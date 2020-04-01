@@ -268,9 +268,15 @@
       ...mapState('global', {
         objreadonlyForJflow: ({ objreadonlyForJflow }) => objreadonlyForJflow,
         JflowControlField: ({ JflowControlField }) => JflowControlField,
-
-        
       }),
+      currentTabIndex() {
+        const tabCurrentIndex = this.$store.state[this[MODULE_COMPONENT_NAME]].tabCurrentIndex;
+        const WebConf = this.$store.state[this[MODULE_COMPONENT_NAME]].WebConf;
+        if (WebConf && WebConf.isCustomizeTab && this.type === 'horizontal') {
+          return tabCurrentIndex + 1;
+        } 
+        return tabCurrentIndex;
+      },
       itemReadOnlyForJflow() {
         let flag = false;
         if(enableJflow() && custommizedJflow()) {
@@ -533,42 +539,12 @@
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
                 }
               }
-              // } else{ // 横向结构
-              //   const store = this.$store.state[this[MODULE_COMPONENT_NAME]];
-              //   let itemModify = [];
-              //   let itemAdd = [];
-              //   if (store.updateData[itemName].modify && store.updateData[itemName].modify[itemName]) {
-              //     itemModify = store.updateData[itemName].modify[itemName];
-              //   }
-              //   if (store.updateData[itemName] && store.updateData[itemName].add[itemName]) {
-              //     itemAdd = store.updateData[itemName].add[itemName];
-              //   }
-              //   if (itemModify && Object.values(itemModify).length > 0 && Object.values(itemAdd).length < 1) { // 单对象界面上下结构子表修改
-              //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
-              //   }
-              //   if (itemAdd && Object.values(itemAdd).length > 0 && Object.values(itemModify).length < 1) { // 单对象界面上下结构子表新增
-              //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
-              //   }
-              //   if(itemModify && Object.values(itemModify).length > 0 && itemAdd && Object.values(itemAdd).length > 0) { // 单对象界面上下结构子表修改新增同时操作
-              //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
-              //   }
-              // }
-              // else { // 没有配置path
-              //   const store = this.$store.state[this[MODULE_COMPONENT_NAME]];
-              //   if (store.updateData[itemName].modify[itemName] && Object.values(store.updateData[itemName].modify[itemName]).length > 0) {
-              //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
-              //   }
-              //   // const add = Object.assign({}, store.updateData[itemName].add[itemName], store.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
-              //   if (store.updateData[itemName].add[itemName] && Object.values(store.updateData[itemName].add[itemName]).length > 0) {
-              //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
-              //   }
-              // }
             }
           }
         }
       },
       savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType, enter) { // 主表新增保存方法
-        const tabIndex = this.$store.state[this[MODULE_COMPONENT_NAME]].tabCurrentIndex;
+        const tabIndex = this.currentTabIndex;
         const objectType = this.type;
         const Id = objId === 'New' ? '-1' : objId;
 

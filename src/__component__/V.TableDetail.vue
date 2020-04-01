@@ -20,6 +20,22 @@
     />
     <div class="verticalTableDetailContent">
       <!-- 上下结构主表 form-->
+
+
+      <!-- <div>
+        <Select
+          v-model="model1"
+          style="width:200px"
+        >
+          <Option
+            v-for="item in customizeData"
+            :key="item.value"
+            :value="item.value"
+          >
+            {{ item.label }}
+          </Option>
+        </Select>
+      </div> -->
       <composite-form
         v-if="mainFormInfo.formData.isShow"
         class="compositeAllform"
@@ -43,13 +59,13 @@
       />
       <div>
         <TabPanels
-                v-if="tabPanels.length > 0"
-                ref="tabPanel"
-                class="tabPanel"
-                :tab-margin-left="20"
-                is-keep-alive
-                :type="'singleCard'"
-                :tab-panels="tabPanels"
+          v-if="tabPanels.length > 0"
+          ref="tabPanel"
+          class="tabPanel"
+          :tab-margin-left="20"
+          is-keep-alive
+          :type="'singleCard'"
+          :tab-panels="tabPanels"
         />
       </div>
     <!-- <TableDetailCollection

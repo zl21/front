@@ -13,7 +13,6 @@ export default {
     state.isHideTempStorage = value;
   },
   updateTabPanelsData(state, data) {
-    console.log(333);
     const { tableName, tableId } = router.currentRoute.params;
     const arr = [{
       label: '标签',

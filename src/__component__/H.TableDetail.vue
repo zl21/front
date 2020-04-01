@@ -222,7 +222,7 @@
         const { tableName, itemId } = this.$route.params;
         // this.getObjectForMainTableForm({ table: tableName, objid: itemId });
         this.getObjectTabForMainTable({
-          table: tableName, objid: itemId, tabIndex: index, isNotFirstRequest
+          table: tableName, objid: itemId, tabIndex: index, isNotFirstRequest, isFirstRequest: true
         });
       }
     },
