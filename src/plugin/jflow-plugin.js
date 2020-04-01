@@ -603,6 +603,7 @@ function AxiosGuard(axios) { // axios拦截
   axios.interceptors.request.use(async (config) => {
     if (config.url.indexOf('jflow') >= 0) { // 所有jflow接口都添加accessToken
       config.headers.accountName = 'guest';
+      
       if (encryptionJflow) {
         config.headers['Content-Type'] = 'application/json';
         const aesKey = uuidGenerator();// 秘钥
@@ -626,7 +627,7 @@ function AxiosGuard(axios) { // axios拦截
         config.headers['encrypt-type'] = 'RSA';
       }
     }
-    if (['V', 'H'].indexOf(window.jflowPlugin.router.currentRoute.path.split('/')[3]) >= 0) { // 配置了流程图并
+    if (['V', 'H'].indexOf(window.jflowPlugin.router.currentRoute.path.split('/')[3]) >= 0 || window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE') { // 配置了流程图并
       // 判断是否触发了配置的动作，满足则走jflow的流程，否则不处理
       
       let launchConfig = [];
