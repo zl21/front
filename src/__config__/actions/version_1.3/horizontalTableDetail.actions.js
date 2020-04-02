@@ -216,7 +216,10 @@ export default {
         const add = Object.assign({}, addDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
         Object.assign(itemAdd[itemName], add);
         const itemTableAdd = Object.assign({}, itemAdd);
-        itemTableAdd[itemName].ID = -1;
+        // itemTableAdd[itemName].ID = -1;
+        itemTableAdd[itemName] = {
+          ID: -1
+        };
         itemTableAdd[itemName] = [
           itemTableAdd[itemName]
         ];
@@ -279,9 +282,14 @@ export default {
               }
             });
           });
-          itemModify[itemName].ID = itemObjId;
-          itemModifyLabel[itemName].ID = itemObjId;
-
+          // itemModify[itemName].ID = itemObjId;
+          itemModify[itemName] = {
+            ID: itemObjId
+          };
+          // itemModifyLabel[itemName].ID = itemObjId;
+          itemModifyLabel[itemName] = {
+            ID: itemObjId
+          };
           const itemModifyRes = {}; 
           const itemModifyResAfter = {};
 
@@ -310,7 +318,10 @@ export default {
         const add = Object.assign({}, addDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
         Object.assign(itemAdd[itemName], add);
         const itemTableAdd = Object.assign({}, itemAdd);
-        itemTableAdd[itemName].ID = -1;
+        // itemTableAdd[itemName].ID = -1;
+        itemTableAdd[itemName] = {
+          ID: -1
+        };
         itemTableAdd[itemName] = [
           itemTableAdd[itemName]
         ];

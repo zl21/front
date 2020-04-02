@@ -283,7 +283,10 @@ export default {
 
           if (Object.values(itemAdd[itemName]).length > 0) {
             const itemTableAdd = Object.assign({}, itemAdd);
-            itemTableAdd[itemName].ID = objId;
+            // itemTableAdd[itemName].ID = objId;
+            itemTableAdd[itemName] = {
+              ID: objId
+            };
             itemTableAdd[itemName] = [
               itemTableAdd[itemName]
             ];
@@ -307,7 +310,10 @@ export default {
             }
           } else if (Object.values(addDefault[itemName]).length > 0) { // 如果子表有默认值
             const itemTableAdd = Object.assign({}, addDefault);
-            itemTableAdd[itemName].ID = objId;
+            // itemTableAdd[itemName].ID = objId;
+            itemTableAdd[itemName] = {
+              ID: objId
+            };
             itemTableAdd[itemName] = [
               itemTableAdd[itemName]
             ];
@@ -427,7 +433,10 @@ export default {
 
 
         if (itemTableAdd && itemTableAdd[itemName]) {
-          itemTableAdd[itemName].ID = -1;
+          // itemTableAdd[itemName].ID = -1;
+          itemTableAdd[itemName] = {
+            ID: -1
+          };
           itemTableAdd[itemName] = [
             itemTableAdd[itemName]
           ];
@@ -508,9 +517,14 @@ export default {
               }
             });
           });
-          itemModify[itemName].ID = itemObjId;
-          itemModifyLabel[itemName].ID = itemObjId;
-  
+          // itemModify[itemName].ID = itemObjId;
+          itemModify[itemName] = {
+            ID: itemObjId
+          };
+          // itemModifyLabel[itemName].ID = itemObjId;
+          itemModifyLabel[itemName] = {
+            ID: itemObjId
+          };
           const itemModifyRes = {}; 
           const itemModifyResAfter = {};
   
@@ -545,7 +559,10 @@ export default {
 
         const itemTableAdd = Object.assign({}, itemAdd);
         if (itemTableAdd && itemTableAdd[itemName]) {
-          itemTableAdd[itemName].ID = -1;
+          // itemTableAdd[itemName].ID = -1;
+          itemTableAdd[itemName] = {
+            ID: -1
+          };
           itemTableAdd[itemName] = [
             itemTableAdd[itemName]
           ];
