@@ -3178,7 +3178,7 @@
       reloadErrorTips(data) {
         // const indexColumn = this.columns.filter(ele => ele.key === COLLECTION_INDEX);
         this.dataSource.row.map((ele) => {
-          if (data.every) {
+          if (data && data.every) {
             const exceptFlag = data.every((item) => {
               if (Number(ele[EXCEPT_COLUMN_NAME].val) !== Number(item.objid)) {
                 return true;

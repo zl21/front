@@ -531,7 +531,9 @@ export default {
             addItem
           ];
           if (path) {
-            modify[tableName].ID = objId;
+            modify[tableName] = {
+              ID: objId
+            };
             if (temporaryStoragePath) {
               parames = {
                 ...modify,
