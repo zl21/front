@@ -1092,8 +1092,7 @@
             objId: this.itemId, table: this.tableName, path: obj.requestUrlPath, isreftabs: this.isreftabs, resolve, reject
           });
         });
-        this.temporaryStorage = false;
-        this.dataArray.temporaryStorage = false;
+        
         this.saveEventAfter = '';
         const saveEventAfterData = {
           k: 'type',
@@ -1102,6 +1101,8 @@
         updateSessionObject('saveEventAfter', saveEventAfterData);
 
         promise.then(() => {
+          this.temporaryStorage = false;
+          this.dataArray.temporaryStorage = false;
           const message = this.buttonsData.invalidData.message;
           if (message) {
             this.upData(`${message}`);
@@ -3042,9 +3043,10 @@
                 objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
               });
             });
-            this.temporaryStorage = false;
-            this.dataArray.temporaryStorage = false;
+           
             promise.then(() => {
+                           this.temporaryStorage = false;
+                           this.dataArray.temporaryStorage = false;
                            const message = this.buttonsData.submitData.message;
                            if (message) {
                              this.upData(`${message}`);

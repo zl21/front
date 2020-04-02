@@ -361,7 +361,6 @@ function NetworkConstructor() {
             actionUrls.action.every((jflowUrl) => {
               if (jflowUrl === url && router.currentRoute.params.tableId === actionUrls.businessType) {
                 flag = true;
-                console.log(44444, matchedUrl, config);
                 return axios.post(matchedUrl, config);
               }
 
