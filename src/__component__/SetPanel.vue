@@ -180,6 +180,8 @@
             router.push({ path: getTouristRoute() });
             removeSessionObject('saveNetwork');
             GetTableName('');
+            this.$store.commit('global/updataUserInfoMessage', {});
+            window.localStorage.removeItem('userInfo');
             this.$store.commit('global/updateJflowControlField', []);
             // 清空updataTreeId
             removeSessionObject('TreeId');
@@ -187,6 +189,8 @@
           })
           .catch(() => {
             router.push({ path: getTouristRoute() });
+            window.localStorage.removeItem('userInfo');
+            this.$store.commit('global/updataUserInfoMessage', {});
             removeSessionObject('saveNetwork');
             removeSessionObject('TreeId');
             this.updateTreeTableListData([]);
