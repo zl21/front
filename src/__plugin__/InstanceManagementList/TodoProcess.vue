@@ -189,7 +189,7 @@
               type: 'DatePicker',
               title: '开始时间',
               filed: 'createTime',
-              value: [new Date(new Date(new Date().getTime() - 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0)).minusDays(29).format('yyyy-MM-dd hh:mm'), new Date(new Date().setHours(23, 59, 59)).format('yyyy-MM-dd hh:mm:ss')]
+              value: [new Date(new Date(new Date().getTime() - 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0)).minusDays(29).format('yyyy-MM-dd hh:mm:ss'), new Date(new Date().setHours(23, 59, 59)).format('yyyy-MM-dd hh:mm:ss')]
             }
           },
           {
@@ -218,7 +218,7 @@
           searchType: '0,1',
           excuStatus: 0,
           userId: window.jflowPlugin.userInfo.id,
-          createTime: [new Date(new Date(new Date().getTime() - 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0)).minusDays(29), new Date(new Date().setHours(23, 59, 59)).format('yyyy-MM-dd hh:mm:ss')]
+          createTime: [new Date(new Date(new Date().getTime() - 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0)).minusDays(29).format('yyyy-MM-dd hh:mm:ss'), new Date(new Date().setHours(23, 59, 59)).format('yyyy-MM-dd hh:mm:ss')]
         },
         // 表格数据
         total: 0,
@@ -534,12 +534,8 @@
           && this.searchData.createTime[0]
           && this.searchData.createTime[1]
         ) {
-          this.searchData.startTime = new Date(
-            this.searchData.createTime[0]
-          ).format('yyyy-MM-dd hh:mm');
-          this.searchData.endTime = new Date(
-            this.searchData.createTime[1]
-          ).format('yyyy-MM-dd hh:mm');
+          this.searchData.startTime = this.searchData.createTime[0];
+          this.searchData.endTime = this.searchData.createTime[1];
         } else {
           this.searchData.startTime = '';
           this.searchData.endTime = '';
