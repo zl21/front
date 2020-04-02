@@ -2873,7 +2873,6 @@
         let removeMessage = false;
         promise.then((res) => {
           // this.closeCurrentLoading();//保存成功后不需要清除loading,调刷新时会触发表单，表单会触发监听，监听会关闭loading
-          this.clearEditData();// 清空store update数据
           stop = false;
           removeMessage = false;
 
@@ -2929,7 +2928,7 @@
       },
       saveAfter(type, tableName, stop, removeMessage) {
         if (!stop) { // 保存失败时，不清空store里面存的参数，
-          this.clearEditData();// 清空store update数据
+          // this.clearEditData();// 清空store update数据
         } else { // 保存失败不执行任何逻辑
           this.saveEventAfter = '';
           const saveEventAfterData = {
@@ -3035,7 +3034,7 @@
         const saveEventAfter = getSeesionObject('saveEventAfter');
         const objTabActionSlientData = getSeesionObject('objTabActionSlientData');
         if (!stop) {
-          this.clearEditData();// 清空store update数据
+          // this.clearEditData();// 清空store update数据
           if (this.saveEventAfter === 'submit' || saveEventAfter.type === 'submit') { // 提交操作
             const promise = new Promise((resolve, reject) => {
               this.getObjectTrySubmit({
@@ -3058,6 +3057,7 @@
                              v: {}
                            };
                            updateSessionObject('saveEventAfter', saveEventAfterData);
+                           this.clearEditData();// 清空store update数据
                          },
                          () => { // 状态为rejected时执行
                            //  const submitReject = window.localStorage.getItem('submitReject');
@@ -3100,6 +3100,7 @@
             // });
           } else if (this.saveEventAfter === 'objTabActionSlient' || saveEventAfter.type === 'objTabActionSlient') { // 静默程序配置isSave时，保存成功后才可执行静默程序
             this.buttonEvent(Object.keys(this.objTabActionSlientData).length > 0 ? this.objTabActionSlientData : objTabActionSlientData.data);
+            this.clearEditData();// 清空store update数据
             // this.objTabActionSlientConfirm(this.objTabActionSlientData);
             this.objTabActionSlientData = {};
             const data = {
@@ -3109,6 +3110,8 @@
             updateSessionObject('objTabActionSlientData', data);
           } else { // 保存后的保存成功提示信息
             const message = this.buttonsData.message;
+            this.clearEditData();// 清空store update数据
+
             if (message) {
               this.upData(`${message}`);
             } else if (removeMessage) {

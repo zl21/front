@@ -273,7 +273,6 @@ export default {
       tabrelation, itemObjId, tableName, add, objId, type, sataType, itemName, itemCurrentParameter, isreftabs, itemNameGroup, temporaryStoragePath
     } = parame;
     let parames = {};
-
     if (type === 'add') { // 新增保存参数
       if (isreftabs) { // 存在子表
         if (itemNameGroup.length > 0) {
@@ -284,10 +283,7 @@ export default {
 
           if (Object.values(itemAdd[itemName]).length > 0) {
             const itemTableAdd = Object.assign({}, itemAdd);
-            // itemTableAdd[itemName].ID = objId;
-            itemTableAdd[itemName] = {
-              ID: objId
-            };
+            itemTableAdd[itemName].ID = objId;
             itemTableAdd[itemName] = [
               itemTableAdd[itemName]
             ];
@@ -311,10 +307,7 @@ export default {
             }
           } else if (Object.values(addDefault[itemName]).length > 0) { // 如果子表有默认值
             const itemTableAdd = Object.assign({}, addDefault);
-            // itemTableAdd[itemName].ID = objId;
-            itemTableAdd[itemName] = {
-              ID: objId
-            };
+            itemTableAdd[itemName].ID = objId;
             itemTableAdd[itemName] = [
               itemTableAdd[itemName]
             ];
@@ -434,16 +427,12 @@ export default {
 
 
         if (itemTableAdd && itemTableAdd[itemName]) {
-          // itemTableAdd[itemName].ID = -1;
-          itemTableAdd[itemName] = {
-            ID: -1
-          };
+          itemTableAdd[itemName].ID = -1;
           itemTableAdd[itemName] = [
             itemTableAdd[itemName]
           ];
         }
-        modify[tableName] = {};
-        if (modify && Object.values(modify[tableName]).length > 0) {
+        if (Object.values(modify[tableName]).length > 0) {
           const value = Object.assign({}, modify, labelregroupTableName);
           parames = {
             table: tableName,
@@ -478,7 +467,6 @@ export default {
           };
         }
       } else if (sataTypeName === 'modify') {
-        modify[tableName] = {};
         if (temporaryStoragePath) {
           const value = Object.assign({}, modify, labelregroupTableName);
           parames = {
@@ -510,10 +498,6 @@ export default {
         } else if (tabrelation) {
           const itemLabelBeforeRes = parame.itemCurrentParameter.defaultLabel;// 子表修改的label
           const itemModifyResBefore = {};
-          itemModify[itemName] = {};
-          itemLabelBeforeRes[itemName] = {};
-          itemModifyResBefore[itemName] = {};
-          itemLabelBeforeRes[itemName] = {};
           Object.keys(itemModify[itemName]).forEach((item) => {
             Object.keys(itemLabelBeforeRes[itemName]).forEach((itemBefore) => {
               if (item === itemBefore) {
@@ -524,14 +508,9 @@ export default {
               }
             });
           });
-          // itemModify[itemName].ID = itemObjId;
-          itemModify[itemName] = {
-            ID: itemObjId
-          };
-          // itemModifyLabel[itemName].ID = itemObjId;
-          itemModifyLabel[itemName] = {
-            ID: itemObjId
-          };
+          itemModify[itemName].ID = itemObjId;
+          itemModifyLabel[itemName].ID = itemObjId;
+  
           const itemModifyRes = {}; 
           const itemModifyResAfter = {};
   
@@ -559,28 +538,21 @@ export default {
         const addDefault = itemCurrentParameter ? itemCurrentParameter.addDefault : {};
         const add = Object.assign({}, addDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
         const itemAddAndModify = {};
-        itemAdd[itemName] = {};
 
         if (itemAdd && itemAdd[itemName]) {
           Object.assign(itemAdd[itemName], add);
         }
+
         const itemTableAdd = Object.assign({}, itemAdd);
-        itemTableAdd[itemName] = {};
         if (itemTableAdd && itemTableAdd[itemName]) {
-          // itemTableAdd[itemName].ID = -1;
-          itemTableAdd[itemName] = {
-            ID: -1
-          };
+          itemTableAdd[itemName].ID = -1;
           itemTableAdd[itemName] = [
             itemTableAdd[itemName]
           ];
         }
-        itemAddAndModify[itemName] = {};
         if (itemAddAndModify && itemAddAndModify[itemName]) {
           itemAddAndModify[itemName] = itemTableAdd[itemName].concat(itemModify[itemName]);
         }
-        modify[tableName] = {};
-        itemModify[itemName] = {};
         if (itemAdd[itemName]
           && itemAdd[itemName]
           && Object.values(itemAdd[itemName]).length > 0
@@ -706,7 +678,6 @@ export default {
       });
     }
   },
-  
   getObjectTrySubmit({
     commit
   }, {
