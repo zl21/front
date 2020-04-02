@@ -223,7 +223,7 @@ export default {
         itemTableAdd[itemName] = [
           itemTableAdd[itemName]
         ];
-  
+        modify[tableName] = {};
         if (Object.values(modify[tableName]).length > 0) {
           const value = Object.assign({}, modify, labelregroupTableName);
           parames = {
@@ -250,6 +250,7 @@ export default {
           };
         }
       } else if (sataTypeName === 'modify') { // 子表修改
+        modify[tableName] = {};
         if (Object.values(modify[tableName]).length > 0) {
           const value = Object.assign({}, modify, labelregroupTableName);
           parames = {
@@ -272,6 +273,8 @@ export default {
         } else if (tabrelation) {
           const itemLabelBeforeRes = parame.itemCurrentParameter.defaultLabel;// 子表修改的label
           const itemModifyResBefore = {};
+          itemModify[itemName] = {};
+          itemLabelBeforeRes[itemName] = {};
           Object.keys(itemModify[itemName]).forEach((item) => {
             Object.keys(itemLabelBeforeRes[itemName]).forEach((itemBefore) => {
               if (item === itemBefore) {
@@ -327,24 +330,9 @@ export default {
         ];
         const itemAddAndModify = {};// 整合子表新增与子表修改参数，合并到一个数组
         itemAddAndModify[itemName] = itemTableAdd[itemName].concat(itemModify[itemName]);
-        // 子表新增保存
-        // if (Object.values(itemAdd[itemName]).length > 0 && Object.values(modify[tableName]).length === 0 && Object.values(itemModify[itemName]).length === 0) {
-        //   parames = {
-        //     table: tableName, // 主表表名
-        //     objid: objId, // 明细id
-        //     data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-        //       ...itemTableAdd
-        //     }
-        //   };
-        // } else if (Object.values(itemModify[itemName]).length > 0 && Object.values(itemAdd[itemName]).length === 0 && Object.values(modify[tableName]).length === 0) { // 子表修改保存
-        //   parames = {
-        //     table: tableName,
-        //     objid: objId,
-        //     data:itemModify,
-        //     after: itemModifyLabel,
-        //     before: itemBeforeLabel,
-        //   };
-        // } else 
+        itemAdd[itemName] = {};
+        itemModify[itemName] = {};
+        modify[tableName] = {};
         if (Object.values(itemAdd[itemName]).length > 0 && Object.values(itemModify[itemName]).length > 0 && Object.values(modify[tableName]).length === 0) { // 2种保存合并（子表修改，子表新增）
           parames = {
             table: tableName, // 主表表名
