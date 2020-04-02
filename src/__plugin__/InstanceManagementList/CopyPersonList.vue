@@ -108,7 +108,7 @@
               type: 'DatePicker',
               title: '处理时间',
               filed: 'createTime',
-              value: [new Date(new Date(new Date().getTime() - 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0)).minusDays(29).format('yyyy-MM-dd hh:mm'), new Date().format('yyyy-MM-dd hh:mm')]
+              value: [new Date(new Date(new Date().getTime() - 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0)).minusDays(29).format('yyyy-MM-dd hh:mm'), new Date(new Date().setHours(23, 59, 59)).format('yyyy-MM-dd hh:mm:ss')]
             }
           }
         ],
@@ -117,7 +117,7 @@
           page: 1,
           pageSize: 10,
           userId: window.jflowPlugin.userInfo.id,
-          createTime: [new Date(new Date(new Date().getTime() - 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0)).minusDays(29), new Date()]
+          createTime: [new Date(new Date(new Date().getTime() - 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0)).minusDays(29), new Date(new Date().setHours(23, 59, 59)).format('yyyy-MM-dd hh:mm:ss')]
         },
 
         // 表格数据
