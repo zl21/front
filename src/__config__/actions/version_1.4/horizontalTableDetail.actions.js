@@ -200,7 +200,10 @@ export default {
               // modify[tableName].ID = objId;// 主表id
               const itemTableAdd = Object.assign({}, itemAdd);
 
-              itemTableAdd[itemName].ID = -1;
+              // itemTableAdd[itemName].ID = -1;
+              itemTableAdd[itemName] = {
+                ID: -1
+              };
               const mainTabale = {};
               mainTabale[tableName] = {
                 ID: objId// 主表id
@@ -226,7 +229,10 @@ export default {
               Object.assign(itemAdd[itemName], add);
               const itemTableAdd = Object.assign({}, itemAdd);
 
-              itemTableAdd[itemName].ID = -1;
+              // itemTableAdd[itemName].ID = -1;
+              itemTableAdd[itemName] = {
+                ID: -1
+              };
               itemTableAdd[itemName] = [
                 itemTableAdd[itemName]
               ];
@@ -255,7 +261,10 @@ export default {
                   ...mainTabale,
                 };
               } else if (tabrelation) { // 处理子表1:1模式逻辑
-                itemModify[itemName].ID = itemObjId;
+                // itemModify[itemName].ID = itemObjId;
+                itemModify[itemName] = {
+                  ID: itemObjId
+                };
                 const itemModifyRes = {}; 
                 itemModifyRes[itemName] = [itemModify[itemName]];
                 parames = {
@@ -271,9 +280,15 @@ export default {
             }
           } else { // 因引起jflow报错ID改为大写
             if (enableJflow()) {
-              modify[tableName].ID = objId;
+              // modify[tableName].ID = objId;
+              modify[tableName] = {
+                ID: objId
+              };
             } else {
-              modify[tableName].Id = objId;
+              // modify[tableName].Id = objId;
+              modify[tableName] = {
+                Id: objId
+              };
             }
             parames = {
               ...modify,
@@ -283,7 +298,10 @@ export default {
           const add = Object.assign({}, itemDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
           Object.assign(itemAdd[itemName], add);
           const itemTableAdd = Object.assign({}, itemAdd);
-          itemTableAdd[itemName].ID = -1;
+          // itemTableAdd[itemName].ID = -1;
+          itemTableAdd[itemName] = {
+            ID: -1
+          };
           const itemModifyForAddAndModify = Object.assign([], itemModify[itemName]);
           itemModifyForAddAndModify.push(itemTableAdd[itemName]);
           const addAndModifyParames = [];
@@ -305,7 +323,10 @@ export default {
           const add = Object.assign({}, itemDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
           Object.assign(itemAdd[itemName], add);
           const itemTableAdd = Object.assign({}, itemAdd);
-          itemTableAdd[itemName].ID = -1;
+          // itemTableAdd[itemName].ID = -1;
+          itemTableAdd[itemName] = {
+            ID: -1
+          };
           itemTableAdd[itemName] = [
             itemTableAdd[itemName]
           ];
@@ -324,7 +345,10 @@ export default {
           if (temporaryStoragePath) {
             console.log('子表不支持暂存');
           } else if (tabrelation) { // 处理子表1:1模式逻辑
-            itemModify[itemName].ID = itemObjId;
+            // itemModify[itemName].ID = itemObjId;
+            itemModify[itemName] = {
+              ID: itemObjId
+            };
             const itemModifyRes = {}; 
             itemModifyRes[itemName] = [itemModify[itemName]];
             parames = {
