@@ -134,7 +134,6 @@
         this.menuTreeQuery = e.target.value;
       }, // 检索输入框值改变
       searchClick(e, input) {
-        console.log(1);
         function func(tdata, resData) {
           if (Array.isArray(tdata) && tdata.length > 0) {
             tdata.forEach((v, i) => {
@@ -142,11 +141,13 @@
                 v.children.map((a) => {
                   if (a.title.search(input.currentValue) !== -1) {
                     v.expand = true;
+                    console.log(2, v.title, a.title, input.currentValue);
                   }
                 });
                 setTimeout(() => {
                   v.children.map((d) => {
                     if (d.expand) {
+                      console.log(1, d.title);
                       v.expand = true;
                     }
                   });
@@ -163,6 +164,7 @@
         }
         const resArr = [];
         func(this.treeData, resArr);
+        console.log(4444, this.treeData);
       },
       menuTreeChange(val, item) {
         const arrayIDs = [];
