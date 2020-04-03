@@ -268,13 +268,13 @@
             this.mountChecked = false;
             // 清空界面的 默认值
             this.defaultFormData = {};
+            this.Comparison();
             // 开启 (刷新界面))
             this.mountNumber = (Math.random() * 1000).toFixed(0);
             // 组件重组
             this.reorganizeForm();
 
             this.defaultColumnCol = this.defaultData.objviewcol || 4;
-            this.Comparison();
           }, 200);
         },
         deep: true
@@ -329,6 +329,8 @@
         this.formData = {};
         this.formDataDef = {};
         this.formDataSave = {};
+        this.labelForm = {};
+        this.labelFormSave = {};
       },
       isReadonly(current) {
         // 设置界面的 是否 disable

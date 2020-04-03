@@ -2973,6 +2973,7 @@
         }
       },
       clearEditData() {
+        console.log(1);
         if (this.objectType === 'vertical') {
           if (this.subtables() && this.itemNameGroup.length > 0) {
             this.clearMainEditData();
@@ -2987,6 +2988,8 @@
         }
       },
       clearMainEditData() {
+        console.log(1);
+
         this.updateChangeData({ tableName: this.tableName, value: {} });
         this.updateModifyData({ tableName: this.tableName, value: {} });
         this.updateAddDefaultData({ tableName: this.tableName, value: {} });
@@ -2994,6 +2997,8 @@
         this.updateDeleteData({ tableName: this.tableName, value: {} });
       },
       clearItemEditData() {
+        console.log(1);
+
         const itemNames = this.itemNameGroup.map((c) => {
           if (c.tableName !== this.tableName) {
             return c.tableName;
