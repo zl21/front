@@ -9,6 +9,7 @@
       icon="ios-search"
       @on-change="searchInputChange"
       @on-click="searchClick"
+      @on-enter="searchClick"
     />
                            
     <Tree
@@ -64,12 +65,12 @@
       };
     },
     created() {
-      document.onkeydown = (e) => {
-        const key = e.keyCode;
-        if (key === 13) {
-          this.searchClick(e, this.menuTreeQuery);
-        }
-      };
+      // document.onkeydown = (e) => {
+      //   const key = e.keyCode;
+      //   if (key === 13) {
+      //     this.searchClick(e, this.menuTreeQuery);
+      //   }
+      // };
     },
     props: {
       treeDatas: {
@@ -133,6 +134,7 @@
         this.menuTreeQuery = e.target.value;
       }, // 检索输入框值改变
       searchClick(e, input) {
+        console.log(1);
         function func(tdata, resData) {
           if (Array.isArray(tdata) && tdata.length > 0) {
             tdata.forEach((v, i) => {
