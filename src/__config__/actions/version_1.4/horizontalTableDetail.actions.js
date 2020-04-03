@@ -163,7 +163,7 @@ export default {
     });
   },
   // 按钮
-  erformMainTableSaveAction({ commit }, { parame, resolve, reject }) { // 主表保存
+  performMainTableSaveAction({ commit }, { parame, resolve, reject }) { // 主表保存
     const {
       tabrelation, itemObjId, tableName, objId, path, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup, sataType, temporaryStoragePath
     } = parame;
