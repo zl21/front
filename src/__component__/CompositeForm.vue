@@ -262,6 +262,7 @@
       },
       defaultData: {
         handler() {
+          this.openLoading();
           // 开启  默认值(刷新界面))
           clearTimeout(this.watchTime);
           this.watchTime = setTimeout(() => {
@@ -2379,20 +2380,20 @@
         if (this.$el) {
           this.setdefaultColumnCol();
         }
+      },
+      openLoading() { // 表单更新时重新加载loading
+        if (!this.tableGetName) { // 子表不添加loading
+          const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
+          const dom = document.querySelector(`#${currentTableName}-loading`);
+          if (!dom && this.from === 'singlePage') {
+            this.$loading.show(this.tableName);
+          }
+        }
       }
     },
     mounted() {
-      if (!this.tableGetName) { // 子表不添加loading
-        const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
-        const dom = document.querySelector(`#${currentTableName}-loading`);
-        if (!dom && this.from === 'singlePage') {
-          this.$loading.show(this.tableName);
-        }
-      }
-
-      
       this.Comparison();
-     
+      this.openLoading();
       setTimeout(() => {
         if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {
           if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {

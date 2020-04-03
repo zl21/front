@@ -36,8 +36,9 @@
           </Option>
         </Select>
       </div> -->
+      
       <composite-form
-        v-if="mainFormInfo.formData.isShow"
+        v-show="mainFormInfo.formData.isShow"
         class="compositeAllform"
         object-type="vertical"
         :is-main-table="true"
@@ -59,7 +60,7 @@
       />
       <div>
         <TabPanels
-          v-if="tabPanels.length > 0"
+          v-show="tabPanels.length > 0"
           ref="tabPanel"
           class="tabPanel"
           :tab-margin-left="20"
