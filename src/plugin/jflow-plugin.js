@@ -683,8 +683,8 @@ function AxiosGuard(axios) { // axios拦截
         // }
         // 主表的按钮获取
         if (response.config.data.indexOf('ismaintable=y') >= 0) {
-          // const tabcmd = JSON.parse(JSON.stringify(response.data.data.tabcmd));
-          // getConfigMap(tabcmd);
+          const tabcmd = JSON.parse(JSON.stringify(response.data.data.tabcmd));
+          getConfigMap(tabcmd);
         }
       }
 
