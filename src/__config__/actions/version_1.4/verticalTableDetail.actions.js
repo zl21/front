@@ -416,9 +416,7 @@ export default {
         };
       }
     } else if (type === 'modify') { // 编辑保存参数
-      const {
-        modify
-      } = parame;
+      const modify = parame.modify;
       const {
         sataType
       } = parame;
@@ -574,14 +572,15 @@ export default {
             };
           }
         } else if (path) { // 主表保存有path的参数
-          if (!modify[tableName]) {
-            modify[tableName] = {};
-            modify[tableName].ID = objId; // 主表id
+          const modifyRes = JSON.parse(JSON.stringify(modify));
+          if (!modifyRes[tableName]) {
+            modifyRes[tableName] = {};
+            modifyRes[tableName].ID = objId; // 主表id
           } else {
-            modify[tableName].ID = objId; // 主表id
+            modifyRes[tableName].ID = objId; // 主表id
           }
           parames = {
-            ...modify
+            ...modifyRes
           };
         } else { // 带子表的没有path的主表保存
           parames = {
