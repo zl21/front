@@ -254,11 +254,11 @@ export default {
   },
    
   getTaskMessageCount({ commit }, userId) { // 获取我的任务数量
-    network.post('/p/c/getMsgCnt', urlSearchParams({ userId })).then((res) => {
-      if (res.data.code === 0) {
-        commit('updateTaskMessageCount', res.data.data);
-      }
-    });
+    // network.post('/p/c/getMsgCnt', urlSearchParams({ userId })).then((res) => {
+    //   if (res.data.code === 0) {
+    //     commit('updateTaskMessageCount', res.data.data);
+    //   }
+    // });
   }
  
 };
