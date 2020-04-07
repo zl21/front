@@ -182,6 +182,13 @@
     },
     
     watch: {
+      isItemTable: {
+        handler(val) {
+          if (val) {
+            this.dataArray.refresh = false;
+          }
+        }
+      },
       backButton: {// 原jflow
         handler(val) {
           this.dataArray.back = val;
@@ -327,6 +334,12 @@
         currentLoading: ({ currentLoading }) => currentLoading,
         JflowControlField: ({ JflowControlField }) => JflowControlField,
       }),
+      currentTabIndex() {
+        if (this.WebConf && this.WebConf.isCustomizeTab && this.objectType === 'horizontal') {
+          return this.tabCurrentIndex + 1;
+        } 
+        return this.tabCurrentIndex;
+      },
       watermarkImg() { // 匹配水印图片路径
         return this.watermarkimg;
       },
@@ -670,21 +683,6 @@
         });// 因左右结构itemNameGroup包含主表，上下结构不包括
         const name = '';
         if (this.itemId === 'New') {
-          // if ((this.updateData[this.itemName] && this.updateData[this.itemName].default && this.updateData[this.itemName].default[this.itemName] && Object.keys(this.updateData[this.itemName].default[this.itemName]).length > 0) //子表有默认值
-          //   || (this.updateData[this.tableName] && this.updateData[this.tableName].default && this.updateData[this.tableName].default[this.tableName] && Object.keys(this.updateData[this.tableName].default[this.tableName]).length > 0)) {//主表有默认值
-          // 新增时，属于中主子表add都有值
-          // if ((this.updateData[this.itemName] 
-          //   && this.updateData[this.itemName].add 
-          //   && this.updateData[this.itemName].add[this.itemName] 
-          //   && Object.keys(this.updateData[this.itemName].add[this.itemName]).length > 0//主表新增有值
-          // ) 
-          //   ||
-          //    (this.updateData[this.tableName] 
-          //   && this.updateData[this.tableName].add 
-          //   && this.updateData[this.tableName].add[this.tableName] 
-          //   && Object.keys(this.updateData[this.tableName].add[this.tableName]).length > 0)//子表新增有值
-          // ) {
-          //   // 新增时，属于中主子表add都有默认值
           if (
             (itemNames.includes(this.itemName) && this.updateData[this.itemName] 
             && this.updateData[this.itemName].default 
@@ -725,43 +723,50 @@
                 < Object.keys(addItemDataLength).length// 子表add>default
               ) {
                 this.isValue = true;// 子表修改了值
+                return true;
                 console.log('新增时，子表add>default,修改了值');
-              } else if (JSON.stringify(defaultItemDataLength) !== JSON.stringify(addItemDataLength)) {
+              } if (JSON.stringify(defaultItemDataLength) !== JSON.stringify(addItemDataLength)) {
                 this.isValue = true;// 左右结构，主表或子表修改了值
+                return true;
                 console.log('新增时，主表或子表add=default,修改了默认值');
               }
             } else if (defaultMainDataLength && Object.keys(defaultMainDataLength).length > 0) {
               if (Object.keys(defaultMainDataLength).length < Object.keys(addMainDataLength).length) { // 主表add>default
                 this.isValue = true;// 主表修改了值
+                return true;
                 console.log('新增时，主表add>default,修改了值');
-              } else if (JSON.stringify(defaultMainDataLength) !== JSON.stringify(addMainDataLength)) {
+              } if (JSON.stringify(defaultMainDataLength) !== JSON.stringify(addMainDataLength)) {
                 this.isValue = true;// 主表修改了值
+                return true;
                 console.log('新增时，主表add=default,修改了默认值');
-              } else if (addItemDataLength && Object.keys(addItemDataLength).length > 0) {
+              } if (addItemDataLength && Object.keys(addItemDataLength).length > 0) {
                 this.isValue = true;// 主表修改了值
+                return true;
                 console.log('新增时，子表修改了值');
               }
             } else if (addItemDataLength && Object.keys(addItemDataLength).length > 0) {
               this.isValue = true;// 子表修改了值
+              return true;
               console.log('新增时，子表修改了值');
             } else if (addMainDataLength && Object.keys(addMainDataLength).length > 0) {
               this.isValue = true;// 主表修改了值
+              return true;
               console.log('新增时，主表修改了值');
             }
           } 
-          // }
-          // }
         } else if (this.objectType === 'horizontal') { // 横向布局
           if (itemNames.includes(this.itemName)) { // 子表
             if ((this.updateData[this.itemName] && this.updateData[this.itemName].modify[this.itemName] && Object.keys(this.updateData[this.itemName].modify[this.itemName]).length > 0)
               || (this.updateData[this.itemName].add[this.itemName] && Object.keys(this.updateData[this.itemName].add[this.itemName]).length > 0)) { // 子表新增及修改
               this.isValue = true;// 子表修改了值
+              return true;
               console.log(' 子表修改了值');
             }
           } else if (this.updateData[this.tableName].modify[this.tableName] && Object.keys(this.updateData[this.tableName].modify[this.tableName]).length > 0
             || this.updateData[this.tableName].add[this.tableName] && Object.keys(this.updateData[this.tableName].add[this.tableName]).length > 0
           ) { 
             this.isValue = true;// 主表修改了值
+            return true;
             console.log(' 左右主表修改了值');
           }
         } else if ((this.updateData[this.tableName] 
@@ -775,17 +780,12 @@
           && Object.keys(this.updateData[this.itemName].add[this.itemName]).length > 0) 
         ) { // 子表新增及修改
           this.isValue = true;// 主表修改了值
+          return true;
           console.log('编辑时，修改时上下主或子表修改了值');
         }
+        return false;
       },
-      // testUpdataForReturn() { // 校验是否修改过值
-      //     Object.entries(this.updateData).forEach(([key, value]) =>{
-        
-
-      //    })
-
-      // },
-     
+  
       clickButtonsRefresh() { // 按钮刷新事件
         this.testUpdata();
         if (this.isValue) {
@@ -869,18 +869,18 @@
         const {
           tablename, refcolid, tabrelation, tabinlinemode
         } = this.itemInfo;
-        const tabIndex = this.tabCurrentIndex;
+       
         if (this.objectType === 'horizontal') { // 横向布局
-          if (this.tabCurrentIndex === 0) { // 主表
+          if (this.currentTabIndex === 0) { // 主表
             this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
             this.getObjectTabForMainTable({
-              table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME]
+              table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME]
             });
           } else if (tabrelation === '1:m') { // 子表
-            this.getInputForitemForChildTableForm({ table: tablename, tabIndex, tabinlinemode });
+            this.getInputForitemForChildTableForm({ table: tablename, tabIndex: this.currentTabIndex, tabinlinemode });
             const promise = new Promise((resolve, reject) => {
               this.getObjectTabForChildTableButtons({
-                maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex, resolve, reject
+                maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex: this.currentTabIndex, resolve, reject
               });
             });
 
@@ -891,22 +891,23 @@
                 range: page.pageSize,
                 fixedcolumns: this.itemInfo.tableSearchData.selectedValue ? { [this.itemInfo.tableSearchData.selectedValue]: `${this.itemInfo.tableSearchData.inputValue}` } : this.itemInfo.tableDefaultFixedcolumns
               };
+       
               this.getObjectTableItemForTableData({
-                table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
+                table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex: this.currentTabIndex
               });
             });
           } else if (tabrelation === '1:1') {
             this.getObjectTabForChildTableButtons({
-              maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex
+              maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex: this.currentTabIndex
             });
             this.getItemObjForChildTableForm({
-              table: tablename, objid: this.itemId, refcolid, tabIndex
+              table: tablename, objid: this.itemId, refcolid, tabIndex: this.currentTabIndex
             });
           }
         } else { // 纵向布局
           this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
           this.getObjectForMainTableForm({
-            table: this.tableName, objid: this.itemId, tabIndex
+            table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex
           });
           // if (this.itemInfo.tabrelation === '1:1') {
           //   // enableRequestItemTable:因此方法是主子表同时请求，加此标记为不请求子表相关接口
@@ -934,7 +935,7 @@
           //   // 获取子表表单
           // } else {
           this.getObjectTabForMainTable({
-            table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME]
+            table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME]
           });
           // }
         }
@@ -1006,14 +1007,16 @@
           });
         }
         const { refcolid } = this.itemInfo;
-        const tabIndex = this.tabCurrentIndex;
+     
         const searchdata = {
           column_include_uicontroller: true,
           startindex: (page.currentPageIndex - 1) * page.pageSize,
           range: page.pageSize,
         };
+      
+
         this.getObjectTableItemForTableData({
-          table: this.itemName, objid: this.itemId, refcolid, searchdata, tabIndex
+          table: this.itemName, objid: this.itemId, refcolid, searchdata, tabIndex: this.currentTabIndex
         });
       },
 
@@ -1089,8 +1092,7 @@
             objId: this.itemId, table: this.tableName, path: obj.requestUrlPath, isreftabs: this.isreftabs, resolve, reject
           });
         });
-        this.temporaryStorage = false;
-        this.dataArray.temporaryStorage = false;
+        
         this.saveEventAfter = '';
         const saveEventAfterData = {
           k: 'type',
@@ -1099,6 +1101,8 @@
         updateSessionObject('saveEventAfter', saveEventAfterData);
 
         promise.then(() => {
+          this.temporaryStorage = false;
+          this.dataArray.temporaryStorage = false;
           const message = this.buttonsData.invalidData.message;
           if (message) {
             this.upData(`${message}`);
@@ -1787,14 +1791,16 @@
                 return true;
               });
               const { tablename } = this.itemInfo;
-              const tabIndex = this.tabCurrentIndex;
+             
               const searchdata = {
                 column_include_uicontroller: true,
                 startindex: 0,
                 range: page.pageSize,
               };
+          
+
               this.getObjectTableItemForTableData({
-                table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
+                table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex: this.currentTabIndex
               });
             }
             this.updateDeleteData({ tableName: this.itemName, value: {} });
@@ -1809,7 +1815,7 @@
         const id = 'New';// 修改路由,复制操作时路由为新增
         const label = `${this.activeTab.label.replace('编辑', '新增')}`;
         if (this.objectType === 'horizontal') { // 横向布局
-          if (this.tabCurrentIndex === 0) { // 主表
+          if (this.currentTabIndex === 0) { // 主表
             let formData = {};
             this.tabPanel.forEach((item) => {
               if (item.tablename === this.tableName) {
@@ -2164,18 +2170,18 @@
             (tabwebact.objtabbutton && tabwebact.objtabbutton.length > 0) {
             this.webactButton(tabwebact.objtabbutton);
           }
-        } else if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
-          if (this.isItemTable) {
+        } else if (this.isItemTable) {
+          if (tabwebact.objtabbutton && tabwebact.objtabbutton.length > 0) {
             this.webactButton(tabwebact.objtabbutton);
-          } else {
-            this.webactButton(tabwebact.objbutton);
           }
+        } else if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
+          this.webactButton(tabwebact.objbutton);
         }
       },
       webactButton(buttonData) { // 自定义按钮渲染
         if (buttonData && buttonData.length > 0) {
           buttonData.forEach((item, index) => {
-            if (item.ishide) {
+            if (item && item.ishide) {
               buttonData.splice(index);
             }
             this.dataArray.waListButtonsConfig.waListButtons.push(item);
@@ -2223,7 +2229,7 @@
             return true;
           });
         }
-        const tabIndex = this.tabCurrentIndex;
+       
         if (this.subtables()) { // 存在子表
           if (this.objectType === 'horizontal') { // 横向布局
             if (this.itemName === this.tableName) { // 主表删除
@@ -2245,7 +2251,7 @@
                         isreftabs: this.subtables(),
                         itemNameGroup: this.itemNameGroup,
                         itemCurrentParameter: this.itemCurrentParameter,
-                        tabIndex,
+                        tabIndex: this.currentTabIndex,
                         resolve,
                         reject
                       });
@@ -2316,7 +2322,7 @@
                         isreftabs: this.subtables(),
                         itemNameGroup: this.itemNameGroup,
                         itemCurrentParameter: this.itemCurrentParameter,
-                        tabIndex,
+                        tabIndex: this.currentTabIndex,
                         resolve,
                         reject
                       });
@@ -2339,7 +2345,7 @@
                         // this.getObjectTableItemForTableData({
                         //   table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
                         // });
-                        this.getInputForitemForChildTableForm({ table: tablename, tabIndex, tabinlinemode });
+                        this.getInputForitemForChildTableForm({ table: tablename, tabIndex: this.currentTabIndex, tabinlinemode });
                         this.updateDeleteData({ tableName: this.itemName, value: {} });
                         // this.clickButtonsBack();
                         // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getQueryListForAg`, searchData);
@@ -2371,7 +2377,7 @@
                         isreftabs: this.subtables(),
                         itemNameGroup: this.itemNameGroup,
                         itemCurrentParameter: this.itemCurrentParameter,
-                        tabIndex,
+                        tabIndex: this.currentTabIndex,
                         resolve,
                         reject
                       });
@@ -2396,7 +2402,7 @@
                         // this.getObjectTableItemForTableData({
                         //   table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
                         // });
-                        this.getInputForitemForChildTableForm({ table: tablename, tabIndex, tabinlinemode });
+                        this.getInputForitemForChildTableForm({ table: tablename, tabIndex: this.currentTabIndex, tabinlinemode });
                         this.updateDeleteData({ tableName: this.itemName, value: {} });
                       }
                     }, () => {
@@ -2868,7 +2874,6 @@
         let removeMessage = false;
         promise.then((res) => {
           // this.closeCurrentLoading();//保存成功后不需要清除loading,调刷新时会触发表单，表单会触发监听，监听会关闭loading
-          this.clearEditData();// 清空store update数据
           stop = false;
           removeMessage = false;
 
@@ -2924,7 +2929,7 @@
       },
       saveAfter(type, tableName, stop, removeMessage) {
         if (!stop) { // 保存失败时，不清空store里面存的参数，
-          this.clearEditData();// 清空store update数据
+          // this.clearEditData();// 清空store update数据
         } else { // 保存失败不执行任何逻辑
           this.saveEventAfter = '';
           const saveEventAfterData = {
@@ -3030,7 +3035,7 @@
         const saveEventAfter = getSeesionObject('saveEventAfter');
         const objTabActionSlientData = getSeesionObject('objTabActionSlientData');
         if (!stop) {
-          this.clearEditData();// 清空store update数据
+          // this.clearEditData();// 清空store update数据
           if (this.saveEventAfter === 'submit' || saveEventAfter.type === 'submit') { // 提交操作
             const promise = new Promise((resolve, reject) => {
               this.getObjectTrySubmit({
@@ -3038,9 +3043,10 @@
                 objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
               });
             });
-            this.temporaryStorage = false;
-            this.dataArray.temporaryStorage = false;
+           
             promise.then(() => {
+                           this.temporaryStorage = false;
+                           this.dataArray.temporaryStorage = false;
                            const message = this.buttonsData.submitData.message;
                            if (message) {
                              this.upData(`${message}`);
@@ -3053,6 +3059,7 @@
                              v: {}
                            };
                            updateSessionObject('saveEventAfter', saveEventAfterData);
+                           this.clearEditData();// 清空store update数据
                          },
                          () => { // 状态为rejected时执行
                            //  const submitReject = window.localStorage.getItem('submitReject');
@@ -3095,6 +3102,7 @@
             // });
           } else if (this.saveEventAfter === 'objTabActionSlient' || saveEventAfter.type === 'objTabActionSlient') { // 静默程序配置isSave时，保存成功后才可执行静默程序
             this.buttonEvent(Object.keys(this.objTabActionSlientData).length > 0 ? this.objTabActionSlientData : objTabActionSlientData.data);
+            this.clearEditData();// 清空store update数据
             // this.objTabActionSlientConfirm(this.objTabActionSlientData);
             this.objTabActionSlientData = {};
             const data = {
@@ -3104,6 +3112,8 @@
             updateSessionObject('objTabActionSlientData', data);
           } else { // 保存后的保存成功提示信息
             const message = this.buttonsData.message;
+            this.clearEditData();// 清空store update数据
+
             if (message) {
               this.upData(`${message}`);
             } else if (removeMessage) {
@@ -3135,31 +3145,33 @@
         }
       },
       jflowClick(event) {
-        if (event.detail.type === 'submit') {
-          const promise = new Promise((resolve, reject) => {
-            const submitButtonPath = (Version() === '1.4') ? this.defaultButtonData.tabcmd.paths[this.defaultButtonData.tabcmd.cmds.indexOf('actionSUBMIT')] : null;
-            this.getObjectTrySubmit({
-              objId: this.itemId, table: this.tableName, path: submitButtonPath, isreftabs: this.isreftabs, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
+        if (!this._inactive && this._inactive !== null) { // 只处理当前激活的子表tab
+          if (event.detail.type === 'submit') {
+            const promise = new Promise((resolve, reject) => {
+              const submitButtonPath = (Version() === '1.4') ? this.defaultButtonData.tabcmd.paths[this.defaultButtonData.tabcmd.cmds.indexOf('actionSUBMIT')] : null;
+              this.getObjectTrySubmit({
+                objId: this.itemId, table: this.tableName, path: submitButtonPath, isreftabs: this.isreftabs, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
+              });
             });
-          });
-        }
+          }
 
-        if (event.detail.type === 'refresh') {
-          this.clickButtonsRefresh();
-        }
+          if (event.detail.type === 'refresh') {
+            this.clickButtonsRefresh();
+          }
 
-        if (event.detail.type === 'save') {
-          this.clickSave();
-        }
+          if (event.detail.type === 'save') {
+            this.clickSave();
+          }
 
 
-        if (event.detail.type === 'clearSubmit') {
-          this.saveEventAfter = '';
-          const saveEventAfterData = {
-            k: 'type',
-            v: {}
-          };
-          updateSessionObject('saveEventAfter', saveEventAfterData);
+          if (event.detail.type === 'clearSubmit') {
+            this.saveEventAfter = '';
+            const saveEventAfterData = {
+              k: 'type',
+              v: {}
+            };
+            updateSessionObject('saveEventAfter', saveEventAfterData);
+          }
         }
       },
       hideBackButton() {
@@ -3224,9 +3236,13 @@
       window.removeEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
     },
     mounted() {
-      this.updataClickSave(() => {
-        this.clickSave();
-      });
+      if (this.isItemTable) {
+        this.dataArray.refresh = false;
+      }
+      
+      this.updataClickSave(this.clickSave);
+      this.testUpdataValue(this.testUpdata);
+      
       this.dataArray.back = this.backButton;
       if (this.jflowButton.length > 0) {
         // this.dataArray.jflowPluginDataArray = [];

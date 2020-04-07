@@ -594,6 +594,7 @@
       top:60px!important;
       left: 220px!important;
       border-bottom:none!important;
+      width: calc(100% - 190px - 40px);
       box-shadow:1px 2px 6px 0px rgba(190,189,189,0.3)!important;
     }
 

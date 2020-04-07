@@ -6,6 +6,9 @@ export default {
   updataClickSave(state, func) {
     state.clickSaveFunction = func;
   },
+  testUpdataValue(state, func) {
+    state.testUpdata = func;
+  },
   updataHideTempStorage(state, value) { // 控制单对象界面暂存按钮
     state.isHideTempStorage = value;
   },
@@ -137,7 +140,6 @@ export default {
 
   updatePanelData(state, data) { // 更新子表面板数据
     state.itemObjId = data.id;
-    // state.instanceId = 1;
     if (enableJflow() && custommizedJflow() && this.state.global.JflowControlField.length > 0) { // 加jflow
       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
       const tabrelation = state.tabPanels.some(item => item.tabrelation === '1:1');
@@ -181,7 +183,7 @@ export default {
             });
             return true;
           }
-        } else {
+        } else if (item.tableId === tableId) {
           isCustomizedTab = true;// jflow配置为子表（子表ID不存在时）
         }
       });
@@ -275,12 +277,12 @@ export default {
             } else {
               objtabbuttons = componentAttribute.buttonsData.data.tabwebact.objtabbutton;
             }
-            let buttonsJflowRes = [];
+            const buttonsJflowRes = [];
             if (JflowControlFieldData[0].exeActionButton.length > 0) {
-              JflowControlFieldData[0].exeActionButton.forEach((buttonId) => {
-                buttonsJflowRes = objtabbuttons.filter((objtabbutton) => {
+              JflowControlFieldData[0].exeActionButton.map((buttonId) => {
+                objtabbuttons.map((objtabbutton) => {
                   if (String(buttonId) === String(objtabbutton.webid)) {
-                    return objtabbutton;
+                    buttonsJflowRes.push(objtabbutton);
                   }
                 });
               });
@@ -288,7 +290,7 @@ export default {
                 componentAttribute.buttonsData.data.tabwebact[tabwebactButton] = buttonsJflowRes;
               } 
             } else { // jflow exeActionButton配置为空时，去除元数据返回的自定义按钮
-              componentAttribute.buttonsData.data.tabwebact.objbutton = [];
+              componentAttribute.buttonsData.data.tabwebact[tabwebactButton] = [];
             }
           }
           if (JflowControlFieldData[0].jflowButton && JflowControlFieldData[0].jflowButton.length > 0) {
@@ -313,7 +315,8 @@ export default {
           componentAttribute.panelData.data = data;// 渲染表单
           state.tabPanels.map((tab, index) => {
             if (tableIndex !== index) { // 除去当前配置表
-              if (data.tabIndex === 0 && index === 0) { // 处理主表
+              // data.tabIndex === 0 && 
+              if (index === 0) { // 处理主表
                 state.jflowConfigrefreshButton = true;
                 if (tab.componentAttribute.buttonsData.data.tabwebact && tab.componentAttribute.buttonsData.data.tabwebact.objbutton && tab.componentAttribute.buttonsData.data.tabwebact.objbutton.length > 0) {
                   tab.componentAttribute.buttonsData.data.tabwebact.objbutton = [];// 将主表自定义按钮置为空
@@ -322,9 +325,10 @@ export default {
                 tab.componentAttribute.buttonsData.data.jflowButton = [];// 配置的是子表时，需将主表按钮置为空，只保留复制按钮
                 if (JflowControlFieldData[0].jflowButton && JflowControlFieldData[0].jflowButton.length > 0) {
                   // 如果jflowButton配置了按钮，则将元数据返回按钮删除，显示jflow按钮
+
                   if (tab.componentAttribute.buttonsData.data.tabcmd && tab.componentAttribute.buttonsData.data.tabcmd.prem && tab.componentAttribute.buttonsData.data.tabcmd.prem.length > 0) {
                     tab.componentAttribute.buttonsData.data.tabcmd.prem = tab.componentAttribute.buttonsData.data.tabcmd.prem.map((item, i) => {
-                      if (JflowControlFieldData[0].readonly.length > 0 && tab.componentAttribute.buttonsData.data.tabcmd.cmds[i] === 'actionCANCOPY') { 
+                      if (tab.componentAttribute.buttonsData.data.tabcmd.cmds[i] === 'actionCANCOPY') { 
                         item = true;
                         return item;
                       }
@@ -334,18 +338,20 @@ export default {
                   }
                 }
               } else { // 处理子表
-                if (JflowControlFieldData[0].jflowButton && JflowControlFieldData[0].jflowButton.length > 0) {
-                  // 如果jflowButton配置了按钮，则将元数据返回按钮删除，显示jflow按钮
-                  if (tab.componentAttribute.buttonsData.data.tabcmd && tab.componentAttribute.buttonsData.data.tabcmd.prem && tab.componentAttribute.buttonsData.data.tabcmd.prem.length > 0) {
-                    tab.componentAttribute.buttonsData.data.tabcmd.prem = tab.componentAttribute.buttonsData.data.tabcmd.prem.map((item) => {
-                      item = false;
-                      return item;
-                    });
+                setTimeout(() => {
+                  if (JflowControlFieldData[0].jflowButton && JflowControlFieldData[0].jflowButton.length > 0) {
+                    // 如果jflowButton配置了按钮，则将元数据返回按钮删除，显示jflow按钮
+                    if (tab.componentAttribute.buttonsData.data.tabcmd && tab.componentAttribute.buttonsData.data.tabcmd.prem && tab.componentAttribute.buttonsData.data.tabcmd.prem.length > 0) {
+                      tab.componentAttribute.buttonsData.data.tabcmd.prem = tab.componentAttribute.buttonsData.data.tabcmd.prem.map((item) => {
+                        item = false;
+                        return item;
+                      });
+                    }
                   }
-                }
-                if (tab.componentAttribute.buttonsData.data.tabwebact && tab.componentAttribute.buttonsData.data.tabwebact.objtabbutton && tab.componentAttribute.buttonsData.data.tabwebact.objtabbutton.length > 0) {
-                  tab.componentAttribute.buttonsData.data.tabwebact.objtabbutton = [];// 将子表表自定义按钮置为空
-                }
+                  if (tab.componentAttribute.buttonsData.data.tabwebact && tab.componentAttribute.buttonsData.data.tabwebact.objtabbutton && tab.componentAttribute.buttonsData.data.tabwebact.objtabbutton.length > 0) {
+                    tab.componentAttribute.buttonsData.data.tabwebact.objtabbutton = [];// 将子表表自定义按钮置为空
+                  }
+                }, 500);
               }
             }
           });

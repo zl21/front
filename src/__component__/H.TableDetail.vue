@@ -82,6 +82,7 @@
       tabPanels() {
         const arr = [];
         if (this.tabPanel) {
+          // this.WebConf.isCustomizeTab = true;
           this.tabPanel.forEach((item, index) => {
             const obj = { ...item };
             if (index === 0) {
@@ -125,7 +126,13 @@
             obj.component = `tapComponent.${item.tablename}`;
             obj.cilckCallback = this.tabClick;
             obj.isRequest = false;
-            arr.push(obj);
+            if (this.WebConf && this.WebConf.isCustomizeTab) {
+              if (index !== 0) {
+                arr.push(obj);
+              }
+            } else {
+              arr.push(obj);
+            }
           });
         }
 
@@ -149,6 +156,9 @@
         let flag = false;
         if (this.isRequest.length > 0 && this.isRequest[index] === true) {
           flag = true;
+        }
+        if (this.WebConf && this.WebConf.isCustomizeTab) {
+          index += 1;
         }
         if (!flag) {
           if (index === 0) { // 主表
@@ -212,7 +222,7 @@
         const { tableName, itemId } = this.$route.params;
         // this.getObjectForMainTableForm({ table: tableName, objid: itemId });
         this.getObjectTabForMainTable({
-          table: tableName, objid: itemId, tabIndex: index, isNotFirstRequest
+          table: tableName, objid: itemId, tabIndex: index, isNotFirstRequest, isFirstRequest: true
         });
       }
     },

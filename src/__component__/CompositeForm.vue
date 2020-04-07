@@ -262,19 +262,20 @@
       },
       defaultData: {
         handler() {
+          this.openLoading();
           // 开启  默认值(刷新界面))
           clearTimeout(this.watchTime);
           this.watchTime = setTimeout(() => {
             this.mountChecked = false;
             // 清空界面的 默认值
             this.defaultFormData = {};
+            this.Comparison();
             // 开启 (刷新界面))
             this.mountNumber = (Math.random() * 1000).toFixed(0);
             // 组件重组
             this.reorganizeForm();
 
             this.defaultColumnCol = this.defaultData.objviewcol || 4;
-            this.Comparison();
           }, 200);
         },
         deep: true
@@ -329,6 +330,8 @@
         this.formData = {};
         this.formDataDef = {};
         this.formDataSave = {};
+        this.labelForm = {};
+        this.labelFormSave = {};
       },
       isReadonly(current) {
         // 设置界面的 是否 disable
@@ -2377,20 +2380,20 @@
         if (this.$el) {
           this.setdefaultColumnCol();
         }
+      },
+      openLoading() { // 表单更新时重新加载loading
+        if (!this.tableGetName) { // 子表不添加loading
+          const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
+          const dom = document.querySelector(`#${currentTableName}-loading`);
+          if (!dom && this.from === 'singlePage') {
+            this.$loading.show(this.tableName);
+          }
+        }
       }
     },
     mounted() {
-      if (!this.tableGetName) { // 子表不添加loading
-        const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
-        const dom = document.querySelector(`#${currentTableName}-loading`);
-        if (!dom && this.from === 'singlePage') {
-          this.$loading.show(this.tableName);
-        }
-      }
-
-      
       this.Comparison();
-     
+      this.openLoading();
       setTimeout(() => {
         if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {
           if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {

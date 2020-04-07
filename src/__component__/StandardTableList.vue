@@ -2229,7 +2229,7 @@
     height: 83px;
     line-height: 84px;
     cursor: pointer;
-    margin-top: 35%;
+    margin-top: 18%;
     text-align: center;
     border-top-left-radius: 46px;
     border-bottom-left-radius: 46px;

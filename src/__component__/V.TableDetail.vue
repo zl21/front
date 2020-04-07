@@ -20,13 +20,30 @@
     />
     <div class="verticalTableDetailContent">
       <!-- 上下结构主表 form-->
+
+
+      <!-- <div>
+        <Select
+          v-model="model1"
+          style="width:200px"
+        >
+          <Option
+            v-for="item in customizeData"
+            :key="item.value"
+            :value="item.value"
+          >
+            {{ item.label }}
+          </Option>
+        </Select>
+      </div> -->
+      
       <composite-form
-        v-if="mainFormInfo.formData.isShow"
+        v-show="mainFormInfo.formData.isShow"
         class="compositeAllform"
         object-type="vertical"
         :is-main-table="true"
-        :objreadonly="objReadonlyForJflow"
-        :readonly="mainFormInfo.buttonsData.data.objreadonly||objReadonlyForJflow"
+        :objreadonly="mainFormInfo.isMainTableObjreadonly?false:(mainFormInfo.buttonsData.data.objreadonly||objReadonlyForJflow)"
+        :readonly="mainFormInfo.isMainTableObjreadonly?false:(mainFormInfo.buttonsData.data.objreadonly||objReadonlyForJflow)"
         :default-set-value="updateData[this.$route.params.tableName]? updateData[this.$route.params.tableName].changeData:{}"
         :master-name="$route.params.tableName"
         :master-id="$route.params.itemId"
@@ -41,15 +58,17 @@
         @InitializationForm="InitializationForm"
         @VerifyMessage="verifyFormPanelMain"
       />
-      <TabPanels
-        v-if="tabPanels.length > 0"
-        ref="tabPanel"
-        class="tabPanel"
-        :tab-margin-left="20"
-        is-keep-alive
-        :type="'singleCard'"
-        :tab-panels="tabPanels"
-      />
+      <div>
+        <TabPanels
+          v-show="tabPanels.length > 0"
+          ref="tabPanel"
+          class="tabPanel"
+          :tab-margin-left="20"
+          is-keep-alive
+          :type="'singleCard'"
+          :tab-panels="tabPanels"
+        />
+      </div>
     <!-- <TableDetailCollection
       :data-source="dataSource"
       @tableSearch="getRefTableSearchList"
@@ -98,7 +117,7 @@
       ...mapState('global', {
         isRequest: ({ isRequest }) => isRequest,
         JflowControlField: ({ JflowControlField }) => JflowControlField,
-        
+
       }),
       maginTableJflowButtons() {
         return this.mainFormInfo.buttonsData.data.jflowButton;
@@ -115,7 +134,7 @@
         }
         return '';
       },
-     
+
       objReadonlyForJflow() {
         // 判断jflow配置中包含当前表，则将当前表（子表及主表）置为不可编辑
         if (enableJflow() && custommizedJflow()) {
@@ -126,7 +145,7 @@
                 // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
                 if (this[INSTANCE_ROUTE_QUERY].tableId === jflowData.tableId && (item.tabrelation === '1:1' || item.tableid === this[INSTANCE_ROUTE_QUERY].tableId)) {
                   flag = true;
-                } 
+                }
               });
             }
           });
@@ -137,6 +156,13 @@
 
       tabPanels() {
         const arr = [];
+        if (this.tabPanel[0] && this.tabPanel[0].vuedisplay && this.tabPanel[0].vuedisplay === 'TabItem') {
+          DispatchEvent('uploadCustomTab', {
+            detail: {
+              data: this.tabPanel[0]
+            }
+          });
+        }
         this.tabPanel.forEach((item) => {
           const obj = { ...item };
           obj.componentAttribute.itemInfo = item;
@@ -155,11 +181,6 @@
           if (obj.vuedisplay === 'TabItem') { // 配置自定义tab
             Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
             obj.componentAttribute.componentName = obj.webact.substring(obj.webact.lastIndexOf('/') + 1, obj.webact.length);
-            DispatchEvent('uploadCustomTab', {
-              detail: {
-                data: obj
-              }
-            });
           } else if (Vue.component(`tapComponent.${item.tablename}`) === undefined) {
             Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
           }

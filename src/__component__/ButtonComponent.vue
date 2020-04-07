@@ -79,7 +79,7 @@
         </DropdownMenu>
       </Dropdown>
       <Button
-        v-if="dataArray.actionCollection"
+        v-if="dataArray.actionCollection && !layoutDirection"
         type="fcdefault"
         class="collection"
         @click="btnclick('Collection')"
@@ -147,7 +147,8 @@
   import { mapState } from 'vuex';
   import Dialog from './Dialog.vue';
   import network from '../__utils__/network';
-  import { MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY } from '../constants/global';
+  import { MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, layoutDirection } from '../constants/global';
+
 
   export default {
     name: 'ButtonList',
@@ -201,6 +202,7 @@
         errorDialog: false, // 消息弹框
         dialogVisible: false, // 消息提示框
         dialogMessage: '', // 消息提示框显示数据
+        layoutDirection: layoutDirection(), // 如果为true 收藏按钮不显示
         dataConShow: {
           dataConShow: false,
           title: '',

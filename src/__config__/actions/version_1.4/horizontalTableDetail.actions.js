@@ -5,7 +5,7 @@ import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 
 export default {
   getObjectTabForMainTable({ commit }, {
-    table, objid, type, tabIndex, isNotFirstRequest, moduleName
+    table, objid, type, tabIndex, isNotFirstRequest, moduleName, isFirstRequest
   }) {
     // 参数说明 table 主表表名，objid列表界面该行数据的id也就是rowid
     const id = objid === 'New' ? '-1' : objid;
@@ -35,6 +35,9 @@ export default {
             objid,
             tabIndex
           };
+          if (resData.webconf && resData.webconf.isCustomizeTab && !isFirstRequest) {
+            param.tabIndex += 1;
+          }
           this._actions[`${moduleName || getComponentName()}/getObjectForMainTableForm`][0](param);
         }
       }
@@ -388,6 +391,147 @@ export default {
       } else {
         reject();
       }
+    }).catch(() => {
+      reject();
+    });
+  },
+  performMainTableDeleteAction({ commit }, {
+    path, table, objId, currentParameter, itemName, itemNameGroup, itemCurrentParameter, resolve, reject
+  }) { // 主表删除
+    let parames = {};
+    if (itemNameGroup && itemNameGroup.length > 0) {
+      const itemDelete = itemCurrentParameter.delete;
+      if (itemName !== table) {
+        if (path) {
+          if (currentParameter && currentParameter.delete) {
+            const mainTable = currentParameter.delete;
+            mainTable[table].ID = objId;
+            mainTable[table].isdelmtable = false;
+            parames = {
+              ...mainTable,
+              ...itemDelete
+            };
+          }
+        } else {
+          const tabItem = {
+            ...itemDelete
+          };
+          parames = {
+            table, // 主表表名
+            objId,
+            delMTable: false,
+            tabItem
+          };
+        }
+      } else if (path) {
+        if (currentParameter && currentParameter.delete) {
+          const mainTable = currentParameter.delete;
+          mainTable[table].ID = objId;
+          mainTable[table].isdelmtable = true;
+          parames = {
+            ...mainTable,
+            ...itemDelete
+          };
+        }
+      } else {
+        const tabItem = {
+          ...itemDelete
+        };
+        parames = {
+          table, // 主表表名
+          objId,
+          delMTable: true,
+          tabItem
+        };
+      }
+    } else if (path) {
+      parames = {
+        // table, // 主表表名
+        ID: objId,
+        isdelmtable: true
+      };
+    } else {
+      parames = {
+        table, // 主表表名
+        objId,
+        delMTable: true
+      };
+    }
+   
+    network.post(path || '/p/cs/objectDelete', parames).then((res) => {
+      if (res.data.code === 0) {
+        resolve();
+        const data = res.data;
+        commit('updateNewMainTableDeleteData', data);
+      } else if (res.data.code === -1) {
+        reject();
+        const data = res.data.data;
+        commit('updatetooltipForItemTableData', data);
+      }
+    });
+  },
+  getExportQueryForButtons({ commit }, // 导出
+    { OBJ, resolve, reject }) {
+    network.post('/p/cs/export', urlSearchParams(
+      OBJ
+    )).then((res) => {
+      if (res.data.code === 0) {
+        resolve();
+        const data = res.data.data;
+        commit('updateButtonsExport', data,);
+      } else {
+        const data = res.data.data;
+        commit('updateButtonsExport', data,);
+        reject();
+      }
+    }).catch(() => {
+      reject();
+    });
+  },
+  getObjectTrySubmit({ commit }, {
+    objId, table, path, isreftabs, resolve, reject, moduleName,
+    routeQuery, routePath
+  }) { // 获取提交数据
+    objId = objId === 'New' ? '-1' : objId;
+    let param = {};
+    if (path) {
+      if (isreftabs) {
+        param[table] = {
+          ID: objId,
+        };
+      } else {
+        param = {
+          ID: objId,
+        };
+      }
+    } else {
+      param = {
+        objId,
+        table
+      };
+    }
+    network.post(path || '/p/cs/objectSubmit', param).then((res) => {
+      if (res.data.code === 0) {
+        const submitData = res.data;
+        resolve();
+        commit('updateSubmitData', submitData);
+      } else {
+        const data = res.data.data;
+        commit('updatetooltipForItemTableData', data);
+        reject();
+      }
+      DispatchEvent('batchSubmitForR3', {
+        detail: {
+          name: 'exeAction',
+          type: 'verticalTable',
+          url: path || '/p/cs/objectSubmit',
+          res,
+          moduleName,
+          routeQuery,
+          tableName: routeQuery.tableName,
+          routePath
+        }
+      });
     }).catch(() => {
       reject();
     });

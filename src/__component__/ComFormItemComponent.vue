@@ -429,7 +429,6 @@
             if (old === undefined) {
               return false;
             }
-
             if (
               val[item.validate.dynamicforcompute.computecolumn]
               === old[item.validate.dynamicforcompute.computecolumn]
@@ -592,7 +591,7 @@
       // console.log(this.changeFormData,'formDataChange');
       // this.$emit('formDataChange', this.dataProcessing(), this.newFormItemLists[this.indexItem]);
       },
-      dataProcessing(current) {
+      dataProcessing(current, type) {
         // change 后台传值
         let obj = {};
         if (current.item.field) {
@@ -736,13 +735,16 @@
           obj[end.colname] = current.item.value[1];
         }
         // checkbox
-        
-        this.formValueItem = Object.assign(this.formValueItem, obj);
-        // 兼容结束
+
 
         // 向父组件抛出整个数据对象以及当前修改的字段
         const setLabel = this.getLable(current);
         this.$emit('formDataChange', obj, valueItem, current, setLabel, this);
+        
+        // 兼容结束
+        if (type !== 'none') {
+          this.formValueItem = Object.assign(JSON.parse(JSON.stringify(this.formValueItem)), JSON.parse(JSON.stringify(obj)));
+        }
         //  change 值 走后台接口赋值
         if (current.item.field) {
           if (this.setAttsetProps && this.setAttsetProps[current.item.field]) {
@@ -927,6 +929,7 @@
       },
       dynamicforcompute(items, json) {
         // 被计算 属性 加减乘除
+
         const str = items.validate.dynamicforcompute.refcolumns.reduce(
           (temp, current) => {
             temp = temp.replace(new RegExp(current, 'g'), Number(json[current]));
@@ -937,8 +940,20 @@
         const _index = this.newFormItemLists.findIndex(
           option => option.item.field === items.validate.dynamicforcompute.computecolumn
         );
+        
         if (this.newFormItemLists[_index]) {
-          this.newFormItemLists[_index].item.value = eval(str);
+          let DyNvalue = '';
+          if (!eval(str) && eval(str) !== 0) {
+            DyNvalue = '';
+          } else if (eval(str) === 0) {
+            DyNvalue = 0;
+          } else {
+            DyNvalue = eval(str);
+          }
+          setTimeout(() => {
+            this.newFormItemLists[_index].item.value = DyNvalue;
+            this.dataProcessing(this.newFormItemLists[_index], 'none');
+          }, 10);
         }
       },
       setJson(item, val) {
