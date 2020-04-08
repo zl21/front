@@ -96,7 +96,7 @@
   import WaterMark from './WaterMark.vue';
   import ImportDialog from './ImportDialog';
   import {
-    custommizedJflow, isItemTableNewValidation, INSTANCE_ROUTE, KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, LINK_MODULE_COMPONENT_PREFIX, enableJflow, getCustomizeWaterMark
+    isItemTableNewValidation, INSTANCE_ROUTE, KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, LINK_MODULE_COMPONENT_PREFIX, getCustomizeWaterMark
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import { getUrl, getLabel } from '../__utils__/url';
@@ -144,7 +144,7 @@
           buttonGroupShowConfig: {// 标准按钮
             buttonGroupShow: []
           },
-          jflowPluginDataArray: [], // jflow老版本按钮配置
+          // jflowPluginDataArray: [], // jflow老版本按钮配置  jflowOld
           jflowButton: [], // jflow配置按钮
           btnclick: (type, item) => {
             const self = this;
@@ -186,14 +186,15 @@
         handler(val) {
           if (val) {
             this.dataArray.refresh = false;
+            this.dataArray.back = false;
           }
         }
       },
-      backButton: {// 原jflow
-        handler(val) {
-          this.dataArray.back = val;
-        }
-      },
+      // backButton: {// jflowNew
+      //   handler(val) {
+      //     this.dataArray.back = val;
+      //   }
+      // },
       isHideTempStorage: {// jflow控制暂存按钮显示
         handler(val) {
           if (val) {
@@ -201,22 +202,22 @@
           }
         }
       },
-      jflowButton: {
-        handler(val) {
-          // this.dataArray.jflowPluginDataArray = [];
-          this.dataArray.jflowButton = val;
-        }
-      },
-      jflowPluginDataArray: {// 原jflow
-        handler(val) {
-          this.dataArray.jflowPluginDataArray = val;
-        }
-      },
-      refreshButtons: {
-        handler(val) {
-          this.dataArray.refresh = val;
-        }
-      },    
+      // jflowButton: {//jflowNew
+      //   handler(val) {
+      //     // this.dataArray.jflowPluginDataArray = [];
+      //     this.dataArray.jflowButton = val;
+      //   }
+      // },
+      // jflowPluginDataArray: {// jflowOld
+      //   handler(val) {
+      //     this.dataArray.jflowPluginDataArray = val;
+      //   }
+      // },
+      // refreshButtons: {//jflowNew
+      //   handler(val) {
+      //     this.dataArray.refresh = val;
+      //   }
+      // },    
       tabcmd: {
         handler(val) {
           this.hideBackButton();
@@ -419,12 +420,12 @@
         }
         return [];
       },
-      refreshButtons() {
-        if (this.jflowConfigrefreshButton) {
-          return false;
-        }
-        return this.refreshButton;
-      },
+      // refreshButtons() { // jflowOldAndNew
+      //   // if (this.jflowConfigrefreshButton) {
+      //   //   return false;
+      //   // }
+      //   // return this.refreshButton;
+      // },
       tablePage() {
         let page = {};
         if (this.objectType === 'horizontal') { // 横向布局
@@ -455,10 +456,10 @@
         type: Boolean,
         default: false
       },
-      backButton: {
-        type: Boolean,
-        default: true
-      }, // 控制返回按钮显示
+      // backButton: {
+      //   type: Boolean,
+      //   default: true
+      // }, // 控制返回按钮显示
       isItemTableVertical: {
         type: Boolean,
         default: false
@@ -483,10 +484,10 @@
         default: () => ({})
       },
     
-      jflowButton: {// jflow配置按钮
-        type: Array,
-        default: () => ([])
-      },
+      // jflowButton: {// jflow配置按钮  jflowNew
+      //   type: Array,
+      //   default: () => ([])
+      // },
       tabwebact: {// 自定义类型按钮
         type: Object,
         default: () => ({})
@@ -831,16 +832,6 @@
         }
       },
       upData(message) { // 页面刷新判断逻辑
-        if (this.JflowControlField && this.JflowControlField.length > 0) {
-          this.JflowControlField.map((item) => {
-            if (item.tableId !== this.tableId) {
-              this.updateRefreshButtonForJflow(false);
-            }
-          });  
-        } else {
-          this.updateRefreshButtonForJflow(false);
-        }
-        
         // this.emptyTestData();
         DispatchEvent('tabRefreshClick');
         // DispatchEvent('jflowPlugin', {
@@ -1167,16 +1158,16 @@
               const contentText = `${JSON.parse(obj.confirm).desc}`;
               this.dialogMessage(title, contentText, obj);
             } else if (JSON.parse(obj.confirm).isSave) { // 静默执行保存
-              const type = 'objTabActionSlient';
-              if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
-                const objTabActionSlientData = {
-                  k: 'data',
-                  v: obj
-                };
-                updateSessionObject('objTabActionSlientData', objTabActionSlientData);
-              } else {
-                this.objTabActionSlientData = obj;
-              }
+              type = 'objTabActionSlient';
+              // if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
+              //   const objTabActionSlientData = {
+              //     k: 'data',
+              //     v: obj
+              //   };
+              //   updateSessionObject('objTabActionSlientData', objTabActionSlientData);
+              // } else {
+              this.objTabActionSlientData = obj;
+              // }
               this.clickSave({ type });
             }
           } else {
@@ -1197,15 +1188,15 @@
           onOk: () => {
             if (obj.confirm && JSON.stringify(obj.confirm) && JSON.parse(JSON.stringify(obj.confirm)).isSave) {
               const type = 'objTabActionSlient';
-              if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
-                const objTabActionSlientData = {
-                  k: 'data',
-                  v: obj
-                };
-                updateSessionObject('objTabActionSlientData', objTabActionSlientData);
-              } else {
-                this.objTabActionSlientData = obj;
-              }
+              // if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
+              //   const objTabActionSlientData = {
+              //     k: 'data',
+              //     v: obj
+              //   };
+              //   updateSessionObject('objTabActionSlientData', objTabActionSlientData);
+              // } else {
+              this.objTabActionSlientData = obj;
+              // }
               this.clickSave({ type });
             } else {
               this.errorconfirmDialog(obj);
@@ -1395,15 +1386,15 @@
         const dom = document.getElementById('actionMODIFY');
         if (dom) {
           if (data) {
-            if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
-              const saveEventAfter = {
-                k: 'type',
-                v: data.type
-              };
-              updateSessionObject('saveEventAfter', saveEventAfter);
-            } else {
-              this.saveEventAfter = data.type;
-            }
+            // if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
+            //   const saveEventAfter = {
+            //     k: 'type',
+            //     v: data.type
+            //   };
+            //   updateSessionObject('saveEventAfter', saveEventAfter);
+            // } else {
+            this.saveEventAfter = data.type;
+            // }
             const myEvent = document.createEvent('HTMLEvents');
             myEvent.initEvent('click', false, true);
             dom.dispatchEvent(myEvent);
@@ -2038,13 +2029,13 @@
                           this.saveButtonPath = tabcmd.paths[index];
                         }
                       }
-                      if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
-                        this.updateRefreshButton(true);
-                      }
+                      // if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示 jflowOld
+                      //   this.updateRefreshButton(true);
+                      // }
                       // if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
                       //   this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                       // }
-                      this.dataArray.refresh = this.refreshButtons;
+                      // this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
                   }
@@ -2066,21 +2057,22 @@
                           this.saveButtonPath = tabcmd.paths[index];
                         }
                       }
-                      if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
-                        this.updateRefreshButton(true);
-                      }
+                      // if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示 jflowOld
+                      //   this.updateRefreshButton(true);
+                      // }
                       if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && !this.isHideTempStorage) {
                         this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                       }
-                      this.dataArray.refresh = this.refreshButtons;
+                      // this.dataArray.refresh = this.refreshButtons;jflowOldAndNew
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
-                  } else {
-                    if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
-                      this.updateRefreshButton(true);
-                    }
-                    this.dataArray.refresh = this.refreshButtons;
                   }
+                  //  else {
+                  //   if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示 jflowOld
+                  //     this.updateRefreshButton(true);
+                  //   }
+                  //   this.dataArray.refresh = this.refreshButtons;//jflowOldAndNew
+                  // }
                 });
               }
             } else { // 横向布局主表不显示导入
@@ -2108,11 +2100,11 @@
                           this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                         }
                       }
-                      if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
-                        this.updateRefreshButton(true);
-                      }
+                      // if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示 jflowOld
+                      //   this.updateRefreshButton(true);
+                      // }
                      
-                      this.dataArray.refresh = this.refreshButtons;
+                      // this.dataArray.refresh = this.refreshButtons;//jflowOldAndNew
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
                   }
@@ -2145,11 +2137,11 @@
                         this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                       }
                     }
-                    if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
-                      this.updateRefreshButton(true);
-                    }
+                    // if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示 jflowOld
+                    //   this.updateRefreshButton(true);
+                    // }
                    
-                    this.dataArray.refresh = this.refreshButtons;
+                    // this.dataArray.refresh = this.refreshButtons;//jflowOldAndNew
                     this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                   }
                 }
@@ -2161,6 +2153,10 @@
         // }
       },
       waListButtons(tabwebact) { // 自定义按钮渲染逻辑
+        if (tabwebact.jflowbutton && tabwebact.jflowbutton.length > 0) {
+          this.dataArray.jflowButton = tabwebact.jflowbutton;
+        }
+      
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.itemName === this.tableName) {
             if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
@@ -2888,32 +2884,32 @@
               }
             });
           }
-          if (enableJflow()) { // jflow开启时，保存成功需通知
-            DispatchEvent('jflowPlugin', {
-              detail: {
-                obj: {
-                  button: 'save',
-                  type: 'resolve'
-                }
+          // if (enableJflow()) { // jflow开启时，保存成功需通知
+          DispatchEvent('jflowPlugin', {
+            detail: {
+              obj: {
+                button: 'save',
+                type: 'resolve'
               }
-            });
-          }
+            }
+          });
+          // }
           DispatchEvent('objTabActionSlientForItemTable', {// 用于子表监听保存成功后执行相对应逻辑
             detail: {
               type: 'resolve',
             }
           });
         }, () => {
-          if (enableJflow()) { // jflow开启时，保存失败需通知
-            DispatchEvent('jflowPlugin', {
-              detail: {
-                obj: {
-                  button: 'save',
-                  type: 'reject'
-                }
+          // if (enableJflow()) { // jflow开启时，保存失败需通知
+          DispatchEvent('jflowPlugin', {
+            detail: {
+              obj: {
+                button: 'save',
+                type: 'reject'
               }
-            });
-          }
+            }
+          });
+          // }
           this.closeCurrentLoading();
           stop = true;
           removeMessage = true;
@@ -3238,18 +3234,18 @@
     mounted() {
       if (this.isItemTable) {
         this.dataArray.refresh = false;
+        this.dataArray.back = false;
       }
       
       this.updataClickSave(this.clickSave);
       this.testUpdataValue(this.testUpdata);
       
-      this.dataArray.back = this.backButton;
-      if (this.jflowButton.length > 0) {
-        // this.dataArray.jflowPluginDataArray = [];
-        this.dataArray.jflowButton = this.jflowButton;
-      }
+      // this.dataArray.back = this.backButton;//jflowNew
+      // if (this.jflowButton.length > 0) { // jflowNew
+      //   // this.dataArray.jflowPluginDataArray = [];
+      //   this.dataArray.jflowButton = this.jflowButton;
+      // }
       this.hideBackButton();
-      // this.dataArray.jflowButton = this.jflowButton;
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);
         window.addEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
@@ -3306,9 +3302,9 @@
         this.buttonsReorganization(this.tabcmd);
       }
       this.waListButtons(this.tabwebact);
-      if (this.jflowPluginDataArray) {
-        this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;
-      }
+      // if (this.jflowPluginDataArray) {//jflowOld
+      //   this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;
+      // }
     },
     created() {
       this.ChineseDictionary = ChineseDictionary;

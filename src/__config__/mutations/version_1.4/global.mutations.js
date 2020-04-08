@@ -298,13 +298,7 @@ export default {
     window.sessionStorage.removeItem('addRouteToEditor');
     window.sessionStorage.removeItem('routeMapRecord');
     window.sessionStorage.removeItem('routeMapRecordForSingleObject');
-    state.JflowControlField = state.JflowControlField.map((item) => {
-      state.openedMenuLists.map((openedMenuList) => {
-        if (item.tableName !== openedMenuList.tableName) {
-          return item;
-        }
-      });
-    });
+ 
     // 清空updataTreeId
     removeSessionObject('TreeId');
   },
@@ -320,10 +314,7 @@ export default {
     });
   },
   tabCloseAppoint(state, tab) {
-    // 关闭tab时需清楚jflow配置的对应表
     // tableName:'主表表明',
-    // routeFullPath:'/SYSTEM/TABLE_DETAIL/V/BCP_CUSTOMER_JFLOW/23968/5555832',
-
     // 关闭当前tab时,如果当前列表界面时树形结构列表界面，需清楚对应的treeID
     // const index = state.treeIds.indexOf(tab.tableName);
     // if (index > -1) {
@@ -335,11 +326,7 @@ export default {
     // };
     deleteFromSessionObject('TreeId', tab.tableName);
     
-    state.JflowControlField = state.JflowControlField.filter((item) => {
-      if (item.tableName !== tab.tableName) {
-        return item;
-      }
-    });
+   
     // window.sessionStorage.removeItem('dynamicRoutingIsBack');// 清除动态路由返回标记
 
     const tabRouteFullPath = tab.routeFullPath;
@@ -608,9 +595,6 @@ export default {
   updateModifySearchFoldnum(state, data) {
     state.changeSearchFoldnum = data;
   },
-  updateJflowControlField(state, data) {
-    state.JflowControlField = data;
-  }
 
   
 };

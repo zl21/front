@@ -4,7 +4,7 @@ import router from '../__config__/router.config';
 import store from '../__config__/store.config';
 
 import {
-  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, getTouristRoute, enableJflow, REQUEST_PENDDING_EXPIRE
+  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, getTouristRoute, REQUEST_PENDDING_EXPIRE
 } from '../constants/global';
 import { addNetwork } from './indexedDB';
 
@@ -353,29 +353,7 @@ function NetworkConstructor() {
     });
     const now = new Date();
     if (pendingRequestMap[requestMd5] && now.getTime() - pendingRequestMap[requestMd5].reqTime < REQUEST_PENDDING_EXPIRE) {
-      if (enableJflow()) {
-        const businessTypes = JSON.parse(window.localStorage.getItem('businessTypes'));
-        let flag = false;
-        businessTypes.every((actionUrls) => {
-          if (!flag) { // 处理多个模版问题，存在一张表多个模版
-            actionUrls.action.every((jflowUrl) => {
-              if (jflowUrl === url && router.currentRoute.params.tableId === actionUrls.businessType) {
-                flag = true;
-                return axios.post(matchedUrl, config);
-              }
-
-              return true;
-            });
-          }
-          return true;
-        });
-
-        if (flag) {
-          return; 
-        }
-      } else {
-        return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
-      }
+      return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
     }
     pendingRequestMap[requestMd5] = {
       reqTime: now.getTime()

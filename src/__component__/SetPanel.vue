@@ -182,7 +182,6 @@
             GetTableName('');
             this.$store.commit('global/updataUserInfoMessage', {});
             window.localStorage.removeItem('userInfo');
-            this.$store.commit('global/updateJflowControlField', []);
             // 清空updataTreeId
             removeSessionObject('TreeId');
             this.updateTreeTableListData([]);
