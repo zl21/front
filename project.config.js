@@ -25,6 +25,8 @@ module.exports = {
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop网关开启环境
   // target: 'http://r3.burgeon.cn:19999/', // 'http://106.15.154.165:19999/', // Cube
   // target: 'http://web.cmsqas.lining.com/', // 李宁
+  // target: 'http://ark-share-dev.dev.burgeononline.com', // ArkShare环境
+
   
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
@@ -34,9 +36,9 @@ module.exports = {
   enableNetworkMonitor: true, // 是否开启网络监控功能
   enableModuleKA: true, // 默认启用keepAlive功能
   // jflowRequestDomain: 'http://jflow-zhixiao.dev.burgeononline.com', // jflow后台地址(知晓)
-  jflowRequestDomain: 'http://jflow-qiaodan.dev.burgeononline.com', // jflow后台地址（乔丹）
+  // jflowRequestDomain: 'http://jflow-qiaodan.dev.burgeononline.com', // jflow后台地址（乔丹）
   // jflowRequestDomain: 'http://106.15.24.156:32940', // jflow后台地址(李宁)
-  // jflowRequestDomain: 'http://10.14.5.198:8080', // jflow后台地址(商飞)
+  jflowRequestDomain: 'http://10.14.5.198:8080', // jflow后台地址(商飞)
   enableTabLists: true, // 是否启用Tab页签切换模块的能力，默认启用
   touristRoute: '/login', // 游客路由：等用户未登录的时候，需要跳转的页面
   enableInitializationRequest: true, // 是否开启初始化请求

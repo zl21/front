@@ -416,9 +416,7 @@ export default {
         };
       }
     } else if (type === 'modify') { // 编辑保存参数
-      const {
-        modify
-      } = parame;
+      const modify = parame.modify;
       const {
         sataType
       } = parame;
@@ -437,15 +435,9 @@ export default {
           addAndModifyParames[itemName] = [
             ...itemModifyForAddAndModify
           ];
-          // modify[tableName].ID = objId;
-          modify[tableName] = {
-            ID: objId
-          };
+          modify[tableName].ID = objId;
           if (path) { // 有path的参数
-            // modify[tableName].ID = objId;
-            modify[tableName] = {
-              ID: objId
-            };
+            modify[tableName].ID = objId;
             if (temporaryStoragePath) {
               parames = {
                 ...modify,
@@ -477,29 +469,21 @@ export default {
         } else if (sataTypeName === 'modify') { // 子表修改保存
           if (path) { // 有path的参数
             if (temporaryStoragePath) {
-              modify[tableName] = {
-                ID: objId
-              };
+              modify[tableName].ID = objId;
               parames = {
                 ...modify,
               };
             } else if (tabrelation) {
-              itemModify[tableName] = {
-                ID: itemObjId
-              };
+              itemModify[itemName].ID = itemObjId;
               const itemModifyRes = {}; 
               itemModifyRes[itemName] = [itemModify[itemName]];
-              modify[tableName] = {
-                ID: objId
-              };
+              modify[tableName].ID = objId;
               parames = {
                 ...modify,
                 ...itemModifyRes
               };
             } else {
-              modify[tableName] = {
-                ID: objId
-              };
+              modify[tableName].ID = objId;
               parames = {
                 ...modify,
                 ...itemModify
@@ -514,10 +498,7 @@ export default {
               }
             };
           } else if (tabrelation) { // 处理子表1:1模式逻辑
-            // itemModify[itemName].ID = itemObjId;
-            itemModify[itemName] = {
-              ID: itemObjId
-            };
+            itemModify[itemName].ID = itemObjId;
             const itemModifyRes = {}; 
             itemModifyRes[itemName] = [itemModify[itemName]];
             parames = {
@@ -548,9 +529,7 @@ export default {
             addItem
           ];
           if (path) {
-            modify[tableName] = {
-              ID: objId
-            };
+            modify[tableName].ID = objId;
             if (temporaryStoragePath) {
               parames = {
                 ...modify,
@@ -593,20 +572,15 @@ export default {
             };
           }
         } else if (path) { // 主表保存有path的参数
-          if (!modify[tableName]) {
-            modify[tableName] = {};
-            // modify[tableName].ID = objId; // 主表id
-            modify[tableName] = {
-              ID: objId
-            };
+          const modifyRes = JSON.parse(JSON.stringify(modify));
+          if (!modifyRes[tableName]) {
+            modifyRes[tableName] = {};
+            modifyRes[tableName].ID = objId; // 主表id
           } else {
-            // modify[tableName].ID = objId; // 主表id
-            modify[tableName] = {
-              ID: objId
-            };
+            modifyRes[tableName].ID = objId; // 主表id
           }
           parames = {
-            ...modify
+            ...modifyRes
           };
         } else { // 带子表的没有path的主表保存
           parames = {

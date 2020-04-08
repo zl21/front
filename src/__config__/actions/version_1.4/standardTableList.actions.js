@@ -41,7 +41,6 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const queryData = res.data.data;
-        resolve();
         commit('updateButtonsTabcmd', queryData.tabcmd);
         commit('updateButtonWaListButtons', queryData.waListButtons);
         commit('updateTableStatus4css', queryData.datas);
@@ -54,6 +53,7 @@ export default {
         if (queryData.datas.webconf && queryData.datas.webconf.dynamicRouting) {
           commit('updateWebconfDynamicRouting', queryData.datas.webconf);
         }
+        resolve();
       }
     });
   },
