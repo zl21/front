@@ -7,7 +7,7 @@ export default async function data() {
   // ....
   let a = [];
   await 
-  network.post('/jflow/p/cs/task/buttons', {
+  network.post('api', {
     businessCode: router.currentRoute.params.itemId,
     userId: JSON.parse(window.localStorage.getItem('userInfo')).id,
     businessType: router.currentRoute.params.tableId,

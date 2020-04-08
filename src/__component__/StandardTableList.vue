@@ -2168,12 +2168,6 @@
           this.searchClickData();
         }
       },
-      // 监听jflow事件
-      jflowEvent(event) {
-        if (event.detail.type === 'search') {
-          this.searchClickData({ value: 'true' });
-        }
-      },
       // 监听update.ST.FailInfo事件
       updateSTFailInfo(event) {
         if (event.detail[MODULE_COMPONENT_NAME] === this[MODULE_COMPONENT_NAME]) {
@@ -2185,7 +2179,6 @@
       this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
       if (!this._inactive) {
         window.addEventListener('network', this.networkEventListener);
-        window.addEventListener('jflowEvent', this.jflowEvent);
         window.addEventListener('network', this.networkGetTableQuery);
         window.addEventListener('updateSTFailInfo', this.updateSTFailInfo);
       }
@@ -2209,7 +2202,6 @@
     beforeDestroy() {
       window.removeEventListener('network', this.networkEventListener);
       window.removeEventListener('network', this.networkGetTableQuery);
-      window.removeEventListener('jflowEvent', this.jflowEvent);
       window.removeEventListener('updateSTFailInfo', this.updateSTFailInfo);
     }
   };

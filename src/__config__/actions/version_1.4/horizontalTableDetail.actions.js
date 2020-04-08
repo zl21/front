@@ -1,6 +1,5 @@
 import network, { urlSearchParams } from '../../../__utils__/network';
 import getComponentName from '../../../__utils__/getModuleName';
-import { enableJflow } from '../../../constants/global';
 import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 
 export default {
@@ -269,12 +268,8 @@ export default {
                 };
               }
             }
-          } else { // 因引起jflow报错ID改为大写
-            if (enableJflow()) {
-              modify[tableName].ID = objId;
-            } else {
-              modify[tableName].Id = objId;
-            }
+          } else {
+            modify[tableName].Id = objId;
             parames = {
               ...modify,
             };
