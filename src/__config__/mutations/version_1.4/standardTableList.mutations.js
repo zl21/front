@@ -15,7 +15,7 @@ export default {
   updateTableStatus4css({
     ag
   }, data) {
-    if (data.tableurl) {
+    if (data && data.tableurl) {
       ag.tableurl = data.tableurl;
     }
     ag.status4css = data.status4css;
