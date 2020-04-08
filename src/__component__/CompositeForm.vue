@@ -264,6 +264,7 @@
         handler() {
           this.openLoading();
           // 开启  默认值(刷新界面))
+          this.mountChecked = false;
           clearTimeout(this.watchTime);
           this.watchTime = setTimeout(() => {
             this.mountChecked = false;
