@@ -1113,10 +1113,11 @@
           // this.upData();
         });
       },
-      webactionClick(obj, type) { // 动作定义执行
+      webactionClick(obj) { // 动作定义执行
         if (obj.confirm) {
           // 有提示
           let selete = [];
+          let type = '';
           if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName]) {
             selete = this.updateData[this.itemName].delete[this.itemName];
             if (Object.keys(selete).length === 0) {
@@ -1163,11 +1164,18 @@
                 this.buttonEvent(obj);
               }
             } else if (JSON.parse(obj.confirm).desc) {
+              const objRes = JSON.parse(JSON.stringify(obj));
+              if (JSON.parse(obj.confirm).isSave && this.testUpdata()) { // 配置isSave以及界面有修改
+                objRes.isrefrsh = false;
+                // type = 'objTabActionSlient';
+                // this.objTabActionSlientData = obj;
+                // this.clickSave({ type });
+              } 
               const title = this.ChineseDictionary.WARNING;
               const contentText = `${JSON.parse(obj.confirm).desc}`;
-              this.dialogMessage(title, contentText, obj);
+              this.dialogMessage(title, contentText, objRes);
             } else if (JSON.parse(obj.confirm).isSave) { // 静默执行保存
-              const type = 'objTabActionSlient';
+              type = 'objTabActionSlient';
               if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
                 const objTabActionSlientData = {
                   k: 'data',
@@ -1195,7 +1203,7 @@
           content: contentText,
           showCancel: true,
           onOk: () => {
-            if (obj.confirm && JSON.stringify(obj.confirm) && JSON.parse(JSON.stringify(obj.confirm)).isSave) {
+            if (obj.confirm && JSON.stringify(obj.confirm) && (JSON.parse(JSON.stringify(obj.confirm)).isSave || JSON.parse(obj.confirm).isSave) && this.testUpdata()) {
               const type = 'objTabActionSlient';
               if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
                 const objTabActionSlientData = {
@@ -1389,7 +1397,7 @@
       },
 
       clickSave(data) {
-        if (data) {
+        if (data && data.requestUrlPath) {
           this.saveButtonPath = data.requestUrlPath;
         }
         const dom = document.getElementById('actionMODIFY');
@@ -1645,11 +1653,9 @@
                 }
               }
               this.upData();
-            // this.$loading.hide(this.tableName);//此时会调取刷新，刷新会触发表单渲染，组件会接收监听，关闭loading
-            // console.log('关闭静默');
             } else {
+              this.upData();
               this.$loading.hide(this.tableName);
-              console.log('关闭静默');
             }
           }, () => {
             this.$loading.hide(this.tableName);
