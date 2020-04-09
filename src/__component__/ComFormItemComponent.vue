@@ -342,7 +342,10 @@
     watch: {
       mountedType() {
         // 监听刷新、切换
+
         this.formRequestJson = {};
+        this.formValueItem = {};
+        this.setAttsetProps = this.getsetAttsetProps();
         setTimeout(() => {
           this.VerificationFormInt();
           this.mountdataFormInt();
@@ -351,11 +354,12 @@
       formDataObject: {
         handler(val, old) {
           // 页面的联动关系及计算逻辑的处理;
-          this.oldformData = old;
 
+          this.oldformData = old;
           if (this.indexItem === -1) {
             return;
           }
+
           //   拦截默认值
           if (!this.actived) {
             // this.formInit();
@@ -422,7 +426,7 @@
 
             item.props.supportType = jsonArr[item.props.webconf.targetField];
           }
-           
+
 
           if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
             // 计算
@@ -1010,18 +1014,18 @@
           if (item.props.regx) {
             item.oldProps.regx = item.props.regx;
           }
-
           // eslint-disable-next-line no-prototype-builtins
           if (!Object.hasOwnProperty('readonly', item.oldProps)) {
             item.oldProps.readonly = props.readonly;
           }
+
           if (item.required === undefined) {
             item.oldProps._required = false;
           } else {
             item.oldProps._required = item.required;
           }
         }
-
+                                
         if (checkout && !checkoutProps) {
           // if (item.props.webconf.setAttributes.props.value === '') {
           //   item.value = '';
@@ -1038,13 +1042,17 @@
           }
           window.eventType(`${this.moduleComponentName}setProps`, window, item);
         } else if (checkout !== true && checkoutProps) {
-          this.newFormItemLists[formindex].item.required = item.oldProps._required;
-          this.newFormItemLists[formindex].item.props.disabled = item.oldProps.disabled;
-          this.newFormItemLists[formindex].item.props.readonly = item.oldProps.disabled;
-          this.newFormItemLists[formindex].item.props.required = item.oldProps._required;
-          if (item.oldProps.regx) {
-            this.newFormItemLists[formindex].item.props.regx = item.oldProps.regx;
-          }
+          item.required = item.oldProps._required;
+          const itemProps = JSON.parse(JSON.stringify(item.props));
+          item.props = Object.assign(itemProps, item.oldProps);
+          window.eventType(`${this.moduleComponentName}setProps`, window, item);
+
+          // this.newFormItemLists[formindex].item.props.disabled = item.oldProps.disabled;
+          // this.newFormItemLists[formindex].item.props.readonly = item.oldProps.disabled;
+          // this.newFormItemLists[formindex].item.props.required = item.oldProps._required;
+          // if (item.oldProps.regx) {
+          //   this.newFormItemLists[formindex].item.props.regx = item.oldProps.regx;
+          // }
         } 
         if (type === 'mounted') {
           this.VerificationFormInt('mounted');
