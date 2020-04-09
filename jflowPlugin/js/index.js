@@ -48,10 +48,6 @@ function thirdlogin() { // 三方登录  获取accessToken
   
   network.post('/jflow/p/c/thirdlogin', data, {
     headers
-  }).then((res) => {
-    globalChange({
-      accessToken: res.data.data.accessToken
-    });
   });
 }
 
@@ -87,7 +83,9 @@ async function jflowButtons(flag) { // 获取jflow单据信息
             });
           }
           if (!flag) {
-            globalChange(res.data.data);
+            globalChange({
+              jflowInfo: res.data.data
+            });
             CreateButton();
           }
         }

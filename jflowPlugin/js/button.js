@@ -40,8 +40,8 @@ function restartProcess() {
 }
 
 
-let jflowobj = {};
-let jflowid = null;
+const jflowobj = {};
+const jflowid = null;
 let beforeClickFunction = {}; // 记录需要前置保存的按钮
 
 // 按钮响应事件
@@ -134,8 +134,9 @@ function clickFunction(e) {
 
 // 触发事件
 function initiateLaunch(event) {
-  if (window.jflowPlugin.objInstanceId) {
-    mutipleOperate(jflowobj.affirmUrl, jflowobj.instanceId, jflowbuttons, jflowid);
+  console.log(event);
+  if (global.jflowInfo.objInstanceId) {
+    mutipleOperate(global.jflowInfo.affirmUrl, global.jflowInfo.instanceId, global.routeInfo.itemId);
   } else {
     // 判断是否存在模版，存在的时候才能发起流程
     let triggerBt = [];
@@ -169,9 +170,7 @@ function initiateLaunch(event) {
 }
 
 // 按钮监听控制
-function buttonAddEventListener(obj, id) {
-  jflowobj = obj;
-  jflowid = id;
+function buttonAddEventListener() {
   window.addEventListener('jflowPlugin', clickFunction, this);
 
   // 监听jflow触发按钮响应
@@ -182,18 +181,18 @@ function buttonAddEventListener(obj, id) {
 // 这里主要是按钮的逻辑
 // 创建按钮
 // obj 获取的按钮相关数据 buttons 生成按钮的方法（jflowButtons） 生成按钮需要的id
-function CreateButton(obj, id) {
+function CreateButton() {
   // 移除事件监听
   window.removeEventListener('jflowPlugin', clickFunction, true);
   window.removeEventListener('jflowLaunch', initiateLaunch, true);
 
-  buttonAddEventListener(obj, id);
+  buttonAddEventListener();
 
-  window.jflowPlugin.objInstanceId = obj.instanceId;
-  window.jflowPlugin.itemId = id;
-  window.jflowPlugin.nodeId = obj.nodeId;
-  window.jflowPlugin.moduleId = obj.moduleId;
-  window.jflowPlugin.pid = obj.pid;
+  // window.jflowPlugin.objInstanceId = obj.instanceId;
+  // window.jflowPlugin.itemId = id;
+  // window.jflowPlugin.nodeId = obj.nodeId;
+  // window.jflowPlugin.moduleId = obj.moduleId;
+  // window.jflowPlugin.pid = obj.pid;
 }
 
 
