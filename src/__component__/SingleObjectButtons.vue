@@ -190,6 +190,11 @@
           }
         }
       },
+      $route(to, from) {
+        setTimeout(() => {
+          this.updataCurrentTableDetailInfo();
+        }, 0);
+      },
       // backButton: {// jflowNew
       //   handler(val) {
       //     this.dataArray.back = val;
@@ -334,6 +339,9 @@
         exportTasks: ({ exportTasks }) => exportTasks,
         currentLoading: ({ currentLoading }) => currentLoading,
         JflowControlField: ({ JflowControlField }) => JflowControlField,
+        userInfo: ({ userInfo }) => userInfo,
+
+        
       }),
       currentTabIndex() {
         if (this.WebConf && this.WebConf.isCustomizeTab && this.objectType === 'horizontal') {
@@ -531,6 +539,18 @@
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
 
       ...mapMutations('global', ['deleteLoading', 'emptyTestData', 'tabCloseAppoint', 'decreasekeepAliveLists', 'copyDataForSingleObject', 'tabHref', 'tabOpen', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
+      updataCurrentTableDetailInfo() { // 更新当前单对象信息
+        if (this[INSTANCE_ROUTE_QUERY].tableName === this.$route.params.tableName && this.$route.meta.routePrefix.includes('/SYSTEM/TABLE_DETAIL/')) { // 当前路由包含单对象标记
+          // 更新单对象界面信息
+          DispatchEvent('updataCurrentTableDetailInfo', {
+            detail: {
+              userInfo: this.userInfo,
+              routeInfo: this[INSTANCE_ROUTE_QUERY],
+              activeTabInfo: this.activeTab
+            }
+          });
+        }
+      },
       imporSuccess(id) {
         if (Version() === '1.3') {
           if (id) {
@@ -1104,10 +1124,11 @@
           // this.upData();
         });
       },
-      webactionClick(obj, type) { // 动作定义执行
+      webactionClick(obj) { // 动作定义执行
         if (obj.confirm) {
           // 有提示
           let selete = [];
+          let type = '';
           if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName]) {
             selete = this.updateData[this.itemName].delete[this.itemName];
             if (Object.keys(selete).length === 0) {
@@ -1154,9 +1175,16 @@
                 this.buttonEvent(obj);
               }
             } else if (JSON.parse(obj.confirm).desc) {
+              const objRes = JSON.parse(JSON.stringify(obj));
+              if (JSON.parse(obj.confirm).isSave && this.testUpdata()) { // 配置isSave以及界面有修改
+                objRes.isrefrsh = false;
+                // type = 'objTabActionSlient';
+                // this.objTabActionSlientData = obj;
+                // this.clickSave({ type });
+              } 
               const title = this.ChineseDictionary.WARNING;
               const contentText = `${JSON.parse(obj.confirm).desc}`;
-              this.dialogMessage(title, contentText, obj);
+              this.dialogMessage(title, contentText, objRes);
             } else if (JSON.parse(obj.confirm).isSave) { // 静默执行保存
               type = 'objTabActionSlient';
               // if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
@@ -1186,7 +1214,7 @@
           content: contentText,
           showCancel: true,
           onOk: () => {
-            if (obj.confirm && JSON.stringify(obj.confirm) && JSON.parse(JSON.stringify(obj.confirm)).isSave) {
+            if (obj.confirm && JSON.stringify(obj.confirm) && (JSON.parse(JSON.stringify(obj.confirm)).isSave || JSON.parse(obj.confirm).isSave) && this.testUpdata()) {
               const type = 'objTabActionSlient';
               // if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
               //   const objTabActionSlientData = {
@@ -1380,7 +1408,7 @@
       },
 
       clickSave(data) {
-        if (data) {
+        if (data && data.requestUrlPath) {
           this.saveButtonPath = data.requestUrlPath;
         }
         const dom = document.getElementById('actionMODIFY');
@@ -1636,11 +1664,9 @@
                 }
               }
               this.upData();
-            // this.$loading.hide(this.tableName);//此时会调取刷新，刷新会触发表单渲染，组件会接收监听，关闭loading
-            // console.log('关闭静默');
             } else {
+              this.upData();
               this.$loading.hide(this.tableName);
-              console.log('关闭静默');
             }
           }, () => {
             this.$loading.hide(this.tableName);
@@ -3232,6 +3258,7 @@
       window.removeEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
     },
     mounted() {
+      this.updataCurrentTableDetailInfo();
       if (this.isItemTable) {
         this.dataArray.refresh = false;
         this.dataArray.back = false;
