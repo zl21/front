@@ -542,13 +542,17 @@
       updataCurrentTableDetailInfo() { // 更新当前单对象信息
         if (this[INSTANCE_ROUTE_QUERY].tableName === this.$route.params.tableName && this.$route.meta.routePrefix.includes('/SYSTEM/TABLE_DETAIL/')) { // 当前路由包含单对象标记
           // 更新单对象界面信息
-          DispatchEvent('updataCurrentTableDetailInfo', {
-            detail: {
-              userInfo: this.userInfo,
-              routeInfo: this[INSTANCE_ROUTE_QUERY],
-              activeTabInfo: this.activeTab
-            }
-          });
+          console.log(99, this.activeTab);
+          setTimeout(() => {
+            DispatchEvent('updataCurrentTableDetailInfo', {
+              detail: {
+                userInfo: this.userInfo,
+                routeInfo: this[INSTANCE_ROUTE_QUERY],
+                activeTabInfo: this.activeTab
+              }
+            });
+          }, 500);
+          
           this.updataCurrentTableDetailMethods();
         }
       },
