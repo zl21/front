@@ -549,7 +549,12 @@
               activeTabInfo: this.activeTab
             }
           });
+          this.updataCurrentTableDetailMethods();
         }
+      },
+      updataCurrentTableDetailMethods() { // 更新单对象挂载window的方法（保持当前激活的单对象界面）
+        window.updataClickSave = () => this.clickSave();
+        window.testUpdataValue = () => this.testUpdata();
       },
       imporSuccess(id) {
         if (Version() === '1.3') {
@@ -3249,7 +3254,8 @@
         if (value.detail.hideCopyLoading || value.detail.hideLoadingForButton) {
           this.$loading.hide(currentTableName);
         }
-      }
+      },
+ 
     },  
     beforeDestroy() {
       window.removeEventListener('jflowClick', this.jflowClick);
@@ -3263,10 +3269,9 @@
         this.dataArray.refresh = false;
         this.dataArray.back = false;
       }
-      
       this.updataClickSave(this.clickSave);
       this.testUpdataValue(this.testUpdata);
-      
+      this.updataCurrentTableDetailMethods();
       // this.dataArray.back = this.backButton;//jflowNew
       // if (this.jflowButton.length > 0) { // jflowNew
       //   // this.dataArray.jflowPluginDataArray = [];
