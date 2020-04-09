@@ -132,6 +132,7 @@
   import mutipleSelectPop from './MutipleSelectPop.vue';
   import { BacklogData } from '../js/todoList';
   import { DispatchEvent } from '../utils/dispatchEvent';
+  import network from '../utils/network';
 
   export default {
     name: 'ApprovelModel',
@@ -220,7 +221,7 @@
       // 查找用户信息
       findUser(param) {
         this.tableLoading = true;
-        this.$network.post('/jflow/p/c/identity/user/list', param).then((res) => {
+        network.post('/jflow/p/c/identity/user/list', param).then((res) => {
           this.tableLoading = false;
           const data = res.data;
           if (data.code === 0) {
@@ -231,7 +232,7 @@
       // 获取树数据
       getTreeData() {
         this.treeLoading = true;
-        this.$network.post('/jflow/p/c/identity/org/treeload', {}).then((res) => {
+        network.post('/jflow/p/c/identity/org/treeload', {}).then((res) => {
           this.treeLoading = false;
           if (res.data.resultCode === 0) {
             this.treeNewData = [];
@@ -384,7 +385,7 @@
             // 当item的TYPE为供应商时
             //  当item的TYPE为组织时
             if (val[0].TYPE === 'CP_C_HRORG_ID') {
-              this.$network
+              network
                 .post('/jflow/p/c/identity/org/treequery', { ID: valID })
                 .then((res) => {
                   if (res.data.resultCode === 0) {
@@ -534,7 +535,7 @@
         param.businessCode = window.jflowPlugin.router.currentRoute.params.itemId;
         param.businessType = window.jflowPlugin.router.currentRoute.params.tableId;
         param.businessName = window.jflowPlugin.router.currentRoute.params.tableName;
-        this.$network.post(this.modalConfig.url, param).then((res) => {
+        network.post(this.modalConfig.url, param).then((res) => {
           window.jflowPlugin.open({ control: false });
           if (res.data.resultCode === 0) {
             this.$Message.success(res.data.resultMsg);
@@ -579,7 +580,7 @@
         //   param.backId = this.returnOption; //驳回节点id
         // }
         param.description = this.returnContent; // 审批意见
-        this.$network.post(this.modalConfig.url, param).then((res) => {
+        network.post(this.modalConfig.url, param).then((res) => {
           window.jflowPlugin.open({ control: false });
           if (res.data.resultCode === 0) {
             this.$Message.success(res.data.resultMsg);
@@ -611,7 +612,7 @@
         param.instanceId = window.jflowPlugin.objInstanceId;
         param.userId = window.jflowPlugin.userInfo.id;
         param.delegateId = this.selectRow.ID; // 驳回节点id
-        this.$network.post(this.modalConfig.url, param).then((res) => {
+        network.post(this.modalConfig.url, param).then((res) => {
           window.jflowPlugin.open({ control: false });
           if (res.data.resultCode === 0) {
             this.$Message.success(res.data.resultMsg);
@@ -635,7 +636,7 @@
 
       // 获取人工干预信息
       getIntervention() {
-        this.$network.post('/jflow/p/cs/error/pageMsg', {
+        network.post('/jflow/p/cs/error/pageMsg', {
           instanceId: window.jflowPlugin.objInstanceId,
           nodeId: window.jflowPlugin.nodeId,
           userId: window.jflowPlugin.userInfo.id,
@@ -650,7 +651,7 @@
       },
       // 人工干预提交
       interventionConfirm() {
-        this.$network.post('/jflow/p/cs/error/invocationFail', {
+        network.post('/jflow/p/cs/error/invocationFail', {
           instanceId: window.jflowPlugin.objInstanceId,
           nodeId: window.jflowPlugin.nodeId,
           userId: window.jflowPlugin.userInfo.id,

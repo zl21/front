@@ -35,6 +35,7 @@
   import FormItemComponent from './FormItemComponent';
   import ItemComponent from './ItemComponent';
   import StandardTable from './StandardTable';
+  import network from '../utils/network';
   // import { Version } from '../../constants/global';
   // import getObjdisType from '../../__utils__/getObjdisType';
   
@@ -354,7 +355,7 @@
         }
       },
       getselectOption() {
-        this.$network.post('/jflow/p/cs/task/relation/list', {}).then((res) => {
+        network.post('/jflow/p/cs/task/relation/list', {}).then((res) => {
           if (res.data.resultCode === 0) {
             this.formLists.forEach((outer) => {
               if (outer.item.filed === 'businessType') {
@@ -380,7 +381,7 @@
         }
         const obj = Object.assign({}, this.searchData);
         delete obj.updateTime;
-        this.$network
+        network
           .post('/jflow/p/cs/task/history/list', obj)
           .then((res) => {
             if (res.data.resultCode === 0) {

@@ -27,6 +27,7 @@ import './src/assets/css/custom-ext.less';
 // jflowPlugin
 import jflowPlugin from './jflowPlugin/js/index';
 
+
 Vue.use(jflowPlugin);
 
 Vue.use(VueDND);

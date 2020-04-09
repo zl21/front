@@ -102,6 +102,7 @@
   import ItemComponent from './ItemComponent';
   import StandardTable from './StandardTable';
   import mutipleSelectPop from './MutipleSelectPop';
+  import network from '../utils/network';
   // import { Version } from '../../constants/global';
   // import getObjdisType from '../../__utils__/getObjdisType';
   import { BacklogData } from '../js/todoList';
@@ -512,7 +513,7 @@
       // ...mapMutations(["currentChange", "checkDetailsOpenWindow"]),
       // 业务关系下拉数据
       getselectOption() {
-        this.$network.post('/jflow/p/cs/task/relation/list', {}).then((res) => {
+        network.post('/jflow/p/cs/task/relation/list', {}).then((res) => {
           if (res.data.resultCode === 0) {
             this.formLists.forEach((outer) => {
               if (outer.item.filed === 'businessType') {
@@ -542,7 +543,7 @@
         }
         const obj = Object.assign({}, this.searchData);
         delete obj.createTime;
-        this.$network
+        network
           .post('/jflow/p/cs/task/backlog/list', obj)
           .then((res) => {
             if (res.data.resultCode === 0) {
@@ -586,7 +587,7 @@
         //   return
         // }
         // sendData.userId = this.userInfo.userId;
-        this.$network.post('/jflow/p/cs/task/batch/deal', sendData).then((res) => {
+        network.post('/jflow/p/cs/task/batch/deal', sendData).then((res) => {
           const data = res.data;
           if (data.resultCode === 0) {
             this.resultData.list = [];
@@ -655,7 +656,7 @@
       },
       // 获取树数据
       getTreeData() {
-        this.$network.post('/jflow/p/c/identity/org/treeload', {}).then((res) => {
+        network.post('/jflow/p/c/identity/org/treeload', {}).then((res) => {
           this.tree_loading = false;
           if (res.data.resultCode === 0) {
             this.treedata = [];
@@ -746,7 +747,7 @@
         if (this.resultData.list && this.resultData.list.length > 0) {
           needdata.AGENT_ID = Number(this.resultData.list[0].ID);
         }
-        this.$network.post('/jflow/p/c/agent/save', needdata).then((res) => {
+        network.post('/jflow/p/c/agent/save', needdata).then((res) => {
           if (res.data.resultCode === 0) {
             this.resultData.list = [];
             this.tableSearch = '';
@@ -792,7 +793,7 @@
       // 查找用户信息
       findUser(param) {
         this.tableLoading = true;
-        this.$network.post('/jflow/p/c/identity/user/list', param).then((res) => {
+        network.post('/jflow/p/c/identity/user/list', param).then((res) => {
           this.tableLoading = false;
           const data = res.data;
           if (data.code === 0) {
@@ -819,7 +820,7 @@
             // 当item的TYPE为供应商时
             //  当item的TYPE为组织时
             if (val[0].TYPE === 'CP_C_HRORG_ID') {
-              this.$network
+              network
                 .post('/jflow/p/c/identity/org/treequery', { ID: valID })
                 .then((res) => {
                   if (res.data.resultCode === 0) {
@@ -957,7 +958,7 @@
       },
       getAgent() {
         // 获取代理人信息
-        this.$network
+        network
           .post('/jflow/p/c/agent/get', {
             USER_ID: window.jflowPlugin.userInfo.id
           })
@@ -974,7 +975,7 @@
           mask: true,
           showCancel: true,
           onOk: () => {
-            this.$network
+            network
               .post('/jflow/p/c/agent/delete', { USER_ID: this.Agent.USER_ID })
               .then((res) => {
                 if (res.data.resultCode === 0) {

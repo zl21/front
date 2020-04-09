@@ -1,4 +1,4 @@
-import InstanceManagementList from '../component/InstanceManagementList';
+import InstanceManagementList from '../view/InstanceManagementList';
 
 
 export default [

@@ -1,4 +1,5 @@
 import { DispatchEvent } from '../utils/dispatchEvent';
+import network from '../utils/network';
 
 // 撤销/结束/作废
 function mutipleOperate(url, instanceId, buttons, id) {
@@ -9,7 +10,7 @@ function mutipleOperate(url, instanceId, buttons, id) {
   param.businessCode = window.jflowPlugin.router.currentRoute.params.itemId;
   param.businessType = window.jflowPlugin.router.currentRoute.params.tableId;
   param.businessName = window.jflowPlugin.router.currentRoute.params.tableName;
-  window.jflowPlugin.axios.post(url, param).then((res) => {
+  network.post(url, param).then((res) => {
     if (res.data.resultCode === 0) {
       window.vm.$Message.success(res.data.resultMsg);
       buttons(id).then(() => {
@@ -58,7 +59,7 @@ function buttonsResponse(e) {
       return;
     }
     
-    window.jflowPlugin.axios.post('/jflow/p/cs/business/change', {
+    network.post('/jflow/p/cs/business/change', {
       instance_id: window.jflowPlugin.objInstanceId,
       business_code: window.jflowPlugin.router.currentRoute.params.itemId,
       business_type: window.jflowPlugin.router.currentRoute.params.tableId,
@@ -201,146 +202,6 @@ function CreateButton(obj, buttons, id) {
   window.jflowPlugin.nodeId = obj.nodeId;
   window.jflowPlugin.moduleId = obj.moduleId;
   window.jflowPlugin.pid = obj.pid;
-
-  const type = window.jflowPlugin.router.currentRoute.fullPath.split('/')[3];
-  const MODULE_COMPONENT_NAME = `${type}.${window.jflowPlugin.router.currentRoute.params.tableName}.${window.jflowPlugin.router.currentRoute.params.tableId}.${window.jflowPlugin.router.currentRoute.params.itemId}`;
-
-  // 流程进度正在发起中 obj.businessStatus === -2
-  if (obj.businessStatus === -2) {
-    const stateTimeout = setInterval(() => {
-      // 定时器的处理，排除列表界面
-      if (window.jflowPlugin.router.currentRoute.fullPath.split('/')[2] === 'TABLE') {
-        clearInterval(stateTimeout);
-        return; 
-      }
-      // 判断state状态是否已经生成
-      const store = window.jflowPlugin.store;
-      let stateFlag = null;
-      try {
-        stateFlag = (window.jflowPlugin.store.state[MODULE_COMPONENT_NAME] && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.tabcmd) || (store.state[MODULE_COMPONENT_NAME].tabPanels && store.state[MODULE_COMPONENT_NAME].tabPanels.length > 0 && store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute && store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem);
-      } catch {
-        clearInterval(stateTimeout);
-      }
-      if (stateFlag) {
-        clearInterval(stateTimeout);
-        const buttonsData = store.state[MODULE_COMPONENT_NAME].mainFormInfo ? JSON.parse(JSON.stringify(store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData)) : JSON.parse(JSON.stringify(store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute.buttonsData));
-        buttonsData.data.tabcmd.prem = buttonsData.data.tabcmd.prem.map(() => false);
-        const newButtons = [];
-        // 修改水印
-        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateWatermarkimg`, obj.waterMark);
-        
-        // 刷新按钮
-        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateRefreshButton`, false);
-
-        // 暂存按钮
-        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updataHideTempStorage`, true);
-        // 更新按钮
-        let tabwebact = [];
-        tabwebact = store.state[MODULE_COMPONENT_NAME].defaultButtonData.tabwebact.objbutton.filter((item) => {
-          if ((obj.visibleBt ? obj.visibleBt : []).includes(String(item.webid))) {
-            return item;
-          }
-        });
-        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, {
-          buttonsData: buttonsData.data.tabcmd.prem, newButtons, instanceId: 1, tabwebact
-        });
-        // 控制字表为只读
-        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateChildTableReadonly`, true);
-      }
-    });
-  }
-
-  // 存在jflow流程时
-  if (obj.instanceId !== null && obj.buttons && obj.buttons !== null && obj.buttons.length > 0) {
-    const stateTimeout = setInterval(() => {
-      // 定时器的处理，排除列表界面
-      if (window.jflowPlugin.router.currentRoute.fullPath.split('/')[2] === 'TABLE') {
-        clearInterval(stateTimeout);
-        return; 
-      }
-      // 判断state状态是否已经生成
-      const store = window.jflowPlugin.store;
-      let stateFlag = null;
-      try {
-        stateFlag = (window.jflowPlugin.store.state[MODULE_COMPONENT_NAME] && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.tabcmd) || (store.state[MODULE_COMPONENT_NAME].tabPanels && store.state[MODULE_COMPONENT_NAME].tabPanels.length > 0 && store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute && store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem);
-      } catch {
-        clearInterval(stateTimeout);
-      }
-      if (stateFlag) {
-        clearInterval(stateTimeout);
-        const buttonsData = store.state[MODULE_COMPONENT_NAME].mainFormInfo ? JSON.parse(JSON.stringify(store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData)) : JSON.parse(JSON.stringify(store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute.buttonsData));
-        buttonsData.data.tabcmd.prem = buttonsData.data.tabcmd.prem.map(() => false);
-        if (obj.editFeild !== null && obj.editFeild !== '[]') { // 判断是否存在可编辑字段
-          buttonsData.data.tabcmd.prem[1] = true;
-        } else {
-          buttonsData.data.tabcmd.prem[1] = false;
-        }
-
-        // 添加刷新按钮
-        obj.buttons.push({
-          button: 'fresh',
-          name: '刷新',
-          url: ''
-        });
-        const newButtons = obj.buttons;
-        let tabwebact = [];
-        tabwebact = store.state[MODULE_COMPONENT_NAME].defaultButtonData.tabwebact.objbutton.filter((item) => {
-          if ((obj.visibleBt ? obj.visibleBt : []).includes(String(item.webid))) {
-            return item;
-          }
-        });
-        // 暂存按钮
-        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updataHideTempStorage`, true);
-        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateRefreshButton`, false);
-        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, {
-          buttonsData: buttonsData.data.tabcmd.prem, newButtons, instanceId: obj.instanceId, tabwebact
-        });
-
-        // 暂存按钮
-        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updataHideTempStorage`, true);
-        
-        // 修改水印
-        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateWatermarkimg`, obj.waterMark);
-        // 控制字表为只读
-        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateChildTableReadonly`, true);
-      }
-    }, 100);
-  } else {
-    const stateTimeout = setInterval(() => {
-      // 定时器的处理，排除列表界面
-      if (window.jflowPlugin.router.currentRoute.fullPath.split('/')[2] === 'TABLE') {
-        clearInterval(stateTimeout);
-        return; 
-      }
-      // 判断state状态是否已经生成
-      const store = window.jflowPlugin.store;
-      let stateFlag = null;
-      try {
-        stateFlag = (window.jflowPlugin.store.state[MODULE_COMPONENT_NAME] && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.tabcmd) || (store.state[MODULE_COMPONENT_NAME].tabPanels && store.state[MODULE_COMPONENT_NAME].tabPanels.length > 0 && store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute && store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem);
-      } catch {
-        clearInterval(stateTimeout);
-      }
-      if (stateFlag) {
-        clearInterval(stateTimeout);
-        const newButtons = [];
-        const defaultButtonData = store.state[MODULE_COMPONENT_NAME].defaultButtonData.tabcmd.prem;
-        const tabwebact = store.state[MODULE_COMPONENT_NAME].defaultButtonData.tabwebact.objbutton;
-        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, {
-          buttonsData: defaultButtonData, newButtons, instanceId: null, tabwebact
-        });
-
-        // 暂存按钮
-        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updataHideTempStorage`, false);
-        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateRefreshButton`, true);
-        // 修改水印
-        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateWatermarkimg`, obj.waterMark);
-        // 控制字表为只读
-        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateChildTableReadonly`, false);
-        // 暂存按钮
-        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updataHideTempStorage`, false);
-      }
-    });
-  }
 }
 
 
