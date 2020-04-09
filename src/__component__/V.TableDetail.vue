@@ -24,7 +24,7 @@
 
       <!-- <div>
         <Select
-          v-model="model1"
+          v-model="customizeValue"
           style="width:200px"
         >
           <Option
@@ -91,6 +91,7 @@
     INSTANCE_ROUTE_QUERY
   } from '../constants/global';
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
+  import customizeDatas from '../__config__/customize.config';
   import singleObjectButtons from './SingleObjectButtons';
   import compositeForm from './CompositeForm';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
@@ -108,6 +109,7 @@
     },
     data() {
       return {
+        customizeValue: '',
         currentSingleButtonComponentName: null,
         from: 'singlePage',
         buttons: []
