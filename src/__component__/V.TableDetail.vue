@@ -38,7 +38,7 @@
       </div> -->
       
       <composite-form
-        v-show="mainFormInfo.formData.isShow"
+        v-if="mainFormInfo.formData.isShow"
         class="compositeAllform"
         object-type="vertical"
         :is-main-table="true"
