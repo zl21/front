@@ -48,6 +48,10 @@ function thirdlogin() { // 三方登录  获取accessToken
   
   network.post('/jflow/p/c/thirdlogin', data, {
     headers
+  }).then((res) => {
+    globalChange({
+      accessToken: res.data.data.accessToken
+    });
   });
 }
 
@@ -58,13 +62,13 @@ function thirdlogin() { // 三方登录  获取accessToken
   active: 当前表表名
   isApprover: 消息中心参数
 */
-async function jflowButtons(id, pid, flag, active, isApprover) { // jflow按钮逻辑处理
+async function jflowButtons(flag) { // 获取jflow单据信息
   return await new Promise((resolve) => {
     network.post('/jflow/p/cs/task/buttons', {
-      businessCode: id,
-      userId: JSON.parse(window.localStorage.getItem('userInfo')).id,
-      businessType: pid || window.vm.router.currentRoute.params.tableId,
-      isApprover: isApprover || window.vm.router.currentRoute.query.isApprover
+      businessCode: global.routeInfo.itemId,
+      userId: global.userInfo.id,
+      businessType: global.routeInfo.tableId,
+      isApprover: window.vm.$router.currentRoute.query.isApprover
     })
       .then((res) => {
         if (res.data.resultCode === 0) {
@@ -83,7 +87,8 @@ async function jflowButtons(id, pid, flag, active, isApprover) { // jflow按钮�
             });
           }
           if (!flag) {
-            CreateButton(res.data.data, jflowButtons, id);
+            globalChange(res.data.data);
+            CreateButton();
           }
         }
         resolve(res);
@@ -154,15 +159,10 @@ async function jflowsave(flag, request) {
 
         const type = router.currentRoute.path.split('/')[3];// 获取组件类型
         if (type === 'H' || type === 'V') {
-          jflowButtons(router.currentRoute.params.itemId).then((res) => {
-            // 设置提交时不能刷新的标志
-            window.localStorage.setItem('submitReject', true);
-            // 流程发起成功刷新界面
-            DispatchEvent('jflowClick', {
-              detail: {
-                type: 'refresh'
-              }
-            });
+          DispatchEvent('jflowClick', {
+            detail: {
+              type: 'refresh'
+            }
           });
         } else {
           DispatchEvent('jflowEvent', {
@@ -224,17 +224,17 @@ function initiateLaunch(data) { // 业务系统流程发起
   return new Promise((resolve, reject) => {
     let obj = {
       // eslint-disable-next-line no-nested-ternary
-      businessCodes: router.currentRoute.params.itemId,
-      businessType: router.currentRoute.params.tableId,
-      businessTypeName: router.currentRoute.params.tableName,
-      initiator: userInfo.id,
-      userName: userInfo.name,
+      businessCodes: global.routeInfo.itemId,
+      businessType: global.routeInfo.tableId,
+      businessTypeName: global.routeInfo.tableName,
+      initiator: global.userInfo.id,
+      userName: global.userInfo.name,
       instanceId,
-      initiatorName: userInfo.name,
-      changeUser: userInfo.id,
+      initiatorName: global.userInfo.name,
+      changeUser: global.userInfo.id,
       // webActionId: data.webid,
-      businessTypeText: window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' ? window.jflowPlugin.store.state.global.activeTab.label : window.jflowPlugin.store.state.global.activeTab.label.substr(0, window.jflowPlugin.store.state.global.activeTab.label.length - 2),
-      moduleId: data.moduleId,
+      businessTypeText: global.activeTabInfo.label.split('编辑')[0],
+      // moduleId: data.moduleId,
       // startNodeId: data.startNodeId,
       // customizeBody: data.customizeBody,
       // assignedNodes: data.assignedNodes
@@ -272,13 +272,10 @@ function initiateLaunch(data) { // 业务系统流程发起
 
         const type = router.currentRoute.path.split('/')[3];// 获取组件类型
         if (type === 'H' || type === 'V') {
-          jflowButtons(router.currentRoute.params.itemId).then((res) => {
-            // 流程发起成功刷新界面
-            DispatchEvent('jflowClick', {
-              detail: {
-                type: 'refresh'
-              }
-            });
+          DispatchEvent('jflowClick', {
+            detail: {
+              type: 'refresh'
+            }
           });
         }
 
@@ -301,6 +298,8 @@ function initLists() { // 小图标的展示
       globalChange(res.data.data.ciphertextVO);
       thirdlogin();
       createComponent();
+
+      // 准备业务系统的监听
       window.conversionJflow = decryptionJflow; // 解密方法
       window.initiateLaunch = initiateLaunch; // 发起流程
       window.jflowRefresh = jflowRefresh; // 刷新
@@ -310,6 +309,12 @@ function initLists() { // 小图标的展示
 
 const install = function install(Vue, options = {}) {
   initLists();
+
+  // 获取业务系统数据
+  window.addEventListener('updataCurrentTableDetailInfo', (event) => {  
+    globalChange(event.detail);
+    jflowButtons();
+  });
 };
 
 

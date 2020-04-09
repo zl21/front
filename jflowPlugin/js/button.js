@@ -1,8 +1,9 @@
 import { DispatchEvent } from '../utils/dispatchEvent';
 import network from '../utils/network';
+import { global, globalChange } from '../utils/global.config';
 
 // 撤销/结束/作废
-function mutipleOperate(url, instanceId, buttons, id) {
+function mutipleOperate(url, instanceId) {
   const param = {};
   param.instanceId = instanceId;
   param.userId = window.jflowPlugin.userInfo.id;
@@ -13,15 +14,10 @@ function mutipleOperate(url, instanceId, buttons, id) {
   network.post(url, param).then((res) => {
     if (res.data.resultCode === 0) {
       window.vm.$Message.success(res.data.resultMsg);
-      buttons(id).then(() => {
-        DispatchEvent('jflowClick', {
-          detail: {
-            type: 'refresh'
-          }
-        });
-        const type = window.jflowPlugin.router.currentRoute.fullPath.split('/')[3];
-        const MODULE_COMPONENT_NAME = `${type}.${window.jflowPlugin.router.currentRoute.params.tableName}.${window.jflowPlugin.router.currentRoute.params.tableId}.${window.jflowPlugin.router.currentRoute.params.itemId}`;
-        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateChildTableReadonly`, false);
+      DispatchEvent('jflowClick', {
+        detail: {
+          type: 'refresh'
+        }
       });
     } else {
       window.R3message({
@@ -43,14 +39,13 @@ function restartProcess() {
   });
 }
 
-let jflowbuttons = [];
+
 let jflowobj = {};
 let jflowid = null;
 let beforeClickFunction = {}; // 记录需要前置保存的按钮
 
 // 按钮响应事件
 function buttonsResponse(e) {
-  const buttons = jflowbuttons;
   const obj = jflowobj;
   const id = jflowid;
   if (e.detail.obj.button === 'save' && window.jflowPlugin.objInstanceId) { // 监听保存按钮并且在存在InstanceId时调用接口
@@ -79,12 +74,10 @@ function buttonsResponse(e) {
   }
 
   if (e.detail.obj.button === 'fresh') {
-    buttons(id).then(() => {
-      DispatchEvent('jflowClick', {
-        detail: {
-          type: 'refresh'
-        }
-      });
+    DispatchEvent('jflowClick', {
+      detail: {
+        type: 'refresh'
+      }
     });
     return; 
   }
@@ -176,8 +169,7 @@ function initiateLaunch(event) {
 }
 
 // 按钮监听控制
-function buttonAddEventListener(buttons, obj, id) {
-  jflowbuttons = buttons;
+function buttonAddEventListener(obj, id) {
   jflowobj = obj;
   jflowid = id;
   window.addEventListener('jflowPlugin', clickFunction, this);
@@ -190,12 +182,12 @@ function buttonAddEventListener(buttons, obj, id) {
 // 这里主要是按钮的逻辑
 // 创建按钮
 // obj 获取的按钮相关数据 buttons 生成按钮的方法（jflowButtons） 生成按钮需要的id
-function CreateButton(obj, buttons, id) {
+function CreateButton(obj, id) {
   // 移除事件监听
   window.removeEventListener('jflowPlugin', clickFunction, true);
   window.removeEventListener('jflowLaunch', initiateLaunch, true);
 
-  buttonAddEventListener(buttons, obj, id);
+  buttonAddEventListener(obj, id);
 
   window.jflowPlugin.objInstanceId = obj.instanceId;
   window.jflowPlugin.itemId = id;

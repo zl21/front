@@ -68,28 +68,13 @@ function NetworkConstructor() {
   // 错误拦截
   axios.interceptors.response.use((response) => {
     if (response.data.resultCode === -1) {
-    // alert(response.data.message);
-      window.vm.$Modal.fcError({
+      window.R3message({
         title: '错误',
         content: response.data.resultMsg,
         mask: true
       });
     }
     return response;
-  }, (error) => {
-    if (error.response) {
-      const { status } = error.response;
-      if (status === 403) {
-        window.vm.$Modal.fcError({
-          title: '错误',
-          content: error.response.data.resultMsg,
-          mask: true
-        });
-      }
-    }
-
-
-    Promise.reject(error);
   });
 
   this.post = (url, config) => apiEncryptable(url, config, 'post');

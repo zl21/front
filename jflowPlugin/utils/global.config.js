@@ -5,6 +5,7 @@ let globalConfig = {
 
 export const globalChange = (data) => {
   globalConfig = Object.assign(globalConfig, data);
+  console.log(globalConfig);
 };
 
 export const global = globalConfig;
