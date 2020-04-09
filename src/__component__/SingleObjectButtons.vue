@@ -2186,6 +2186,8 @@
       waListButtons(tabwebact) { // 自定义按钮渲染逻辑
         if (tabwebact.jflowbutton && tabwebact.jflowbutton.length > 0) {
           this.dataArray.jflowButton = tabwebact.jflowbutton;
+        } else {
+          this.dataArray.jflowButton = [];
         }
       
         if (this.objectType === 'horizontal') { // 横向布局
