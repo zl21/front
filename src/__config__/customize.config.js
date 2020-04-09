@@ -38,13 +38,10 @@ export default {
     label: '功能权限3'
 
   },
-  // AD_TABLE: {
-  //   component: AD_TABLE
-  // },
   taskList: {
     component: taskList,
     labelName: '任务记录',
-    label: '功能权限4'
+    label: '任务记录'
 
   }
   

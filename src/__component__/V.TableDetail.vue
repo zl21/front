@@ -21,24 +21,26 @@
     <div class="verticalTableDetailContent">
       <!-- 上下结构主表 form-->
 
-
       <!-- <div>
+        <label>
+          自定义界面
+        </label>
         <Select
           v-model="customizeValue"
           style="width:200px"
         >
           <Option
-            v-for="item in customizeData"
-            :key="item.value"
-            :value="item.value"
+            v-for="(item,key) in customizeDataRes"
+            :key="key"
+            :value="key"
           >
             {{ item.label }}
           </Option>
         </Select>
-      </div> -->
-      
+      </div>
+      <AutomaticPathGenerationInput />
       <composite-form
-        v-show="mainFormInfo.formData.isShow"
+        v-if="mainFormInfo.formData.isShow"
         class="compositeAllform"
         object-type="vertical"
         :is-main-table="true"
@@ -57,7 +59,7 @@
         @formChange="formChange"
         @InitializationForm="InitializationForm"
         @VerifyMessage="verifyFormPanelMain"
-      />
+      /> -->
       <div>
         <TabPanels
           v-show="tabPanels.length > 0"
@@ -84,6 +86,8 @@
   import Vue from 'vue';
   // import getComponentName from '../__utils__/getModuleName';
   import tabComponent from './SingleObjectTabComponent';
+  import AutomaticPathGenerationInput from './AutomaticPathGenerationInput';
+  
   import {
     MODULE_COMPONENT_NAME,
     enableJflow,
@@ -91,12 +95,13 @@
     INSTANCE_ROUTE_QUERY
   } from '../constants/global';
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
-  import customizeDatas from '../__config__/customize.config';
+
+  import customizeData from '../__config__/customize.config';
   import singleObjectButtons from './SingleObjectButtons';
   import compositeForm from './CompositeForm';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
 
-
+ 
   export default {
     // name: 'VTableDetail',
     watch: {
@@ -121,6 +126,13 @@
         JflowControlField: ({ JflowControlField }) => JflowControlField,
 
       }),
+      customizeDataRes() {
+        const obj = {};
+        return Object.keys(customizeData).reduce((arr, key) => {
+          arr.push(obj[key] = customizeData[key]);  
+          return arr;
+        }, []);
+      },
       maginTableJflowButtons() {
         return this.mainFormInfo.buttonsData.data.jflowButton;
       },
@@ -209,7 +221,8 @@
       },
     },
     components: {
-      compositeForm
+      compositeForm,
+      AutomaticPathGenerationInput
     },
     created() {
       // this.emptyTestData();

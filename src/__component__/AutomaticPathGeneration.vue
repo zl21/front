@@ -94,6 +94,7 @@
   } from '../constants/global';
 
   export default {
+    name: 'AutomaticPathGeneration',
     watch: {
       'formItem.pathTypeModel': {
         handler() {
@@ -193,6 +194,7 @@
      
     },
     methods: {
+     
       AutomaticPathGeneration() {
         if (this.currentInfo.itemId) {
           this.formItem.path = `${this.currentInfo.value}${this.formItem.nameValue}/${this.formItem.idValue}/${this.currentInfo.itemId}`;
@@ -201,6 +203,8 @@
         } else {
           this.formItem.path = `${this.currentInfo.value}${this.formItem.nameValue}`;
         }
+        this.$emit('setValue', this.formItem.path);
+        this.$emit('closeActionDialog', true);
       },
       singleObjectChange(data) {
         const dataRes = this.formItem.singleObjectPageData.filter(item => item.value === data.value)[0];
@@ -225,6 +229,6 @@
 </script>
 <style lang="less" scoped>
 .AutomaticPathGeneration{
-    
+    width:1000px;
 }
 </style>
