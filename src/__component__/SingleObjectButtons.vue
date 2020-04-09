@@ -190,6 +190,11 @@
           }
         }
       },
+      $route(to, from) {
+        setTimeout(() => {
+          this.updataCurrentTableDetailInfo();
+        }, 0);
+      },
       // backButton: {// jflowNew
       //   handler(val) {
       //     this.dataArray.back = val;
@@ -334,6 +339,9 @@
         exportTasks: ({ exportTasks }) => exportTasks,
         currentLoading: ({ currentLoading }) => currentLoading,
         JflowControlField: ({ JflowControlField }) => JflowControlField,
+        userInfo: ({ userInfo }) => userInfo,
+
+        
       }),
       currentTabIndex() {
         if (this.WebConf && this.WebConf.isCustomizeTab && this.objectType === 'horizontal') {
@@ -531,6 +539,18 @@
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
 
       ...mapMutations('global', ['deleteLoading', 'emptyTestData', 'tabCloseAppoint', 'decreasekeepAliveLists', 'copyDataForSingleObject', 'tabHref', 'tabOpen', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
+      updataCurrentTableDetailInfo() { // 更新当前单对象信息
+        if (this[INSTANCE_ROUTE_QUERY].tableName === this.$route.params.tableName && this.$route.meta.routePrefix.includes('/SYSTEM/TABLE_DETAIL/')) { // 当前路由包含单对象标记
+          // 更新单对象界面信息
+          DispatchEvent('updataCurrentTableDetailInfo', {
+            detail: {
+              userInfo: this.userInfo,
+              routeInfo: this[INSTANCE_ROUTE_QUERY],
+              activeTabInfo: this.activeTab
+            }
+          });
+        }
+      },
       imporSuccess(id) {
         if (Version() === '1.3') {
           if (id) {
@@ -1167,7 +1187,6 @@
               this.dialogMessage(title, contentText, objRes);
             } else if (JSON.parse(obj.confirm).isSave) { // 静默执行保存
               type = 'objTabActionSlient';
-<<<<<<< HEAD
               // if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
               //   const objTabActionSlientData = {
               //     k: 'data',
@@ -1177,17 +1196,6 @@
               // } else {
               this.objTabActionSlientData = obj;
               // }
-=======
-              if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
-                const objTabActionSlientData = {
-                  k: 'data',
-                  v: obj
-                };
-                updateSessionObject('objTabActionSlientData', objTabActionSlientData);
-              } else {
-                this.objTabActionSlientData = obj;
-              }
->>>>>>> origin/v1.4
               this.clickSave({ type });
             }
           } else {
@@ -3250,6 +3258,7 @@
       window.removeEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
     },
     mounted() {
+      this.updataCurrentTableDetailInfo();
       if (this.isItemTable) {
         this.dataArray.refresh = false;
         this.dataArray.back = false;
