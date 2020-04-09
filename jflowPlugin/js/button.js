@@ -1,4 +1,4 @@
-import { DispatchEvent } from '../__utils__/dispatchEvent';
+import { DispatchEvent } from '../utils/dispatchEvent';
 
 // 撤销/结束/作废
 function mutipleOperate(url, instanceId, buttons, id) {

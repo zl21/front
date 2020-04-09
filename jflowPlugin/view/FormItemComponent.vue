@@ -37,7 +37,7 @@
 </template>
 <script>
   import Vue from 'vue';
-  import layoutAlgorithm from './utils/layoutAlgorithm';
+  import layoutAlgorithm from '../utils/layoutAlgorithm';
 
   export default {
     name: 'FormItemComponent',

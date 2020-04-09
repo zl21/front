@@ -120,7 +120,7 @@
   </div>
 </template>
 <script>
-  import dataProp from './utils/props.config';
+  import dataProp from '../utils/props.config';
 
   export default {
     name: 'ItemComponent',
