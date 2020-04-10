@@ -201,13 +201,14 @@ function createComponent() { // 创建跟节点实例
   const jflowPlugin = document.createElement('div');
   jflowPlugin.id = 'jflowPlugin';
   document.body.appendChild(jflowPlugin);
-  window.jflowVm = new Vue({
+  const vm = new Vue({
     el: '#jflowPlugin',
     template: '<mainComponent />',
     components: {
       mainComponent
     }
   });
+  window.jflowPlugin = vm.$children[0];
 }
 
 function jflowRefresh() { // 刷新业务系统
@@ -302,13 +303,17 @@ function initLists() { // init
 const install = function install(Vue, options = {}) {
   initLists();
 
+  // 业务系统登录成功后创建右上角的小图标
   window.addEventListener('userReady', (event) => {
-    console.log(event);
     globalChange({
       userInfo: event.detail.userInfo
     });
-
     todoList();
+  });
+
+  // 监听业务系统的刷新，获取最新的jflow信息，防止数据不同步
+  window.addEventListener('clickButtonsRefresh', () => {
+    jflowButtons();
   });
 
   // 获取业务系统数据
@@ -325,3 +330,5 @@ export default install;
 export function components() {
   return InstanceManagementList;
 }
+
+export const getJflowInfo = jflowButtons;

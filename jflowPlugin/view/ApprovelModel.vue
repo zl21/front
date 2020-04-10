@@ -1,3 +1,4 @@
+
 <template>
   <div>
     <Modal
@@ -133,6 +134,8 @@
   import { BacklogData } from '../js/todoList';
   import { DispatchEvent } from '../utils/dispatchEvent';
   import network from '../utils/network';
+  import { global } from '../utils/global.config';
+  import { getJflowInfo } from '../js/index';
 
   export default {
     name: 'ApprovelModel',
@@ -528,19 +531,19 @@
         //   }
         // }
         const param = {};
-        param.instanceId = window.jflowPlugin.objInstanceId;
-        param.userId = window.jflowPlugin.userInfo.id;
-        param.nodeId = window.jflowPlugin.nodeId;
+        param.instanceId = global.jflowInfo.instanceId;
+        param.userId = global.userInfo.id;
+        param.nodeId = global.jflowInfo.nodeId;
         param.description = this.agreecontent; // 审批意见
-        param.businessCode = window.jflowPlugin.router.currentRoute.params.itemId;
-        param.businessType = window.jflowPlugin.router.currentRoute.params.tableId;
-        param.businessName = window.jflowPlugin.router.currentRoute.params.tableName;
+        param.businessCode = global.routeInfo.itemId;
+        param.businessType = global.routeInfo.tableId;
+        param.businessName = global.routeInfo.tableName;
         network.post(this.modalConfig.url, param).then((res) => {
           window.jflowPlugin.open({ control: false });
           if (res.data.resultCode === 0) {
             this.$Message.success(res.data.resultMsg);
-            this.modalConfig.buttons(window.jflowPlugin.itemId);
-            BacklogData(window.jflowPlugin.store);
+            BacklogData();
+            getJflowInfo();
             DispatchEvent('jflowClick', {
               detail: {
                 type: 'refresh'
@@ -564,28 +567,21 @@
         //   }
         // }
         const param = {};
-        param.instanceId = window.jflowPlugin.objInstanceId;
-        param.userId = window.jflowPlugin.userInfo.id;
-        param.nodeId = window.jflowPlugin.nodeId;
-        param.businessCode = window.jflowPlugin.router.currentRoute.params.itemId;
-        param.businessType = window.jflowPlugin.router.currentRoute.params.tableId;
-        param.businessName = window.jflowPlugin.router.currentRoute.params.tableName;
-        param.pid = window.jflowPlugin.pid;
-        param.moduleId = window.jflowPlugin.moduleId;
-        // if (this.returnOption === "") {
-        //   this.$Message.warning("驳回节点不能为空");
-        //   window.jflowPlugin.open({ control: false });
-        //   return;
-        // } else {
-        //   param.backId = this.returnOption; //驳回节点id
-        // }
+        param.instanceId = global.jflowInfo.instanceId;
+        param.userId = global.userInfo.id;
+        param.nodeId = global.jflowInfo.nodeId;
+        param.businessCode = global.routeInfo.itemId;
+        param.businessType = global.routeInfo.tableId;
+        param.businessName = global.routeInfo.tableName;
+        param.pid = global.jflowInfo.pid;
+        param.moduleId = global.jflowInfo.moduleId;
         param.description = this.returnContent; // 审批意见
         network.post(this.modalConfig.url, param).then((res) => {
           window.jflowPlugin.open({ control: false });
           if (res.data.resultCode === 0) {
             this.$Message.success(res.data.resultMsg);
-            this.modalConfig.buttons(window.jflowPlugin.itemId);
-            BacklogData(window.jflowPlugin.store);
+            BacklogData();
+            getJflowInfo();
             DispatchEvent('jflowClick', {
               detail: {
                 type: 'refresh'
@@ -609,16 +605,16 @@
         //   }
         // }
         const param = {};
-        param.instanceId = window.jflowPlugin.objInstanceId;
-        param.userId = window.jflowPlugin.userInfo.id;
+        param.instanceId = global.jflowInfo.instanceId;
+        param.userId = global.userInfo.id;
         param.delegateId = this.selectRow.ID; // 驳回节点id
         network.post(this.modalConfig.url, param).then((res) => {
           window.jflowPlugin.open({ control: false });
           if (res.data.resultCode === 0) {
             this.$Message.success(res.data.resultMsg);
             this.selectRow = {};
-            this.modalConfig.buttons(window.jflowPlugin.itemId);
-            BacklogData(window.jflowPlugin.store);
+            BacklogData();
+            getJflowInfo();
             DispatchEvent('jflowClick', {
               detail: {
                 type: 'refresh'
@@ -637,9 +633,9 @@
       // 获取人工干预信息
       getIntervention() {
         network.post('/jflow/p/cs/error/pageMsg', {
-          instanceId: window.jflowPlugin.objInstanceId,
-          nodeId: window.jflowPlugin.nodeId,
-          userId: window.jflowPlugin.userInfo.id,
+          instanceId: global.jflowInfo.instanceId,
+          nodeId: global.jflowInfo.nodeId,
+          userId: global.userInfo.id,
           errorCode: this.config.item.errorCode,
           errorTaskId: this.config.item.errorTaskId
         })
@@ -652,9 +648,9 @@
       // 人工干预提交
       interventionConfirm() {
         network.post('/jflow/p/cs/error/invocationFail', {
-          instanceId: window.jflowPlugin.objInstanceId,
-          nodeId: window.jflowPlugin.nodeId,
-          userId: window.jflowPlugin.userInfo.id,
+          instanceId: global.jflowInfo.objInstanceId,
+          nodeId: global.jflowInfo.nodeId,
+          userId: global.userInfo.id,
           handleUrl: this.intervention.handleUrl,
           handleParam: this.intervention.handleParam,
           handleRemark: this.intervention.handleRemark,
@@ -664,8 +660,8 @@
           .then((res) => {
             if (res.data.resultCode === 0) {
               this.$Message.success(res.data.resultMsg);
-              this.modalConfig.buttons(window.jflowPlugin.itemId);
-              BacklogData(window.jflowPlugin.store);
+              BacklogData();
+              getJflowInfo();
               DispatchEvent('jflowClick', {
                 detail: {
                   type: 'refresh'

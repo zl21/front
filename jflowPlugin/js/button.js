@@ -32,12 +32,13 @@ function mutipleOperate(url) {
 
 // 重启流程/提交按钮
 function restartProcess() {
-  // 通过模拟点击一下actionSUBMIT按钮重新发起流程
-  DispatchEvent('jflowClick', {
-    detail: {
-      type: 'submit'
-    }
-  });
+  if (window.testUpdataValue()) {
+    window.updataClickSave(async () => {
+      window.initiateLaunch({ webActionId: 0 });
+    });
+  } else {
+    window.initiateLaunch({ webActionId: 0 });
+  }
 }
 
 // 业务系统的保存需要通知jflow
@@ -53,11 +54,6 @@ async function businessChange() {
 
 // 按钮响应事件
 function buttonsResponse(e) {
-  // if (e.detail.obj.button === 'save' && global.jflowInfo.instanceId) { // 监听保存按钮并且在存在InstanceId时调用接口
-  //   businessChange();
-  //   return;
-  // }
-
   if (e.detail.obj.button === 'fresh') {
     DispatchEvent('jflowClick', {
       detail: {
@@ -67,34 +63,36 @@ function buttonsResponse(e) {
     return; 
   }
   const item = e.detail.obj;
-  if (item.button !== '4') {
-    switch (item.button) {
-      case '-1': // 撤销
-      case '7': // 作废
-      case '2': // 结束流程
-        mutipleOperate(item.url); 
-        break;  
-      case '1': // 驳回
-        window.jflowPlugin.open({
-          control: true, type: item.button, url: item.url, instanceId: global.jflowInfo.instanceId, returnOption: global.jflowInfo.backNodeIds, id: global.routeInfo.id 
+  switch (item.button) {
+    case '-1': // 撤销
+    case '7': // 作废
+    case '2': // 结束流程
+      mutipleOperate(item.url); 
+      break;  
+    case '1': // 驳回
+    case '0': // 同意
+    case '8': // 确认
+    case '3': // 转派
+    case '9': // 人工干预
+      window.jflowPlugin.open({// 同意和转派
+        control: true, type: item.button, url: item.url, instanceId: global.jflowInfo.instanceId, returnOption: global.jflowInfo.backNodeIds, id: global.routeInfo.id, item 
+      });
+      break;
+    case '5': // 流程进度
+      window.open(`${global.localIp}/#/FlowChart?instanceId=${global.jflowInfo.instanceId}`, '_blank', 'width=861,height=612');
+      break;
+    case '6': // 重启流程
+    case 'submit': // 提交
+      restartProcess();
+      break;
+    case '4': // 保存
+      if (window.testUpdataValue()) {
+        window.updataClickSave(async () => {
+          await businessChange();
         });
-        break;
-      case '0': // 同意
-      case '8': // 确认
-      case '3': // 转派
-      case '9': // 人工干预
-        window.jflowPlugin.open({// 同意和转派
-          control: true, type: item.button, url: item.url, instanceId: global.jflowInfo.instanceId, id: global.routeInfo.id, item 
-        });
-        break;
-      case '5': // 流程进度
-        window.open(`${global.localIp}/#/FlowChart?instanceId=${global.jflowInfo.instanceId}`, '_blank', 'width=861,height=612');
-        break;
-      case '6': // 重启流程
-        restartProcess();
-        break;
-      default: break;
-    }
+      }
+      break;
+    default: break;
   }
 }
 
