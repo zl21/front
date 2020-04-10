@@ -110,6 +110,7 @@
   export default {
     data() {
       return {
+        saveCallBack: null, // 保存成功后回调
         actionId: null, // 自定义按钮ID
         temporaryStorage: false, // 是否开启暂存
         temporaryStoragePath: '',
@@ -190,7 +191,7 @@
           }
         }
       },
-      $route(to, from) {
+      $route() {
         setTimeout(() => {
           this.updataCurrentTableDetailInfo();
         }, 0);
@@ -562,7 +563,7 @@
         }
       },
       updataCurrentTableDetailMethods() { // 更新单对象挂载window的方法（保持当前激活的单对象界面）
-        window.updataClickSave = () => this.clickSave();
+        window.updataClickSave = event => this.clickSave({ event });
         window.testUpdataValue = () => this.testUpdata();
       },
       imporSuccess(id) {
@@ -677,7 +678,7 @@
         } else if (type === 'temporaryStorage') {
           this.clickButtonsTemporaryStorage();// 暂存按钮执行方法(暂存按钮根据webConf配置显示，同时与保存按钮显示逻辑相同)
         } else if (type === 'refresh') {
-          this.clickButtonsRefresh();// 刷新按钮执行方法
+          this.clickButtonsRefresh(type);// 刷新按钮执行方法
         } else if (type === 'extraposition') {
           this.clickExtraposition(obj);// jflow按钮执行方法
         }
@@ -821,14 +822,14 @@
         return false;
       },
   
-      clickButtonsRefresh() { // 按钮刷新事件
+      clickButtonsRefresh(type) { // 按钮刷新事件
         this.testUpdata();
         if (this.isValue) {
           this.Warning('修改的数据未保存,确定刷新？', () => {
-            this.refresh();
+            this.refresh(type);
           });
         } else {
-          this.refresh();
+          this.refresh(type);
           this.isValue = null;
         }
       },
@@ -846,7 +847,10 @@
         };
         this.$Modal.fcWarning(data);
       },
-      refresh() {
+      refresh(type) {
+        if (type === 'jflow') { // jflow调用的刷新，因需要读取jflow传入的回调，则无法执行清空页面状态，则通过收到jflow刷新通知，单独在刷新前执行清空页面状态值逻辑
+          this.clearEditData();// 清空store update数据
+        }
         if (this.itemInfo.vuedisplay === 'TabItem') { // 兼容半定制界面
           // const webactType = this.itemInfo.webact.substring(0, this.itemInfo.webact.lastIndexOf('/'));
           if (this.objectType === 'vertical') {
@@ -1421,7 +1425,10 @@
         } 
       },
 
-      clickSave(data) {
+      clickSave({ data, event }) {
+        if (typeof (event) === 'function') {
+          this.saveCallBack = event;
+        }
         if (data && data.requestUrlPath) {
           this.saveButtonPath = data.requestUrlPath;
         }
@@ -3148,6 +3155,9 @@
               v: {}
             };
             updateSessionObject('objTabActionSlientData', data);
+          } else if (typeof (this.saveCallBack) === 'function') {
+            this.saveCallBack();
+            this.saveCallBack = null;
           } else { // 保存后的保存成功提示信息
             const message = this.buttonsData.message;
             this.clearEditData();// 清空store update数据
@@ -3194,7 +3204,8 @@
           }
 
           if (event.detail.type === 'refresh') {
-            this.clickButtonsRefresh();
+            const type = 'jflow';
+            this.clickButtonsRefresh(type);
           }
 
           if (event.detail.type === 'save') {
