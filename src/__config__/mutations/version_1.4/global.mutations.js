@@ -108,7 +108,17 @@ export default {
     }
   },
   changeNavigatorSetting(state, data) {
-    state.navigatorSetting = data;
+    let flag = false;
+    state.navigatorSetting = state.navigatorSetting.filter((item) => {
+      if (item.id === data[0].id) {
+        item = data[0];
+        flag = true;
+      }
+      return item;
+    });
+    if (flag) {
+      state.navigatorSetting.push(data[0]);
+    }
   },
   changeSelectedPrimaryMenu(state, index) {
     state.primaryMenuIndex = index;

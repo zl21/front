@@ -1,6 +1,5 @@
 import network from '../utils/network';
-
-let jflowRouter = {};
+import { global } from '../utils/global.config';
 
 // 点击图标打开待办列表
 function openTodoLists() {
@@ -9,26 +8,26 @@ function openTodoLists() {
   // };
   // const { type, value, id } = obj;
   // routeTo({ type, info: { tableName: value, tableId: id } });
-  jflowRouter.push({
+  window.vm.$router.push({
     path: '/PLUGIN/INSTANCEMANAGEMENTLIST'
   });
 }
 
 function pollBacklogData(store) {
   network.post('/jflow/p/cs/task/backlog/list', {
-    page: 1, pageSize: 10, searchType: '0,1', excuStatus: 0, isPoll: true, userId: JSON.parse(window.localStorage.getItem('userInfo')).id
+    page: 1, pageSize: 10, searchType: '0,1', excuStatus: 0, isPoll: true, userId: global.userInfo.id
   }).then((res) => {
     if (res.data.resultCode === 0 && res.data.data.total > 0) {
-      let data = store.state.global.navigatorSetting.concat([]);
-      data = [{
+      const data = [{
+        id: 'jflow',
         icon: 'iconlogo-jflow',
         callback: openTodoLists,
         count: res.data.data.total 
       }];
       window.changeNavigatorSetting(data);
     } else {
-      let data = store.state.global.navigatorSetting.concat([]);
-      data = [{
+      const data = [{
+        id: 'jflow',
         icon: 'iconlogo-jflow',
         callback: openTodoLists,
         count: 0
@@ -38,28 +37,27 @@ function pollBacklogData(store) {
   });
 }
 
-function createIcon(store) {
-  let data = store.state.global.navigatorSetting.concat([]);
-  data = [{
+function createIcon() {
+  const data = [{
+    id: 'jflow',
     icon: 'iconlogo-jflow',
     callback: () => {
       openTodoLists();
     },
     count: 0
   }];
-  store.commit('global/changeNavigatorSetting', data);
-  pollBacklogData(store);
+  window.changeNavigatorSetting(data);
+  pollBacklogData();
   setInterval(() => {
-    pollBacklogData(store);
+    pollBacklogData();
   }, 100000);
 }
 
 
 export const BacklogData = pollBacklogData;
 
-function todoList(store, router) {
-  jflowRouter = router;
-  createIcon(store);
+function todoList() {
+  createIcon();
 }
 
 export default todoList;

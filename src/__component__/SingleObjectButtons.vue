@@ -823,6 +823,9 @@
       },
   
       clickButtonsRefresh(type) { // 按钮刷新事件
+        if (type === 'jflow') { // jflow调用的刷新，因需要读取jflow传入的回调，则无法执行清空页面状态，则通过收到jflow刷新通知，单独在刷新前执行清空页面状态值逻辑
+          this.clearEditData();// 清空store update数据
+        }
         this.testUpdata();
         if (this.isValue) {
           this.Warning('修改的数据未保存,确定刷新？', () => {
@@ -848,9 +851,6 @@
         this.$Modal.fcWarning(data);
       },
       refresh(type) {
-        if (type === 'jflow') { // jflow调用的刷新，因需要读取jflow传入的回调，则无法执行清空页面状态，则通过收到jflow刷新通知，单独在刷新前执行清空页面状态值逻辑
-          this.clearEditData();// 清空store update数据
-        }
         if (this.itemInfo.vuedisplay === 'TabItem') { // 兼容半定制界面
           // const webactType = this.itemInfo.webact.substring(0, this.itemInfo.webact.lastIndexOf('/'));
           if (this.objectType === 'vertical') {

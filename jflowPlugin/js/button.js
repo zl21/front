@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-expressions */
 import { DispatchEvent } from '../utils/dispatchEvent';
 import network from '../utils/network';
-import { global, globalChange } from '../utils/global.config';
+import { global } from '../utils/global.config';
 
 // 撤销/结束/作废
 function mutipleOperate(url) {
@@ -39,33 +40,23 @@ function restartProcess() {
   });
 }
 
-let beforeClickFunction = {}; // 记录需要前置保存的按钮
+// 业务系统的保存需要通知jflow
+async function businessChange() {
+  await network.post('/jflow/p/cs/business/change', {
+    instance_id: global.jflowInfo.instanceId,
+    business_code: global.routeInfo.itemId,
+    business_type: global.routeInfo.tableId,
+    businessTypeName: global.routeInfo.tableName,
+    sync: true
+  });
+}
 
 // 按钮响应事件
 function buttonsResponse(e) {
-  if (e.detail.obj.button === 'save' && global.jflowInfo.instanceId) { // 监听保存按钮并且在存在InstanceId时调用接口
-    if (e.detail.obj.type === 'reject') {
-      beforeClickFunction = {};
-      return;
-    }
-    
-    network.post('/jflow/p/cs/business/change', {
-      instance_id: global.jflowInfo.instanceId,
-      business_code: global.routeInfo.itemId,
-      business_type: global.routeInfo.tableId,
-      businessTypeName: global.routeInfo.tableName,
-      sync: true
-    })
-      .then(() => {
-        // 处理前置事件保存之后再处理当前事件
-        if (Object.keys(beforeClickFunction).length > 0) {
-          buttonsResponse(beforeClickFunction);
-          beforeClickFunction = {};
-        }
-      });
-
-    return;
-  }
+  // if (e.detail.obj.button === 'save' && global.jflowInfo.instanceId) { // 监听保存按钮并且在存在InstanceId时调用接口
+  //   businessChange();
+  //   return;
+  // }
 
   if (e.detail.obj.button === 'fresh') {
     DispatchEvent('jflowClick', {
@@ -111,13 +102,10 @@ function buttonsResponse(e) {
 // 按钮点击逻辑处理
 function clickFunction(e) {
   if (e.detail.obj.isSave && window.testUpdataValue()) { // 按钮存在保存前置事件时
-    beforeClickFunction = e;
-    DispatchEvent('jflowClick', {
-      detail: {
-        type: 'save'
-      }
+    window.updataClickSave(async () => {
+      await global.jflowInfo.instanceId ? businessChange() : null;
+      buttonsResponse(e);
     });
-    // buttonsResponse(e);
   } else {
     buttonsResponse(e);
   }
@@ -126,24 +114,31 @@ function clickFunction(e) {
 
 // 触发事件
 function initiateLaunch(event) {
-  console.log(event);
-  if (global.jflowInfo.objInstanceId) {
-    mutipleOperate(global.jflowInfo.affirmUrl);
-  } else {
-    // 判断是否存在模版，存在的时候才能发起流程
-    let triggerBt = [];
-    if (global.template.length > 0) {
-      global.template.map((item) => {
-        if (item.businessType === global.routeInfo.tableId) {
-          triggerBt = triggerBt.concat(item.triggerBt);
+  window.updataClickSave(async () => {
+    if (global.jflowInfo.objInstanceId) {
+      mutipleOperate(global.jflowInfo.affirmUrl);
+    } else {
+      // 判断是否存在模版，存在的时候才能发起流程
+      let triggerBt = [];
+      if (global.template.length > 0) {
+        global.template.map((item) => {
+          if (item.businessType === global.routeInfo.tableId) {
+            triggerBt = triggerBt.concat(item.triggerBt);
+          }
+          return item;
+        });
+  
+        triggerBt = triggerBt.filter((item, index, self) => self.indexOf(item) === index);
+        
+        if (triggerBt.includes(String(event.detail.data.webid))) {
+          window.initiateLaunch({ webActionId: event.detail.data.webid });
+        } else {
+          window.R3message({
+            title: '错误',
+            content: '当前按钮为工作流触发按钮，请先配置模板！',
+            mask: true
+          });
         }
-        return item;
-      });
-
-      triggerBt = triggerBt.filter((item, index, self) => self.indexOf(item) === index);
-      
-      if (triggerBt.includes(String(event.detail.data.webid))) {
-        window.initiateLaunch({ webActionId: event.detail.data.webid });
       } else {
         window.R3message({
           title: '错误',
@@ -151,14 +146,8 @@ function initiateLaunch(event) {
           mask: true
         });
       }
-    } else {
-      window.R3message({
-        title: '错误',
-        content: '当前按钮为工作流触发按钮，请先配置模板！',
-        mask: true
-      });
     }
-  }
+  });
 }
 
 // 按钮监听控制
@@ -172,19 +161,11 @@ function buttonAddEventListener() {
 
 // 这里主要是按钮的逻辑
 // 创建按钮
-// obj 获取的按钮相关数据 buttons 生成按钮的方法（jflowButtons） 生成按钮需要的id
 function CreateButton() {
   // 移除事件监听
   window.removeEventListener('jflowPlugin', clickFunction, true);
   window.removeEventListener('jflowLaunch', initiateLaunch, true);
-
   buttonAddEventListener();
-
-  // window.jflowPlugin.objInstanceId = obj.instanceId;
-  // window.jflowPlugin.itemId = id;
-  // window.jflowPlugin.nodeId = obj.nodeId;
-  // window.jflowPlugin.moduleId = obj.moduleId;
-  // window.jflowPlugin.pid = obj.pid;
 }
 
 

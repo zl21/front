@@ -241,7 +241,7 @@ function initiateLaunch(data) { // 业务系统流程发起
       initiatorName: global.userInfo.name,
       changeUser: global.userInfo.id,
       // webActionId: data.webid,
-      businessTypeText: global.activeTabInfo.label.split('编辑')[0],
+      // businessTypeText: global.activeTabInfo.label.split('编辑')[0],
       // moduleId: data.moduleId,
       // startNodeId: data.startNodeId,
       // customizeBody: data.customizeBody,
@@ -304,6 +304,11 @@ const install = function install(Vue, options = {}) {
 
   window.addEventListener('userReady', (event) => {
     console.log(event);
+    globalChange({
+      userInfo: event.detail.userInfo
+    });
+
+    todoList();
   });
 
   // 获取业务系统数据
