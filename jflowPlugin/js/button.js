@@ -3,14 +3,14 @@ import network from '../utils/network';
 import { global, globalChange } from '../utils/global.config';
 
 // 撤销/结束/作废
-function mutipleOperate(url, instanceId) {
+function mutipleOperate(url) {
   const param = {};
-  param.instanceId = instanceId;
-  param.userId = window.jflowPlugin.userInfo.id;
-  param.nodeId = window.jflowPlugin.nodeId;
-  param.businessCode = window.jflowPlugin.router.currentRoute.params.itemId;
-  param.businessType = window.jflowPlugin.router.currentRoute.params.tableId;
-  param.businessName = window.jflowPlugin.router.currentRoute.params.tableName;
+  param.instanceId = global.jflowInfo.instanceId;
+  param.userId = global.userInfo.id;
+  param.nodeId = global.jflowInfo.nodeId;
+  param.businessCode = global.routeInfo.itemId;
+  param.businessType = global.routeInfo.tableId;
+  param.businessName = global.routeInfo.tableName;
   network.post(url, param).then((res) => {
     if (res.data.resultCode === 0) {
       window.vm.$Message.success(res.data.resultMsg);
@@ -29,7 +29,7 @@ function mutipleOperate(url, instanceId) {
   });
 }
 
-// 重启流程
+// 重启流程/提交按钮
 function restartProcess() {
   // 通过模拟点击一下actionSUBMIT按钮重新发起流程
   DispatchEvent('jflowClick', {
@@ -39,31 +39,25 @@ function restartProcess() {
   });
 }
 
-
-const jflowobj = {};
-const jflowid = null;
 let beforeClickFunction = {}; // 记录需要前置保存的按钮
 
 // 按钮响应事件
 function buttonsResponse(e) {
-  const obj = jflowobj;
-  const id = jflowid;
-  if (e.detail.obj.button === 'save' && window.jflowPlugin.objInstanceId) { // 监听保存按钮并且在存在InstanceId时调用接口
+  if (e.detail.obj.button === 'save' && global.jflowInfo.instanceId) { // 监听保存按钮并且在存在InstanceId时调用接口
     if (e.detail.obj.type === 'reject') {
       beforeClickFunction = {};
       return;
     }
     
     network.post('/jflow/p/cs/business/change', {
-      instance_id: window.jflowPlugin.objInstanceId,
-      business_code: window.jflowPlugin.router.currentRoute.params.itemId,
-      business_type: window.jflowPlugin.router.currentRoute.params.tableId,
-      businessTypeName: window.jflowPlugin.router.currentRoute.params.tableName,
+      instance_id: global.jflowInfo.instanceId,
+      business_code: global.routeInfo.itemId,
+      business_type: global.routeInfo.tableId,
+      businessTypeName: global.routeInfo.tableName,
       sync: true
     })
       .then(() => {
         // 处理前置事件保存之后再处理当前事件
-        console.log(beforeClickFunction);
         if (Object.keys(beforeClickFunction).length > 0) {
           buttonsResponse(beforeClickFunction);
           beforeClickFunction = {};
@@ -87,11 +81,11 @@ function buttonsResponse(e) {
       case '-1': // 撤销
       case '7': // 作废
       case '2': // 结束流程
-        mutipleOperate(item.url, obj.instanceId, buttons, id); 
+        mutipleOperate(item.url); 
         break;  
       case '1': // 驳回
         window.jflowPlugin.open({
-          control: true, type: item.button, url: item.url, instanceId: obj.instanceId, returnOption: obj.backNodeIds, buttons, id 
+          control: true, type: item.button, url: item.url, instanceId: global.jflowInfo.instanceId, returnOption: global.jflowInfo.backNodeIds, id: global.routeInfo.id 
         });
         break;
       case '0': // 同意
@@ -99,11 +93,11 @@ function buttonsResponse(e) {
       case '3': // 转派
       case '9': // 人工干预
         window.jflowPlugin.open({// 同意和转派
-          control: true, type: item.button, url: item.url, instanceId: obj.instanceId, buttons, id, item 
+          control: true, type: item.button, url: item.url, instanceId: global.jflowInfo.instanceId, id: global.routeInfo.id, item 
         });
         break;
       case '5': // 流程进度
-        window.open(`${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${window.jflowPlugin.objInstanceId}`, '_blank', 'width=861,height=612');
+        window.open(`${global.localIp}/#/FlowChart?instanceId=${global.jflowInfo.instanceId}`, '_blank', 'width=861,height=612');
         break;
       case '6': // 重启流程
         restartProcess();
@@ -116,9 +110,7 @@ function buttonsResponse(e) {
 
 // 按钮点击逻辑处理
 function clickFunction(e) {
-  const type = window.jflowPlugin.router.currentRoute.fullPath.split('/')[3];
-  const MODULE_COMPONENT_NAME = `${type}.${window.jflowPlugin.router.currentRoute.params.tableName}.${window.jflowPlugin.router.currentRoute.params.tableId}.${window.jflowPlugin.router.currentRoute.params.itemId}`;
-  if (e.detail.obj.isSave && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].testUpdata()) { // 按钮存在保存前置事件时
+  if (e.detail.obj.isSave && window.testUpdataValue()) { // 按钮存在保存前置事件时
     beforeClickFunction = e;
     DispatchEvent('jflowClick', {
       detail: {
@@ -136,13 +128,13 @@ function clickFunction(e) {
 function initiateLaunch(event) {
   console.log(event);
   if (global.jflowInfo.objInstanceId) {
-    mutipleOperate(global.jflowInfo.affirmUrl, global.jflowInfo.instanceId, global.routeInfo.itemId);
+    mutipleOperate(global.jflowInfo.affirmUrl);
   } else {
     // 判断是否存在模版，存在的时候才能发起流程
     let triggerBt = [];
-    if (window.localStorage.getItem('businessTypes')) {
-      JSON.parse(window.localStorage.getItem('businessTypes')).map((item) => {
-        if (item.businessType === window.jflowPlugin.router.currentRoute.params.tableId) {
+    if (global.template.length > 0) {
+      global.template.map((item) => {
+        if (item.businessType === global.routeInfo.tableId) {
           triggerBt = triggerBt.concat(item.triggerBt);
         }
         return item;

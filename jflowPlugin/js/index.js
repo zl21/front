@@ -51,6 +51,16 @@ function thirdlogin() { // 三方登录  获取accessToken
   });
 }
 
+function getTemplate() { // 获取模版信息
+  network.post('/jflow/p/cs/task/businessType/list', {}).then((res) => {
+    if (res.data.resultCode === 0) {
+      globalChange({
+        template: res.data.data.businessTypes ? res.data.data.businessTypes : []
+      });
+    }
+  });
+}
+
 /* 
   id:明细id
   pid:主表id
@@ -240,15 +250,6 @@ function initiateLaunch(data) { // 业务系统流程发起
 
     obj = Object.assign(obj, data);
     network.post('/jflow/p/cs/process/launch', obj).then((res) => {
-      if (window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' && res.data.resultCode === 0 && res.data.notice) {
-        window.R3message({
-          title: '错误',
-          content: res.data.notice,
-          mask: true
-        });
-        resolve(res);
-        return; 
-      }
       if (res.data.data.records && res.data.data.records[0].notice) {
         window.R3message({
           title: '错误',
@@ -266,20 +267,10 @@ function initiateLaunch(data) { // 业务系统流程发起
             mask: true
           });
         }
-        instanceId = res.data.data.instanceId;
-
-        const type = router.currentRoute.path.split('/')[3];// 获取组件类型
-        if (type === 'H' || type === 'V') {
-          DispatchEvent('jflowClick', {
-            detail: {
-              type: 'refresh'
-            }
-          });
-        }
-
-        DispatchEvent('jflowEvent', {
+        jflowButtons(); // 重新获取单据信息
+        DispatchEvent('jflowClick', {
           detail: {
-            type: 'search'
+            type: 'refresh'
           }
         });
         resolve(res);
@@ -294,6 +285,9 @@ function initLists() { // 小图标的展示
   network.post('/jflow/p/sys/properties', {})
     .then((res) => {
       globalChange(res.data.data.ciphertextVO);
+      globalChange({
+        localIp: res.data.data.localIp
+      });
       thirdlogin();
       createComponent();
 
@@ -312,6 +306,7 @@ const install = function install(Vue, options = {}) {
   window.addEventListener('updataCurrentTableDetailInfo', (event) => {  
     globalChange(event.detail);
     jflowButtons();
+    getTemplate();
   });
 };
 
