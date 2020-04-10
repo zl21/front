@@ -68,7 +68,9 @@
         <Input
           v-model="formItem.path"
           placeholder="path"
-        /></Input>
+          readonly
+          disabled
+        />
       </FormItem>
     
       <FormItem>
@@ -204,7 +206,7 @@
           this.formItem.path = `${this.currentInfo.value}${this.formItem.nameValue}`;
         }
         this.$emit('setValue', this.formItem.path);
-        this.$emit('closeActionDialog', true);
+        // this.$emit('closeActionDialog', true);
       },
       singleObjectChange(data) {
         const dataRes = this.formItem.singleObjectPageData.filter(item => item.value === data.value)[0];

@@ -21,27 +21,27 @@ export default {
   functionPermission: {
     component: functionPermission,
     labelName: '功能权限',
-    label: '功能权限'
+    label: 'functionPermission'
   },
   pro_desc: {
     component: proDesc,
-    label: '功能权限1'
+    label: 'pro_desc'
 
   },
   standard: {
     component: standard,
-    label: '功能权限2'
+    label: 'standard'
 
   },
   metricsDefinition: {
     component: metricsDefinition,
-    label: '功能权限3'
+    label: 'metricsDefinition'
 
   },
   taskList: {
     component: taskList,
     labelName: '任务记录',
-    label: '任务记录'
+    label: 'taskList'
 
   }
   

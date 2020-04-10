@@ -23,7 +23,7 @@
 
       <!-- <div>
         <label>
-          自定义界面
+          自定义界面:
         </label>
         <Select
           v-model="customizeValue"
@@ -38,7 +38,13 @@
           </Option>
         </Select>
       </div>
-      <AutomaticPathGenerationInput />
+      <div style="margin-top:10px;">
+        <label style="float:left">
+          路由:
+        </label>
+        <AutomaticPathGenerationInput />
+      </div> -->
+     
       <composite-form
         v-if="mainFormInfo.formData.isShow"
         class="compositeAllform"
@@ -59,7 +65,7 @@
         @formChange="formChange"
         @InitializationForm="InitializationForm"
         @VerifyMessage="verifyFormPanelMain"
-      /> -->
+      />
       <div>
         <TabPanels
           v-show="tabPanels.length > 0"
