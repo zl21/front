@@ -33,7 +33,11 @@
         @setTitle="setTitle"
         @closeActionDialog="closeActionDialog"
         @clearSelectIdArray="clearSelectIdArray"
+        @setValue="setValue"
       />
+      <!-- @setValue:用来接收弹窗emit值 -->
+      <!-- @clearSelectIdArray:清除勾选ID -->
+      <!-- @setTitle：设置title -->
     </div>
   </Modal>
 </template>
@@ -164,6 +168,9 @@
     mounted() {
     },
     methods: {
+      setValue(value) {
+        this.$emit('setValue', value);
+      },
       clearSelectIdArray() { // 清空列表选中项
         this.$emit('clearSelectIdArray');
       },

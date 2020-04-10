@@ -20,23 +20,29 @@ export default {
   // 列表配置双击跳转定制界面，需在文档里维护对应的labelName属性
   functionPermission: {
     component: functionPermission,
-    labelName: '功能权限'
+    labelName: '功能权限',
+    label: 'functionPermission'
   },
   pro_desc: {
     component: proDesc,
+    label: 'pro_desc'
+
   },
   standard: {
-    component: standard
+    component: standard,
+    label: 'standard'
+
   },
   metricsDefinition: {
-    component: metricsDefinition
+    component: metricsDefinition,
+    label: 'metricsDefinition'
+
   },
-  // AD_TABLE: {
-  //   component: AD_TABLE
-  // },
   taskList: {
     component: taskList,
-    labelName: '任务记录'
+    labelName: '任务记录',
+    label: 'taskList'
+
   }
   
 };
