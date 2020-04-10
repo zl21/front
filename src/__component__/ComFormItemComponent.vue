@@ -323,7 +323,7 @@
       this.formValueItem = {};
       this.setAttsetProps = this.getsetAttsetProps();
       this.formRequestJson = {};
-
+      this.VerificationForm = [];
       // 映射回调
       window.addEventListener(`${this.moduleComponentName}setProps`, this.setPropsListener);
       this.mappStatus(this.Mapping, this.mapData);
@@ -345,6 +345,7 @@
 
         this.formRequestJson = {};
         this.formValueItem = {};
+        this.VerificationForm = [];
         this.setAttsetProps = this.getsetAttsetProps();
         setTimeout(() => {
           this.VerificationFormInt();
@@ -536,7 +537,7 @@
               this.verificationMap(this.formIndex, index, item, type);
             }
           });
-        }, 50);
+        }, 100);
       },
       verificationMap(formIndex, index, items, type) {
         // 获取校验的配置及节点
@@ -1056,7 +1057,7 @@
         } 
         if (type === 'mounted') {
           this.VerificationFormInt('mounted');
-        }   
+        } 
         return true;
       },
       filtercolumn(item, formindex, val, type) {
