@@ -25,7 +25,7 @@ function pollBacklogData(store) {
         callback: openTodoLists,
         count: res.data.data.total 
       }];
-      store.commit('global/changeNavigatorSetting', data);
+      window.changeNavigatorSetting(data);
     } else {
       let data = store.state.global.navigatorSetting.concat([]);
       data = [{
@@ -33,7 +33,7 @@ function pollBacklogData(store) {
         callback: openTodoLists,
         count: 0
       }];
-      store.commit('global/changeNavigatorSetting', data);
+      window.changeNavigatorSetting(data);
     }
   });
 }

@@ -107,6 +107,10 @@ const init = () => {
       ])
     });
   };
+
+  window.changeNavigatorSetting = (data) => {
+    store.commit('global/changeNavigatorSetting', data);
+  };
 };
 const getCategory = () => {
   if (enableInitializationRequest()) {

@@ -281,7 +281,7 @@ function initiateLaunch(data) { // 业务系统流程发起
   });
 }
 
-function initLists() { // 小图标的展示
+function initLists() { // init
   network.post('/jflow/p/sys/properties', {})
     .then((res) => {
       globalChange(res.data.data.ciphertextVO);
@@ -301,6 +301,10 @@ function initLists() { // 小图标的展示
 
 const install = function install(Vue, options = {}) {
   initLists();
+
+  window.addEventListener('userReady', (event) => {
+    console.log(event);
+  });
 
   // 获取业务系统数据
   window.addEventListener('updataCurrentTableDetailInfo', (event) => {  
