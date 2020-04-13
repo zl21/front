@@ -248,6 +248,7 @@ function CreateButton(obj, buttons, id) {
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateChildTableReadonly`, true);
       }
     });
+    return;
   }
 
   // 存在jflow流程时
