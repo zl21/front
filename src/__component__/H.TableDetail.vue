@@ -81,6 +81,13 @@
 
       tabPanels() {
         const arr = [];
+        if (this.tabPanel[1] && this.tabPanel[1].vuedisplay && this.tabPanel[1].vuedisplay === 'TabItem') {
+          DispatchEvent('uploadCustomTab', {
+            detail: {
+              data: this.tabPanel[1]
+            }
+          });
+        }
         if (this.tabPanel) {
           // this.WebConf.isCustomizeTab = true;
           this.tabPanel.forEach((item, index) => {

@@ -253,13 +253,14 @@
       };
     },
     watch: {
-      mountNumber: {
-        handler() {
-          // 组件重组
-          this.reorganizeForm();
-        }
+      // mountNumber: {
+      //   handler() {
+      //     // 组件重组
+      //     this.Comparison();
+      //     this.reorganizeForm();
+      //   }
 
-      },
+      // },
       defaultData: {
         handler() {
           this.openLoading();
@@ -328,10 +329,12 @@
         //  重新初始化校验
         this.VerificationForm = [];
         this.verifyMessItem = [];
+        this.VerificationFormItem = [];
         this.formData = {};
         this.formDataDef = {};
         this.formDataSave = {};
         this.labelForm = {};
+        this.r3Form = {};
         this.labelFormSave = {};
       },
       isReadonly(current) {
@@ -681,6 +684,7 @@
         // 获取需要校验的表单
         // 初始化form 校验
         this.mountChecked = true;
+        this.VerificationForm = [];
         this.VerificationFormItem[type] = [];
         this.VerificationFormItem[type].push(...value);
         clearTimeout(this.setVerifyMessageTime);
@@ -704,6 +708,7 @@
       },
       setVerifyMessageForm() {
         //  校验赋值
+        this.VerificationForm = [];
         Object.keys(this.$refs).forEach((item) => {
           if (this.$refs[item] && this.$refs[item][0]) {
             this.$refs[item][0].VerificationFormInt('change');
@@ -1133,7 +1138,12 @@
         const srccol = obj.item.validate.refcolval && obj.item.validate.refcolval.srccol;
         const prmsrccol = current.refcolprem && current.refcolprem.srccol;
         let _valuedata = current.valuedata || current.defval || '';
-        this.formItem[`${this.tableGetName}${obj.item.field}`] = _valuedata;
+        if (this.defaultSetValue && this.defaultSetValue[current.colname]) {
+          _valuedata = this.defaultSetValue[current.colname];
+          this.formItem[`${this.tableGetName}${obj.item.field}`] = this.defaultSetValue[current.colname];
+        } else {
+          this.formItem[`${this.tableGetName}${obj.item.field}`] = _valuedata;
+        }
         if (current.display === 'select' || current.display === 'check') {
           if (!Array.isArray(current.combobox)) {
             return false;

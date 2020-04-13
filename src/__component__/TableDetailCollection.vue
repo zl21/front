@@ -787,10 +787,13 @@
                 this.buttonEvent(obj);
               }
             } else if (JSON.parse(obj.confirm).desc) {
+              if (JSON.parse(obj.confirm).isSave) { // 配置保存以及刷新后，重置刷新
+                obj.isrefrsh = false;
+              }
               const title = this.ChineseDictionary.WARNING;
               const contentText = `${JSON.parse(obj.confirm).desc}`;
               this.dialogMessage(title, contentText, obj);
-            } else if (obj.confirm.isSave) { // 静默执行保存
+            } else if (JSON.parse(obj.confirm).isSave) { // 静默执行保存
               const type = 'objTabActionSlient';
               this.objTabActionSlientData = obj;
               this.clickSave({ type });
@@ -918,7 +921,6 @@
           );
 
           promise.then(() => {
-            console.log(11, this[INSTANCE_ROUTE_QUERY]);
             this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
             if (nextOperate.success) {
               let successAction = null;
@@ -945,8 +947,6 @@
               this.$Modal.fcSuccess(data);
             }
           }, () => {
-            console.log(11, this[INSTANCE_ROUTE_QUERY]);
-
             this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
             if (nextOperate.failure) {
               let errorAction = null;

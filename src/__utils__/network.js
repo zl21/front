@@ -159,7 +159,7 @@ axios.interceptors.response.use(
                 // readonly: 'readonly',
               },
               domProps: {
-                innerHTML: response.data.message + errorHTML || response.data.msg + errorHTML || 'No Error Message.',
+                innerHTML: response.data.message + errorHTML !== 'undefined' ? response.data.message + errorHTML : (response.data.msg + errorHTML || 'No Error Message.'),
               },
               style: `width: 80%;
                     margin: 1px;
