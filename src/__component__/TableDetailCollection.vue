@@ -1024,11 +1024,11 @@
         // }
         const { itemId, tableName } = this.$route.params;
         this.getObjectForMainTableForm({
-          table: this.tableName, objid: itemId, tabIndex: this.currentTabIndex
+          table: tableName, objid: itemId, tabIndex: this.currentTabIndex
         });
         new Promise((resolve, reject) => {
           this.getObjectTabForMainTable({
-            table: this.tableName, objid: itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: this.pageInfo, resolve, reject
+            table: tableName, objid: itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: this.pageInfo, resolve, reject
           });
         }).then(() => {
         });

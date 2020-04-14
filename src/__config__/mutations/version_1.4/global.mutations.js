@@ -290,6 +290,15 @@ export default {
     });
   },
   emptyTabs(state) {
+    state.JflowControlField.map((item, index) => {
+      state.openedMenuLists.map((openedMenuList) => {
+        const b = openedMenuList.keepAliveModuleName.slice(0, openedMenuList.keepAliveModuleName.lastIndexOf('.'));
+        const openedMenuListId = b.slice(b.lastIndexOf(b.slice(b.lastIndexOf('.') + 1), b.length));
+        if (item.tableId === openedMenuListId) {
+          state.JflowControlField.splice(index, 1);
+        }
+      });
+    });
     state.openedMenuLists = [];
     state.keepAliveLists = [];
     state.activeTab = {};
@@ -298,13 +307,7 @@ export default {
     window.sessionStorage.removeItem('addRouteToEditor');
     window.sessionStorage.removeItem('routeMapRecord');
     window.sessionStorage.removeItem('routeMapRecordForSingleObject');
-    state.JflowControlField = state.JflowControlField.map((item) => {
-      state.openedMenuLists.map((openedMenuList) => {
-        if (item.tableName !== openedMenuList.tableName) {
-          return item;
-        }
-      });
-    });
+  
     // 清空updataTreeId
     removeSessionObject('TreeId');
   },
@@ -334,9 +337,10 @@ export default {
     //   v: item.ID
     // };
     deleteFromSessionObject('TreeId', tab.tableName);
-    
+    const b = tab.keepAliveModuleName.slice(0, tab.keepAliveModuleName.lastIndexOf('.'));
+    const openedMenuListId = b.slice(b.lastIndexOf(b.slice(b.lastIndexOf('.') + 1), b.length));
     state.JflowControlField = state.JflowControlField.filter((item) => {
-      if (item.tableName !== tab.tableName) {
+      if (item.tableId !== openedMenuListId) {
         return item;
       }
     });
