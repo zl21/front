@@ -148,13 +148,15 @@
       ...mapMutations('global', ['isRequestUpdata', 'emptyTestData']),
  
       tabClick(index) {
-        this.updateTabCurrentIndex(index);
         let flag = false;
-        if (this.isRequest.length > 0 && this.isRequest[index] === true) {
-          flag = true;
-        }
+   
         if (this.WebConf && this.WebConf.isCustomizeTab) {
           index += 1;
+        }
+        this.updateTabCurrentIndex(index);
+
+        if (this.isRequest.length > 0 && this.isRequest[index] === true) {
+          flag = true;
         }
         DispatchEvent('tabClick', {
           detail: {
