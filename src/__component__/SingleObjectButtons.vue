@@ -903,8 +903,11 @@
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.currentTabIndex === 0) { // 主表
             this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
-            this.getObjectTabForMainTable({
-              table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME]
+            new Promise((resolve, reject) => {
+              this.getObjectTabForMainTable({
+                table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
+              });
+            }).then(() => {
             });
           } else if (tabrelation === '1:m') { // 子表
             this.getInputForitemForChildTableForm({ table: tablename, tabIndex: this.currentTabIndex, tabinlinemode });
@@ -964,9 +967,13 @@
           //   // });
           //   // 获取子表表单
           // } else {
-          this.getObjectTabForMainTable({
-            table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME]
+          new Promise((resolve, reject) => {
+            this.getObjectTabForMainTable({
+              table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
+            });
+          }).then(() => {
           });
+        
           // }
         }
         // this.closeCurrentLoading();//刷新后无需手动关闭loading，触发form后会收到监听

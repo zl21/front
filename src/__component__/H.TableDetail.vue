@@ -40,13 +40,7 @@
       
       tabPanels() {
         const arr = [];
-        if (this.tabPanel[1] && this.tabPanel[1].vuedisplay && this.tabPanel[1].vuedisplay === 'TabItem') {
-          DispatchEvent('uploadCustomTab', {
-            detail: {
-              data: this.tabPanel[1]
-            }
-          });
-        }
+       
         if (this.tabPanel) {
           this.tabPanel.forEach((item, index) => {
             const obj = { ...item };
@@ -111,19 +105,21 @@
       ...mapMutations('global', ['isRequestUpdata', 'emptyTestData']),
  
       tabClick(index) {
+        let flag = false;
+   
+        if (this.WebConf && this.WebConf.isCustomizeTab) {
+          index += 1;
+        }
+        this.updateTabCurrentIndex(index);
+
+        if (this.isRequest.length > 0 && this.isRequest[index] === true) {
+          flag = true;
+        }
         DispatchEvent('tabClick', {
           detail: {
             data: this.tabPanel[index]
           }
         });
-        this.updateTabCurrentIndex(index);
-        let flag = false;
-        if (this.isRequest.length > 0 && this.isRequest[index] === true) {
-          flag = true;
-        }
-        if (this.WebConf && this.WebConf.isCustomizeTab) {
-          index += 1;
-        }
         if (!flag) {
           if (index === 0) { // 主表
             this.getMainTable(index, true);
@@ -185,8 +181,16 @@
       getMainTable(index, isNotFirstRequest) {
         const { tableName, itemId } = this.$route.params;
         // this.getObjectForMainTableForm({ table: tableName, objid: itemId });
-        this.getObjectTabForMainTable({
-          table: tableName, objid: itemId, tabIndex: index, isNotFirstRequest, isFirstRequest: true
+        new Promise((resolve, reject) => {
+          this.getObjectTabForMainTable({
+            table: tableName, objid: itemId, tabIndex: index, isNotFirstRequest, isFirstRequest: true, resolve, reject
+          });
+        }).then((resData) => {
+          DispatchEvent('uploadCustomTab', {
+            detail: {
+              data: resData
+            }
+          });
         });
       }
     },
