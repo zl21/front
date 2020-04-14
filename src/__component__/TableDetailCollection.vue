@@ -1026,9 +1026,14 @@
         this.getObjectForMainTableForm({
           table: this.tableName, objid: itemId, tabIndex: this.currentTabIndex
         });
-        this.getObjectTabForMainTable({
-          table: this.tableName, objid: itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: this.pageInfo
+        new Promise((resolve, reject) => {
+          this.getObjectTabForMainTable({
+            table: this.tableName, objid: itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: this.pageInfo, resolve, reject
+          });
+        }).then(() => {
         });
+        
+       
         const fixedcolumns = {};
         if (this.searchCondition) {
           fixedcolumns[this.searchCondition] = this.searchInfo;

@@ -5,7 +5,7 @@ import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 
 export default {
   getObjectTabForMainTable({ commit }, {
-    table, objid, type, tabIndex, isNotFirstRequest, moduleName, isFirstRequest
+    table, objid, type, tabIndex, isNotFirstRequest, moduleName, isFirstRequest, resolve, reject
   }) {
     // 参数说明 table 主表表名，objid列表界面该行数据的id也就是rowid
     const id = objid === 'New' ? '-1' : objid;
@@ -29,6 +29,8 @@ export default {
           }
         }
         commit('updateWebConf', resData.webconf);
+
+        resolve(resData);
         if (this._actions[`${moduleName || getComponentName()}/getObjectForMainTableForm`] && this._actions[`${moduleName || getComponentName()}/getObjectForMainTableForm`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getObjectForMainTableForm`][0] === 'function') {
           const param = {
             table,
