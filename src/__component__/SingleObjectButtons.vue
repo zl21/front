@@ -3211,10 +3211,10 @@
             });
           }
 
-          if (event.detail.type === 'refresh') {
-            const type = 'jflow';
-            this.clickButtonsRefresh(type);
-          }
+          // if (event.detail.type === 'refresh') {
+          //   const type = 'jflow';
+          //   this.clickButtonsRefresh(type);
+          // }
 
           if (event.detail.type === 'save') {
             this.clickSave();
