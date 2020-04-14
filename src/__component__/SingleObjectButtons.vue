@@ -1210,7 +1210,10 @@
           content: contentText,
           showCancel: true,
           onOk: () => {
-            if (obj.confirm && JSON.stringify(obj.confirm) && (JSON.parse(JSON.stringify(obj.confirm)).isSave || JSON.parse(obj.confirm).isSave) && this.testUpdata()) {
+            if (obj.confirm && JSON.stringify(obj.confirm)
+              && JSON.parse(JSON.stringify(obj.confirm)) 
+              && JSON.parse(JSON.stringify(obj.confirm)).isSave
+              && this.testUpdata()) {
               const type = 'objTabActionSlient';
               if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
                 const objTabActionSlientData = {
