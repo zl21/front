@@ -697,7 +697,7 @@
       color: red;
       line-height: 24px;
     }
-    .burgeon-select .burgeon-select-single .burgeon-select-default {
+    .ark-select .ark-select-single .ark-select-default {
       width: calc(100%-10px);
     }
   }

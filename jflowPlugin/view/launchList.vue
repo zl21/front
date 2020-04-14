@@ -407,7 +407,7 @@
   };
 </script>
 <style lang="less">
-.burgeon-spin-fix {
+.ark-spin-fix {
   z-index: 100;
 }
 .HistoricalProcess {

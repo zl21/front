@@ -17,6 +17,7 @@ import { removeSessionObject } from './__utils__/sessionStorage';
 import customizedModalConfig from './__config__/customizeDialog.config';
 import CompositeForm from './__component__/CompositeForm';
 import Loading from './__utils__/loading';
+import getObjdisType from './src/__utils__/getObjdisType';
 // css import
 import '../node_modules/ag-grid/dist/styles/ag-grid.css';
 import './assets/css/ag-theme-balham.less';
@@ -95,6 +96,12 @@ const init = () => {
       ])
     });
   };
+
+  window.changeNavigatorSetting = (data) => {
+    store.commit('global/changeNavigatorSetting', data);
+  };
+
+  window.getObjdisType = getObjdisType;
 };
 
 const getCategory = () => {

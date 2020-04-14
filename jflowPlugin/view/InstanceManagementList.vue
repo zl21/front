@@ -6,6 +6,21 @@
         @on-click="onClick"
       >
         <TabPane
+          v-for="(item,index) in tabConfig"
+          :key="index"
+          :label="item.label"
+          :name="item.name"
+        >
+          <keep-alive>
+            <components
+              :is="currentComponents"
+              v-if="currentComponents === item.name"
+              :ref="item.name"
+              :tabalive="tabalive"
+            />
+          </keep-alive>
+        </TabPane>
+        <!-- <TabPane
           label="待我审批的"
           name="待我审批的"
         >
@@ -18,7 +33,7 @@
           label="我已审批的"
           name="我已审批的"
         >
-          <HistoricalProcess
+          <todoProcess
             ref="history"
             :tabalive="tabalive"
           />
@@ -27,7 +42,7 @@
           label="我发起的"
           name="我发起的"
         >
-          <launchList
+          <todoProcess
             ref="launch"
             :tabalive="tabalive"
           />
@@ -36,93 +51,80 @@
           label="抄送我的"
           name="抄送我的"
         >
-          <CopyPersonList :tabalive="tabalive" />
-        </TabPane>
+          <todoProcess :tabalive="tabalive" />
+        </TabPane> -->
       </Tabs>
     </div>
   </div>
 </template>
  <script>
+  import Vue from 'vue';
   import todoProcess from './TodoProcess';
-  import HistoricalProcess from './HistoricalProcess';
-  import launchList from './launchList';
-  import CopyPersonList from './CopyPersonList';
 
   export default {
-    // name: 'InstanceManagementList',
+    name: 'InstanceManagementList',
     components: {
-      todoProcess, HistoricalProcess, launchList, CopyPersonList 
+      todoProcess
     },
     data() {
       return {
-        tabalive: '待我审批的', // tab切换默认值
+        tabalive: 'todoList', // tab切换默认值
         tabConfig: [
           {
             label: '待我审批的',
-            name: '待我审批的'
+            name: 'todoList'
           },
           {
             label: ' 我已审批的',
-            name: ' 我已审批的'
+            name: 'approvalList'
           },
           {
             label: '我发起的',
-            name: '我发起的'
+            name: 'launchList'
           }, 
           {
             label: '抄送我的',
-            name: '抄送我的'
+            name: 'copyList'
           }
-        ]
+        ],
+
+        currentComponents: null // 当前组件
       };
     },
     methods: {
-      routeClick(val) {
-        if (val === 1) {
-          this.tabalive = '待我审批的';
-        } else if (val === 2) {
-          this.tabalive = ' 我已审批的';
-        } else if (val === 3) {
-          this.tabalive = ' 我发起的';
-        } else if (val === 4) {
-          this.tabalive = ' 抄送我的';
-        }
-      },
       // tab切换点击事件
       onClick(val) {
         this.tabalive = val;
-      // if(val==='历史流程'){
-      //  window.history.replaceState({}, '', "/InstanceManagementList?type=2");
-      // }else{
-      //  window.history.replaceState({}, '', "/InstanceManagementList?type=1");
-      // }
+        if (!Vue.component(this.tabalive)) {
+          Vue.component(this.tabalive, Vue.extend(todoProcess));
+        } 
+        this.currentComponents = this.tabalive;
       }
     },
     created() {
-      const path = window.location.pathname;
-      this.routeClick(path.split('=')[1]);
-    },
-    mounted() {
-      this.showTab = window.jflowPlugin.showTab;
+      if (!Vue.component(this.tabalive)) {
+        Vue.component(this.tabalive, Vue.extend(todoProcess));
+      } 
+      this.currentComponents = this.tabalive;
     },
     activated() {
-      if (this.tabalive === '待我审批的') {
-        this.$refs.todo.getselectOption();
-        this.$refs.todo.queryLists();
-        this.$refs.todo.getAgent();
-      }
-      if (this.tabalive === ' 我已审批的') {
-        this.$refs.history.getselectOption();
-        this.$refs.history.queryLists();
-      }
-      if (this.tabalive === ' 我发起的') {
-        this.$refs.launch.getselectOption();
-        this.$refs.launch.queryLists();
-      }
-      if (this.tabalive === '抄送人') {
-        this.$refs.copy.getselectOption();
-        this.$refs.copy.queryLists();
-      }
+      // if (this.tabalive === '待我审批的') {
+      //   this.$refs.todo.getselectOption();
+      //   this.$refs.todo.queryLists();
+      //   this.$refs.todo.getAgent();
+      // }
+      // if (this.tabalive === ' 我已审批的') {
+      //   this.$refs.history.getselectOption();
+      //   this.$refs.history.queryLists();
+      // }
+      // if (this.tabalive === ' 我发起的') {
+      //   this.$refs.launch.getselectOption();
+      //   this.$refs.launch.queryLists();
+      // }
+      // if (this.tabalive === '抄送人') {
+      //   this.$refs.copy.getselectOption();
+      //   this.$refs.copy.queryLists();
+      // }
     }
   };
 </script>
@@ -154,22 +156,23 @@
     }
   }
 
-  .burgeon-breadcrumb {
+  .ark-breadcrumb {
     font-size: 18px;
     margin-bottom: 12px;
   }
-  .burgeon-tabs {
+  .ark-tabs {
     flex: 1;
     display: flex;
     -webkit-box-direction: column;
     flex-direction: column;
     background: white;
-    .burgeon-tabs-bar {
+    .ark-tabs-bar {
       height: 27px;
+      margin-bottom: 10px;
     }
-    .burgeon-tabs-content-animated {
+    .ark-tabs-content-animated {
       flex: 1;
-      .burgeon-tabs-tabpane {
+      .ark-tabs-tabpane {
         display: flex;
       }
     }

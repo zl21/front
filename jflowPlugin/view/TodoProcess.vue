@@ -1,5 +1,4 @@
 <template>
-  <!-- 待办流程 -->
   <div class="TodoProcess">
     <div class="btn-agent">
       <div class="btnArea">
@@ -10,6 +9,7 @@
           查询
         </Button>
         <Button
+          v-if="tabalive === 'todoList'"
           type="primary"
           ghost
           @click="openModal(2)"
@@ -17,6 +17,7 @@
           转派
         </Button>
         <Button
+          v-if="tabalive === 'todoList'"
           type="primary"
           ghost
           @click="openModal(3)"
@@ -96,19 +97,16 @@
   </div>
 </template>
 <script>
-  // import { mapState } from 'vuex';
-  // import { mapMutations } from 'vuex';
   import FormItemComponent from './FormItemComponent';
   import ItemComponent from './ItemComponent';
   import StandardTable from './StandardTable';
   import mutipleSelectPop from './MutipleSelectPop';
   import network from '../utils/network';
   // import { Version } from '../../constants/global';
-  // import getObjdisType from '../../__utils__/getObjdisType';
   import { BacklogData } from '../js/todoList';
+  import { global } from '../utils/global.config';
 
   export default {
-    name: 'TodoProcess',
     components: { FormItemComponent, StandardTable, mutipleSelectPop },
     props: {
       tabalive: { type: String, default: '' }
@@ -218,7 +216,6 @@
           pageSize: 10,
           searchType: '0,1',
           excuStatus: 0,
-          userId: window.jflowPlugin.userInfo.id,
           createTime: [new Date(new Date(new Date().getTime() - 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0)).minusDays(29).format('yyyy-MM-dd hh:mm:ss'), new Date(new Date().setHours(23, 59, 59)).format('yyyy-MM-dd hh:mm:ss')]
         },
         // 表格数据
@@ -335,28 +332,25 @@
                     },
                     on: {
                       click: () => {
-                        params.row.loadType = 0;
-                        // if (Version() === '1.4') {
-                        //   getObjdisType({ table: params.row.formUrl.split('/')[4] }).then((res) => {
-                        //     const distype = res === 'tabpanle' ? 'H' : 'V';
-                        //     const arr = params.row.formUrl.split('/');
-                        //     arr[3] = distype;
-                        //     window.sessionStorage.setItem('dynamicRouting', true);
-                        //     window.jflowPlugin.router.push({
-                        //       path: arr.join('/')
-                        //     });
-                        //   });
-                        // } else {
-                        //   const query = this.urlParse(params.row.formUrl);
-                        //   getObjdisType({ table: query.tableName }).then((res) => {
-                        //     const distype = res === 'tabpanle' ? 'H' : 'V';
-                        //     const formUrl = `/SYSTEM/TABLE_DETAIL/${distype}/${query.tableName}/${query.pid}/${query.id}`;
-                        //     window.sessionStorage.setItem('dynamicRouting', true);
-                        //     window.jflowPlugin.router.push({
-                        //       path: formUrl
-                        //     });
-                        //   });
-                        // }
+                        if (params.row.formUrl.indexOf('SYSTEM') >= 0) { // 区分版本  1.4版本
+                          window.getObjdisType({ table: params.row.formUrl.split('/')[4] }).then((res) => {
+                            const distype = res === 'tabpanle' ? 'H' : 'V';
+                            const arr = params.row.formUrl.split('/');
+                            arr[3] = distype;
+                            window.vm.$router.push({
+                              path: arr.join('/')
+                            });
+                          });
+                        } else {
+                          const query = this.urlParse(params.row.formUrl);
+                          window.getObjdisType({ table: query.tableName }).then((res) => {
+                            const distype = res === 'tabpanle' ? 'H' : 'V';
+                            const formUrl = `/SYSTEM/TABLE_DETAIL/${distype}/${query.tableName}/${query.pid}/${query.id}`;
+                            window.vm.$router.push({
+                              path: formUrl
+                            });
+                          });
+                        }
                       }
                     }
                   },
@@ -475,20 +469,6 @@
         Agent: {} // 代理人信息
       };
     },
-    // computed: {
-    //   query() {
-    //     return this.findValue;
-    //   }
-    // },
-    watch: {
-      tabalive(newVal) {
-        if (newVal === '待我审批的') {
-          this.getselectOption();
-          this.queryLists();
-          this.getAgent();
-        }
-      }
-    },
     methods: {
       urlParse(path) {
         const url = path || window.location.search; // 得到url问号后面拼接的参数  ?id=12345&a=b
@@ -543,6 +523,7 @@
         }
         const obj = Object.assign({}, this.searchData);
         delete obj.createTime;
+        obj.userId = global.userInfo.id;
         network
           .post('/jflow/p/cs/task/backlog/list', obj)
           .then((res) => {
@@ -623,7 +604,8 @@
         // 输入框change事件
         this.tableSearch = event.target.value;
       },
-      openModal(type) {
+      async openModal(type) {
+        await this.getAgent();
         this.modaltype = type;
         // eslint-disable-next-line no-unused-expressions
         type === 2
@@ -742,7 +724,7 @@
       // 设置外出代理人
       setAgent() {
         const needdata = {};
-        needdata.USER_ID = window.jflowPlugin.userInfo.id;
+        needdata.USER_ID = global.userInfo.id;
         needdata.AGENT_ENAME = this.resultData.list[0].ENAME;
         if (this.resultData.list && this.resultData.list.length > 0) {
           needdata.AGENT_ID = Number(this.resultData.list[0].ID);
@@ -956,11 +938,11 @@
         });
         this.componentData[0].list = this.componentData[0].list.concat([]);
       },
-      getAgent() {
+      async getAgent() {
         // 获取代理人信息
-        network
+        await network
           .post('/jflow/p/c/agent/get', {
-            USER_ID: window.jflowPlugin.userInfo.id
+            USER_ID: global.userInfo.id
           })
           .then((res) => {
             if (res.data.resultCode === 0) {
@@ -989,29 +971,29 @@
         });
       }
     },
-    created() {
-      // this.getselectOption();
-      // this.queryLists();
-      // this.getAgent();
-    },
-    mounted() {}
+    activated() {
+      this.getselectOption();
+      this.queryLists();
+    }
   };
 </script>
 <style lang="less">
-.burgeon-spin-fix {
-  z-index: 100;
-}
+
 .TodoProcess {
   width: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+
+  .ark-spin-fix {
+    z-index: 100;
+  }
   .btn-agent {
     display: flex;
     justify-content: space-between;
     .btnArea {
       margin-bottom: 10px;
-      .burgeon-btn {
+      .ark-btn {
         margin-right: 9px;
         &:last-child {
           margin-right: 0;
@@ -1040,7 +1022,7 @@
   }
 }
 .modalCotent {
-  .burgeon-tree {
+  .ark-tree {
     overflow-y: auto;
   }
 }

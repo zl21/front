@@ -17,7 +17,7 @@ module.exports = {
   // target: 'http://139.224.169.76:28888', // 沁园
   // target: 'http://10.14.5.196', // 商飞开发环境
   // target: 'http://10.14.3.71', // 商飞预发环境
-  target: 'http://172.18.34.178:9095', // 商飞测试环境
+  target: 'http://172.18.34.200:9095', // 商飞测试环境
   // target: 'http://ark-share-dev.dev.burgeononline.com', // ArkShare环境
 
   
