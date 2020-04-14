@@ -679,7 +679,7 @@
           this.clickButtonsTemporaryStorage();// 暂存按钮执行方法(暂存按钮根据webConf配置显示，同时与保存按钮显示逻辑相同)
         } else if (type === 'refresh') {
           this.clickButtonsRefresh(type);// 刷新按钮执行方法
-          DispatchEvent('clickButtonsRefresh');
+          // DispatchEvent('clickButtonsRefresh');
         } else if (type === 'extraposition') {
           this.clickExtraposition(obj);// jflow按钮执行方法
         }
@@ -3211,10 +3211,10 @@
             });
           }
 
-          // if (event.detail.type === 'refresh') {
-          //   const type = 'jflow';
-          //   this.clickButtonsRefresh(type);
-          // }
+          if (event.detail.type === 'refresh') {
+            const type = 'jflow';
+            this.clickButtonsRefresh(type);
+          }
 
           if (event.detail.type === 'save') {
             this.clickSave();
