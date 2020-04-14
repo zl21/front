@@ -39,7 +39,7 @@
     customizeModules[key.toUpperCase()] = CustomizeModule[key];
   });
 
-  const pluginModules = {};
+  let pluginModules = {};
   Object.keys(PluginModule).forEach((key) => {
     pluginModules[key.toUpperCase()] = PluginModule[key];
   });
@@ -133,12 +133,18 @@
       generatePluginComponent() {
         const { pluginModuleName } = this.$route.params;
         const { routePrefix } = this.$route.meta;
-        
         if (routePrefix !== PLUGIN_MODULE_PREFIX) { return; }
         const componentName = `${PLUGIN_MODULE_COMPONENT_PREFIX}.${pluginModuleName}`;
         if (Vue.component(componentName) === undefined) {
+          if (window.ProjectConfig && window.ProjectConfig.externalPluginModules) {
+            pluginModules = Object.assign({}, pluginModules, window.ProjectConfig.externalPluginModules);
+          }
           const target = pluginModules[pluginModuleName] ? pluginModules[pluginModuleName] : undefined;
-          Vue.component(componentName, target ? target.component : Vue.extend(Object.assign({}, PageNotFound)));
+          if (target && target.component) {
+            Vue.component(componentName, target.component);
+          } else {
+            Vue.component(componentName, Vue.extend(Object.assign({}, PageNotFound)));
+          }
         }
         this.currentModule = componentName;
       },

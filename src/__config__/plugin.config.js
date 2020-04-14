@@ -22,5 +22,8 @@ export default {
       /* webpackMode: 'eager' */
       '../__plugin__/Print/printPreview.vue'
     )
+  },
+  INSTANCEMANAGEMENTLIST: {
+    name: '代办列表', // 菜单Tab显示的label
   }
 };

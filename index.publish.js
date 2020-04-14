@@ -61,6 +61,10 @@ export default {
    *     keyTwo: VueComponentTwo,
    *     ...
    *   }, // 如无自定义弹窗，此配置项可不传参。
+   *   externalPluginModules: {  // 项目引用插件界面
+   *     keyOne: VueComponentOne,
+   *     ...
+   *   }, // 如无自定义弹窗，此配置项可不传参。
    *   projectRoutes: [  // 项目自定义路由，一般情况下用不到此配置。
    *     {
    *       path: '/register',
