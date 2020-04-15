@@ -1463,7 +1463,7 @@
           const obj = {   
             name: '保存',
             eName: this.saveInfo.name,
-            requestUrlPath: this.saveInfo.path 
+            requestUrlPath: this.saveInfo.paths 
           };
           this.objectSave(obj);
         }
