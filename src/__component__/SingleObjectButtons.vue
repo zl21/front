@@ -586,7 +586,7 @@
           this.$loading.hide(this.tableName);
         }
       },
-      dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作
+      dialogComponentSaveSuccess(value) { // 自定义弹框执行确定按钮操作
         if (this.isrefrsh) {
           this.upData();
         }
@@ -1172,12 +1172,12 @@
               }
             } else if (JSON.parse(obj.confirm).desc) {
               const objRes = JSON.parse(JSON.stringify(obj));
-              if (JSON.parse(obj.confirm).isSave && this.testUpdata()) { // 配置isSave以及界面有修改
-                objRes.isrefrsh = false;
-                // type = 'objTabActionSlient';
-                // this.objTabActionSlientData = obj;
-                // this.clickSave({ type });
-              } 
+              // if (JSON.parse(obj.confirm).isSave && this.testUpdata()) { // 配置isSave以及界面有修改
+              //   // objRes.isrefrsh = false;
+              //   // type = 'objTabActionSlient';
+              //   // this.objTabActionSlientData = obj;
+              //   // this.clickSave({ type });
+              // } 
               const title = this.ChineseDictionary.WARNING;
               const contentText = `${JSON.parse(obj.confirm).desc}`;
               this.dialogMessage(title, contentText, objRes);
@@ -1210,24 +1210,49 @@
           content: contentText,
           showCancel: true,
           onOk: () => {
-            if (obj.confirm && JSON.stringify(obj.confirm)
-              && JSON.parse(JSON.stringify(obj.confirm)) 
-              && JSON.parse(JSON.stringify(obj.confirm)).isSave
-              && this.testUpdata()) {
-              const type = 'objTabActionSlient';
-              if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
-                const objTabActionSlientData = {
-                  k: 'data',
-                  v: obj
-                };
-                updateSessionObject('objTabActionSlientData', objTabActionSlientData);
-              } else {
-                this.objTabActionSlientData = obj;
+            if (obj.confirm && obj.confirm.indexOf('{') !== '-1') {
+              try {
+                if (JSON.parse(obj.confirm) && JSON.parse(obj.confirm).isSave && this.testUpdata()) {
+                  console.log(2, JSON.parse(obj.confirm).isSave);
+                  const type = 'objTabActionSlient';
+                  if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
+                    const objTabActionSlientData = {
+                      k: 'data',
+                      v: obj
+                    };
+                    updateSessionObject('objTabActionSlientData', objTabActionSlientData);
+                  } else {
+                    this.objTabActionSlientData = obj;
+                  }
+                  this.clickSave({ type });
+                } else { // 无修改值时
+                  this.errorconfirmDialog(obj);
+                }
+              } catch (error) {
+                this.errorconfirmDialog(obj);
               }
-              this.clickSave({ type });
             } else {
               this.errorconfirmDialog(obj);
             }
+            
+            // if (obj.confirm && JSON.stringify(obj.confirm)
+            //   && JSON.parse(JSON.stringify(obj.confirm)) 
+            //   && JSON.parse(JSON.stringify(obj.confirm)).isSave
+            //   && this.testUpdata()) {
+            //   const type = 'objTabActionSlient';
+            //   if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
+            //     const objTabActionSlientData = {
+            //       k: 'data',
+            //       v: obj
+            //     };
+            //     updateSessionObject('objTabActionSlientData', objTabActionSlientData);
+            //   } else {
+            //     this.objTabActionSlientData = obj;
+            //   }
+            //   this.clickSave({ type });
+            // } else {
+            //   this.errorconfirmDialog(obj);
+            // }
           }
         };
         this.$Modal.fcWarning(data);
@@ -3052,6 +3077,7 @@
         const objTabActionSlientData = getSeesionObject('objTabActionSlientData');
         if (!stop) {
           // this.clearEditData();// 清空store update数据
+          console.log(88, this.saveEventAfter, saveEventAfter.type);
           if (this.saveEventAfter === 'submit' || saveEventAfter.type === 'submit') { // 提交操作
             const promise = new Promise((resolve, reject) => {
               this.getObjectTrySubmit({
@@ -3126,6 +3152,12 @@
               v: {}
             };
             updateSessionObject('objTabActionSlientData', data);
+            const saveEventAfterData = {
+              k: 'type',
+              v: {}
+            };
+            updateSessionObject('saveEventAfter', saveEventAfterData);
+            this.saveEventAfter = '';
           } else { // 保存后的保存成功提示信息
             const message = this.buttonsData.message;
             this.clearEditData();// 清空store update数据

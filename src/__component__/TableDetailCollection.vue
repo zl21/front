@@ -1031,6 +1031,9 @@
             });
           }).then(() => {
           });
+          this.getObjectForMainTableForm({
+            table: tableName, objid: itemId, tabIndex: this.currentTabIndex
+          });
         } else { //  左右结构
           this.getObjectForMainTableForm({
             table: tableName, objid: itemId, tabIndex: this.currentTabIndex

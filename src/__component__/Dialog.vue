@@ -205,7 +205,7 @@
       closeActionDialog(value) {
         this.$emit('clearDialogComponentName');
         this.showModal = false;
-        if (value === true || this.isrefrsh) {
+        if (value === true && this.isrefrsh) {
           this.$emit('dialogComponentSaveSuccess');
         }
       },
