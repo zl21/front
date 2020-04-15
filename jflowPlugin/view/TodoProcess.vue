@@ -113,6 +113,18 @@
     },
     data() {
       return {
+        urlMap: { // 请求数据url映射
+          todoList: '/jflow/p/cs/task/backlog/list',
+          approvalList: '/jflow/p/cs/task/history/list',
+          launchList: '/jflow/p/cs/task/initiator/list',
+          copyList: '/jflow/p/cs/task/relation/list'
+        },
+        headerUrlMap: {
+          todoList: 'upcoming',
+          approvalList: 'approved',
+          launchList: 'initiated',
+          copyList: 'carbon-copied'
+        },
         modaltype: 0,
         openControl: false, // 弹框是否显示控制
         modaltitle: '', // 弹框标题
@@ -122,94 +134,94 @@
         ApprovalData: [],
         selectValue: '', // 选中的数据
         // 表单配置
-        formLists: [
-          {
-            row: 1,
-            col: 1,
-            component: ItemComponent,
-            item: {
-              type: 'input',
-              title: '工作流编号',
-              filed: 'instanceId',
-              props: {
-                regx: /^[0-9]*$/
-              },
-              event: {
-                keydown: (event) => {
-                  if (event.keyCode === 13) {
-                    this.searchData.page = 1;
-                    this.queryLists();
-                  }
-                }
-              }
-            }
-          },
-          {
-            row: 1,
-            col: 1,
-            component: ItemComponent,
-            item: {
-              type: 'input',
-              title: '查询索引',
-              filed: 'businessNumber',
-              event: {
-                keydown: (event) => {
-                  if (event.keyCode === 13) {
-                    this.searchData.page = 1;
-                    this.queryLists();
-                  }
-                }
-              }
-            }
+        formLists: [],
+        // formLists: [
+        //   {
+        //     row: 1,
+        //     col: 1,
+        //     component: ItemComponent,
+        //     item: {
+        //       type: 'input',
+        //       title: '工作流编号',
+        //       filed: 'instanceId',
+        //       props: {
+        //         regx: /^[0-9]*$/
+        //       },
+        //       event: {
+        //         keydown: (event) => {
+        //           if (event.keyCode === 13) {
+        //             this.searchData.page = 1;
+        //             this.queryLists();
+        //           }
+        //         }
+        //       }
+        //     }
+        //   },
+        //   {
+        //     row: 1,
+        //     col: 1,
+        //     component: ItemComponent,
+        //     item: {
+        //       type: 'input',
+        //       title: '查询索引',
+        //       filed: 'businessNumber',
+        //       event: {
+        //         keydown: (event) => {
+        //           if (event.keyCode === 13) {
+        //             this.searchData.page = 1;
+        //             this.queryLists();
+        //           }
+        //         }
+        //       }
+        //     }
             
-          },
-
-          {
-            row: 1,
-            col: 1,
-            component: ItemComponent,
-            item: {
-              type: 'select',
-              title: '单据类型',
-              filed: 'businessType',
-              options: [
-                { value: 0, label: '发送成功' },
-                { value: 1, label: '发送失败(待发送)' },
-                { value: 2, label: '消费成功' },
-                { value: 3, label: '消费失败(待消费)' }
-              ]
-            }
-          },
-          {
-            row: 1,
-            col: 1,
-            component: ItemComponent,
-            item: {
-              type: 'DatePicker',
-              title: '开始时间',
-              filed: 'createTime',
-              value: [new Date(new Date(new Date().getTime() - 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0)).minusDays(29).format('yyyy-MM-dd hh:mm:ss'), new Date(new Date().setHours(23, 59, 59)).format('yyyy-MM-dd hh:mm:ss')]
-            }
-          },
-          {
-            row: 1,
-            col: 1,
-            component: ItemComponent,
-            item: {
-              type: 'input',
-              title: '节点名称',
-              filed: 'nodeName',
-              event: {
-                keydown: (event) => {
-                  if (event.keyCode === 13) {
-                    this.searchData.page = 1;
-                    this.queryLists();
-                  }
-                }
-              }
-            }
-          }
-        ],
+        //   },
+        //   {
+        //     row: 1,
+        //     col: 1,
+        //     component: ItemComponent,
+        //     item: {
+        //       type: 'select',
+        //       title: '单据类型',
+        //       filed: 'businessType',
+        //       options: [
+        //         { value: 0, label: '发送成功' },
+        //         { value: 1, label: '发送失败(待发送)' },
+        //         { value: 2, label: '消费成功' },
+        //         { value: 3, label: '消费失败(待消费)' }
+        //       ]
+        //     }
+        //   },
+        //   {
+        //     row: 1,
+        //     col: 1,
+        //     component: ItemComponent,
+        //     item: {
+        //       type: 'DatePicker',
+        //       title: '开始时间',
+        //       filed: 'createTime',
+        //       value: [new Date(new Date(new Date().getTime() - 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0)).minusDays(29).format('yyyy-MM-dd hh:mm:ss'), new Date(new Date().setHours(23, 59, 59)).format('yyyy-MM-dd hh:mm:ss')]
+        //     }
+        //   },
+        //   {
+        //     row: 1,
+        //     col: 1,
+        //     component: ItemComponent,
+        //     item: {
+        //       type: 'input',
+        //       title: '节点名称',
+        //       filed: 'nodeName',
+        //       event: {
+        //         keydown: (event) => {
+        //           if (event.keyCode === 13) {
+        //             this.searchData.page = 1;
+        //             this.queryLists();
+        //           }
+        //         }
+        //       }
+        //     }
+        //   }
+        // ],
         // 查询条件
         searchData: {
           page: 1,
@@ -220,174 +232,7 @@
         },
         // 表格数据
         total: 0,
-        columns: [
-          {
-            type: 'selection',
-            width: 60,
-            align: 'center'
-          },
-          {
-            title: '工作流编号',
-            key: 'instanceId'
-          },
-          {
-            title: '查询索引',
-            key: 'businessNumber'
-          },
-          {
-            title: '单据类型',
-            key: 'businessName'
-          },
-          {
-            title: '模板名称',
-            key: 'moduleName'
-          },
-          {
-            title: '节点名称',
-            key: 'nodeName'
-          },
-          {
-            title: '待审批人',
-            key: 'approverValue',
-            render: (h, params) => h(
-              'p',
-              {
-                style: {
-                  maxWidth: '160px',
-                  overflow: 'hidden',
-                  'text-overflow': 'ellipsis',
-                  'white-space': 'nowrap'
-                }
-              },
-              params.row.approvers.join(',')
-            )
-          },
-          {
-            title: '发起人',
-            key: 'initiatorName'
-          },
-          {
-            title: '处理时间',
-            key: 'createTime'
-          },
-          {
-            title: '消耗时长',
-            key: 'durationTime'
-          },
-          {
-            title: '流程状态',
-            key: 'processStatusName',
-            render: (h, params) => {
-              if (params.row.processStatus === 4) {
-                return h('Poptip', {
-                  props: {
-                    trigger: 'hover',
-                    content: params.row.submitErrorMsg,
-                    transfer: true
-                  }
-                }, [h(
-                  'span',
-                  {
-                    style: {
-                      color: 'rgba(255, 0, 0, 1)',
-                      cursor: 'pointer'
-                    }
-                  },
-                  params.row.processStatusName
-                )]);
-              }
-              return h(
-                'p',
-                {
-                  style: {
-                    maxWidth: '160px',
-                    overflow: 'hidden',
-                    'text-overflow': 'ellipsis',
-                    'white-space': 'nowrap'
-                  }
-                },
-                params.row.processStatusName
-              );
-            }
-          },
-          {
-            title: '详情',
-            fixed: 'right',
-            render: (h, params) => h(
-              'p',
-              {
-                style: {
-                  display: 'flex',
-                  'align-items': 'center'
-                  // "justify-content": "center"
-                }
-              },
-              [
-                h(
-                  'span',
-                  {
-                    style: {
-                      color: 'rgba(16, 142, 233, 1)',
-                      cursor: 'pointer'
-                    },
-                    on: {
-                      click: () => {
-                        if (params.row.formUrl.indexOf('SYSTEM') >= 0) { // 区分版本  1.4版本
-                          window.getObjdisType({ table: params.row.formUrl.split('/')[4] }).then((res) => {
-                            const distype = res === 'tabpanle' ? 'H' : 'V';
-                            const arr = params.row.formUrl.split('/');
-                            arr[3] = distype;
-                            window.vm.$router.push({
-                              path: arr.join('/')
-                            });
-                          });
-                        } else {
-                          const query = this.urlParse(params.row.formUrl);
-                          window.getObjdisType({ table: query.tableName }).then((res) => {
-                            const distype = res === 'tabpanle' ? 'H' : 'V';
-                            const formUrl = `/SYSTEM/TABLE_DETAIL/${distype}/${query.tableName}/${query.pid}/${query.id}`;
-                            window.vm.$router.push({
-                              path: formUrl
-                            });
-                          });
-                        }
-                      }
-                    }
-                  },
-                  '查看明细'
-                ),
-                h('span', {
-                  style: {
-                    width: '1px',
-                    height: '19px',
-                    display: 'inline-block',
-                    background: 'rgba(228,228,228,1)',
-                    margin: '0 16px'
-                  }
-                }),
-                h(
-                  'span',
-                  {
-                    style: {
-                      color: 'rgba(16, 142, 233, 1)',
-                      cursor: 'pointer'
-                    },
-                    on: {
-                      click: () => {
-                        window.open(
-                          `${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${params.row.instanceId}`,
-                          '_blank',
-                          'width=861,height=612'
-                        );
-                      }
-                    }
-                  },
-                  '流程进度'
-                )
-              ]
-            )
-          }
-        ],
+        columns: [], // 表头字段
         data: [],
         standardTableEvent: {
           'on-change': (page) => {
@@ -490,7 +335,194 @@
         }
         return obj;
       },
-      // ...mapMutations(["currentChange", "checkDetailsOpenWindow"]),
+      // 获取表头数据
+      getHeader() {
+        const gridName = this.headerUrlMap[this.tabalive];
+        network.post(`/jflow/p/cs/sys/grid/header/${gridName}`, {}).then((res) => {
+          if (res.data.resultCode === 0) {
+            res.data.data.headers = res.data.data.headers.map((item) => {
+              // 待审批人
+              if (item.key === 'approverValue') {
+                item.render = (h, params) => h(
+                  'p',
+                  {
+                    style: {
+                      maxWidth: '160px',
+                      overflow: 'hidden',
+                      'text-overflow': 'ellipsis',
+                      'white-space': 'nowrap'
+                    }
+                  },
+                  params.row.approvers.join(',')
+                );
+              }
+
+              // 流程状态
+              if (item.key === 'processStatusName') {
+                item.render = (h, params) => {
+                  if (params.row.processStatus === 4) {
+                    return h('Poptip', {
+                      props: {
+                        trigger: 'hover',
+                        content: params.row.submitErrorMsg,
+                        transfer: true
+                      }
+                    }, [h(
+                      'span',
+                      {
+                        style: {
+                          color: 'rgba(255, 0, 0, 1)',
+                          cursor: 'pointer'
+                        }
+                      },
+                      params.row.processStatusName
+                    )]);
+                  }
+                  return h(
+                    'p',
+                    {
+                      style: {
+                        maxWidth: '160px',
+                        overflow: 'hidden',
+                        'text-overflow': 'ellipsis',
+                        'white-space': 'nowrap'
+                      }
+                    },
+                    params.row.processStatusName
+                  );
+                };
+              }
+              return item;
+            });
+
+            res.data.data.headers.push({
+              title: '详情',
+              fixed: 'right',
+              render: (h, params) => h(
+                'p',
+                {
+                  style: {
+                    display: 'flex',
+                    'align-items': 'center'
+                  // "justify-content": "center"
+                  }
+                },
+                [
+                  h(
+                    'span',
+                    {
+                      style: {
+                        color: 'rgba(16, 142, 233, 1)',
+                        cursor: 'pointer'
+                      },
+                      on: {
+                        click: () => {
+                          if (params.row.formUrl.indexOf('SYSTEM') >= 0) { // 区分版本  1.4版本
+                            window.getObjdisType({ table: params.row.formUrl.split('/')[4] }).then((res) => {
+                              const distype = res === 'tabpanle' ? 'H' : 'V';
+                              const arr = params.row.formUrl.split('/');
+                              arr[3] = distype;
+                              window.vm.$router.push({
+                                path: arr.join('/')
+                              });
+                            });
+                          } else {
+                            const query = this.urlParse(params.row.formUrl);
+                            window.getObjdisType({ table: query.tableName }).then((res) => {
+                              const distype = res === 'tabpanle' ? 'H' : 'V';
+                              const formUrl = `/SYSTEM/TABLE_DETAIL/${distype}/${query.tableName}/${query.pid}/${query.id}`;
+                              window.vm.$router.push({
+                                path: formUrl
+                              });
+                            });
+                          }
+                        }
+                      }
+                    },
+                    '查看明细'
+                  ),
+                  h('span', {
+                    style: {
+                      width: '1px',
+                      height: '19px',
+                      display: 'inline-block',
+                      background: 'rgba(228,228,228,1)',
+                      margin: '0 16px'
+                    }
+                  }),
+                  h(
+                    'span',
+                    {
+                      style: {
+                        color: 'rgba(16, 142, 233, 1)',
+                        cursor: 'pointer'
+                      },
+                      on: {
+                        click: () => {
+                          window.open(
+                            `${global.localIp}/#/FlowChart?instanceId=${params.row.instanceId}`,
+                            '_blank',
+                            'width=861,height=612'
+                          );
+                        }
+                      }
+                    },
+                    '流程进度'
+                  )
+                ]
+              )
+            });
+
+            this.columns = res.data.data.headers;
+          }
+        });
+      },
+      // 获取查询条件
+      getFormLists() {
+        const gridName = this.headerUrlMap[this.tabalive];
+        network.post(`/jflow/p/cs/sys/grid/search/area/${gridName}`, {})
+          .then((res) => {
+            res.data.data.searchArea = res.data.data.searchArea.map((item) => {
+              const temp = {
+                row: 1,
+                col: 1,
+                component: ItemComponent,
+                item
+              };
+              if (temp.item.type === 'input') {
+                temp.item.event = {
+                  keydown: (event) => {
+                    if (event.keyCode === 13) {
+                      this.searchData.page = 1;
+                      this.queryLists();
+                    }
+                  }
+                };
+              }
+              if (temp.item.field === 'instanceId') { // 工作流编号只能输入数字
+                temp.item.props = {
+                  regx: /^[0-9]*$/
+                };
+              }
+
+              if (temp.item.field === 'businessType') { // 单据类型
+                temp.item.options = [
+                  { value: 0, label: '发送成功' },
+                  { value: 1, label: '发送失败(待发送)' },
+                  { value: 2, label: '消费成功' },
+                  { value: 3, label: '消费失败(待消费)' }
+                ];
+              }
+
+              if (temp.item.field === 'createTime') { // 创建时间设置默认值
+                temp.item.value = [new Date(new Date(new Date().getTime() - 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0)).minusDays(29).format('yyyy-MM-dd hh:mm:ss'), new Date(new Date().setHours(23, 59, 59)).format('yyyy-MM-dd hh:mm:ss')];
+              }
+
+              return temp;
+            });
+            this.formLists = res.data.data.searchArea;
+          });
+      },
       // 业务关系下拉数据
       getselectOption() {
         network.post('/jflow/p/cs/task/relation/list', {}).then((res) => {
@@ -971,9 +1003,23 @@
         });
       }
     },
+    created() {
+      this.getHeader();
+      this.getFormLists();
+    },
     activated() {
-      this.getselectOption();
-      this.queryLists();
+      if (global.userInfo) {
+        this.getselectOption();
+        this.queryLists();
+      } else {
+        const timer = setTimeout(() => {
+          if (global.userInfo) {
+            clearTimeout(timer);
+            this.getselectOption();
+            this.queryLists();
+          }
+        }, 10);
+      }
     }
   };
 </script>

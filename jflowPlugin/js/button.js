@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-expressions */
 import { DispatchEvent } from '../utils/dispatchEvent';
 import network from '../utils/network';
-import { global } from '../utils/global.config';
-
+import { global, globalChange } from '../utils/global.config';
+import { getJflowInfo } from './index';
 // 撤销/结束/作废
 function mutipleOperate(url) {
   const param = {};
@@ -53,7 +53,8 @@ async function businessChange() {
 }
 
 // 按钮响应事件
-function buttonsResponse(e) {
+async function buttonsResponse(e) {
+  await getJflowInfo();
   if (e.detail.obj.button === 'fresh') {
     DispatchEvent('jflowClick', {
       detail: {
@@ -109,13 +110,25 @@ function clickFunction(e) {
   }
 }
 
+async function getTemplate() { // 获取模版信息
+  await network.post('/jflow/p/cs/task/businessType/list', {}).then((res) => {
+    if (res.data.resultCode === 0) {
+      globalChange({
+        template: res.data.data.businessTypes ? res.data.data.businessTypes : []
+      });
+    }
+  });
+}
+
 
 // 触发事件
-function initiateLaunch(event) {
+async function initiateLaunch(event) {
   window.updataClickSave(async () => {
     if (global.jflowInfo.objInstanceId) {
       mutipleOperate(global.jflowInfo.affirmUrl);
     } else {
+      // 触发按钮之前获取最新的模版信息
+      await getTemplate();
       // 判断是否存在模版，存在的时候才能发起流程
       let triggerBt = [];
       if (global.template.length > 0) {

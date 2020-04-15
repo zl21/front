@@ -648,7 +648,7 @@
       // 人工干预提交
       interventionConfirm() {
         network.post('/jflow/p/cs/error/invocationFail', {
-          instanceId: global.jflowInfo.objInstanceId,
+          instanceId: global.jflowInfo.instanceId,
           nodeId: global.jflowInfo.nodeId,
           userId: global.userInfo.id,
           handleUrl: this.intervention.handleUrl,

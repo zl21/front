@@ -51,16 +51,6 @@ function thirdlogin() { // 三方登录  获取accessToken
   });
 }
 
-function getTemplate() { // 获取模版信息
-  network.post('/jflow/p/cs/task/businessType/list', {}).then((res) => {
-    if (res.data.resultCode === 0) {
-      globalChange({
-        template: res.data.data.businessTypes ? res.data.data.businessTypes : []
-      });
-    }
-  });
-}
-
 /* 
   id:明细id
   pid:主表id
@@ -68,7 +58,7 @@ function getTemplate() { // 获取模版信息
   active: 当前表表名
   isApprover: 消息中心参数
 */
-async function jflowButtons(flag) { // 获取jflow单据信息
+async function jflowButtons() { // 获取jflow单据信息
   return await new Promise((resolve) => {
     network.post('/jflow/p/cs/task/buttons', {
       businessCode: global.routeInfo.itemId,
@@ -92,12 +82,10 @@ async function jflowButtons(flag) { // 获取jflow单据信息
               mask: true
             });
           }
-          if (!flag) {
-            globalChange({
-              jflowInfo: res.data.data
-            });
-            CreateButton();
-          }
+          
+          globalChange({
+            jflowInfo: res.data.data
+          });
         }
         resolve(res);
       });
@@ -310,17 +298,9 @@ const install = function install(Vue, options = {}) {
     });
     todoList();
   });
-
-  // 监听业务系统的刷新，获取最新的jflow信息，防止数据不同步
-  window.addEventListener('clickButtonsRefresh', () => {
-    jflowButtons();
-  });
-
   // 获取业务系统数据
   window.addEventListener('updataCurrentTableDetailInfo', (event) => {  
     globalChange(event.detail);
-    jflowButtons();
-    getTemplate();
   });
 };
 

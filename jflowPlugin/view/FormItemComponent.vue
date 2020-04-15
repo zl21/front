@@ -122,7 +122,7 @@
         // }else{
         //   this.formData[items.filed] = value
         // }
-        this.formData[items.filed] = value;
+        this.formData[items.field] = value;
         this.$emit('formChange', this.formData);
       },
       search() {
