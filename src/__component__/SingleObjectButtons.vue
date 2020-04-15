@@ -1689,7 +1689,7 @@
               }
               this.upData();
             } else {
-              this.upData();
+              // this.upData();
               this.$loading.hide(this.tableName);
             }
           }, () => {
