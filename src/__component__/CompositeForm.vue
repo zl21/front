@@ -1364,7 +1364,7 @@
             expression = current.item.validate.hidecolumn.expression;
           }
           if (expression !== '=') {
-            return eval(val + expression + refval);
+            return eval(val.replace(/\s+/g, '') + expression + refval.replace(/\s+/g, ''));
           }
          
 
