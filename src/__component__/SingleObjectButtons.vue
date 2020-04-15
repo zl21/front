@@ -1181,7 +1181,7 @@
               const title = this.ChineseDictionary.WARNING;
               const contentText = `${JSON.parse(obj.confirm).desc}`;
               this.dialogMessage(title, contentText, objRes);
-            } else if (JSON.parse(obj.confirm).isSave) { // 静默执行保存
+            } else if (JSON.parse(obj.confirm).isSave && this.testUpdata()) { // 静默执行保存
               type = 'objTabActionSlient';
               if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
                 const objTabActionSlientData = {
@@ -1193,6 +1193,8 @@
                 this.objTabActionSlientData = obj;
               }
               this.clickSave({ type });
+            } else {
+              this.buttonEvent(obj);
             }
           } else {
             const title = this.ChineseDictionary.WARNING;
