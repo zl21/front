@@ -597,7 +597,7 @@ export default {
                     }
                   } else if (b.valuedata) {
                     if (b.display === 'doc') {
-                      copySaveDataForParam[b.colname] = b.valuedata;
+                      copySaveDataForParam[b.colname] = JSON.parse(b.valuedata);
                     } else if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop') {
                       copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
                     } else if (b.fkdisplay === 'mop') {
@@ -638,7 +638,7 @@ export default {
               }
             } else if (b.valuedata) {
               if (b.display === 'doc') {
-                copySaveDataForParam[b.colname] = b.valuedata;
+                copySaveDataForParam[b.colname] = JSON.parse(b.valuedata);
               } else if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop') {
                 copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
               } else if (b.fkdisplay === 'mop') {
