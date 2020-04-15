@@ -1677,8 +1677,10 @@
               },
             };
             this.$Modal.fcSuccess(data);
+            
             if (tab.isrefrsh) {
               // 左右结构子表时，接收不到主表的表单监听，需要关闭loading
+              this.$loading.hide(this.tableName);
               if (this.objectType === 'horizontal') {
                 const itemNames = this.itemNameGroup.map((c) => {
                   if (c.tableName !== this.tableName) {
@@ -1689,6 +1691,7 @@
                   this.$loading.hide(this.tableName);
                 }
               }
+
               this.upData();
             } else {
               // this.upData();
@@ -3079,7 +3082,6 @@
         const objTabActionSlientData = getSeesionObject('objTabActionSlientData');
         if (!stop) {
           // this.clearEditData();// 清空store update数据
-          console.log(88, this.saveEventAfter, saveEventAfter.type);
           if (this.saveEventAfter === 'submit' || saveEventAfter.type === 'submit') { // 提交操作
             const promise = new Promise((resolve, reject) => {
               this.getObjectTrySubmit({
@@ -3275,7 +3277,11 @@
         const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
         // const dom = document.querySelector(`#${currentTableName}-loading`);
         if (value.detail.hideCopyLoading || value.detail.hideLoadingForButton) {
+          // if (currentTableName) {
           this.$loading.hide(currentTableName);
+          // } else {
+          //   this.$loading.hide(this.instanceRouteQuery.tableName);
+          // }
         }
       }
     },  

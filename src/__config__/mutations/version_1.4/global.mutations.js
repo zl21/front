@@ -222,6 +222,7 @@ export default {
     state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('keepAliveLabelMaps'));
     state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
   },
+  
   increaseLinkUrl(state, { linkId, linkUrl }) {
     const linkType = {};
     linkType[linkId] = linkUrl;
@@ -458,6 +459,7 @@ export default {
       };
       updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
       state.serviceIdMap = Object.assign({}, state.serviceIdMap, serviceIdMap);
+      console.log(111, serviceIdMap);
     }
     let path = '';
     if (type === 'tableDetailHorizontal') {
