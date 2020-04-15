@@ -416,6 +416,12 @@
           item.type ? dataProp[item.type] && dataProp[item.type].props : {},
           this.items.props
         );
+        if (item.type === 'docfile') {
+          if (!Array.isArray(item.props.itemdata.valuedata)) {
+            item.props.itemdata.valuedata = [];
+          }
+        }
+
         if (item.type === 'AttachFilter') {
           // 大弹窗卡槽页面
           if (item.props.fkdisplay === 'pop') {
