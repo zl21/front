@@ -288,8 +288,7 @@ export default {
   emptyTabs(state) {
     state.JflowControlField.map((item, index) => {
       state.openedMenuLists.map((openedMenuList) => {
-        const b = openedMenuList.keepAliveModuleName.slice(0, openedMenuList.keepAliveModuleName.lastIndexOf('.'));
-        const openedMenuListId = b.slice(b.lastIndexOf(b.slice(b.lastIndexOf('.') + 1), b.length));
+        const openedMenuListId = openedMenuList.keepAliveModuleName.split('.')[2];
         if (item.tableId === openedMenuListId) {
           state.JflowControlField.splice(index, 1);
         }
@@ -325,8 +324,8 @@ export default {
 
     // 关闭tab时需清楚jflow配置的对应表
     deleteFromSessionObject('TreeId', tab.tableName);
-    const b = tab.keepAliveModuleName.slice(0, tab.keepAliveModuleName.lastIndexOf('.'));
-    const openedMenuListId = b.slice(b.lastIndexOf(b.slice(b.lastIndexOf('.') + 1), b.length));
+    const openedMenuListId = tab.keepAliveModuleName.split('.')[2];
+
     state.JflowControlField = state.JflowControlField.filter((item) => {
       if (item.tableId !== openedMenuListId) {
         return item;

@@ -293,13 +293,13 @@ export default {
   emptyTabs(state) {
     state.JflowControlField.map((item, index) => {
       state.openedMenuLists.map((openedMenuList) => {
-        const b = openedMenuList.keepAliveModuleName.slice(0, openedMenuList.keepAliveModuleName.lastIndexOf('.'));
-        const openedMenuListId = b.slice(b.lastIndexOf(b.slice(b.lastIndexOf('.') + 1), b.length));
+        const openedMenuListId = openedMenuList.keepAliveModuleName.split('.')[2];
         if (item.tableId === openedMenuListId) {
           state.JflowControlField.splice(index, 1);
         }
       });
     });
+
     state.openedMenuLists = [];
     state.keepAliveLists = [];
     state.activeTab = {};
@@ -338,13 +338,14 @@ export default {
     //   v: item.ID
     // };
     deleteFromSessionObject('TreeId', tab.tableName);
-    const b = tab.keepAliveModuleName.slice(0, tab.keepAliveModuleName.lastIndexOf('.'));
-    const openedMenuListId = b.slice(b.lastIndexOf(b.slice(b.lastIndexOf('.') + 1), b.length));
+    const openedMenuListId = tab.keepAliveModuleName.split('.')[2];
     state.JflowControlField = state.JflowControlField.filter((item) => {
       if (item.tableId !== openedMenuListId) {
         return item;
       }
     });
+
+    
     // window.sessionStorage.removeItem('dynamicRoutingIsBack');// 清除动态路由返回标记
 
     const tabRouteFullPath = tab.routeFullPath;
@@ -459,7 +460,6 @@ export default {
       };
       updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
       state.serviceIdMap = Object.assign({}, state.serviceIdMap, serviceIdMap);
-      console.log(111, serviceIdMap);
     }
     let path = '';
     if (type === 'tableDetailHorizontal') {

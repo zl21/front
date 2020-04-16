@@ -23,6 +23,7 @@ export default {
     state.mainFormInfo.tableid = tableId;
     state.mainFormInfo.formData.isShow = data && data.addcolums && data.addcolums.length > 0;
     if (enableJflow() && custommizedJflow() && this.state.global.JflowControlField.length > 0) {
+      // 配置了jflow更新主表面板数据的逻辑在updatePanelData方法里处理，会增加isJflowConfig标记
       data.isJflowConfig = true;// 子表标记
       setTimeout(() => {
         this.commit(`${getComponentName()}/updatePanelData`, data);
@@ -90,14 +91,7 @@ export default {
 
       if (JflowControlFieldData[0]) { // 符合jflow控制子表字段配置条件执行以下逻辑
         state.isHideTempStorage = true;
-
-        // let dataArray = [];
-        // if (tableNameFlag && data.isJflowConfig) { // 主表
-        //   // dataArray = state.mainFormInfo.formData.data.addcolums;
-        //   dataArray = data.addcolums;
-        // } else { // 子表
-        //   dataArray = data.addcolums;
-        // }
+        // isJflowConfig 主表标记
         if (data.isJflowConfig) { // jflow修改字段配置为主表
           state.mainFormInfo.isMainTableObjreadonly = true;// 将主表置为不可编辑状态
           const addcolumsData = data.addcolums.reduce((a, c) => {
@@ -345,7 +339,7 @@ export default {
         
        
         // 处理jflow配置自定义按钮逻辑
-      } else if (data.isJflowConfig) {
+      } else if (data.isJflowConfig) { // 更新主表面板数据
         state.mainFormInfo.formData.data = Object.assign({}, data);
       } else if (isCustomizedTab) { // 所有表均为不可编辑
         // jflow配置子表（子表id不存在时），以下逻辑为控制主表按钮显示逻辑（只显示复制/刷新/返回）
