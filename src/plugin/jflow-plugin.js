@@ -783,7 +783,8 @@ function createComponent() { // 创建跟节点实例
   window.jflowPlugin.jflowIp = jflowIp;
 }
 
-function jflowRefresh() { // 刷新业务系统
+async function jflowRefresh() { // 刷新业务系统
+  await jflowButtons(window.vm.$router.currentRoute.params.itemId);
   DispatchEvent('jflowClick', {
     detail: {
       type: 'refresh'
