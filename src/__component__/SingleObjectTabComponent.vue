@@ -275,10 +275,10 @@
       },
       currentTabIndex() {
         const tabCurrentIndex = this.$store.state[this[MODULE_COMPONENT_NAME]].tabCurrentIndex;
-        const WebConf = this.$store.state[this[MODULE_COMPONENT_NAME]].WebConf;
-        if (WebConf && WebConf.isCustomizeTab && this.type === 'horizontal') {
-          return tabCurrentIndex + 1;
-        } 
+        // const WebConf = this.$store.state[this[MODULE_COMPONENT_NAME]].WebConf;
+        // if (WebConf && WebConf.isCustomizeTab && this.type === 'horizontal') {
+        //   return tabCurrentIndex + 1;
+        // } 
         return tabCurrentIndex;
       },
       itemReadOnlyForJflow() {

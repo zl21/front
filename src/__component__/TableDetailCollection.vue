@@ -327,11 +327,13 @@
 
       }),
       currentTabIndex() {
-        if (this.WebConf && this.WebConf.isCustomizeTab && this.type === 'horizontal') {
-          return this.tabCurrentIndex + 1;
-        } else {
-          return this.tabCurrentIndex;
-        }
+        return this.tabCurrentIndex;
+
+        // if (this.WebConf && this.WebConf.isCustomizeTab && this.type === 'horizontal') {
+        //   return this.tabCurrentIndex + 1;
+        // } else {
+        //   return this.tabCurrentIndex;
+        // }
       },
       dynamicRoutingForSinglePage() {
         if (this.itemInfo && this.itemInfo.componentAttribute && this.itemInfo.componentAttribute.buttonsData && this.itemInfo.componentAttribute.buttonsData.data && this.itemInfo.componentAttribute.buttonsData.data.webconf) {

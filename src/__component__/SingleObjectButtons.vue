@@ -335,9 +335,9 @@
         JflowControlField: ({ JflowControlField }) => JflowControlField,
       }),
       currentTabIndex() {
-        if (this.WebConf && this.WebConf.isCustomizeTab && this.objectType === 'horizontal') {
-          return this.tabCurrentIndex + 1;
-        } 
+        // if (this.WebConf && this.WebConf.isCustomizeTab && this.objectType === 'horizontal') {
+        //   return this.tabCurrentIndex + 1;
+        // } 
         return this.tabCurrentIndex;
       },
       watermarkImg() { // 匹配水印图片路径
