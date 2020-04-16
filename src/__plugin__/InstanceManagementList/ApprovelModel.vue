@@ -534,11 +534,11 @@
         param.businessCode = window.jflowPlugin.router.currentRoute.params.itemId;
         param.businessType = window.jflowPlugin.router.currentRoute.params.tableId;
         param.businessName = window.jflowPlugin.router.currentRoute.params.tableName;
-        this.$network.post(this.modalConfig.url, param).then((res) => {
+        this.$network.post(this.modalConfig.url, param).then(async (res) => {
           window.jflowPlugin.open({ control: false });
           if (res.data.resultCode === 0) {
             this.$Message.success(res.data.resultMsg);
-            this.modalConfig.buttons(window.jflowPlugin.itemId);
+            await this.modalConfig.buttons(window.jflowPlugin.itemId);
             BacklogData(window.jflowPlugin.store);
             DispatchEvent('jflowClick', {
               detail: {
@@ -569,7 +569,6 @@
         param.businessCode = window.jflowPlugin.router.currentRoute.params.itemId;
         param.businessType = window.jflowPlugin.router.currentRoute.params.tableId;
         param.businessName = window.jflowPlugin.router.currentRoute.params.tableName;
-        param.pid = window.jflowPlugin.pid;
         param.moduleId = window.jflowPlugin.moduleId;
         // if (this.returnOption === "") {
         //   this.$Message.warning("驳回节点不能为空");

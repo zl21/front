@@ -220,7 +220,7 @@ function thirdlogin() { // 三方登录  获取accessToken
   id:明细id
   pid:主表id
   flag: 是否刷新按钮
-  active: 当前表表名
+  active: 当前表表名(现在不需要，通过jflowButtons)
   isApprover: 消息中心参数
 */
 async function jflowButtons(id, pid, flag, active, isApprover) { // jflow按钮逻辑处理
@@ -266,7 +266,7 @@ async function jflowButtons(id, pid, flag, active, isApprover) { // jflow按钮�
             });
             const obj = {
               tableId: pid || window.jflowPlugin.router.currentRoute.params.tableId,
-              itemTableId: (active || window.jflowPlugin.router.currentRoute.query.ACTIVE) || pid || window.jflowPlugin.router.currentRoute.params.tableId,
+              itemTableId: (String(res.data.data.businessType)) || pid || window.jflowPlugin.router.currentRoute.params.tableId,
               isShow: modifiField,
               readonly: edit,
               exeActionButton,
@@ -282,6 +282,7 @@ async function jflowButtons(id, pid, flag, active, isApprover) { // jflow按钮�
 
             JflowControlField.push(obj);
             window.jflowPlugin.store.commit('global/updateJflowControlField', JflowControlField);
+            console.log(JflowControlField);
           } else { // 不在流程中去除相对应的配置
             let JflowControlField = JSON.parse(JSON.stringify(window.jflowPlugin.store.state.global.JflowControlField));
             const obj = {
@@ -306,6 +307,7 @@ async function jflowButtons(id, pid, flag, active, isApprover) { // jflow按钮�
             CreateButton(res.data.data, jflowButtons, id);
           }
         }
+        
         resolve(res);
       });
   });
