@@ -31,8 +31,8 @@
       :objreadonly="objreadonly"
       :readonly="formReadonly"
       :default-set-value="changeData"
-      :master-name="$route.params.tableName"
-      :master-id="$route.params.itemId"
+      :master-name="currentPageRoute.tableName"
+      :master-id="currentPageRoute.itemId"
       :module-form-type="type"
       class="form"
       :default-data="formData.data"
@@ -62,8 +62,8 @@
         :objreadonly="objreadonly"
         :readonly="formReadonly"
         :default-set-value="changeData"
-        :master-name="$route.params.tableName"
-        :master-id="$route.params.itemId"
+        :master-name="currentPageRoute.tableName"
+        :master-id="currentPageRoute.itemId"
         :module-form-type="type"
         :class="type === 'vertical' ? 'verticalFormPanel' : 'formPanel'"
         type="PanelForm"
@@ -74,7 +74,7 @@
         @formChange="formPanelChange"
         @InitializationForm="initFormPanel"
         @VerifyMessage="verifyFormPanel"
-      />
+      />d
     </div>
     <!-- 左右结构主表和子表的form(面板) -->
     <compositeForm
@@ -84,8 +84,8 @@
       :objreadonly="itemReadOnlyForJflow"
       :readonly="itemReadOnlyForJflow"
       :default-set-value="changeData"
-      :master-name="$route.params.tableName"
-      :master-id="$route.params.itemId"
+      :master-name="currentPageRoute.tableName"
+      :master-id="currentPageRoute.itemId"
       :module-form-type="type"
       :class="type === 'vertical' ? 'verticalFormPanel' : 'formPanel'"
       type="PanelForm"
@@ -163,6 +163,7 @@
         objectTableComponent: '', // 单对象表格组件
         customizeComponent: '', // 自定义组件
         isRequest: false,
+        tableName: this[INSTANCE_ROUTE_QUERY].tableName
       };
     },
     components: {
@@ -185,10 +186,10 @@
         type: String,
         default: 'vertical'
       },
-      tableName: {
-        type: String,
-        default: ''
-      },
+      // tableName: {
+      //   type: String,
+      //   default: ''
+      // },
       isreftabs: {
         type: Boolean,
       },
@@ -263,12 +264,15 @@
         default: ''
       }// 定制界面自定义组件类型，为ALL时不显示单对象按钮组件
     },
-    inject: [MODULE_COMPONENT_NAME],  
+    inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY],  
     computed: { 
       ...mapState('global', {
         objreadonlyForJflow: ({ objreadonlyForJflow }) => objreadonlyForJflow,
         JflowControlField: ({ JflowControlField }) => JflowControlField,
       }),
+      currentPageRoute() {
+        return this[INSTANCE_ROUTE_QUERY];
+      },
       currentTabIndex() {
         const tabCurrentIndex = this.$store.state[this[MODULE_COMPONENT_NAME]].tabCurrentIndex;
         const WebConf = this.$store.state[this[MODULE_COMPONENT_NAME]].WebConf;
@@ -578,7 +582,7 @@
             this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { tableName: this.tableName, value: {} });
             this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateAddData`, { tableName: this.tableName, value: {} });
           }
-          const { tableId, itemId } = this.$route.params;
+          const { tableId, itemId } = this[INSTANCE_ROUTE_QUERY];
           const { tablename, refcolid, tabinlinemode } = this.itemInfo;
           let id = '';
           if (this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData.newMainTableSaveData) {
@@ -706,7 +710,7 @@
       formChange(val, changeVal) {
         const { tableName } = this;
         const obj = {};
-        const { itemId } = this.$route.params;
+        const { itemId } = this[INSTANCE_ROUTE_QUERY];
         obj[tableName] = val;
         if (itemId) {
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { tableName, value: changeVal });
@@ -715,7 +719,7 @@
       },
       initForm(val) {
         const { tableName } = this;
-        const { itemId } = this.$route.params;
+        const { itemId } = this[INSTANCE_ROUTE_QUERY];
         const obj = {};
         obj[tableName] = val;
         if (itemId) {
@@ -724,21 +728,21 @@
       },
       verifyForm(data) {
         const { tableName } = this;
-        const { itemId } = this.$route.params;
+        const { itemId } = this[INSTANCE_ROUTE_QUERY];
         if (itemId) {
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateCheckedInfoData`, { tableName, value: data });
         }
       },
       verifyFormPanel(data) {
         const { tableName } = this;
-        const { itemId } = this.$route.params;
+        const { itemId } = this[INSTANCE_ROUTE_QUERY];
         if (itemId) {
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateCheckedInfoData`, { tableName, value: data });
         }
       },
       formPanelChange(val, changeVal, valLabel) {
         const { tableName } = this;
-        const { itemId } = this.$route.params;
+        const { itemId } = this[INSTANCE_ROUTE_QUERY];
         const obj = {};
         const objLabel = {};
         obj[tableName] = val;
@@ -759,7 +763,7 @@
         const objLabel = {};
         obj[tableName] = val;
         objLabel[tableName] = valLabel;
-        const { itemId } = this.$route.params;
+        const { itemId } = this[INSTANCE_ROUTE_QUERY];
         if (itemId) {
           if (itemId === 'New') {
             this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateAddData`, { tableName, value: obj });
@@ -770,42 +774,42 @@
       },
       tableBeforeData(data) {
         const { tableName } = this;
-        const { itemId } = this.$route.params;
+        const { itemId } = this[INSTANCE_ROUTE_QUERY];
         if (itemId) {
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateDefaultData`, { tableName, value: data });
         }
       },
       tableBeforeLabelData(data) {
         const { tableName } = this;
-        const { itemId } = this.$route.params;
+        const { itemId } = this[INSTANCE_ROUTE_QUERY];
         if (itemId) {
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateDefaultLabelData`, { tableName, value: data });
         }
       },
       tableDataChangeLabelBefore(data) {
         const { tableName } = this;
-        const { itemId } = this.$route.params;
+        const { itemId } = this[INSTANCE_ROUTE_QUERY];
         if (itemId) {
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateItemBeforeLabelData`, { tableName, value: data });
         }
       },
       tableDataChange(data) {
         const { tableName } = this;
-        const { itemId } = this.$route.params;
+        const { itemId } = this[INSTANCE_ROUTE_QUERY];
         if (itemId) {
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateModifyData`, { tableName, value: data });
         }
       },
       tableDataChangeLabel(data) {
         const { tableName } = this;
-        const { itemId } = this.$route.params;
+        const { itemId } = this[INSTANCE_ROUTE_QUERY];
         if (itemId) {
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateModifyLabelData`, { tableName, value: data });
         }
       }, // 抛出label
       tableSelectedRow(data) {
         const { tableName } = this;
-        const { itemId } = this.$route.params;
+        const { itemId } = this[INSTANCE_ROUTE_QUERY];
         if (itemId) {
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateDeleteData`, { tableName, value: data });
         }

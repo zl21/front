@@ -1677,10 +1677,9 @@
               },
             };
             this.$Modal.fcSuccess(data);
-            
             if (tab.isrefrsh) {
               // 左右结构子表时，接收不到主表的表单监听，需要关闭loading
-              this.$loading.hide(this.tableName);
+              // this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
               if (this.objectType === 'horizontal') {
                 const itemNames = this.itemNameGroup.map((c) => {
                   if (c.tableName !== this.tableName) {
