@@ -7,6 +7,7 @@
   >
     <tree
       v-if="isTreeList&&treeShow"
+      :current-label="getCurrentLabel"
       :tree-datas="treeConfigData"
       :is-change-tree-config-data="isChangeTreeConfigData"
       @menuTreeChange="menuTreeChange"
@@ -206,6 +207,9 @@
         exportTasks: ({ exportTasks }) => exportTasks,
         changeSearchFoldnum: ({ changeSearchFoldnum }) => changeSearchFoldnum
       }),
+      getCurrentLabel() {
+        return this.keepAliveLabelMaps[this[MODULE_COMPONENT_NAME]];
+      },
       formLists() {
         return this.refactoringData(
           this.formItems.defaultFormItemsLists.concat([])

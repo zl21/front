@@ -4,7 +4,7 @@
   >
     <Input
       v-model="inputValue"
-      placeholder="请输入角色"
+      :placeholder="getPlaceholder"
       class="input"
       icon="ios-search"
       @on-change="searchInputChange"
@@ -25,6 +25,7 @@
   export default {
     data() {
       return {
+        placeholder: '',
         inputValue: '',
         treeName: '',
         menuTreeQuery: '', // 菜单树检索的值
@@ -64,6 +65,14 @@
         ]
       };
     },
+    computed: {
+      getPlaceholder() {
+        if (this.placeholder) {
+          return this.placeholder;
+        }
+        return `请输入${this.currentLabel}`;
+      }
+    },
     created() {
       // document.onkeydown = (e) => {
       //   const key = e.keyCode;
@@ -73,6 +82,10 @@
       // };
     },
     props: {
+      currentLabel: {
+        type: String,
+        default: ''
+      }, 
       treeDatas: {
         type: Function,
         default: () => {}
@@ -81,6 +94,7 @@
         type: String,
         default: ''
       }, 
+    
     },
     watch: {
       treeDatas: {
@@ -89,6 +103,7 @@
             this.treeDatas().then((value) => {
               this.treeData = value.data;
               this.treeName = value.name;
+              this.placeholder = value.placeholder;
             });
           }
         }

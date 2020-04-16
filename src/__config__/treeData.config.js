@@ -24,7 +24,8 @@ export default {
     // ....
     const treeData = {
       data: [],
-      name: 'ID'
+      name: 'ID',
+      placeholder: ''
     };
     treeData.data = [
       {
