@@ -163,7 +163,7 @@
         objectTableComponent: '', // 单对象表格组件
         customizeComponent: '', // 自定义组件
         isRequest: false,
-        tableName: this[INSTANCE_ROUTE_QUERY].tableName
+        // tableName: this[INSTANCE_ROUTE_QUERY].tableName
       };
     },
     components: {
@@ -186,10 +186,10 @@
         type: String,
         default: 'vertical'
       },
-      // tableName: {
-      //   type: String,
-      //   default: ''
-      // },
+      tableName: {
+        type: String,
+        default: ''
+      },
       isreftabs: {
         type: Boolean,
       },

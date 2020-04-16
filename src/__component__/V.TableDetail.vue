@@ -335,11 +335,14 @@
             let getButtonDataPromise = null;
             if (this.tabPanels[index].componentAttribute.refcolid !== -1) {
               // 获取子表表单
-              getButtonDataPromise = new Promise((rec, rej) => {
-                this.getObjectTabForRefTable({
-                  table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej
+              if (refTab.tabrelation !== '1:1') {
+                getButtonDataPromise = new Promise((rec, rej) => {
+                  this.getObjectTabForRefTable({
+                    table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej
+                  });
                 });
-              });
+              }
+            
               const formParam = {
                 table: refTab.tablename,
                 inlinemode: refTab.tabinlinemode,
