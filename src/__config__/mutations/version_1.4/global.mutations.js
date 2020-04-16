@@ -220,7 +220,7 @@ export default {
       state.keepAliveLabelMaps[name] = `${tableDetailUrlMessage.linkLabel}`;
     }
     state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('keepAliveLabelMaps'));
-    state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
+   
   },
   
   increaseLinkUrl(state, { linkId, linkUrl }) {
@@ -458,8 +458,7 @@ export default {
         v: serviceId
       };
       updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
-      state.serviceIdMap = Object.assign({}, state.serviceIdMap, serviceIdMap);
-      console.log(111, serviceIdMap);
+      state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
     }
     let path = '';
     if (type === 'tableDetailHorizontal') {

@@ -144,7 +144,10 @@ const getCategory = () => {
             }
             return a;
           }, {});
-        window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMaps));
+          //
+        const getServiceIdMap = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
+        const serviceIdMapRes = Object.assign({}, getServiceIdMap, serviceIdMaps);
+        window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMapRes));
       }
     }).catch(() => {
       router.push({ path: getTouristRoute() });
