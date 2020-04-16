@@ -164,7 +164,6 @@
         }
         const resArr = [];
         func(this.treeData, resArr);
-        console.log(4444, this.treeData);
       },
       menuTreeChange(val, item) {
         const arrayIDs = [];
@@ -172,7 +171,9 @@
           if (Array.isArray(tdata) && tdata.length > 0) {
             tdata.forEach((v, i) => {
               resData.push(v);
-              arrayIDs.push(JSON.stringify(v.ID));
+              if (v.ID) {
+                arrayIDs.push(JSON.stringify(v.ID));
+              }
               const arr = [];
               func(v.children, arr);
               if (resData[i] && resData[i].children) {
@@ -183,8 +184,6 @@
         }
         const resArr = [];
         func(val, resArr);
-       
-       
         this.$emit('menuTreeChange', arrayIDs, this.treeName, val, item);
       }, // 左侧树点击
     }

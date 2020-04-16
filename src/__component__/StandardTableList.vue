@@ -310,8 +310,7 @@
       },
       menuTreeChange(arrayIDs, treeName, val, item) {
         this.searchData.fixedcolumns = this.dataProcessing();
-        console.log();
-        if (val.length > 0) {
+        if (val.length > 0 && arrayIDs.length > 0) {
           this.searchData.reffixedcolumns = {
             [treeName]: `in (${arrayIDs})`
           };
