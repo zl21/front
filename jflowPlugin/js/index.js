@@ -226,7 +226,7 @@ function initiateLaunch(data) { // 业务系统流程发起
       businessTypeName: global.routeInfo.tableName,
       initiator: global.userInfo.id,
       userName: global.userInfo.name,
-      instanceId,
+      instanceId: global.jflowInfo.instanceId,
       initiatorName: global.userInfo.name,
       changeUser: global.userInfo.id,
       // webActionId: data.webid,
