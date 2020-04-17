@@ -9,7 +9,7 @@ import {
 import { addNetwork } from './indexedDB';
 
 import {
-  updateSessionObject
+  updateSessionObject, removeSessionObject, getSeesionObject
 } from './sessionStorage';
 
 let tableNameForGet = '';
@@ -209,7 +209,12 @@ axios.interceptors.response.use(
       }));
       delete pendingRequestMap[requestMd5];
       if (status === 403) {
+        // 清楚对应登陆用户信息
         window.sessionStorage.setItem('loginStatus', false);
+        store.commit('global/updataUserInfoMessage', {
+          userInfo: {}
+        });
+        removeSessionObject('userInfo');
         if (getProjectQuietRoutes().indexOf(router.currentRoute.path) === -1) {
           router.push(getTouristRoute());
         }

@@ -149,6 +149,10 @@ Object.keys(PluginModule).forEach((key) => {
 
 export default (router) => {
   router.beforeEach((to, from, next) => {
+    if (to.path === '/login' && getSeesionObject('loginStatus') === true) {
+      window.location.href = window.location.origin;
+      return;
+    }
     if (router.getMatchedComponents(to.path).length === 0) {
       next('/');
     }
