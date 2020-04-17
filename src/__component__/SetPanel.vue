@@ -176,6 +176,7 @@
         network
           .get('/p/cs/logout')
           .then(() => {
+            window.sessionStorage.setItem('loginStatus', false);
             this.emptyTabs();
             router.push({ path: getTouristRoute() });
             removeSessionObject('saveNetwork');

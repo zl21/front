@@ -186,6 +186,9 @@ axios.interceptors.response.use(
       rejected: false,
     });
 
+    if (config.url.indexOf('/p/c/login') !== -1) {
+      window.sessionStorage.setItem('loginStatus', true);
+    }
     if (config.url.indexOf('/p/cs/getSubSystems') !== -1) {
       if (response.status === 200 && response.data.data.length > 0) {
 
@@ -206,6 +209,7 @@ axios.interceptors.response.use(
       }));
       delete pendingRequestMap[requestMd5];
       if (status === 403) {
+        window.sessionStorage.setItem('loginStatus', false);
         if (getProjectQuietRoutes().indexOf(router.currentRoute.path) === -1) {
           router.push(getTouristRoute());
         }
