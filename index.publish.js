@@ -21,7 +21,6 @@ import DocFile from './src/__component__/docfile/DocFileComponent.vue';
 import { menuClick } from './src/__config__/event.config';
 
 
-
 const validateConfig = config => ({
   isQualified: true,
   message: 'xxx'
@@ -30,8 +29,8 @@ const validateConfig = config => ({
 export default {
   version: '1.8.3',
   temporaryVersion: '2.1.2',
-  packageTime: '2020.04.17.11.07', 
-  user: 'ArkShare',                     
+  packageTime: '2020.04.20.13.09', 
+  user: 'shangfei本地调试包（不可用于发版）',                     
   /**
    * @param projectConfig 项目配置
    * projectConfig: {
