@@ -30,6 +30,7 @@
       :confirm="dialogConfig.confirm"
       :isrefrsh="isrefrsh"
       :action-id="actionId"
+      :obj-tab-action-dialog-config="objTabActionDialogConfig"
       :dialog-component-name="dialogComponentName"
       :obj-list="dialogComponentName?objList:[]"
       @dialogComponentSaveSuccess="dialogComponentSaveSuccess"
@@ -110,6 +111,7 @@
   export default {
     data() {
       return {
+        objTabActionDialogConfig: {}, // 自定义按钮配置
         actionId: null, // 自定义按钮ID
         temporaryStorage: false, // 是否开启暂存
         temporaryStoragePath: '',
@@ -1713,6 +1715,7 @@
         const url = tab.action;
         const index = url.lastIndexOf('/');
         const filePath = url.substring(index + 1, url.length);
+        this.objTabActionDialogConfig = tab;
         this.dialogComponentName = filePath;
       },
       objectEXPORT() { // 导出功能

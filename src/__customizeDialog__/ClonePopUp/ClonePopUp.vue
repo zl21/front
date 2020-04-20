@@ -68,6 +68,10 @@
         type: Array,
         default: () => []
       },
+      objTabActionDialogConfig: {
+        type: Object,
+        default: () => {}
+      },
       actionId: {// 获取自定按钮ID
         type: [Number, String],
         default: () => ''
