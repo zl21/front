@@ -1,7 +1,5 @@
 
-import data from '../treeData/cp_c_inorg';
 
-import router from './router.config';
 import network from '../__utils__/network';
 
 // 需要在配置文件中加入externalTreeDatas配置
@@ -23,9 +21,9 @@ export default {
   C_STORE: () => async () => {
     // ....
     const treeData = {
-      data: [],
-      name: 'ID',
-      placeholder: ''
+      data: [], // 树结构列表数据
+      name: 'ID', // 定义查询参数
+      placeholder: ''// placeholder自定义
     };
     treeData.data = [
       {
@@ -368,39 +366,39 @@ export default {
       },
      
     ];
-    // await 
-    // network.post('api',)
-    //   .then((res) => {
-    //     if (res.data.resultCode === 0) {
-    //       treeData.data = [
-    //         {
-    //           expand: true, // 是否开启
-    //           title: 'ceshi',
-    //           TREENO: 2,
-    //           MIXNAME: '[001]ceshi',
-    //           ECODE: '001',
-    //           RIGHTVALUE: 12,
-    //           ID: 2,
-    //           LEFTVALUE: 1,
-    //           clickNode: true,
-    //           children: [
-    //             {
-    //               title: 'CYX内部组织档案CYX',
-    //               TREENO: 2,
-    //               MIXNAME: '[10001]CYX内部组织档案',
-    //               ECODE: '10001',
-    //               RIGHTVALUE: 7,
-    //               ID: 7,
-    //               CP_C_ORGUP_ID: 2,
-    //               LEFTVALUE: 4,
-    //               lastChild: false,
-    //               expand: true, // 是否开启
-    //             },
-    //           ]
-    //         }
-    //       ];
-    //     }
-    //   });
+    await 
+    network.post('api',)
+      .then((res) => {
+        if (res.data.resultCode === 0) {
+          treeData.data = [
+            {
+              expand: true, // 是否开启
+              title: 'ceshi',
+              TREENO: 2,
+              MIXNAME: '[001]ceshi',
+              ECODE: '001',
+              RIGHTVALUE: 12,
+              ID: 2,
+              LEFTVALUE: 1,
+              clickNode: true,
+              children: [
+                {
+                  title: 'CYX内部组织档案CYX',
+                  TREENO: 2,
+                  MIXNAME: '[10001]CYX内部组织档案',
+                  ECODE: '10001',
+                  RIGHTVALUE: 7,
+                  ID: 7,
+                  CP_C_ORGUP_ID: 2,
+                  LEFTVALUE: 4,
+                  lastChild: false,
+                  expand: true, // 是否开启
+                },
+              ]
+            }
+          ];
+        }
+      });
   
     return treeData;
   }, // return  调用接口，同步请求，返回Promice，可直接复制原1.3框架接口请求逻辑  

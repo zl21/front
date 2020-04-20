@@ -3208,6 +3208,21 @@
 
           if (event.detail.type === 'refresh') {
             this.clickButtonsRefresh();
+            // const query = this.JflowControlField.filter((item) => {
+            //   if (item.tableId === this.tableId) {
+            //     return item;
+            //   } 
+            // });
+            // const oUl = document.querySelector('.burgeon-tabs-panels-nav');
+            // if (query && oUl) {
+            //   for (let i = 0; i < oUl.children.length; i++) {
+            //     this.tabPanel.forEach((item) => {
+            //       if (Number(query) === item.tableid && item.tabledesc === oUl.children[i].innerText) {
+            //         oUl.children[i].click();
+            //       }
+            //     });
+            //   }
+            // }
           }
 
           if (event.detail.type === 'save') {
