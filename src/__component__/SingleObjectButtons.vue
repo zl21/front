@@ -345,9 +345,9 @@
         
       }),
       currentTabIndex() {
-        if (this.WebConf && this.WebConf.isCustomizeTab && this.objectType === 'horizontal') {
-          return this.tabCurrentIndex + 1;
-        } 
+        // if (this.WebConf && this.WebConf.isCustomizeTab && this.objectType === 'horizontal') {
+        //   return this.tabCurrentIndex + 1;
+        // } 
         return this.tabCurrentIndex;
       },
       watermarkImg() { // 匹配水印图片路径
@@ -622,7 +622,7 @@
           this.$loading.hide(this.tableName);
         }
       },
-      dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作
+      dialogComponentSaveSuccess(value) { // 自定义弹框执行确定按钮操作
         if (this.isrefrsh) {
           this.upData();
         }
@@ -1202,16 +1202,16 @@
               }
             } else if (JSON.parse(obj.confirm).desc) {
               const objRes = JSON.parse(JSON.stringify(obj));
-              if (JSON.parse(obj.confirm).isSave && this.testUpdata()) { // 配置isSave以及界面有修改
-                objRes.isrefrsh = false;
-                // type = 'objTabActionSlient';
-                // this.objTabActionSlientData = obj;
-                // this.clickSave({ type });
-              } 
+              // if (JSON.parse(obj.confirm).isSave && this.testUpdata()) { // 配置isSave以及界面有修改
+              //   // objRes.isrefrsh = false;
+              //   // type = 'objTabActionSlient';
+              //   // this.objTabActionSlientData = obj;
+              //   // this.clickSave({ type });
+              // } 
               const title = this.ChineseDictionary.WARNING;
               const contentText = `${JSON.parse(obj.confirm).desc}`;
               this.dialogMessage(title, contentText, objRes);
-            } else if (JSON.parse(obj.confirm).isSave) { // 静默执行保存
+            } else if (JSON.parse(obj.confirm).isSave && this.testUpdata()) { // 静默执行保存
               type = 'objTabActionSlient';
               // if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
               //   const objTabActionSlientData = {
@@ -1223,6 +1223,8 @@
               this.objTabActionSlientData = obj;
               // }
               this.clickSave({ type });
+            } else {
+              this.buttonEvent(obj);
             }
           } else {
             const title = this.ChineseDictionary.WARNING;
@@ -1240,18 +1242,18 @@
           content: contentText,
           showCancel: true,
           onOk: () => {
-            if (obj.confirm && JSON.stringify(obj.confirm) && (JSON.parse(JSON.stringify(obj.confirm)).isSave || JSON.parse(obj.confirm).isSave) && this.testUpdata()) {
-              const type = 'objTabActionSlient';
-              // if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
-              //   const objTabActionSlientData = {
-              //     k: 'data',
-              //     v: obj
-              //   };
-              //   updateSessionObject('objTabActionSlientData', objTabActionSlientData);
-              // } else {
-              this.objTabActionSlientData = obj;
-              // }
-              this.clickSave({ type });
+            if (obj.confirm && obj.confirm.indexOf('{') !== '-1') {
+              try {
+                if (JSON.parse(obj.confirm) && JSON.parse(obj.confirm).isSave && this.testUpdata()) {
+                  const type = 'objTabActionSlient';
+                    this.objTabActionSlientData = obj;
+                  this.clickSave({ type });
+                } else { // 无修改值时
+                  this.errorconfirmDialog(obj);
+                }
+              } catch (error) {
+                this.errorconfirmDialog(obj);
+              }
             } else {
               this.errorconfirmDialog(obj);
             }
@@ -1468,7 +1470,7 @@
           const obj = {   
             name: '保存',
             eName: this.saveInfo.name,
-            requestUrlPath: this.saveInfo.path 
+            requestUrlPath: this.saveInfo.paths 
           };
           this.objectSave(obj);
         }
@@ -1682,6 +1684,7 @@
             this.$Modal.fcSuccess(data);
             if (tab.isrefrsh) {
               // 左右结构子表时，接收不到主表的表单监听，需要关闭loading
+              // this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
               if (this.objectType === 'horizontal') {
                 const itemNames = this.itemNameGroup.map((c) => {
                   if (c.tableName !== this.tableName) {
@@ -1692,9 +1695,10 @@
                   this.$loading.hide(this.tableName);
                 }
               }
+
               this.upData();
             } else {
-              this.upData();
+              // this.upData();
               this.$loading.hide(this.tableName);
             }
           }, () => {
@@ -2004,16 +2008,16 @@
             deleteFromSessionObject('routeMapRecord', keepAliveModuleName);
           }
           this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true });
+          this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName });
         } else if (routeMapRecordForSingleObject[currentPath]) {
           router.push(routeMapRecordForSingleObject[currentPath]);
           this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true });
+          this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName });
           // this.clickButtonsRefresh();
         } else if (routeMapRecordForSingleObjectNew) {
           router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectNew]);
           this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true });
+          this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName });
           // this.clickButtonsRefresh();
         } else if (routeMapRecordForListNew.to) { // 动态路由（新增返回）
           const param = {
@@ -2032,11 +2036,11 @@
           }
           window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
           this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true });
+          this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName });
         } else if (routeMapRecordForSingleObjectModify) { // 单对象动态路由新增以及复制保存后跳转到编辑界面的返回需回到动态路由对应的界面
           router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectModify]);
           this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true });
+          this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName });
         } else if (routeMapRecordForListModify.to) { // 列表动态路由（新增/复制保存成功后跳转到单对象界面执行返回操作）
           const param = {
             type: tabUrl,
@@ -2050,7 +2054,7 @@
           updateSessionObject('dynamicRoutingIsBackForDelete', deleteValue);
           window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
           this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true });
+          this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName });
         } else {
           const param = {
             tableId,
@@ -3166,6 +3170,12 @@
           } else if (typeof (this.saveCallBack) === 'function') {
             this.saveCallBack();
             this.saveCallBack = null;
+            const saveEventAfterData = {
+              k: 'type',
+              v: {}
+            };
+            updateSessionObject('saveEventAfter', saveEventAfterData);
+            this.saveEventAfter = '';
           } else { // 保存后的保存成功提示信息
             const message = this.buttonsData.message;
             this.clearEditData();// 清空store update数据
@@ -3282,7 +3292,11 @@
         const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
         // const dom = document.querySelector(`#${currentTableName}-loading`);
         if (value.detail.hideCopyLoading || value.detail.hideLoadingForButton) {
+          // if (currentTableName) {
           this.$loading.hide(currentTableName);
+          // } else {
+          //   this.$loading.hide(this.instanceRouteQuery.tableName);
+          // }
         }
       },
  

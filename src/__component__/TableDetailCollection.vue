@@ -327,11 +327,13 @@
 
       }),
       currentTabIndex() {
-        if (this.WebConf && this.WebConf.isCustomizeTab && this.type === 'horizontal') {
-          return this.tabCurrentIndex + 1;
-        } else {
-          return this.tabCurrentIndex;
-        }
+        return this.tabCurrentIndex;
+
+        // if (this.WebConf && this.WebConf.isCustomizeTab && this.type === 'horizontal') {
+        //   return this.tabCurrentIndex + 1;
+        // } else {
+        //   return this.tabCurrentIndex;
+        // }
       },
       dynamicRoutingForSinglePage() {
         if (this.itemInfo && this.itemInfo.componentAttribute && this.itemInfo.componentAttribute.buttonsData && this.itemInfo.componentAttribute.buttonsData.data && this.itemInfo.componentAttribute.buttonsData.data.webconf) {
@@ -1023,37 +1025,42 @@
         //   tabIndex = this.tabCurrentIndex;
         // }
         const { itemId, tableName } = this.$route.params;
-        this.getObjectForMainTableForm({
-          table: this.tableName, objid: itemId, tabIndex: this.currentTabIndex
-        });
-        new Promise((resolve, reject) => {
-          this.getObjectTabForMainTable({
-            table: this.tableName, objid: itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: this.pageInfo, resolve, reject
+      
+        if (this.type === 'vertical') { // 上下结构
+          new Promise((resolve, reject) => {
+            this.getObjectTabForMainTable({
+              table: tableName, objid: itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: this.pageInfo, resolve, reject
+            });
+          }).then(() => {
           });
-        }).then(() => {
-        });
-        
-       
-        const fixedcolumns = {};
-        if (this.searchCondition) {
-          fixedcolumns[this.searchCondition] = this.searchInfo;
-        }
-        const params = {
-          table: tableName,
-          objid: itemId,
-          refcolid: this.tabPanel[this.currentTabIndex].refcolid,
-          searchdata: {
-            column_include_uicontroller: true,
-            startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
-            range: this.pageInfo.pageSize,
-            fixedcolumns
+          this.getObjectForMainTableForm({
+            table: tableName, objid: itemId, tabIndex: this.currentTabIndex
+          });
+        } else { //  左右结构
+          this.getObjectForMainTableForm({
+            table: tableName, objid: itemId, tabIndex: this.currentTabIndex
+          });
+          const fixedcolumns = {};
+          if (this.searchCondition) {
+            fixedcolumns[this.searchCondition] = this.searchInfo;
           }
-        };
-        if (this.currentOrderList.length > 0) {
-          // 如果没有排序则不传该参数
-          params.searchdata.orderby = this.currentOrderList;
+          const params = {
+            table: tableName,
+            objid: itemId,
+            refcolid: this.tabPanel[this.currentTabIndex].refcolid,
+            searchdata: {
+              column_include_uicontroller: true,
+              startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
+              range: this.pageInfo.pageSize,
+              fixedcolumns
+            }
+          };
+          if (this.currentOrderList.length > 0) {
+            // 如果没有排序则不传该参数
+            params.searchdata.orderby = this.currentOrderList;
+          }
+          this.getObjectTableItemForTableData(params);
         }
-        this.getObjectTableItemForTableData(params);
       },
       clearDialogComponentName() {
         this.dialogComponentName = null;

@@ -286,6 +286,14 @@ export default {
     });
   },
   emptyTabs(state) {
+    state.JflowControlField.map((item, index) => {
+      state.openedMenuLists.map((openedMenuList) => {
+        const openedMenuListId = openedMenuList.keepAliveModuleName.split('.')[2];
+        if (item.tableId === openedMenuListId) {
+          state.JflowControlField.splice(index, 1);
+        }
+      });
+    });
     state.openedMenuLists = [];
     state.keepAliveLists = [];
     state.activeTab = {};
@@ -294,6 +302,7 @@ export default {
     window.sessionStorage.removeItem('addRouteToEditor');
     window.sessionStorage.removeItem('routeMapRecord');
     window.sessionStorage.removeItem('routeMapRecordForSingleObject');
+  
     // 清空updataTreeId
     removeSessionObject('TreeId');
   },
@@ -313,6 +322,15 @@ export default {
     // 关闭当前tab时,如果当前列表界面时树形结构列表界面，需清楚对应的treeID
     deleteFromSessionObject('TreeId', tab.tableName);
 
+    // 关闭tab时需清楚jflow配置的对应表
+    deleteFromSessionObject('TreeId', tab.tableName);
+    const openedMenuListId = tab.keepAliveModuleName.split('.')[2];
+
+    state.JflowControlField = state.JflowControlField.filter((item) => {
+      if (item.tableId !== openedMenuListId) {
+        return item;
+      }
+    });
     const tabRouteFullPath = tab.routeFullPath;
 
     // 删除规则一：关闭页签时，菜单跳转到单对象后新增保存跳转到编辑界面，清除session中存储的对应关系。

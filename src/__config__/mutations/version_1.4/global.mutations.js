@@ -232,6 +232,7 @@ export default {
     state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('keepAliveLabelMaps'));
     state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
   },
+  
   increaseLinkUrl(state, { linkId, linkUrl }) {
     const linkType = {};
     linkType[linkId] = linkUrl;
@@ -300,6 +301,15 @@ export default {
     });
   },
   emptyTabs(state) {
+    state.JflowControlField.map((item, index) => {
+      state.openedMenuLists.map((openedMenuList) => {
+        const openedMenuListId = openedMenuList.keepAliveModuleName.split('.')[2];
+        if (item.tableId === openedMenuListId) {
+          state.JflowControlField.splice(index, 1);
+        }
+      });
+    });
+
     state.openedMenuLists = [];
     state.keepAliveLists = [];
     state.activeTab = {};
@@ -308,7 +318,7 @@ export default {
     window.sessionStorage.removeItem('addRouteToEditor');
     window.sessionStorage.removeItem('routeMapRecord');
     window.sessionStorage.removeItem('routeMapRecordForSingleObject');
- 
+  
     // 清空updataTreeId
     removeSessionObject('TreeId');
   },
@@ -335,8 +345,14 @@ export default {
     //   v: item.ID
     // };
     deleteFromSessionObject('TreeId', tab.tableName);
+    const openedMenuListId = tab.keepAliveModuleName.split('.')[2];
+    state.JflowControlField = state.JflowControlField.filter((item) => {
+      if (item.tableId !== openedMenuListId) {
+        return item;
+      }
+    });
+
     
-   
     // window.sessionStorage.removeItem('dynamicRoutingIsBack');// 清除动态路由返回标记
 
     const tabRouteFullPath = tab.routeFullPath;

@@ -1364,7 +1364,7 @@
             expression = current.item.validate.hidecolumn.expression;
           }
           if (expression !== '=') {
-            return eval(val + expression + refval);
+            return eval(val.replace(/\s+/g, '') + expression + refval.replace(/\s+/g, ''));
           }
          
 
@@ -2397,7 +2397,10 @@
           const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
           const dom = document.querySelector(`#${currentTableName}-loading`);
           if (!dom && this.from === 'singlePage') {
-            this.$loading.show(this.tableName);
+            // this.$route.params.tableName！==currentTableName说明调用刷新时，路由已切换到其它tab,此时不需要加loading
+            if (this.$route.params.tableName === currentTableName) {
+              this.$loading.show(this.tableName);
+            }
           }
         }
       }

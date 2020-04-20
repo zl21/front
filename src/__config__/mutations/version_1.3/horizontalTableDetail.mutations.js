@@ -270,7 +270,9 @@ export default {
                       }
                     }
                   } else if (b.valuedata) {
-                    if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') { // 外键类型要特殊整合
+                    if (b.display === 'doc') {
+                      copySaveDataForParam[b.colname] = JSON.parse(b.valuedata);
+                    } else if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') { // 外键类型要特殊整合
                       copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
                     } else if (b.fkdisplay === 'mop') {
                       try {
@@ -309,7 +311,9 @@ export default {
                 }
               }
             } else if (b.valuedata) {
-              if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') { // 外键类型要特殊整合
+              if (b.display === 'doc') {
+                copySaveDataForParam[b.colname] = JSON.parse(b.valuedata);
+              } else if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') { // 外键类型要特殊整合
                 copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
               } else if (b.fkdisplay === 'mop') {
                 try {

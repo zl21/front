@@ -24,7 +24,8 @@ export default {
     // ....
     const treeData = {
       data: [],
-      name: 'ID'
+      name: 'ID',
+      placeholder: ''
     };
     treeData.data = [
       {
@@ -34,7 +35,7 @@ export default {
         MIXNAME: '[001]ceshi',
         ECODE: '001',
         RIGHTVALUE: 12,
-        ID: 2,
+        ID: null,
         LEFTVALUE: 1,
         clickNode: true,
         children: [
@@ -44,7 +45,7 @@ export default {
             MIXNAME: '[10001]CYX内部组织档案',
             ECODE: '10001',
             RIGHTVALUE: 7,
-            ID: 7,
+            ID: null,
             CP_C_ORGUP_ID: 2,
             LEFTVALUE: 4,
             lastChild: false,
@@ -56,7 +57,7 @@ export default {
                 MIXNAME: '[011]销售部',
                 ECODE: '011',
                 RIGHTVALUE: 6,
-                ID: 13,
+                ID: null,
                 CP_C_ORGUP_ID: 7,
                 LEFTVALUE: 5,
                 lastChild: true,
@@ -72,7 +73,7 @@ export default {
             MIXNAME: '[11]11',
             ECODE: '11',
             RIGHTVALUE: 9,
-            ID: 10,
+            ID: null,
             CP_C_ORGUP_ID: 2,
             LEFTVALUE: 8,
             lastChild: false,
@@ -86,7 +87,7 @@ export default {
             MIXNAME: '[12]12',
             ECODE: '12',
             RIGHTVALUE: 3,
-            ID: 1,
+            ID: null,
             CP_C_ORGUP_ID: 2,
             LEFTVALUE: 2,
             lastChild: false,
@@ -102,7 +103,7 @@ export default {
             MIXNAME: '[LINLIN]llnlin',
             ECODE: 'LINLIN',
             RIGHTVALUE: 11,
-            ID: 12,
+            ID: null,
             CP_C_ORGUP_ID: 2,
             LEFTVALUE: 10,
             lastChild: true,
@@ -157,7 +158,7 @@ export default {
             MIXNAME: '[11]11',
             ECODE: '11',
             RIGHTVALUE: 9,
-            ID: 10,
+            ID: null,
             CP_C_ORGUP_ID: 2,
             LEFTVALUE: 8,
             lastChild: false,
@@ -171,7 +172,7 @@ export default {
             MIXNAME: '[12]12',
             ECODE: '12',
             RIGHTVALUE: 3,
-            ID: 1,
+            ID: null,
             CP_C_ORGUP_ID: 2,
             LEFTVALUE: 2,
             lastChild: false,
@@ -187,7 +188,7 @@ export default {
             MIXNAME: '[LINLIN]llnlin',
             ECODE: 'LINLIN',
             RIGHTVALUE: 11,
-            ID: 12,
+            ID: 666,
             CP_C_ORGUP_ID: 2,
             LEFTVALUE: 10,
             lastChild: true,

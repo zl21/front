@@ -106,15 +106,13 @@
  
       tabClick(index) {
         let flag = false;
-   
+        if (this.isRequest.length > 0 && this.isRequest[index] === true) {
+          flag = true;
+        }
         if (this.WebConf && this.WebConf.isCustomizeTab) {
           index += 1;
         }
         this.updateTabCurrentIndex(index);
-
-        if (this.isRequest.length > 0 && this.isRequest[index] === true) {
-          flag = true;
-        }
         DispatchEvent('tabClick', {
           detail: {
             data: this.tabPanel[index]
@@ -176,7 +174,12 @@
             }
           }
         }
-        this.isRequestUpdata({ tabPanel: this.tabPanels, index });
+        if (this.WebConf && this.WebConf.isCustomizeTab) {
+          const i = index - 1;
+          this.isRequestUpdata({ tabPanel: this.tabPanels, index: i });
+        } else {
+          this.isRequestUpdata({ tabPanel: this.tabPanels, index });
+        }
       }, // tab切换触发的方法
       getMainTable(index, isNotFirstRequest) {
         const { tableName, itemId } = this.$route.params;
@@ -186,6 +189,12 @@
             table: tableName, objid: itemId, tabIndex: index, isNotFirstRequest, isFirstRequest: true, resolve, reject
           });
         }).then((resData) => {
+          // if (resData.webconf && resData.webconf.isCustomizeTab) {
+          //   console.log(111, this.tabPanels);
+          //   this.isRequestUpdata({ tabPanel: this.tabPanels, index: 1 });
+          // } else {
+          this.isRequestUpdata({ tabPanel: this.tabPanels, index: 0 });
+          // }
           DispatchEvent('uploadCustomTab', {
             detail: {
               data: resData
@@ -199,7 +208,6 @@
     },
     mounted() {
       this.getMainTable(this.tabCurrentIndex, false);
-      this.isRequestUpdata({ tabPanel: this.tabPanels, index: 0 });
       setTimeout(() => {
         const query = this.$route.query.ACTIVE;
         const oUl = document.querySelector('.ark-tabs-panels-nav');

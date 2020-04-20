@@ -31,8 +31,8 @@ const validateConfig = config => ({
 export default {
   version: '1.8.3',
   temporaryVersion: '2.1.2',
-  packageTime: '2020.04.14.11.34', 
-  user: 'shangfei',                     
+  packageTime: '2020.04.17.11.07', 
+  user: 'ArkShare',                     
   /**
    * @param projectConfig 项目配置
    * projectConfig: {
