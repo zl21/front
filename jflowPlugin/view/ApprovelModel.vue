@@ -573,7 +573,6 @@
         param.businessCode = global.routeInfo.itemId;
         param.businessType = global.routeInfo.tableId;
         param.businessName = global.routeInfo.tableName;
-        param.moduleId = global.jflowInfo.moduleId;
         param.description = this.returnContent; // 审批意见
         network.post(this.modalConfig.url, param).then((res) => {
           window.jflowPlugin.open({ control: false });
