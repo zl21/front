@@ -254,7 +254,7 @@ function initiateLaunch(data) { // 业务系统流程发起
             mask: true
           });
         }
-        jflowButtons(); // 重新获取单据信息
+
         DispatchEvent('jflowClick', {
           detail: {
             type: 'refresh'
