@@ -524,12 +524,6 @@
         window.jflowPlugin.open({ control: false });
       },
       Agree() {
-        // const children = document.getElementsByClassName('operate-btn')[0].children;
-        // for (const child of children) {
-        //   if (child.innerText.trim() !== '同意') {
-        //     child.setAttribute('disabled', 'disabled');
-        //   }
-        // }
         const param = {};
         param.instanceId = global.jflowInfo.instanceId;
         param.userId = global.userInfo.id;
@@ -560,12 +554,6 @@
       },
       // 驳回
       back() {
-        // const children = document.getElementsByClassName('operate-btn')[0].children;
-        // for (const child of children) {
-        //   if (child.innerText.trim() !== '驳回') {
-        //     child.setAttribute('disabled', 'disabled');
-        //   }
-        // }
         const param = {};
         param.instanceId = global.jflowInfo.instanceId;
         param.userId = global.userInfo.id;
@@ -596,12 +584,6 @@
       },
       // 转派
       delegate() {
-        // const children = document.getElementsByClassName('operate-btn')[0].children;
-        // for (const child of children) {
-        //   if (child.innerText.trim() !== '转派') {
-        //     child.setAttribute('disabled', 'disabled');
-        //   }
-        // }
         const param = {};
         param.instanceId = global.jflowInfo.instanceId;
         param.userId = global.userInfo.id;

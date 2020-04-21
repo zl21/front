@@ -56,15 +56,13 @@ function thirdlogin() { // 三方登录  获取accessToken
   pid:主表id
   flag: 是否刷新按钮
   active: 当前表表名
-  isApprover: 消息中心参数
 */
 async function jflowButtons() { // 获取jflow单据信息
   return await new Promise((resolve) => {
-    network.post('/jflow/p/cs/task/buttons', {
+    network.post('/jflow/p/cs/task/approveAction', {
       businessCode: global.routeInfo.itemId,
       userId: global.userInfo.id,
-      businessType: global.routeInfo.tableId,
-      isApprover: window.vm.$router.currentRoute.query.isApprover
+      businessType: global.routeInfo.tableId
     })
       .then((res) => {
         if (res.data.resultCode === 0) {
