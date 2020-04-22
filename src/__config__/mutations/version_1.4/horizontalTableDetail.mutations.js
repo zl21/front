@@ -270,7 +270,7 @@ export default {
             tabwebactButton = 'objtabbutton';
           }
 
-          if (componentAttribute.buttonsData.data.tabwebact && componentAttribute.buttonsData.data.tabwebact[tabwebactButton].length > 0) {
+          if (componentAttribute.buttonsData.data.tabwebact && componentAttribute.buttonsData.data.tabwebact[tabwebactButton] && componentAttribute.buttonsData.data.tabwebact[tabwebactButton].length > 0) {
             let objtabbuttons = [];
             if (isMainTable) { // 配置的为主表
               objtabbuttons = componentAttribute.buttonsData.data.tabwebact.objbutton;
