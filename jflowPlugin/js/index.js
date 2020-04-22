@@ -6,7 +6,7 @@
 import Vue from 'vue';
 import { DispatchEvent } from '../utils/dispatchEvent';
 import CreateButton from './button';
-import todoList from './todoList';
+import websocketInit from './websocket';
 import '../utils/dateApi';
 import network from '../utils/network';
 import mainComponent from '../view/mainComponent';
@@ -277,6 +277,7 @@ function initLists() { // init
       });
       thirdlogin();
       createComponent();
+      websocketInit();
 
       // 准备业务系统的监听
       window.conversionJflow = decryptionJflow; // 解密方法
@@ -294,7 +295,7 @@ const install = function install(Vue, options = {}) {
     globalChange({
       userInfo: event.detail.userInfo
     });
-    todoList();
+    websocketInit();
   });
   // 获取业务系统数据
   window.addEventListener('updataCurrentTableDetailInfo', (event) => {  
