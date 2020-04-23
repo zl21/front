@@ -1,5 +1,5 @@
 // 处理协同操作以及待办
-import { global, globalChange } from '../utils/global.config';
+import { global } from '../utils/global.config';
 import { BacklogData } from './todoList';
 
 let websock = null; // websocket实例
