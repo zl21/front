@@ -30,6 +30,7 @@
       :confirm="dialogConfig.confirm"
       :isrefrsh="isrefrsh"
       :action-id="actionId"
+      :obj-tab-action-dialog-config="objTabActionDialogConfig"
       :dialog-component-name="dialogComponentName"
       :obj-list="dialogComponentName?objList:[]"
       @dialogComponentSaveSuccess="dialogComponentSaveSuccess"
@@ -111,6 +112,7 @@
     data() {
       return {
         saveCallBack: null, // 保存成功后回调
+        objTabActionDialogConfig: {}, // 自定义按钮配置
         actionId: null, // 自定义按钮ID
         temporaryStorage: false, // 是否开启暂存
         temporaryStoragePath: '',
@@ -1246,7 +1248,7 @@
               try {
                 if (JSON.parse(obj.confirm) && JSON.parse(obj.confirm).isSave && this.testUpdata()) {
                   const type = 'objTabActionSlient';
-                    this.objTabActionSlientData = obj;
+                  this.objTabActionSlientData = obj;
                   this.clickSave({ type });
                 } else { // 无修改值时
                   this.errorconfirmDialog(obj);
@@ -1718,6 +1720,7 @@
         const url = tab.action;
         const index = url.lastIndexOf('/');
         const filePath = url.substring(index + 1, url.length);
+        this.objTabActionDialogConfig = tab;
         this.dialogComponentName = filePath;
       },
       objectEXPORT() { // 导出功能
@@ -3224,6 +3227,21 @@
           if (event.detail.type === 'refresh') {
             const type = 'jflow';
             this.clickButtonsRefresh(type);
+            // const query = this.JflowControlField.filter((item) => {
+            //   if (item.tableId === this.tableId) {
+            //     return item;
+            //   } 
+            // });
+            // const oUl = document.querySelector('.burgeon-tabs-panels-nav');
+            // if (query && oUl) {
+            //   for (let i = 0; i < oUl.children.length; i++) {
+            //     this.tabPanel.forEach((item) => {
+            //       if (Number(query) === item.tableid && item.tabledesc === oUl.children[i].innerText) {
+            //         oUl.children[i].click();
+            //       }
+            //     });
+            //   }
+            // }
           }
 
           if (event.detail.type === 'save') {

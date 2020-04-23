@@ -30,6 +30,7 @@
         :obj-list="objList"
         :action-id="actionId"
         :item-id="itemId"
+        :obj-tab-action-dialog-config="objTabActionDialogConfig"
         @setTitle="setTitle"
         @closeActionDialog="closeActionDialog"
         @clearSelectIdArray="clearSelectIdArray"
@@ -49,6 +50,10 @@
     props: {
       idArray: {// 获取ID用于多选
         type: [Array, Object],
+        default: () => {}
+      },
+      objTabActionDialogConfig: {// 当前自定义按钮配置信息
+        type: [Object],
         default: () => {}
       },
       itemId: {// 获取当前子表表名

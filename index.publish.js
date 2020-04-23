@@ -14,12 +14,10 @@ import ContentDisplayArea from './src/__component__/ContentDisplayArea';
 import ComAttachFilter from './src/__component__/ComAttachFilter';
 import DownComponent from './src/__component__/DownComponent';
 import WaterMark from './src/__component__/WaterMark';
-import SearchForm from './src/__component__/form/SearchForm';
+import SearchForm from './src/__component__/form/SearchForm';//
 import FilterTree from './src/__component__/Tree/FilterTree';
 import SelectTree from './src/__component__/Tree/SelectTree';
 import DocFile from './src/__component__/docfile/DocFileComponent.vue';
-
-
 import { menuClick } from './src/__config__/event.config';
 
 
@@ -31,8 +29,8 @@ const validateConfig = config => ({
 export default {
   version: '1.8.3',
   temporaryVersion: '2.1.2',
-  packageTime: '2020.04.17.11.07', 
-  user: 'ArkShare',                     
+  packageTime: '2020.04.20.13.09', 
+  user: 'shangfei本地调试包（不可用于发版）',                     
   /**
    * @param projectConfig 项目配置
    * projectConfig: {
