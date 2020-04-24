@@ -36,8 +36,8 @@ function websocketsend(Data) { // 数据发送
 }
 
 function websocketInit() {
-  if (global.localIp && global.userInfo) {
-    const wsuri = 'ws://172.18.34.203:18081/upcoming/user';
+  if (global.msgPushLocation && global.userInfo) {
+    const wsuri = global.msgPushLocation;
     websock = new WebSocket(wsuri);
     websock.onmessage = websocketonmessage;
     websock.onopen = websocketonopen;
