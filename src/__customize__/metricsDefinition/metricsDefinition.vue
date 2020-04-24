@@ -89,14 +89,18 @@
                   @on-change="move('child', idx)"
                 >
                   <ul>
-                    <li
-                      v-for="(item1, i) in item.childList"
-                      :key="i"
-                    >
-                      <Checkbox :label="item1.ID">
-                        {{ item1.DESCRIPTION }}
-                      </Checkbox>
-                    </li>
+                    <draggable @update="datadragEnd"  v-model="item.childList" v-bind="dragOptions">
+                      <transition-group>
+                        <li
+                                v-for="(item1, i) in item.childList"
+                                :key="i"
+                        >
+                          <Checkbox :label="item1.ID">
+                            {{ item1.DESCRIPTION }}
+                          </Checkbox>
+                        </li>
+                      </transition-group>
+                    </draggable>
                   </ul>
                 </CheckboxGroup>
               </div>
@@ -240,10 +244,18 @@
 <script>
   import network, { urlSearchParams } from '../../__utils__/network';
   import { getSeesionObject } from '../../__utils__/sessionStorage';
-
+  import draggable from 'vuedraggable'
   export default {
     data() {
       return {
+        editable:true,
+        dragOptions: { animation: 500 },
+        lists: [
+          { name: "John"},
+          { name: "Joao"},
+          { name: "Jean"},
+          { name: "Gerard"}
+        ],
         reportId: 1,
         adTableInfo: {},
         list: [],
@@ -413,12 +425,32 @@
         ]
       };
     },
+    components: {
+      draggable
+    },
     mounted() {
       this.reportId = Object.values(getSeesionObject('undataFromPageCustomizeButtonInfo'))[0]
         .itemId || 1;
       this.getList();
     },
+    computed: {
+    /*  dragOptions() {
+        return {
+          animation: 0,
+          group: "description",
+          disabled: !this.editable,
+          ghostClass: "ghost"
+        };
+      },*/
+    },
     methods: {
+      // 顺序更新执行
+      datadragEnd(evt) {
+        evt.preventDefault();
+        this.childBoxList=JSON.parse(JSON.stringify(this.childBoxList));// 解决拖拽之后CheckBox状态不更新问题
+        console.log(`拖动前的索引 :${evt.oldIndex}`)
+        console.log(`拖动后的索引 :${evt.newIndex}`)
+      },
       getList() {
         network
           .get('/p/cs/rpt/cxtab/v1/selectCubeReportConfig', {
@@ -630,6 +662,9 @@
         padding: 8px 16px;
         line-height: 28px;
         overflow: scroll;
+     /*   label {
+          cursor: move;
+        }*/
       }
     }
     .parent-box {
