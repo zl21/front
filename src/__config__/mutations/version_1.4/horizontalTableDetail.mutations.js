@@ -3,6 +3,9 @@ import { enableJflow, custommizedJflow } from '../../../constants/global';
 
 
 export default {
+  updataSinglePageButtonsConfigForMainTable(state, data) {
+    state.singlePageMainTableButtonData = data;
+  },
   updataClickSave(state, func) {
     state.clickSaveFunction = func;
   },
@@ -338,20 +341,18 @@ export default {
                   }
                 }
               } else { // 处理子表
-                setTimeout(() => {
-                  if (JflowControlFieldData[0].jflowButton && JflowControlFieldData[0].jflowButton.length > 0) {
-                    // 如果jflowButton配置了按钮，则将元数据返回按钮删除，显示jflow按钮
-                    if (tab.componentAttribute.buttonsData.data.tabcmd && tab.componentAttribute.buttonsData.data.tabcmd.prem && tab.componentAttribute.buttonsData.data.tabcmd.prem.length > 0) {
-                      tab.componentAttribute.buttonsData.data.tabcmd.prem = tab.componentAttribute.buttonsData.data.tabcmd.prem.map((item) => {
-                        item = false;
-                        return item;
-                      });
-                    }
+                if (JflowControlFieldData[0].jflowButton && JflowControlFieldData[0].jflowButton.length > 0) {
+                  // 如果jflowButton配置了按钮，则将元数据返回按钮删除，显示jflow按钮
+                  if (tab.componentAttribute.buttonsData.data.tabcmd && tab.componentAttribute.buttonsData.data.tabcmd.prem && tab.componentAttribute.buttonsData.data.tabcmd.prem.length > 0) {
+                    tab.componentAttribute.buttonsData.data.tabcmd.prem = tab.componentAttribute.buttonsData.data.tabcmd.prem.map((item) => {
+                      item = false;
+                      return item;
+                    });
                   }
-                  if (tab.componentAttribute.buttonsData.data.tabwebact && tab.componentAttribute.buttonsData.data.tabwebact.objtabbutton && tab.componentAttribute.buttonsData.data.tabwebact.objtabbutton.length > 0) {
-                    tab.componentAttribute.buttonsData.data.tabwebact.objtabbutton = [];// 将子表表自定义按钮置为空
-                  }
-                }, 500);
+                }
+                if (tab.componentAttribute.buttonsData.data.tabwebact && tab.componentAttribute.buttonsData.data.tabwebact.objtabbutton && tab.componentAttribute.buttonsData.data.tabwebact.objtabbutton.length > 0) {
+                  tab.componentAttribute.buttonsData.data.tabwebact.objtabbutton = [];// 将子表表自定义按钮置为空
+                }
               }
             }
           });

@@ -2,6 +2,9 @@ import router from '../../router.config';
 import { enableJflow, custommizedJflow } from '../../../constants/global';
 
 export default {
+  updataSinglePageButtonsConfigForMainTable(state, data) {
+    state.singlePageMainTableButtonData = data;
+  },
   updataClickSave(state, func) {
     state.clickSaveFunction = func;
   },
