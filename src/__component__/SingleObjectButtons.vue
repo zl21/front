@@ -1216,7 +1216,7 @@
           onOk: () => {
             if (obj.confirm && obj.confirm.indexOf('{') !== '-1') {
               try {
-                if (JSON.parse(obj.confirm) && JSON.parse(obj.confirm).isSave && this.testUpdata()) {
+                if (JSON.parse(obj.confirm) && JSON.parse(obj.confirm).isSave && this.verifyRequiredInformation) {
                   console.log(2, JSON.parse(obj.confirm).isSave);
                   const type = 'objTabActionSlient';
                   if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
@@ -2762,21 +2762,23 @@
           if (this.updateData[itemName].add && this.updateData[itemName].add[itemName]) {
             itemAdd = Object.values(this.updateData[itemName].add[itemName]);
           }
-          if (itemAdd.length > 0 && itemModify.length > 0) { // 同时新增子表以及修改子表
-            if (this.verifyRequiredInformation() && this.itemTableCheckFunc()) { // 横向结构保存校验
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
+          if (this.verifyRequiredInformation()) {
+            if (itemAdd.length > 0 && itemModify.length > 0) { // 同时新增子表以及修改子表
+              if (this.verifyRequiredInformation() && this.itemTableCheckFunc()) { // 横向结构保存校验
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
+              }
             }
-          }
-          if (itemAdd.length > 0 && itemModify.length < 1) { // 新增子表
-            if (this.verifyRequiredInformation()) { // 横向结构保存校验
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
+            if (itemAdd.length > 0 && itemModify.length < 1) { // 新增子表
+              if (this.verifyRequiredInformation()) { // 横向结构保存校验
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
+              }
             }
-          }
-          if (itemModify.length > 0 && itemAdd.length < 1) { // 子表表格编辑修改
-            if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) {
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
-            } else if (this.itemTableCheckFunc()) {
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+            if (itemModify.length > 0 && itemAdd.length < 1) { // 子表表格编辑修改
+              if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) {
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+              } else if (this.itemTableCheckFunc()) {
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+              }
             }
           }
         }
@@ -2851,6 +2853,15 @@
                       }
                     }
                   }
+                } else if (this.itemInfo.tabrelation === '1:1') {
+                  const itemMessageTip = itemCheckedInfo.messageTip;
+                  if (itemMessageTip) {
+                    if (itemMessageTip.length > 0) {
+                      this.$Message.warning(itemMessageTip[0]);
+                      itemCheckedInfo.validateForm.focus();
+                      return false;
+                    }
+                  }
                 } else if (Object.values(this.itemCurrentParameter.add[this.itemName]).length > 0) { // 处理当子表填入一个必填项值时，其余必填项必须填写
                   const itemMessageTip = itemCheckedInfo.messageTip;
                   if (itemMessageTip) {
@@ -2862,6 +2873,7 @@
                   }
                 }
               } else if (itemCheckedInfo) {
+                debugger;
                 const itemMessageTip = itemCheckedInfo.messageTip;
                 if (itemMessageTip) {
                   if (itemMessageTip.length > 0) {
@@ -3315,6 +3327,7 @@
       
       this.updataClickSave(this.clickSave);
       this.testUpdataValue(this.testUpdata);
+      this.updatavVerifyRequiredInformation(this.verifyRequiredInformation);
       
       this.dataArray.back = this.backButton;
       if (this.jflowButton.length > 0) {

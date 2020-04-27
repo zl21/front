@@ -123,7 +123,8 @@ export default () => ({
         'updateButtonGetActionData',
         'updateRefreshButtonForJflow',
         'updataClickSave',
-        'testUpdataValue'
+        'testUpdataValue',
+        'updatavVerifyRequiredInformation'
       ]),
   },
   beforeDestroy() {
