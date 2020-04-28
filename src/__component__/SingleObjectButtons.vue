@@ -1217,7 +1217,6 @@
             if (obj.confirm && obj.confirm.indexOf('{') !== '-1') {
               try {
                 if (JSON.parse(obj.confirm) && JSON.parse(obj.confirm).isSave && this.verifyRequiredInformation) {
-                  console.log(2, JSON.parse(obj.confirm).isSave);
                   const type = 'objTabActionSlient';
                   if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
                     const objTabActionSlientData = {
@@ -1765,8 +1764,6 @@
 
         const promise = new Promise((resolve, reject) => {
           this.getExportQueryForButtons({ OBJ, resolve, reject });
-          console.log(4);
-
           this.$loading.show(this.tableName);
         });
         promise.then(() => {
