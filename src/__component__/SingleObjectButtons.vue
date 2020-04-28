@@ -877,7 +877,7 @@
             this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
             new Promise((resolve, reject) => {
               this.getObjectTabForMainTable({
-                table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
+                itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
               });
             }).then(() => {
             });
@@ -885,7 +885,7 @@
             this.getInputForitemForChildTableForm({ table: tablename, tabIndex: this.currentTabIndex, tabinlinemode });
             const promise = new Promise((resolve, reject) => {
               this.getObjectTabForChildTableButtons({
-                maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex: this.currentTabIndex, resolve, reject
+                itemInfo: this.itemInfo, maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex: this.currentTabIndex, resolve, reject
               });
             });
 
@@ -903,10 +903,10 @@
             });
           } else if (tabrelation === '1:1') {
             this.getObjectTabForChildTableButtons({
-              maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex: this.currentTabIndex
+              itemInfo: this.itemInfo, maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex: this.currentTabIndex
             });
             this.getItemObjForChildTableForm({
-              table: tablename, objid: this.itemId, refcolid, tabIndex: this.currentTabIndex
+              itemInfo: this.itemInfo, table: tablename, objid: this.itemId, refcolid, tabIndex: this.currentTabIndex
             });
           }
         } else { // 纵向布局
@@ -941,7 +941,7 @@
           // } else {
           new Promise((resolve, reject) => {
             this.getObjectTabForMainTable({
-              table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
+              itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
             });
           }).then(() => {
           });
@@ -3391,6 +3391,7 @@
       if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
         this.buttonsReorganization(this.tabcmd);
       }
+      this.dataArray.refresh = this.refreshButtons;
       this.waListButtons(this.tabwebact);
       if (this.jflowPluginDataArray) {
         this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;

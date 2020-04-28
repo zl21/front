@@ -45,39 +45,39 @@
         }
         return '';
       },
-      objReadonlyForJflow() {
-        // 判断jflow配置中包含当前表，则将当前表（子表及主表）置为不可编辑
-        if (enableJflow() && custommizedJflow()) {
-          let flag = false;
-          this.tabPanel.map((item) => {
-            if (this.JflowControlField.length > 0) {
-              this.JflowControlField.map((jflowData) => {
-                // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
-                if (item.tableid === Number(jflowData.itemTableId) && (item.tabrelation === '1:1' || item.tableid === this.$route.params.tableId)) {
-                  // jflow配置中需要修改字段的表为主表时item.tabrelation !== '1:1', 则可进入此判断;
-                  flag = true;
-                } 
-              });
-            }
-          });
-          return flag;
-        }
-        return false;
+      // objReadonlyForJflow() {
+      //   // 判断jflow配置中包含当前表，则将当前表（子表及主表）置为不可编辑
+      //   if (enableJflow() && custommizedJflow()) {
+      //     let flag = false;
+      //     this.tabPanel.map((item) => {
+      //       if (this.JflowControlField.length > 0) {
+      //         this.JflowControlField.map((jflowData) => {
+      //           // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
+      //           if (item.tableid === Number(jflowData.itemTableId) && (item.tabrelation === '1:1' || item.tableid === this.$route.params.tableId)) {
+      //             // jflow配置中需要修改字段的表为主表时item.tabrelation !== '1:1', 则可进入此判断;
+      //             flag = true;
+      //           } 
+      //         });
+      //       }
+      //     });
+      //     return flag;
+      //   }
+      //   return false;
 
-        // if (enableJflow() && custommizedJflow()) {
-        //   let flag = false;
-        //   if (this.JflowControlField.length > 0) {
-        //     this.JflowControlField.map((jflowData) => {
-        //       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
-        //       if (this[INSTANCE_ROUTE_QUERY].tableId === jflowData.tableId) { // 当前单对象界面是否在流程中
-        //         flag = true;
-        //       }
-        //     });
-        //   }
-        //   return flag;
-        // }
-        // return false;
-      },
+      //   // if (enableJflow() && custommizedJflow()) {
+      //   //   let flag = false;
+      //   //   if (this.JflowControlField.length > 0) {
+      //   //     this.JflowControlField.map((jflowData) => {
+      //   //       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
+      //   //       if (this[INSTANCE_ROUTE_QUERY].tableId === jflowData.tableId) { // 当前单对象界面是否在流程中
+      //   //         flag = true;
+      //   //       }
+      //   //     });
+      //   //   }
+      //   //   return flag;
+      //   // }
+      //   // return false;
+      // },
 
       tabPanels() {
         const arr = [];
@@ -91,14 +91,18 @@
               obj.componentAttribute.isactive = this.tabPanel[0].componentAttribute.buttonsData.data.isactive;
               obj.componentAttribute.watermarkimg = this.tabPanel[0].componentAttribute.buttonsData.data.watermarkimg;
               obj.componentAttribute.jflowWaterMark = this.jflowWaterMark;
-              obj.componentAttribute.isMainTable = true;           
-              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.tabPanel[0].componentAttribute.panelData.data.isdefault || this.objReadonlyForJflow;
+              obj.componentAttribute.isMainTable = true;     
+              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.tabPanel[0].componentAttribute.panelData.data.isdefault || item.JflowReadonly;
+            } 
+
+            if (enableJflow() && custommizedJflow()) {
+              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || item.JflowReadonly;
             } else {
-              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.childReadonly || this.objReadonlyForJflow;
+              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.childReadonly;
             }
             obj.componentAttribute.isreftabs = this.tabPanel[0].componentAttribute.buttonsData.data.isreftabs;
             obj.componentAttribute.tableName = item.tablename;
-            obj.componentAttribute.formReadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly;
+            obj.componentAttribute.formReadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || item.JflowReadonly;
             obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
             obj.componentAttribute.itemInfo = item;
             obj.componentAttribute.childTableNames = this.childTableNames;
@@ -183,7 +187,7 @@
                 }
                 new Promise((resolve, reject) => {
                   this.getObjectTabForChildTableButtons({
-                    maintable: tableName, table: tablename, objid: itemId, tabIndex: index, resolve, reject
+                    itemInfo: this.tabPanel[index], maintable: tableName, table: tablename, objid: itemId, tabIndex: index, resolve, reject
                   });
                 }).then(() => {
                   const {
@@ -207,14 +211,14 @@
                 const { tablename, refcolid } = this.tabPanel[index];
                 new Promise((resolve, reject) => {
                   this.getObjectTabForChildTableButtons({
-                    maintable: tableName, table: tablename, objid: itemId, tabIndex: index, resolve, reject
+                    itemInfo: this.tabPanel[index], maintable: tableName, table: tablename, objid: itemId, tabIndex: index, resolve, reject
                   });
                 }).then(() => {
 
                 });
                
                 this.getItemObjForChildTableForm({
-                  table: tablename, objid: itemId, refcolid, tabIndex: index
+                  itemInfo: this.tabPanel[index], table: tablename, objid: itemId, refcolid, tabIndex: index
                 });
               }
             }

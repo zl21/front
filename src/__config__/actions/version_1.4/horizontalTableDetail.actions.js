@@ -2,9 +2,13 @@ import network, { urlSearchParams } from '../../../__utils__/network';
 import getComponentName from '../../../__utils__/getModuleName';
 import { enableJflow } from '../../../constants/global';
 import { DispatchEvent } from '../../../__utils__/dispatchEvent';
+import horizontalMainTableButtons from '../../jflowConfig/horizontalPage/horizontalMainTableButtons.jflowConfig';
+import horizontalItemTableButtons from '../../jflowConfig/horizontalPage/horizontalItemTableButtons.jflowConfig';
+import horizontalMainTableForms from '../../jflowConfig/horizontalPage/horizontalMainTableForm.jflowConfig';
+import horizontalItemTableForm from '../../jflowConfig/horizontalPage/horizontalItemTableForm.jflowConfig';
 
 export default {
-  getObjectTabForMainTable({ commit }, {
+  getObjectTabForMainTable({ commit }, {// 主表获取按钮以及所有tab
     table, objid, type, tabIndex, isNotFirstRequest, moduleName, isFirstRequest, resolve, reject
   }) {
     // 参数说明 table 主表表名，objid列表界面该行数据的id也就是rowid
@@ -15,7 +19,27 @@ export default {
       ismaintable: 'y'
     })).then((res) => {
       if (res.data.code === 0) {
-        const resData = res.data.data;
+        let resData = res.data.data;
+        // 根据jflow配置条件控制按钮以及表单start🍓
+        if (resData.JflowConfigData && resData.JflowConfigData.length > 0) {
+          const JflowConfigData = resData.JflowConfigData[0];
+          const data = {
+            JflowConfigData,
+            resData
+          };
+
+          if (JflowConfigData.itemTableId === JflowConfigData.tableId) { // 配置为主表
+            data.type = 'mainTable';
+          } else { // 配置为子表时，处理主表逻辑
+            data.type = 'itemTable';
+          }
+          resData = horizontalMainTableButtons(data);
+        }
+        commit('updateRefreshButtonForJflow', resData.jflowConfigrefreshButton);// jflow控制刷新按钮显示
+        commit('updataHideTempStorage', resData.isHideTempStorage);// jflow控制暂存按钮显示
+        // 根据jflow配置条件控制按钮以及表单end🍓
+
+        
         commit('updateDefaultButton', JSON.parse(JSON.stringify(res.data.data)));
         if (type === 'copy') {
           resData.type = 'copy';
@@ -45,7 +69,7 @@ export default {
     });
   }, // 获取主表按钮和子表信息
   getObjectTabForChildTableButtons({ commit }, {
-    maintable, table, objid, tabIndex, resolve, reject
+    maintable, table, objid, tabIndex, itemInfo, resolve, reject
   }) {
     // 参数说明 maintable主表表名，table 子表表名，objid列表界面该行数据的id也就是rowid
     const id = objid === 'New' ? '-1' : objid;
@@ -56,7 +80,22 @@ export default {
       ismaintable: 'n'
     })).then((res) => {
       if (res.data.code === 0) {
-        const resData = res.data.data;
+        let resData = res.data.data;
+        // 根据jflow配置条件控制按钮以及表单start🍓
+        if (resData.JflowConfigData && resData.JflowConfigData.length > 0) {
+          const JflowConfigData = resData.JflowConfigData[0];
+          const data = {
+            JflowConfigData,
+            resData
+          };
+          if (Number(JflowConfigData.itemTableId) === Number(itemInfo.tableid)) { // 配置为子表
+            data.type = 'itemTable';
+          } else { // 配置为子表时，处理主表逻辑
+            data.type = 'mainTable';
+          }
+          resData = horizontalItemTableButtons(data);
+        }
+        // 根据jflow配置条件控制按钮以及表单end🍓
         if (resData.tabfilter && resData.tabfilter.length > 0) {
           const childTableFixedcolumns = {};
           const tabfilterData = JSON.parse(JSON.stringify(resData));
@@ -97,7 +136,7 @@ export default {
       }
     });
   }, // 获取子表按钮
-  getObjectForMainTableForm({ dispatch, commit }, { table, objid, tabIndex }) {
+  getObjectForMainTableForm({ dispatch, commit }, { table, objid, tabIndex }) { // 获取主表表单
     // 参数说明 table 主表表名，objid列表界面该行数据的id也就是rowid
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/getObject', urlSearchParams({
@@ -105,10 +144,28 @@ export default {
       objid: id
     })).then((res) => {
       if (res.data.code === 0) {
-        const formData = res.data.data;
-        formData.tabIndex = tabIndex;
-        commit('updateCopyDataForRealdOnly', formData);// 复制按钮操作保存默认数据
-        commit('updatePanelData', formData);
+        let resData = res.data.data;
+        // 根据jflow配置条件控制表单start🍓
+        if (resData.JflowConfigData && resData.JflowConfigData.length > 0) {
+          const JflowConfigData = resData.JflowConfigData[0];
+          const data = {
+            JflowConfigData,
+            resData,
+          };
+          if (JflowConfigData.itemTableId === JflowConfigData.tableId) { // 配置为主表
+            data.type = 'mainTable';
+          } else { // 配置为子表
+            data.type = 'itemTable';
+          }
+          resData = horizontalMainTableForms(data);
+        }
+     
+        // 根据jflow配置条件控制表单end🍓
+
+
+        resData.tabIndex = tabIndex;
+        commit('updateCopyDataForRealdOnly', resData);// 复制按钮操作保存默认数据
+        commit('updatePanelData', resData);
       }
     });
   }, // 获取主表面板信息
@@ -129,7 +186,7 @@ export default {
     });
   }, // 获取子表表单信息
   getItemObjForChildTableForm({ commit }, {
-    table, objid, refcolid, tabIndex
+    table, objid, itemInfo, refcolid, tabIndex
   }) {
     // 参数说明  table 子表表名，objid列表界面该行数据的id也就是rowid，refcolid子表id
     const id = objid === 'New' ? '-1' : objid;
@@ -139,9 +196,26 @@ export default {
       refcolid
     })).then((res) => {
       if (res.data.code === 0) {
-        const formData = res.data.data;
-        formData.tabIndex = tabIndex;
-        commit('updatePanelData', formData);
+        let resData = res.data.data;
+        // 根据jflow配置条件控制按钮以及表单start🍓
+        if (resData.JflowConfigData && resData.JflowConfigData.length > 0) {
+          const JflowConfigData = resData.JflowConfigData[0];
+          const data = {
+            JflowConfigData,
+            resData
+          };
+          if (Number(JflowConfigData.itemTableId) === Number(itemInfo.tableid)) { // 配置为子表
+            // data.type = 'itemTable';
+            data.tableid = itemInfo.tableid;
+            resData = horizontalItemTableForm(data);
+          }
+          //  else { // 配置为子表时，处理主表逻辑
+          //   data.type = 'mainTable';
+          // }
+        }
+        // 根据jflow配置条件控制按钮以及表单end🍓
+        resData.tabIndex = tabIndex;
+        commit('updatePanelData', resData);
       }
     });
   }, // 获取子表面板信息
@@ -392,147 +466,6 @@ export default {
       } else {
         reject();
       }
-    }).catch(() => {
-      reject();
-    });
-  },
-  performMainTableDeleteAction({ commit }, {
-    path, table, objId, currentParameter, itemName, itemNameGroup, itemCurrentParameter, resolve, reject
-  }) { // 主表删除
-    let parames = {};
-    if (itemNameGroup && itemNameGroup.length > 0) {
-      const itemDelete = itemCurrentParameter.delete;
-      if (itemName !== table) {
-        if (path) {
-          if (currentParameter && currentParameter.delete) {
-            const mainTable = currentParameter.delete;
-            mainTable[table].ID = objId;
-            mainTable[table].isdelmtable = false;
-            parames = {
-              ...mainTable,
-              ...itemDelete
-            };
-          }
-        } else {
-          const tabItem = {
-            ...itemDelete
-          };
-          parames = {
-            table, // 主表表名
-            objId,
-            delMTable: false,
-            tabItem
-          };
-        }
-      } else if (path) {
-        if (currentParameter && currentParameter.delete) {
-          const mainTable = currentParameter.delete;
-          mainTable[table].ID = objId;
-          mainTable[table].isdelmtable = true;
-          parames = {
-            ...mainTable,
-            ...itemDelete
-          };
-        }
-      } else {
-        const tabItem = {
-          ...itemDelete
-        };
-        parames = {
-          table, // 主表表名
-          objId,
-          delMTable: true,
-          tabItem
-        };
-      }
-    } else if (path) {
-      parames = {
-        // table, // 主表表名
-        ID: objId,
-        isdelmtable: true
-      };
-    } else {
-      parames = {
-        table, // 主表表名
-        objId,
-        delMTable: true
-      };
-    }
-   
-    network.post(path || '/p/cs/objectDelete', parames).then((res) => {
-      if (res.data.code === 0) {
-        resolve();
-        const data = res.data;
-        commit('updateNewMainTableDeleteData', data);
-      } else if (res.data.code === -1) {
-        reject();
-        const data = res.data.data;
-        commit('updatetooltipForItemTableData', data);
-      }
-    });
-  },
-  getExportQueryForButtons({ commit }, // 导出
-    { OBJ, resolve, reject }) {
-    network.post('/p/cs/export', urlSearchParams(
-      OBJ
-    )).then((res) => {
-      if (res.data.code === 0) {
-        resolve();
-        const data = res.data.data;
-        commit('updateButtonsExport', data,);
-      } else {
-        const data = res.data.data;
-        commit('updateButtonsExport', data,);
-        reject();
-      }
-    }).catch(() => {
-      reject();
-    });
-  },
-  getObjectTrySubmit({ commit }, {
-    objId, table, path, isreftabs, resolve, reject, moduleName,
-    routeQuery, routePath
-  }) { // 获取提交数据
-    objId = objId === 'New' ? '-1' : objId;
-    let param = {};
-    if (path) {
-      if (isreftabs) {
-        param[table] = {
-          ID: objId,
-        };
-      } else {
-        param = {
-          ID: objId,
-        };
-      }
-    } else {
-      param = {
-        objId,
-        table
-      };
-    }
-    network.post(path || '/p/cs/objectSubmit', param).then((res) => {
-      if (res.data.code === 0) {
-        const submitData = res.data;
-        resolve();
-        commit('updateSubmitData', submitData);
-      } else {
-        const data = res.data.data;
-        commit('updatetooltipForItemTableData', data);
-        reject();
-      }
-      DispatchEvent('batchSubmitForR3', {
-        detail: {
-          name: 'exeAction',
-          type: 'verticalTable',
-          url: path || '/p/cs/objectSubmit',
-          res,
-          moduleName,
-          routeQuery,
-          tableName: routeQuery.tableName,
-          routePath
-        }
-      });
     }).catch(() => {
       reject();
     });

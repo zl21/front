@@ -81,8 +81,8 @@
       v-if="panelData.isShow&&!componentName"
       :is-main-table="isMainTable"
       :object-type="type"
-      :objreadonly="itemReadOnlyForJflow"
-      :readonly="itemReadOnlyForJflow"
+      :objreadonly="objreadonly"
+      :readonly="formReadonly"
       :default-set-value="changeData"
       :master-name="currentPageRoute.tableName"
       :master-id="currentPageRoute.itemId"
@@ -281,47 +281,47 @@
         // } 
         return tabCurrentIndex;
       },
-      itemReadOnlyForJflow() {
-        let flag = false;
-        if(enableJflow() && custommizedJflow()) {
-          const { tableId } = router.currentRoute.params;
-          if(this.objreadonlyForJflow.length > 0) {
-            this.objreadonlyForJflow.map((item) => {
-              let id = null;
-              if(this.itemInfo.id) {
-                id = Number(this.itemInfo.id);
-              }else{
-                id = this.itemInfo.tableid;
-              }
-              // if (this.type === 'vertical') {
-              //   id = this.itemInfo.tableid;
-              // }else{
-              //   id = Number(this.itemInfo.id);
-              // }
-              if(item.tableId === tableId) {
-                if(item.itemTableId === id) {
-                  flag = item.readonly;
-                }else{
-                  flag = this.objreadonly;
-                }
-              }else{
-                flag = this.objreadonly;
-              }
-            });
-          }else{
-            // jflow配置表为不存在的子表ID时，控制所有表字段为不可编辑状态
-            this.JflowControlField.map((q) => {
-              if(tableId === q.tableId) {
-                flag = true;
-                return flag;
-              }
-            });
-          }
-        }else{
-          flag = this.objreadonly;
-        }
-        return flag;
-      }, 
+      // itemReadOnlyForJflow() {
+      //   let flag = false;
+      //   if(enableJflow() && custommizedJflow()) {
+      //     const { tableId } = router.currentRoute.params;
+      //     if(this.objreadonlyForJflow.length > 0) {
+      //       this.objreadonlyForJflow.map((item) => {
+      //         let id = null;
+      //         if(this.itemInfo.id) {
+      //           id = Number(this.itemInfo.id);
+      //         }else{
+      //           id = this.itemInfo.tableid;
+      //         }
+      //         // if (this.type === 'vertical') {
+      //         //   id = this.itemInfo.tableid;
+      //         // }else{
+      //         //   id = Number(this.itemInfo.id);
+      //         // }
+      //         if(item.tableId === tableId) {
+      //           if(item.itemTableId === id) {
+      //             flag = item.readonly;
+      //           }else{
+      //             flag = this.objreadonly;
+      //           }
+      //         }else{
+      //           flag = this.objreadonly;
+      //         }
+      //       });
+      //     }else{
+      //       // jflow配置表为不存在的子表ID时，控制所有表字段为不可编辑状态
+      //       this.JflowControlField.map((q) => {
+      //         if(tableId === q.tableId) {
+      //           flag = true;
+      //           return flag;
+      //         }
+      //       });
+      //     }
+      //   }else{
+      //     flag = this.objreadonly;
+      //   }
+      //   return flag;
+      // }, 
 
       tabPanelsAll() {
         return this.$store.state[this[MODULE_COMPONENT_NAME]].tabPanels;
