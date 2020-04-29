@@ -23,7 +23,9 @@ import './src/assets/css/ag-theme-balham.less';
 import './src/assets/theme/custom.less';
 import './src/assets/css/loading.css';
 import './src/assets/css/custom-ext.less';
-
+import 'ztree';
+import 'ztree/css/metroStyle/metroStyle.css';
+import 'ztree/js/jquery.ztree.exhide.min';
 import jflowplugin from './src/plugin/jflow-plugin';
 
 Vue.use(VueDND);

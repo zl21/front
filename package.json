@@ -70,7 +70,8 @@
         "md5": "^2.2.1",
         "vue": "^2.6.8",
         "vue-router": "^3.0.2",
-        "vuex": "^3.1.0"
+        "vuex": "^3.1.0",
+        "ztree": "^3.5.24"
     },
     "peerDependencies": {
         "burgeon-ui": ">1.0.0"
