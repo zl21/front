@@ -2870,7 +2870,6 @@
                   }
                 }
               } else if (itemCheckedInfo) {
-                debugger;
                 const itemMessageTip = itemCheckedInfo.messageTip;
                 if (itemMessageTip) {
                   if (itemMessageTip.length > 0) {
