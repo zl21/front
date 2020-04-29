@@ -32,6 +32,8 @@ export const verticalTableDetailJflowConfigData = (data) => {
         if (buttonsJflowRes.length > 0) { // jflow exeActionButton配置中包含子表自定义按钮ID，则显示
           resData.tabwebact.objtabbutton = buttonsJflowRes;// 上下结构，1:1面板+单对象按钮组件，自定义类型按钮需放在objbutton可显示
         } 
+      } else {
+        resData.tabwebact.objtabbutton = [];// 未配置exeActionButton时，不显示元数据自定义类型按钮
       }
     }
     if (JflowConfigData.jflowButton && JflowConfigData.jflowButton.length > 0) {
