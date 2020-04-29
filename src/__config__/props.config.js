@@ -249,6 +249,7 @@ const DropDownSelectFilter = {
   props: {
     // 是否是单选，可选值为 true、false
     single: true,
+    hidecolumns: ['id', 'value'],
     isShowPopTip: () => true, // form 不展示
     // 下拉气泡表格里数据
     data: {},
@@ -279,6 +280,7 @@ const DropMultiSelectFilter = {
   props: {
     // 是否是单选，可选值为 true、false
     single: true,
+    hidecolumns: ['id', 'value'],
     isShowPopTip: () => true, // form 不展示
     // 下拉气泡表格里数据
     data: {},

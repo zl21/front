@@ -1216,7 +1216,8 @@
           onOk: () => {
             if (obj.confirm && obj.confirm.indexOf('{') !== '-1') {
               try {
-                if (JSON.parse(obj.confirm) && JSON.parse(obj.confirm).isSave && this.verifyRequiredInformation) {
+                if (JSON.parse(obj.confirm) && JSON.parse(obj.confirm).isSave && this.verifyRequiredInformation && this.testUpdata()) {
+                  console.log(2, JSON.parse(obj.confirm).isSave);
                   const type = 'objTabActionSlient';
                   if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
                     const objTabActionSlientData = {

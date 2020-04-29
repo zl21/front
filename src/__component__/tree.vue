@@ -1,31 +1,25 @@
 <template>
   <div
-    class="tree"
+    id="R3tree"
+    class="R3tree"
   >
-    <Input
-      v-model="inputValue"
-      :placeholder="getPlaceholder"
-      class="input"
-      icon="ios-search"
-      @on-change="searchInputChange"
-      @on-click="searchClick"
-      @on-enter="searchClick"
-    />
-                           
-    <Tree
-      ref="menuTree"
-      class="treeContent"
-      :data="treeData"
-      :query="menuTreeQuery"
-      @on-select-change="menuTreeChange"
+    <Ztree
+      ref="zTree"
+      :z-nodes="treeData"
+      @clickTreeNode="clickTreeNode"
     />
   </div>
 </template>
 <script>
+  import Ztree from './Ztree';
+
   export default {
     data() {
       return {
-        placeholder: '',
+        treeNodeID: null, // 当前点击的节点ID
+        Ids: [],
+        resArr: [],
+        currentClickNoded: [],
         inputValue: '',
         treeName: '',
         menuTreeQuery: '', // 菜单树检索的值
@@ -65,13 +59,8 @@
         ]
       };
     },
-    computed: {
-      getPlaceholder() {
-        if (this.placeholder) {
-          return this.placeholder;
-        }
-        return `请输入${this.currentLabel}`;
-      }
+    components: {
+      Ztree
     },
     created() {
       // document.onkeydown = (e) => {
@@ -82,19 +71,10 @@
       // };
     },
     props: {
-      currentLabel: {
-        type: String,
-        default: ''
-      }, 
       treeDatas: {
         type: Function,
         default: () => {}
       },     
-      isChangeTreeConfigData: {
-        type: String,
-        default: ''
-      }, 
-    
     },
     watch: {
       treeDatas: {
@@ -103,34 +83,7 @@
             this.treeDatas().then((value) => {
               this.treeData = value.data;
               this.treeName = value.name;
-              this.placeholder = value.placeholder;
             });
-          }
-        }
-      },
-      isChangeTreeConfigData: {
-        handler(val) {
-          function func(tdata, resData) {
-            if (Array.isArray(tdata) && tdata.length > 0) {
-              tdata.forEach((v, i) => {
-                if (v.selected) {
-                  v.selected = false;
-                }
-                resData.push(v);
-                const arr = [];
-                func(v.children, arr);
-                if (resData[i] && resData[i].children) {
-                  resData[i].children = arr;
-                }
-              });
-            }
-          }
-          if (val === 'Y') {
-            this.menuTreeQuery = '';
-            this.inputValue = '';
-            const resArr = [];
-            func(this.treeData, resArr);
-            this.$emit('changeTreeConfigData', '');
           }
         }
       },
@@ -144,75 +97,67 @@
       }
     },
     methods: {
-     
+      //  this.$emit('menuTreeChange', this.Ids, this.treeName, treeNodeID, flag);
+      // 参数说明
+      // this.Ids: 当前选中节点的ID以及全部子ID type:Array
+      // this.treeName:前端配置用作/p/cs/QueryList接口查询树节点的指定参数key
+      // treeNodeID：当前点击节点ID
+      // flag:true:查询选中的节点，false:查询空
+
+
+      callMethod() {
+        this.$refs.zTree.callMethod(); 
+      },
+      callBackFunction(tdata, resData) {
+        if (Array.isArray(tdata) && tdata.length > 0) {
+          tdata.forEach((v, i) => {
+            if (v.ID) {
+              this.Ids.push(v.ID);
+            }
+            const arr = [];
+            this.callBackFunction(v.CHILDREN, arr);
+            if (resData[i] && resData[i].CHILDREN) {
+              resData[i].CHILDREN = arr;
+            }
+          });
+        }
+      },
+      clickTreeNode(datas, treeNodeID, flag) {      
+        if (flag) { // 为true时查询当前节点以及全部子节点
+          this.currentClickNoded = datas;
+          this.treeNodeID = treeNodeID;
+          this.menuTreeChange(datas, treeNodeID, flag);
+        } else { // 查空
+          this.menuTreeChange(datas, treeNodeID, flag);
+        }
+      },
       searchInputChange(e) {
         this.menuTreeQuery = e.target.value;
       }, // 检索输入框值改变
-      searchClick(e, input) {
-        function func(tdata, resData) {
-          if (Array.isArray(tdata) && tdata.length > 0) {
-            tdata.forEach((v, i) => {
-              if (v.children && v.children.length > 0) {
-                v.children.map((a) => {
-                  if (a.title.search(input.currentValue) !== -1) {
-                    v.expand = true;
-                    console.log(2, v.title, a.title, input.currentValue);
-                  }
-                });
-                setTimeout(() => {
-                  v.children.map((d) => {
-                    if (d.expand) {
-                      console.log(1, d.title);
-                      v.expand = true;
-                    }
-                  });
-                }, 0);
-              }
-              resData.push(v);
-              const arr = [];
-              func(v.children, arr);
-              if (resData[i] && resData[i].children) {
-                resData[i].children = arr;
-              }
-            });
-          }
-        }
+  
+      menuTreeChange(datas, treeNodeID, flag) {
         const resArr = [];
-        func(this.treeData, resArr);
-      },
-      menuTreeChange(val, item) {
-        const arrayIDs = [];
-        function func(tdata, resData) {
-          if (Array.isArray(tdata) && tdata.length > 0) {
-            tdata.forEach((v, i) => {
-              resData.push(v);
-              if (v.ID) {
-                arrayIDs.push(JSON.stringify(v.ID));
-              }
-              const arr = [];
-              func(v.children, arr);
-              if (resData[i] && resData[i].children) {
-                resData[i].children = arr;
-              }
-            });
-          }
-        }
-        const resArr = [];
-        func(val, resArr);
-        this.$emit('menuTreeChange', arrayIDs, this.treeName, val, item);
+        this.Ids = [];// 需将上一次查询存储的ID置空
+        this.callBackFunction(datas, resArr);
+        this.$emit('menuTreeChange', this.Ids, this.treeName, treeNodeID, flag);
+        // 参数说明
+        // this.Ids: 当前选中节点的ID以及全部子ID type:Array
+        // this.treeName:前端配置用作/p/cs/QueryList接口查询树节点的指定参数key
+        // treeNodeID：当前点击节点ID
+        // flag:true:查询选中的节点，false:查询空
       }, // 左侧树点击
     }
   };
 </script>
 <style >
-.burgeon-tree-title-selected{
-  background:red !important;
-}
-.treeContent{
-  overflow: scroll;
-    width: 100%;
-    height: 100%;
-}
+.R3tree{
+    width:300px;
+    padding:10px;
+    border-right:1px solid #d2d2d2;
+    overflow-x: scroll;
+    overflow-y: scroll;
+   
+  }
 .input{
   margin-bottom:10px
 }
