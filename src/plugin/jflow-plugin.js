@@ -336,6 +336,7 @@ function RoutingGuard(router) { // 路由守卫
   });
 }
 async function jflowsave(flag, request) {
+  window.vm.$Spin.show();
   await new Promise((resolve, reject) => {
     // console.log(request.data.ids);
     // const params = new URLSearchParams(request.data);
@@ -366,6 +367,7 @@ async function jflowsave(flag, request) {
         ruleField: 'V',
         webActionId: 0
       }).then((res) => {
+      window.vm.$Spin.hide();
       if (res.data.resultCode !== 0) {
         window.R3message({
           title: '错误',
@@ -805,6 +807,7 @@ async function jflowRefresh() { // 刷新业务系统
 */
 
 function initiateLaunch(data) { // 业务系统流程发起
+  window.vm.$Spin.show();
   return new Promise((resolve, reject) => {
     let obj = {
       // eslint-disable-next-line no-nested-ternary
@@ -826,6 +829,7 @@ function initiateLaunch(data) { // 业务系统流程发起
 
     obj = Object.assign(obj, data);
     axios.post('/jflow/p/cs/process/launch', obj).then((res) => {
+      window.vm.$Spin.hide();
       if (window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' && res.data.resultCode === 0 && res.data.notice) {
         window.R3message({
           title: '错误',
