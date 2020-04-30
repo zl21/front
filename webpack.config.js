@@ -1,6 +1,7 @@
 const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -35,7 +36,7 @@ module.exports = env => ({
   },
   devServer: {
     compress: true,
-    port: 8192,
+    port: 8199,
     host: '0.0.0.0',
     open: true,
     historyApiFallback: {
@@ -88,7 +89,9 @@ module.exports = env => ({
         context: '/jflow',
         // target: 'http://106.15.24.156:32940', // 重新占单
         // target: 'http://106.15.24.156:32940', // 李宁环境
+        // target: 'http://jflow-shangfei-yf.dev.burgeononline.com/', // 商飞环境
         target: 'http://jflow-shangfei.dev.burgeononline.com/', // 商飞环境
+
         // target: ' http://47.102.164.111:26665/', // 卡宾环境
 
        
@@ -181,6 +184,12 @@ module.exports = env => ({
         ignore: ['.*'],
       },
     ]),
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+      jquery: 'jquery',
+      'window.jQuery': 'jquery'
+    })
   ],
   mode: env && env.production ? 'production' : 'development',
   resolve: {
