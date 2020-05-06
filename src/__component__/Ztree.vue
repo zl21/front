@@ -35,7 +35,6 @@
 </template>
 
 <script>
-  import $ from 'jquery';
   import { fuzzySearch } from '../../static/js/ztree/fuzzysearch';
 
   export default {
