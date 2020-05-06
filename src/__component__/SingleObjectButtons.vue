@@ -761,15 +761,16 @@
             if ((this.updateData[this.itemName] && this.updateData[this.itemName].modify[this.itemName] && Object.keys(this.updateData[this.itemName].modify[this.itemName]).length > 0)
               || (this.updateData[this.itemName].add[this.itemName] && Object.keys(this.updateData[this.itemName].add[this.itemName]).length > 0)) { // 子表新增及修改
               this.isValue = true;// 子表修改了值
-              return true;
               console.log(' 子表修改了值');
+
+              return true;
             }
           } else if (this.updateData[this.tableName].modify[this.tableName] && Object.keys(this.updateData[this.tableName].modify[this.tableName]).length > 0
             || this.updateData[this.tableName].add[this.tableName] && Object.keys(this.updateData[this.tableName].add[this.tableName]).length > 0
           ) { 
             this.isValue = true;// 主表修改了值
-            return true;
             console.log(' 左右主表修改了值');
+            return true;
           }
         } else if ((this.updateData[this.tableName] 
           && this.updateData[this.tableName].modify
@@ -782,8 +783,9 @@
           && Object.keys(this.updateData[this.itemName].add[this.itemName]).length > 0) 
         ) { // 子表新增及修改
           this.isValue = true;// 主表修改了值
-          return true;
           console.log('编辑时，修改时上下主或子表修改了值');
+
+          return true;
         }
         return false;
       },
@@ -1216,19 +1218,26 @@
           onOk: () => {
             if (obj.confirm && obj.confirm.indexOf('{') !== '-1') {
               try {
-                if (JSON.parse(obj.confirm) && JSON.parse(obj.confirm).isSave && this.verifyRequiredInformation && this.testUpdata()) {
-                  console.log(2, JSON.parse(obj.confirm).isSave);
-                  const type = 'objTabActionSlient';
-                  if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
-                    const objTabActionSlientData = {
-                      k: 'data',
-                      v: obj
-                    };
-                    updateSessionObject('objTabActionSlientData', objTabActionSlientData);
+                if (JSON.parse(obj.confirm) && JSON.parse(obj.confirm).isSave) {
+                  if (this.verifyRequiredInformation()) {
+                    if (this.testUpdata()) {
+                      const type = 'objTabActionSlient';
+                      if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
+                        const objTabActionSlientData = {
+                          k: 'data',
+                          v: obj
+                        };
+                        updateSessionObject('objTabActionSlientData', objTabActionSlientData);
+                      } else {
+                        this.objTabActionSlientData = obj;
+                      }
+                      this.clickSave({ type });
+                    } else {
+                      this.errorconfirmDialog(obj);
+                    }
                   } else {
-                    this.objTabActionSlientData = obj;
+                    return;
                   }
-                  this.clickSave({ type });
                 } else { // 无修改值时
                   this.errorconfirmDialog(obj);
                 }
