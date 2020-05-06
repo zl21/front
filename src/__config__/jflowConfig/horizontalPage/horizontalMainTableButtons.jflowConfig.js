@@ -1,6 +1,6 @@
 
 // import store from '../store.config';
-// import router from '../router.config';
+import router from '../../router.config';
 // import { getKeepAliveModuleName } from '../router.navigation.guard';
 
 
@@ -71,8 +71,18 @@ export const verticalTableDetailJflowConfigData = (data) => {
     resData.reftabs.map((tabData) => { // 主子表全部置为不可编辑，请求配置的子表时，再将子表置为可编辑
       if (Number(tabData.tableid) !== Number(JflowConfigData.itemTableId)) {
         tabData.JflowReadonly = true;// 将所有子表置为不可编辑
-      } else {
+      } else { // 当前jflow配置的子表
         tabData.JflowReadonly = false;
+        const oUl = document.querySelector('.burgeon-tabs-panels-nav');
+        if (oUl) {
+          setTimeout(() => {
+            for (let i = 0; i < oUl.children.length; i++) {
+              if (tabData.tabledesc === oUl.children[i].innerText) {
+                oUl.children[i].click();
+              }
+            }
+          }, 1000);
+        }
       }
     });
   }

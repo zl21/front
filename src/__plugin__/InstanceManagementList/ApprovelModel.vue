@@ -98,27 +98,122 @@
             <span>人工干预处理：</span>
           </p>
 
-          <div>
-            <p>
-              <label>URL:</label>
-              <Input
-                v-model="intervention.handleUrl"
-                type="text"
-              />
-            </p>
-            <p>
-              <label>服务参数:</label>
-              <Input
-                v-model="intervention.handleParam"
-                type="textarea"
-                class="textarea"
-                :autosize="{ minRows: 3, maxRows: 3 }"
-              />
-            </p>
+          <div style="padding-left: 20px">
+            <!-- 接口不通 -->
+            <div v-if="Number(intervention.errorCode) === 47">
+              <p>
+                <label>URL:</label>
+                <Input
+                  v-model="intervention.handleUrl"
+                  type="text"
+                />
+              </p>
+              <p>
+                <label>服务参数:</label>
+                <Input
+                  v-model="intervention.handleParam"
+                  type="textarea"
+                  class="textarea"
+                  :autosize="{ minRows: 3, maxRows: 3 }"
+                />
+              </p>
+            </div>
+
+            <!-- 条件不符 -->
+            <div
+              v-if="Number(intervention.errorCode) === 5"
+              style="margin-bottom:8px;display:flex"
+            >
+              <Select
+                v-model="selectCheck"
+                class="checkSelect"
+                @on-change="() => {selectedNode = null;selectedNodeValue = null}"
+              >
+                <Option :value="0">
+                  同意
+                </Option>
+                <Option :value="1">
+                  驳回
+                </Option>
+              </Select>
+              <Select
+                v-if="selectCheck === 0"
+                v-model="selectedNodeValue"
+                class="checkSelect"
+                label-in-value
+                @on-change="(data) => {selectedNodeValue = data?data.value:null;selectedNode = data}"
+              >
+                <Option
+                  v-for="item in intervention.passNodes"
+                  :key="item.nodeName"
+                  :value="item.nodeId"
+                >
+                  {{ item.nodeName }}
+                </Option>
+              </Select>
+              <Select
+                v-if="selectCheck === 1"
+                v-model="selectedNodeValue"
+                class="checkSelect"
+                label-in-value
+                @on-change="(data) => {selectedNodeValue = data?data.value:null;selectedNode = data}"
+              >
+                <Option
+                  v-for="item in intervention.backNodes"
+                  :key="item.nodeName"
+                  :value="item.nodeId"
+                >
+                  {{ item.nodeName }}
+                </Option>
+              </Select>
+            </div>
+
+            <!-- 节点报错 -->
+            <div v-if="Number(intervention.errorCode) === 33">
+              <p>
+                <label>人员指派:</label>
+              </p>
+            </div>
+
+            <!-- 提交失败 -->
+            <div>
+              <RadioGroup
+                v-model="submitType"
+                vertical
+                @on-change="selectBackNode = null"
+              >
+                <Radio :label="0">
+                  <span>重新提交</span>
+                </Radio>
+                <div style="display:flex">
+                  <Radio
+                    :label="1"
+                    style="margin-right: 2px;"
+                  >
+                    <span>驳回至</span>
+                  </Radio>
+                  <Select
+                    v-model="selectBackNode"
+                    class="checkSelect"
+                    label-in-value
+                    :disabled="submitType === 0"
+                  >
+                    <Option
+                      v-for="item in intervention.backNodes"
+                      :key="item.nodeName"
+                      :value="item.nodeId"
+                    >
+                      {{ item.nodeName }}
+                    </Option>
+                  </Select>
+                </div>
+              </RadioGroup>
+            </div>
+
             <p>
               <label>备注:</label>
               <Input
-                v-model="intervention.handleRemark"
+                v-model="remark"
                 type="text"
               />
             </p>
@@ -192,7 +287,14 @@
         obj: {}, //
 
 
-        intervention: {} // 人工干预数据
+        intervention: {}, // 人工干预数据
+        selectCheck: 0, // 0同意 1驳回
+        selectedNode: null, // 选中节点
+        selectedNodeValue: null, // 选中节点值
+        ApproverLists: {}, // 人员指派
+        submitType: 0, // 提交失败选择类型
+        selectBackNode: null, // 提交失败驳回节点
+        remark: null // 备注
       };
     },
     methods: {
@@ -513,7 +615,7 @@
         }
 
         if (this.type === '9') {
-          this.interventionConfirm(); // 转派
+          this.interventionConfirm(); // 人工干预
         }
       },
       cancel() {
@@ -639,7 +741,8 @@
           nodeId: window.jflowPlugin.nodeId,
           userId: window.jflowPlugin.userInfo.id,
           errorCode: this.config.item.errorCode,
-          errorTaskId: this.config.item.errorTaskId
+          errorTaskId: this.config.item.errorTaskId,
+          batch: this.config.item.batch
         })
           .then((res) => {
             if (res.data.resultCode === 0) {
@@ -649,6 +752,9 @@
       },
       // 人工干预提交
       interventionConfirm() {
+        if (Number(this.intervention.errorCode) === 5) { // 条件不符
+          this.errAction();
+        }
         this.$network.post('/jflow/p/cs/error/invocationFail', {
           instanceId: window.jflowPlugin.objInstanceId,
           nodeId: window.jflowPlugin.nodeId,
@@ -677,7 +783,109 @@
               });
             }
           });
-      }
+      },
+
+      // 条件不符
+      errAction() {
+        if (!this.selectedNode) {
+          this.$Modal.fcWarning({
+            title: '警告',
+            content: `请选择${this.selectCheck === 0 ? '同意' : '驳回'}节点`,
+            mask: true
+          });
+          return;
+        }
+        const obj = {
+          instanceId: window.jflowPlugin.objInstanceId,
+          id: this.intervention.exceptionId,
+          nodeId: window.jflowPlugin.nodeId,
+          initiator: this.intervention.initiator,
+          processStatus: this.intervention.processStatus,
+          batch: this.intervention.batch,
+          actType: this.selectCheck,
+          backNodeId: this.selectedNode.value,
+          passNodeId: this.selectedNode.value,
+          errorCode: this.intervention.errorCode,
+          errorMsg: this.intervention.errorMsg,
+          errorBody: this.intervention.errorBody,
+          startTime: this.intervention.startTime,
+          manualNode: this.selectedNode.label,
+          operaterName: window.jflowPlugin.userInfo.ename,
+          handleRemark: this.remark
+        };
+
+        this.$network.post('/jflow/p/cs/error/errAction', obj)
+          .then((res) => {
+            if (res.data.resultCode === 0) {
+              // this.$parent.$parent.modalType = 'FlowChartShow'
+              this.selectCheck = 0;
+              this.selectedNode = null;
+              this.selectedNodeValue = null;
+              this.remark = null;
+              if (res.data.resultCode === 0) {
+                this.$Message.success(res.data.resultMsg);
+                this.modalConfig.buttons(window.jflowPlugin.itemId);
+                BacklogData(window.jflowPlugin.store);
+                DispatchEvent('jflowClick', {
+                  detail: {
+                    type: 'refresh'
+                  }
+                });
+              } else {
+                this.$Modal.fcError({
+                  title: '错误',
+                  content: res.data.resultMsg,
+                  mask: true
+                });
+              }
+            }
+          });
+      },  
+      ApproverConfirm() { // 节点报错提交
+        if (this.ApproverLists.list && this.ApproverLists.list.length > 0) {
+          const obj = {
+            instanceId: window.jflowPlugin.objInstanceId,
+            id: this.intervention.exceptionId,
+            nodeId: window.jflowPlugin.nodeId,
+            initiator: this.intervention.initiator,
+            processStatus: this.intervention.processStatus,
+            batch: this.intervention.batch,
+            approverInfo: this.ApproverLists.list,
+            errorCode: this.intervention.errorCode,
+            errorMsg: this.intervention.errorMsg,
+            errorBody: this.intervention.errorBody,
+            startTime: this.intervention.startTime,
+            handleRemark: this.remark,
+            operaterName: window.jflowPlugin.userInfo.ename
+          };
+          this.$network.post('/p/cs/error/modifyApprover', obj)
+            .then((res) => {
+              if (res.data.resultCode === 0) {
+                this.ApproverLists = {};
+                this.remark = null;
+                this.$Message.success(res.data.resultMsg);
+                this.modalConfig.buttons(window.jflowPlugin.itemId);
+                BacklogData(window.jflowPlugin.store);
+                DispatchEvent('jflowClick', {
+                  detail: {
+                    type: 'refresh'
+                  }
+                });
+              } else {
+                this.$Modal.fcError({
+                  title: '错误',
+                  content: res.data.resultMsg,
+                  mask: true
+                });
+              }
+            });
+        } else {
+          this.$Modal.fcWarning({
+            title: '提示',
+            content: '请选择审批人!'
+          });
+        }
+      },
     },
     created() {
       if (this.config.type === '3') {
@@ -741,7 +949,38 @@
 
     .deal{
       >div{
-        >p{
+        >.checkSelect{
+          display: inline-block;
+          flex: 1;
+
+          .burgeon-select-selection{
+            border-color: #dcdee2;
+            box-shadow: none;
+          }
+
+          &:first-child{
+            width: 60px;
+            flex: none;
+            .burgeon-select-selection{
+              background: #F9F9F9;
+              border-top-right-radius: 0;
+              border-bottom-right-radius: 0;
+            }
+          }
+
+          &:last-child{
+            .burgeon-select-selection{
+              border-left: none;
+              border-top-left-radius: 0;
+              border-bottom-left-radius: 0;
+            }
+          } 
+        }
+
+        .complexBox{
+          width: 100%;
+        }
+        p{
           line-height: 24px;
           display: flex;
           margin-bottom: 8px;

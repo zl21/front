@@ -259,19 +259,6 @@
     },
     mounted() {
       this.getMainTable(this.tabCurrentIndex, false);
-      setTimeout(() => {
-        const query = this.$route.query.ACTIVE;
-        const oUl = document.querySelector('.burgeon-tabs-panels-nav');
-        if (query && oUl) {
-          for (let i = 0; i < oUl.children.length; i++) {
-            this.tabPanels.forEach((item) => {
-              if (Number(query) === item.tableid && item.tabledesc === oUl.children[i].innerText) {
-                oUl.children[i].click();
-              }
-            });
-          }
-        }
-      }, 1500);
     },
     created() {
       // this.emptyTestData();

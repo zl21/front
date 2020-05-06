@@ -7,7 +7,6 @@
 export const horizontalItemTableForm = (data) => {
   // const { tableId } = router.currentRoute.params;
   const { JflowConfigData, resData } = data;
-  console.log(1, JflowConfigData, new Date());
   const addcolumsData = resData.addcolums.reduce((a, c) => {
     const u = [];
     if (c.childs) {

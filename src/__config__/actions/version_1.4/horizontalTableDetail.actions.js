@@ -208,7 +208,22 @@ export default {
             // data.type = 'itemTable';
             data.tableid = itemInfo.tableid;
             resData = horizontalItemTableForms(data);
+          } else if (JflowConfigData.itemTableId === JflowConfigData.tableId) { // 配置为主表
+            // 解决触发jflow按钮时，jflow配置更改表，此时，需要切换到更改后的tab，需从新触发更改后的表的刷新按钮，jflow配置才可生效
+
           }
+          // else{
+          //   const oUl = document.querySelector('.burgeon-tabs-panels-nav');
+          //   if (oUl) {
+          //     setTimeout(() => {
+          //       for (let i = 0; i < oUl.children.length; i++) {
+          //         if (tabData.tabledesc === oUl.children[i].innerText) {
+          //           oUl.children[i].click();
+          //         }
+          //       }
+          //     }, 1000);
+          //   }
+          // }
           //  else { // 配置为子表时，处理主表逻辑
           //   data.type = 'mainTable';
           // }
