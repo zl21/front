@@ -7,7 +7,7 @@
 export const horizontalItemTableForm = (data) => {
   // const { tableId } = router.currentRoute.params;
   const { JflowConfigData, resData } = data;
-  
+  console.log(1, JflowConfigData, new Date());
   const addcolumsData = resData.addcolums.reduce((a, c) => {
     const u = [];
     if (c.childs) {
@@ -29,7 +29,6 @@ export const horizontalItemTableForm = (data) => {
           }
         } else if (JflowConfigData.readonly.length > 0) {
           // 未配置jflowisShow字段，则显示全部元数据字段，由readonly控制字段是否可编辑
-          console.log(5, JflowConfigData.readonly.includes(String(d.colid)));
           if (JflowConfigData.readonly.includes(String(d.colid))) {
             // 未配置可见字段，只配置了可编辑字段时，所有元数据返回的字段可见，readonly内配置的可编辑
             d.readonly = false;

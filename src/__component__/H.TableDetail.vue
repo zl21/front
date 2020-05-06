@@ -156,6 +156,7 @@
  
       tabClick(index) {
         let flag = false;
+
         if (this.isRequest.length > 0 && this.isRequest[index] === true) {
           flag = true;
         }
@@ -270,7 +271,7 @@
             });
           }
         }
-      }, 1000);
+      }, 1500);
     },
     created() {
       // this.emptyTestData();

@@ -5,7 +5,7 @@ import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 import horizontalMainTableButtons from '../../jflowConfig/horizontalPage/horizontalMainTableButtons.jflowConfig';
 import horizontalItemTableButtons from '../../jflowConfig/horizontalPage/horizontalItemTableButtons.jflowConfig';
 import horizontalMainTableForms from '../../jflowConfig/horizontalPage/horizontalMainTableForm.jflowConfig';
-import horizontalItemTableForm from '../../jflowConfig/horizontalPage/horizontalItemTableForm.jflowConfig';
+import horizontalItemTableForms from '../../jflowConfig/horizontalPage/horizontalItemTableForm.jflowConfig';
 
 export default {
   getObjectTabForMainTable({ commit }, {// 主表获取按钮以及所有tab
@@ -207,7 +207,7 @@ export default {
           if (Number(JflowConfigData.itemTableId) === Number(itemInfo.tableid)) { // 配置为子表
             // data.type = 'itemTable';
             data.tableid = itemInfo.tableid;
-            resData = horizontalItemTableForm(data);
+            resData = horizontalItemTableForms(data);
           }
           //  else { // 配置为子表时，处理主表逻辑
           //   data.type = 'mainTable';
