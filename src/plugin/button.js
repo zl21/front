@@ -67,7 +67,6 @@ function buttonsResponse(e) {
     })
       .then(() => {
         // 处理前置事件保存之后再处理当前事件
-        console.log(beforeClickFunction);
         if (Object.keys(beforeClickFunction).length > 0) {
           buttonsResponse(beforeClickFunction);
           beforeClickFunction = {};
@@ -125,28 +124,21 @@ function clickFunction(e) {
   const type = window.jflowPlugin.router.currentRoute.fullPath.split('/')[3];
   const MODULE_COMPONENT_NAME = `${type}.${window.jflowPlugin.router.currentRoute.params.tableName}.${window.jflowPlugin.router.currentRoute.params.tableId}.${window.jflowPlugin.router.currentRoute.params.itemId}`;
   if (e.detail.obj.isSave) {
-    if (window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].updatavVerifyRequiredInformation() && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].testUpdata()) {
-      beforeClickFunction = e;
-      DispatchEvent('jflowClick', {
-        detail: {
-          type: 'save'
-        }
-      });
+    if (window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].updatavVerifyRequiredInformation()) {
+      if (window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].testUpdata()) {
+        beforeClickFunction = e;
+        DispatchEvent('jflowClick', {
+          detail: {
+            type: 'save'
+          }
+        });
+      } else {
+        buttonsResponse(e);
+      }
     }
   } else {
     buttonsResponse(e);
   }
-  // if (e.detail.obj.isSave && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].updatavVerifyRequiredInformation() && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].testUpdata()) { // 按钮存在保存前置事件时
-  //   beforeClickFunction = e;
-  //   DispatchEvent('jflowClick', {
-  //     detail: {
-  //       type: 'save'
-  //     }
-  //   });
-  //   // buttonsResponse(e);
-  // } else {
-  //   buttonsResponse(e);
-  // }
 }
 
 
