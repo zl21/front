@@ -101,23 +101,19 @@ async function buttonsResponse(e) {
 // 按钮点击逻辑处理
 function clickFunction(e) {
   if (e.detail.obj.isSave) { // 按钮存在保存前置事件时
-    if (window.updatavVerifyRequiredInformation() && window.testUpdataValue()) {
-      window.updataClickSave(async () => {
-        await global.jflowInfo.instanceId ? businessChange() : null;
+    if (window.updatavVerifyRequiredInformation()) {
+      if (window.testUpdataValue()) {
+        window.updataClickSave(async () => {
+          await global.jflowInfo.instanceId ? businessChange() : null;
+          buttonsResponse(e);
+        });
+      } else {
         buttonsResponse(e);
-      });
+      }
     }
   } else {
     buttonsResponse(e);
   }
-  // if (e.detail.obj.isSave && window.testUpdataValue()) { 
-  //   window.updataClickSave(async () => {
-  //     await global.jflowInfo.instanceId ? businessChange() : null;
-  //     buttonsResponse(e);
-  //   });
-  // } else {
-  //   buttonsResponse(e);
-  // }
 }
 
 async function getTemplate() { // 获取模版信息
