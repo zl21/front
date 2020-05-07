@@ -1,12 +1,14 @@
 
-// import store from '../store.config';
+import store from '../../store.config';
 import router from '../../router.config';
 // import { getKeepAliveModuleName } from '../router.navigation.guard';
 
 
 export const verticalTableDetailJflowConfigData = (data) => {
   // const { tableId } = router.currentRoute.params;
-  const { JflowConfigData, resData, type } = data;
+  const {
+    JflowConfigData, resData, type, tabIndex 
+  } = data;
   const buttonsJflowRes = [];
 
   if (type === 'mainTable') { // 配置为主表
@@ -73,15 +75,17 @@ export const verticalTableDetailJflowConfigData = (data) => {
         tabData.JflowReadonly = true;// 将所有子表置为不可编辑
       } else { // 当前jflow配置的子表
         tabData.JflowReadonly = false;
-        const oUl = document.querySelector('.burgeon-tabs-panels-nav');
-        if (oUl) {
-          setTimeout(() => {
-            for (let i = 0; i < oUl.children.length; i++) {
-              if (tabData.tabledesc === oUl.children[i].innerText) {
-                oUl.children[i].click();
+        if (tabIndex === 0 && !store.state.global.isRequest.includes(true)) { // 当激活的tab为主表时，才需要根据jflow配置进行切换tab
+          const oUl = document.querySelector('.burgeon-tabs-panels-nav');
+          if (oUl) {
+            setTimeout(() => {
+              for (let i = 0; i < oUl.children.length; i++) {
+                if (tabData.tabledesc === oUl.children[i].innerText) {
+                  oUl.children[i].click();
+                }
               }
-            }
-          }, 1000);
+            }, 1000);
+          }
         }
       }
     });

@@ -33,6 +33,7 @@ export default {
           } else { // 配置为子表时，处理主表逻辑
             data.type = 'itemTable';
           }
+          data.tabIndex = tabIndex;
           resData = horizontalMainTableButtons(data);
         }
         commit('updateRefreshButtonForJflow', resData.jflowConfigrefreshButton);// jflow控制刷新按钮显示

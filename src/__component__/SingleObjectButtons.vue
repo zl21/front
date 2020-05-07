@@ -3284,21 +3284,34 @@
                       // }
                     }
                   } else if (oUl) {
+                    this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
+
                     this.tabPanel.map((tab, index) => {
                       if (Number(currentJflowConfigTable[0].itemTableId) === Number(tab.tableid)) { // 配置的为子表
-                        console.log(6, Number(currentJflowConfigTable[0].itemTableId) === Number(tab.tableid));
-                        this.clickButtonsRefresh();
-                        for (let i = 0; i < oUl.children.length; i++) {
-                          if (tab.tabledesc === oUl.children[i].innerText) {
-                            oUl.children[i].click();
-                            console.log(33, tab.tabledesc, tab, oUl.children[i].innerText);
-                            // if (this.isRequest.length > 0 && this.isRequest[index] !== true) {
-                            setTimeout(() => {
-                              this.clickButtonsRefresh();
-                            }, 1000);
-                            // }
-                          }
+                        if (index === 0) { // 当前激活tab为主表时，此方法可刷新主表
+                          this.clickButtonsRefresh();
+                        } else { // 当前激活tab非主表时，说明，当前jflow配置由子表切换子表，
+                          new Promise((resolve, reject) => {
+                            this.getObjectTabForMainTable({
+                              itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: {}, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
+                            });
+                          }).then(() => {
+
+                          });
                         }
+                        setTimeout(() => { // 需要等主表请求完成后，再切换子表
+                          for (let i = 0; i < oUl.children.length; i++) {
+                            if (tab.tabledesc === oUl.children[i].innerText) {
+                              oUl.children[i].click();
+                              // if (index !== 0) { // jflow配置由子表切换子表，需要重新触发切换的子表刷新，读取配置，
+                              //   debugger;
+                              //   setTimeout(() => {
+                              //     this.clickButtonsRefresh();
+                              //   }, 5000);
+                              // }
+                            }
+                          }
+                        }, 1000);
                       }
                     });
                   }
