@@ -25,6 +25,9 @@ export default {
   //   // data.treeId:勾选的树结构列表ID
   //   state.treeIds.push(data);
   // },
+  updataOpenedMenuLists(state, data) {
+    data.openedMenuLists = data;
+  },
   updateTreeTableListData(state) {
     state.treeTableListData = [];
   },

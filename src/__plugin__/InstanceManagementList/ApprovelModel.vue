@@ -122,36 +122,25 @@
             <!-- 条件不符 -->
             <div
               v-if="Number(intervention.errorCode) === 5"
-              style="margin-bottom:8px;display:flex"
+              style="margin-bottom:8px;display:flex;align-items: center;"
             >
+              <label>干预至某节点:</label>
               <Select
-                v-model="selectCheck"
-                class="checkSelect"
-                @on-change="() => {selectedNode = null;selectedNodeValue = null}"
-              >
-                <Option :value="0">
-                  同意
-                </Option>
-                <Option :value="1">
-                  驳回
-                </Option>
-              </Select>
-              <Select
-                v-if="selectCheck === 0"
                 v-model="selectedNodeValue"
+                style="flex:1;margin-left: 10px;"
                 class="checkSelect"
                 label-in-value
                 @on-change="(data) => {selectedNodeValue = data?data.value:null;selectedNode = data}"
               >
                 <Option
-                  v-for="item in intervention.passNodes"
+                  v-for="item in intervention.mannalNodes"
                   :key="item.nodeName"
                   :value="item.nodeId"
                 >
                   {{ item.nodeName }}
                 </Option>
               </Select>
-              <Select
+              <!-- <Select
                 v-if="selectCheck === 1"
                 v-model="selectedNodeValue"
                 class="checkSelect"
@@ -165,7 +154,7 @@
                 >
                   {{ item.nodeName }}
                 </Option>
-              </Select>
+              </Select> -->
             </div>
 
             <!-- 节点报错 -->
@@ -176,7 +165,7 @@
             </div>
 
             <!-- 提交失败 -->
-            <div>
+            <div v-if="Number(intervention.errorCode) === 53">
               <RadioGroup
                 v-model="submitType"
                 vertical
@@ -210,6 +199,7 @@
               </RadioGroup>
             </div>
 
+            <!-- 备注字段 -->
             <p>
               <label>备注:</label>
               <Input
@@ -752,37 +742,22 @@
       },
       // 人工干预提交
       interventionConfirm() {
-        if (Number(this.intervention.errorCode) === 5) { // 条件不符
+        switch (Number(this.intervention.errorCode)) {
+        case 33: // 节点报错
+          this.ApproverConfirm();
+          break;
+        case 5: // 条件不符
           this.errAction();
+          break;
+        case 47: // 接口不通
+          this.invocationFail();
+          break;
+        case 53: // 提交失败
+          this.manualsubmit();
+          break;
+        default:
+          break;
         }
-        this.$network.post('/jflow/p/cs/error/invocationFail', {
-          instanceId: window.jflowPlugin.objInstanceId,
-          nodeId: window.jflowPlugin.nodeId,
-          userId: window.jflowPlugin.userInfo.id,
-          handleUrl: this.intervention.handleUrl,
-          handleParam: this.intervention.handleParam,
-          handleRemark: this.intervention.handleRemark,
-          errorTaskId: this.intervention.errorTaskId,
-          exceptionId: this.intervention.exceptionId
-        })
-          .then((res) => {
-            if (res.data.resultCode === 0) {
-              this.$Message.success(res.data.resultMsg);
-              this.modalConfig.buttons(window.jflowPlugin.itemId);
-              BacklogData(window.jflowPlugin.store);
-              DispatchEvent('jflowClick', {
-                detail: {
-                  type: 'refresh'
-                }
-              });
-            } else {
-              this.$Modal.fcError({
-                title: '错误',
-                content: res.data.resultMsg,
-                mask: true
-              });
-            }
-          });
       },
 
       // 条件不符
@@ -885,6 +860,119 @@
             content: '请选择审批人!'
           });
         }
+      },
+      // 接口不通
+      invocationFail() {
+        try {
+          const reg = /^\{/;
+          if (this.intervention.handleParam) {
+            if (reg.test(this.intervention.handleParam)) {
+              JSON.parse(this.intervention.handleParam);
+            } else {
+              this.$Modal.fcError({
+                title: '错误',
+                content: '服务参数数据格式错误',
+                mask: true
+              });
+              return;
+            }
+          }
+        
+          const obj = {
+            instanceId: window.jflowPlugin.objInstanceId,
+            id: this.intervention.exceptionId,
+            nodeId: window.jflowPlugin.nodeId,
+            userId: window.jflowPlugin.userInfo.id,
+            handleUrl: this.intervention.handleUrl,
+            handleParam: this.intervention.handleParam,
+            handleRemark: this.remark,
+            errorTaskId: this.intervention.errorTaskId,
+            exceptionId: this.intervention.exceptionId,
+            operaterName: window.jflowPlugin.userInfo.ename
+          };
+          this.$network.post('/p/cs/error/invocationFail', obj)
+            .then((res) => {
+              if (res.data.resultCode === 0) {
+                this.$Message.success(res.data.resultMsg);
+                this.modalConfig.buttons(window.jflowPlugin.itemId);
+                BacklogData(window.jflowPlugin.store);
+                DispatchEvent('jflowClick', {
+                  detail: {
+                    type: 'refresh'
+                  }
+                });
+              }
+            });
+        } catch (err) {
+          this.$Modal.fcError({
+            title: '错误',
+            content: '服务参数数据格式错误',
+            mask: true
+          });
+        }
+      },
+      // 提交失败
+      manualsubmit() {
+        let url = null;
+        let obj = {};
+        if (this.submitType === 0) { // 重新提交
+          url = '/p/cs/error/manualsubmit';
+          obj = {
+            instanceId: window.jflowPlugin.objInstanceId,
+            errorTaskId: this.intervention.errorTaskId,
+            exceptionId: this.intervention.exceptionId,
+            nodeId: window.jflowPlugin.nodeId,
+            handleRemark: this.remark,
+            id: this.intervention.exceptionId,
+            operaterName: window.jflowPlugin.userInfo.ename
+          };
+        } else { // 驳回
+          if (!this.selectBackNode) {
+            this.$Modal.fcWarning({
+              title: '警告',
+              content: '请选择驳回节点',
+              mask: true
+            });
+            return;
+          }
+          url = '/p/cs/error/errAction';
+          obj = {
+            instanceId: window.jflowPlugin.objInstanceId,
+            id: this.intervention.id,
+            nodeId: window.jflowPlugin.nodeId,
+            initiator: this.intervention.initiator,
+            processStatus: this.intervention.processStatus,
+            batch: this.intervention.batch,
+            actType: 1,
+            backNodeId: this.selectBackNode,
+            errorCode: this.intervention.errorCode,
+            errorMsg: this.intervention.errorMsg,
+            errorBody: this.intervention.errorBody,
+            startTime: this.intervention.startTime,
+            manualNode: this.backNodes.filter(item => item.value === this.selectBackNode)[0].label,
+            operaterName: window.jflowPlugin.userInfo.ename,
+            errorTaskId: this.intervention.errorTaskId,
+          };
+        }
+
+        this.$network.post(url, obj)
+          .then((res) => {
+            if (res.data.resultCode === 0) {
+              setTimeout(() => {
+                this.selectBackNode = null;
+                this.submitType = 0;
+                this.remark = null;
+                this.$Message.success(res.data.resultMsg);
+                this.modalConfig.buttons(window.jflowPlugin.itemId);
+                BacklogData(window.jflowPlugin.store);
+                DispatchEvent('jflowClick', {
+                  detail: {
+                    type: 'refresh'
+                  }
+                });
+              });
+            }
+          });
       },
     },
     created() {

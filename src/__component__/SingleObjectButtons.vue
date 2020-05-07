@@ -3262,40 +3262,49 @@
          
           if (event.detail.type === 'refresh') {
             // this.clickButtonsRefresh();
-            const currentJflowConfigTable = this.JflowControlField.filter((item) => {
-              if (item.tableId === this.tableId) {
-                return item;
-              } 
-            });
-            if (currentJflowConfigTable[0]) {
-              if (Number(currentJflowConfigTable[0].itemTableId) === Number(this.itemInfo.tableid)) { // 需要刷新的是当前tab
-                this.clickButtonsRefresh();
-              } else {
-                const oUl = document.querySelector('.burgeon-tabs-panels-nav');
+            if (this.objectType === 'horizontal') {
+              const currentJflowConfigTable = this.JflowControlField.filter((item) => {
+                if (item.tableId === this.tableId) {
+                  return item;
+                } 
+              });
+              if (currentJflowConfigTable[0]) {
+                if (Number(currentJflowConfigTable[0].itemTableId) === (Number(this.itemInfo.tableid) || Number(this.itemInfo.id))) { // 需要刷新的是当前tab
+                  this.clickButtonsRefresh();
+                } else {
+                  const oUl = document.querySelector('.burgeon-tabs-panels-nav');
 
-                if (Number(currentJflowConfigTable[0].itemTableId) === Number(currentJflowConfigTable[0].tableId)) { // 主表
-                  if (oUl) {
-                    oUl.children[1].click();
-                    setTimeout(() => {
-                      this.clickButtonsRefresh();
-                    }, 1000);
-                  }
-                } else if (oUl) {
-                  for (let i = 0; i < oUl.children.length; i++) {
-                    this.tabPanel.map((tab) => {
+                  if (Number(currentJflowConfigTable[0].itemTableId) === Number(currentJflowConfigTable[0].tableId)) { // 主表
+                    if (oUl) {
+                      oUl.children[1].click();
+                      // if (this.isRequest.length > 0 && this.isRequest[0] !== true) {
+                      setTimeout(() => {
+                        this.clickButtonsRefresh();
+                      }, 1000);
+                      // }
+                    }
+                  } else if (oUl) {
+                    this.tabPanel.map((tab, index) => {
                       if (Number(currentJflowConfigTable[0].itemTableId) === Number(tab.tableid)) { // 配置的为子表
                         console.log(6, Number(currentJflowConfigTable[0].itemTableId) === Number(tab.tableid));
                         this.clickButtonsRefresh();
-                        if (tab.tabledesc === oUl.children[i].innerText) {
-                          oUl.children[i].click();
-                          setTimeout(() => {
-                            this.clickButtonsRefresh();
-                          }, 1000);
+                        for (let i = 0; i < oUl.children.length; i++) {
+                          if (tab.tabledesc === oUl.children[i].innerText) {
+                            oUl.children[i].click();
+                            console.log(33, tab.tabledesc, tab, oUl.children[i].innerText);
+                            // if (this.isRequest.length > 0 && this.isRequest[index] !== true) {
+                            setTimeout(() => {
+                              this.clickButtonsRefresh();
+                            }, 1000);
+                            // }
+                          }
                         }
                       }
                     });
                   }
                 }
+              } else {
+                this.clickButtonsRefresh();
               }
             } else {
               this.clickButtonsRefresh();
