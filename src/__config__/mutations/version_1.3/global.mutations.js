@@ -19,6 +19,9 @@ import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 
 
 export default {
+  updataOpenedMenuLists(state, data) {
+    data.openedMenuLists = data;
+  },
   updateTreeTableListData(state, data) {
     state.treeTableListData = data;
   },
