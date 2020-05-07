@@ -99,27 +99,112 @@
             <span>人工干预处理：</span>
           </p>
 
-          <div>
-            <p>
-              <label>URL:</label>
-              <Input
-                v-model="intervention.handleUrl"
-                type="text"
-              />
-            </p>
-            <p>
-              <label>服务参数:</label>
-              <Input
-                v-model="intervention.handleParam"
-                type="textarea"
-                class="textarea"
-                :autosize="{ minRows: 3, maxRows: 3 }"
-              />
-            </p>
+          <div style="padding-left: 20px">
+            <!-- 接口不通 -->
+            <div v-if="Number(intervention.errorCode) === 47">
+              <p>
+                <label>URL:</label>
+                <Input
+                  v-model="intervention.handleUrl"
+                  type="text"
+                />
+              </p>
+              <p>
+                <label>服务参数:</label>
+                <Input
+                  v-model="intervention.handleParam"
+                  type="textarea"
+                  class="textarea"
+                  :autosize="{ minRows: 3, maxRows: 3 }"
+                />
+              </p>
+            </div>
+
+            <!-- 条件不符 -->
+            <div
+              v-if="Number(intervention.errorCode) === 5"
+              style="margin-bottom:8px;display:flex;align-items: center;"
+            >
+              <label>干预至某节点:</label>
+              <Select
+                v-model="selectedNodeValue"
+                style="flex:1;margin-left: 10px;"
+                class="checkSelect"
+                label-in-value
+                @on-change="(data) => {selectedNodeValue = data?data.value:null;selectedNode = data}"
+              >
+                <Option
+                  v-for="item in intervention.mannalNodes"
+                  :key="item.nodeName"
+                  :value="item.nodeId"
+                >
+                  {{ item.nodeName }}
+                </Option>
+              </Select>
+              <!-- <Select
+                v-if="selectCheck === 1"
+                v-model="selectedNodeValue"
+                class="checkSelect"
+                label-in-value
+                @on-change="(data) => {selectedNodeValue = data?data.value:null;selectedNode = data}"
+              >
+                <Option
+                  v-for="item in intervention.backNodes"
+                  :key="item.nodeName"
+                  :value="item.nodeId"
+                >
+                  {{ item.nodeName }}
+                </Option>
+              </Select> -->
+            </div>
+
+            <!-- 节点报错 -->
+            <div v-if="Number(intervention.errorCode) === 33">
+              <p>
+                <label>人员指派:</label>
+              </p>
+            </div>
+
+            <!-- 提交失败 -->
+            <div v-if="Number(intervention.errorCode) === 53">
+              <RadioGroup
+                v-model="submitType"
+                vertical
+                @on-change="selectBackNode = null"
+              >
+                <Radio :label="0">
+                  <span>重新提交</span>
+                </Radio>
+                <div style="display:flex">
+                  <Radio
+                    :label="1"
+                    style="margin-right: 2px;"
+                  >
+                    <span>驳回至</span>
+                  </Radio>
+                  <Select
+                    v-model="selectBackNode"
+                    class="checkSelect"
+                    label-in-value
+                    :disabled="submitType === 0"
+                  >
+                    <Option
+                      v-for="item in intervention.backNodes"
+                      :key="item.nodeName"
+                      :value="item.nodeId"
+                    >
+                      {{ item.nodeName }}
+                    </Option>
+                  </Select>
+                </div>
+              </RadioGroup>
+            </div>
+
+            <!-- 备注字段 -->
             <p>
               <label>备注:</label>
               <Input
-                v-model="intervention.handleRemark"
+                v-model="remark"
                 type="text"
               />
             </p>
@@ -196,7 +281,14 @@
         obj: {}, //
 
 
-        intervention: {} // 人工干预数据
+        intervention: {}, // 人工干预数据
+        selectCheck: 0, // 0同意 1驳回
+        selectedNode: null, // 选中节点
+        selectedNodeValue: null, // 选中节点值
+        ApproverLists: {}, // 人员指派
+        submitType: 0, // 提交失败选择类型
+        selectBackNode: null, // 提交失败驳回节点
+        remark: null // 备注
       };
     },
     methods: {
@@ -536,7 +628,6 @@
           window.jflowPlugin.open({ control: false });
           if (res.data.resultCode === 0) {
             this.$Message.success(res.data.resultMsg);
-            BacklogData();
             getJflowInfo();
             DispatchEvent('jflowClick', {
               detail: {
@@ -566,7 +657,6 @@
           window.jflowPlugin.open({ control: false });
           if (res.data.resultCode === 0) {
             this.$Message.success(res.data.resultMsg);
-            BacklogData();
             getJflowInfo();
             DispatchEvent('jflowClick', {
               detail: {
@@ -593,7 +683,6 @@
           if (res.data.resultCode === 0) {
             this.$Message.success(res.data.resultMsg);
             this.selectRow = {};
-            BacklogData();
             getJflowInfo();
             DispatchEvent('jflowClick', {
               detail: {
@@ -625,37 +714,269 @@
             }
           });
       },
-      // 人工干预提交
+      // interventionConfirm() {
+      //   network.post('/jflow/p/cs/error/invocationFail', {
+      //     instanceId: global.jflowInfo.instanceId,
+      //     nodeId: global.jflowInfo.nodeId,
+      //     userId: global.userInfo.id,
+      //     handleUrl: this.intervention.handleUrl,
+      //     handleParam: this.intervention.handleParam,
+      //     handleRemark: this.intervention.handleRemark,
+      //     errorTaskId: this.intervention.errorTaskId,
+      //     exceptionId: this.intervention.exceptionId
+      //   })
+      //     .then((res) => {
+      //       if (res.data.resultCode === 0) {
+      //         this.$Message.success(res.data.resultMsg);
+      //         BacklogData();
+      //         getJflowInfo();
+      //         DispatchEvent('jflowClick', {
+      //           detail: {
+      //             type: 'refresh'
+      //           }
+      //         });
+      //       } else {
+      //         this.$Modal.fcError({
+      //           title: '错误',
+      //           content: res.data.resultMsg,
+      //           mask: true
+      //         });
+      //       }
+      //     });
+      // },
+      // 人工干预
       interventionConfirm() {
-        network.post('/jflow/p/cs/error/invocationFail', {
+        switch (Number(this.intervention.errorCode)) {
+        case 33: // 节点报错
+          this.ApproverConfirm();
+          break;
+        case 5: // 条件不符
+          this.errAction();
+          break;
+        case 47: // 接口不通
+          this.invocationFail();
+          break;
+        case 53: // 提交失败
+          this.manualsubmit();
+          break;
+        default:
+          break;
+        }
+      },
+      // 条件不符
+      errAction() {
+        if (!this.selectedNode) {
+          this.$Modal.fcWarning({
+            title: '警告',
+            content: `请选择${this.selectCheck === 0 ? '同意' : '驳回'}节点`,
+            mask: true
+          });
+          return;
+        }
+        const obj = {
           instanceId: global.jflowInfo.instanceId,
-          nodeId: global.jflowInfo.nodeId,
+          id: this.intervention.exceptionId,
           userId: global.userInfo.id,
-          handleUrl: this.intervention.handleUrl,
-          handleParam: this.intervention.handleParam,
-          handleRemark: this.intervention.handleRemark,
-          errorTaskId: this.intervention.errorTaskId,
-          exceptionId: this.intervention.exceptionId
-        })
+          nodeId: global.jflowInfo.nodeId,
+          initiator: this.intervention.initiator,
+          processStatus: this.intervention.processStatus,
+          batch: this.intervention.batch,
+          actType: this.selectCheck,
+          backNodeId: this.selectedNode.value,
+          passNodeId: this.selectedNode.value,
+          errorCode: this.intervention.errorCode,
+          errorMsg: this.intervention.errorMsg,
+          errorBody: this.intervention.errorBody,
+          startTime: this.intervention.startTime,
+          manualNode: this.selectedNode.label,
+          operaterName: global.userInfo.ename,
+          handleRemark: this.remark
+        };
+
+        this.$network.post('/jflow/p/cs/error/errAction', obj)
           .then((res) => {
             if (res.data.resultCode === 0) {
-              this.$Message.success(res.data.resultMsg);
-              BacklogData();
-              getJflowInfo();
-              DispatchEvent('jflowClick', {
-                detail: {
-                  type: 'refresh'
-                }
-              });
+              this.selectCheck = 0;
+              this.selectedNode = null;
+              this.selectedNodeValue = null;
+              this.remark = null;
+              if (res.data.resultCode === 0) {
+                this.$Message.success(res.data.resultMsg);
+                getJflowInfo();
+                DispatchEvent('jflowClick', {
+                  detail: {
+                    type: 'refresh'
+                  }
+                });
+              } else {
+                this.$Modal.fcError({
+                  title: '错误',
+                  content: res.data.resultMsg,
+                  mask: true
+                });
+              }
+            }
+          });
+      }, 
+      ApproverConfirm() { // 节点报错提交
+        if (this.ApproverLists.list && this.ApproverLists.list.length > 0) {
+          const obj = {
+            instanceId: global.jflowInfo.instanceId,
+            id: this.intervention.exceptionId,
+            userId: global.userInfo.id,
+            nodeId: global.jflowInfo.nodeId,
+            initiator: this.intervention.initiator,
+            processStatus: this.intervention.processStatus,
+            batch: this.intervention.batch,
+            approverInfo: this.ApproverLists.list,
+            errorCode: this.intervention.errorCode,
+            errorMsg: this.intervention.errorMsg,
+            errorBody: this.intervention.errorBody,
+            startTime: this.intervention.startTime,
+            handleRemark: this.remark,
+            operaterName: global.userInfo.ename
+          };
+          this.$network.post('/p/cs/error/modifyApprover', obj)
+            .then((res) => {
+              if (res.data.resultCode === 0) {
+                this.ApproverLists = {};
+                this.remark = null;
+                this.$Message.success(res.data.resultMsg);
+                BacklogData();
+                DispatchEvent('jflowClick', {
+                  detail: {
+                    type: 'refresh'
+                  }
+                });
+              } else {
+                this.$Modal.fcError({
+                  title: '错误',
+                  content: res.data.resultMsg,
+                  mask: true
+                });
+              }
+            });
+        } else {
+          this.$Modal.fcWarning({
+            title: '提示',
+            content: '请选择审批人!'
+          });
+        }
+      },
+      // 接口不通
+      invocationFail() {
+        try {
+          const reg = /^\{/;
+          if (this.intervention.handleParam) {
+            if (reg.test(this.intervention.handleParam)) {
+              JSON.parse(this.intervention.handleParam);
             } else {
               this.$Modal.fcError({
                 title: '错误',
-                content: res.data.resultMsg,
+                content: '服务参数数据格式错误',
                 mask: true
+              });
+              return;
+            }
+          }
+        
+          const obj = {
+            instanceId: global.jflowInfo.instanceId,
+            id: this.intervention.exceptionId,
+            nodeId: global.jflowInfo.nodeId,
+            userId: global.userInfo.id,
+            handleUrl: this.intervention.handleUrl,
+            handleParam: this.intervention.handleParam,
+            handleRemark: this.remark,
+            errorTaskId: this.intervention.errorTaskId,
+            exceptionId: this.intervention.exceptionId,
+            operaterName: global.userInfo.ename
+          };
+          this.$network.post('/p/cs/error/invocationFail', obj)
+            .then((res) => {
+              if (res.data.resultCode === 0) {
+                this.$Message.success(res.data.resultMsg);
+                this.remark = null;
+                BacklogData();
+                DispatchEvent('jflowClick', {
+                  detail: {
+                    type: 'refresh'
+                  }
+                });
+              }
+            });
+        } catch (err) {
+          this.$Modal.fcError({
+            title: '错误',
+            content: '服务参数数据格式错误',
+            mask: true
+          });
+        }
+      },
+      // 提交失败
+      manualsubmit() {
+        let url = null;
+        let obj = {};
+        if (this.submitType === 0) { // 重新提交
+          url = '/p/cs/error/manualsubmit';
+          obj = {
+            instanceId: global.jflowInfo.instanceId,
+            errorTaskId: this.intervention.errorTaskId,
+            exceptionId: this.intervention.exceptionId,
+            nodeId: global.jflowInfo.nodeId,
+            handleRemark: this.remark,
+            id: this.intervention.exceptionId,
+            operaterName: global.userInfo.ename,
+            userId: global.userInfo.id
+          };
+        } else { // 驳回
+          if (!this.selectBackNode) {
+            this.$Modal.fcWarning({
+              title: '警告',
+              content: '请选择驳回节点',
+              mask: true
+            });
+            return;
+          }
+          url = '/p/cs/error/errAction';
+          obj = {
+            instanceId: global.jflowInfo.instanceId,
+            id: this.intervention.id,
+            nodeId: global.jflowInfo.nodeId,
+            initiator: this.intervention.initiator,
+            processStatus: this.intervention.processStatus,
+            batch: this.intervention.batch,
+            actType: 1,
+            backNodeId: this.selectBackNode,
+            errorCode: this.intervention.errorCode,
+            errorMsg: this.intervention.errorMsg,
+            errorBody: this.intervention.errorBody,
+            startTime: this.intervention.startTime,
+            manualNode: this.backNodes.filter(item => item.value === this.selectBackNode)[0].label,
+            operaterName: global.userInfo.ename,
+            userId: global.userInfo.id,
+            errorTaskId: this.intervention.errorTaskId,
+          };
+        }
+
+        this.$network.post(url, obj)
+          .then((res) => {
+            if (res.data.resultCode === 0) {
+              setTimeout(() => {
+                this.selectBackNode = null;
+                this.submitType = 0;
+                this.remark = null;
+                this.$Message.success(res.data.resultMsg);
+                BacklogData();
+                DispatchEvent('jflowClick', {
+                  detail: {
+                    type: 'refresh'
+                  }
+                });
               });
             }
           });
-      }
+      },
     },
     created() {
       if (this.config.type === '3') {
