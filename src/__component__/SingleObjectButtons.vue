@@ -191,6 +191,11 @@
           }
         }
       },
+      // getJflowConfigCurrentTab: {
+      //   handler(val, oldVal) {
+      //     console.log(4444, val, oldVal);
+      //   }
+      // },
       backButton: {// 原jflow
         handler(val) {
           this.dataArray.back = val;
@@ -345,6 +350,22 @@
       watermarkImg() { // 匹配水印图片路径
         return this.watermarkimg;
       },
+      isCurrentItemTab() { // 当前表是否为子表
+        const itemNames = this.itemNameGroup.map((c) => {
+          if (c.tableName !== this.tableName) {
+            return c.tableName;
+          }
+        });
+        if (itemNames.includes(this.itemName)) {
+          return true;
+        }
+        return false;
+      },
+      // getJflowConfigCurrentTab() {
+      //   const currentJflowConfig = this.JflowControlField.filter(item => item.tableId === this.tableId);
+      //   // 解决jflow配置由子表改为主表
+      //   return currentJflowConfig.itemTableId ? currentJflowConfig.itemTableId : null;
+      // },
       waterMarkText() {
         const customizeWaterMark = getCustomizeWaterMark();
         const textMap = Object.assign({
@@ -1473,6 +1494,18 @@
             // dom.dispatchEvent(myEvent);
           }
         } else {
+          if (data) {
+            if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
+              const saveEventAfter = {
+                k: 'type',
+                v: data.type
+              };
+              updateSessionObject('saveEventAfter', saveEventAfter);
+            } else {
+              this.saveEventAfter = data.type;
+            }
+          }
+        
           const obj = {   
             name: '保存',
             eName: this.saveInfo.name,
@@ -3226,24 +3259,47 @@
               });
             });
           }
-
+         
           if (event.detail.type === 'refresh') {
-            this.clickButtonsRefresh();
-            // const query = this.JflowControlField.filter((item) => {
-            //   if (item.tableId === this.tableId) {
-            //     return item;
-            //   } 
-            // });
-            // const oUl = document.querySelector('.burgeon-tabs-panels-nav');
-            // if (query && oUl) {
-            //   for (let i = 0; i < oUl.children.length; i++) {
-            //     this.tabPanel.forEach((item) => {
-            //       if (Number(query) === item.tableid && item.tabledesc === oUl.children[i].innerText) {
-            //         oUl.children[i].click();
-            //       }
-            //     });
-            //   }
-            // }
+            // this.clickButtonsRefresh();
+            const currentJflowConfigTable = this.JflowControlField.filter((item) => {
+              if (item.tableId === this.tableId) {
+                return item;
+              } 
+            });
+            if (currentJflowConfigTable[0]) {
+              if (Number(currentJflowConfigTable[0].itemTableId) === Number(this.itemInfo.tableid)) { // 需要刷新的是当前tab
+                this.clickButtonsRefresh();
+              } else {
+                const oUl = document.querySelector('.burgeon-tabs-panels-nav');
+
+                if (Number(currentJflowConfigTable[0].itemTableId) === Number(currentJflowConfigTable[0].tableId)) { // 主表
+                  if (oUl) {
+                    oUl.children[1].click();
+                    setTimeout(() => {
+                      this.clickButtonsRefresh();
+                    }, 1000);
+                  }
+                } else if (oUl) {
+                  for (let i = 0; i < oUl.children.length; i++) {
+                    this.tabPanel.map((tab) => {
+                      if (Number(currentJflowConfigTable[0].itemTableId) === Number(tab.tableid)) { // 配置的为子表
+                        console.log(6, Number(currentJflowConfigTable[0].itemTableId) === Number(tab.tableid));
+                        this.clickButtonsRefresh();
+                        if (tab.tabledesc === oUl.children[i].innerText) {
+                          oUl.children[i].click();
+                          setTimeout(() => {
+                            this.clickButtonsRefresh();
+                          }, 1000);
+                        }
+                      }
+                    });
+                  }
+                }
+              }
+            } else {
+              this.clickButtonsRefresh();
+            }
           }
 
           if (event.detail.type === 'save') {

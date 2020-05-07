@@ -241,7 +241,6 @@
           });
         }).then((resData) => {
           // if (resData.webconf && resData.webconf.isCustomizeTab) {
-          //   console.log(111, this.tabPanels);
           //   this.isRequestUpdata({ tabPanel: this.tabPanels, index: 1 });
           // } else {
           this.isRequestUpdata({ tabPanel: this.tabPanels, index: 0 });
