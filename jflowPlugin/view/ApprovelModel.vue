@@ -609,7 +609,7 @@
         }
 
         if (this.type === '9') {
-          this.interventionConfirm(); // 转派
+          this.interventionConfirm(); // 人工干预
         }
       },
       cancel() {
@@ -706,7 +706,8 @@
           nodeId: global.jflowInfo.nodeId,
           userId: global.userInfo.id,
           errorCode: this.config.item.errorCode,
-          errorTaskId: this.config.item.errorTaskId
+          errorTaskId: this.config.item.errorTaskId,
+          batch: this.config.item.batch
         })
           .then((res) => {
             if (res.data.resultCode === 0) {
@@ -1040,7 +1041,38 @@
 
     .deal{
       >div{
-        >p{
+        >.checkSelect{
+          display: inline-block;
+          flex: 1;
+
+          .burgeon-select-selection{
+            border-color: #dcdee2;
+            box-shadow: none;
+          }
+
+          &:first-child{
+            width: 60px;
+            flex: none;
+            .burgeon-select-selection{
+              background: #F9F9F9;
+              border-top-right-radius: 0;
+              border-bottom-right-radius: 0;
+            }
+          }
+
+          &:last-child{
+            .burgeon-select-selection{
+              border-left: none;
+              border-top-left-radius: 0;
+              border-bottom-left-radius: 0;
+            }
+          } 
+        }
+
+        .complexBox{
+          width: 100%;
+        }
+        p{
           line-height: 24px;
           display: flex;
           margin-bottom: 8px;

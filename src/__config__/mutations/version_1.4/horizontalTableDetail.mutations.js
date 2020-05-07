@@ -1,11 +1,17 @@
 import router from '../../router.config';
 
 export default {
+  updataSinglePageButtonsConfigForMainTable(state, data) {
+    state.singlePageMainTableButtonData = data;
+  },
   updataClickSave(state, func) {
     state.clickSaveFunction = func;
   },
   testUpdataValue(state, func) {
     state.testUpdata = func;
+  },
+  updatavVerifyRequiredInformation(state, func) {
+    state.updatavVerifyRequiredInformation = func;
   },
   updataHideTempStorage(state, value) { // 控制单对象界面暂存按钮
     state.isHideTempStorage = value;

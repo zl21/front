@@ -5,16 +5,25 @@
     :id="buttons.tableName"
     class="standarTableListContent"
   >
-    <tree
+    <!-- oldTree
+      <tree
       v-if="isTreeList&&treeShow"
       :current-label="getCurrentLabel"
       :tree-datas="treeConfigData"
       :is-change-tree-config-data="isChangeTreeConfigData"
+      @searchClick="searchClick"
       @menuTreeChange="menuTreeChange"
       @changeTreeConfigData="changeTreeConfigData"
     />
-    <!-- :style="{ left: !treeShow ? '5px' : '245px' }" -->
+     -->
+    
 
+    <tree
+      v-if="isTreeList&&treeShow"
+      ref="tree"
+      :tree-datas="treeConfigData"
+      @menuTreeChange="menuTreeChange"
+    />
     <div
       v-if="isTreeList"
       class="treeSwitch"
@@ -172,7 +181,7 @@
     },
     data() {
       return {
-        isChangeTreeConfigData: '',
+        // isChangeTreeConfigData: '',//oldTree
         treeShow: true,
         actionModal: false,
         resetType: false, // 是否是重置的功能
@@ -309,33 +318,57 @@
     methods: {
       ...mapActions('global', ['updateAccessHistory', 'getExportedState', 'updataTaskMessageCount', 'getMenuLists']),
       ...mapMutations('global', ['tabHref', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter']),
-      changeTreeConfigData(value) {
-        this.isChangeTreeConfigData = value;
-      },
-      menuTreeChange(arrayIDs, treeName, val, item) {
+      // changeTreeConfigData(value) {//oldTree
+      //   this.isChangeTreeConfigData = value;
+      // },
+      // searchClick(value) { // 用于和读取的树配置文件传参，用于模糊查询功能
+      //   this.searchTreeDatas.menuTreeQuery = value;
+      //   this.treeDatas = this.getTreeDatas(this.searchTreeDatas);
+      // },
+      menuTreeChange(arrayIDs, treeName, currentId, flag) {
         this.searchData.fixedcolumns = this.dataProcessing();
-        if (val.length > 0 && arrayIDs.length > 0) {
+        if (arrayIDs && arrayIDs.length > 0 && flag) {
           this.searchData.reffixedcolumns = {
             [treeName]: `in (${arrayIDs})`
           };
         } else if (this.searchData && this.searchData.reffixedcolumns) {
           delete this.searchData.reffixedcolumns;
         }
+        this.searchData.startIndex = 0;
         this.getQueryListForAg(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
         // 按钮查找 查询第一页数据
-       
         const { tableName } = this[INSTANCE_ROUTE_QUERY];
         const data = {
           k: tableName,
-          v: item.ID
+          v: currentId
         };
         updateSessionObject('TreeId', data);
-        // const data = {
-        //   [tableName]: item.ID
-        // };
-        // this.updataTreeId(data);
       },
+      // menuTreeChange(arrayIDs, treeName, val, item) {//oldTree
+      //   this.searchData.fixedcolumns = this.dataProcessing();
+      //   if (val.length > 0 && arrayIDs.length > 0) {
+      //     this.searchData.reffixedcolumns = {
+      //       [treeName]: `in (${arrayIDs})`
+      //     };
+      //   } else if (this.searchData && this.searchData.reffixedcolumns) {
+      //     delete this.searchData.reffixedcolumns;
+      //   }
+      //   this.getQueryListForAg(this.searchData);
+      //   this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+      //   // 按钮查找 查询第一页数据
+       
+      //   const { tableName } = this[INSTANCE_ROUTE_QUERY];
+      //   const data = {
+      //     k: tableName,
+      //     v: item.ID
+      //   };
+      //   updateSessionObject('TreeId', data);
+      //   // const data = {
+      //   //   [tableName]: item.ID
+      //   // };
+      //   // this.updataTreeId(data);
+      // },
       imporSuccess(id) {
         if (Version() === '1.3') {
           if (id) {
@@ -966,7 +999,8 @@
           if (searchData.reffixedcolumns) {
             delete searchData.reffixedcolumns;
           }
-          this.isChangeTreeConfigData = 'Y'; 
+          // this.isChangeTreeConfigData = 'Y'; //oldTree
+          this.$refs.tree.callMethod(); 
           this.getTableQueryForForm({ searchData, resolve, reject });
         });
       },

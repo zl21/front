@@ -798,15 +798,16 @@
             if ((this.updateData[this.itemName] && this.updateData[this.itemName].modify[this.itemName] && Object.keys(this.updateData[this.itemName].modify[this.itemName]).length > 0)
               || (this.updateData[this.itemName].add[this.itemName] && Object.keys(this.updateData[this.itemName].add[this.itemName]).length > 0)) { // 子表新增及修改
               this.isValue = true;// 子表修改了值
-              return true;
               console.log(' 子表修改了值');
+
+              return true;
             }
           } else if (this.updateData[this.tableName].modify[this.tableName] && Object.keys(this.updateData[this.tableName].modify[this.tableName]).length > 0
             || this.updateData[this.tableName].add[this.tableName] && Object.keys(this.updateData[this.tableName].add[this.tableName]).length > 0
           ) { 
             this.isValue = true;// 主表修改了值
-            return true;
             console.log(' 左右主表修改了值');
+            return true;
           }
         } else if ((this.updateData[this.tableName] 
           && this.updateData[this.tableName].modify
@@ -819,8 +820,9 @@
           && Object.keys(this.updateData[this.itemName].add[this.itemName]).length > 0) 
         ) { // 子表新增及修改
           this.isValue = true;// 主表修改了值
-          return true;
           console.log('编辑时，修改时上下主或子表修改了值');
+
+          return true;
         }
         return false;
       },
@@ -1246,10 +1248,26 @@
           onOk: () => {
             if (obj.confirm && obj.confirm.indexOf('{') !== '-1') {
               try {
-                if (JSON.parse(obj.confirm) && JSON.parse(obj.confirm).isSave && this.testUpdata()) {
-                  const type = 'objTabActionSlient';
-                  this.objTabActionSlientData = obj;
-                  this.clickSave({ type });
+                if (JSON.parse(obj.confirm) && JSON.parse(obj.confirm).isSave) {
+                  if (this.verifyRequiredInformation()) {
+                    if (this.testUpdata()) {
+                      const type = 'objTabActionSlient';
+                      if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
+                        const objTabActionSlientData = {
+                          k: 'data',
+                          v: obj
+                        };
+                        updateSessionObject('objTabActionSlientData', objTabActionSlientData);
+                      } else {
+                        this.objTabActionSlientData = obj;
+                      }
+                      this.clickSave({ type });
+                    } else {
+                      this.errorconfirmDialog(obj);
+                    }
+                  } else {
+                    return;
+                  }
                 } else { // 无修改值时
                   this.errorconfirmDialog(obj);
                 }
@@ -2774,21 +2792,23 @@
           if (this.updateData[itemName].add && this.updateData[itemName].add[itemName]) {
             itemAdd = Object.values(this.updateData[itemName].add[itemName]);
           }
-          if (itemAdd.length > 0 && itemModify.length > 0) { // 同时新增子表以及修改子表
-            if (this.verifyRequiredInformation() && this.itemTableCheckFunc()) { // 横向结构保存校验
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
+          if (this.verifyRequiredInformation()) {
+            if (itemAdd.length > 0 && itemModify.length > 0) { // 同时新增子表以及修改子表
+              if (this.verifyRequiredInformation() && this.itemTableCheckFunc()) { // 横向结构保存校验
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
+              }
             }
-          }
-          if (itemAdd.length > 0 && itemModify.length < 1) { // 新增子表
-            if (this.verifyRequiredInformation()) { // 横向结构保存校验
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
+            if (itemAdd.length > 0 && itemModify.length < 1) { // 新增子表
+              if (this.verifyRequiredInformation()) { // 横向结构保存校验
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
+              }
             }
-          }
-          if (itemModify.length > 0 && itemAdd.length < 1) { // 子表表格编辑修改
-            if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) {
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
-            } else if (this.itemTableCheckFunc()) {
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+            if (itemModify.length > 0 && itemAdd.length < 1) { // 子表表格编辑修改
+              if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) {
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+              } else if (this.itemTableCheckFunc()) {
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+              }
             }
           }
         }
@@ -2861,6 +2881,15 @@
                           }     
                         }                             
                       }
+                    }
+                  }
+                } else if (this.itemInfo.tabrelation === '1:1') {
+                  const itemMessageTip = itemCheckedInfo.messageTip;
+                  if (itemMessageTip) {
+                    if (itemMessageTip.length > 0) {
+                      this.$Message.warning(itemMessageTip[0]);
+                      itemCheckedInfo.validateForm.focus();
+                      return false;
                     }
                   }
                 } else if (Object.values(this.itemCurrentParameter.add[this.itemName]).length > 0) { // 处理当子表填入一个必填项值时，其余必填项必须填写
@@ -3333,12 +3362,13 @@
       }
       this.updataClickSave(this.clickSave);
       this.testUpdataValue(this.testUpdata);
-      this.updataCurrentTableDetailMethods();
-      // this.dataArray.back = this.backButton;//jflowNew
-      // if (this.jflowButton.length > 0) { // jflowNew
-      //   // this.dataArray.jflowPluginDataArray = [];
-      //   this.dataArray.jflowButton = this.jflowButton;
-      // }
+      this.updatavVerifyRequiredInformation(this.verifyRequiredInformation);
+      
+      this.dataArray.back = this.backButton;
+      if (this.jflowButton.length > 0) {
+        // this.dataArray.jflowPluginDataArray = [];
+        this.dataArray.jflowButton = this.jflowButton;
+      }
       this.hideBackButton();
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);

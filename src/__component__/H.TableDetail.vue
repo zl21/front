@@ -85,6 +85,9 @@
             obj.cilckCallback = this.tabClick;
             obj.isRequest = false;
             if (this.WebConf && this.WebConf.isCustomizeTab) {
+              if (index === 1) {
+                obj.componentAttribute.isCustomizeMainTable = true;
+              }
               if (index !== 0) {
                 arr.push(obj);
               }

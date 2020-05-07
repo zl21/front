@@ -119,7 +119,8 @@ export default () => ({
         'emptyChangeData',
         'updateButtonGetActionData',
         'updataClickSave',
-        'testUpdataValue'
+        'testUpdataValue',
+        'updatavVerifyRequiredInformation'
       ]),
   },
   beforeDestroy() {
