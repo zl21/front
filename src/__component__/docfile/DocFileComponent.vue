@@ -115,6 +115,9 @@
         const fileInformationUploaded = e.target.files;
         const url = this.docList.url;
         const sendData = this.docList.sendData;
+        if (this.docList.filesize) {
+          this.docList.filesize = 1024 * 1024 * this.docList.filesize;
+        }
         const aUploadParame = Object.assign(
           {},
           {
@@ -122,6 +125,7 @@
             url,
             multiple: true,
             length: this.docList.ImageSize,
+            imgSize: this.docList.filesize,
             sendData,
             fileName: 'files',
             success: this.success,
