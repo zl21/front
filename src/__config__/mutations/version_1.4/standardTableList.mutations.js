@@ -1,5 +1,6 @@
 
 export default {
+  
   updateFailInfo({ ag }, failInfo) {
     ag.datas.deleteFailInfo = failInfo;
     ag.datas = Object.assign({}, ag.datas);
@@ -78,7 +79,9 @@ export default {
     // 双击条状判断
     buttons.objTableUrl = data.tableurl;
   },
-
+  updataSelectIdArr({ buttons }, id) {
+    buttons.selectIdArr.push(id);
+  },
   setActiveTabActionValue({
     buttons
   }, obj) {

@@ -32,13 +32,7 @@ function mutipleOperate(url) {
 
 // 重启流程/提交按钮
 function restartProcess() {
-  if (window.testUpdataValue()) {
-    window.updataClickSave(async () => {
-      window.initiateLaunch({ webActionId: 0 });
-    });
-  } else {
-    window.initiateLaunch({ webActionId: 0 });
-  }
+  window.initiateLaunch({ webActionId: 0 });
 }
 
 // 业务系统的保存需要通知jflow
@@ -54,10 +48,7 @@ async function businessChange() {
 
 // 按钮响应事件
 async function buttonsResponse(e) {
-  if (e.detail.obj.button !== 'submit') {
-    await getJflowInfo();
-  }
-  
+  await getJflowInfo();
   if (e.detail.obj.button === 'fresh') {
     DispatchEvent('jflowClick', {
       detail: {
@@ -103,7 +94,6 @@ async function buttonsResponse(e) {
 
 // 按钮点击逻辑处理
 function clickFunction(e) {
-  console.log(e);
   if (e.detail.obj.isSave) { // 按钮存在保存前置事件时
     if (window.updatavVerifyRequiredInformation()) {
       if (window.testUpdataValue()) {

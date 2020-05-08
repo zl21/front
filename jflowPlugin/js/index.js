@@ -17,7 +17,7 @@ import todoList from './todoList';
 
 const router = {}; // 路由
 const userInfo = {}; // 用户信息
-let instanceId = null; // 流程id
+const instanceId = null; // 流程id
 
 function thirdlogin() { // 三方登录  获取accessToken
   let data = {
@@ -91,92 +91,6 @@ async function jflowButtons() { // 获取jflow单据信息
   });
 }
 
-async function jflowsave(flag, request) {
-  await new Promise((resolve, reject) => {
-    const response = request.data;
-
-    network.post('/jflow/p/cs/process/launch',
-      {
-        // eslint-disable-next-line no-nested-ternary
-        businessCodes: (response.ids || response.objids) ? (response.ids.join(',') || response.objids) : router.currentRoute.params.itemId,
-        businessType: router.currentRoute.params.tableId,
-        businessTypeName: router.currentRoute.params.tableName,
-        initiator: userInfo.id,
-        userName: userInfo.name,
-        instanceId,
-        initiatorName: userInfo.name,
-        changeUser: userInfo.id,
-        businessUrl: request.url,
-        ruleField: 'V',
-        webActionId: 0
-      }).then((res) => {
-      if (res.data.resultCode !== 0) {
-        window.R3message({
-          title: '错误',
-          content: res.data.resultCode,
-          mask: true
-        });
-        return; 
-      }
-      DispatchEvent('jflowClick', {
-        detail: {
-          type: 'clearSubmit'
-        }
-      });
-      
-      if (window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' && res.data.resultCode === 0 && res.data.notice) {
-        window.R3message({
-          title: '错误',
-          content: res.data.notice,
-          mask: true
-        });
-        reject(res);
-        return; 
-      }
-      if (res.data.data.records && res.data.data.records[0].notice) {
-        window.R3message({
-          title: '错误',
-          content: res.data.data.records[0].notice,
-          mask: true
-        });
-        reject(res);
-        return;
-      }
-      if (res.data.resultCode === 0) {
-        if (res.objids) {
-          window.R3message({
-            title: '提示',
-            content: '请稍等,正在审批······',
-            mask: true
-          });
-        }
-        instanceId = res.data.data.instanceId;
-
-        const type = router.currentRoute.path.split('/')[3];// 获取组件类型
-        if (type === 'H' || type === 'V') {
-          DispatchEvent('jflowClick', {
-            detail: {
-              type: 'refresh'
-            }
-          });
-        } else {
-          DispatchEvent('jflowEvent', {
-            detail: {
-              type: 'search'
-            }
-          });
-        }
-
-        
-        reject(response);
-      } else {
-        resolve();
-      }
-    });
-  });
-}
-
-
 function uuidGenerator() {
   const originStr = 'xxxxxxxxxxxxxxxx';
   const originChar = '0123456789abcdef';
@@ -217,6 +131,7 @@ function jflowRefresh() { // 刷新业务系统
 }
 */
 function initiateLaunch(data) { // 业务系统流程发起
+  window.vm.$Spin.show();
   return new Promise((resolve, reject) => {
     let obj = {
       // eslint-disable-next-line no-nested-ternary
@@ -238,6 +153,7 @@ function initiateLaunch(data) { // 业务系统流程发起
 
     obj = Object.assign(obj, data);
     network.post('/jflow/p/cs/process/launch', obj).then((res) => {
+      window.vm.$Spin.hide();
       if (res.data.data.records && res.data.data.records[0].notice) {
         window.R3message({
           title: '错误',
@@ -273,10 +189,8 @@ function initLists() { // init
   network.post('/jflow/p/sys/properties', {})
     .then((res) => {
       globalChange(res.data.data.ciphertextVO);
-      globalChange({
-        localIp: res.data.data.localIp,
-        msgPushLocation: res.data.data.msgPushLocation
-      });
+      delete res.data.data.ciphertextVO;
+      globalChange(res.data.data);
       thirdlogin();
       createComponent();
       if (res.data.data.msgPushLocation) {

@@ -10,15 +10,15 @@ function openTodoLists() {
 
 function pollBacklogData(total) {
   if (total === undefined) {
-    network.post('/jflow/p/cs/task/backlog/list', {
+    network.post('/jflow/p/cs/task/poll', {
       page: 1, pageSize: 10, searchType: '0,1', excuStatus: 0, isPoll: true, userId: global.userInfo.id
     }).then((res) => {
-      if (res.data.resultCode === 0 && res.data.data.total > 0) {
+      if (res.data.resultCode === 0 && res.data.data.count > 0) {
         const data = [{
           id: 'jflow',
           icon: 'iconlogo-jflow',
           callback: openTodoLists,
-          count: res.data.data.total 
+          count: res.data.data.count 
         }];
         window.changeNavigatorSetting(data);
       } else {
