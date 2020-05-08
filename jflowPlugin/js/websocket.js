@@ -6,7 +6,9 @@ let websock = null; // websocket实例
 
 function websocketonerror(e) { // 连接建立失败重连
   console.log('连接建立失败', e);
-  websocketInit();
+  if (global.msgPushLocation) {
+    websocketInit();
+  }
 }
 
 function websocketonmessage(e) { // 数据接收

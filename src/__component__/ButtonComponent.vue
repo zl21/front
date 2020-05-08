@@ -37,7 +37,7 @@
       />
       <!-- jflow配置按钮-->
       <Button
-        v-for="(item) in dataArray. jflowButton"
+        v-for="(item) in dataArray.jflowButton"
         :key="item.button"
         :ref="item"
         type="fcdefault"

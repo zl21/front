@@ -54,7 +54,10 @@ async function businessChange() {
 
 // 按钮响应事件
 async function buttonsResponse(e) {
-  await getJflowInfo();
+  if (e.detail.obj.button !== 'submit') {
+    await getJflowInfo();
+  }
+  
   if (e.detail.obj.button === 'fresh') {
     DispatchEvent('jflowClick', {
       detail: {
@@ -100,6 +103,7 @@ async function buttonsResponse(e) {
 
 // 按钮点击逻辑处理
 function clickFunction(e) {
+  console.log(e);
   if (e.detail.obj.isSave) { // 按钮存在保存前置事件时
     if (window.updatavVerifyRequiredInformation()) {
       if (window.testUpdataValue()) {
@@ -129,6 +133,7 @@ async function getTemplate() { // 获取模版信息
 
 // 触发事件
 async function initiateLaunch(event) {
+  await getJflowInfo();
   window.updataClickSave(async () => {
     if (global.jflowInfo.objInstanceId) {
       mutipleOperate(global.jflowInfo.affirmUrl);

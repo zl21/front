@@ -327,13 +327,6 @@ export default {
 
     // 关闭tab时需清楚jflow配置的对应表
     deleteFromSessionObject('TreeId', tab.tableName);
-    const openedMenuListId = tab.keepAliveModuleName.split('.')[2];
-
-    state.JflowControlField = state.JflowControlField.filter((item) => {
-      if (item.tableId !== openedMenuListId) {
-        return item;
-      }
-    });
     const tabRouteFullPath = tab.routeFullPath;
 
     // 删除规则一：关闭页签时，菜单跳转到单对象后新增保存跳转到编辑界面，清除session中存储的对应关系。

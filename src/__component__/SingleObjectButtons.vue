@@ -210,12 +210,12 @@
           }
         }
       },
-      // jflowButton: {//jflowNew
-      //   handler(val) {
-      //     // this.dataArray.jflowPluginDataArray = [];
-      //     this.dataArray.jflowButton = val;
-      //   }
-      // },
+      jflowButton: {// jflowNew
+        handler(val) {
+          // this.dataArray.jflowPluginDataArray = [];
+          this.dataArray.jflowButton = val;
+        }
+      },
       // jflowPluginDataArray: {// jflowOld
       //   handler(val) {
       //     this.dataArray.jflowPluginDataArray = val;
@@ -495,10 +495,10 @@
         default: () => ({})
       },
     
-      // jflowButton: {// jflow配置按钮  jflowNew
-      //   type: Array,
-      //   default: () => ([])
-      // },
+      jflowButton: {// jflow配置按钮  jflowNew
+        type: Array,
+        default: () => ([])
+      },
       tabwebact: {// 自定义类型按钮
         type: Object,
         default: () => ({})
@@ -2989,14 +2989,14 @@
             });
           }
           // if (enableJflow()) { // jflow开启时，保存成功需通知
-          DispatchEvent('jflowPlugin', {
-            detail: {
-              obj: {
-                button: 'save',
-                type: 'resolve'
-              }
-            }
-          });
+          // DispatchEvent('jflowPlugin', {
+          //   detail: {
+          //     obj: {
+          //       button: 'save',
+          //       type: 'resolve'
+          //     }
+          //   }
+          // });
           // }
           DispatchEvent('objTabActionSlientForItemTable', {// 用于子表监听保存成功后执行相对应逻辑
             detail: {
@@ -3005,14 +3005,14 @@
           });
         }, () => {
           // if (enableJflow()) { // jflow开启时，保存失败需通知
-          DispatchEvent('jflowPlugin', {
-            detail: {
-              obj: {
-                button: 'save',
-                type: 'reject'
-              }
-            }
-          });
+          // DispatchEvent('jflowPlugin', {
+          //   detail: {
+          //     obj: {
+          //       button: 'save',
+          //       type: 'reject'
+          //     }
+          //   }
+          // });
           // }
           this.closeCurrentLoading();
           stop = true;

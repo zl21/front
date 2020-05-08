@@ -51,6 +51,13 @@ const createDOM = () => {
   document.body.appendChild(div);
   return div;
 };
+
+// 提前挂载方法
+window.changeNavigatorSetting = (data) => {
+  store.commit('global/changeNavigatorSetting', data);
+};
+
+
 const init = () => {
   removeSessionObject(HAS_BEEN_DESTROYED_MODULE);
   const rootDom = createDOM();
@@ -108,10 +115,7 @@ const init = () => {
       ])
     });
   };
-
-  window.changeNavigatorSetting = (data) => {
-    store.commit('global/changeNavigatorSetting', data);
-  };
+  
 
   window.getObjdisType = getObjdisType;
 };

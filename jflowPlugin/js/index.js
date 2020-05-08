@@ -13,6 +13,7 @@ import mainComponent from '../view/mainComponent';
 import InstanceManagementList from '../view/InstanceManagementList';
 import decryptionJflow from './decryptionJflow';
 import { global, globalChange } from '../utils/global.config';
+import todoList from './todoList';
 
 const router = {}; // 路由
 const userInfo = {}; // 用户信息
@@ -59,7 +60,7 @@ function thirdlogin() { // 三方登录  获取accessToken
 */
 async function jflowButtons() { // 获取jflow单据信息
   return await new Promise((resolve) => {
-    network.post('/jflow/p/cs/task/approveAction', {
+    network.post('/jflow/p/cs/task/page/approveAction', {
       businessCode: global.routeInfo.itemId,
       userId: global.userInfo.id,
       businessType: global.routeInfo.tableId
@@ -273,11 +274,17 @@ function initLists() { // init
     .then((res) => {
       globalChange(res.data.data.ciphertextVO);
       globalChange({
-        localIp: res.data.data.localIp
+        localIp: res.data.data.localIp,
+        msgPushLocation: res.data.data.msgPushLocation
       });
       thirdlogin();
       createComponent();
-      websocketInit();
+      if (res.data.data.msgPushLocation) {
+        websocketInit();
+      } else {
+        todoList();
+      }
+      
 
       // 准备业务系统的监听
       window.conversionJflow = decryptionJflow; // 解密方法

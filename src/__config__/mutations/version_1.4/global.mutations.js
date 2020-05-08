@@ -112,6 +112,8 @@ export default {
   },
   changeNavigatorSetting(state, data) {
     let flag = false;
+
+    // 去重覆盖
     state.navigatorSetting = state.navigatorSetting.filter((item) => {
       if (item.id === data[0].id) {
         item = data[0];
@@ -119,7 +121,7 @@ export default {
       }
       return item;
     });
-    if (flag) {
+    if (flag || state.navigatorSetting.length === 0) {
       state.navigatorSetting.push(data[0]);
     }
   },
@@ -348,12 +350,6 @@ export default {
     //   v: item.ID
     // };
     deleteFromSessionObject('TreeId', tab.tableName);
-    const openedMenuListId = tab.keepAliveModuleName.split('.')[2];
-    state.JflowControlField = state.JflowControlField.filter((item) => {
-      if (item.tableId !== openedMenuListId) {
-        return item;
-      }
-    });
 
     
     // window.sessionStorage.removeItem('dynamicRoutingIsBack');// 清除动态路由返回标记
