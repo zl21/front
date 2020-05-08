@@ -1473,6 +1473,17 @@
             // dom.dispatchEvent(myEvent);
           }
         } else {
+          if (data) {
+            if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
+              const saveEventAfter = {
+                k: 'type',
+                v: data.type
+              };
+              updateSessionObject('saveEventAfter', saveEventAfter);
+            } else {
+              this.saveEventAfter = data.type;
+            }
+          }
           const obj = {   
             name: '保存',
             eName: this.saveInfo.name,
