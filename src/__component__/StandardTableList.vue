@@ -1018,7 +1018,9 @@
             delete searchData.reffixedcolumns;
           }
           // this.isChangeTreeConfigData = 'Y'; //oldTree
-          this.$refs.tree.callMethod(); 
+          if (this.isTreeList && this.treeShow) {
+            this.$refs.tree.callMethod();
+          }
           this.getTableQueryForForm({ searchData, resolve, reject });
         });
       },
