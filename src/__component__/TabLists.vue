@@ -21,9 +21,10 @@
       class="tab-list"
     >
       <a
-        v-for="(tag, index) in openedMenuLists"
+        v-for="(tag, index) in getOpenedMenuLists"
         :key="index"
         ref="tabBox"
+        v-dragging="{ item: tag, list:getOpenedMenuLists,group: 'color'}"
         class="tabBox"
         :title="tag.label"
         @click="switchTab(tag,index)"
@@ -82,8 +83,15 @@
     data() {
       return {
         clickShow: true,
-        tagIndex: 0
+        tagIndex: 0,
+        getOpenedMenuLists: []
       };
+    },
+    mounted() {
+      this.$dragging.$on('dragged', ({ value }) => { // 更新MenuList
+        this.updataOpenedMenuLists(value.list);
+      });
+      this.getOpenedMenuLists = JSON.parse(JSON.stringify(this.openedMenuLists));
     },
     computed: {
       ...mapState('global', {
@@ -93,7 +101,7 @@
       menuLists() {
         const openedMenuListsLength = this.openedMenuLists.length;
         return openedMenuListsLength;
-      }
+      },
     },
     watch: {
       menuLists: {
@@ -121,14 +129,21 @@
             }
           });
         }
-      }
+      },
+      openedMenuLists: {
+        handler(val) {
+          this.getOpenedMenuLists = JSON.parse(JSON.stringify(val));
+        },
+        deep: true
+      },
     },
     methods: {
       ...mapMutations('global', [
         'tabCloseAppoint',
         'addExcludedComponents',
         'emptyTabs',
-        'switchTabForActiveTab'
+        'switchTabForActiveTab',
+        'updataOpenedMenuLists'
       ]),
       switchTab(item, index) {
         const tag = this.openedMenuLists[index];

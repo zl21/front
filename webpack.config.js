@@ -33,7 +33,9 @@ module.exports = env => ({
     'vue-router': 'VueRouter',
     axios: 'axios',
     // 'ag-grid': 'agGrid',
-    // 'ark-ui': 'Ark'
+    'burgeon-ui': 'Ark',
+    jquery: '$',
+    ztree: 'ztree',
   },
   devServer: {
     compress: true,

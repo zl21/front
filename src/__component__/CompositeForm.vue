@@ -1364,7 +1364,9 @@
             expression = current.item.validate.hidecolumn.expression;
           }
           if (expression !== '=') {
-            return eval(val.replace(/\s+/g, '') + expression + refval.replace(/\s+/g, ''));
+            if (val) {
+              return eval(val.replace(/\s+/g, '') + expression + refval.replace(/\s+/g, ''));
+            }
           }
          
 
@@ -1828,12 +1830,14 @@
           item.type = 'docfile';
           const valuedata = this.defaultValue(current) || [];
           const filesLength = Number(current.webconf && current.webconf.filesLength);
+          const filesize = Number(current.webconf && current.webconf.filesize);
           let readonly = current.readonly;
           readonly = checkIsReadonly;
           item.props.itemdata = {
             colname: current.colname,
             readonly,
             filesLength,
+            filesize,
             masterName: this.masterName,
             objId: this.masterId,
             sendData: {
@@ -2136,6 +2140,7 @@
           item.props.type = 'ImageUpload';
           const valuedata = this.defaultValue(current);
           const ImageSize = Number(current.webconf && current.webconf.ImageSize);
+          // const imgSize = Number(current.webconf && 0.05 * 1024 * 1024);
 
           let readonly = current.readonly;
           readonly = checkIsReadonly;
