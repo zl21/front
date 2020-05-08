@@ -789,7 +789,7 @@
           errorMsg: this.intervention.errorMsg,
           errorBody: this.intervention.errorBody,
           startTime: this.intervention.startTime,
-          manualNode: this.selectedNode.label,
+          mannalNode: this.selectedNode.label,
           operaterName: global.userInfo.ename,
           handleRemark: this.remark
         };
@@ -953,7 +953,7 @@
             errorMsg: this.intervention.errorMsg,
             errorBody: this.intervention.errorBody,
             startTime: this.intervention.startTime,
-            manualNode: this.backNodes.filter(item => item.value === this.selectBackNode)[0].label,
+            mannalNode: this.backNodes.filter(item => item.value === this.selectBackNode)[0].label,
             operaterName: global.userInfo.ename,
             userId: global.userInfo.id,
             errorTaskId: this.intervention.errorTaskId,
