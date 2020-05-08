@@ -1,5 +1,8 @@
 
 export default {
+  updataSelectIdArr(state, id) {
+    state.selectIdArr.push(id);
+  },
   updateFailInfo({ ag }, failInfo) {
     ag.datas.deleteFailInfo = failInfo;
     ag.datas = Object.assign({}, ag.datas);

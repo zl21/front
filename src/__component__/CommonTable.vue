@@ -41,14 +41,38 @@
   /* eslint-disable no-lonely-if */
 
   import { mapMutations } from 'vuex';
+  import Vue from 'vue';
   import Dialog from './Dialog.vue';
+  import ButtonComponent from './tableButtons';
+
   import network from '../__utils__/network';
   import store from '../__config__/store.config';
   import DispatchEvent from '../__utils__/dispatchEvent';
 
+  Vue.component('buttons', Vue.extend(ButtonComponent));
   export default {
     data() {
       return {
+        dataArray: {
+          refresh: true, // 显示刷新
+          back: true, // 显示返回
+          temporaryStorage: false, // 显示暂存
+          printValue: false, // 是否显示打印
+          actionCollection: false,
+          collectiImg: false, // 是否收藏
+          waListButtonsConfig: {// 自定义按钮
+            waListButtons: []
+          },
+          buttonGroupShowConfig: {// 标准按钮
+            buttonGroupShow: []
+          },
+          jflowPluginDataArray: [], // jflow老版本按钮配置
+          jflowButton: [], // jflow配置按钮
+          btnclick: (type, item) => {
+            const self = this;
+            return self.buttonClick(type, item);
+          }
+        },
         spinShow: false,
         dialogComponentName: null,
         dialogConfig: {
@@ -64,6 +88,10 @@
     name: 'CommonTable',
     components: { Dialog },
     props: {
+      buttonsData: {// 获取自定义按钮组
+        type: Array,
+        default: () => []
+      },
       doTableSearch: {
         type: Function,
         default: () => {},
@@ -230,8 +258,9 @@
                   align: 'left',
                   fixed: 'left',
                   key: 'ID',
-                  width: 40,
+                  width: 240,
                   render: this.collectionIndexRender()
+                  //  this.buttonsRender()
                 }, cur));
               } else if (['switch', 'command', 'image', 'doc', 'operatebuts'].indexOf(cur.display) > -1) {
                 switch (cur.display) {
@@ -416,6 +445,43 @@
     watch: {},
     methods: {
       ...mapMutations('global', ['tabOpen', 'tabHref']),
+      btnclick(obj) {
+        this.$emit('btnclick', obj);
+        // switch (obj.vuedisplay) {
+        // case 'slient':
+        //   this.$emit('objTabActionSlient', obj);
+        //   break;
+        // case 'dialog':
+        //   this.$emit('objTabActionDialog', obj);
+        //   break;
+        // case 'navbar':
+        //   this.$emit('objTabActionNavbar', obj);
+        //   break;
+       
+        // default:
+        //   break;
+        // }
+      },
+      buttonsRender() {
+        // 按钮组
+        return (h, info) => h('div',
+                              [
+                                h('buttons', {
+                                  on: {
+                                    btnclick: (obj) => {
+                                      obj.ID = info.row.ID;
+                                      this.btnclick(obj);
+                                    }
+                                  },
+                                  props: {
+                                    buttonsData: this.buttonsData
+                                    // value: info.row[info.column.colname] === 'true',
+                                    // size: 'small',
+                                    // loading: false
+                                  },
+                                })
+                              ]);
+      },
       deselectAll() {
         this.$refs.table.selectAll(false);
       }, // 取消表格全部选中

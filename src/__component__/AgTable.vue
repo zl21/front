@@ -20,14 +20,16 @@
       <CommonTable
         ref="commonTable"
         :datas="datas"
+        :buttons-data="buttonsData"
         :css-status="cssStatus"
         :error-arr="errorArr"
         :on-row-double-click="onRowDoubleClick"
         :on-sort-changed="onSortChanged"
         :on-selection-changed="onSelectionChanged"
         :on-row-single-click="onRowSingleClick"
+        :do-table-search="doTableSearch"
         @CustomizedDialog="customizedDialog"
-        :doTableSearch="doTableSearch"
+        @btnclick="btnclick"
       />
     </div>
     <div class="queryDesc">
@@ -113,6 +115,10 @@
         type: Boolean,
         default: false
       }, // 是否重新创建ag实例
+      buttonsData: {// 获取自定义按钮组
+        type: Array,
+        default: () => []
+      },
       cssStatus: {
         type: Array,
         default: () => []
@@ -221,6 +227,10 @@
       },
     },
     methods: {
+
+      btnclick(obj) {
+        this.$emit('btnclick', obj);
+      },
       agGridTable(th, row, data) { // agGrid
         const self = this;
         const arr = [];

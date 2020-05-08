@@ -17,7 +17,6 @@
     />
      -->
     
-
     <tree
       v-if="isTreeList&&treeShow"
       ref="tree"
@@ -73,8 +72,10 @@
         :on-column-visible-changed="onColumnVisibleChanged"
         :on-cell-single-click="onCellSingleClick"
         :is-common-table="commonTable"
+        :buttons-data=" buttons.dataArray.waListButtonsConfig.waListButtons"
         :do-table-search="searchClickData"
         @CommonTableCustomizedDialog="commonTableCustomizedDialog"
+        @btnclick="btnclick"
       />
     </div>
    
@@ -181,6 +182,7 @@
     },
     data() {
       return {
+        tableButtons: [],
         // isChangeTreeConfigData: '',//oldTree
         treeShow: true,
         actionModal: false,
@@ -369,6 +371,22 @@
       //   // };
       //   // this.updataTreeId(data);
       // },
+      btnclick(obj) { // 表格操作按钮组
+        this.updataSelectIdArr(obj.ID);
+        switch (obj.vuedisplay) {
+        case 'slient':
+          this.webActionSlient(obj);
+          break;
+        case 'dialog':
+          // 
+          break;
+        case 'navbar':
+          this.objTabActionNavbar(obj); // 新标签跳转
+          break;
+        default:
+          break;
+        }
+      },
       imporSuccess(id) {
         if (Version() === '1.3') {
           if (id) {
@@ -1406,6 +1424,9 @@
             item, obj, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
           });
         });
+        if (item.ID) {
+          this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+        }
         if (this.buttons.activeTabAction.cuscomponent) { // 如果接口cuscomponent有值，逻辑为自定义调自定义
           const nextOperate = JSON.parse(// 配置信息
             this.buttons.activeTabAction.cuscomponent
