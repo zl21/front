@@ -113,11 +113,12 @@
       uploadFileChange(e) {
         // 上传图片
         const fileInformationUploaded = e.target.files;
+        if (!this.checkFile(e.target.files)) {
+          return false;
+        }
         const url = this.docList.url;
         const sendData = this.docList.sendData;
-        if (this.docList.filesize) {
-          this.docList.filesize = 1024 * 1024 * this.docList.filesize;
-        }
+        
         const aUploadParame = Object.assign(
           {},
           {

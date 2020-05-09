@@ -258,7 +258,7 @@
                   align: 'left',
                   fixed: 'left',
                   key: 'ID',
-                  width: 240,
+                  width: 40,
                   render: this.collectionIndexRender()
                   //  this.buttonsRender()
                 }, cur));

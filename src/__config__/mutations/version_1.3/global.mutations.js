@@ -110,7 +110,15 @@ export default {
     state.exportTasks = exportTask;
   },
   changeNavigatorSetting(state, data) {
-    state.navigatorSetting = data;
+    state.navigatorSetting.unshift(data[0]);
+    // 去重覆盖
+    state.navigatorSetting = state.navigatorSetting.filter((x, index, self) => {
+      const arrids = [];
+      state.navigatorSetting.forEach((item, i) => {
+        arrids.push(item.id);
+      });
+      return arrids.indexOf(x.id) === index;
+    });
   },
   changeSelectedPrimaryMenu(state, index) {
     state.primaryMenuIndex = index;

@@ -112,19 +112,15 @@ export default {
     }
   },
   changeNavigatorSetting(state, data) {
-    let flag = false;
-
+    state.navigatorSetting.unshift(data[0]);
     // 去重覆盖
-    state.navigatorSetting = state.navigatorSetting.filter((item) => {
-      if (item.id === data[0].id) {
-        item = data[0];
-        flag = true;
-      }
-      return item;
+    state.navigatorSetting = state.navigatorSetting.filter((x, index, self) => {
+      const arrids = [];
+      state.navigatorSetting.forEach((item, i) => {
+        arrids.push(item.id);
+      });
+      return arrids.indexOf(x.id) === index;
     });
-    if (flag || state.navigatorSetting.length === 0) {
-      state.navigatorSetting.push(data[0]);
-    }
   },
   changeSelectedPrimaryMenu(state, index) {
     state.primaryMenuIndex = index;
