@@ -1830,7 +1830,7 @@
           item.type = 'docfile';
           const valuedata = this.defaultValue(current) || [];
           const filesLength = Number(current.webconf && current.webconf.filesLength);
-          const filesize = Number(current.webconf && current.webconf.filesize);
+          const filesize = Number(current.webconf && 1024 * 1024 * Number(current.webconf.filesize));
           let readonly = current.readonly;
           readonly = checkIsReadonly;
           item.props.itemdata = {
