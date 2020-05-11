@@ -127,11 +127,11 @@
             >
               <label>干预至某节点:</label>
               <Select
-                v-model="selectedNodeValue"
+                v-model="selectedNode"
                 style="flex:1;margin-left: 10px;"
                 class="checkSelect"
                 label-in-value
-                @on-change="(data) => {selectedNodeValue = data?data.value:null;selectedNode = data}"
+                @on-change="(data) => {selectedNode = data}"
               >
                 <Option
                   v-for="item in intervention.mannalNodes"
@@ -189,7 +189,7 @@
                     :disabled="submitType === 0"
                   >
                     <Option
-                      v-for="item in intervention.backNodes"
+                      v-for="item in intervention.mannalNodes"
                       :key="item.nodeName"
                       :value="item.nodeId"
                     >
@@ -284,7 +284,6 @@
         intervention: {}, // 人工干预数据
         selectCheck: 0, // 0同意 1驳回
         selectedNode: null, // 选中节点
-        selectedNodeValue: null, // 选中节点值
         ApproverLists: {}, // 人员指派
         submitType: 0, // 提交失败选择类型
         selectBackNode: null, // 提交失败驳回节点
@@ -782,14 +781,13 @@
           initiator: this.intervention.initiator,
           processStatus: this.intervention.processStatus,
           batch: this.intervention.batch,
-          actType: this.selectCheck,
-          backNodeId: this.selectedNode.value,
-          passNodeId: this.selectedNode.value,
+          actType: this.intervention.mannalNodes.filter(item => item.value === this.selectedNode)[0].actType,
+          mannalNodeId: this.selectedNode,
           errorCode: this.intervention.errorCode,
           errorMsg: this.intervention.errorMsg,
           errorBody: this.intervention.errorBody,
           startTime: this.intervention.startTime,
-          mannalNode: this.selectedNode.label,
+          mannalNode: this.intervention.mannalNodes.filter(item => item.value === this.selectedNode)[0].label,
           operaterName: global.userInfo.ename,
           handleRemark: this.remark
         };
@@ -799,7 +797,6 @@
             if (res.data.resultCode === 0) {
               this.selectCheck = 0;
               this.selectedNode = null;
-              this.selectedNodeValue = null;
               this.remark = null;
               if (res.data.resultCode === 0) {
                 this.$Message.success(res.data.resultMsg);
@@ -947,13 +944,13 @@
             initiator: this.intervention.initiator,
             processStatus: this.intervention.processStatus,
             batch: this.intervention.batch,
-            actType: 1,
-            backNodeId: this.selectBackNode,
+            actType: this.intervention.mannalNodes.filter(item => item.value === this.selectBackNode)[0].actType,
+            mannalNodeId: this.selectBackNode,
             errorCode: this.intervention.errorCode,
             errorMsg: this.intervention.errorMsg,
             errorBody: this.intervention.errorBody,
             startTime: this.intervention.startTime,
-            mannalNode: this.backNodes.filter(item => item.value === this.selectBackNode)[0].label,
+            mannalNode: this.intervention.mannalNodes.filter(item => item.value === this.selectBackNode)[0].label,
             operaterName: global.userInfo.ename,
             userId: global.userInfo.id,
             errorTaskId: this.intervention.errorTaskId,
