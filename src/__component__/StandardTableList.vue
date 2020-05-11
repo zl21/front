@@ -1234,11 +1234,11 @@
                 ) {
                   const title = this.ChineseDictionary.WARNING;
                   const contentText = `${JSON.parse(obj.confirm).radiodesc}`;
-                  this.dialogMessage(title, contentText);
+                  this.dialogMessage(title, contentText, obj);
                 } else if (JSON.parse(obj.confirm).desc) {
                   const title = this.ChineseDictionary.WARNING;
                   const contentText = `${JSON.parse(obj.confirm).desc}`;
-                  this.dialogMessage(title, contentText);
+                  this.dialogMessage(title, contentText, obj);
                 } else {
                   // 参数都不存在,直接执行
                   this.webActionSlient(obj);
@@ -1246,12 +1246,12 @@
               } else {
                 const title = this.ChineseDictionary.WARNING;
                 const contentText = `${JSON.parse(obj.confirm).desc}`;
-                this.dialogMessage(title, contentText);
+                this.dialogMessage(title, contentText, obj);
               }
             } else {
               const title = this.ChineseDictionary.WARNING;
               const contentText = `${obj.confirm}`;
-              this.dialogMessage(title, contentText);
+              this.dialogMessage(title, contentText, obj);
             }
           } else {
             this.webActionSlient(obj);
@@ -1302,14 +1302,14 @@
             if (confirm.isradio && this.buttons.selectIdArr.length !== 1) {
               const title = this.ChineseDictionary.WARNING;
               const contentText = `${confirm.radiodesc}`;
-              this.dialogMessage(title, contentText);
+              this.dialogMessage(title, contentText, obj);
             } else if (confirm.desc) {
               const title = this.ChineseDictionary.WARNING;
               const contentText = `${confirm.desc.replace(
                 '{isselect}',
                 this.buttons.selectIdArr.length
               )}`;
-              this.dialogMessage(title, contentText);
+              this.dialogMessage(title, contentText, obj);
             } else if (obj.vuedisplay === 'download') {
               this.objTabActiondDownload(obj);
             } else {
@@ -1352,7 +1352,7 @@
             : obj.confirm;
           const title = this.ChineseDictionary.WARNING;
           const contentText = `${message}`;
-          this.dialogMessage(title, contentText);
+          this.dialogMessage(title, contentText, obj);
         }
       },
 
@@ -1591,7 +1591,7 @@
         this.getQueryListForAg(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
-      dialogMessage(title, contentText) {
+      dialogMessage(title, contentText, obj) {
         this.setErrorModalValue({
           title,
           contentText,
@@ -1602,7 +1602,7 @@
           content: this.buttons.dialogConfig.contentText,
           showCancel: true,
           onOk: () => {
-            this.errorconfirmDialog();
+            this.errorconfirmDialog(obj);
           }
         };
         this.$Modal.fcWarning(data);
@@ -1682,7 +1682,7 @@
           if (this.buttons.selectIdArr.length > 0) {
             const title = '警告';
             const contentText = `确认执行${obj.name}?`;
-            this.dialogMessage(title, contentText);
+            this.dialogMessage(title, contentText, obj);
           } else {
             const data = {
               mask: true,
@@ -1700,7 +1700,7 @@
           if (this.buttons.selectIdArr.length > 0) {
             const title = '警告';
             const contentText = `确认执行${obj.name}?`;
-            this.dialogMessage(title, contentText);
+            this.dialogMessage(title, contentText, obj);
           } else {
             const data = {
               mask: true,
@@ -1717,7 +1717,7 @@
           if (this.buttons.selectIdArr.length > 0) {
             const title = '警告';
             const contentText = `确认执行${obj.name}?`;
-            this.dialogMessage(title, contentText);
+            this.dialogMessage(title, contentText, obj);
           } else {
             const data = {
               mask: true,
@@ -1734,7 +1734,7 @@
           if (this.buttons.selectIdArr.length > 0) {
             const title = '警告';
             const contentText = `确认执行${obj.name}?`;
-            this.dialogMessage(title, contentText);
+            this.dialogMessage(title, contentText, obj);
           } else {
             const data = {
               mask: true,
@@ -1751,10 +1751,10 @@
           if (this.buttons.selectIdArr.length === 0) {
             const title = '警告';
             const contentText = '当前的操作会执行全量导出，导出时间可能会比较慢！是否继续导出？';
-            this.dialogMessage(title, contentText);
+            this.dialogMessage(title, contentText, obj);
             return;
           }
-          this.batchExport();
+          this.batchExport(obj);
           return;
         }
 
@@ -1797,9 +1797,8 @@
           }
         }
       },
-      batchExport() {
+      batchExport(buttonsData) {
         this.$loading.show();
-        console.log('导出');
         let searchData = {};
         const { tableName } = this[INSTANCE_ROUTE_QUERY];
         // 导出
@@ -1821,7 +1820,9 @@
           menu: this.activeTab.label
         };
         const promise = new Promise((resolve, reject) => {
-          this.getExportQueryForButtons({ OBJ, resolve, reject });
+          this.getExportQueryForButtons({
+            OBJ, resolve, reject, buttonsData 
+          });
         });
         promise.then(() => {
           if (this.buttons.exportdata) {
@@ -1889,12 +1890,12 @@
           this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
         });
       },
-      deleteTableList() { // 删除方法
+      deleteTableList(data) { // 删除方法
         const tableName = this.buttons.tableName;
         const selectIdArr = this.buttons.selectIdArr;
         const promise = new Promise((resolve, reject) => {
           this.getBatchDeleteForButtons({
-            tableName, selectIdArr, resolve, reject
+            tableName, selectIdArr, resolve, reject, data
           });
         });
         promise.then(() => {
@@ -1907,13 +1908,13 @@
           this.$Modal.fcSuccess(data);
         }, () => {});
       },
-      batchVoid() {
+      batchVoid(data) {
         const tableName = this.buttons.tableName;
         const ids = this.buttons.selectIdArr.map(d => parseInt(d));
         // this.$loading.show();
         const promise = new Promise((resolve, reject) => {
           this.batchVoidForButtons({
-            tableName, ids, resolve, reject
+            tableName, ids, resolve, reject, data
           });
         });
         promise.then(() => {
@@ -1927,14 +1928,14 @@
           this.$Modal.fcSuccess(data);
         }, () => {});
       },
-      batchSubmit() {
+      batchSubmit(data) {
         // 批量提交
         const url = this.buttons.dynamicRequestUrl.submit;
         const tableName = this.buttons.tableName;
         const ids = this.buttons.selectIdArr.map(d => parseInt(d));
         const promise = new Promise((resolve, reject) => {
           this.batchSubmitForButtons({
-            url, tableName, ids, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
+            url, tableName, ids, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE], data
           });
         });
         promise.then(() => {
@@ -1947,14 +1948,16 @@
           this.$Modal.fcSuccess(data);
         }, () => {});
       },
-      batchUnSubmit() {
+      batchUnSubmit(data) {
         // 批量反提交
         const obj = {
           tableName: this.buttons.tableName,
           ids: this.buttons.selectIdArr.map(d => parseInt(d))
         };
         const promise = new Promise((resolve, reject) => {
-          this.batchUnSubmitForButtons({ obj, resolve, reject });
+          this.batchUnSubmitForButtons({
+            obj, resolve, reject, data
+          });
         });
         promise.then(() => {
           const message = this.buttons.batchUnSubmitData;
@@ -1985,7 +1988,7 @@
           this.getToFavoriteDataForButtons(params);
         }
       },
-      errorconfirmDialog() {
+      errorconfirmDialog(obj) {
         // this.$nextTick(() => {
         if (this.buttons.selectIdArr.length > 0) {
           if (
@@ -1993,7 +1996,7 @@
               this.buttonMap.CMD_UNSUBMIT.name
             ) >= 0
           ) {
-            this.batchUnSubmit();// 按钮取消提交动作
+            this.batchUnSubmit(obj);// 按钮取消提交动作
             // this.searchClickData();
             return;
           }
@@ -2002,7 +2005,7 @@
               this.buttonMap.CMD_SUBMIT.name
             ) >= 0
           ) {
-            this.batchSubmit();// 按钮提交动作
+            this.batchSubmit(obj);// 按钮提交动作
             // this.searchClickData();
             return;
           }
@@ -2011,7 +2014,7 @@
               this.buttonMap.CMD_DELETE.name
             ) >= 0
           ) {
-            this.deleteTableList(); // 按钮删除动作
+            this.deleteTableList(obj); // 按钮删除动作
             // this.searchClickData();
             return;
           }
@@ -2020,7 +2023,7 @@
               this.buttonMap.CMD_VOID.name
             ) >= 0
           ) {
-            this.batchVoid(); // 按钮作废动作
+            this.batchVoid(obj); // 按钮作废动作
             return;
           }
         }
@@ -2034,16 +2037,16 @@
                 ) {
                   // 单选
                   if (this.buttons.selectIdArr.length === 1) {
-                    this.webActionSlient(this.buttons.activeTabAction); // 静默执行
+                    this.webActionSlient(this.buttons.activeTabAction, obj); // 静默执行
                   }
                 } else if (this.buttons.selectIdArr.length > 0) {
-                  this.webActionSlient(this.buttons.activeTabAction);
+                  this.webActionSlient(this.buttons.activeTabAction, obj);
                 }
               } else {
-                this.webActionSlient(this.buttons.activeTabAction);
+                this.webActionSlient(this.buttons.activeTabAction, obj);
               }
             } else {
-              this.webActionSlient(this.buttons.activeTabAction);
+              this.webActionSlient(this.buttons.activeTabAction, obj);
             }
             return;
           }
@@ -2100,7 +2103,7 @@
           } else if (
             this.buttons.dialogConfig.contentText.indexOf('操作会执行全量导出') >= 0
           ) {
-            this.batchExport();
+            this.batchExport(obj);
           } else if (this.buttons.selectSysment.length > 0) {
             this.searchData('backfresh');
           }

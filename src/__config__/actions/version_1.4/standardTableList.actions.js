@@ -58,14 +58,16 @@ export default {
     });
   },
   getExportQueryForButtons({ commit },
-    { OBJ, resolve, reject }) {
-    network.post('/p/cs/export', urlSearchParams(
+    {
+      OBJ, resolve, reject, data
+    }) {
+    network.post(data.requestUrlPath || '/p/cs/export', urlSearchParams(
       OBJ
     )).then((res) => {
       if (res.data.code === 0) {
         resolve();
-        const data = res.data.data;
-        commit('updateButtonsExport', data);
+        const datas = res.data.data;
+        commit('updateButtonsExport', datas);
       } else {
         reject();
       }
@@ -74,10 +76,10 @@ export default {
     });
   },
   getBatchDeleteForButtons({ commit }, {
-    tableName, selectIdArr, resolve, reject
+    tableName, selectIdArr, resolve, reject, data
   }) { // 调用删除明细接口
     const ids = selectIdArr.map(d => parseInt(d));
-    network.post('/p/cs/batchDelete',
+    network.post(data.requestUrlPath || '/p/cs/batchDelete',
       {
         tableName,
         ids
@@ -186,18 +188,18 @@ export default {
     });
   },
   batchVoidForButtons({ commit }, {
-    tableName, ids, resolve, reject
+    tableName, ids, resolve, reject, data
   }) { // 调用作废接口
-    network.post('/p/cs/batchVoid',
+    network.post(data.requestUrlPath || '/p/cs/batchVoid',
       { tableName, ids }).then((res) => {
-      const data = res.data;
+      const datas = res.data;
       if (res.data.code === 0) {
         resolve();
-        commit('batchVoidForButtonsData', data);
+        commit('batchVoidForButtonsData', datas);
         commit('onSelectionChangedAssignment', {});
       } else {
         reject();
-        commit('batchVoidForButtonsData', data.data);
+        commit('batchVoidForButtonsData', datas.data);
         commit('onSelectionChangedAssignment', {});
       }
     });
@@ -234,8 +236,10 @@ export default {
   },
  
   batchUnSubmitForButtons({ commit },
-    { obj, resolve, reject }) {
-    network.post('/p/cs/batchUnSubmit',
+    {
+      obj, resolve, reject, data
+    }) {
+    network.post(data.requestUrlPath || '/p/cs/batchUnSubmit',
       obj).then((res) => {
       if (res.data.code === 0) {
         resolve(res);
