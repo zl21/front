@@ -131,7 +131,6 @@
                 style="flex:1;margin-left: 10px;"
                 class="checkSelect"
                 label-in-value
-                @on-change="(data) => {selectedNode = data}"
               >
                 <Option
                   v-for="item in intervention.mannalNodes"
@@ -781,13 +780,13 @@
           initiator: this.intervention.initiator,
           processStatus: this.intervention.processStatus,
           batch: this.intervention.batch,
-          actType: this.intervention.mannalNodes.filter(item => item.value === this.selectedNode)[0].actType,
+          actType: this.intervention.mannalNodes.filter(item => item.nodeId === this.selectedNode)[0].actType,
           mannalNodeId: this.selectedNode,
           errorCode: this.intervention.errorCode,
           errorMsg: this.intervention.errorMsg,
           errorBody: this.intervention.errorBody,
           startTime: this.intervention.startTime,
-          mannalNode: this.intervention.mannalNodes.filter(item => item.value === this.selectedNode)[0].label,
+          mannalNode: this.intervention.mannalNodes.filter(item => item.nodeId === this.selectedNode)[0].label,
           operaterName: global.userInfo.ename,
           handleRemark: this.remark
         };
@@ -944,13 +943,13 @@
             initiator: this.intervention.initiator,
             processStatus: this.intervention.processStatus,
             batch: this.intervention.batch,
-            actType: this.intervention.mannalNodes.filter(item => item.value === this.selectBackNode)[0].actType,
+            actType: this.intervention.mannalNodes.filter(item => item.nodeId === this.selectBackNode)[0].actType,
             mannalNodeId: this.selectBackNode,
             errorCode: this.intervention.errorCode,
             errorMsg: this.intervention.errorMsg,
             errorBody: this.intervention.errorBody,
             startTime: this.intervention.startTime,
-            mannalNode: this.intervention.mannalNodes.filter(item => item.value === this.selectBackNode)[0].label,
+            mannalNode: this.intervention.mannalNodes.filter(item => item.nodeId === this.selectBackNode)[0].label,
             operaterName: global.userInfo.ename,
             userId: global.userInfo.id,
             errorTaskId: this.intervention.errorTaskId,
