@@ -681,8 +681,19 @@
           }
           const data = JSON.parse(params.row[params.column.colname]);
           let html = '';
+          // webconf配置docFile则走docFile配置程序，点击上传的文件取消下载功能，改为预览功能
+          let getDocFileWebConfUrl = '';
+          let getDocFileWebConf = false;
+          if (params.column.webconf.docFile && params.column.webconf.docFile.isPreview) {
+            getDocFileWebConf = params.column.webconf.docFile.isPreview;
+            getDocFileWebConfUrl = params.column.webconf.docFile.url;
+          }
           data.forEach((item) => {
-            html += `<span class="doc-wrapper"><a href="${item.url}"><i class="iconfont iconmd-document" data-target-tag="fkIcon" style="color: #20a0ff; cursor: pointer; font-size: 16px" ></i> ${item.name}</a></span>`;
+            if (getDocFileWebConf) {
+              html += `<span class="doc-wrapper"><a href="${getDocFileWebConfUrl}?url=${item.url}" target="_blank"><i class="iconfont iconmd-document" data-target-tag="fkIcon" style="color: #20a0ff; cursor: pointer; font-size: 16px" ></i> ${item.name}</a></span>`;
+            } else {
+              html += `<span class="doc-wrapper"><a href="${item.url}"><i class="iconfont iconmd-document" data-target-tag="fkIcon" style="color: #20a0ff; cursor: pointer; font-size: 16px" ></i> ${item.name}</a></span>`;
+            }
           });
           return h('div', {
             domProps: {
