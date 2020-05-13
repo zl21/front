@@ -198,6 +198,11 @@
                 document.getElementById('content').removeChild(elem);
               }
             }
+          } else {
+            const elem = document.getElementById('iFrameForLinkPage');
+            if (elem) {
+              document.getElementById('content').removeChild(elem);
+            }
           }
         }
       }
