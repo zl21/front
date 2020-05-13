@@ -194,6 +194,7 @@ axios.interceptors.response.use(
 
       } else {
         updateSessionObject('saveNetwork', { k: 'name', v: '/p/cs/getSubSystems' });
+        window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
       }
     }
     return response;

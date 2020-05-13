@@ -104,6 +104,7 @@ const getCategory = () => {
   if (enableInitializationRequest()) {
     network.post('/p/cs/getSubSystems').then((res) => {
       if (res.data.code === '-1') {
+        window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
         router.push({ path: getTouristRoute() });
       } else if (res.data.data) {
         store.commit('global/updateMenuLists', res.data.data);
