@@ -44,11 +44,16 @@ async function businessChange() {
     businessTypeName: global.routeInfo.tableName,
     sync: true
   });
+  
+  DispatchEvent('jflowClick', {
+    detail: {
+      type: 'refresh'
+    }
+  });
 }
 
 // 按钮响应事件
 async function buttonsResponse(e) {
-  await getJflowInfo();
   if (e.detail.obj.button === 'fresh') {
     DispatchEvent('jflowClick', {
       detail: {
@@ -62,6 +67,7 @@ async function buttonsResponse(e) {
     case '-1': // 撤销
     case '7': // 作废
     case '2': // 结束流程
+      await getJflowInfo();
       mutipleOperate(item.url); 
       break;  
     case '1': // 驳回
@@ -69,22 +75,24 @@ async function buttonsResponse(e) {
     case '8': // 确认
     case '3': // 转派
     case '9': // 人工干预
+      await getJflowInfo();
       window.jflowPlugin.open({// 同意和转派
         control: true, type: item.button, url: item.url, instanceId: global.jflowInfo.instanceId, returnOption: global.jflowInfo.backNodeIds, id: global.routeInfo.id, item 
       });
       break;
     case '5': // 流程进度
+      await getJflowInfo();
       window.open(`${global.localIp}/#/FlowChart?instanceId=${global.jflowInfo.instanceId}`, '_blank', 'width=861,height=612');
       break;
     case '6': // 重启流程
     case 'submit': // 提交
+      await getJflowInfo();
       restartProcess();
       break;
     case '4': // 保存
       if (window.testUpdataValue()) {
-        window.updataClickSave(async () => {
-          await businessChange();
-        });
+        await getJflowInfo();
+        businessChange();
       }
       break;
     default: break;
@@ -98,7 +106,6 @@ function clickFunction(e) {
     if (window.updatavVerifyRequiredInformation()) {
       if (window.testUpdataValue()) {
         window.updataClickSave(async () => {
-          await global.jflowInfo.instanceId ? businessChange() : null;
           buttonsResponse(e);
         });
       } else {
