@@ -5,6 +5,9 @@ import { Grid }  from 'ag-grid';
 import { LicenseManager } from 'ag-grid-enterprise/main';
 import { agGridEnterpriseLicenseKey } from './constant';
 import loadingSVG from '../image/loading.svg';
+import { getKeepAliveModuleName } from '../../__config__/router.navigation.guard';
+import store from '../../__config__/store.config';
+import router from '../../__config__/router.config';
 
 // 设置enterprise key
 // const { Grid, LicenseManager } = agGrid;
@@ -224,9 +227,10 @@ attachmentComponent.prototype.init = function (params) {
    // webconf配置docFile则走docFile配置程序，点击上传的文件取消下载功能，改为预览功能
    let getDocFileWebConfUrl = '';
    let getDocFileWebConf = false;
-   if (params.colDef.webconf.docFile && params.colDef.webconf.docFile.isPreview) {
-     getDocFileWebConf = params.colDef.webconf.docFile.isPreview;
-     getDocFileWebConfUrl = params.colDef.webconf.docFile.url;
+   const getCurrentKeepAliveModuleName=store.state[getKeepAliveModuleName(router.currentRoute)]
+   if (getCurrentKeepAliveModuleName.webconf &&getCurrentKeepAliveModuleName.webconf.docFile&&getCurrentKeepAliveModuleName.webconf.docFile.isPreview) {
+     getDocFileWebConf =getCurrentKeepAliveModuleName.webconf.docFile.isPreview;
+     getDocFileWebConfUrl =getCurrentKeepAliveModuleName.webconf.docFile.url;
    }
   if (Object.prototype.toString.call(JSON.parse(value)) === '[object Array]') {
     if (getDocFileWebConf) {

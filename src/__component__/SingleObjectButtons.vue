@@ -614,9 +614,9 @@
       buttonsReorganization(buttonData) { // 根据页面不同执行按钮渲染逻辑
         if (Object.values(buttonData).length > 0) {
           // if (this.objectType === 'horizontal') { // 横向布局
-          if (this.itemId === 'New') { // 编辑按钮渲染逻辑   根据copy来控制复制按钮操作后按钮的显示条件
+          if (this.itemId === 'New') { // 新增界面按钮渲染逻辑   根据copy来控制复制按钮操作后按钮的显示条件
             this.addButtonShow(buttonData);
-          } else { // 新增按钮渲染逻辑
+          } else { // 编辑界面按钮渲染逻辑
             this.getbuttonGroupData(buttonData);
           }
           // } else if (this.objectType === 'vertical') {
@@ -1045,7 +1045,7 @@
               // const myEvent = new Event('click');
               // dom.dispatchEvent(myEvent);
               // this.saveEventAfter = 'submit';
-
+             
               this.clickSave({ requestUrlPath: obj.requestUrlPath, type: 'submit' });
             }
           };
@@ -1062,7 +1062,7 @@
             this.saveButtonPath = obj.requestUrlPath;
             const promise = new Promise((resolve, reject) => {
               this.getObjectTryUnSubmit({
-                objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject
+                buttonInfo: obj, objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject
               });
             });
             promise.then(() => {
@@ -1100,7 +1100,7 @@
       invalid(obj) {
         const promise = new Promise((resolve, reject) => {
           this.getObjectTryInvalid({
-            objId: this.itemId, table: this.tableName, path: obj.requestUrlPath, isreftabs: this.isreftabs, resolve, reject
+            buttonInfo: obj, objId: this.itemId, table: this.tableName, path: obj.requestUrlPath, isreftabs: this.isreftabs, resolve, reject
           });
         });
         
@@ -2106,6 +2106,11 @@
                           this.saveButtonPath = tabcmd.paths[index];
                         }
                       }
+
+                      if (tabcmd.jflowpaths) {
+                        buttonConfigInfo.jflowpath = tabcmd.jflowpaths[index];
+                      }
+
                       if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
                         this.updateRefreshButton(true);
                       }
@@ -2134,6 +2139,10 @@
                           this.saveButtonPath = tabcmd.paths[index];
                         }
                       }
+                      if (tabcmd.jflowpaths) {
+                        buttonConfigInfo.jflowpath = tabcmd.jflowpaths[index];
+                      }
+
                       if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
                         this.updateRefreshButton(true);
                       }
@@ -2176,6 +2185,10 @@
                           this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                         }
                       }
+                      if (tabcmd.jflowpaths) {
+                        buttonConfigInfo.jflowpath = tabcmd.jflowpaths[index];
+                      }
+
                       if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
                         this.updateRefreshButton(true);
                       }
@@ -2213,6 +2226,10 @@
                         this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                       }
                     }
+                    if (tabcmd.jflowpaths) {
+                      buttonConfigInfo.jflowpath = tabcmd.jflowpaths[index];
+                    }
+
                     if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
                       this.updateRefreshButton(true);
                     }
@@ -2257,7 +2274,7 @@
         }
       },
       addButtonShow(tabcmd) { // 判断按钮显示的条件是否为新增
-        tabcmd.cmds.forEach((item, index) => {
+        tabcmd.cmds.map((item, index) => {
           if (item === 'actionADD') {
             if (tabcmd.prem[index]) {
               if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && !this.isHideTempStorage) {
@@ -2268,6 +2285,10 @@
               if (this.tabcmd.paths) {
                 this.dynamic.requestUrlPath = this.tabcmd.paths[index];
               }
+              if (this.tabcmd.jflowpaths) {
+                this.dynamic.jflowpath = this.tabcmd.jflowpaths[index];
+              }
+
               this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(this.dynamic);
             }
           }
@@ -2279,6 +2300,8 @@
         //   startIndex: 0,
         //   range: 10
         // };
+        const buttonInfo = this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '删除')[0];
+
         let page = {};
         if (this.objectType === 'horizontal') { // 横向布局
           this.tabPanel.every((item) => {
@@ -2311,6 +2334,7 @@
                   onOk: () => {
                     const promise = new Promise((resolve, reject) => {
                       this.performMainTableDeleteAction({
+                        buttonInfo,
                         path: obj.requestUrlPath,
                         table: this.tableName,
                         objId: this.itemId,
@@ -2352,7 +2376,7 @@
                   onOk: () => {
                     const promise = new Promise((resolve, reject) => {
                       this.performMainTableDeleteAction({
-                        table: this.tableName, objId: this.itemId, resolve, reject
+                        buttonInfo, table: this.tableName, objId: this.itemId, resolve, reject
                       });
                     });
                     promise.then(() => {
@@ -2382,6 +2406,7 @@
                   onOk: () => {
                     const promise = new Promise((resolve, reject) => {
                       this.performMainTableDeleteAction({
+                        buttonInfo,
                         path: obj.requestUrlPath,
                         table: this.tableName,
                         objId: this.itemId,
@@ -2437,6 +2462,7 @@
                   onOk: () => {
                     const promise = new Promise((resolve, reject) => {
                       this.performMainTableDeleteAction({
+                        buttonInfo,
                         path: obj.requestUrlPath,
                         table: this.tableName,
                         objId: this.itemId,
@@ -2502,6 +2528,7 @@
                 onOk: () => {
                   const promise = new Promise((resolve, reject) => {
                     this.performMainTableDeleteAction({
+                      buttonInfo,
                       path: obj.requestUrlPath,
                       table: this.tableName,
                       objId: this.itemId,
@@ -2540,7 +2567,7 @@
                 onOk: () => {
                   const promise = new Promise((resolve, reject) => {
                     this.performMainTableDeleteAction({
-                      table: this.tableName, objId: this.itemId, resolve, reject
+                      buttonInfo, table: this.tableName, objId: this.itemId, resolve, reject
                     });
                   });
                   promise.then(() => {
@@ -2570,7 +2597,7 @@
             onOk: () => {
               const promise = new Promise((resolve, reject) => {
                 this.performMainTableDeleteAction({
-                  path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, resolve, reject
+                  buttonInfo, path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, resolve, reject,
                 });
               });
               promise.then(() => {
@@ -2599,7 +2626,7 @@
             onOk: () => {
               const promise = new Promise((resolve, reject) => {
                 this.performMainTableDeleteAction({
-                  table: this.tableName, objId: this.itemId, resolve, reject
+                  buttonInfo, table: this.tableName, objId: this.itemId, resolve, reject
                 });
               });
               promise.then(() => {
@@ -2917,6 +2944,7 @@
        * }
        */
       savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType) { // 主表新增保存方法
+        const buttonInfo = this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '保存')[0];
         const tableName = this.tableName;
         const objectType = this.objectType;
         const isreftabs = this.subtables();
@@ -2940,7 +2968,8 @@
           itemNameGroup, // 子表表名
           itemObjId: this.itemObjId,
           temporaryStoragePath: this.temporaryStoragePath, // 暂存path
-          tabrelation// 子表1:1标记
+          tabrelation, // 子表1:1标记
+          buttonInfo
         };
         const promise = new Promise((resolve, reject) => {
           if (this.itemId === 'New') {
