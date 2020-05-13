@@ -9,7 +9,7 @@ import App from './src/App';
 import './src/constants/dateApi';
 import network from './src/__utils__/network';
 import {
-  getTouristRoute, enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, encryptionJflow, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE
+  backDashboardRoute, getTouristRoute, enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, encryptionJflow, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE
 } from './src/constants/global';
 import { removeSessionObject } from './src/__utils__/sessionStorage';
 import CompositeForm from './src/__component__/CompositeForm';
@@ -69,7 +69,12 @@ const init = () => {
     store,
     render: createElement => createElement(App)
   }).$mount(rootDom);
-
+  if (backDashboardRoute().filter(path => path === router.currentRoute.fullPath)) {
+    router.push('/');
+    setTimeout(() => {
+      store.commit('global/updataOpenedMenuLists', []);
+    }, 500);
+  }
   window.R3message = (data) => {
     window.vm.$Modal.fcError({
       mask: data.mask,
