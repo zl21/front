@@ -116,6 +116,8 @@ export default {
           state.saveInfo = {
             paths: data.tabcmd.paths && data.tabcmd.paths.length > 0 ? data.tabcmd.paths[i] : null,
             name: 'actionMODIFY',
+            jflowPath: data.tabcmd.jflowpaths && data.tabcmd.jflowpaths.length > 0 ? data.tabcmd.jflowpaths[i] : null,
+
           };
         }
       });

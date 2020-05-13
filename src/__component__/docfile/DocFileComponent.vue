@@ -73,7 +73,13 @@
         default() {
           return {};
         }
-      }
+      },
+      itemWebconf: {// 表单字段webconf
+        type: Object,
+        default() {
+          return {};
+        }
+      },
     },
     mounted() {
       // this.$dragging.$on('dragend', (res) => {
@@ -91,6 +97,19 @@
       };
     },
     computed: {
+      // getDocFileWebConf() {
+      //   if (this.itemWebconf && this.itemWebconf.docFile) {
+      //     return this.itemWebconf.docFile.isPreview;
+      //   }
+      //   return false;
+      // },
+      // getDocFileWebConfUrl() {
+      //   if (this.itemWebconf && this.itemWebconf.docFile) {
+      //     return this.itemWebconf.docFile.url;
+      //   }
+      //   return null;
+      // }
+
       getDocFileWebConf() {
         if (store.state[this[MODULE_COMPONENT_NAME]].WebConf && store.state[this[MODULE_COMPONENT_NAME]].WebConf.docFile) {
           return store.state[this[MODULE_COMPONENT_NAME]].WebConf.docFile.isPreview;

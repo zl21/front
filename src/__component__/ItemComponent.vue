@@ -321,10 +321,10 @@
         />
       </template> -->
       <!-- 上传文件 -->
-
       <Docfile
         v-if="_items.type === 'docfile'"
         :ref="_items.field"
+        :item-webconf="_items.props.webconf"
         :dataitem="_items.props.itemdata"
         @filechange="filechange"
       />

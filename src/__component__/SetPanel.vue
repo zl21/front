@@ -188,6 +188,7 @@
             this.updateTreeTableListData([]);
           })
           .catch(() => {
+            window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
             router.push({ path: getTouristRoute() });
             window.localStorage.removeItem('userInfo');
             this.$store.commit('global/updataUserInfoMessage', {});

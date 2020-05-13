@@ -165,7 +165,7 @@ export default {
   // 按钮
   performMainTableSaveAction({ commit }, { parame, resolve, reject }) { // 主表保存
     const {
-      tabrelation, itemObjId, tableName, objId, path, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup, sataType, temporaryStoragePath
+      buttonInfo, tabrelation, itemObjId, tableName, objId, path, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup, sataType, temporaryStoragePath
     } = parame;
     const sataTypeName = sataType ? sataType.sataType : '';
     let parames = {};
@@ -379,7 +379,7 @@ export default {
         };
       }
     }
-    network.post(temporaryStoragePath || path || '/p/cs/objectSave', parames).then((res) => {
+    network.post(temporaryStoragePath || buttonInfo.jflowpath || path || '/p/cs/objectSave', parames).then((res) => {
       if (res.data.code === 0) {
         const data = res.data;
         resolve(res);
@@ -392,7 +392,7 @@ export default {
     });
   },
   performMainTableDeleteAction({ commit }, {
-    path, table, objId, currentParameter, itemName, itemNameGroup, itemCurrentParameter, resolve, reject
+    buttonInfo, path, table, objId, currentParameter, itemName, itemNameGroup, itemCurrentParameter, resolve, reject
   }) { // 主表删除
     let parames = {};
     if (itemNameGroup && itemNameGroup.length > 0) {
@@ -454,7 +454,7 @@ export default {
       };
     }
    
-    network.post(path || '/p/cs/objectDelete', parames).then((res) => {
+    network.post(buttonInfo.jflowpath || path || '/p/cs/objectDelete', parames).then((res) => {
       if (res.data.code === 0) {
         resolve();
         const data = res.data;
