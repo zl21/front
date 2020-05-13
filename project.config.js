@@ -37,7 +37,7 @@ module.exports = {
   // jflowRequestDomain: 'http://jflow-zhixiao.dev.burgeononline.com', // jflow后台地址(知晓)
   // jflowRequestDomain: 'http://jflow-qiaodan.dev.burgeononline.com', // jflow后台地址（乔丹）
   // jflowRequestDomain: 'http://106.15.24.156:32940', // jflow后台地址(李宁)
-  jflowRequestDomain: 'http://jflow-shangfei.dev.burgeononline.com/', // jflow后台地址(商飞)
+  jflowRequestDomain: 'http://jflow-syman-dev.dev.burgeononline.com/', // jflow后台地址(商飞)
   
   enableTabLists: true, // 是否启用Tab页签切换模块的能力，默认启用
   touristRoute: '/login', // 游客路由：等用户未登录的时候，需要跳转的页面
