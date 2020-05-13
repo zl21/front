@@ -221,8 +221,21 @@ attachmentComponent.prototype.init = function (params) {
   const eGui = document.createElement('span');
   this.eGui = eGui;
   const { value } = params;
+   // webconf配置docFile则走docFile配置程序，点击上传的文件取消下载功能，改为预览功能
+   let getDocFileWebConfUrl = '';
+   let getDocFileWebConf = false;
+   if (params.colDef.webconf.docFile && params.colDef.webconf.docFile.isPreview) {
+     getDocFileWebConf = params.colDef.webconf.docFile.isPreview;
+     getDocFileWebConfUrl = params.colDef.webconf.docFile.url;
+   }
   if (Object.prototype.toString.call(JSON.parse(value)) === '[object Array]') {
-    eGui.innerHTML = JSON.parse(value).map(d => `<span class="attachment-wrapper"><a class="attachment" href="${d.url || ''}"><i class="iconfont iconmd-document"></i> ${d.name} ${d.Size ? `(${d.Size})` : ''}</a></span>`).join(' ');
+    if (getDocFileWebConf) {
+      eGui.innerHTML = JSON.parse(value).map(d => `<span class="attachment-wrapper"><a class="attachment"   href="${getDocFileWebConfUrl}?url=${d.url || ''}" target="_blank"><i class="iconfont iconmd-document"></i> ${d.name} ${d.Size ? `(${d.Size})` : ''}</a></span>`).join(' ');
+
+    }else{
+      eGui.innerHTML = JSON.parse(value).map(d => `<span class="attachment-wrapper"><a class="attachment" href="${d.url || ''}"><i class="iconfont iconmd-document"></i> ${d.name} ${d.Size ? `(${d.Size})` : ''}</a></span>`).join(' ');
+
+    }
   }
 };
 

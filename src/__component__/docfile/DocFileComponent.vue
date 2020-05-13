@@ -8,7 +8,15 @@
           :key="index"
           v-dragging="{ item: option, list: docList.valuedata, }"
         >
-          <a :href="option.url">{{ option.name }}</a>
+          <a
+            v-if="getDocFileWebConf"
+            :href="`${getDocFileWebConfUrl}?url=${option.url}`"
+            target="_blank"
+          >{{ option.name }}</a>
+          <a
+            v-else
+            :href="option.url"
+          >{{ option.name }}</a>
           <i
             v-if="docList.readonly!== true && option.name"
             class="iconfont iconios-close-circle-outline"
@@ -47,13 +55,17 @@
 
 <script>
   import Upload from '../../__utils__/upload';
-  import { Version } from '../../constants/global';
+  import {
+    Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, INSTANCE_ROUTE
+  } from '../../constants/global';
+  import store from '../../__config__/store.config';
 
   const fkHttpRequest = () => require(`../../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
 
   export default {
     name: 'Docfile',
+    inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, INSTANCE_ROUTE],
     
     props: {
       dataitem: {
@@ -79,7 +91,18 @@
       };
     },
     computed: {
-      
+      getDocFileWebConf() {
+        if (store.state[this[MODULE_COMPONENT_NAME]].WebConf && store.state[this[MODULE_COMPONENT_NAME]].WebConf.docFile) {
+          return store.state[this[MODULE_COMPONENT_NAME]].WebConf.docFile.isPreview;
+        }
+        return false;
+      },
+      getDocFileWebConfUrl() {
+        if (store.state[this[MODULE_COMPONENT_NAME]].WebConf && store.state[this[MODULE_COMPONENT_NAME]].WebConf.docFile) {
+          return store.state[this[MODULE_COMPONENT_NAME]].WebConf.docFile.url;
+        }
+        return null;
+      }
     },
     watch: {
       dataitem: {
