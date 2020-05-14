@@ -88,9 +88,11 @@
       };
     },
     mounted() {
-      this.$dragging.$on('dragged', ({ value }) => { // 更新MenuList
-        this.updataOpenedMenuLists(value.list);
-      });
+      if (!this._inactive && this._inactive !== null) {
+        this.$dragging.$on('dragged', ({ value }) => { // 更新MenuList
+          this.updataOpenedMenuLists(value.list);
+        });
+      }
       this.getOpenedMenuLists = JSON.parse(JSON.stringify(this.openedMenuLists));
     },
     computed: {

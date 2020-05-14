@@ -2754,42 +2754,45 @@
         const type = 'modify';
         const objId = this.itemId;
         if (this.objectType === 'vertical') {
-          if (this.verifyRequiredInformation()) { // 纵向结构保存校验
-            let itemModify = [];
-            let itemAdd = [];
-            if (this.updateData[itemName].modify && this.updateData[itemName].modify[itemName]) {
-              itemModify = Object.values(this.updateData[itemName].modify[itemName]);// 子表修改的值
-            }
-            if (this.updateData[itemName] && this.updateData[itemName].add[itemName]) {
-              itemAdd = Object.values(this.updateData[itemName].add[itemName]);// 子表新增的值
-            }
-            if (itemModify.length === 0 && itemAdd.length === 0) { // 主表修改
+          let itemModify = [];
+          let itemAdd = [];
+          if (this.updateData[itemName].modify && this.updateData[itemName].modify[itemName]) {
+            itemModify = Object.values(this.updateData[itemName].modify[itemName]);// 子表修改的值
+          }
+          if (this.updateData[itemName] && this.updateData[itemName].add[itemName]) {
+            itemAdd = Object.values(this.updateData[itemName].add[itemName]);// 子表新增的值
+          }
+          if (itemModify.length === 0 && itemAdd.length === 0) { // 主表修改
+            if (this.verifyRequiredInformation()) { // 纵向结构保存校验
               if (obj.requestUrlPath) { // 配置path
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               } else { // 没有配置path  
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               }
-              // }
-            } else { 
-              if (itemModify.length > 0 && itemAdd.length < 1) { // 子表表格编辑修改
-                // 校验子表表格必填项
-                if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) { // 配置了暂存按钮，不校验子表
-                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
-                } else if (this.itemTableCheckFunc()) { // 未配置暂存按钮，子表必须校验
-                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
-                }
+            }
+          } else { 
+            if (itemModify.length > 0 && itemAdd.length < 1) { // 子表表格编辑修改
+              // 校验子表表格必填项
+              if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) { // 配置了暂存按钮，不校验子表
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+              } else if (this.itemTableCheckFunc()) { // 未配置暂存按钮，子表必须校验
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
               }
-              // const add = Object.assign({}, this.updateData[itemName].add[itemName], this.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
-              if (itemAdd.length > 0 && itemModify.length < 1) { // 子表新增
+            }
+            // const add = Object.assign({}, this.updateData[itemName].add[itemName], this.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
+            if (itemAdd.length > 0 && itemModify.length < 1) { // 子表新增
+              if (this.verifyRequiredInformation()) { // 纵向结构保存校验
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
               }
-              if (itemAdd.length > 0 && itemModify.length > 0) {
+            }
+            if (itemAdd.length > 0 && itemModify.length > 0) {
+              if (this.verifyRequiredInformation()) { // 纵向结构保存校验
                 if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) { // 配置了暂存按钮，不校验子表
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
                 } else if (this.itemTableCheckFunc()) { // 未配置暂存按钮，子表必须校验
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
                 }
-              }
+              }u
             }
           }
         } else if (itemName === this.tableName) { // 主表修改
