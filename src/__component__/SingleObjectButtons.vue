@@ -2814,7 +2814,7 @@
                 } else if (this.itemTableCheckFunc()) { // 未配置暂存按钮，子表必须校验
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
                 }
-              }u
+              }
             }
           }
         } else if (itemName === this.tableName) { // 主表修改
@@ -2969,7 +2969,12 @@
        * }
        */
       savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType) { // 主表新增保存方法
-        const buttonInfo = this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '保存')[0];
+        let buttonInfo = {};
+        if (this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '保存').length > 0) {
+          buttonInfo = this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '保存')[0];
+        } else if (this.dataArray.buttonGroupShowConfig.jflowbutton.filter(d => d.button === '4').length > 0) {
+          buttonInfo = this.dataArray.buttonGroupShowConfig.jflowbutton.filter(d => d.button === '4')[0];
+        }
         const tableName = this.tableName;
         const objectType = this.objectType;
         const isreftabs = this.subtables();
