@@ -76,6 +76,7 @@ export default () => ({
         'closeImportDialog',
         'setAgTableErrorMessage',
         'setPrintValueForButtons',
+        'updataSelectIdArr'
       
         
       ]),

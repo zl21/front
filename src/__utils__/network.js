@@ -194,6 +194,7 @@ axios.interceptors.response.use(
     if (config.url.indexOf('/p/cs/getSubSystems') !== -1) {
       if (response.status === 200 && response.data.data.length > 0) {} else {
         updateSessionObject('saveNetwork', { k: 'name', v: '/p/cs/getSubSystems' });
+        window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
       }
     }
     if (enableJflow()) {

@@ -7,6 +7,7 @@ module.exports = {
   projectIconPath: path.join(__dirname, './favicon.ico'), // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
   // target: 'http://r3-8098.dev.burgeononline.com/', // 框架研发网关开启环境
+  target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 新版本jflow测试环境
   // target: 'http://r3dev.qiaodan.com:28889', // 乔丹开发环境
   // target: 'http://r3dev.qiaodan.com:26666', // 乔丹开发环境
   // target: 'http://r3-know-dev.dev.burgeononline.com/', // 知晓测试环境(启用网关)
@@ -17,7 +18,7 @@ module.exports = {
   // target: 'http://139.224.169.76:28888', // 沁园
   // target: 'http://10.14.5.196', // 商飞开发环境
   // target: 'http://10.14.3.71', // 商飞预发环境
-  target: 'http://jflow-shangfei-yf-r3.dev.burgeononline.com/', // 商飞测试环境
+  // target: 'http://jflow-shangfei-yf-r3.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop网关开启环境
   // target: 'http://r3.burgeon.cn:19999/', // 'http://106.15.154.165:19999/', // Cube
   // target: 'http://web.cmsqas.lining.com/', // 李宁
@@ -51,5 +52,6 @@ module.exports = {
   custommizedJflow: true, // jflow定制版开关,默认为true
   functionPowerRequestURL: '', // 功能权限获取检索项数据接口名称
   cbs: undefined, // 框架回调，形如 { loginCb: function() {} }
-  layoutDirection: false // 默认是false ,水平排版 ，true 是垂直排版
+  layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
+  backDashboardRoute: []// 配置刷新浏览器回到Dashboard界面
 };

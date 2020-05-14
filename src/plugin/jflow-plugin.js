@@ -7,7 +7,7 @@ import Vue from 'vue';
 import { DispatchEvent } from '../__utils__/dispatchEvent';
 import { Version } from '../constants/global';
 import CreateButton from './button';
-import todoList from './todoList';
+import { todoList, BacklogData } from './todoList';
 import '../__plugin__/InstanceManagementList/utils/dateApi';
 import network from '../__utils__/network';
 import mainComponent from '../__plugin__/InstanceManagementList/mainComponent';
@@ -899,6 +899,7 @@ function initLists(e) { // 小图标的展示
       
   window.initiateLaunch = initiateLaunch;
   window.jflowRefresh = jflowRefresh;
+  window.BacklogData = BacklogData;
   // !closeJflowIcon ? todoList(store, router) : null; // 添加待办列表菜单
 
   // axios.post('/jflow/p/sys/properties', {})

@@ -19,8 +19,9 @@ import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 
 
 export default {
+ 
   updataOpenedMenuLists(state, data) {
-    data.openedMenuLists = data;
+    state.openedMenuLists = data;
   },
   updateTreeTableListData(state, data) {
     state.treeTableListData = data;
@@ -155,7 +156,13 @@ export default {
           if (c.type === 'action') {
           // 外部跳转链接URL的处理
             if (c.url) {
-              const actionType = c.url.substring(0, c.url.indexOf('/'));
+              let actionType = '';
+              if (c.url.includes('/m/action/')) {
+                actionType = 'CUSTOMIZED';
+                c.url = `CUSTOMIZED/${c.url.substring(c.url.lastIndexOf('/') + 1)}`;
+              } else {
+                actionType = c.url.substring(0, c.url.indexOf('/'));
+              }
               if (actionType === 'https:' || actionType === 'http:') {
                 const linkUrl = {};
                 linkUrl[c.id] = c.url;
