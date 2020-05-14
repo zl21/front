@@ -709,7 +709,7 @@
         })
           .then((res) => {
             if (res.data.resultCode === 0) {
-              this.$set('intervention', res.data.data);
+              this.intervention = res.data.data;
             }
           });
       },
