@@ -431,17 +431,18 @@
 
           if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
             // 计算
-            if (old === undefined) {
-              return false;
-            }
-            if (
-              val[item.validate.dynamicforcompute.computecolumn]
-              === old[item.validate.dynamicforcompute.computecolumn]
-            ) {
-              this.dynamicforcompute(item, val, i, old);
-            } else {
-              // this.formDataChange();
-            }
+            // if (old === undefined) {
+            //   return false;
+            // }
+            // if (
+            //   val[item.validate.dynamicforcompute.computecolumn]
+            //   === old[item.validate.dynamicforcompute.computecolumn]
+            // ) {
+            //   this.dynamicforcompute(item, val, i, old);
+            // } else {
+            //   // this.formDataChange();
+            // }
+            // this.dynamicforcompute(item, val, i, old);
           } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
             //  联动隐藏
             return false;
@@ -471,6 +472,7 @@
         });
       },
       setformUrl(item, val) {
+        // 联动  来源数据后台查询
         if (item.props.webconf && item.props.webconf.formRequest) {
           const isCopyCheck = this.isCopy();
           if (this.actived && isCopyCheck) {
@@ -488,6 +490,7 @@
         return true;
       },
       inputget(formIndex, index, items) {
+        // 获取input
         const elDiv = this.$refs[`component_${index}`][0]
           && this.$refs[`component_${index}`][0].$el;
         if (!elDiv) {
@@ -502,6 +505,7 @@
         return onfousInput;
       },  
       formInit() {
+        // 表单初始化
         const val = this.getStateData();
         setTimeout(() => {
           if (this.actived === false) {
@@ -511,11 +515,23 @@
           }
         }, 50);
       }, 
+      setDynamicForcompute(data, current) {
+        // 监听 计算
+        if (current.item && Object.hasOwnProperty.call(current.item.validate, 'dynamicforcompute')) {
+          setTimeout(() => {
+            window.eventType(`${this[MODULE_COMPONENT_NAME]}Dynam`, window, {
+              ...current.item.validate,
+              data: Object.assign(JSON.parse(JSON.stringify(this.getStateData())), data)
+            });
+          }, 200);
+        }
+      },
       mountdataFormInt() {
         this.actived = false;
         setTimeout(() => {
           //  传form 默认值
           const Item = this.newFormItemLists.reduce((arr, item) => {
+            this.setDynamicForcompute({}, item);
             const setLabel = this.getLable(item);
             arr = Object.assign(arr, setLabel);
             return arr;
@@ -911,7 +927,7 @@
       },
       inputChange(value, items, index) {
         this.indexItem = index;
-        this.newFormItemLists[index].item.value = value;   
+        this.newFormItemLists[index].item.value = value; 
         this.newFormItemLists = this.newFormItemLists.concat([]);
         this.dataProcessing(this.newFormItemLists[index], index);
         return true;
@@ -932,18 +948,18 @@
         //   }
         // }
       },
-      dynamicforcompute(items, json) {
+      dynamicforcompute(data) {
         // 被计算 属性 加减乘除
 
-        const str = items.validate.dynamicforcompute.refcolumns.reduce(
+        const str = data.dynamicforcompute.refcolumns.reduce(
           (temp, current) => {
-            temp = temp.replace(new RegExp(current, 'g'), Number(json[current]));
+            temp = temp.replace(new RegExp(current, 'g'), ((Number(data.data[current]) * 1000) / 1000));
             return temp;
           },
-          items.validate.dynamicforcompute.express
+          data.dynamicforcompute.express
         );
         const _index = this.newFormItemLists.findIndex(
-          option => option.item.field === items.validate.dynamicforcompute.computecolumn
+          option => option.item.field === data.dynamicforcompute.computecolumn
         );
         
         if (this.newFormItemLists[_index]) {
@@ -953,7 +969,7 @@
           } else if (eval(str) === 0) {
             DyNvalue = 0;
           } else {
-            DyNvalue = eval(str);
+            DyNvalue = eval(str).toFixed(2);
           }
           setTimeout(() => {
             this.newFormItemLists[_index].item.value = DyNvalue;

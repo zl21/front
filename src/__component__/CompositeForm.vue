@@ -544,6 +544,14 @@
         }
         return true;
       },
+      setDynamicForcompute(data, current) {
+        if (current.item && Object.hasOwnProperty.call(current.item.validate, 'dynamicforcompute')) {
+          window.eventType(`${this[MODULE_COMPONENT_NAME]}Dynam`, window, {
+            ...current.item.validate,
+            data: Object.assign(JSON.parse(JSON.stringify(this.refcolvalAll)), data)
+          });
+        }
+      },
       formDataChange(data, setdefval, current, label) {
         // 表单数据修改  判断vuex 里面是否有input name
         if (current.item.props.isuppercase && data[current.item.field]) {
@@ -568,6 +576,8 @@
           return false;
         }
 
+        // 计算逻辑
+        this.setDynamicForcompute(data, current);
 
         // 修改联动的值
         this.setChangeValue(data, current);

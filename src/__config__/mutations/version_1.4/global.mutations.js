@@ -27,7 +27,7 @@ export default {
   // },
  
   updataOpenedMenuLists(state, data) {
-    data.openedMenuLists = data;
+    state.openedMenuLists = data;
   },
   updateTreeTableListData(state) {
     state.treeTableListData = [];
