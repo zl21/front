@@ -69,7 +69,7 @@ const init = () => {
     store,
     render: createElement => createElement(App)
   }).$mount(rootDom);
-  if (backDashboardRoute().filter(path => path === router.currentRoute.fullPath)) {
+  if (backDashboardRoute().filter(path => path === router.currentRoute.fullPath).length > 0) {
     router.push('/');
     setTimeout(() => {
       store.commit('global/updataOpenedMenuLists', []);
