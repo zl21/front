@@ -266,7 +266,7 @@ export default {
     reject
   }) { // 主表保存
     const {
-      tabrelation, itemObjId, tableName, temporaryStoragePath, objId, path, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup
+      buttonInfo, tabrelation, itemObjId, tableName, temporaryStoragePath, objId, path, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup
     } = parame;
     let parames = {};
     if (type === 'add') { // 新增保存参数
@@ -609,7 +609,7 @@ export default {
     }
 
     
-    network.post(temporaryStoragePath || path || '/p/cs/objectSave', parames).then((res) => {
+    network.post(temporaryStoragePath || buttonInfo.jflowpathspath || '/p/cs/objectSave', parames).then((res) => {
       if (res.data.code === 0) {
         const data = res.data;
         resolve(res);
@@ -627,6 +627,7 @@ export default {
   performMainTableDeleteAction({
     commit
   }, {
+    buttonInfo,
     path,
     table,
     objId,
@@ -666,7 +667,7 @@ export default {
       };
     }
 
-    network.post(path || '/p/cs/objectDelete', parames).then((res) => {
+    network.post(buttonInfo.jflowpathspath || path || '/p/cs/objectDelete', parames).then((res) => {
       if (res.data.code === 0) {
         resolve();
         const data = res.data;

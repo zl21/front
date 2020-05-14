@@ -1164,6 +1164,10 @@
                 if (tabcmdData.paths) {
                   buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
                 }
+                if (tabcmdData.jflowpaths) { // jflow对标准类型按钮配置path
+                  const jflowpathsRes = JSON.parse(JSON.stringify(tabcmdData.jflowpaths));
+                  buttonConfigInfo.jflowUrlPath = jflowpathsRes[index];
+                }
                 buttonGroupShow.push(buttonConfigInfo);
               }
             }

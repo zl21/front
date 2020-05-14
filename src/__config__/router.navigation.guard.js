@@ -156,6 +156,7 @@ export default (router) => {
     if (router.getMatchedComponents(to.path).length === 0) {
       next('/');
     }
+  
     const { commit } = store;
     const { keepAliveLists, openedMenuLists } = store.state.global;
     const {

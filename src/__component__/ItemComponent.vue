@@ -321,10 +321,10 @@
         />
       </template> -->
       <!-- 上传文件 -->
-
       <Docfile
         v-if="_items.type === 'docfile'"
         :ref="_items.field"
+        :item-webconf="_items.props.webconf"
         :dataitem="_items.props.itemdata"
         @filechange="filechange"
       />
@@ -1645,6 +1645,13 @@
             this.$parent.hidecolumn(this._items, this.index, e.value.data, 'mounted');
           }, 10);
         }
+      },
+      setListenerDynam(e) {
+        if (this._items.props.colname === e.value.dynamicforcompute.computecolumn) {
+          setTimeout(() => {
+            this.$parent.dynamicforcompute(e.value);
+          }, 10);
+        }
       }
       
     },
@@ -1652,6 +1659,7 @@
       window.removeEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetProps);
       window.removeEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
       window.removeEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
+      window.removeEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
     },
     created() {
     // console.log(this.type,this.formIndex);
@@ -1660,6 +1668,7 @@
       window.addEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetProps);
       window.addEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
       window.addEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
+      window.addEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
     }
   };
 </script>

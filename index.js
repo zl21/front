@@ -9,7 +9,7 @@ import App from './src/App';
 import './src/constants/dateApi';
 import network from './src/__utils__/network';
 import {
-  getTouristRoute, enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, encryptionJflow, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE
+  backDashboardRoute, getTouristRoute, enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, encryptionJflow, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE
 } from './src/constants/global';
 import { removeSessionObject } from './src/__utils__/sessionStorage';
 import CompositeForm from './src/__component__/CompositeForm';
@@ -69,7 +69,12 @@ const init = () => {
     store,
     render: createElement => createElement(App)
   }).$mount(rootDom);
-
+  if (backDashboardRoute().filter(path => path === router.currentRoute.fullPath).length > 0) {
+    router.push('/');
+    setTimeout(() => {
+      store.commit('global/updataOpenedMenuLists', []);
+    }, 500);
+  }
   window.R3message = (data) => {
     window.vm.$Modal.fcError({
       mask: data.mask,
@@ -123,6 +128,7 @@ const getCategory = () => {
   if (enableInitializationRequest()) {
     network.post('/p/cs/getSubSystems').then((res) => {
       if (res.data.code === '-1') {
+        window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
         router.push({ path: getTouristRoute() });
       } else if (res.data.data) {
         store.commit('global/updateMenuLists', res.data.data);
@@ -152,6 +158,7 @@ const getCategory = () => {
         window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMapRes));
       }
     }).catch(() => {
+      window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
       router.push({ path: getTouristRoute() });
     });
   }
