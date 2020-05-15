@@ -3346,28 +3346,35 @@
                       if (Number(currentJflowConfigTable[0].itemTableId) === Number(tab.tableid)) { // 配置的为子表
                         if (index === 0) { // 当前激活tab为主表时，此方法可刷新主表
                           this.clickButtonsRefresh();
-                        } else { // 当前激活tab非主表时，说明，当前jflow配置由子表切换子表，
-                          new Promise((resolve, reject) => {
-                            this.getObjectTabForMainTable({
-                              itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: {}, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
-                            });
-                          }).then(() => {
-
-                          });
-                        }
-                        setTimeout(() => { // 需要等主表请求完成后，再切换子表
-                          for (let i = 0; i < oUl.children.length; i++) {
-                            if (tab.tabledesc === oUl.children[i].innerText) {
-                              oUl.children[i].click();
+                          setTimeout(() => { // 需要等主表请求完成后，再切换子表
+                            for (let i = 0; i < oUl.children.length; i++) {
+                              if (tab.tabledesc === oUl.children[i].innerText) {
+                                oUl.children[i].click();
                               // if (index !== 0) { // jflow配置由子表切换子表，需要重新触发切换的子表刷新，读取配置，
                               //   debugger;
                               //   setTimeout(() => {
                               //     this.clickButtonsRefresh();
                               //   }, 5000);
                               // }
+                              }
                             }
-                          }
-                        }, 1000);
+                          }, 1000);
+                        } else { // 当前激活tab非主表时，说明，当前jflow配置由子表切换子表，
+                          new Promise((resolve, reject) => {
+                            this.getObjectTabForMainTable({
+                              itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: {}, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
+                            });
+                          }).then(() => {
+                            setTimeout(() => { // 需要等主表请求完成后，再切换子表
+                              for (let i = 0; i < oUl.children.length; i++) {
+                                if (tab.tabledesc === oUl.children[i].innerText) {
+                                  console.log('tabledesc', tab.tabledesc);
+                                  oUl.children[i].click();
+                                }
+                              }
+                            }, 1000);
+                          });
+                        }
                       }
                     });
                   }
