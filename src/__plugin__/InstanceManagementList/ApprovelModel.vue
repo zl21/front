@@ -670,11 +670,11 @@
         //   param.backId = this.returnOption; //驳回节点id
         // }
         param.description = this.returnContent; // 审批意见
-        this.$network.post(this.modalConfig.url, param).then((res) => {
+        this.$network.post(this.modalConfig.url, param).then(async (res) => {
           window.jflowPlugin.open({ control: false });
           if (res.data.resultCode === 0) {
             this.$Message.success(res.data.resultMsg);
-            this.modalConfig.buttons(window.jflowPlugin.itemId);
+            await this.modalConfig.buttons(window.jflowPlugin.itemId);
             BacklogData(window.jflowPlugin.store);
             DispatchEvent('jflowClick', {
               detail: {
@@ -702,12 +702,12 @@
         param.instanceId = window.jflowPlugin.objInstanceId;
         param.userId = window.jflowPlugin.userInfo.id;
         param.delegateId = this.selectRow.ID; // 驳回节点id
-        this.$network.post(this.modalConfig.url, param).then((res) => {
+        this.$network.post(this.modalConfig.url, param).then(async (res) => {
           window.jflowPlugin.open({ control: false });
           if (res.data.resultCode === 0) {
             this.$Message.success(res.data.resultMsg);
             this.selectRow = {};
-            this.modalConfig.buttons(window.jflowPlugin.itemId);
+            await this.modalConfig.buttons(window.jflowPlugin.itemId);
             BacklogData(window.jflowPlugin.store);
             DispatchEvent('jflowClick', {
               detail: {
