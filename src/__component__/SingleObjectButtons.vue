@@ -111,11 +111,8 @@
   export default {
     data() {
       return {
-<<<<<<< HEAD
         saveCallBack: null, // 保存成功后回调
-=======
         saveButtonJflowPath: '',
->>>>>>> origin/v1.4
         objTabActionDialogConfig: {}, // 自定义按钮配置
         actionId: null, // 自定义按钮ID
         temporaryStorage: false, // 是否开启暂存
@@ -2173,6 +2170,17 @@
                       // this.dataArray.refresh = this.refreshButtons;jflowOldAndNew
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
+<<<<<<< HEAD
+=======
+                  } else {
+                    if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
+                      this.updateRefreshButton(true);
+                    }
+                    this.dataArray.refresh = this.refreshButtons;
+                    if (item === 'actionMODIFY' && tabcmd.jflowpaths) {
+                      this.saveButtonJflowPath = tabcmd.jflowpaths[index];
+                    }
+>>>>>>> origin/v1.4
                   }
                   //  else {
                   //   if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示 jflowOld
@@ -2218,6 +2226,8 @@
                       // this.dataArray.refresh = this.refreshButtons;//jflowOldAndNew
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
+                  } else if (item === 'actionMODIFY' && tabcmd.jflowpaths) {
+                    this.saveButtonJflowPath = tabcmd.jflowpaths[index];
                   }
                 }
               });
@@ -2259,6 +2269,8 @@
                     // this.dataArray.refresh = this.refreshButtons;//jflowOldAndNew
                     this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                   }
+                } else if (item === 'actionMODIFY' && tabcmd.jflowpaths) {
+                  this.saveButtonJflowPath = tabcmd.jflowpaths[index];
                 }
               }
             });
@@ -2980,7 +2992,7 @@
           buttonInfo = this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '保存')[0];
         } else if (this.dataArray.jflowButton.filter(d => d.button === '4').length > 0) {
           buttonInfo = this.dataArray.jflowButton.filter(d => d.button === '4')[0];
-          buttonInfo.jflowPath = this.saveButtonJflowPath;
+          buttonInfo.jflowpath = this.saveButtonJflowPath;
         }
         const tableName = this.tableName;
         const objectType = this.objectType;
