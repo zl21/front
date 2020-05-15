@@ -19,6 +19,7 @@
           :ref="'component_'+index"
           :index="index"
           :type="type"
+          :web-conf-single="webConfSingle"
           :items="item.item"
           @inputChange="inputChange"
         />
@@ -159,6 +160,10 @@
       }
     },
     props: {
+      webConfSingle: {// 当前子表webConf
+        type: Object,
+        default: () => ({})
+      },
       defaultColumn: { // 默认列数
         type: Number,
         default: 4

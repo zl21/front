@@ -2,7 +2,7 @@
   <div class="set-panel">
     <div class="panel-main">
       <div class="panel-item">
-        <p>
+        <p :title="userInfo.ename">
           <i class="iconfont iconmd-contact explanatory" />
           欢迎: {{ userInfo.ename }}
         </p>
@@ -225,6 +225,7 @@
         height: 50px;
         line-height: 50px;
         margin: 0 20px;
+        overflow: hidden;
       }
       span {
         font-size: 12px;

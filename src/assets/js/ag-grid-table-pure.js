@@ -228,9 +228,9 @@ attachmentComponent.prototype.init = function (params) {
    let getDocFileWebConfUrl = '';
    let getDocFileWebConf = false;
    const getCurrentKeepAliveModuleName=store.state[getKeepAliveModuleName(router.currentRoute)]
-   if (getCurrentKeepAliveModuleName.webconf &&getCurrentKeepAliveModuleName.webconf.docFile&&getCurrentKeepAliveModuleName.webconf.docFile.isPreview) {
-     getDocFileWebConf =getCurrentKeepAliveModuleName.webconf.docFile.isPreview;
-     getDocFileWebConfUrl =getCurrentKeepAliveModuleName.webconf.docFile.url;
+   if (getCurrentKeepAliveModuleName.webConf &&getCurrentKeepAliveModuleName.webConf.docFile&&getCurrentKeepAliveModuleName.webConf.docFile.isPreview) {
+     getDocFileWebConf =getCurrentKeepAliveModuleName.webConf.docFile.isPreview;
+     getDocFileWebConfUrl =getCurrentKeepAliveModuleName.webConf.docFile.url;
    }
   if (Object.prototype.toString.call(JSON.parse(value)) === '[object Array]') {
     if (getDocFileWebConf) {

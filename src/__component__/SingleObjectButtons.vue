@@ -243,7 +243,7 @@
                       }
                     });
                   }
-                  if (Version() === '1.4' && this.itemInfo && this.itemInfo.tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
+                  if (Version() === '1.4' && this.itemInfo && this.itemInfo.tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮默认不显示
                     if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
                       this.tabcmd.cmds.forEach((item, index) => {
                         if (item !== 'actionMODIFY' && item !== 'actionEXPORT') {
@@ -283,7 +283,11 @@
                   }
                 }
               }
+              console.log(333, this.itemInfo);
+              // if(this.itemInfo)
             } 
+            this.setDisableButtons();
+
             // 是否为只读(当配置了只读时，以下类型按钮不显示),只针对子表
             // this.tableName) { // 是否为只读(当配置了只读时，以下类型按钮不显示)
             //   //  || item === 'actionCANCOPY'
@@ -521,6 +525,10 @@
         default: () => ([])
       },
       itemInfo: {// 当前子表信息
+        type: Object,
+        default: () => ({})
+      },
+      webConfSingle: {// 当前子表webConf
         type: Object,
         default: () => ({})
       },
@@ -3404,7 +3412,34 @@
           // }
         }
       },
- 
+      hideButtonsForcmds(data) { // 隐藏标准类型元数据配置按钮
+        if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+          this.tabcmd.cmds.map((item, index) => {
+            if (data.includes(item)) {
+              this.tabcmd.prem[index] = false;
+            }
+          });
+        }
+      },
+      setDisableButtons() {
+        if (this.objectType === 'horizontal') {
+          if (this.itemInfo.id && this.itemInfo.id === this.tableId) { // 当前激活 tab为主表
+            if (this.WebConf && this.WebConf.disableExport) {
+              this.hideButtonsForcmds(['actionEXPORT']);
+            } else if (this.WebConf && this.WebConf.disableImport) {
+              this.hideButtonsForcmds(['actionIMPORT']);
+            } 
+          } else if (this.webConfSingle && this.webConfSingle.disableExport) {
+            this.hideButtonsForcmds(['actionEXPORT']);
+          } else if (this.webConfSingle && this.webConfSingle.disableImport) {
+            this.hideButtonsForcmds(['actionIMPORT']);
+          } 
+        } else if (this.WebConf && this.WebConf.disableExport) {
+          this.hideButtonsForcmds(['actionEXPORT']);
+        } else if (this.WebConf && this.WebConf.disableImport) {
+          this.hideButtonsForcmds(['actionIMPORT']);
+        }
+      }
     },  
     beforeDestroy() {
       window.removeEventListener('jflowClick', this.jflowClick);
@@ -3413,7 +3448,7 @@
       window.removeEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
     },
     mounted() {
-      this.updataCurrentTableDetailInfo();
+      this.setDisableButtons();
       if (this.isItemTable) {
         this.dataArray.refresh = false;
         this.dataArray.back = false;
@@ -3439,14 +3474,16 @@
           if (this.itemName !== this.tableName) {
             const objreadonly = item.componentAttribute.buttonsData.data.objreadonly;
             if (objreadonly) {
-              if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
-                this.tabcmd.cmds.forEach((item, index) => {
-                  if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT' || item === 'actionCANCOPY') {
-                    this.tabcmd.prem[index] = false;
-                  }
-                });
-              }
+              this.hideButtonsForcmds(['actionMODIFY', 'actionDELETE', 'actionIMPORT', 'actionCANCOPY']);
+              // if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+              // this.tabcmd.cmds.forEach((item, index) => {
+              //   if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT' || item === 'actionCANCOPY') {
+              //     this.tabcmd.prem[index] = false;
+              //   }
+              // });
+              // }
             }
+
             if (Version() === '1.4' && this.itemInfo && this.itemInfo.tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
               if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
                 this.tabcmd.cmds.forEach((item, index) => {
@@ -3459,25 +3496,30 @@
         
             const { tabinlinemode } = this.itemInfo;
             if (tabinlinemode === 'N') {
-              if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
-                this.tabcmd.cmds.forEach((item, index) => {
-                  if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT') {
-                    this.tabcmd.prem[index] = false;
-                  }
-                });
-              }
+              this.hideButtonsForcmds(['actionMODIFY', 'actionDELETE', 'actionIMPORT']);
+              // if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+              //   this.tabcmd.cmds.forEach((item, index) => {
+              //     if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT') {
+              //       this.tabcmd.prem[index] = false;
+              //     }
+              //   });
+              // }
             }
+
             if (this.disableExport) {
-              if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
-                this.tabcmd.cmds.forEach((item, index) => {
-                  if (item === 'actionEXPORT') {
-                    this.tabcmd.prem[index] = false;
-                  }
-                });
-              }
+              this.hideButtonsForcmds(['actionEXPORT']);
             }
           }
         });
+
+        if (this.webConfSingle) {
+          if (this.webConfSingle.disableImport) {
+            this.hideButtonsForcmds(['actionIMPORT']);
+          }
+          if (this.webConfSingle.disableExport) {
+            this.hideButtonsForcmds(['actionEXPORT']);
+          }
+        }
       }
       
       if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
