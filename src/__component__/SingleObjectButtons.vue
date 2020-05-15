@@ -2170,17 +2170,8 @@
                       // this.dataArray.refresh = this.refreshButtons;jflowOldAndNew
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
-<<<<<<< HEAD
-=======
-                  } else {
-                    if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
-                      this.updateRefreshButton(true);
-                    }
-                    this.dataArray.refresh = this.refreshButtons;
-                    if (item === 'actionMODIFY' && tabcmd.jflowpaths) {
-                      this.saveButtonJflowPath = tabcmd.jflowpaths[index];
-                    }
->>>>>>> origin/v1.4
+                  } else if (item === 'actionMODIFY' && tabcmd.jflowpaths) {
+                    this.saveButtonJflowPath = tabcmd.jflowpaths[index];
                   }
                   //  else {
                   //   if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示 jflowOld
@@ -3002,7 +2993,6 @@
         if (this.itemInfo.tabrelation === '1:1') {
           tabrelation = true;
         }
- 
         const parame = {
           ...this.currentParameter, // 主表信息
           itemCurrentParameter, // 子表信息

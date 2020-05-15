@@ -383,7 +383,6 @@ export default {
     if (buttonInfo && buttonInfo.jflowpath) {
       jflowpath = buttonInfo.jflowpath;
     }
-    
     network.post(temporaryStoragePath || jflowpath || path || '/p/cs/objectSave', parames).then((res) => {
       if (res.data.code === 0) {
         const data = res.data;
