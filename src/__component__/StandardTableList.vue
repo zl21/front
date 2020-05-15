@@ -1157,7 +1157,6 @@
               const str = `CMD_${type[1].toUpperCase()}`;
               if (str === 'CMD_PRINT') {
                 this.setPrintValueForButtons(true);
-                // this.buttons.dataArray.printValue = true;
               } else {
                 this.buttonMap[str].eName = item;
                 const buttonConfigInfo = this.buttonMap[str];
@@ -1168,7 +1167,11 @@
                   const jflowpathsRes = JSON.parse(JSON.stringify(tabcmdData.jflowpaths));
                   buttonConfigInfo.jflowUrlPath = jflowpathsRes[index];
                 }
-                buttonGroupShow.push(buttonConfigInfo);
+                if (this.webConf && (this.webConf.disableImport && str === 'CMD_IMPORT') || (this.webConf.disableExport && str === 'CMD_EXPORT')) {
+                  // 根据webConf控制列表界面导入导出按钮
+                } else {
+                  buttonGroupShow.push(buttonConfigInfo);
+                }
               }
             }
           });

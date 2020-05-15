@@ -6,6 +6,7 @@
 <template>
   <div>
     <template v-if="type === 'PanelForm'">
+      <!-- 面板内 -->
       <Collapse
         v-for="(item,index) in computdefaultData"
         :key="index"
@@ -37,6 +38,7 @@
                 :child-table-name="childTableName"
                 :refcolval-data="refcolvaData"
                 :mapp-status="setMapping"
+                :web-conf-single="webConfSingle"
                 :is-main-table="isMainTableForm"
                 :partent-vue="partentVue"
                 :condition="conditiontype"
@@ -55,6 +57,7 @@
         </Panel>
       </Collapse>
     </template>
+    <!-- 面板外 -->
     <template v-if="type !== 'PanelForm'">
       <template v-if="FormItemComponent!==''">
         <component
@@ -69,6 +72,7 @@
           :child-table-name="childTableNameForm"
           :verifymessageform="VerifyMessageForm"
           :set-objreadonly="setObjreadonly"
+          :web-conf-single="webConfSingle"
           :mapp-status="setMapping"
           :partent-vue="partentVue"
           :module-form-type="moduleFormType"
@@ -110,6 +114,10 @@
         default() {
           return '';
         }
+      },
+      webConfSingle: {// 当前子表webConf
+        type: Object,
+        default: () => ({})
       },
       isMainTable: {
         // 是否 主表

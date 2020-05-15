@@ -21,6 +21,7 @@
       :is-item-table-vertical="buttonsData.data.isItemTableVertical"
       :back-button="buttonsData.data.backButton"
       :is-item-table="isItemTable"
+      :web-conf-single="webConfSingle"
     />
     <!-- 子表表格新增区域form -->
     <compositeForm  
@@ -40,6 +41,7 @@
       :isreftabs="isreftabs"
       :child-table-name="tableName"
       :from="from"
+      :web-conf-single="webConfSingle"
       @on-formEnter="enterClick"
       @formChange="formChange"
       @InitializationForm="initForm"
@@ -74,9 +76,9 @@
         @formChange="formPanelChange"
         @InitializationForm="initFormPanel"
         @VerifyMessage="verifyFormPanel"
-      />d
+      />
     </div>
-    <!-- 左右结构主表和子表的form(面板) -->
+    <!-- 左右结构主表和子表1:1模式的form(面板) -->
     <compositeForm
       v-if="panelData.isShow&&!componentName"
       :is-main-table="isMainTable"
@@ -98,6 +100,7 @@
       @InitializationForm="initFormPanel"
       @VerifyMessage="verifyFormPanel"
     />
+    <!-- 明细表格 -->
     <component
       :is="objectTableComponent"
       v-if="tableData.isShow"
@@ -111,6 +114,7 @@
       :jflow-button="buttonsData.data.jflowButton"
       :readonly="buttonsData.data.objreadonly || !getActionModify"
       :objreadonly="objreadonly"
+      :web-conf-single="webConfSingle"
       :status="status"
       :tabwebact="buttonsData.data.tabwebact"
       :tooltip-for-item-table="tooltipForItemTable"
@@ -216,6 +220,10 @@
         default: ''
       },
       changeData: {
+        type: Object,
+        default: () => ({})
+      },
+      webConfSingle: {
         type: Object,
         default: () => ({})
       },
