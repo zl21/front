@@ -325,6 +325,7 @@
         v-if="_items.type === 'docfile'"
         :ref="_items.field"
         :item-webconf="_items.props.webconf"
+        :web-conf-single="webConfSingle"
         :dataitem="_items.props.itemdata"
         @filechange="filechange"
       />
@@ -360,6 +361,10 @@
     },
     inject: [MODULE_COMPONENT_NAME],
     props: {
+      webConfSingle: {// 当前子表webConf
+        type: Object,
+        default: () => ({})
+      },
       labelWidth: {
         type: Number,
         default: 120

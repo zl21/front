@@ -38,7 +38,7 @@ module.exports = env => ({
   },
   devServer: {
     compress: true,
-    port: 8196,
+    port: 8198,
     host: '0.0.0.0',
     open: true,
     historyApiFallback: {
@@ -91,9 +91,9 @@ module.exports = env => ({
         context: '/jflow',
         // target: 'http://106.15.24.156:32940', // 重新占单
         // target: 'http://106.15.24.156:32940', // 李宁环境
-        // target: 'http://jflow-shangfei-yf.dev.burgeononline.com/', // 商飞环境
+        target: 'http://jflow-shangfei-yf.dev.burgeononline.com/', // 商飞环境
 
-        target: 'http://jflow-shangfei.dev.burgeononline.com/', // 新版jflow
+        // target: 'http://jflow-shangfei.dev.burgeononline.com/', // 新版jflow
         
 
         // target: 'http://jflow-shangfei.dev.burgeononline.com/', // 商飞环境

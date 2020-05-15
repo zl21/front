@@ -50,6 +50,7 @@
         class="compositeAllform"
         object-type="vertical"
         :is-main-table="true"
+        :web-conf-single="mainFormInfo.buttonsData.data.webconf"
         :objreadonly="mainFormInfo.isMainTableObjreadonly?false:(mainFormInfo.buttonsData.data.objreadonly||objReadonlyForJflow)"
         :readonly="mainFormInfo.isMainTableObjreadonly?false:(mainFormInfo.buttonsData.data.objreadonly||objReadonlyForJflow)"
         :default-set-value="updateData[this.$route.params.tableName]? updateData[this.$route.params.tableName].changeData:{}"
@@ -193,7 +194,9 @@
             obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly || this.childReadonly || this.objReadonlyForJflow;
             obj.componentAttribute.formReadonly = this.mainFormInfo.buttonsData.data.objreadonly || this.objReadonlyForJflow;
             obj.componentAttribute.status = this.mainFormInfo.buttonsData.data.status;
+            obj.componentAttribute.webConfSingle = this.mainFormInfo.buttonsData.data.webconf;
           }
+          obj.componentAttribute.webConfSingle = obj.componentAttribute.buttonsData.data.webconf;
           obj.componentAttribute.childTableNames = this.childTableNames;
           obj.componentAttribute.mainFormPaths = this.formPaths;
           obj.componentAttribute.tooltipForItemTable = this.tooltipForItem;

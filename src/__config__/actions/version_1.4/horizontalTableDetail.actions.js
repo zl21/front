@@ -384,7 +384,11 @@ export default {
         };
       }
     }
-    network.post(temporaryStoragePath || buttonInfo.jflowpath || path || '/p/cs/objectSave', parames).then((res) => {
+    let jflowpath = '';
+    if (buttonInfo && buttonInfo.jflowpath) {
+      jflowpath = buttonInfo.jflowpath;
+    }
+    network.post(temporaryStoragePath || jflowpath || path || '/p/cs/objectSave', parames).then((res) => {
       if (res.data.code === 0) {
         const data = res.data;
         resolve(res);
@@ -458,8 +462,11 @@ export default {
         delMTable: true
       };
     }
-   
-    network.post(buttonInfo.jflowpath || path || '/p/cs/objectDelete', parames).then((res) => {
+    let jflowpath = '';
+    if (buttonInfo && buttonInfo.jflowpath) {
+      jflowpath = buttonInfo.jflowpath;
+    }
+    network.post(jflowpath || path || '/p/cs/objectDelete', parames).then((res) => {
       if (res.data.code === 0) {
         resolve();
         const data = res.data;
