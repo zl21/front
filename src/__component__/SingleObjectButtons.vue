@@ -111,6 +111,7 @@
   export default {
     data() {
       return {
+        saveButtonJflowPath: '',
         objTabActionDialogConfig: {}, // 自定义按钮配置
         actionId: null, // 自定义按钮ID
         temporaryStorage: false, // 是否开启暂存
@@ -2128,6 +2129,8 @@
                       this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
+                  } else if (item === 'actionMODIFY' && tabcmd.jflowpaths) {
+                    this.saveButtonJflowPath = tabcmd.jflowpaths[index];
                   }
                 });
               } else { // 纵向结构主表不显示导入  //1:1不显示导入按钮
@@ -2165,6 +2168,9 @@
                       this.updateRefreshButton(true);
                     }
                     this.dataArray.refresh = this.refreshButtons;
+                    if (item === 'actionMODIFY' && tabcmd.jflowpaths) {
+                      this.saveButtonJflowPath = tabcmd.jflowpaths[index];
+                    }
                   }
                 });
               }
@@ -2204,6 +2210,8 @@
                       this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
+                  } else if (item === 'actionMODIFY' && tabcmd.jflowpaths) {
+                    this.saveButtonJflowPath = tabcmd.jflowpaths[index];
                   }
                 }
               });
@@ -2245,6 +2253,8 @@
                     this.dataArray.refresh = this.refreshButtons;
                     this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                   }
+                } else if (item === 'actionMODIFY' && tabcmd.jflowpaths) {
+                  this.saveButtonJflowPath = tabcmd.jflowpaths[index];
                 }
               }
             });
@@ -2955,7 +2965,13 @@
        * }
        */
       savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType) { // 主表新增保存方法
-        const buttonInfo = this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '保存')[0];
+        let buttonInfo = {};
+        if (this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '保存').length > 0) {
+          buttonInfo = this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '保存')[0];
+        } else if (this.dataArray.jflowButton.filter(d => d.button === '4').length > 0) {
+          buttonInfo = this.dataArray.jflowButton.filter(d => d.button === '4')[0];
+          buttonInfo.jflowpath = this.saveButtonJflowPath;
+        }
         const tableName = this.tableName;
         const objectType = this.objectType;
         const isreftabs = this.subtables();
