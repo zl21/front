@@ -569,7 +569,7 @@
               activeTabInfo: currentTabName
             }
           });
-          
+
           this.updataCurrentTableDetailMethods();
         }
       },
@@ -3448,6 +3448,8 @@
       window.removeEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
     },
     mounted() {
+      this.updataCurrentTableDetailInfo();
+
       this.setDisableButtons();
       if (this.isItemTable) {
         this.dataArray.refresh = false;
