@@ -7,7 +7,7 @@ module.exports = {
   projectIconPath: path.join(__dirname, './favicon.ico'), // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
   // target: 'http://r3-8098.dev.burgeononline.com/', // 框架研发网关开启环境
-  target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 新版本jflow测试环境
+  // target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 新版本jflow测试环境
   // target: 'http://r3dev.qiaodan.com:28889', // 乔丹开发环境
   // target: 'http://r3dev.qiaodan.com:26666', // 乔丹开发环境
   // target: 'http://r3-know-dev.dev.burgeononline.com/', // 知晓测试环境(启用网关)
@@ -23,11 +23,12 @@ module.exports = {
   // target: 'http://r3.burgeon.cn:19999/', // 'http://106.15.154.165:19999/', // Cube
   // target: 'http://web.cmsqas.lining.com/', // 李宁
   // target: 'http://ark-share-dev.dev.burgeononline.com', // ArkShare环境
+  target: 'http://47.102.164.111:26666/', // 卡宾环境
 
   
-  Version: '1.4', // 版本号
+  Version: '1.3', // 版本号
   interlocks: true, // 是否打开三级联动装置
-  enableGateWay: true, // 网关是否打开,
+  enableGateWay: false, // 网关是否打开,
   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用功能
   ignoreGateWayPattern: [/\/jflow\/*/g, /\/api\/*/g], // 框架默认禁用的网关逻辑的正则模式匹配
   enableNetworkMonitor: true, // 是否开启网络监控功能

@@ -74,7 +74,7 @@
         @formChange="formPanelChange"
         @InitializationForm="initFormPanel"
         @VerifyMessage="verifyFormPanel"
-      />d
+      />
     </div>
     <!-- 左右结构主表和子表的form(面板) -->
     <compositeForm

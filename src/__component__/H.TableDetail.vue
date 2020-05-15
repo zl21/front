@@ -108,7 +108,6 @@
             if (obj.webact) { // 自定义tab全定制，tab切换时不需要请求，且不显示单对象按钮组件
               webactType = obj.webact.substring(0, obj.webact.lastIndexOf('/')).toUpperCase();
             }
-
             if (obj.vuedisplay === 'TabItem') { // 引入自定义组件
               Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
               obj.componentAttribute.componentName = obj.webact.substring(obj.webact.lastIndexOf('/') + 1, obj.webact.length);// 自定义组件名称
@@ -120,7 +119,7 @@
               }
             }
            
-            if (webactType === 'HALF') { // 如果是自定义tab全定制界面时，不需要引入公共组件
+            if (webactType === 'HALF') { // 如果是自定义tab全定制界面时，不需要引入公共组件,半定制界面需要引入公共组件
               this.updateButtonsDataForCustomization({ tabIndex: index, isShowValue: false });
               // obj.componentAttribute.buttonsData.isShow = false;
             }
