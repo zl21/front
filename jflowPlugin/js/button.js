@@ -44,12 +44,6 @@ async function businessChange() {
     businessTypeName: global.routeInfo.tableName,
     async: true
   });
-  
-  DispatchEvent('jflowClick', {
-    detail: {
-      type: 'refresh'
-    }
-  });
 }
 
 // 按钮响应事件
@@ -90,6 +84,11 @@ async function buttonsResponse(e) {
       restartProcess();
       break;
     case '4': // 保存
+      DispatchEvent('jflowClick', {
+        detail: {
+          type: 'refresh'
+        }
+      });
       break;
     default: break;
   }

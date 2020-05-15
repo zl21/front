@@ -57,6 +57,12 @@ function thirdlogin() { // 三方登录  获取accessToken
 */
 async function jflowButtons() { // 获取jflow单据信息
   return await new Promise((resolve) => {
+    if (global.routeInfo.itemId === 'New') { // 过滤单据新增的情况
+      globalChange({
+        jflowInfo: null
+      });
+      return;
+    }
     network.post('/jflow/p/cs/task/page/approveAction', {
       businessCode: global.routeInfo.itemId,
       userId: global.userInfo.id,
