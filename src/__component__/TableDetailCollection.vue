@@ -271,7 +271,10 @@
       };
     },
     props: {
-
+      webConfSingle: {// 当前子表webconf
+        type: Object,
+        default: () => ({})
+      },
       tabwebact: {// 自定义类型按钮
         type: Object,
         default: () => ({})
@@ -377,6 +380,7 @@
       isHorizontal() { // 是否是左右结构
         return this.type === pageType.Horizontal;
       },
+      
       buttonGroups() { // 按钮组的数据组合
         // let tabIndex = null;
         // if (this.WebConf && this.WebConf.isCustomizeTab && this.type === 'horizontal') {
@@ -384,6 +388,7 @@
         // } else {
         //   tabIndex = this.tabCurrentIndex;
         // }
+        
         const { tabcmd, DisableEXPORT } = this.tabPanel[this.currentTabIndex].componentAttribute.buttonsData.data;
         if (!tabcmd) {
           return [];
@@ -444,6 +449,22 @@
               buttonGroupShow.splice(index, 1);
             }
           });
+        }
+        if (this.webConfSingle) {
+          if (this.webConfSingle.disableExport) {
+            buttonGroupShow.forEach((item, index) => {
+              if (item.eName === 'actionEXPORT') {
+                buttonGroupShow.splice(index, 1);
+              }
+            });
+          }
+          if (this.webConfSingle.disableImport) {
+            buttonGroupShow.forEach((item, index) => {
+              if (item.eName === 'actionIMPORT') {
+                buttonGroupShow.splice(index, 1);
+              }
+            });
+          }
         }
         let buttons = '';
         if (this.tabwebact && this.tabwebact.objtabbutton && this.tabwebact.objtabbutton.length > 0) { // 接入自定义按钮渲染逻辑
@@ -3035,7 +3056,8 @@
                     },
                     url: getGateway('/p/cs/batchUpload'),
                     valuedata: this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val) : []
-                  }
+                  },
+                  webConfSingle: this.webConfSingle
                 },
                 on: {
                   filechange: (val) => {

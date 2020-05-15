@@ -91,11 +91,13 @@
               obj.componentAttribute.isactive = this.tabPanel[0].componentAttribute.buttonsData.data.isactive;
               obj.componentAttribute.watermarkimg = this.tabPanel[0].componentAttribute.buttonsData.data.watermarkimg;
               obj.componentAttribute.jflowWaterMark = this.jflowWaterMark;
-              obj.componentAttribute.isMainTable = true;           
+              obj.componentAttribute.isMainTable = true;       
+              obj.componentAttribute.webConfSingle = this.WebConf;
               obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.tabPanel[0].componentAttribute.panelData.data.isdefault || this.objReadonlyForJflow;
             } else {
               obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.childReadonly || this.objReadonlyForJflow;
             }
+            obj.componentAttribute.webConfSingle = this.tabPanel[index].componentAttribute.buttonsData.data.webconf;
             obj.componentAttribute.isreftabs = this.tabPanel[0].componentAttribute.buttonsData.data.isreftabs;
             obj.componentAttribute.tableName = item.tablename;
             obj.componentAttribute.formReadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly;

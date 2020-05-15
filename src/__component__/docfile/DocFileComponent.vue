@@ -80,6 +80,10 @@
           return {};
         }
       },
+      webConfSingle: {// 当前子表webConf
+        type: Object,
+        default: () => ({})
+      },
     },
     mounted() {
       // this.$dragging.$on('dragend', (res) => {
@@ -111,14 +115,14 @@
       // }
 
       getDocFileWebConf() {
-        if (store.state[this[MODULE_COMPONENT_NAME]].WebConf && store.state[this[MODULE_COMPONENT_NAME]].WebConf.docFile) {
-          return store.state[this[MODULE_COMPONENT_NAME]].WebConf.docFile.isPreview;
+        if (this.webConfSingle && this.webConfSingle.docFile) {
+          return this.webConfSingle.docFile.isPreview;
         }
         return false;
       },
       getDocFileWebConfUrl() {
-        if (store.state[this[MODULE_COMPONENT_NAME]].WebConf && store.state[this[MODULE_COMPONENT_NAME]].WebConf.docFile) {
-          return store.state[this[MODULE_COMPONENT_NAME]].WebConf.docFile.url;
+        if (this.webConfSingle && this.webConfSingle.docFile) {
+          return this.webConfSingle.docFile.url;
         }
         return null;
       }
