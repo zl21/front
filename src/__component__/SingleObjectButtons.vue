@@ -2160,6 +2160,9 @@
                       this.updateRefreshButton(true);
                     }
                     this.dataArray.refresh = this.refreshButtons;
+                    if (item === 'actionMODIFY' && tabcmd.jflowpaths) {
+                      this.saveButtonJflowPath = tabcmd.jflowpaths[index];
+                    }
                   }
                 });
               }
@@ -2199,6 +2202,8 @@
                       this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
+                  } else if (item === 'actionMODIFY' && tabcmd.jflowpaths) {
+                    this.saveButtonJflowPath = tabcmd.jflowpaths[index];
                   }
                 }
               });
@@ -2240,6 +2245,8 @@
                     this.dataArray.refresh = this.refreshButtons;
                     this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                   }
+                } else if (item === 'actionMODIFY' && tabcmd.jflowpaths) {
+                  this.saveButtonJflowPath = tabcmd.jflowpaths[index];
                 }
               }
             });
@@ -2955,7 +2962,7 @@
           buttonInfo = this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '保存')[0];
         } else if (this.dataArray.jflowButton.filter(d => d.button === '4').length > 0) {
           buttonInfo = this.dataArray.jflowButton.filter(d => d.button === '4')[0];
-          buttonInfo.jflowPath = this.saveButtonJflowPath;
+          buttonInfo.jflowpath = this.saveButtonJflowPath;
         }
         const tableName = this.tableName;
         const objectType = this.objectType;
