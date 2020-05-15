@@ -15,9 +15,6 @@ import decryptionJflow from './decryptionJflow';
 import { global, globalChange } from '../utils/global.config';
 import todoList from './todoList';
 
-const router = {}; // 路由
-const userInfo = {}; // 用户信息
-const instanceId = null; // 流程id
 
 function thirdlogin() { // 三方登录  获取accessToken
   let data = {
@@ -221,6 +218,7 @@ const install = function install(Vue, options = {}) {
   // 获取业务系统数据
   window.addEventListener('updataCurrentTableDetailInfo', (event) => {  
     globalChange(event.detail);
+    jflowButtons();
   });
 };
 

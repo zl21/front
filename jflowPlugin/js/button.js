@@ -38,11 +38,11 @@ function restartProcess() {
 // 业务系统的保存需要通知jflow
 async function businessChange() {
   await network.post('/jflow/p/cs/business/change', {
-    instance_id: global.jflowInfo.instanceId,
-    business_code: global.routeInfo.itemId,
-    business_type: global.routeInfo.tableId,
+    instanceId: global.jflowInfo.instanceId,
+    businessCode: global.routeInfo.itemId,
+    businessType: global.routeInfo.tableId,
     businessTypeName: global.routeInfo.tableName,
-    sync: true
+    async: true
   });
   
   DispatchEvent('jflowClick', {
@@ -90,10 +90,6 @@ async function buttonsResponse(e) {
       restartProcess();
       break;
     case '4': // 保存
-      if (window.testUpdataValue()) {
-        await getJflowInfo();
-        businessChange();
-      }
       break;
     default: break;
   }
@@ -106,6 +102,7 @@ function clickFunction(e) {
     if (window.updatavVerifyRequiredInformation()) {
       if (window.testUpdataValue()) {
         window.updataClickSave(async () => {
+          await global.jflowInfo ? businessChange() : null;
           buttonsResponse(e);
         });
       } else {
