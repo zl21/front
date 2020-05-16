@@ -12,7 +12,7 @@ import './constants/dateApi';
 import network from './__utils__/network';
 import DispatchEvent from './__utils__/dispatchEvent';
 import {
-  getTouristRoute, enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, encryptionJflow, enableInitializationRequest, specifiedGlobalGateWay, HAS_BEEN_DESTROYED_MODULE
+  backDashboardRoute, getTouristRoute, enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, encryptionJflow, enableInitializationRequest, specifiedGlobalGateWay, HAS_BEEN_DESTROYED_MODULE
 } from './constants/global';
 import { removeSessionObject } from './__utils__/sessionStorage';
 import customizedModalConfig from './__config__/customizeDialog.config';
@@ -98,6 +98,12 @@ const init = () => {
       ])
     });
   };
+  if (backDashboardRoute().filter(path => path === router.currentRoute.fullPath).length > 0) {
+    router.push('/');
+    setTimeout(() => {
+      store.commit('global/updataOpenedMenuLists', []);
+    }, 500);
+  }
 };
 
 const getCategory = () => {
