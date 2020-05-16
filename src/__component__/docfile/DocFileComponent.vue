@@ -87,7 +87,7 @@
       },
       draggingTag: {// 拖拽group属性标示，如果当前界面多次使用了当前组件，需保持标示唯一性
         type: String,
-        default: this.dataitem.colname
+        default: () => this.getDataitem
       }
     },
     mounted() {
@@ -118,7 +118,9 @@
       //   }
       //   return null;
       // }
-
+      getDataitem() {
+        return this.dataitem.colname;
+      },
       getDocFileWebConf() {
         if (this.webConfSingle && this.webConfSingle.docFile) {
           return this.webConfSingle.docFile.isPreview;
