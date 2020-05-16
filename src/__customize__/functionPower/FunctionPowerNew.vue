@@ -1,213 +1,297 @@
 <template>
-    <div class="functionPower">
-        <div class="buttonGroup">
-            <Button
-                    v-for="(item, index) in buttonsData"
-                    :key="index"
-                    type="fcdefault"
-                    class="Button"
-                    @click="btnClick(item)"
-            >
-                {{ item.webdesc }}
-            </Button>
-        </div>
-        <div class="content">
-            <div class="contentLeft">
-                <Input
-                        placeholder="请输入角色"
-                        clearable
-                        @on-change="searchInputChange"
-                        icon="ios-search"
-                >
-                <span slot="prepend">检索</span>
-                </Input>
-                <div class="menuContainer">
-                    <Tree
-                            ref="menuTree"
-                            :data="menuTreeData"
-                            :query="menuTreeQuery"
-                            @on-select-change="menuTreeChange"
-                    />
-                </div>
-                <!--<ul class="menuContainer">-->
-                <!--<li-->
-                <!--v-for="(item, index) in menuList"-->
-                <!--:key="index"-->
-                <!--class="menuList"-->
-                <!--:class="index === menuHighlightIndex? 'menuHighlight':''"-->
-                <!--@click="menuClick(index, item)"-->
-                <!--&gt;-->
-                <!--{{ item.NAME }}-->
-                <!--</li>-->
-                <!--</ul>-->
-            </div>
-            <div class="contentRight">
-                <div class="left-tree">
-                    <Tree
-                            ref="tree"
-                            :data="treeData"
-                            @on-select-change="treeChange"
-                    />
-                </div>
-                <div class="right-list">
-                    <div class="upper-part">
-                        <div class="upper-table" ref="upperTable">
-                            <div class="upper-table-tabth" :style="{left: upperTableTabthLeft}">
-                                <table>
-                                    <thead>
-                                    <tr>
-                                        <th class="functionColumnClass" ref="functionColumnTh" :style="{'min-width': `${functionColumnWidth}px`}">功能</th>
-                                        <th v-for="(item, index) in columns" :key="index" :ref="`tableTabth${index}`" :style="{width: theadThMinWidth}">
-                                            <Checkbox v-model="item[`${item.key}Value`]" @on-change="(currentValue) => tabthCheckboxChange(currentValue, {index: index, column: item})"></Checkbox>{{item.title}}
-                                        </th>
-                                    </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                            <div v-show="tableData.length === 0" class="upper-table-tabtd-empty">暂无数据</div>
-                            <div v-show="tableData.length > 0" ref="upperTableTabtd" class="upper-table-tabtd" @scroll="upperTableTbodyScroll">
-                                <table>
-                                    <tbody>
-                                    <tr v-for="(item, index) in tableData" :key="index" :class="upperTableTbodyHighlightIndex === index ? 'upper-table-tabtd-highlight' : ''" @click="upperTableTbodyClick(item, index)">
-                                        <td ref="functionColumnTd" :style="{'min-width': functionColumnTdWidth}">{{item.description}}</td>
-                                        <td :style="{'min-width': tem.tbodyWidth}" v-for="(tem, temIdx) in columns" :key="temIdx">
-                                            <Checkbox v-model="item[`${tem.key}Value`]" :disabled="item[`${tem.key}Disabled`]" @on-change="(currentValue) => rowCheckboxChange(currentValue, {row: item, index: index, column: tem})"></Checkbox>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bottom-part">
-                        <div class="bottom-table">
-                            <!--<Table-->
-                                    <!--class="table"-->
-                                    <!--highlight-row-->
-                                    <!--:height="true"-->
-                                    <!--:data="extendTableData"-->
-                                    <!--:columns="columnsBottom"-->
-                            <!--/>-->
-                            <div class="bottom-table-tabth">
-                                <table>
-                                    <thead>
-                                    <tr>
-                                        <th>扩展功能</th>
-                                        <th>功能</th>
-                                    </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                            <div v-show="extendTableData.length === 0" class="bottom-table-tbody-empty">暂无数据</div>
-                            <div v-show="extendTableData.length > 0" class="bottom-table-tbody">
-                                <table>
-                                    <tbody>
-                                    <tr v-for="(item, index) in extendTableData" :key="index" :class="bottomTableTbodyHighlightIndex === index ? 'bottom-table-tbody-highlight' : ''" @click="bottomTableTbodyClick(index)">
-                                        <td style="width: 200px">
-                                            <Checkbox :value="item.permission === 128 ? true : false" @on-change="(currentValue) => extendFunctionCheckboxChange(currentValue, {row: item, index: index})"></Checkbox>{{item.description}}
-                                        </td>
-                                        <td>
-                                            <Checkbox v-show="item.children && item.children.length > 0" :value="item.children && item.children.length > 0 ? item.children[0].permission === 128 : false" @on-change="(currentValue) => functionCheckboxChange(currentValue, {row: item, index: index})"></Checkbox>{{item.children.length > 0 ? item.children[0].description : ''}}
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <Modal
-                v-model="copyPermission"
-                closable
-                :width="420"
-                mask
-                footer-hide
-                title="复制权限"
-        >
-            <div class="modalContent">
-                <div class="itemContent">
-                    <div class="labelContent">
-                        <div class="labelTip">*</div>
-                        <div>原角色:</div>
-                    </div>
-                    <DropDownSelectFilter class="itemCom"
-                                          :totalRowCount="totalRowCount"
-                                          :pageSize="dropPageSize"
-                                          :AutoData="singleAutoData"
-                                          :columnsKey="['NAME']"
-                                          :hidecolumns="['ID']"
-                                          :defaultSelected="singleDefaultSelected"
-                                          @on-fkrp-selected="singleDropSelected"
-                                          @on-page-change="singleDropPageChange"
-                                          @on-popper-hide="singlePopperHide"
-                                          @on-clear="singleDropClear"
-                                          @on-input-value-change="singleInputChange"
-                                          :data="singleDropDownSelectFilterData">
-                    </DropDownSelectFilter>
-                </div>
-                <div class="itemContent">
-                    <div class="labelContent">
-                        <div class="labelTip">*</div>
-                        <div>目的角色:</div>
-                    </div>
-                    <DropDownSelectFilter :single="false"
-                                          class="itemCom"
-                                          :totalRowCount="totalRowCount"
-                                          :pageSize="dropPageSize"
-                                          :columnsKey="['NAME']"
-                                          :hidecolumns="['ID']"
-                                          :defaultSelected="multipleDefaultSelected"
-                                          :AutoData="multipleAutoData"
-                                          @on-fkrp-selected="multipleDropSelected"
-                                          @on-page-change="multipleDropPageChange"
-                                          @on-popper-hide="multiplePopperHide"
-                                          @on-clear="multipleDropClear"
-                                          @on-input-value-change="multipleInputChange"
-                                          :data="multipleDropDownSelectFilterData">
-                    </DropDownSelectFilter>
-                </div>
-                <div class="itemContent">
-                    <div class="labelContent">
-                        <div class="labelTip">*</div>
-                        <div>复制方式:</div>
-                    </div>
-                    <Select v-model="copyType" class="itemCom" placeholder="请选择复制方式">
-                        <Option value="cover">覆盖原有权限</Option>
-                        <Option value="copy">保留原有权限</Option>
-                    </Select>
-                </div>
-                <div class="modalButton">
-                    <Button
-                            type="fcdefault"
-                            class="Button"
-                            @click="modalConfirm"
-                    >
-                        确定
-                    </Button>
-                    <Button
-                            type="fcdefault"
-                            class="Button"
-                            @click="modalCancel"
-                    >
-                        取消
-                    </Button>
-                </div>
-            </div>
-        </Modal>
-        <Spin
-                v-show="spinShow"
-                fix
-        >
-            <Icon
-                    type="ios-loading"
-                    size="48"
-                    class="demo-spin-icon-load"
-            />
-            <div>Loading</div>
-        </Spin>
+  <div class="functionPower">
+    <div class="buttonGroup">
+      <Button
+        v-for="(item, index) in buttonsData"
+        :key="index"
+        type="fcdefault"
+        class="Button"
+        @click="btnClick(item)"
+      >
+        {{ item.webdesc }}
+      </Button>
     </div>
+    <div class="content">
+      <div class="contentLeft">
+        <Input
+          placeholder="请输入角色"
+          clearable
+          icon="ios-search"
+          @on-change="searchInputChange"
+           >
+        <span slot="prepend">检索</span>
+        </Input>
+        <div class="menuContainer">
+          <Tree
+            ref="menuTree"
+            :data="menuTreeData"
+            :query="menuTreeQuery"
+            @on-select-change="menuTreeChange"
+          />
+        </div>
+        <!--<ul class="menuContainer">-->
+        <!--<li-->
+        <!--v-for="(item, index) in menuList"-->
+        <!--:key="index"-->
+        <!--class="menuList"-->
+        <!--:class="index === menuHighlightIndex? 'menuHighlight':''"-->
+        <!--@click="menuClick(index, item)"-->
+        <!--&gt;-->
+        <!--{{ item.NAME }}-->
+        <!--</li>-->
+        <!--</ul>-->
+      </div>
+      <div class="contentRight">
+        <div class="left-tree">
+          <Tree
+            ref="tree"
+            :data="treeData"
+            @on-select-change="treeChange"
+          />
+        </div>
+        <div class="right-list">
+          <div class="upper-part">
+            <div
+              ref="upperTable"
+              class="upper-table"
+            >
+              <div
+                class="upper-table-tabth"
+                :style="{left: upperTableTabthLeft}"
+              >
+                <table>
+                  <thead>
+                    <tr>
+                      <th
+                        ref="functionColumnTh"
+                        class="functionColumnClass"
+                        :style="{'min-width': `${functionColumnWidth}px`}"
+                      >
+                        功能
+                      </th>
+                      <th
+                        v-for="(item, index) in columns"
+                        :key="index"
+                        :ref="`tableTabth${index}`"
+                        :style="{width: theadThMinWidth}"
+                      >
+                        <Checkbox
+                          v-model="item[`${item.key}Value`]"
+                          @on-change="(currentValue) => tabthCheckboxChange(currentValue, {index: index, column: item})"
+                        />{{ item.title }}
+                      </th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+              <div
+                v-show="tableData.length === 0"
+                class="upper-table-tabtd-empty"
+              >
+                暂无数据
+              </div>
+              <div
+                v-show="tableData.length > 0"
+                ref="upperTableTabtd"
+                class="upper-table-tabtd"
+                @scroll="upperTableTbodyScroll"
+              >
+                <table>
+                  <tbody>
+                    <tr
+                      v-for="(item, index) in tableData"
+                      :key="index"
+                      :class="upperTableTbodyHighlightIndex === index ? 'upper-table-tabtd-highlight' : ''"
+                      @click="upperTableTbodyClick(item, index)"
+                    >
+                      <td
+                        ref="functionColumnTd"
+                        :style="{'min-width': functionColumnTdWidth}"
+                      >
+                        {{ item.description }}
+                      </td>
+                      <td
+                        v-for="(tem, temIdx) in columns"
+                        :key="temIdx"
+                        :style="{'min-width': tem.tbodyWidth}"
+                      >
+                        <Checkbox
+                          v-model="item[`${tem.key}Value`]"
+                          :disabled="item[`${tem.key}Disabled`]"
+                          @on-change="(currentValue) => rowCheckboxChange(currentValue, {row: item, index: index, column: tem})"
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="bottom-part">
+            <div class="bottom-table">
+              <!--<Table-->
+              <!--class="table"-->
+              <!--highlight-row-->
+              <!--:height="true"-->
+              <!--:data="extendTableData"-->
+              <!--:columns="columnsBottom"-->
+              <!--/>-->
+              <div class="bottom-table-tabth">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>扩展功能</th>
+                      <th>功能</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+              <div
+                v-show="extendTableData.length === 0"
+                class="bottom-table-tbody-empty"
+              >
+                暂无数据
+              </div>
+              <div
+                v-show="extendTableData.length > 0"
+                class="bottom-table-tbody"
+              >
+                <table>
+                  <tbody>
+                    <tr
+                      v-for="(item, index) in extendTableData"
+                      :key="index"
+                      :class="bottomTableTbodyHighlightIndex === index ? 'bottom-table-tbody-highlight' : ''"
+                      @click="bottomTableTbodyClick(index)"
+                    >
+                      <td style="width: 200px">
+                        <Checkbox
+                          :value="item.permission === 128 ? true : false"
+                          @on-change="(currentValue) => extendFunctionCheckboxChange(currentValue, {row: item, index: index})"
+                        />{{ item.description }}
+                      </td>
+                      <td>
+                        <Checkbox
+                          v-show="item.children && item.children.length > 0"
+                          :value="item.children && item.children.length > 0 ? item.children[0].permission === 128 : false"
+                          @on-change="(currentValue) => functionCheckboxChange(currentValue, {row: item, index: index})"
+                        />{{ item.children.length > 0 ? item.children[0].description : '' }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <Modal
+      v-model="copyPermission"
+      closable
+      :width="420"
+      mask
+      footer-hide
+      title="复制权限"
+    >
+      <div class="modalContent">
+        <div class="itemContent">
+          <div class="labelContent">
+            <div class="labelTip">
+              *
+            </div>
+            <div>原角色:</div>
+          </div>
+          <DropDownSelectFilter
+            class="itemCom"
+            :total-row-count="totalRowCount"
+            :page-size="dropPageSize"
+            :auto-data="singleAutoData"
+            :columns-key="['NAME']"
+            :hidecolumns="['ID']"
+            :default-selected="singleDefaultSelected"
+            :data="singleDropDownSelectFilterData"
+            @on-fkrp-selected="singleDropSelected"
+            @on-page-change="singleDropPageChange"
+            @on-popper-hide="singlePopperHide"
+            @on-clear="singleDropClear"
+            @on-input-value-change="singleInputChange"
+          />
+        </div>
+        <div class="itemContent">
+          <div class="labelContent">
+            <div class="labelTip">
+              *
+            </div>
+            <div>目的角色:</div>
+          </div>
+          <DropDownSelectFilter
+            :single="false"
+            class="itemCom"
+            :total-row-count="totalRowCount"
+            :page-size="dropPageSize"
+            :columns-key="['NAME']"
+            :hidecolumns="['ID']"
+            :default-selected="multipleDefaultSelected"
+            :auto-data="multipleAutoData"
+            :data="multipleDropDownSelectFilterData"
+            @on-fkrp-selected="multipleDropSelected"
+            @on-page-change="multipleDropPageChange"
+            @on-popper-hide="multiplePopperHide"
+            @on-clear="multipleDropClear"
+            @on-input-value-change="multipleInputChange"
+          />
+        </div>
+        <div class="itemContent">
+          <div class="labelContent">
+            <div class="labelTip">
+              *
+            </div>
+            <div>复制方式:</div>
+          </div>
+          <Select
+            v-model="copyType"
+            class="itemCom"
+            placeholder="请选择复制方式"
+          >
+            <Option value="cover">
+              覆盖原有权限
+            </Option>
+            <Option value="copy">
+              保留原有权限
+            </Option>
+          </Select>
+        </div>
+        <div class="modalButton">
+          <Button
+            type="fcdefault"
+            class="Button"
+            @click="modalConfirm"
+          >
+            确定
+          </Button>
+          <Button
+            type="fcdefault"
+            class="Button"
+            @click="modalCancel"
+          >
+            取消
+          </Button>
+        </div>
+      </div>
+    </Modal>
+    <Spin
+      v-show="spinShow"
+      fix
+    >
+      <Icon
+        type="ios-loading"
+        size="48"
+        class="demo-spin-icon-load"
+      />
+      <div>Loading</div>
+    </Spin>
+  </div>
 </template>
 
 <script>
@@ -419,12 +503,12 @@
       this.getButtonData();
     },
     mounted() {
-      window.addEventListener('resize', () => {
-        this.fixTableColumnWidth();
-      });
-      window.addEventListener('doCollapseHistoryAndFavorite', () => {
-        this.fixTableColumnWidth();
-      });
+      if (!this._inactive) {
+        window.addEventListener('resize',
+                                this.fixTableColumnWidth());
+        window.addEventListener('doCollapseHistoryAndFavorite', 
+                                this.fixTableColumnWidth());
+      }
     },
     beforeDestroy() {
       window.removeEventListener('resize', this.fixTableColumnWidth);
@@ -516,7 +600,7 @@
           params,
           success: (res) => {
             if (res.data.code === 0) {
-              let buttonsData = res.data.data;
+              const buttonsData = res.data.data;
               if (Version() === '1.4') {
                 buttonsData.push({
                   webdesc: '刷新'
@@ -985,7 +1069,7 @@
       }, // 复制权限弹框确定按钮
       rowCheckboxChange(currentValue, params) {
         if (params.column.key === 'extend') {
-          this.extendRowCheckboxChange(currentValue, params)
+          this.extendRowCheckboxChange(currentValue, params);
         } else {
           // 选中该行数据
           params.row[`${params.column.key}Value`] = currentValue;
@@ -1012,11 +1096,11 @@
       cancelRowSelected(params) {
         // 取消上边表格整行的选中状态
         this.columns.reduce((acc, cur, idx) => {
-            if (idx > 0) {
-              acc.push(cur.key);
-            }
-            return acc;
-          }, [])
+          if (idx > 0) {
+            acc.push(cur.key);
+          }
+          return acc;
+        }, [])
           .forEach((item) => {
             params.row[`${item}Value`] = false;
           });
@@ -1205,11 +1289,11 @@
       }, // 表格表头的checkbox改变时触发
       cancelAllSelected() {
         this.columns.reduce((acc, cur, idx) => {
-            if (idx > 0) {
-              acc.push(cur.key);
-            }
-            return acc;
-          }, [])
+          if (idx > 0) {
+            acc.push(cur.key);
+          }
+          return acc;
+        }, [])
           .forEach((key) => {
             // const columns = this.columns.map((item) => {
             //   if (item[`${key}Value`]) {
@@ -1364,12 +1448,12 @@
         if (arr.length > 0) {
           if (findIndex > -1) {
             this.tableData[findIndex].extendValue = false;
-            this.selectedSeeColumn({ index: findIndex}, false);
+            this.selectedSeeColumn({ index: findIndex }, false);
           }
         } else {
           if (findIndex > -1) {
             this.tableData[findIndex].extendValue = true;
-            this.selectedSeeColumn({ index : findIndex }, true);
+            this.selectedSeeColumn({ index: findIndex }, true);
           }
         }
 
