@@ -25,7 +25,7 @@
           设置外出代理人
         </Button>
         <Button
-          v-if="Agent.AGENT_ENAME&&Agent.AGENT_ENAME!==''"
+          v-if="tabalive === 'todoList' && Agent.AGENT_ENAME"
           type="primary"
           ghost
           @click="cancelAgent"
@@ -34,7 +34,7 @@
         </Button>
       </div>
       <span
-        v-if="Agent.AGENT_ENAME&&Agent.AGENT_ENAME!==''"
+        v-if="tabalive === 'todoList' && Agent.AGENT_ENAME"
         class="agentshow"
       >代理人：{{ Agent.AGENT_ENAME }}</span>
     </div>
