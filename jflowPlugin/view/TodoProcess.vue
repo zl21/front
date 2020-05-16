@@ -713,9 +713,9 @@
         // 获取外出代理人数据
         this.getAgent();
       } else {
-        const timer = setTimeout(() => {
+        const timer = setInterval(() => {
           if (global.userInfo) {
-            clearTimeout(timer);
+            clearInterval(timer);
             this.getselectOption();
             this.queryLists();
             // 获取外出代理人数据
