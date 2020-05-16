@@ -6,7 +6,7 @@
         <li
           v-for="(option,index) in docList.valuedata"
           :key="index"
-          v-dragging="{ item: option, list: docList.valuedata, }"
+          v-dragging="{ item: option, list: docList.valuedata,group: dataitem.colname }"
         >
           <a
             v-if="getDocFileWebConf"
@@ -60,7 +60,8 @@
   } from '../../constants/global';
   import store from '../../__config__/store.config';
 
-  const fkHttpRequest = () => require(`../../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+  const apiVersion = Version();
+  const fkHttpRequest = () => require(`../../__config__/actions/version_${apiVersion}/formHttpRequest/fkHttpRequest.js`);
 
 
   export default {
