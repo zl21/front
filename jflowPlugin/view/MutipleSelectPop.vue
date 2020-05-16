@@ -1,14 +1,15 @@
 <template>
   <div class="MutipleSelectPop">
     <div class="dialog_left">
+      <p class="label">
+        部门:
+      </p>
       <div class="left_top">
         <Input
           v-model="tree.search"
           search
           :placeholder="tree.placeholder"
-          @on-change="inputchange"
-          @on-keydown="inputkeydown"
-          @on-search="inputsearch"
+          @on-change="organizationSearch"
         /></Input>
       </div>
       <div class="left_center">
@@ -20,18 +21,59 @@
             <Icon
               type="ios-loading"
               size="30"
-              class="demo-spin-icon-load" 
+              class="demo-spin-icon-load"
             />
           </Spin>
         </div>
-        <Tree
-          ref="Tree"
-          :data="treeLists"
+        <!-- <Tree
+          :data="treeData"
+          :load-data="treeLoadData"
           show-checkbox
+          ref="Tree"
           :query="tree.search"
-          :query-style="queryStyle"
-          @on-select-change="getSelectedNodes"
+          :queryStyle="queryStyle"
           @on-check-change="getCheckedNodes"
+        ></Tree> -->
+        <ZTree
+          :z-nodes="treeData"
+          element-id="organizationTree"
+          :event="organizationEvents"
+        />
+      </div>
+    </div>
+    <div
+      v-if="isUse && roleSwitch"
+      class="dialog_left"
+    >
+      <p class="label">
+        角色:
+      </p>
+      <div class="left_top">
+        <Input
+          v-model="role.search"
+          search
+          :placeholder="role.placeholder"
+          @on-change="roleSearch"
+          @on-search="() => {getRoleData()}"
+        /></Input>
+      </div>
+      <div class="left_center">
+        <div
+          v-if="roleLoading"
+          class="complex-spin-fix"
+        >
+          <Spin fix>
+            <Icon
+              type="ios-loading"
+              size="30"
+              class="demo-spin-icon-load"
+            />
+          </Spin>
+        </div>
+        <ZTree
+          :z-nodes="roleData"
+          element-id="roleTree"
+          :event="roleEvents"
         />
       </div>
     </div>
@@ -50,6 +92,9 @@
       </div>
       <div class="dialog_center_top">
         <div class="dialog_center_top_fix">
+          <p class="label">
+            人员:
+          </p>
           <Input
             v-model="table.search"
             search
@@ -67,7 +112,7 @@
           @on-click="tabClick"
         >
           <TabPane
-            v-for="(item,key) in TabPaneData"
+            v-for="(item,key) in component"
             :key="key"
             :label="item.tab"
           >
@@ -110,44 +155,55 @@
       v-if="index === 0"
       class="dialog-operation"
     >
-      <Button
-        v-if="isUse"
-        class="operatebtn"
-        type="primary"
-        ghost
-        @click="operationTwo"
-      >
-        选择部门
-      </Button>
-      <Button
-        class="operatebtn"
-        type="primary"
-        ghost
-        @click="operation"
-      >
-        选择人员
-      </Button>
+      <div>
+        <Button
+          v-if="isUse"
+          class="operatebtn"
+          type="primary"
+          ghost
+          @click="operationTwo"
+        >
+          选择部门
+        </Button>
+        <Button
+          v-if="isUse && roleSwitch"
+          class="operatebtn"
+          type="primary"
+          ghost
+          @click="operationRole"
+        >
+          选择角色
+        </Button>
+        <Button
+          class="operatebtn"
+          type="primary"
+          ghost
+          @click="operation"
+        >
+          选择人员
+        </Button>
+      </div>
     </div>
     <div class="dialog_right">
       <div class="left_top right_top">
-        <div>已选中({{ resultMessage.total || 0 }})</div>
+        <div>已选中({{ resultRightData.total || 0 }})</div>
         <div>
-          <icon
-            :custom="iconDelect"
-            @click="delecFun" 
+          <i
+            class="iconfont iconios-trash-outline"
+            @click="delecFun"
           />
         </div>
       </div>
       <div class="right_center">
-        <ul v-if="resultMessage.list.length>0">
+        <ul v-if="resultRightData.list.length>0">
           <li
-            v-for="(item,index) in resultMessage.list"
+            v-for="(item,index) in resultRightData.list"
             :key="index"
           >
             <p>{{ item.string }}</p>
             <i
               class="iconfont iconbj_delete2"
-              @click="deleteLi(index,item)" 
+              @click="deleteLi(index,item)"
             />
           </li>
         </ul>
@@ -156,21 +212,27 @@
   </div>
 </template>
 <script>
+  import { mapState } from 'vuex';
+  import ZTree from '../ztree/zTree';
+  import { fuzzySearch } from '../ztree/js/fuzzysearch';
+  import network from '../utils/network';
+
   export default {
     name: 'Mutiple',
+    components: { ZTree },
     props: {
-      treedata: {
-        type: Array,
-        default() {
-          return [];
-        }
-      },
-      componentData: {
-        type: Array,
-        default() {
-          return [];
-        }
-      },
+      // treedata: {
+      //   type: Array,
+      //   default() {
+      //     return [];
+      //   }
+      // },
+      // componentData: {
+      //   type: Array,
+      //   default() {
+      //     return [];
+      //   }
+      // },
       resultData: {
         type: Object,
         default() {
@@ -181,21 +243,21 @@
         type: Boolean,
         default: false
       },
-      treeLoading: {
-        type: Boolean,
-        default: false
-      },
-      tableLoading: {
-        type: Boolean,
-        default: false
-      },
+      // treeLoading: {
+      //   type: Boolean,
+      //   default: false
+      // },
+      // tableLoading: {
+      //   type: Boolean,
+      //   default: false
+      // },
       open: {
         type: Boolean,
         default: false
       },
       iconDelect: {
         type: String,
-        default: 'iconfont  iconbj_delete'
+        default: 'iconfont  icon-bj_delete'
       },
       checkedList: {
         type: Array,
@@ -203,36 +265,74 @@
           return [];
         }
       },
-      tableSearch: {
-        type: String,
-        default: ''
-      },
-      isUse: {
+      // tableSearch: {
+      //   type: String,
+      //   default: ""
+      // },
+      isUse: { // 是否只是人员选择
         type: Boolean,
         default: true
-      }
+      },
+      isMutiple: {
+        // 是否多选
+        type: Boolean,
+        default: true
+      },
+    // isResultShow: {
+    //   //result.list是否反显
+    //   type: Boolean,
+    //   default: true
+    // },
     },
     data() {
       return {
+        load: require('../ztree/css/zTreeStyle/img/loading.gif'),
+        tableLoading: false,
+        // 组织树
+        currentoOrganization: null, // 当前选中的组织
+        treeLoading: false,
         tree: {
-          placeholder: '可搜索店仓/部分',
+          placeholder: '可搜索店仓/部门',
           search: ''
         },
+        treeData: [], // 组织树
+        showTree: this.open,
+
+        // 角色树
+        currentoRole: null, // 当前选中的角色  -->去除不需要字段
+        roleLoading: false,
+        role: {
+          placeholder: '可搜索角色',
+          search: ''
+        },
+        roleData: [], // 角色树
+        currentRole: {}, // 当前获取的角色
+
         table: {
           // 表格显示部分搜索
           placeholder: '直接输入人员姓名搜索',
           search: ''
         },
         columns: [],
-        treeNewData: {},
-        showTree: this.open,
         component: [
           {
             tab: '筛选结果',
-            columns: [],
+            columns: [
+              {
+                type: 'selection',
+                align: 'center',
+                fixed: 'left',
+                width: 30
+              },
+              { key: 'NAME', title: '用户名' },
+              { key: 'ENAME', title: '用户姓名' }
+            ],
             list: [],
+            total: 0,
+            pageSize: 10,
+            pageNum: 1, // 当前页码
             pageOptions: [10, 20, 50, 100],
-            height: 200
+            height: 340
           }
         ],
         resultRightData: {
@@ -243,139 +343,624 @@
         index: 0,
         queryStyle: {
           color: '#fd6442'
+        },
+        selectRow: [], // 表格选中的数据
+        selectDatas: {}, // 单行选中
+        obj: {}, //
+
+        organizationEvents: {
+          onCheck: async (e, treeId, treeNode) => {
+            // 查询人员
+            const organizationTree = $.fn.zTree.getZTreeObj('organizationTree');
+            const arr = organizationTree.getCheckedNodes(true).filter(item => !item.getCheckStatus().half).map(item => item.ID);
+            this.obj.CP_C_HRORG_ID = arr.join(',');
+            this.obj.GROUPID = null;
+            this.findUser(this.obj);
+
+            // 加载角色树
+            const tree = await this.getRoleData();
+            const roleTree = $.fn.zTree.getZTreeObj('roleTree');
+            roleTree.updateNode(tree);
+          },
+          beforeExpand: async (treeId, treeNode) => {
+            if (this.asyncTree) {
+              if (!(treeNode.children && treeNode.children.length > 0)) {
+                const tree = await this.getTreeData(treeNode);
+                const zTree = $.fn.zTree.getZTreeObj('organizationTree');
+                zTree.addNodes(treeNode, tree, true);
+              }
+            }
+          },
+        },
+        roleEvents: {
+          onCheck: (e, treeId, treeNode) => {
+            const organizationTree = $.fn.zTree.getZTreeObj('organizationTree');
+            const arr = organizationTree.getCheckedNodes(true).filter(item => !item.getCheckStatus().half).map(item => item.ID);
+            this.obj.CP_C_HRORG_ID = arr.join(',');
+
+            const roleTree = $.fn.zTree.getZTreeObj('roleTree');
+            const arrRole = roleTree.getCheckedNodes(true).filter(item => !item.getCheckStatus().half).map(item => item.ID);
+            this.obj.GROUPID = arrRole.join(',');
+            this.findUser(this.obj);
+          },
+          beforeExpand: async (treeId, treeNode) => {
+            if (this.asyncTree) {
+              if (!(treeNode.children && treeNode.children.length > 0)) {
+                const zTree = $.fn.zTree.getZTreeObj('roleTree');
+                const tree = await this.getRoleData(treeNode);
+                zTree.addNodes(treeNode, tree, true);
+              }
+            }
+          }
         }
       };
     },
     computed: {
-      treeLists() {
-        this.treeNewData = this.treedata;
-        return this.treeNewData;
+      // ...mapState({
+      //   roleSwitch: state => state.roleSwitch,
+      //   asyncTree: state => state.asyncTree
+      // })
+      roleSwitch() {
+        return false;
       },
-      TabPaneData() {
-        const data = Object.assign(this.component, this.componentData);
-        return data;
-      },
-      resultMessage() {
-        const data = Object.assign(this.resultRightData, this.resultData);
-        return data;
-      }
-    },
-    watch: {
-      tableSearch: {
-        handler(newValue, oldValue) {
-          this.table.search = newValue;
-        }
+      asyncTree() {
+        return false;
       }
     },
     methods: {
-      getSelectedNodes(obj) {
-        console.log(obj, '单击');
-        this.$emit('on-select-tree', obj, this);
+      deepCopy(obj) {
+        // 实现深拷贝
+        const result = Array.isArray(obj) ? [] : {};
+        for (const key in obj) {
+          if (obj.hasOwnProperty(key)) {
+            if (typeof obj[key] === 'object' && obj[key] !== null) {
+              result[key] = this.deepCopy(obj[key]); // 递归复制
+            } else {
+              result[key] = obj[key];
+            }
+          }
+        }
+        return result;
       },
-      getCheckedNodes(obj) {
-        this.$emit('on-change-tree', obj, this);
-      },
-      tabClick(index) {
+      tabClick(index) { // tab切换
         this.index = index;
         this.$emit('on-click-tab', index, this);
       },
-      pageChange(index) {
+      pageChange(index) { // 分页
         this.$emit('on-change-page', index, this);
+        this.component[0].pageNum = index;
+        const param = Object.assign(this.obj, { page: index, pageSize: 10 });
+        if (this.table.search !== '') {
+          param.ENAME = this.table.search;
+        }
+        this.findUser(param);
       },
-      pageChangeSize(index) {
+      pageChangeSize(index) { // 当前页显示数据修改
         this.$emit('on-change-pageSize', index, this);
+        this.component[0].pageSize = index;
+        const param = Object.assign(this.obj, { page: 1, pageSize: index });
+        if (this.table.search !== '') {
+          param.ENAME = this.table.search;
+        }
+        this.findUser(param);
       },
-      rowdbClick(index, row) {
-        this.$emit('on-row-dblclick', index, row, this);
-        setTimeout(() => {
-          this.$refs.Table[0].clearCurrentRow();
-        }, 200);
+      rowdbClick(row, index) { // 双击表格行
+        const selectObj = Object.assign({}, row);
+        if (!this.isMutiple) {
+          selectObj.string = selectObj.ENAME;
+          if (this.resultRightData.list) {
+            this.resultRightData.list = [];
+            this.resultRightData.list.push(selectObj);
+          } else {
+            this.$set(this.resultRightData, 'list', [selectObj]);
+          }
+        } else {
+          const selectObj = Object.assign({ approve_type: 4 }, row);
+          selectObj.string = selectObj.ENAME;
+          if (this.resultRightData.list && this.resultRightData.list.length > 0) {
+            const flagIndex = this.resultRightData.list.findIndex(inner => (
+              Number(selectObj.ID) === Number(inner.ID) || Number(selectObj.ID) === Number(inner.approve_value)
+            ));
+            if (flagIndex === -1) {
+              // 没有找到相同的就加入
+              this.resultRightData.list.push(selectObj);
+            } else {
+              this.$Message.warning(
+                `${selectObj.ENAME}已经选择过了,请不要重复选择！`
+              );
+            }
+          } else {
+            this.$set(this.resultRightData, 'list', [selectObj]);
+          }
+        }
+        this.resultRightData.total
+          ? (this.resultRightData.total = this.resultRightData.list.length)
+          : this.$set(
+            this.resultRightData,
+            'total',
+            this.resultRightData.list.length
+          );
+        this.$emit('getResult', this.resultRightData);
+        this.$refs.Table[0].clearCurrentRow();
+        this.$emit('on-row-dblclick', row, index, this);
       },
-      rowClick(index, row) {
-        this.$emit('on-row-click', index, row, this);
+      rowClick(row, index) { // 单击表格
+        if (!this.isMutiple) {
+          this.selectDatas = Object.assign(this.selectDatas, row);
+        }
+        this.$emit('on-row-click', row, index, this);
       },
       Onselect(selection, row) {
+        if (this.isMutiple) {
+          this.component[0].list.map((item) => {
+            if (row.ID === item.ID) {
+              item._checked = true;
+            }
+          });
+          this.selectRow = [];
+          this.selectRow = selection;
+        }
+
         this.$emit('on-select', selection, row);
       },
       onSelectCancel(selection, row) {
+        this.component[0].list.map((item) => {
+          if (row.ID === item.ID) {
+            item._checked = false;
+          }
+        });
+        this.selectRow = [];
+        this.selectRow = selection;
         this.$emit('on-select-cancel', selection, row);
       },
       onSelectAll(selection) {
+        this.selectRow = [];
+        this.component[0].list.map((item) => {
+          item._checked = true;
+        });
+        this.selectRow = selection;
         this.$emit('on-select-all', selection);
       },
       onSelectAllCancel(selection) {
+        this.component[0].list.map((item) => {
+          item._checked = false;
+        });
+        this.selectRow = [];
         this.$emit('on-select-all-cancel', selection);
       },
       onSelectChange(selection) {
         this.$emit('on-select-change', selection);
       },
       inputchange(event) {
+        // if(!this.isUse&&!this.isMutiple){
+        // this.table.search = event.target.value;
+        // }
         this.$emit('on-change', event, this);
       },
       inputkeydown(event) {
         this.$emit('on-keydown', event, this);
       },
       inputsearch(event) {
+        const param = Object.assign(this.obj, {
+          page: 1,
+          pageSize: 10,
+          ENAME: event
+        });
+        this.findUser(param);
         this.$emit('on-search', event, this);
       },
-      operationTwo() {
-        const selectNode = this.$refs.Tree.getCheckedNodes();
+
+    
+      operationTwo() { // 选择部门
+        const organizationTree = $.fn.zTree.getZTreeObj('organizationTree');
+        let selectNode = organizationTree.getCheckedNodes(true);
+        selectNode = selectNode.filter((item) => {
+          if (!item.getCheckStatus().half) {
+            const {
+              ID,
+              ENAME,
+              CP_C_ORGUP_ID,
+              expand,
+              children,
+              loading,
+              oldname
+            } = item;
+            item = {
+              ID,
+              ENAME,
+              CP_C_ORGUP_ID,
+              expand,
+              children,
+              loading,
+              oldname
+            };
+            return item;
+          }
+        });
+        if (this.isMutiple) {
+          if (selectNode.length > 0) {
+            this.resultRightData.total
+              ? this.$set(this.resultRightData, 'total', this.resultData.total + selectNode.length)
+              : this.$set(this.resultRightData, 'total', selectNode.length);
+            selectNode.map((item) => {
+              const selectObj = Object.assign({ approve_type: 2 }, item);
+              selectObj.string = item.oldname ? item.oldname : item.ENAME;
+              if (
+                this.resultRightData.list
+                && this.resultRightData.list.length > 0
+              ) {
+                const flagIndex = this.resultRightData.list.findIndex(inner => item.ID == inner.ID || item.ID == inner.approve_value);
+                if (flagIndex === -1) {
+                  // 没有找到相同的就加入
+                  this.resultRightData.list.push(selectObj);
+                } else {
+                  this.$Message.warning(
+                    item.oldname ? item.oldname : `${item.ENAME}已经选择过了,请不要重复选择！`
+                  );
+                  this.$set(this.resultRightData, 'total', --this.resultRightData.total);
+                // this.$set(this.resultRightData, "total", --this.resultData.total)
+                }
+              } else {
+                this.$set(this.resultRightData, 'list', [selectObj]);
+              }
+            });
+          } else {
+            this.$Message.warning('请选择部门');
+          }
+          this.getTreeData();
+        }
+        if (this.selectRow.length > 0) {
+          // 选中状态的清除
+          this.selectRow = [];
+        }
+        if (Object.keys(this.selectDatas).length > 0) {
+          this.selectDatas = {};
+        }
+        this.$emit('getResult', this.resultRightData);
         this.$emit('on-transfer-two', selectNode, this);
       },
-      operation() {
+      operationRole() { // 选择角色
+        const roleTree = $.fn.zTree.getZTreeObj('roleTree');
+        let selectNode = roleTree.getCheckedNodes(true);
+        console.log(selectNode);
+        selectNode = selectNode.filter((item) => {
+          if (!item.getCheckStatus().half) {
+            const {
+              ID,
+              ENAME,
+              CP_C_ORGUP_ID,
+              expand,
+              children,
+              loading,
+              oldname
+            } = item;
+            item = {
+              ID,
+              ENAME,
+              CP_C_ORGUP_ID,
+              expand,
+              children,
+              loading,
+              oldname
+            };
+            return item;
+          }
+        });
+        if (this.isMutiple) {
+          if (selectNode.length > 0) {
+            this.resultRightData.total
+              ? this.$set(this.resultRightData, 'total', this.resultData.total + selectNode.length)
+              : this.$set(this.resultRightData, 'total', selectNode.length);
+            selectNode.map((item) => {
+              const selectObj = Object.assign({ approve_type: 3 }, item);
+              selectObj.string = item.oldname ? item.oldname : item.ENAME;
+              if (
+                this.resultRightData.list
+                && this.resultRightData.list.length > 0
+              ) {
+                const flagIndex = this.resultRightData.list.findIndex(inner => item.ID == inner.ID || item.ID == inner.approve_value);
+                if (flagIndex === -1) {
+                  // 没有找到相同的就加入
+                  this.resultRightData.list.push(selectObj);
+                } else {
+                  this.$Message.warning(
+                    item.oldname ? item.oldname : `${item.ENAME}已经选择过了,请不要重复选择！`
+                  );
+                  this.$set(this.resultRightData, 'total', --this.resultRightData.total);
+                }
+              } else {
+                this.$set(this.resultRightData, 'list', [selectObj]);
+              }
+            });
+          } else {
+            this.$Message.warning('请选择角色');
+          }
+          this.getRoleData();
+        }
+        if (this.selectRow.length > 0) {
+          // 选中状态的清除
+          this.selectRow = [];
+        }
+        if (Object.keys(this.selectDatas).length > 0) {
+          this.selectDatas = {};
+        }
+        this.$emit('getResult', this.resultRightData);
+      },
+      operation() { // 选择人员
+        if (!this.isMutiple) {
+          // 单选逻辑
+          if (Object.keys(this.selectDatas).length === 0) {
+            this.$Message.warning('请选择人员');
+            return;
+          }
+          this.resultRightData.total
+            ? (this.resultRightData.total = 1)
+            : this.$set(this.resultRightData, 'total', 1);
+          const selectObj = Object.assign({}, this.selectDatas);
+          selectObj.string = selectObj.ENAME;
+          if (this.resultRightData.list) {
+            this.resultRightData.list = [];
+            this.resultRightData.list.push(selectObj);
+          } else {
+            this.$set(this.resultRightData, 'list', [selectObj]);
+          }
+        } else {
+          // 多选逻辑
+          if (this.selectRow.length > 0) {
+            this.selectRow.map((item) => {
+              const selectObj = Object.assign({ approve_type: 4 }, item);
+              selectObj.string = item.ENAME;
+              if (
+                this.resultRightData.list
+                && this.resultRightData.list.length > 0
+              ) {
+                const flagIndex = this.resultRightData.list.findIndex(inner => item.ID == inner.ID || item.ID == inner.approve_value);
+                if (flagIndex === -1) {
+                  // 没有找到相同的就加入
+                  this.resultRightData.list.push(selectObj);
+                } else {
+                  this.$Message.warning(
+                    `${item.ENAME}已经选择过了,请不要重复选择！`
+                  );
+                }
+              } else {
+                this.$set(this.resultRightData, 'list', [selectObj]);
+              }
+            });
+            this.resultRightData.total
+              ? (this.resultRightData.total = this.resultRightData.list.length)
+              : this.$set(
+                this.resultRightData,
+                'total',
+                this.resultRightData.list.length
+              );
+          } else {
+            this.$Message.warning('请选择人员');
+          }
+        }
+        // 刷新表格数据
+        this.component[0].list.map((item) => {
+          item._checked = false;
+        });
+        this.component[0].list = this.component[0].list.concat([]);
+        if (this.selectRow.length > 0) {
+          // 选中状态的清除
+          this.selectRow = [];
+        }
+        if (Object.keys(this.selectDatas).length > 0) {
+          this.selectDatas = {};
+        }
+        this.$emit('getResult', this.resultRightData);
         this.$emit('on-transfer', this);
       },
-      deleteLi(index, tem) {
-        const selectNode = this.$refs.Tree.getCheckedNodes();
+      deleteLi(index, tem) { // 删除
+        const organizationTree = $.fn.zTree.getZTreeObj('organizationTree');
+        const selectNode = organizationTree.getCheckedNodes(true);
         if (selectNode && selectNode.length > 0) {
           selectNode.map((inItem) => {
             if (inItem.ID === tem.ID) {
-              this.$refs.Tree.handleCheck({
-                checked: false,
-                nodeKey: inItem.nodeKey
-              });
+              organizationTree.checkNode(inItem, false, true);
             }
           });
         }
-        const selectrow = this.TabPaneData[0].list; // 表格数据
+
+        const roleTree = $.fn.zTree.getZTreeObj('roleTree');
+        const selectRoleNode = roleTree.getCheckedNodes(true);
+        if (selectRoleNode && selectRoleNode.length > 0) {
+          selectRoleNode.map((inItem) => {
+            if (inItem.ID === tem.ID) {
+              roleTree.checkNode(inItem, false, true);
+            }
+          });
+        }
+
+        const selectrow = this.component[0].list; // 表格数据
         selectrow.map((row, Index) => {
           if (row.ID === tem.ID) {
             row._checked = false;
           }
         });
+        this.resultRightData.list.splice(index, 1);
+        this.resultRightData.total = this.resultRightData.list.length;
+        this.$emit('getResult', this.resultRightData);
         this.$emit('on-delectli', index, tem, this);
       },
-      treeOpen(checked) {
-        this.showTree = !checked;
-        this.treeNewData.forEach((item) => {
-          item.expand = !item.expand;
-        });
-      },
       delecFun() {
-        const selectNode = this.$refs.Tree.getCheckedNodes();
+        const organizationTree = $.fn.zTree.getZTreeObj('organizationTree');
+        const selectNode = organizationTree.getCheckedNodes(true);
         if (selectNode && selectNode.length > 0) {
           selectNode.map((inItem) => {
-            this.$refs.Tree.handleCheck({
-              checked: false,
-              nodeKey: inItem.nodeKey
-            });
+            organizationTree.checkNode(inItem, false, true);
           });
         }
-        const selectrow = this.TabPaneData[0].list; // 表格数据
+
+        const roleTree = $.fn.zTree.getZTreeObj('roleTree');
+        const selectRoleNode = roleTree.getCheckedNodes(true);
+        if (selectRoleNode && selectRoleNode.length > 0) {
+          selectRoleNode.map((inItem) => {
+            roleTree.checkNode(inItem, false, true);
+          });
+        }
+
+        const selectrow = this.component[0].list; // 表格数据
         if (selectrow && selectrow.length > 0) {
           selectrow.map((row, Index) => {
             row._checked = false;
           });
         }
-
         this.$emit('on-deleBtn', this);
+        this.resultRightData.total = 0;
+        this.resultRightData.list = [];
+        this.component[0].list.map((item) => {
+          item._checked = false;
+        });
+        this.component[0].list = this.component[0].list.concat([]);
+        this.$emit('getResult', this.resultRightData);
+      },
+      // 查找用户信息
+      findUser(param) {
+        this.tableLoading = true;
+        network.post('/jflow/p/c/identity/user/list', param).then((res) => {
+          this.tableLoading = false;
+          const data = res.data;
+          if (data.code === 0) {
+            if (data.data) {
+              this.transferTbody(data.data);
+            }
+            if (data.datas) {
+              this.transferTbody(data.datas);
+            }
+          }
+        });
+      },
+      // 表格体数据转化
+      transferTbody(data) {
+        this.component[0].total = data.totalRowCount;
+        this.component[0].pageOptions = data.selectrange;
+        this.component[0].list = [];
+        data.row.map((item) => {
+          const tem = {};
+          let temval = {};
+          Object.keys(item).map((inner) => {
+            tem[inner] = item[inner].val;
+          });
+          temval = Object.assign({}, tem);
+          this.component[0].list.push(tem);
+        });
+      },
+
+
+      // 获取树数据
+      async getTreeData(item) {
+        this.treeLoading = true;
+        let records = [];
+        await network.post('/jflow/p/c/identity/org/treeload', {
+          ID: item ? item.ID : null
+        }).then((res) => {
+          this.treeLoading = false;
+          if (res.data.resultCode === 0) {
+            res.data.data.records.map((item) => {
+              if (this.asyncTree) {
+                item.children ? item.isParent = true : item.isParent = false;
+                item.children = [];
+              }
+              return item;
+            });
+            records = res.data.data.records;
+            if (!item) {
+              this.treeData = res.data.data.records;
+            }
+          }
+        });
+        return records;
+      },
+      // 组织树的模糊搜索
+      organizationSearch() {
+        fuzzySearch('organizationTree', this.tree.search, null, true);
+      },
+      // 获取角色数据
+      async getRoleData(item) {
+        this.roleLoading = true;
+        let records = [];
+
+        const zTree = $.fn.zTree.getZTreeObj('organizationTree');
+        const arr = zTree.getCheckedNodes(true).filter(item => !item.getCheckStatus().half).map(item => item.ID);
+        await network.post('/jflow/p/c/identity/groups/treeload', {
+          horgIds: arr.join(','),
+          roleName: this.role.search,
+          ID: item ? item.ID : null
+        }).then((res) => {
+          this.roleLoading = false;
+          if (res.data.resultCode === 0) {
+            res.data.data.records.map((item) => {
+              if (this.asyncTree) {
+                item.children ? item.isParent = true : item.isParent = false;
+                item.children = [];
+              }
+              return item;
+            });
+            records = res.data.data.records;
+            if (!item) {
+              this.roleData = res.data.data.records;
+            }
+
+            if (this.role.search) {
+              this.roleSearch();
+            }
+          }
+        });
+        if (item) {
+          return records;
+        }
+      },
+      // 角色树检索
+      roleSearch() {
+        if (this.role.search) {
+          fuzzySearch('roleTree', this.role.search, null, true);
+        } else {
+          this.getRoleData();
+        }
+      }
+    },
+    mounted() {
+      // 加载组织树
+      this.component[0].pageNum = 1;
+      this.getTreeData();
+
+      // 获取角色数据
+      if (this.isUse && this.roleSwitch) {
+        this.getRoleData();
+      }
+    
+      if (this.resultData.list) {
+        this.resultRightData = this.deepCopy(this.resultData);
+      }
+
+      // 获取人员信息
+      this.findUser({});
+    },
+    beforeDestroy() {
+      if (this.selectRow.length > 0) {
+        this.selectRow = [];
+      }
+      if (Object.keys(this.selectDatas).length > 0) {
+        this.selectDatas = {};
+      }
+      if (this.table.search) {
+        this.table.search = '';
       }
     }
   };
 </script>
 <style lang="less">
+
+.burgeon-tree-arrow-open i:after{
+  left: 6px;
+  height: 19px;
+  top: 11px;
+}
+
 .MutipleSelectPop {
-  width: 800px;
   display: flex;
   height: 484px;
   position: relative;
@@ -406,6 +991,12 @@
     padding: 10px;
     border: 1px solid #dcdee2;
     border-right: none;
+
+    .label{
+      line-height: 20px;
+      border-bottom: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
     .left_top {
       height: 32px;
       line-height: 32px;
@@ -421,9 +1012,6 @@
 
       div:first-child {
         flex: 1;
-      }
-      i {
-        margin-right: 10px;
       }
     }
     .left_center {
@@ -442,13 +1030,18 @@
     height: 484px;
     border: 1px solid #dcdee2;
     border-right: none;
-    overflow: hidden;
     //box-shadow: 2px -2px 9px @shadow-color;
     padding: 10px;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-direction: column;
     flex-direction: column;
+
+    .label{
+      line-height: 20px;
+      border-bottom: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
     .dialog_p10 {
       padding: 10px 0;
     }
@@ -458,7 +1051,7 @@
       vertical-align: middle;
       box-sizing: border-box;
       .dialog_center_top_fix {
-        width: 270px;
+        width: 100%;
         box-sizing: border-box;
         padding-right: 20px;
         input {
