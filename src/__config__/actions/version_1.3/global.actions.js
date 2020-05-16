@@ -292,6 +292,6 @@ export default {
         removeSessionObject('TreeId');
         commit('updateTreeTableListData', []);
       });
-  }
+  },
  
 };

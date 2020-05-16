@@ -217,7 +217,8 @@ axios.interceptors.response.use(
         });
         removeSessionObject('userInfo');
         if (getProjectQuietRoutes().indexOf(router.currentRoute.path) === -1) {
-          router.push(getTouristRoute());
+          // router.push(getTouristRoute());
+          store.dispatch('global/signout');
         }
       } else if (status === 500 || status === 404) {
       // 如果http状态码正常，则直接返回数据

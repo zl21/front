@@ -106,8 +106,8 @@ const init = () => {
   }
 };
 const backTouristRoute = () => {
-  window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
-  router.push({ path: getTouristRoute() });
+  // window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
+  // router.push({ path: getTouristRoute() });
   store.dispatch('global/signout');
 };
 
@@ -133,8 +133,7 @@ const getCategory = () => {
   if (enableInitializationRequest()) {
     network.post('/p/cs/getSubSystems').then((res) => {
       if (res.data.code === '-1') {
-        window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
-        router.push({ path: getTouristRoute() });
+        backTouristRoute();
       } else if (res.data.data.length > 0) {
         store.commit('global/updateMenuLists', res.data.data);
         const serviceIdMaps = res.data.data.map(d => d.children)
