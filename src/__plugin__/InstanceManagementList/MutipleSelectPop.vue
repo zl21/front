@@ -315,12 +315,12 @@
           {
             tab: '筛选结果',
             columns: [
-              {
-                type: 'selection',
-                align: 'center',
-                fixed: 'left',
-                width: 30
-              },
+              // {
+              //   type: 'selection',
+              //   align: 'center',
+              //   fixed: 'left',
+              //   width: 30
+              // },
               { key: 'NAME', title: '用户名' },
               { key: 'ENAME', title: '用户姓名' }
             ],
@@ -705,6 +705,7 @@
           }
         } else {
           // 多选逻辑
+          // eslint-disable-next-line no-lonely-if
           if (this.selectRow.length > 0) {
             this.selectRow.map((item) => {
               const selectObj = Object.assign({ approve_type: 4 }, item);
@@ -763,15 +764,18 @@
           });
         }
 
-        const roleTree = $.fn.zTree.getZTreeObj('roleTree');
-        const selectRoleNode = roleTree.getCheckedNodes(true);
-        if (selectRoleNode && selectRoleNode.length > 0) {
-          selectRoleNode.map((inItem) => {
-            if (inItem.ID === tem.ID) {
-              roleTree.checkNode(inItem, false, true);
-            }
-          });
+        if (this.roleSwitch) {
+          const roleTree = $.fn.zTree.getZTreeObj('roleTree');
+          const selectRoleNode = roleTree.getCheckedNodes(true);
+          if (selectRoleNode && selectRoleNode.length > 0) {
+            selectRoleNode.map((inItem) => {
+              if (inItem.ID === tem.ID) {
+                roleTree.checkNode(inItem, false, true);
+              }
+            });
+          }
         }
+        
 
         const selectrow = this.component[0].list; // 表格数据
         selectrow.map((row, Index) => {
@@ -793,13 +797,16 @@
           });
         }
 
-        const roleTree = $.fn.zTree.getZTreeObj('roleTree');
-        const selectRoleNode = roleTree.getCheckedNodes(true);
-        if (selectRoleNode && selectRoleNode.length > 0) {
-          selectRoleNode.map((inItem) => {
-            roleTree.checkNode(inItem, false, true);
-          });
+        if (this.roleSwitch) {
+          const roleTree = $.fn.zTree.getZTreeObj('roleTree');
+          const selectRoleNode = roleTree.getCheckedNodes(true);
+          if (selectRoleNode && selectRoleNode.length > 0) {
+            selectRoleNode.map((inItem) => {
+              roleTree.checkNode(inItem, false, true);
+            });
+          }
         }
+        
 
         const selectrow = this.component[0].list; // 表格数据
         if (selectrow && selectrow.length > 0) {
