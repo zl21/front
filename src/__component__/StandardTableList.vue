@@ -778,7 +778,7 @@
                 fkrpSelected: (value) => {
                   this.formItemsLists[itemIndex].item.props.AutoData = [];
                   this.formItemsLists[itemIndex].item.value = value;
-                  this.formItemsLists = this.formItemsLists.concat([]);
+                  // this.formItemsLists = this.formItemsLists.concat([]);
                 },
                 'on-delete': ($this, item, key, index) => {
                   fkHttpRequest().fkDelMultiQuery({
