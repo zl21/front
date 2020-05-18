@@ -600,6 +600,10 @@
         });
       },
       ok() {
+        if (!(this.resultData.list && this.resultData.list.length > 0)) {
+          this.$Message.warning('请选择人员');
+          return;
+        }
         if (this.modaltype === 3) {
           this.setAgent();
         } else {
