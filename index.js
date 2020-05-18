@@ -9,7 +9,7 @@ import App from './src/App';
 import './src/constants/dateApi';
 import network from './src/__utils__/network';
 import {
-  backDashboardRoute, getTouristRoute, enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, encryptionJflow, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE
+  backDashboardRoute, getTouristRoute, enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, encryptionJflow, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE, specifiedGlobalGateWay
 } from './src/constants/global';
 import { removeSessionObject, getSeesionObject } from './src/__utils__/sessionStorage';
 import CompositeForm from './src/__component__/CompositeForm';
@@ -201,15 +201,25 @@ const getSubSystems = () => {
     });
   }
 };
+
+
 const getGateWayServiceId = () => {
   if (enableInitializationRequest()) {
-    network.get('/p/c/get_service_id').then((res) => {
-      window.sessionStorage.setItem('serviceId', res.data.data.serviceId);
+    if (specifiedGlobalGateWay()) {
+      window.sessionStorage.setItem('serviceId', specifiedGlobalGateWay());
       getCategory();
       setTimeout(() => {
         init();
       }, 0);
-    });
+    } else {
+      network.get('/p/c/get_service_id').then((res) => {
+        window.sessionStorage.setItem('serviceId', res.data.data.serviceId);
+        getCategory();
+        setTimeout(() => {
+          init();
+        }, 0);
+      });
+    }
   }
 };
 
