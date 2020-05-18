@@ -194,7 +194,7 @@ axios.interceptors.response.use(
     if (config.url.indexOf('/p/cs/getSubSystems') !== -1) {
       if (response.status === 200 && response.data.data.length > 0) {} else {
         updateSessionObject('saveNetwork', { k: 'name', v: '/p/cs/getSubSystems' });
-        window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
+        // window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
       }
     }
     if (enableJflow()) {
@@ -232,7 +232,10 @@ axios.interceptors.response.use(
         });
         removeSessionObject('userInfo');
         if (getProjectQuietRoutes().indexOf(router.currentRoute.path) === -1) {
-          router.push(getTouristRoute());
+          // router.push(getTouristRoute());
+          if (config.url !== '/p/cs/logout') {
+            store.dispatch('global/signout');
+          }
         }
       } else if (status === 500 || status === 404) {
       // 如果http状态码正常，则直接返回数据
