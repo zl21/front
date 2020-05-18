@@ -6,8 +6,6 @@
       :mask="true"
       :width="type==='3'?835:520"
       :ok-text="type === '9'?'提交':'确定'"
-      @on-ok="ok"
-      @on-cancel="cancel"
     >
       <!-- 同意 -->
       <div
@@ -41,24 +39,11 @@
         class="ApprovelModel"
       >
         <mutipleSelectPop
+          v-if="modalConfig.control"
           ref="dialogtest"
-          :loading="loading"
-          :tree-loading="tree_loading"
-          :table-loading="tableLoading"
-          :treedata="treedata"
-          :component-data="componentData"
-          :result-data="resultData"
+          :is-mutiple="false"
           :is-use="false"
-          @on-select-tree="selectTtree"
-          @on-change-tree="changeTtree"
-          @on-change-page="changePage"
-          @on-change-pageSize="changePageSize"
-          @on-row-dblclick="rowdbClick"
-          @on-row-click="rowClick"
-          @on-search="inputsearch"
-          @on-transfer="transfer"
-          @on-delectli="deleteLi"
-          @on-deleBtn="deleBtn"
+          @getResult="getResult"
         />
       </div>
 
@@ -210,6 +195,21 @@
           </div>
         </div>
       </div>
+
+      <div slot="footer">
+        <Button
+          type="text"
+          @click="cancel"
+        >
+          取消
+        </Button>
+        <Button
+          type="primary"
+          @click="ok"
+        >
+          确定
+        </Button>
+      </div>
     </Modal>
   </div>
 </template>
@@ -320,242 +320,6 @@
           }
         });
       },
-      // 获取树数据
-      getTreeData() {
-        this.treeLoading = true;
-        this.$network.post('/jflow/p/c/identity/org/treeload', {}).then((res) => {
-          this.treeLoading = false;
-          if (res.data.resultCode === 0) {
-            this.treeNewData = [];
-            const newArr = [];
-            // let root = {};
-            if (res.data.data.records.length > 0) {
-              res.data.data.records.forEach((item) => {
-                const tem = Object.assign(item);
-                newArr.push(tem);
-              // if (
-              //   item["CP_C_ORGUP_ID"] === null ||
-              //   item["CP_C_ORGUP_ID"] === ""
-              // ) {
-              //   root = Object.assign({}, item);
-              // }
-              });
-              this.treeNewData = this.arrayTransTree(newArr, 'CP_C_ORGUP_ID');
-            }
-            this.findUser({}); // 显示所有的用户
-          }
-        });
-      },
-      // 改造树数据的结构
-      arrayTransTree(list, key) {
-        let parent = [];
-        const children = [];
-        list.map((item) => {
-          item.expand = false;
-          item.title = key === 'CP_C_ORGUP_ID' ? item.ENAME : item.NAME;
-          if (
-            !item[key]
-            || (String(item[key]).indexOf('.') !== -1 && !String(item[key]).split('.')[1])
-          ) {
-            // 根节点
-            parent.push(item);
-          } else {
-            // 有父节点的
-            children.push(item);
-          }
-
-          return item;
-        });
-        if (parent.length < 1) {
-          // 没有根节点
-          const newParent = this.findTreeRootFirstChild(list, key); // 拿到一级节点
-          const rootArr = newParent.map(item => item[key]);
-          const rootTem = Array.from(new Set([...rootArr]));
-          if (rootTem.length === 1) {
-            if (key === 'CP_C_ORGUP_ID') {
-              parent = [
-                {
-                  CP_C_ORGUP_ID: null,
-                  ECODE: '00000',
-                  ENAME: '全部',
-                  ID: rootTem[0],
-                  MIXNAME: '[00000]全部',
-                  ORGTYPE: 'IN',
-                  TYPE: 'CP_C_HRORG_ID',
-                  title: '全部'
-                }
-              ];
-            } else {
-              parent = [
-                {
-                  PARENT_ID: null,
-                  NAME: '全部',
-                  ID: rootTem[0],
-                  MIXNAME: '[00000]全部',
-                  ORGTYPE: 'IN',
-                  TYPE: 'CP_C_HRORG_ID',
-                  title: '全部'
-                }
-              ];
-            }
-          
-            this.translator(parent, children, key);
-            return parent;
-          } 
-          this.$Message.warning('数据有问题，请检查...');
-          return 'error';
-        } 
-        this.translator(parent, children, key);
-
-        return parent;
-      },
-      translator(parents, children, key) {
-        const temp = [];
-        children.map((item) => {
-          // 对子节点数据进行深复制，这里只支持部分类型的数据深复制
-          const temItem = Object.assign({}, item);
-          temp.push(temItem);
-        });
-        // 遍历父节点数据
-        parents.map((parent) => {
-          // 遍历子节点数据
-          children.map((current, index) => {
-            // 此时找到父节点对应的一个子节点
-            if (current[key] === parent.ID) {
-              // 让当前子节点从temp中移除，temp作为新的子节点数据，这里是为了让递归时，子节点的遍历次数更少，如果父子关系的层级越多，越有利
-              temp.splice(index, 1);
-              // 让当前子节点作为唯一的父节点，去递归查找其对应的子节点
-              this.translator([current], temp, key);
-              // 把找到子节点放入父节点的children属性中
-              parent.children
-                ? parent.children.push(current)
-                : (parent.children = [current]);
-            }
-          });
-        });
-      },
-      treeTransArray(tree, key) {
-        return tree
-          .reduce(function iteration(con, item) {
-            con.push(item);
-            if (item[key] && item[key].length > 0) { item[key].reduce(iteration, con); }
-            return con;
-          }, [])
-          .map((item) => {
-            item[key] = [];
-            return item;
-          });
-      },
-      findTreeRootFirstChild(Arr, key) {
-        let idArr = [];
-        const result = [];
-        idArr = Arr.map(item => item.ID);
-        Arr.map((item) => {
-          if (!idArr.includes(item[key])) {
-            // 一级节点的特点是存在父节点 但是已父节点为ID的节点是不存在的
-            result.push(item);
-          }
-        });
-        return result;
-      },
-      selectTtree(val, vm) {
-        this.obj = {};
-        if (this.val.length > 0) {
-          this.saveObj = val[0];
-          const self = this;
-          let valID = val[0].ID.split('.')[1];
-          valID = parseInt(valID);
-          if (val[0].CP_C_ORGUP_ID === null) {
-            // 根节点
-            this.findUser({});
-          } else {
-            // 当item的TYPE为店仓时
-            if (val[0].TYPE === 'CP_C_STORE_ID') {
-              this.obj.CP_C_STORE_ID = `in(${valID})`;
-            }
-            // 当item的TYPE为供应商时
-            //  当item的TYPE为组织时
-            if (val[0].TYPE === 'CP_C_HRORG_ID') {
-              this.$network
-                .post('/jflow/p/c/identity/org/treequery', { ID: valID })
-                .then((res) => {
-                  if (res.data.resultCode === 0) {
-                    let HRORG = 'in ('; // 储存键名为CP_C_HRORG_ID对象的ID
-                    let STORE = 'in ('; // 储存键名为CP_C_STORE_ID对象的ID
-                    if (
-                      res.data.data.CP_C_HRORG
-                      && res.data.data.CP_C_HRORG.length > 0
-                    ) {
-                      res.data.data.CP_C_HRORG.forEach((item) => {
-                        HRORG += `${item.ID},`; // in 1,2,3,5,6,87,8,6
-                      });
-                      if (res.data.data.CP_C_HRORG.length > 0) {
-                        self.obj.CP_C_HRORG_ID = `${HRORG.substring(0, HRORG.length - 1)})`;
-                      }
-                    }
-                    if (
-                      res.data.data.CP_C_STORE
-                      && res.data.data.CP_C_STORE.length > 0
-                    ) {
-                      res.data.data.CP_C_STORE.forEach((item) => {
-                        STORE += `${item.ID},`;
-                      });
-                      if (res.data.data.CP_C_STORE.length > 0) {
-                        self.obj.CP_C_STORE_ID = `${STORE.substring(0, STORE.length - 1)})`;
-                      }
-                    }
-                  } else {
-                    this.$Modal.fcError({
-                      title: '错误提示',
-                      content: res.data.resultMsg
-                    });
-                  }
-                });
-            }
-            setTimeout(() => {
-              self.findUser(self.obj);
-            });
-          }
-        }
-      },
-      changeTtree(selectedData, vm) {},
-      changePage(index, vm) {
-        this.componentData[0].pageNum = index;
-        const param = Object.assign(this.obj, {
-          page: index,
-          pageSize: this.componentData[0].pageSize
-        });
-        this.findUser(param);
-      },
-      changePageSize(index, vm) {
-        this.componentData[0].pageSize = index;
-        const param = Object.assign(this.obj, {
-          page: this.componentData[0].pageNum,
-          pageSize: index
-        });
-        this.findUser(param);
-      },
-      rowClick(row, index, vm) {
-        this.selectRow = Object.assign(this.selectRow, row);
-      },
-      rowdbClick(row, index) {
-        // 双击事件
-        const selectObj = Object.assign({}, row);
-        selectObj.string = selectObj.ENAME;
-        if (this.resultData.list) {
-          this.resultData.list = [];
-          this.resultData.list.push(selectObj);
-        } else {
-          this.$set(this.resultData, 'list', [selectObj]);
-        }
-        this.resultData.total
-          ? (this.resultData.total = 1)
-          : this.$set(this.resultData, 'total', 1);
-        this.componentData[0].list.map((item, i) => {
-          item._checked = false;
-        });
-        this.selectRow = Object.assign({}, row);
-      },
       // 搜索
       inputsearch(event, vm) {
         const param = Object.assign(this.obj, {
@@ -564,34 +328,6 @@
           ENAME: event
         });
         this.findUser(param);
-      },
-      transfer(vm) {
-        // eslint-disable-next-line no-unused-expressions
-        this.resultData.total
-          ? (this.resultData.total = 1)
-          : this.$set(this.resultData, 'total', 1);
-        const selectObj = Object.assign({}, this.selectRow);
-        selectObj.string = selectObj.ENAME;
-        if (this.resultData.list) {
-          this.resultData.list = [];
-          this.resultData.list.push(selectObj);
-        } else {
-          this.$set(this.resultData, 'list', [selectObj]);
-        }
-        this.componentData[0].list.map((item) => {
-          item._checked = false;
-        });
-        this.componentData[0].list = this.componentData[0].list.concat([]);
-      },
-      deleteLi(index, tem) {
-        // 删除li
-        this.resultData.total = this.resultData.total - 1;
-        this.resultData.list.splice(index, 1);
-      },
-      deleBtn(vm) {
-        // 全部清空事件
-        this.resultData.total = 0;
-        this.resultData.list = [];
       },
       ok() {
         if (this.type === '0' || this.type === '8') {
@@ -670,11 +406,11 @@
         //   param.backId = this.returnOption; //驳回节点id
         // }
         param.description = this.returnContent; // 审批意见
-        this.$network.post(this.modalConfig.url, param).then((res) => {
+        this.$network.post(this.modalConfig.url, param).then(async (res) => {
           window.jflowPlugin.open({ control: false });
           if (res.data.resultCode === 0) {
             this.$Message.success(res.data.resultMsg);
-            this.modalConfig.buttons(window.jflowPlugin.itemId);
+            await this.modalConfig.buttons(window.jflowPlugin.itemId);
             BacklogData(window.jflowPlugin.store);
             DispatchEvent('jflowClick', {
               detail: {
@@ -690,24 +426,26 @@
           }
         });
       },
+      // 人员获取
+      getResult(data) {
+        this.selectRow = data.list[0];
+      },
       // 转派
       delegate() {
-        // const children = document.getElementsByClassName('operate-btn')[0].children;
-        // for (const child of children) {
-        //   if (child.innerText.trim() !== '转派') {
-        //     child.setAttribute('disabled', 'disabled');
-        //   }
-        // }
+        if (!this.selectRow.ID) {
+          this.$Message.warning('请选择人员');
+          return;
+        }
         const param = {};
         param.instanceId = window.jflowPlugin.objInstanceId;
         param.userId = window.jflowPlugin.userInfo.id;
         param.delegateId = this.selectRow.ID; // 驳回节点id
-        this.$network.post(this.modalConfig.url, param).then((res) => {
+        this.$network.post(this.modalConfig.url, param).then(async (res) => {
           window.jflowPlugin.open({ control: false });
           if (res.data.resultCode === 0) {
             this.$Message.success(res.data.resultMsg);
             this.selectRow = {};
-            this.modalConfig.buttons(window.jflowPlugin.itemId);
+            await this.modalConfig.buttons(window.jflowPlugin.itemId);
             BacklogData(window.jflowPlugin.store);
             DispatchEvent('jflowClick', {
               detail: {
@@ -736,7 +474,7 @@
         })
           .then((res) => {
             if (res.data.resultCode === 0) {
-              this.$set('intervention', res.data.data);
+              this.intervention = res.data.data;
             }
           });
       },
@@ -976,10 +714,6 @@
       },
     },
     created() {
-      if (this.config.type === '3') {
-        this.getTreeData();
-      }
-
       if (this.config.type === '9') {
         this.getIntervention();
       }

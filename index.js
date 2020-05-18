@@ -9,9 +9,9 @@ import App from './src/App';
 import './src/constants/dateApi';
 import network from './src/__utils__/network';
 import {
-  backDashboardRoute, getTouristRoute, enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, encryptionJflow, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE
+  backDashboardRoute, getTouristRoute, enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, encryptionJflow, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE, specifiedGlobalGateWay
 } from './src/constants/global';
-import { removeSessionObject } from './src/__utils__/sessionStorage';
+import { removeSessionObject, getSeesionObject } from './src/__utils__/sessionStorage';
 import CompositeForm from './src/__component__/CompositeForm';
 import customizedModalConfig from './src/__config__/customizeDialog.config';
 import Loading from './src/__utils__/loading';
@@ -60,6 +60,30 @@ const createDOM = () => {
   div.setAttribute('id', getGuid());
   document.body.appendChild(div);
   return div;
+};
+
+const backTouristRoute = () => {
+  // window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
+  // router.push({ path: getTouristRoute() });
+  store.dispatch('global/signout');
+};
+
+const setMessage = (data) => {
+  window.vm.$Modal.fcError({
+    title: '提示',
+    content: data.content,
+    cancelType: true,
+    titleAlign: 'left',
+    mask: true,
+    draggable: true,
+    closable: false,
+    onCancel: () => {
+      backTouristRoute();
+    },
+    onOk: () => {
+      backTouristRoute();
+    },
+  });
 };
 const init = () => {
   removeSessionObject(HAS_BEEN_DESTROYED_MODULE);
@@ -128,9 +152,10 @@ const getCategory = () => {
   if (enableInitializationRequest()) {
     network.post('/p/cs/getSubSystems').then((res) => {
       if (res.data.code === '-1') {
-        window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
-        router.push({ path: getTouristRoute() });
-      } else if (res.data.data) {
+        backTouristRoute();
+        // window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
+        // router.push({ path: getTouristRoute() });
+      } else if (res.data.data.length > 0) {
         store.commit('global/updateMenuLists', res.data.data);
         const serviceIdMaps = res.data.data.map(d => d.children)
           .reduce((a, c) => a.concat(c))
@@ -156,13 +181,17 @@ const getCategory = () => {
         const getServiceIdMap = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
         const serviceIdMapRes = Object.assign({}, getServiceIdMap, serviceIdMaps);
         window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMapRes));
+      } else if (getSeesionObject('loginStatus') === true) {
+        setMessage({ content: '当前用户无菜单权限,将为您跳转到登陆界面' });
       }
-    }).catch(() => {
-      window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
-      router.push({ path: getTouristRoute() });
+    }).catch(() => { // 处理返回数据为空值情况，当返回数据为空时，避免直接跳转框架表单路由
+      if (getSeesionObject('loginStatus') === true) {
+        setMessage({ content: '当前用户无菜单权限,将为您跳转到登陆界面' });
+      }
     });
   }
 };
+
 const getSubSystems = () => {
   if (enableInitializationRequest()) {
     network.post('/p/cs/getSubSystems').then((res) => {
@@ -172,15 +201,25 @@ const getSubSystems = () => {
     });
   }
 };
+
+
 const getGateWayServiceId = () => {
   if (enableInitializationRequest()) {
-    network.get('/p/c/get_service_id').then((res) => {
-      window.sessionStorage.setItem('serviceId', res.data.data.serviceId);
+    if (specifiedGlobalGateWay()) {
+      window.sessionStorage.setItem('serviceId', specifiedGlobalGateWay());
       getCategory();
       setTimeout(() => {
         init();
       }, 0);
-    });
+    } else {
+      network.get('/p/c/get_service_id').then((res) => {
+        window.sessionStorage.setItem('serviceId', res.data.data.serviceId);
+        getCategory();
+        setTimeout(() => {
+          init();
+        }, 0);
+      });
+    }
   }
 };
 

@@ -187,5 +187,7 @@ export default {
   updateWebconfDynamicRouting({ webconf }, data) {
     webconf.dynamicRouting = data.dynamicRouting;
   }, // 修改state中dynamicRouting的值
-  
+  updataWebConf(state, data) {
+    state.webConf = data;
+  }
 };

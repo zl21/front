@@ -124,7 +124,7 @@ export const fuzzySearch = (zTreeId, searchField, isHighLight, isExpand) => {
       ztreeFilter(zTreeObj, _keywords); // lazy load ztreeFilter function 
       // $(searchField).focus();//focus input field again after filtering
       lastKeyword = _keywords;
-      document.getElementById('R3tree').scrollTop = 0;// 检索字符完成后将滚动条设置到顶部
+      document.getElementById(zTreeId).scrollTop = 0;// 检索字符完成后将滚动条设置到顶部
     }, 500);
   }
   if (searchField) { // 检测到搜索的字符，调用以下逻辑

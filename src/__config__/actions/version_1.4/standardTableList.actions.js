@@ -47,11 +47,14 @@ export default {
         commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
         commit('updateDefaultButtonsdatas', queryData.datas);
         commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
-        if (queryData.datas.webconf && queryData.datas.webconf.commonTable) {
-          commit('updateWebconfCommonTable', queryData.datas.webconf);
-        }
-        if (queryData.datas.webconf && queryData.datas.webconf.dynamicRouting) {
-          commit('updateWebconfDynamicRouting', queryData.datas.webconf);
+        if (queryData.datas.webconf) {
+          if (queryData.datas.webconf.commonTable) {
+            commit('updateWebconfCommonTable', queryData.datas.webconf);
+          }
+          if (queryData.datas.webconf.dynamicRouting) {
+            commit('updateWebconfDynamicRouting', queryData.datas.webconf);
+          }
+          commit('updataWebConf', queryData.datas.webconf);
         }
         resolve();
       }
