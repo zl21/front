@@ -7,8 +7,6 @@
       :mask="true"
       :width="type==='3'?835:520"
       :ok-text="type === '9'?'提交':'确定'"
-      @on-ok="ok"
-      @on-cancel="cancel"
     >
       <!-- 同意 -->
       <div
@@ -42,24 +40,11 @@
         class="ApprovelModel"
       >
         <mutipleSelectPop
+          v-if="modalConfig.control"
           ref="dialogtest"
-          :loading="loading"
-          :tree-loading="tree_loading"
-          :table-loading="tableLoading"
-          :treedata="treedata"
-          :component-data="componentData"
-          :result-data="resultData"
+          :is-mutiple="false"
           :is-use="false"
-          @on-select-tree="selectTtree"
-          @on-change-tree="changeTtree"
-          @on-change-page="changePage"
-          @on-change-pageSize="changePageSize"
-          @on-row-dblclick="rowdbClick"
-          @on-row-click="rowClick"
-          @on-search="inputsearch"
-          @on-transfer="transfer"
-          @on-delectli="deleteLi"
-          @on-deleBtn="deleBtn"
+          @getResult="getResult"
         />
       </div>
 
@@ -209,6 +194,21 @@
             </p>
           </div>
         </div>
+      </div>
+
+      <div slot="footer">
+        <Button
+          type="text"
+          @click="cancel"
+        >
+          取消
+        </Button>
+        <Button
+          type="primary"
+          @click="ok"
+        >
+          确定
+        </Button>
       </div>
     </Modal>
   </div>
@@ -567,34 +567,6 @@
         });
         this.findUser(param);
       },
-      transfer(vm) {
-        // eslint-disable-next-line no-unused-expressions
-        this.resultData.total
-          ? (this.resultData.total = 1)
-          : this.$set(this.resultData, 'total', 1);
-        const selectObj = Object.assign({}, this.selectRow);
-        selectObj.string = selectObj.ENAME;
-        if (this.resultData.list) {
-          this.resultData.list = [];
-          this.resultData.list.push(selectObj);
-        } else {
-          this.$set(this.resultData, 'list', [selectObj]);
-        }
-        this.componentData[0].list.map((item) => {
-          item._checked = false;
-        });
-        this.componentData[0].list = this.componentData[0].list.concat([]);
-      },
-      deleteLi(index, tem) {
-        // 删除li
-        this.resultData.total = this.resultData.total - 1;
-        this.resultData.list.splice(index, 1);
-      },
-      deleBtn(vm) {
-        // 全部清空事件
-        this.resultData.total = 0;
-        this.resultData.list = [];
-      },
       ok() {
         if (this.type === '0' || this.type === '8') {
           this.Agree(); // 同意
@@ -669,6 +641,10 @@
             });
           }
         });
+      },
+      // 人员获取
+      getResult(data) {
+        this.selectRow = data.list[0];
       },
       // 转派
       delegate() {
@@ -985,10 +961,6 @@
       },
     },
     created() {
-      if (this.config.type === '3') {
-        this.getTreeData();
-      }
-
       if (this.config.type === '9') {
         this.getIntervention();
       }
