@@ -53,7 +53,7 @@
         </p>
       </div>
       <div class="panel-item">
-        <p @click="signout">
+        <p @click="clickSignout">
           <i class="iconfont iconmd-exit explanatory" />
           退出
         </p>
@@ -63,12 +63,10 @@
 </template>
 
 <script>
-  import { mapState, mapMutations } from 'vuex';
-  import { getTouristRoute, enableInitializationRequest, layoutDirection } from '../constants/global';
-  import router from '../__config__/router.config';
-  import network, { urlSearchParams, GetTableName } from '../__utils__/network';
+  import { mapState, mapMutations, mapActions } from 'vuex';
+  import { layoutDirection, enableInitializationRequest } from '../constants/global';
+  import network, { urlSearchParams } from '../__utils__/network';
   import moduleName from '../__utils__/getModuleName';
-  import { removeSessionObject } from '../__utils__/sessionStorage';
 
 
   export default {
@@ -113,6 +111,8 @@
     },
     methods: {
       ...mapMutations('global', ['doCollapseHistoryAndFavorite', 'emptyTabs', 'updateTreeTableListData']),
+      ...mapActions('global', ['signout']),
+
       setDefaultSearchFoldnum() {
         if (enableInitializationRequest()) {
           network
@@ -172,30 +172,8 @@
             }
           });
       },
-      signout() {
-        network
-          .get('/p/cs/logout')
-          .then(() => {
-            window.sessionStorage.setItem('loginStatus', false);
-            this.emptyTabs();
-            router.push({ path: getTouristRoute() });
-            removeSessionObject('saveNetwork');
-            GetTableName('');
-            this.$store.commit('global/updataUserInfoMessage', {});
-            window.localStorage.removeItem('userInfo');
-            // 清空updataTreeId
-            removeSessionObject('TreeId');
-            this.updateTreeTableListData([]);
-          })
-          .catch(() => {
-            window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
-            router.push({ path: getTouristRoute() });
-            window.localStorage.removeItem('userInfo');
-            this.$store.commit('global/updataUserInfoMessage', {});
-            removeSessionObject('saveNetwork');
-            removeSessionObject('TreeId');
-            this.updateTreeTableListData([]);
-          });
+      clickSignout() {
+        this.signout();
       }
     },
   };

@@ -770,6 +770,7 @@
             content: `请选择${this.selectCheck === 0 ? '同意' : '驳回'}节点`,
             mask: true
           });
+          window.jflowPlugin.open({ control: false });
           return;
         }
         const obj = {
@@ -793,6 +794,7 @@
 
         this.$network.post('/jflow/p/cs/error/errAction', obj)
           .then((res) => {
+            window.jflowPlugin.open({ control: false });
             if (res.data.resultCode === 0) {
               this.selectCheck = 0;
               this.selectedNode = null;
@@ -835,6 +837,7 @@
           };
           this.$network.post('/p/cs/error/modifyApprover', obj)
             .then((res) => {
+              window.jflowPlugin.open({ control: false });
               if (res.data.resultCode === 0) {
                 this.ApproverLists = {};
                 this.remark = null;
@@ -858,6 +861,7 @@
             title: '提示',
             content: '请选择审批人!'
           });
+          window.jflowPlugin.open({ control: false });
         }
       },
       // 接口不通
@@ -868,11 +872,13 @@
             if (reg.test(this.intervention.handleParam)) {
               JSON.parse(this.intervention.handleParam);
             } else {
+              window.jflowPlugin.open({ control: false });
               this.$Modal.fcError({
                 title: '错误',
                 content: '服务参数数据格式错误',
                 mask: true
               });
+              
               return;
             }
           }
@@ -891,6 +897,7 @@
           };
           this.$network.post('/p/cs/error/invocationFail', obj)
             .then((res) => {
+              window.jflowPlugin.open({ control: false });
               if (res.data.resultCode === 0) {
                 this.$Message.success(res.data.resultMsg);
                 this.remark = null;
@@ -933,6 +940,7 @@
               content: '请选择驳回节点',
               mask: true
             });
+            window.jflowPlugin.open({ control: false });
             return;
           }
           url = '/p/cs/error/errAction';
@@ -958,6 +966,7 @@
 
         this.$network.post(url, obj)
           .then((res) => {
+            window.jflowPlugin.open({ control: false });
             if (res.data.resultCode === 0) {
               setTimeout(() => {
                 this.selectBackNode = null;

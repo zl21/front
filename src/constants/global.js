@@ -95,4 +95,4 @@ export const extentionForTable = () => (window.ProjectConfig && window.ProjectCo
 export const extentionForColumn = () => (window.ProjectConfig && window.ProjectConfig.extentionForColumn ? window.ProjectConfig.extentionForColumn : configForColumn);
 
 // 配置路由刷新浏览器回到dashboard界面
-export const backDashboardRoute = () => (window.ProjectConfig && window.ProjectConfig.backDashboardRoute ? window.ProjectConfig.backDashboardRoute.concat(backDashboardRoute) : backDashboardRoutes);
+export const backDashboardRoute = () => (window.ProjectConfig && window.ProjectConfig.backDashboardRoute ? window.ProjectConfig.backDashboardRoute.concat(backDashboardRoutes) : backDashboardRoutes);

@@ -11,9 +11,9 @@ import './constants/dateApi';
 import network from './__utils__/network';
 import DispatchEvent from './__utils__/dispatchEvent';
 import {
-  getTouristRoute, enableGateWay, enableInitializationRequest, specifiedGlobalGateWay, HAS_BEEN_DESTROYED_MODULE
+  backDashboardRoute, getTouristRoute, enableGateWay, enableInitializationRequest, specifiedGlobalGateWay, HAS_BEEN_DESTROYED_MODULE
 } from './constants/global';
-import { removeSessionObject } from './__utils__/sessionStorage';
+import { removeSessionObject, getSeesionObject } from './__utils__/sessionStorage';
 import customizedModalConfig from './__config__/customizeDialog.config';
 import CompositeForm from './__component__/CompositeForm';
 import Loading from './__utils__/loading';
@@ -96,21 +96,43 @@ const init = () => {
       ])
     });
   };
+  if (backDashboardRoute().filter(path => path === router.currentRoute.fullPath).length > 0) {
+    router.push('/');
+    setTimeout(() => {
+      store.commit('global/updataOpenedMenuLists', []);
+    }, 500);
+  }
+};
+const backTouristRoute = () => {
+  // window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
+  // router.push({ path: getTouristRoute() });
+  store.dispatch('global/signout');
+};
 
-  window.changeNavigatorSetting = (data) => {
-    store.commit('global/changeNavigatorSetting', data);
-  };
-
-  window.getObjdisType = getObjdisType;
+const setMessage = (data) => {
+  window.vm.$Modal.fcError({
+    title: '提示',
+    content: data.content,
+    cancelType: true,
+    titleAlign: 'left',
+    mask: true,
+    draggable: true,
+    closable: false,
+    onCancel: () => {
+      backTouristRoute();
+    },
+    onOk: () => {
+      backTouristRoute();
+    },
+  });
 };
 
 const getCategory = () => {
   if (enableInitializationRequest()) {
     network.post('/p/cs/getSubSystems').then((res) => {
       if (res.data.code === '-1') {
-        window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
-        router.push({ path: getTouristRoute() });
-      } else if (res.data.data) {
+        backTouristRoute();
+      } else if (res.data.data.length > 0) {
         store.commit('global/updateMenuLists', res.data.data);
         const serviceIdMaps = res.data.data.map(d => d.children)
           .reduce((a, c) => a.concat(c), [])
@@ -120,9 +142,14 @@ const getCategory = () => {
           .reduce((a, c) => { a[c.value.toUpperCase()] = c.serviceId; return a; }, {});
         window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMaps));
         DispatchEvent('gatewayReady');
+      } else if (getSeesionObject('loginStatus') === true) {
+        setMessage({ content: '当前用户无菜单权限,将为您跳转到登陆界面' });
       }
     }).catch(() => {
       // router.push({ path: getTouristRoute() });
+      if (getSeesionObject('loginStatus') === true) {
+        setMessage({ content: '当前用户无菜单权限,将为您跳转到登陆界面' });
+      }
     });
   }
 };

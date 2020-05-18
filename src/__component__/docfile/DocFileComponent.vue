@@ -6,7 +6,7 @@
         <li
           v-for="(option,index) in docList.valuedata"
           :key="index"
-          v-dragging="{ item: option, list: docList.valuedata, }"
+          v-dragging="{ item: option, list: docList.valuedata,group: draggingTag }"
         >
           <a
             v-if="getDocFileWebConf"
@@ -60,7 +60,8 @@
   } from '../../constants/global';
   import store from '../../__config__/store.config';
 
-  const fkHttpRequest = () => require(`../../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+  const apiVersion = Version();
+  const fkHttpRequest = () => require(`../../__config__/actions/version_${apiVersion}/formHttpRequest/fkHttpRequest.js`);
 
 
   export default {
@@ -84,6 +85,10 @@
         type: Object,
         default: () => ({})
       },
+      draggingTag: {// 拖拽group属性标示，如果当前界面多次使用了当前组件，需保持标示唯一性
+        type: String,
+        default: () => this.getDataitem
+      }
     },
     mounted() {
       // this.$dragging.$on('dragend', (res) => {
@@ -113,7 +118,9 @@
       //   }
       //   return null;
       // }
-
+      getDataitem() {
+        return this.dataitem.colname;
+      },
       getDocFileWebConf() {
         if (this.webConfSingle && this.webConfSingle.docFile) {
           return this.webConfSingle.docFile.isPreview;

@@ -1,5 +1,7 @@
-import network, { urlSearchParams } from '../../../__utils__/network';
-import { enableHistoryAndFavorite, enableInitializationRequest } from '../../../constants/global';
+import network, { urlSearchParams, GetTableName } from '../../../__utils__/network';
+import { enableHistoryAndFavorite, enableInitializationRequest, getTouristRoute } from '../../../constants/global';
+import { removeSessionObject } from '../../../__utils__/sessionStorage';
+import router from '../../router.config';
 
 export default {
   getHistoryAndFavorite({ commit }) {
@@ -254,11 +256,42 @@ export default {
   },
    
   getTaskMessageCount({ commit }, userId) { // 获取我的任务数量
-    // network.post('/p/c/getMsgCnt', urlSearchParams({ userId })).then((res) => {
-    //   if (res.data.code === 0) {
-    //     commit('updateTaskMessageCount', res.data.data);
-    //   }
-    // });
-  }
+    network.post('/p/c/getMsgCnt', urlSearchParams({ userId })).then((res) => {
+      if (res.data.code === 0) {
+        commit('updateTaskMessageCount', res.data.data);
+      }
+    });
+  },
+  signout({ commit }) {
+    network
+      .get('/p/cs/logout')
+      .then(() => {
+        window.sessionStorage.setItem('loginStatus', false);
+        commit('emptyTabs');
+        router.push({ path: getTouristRoute() });
+        removeSessionObject('saveNetwork');
+        GetTableName('');
+        commit('updataUserInfoMessage', {});
+        window.localStorage.removeItem('userInfo');
+        commit('updateJflowControlField', []);
+        // 清空updataTreeId
+        removeSessionObject('TreeId');
+        commit('updateTreeTableListData', []);
+      })
+      .catch(() => {
+        window.sessionStorage.setItem('loginStatus', false);
+        commit('emptyTabs');
+        commit('updataUserInfoMessage', {});
+        router.push({ path: getTouristRoute() });
+        removeSessionObject('saveNetwork');
+        GetTableName('');
+        commit('updataUserInfoMessage', {});
+        window.localStorage.removeItem('userInfo');
+        commit('updateJflowControlField', []);
+        // 清空updataTreeId
+        removeSessionObject('TreeId');
+        commit('updateTreeTableListData', []);
+      });
+  },
  
 };
