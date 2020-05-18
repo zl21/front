@@ -38,6 +38,7 @@ export default {
     network
       .get('/p/cs/logout')
       .then(() => {
+        console.log(123123);
         window.sessionStorage.setItem('loginStatus', false);
         commit('emptyTabs');
         router.push({ path: getTouristRoute() });
@@ -45,7 +46,7 @@ export default {
         GetTableName('');
         commit('updataUserInfoMessage', {});
         window.localStorage.removeItem('userInfo');
-        commit('updateJflowControlField', []);
+        // commit('updateJflowControlField', []);
         // 清空updataTreeId
         removeSessionObject('TreeId');
         commit('updateTreeTableListData', []);
@@ -59,7 +60,7 @@ export default {
         GetTableName('');
         commit('updataUserInfoMessage', {});
         window.localStorage.removeItem('userInfo');
-        commit('updateJflowControlField', []);
+        // commit('updateJflowControlField', []);
         // 清空updataTreeId
         removeSessionObject('TreeId');
         commit('updateTreeTableListData', []);

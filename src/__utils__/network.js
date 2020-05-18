@@ -218,7 +218,7 @@ axios.interceptors.response.use(
         removeSessionObject('userInfo');
         if (getProjectQuietRoutes().indexOf(router.currentRoute.path) === -1) {
           // router.push(getTouristRoute());
-          if (config.url !== '/p/cs/logout') {
+          if (!config.url.includes('/p/cs/logout')) {
             store.dispatch('global/signout');
           }
         }

@@ -304,14 +304,6 @@ export default {
     });
   },
   emptyTabs(state) {
-    state.JflowControlField.map((item, index) => {
-      state.openedMenuLists.map((openedMenuList) => {
-        const openedMenuListId = openedMenuList.keepAliveModuleName.split('.')[2];
-        if (item.tableId === openedMenuListId) {
-          state.JflowControlField.splice(index, 1);
-        }
-      });
-    });
     state.openedMenuLists = [];
     state.keepAliveLists = [];
     state.activeTab = {};
