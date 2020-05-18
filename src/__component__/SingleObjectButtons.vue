@@ -3335,7 +3335,12 @@
                       oUl.children[1].click();
                       // if (this.isRequest.length > 0 && this.isRequest[0] !== true) {
                       setTimeout(() => {
-                        this.clickButtonsRefresh();
+                        if (this.WebConf && this.WebConf.isCustomizeTab) {
+                          // 解决配置isCustomizeTab情况时，jflow配置子表切换主表时，需刷新主表重置所有子表
+                          this.updataMainTableForHorizontal();// 请求主表
+                        } else {
+                          this.clickButtonsRefresh();
+                        }
                       }, 1000);
                       // }
                     }
@@ -3402,6 +3407,24 @@
           }
         }
       },
+      updataMainTableForHorizontal() {
+        let page = {};
+        if (this.objectType === 'horizontal') { // 横向布局
+          this.tabPanel.every((item) => {
+            if (this.itemName !== this.tableName && item.tablename === this.itemName) {
+              page = item.tablePageInfo;
+              return false;
+            }
+            return true;
+          });
+        } 
+        new Promise((resolve, reject) => {
+          this.getObjectTabForMainTable({
+            itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
+          });
+        }).then(() => {
+        });
+      },
       hideBackButton() {
         const clickMenuAddSingleObjectData = getSeesionObject('clickMenuAddSingleObject');
         const currentRoute = this.$router.currentRoute.path;
@@ -3442,6 +3465,7 @@
 
         return false;
       },
+      
       closeCurrentLoading() { // 关闭当前tab loading
         const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
         const dom = document.querySelector(`#${currentTableName}-loading`);

@@ -11,6 +11,8 @@ packageTime: '2020.05.04.12.33':增加自定义按钮必填项校验逻辑
 packageTime: '2020.05.08.13.15':支持打开的菜单可拖拽排序,需npm install awe-dnd
 packageTime: '2020.05.16.14.20':修复了文件上传组件问题/修复外部无法配置backDashboardRoute
 
+文件上传组件props   draggingTag参数为设置当前拖拽唯一标示，type:String
+
 
 
 
