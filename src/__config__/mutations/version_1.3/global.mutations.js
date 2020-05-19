@@ -460,27 +460,25 @@ export default {
       router.push({ path });
     }
     if (back) {
-      if (back) {
-        path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
-        const query = {
-          isBack: true
-        };
-        state.treeTableListData.map((item) => {
-          if (item.value === tableName && item.id === Number(tableId)) {
-            query.isTreeTable = true;
-          }
-        });
-        const routeInfo = {
-          path,
-          query
-        };
+      path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
+      const query = {
+        isBack: true
+      };
+      state.treeTableListData.map((item) => { // 支持树结构列表界面单对象返回列表
+        if (item.value === tableName && item.id === Number(tableId)) {
+          query.isTreeTable = true;
+        }
+      });
+      const routeInfo = {
+        path,
+        query
+      };
   
-        router.push(routeInfo);
-      }
+      router.push(routeInfo);
     }
   },
   tabOpen(state, {// 打开一个新tab添加路由
-    type, tableName, tableId, id, customizedModuleName, customizedModuleId, linkName,
+    back, type, tableName, tableId, id, customizedModuleName, customizedModuleId, linkName,
     linkId, url, label, serviceId
   }) {
     // back:返回标志, 
@@ -489,7 +487,15 @@ export default {
     // tableId:主表ID,
     // id:明细ID,
     // label:显示名称, 
-    // serviceId:网关
+    // serviceId:网关,
+    // customizedModuleName:自定义界面组件名称
+    // customizedModuleId:自定义界面ID，
+    // linkName:外链界面名称，
+    // linkId:外链界面ID,
+    // label：中文tab名称，
+    // url:固定格式url（按照框架路由规则拼接好的）,
+    // serviceId
+
     const keepAliveModuleName = `S.${tableName}.${tableId}`;
     if (state.keepAliveLabelMaps[keepAliveModuleName] === undefined) {
       state.keepAliveLabelMaps[keepAliveModuleName] = `${label}`;
@@ -515,28 +521,52 @@ export default {
       } else {
         path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
       }
-    } else if (type === 'tableDetailHorizontal' || type === 'H') {
+    } 
+    if (type === 'tableDetailHorizontal' || type === 'H') {
       if (url) {
         path = `${url.toUpperCase()}`;
       } else {
         path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
       }
-    } else if (type === 'tableDetailVertical' || type === 'V') {
+    } 
+    if (type === 'tableDetailVertical' || type === 'V') {
       if (url) {
         path = `${url.toUpperCase()}`;
       } else {
         path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
       }
-    } else if (type === 'tableDetailAction') {
+    }
+    if (type === 'tableDetailAction' || type === 'C') {
       if (url) {
         path = `${url.toUpperCase()}`;
       } else {
         path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${customizedModuleId}`;
       }
-    } else if (type === 'tableDetailUrl') {
-      path = `${LINK_MODULE_PREFIX}/${linkName.toUpperCase()}/${linkId}`;
+    } 
+    if (type === 'tableDetailUrl' || type === 'URL') {
+      if (url) {
+        path = `${url.toUpperCase()}`;
+      } else {
+        path = `${LINK_MODULE_PREFIX}/${linkName.toUpperCase()}/${linkId}`;
+      }
     }
-    
+    if (back) {
+      path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
+      const query = {
+        isBack: true
+      };
+      state.treeTableListData.map((item) => { // 支持树结构列表界面单对象返回列表
+        if (item.value === tableName && item.id === Number(tableId)) {
+          query.isTreeTable = true;
+        }
+      });
+      const routeInfo = {
+        path,
+        query
+      };
+  
+      router.push(routeInfo);
+    }
     router.push({
       path
     });
