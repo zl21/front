@@ -28,7 +28,7 @@
   import SizeComponent from './SizeComponent';
   import ColorComponent from './ColorComponent';
   import network, { urlSearchParams } from '../../__utils__/network';
-  import custommizedRequestUrl from '../../__config__/custommizedRequestURL.config';
+  import { custommizedRequestUrl } from '../../constants/global';
 
   export default {
     name: 'Standard',
@@ -91,7 +91,7 @@
           IsTable: true
         }
       };
-      const URL = custommizedRequestUrl['/p/cs/fetchActionsInCustomizePage'];
+      const URL = custommizedRequestUrl()['/p/cs/fetchActionsInCustomizePage'];
       network.get(URL || '/p/cs/fetchActionsInCustomizePage', { params })
         .then((res) => {
           if (res.data.code === 0) {
@@ -111,8 +111,7 @@
             PS_C_PRO_ID: itemId
           }
         };
-        const URL = custommizedRequestUrl['/p/cs/cprospecload'];
-        
+        const URL = custommizedRequestUrl()['/p/cs/cprospecload'];
         network.get(URL || '/p/cs/cprospecload', { params })
           .then((res) => {
             if (res.data.code === 0) {
@@ -157,7 +156,7 @@
           webaction: 'CskuGenerateCmd',
           actionid: '2005'
         };
-        const URL = custommizedRequestUrl['/p/cs/exeAction'];
+        const URL = custommizedRequestUrl()['/p/cs/exeAction'];
         
         network.post(URL || '/p/cs/exeAction', urlSearchParams(params))
           .then((res) => {

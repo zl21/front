@@ -79,8 +79,8 @@
   import FormItemComponent from '../../__component__/FormItemComponent';
   import ItemComponent from '../../__component__/ItemComponent';
   import commonTable from './tableSpecial';
-  import { Version } from '../../constants/global';
-  import custommizedRequestUrl from '../../__config__/custommizedRequestURL.config';
+  import { Version, custommizedRequestUrl } from '../../constants/global';
+  
 
   const version = Version();
   const fkHttpRequest = () => require(`../../__config__/actions/version_${version}/formHttpRequest/fkHttpRequest.js`);
@@ -575,7 +575,7 @@
       // this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] }); // 查询成功后清除表格选中项
       },
       getQueryList(data) {
-        const URL = custommizedRequestUrl['/p/cs/taskrecord/query'];
+        const URL = custommizedRequestUrl()['/p/cs/taskrecord/query'];
         network
           .post(URL || '/p/cs/taskrecord/query', urlSearchParams({ searchdata: data }))
           .then((res) => {
@@ -702,7 +702,7 @@
         this.searchClickData('1');
       }, // 每页显示条数变化
       editTaskStatus(ID) {
-        const URL = custommizedRequestUrl['/p/cs/taskrecord/read'];
+        const URL = custommizedRequestUrl()['/p/cs/taskrecord/read'];
 
         network.post(URL || '/p/cs/taskrecord/read', { ID }).then((res) => {
           if (res.data.code === 0) {

@@ -225,7 +225,7 @@
 
 <script>
   import network, { urlSearchParams } from '../../__utils__/network';
-  import custommizedRequestUrl from '../../__config__/custommizedRequestURL.config';
+  import { custommizedRequestUrl } from '../../constants/global';
 
   export default {
     name: 'ProDesc',
@@ -294,7 +294,7 @@
         const { itemId } = this.$route.params;
 
         // 获取主图
-        const url = custommizedRequestUrl['/p/cs/proImage'];
+        const url = custommizedRequestUrl()['/p/cs/proImage'];
         network.post(url || '/p/cs/proImage', urlSearchParams({
           param: {
             PS_C_PRO_ID: itemId
@@ -328,7 +328,7 @@
               PS_C_PRO_ID: itemId
             }
           };
-          const URL = custommizedRequestUrl['/p/cs/cprospecload'];
+          const URL = custommizedRequestUrl()['/p/cs/cprospecload'];
           network.get(URL || '/p/cs/cprospecload', {
             params
           }).then((col) => {

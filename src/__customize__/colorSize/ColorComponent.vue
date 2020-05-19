@@ -84,7 +84,7 @@
 
 <script>
   import network, { urlSearchParams } from '../../__utils__/network';
-  import custommizedRequestUrl from '../../__config__/custommizedRequestURL.config';
+  import { custommizedRequestUrl } from '../../constants/global';
 
   export default {
     data() {
@@ -212,7 +212,7 @@
             FLAG: 1
           }
         };
-        const URL = custommizedRequestUrl['/p/cs/cspecobjload'];
+        const URL = custommizedRequestUrl()['/p/cs/cspecobjload'];
         network.get(URL || '/p/cs/cspecobjload', { params })
           .then((res) => {
             if (res.data.code === 0) {
@@ -254,7 +254,7 @@
           COLOR: this.addColorInputValue,
           SELECTED: JSON.stringify(ecodes)
         };
-        const URL = custommizedRequestUrl['/p/cs/cclrquery'];
+        const URL = custommizedRequestUrl()['/p/cs/cclrquery'];
         
         network.get(URL || '/p/cs/cclrquery', { params })
           .then((res) => {

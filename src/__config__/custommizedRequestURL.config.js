@@ -1,3 +1,3 @@
 export default {
-//   '/p/cs/proImage': '/a/b/c'
+//   '/p/cs/cprospecload': '/a/b/c'
 };
