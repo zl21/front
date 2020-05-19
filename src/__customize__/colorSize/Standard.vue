@@ -28,6 +28,7 @@
   import SizeComponent from './SizeComponent';
   import ColorComponent from './ColorComponent';
   import network, { urlSearchParams } from '../../__utils__/network';
+  import custommizedRequestUrl from '../../__config__/custommizedRequestURL.config';
 
   export default {
     name: 'Standard',
@@ -90,7 +91,8 @@
           IsTable: true
         }
       };
-      network.get('/p/cs/fetchActionsInCustomizePage', { params })
+      const URL = custommizedRequestUrl['/p/cs/fetchActionsInCustomizePage'];
+      network.get(URL || '/p/cs/fetchActionsInCustomizePage', { params })
         .then((res) => {
           if (res.data.code === 0) {
             const result = res.data.data;
@@ -109,7 +111,9 @@
             PS_C_PRO_ID: itemId
           }
         };
-        network.get('/p/cs/cprospecload', { params })
+        const URL = custommizedRequestUrl['/p/cs/cprospecload'];
+        
+        network.get(URL || '/p/cs/cprospecload', { params })
           .then((res) => {
             if (res.data.code === 0) {
               this.rightTableDataForSize = res.data.data.SIZE;
@@ -153,7 +157,9 @@
           webaction: 'CskuGenerateCmd',
           actionid: '2005'
         };
-        network.post('/p/cs/exeAction', urlSearchParams(params))
+        const URL = custommizedRequestUrl['/p/cs/exeAction'];
+        
+        network.post(URL || '/p/cs/exeAction', urlSearchParams(params))
           .then((res) => {
             if (res.data.code === 0) {
               // debugger;

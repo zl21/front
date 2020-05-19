@@ -57,7 +57,7 @@
           icon="ios-add-circle-outline"
           @on-change="addColorInputChange"
           @on-click="addIconClick"
-              >
+        />
         <Button
           slot="prepend"
           @click="addColor"
@@ -84,6 +84,7 @@
 
 <script>
   import network, { urlSearchParams } from '../../__utils__/network';
+  import custommizedRequestUrl from '../../__config__/custommizedRequestURL.config';
 
   export default {
     data() {
@@ -211,7 +212,8 @@
             FLAG: 1
           }
         };
-        network.get('/p/cs/cspecobjload', { params })
+        const URL = custommizedRequestUrl['/p/cs/cspecobjload'];
+        network.get(URL || '/p/cs/cspecobjload', { params })
           .then((res) => {
             if (res.data.code === 0) {
               let colorData = res.data.data;
@@ -252,7 +254,9 @@
           COLOR: this.addColorInputValue,
           SELECTED: JSON.stringify(ecodes)
         };
-        network.get('/p/cs/cclrquery', { params })
+        const URL = custommizedRequestUrl['/p/cs/cclrquery'];
+        
+        network.get(URL || '/p/cs/cclrquery', { params })
           .then((res) => {
             if (res.data.code === 0) {
               const result = res.data;
