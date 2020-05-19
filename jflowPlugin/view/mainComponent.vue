@@ -48,7 +48,6 @@
           this.modalConfig.item = option.item;
         }
         // this.modalConfig = option
-        console.log(option);
         setTimeout(() => {
           this.modalConfigShow = option.control;
         }, 200);

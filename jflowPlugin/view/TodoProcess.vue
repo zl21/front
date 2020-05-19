@@ -66,8 +66,6 @@
       :title="modaltitle"
       :mask="true"
       :width="835"
-      @on-ok="ok"
-      @on-cancel="cancel"
     >
       <div class="modalCotent">
         <mutipleSelectPop
@@ -77,6 +75,20 @@
           :is-mutiple="false"
           @getResult="getResult"
         />
+      </div>
+      <div slot="footer">
+        <Button
+          type="text"
+          @click="cancel"
+        >
+          取消
+        </Button>
+        <Button
+          type="primary"
+          @click="ok"
+        >
+          确定
+        </Button>
       </div>
     </Modal>
   </div>
@@ -588,6 +600,7 @@
         network.post('/jflow/p/cs/task/batch/deal', sendData).then((res) => {
           const data = res.data;
           if (data.resultCode === 0) {
+            this.openControl = false; // 关闭弹框
             this.resultData.list = [];
             this.tableSearch = '';
             // this.selectRow = {};
@@ -659,10 +672,16 @@
           if (res.data.resultCode === 0) {
             this.resultData.list = [];
             this.tableSearch = '';
-            this.getAgent();
+            // this.getAgent();
+            this.Agent = {
+              AGENT_ENAME: needdata.AGENT_ENAME,
+              AGENT_ID: needdata.AGENT_ID,
+              USER_ID: global.userInfo.id
+            };
             this.queryLists();
             // this.selectRow={};
             this.$Message.success(res.data.resultMsg);
+            this.openControl = false; // 关闭弹框
           } else {
             this.$Message.warning(res.data.resultMsg);
           }
