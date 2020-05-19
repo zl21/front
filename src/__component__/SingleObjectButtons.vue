@@ -3418,12 +3418,14 @@
             return true;
           });
         } 
+
         new Promise((resolve, reject) => {
           this.getObjectTabForMainTable({
-            itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
+            itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: 0, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject, isFirstRequest: true, isNotFirstRequest: false
           });
         }).then(() => {
         });
+        this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
       },
       hideBackButton() {
         const clickMenuAddSingleObjectData = getSeesionObject('clickMenuAddSingleObject');
