@@ -189,7 +189,7 @@ function initiateLaunch(data) { // 业务系统流程发起
 }
 
 function initLists() { // init
-  network.post('/jflow/p/sys/properties', {})
+  network.get('/jflow/p/sys/properties')
     .then((res) => {
       globalChange(res.data.data.ciphertextVO);
       delete res.data.data.ciphertextVO;
