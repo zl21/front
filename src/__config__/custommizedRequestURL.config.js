@@ -1,3 +1,3 @@
 export default {
-//   '/p/cs/proImage': '图片上传'
+//   '/p/cs/proImage': '/a/b/c'
 };

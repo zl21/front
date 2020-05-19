@@ -6,10 +6,10 @@ module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
   projectIconPath: path.join(__dirname, './favicon.ico'), // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
-  // target: 'http://r3-8098.dev.burgeononline.com/', // 框架研发网关开启环境
+  target: 'http://r3-8098.dev.burgeononline.com/', // 框架研发网关开启环境
   // target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 新版本jflow测试环境
   // target: 'http://r3dev.qiaodan.com:28889', // 乔丹开发环境
-  target: 'http://r3dev.qiaodan.com:26666', // 乔丹开发环境
+  // target: 'http://r3dev.qiaodan.com:26666', // 乔丹开发环境
   // target: 'http://r3-know-dev.dev.burgeononline.com/', // 知晓测试环境(启用网关)
   // target: 'http://zhixiao.burgeononline.com:32769/', // 知晓正式环境(启用网关)
   // target: 'http://dev.burgeononline.com:8098', // 掌云测试环境(启用网关)
