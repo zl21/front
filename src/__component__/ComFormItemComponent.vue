@@ -976,10 +976,12 @@
           } else {
             DyNvalue = eval(str).toFixed(2);
           }
-          setTimeout(() => {
-            this.newFormItemLists[_index].item.value = DyNvalue;
-            this.dataProcessing(this.newFormItemLists[_index], 'none');
-          }, 10);
+          if (this.newFormItemLists[_index].item.value !== DyNvalue) {
+            setTimeout(() => {
+              this.newFormItemLists[_index].item.value = DyNvalue;
+              this.dataProcessing(this.newFormItemLists[_index], 'none');
+            }, 10);
+          }
         }
       },
       setJson(item, val) {
