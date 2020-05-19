@@ -605,7 +605,7 @@ function uuidGenerator() {
 
 function AxiosGuard(axios) { // axios拦截
   axios.interceptors.request.use(async (config) => {
-    if (config.url.indexOf('jflow') >= 0) { // 所有jflow接口都添加accessToken
+    if (config.url.startsWith('/jflow')) { // 所有jflow接口都添加accessToken
       config.headers.accountName = 'guest';
       
       if (encryptionJflow) {
