@@ -554,7 +554,7 @@
         delete obj.createTime;
         obj.userId = global.userInfo.id;
         network
-          .post('/jflow/p/cs/task/backlog/list', obj)
+          .post(this.urlMap[this.tabalive], obj)
           .then((res) => {
             if (res.data.resultCode === 0) {
               const data = res.data.data;
@@ -733,16 +733,20 @@
       if (global.userInfo) {
         this.getselectOption();
         this.queryLists();
-        // 获取外出代理人数据
-        this.getAgent();
+        if (this.tabalive === 'todoList') {
+          // 获取外出代理人数据
+          this.getAgent();
+        }
       } else {
         const timer = setInterval(() => {
           if (global.userInfo) {
             clearInterval(timer);
             this.getselectOption();
             this.queryLists();
-            // 获取外出代理人数据
-            this.getAgent();
+            if (this.tabalive === 'todoList') {
+              // 获取外出代理人数据
+              this.getAgent();
+            }
           }
         }, 10);
       }

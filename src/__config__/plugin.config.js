@@ -24,7 +24,7 @@ export default {
     )
   },
   INSTANCEMANAGEMENTLIST: {
-    name: '代办列表', // 菜单Tab显示的label
+    name: '待办列表', // 菜单Tab显示的label
     component: () => import(
       /* webpackChunkName: 'NetworkMonitor' */
       /* webpackMode: 'eager' */

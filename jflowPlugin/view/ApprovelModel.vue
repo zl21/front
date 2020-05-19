@@ -146,6 +146,7 @@
             <div v-if="Number(intervention.errorCode) === 33">
               <p>
                 <label>人员指派:</label>
+                <ComplexBox @getTotalResult="getTotalResult" /></complexbox>
               </p>
             </div>
 
@@ -214,7 +215,7 @@
   </div>
 </template>
 <script>
-  import mutipleSelectPop from './MutipleSelectPop.vue';
+  import ComplexBox from './complexPop';
   import { BacklogData } from '../js/todoList';
   import { DispatchEvent } from '../utils/dispatchEvent';
   import network from '../utils/network';
@@ -223,7 +224,7 @@
 
   export default {
     name: 'ApprovelModel',
-    components: { mutipleSelectPop },
+    components: { ComplexBox },
     props: {
       config: {
         type: Object,
@@ -480,7 +481,6 @@
             content: `请选择${this.selectCheck === 0 ? '同意' : '驳回'}节点`,
             mask: true
           });
-          window.jflowPlugin.open({ control: false });
           return;
         }
         const obj = {
@@ -502,7 +502,7 @@
           handleRemark: this.remark
         };
 
-        this.$network.post('/jflow/p/cs/error/errAction', obj)
+        network.post('/jflow/p/cs/error/errAction', obj)
           .then((res) => {
             window.jflowPlugin.open({ control: false });
             if (res.data.resultCode === 0) {
@@ -527,6 +527,10 @@
             }
           });
       }, 
+      // 节点报错的人员指派
+      getTotalResult(data) {
+        this.ApproverLists = data;
+      },
       ApproverConfirm() { // 节点报错提交
         if (this.ApproverLists.list && this.ApproverLists.list.length > 0) {
           const obj = {
@@ -545,7 +549,7 @@
             handleRemark: this.remark,
             operaterName: global.userInfo.ename
           };
-          this.$network.post('/p/cs/error/modifyApprover', obj)
+          network.post('/jflow/p/cs/error/modifyApprover', obj)
             .then((res) => {
               window.jflowPlugin.open({ control: false });
               if (res.data.resultCode === 0) {
@@ -571,7 +575,6 @@
             title: '提示',
             content: '请选择审批人!'
           });
-          window.jflowPlugin.open({ control: false });
         }
       },
       // 接口不通
@@ -582,7 +585,6 @@
             if (reg.test(this.intervention.handleParam)) {
               JSON.parse(this.intervention.handleParam);
             } else {
-              window.jflowPlugin.open({ control: false });
               this.$Modal.fcError({
                 title: '错误',
                 content: '服务参数数据格式错误',
@@ -605,7 +607,7 @@
             exceptionId: this.intervention.exceptionId,
             operaterName: global.userInfo.ename
           };
-          this.$network.post('/p/cs/error/invocationFail', obj)
+          network.post('/jflow/p/cs/error/invocationFail', obj)
             .then((res) => {
               window.jflowPlugin.open({ control: false });
               if (res.data.resultCode === 0) {
@@ -632,7 +634,7 @@
         let url = null;
         let obj = {};
         if (this.submitType === 0) { // 重新提交
-          url = '/p/cs/error/manualsubmit';
+          url = '/jflow/p/cs/error/manualsubmit';
           obj = {
             instanceId: global.jflowInfo.instanceId,
             errorTaskId: this.intervention.errorTaskId,
@@ -650,10 +652,9 @@
               content: '请选择驳回节点',
               mask: true
             });
-            window.jflowPlugin.open({ control: false });
             return;
           }
-          url = '/p/cs/error/errAction';
+          url = '/jflow/p/cs/error/errAction';
           obj = {
             instanceId: global.jflowInfo.instanceId,
             id: this.intervention.id,
@@ -674,7 +675,7 @@
           };
         }
 
-        this.$network.post(url, obj)
+        network.post(url, obj)
           .then((res) => {
             window.jflowPlugin.open({ control: false });
             if (res.data.resultCode === 0) {
