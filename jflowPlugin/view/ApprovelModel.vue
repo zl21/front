@@ -504,8 +504,8 @@
 
         network.post('/jflow/p/cs/error/errAction', obj)
           .then((res) => {
-            window.jflowPlugin.open({ control: false });
             if (res.data.resultCode === 0) {
+              window.jflowPlugin.open({ control: false });
               this.selectCheck = 0;
               this.selectedNode = null;
               this.remark = null;
@@ -551,8 +551,8 @@
           };
           network.post('/jflow/p/cs/error/modifyApprover', obj)
             .then((res) => {
-              window.jflowPlugin.open({ control: false });
               if (res.data.resultCode === 0) {
+                window.jflowPlugin.open({ control: false });
                 this.ApproverLists = {};
                 this.remark = null;
                 this.$Message.success(res.data.resultMsg);
@@ -609,8 +609,8 @@
           };
           network.post('/jflow/p/cs/error/invocationFail', obj)
             .then((res) => {
-              window.jflowPlugin.open({ control: false });
               if (res.data.resultCode === 0) {
+                window.jflowPlugin.open({ control: false });
                 this.$Message.success(res.data.resultMsg);
                 this.remark = null;
                 BacklogData();
@@ -677,8 +677,8 @@
 
         network.post(url, obj)
           .then((res) => {
-            window.jflowPlugin.open({ control: false });
             if (res.data.resultCode === 0) {
+              window.jflowPlugin.open({ control: false });
               setTimeout(() => {
                 this.selectBackNode = null;
                 this.submitType = 0;
