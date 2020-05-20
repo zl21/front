@@ -561,6 +561,8 @@ export default {
                       } catch (e) {
                         copySaveDataForParam[b.colname] = b.valuedata;
                       }
+                    } else if (c.display === 'OBJ_DATENUMBER') {
+                      copySaveDataForParam[b.colname] = b.valuedata.replace(/-/g, '');
                     } else {
                       copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
                     }
@@ -602,6 +604,8 @@ export default {
                 } catch (e) {
                   copySaveDataForParam[b.colname] = b.valuedata;
                 }
+              } else if (c.display === 'OBJ_DATENUMBER') {
+                copySaveDataForParam[b.colname] = b.valuedata.replace(/-/g, '');
               } else {
                 copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
               }
