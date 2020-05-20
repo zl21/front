@@ -59,7 +59,7 @@
 
 <script>
   import network, { urlSearchParams } from '../../__utils__/network';
-  import custommizedRequestUrl from '../../__config__/custommizedRequestURL.config';
+  import { custommizedRequestUrl } from '../../constants/global';
 
   export default {
     name: 'SizeComponent',
@@ -174,7 +174,7 @@
             FLAG: 2
           }
         };
-        const URL = custommizedRequestUrl['/p/cs/cspecobjload'];
+        const URL = custommizedRequestUrl()['/p/cs/cspecobjload'];
 
         network.get(URL || '/p/cs/cspecobjload', { params })
           .then((res) => {
