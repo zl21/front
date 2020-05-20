@@ -276,6 +276,8 @@ export default {
         commit('updateJflowControlField', []);
         // 清空updataTreeId
         removeSessionObject('TreeId');
+        removeSessionObject('routeMapRecordForCustomizePages');
+
         commit('updateTreeTableListData', []);
       })
       .catch(() => {
@@ -290,6 +292,8 @@ export default {
         commit('updateJflowControlField', []);
         // 清空updataTreeId
         removeSessionObject('TreeId');
+        removeSessionObject('routeMapRecordForCustomizePages');
+
         commit('updateTreeTableListData', []);
       });
   },

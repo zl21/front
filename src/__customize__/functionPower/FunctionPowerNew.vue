@@ -298,6 +298,7 @@
   /* eslint-disable arrow-parens,no-lonely-if,no-empty */
   // import network, { urlSearchParams } from '../../__utils__/network';
   import { Version } from '../../constants/global';
+  import store from '../../__config__/store.config';
 
   const functionPowerActions = () => require(`../../__config__/actions/version_${Version()}/functionPower.actions.js`);
 
@@ -963,7 +964,13 @@
         } else if (item.webdesc === '复制权限') {
           this.copyPerm();
         } else if (item.webdesc === '保存') {
-          this.savePermission();
+          const param = {
+            url: '/SYSTEM/TABLE_DETAIL/H/AD_TABLE/992/24407',
+            type: 'H',
+            dynamicRoutingForCustomizePage: true
+          };
+          store.commit('global/tabOpen', param);
+          // this.savePermission();
         }
       }, // 点击按钮触发
       copyPerm() {

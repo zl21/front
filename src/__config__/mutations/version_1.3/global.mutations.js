@@ -479,7 +479,7 @@ export default {
   },
   tabOpen(state, {// 打开一个新tab添加路由
     back, type, tableName, tableId, id, customizedModuleName, customizedModuleId, linkName,
-    linkId, url, label, serviceId
+    linkId, url, label, serviceId, dynamicRoutingForCustomizePage
   }) {
     // back:返回标志, 
     // type:跳转类型,
@@ -551,6 +551,8 @@ export default {
       }
     }
     if (back) {
+      window.sessionStorage.setItem('dynamicRoutingForCustomizePage', true);
+
       path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
       const query = {
         isBack: true
@@ -564,7 +566,7 @@ export default {
         path,
         query
       };
-  
+      
       router.push(routeInfo);
     }
     router.push({

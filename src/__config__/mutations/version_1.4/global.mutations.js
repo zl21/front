@@ -402,6 +402,16 @@ export default {
         deleteFromSessionObject('routeMapRecordForSingleObject', tabRouteFullPath);
       }
     });
+
+    // 删除规则六： 关闭页签时，清除定制界面跳转单对象界面session中存储的对应关系
+    const routeMapRecordForCustomizePage = getSeesionObject('routeMapRecordForCustomizePage');
+    if (routeMapRecordForCustomizePage[router.currentRoute.fullPath]) {
+      Object.keys(routeMapRecordForCustomizePage).map((item) => {
+        if (router.currentRoute.fullPath === item) {
+          deleteFromSessionObject('routeMapRecordForCustomizePage', router.currentRoute.fullPath);
+        }
+      });
+    }
     
     state.isRequest = [];// 清空修改数据验证
 
@@ -493,7 +503,7 @@ export default {
   },
   tabOpen(state, {// 打开一个新tab添加路由
     back, type, tableName, tableId, id, customizedModuleName, customizedModuleId, linkName,
-    linkId, url, label, serviceId
+    linkId, url, label, serviceId, dynamicRoutingForCustomizePage
   }) {
     // back:返回标志, 
     // type:跳转类型,
@@ -509,7 +519,7 @@ export default {
     // label：中文tab名称，
     // url:固定格式url（按照框架路由规则拼接好的）,
     // serviceId
-
+    // dynamicRoutingForCustomizePage:自定义界面跳转至单对象界面
     const keepAliveModuleName = `S.${tableName}.${tableId}`;
     if (state.keepAliveLabelMaps[keepAliveModuleName] === undefined) {
       state.keepAliveLabelMaps[keepAliveModuleName] = `${label}`;
@@ -537,6 +547,10 @@ export default {
       }
     } 
     if (type === 'tableDetailHorizontal' || type === 'H') {
+      if (dynamicRoutingForCustomizePage) {
+        window.sessionStorage.setItem('dynamicRoutingForCustomizePage', true);
+      }
+
       if (url) {
         path = `${url.toUpperCase()}`;
       } else {
@@ -544,6 +558,9 @@ export default {
       }
     } 
     if (type === 'tableDetailVertical' || type === 'V') {
+      if (dynamicRoutingForCustomizePage) {
+        window.sessionStorage.setItem('dynamicRoutingForCustomizePage', true);
+      }
       if (url) {
         path = `${url.toUpperCase()}`;
       } else {
@@ -565,21 +582,39 @@ export default {
       }
     }
     if (back) {
-      path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
-      const query = {
-        isBack: true
-      };
-      state.treeTableListData.map((item) => { // 支持树结构列表界面单对象返回列表
-        if (item.value === tableName && item.id === Number(tableId)) {
-          query.isTreeTable = true;
-        }
-      });
-      const routeInfo = {
-        path,
-        query
-      };
-  
-      router.push(routeInfo);
+      const routeMapRecordForCustomizePage = getSeesionObject('routeMapRecordForCustomizePage');
+     
+      if (routeMapRecordForCustomizePage[router.currentRoute.fullPath]) {
+        const CustomizePagePath = routeMapRecordForCustomizePage[router.currentRoute.fullPath];
+        Object.keys(routeMapRecordForCustomizePage).map((item) => {
+          if (router.currentRoute.fullPath === item) {
+            deleteFromSessionObject('routeMapRecordForCustomizePage', router.currentRoute.fullPath);
+          }
+        });
+        router.push(CustomizePagePath);
+        state.openedMenuLists.map((menu, index) => {
+          if (menu.routeFullPath === router.currentRoute.fullPath) {
+            setTimeout(() => {
+              delete state.openedMenuLists[index];
+            }, 500);
+          }
+        });
+      } else {
+        path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
+        const query = {
+          isBack: true
+        };
+        state.treeTableListData.map((item) => { // 支持树结构列表界面单对象返回列表
+          if (item.value === tableName && item.id === Number(tableId)) {
+            query.isTreeTable = true;
+          }
+        });
+        const routeInfo = {
+          path,
+          query
+        };
+        router.push(routeInfo);
+      }
     }
     router.push({
       path
