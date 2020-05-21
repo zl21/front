@@ -200,12 +200,14 @@
       <div slot="footer">
         <Button
           type="text"
+          :disabled="buttonDisabled"
           @click="cancel"
         >
           取消
         </Button>
         <Button
           type="primary"
+          :disabled="buttonDisabled"
           @click="ok"
         >
           确定
@@ -287,7 +289,10 @@
         ApproverLists: {}, // 人员指派
         submitType: 0, // 提交失败选择类型
         selectBackNode: null, // 提交失败驳回节点
-        remark: null // 备注
+        remark: null, // 备注
+
+
+        buttonDisabled: false, // 控制按钮禁用
       };
     },
     methods: {
@@ -334,9 +339,11 @@
       },
       ok() {
         if (this.type === '0' || this.type === '8') {
+          this.buttonDisabled = true;
           this.Agree(); // 同意
         }
         if (this.type === '1') {
+          this.buttonDisabled = true;
           this.back(); // 驳回
         }
         if (this.type === '3') {
@@ -360,8 +367,9 @@
         param.businessType = global.routeInfo.tableId;
         param.businessName = global.routeInfo.tableName;
         network.post(this.modalConfig.url, param).then((res) => {
-          window.jflowPlugin.open({ control: false });
+          this.buttonDisabled = false;
           if (res.data.resultCode === 0) {
+            window.jflowPlugin.open({ control: false });
             this.$Message.success(res.data.resultMsg);
             getJflowInfo();
             DispatchEvent('jflowClick', {
@@ -376,7 +384,10 @@
               mask: true
             });
           }
-        });
+        })
+          .catch(() => {
+            this.buttonDisabled = false;
+          });
       },
       // 驳回
       back() {
@@ -389,8 +400,9 @@
         param.businessName = global.routeInfo.tableName;
         param.description = this.returnContent; // 审批意见
         network.post(this.modalConfig.url, param).then((res) => {
-          window.jflowPlugin.open({ control: false });
+          this.buttonDisabled = false;
           if (res.data.resultCode === 0) {
+            window.jflowPlugin.open({ control: false });
             this.$Message.success(res.data.resultMsg);
             getJflowInfo();
             DispatchEvent('jflowClick', {
@@ -405,7 +417,10 @@
               mask: true
             });
           }
-        });
+        })
+          .catch(() => {
+            this.buttonDisabled = false;
+          });
       },
       // 人员获取
       getResult(data) {

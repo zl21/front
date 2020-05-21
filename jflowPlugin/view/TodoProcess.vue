@@ -132,6 +132,7 @@
         selectValue: '', // 选中的数据
         // 表单配置
         formLists: [],
+        options: [], // 单据类型选项
         // formLists: [
         //   {
         //     row: 1,
@@ -503,12 +504,7 @@
               }
 
               if (temp.item.field === 'businessType') { // 单据类型
-                temp.item.options = [
-                  { value: 0, label: '发送成功' },
-                  { value: 1, label: '发送失败(待发送)' },
-                  { value: 2, label: '消费成功' },
-                  { value: 3, label: '消费失败(待消费)' }
-                ];
+                temp.item.options = this.options;
               }
 
               if (temp.item.field === 'createTime') { // 创建时间设置默认值
@@ -521,17 +517,13 @@
           });
       },
       // 业务关系下拉数据
-      getselectOption() {
-        network.post('/jflow/p/cs/task/relation/list', {}).then((res) => {
+      async getselectOption() {
+        await network.post('/jflow/p/cs/task/relation/list', {}).then((res) => {
           if (res.data.resultCode === 0) {
-            this.formLists.forEach((outer) => {
-              if (outer.item.filed === 'businessType') {
-                outer.item.options = res.data.data.relations.map((item) => {
-                  item.value = item.businesskey;
-                  item.label = item.businessName;
-                  return item;
-                });
-              }
+            this.options = res.data.data.relations.map((item) => {
+              item.value = item.businesskey;
+              item.label = item.businessName;
+              return item;
             });
           }
         });
@@ -725,13 +717,13 @@
         this.resultData = data;
       }
     },
-    created() {
+    async created() {
       this.getHeader();
+      await this.getselectOption();
       this.getFormLists();
     },
     activated() {
       if (global.userInfo) {
-        this.getselectOption();
         this.queryLists();
         if (this.tabalive === 'todoList') {
           // 获取外出代理人数据
@@ -741,7 +733,6 @@
         const timer = setInterval(() => {
           if (global.userInfo) {
             clearInterval(timer);
-            this.getselectOption();
             this.queryLists();
             if (this.tabalive === 'todoList') {
               // 获取外出代理人数据
