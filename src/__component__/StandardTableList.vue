@@ -1907,12 +1907,12 @@
         });
         promise.then(() => {
           const message = this.buttons.batchDeleteData.message;
-          const data = {
+          const datas = {
             mask: true,
             title: '成功',
             content: `${message}`
           };
-          this.$Modal.fcSuccess(data);
+          this.$Modal.fcSuccess(datas);
         }, () => {});
       },
       batchVoid(data) {
