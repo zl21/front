@@ -64,7 +64,17 @@ export default {
     {
       OBJ, resolve, reject, data 
     }) {
-    network.post(data.jflowUrlPath || data.requestUrlPath || '/p/cs/export', urlSearchParams(
+    let jflowpath = '';
+    let requestUrlPath = '';
+    if (data) {
+      if (data.jflowpath) {
+        jflowpath = data.jflowpath;
+      }
+      if (data.requestUrlPath) {
+        requestUrlPath = data.requestUrlPath;
+      }
+    }
+    network.post(jflowpath || requestUrlPath || '/p/cs/export', urlSearchParams(
       OBJ
     )).then((res) => {
       if (res.data.code === 0) {
@@ -88,7 +98,17 @@ export default {
       table: tableName,
       objids: ids
     };
-    network.post(data.jflowUrlPath || data.requestUrlPath || '/p/cs/batchDelete', urlSearchParams(params)).then((res) => {
+    let jflowpath = '';
+    let requestUrlPath = '';
+    if (data) {
+      if (data.jflowpath) {
+        jflowpath = data.jflowpath;
+      }
+      if (data.requestUrlPath) {
+        requestUrlPath = data.requestUrlPath;
+      }
+    }
+    network.post(jflowpath || requestUrlPath || '/p/cs/batchDelete', urlSearchParams(params)).then((res) => {
       const deleteTableData = res.data;
       if (res.data.code === 0) {
         resolve();
@@ -187,7 +207,17 @@ export default {
   batchVoidForButtons({ commit }, {
     tableName, ids, resolve, reject, data
   }) { // 调用作废接口
-    network.post(data.jflowUrlPath || data.requestUrlPath || '/p/cs/batchVoid', urlSearchParams(
+    let jflowpath = '';
+    let requestUrlPath = '';
+    if (data) {
+      if (data.jflowpath) {
+        jflowpath = data.jflowpath;
+      }
+      if (data.requestUrlPath) {
+        requestUrlPath = data.requestUrlPath;
+      }
+    }
+    network.post(jflowpath || requestUrlPath || '/p/cs/batchVoid', urlSearchParams(
       { 
         table: tableName,
         objids: ids.join(',')
@@ -240,7 +270,17 @@ export default {
     {
       obj, resolve, reject, data
     }) {
-    network.post(data.jflowUrlPath || data.requestUrlPath || '/p/cs/batchUnSubmit', urlSearchParams(
+    let jflowpath = '';
+    let requestUrlPath = '';
+    if (data) {
+      if (data.jflowpath) {
+        jflowpath = data.jflowpath;
+      }
+      if (data.requestUrlPath) {
+        requestUrlPath = data.requestUrlPath;
+      }
+    }
+    network.post(jflowpath || requestUrlPath || '/p/cs/batchUnSubmit', urlSearchParams(
       { 
         table: obj.tableName,
         objids: obj.ids.join()
