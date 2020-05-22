@@ -128,7 +128,7 @@ async function getTemplate() { // 获取模版信息
 async function initiateLaunch(event) {
   await getJflowInfo();
   window.updataClickSave(async () => {
-    if (global.jflowInfo.objInstanceId) {
+    if (global.jflowInfo.instanceId) {
       mutipleOperate(global.jflowInfo.affirmUrl);
     } else {
       // 触发按钮之前获取最新的模版信息
