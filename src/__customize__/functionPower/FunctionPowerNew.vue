@@ -10,6 +10,13 @@
       >
         {{ item.webdesc }}
       </Button>
+      <Button
+        type="fcdefault"
+        class="Button"
+        @click="customize"
+      >
+        测试跳转到单对象界面
+      </Button>
     </div>
     <div class="content">
       <div class="contentLeft">
@@ -964,15 +971,17 @@
         } else if (item.webdesc === '复制权限') {
           this.copyPerm();
         } else if (item.webdesc === '保存') {
-          const param = {
-            url: '/SYSTEM/TABLE_DETAIL/H/AD_TABLE/992/24407',
-            type: 'H',
-            dynamicRoutingForCustomizePage: true
-          };
-          store.commit('global/tabOpen', param);
-          // this.savePermission();
+          this.savePermission();
         }
       }, // 点击按钮触发
+      customize() {
+        const param = {
+          url: '/SYSTEM/TABLE_DETAIL/H/AD_TABLE/992/24407',
+          type: 'H',
+          dynamicRoutingForCustomizePage: true
+        };
+        store.commit('global/tabOpen', param);
+      },
       copyPerm() {
         this.copyPermission = true;
       }, // 复制权限

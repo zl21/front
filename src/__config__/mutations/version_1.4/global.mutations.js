@@ -248,14 +248,15 @@ export default {
     state.openedMenuLists.forEach((d) => { d.isActive = false; });
     state.openedMenuLists[index] = openedMenuInfo;
     state.openedMenuLists = state.openedMenuLists.concat([]);
-    state.activeTab = {
-      isActive: openedMenuInfo.isActive,
-      keepAliveModuleName: openedMenuInfo.keepAliveModuleName,
-      label: openedMenuInfo.label,
-      routeFullPath: openedMenuInfo.routeFullPath,
-      routePrefix: openedMenuInfo.routePrefix,
-      tableName: openedMenuInfo.tableName,
-    };
+    state.activeTab = openedMenuInfo;
+    // state.activeTab = {
+    //   isActive: openedMenuInfo.isActive,
+    //   keepAliveModuleName: openedMenuInfo.keepAliveModuleName,
+    //   label: openedMenuInfo.label,
+    //   routeFullPath: openedMenuInfo.routeFullPath,
+    //   routePrefix: openedMenuInfo.routePrefix,
+    //   tableName: openedMenuInfo.tableName,
+    // };
   },
   increaseOpenedMenuLists(state, {
     label, keepAliveModuleName, tableName, routeFullPath, routePrefix
@@ -519,7 +520,7 @@ export default {
     // label：中文tab名称，
     // url:固定格式url（按照框架路由规则拼接好的）,
     // serviceId
-    // dynamicRoutingForCustomizePage:自定义界面跳转至单对象界面
+    // dynamicRoutingForCustomizePage:自定义界面跳转至单对象界面，为true时可返回来源的单对象界面
     const keepAliveModuleName = `S.${tableName}.${tableId}`;
     if (state.keepAliveLabelMaps[keepAliveModuleName] === undefined) {
       state.keepAliveLabelMaps[keepAliveModuleName] = `${label}`;
@@ -591,14 +592,22 @@ export default {
             deleteFromSessionObject('routeMapRecordForCustomizePage', router.currentRoute.fullPath);
           }
         });
-        router.push(CustomizePagePath);
-        state.openedMenuLists.map((menu, index) => {
-          if (menu.routeFullPath === router.currentRoute.fullPath) {
-            setTimeout(() => {
-              delete state.openedMenuLists[index];
-            }, 500);
-          }
-        });
+        const dom = document.querySelector(`#${router.currentRoute.params.tableName}`);
+        dom.click();
+        if (state.openedMenuLists.length > 1) { // 框架路由tab逻辑为刷新浏览器保留最后一个打开的tab页签，则关闭当前会自动激活前一个
+          router.push(CustomizePagePath);
+        }
+     
+        // state.openedMenuLists.map((menu) => {
+        //   if (menu.routeFullPath === CustomizePagePath) {
+        //     menu.isActive = true;
+        //     state.activeTab = menu;
+        //     // setTimeout(() => {
+        //     //   state.openedMenuLists.splice(index, 1);
+        //     //   console.log(3, state.openedMenuLists);
+        //     // }, 500);
+        //   }
+        // });
       } else {
         path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
         const query = {
@@ -614,6 +623,7 @@ export default {
           query
         };
         router.push(routeInfo);
+        return;
       }
     }
     router.push({

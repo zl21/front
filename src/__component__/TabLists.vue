@@ -36,6 +36,7 @@
         >
           {{ tag.label }}
           <span
+            :id="tag.tableName"
             class="close"
             @click.stop="handleClose(tag,index)"
           >

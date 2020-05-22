@@ -249,14 +249,15 @@ export default {
     state.openedMenuLists.forEach((d) => { d.isActive = false; });
     state.openedMenuLists[index] = openedMenuInfo;
     state.openedMenuLists = state.openedMenuLists.concat([]);
-    state.activeTab = {
-      isActive: openedMenuInfo.isActive,
-      keepAliveModuleName: openedMenuInfo.keepAliveModuleName,
-      label: openedMenuInfo.label,
-      routeFullPath: openedMenuInfo.routeFullPath,
-      routePrefix: openedMenuInfo.routePrefix,
-      tableName: openedMenuInfo.tableName,
-    };
+    state.activeTab = openedMenuInfo;
+    // state.activeTab = {
+    //   isActive: openedMenuInfo.isActive,
+    //   keepAliveModuleName: openedMenuInfo.keepAliveModuleName,
+    //   label: openedMenuInfo.label,
+    //   routeFullPath: openedMenuInfo.routeFullPath,
+    //   routePrefix: openedMenuInfo.routePrefix,
+    //   tableName: openedMenuInfo.tableName,
+    // };
   },
   increaseOpenedMenuLists(state, {
     label, keepAliveModuleName, tableName, routeFullPath, routePrefix
@@ -494,7 +495,9 @@ export default {
     // linkId:外链界面ID,
     // label：中文tab名称，
     // url:固定格式url（按照框架路由规则拼接好的）,
-    // serviceId
+    // serviceId,
+    // dynamicRoutingForCustomizePage:自定义界面跳转至单对象界面，为true时可返回来源的单对象界面
+
 
     const keepAliveModuleName = `S.${tableName}.${tableId}`;
     if (state.keepAliveLabelMaps[keepAliveModuleName] === undefined) {
@@ -551,23 +554,48 @@ export default {
       }
     }
     if (back) {
-      window.sessionStorage.setItem('dynamicRoutingForCustomizePage', true);
-
-      path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
-      const query = {
-        isBack: true
-      };
-      state.treeTableListData.map((item) => { // 支持树结构列表界面单对象返回列表
-        if (item.value === tableName && item.id === Number(tableId)) {
-          query.isTreeTable = true;
+      const routeMapRecordForCustomizePage = getSeesionObject('routeMapRecordForCustomizePage');
+     
+      if (routeMapRecordForCustomizePage[router.currentRoute.fullPath]) {
+        const CustomizePagePath = routeMapRecordForCustomizePage[router.currentRoute.fullPath];
+        Object.keys(routeMapRecordForCustomizePage).map((item) => {
+          if (router.currentRoute.fullPath === item) {
+            deleteFromSessionObject('routeMapRecordForCustomizePage', router.currentRoute.fullPath);
+          }
+        });
+        const dom = document.querySelector(`#${router.currentRoute.params.tableName}`);
+        dom.click();
+        if (state.openedMenuLists.length > 1) { // 框架路由tab逻辑为刷新浏览器保留最后一个打开的tab页签，则关闭当前会自动激活前一个
+          router.push(CustomizePagePath);
         }
-      });
-      const routeInfo = {
-        path,
-        query
-      };
-      
-      router.push(routeInfo);
+     
+        // state.openedMenuLists.map((menu) => {
+        //   if (menu.routeFullPath === CustomizePagePath) {
+        //     menu.isActive = true;
+        //     state.activeTab = menu;
+        //     // setTimeout(() => {
+        //     //   state.openedMenuLists.splice(index, 1);
+        //     //   console.log(3, state.openedMenuLists);
+        //     // }, 500);
+        //   }
+        // });
+      } else {
+        path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
+        const query = {
+          isBack: true
+        };
+        state.treeTableListData.map((item) => { // 支持树结构列表界面单对象返回列表
+          if (item.value === tableName && item.id === Number(tableId)) {
+            query.isTreeTable = true;
+          }
+        });
+        const routeInfo = {
+          path,
+          query
+        };
+        router.push(routeInfo);
+        return;
+      }
     }
     router.push({
       path

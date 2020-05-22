@@ -210,6 +210,7 @@ export default (router) => {
       }
       return false;
     })[0];
+
     if (existModuleIndex !== -1 && KEEP_MODULE_STATE_WHEN_CLICK_MENU) {
       // Condition One:
       // 如果目标路由界面所对应的[表]已经存在于已经打开的菜单列表中(不论其当前是列表状态还是编辑状态)
@@ -293,10 +294,9 @@ export default (router) => {
     const isFromPlugin = from.meta.routePrefix === PLUGIN_MODULE_PREFIX;// 目标单对象界面和列表界面属于不同的表（路由类型不同（插件类型路由））
     const isFromCustomize = from.meta.routePrefix === CUSTOMIZED_MODULE_PREFIX;// 目标单对象界面和列表界面属于不同的表（路由类型不同（自定义界面类型路由））
 
-
     const isTableDetail = [HORIZONTAL_TABLE_DETAIL_PREFIX, VERTICAL_TABLE_DETAIL_PREFIX, CUSTOMIZED_MODULE_PREFIX].indexOf(to.meta.routePrefix) > -1;
     const isNotFromSameTable = to.params.tableName !== from.params.tableName;// 目标单对象界面和列表界面属于不同的表（Table不同）
-    const isNotFromSameTableForHideBackButton = to.params.itemId !== (from.params.itemId === 'New');
+    const isNotFromSameTableForHideBackButton = (to.params.itemId !== from.params.itemId) && (from.params.itemId === 'New');
     if (!isNotFromSameTable) {
       window.sessionStorage.removeItem('dynamicRouting');
       window.sessionStorage.removeItem('isDynamicRoutingForHideBackButton');
@@ -306,8 +306,6 @@ export default (router) => {
     // const ignore = Boolean(window.sessionStorage.getItem('ignore'));
 
     if (isDynamicRouting && (isFromStandardTable || isFromPlugin) && isTableDetail && isNotFromSameTable) {
-      debugger;
-
       window.sessionStorage.removeItem('dynamicRouting');
       const routeMapRecordForSingleObject = getSeesionObject('routeMapRecordForSingleObject');
       if (Object.keys(routeMapRecordForSingleObject).indexOf(to.fullPath) > -1) { // 如果在单对象配置的动态路由维护关系里存在，当前要跳转的单对象界面，则不记录当前的
@@ -331,7 +329,7 @@ export default (router) => {
     }
 
     // 记录规则三：不是由列表跳转到单对象界面，由新增界面跳转到编辑界面（itemID不同），则将此种关系维护到路由记录“栈”。
-    if (!(isFromStandardTable || isFromPlugin || isFromCustomize) && isNotFromSameTableForHideBackButton && (to.path !== '/' && from.path !== '/')) { // 非列表
+    if (!isFromStandardTable && !isFromCustomize && !isFromPlugin && isNotFromSameTableForHideBackButton && (to.path !== '/' && from.path !== '/')) { // 非列表
       const toPath = to.path.substring(to.path.indexOf('/') + 1, to.path.lastIndexOf('/') + 1);
       updateSessionObject('addRouteToEditor', { k: from.path, v: toPath }); 
     }
@@ -347,8 +345,6 @@ export default (router) => {
       if (Object.keys(routeMapRecord).indexOf(toPath) > -1) { // 如果在列表配置的动态路由维护关系里存在，当前要跳转的单对象界面，则不记录当前的
         deleteFromSessionObject('routeMapRecord', toPath);
       }
-      debugger;
-
       const routeMapRecordForSingleObject = getSeesionObject('routeMapRecordForSingleObject');
       updateSessionObject('routeMapRecordForSingleObject', { k: to.fullPath, v: from.fullPath });
       if (JSON.stringify(routeMapRecordForSingleObject) !== '{}' && to.fullPath !== from.fullPath) {
@@ -360,8 +356,6 @@ export default (router) => {
     const isCustomizedTableDetail = [CUSTOMIZED_MODULE_PREFIX].indexOf(from.meta.routePrefix) > -1;
     const dynamicRoutingForCustomizePage = Boolean(window.sessionStorage.getItem('dynamicRoutingForCustomizePage'));
     if (isCustomizedTableDetail && dynamicRoutingForCustomizePage && isTableDetail) {
-      debugger;
-
       window.sessionStorage.removeItem('dynamicRoutingForCustomizePage');
       const routeMapRecordForCustomizePage = getSeesionObject('routeMapRecordForCustomizePage');
       updateSessionObject('routeMapRecordForCustomizePage', { k: to.fullPath, v: from.fullPath });
