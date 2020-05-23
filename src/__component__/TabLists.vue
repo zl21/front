@@ -90,6 +90,7 @@
     mounted() {
       if (!this._inactive && this._inactive !== null) {
         this.$dragging.$on('dragged', ({ value }) => { // 更新MenuList
+          console.log(444, value);
           this.updataOpenedMenuLists(value.list);
         });
       }
@@ -136,7 +137,7 @@
         handler(val) {
           this.getOpenedMenuLists = JSON.parse(JSON.stringify(val));
         },
-        deep: true
+        // deep: true
       },
     },
     methods: {
