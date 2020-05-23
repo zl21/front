@@ -25,7 +25,7 @@ export default {
     })).then((res) => {
       let resData = res.data.data;
       // 根据jflow配置条件控制表单start🍓
-      if (resData.JflowConfigData && resData.JflowConfigData.length > 0) {
+      if (objid !== 'New' && resData.JflowConfigData && resData.JflowConfigData.length > 0) {
         const JflowConfigData = resData.JflowConfigData[0];
         const data = {
           JflowConfigData,
@@ -71,7 +71,7 @@ export default {
       if (res.data.code === 0) {
         let resData = res.data.data;
         // 根据jflow配置条件控制按钮以及表单start🍓
-        if (resData.JflowConfigData && resData.JflowConfigData.length > 0) {
+        if (objid !== 'New' && resData.JflowConfigData && resData.JflowConfigData.length > 0) {
           const JflowConfigData = resData.JflowConfigData[0];
           const data = {
             JflowConfigData,
@@ -197,7 +197,7 @@ export default {
       if (res.data.code === 0) {
         let resData = res.data.data;
         // 根据jflow配置条件控制按钮以及表单start🍓
-        if (resData.JflowConfigData && resData.JflowConfigData.length > 0) {
+        if (objid !== 'New' && resData.JflowConfigData && resData.JflowConfigData.length > 0) {
           const JflowConfigData = resData.JflowConfigData[0];
           if (Number(JflowConfigData.itemTableId) === Number(itemInfo.tableid)) { // 配置为子表
             const data = {
@@ -283,7 +283,7 @@ export default {
       if (res.data.code === 0) {
         let resData = res.data.data;
         // 根据jflow配置条件控制按钮以及表单start🍓
-        if (resData.JflowConfigData && resData.JflowConfigData.length > 0) {
+        if (objid !== 'New' && resData.JflowConfigData && resData.JflowConfigData.length > 0) {
           const JflowConfigData = resData.JflowConfigData[0];
           const data = {
             JflowConfigData,
