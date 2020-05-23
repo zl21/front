@@ -13,6 +13,7 @@
       ref="agGridTableContainer"
       class="detailTable"
     />
+
     <div
       v-if="isCommonTable"
       class="common-table"
