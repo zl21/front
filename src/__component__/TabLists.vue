@@ -20,11 +20,11 @@
       ref="tabList"
       class="tab-list"
     >
+      <!-- v-dragging="{ item: tag, list:getOpenedMenuLists,group: 'color'}" -->
       <a
-        v-for="(tag, index) in getOpenedMenuLists"
+        v-for="(tag, index) in openedMenuLists"
         :key="index"
         ref="tabBox"
-        v-dragging="{ item: tag, list:getOpenedMenuLists,group: 'color'}"
         class="tabBox"
         :title="tag.label"
         @click="switchTab(tag,index)"
@@ -36,6 +36,7 @@
         >
           {{ tag.label }}
           <span
+            :id="`${tag.tableName}_TAB`"
             class="close"
             @click.stop="handleClose(tag,index)"
           >
@@ -84,17 +85,16 @@
       return {
         clickShow: true,
         tagIndex: 0,
-        getOpenedMenuLists: []
+        // getOpenedMenuLists: []
       };
     },
     mounted() {
-      if (!this._inactive && this._inactive !== null) {
-        this.$dragging.$on('dragged', ({ value }) => { // 更新MenuList
-          console.log(444, value);
-          this.updataOpenedMenuLists(value.list);
-        });
-      }
-      this.getOpenedMenuLists = JSON.parse(JSON.stringify(this.openedMenuLists));
+      // if (!this._inactive && this._inactive !== null) {
+      //   this.$dragging.$on('dragged', ({ value }) => { // 更新MenuList
+      //     this.updataOpenedMenuLists(value.list);
+      //   });
+      // }
+      // this.getOpenedMenuLists = JSON.parse(JSON.stringify(this.openedMenuLists));
     },
     computed: {
       ...mapState('global', {
@@ -133,12 +133,12 @@
           });
         }
       },
-      openedMenuLists: {
-        handler(val) {
-          this.getOpenedMenuLists = JSON.parse(JSON.stringify(val));
-        },
-        // deep: true
-      },
+      // openedMenuLists: {
+      //   handler(val) {
+      //     this.getOpenedMenuLists = JSON.parse(JSON.stringify(val));
+      //   },
+      //   deep: true
+      // },
     },
     methods: {
       ...mapMutations('global', [
