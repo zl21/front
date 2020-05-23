@@ -313,7 +313,7 @@ export default {
     window.sessionStorage.removeItem('addRouteToEditor');
     window.sessionStorage.removeItem('routeMapRecord');
     window.sessionStorage.removeItem('routeMapRecordForSingleObject');
-  
+    window.sessionStorage.removeItem('routeMapRecordForCustomizePage');
     // 清空updataTreeId
     removeSessionObject('TreeId');
   },
@@ -592,7 +592,17 @@ export default {
             deleteFromSessionObject('routeMapRecordForCustomizePage', router.currentRoute.fullPath);
           }
         });
-        const dom = document.querySelector(`#${router.currentRoute.params.tableName}`);
+      
+        // const flag = state.openedMenuLists.filter((d, i) => { // 判断单对象界面要返回来源定制界面是否在前一个
+        //   if (d.tableName === router.currentRoute.params.tableName) {
+        //     d.index = i;
+        //     if (i !== 0 && state.openedMenuLists[i - 1].routeFullPath === CustomizePagePath) { // 当自定义及界面要跳转的单对象界面位置不是第一个时
+        //       return true;
+        //     }
+        //   }
+        //   return false;
+        // })[0];
+        const dom = document.querySelector(`#${router.currentRoute.params.tableName}_TAB`);
         dom.click();
         if (state.openedMenuLists.length > 1) { // 框架路由tab逻辑为刷新浏览器保留最后一个打开的tab页签，则关闭当前会自动激活前一个
           router.push(CustomizePagePath);
