@@ -232,10 +232,10 @@
       commonTable() {
         if (router.currentRoute.meta.routePrefix === '/SYSTEM/COMMONTABLE') {
           return true;
-        } if (router.currentRoute.meta.routePrefix === '/SYSTEM/TABLE') {
-          return this.isCommonTable || this.webconf.commonTable;
-        }
-        return null;
+        }  
+        return this.isCommonTable || this.webconf.commonTable;
+        //  (router.currentRoute.meta.routePrefix === '/SYSTEM/TABLE')
+        // return false;
       },
       agTableElementStyles() {
         if (this.formItemsLists.length === 0) {
