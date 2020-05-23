@@ -566,6 +566,7 @@ export default {
       };
   
       router.push(routeInfo);
+      return;
     }
     router.push({
       path

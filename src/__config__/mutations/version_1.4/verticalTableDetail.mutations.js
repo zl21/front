@@ -247,7 +247,7 @@ export default {
                         copySaveDataForParam[b.colname] = c.defval;
                       } else if (c.fkdisplay === 'drp' || c.fkdisplay === 'mrp' || c.fkdisplay === 'pop' || c.fkdisplay === 'mop') {
                         copySaveDataForParam[b.colname] = [{ ID: c.refobjid, Label: c.defval }];
-                      }
+                      } 
                     } else {
                       b.valuedata = '';// 将配置为不可编辑的值置空
                       if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'mop') {
@@ -266,6 +266,8 @@ export default {
                       } catch (e) {
                         copySaveDataForParam[b.colname] = b.valuedata;
                       }
+                    } else if (c.display === 'OBJ_DATENUMBER') {
+                      copySaveDataForParam[b.colname] = b.valuedata.replace(/-/g, '');
                     } else {
                       copySaveDataForParam[b.colname] = b.valuedata;
                     }
@@ -307,6 +309,8 @@ export default {
                 } catch (e) {
                   copySaveDataForParam[b.colname] = b.valuedata;
                 }
+              } else if (c.display === 'OBJ_DATENUMBER') {
+                copySaveDataForParam[b.colname] = b.valuedata.replace(/-/g, '');
               } else {
                 copySaveDataForParam[b.colname] = b.valuedata;
               }

@@ -578,8 +578,8 @@ export default {
         path,
         query
       };
-  
       router.push(routeInfo);
+      return;
     }
     router.push({
       path

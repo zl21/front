@@ -62,9 +62,19 @@ export default {
   },
   getExportQueryForButtons({ commit },
     {
-      OBJ, resolve, reject, data
+      OBJ, resolve, reject, buttonsData
     }) {
-    network.post(data.jflowUrlPath || data.requestUrlPath || '/p/cs/export', urlSearchParams(
+    let jflowpath = '';
+    let requestUrlPath = '';
+    if (buttonsData) {
+      if (buttonsData.jflowpath) {
+        jflowpath = buttonsData.jflowpath;
+      }
+      if (buttonsData.requestUrlPath) {
+        requestUrlPath = buttonsData.requestUrlPath;
+      }
+    }
+    network.post(jflowpath || requestUrlPath || '/p/cs/export', urlSearchParams(
       OBJ
     )).then((res) => {
       if (res.data.code === 0) {
@@ -82,7 +92,17 @@ export default {
     tableName, selectIdArr, resolve, reject, data
   }) { // 调用删除明细接口
     const ids = selectIdArr.map(d => parseInt(d));
-    network.post(data.jflowUrlPath || data.requestUrlPath || '/p/cs/batchDelete',
+    let jflowpath = '';
+    let requestUrlPath = '';
+    if (data) {
+      if (data.jflowpath) {
+        jflowpath = data.jflowpath;
+      }
+      if (data.requestUrlPath) {
+        requestUrlPath = data.requestUrlPath;
+      }
+    }
+    network.post(jflowpath || requestUrlPath || '/p/cs/batchDelete',
       {
         tableName,
         ids
@@ -193,7 +213,17 @@ export default {
   batchVoidForButtons({ commit }, {
     tableName, ids, resolve, reject, data
   }) { // 调用作废接口
-    network.post(data.jflowUrlPath || data.requestUrlPath || '/p/cs/batchVoid',
+    let jflowpath = '';
+    let requestUrlPath = '';
+    if (data) {
+      if (data.jflowpath) {
+        jflowpath = data.jflowpath;
+      }
+      if (data.requestUrlPath) {
+        requestUrlPath = data.requestUrlPath;
+      }
+    }
+    network.post(jflowpath || requestUrlPath || '/p/cs/batchVoid',
       { tableName, ids }).then((res) => {
       const datas = res.data;
       if (res.data.code === 0) {
@@ -242,7 +272,17 @@ export default {
     {
       obj, resolve, reject, data
     }) {
-    network.post(data.jflowUrlPath || data.requestUrlPath || '/p/cs/batchUnSubmit',
+    let jflowpath = '';
+    let requestUrlPath = '';
+    if (data) {
+      if (data.jflowpath) {
+        jflowpath = data.jflowpath;
+      }
+      if (data.requestUrlPath) {
+        requestUrlPath = data.requestUrlPath;
+      }
+    }
+    network.post(jflowpath || requestUrlPath || '/p/cs/batchUnSubmit',
       obj).then((res) => {
       if (res.data.code === 0) {
         resolve(res);

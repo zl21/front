@@ -280,6 +280,8 @@ export default {
                       } catch (e) {
                         copySaveDataForParam[b.colname] = b.valuedata;
                       }
+                    } else if (c.display === 'OBJ_DATENUMBER') {
+                      copySaveDataForParam[b.colname] = b.valuedata.replace(/-/g, '');
                     } else {
                       copySaveDataForParam[b.colname] = b.valuedata;
                     }
@@ -321,6 +323,8 @@ export default {
                 } catch (e) {
                   copySaveDataForParam[b.colname] = b.valuedata;
                 }
+              } else if (c.display === 'OBJ_DATENUMBER') {
+                copySaveDataForParam[b.colname] = b.valuedata.replace(/-/g, '');
               } else {
                 copySaveDataForParam[b.colname] = b.valuedata;
               }

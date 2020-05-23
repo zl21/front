@@ -18,8 +18,9 @@
             @on-change="pageChangeEvent"
             @on-page-size-change="pageSizeChangeEvent"
           />
+         
           <ul
-            v-if="!isHorizontal && !objreadonly"
+            v-if="!isHorizontal && !readonly"
             class="detail-buttons"
           >
             <a
@@ -388,7 +389,6 @@
         // } else {
         //   tabIndex = this.tabCurrentIndex;
         // }
-        
         const { tabcmd, DisableEXPORT } = this.tabPanel[this.currentTabIndex].componentAttribute.buttonsData.data;
         if (!tabcmd) {
           return [];
