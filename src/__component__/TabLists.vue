@@ -22,7 +22,7 @@
     >
       <!-- v-dragging="{ item: tag, list:getOpenedMenuLists,group: 'color'}" -->
       <a
-        v-for="(tag, index) in getOpenedMenuLists"
+        v-for="(tag, index) in openedMenuLists"
         :key="index"
         ref="tabBox"
         class="tabBox"
@@ -85,7 +85,7 @@
       return {
         clickShow: true,
         tagIndex: 0,
-        getOpenedMenuLists: []
+        // getOpenedMenuLists: []
       };
     },
     mounted() {
@@ -94,7 +94,7 @@
       //     this.updataOpenedMenuLists(value.list);
       //   });
       // }
-      this.getOpenedMenuLists = JSON.parse(JSON.stringify(this.openedMenuLists));
+      // this.getOpenedMenuLists = JSON.parse(JSON.stringify(this.openedMenuLists));
     },
     computed: {
       ...mapState('global', {
@@ -133,12 +133,12 @@
           });
         }
       },
-      openedMenuLists: {
-        handler(val) {
-          this.getOpenedMenuLists = JSON.parse(JSON.stringify(val));
-        },
-        deep: true
-      },
+      // openedMenuLists: {
+      //   handler(val) {
+      //     this.getOpenedMenuLists = JSON.parse(JSON.stringify(val));
+      //   },
+      //   deep: true
+      // },
     },
     methods: {
       ...mapMutations('global', [
