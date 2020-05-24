@@ -869,13 +869,15 @@ function initiateLaunch(data) { // 业务系统流程发起
               }
             });
           });
+        } else {
+          DispatchEvent('jflowEvent', {
+            detail: {
+              type: 'search'
+            }
+          });
         }
 
-        DispatchEvent('jflowEvent', {
-          detail: {
-            type: 'search'
-          }
-        });
+        
         resolve(res);
       } else {
         resolve();
