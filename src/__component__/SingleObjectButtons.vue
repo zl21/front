@@ -2103,7 +2103,7 @@
             tableName,
             back: true,
           };
-          this.tabHref(param);
+          this.tabOpen(param);
         }
       },
       getbuttonGroupData(tabcmd) { // 按钮渲染逻辑

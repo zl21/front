@@ -232,10 +232,10 @@
       commonTable() {
         if (router.currentRoute.meta.routePrefix === '/SYSTEM/COMMONTABLE') {
           return true;
-        } if (router.currentRoute.meta.routePrefix === '/SYSTEM/TABLE') {
-          return this.isCommonTable || this.webconf.commonTable;
-        }
-        return null;
+        }  
+        return this.isCommonTable || this.webconf.commonTable;
+        //  (router.currentRoute.meta.routePrefix === '/SYSTEM/TABLE')
+        // return false;
       },
       agTableElementStyles() {
         if (this.formItemsLists.length === 0) {
@@ -1907,12 +1907,12 @@
         });
         promise.then(() => {
           const message = this.buttons.batchDeleteData.message;
-          const data = {
+          const datas = {
             mask: true,
             title: '成功',
             content: `${message}`
           };
-          this.$Modal.fcSuccess(data);
+          this.$Modal.fcSuccess(datas);
         }, () => {});
       },
       batchVoid(data) {

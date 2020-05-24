@@ -12,6 +12,7 @@ function mutipleOperate(url) {
   param.businessCode = global.routeInfo.itemId;
   param.businessType = global.routeInfo.tableId;
   param.businessName = global.routeInfo.tableName;
+  console.log(url, param);
   network.post(url, param).then((res) => {
     if (res.data.resultCode === 0) {
       window.vm.$Message.success(res.data.resultMsg);
