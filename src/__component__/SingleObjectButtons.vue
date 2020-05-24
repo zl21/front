@@ -111,6 +111,7 @@
   export default {
     data() {
       return {
+        isIE: window.navigator.userAgent.indexOf('Trident') > -1,
         saveButtonJflowPath: '',
         objTabActionDialogConfig: {}, // 自定义按钮配置
         actionId: null, // 自定义按钮ID
@@ -686,8 +687,9 @@
             this.temporaryStoragePath = this.tempStorage.temp_storage.path;
             const dom = document.getElementById('actionMODIFY');
             if (dom) {
-              const myEvent = new Event('click');
-              dom.dispatchEvent(myEvent);    
+              const event = document.createEvent('HTMLEvents');
+              event.initEvent('click', false, true);
+              dom.dispatchEvent(event);
             }
           } else {
             const data = {
@@ -1075,7 +1077,6 @@
               // const myEvent = new Event('click');
               // dom.dispatchEvent(myEvent);
               // this.saveEventAfter = 'submit';
-             
               this.clickSave({ requestUrlPath: obj.requestUrlPath, type: 'submit' });
             }
           };
@@ -1247,9 +1248,11 @@
           showCancel: true,
           onOk: () => {
             if (obj.confirm && obj.confirm.indexOf('{') !== '-1') {
+              let verifyRequiredInformation = null;
               try {
                 if (JSON.parse(obj.confirm) && JSON.parse(obj.confirm).isSave) {
-                  if (this.verifyRequiredInformation()) {
+                  verifyRequiredInformation = this.verifyRequiredInformation();
+                  if (verifyRequiredInformation) {
                     if (this.testUpdata()) {
                       const type = 'objTabActionSlient';
                       if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
@@ -1272,6 +1275,9 @@
                   this.errorconfirmDialog(obj);
                 }
               } catch (error) {
+                if (!verifyRequiredInformation) {
+                  return;
+                }
                 this.errorconfirmDialog(obj);
               }
             } else {
@@ -1824,7 +1830,7 @@
               this.$loading.hide(this.tableName);
               const eleLink = document.createElement('a');
               const path = getGateway(`/p/cs/download?filename=${this.buttonsData.exportdata}`);
-              eleLink.setAttribute('href', path);
+              eleLink.setAttribute('href', encodeURI(path));
               eleLink.style.display = 'none';
               document.body.appendChild(eleLink);
               eleLink.click();
