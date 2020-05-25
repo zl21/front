@@ -3352,42 +3352,57 @@
                     }
                   } else if (oUl) {
                     this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
-
-                    this.tabPanel.map((tab, index) => {
-                      if (Number(currentJflowConfigTable[0].itemTableId) === Number(tab.tableid)) { // 配置的为子表
-                        if (index === 0) { // 当前激活tab为主表时，此方法可刷新主表
-                          this.clickButtonsRefresh();
-                          setTimeout(() => { // 需要等主表请求完成后，再切换子表
-                            for (let i = 0; i < oUl.children.length; i++) {
-                              if (tab.tabledesc === oUl.children[i].innerText) {
-                                oUl.children[i].click();
-                              // if (index !== 0) { // jflow配置由子表切换子表，需要重新触发切换的子表刷新，读取配置，
-                              //   debugger;
-                              //   setTimeout(() => {
-                              //     this.clickButtonsRefresh();
-                              //   }, 5000);
-                              // }
-                              }
-                            }
-                          }, 1000);
-                        } else { // 当前激活tab非主表时，说明，当前jflow配置由子表切换子表，
-                          new Promise((resolve, reject) => {
-                            this.getObjectTabForMainTable({
-                              itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: {}, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
-                            });
-                          }).then(() => {
+                    const currentCustomizeTag = this.tabPanel.map(t => Number(t.tableid));
+                    if (!currentCustomizeTag.includes(Number(currentJflowConfigTable[0].itemTableId))) { // 当itemTableId不是主表id和子表id时，则认为配置的是自定义tab
+                      this.clickButtonsRefresh();
+                    } else {
+                      this.tabPanel.map((tab, index) => {
+                        if (Number(currentJflowConfigTable[0].itemTableId) === Number(tab.tableid)) { // 配置的为子表
+                          if (index === 0) { // 当前激活tab为主表时，此方法可刷新主表
+                            this.clickButtonsRefresh();
                             setTimeout(() => { // 需要等主表请求完成后，再切换子表
+                              for (let i = 0; i < oUl.children.length; i++) {
+                                if (tab.tabledesc === oUl.children[i].innerText) {
+                                  oUl.children[i].click();
+                                  // if (index !== 0) { // jflow配置由子表切换子表，需要重新触发切换的子表刷新，读取配置，
+                                  //   debugger;
+                                  //   setTimeout(() => {
+                                  //     this.clickButtonsRefresh();
+                                  //   }, 5000);
+                                  // }
+                                }
+                              }
+                            }, 1000);
+                          } else if (this.WebConf && this.WebConf.isCustomizeTab) { // 当前激活tab非主表时，说明，当前jflow配置由子表切换子表，
+                            // 解决配置isCustomizeTab情况时，jflow配置子表切换主表时，需刷新主表重置所有子表
+                            const fun = () => {
                               for (let i = 0; i < oUl.children.length; i++) {
                                 if (tab.tabledesc === oUl.children[i].innerText) {
                                   console.log('tabledesc', tab.tabledesc);
                                   oUl.children[i].click();
                                 }
                               }
-                            }, 1000);
-                          });
+                            };
+                            this.updataMainTableForHorizontal(fun);// 请求主表
+                          } else {
+                            new Promise((resolve, reject) => {
+                              this.getObjectTabForMainTable({
+                                itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: {}, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
+                              });
+                            }).then(() => {
+                              setTimeout(() => { // 需要等主表请求完成后，再切换子表
+                                for (let i = 0; i < oUl.children.length; i++) {
+                                  if (tab.tabledesc === oUl.children[i].innerText) {
+                                    console.log('tabledesc', tab.tabledesc);
+                                    oUl.children[i].click();
+                                  }
+                                }
+                              }, 1000);
+                            });
+                          }
                         }
-                      }
-                    });
+                      });
+                    }
                   }
                 }
               } else {
@@ -3413,7 +3428,7 @@
           }
         }
       },
-      updataMainTableForHorizontal() {
+      updataMainTableForHorizontal(fun) {
         let page = {};
         if (this.objectType === 'horizontal') { // 横向布局
           this.tabPanel.every((item) => {
@@ -3430,6 +3445,9 @@
             itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: 0, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject, isFirstRequest: true, isNotFirstRequest: false
           });
         }).then(() => {
+          if (fun) {
+            fun();
+          }
         });
         this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
       },
