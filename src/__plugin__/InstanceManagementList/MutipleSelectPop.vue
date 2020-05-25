@@ -289,7 +289,7 @@
         currentoOrganization: null, // 当前选中的组织
         treeLoading: false,
         tree: {
-          placeholder: '可搜索店仓/部门',
+          placeholder: '请输入',
           search: ''
         },
         treeData: [], // 组织树
@@ -299,7 +299,7 @@
         currentoRole: null, // 当前选中的角色  -->去除不需要字段
         roleLoading: false,
         role: {
-          placeholder: '可搜索角色',
+          placeholder: '请输入',
           search: ''
         },
         roleData: [], // 角色树
@@ -307,7 +307,7 @@
 
         table: {
           // 表格显示部分搜索
-          placeholder: '直接输入人员姓名搜索',
+          placeholder: '请输入',
           search: ''
         },
         columns: [],
