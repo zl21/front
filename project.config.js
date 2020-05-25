@@ -22,21 +22,20 @@ module.exports = {
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop网关开启环境
   // target: 'http://r3.burgeon.cn:19999/', // 'http://106.15.154.165:19999/', // Cube
   // target: 'http://web.cmsqas.lining.com/', // 李宁
-  target: 'http://r3.burgeon.cn:28888/', // 李宁
-
-  
+  // target: 'http://r3.burgeon.cn:28888/', // 李宁
+  target: 'http://jflow-shangfei-r3.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://ark-share-dev.dev.burgeononline.com', // ArkShare环境
   // target: 'http://47.102.164.111:26666/', // 卡宾环境
 
   
-  Version: '1.3', // 版本号
+  Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
-  enableGateWay: false, // 网关是否打开,
+  enableGateWay: true, // 网关是否打开,
   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用功能
   ignoreGateWayPattern: [/\/jflow\/*/g, /\/api\/*/g], // 框架默认禁用的网关逻辑的正则模式匹配
   enableNetworkMonitor: true, // 是否开启网络监控功能
   enableModuleKA: true, // 默认启用keepAlive功能
-  enableJflow: false, // 默认禁用JFlow插件功能
+  enableJflow: true, // 默认禁用JFlow插件功能
   closeJflowIcon: false, // 控制是否是tab显示，既是否显示顶部的jflow图标
   encryptionJflow: false, // 控制jflow传参是否加密
   // jflowRequestDomain: 'http://jflow-zhixiao.dev.burgeononline.com', // jflow后台地址(知晓)
@@ -48,7 +47,7 @@ module.exports = {
   enableInitializationRequest: true, // 是否开启初始化请求
   // enableCustomInterface: false // 是否开启自定义接口,
   customizeWaterMark: {}, // 启用外部自定义水印配置,
-  specifiedGlobalGateWay: '',
+  specifiedGlobalGateWay: 'ad-app',
   encryptedPassword: false, // 是否允许login接口password加密
   isItemTableNewValidation: true, // 是否允许子表新增有必填项时，输入值才触发子表必填项校验，不输入值则只校验主表
   isCommonTable: false, // 是否开启普通表格，默认关闭
