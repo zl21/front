@@ -360,6 +360,22 @@
       watermarkImg() { // 匹配水印图片路径
         return this.watermarkimg;
       },
+      isCurrentItemTab() { // 当前表是否为子表
+        const itemNames = this.itemNameGroup.map((c) => {
+          if (c.tableName !== this.tableName) {
+            return c.tableName;
+          }
+        });
+        if (itemNames.includes(this.itemName)) {
+          return true;
+        }
+        return false;
+      },
+      // getJflowConfigCurrentTab() {
+      //   const currentJflowConfig = this.JflowControlField.filter(item => item.tableId === this.tableId);
+      //   // 解决jflow配置由子表改为主表
+      //   return currentJflowConfig.itemTableId ? currentJflowConfig.itemTableId : null;
+      // },
       waterMarkText() {
         const customizeWaterMark = getCustomizeWaterMark();
         const textMap = Object.assign({
@@ -703,8 +719,9 @@
             this.temporaryStoragePath = this.tempStorage.temp_storage.path;
             const dom = document.getElementById('actionMODIFY');
             if (dom) {
-              const myEvent = new Event('click');
-              dom.dispatchEvent(myEvent);    
+              const event = document.createEvent('HTMLEvents');
+              event.initEvent('click', false, true);
+              dom.dispatchEvent(event);
             }
           } else {
             const data = {
@@ -919,7 +936,7 @@
             this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
             new Promise((resolve, reject) => {
               this.getObjectTabForMainTable({
-                table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
+                itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
               });
             }).then(() => {
             });
@@ -927,7 +944,7 @@
             this.getInputForitemForChildTableForm({ table: tablename, tabIndex: this.currentTabIndex, tabinlinemode });
             const promise = new Promise((resolve, reject) => {
               this.getObjectTabForChildTableButtons({
-                maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex: this.currentTabIndex, resolve, reject
+                itemInfo: this.itemInfo, maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex: this.currentTabIndex, resolve, reject
               });
             });
 
@@ -945,10 +962,10 @@
             });
           } else if (tabrelation === '1:1') {
             this.getObjectTabForChildTableButtons({
-              maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex: this.currentTabIndex
+              itemInfo: this.itemInfo, maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex: this.currentTabIndex
             });
             this.getItemObjForChildTableForm({
-              table: tablename, objid: this.itemId, refcolid, tabIndex: this.currentTabIndex
+              itemInfo: this.itemInfo, table: tablename, objid: this.itemId, refcolid, tabIndex: this.currentTabIndex
             });
           }
         } else { // 纵向布局
@@ -983,7 +1000,7 @@
           // } else {
           new Promise((resolve, reject) => {
             this.getObjectTabForMainTable({
-              table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
+              itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
             });
           }).then(() => {
           });
@@ -1085,7 +1102,6 @@
               // const myEvent = new Event('click');
               // dom.dispatchEvent(myEvent);
               // this.saveEventAfter = 'submit';
-             
               this.clickSave({ requestUrlPath: obj.requestUrlPath, type: 'submit' });
             }
           };
@@ -1257,9 +1273,11 @@
           showCancel: true,
           onOk: () => {
             if (obj.confirm && obj.confirm.indexOf('{') !== '-1') {
+              let verifyRequiredInformation = null;
               try {
                 if (JSON.parse(obj.confirm) && JSON.parse(obj.confirm).isSave) {
-                  if (this.verifyRequiredInformation()) {
+                  verifyRequiredInformation = this.verifyRequiredInformation();
+                  if (verifyRequiredInformation) {
                     if (this.testUpdata()) {
                       const type = 'objTabActionSlient';
                       if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
@@ -1282,6 +1300,9 @@
                   this.errorconfirmDialog(obj);
                 }
               } catch (error) {
+                if (!verifyRequiredInformation) {
+                  return;
+                }
                 this.errorconfirmDialog(obj);
               }
             } else {
@@ -1508,6 +1529,7 @@
               this.saveEventAfter = data.type;
             }
           }
+        
           const obj = {   
             name: '保存',
             eName: this.saveInfo.name,
@@ -1809,8 +1831,6 @@
 
         const promise = new Promise((resolve, reject) => {
           this.getExportQueryForButtons({ OBJ, resolve, reject });
-          console.log(4);
-
           this.$loading.show(this.tableName);
         });
         promise.then(() => {
@@ -1819,7 +1839,7 @@
               this.$loading.hide(this.tableName);
               const eleLink = document.createElement('a');
               const path = getGateway(`/p/cs/download?filename=${this.buttonsData.exportdata}`);
-              eleLink.setAttribute('href', path);
+              eleLink.setAttribute('href', encodeURI(path));
               eleLink.style.display = 'none';
               document.body.appendChild(eleLink);
               eleLink.click();
@@ -3318,7 +3338,7 @@
               });
             });
           }
-
+         
           if (event.detail.type === 'refresh') {
             const type = 'jflow';
             this.clickButtonsRefresh(type);
@@ -3353,6 +3373,26 @@
             updateSessionObject('saveEventAfter', saveEventAfterData);
           }
         }
+      },
+      updataMainTableForHorizontal() {
+        let page = {};
+        if (this.objectType === 'horizontal') { // 横向布局
+          this.tabPanel.every((item) => {
+            if (this.itemName !== this.tableName && item.tablename === this.itemName) {
+              page = item.tablePageInfo;
+              return false;
+            }
+            return true;
+          });
+        } 
+
+        new Promise((resolve, reject) => {
+          this.getObjectTabForMainTable({
+            itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: 0, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject, isFirstRequest: true, isNotFirstRequest: false
+          });
+        }).then(() => {
+        });
+        this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
       },
       hideBackButton() {
         const clickMenuAddSingleObjectData = getSeesionObject('clickMenuAddSingleObject');
@@ -3394,6 +3434,7 @@
 
         return false;
       },
+      
       closeCurrentLoading() { // 关闭当前tab loading
         const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
         const dom = document.querySelector(`#${currentTableName}-loading`);
@@ -3527,6 +3568,7 @@
       if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
         this.buttonsReorganization(this.tabcmd);
       }
+      this.dataArray.refresh = this.refreshButtons;
       this.waListButtons(this.tabwebact);
       // if (this.jflowPluginDataArray) {//jflowOld
       //   this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;

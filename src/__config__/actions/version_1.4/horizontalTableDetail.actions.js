@@ -1,9 +1,13 @@
 import network, { urlSearchParams } from '../../../__utils__/network';
 import getComponentName from '../../../__utils__/getModuleName';
 import { DispatchEvent } from '../../../__utils__/dispatchEvent';
+import horizontalMainTableButtons from '../../jflowConfig/horizontalPage/horizontalMainTableButtons.jflowConfig';
+import horizontalItemTableButtons from '../../jflowConfig/horizontalPage/horizontalItemTableButtons.jflowConfig';
+import horizontalMainTableForms from '../../jflowConfig/horizontalPage/horizontalMainTableForm.jflowConfig';
+import horizontalItemTableForms from '../../jflowConfig/horizontalPage/horizontalItemTableForm.jflowConfig';
 
 export default {
-  getObjectTabForMainTable({ commit }, {
+  getObjectTabForMainTable({ commit }, {// 主表获取按钮以及所有tab
     table, objid, type, tabIndex, isNotFirstRequest, moduleName, isFirstRequest, resolve, reject
   }) {
     // 参数说明 table 主表表名，objid列表界面该行数据的id也就是rowid
@@ -14,7 +18,28 @@ export default {
       ismaintable: 'y'
     })).then((res) => {
       if (res.data.code === 0) {
-        const resData = res.data.data;
+        let resData = res.data.data;
+        // 根据jflow配置条件控制按钮以及表单start🍓
+        if (objid !== 'New' && resData.JflowConfigData && resData.JflowConfigData.length > 0) {
+          const JflowConfigData = resData.JflowConfigData[0];
+          const data = {
+            JflowConfigData,
+            resData
+          };
+
+          if (JflowConfigData.itemTableId === JflowConfigData.tableId) { // 配置为主表
+            data.type = 'mainTable';
+          } else { // 配置为子表时，处理主表逻辑
+            data.type = 'itemTable';
+          }
+          data.tabIndex = tabIndex;
+          resData = horizontalMainTableButtons(data);
+        }
+        commit('updateRefreshButtonForJflow', resData.jflowConfigrefreshButton);// jflow控制刷新按钮显示
+        commit('updataHideTempStorage', resData.isHideTempStorage);// jflow控制暂存按钮显示
+        // 根据jflow配置条件控制按钮以及表单end🍓
+
+        
         commit('updateDefaultButton', JSON.parse(JSON.stringify(res.data.data)));
         if (type === 'copy') {
           resData.type = 'copy';
@@ -44,7 +69,7 @@ export default {
     });
   }, // 获取主表按钮和子表信息
   getObjectTabForChildTableButtons({ commit }, {
-    maintable, table, objid, tabIndex, resolve, reject
+    maintable, table, objid, tabIndex, itemInfo, resolve, reject
   }) {
     // 参数说明 maintable主表表名，table 子表表名，objid列表界面该行数据的id也就是rowid
     const id = objid === 'New' ? '-1' : objid;
@@ -55,7 +80,22 @@ export default {
       ismaintable: 'n'
     })).then((res) => {
       if (res.data.code === 0) {
-        const resData = res.data.data;
+        let resData = res.data.data;
+        // 根据jflow配置条件控制按钮以及表单start🍓
+        if (objid !== 'New' && resData.JflowConfigData && resData.JflowConfigData.length > 0) {
+          const JflowConfigData = resData.JflowConfigData[0];
+          const data = {
+            JflowConfigData,
+            resData
+          };
+          if (Number(JflowConfigData.itemTableId) === Number(itemInfo.tableid)) { // 配置为子表
+            data.type = 'itemTable';
+          } else { // 配置为子表时，处理主表逻辑
+            data.type = 'mainTable';
+          }
+          resData = horizontalItemTableButtons(data);
+        }
+        // 根据jflow配置条件控制按钮以及表单end🍓
         if (resData.tabfilter && resData.tabfilter.length > 0) {
           const childTableFixedcolumns = {};
           const tabfilterData = JSON.parse(JSON.stringify(resData));
@@ -96,7 +136,7 @@ export default {
       }
     });
   }, // 获取子表按钮
-  getObjectForMainTableForm({ dispatch, commit }, { table, objid, tabIndex }) {
+  getObjectForMainTableForm({ dispatch, commit }, { table, objid, tabIndex }) { // 获取主表表单
     // 参数说明 table 主表表名，objid列表界面该行数据的id也就是rowid
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/getObject', urlSearchParams({
@@ -104,10 +144,28 @@ export default {
       objid: id
     })).then((res) => {
       if (res.data.code === 0) {
-        const formData = res.data.data;
-        formData.tabIndex = tabIndex;
-        commit('updateCopyDataForRealdOnly', formData);// 复制按钮操作保存默认数据
-        commit('updatePanelData', formData);
+        let resData = res.data.data;
+        // 根据jflow配置条件控制表单start🍓
+        if (objid !== 'New' && resData.JflowConfigData && resData.JflowConfigData.length > 0) {
+          const JflowConfigData = resData.JflowConfigData[0];
+          const data = {
+            JflowConfigData,
+            resData,
+          };
+          if (JflowConfigData.itemTableId === JflowConfigData.tableId) { // 配置为主表
+            data.type = 'mainTable';
+          } else { // 配置为子表
+            data.type = 'itemTable';
+          }
+          resData = horizontalMainTableForms(data);
+        }
+     
+        // 根据jflow配置条件控制表单end🍓
+
+
+        resData.tabIndex = tabIndex;
+        commit('updateCopyDataForRealdOnly', resData);// 复制按钮操作保存默认数据
+        commit('updatePanelData', resData);
       }
     });
   }, // 获取主表面板信息
@@ -128,7 +186,7 @@ export default {
     });
   }, // 获取子表表单信息
   getItemObjForChildTableForm({ commit }, {
-    table, objid, refcolid, tabIndex
+    table, objid, itemInfo, refcolid, tabIndex
   }) {
     // 参数说明  table 子表表名，objid列表界面该行数据的id也就是rowid，refcolid子表id
     const id = objid === 'New' ? '-1' : objid;
@@ -138,9 +196,47 @@ export default {
       refcolid
     })).then((res) => {
       if (res.data.code === 0) {
-        const formData = res.data.data;
-        formData.tabIndex = tabIndex;
-        commit('updatePanelData', formData);
+        let resData = res.data.data;
+        // 根据jflow配置条件控制按钮以及表单start🍓
+        if (objid !== 'New' && resData.JflowConfigData && resData.JflowConfigData.length > 0) {
+          const JflowConfigData = resData.JflowConfigData[0];
+          const data = {
+            JflowConfigData,
+            resData
+          };
+          //   data.type = 'mainTable';
+          //   data.type = 'itemTable';
+
+
+          if (Number(JflowConfigData.itemTableId) === Number(itemInfo.tableid)) { // 配置为子表
+            data.type = 'itemTable';
+            data.tableid = itemInfo.tableid;
+          } else if (JflowConfigData.itemTableId === JflowConfigData.tableId) { // 配置为主表
+            // 解决触发jflow按钮时，jflow配置更改表，此时，需要切换到更改后的tab，需从新触发更改后的表的刷新按钮，jflow配置才可生效
+            data.type = 'mainTable';
+            data.itemInfo = itemInfo;
+          }
+          resData = horizontalItemTableForms(data);
+
+          // else{
+          //   const oUl = document.querySelector('.burgeon-tabs-panels-nav');
+          //   if (oUl) {
+          //     setTimeout(() => {
+          //       for (let i = 0; i < oUl.children.length; i++) {
+          //         if (tabData.tabledesc === oUl.children[i].innerText) {
+          //           oUl.children[i].click();
+          //         }
+          //       }
+          //     }, 1000);
+          //   }
+          // }
+          //  else { // 配置为子表时，处理主表逻辑
+          //   data.type = 'mainTable';
+          // }
+        }
+        // 根据jflow配置条件控制按钮以及表单end🍓
+        resData.tabIndex = tabIndex;
+        commit('updatePanelData', resData);
       }
     });
   }, // 获取子表面板信息

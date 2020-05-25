@@ -21,6 +21,7 @@ export default {
     const { tableName, tableId } = router.currentRoute.params;
     state.mainFormInfo.tablename = tableName;
     state.mainFormInfo.tableid = tableId;
+    state.mainFormInfo.JflowReadonly = data.JflowReadonly;// 增加字段控制主表是否可编辑🍓
     state.mainFormInfo.formData.isShow = data && data.addcolums && data.addcolums.length > 0;
     state.mainFormInfo.formData.data = Object.assign({}, data);
     state.updateData[tableName] = {
@@ -115,7 +116,18 @@ export default {
   },
   updateRefButtonsData(state, data) { // 更新子表按钮数据
     const { componentAttribute } = state.tabPanels[data.tabIndex];
-    componentAttribute.buttonsData.isShow = false;
+    if (data.isShow) { // 处理jflow配置为子表时，子表显示按钮组
+      componentAttribute.buttonsData.isShow = data.isShow;
+    } else {
+      componentAttribute.buttonsData.isShow = false;
+    }
+    if (data.isItemTableVertical) { // 此字段用于单对象按钮组件控制样式
+      componentAttribute.buttonsData.isItemTableVertical = data.isItemTableVertical;
+    }
+    if (data.backButton === 'false') { // 处理jflow配置为子表时，将子表按钮组返回按钮删除
+      componentAttribute.buttonsData.data.backButton = false;
+    }
+    // componentAttribute.jflowButton = data.jflowButton;
     componentAttribute.buttonsData.data = data;
   },
   updateFormDataForRefTable(state, data) { // 更新子表表单数据

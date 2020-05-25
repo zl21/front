@@ -3,13 +3,14 @@ import md5 from 'md5';
 import router from '../__config__/router.config';
 import store from '../__config__/store.config';
 
+
 import {
-  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, getTouristRoute, REQUEST_PENDDING_EXPIRE
+  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, REQUEST_PENDDING_EXPIRE
 } from '../constants/global';
 import { addNetwork } from './indexedDB';
 
 import {
-  updateSessionObject, removeSessionObject, getSeesionObject
+  updateSessionObject, removeSessionObject
 } from './sessionStorage';
 
 let tableNameForGet = '';
@@ -190,9 +191,7 @@ axios.interceptors.response.use(
       window.sessionStorage.setItem('loginStatus', true);
     }
     if (config.url.indexOf('/p/cs/getSubSystems') !== -1) {
-      if (response.status === 200 && response.data.data.length > 0) {
-
-      } else {
+      if (response.status === 200 && response.data.data.length > 0) {} else {
         updateSessionObject('saveNetwork', { k: 'name', v: '/p/cs/getSubSystems' });
         // window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
       }
