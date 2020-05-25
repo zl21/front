@@ -111,7 +111,7 @@
   export default {
     data() {
       return {
-        isIE: window.navigator.userAgent.indexOf('Trident') > -1,
+        saveCallBack: null, // 保存成功后回调
         saveButtonJflowPath: '',
         objTabActionDialogConfig: {}, // 自定义按钮配置
         actionId: null, // 自定义按钮ID
@@ -194,15 +194,10 @@
           }
         }
       },
-      // getJflowConfigCurrentTab: {
-      //   handler(val, oldVal) {
-      //     console.log(4444, val, oldVal);
-      //   }
-      // },
-      backButton: {// 原jflow
-        handler(val) {
-          this.dataArray.back = val;
-        }
+      $route() {
+        setTimeout(() => {
+          this.updataCurrentTableDetailInfo();
+        }, 0);
       },
       // backButton: {// jflowNew
       //   handler(val) {
@@ -3345,79 +3340,23 @@
           }
          
           if (event.detail.type === 'refresh') {
-            // this.clickButtonsRefresh();
-            if (this.objectType === 'horizontal') {
-              const currentJflowConfigTable = this.JflowControlField.filter((item) => {
-                if (item.tableId === this.tableId) {
-                  return item;
-                } 
-              });
-              if (currentJflowConfigTable[0]) {
-                if (Number(currentJflowConfigTable[0].itemTableId) === (Number(this.itemInfo.tableid) || Number(this.itemInfo.id))) { // 需要刷新的是当前tab
-                  this.clickButtonsRefresh();
-                } else {
-                  const oUl = document.querySelector('.burgeon-tabs-panels-nav');
-
-                  if (Number(currentJflowConfigTable[0].itemTableId) === Number(currentJflowConfigTable[0].tableId)) { // 主表
-                    if (oUl) {
-                      oUl.children[1].click();
-                      // if (this.isRequest.length > 0 && this.isRequest[0] !== true) {
-                      setTimeout(() => {
-                        if (this.WebConf && this.WebConf.isCustomizeTab) {
-                          // 解决配置isCustomizeTab情况时，jflow配置子表切换主表时，需刷新主表重置所有子表
-                          this.updataMainTableForHorizontal();// 请求主表
-                        } else {
-                          this.clickButtonsRefresh();
-                        }
-                      }, 1000);
-                      // }
-                    }
-                  } else if (oUl) {
-                    this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
-
-                    this.tabPanel.map((tab, index) => {
-                      if (Number(currentJflowConfigTable[0].itemTableId) === Number(tab.tableid)) { // 配置的为子表
-                        if (index === 0) { // 当前激活tab为主表时，此方法可刷新主表
-                          this.clickButtonsRefresh();
-                          setTimeout(() => { // 需要等主表请求完成后，再切换子表
-                            for (let i = 0; i < oUl.children.length; i++) {
-                              if (tab.tabledesc === oUl.children[i].innerText) {
-                                oUl.children[i].click();
-                              // if (index !== 0) { // jflow配置由子表切换子表，需要重新触发切换的子表刷新，读取配置，
-                              //   debugger;
-                              //   setTimeout(() => {
-                              //     this.clickButtonsRefresh();
-                              //   }, 5000);
-                              // }
-                              }
-                            }
-                          }, 1000);
-                        } else { // 当前激活tab非主表时，说明，当前jflow配置由子表切换子表，
-                          new Promise((resolve, reject) => {
-                            this.getObjectTabForMainTable({
-                              itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: {}, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
-                            });
-                          }).then(() => {
-                            setTimeout(() => { // 需要等主表请求完成后，再切换子表
-                              for (let i = 0; i < oUl.children.length; i++) {
-                                if (tab.tabledesc === oUl.children[i].innerText) {
-                                  console.log('tabledesc', tab.tabledesc);
-                                  oUl.children[i].click();
-                                }
-                              }
-                            }, 1000);
-                          });
-                        }
-                      }
-                    });
-                  }
-                }
-              } else {
-                this.clickButtonsRefresh();
-              }
-            } else {
-              this.clickButtonsRefresh();
-            }
+            const type = 'jflow';
+            this.clickButtonsRefresh(type);
+            // const query = this.JflowControlField.filter((item) => {
+            //   if (item.tableId === this.tableId) {
+            //     return item;
+            //   } 
+            // });
+            // const oUl = document.querySelector('.burgeon-tabs-panels-nav');
+            // if (query && oUl) {
+            //   for (let i = 0; i < oUl.children.length; i++) {
+            //     this.tabPanel.forEach((item) => {
+            //       if (Number(query) === item.tableid && item.tabledesc === oUl.children[i].innerText) {
+            //         oUl.children[i].click();
+            //       }
+            //     });
+            //   }
+            // }
           }
 
           if (event.detail.type === 'save') {

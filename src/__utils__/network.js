@@ -4,12 +4,12 @@ import router from '../__config__/router.config';
 import store from '../__config__/store.config';
 
 import {
-  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, getTouristRoute, REQUEST_PENDDING_EXPIRE
+  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, REQUEST_PENDDING_EXPIRE
 } from '../constants/global';
 import { addNetwork } from './indexedDB';
 
 import {
-  updateSessionObject, removeSessionObject, getSeesionObject
+  updateSessionObject, removeSessionObject
 } from './sessionStorage';
 
 let tableNameForGet = '';
