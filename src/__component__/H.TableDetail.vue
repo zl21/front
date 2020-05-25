@@ -96,10 +96,10 @@
             } 
 
             if (enableJflow() && custommizedJflow()) {
-              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || item.JflowReadonly;
+              // obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || item.JflowReadonly;
               obj.componentAttribute.isMainTable = true;       
               obj.componentAttribute.webConfSingle = this.WebConf;
-              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.tabPanel[0].componentAttribute.panelData.data.isdefault || this.objReadonlyForJflow;
+              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.tabPanel[0].componentAttribute.panelData.data.isdefault || item.JflowReadonly;
             } else {
               obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.childReadonly;
             }

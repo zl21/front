@@ -3383,6 +3383,7 @@
                                 }
                               }
                             };
+                            // this.clickButtonsRefresh();
                             this.updataMainTableForHorizontal(fun);// 请求主表
                           } else {
                             new Promise((resolve, reject) => {
@@ -3439,7 +3440,6 @@
             return true;
           });
         } 
-
         new Promise((resolve, reject) => {
           this.getObjectTabForMainTable({
             itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: 0, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject, isFirstRequest: true, isNotFirstRequest: false
