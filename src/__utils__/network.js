@@ -2,6 +2,8 @@ import axios from 'axios';
 import md5 from 'md5';
 import router from '../__config__/router.config';
 import store from '../__config__/store.config';
+import { singlePageNetworkConfig } from '../__config__/jflowConfig/singlePageNetworkConfig';
+
 
 import {
   ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, getTouristRoute, enableJflow, REQUEST_PENDDING_EXPIRE
@@ -190,13 +192,26 @@ axios.interceptors.response.use(
       window.sessionStorage.setItem('loginStatus', true);
     }
     if (config.url.indexOf('/p/cs/getSubSystems') !== -1) {
-      if (response.status === 200 && response.data.data.length > 0) {
-
-      } else {
+      if (response.status === 200 && response.data.data.length > 0) {} else {
         updateSessionObject('saveNetwork', { k: 'name', v: '/p/cs/getSubSystems' });
         // window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
       }
     }
+    if (enableJflow()) {
+      const urlArray = [
+        '/p/cs/objectTab',
+        '/p/cs/getObject',
+        '/p/cs/itemObj',
+      ];
+      const url = urlArray.filter(u => config.url.indexOf(u) !== -1);
+      if (url && url.length > 0) {
+        const getJflowConfigData = singlePageNetworkConfig();
+        if (getJflowConfigData && getJflowConfigData.length > 0) {
+          response.data.data.JflowConfigData = getJflowConfigData;
+        }
+      }
+    }
+
     return response;
   },
   (error) => {

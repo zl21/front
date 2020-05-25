@@ -111,6 +111,7 @@
   export default {
     data() {
       return {
+        isIE: window.navigator.userAgent.indexOf('Trident') > -1,
         saveButtonJflowPath: '',
         objTabActionDialogConfig: {}, // 自定义按钮配置
         actionId: null, // 自定义按钮ID
@@ -192,6 +193,11 @@
           }
         }
       },
+      // getJflowConfigCurrentTab: {
+      //   handler(val, oldVal) {
+      //     console.log(4444, val, oldVal);
+      //   }
+      // },
       backButton: {// 原jflow
         handler(val) {
           this.dataArray.back = val;
@@ -350,6 +356,22 @@
       watermarkImg() { // 匹配水印图片路径
         return this.watermarkimg;
       },
+      isCurrentItemTab() { // 当前表是否为子表
+        const itemNames = this.itemNameGroup.map((c) => {
+          if (c.tableName !== this.tableName) {
+            return c.tableName;
+          }
+        });
+        if (itemNames.includes(this.itemName)) {
+          return true;
+        }
+        return false;
+      },
+      // getJflowConfigCurrentTab() {
+      //   const currentJflowConfig = this.JflowControlField.filter(item => item.tableId === this.tableId);
+      //   // 解决jflow配置由子表改为主表
+      //   return currentJflowConfig.itemTableId ? currentJflowConfig.itemTableId : null;
+      // },
       waterMarkText() {
         const customizeWaterMark = getCustomizeWaterMark();
         const textMap = Object.assign({
@@ -665,8 +687,9 @@
             this.temporaryStoragePath = this.tempStorage.temp_storage.path;
             const dom = document.getElementById('actionMODIFY');
             if (dom) {
-              const myEvent = new Event('click');
-              dom.dispatchEvent(myEvent);    
+              const event = document.createEvent('HTMLEvents');
+              event.initEvent('click', false, true);
+              dom.dispatchEvent(event);
             }
           } else {
             const data = {
@@ -888,7 +911,7 @@
             this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
             new Promise((resolve, reject) => {
               this.getObjectTabForMainTable({
-                table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
+                itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
               });
             }).then(() => {
             });
@@ -896,7 +919,7 @@
             this.getInputForitemForChildTableForm({ table: tablename, tabIndex: this.currentTabIndex, tabinlinemode });
             const promise = new Promise((resolve, reject) => {
               this.getObjectTabForChildTableButtons({
-                maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex: this.currentTabIndex, resolve, reject
+                itemInfo: this.itemInfo, maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex: this.currentTabIndex, resolve, reject
               });
             });
 
@@ -914,10 +937,10 @@
             });
           } else if (tabrelation === '1:1') {
             this.getObjectTabForChildTableButtons({
-              maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex: this.currentTabIndex
+              itemInfo: this.itemInfo, maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex: this.currentTabIndex
             });
             this.getItemObjForChildTableForm({
-              table: tablename, objid: this.itemId, refcolid, tabIndex: this.currentTabIndex
+              itemInfo: this.itemInfo, table: tablename, objid: this.itemId, refcolid, tabIndex: this.currentTabIndex
             });
           }
         } else { // 纵向布局
@@ -952,7 +975,7 @@
           // } else {
           new Promise((resolve, reject) => {
             this.getObjectTabForMainTable({
-              table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
+              itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
             });
           }).then(() => {
           });
@@ -1054,7 +1077,6 @@
               // const myEvent = new Event('click');
               // dom.dispatchEvent(myEvent);
               // this.saveEventAfter = 'submit';
-             
               this.clickSave({ requestUrlPath: obj.requestUrlPath, type: 'submit' });
             }
           };
@@ -1226,9 +1248,11 @@
           showCancel: true,
           onOk: () => {
             if (obj.confirm && obj.confirm.indexOf('{') !== '-1') {
+              let verifyRequiredInformation = null;
               try {
                 if (JSON.parse(obj.confirm) && JSON.parse(obj.confirm).isSave) {
-                  if (this.verifyRequiredInformation()) {
+                  verifyRequiredInformation = this.verifyRequiredInformation();
+                  if (verifyRequiredInformation) {
                     if (this.testUpdata()) {
                       const type = 'objTabActionSlient';
                       if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
@@ -1251,6 +1275,9 @@
                   this.errorconfirmDialog(obj);
                 }
               } catch (error) {
+                if (!verifyRequiredInformation) {
+                  return;
+                }
                 this.errorconfirmDialog(obj);
               }
             } else {
@@ -1493,6 +1520,7 @@
               this.saveEventAfter = data.type;
             }
           }
+        
           const obj = {   
             name: '保存',
             eName: this.saveInfo.name,
@@ -1794,8 +1822,6 @@
 
         const promise = new Promise((resolve, reject) => {
           this.getExportQueryForButtons({ OBJ, resolve, reject });
-          console.log(4);
-
           this.$loading.show(this.tableName);
         });
         promise.then(() => {
@@ -1804,7 +1830,7 @@
               this.$loading.hide(this.tableName);
               const eleLink = document.createElement('a');
               const path = getGateway(`/p/cs/download?filename=${this.buttonsData.exportdata}`);
-              eleLink.setAttribute('href', path);
+              eleLink.setAttribute('href', encodeURI(path));
               eleLink.style.display = 'none';
               document.body.appendChild(eleLink);
               eleLink.click();
@@ -2088,7 +2114,7 @@
             tableName,
             back: true,
           };
-          this.tabHref(param);
+          this.tabOpen(param);
         }
       },
       getbuttonGroupData(tabcmd) { // 按钮渲染逻辑
@@ -3295,24 +3321,81 @@
               });
             });
           }
-
+         
           if (event.detail.type === 'refresh') {
-            this.clickButtonsRefresh();
-            // const query = this.JflowControlField.filter((item) => {
-            //   if (item.tableId === this.tableId) {
-            //     return item;
-            //   } 
-            // });
-            // const oUl = document.querySelector('.burgeon-tabs-panels-nav');
-            // if (query && oUl) {
-            //   for (let i = 0; i < oUl.children.length; i++) {
-            //     this.tabPanel.forEach((item) => {
-            //       if (Number(query) === item.tableid && item.tabledesc === oUl.children[i].innerText) {
-            //         oUl.children[i].click();
-            //       }
-            //     });
-            //   }
-            // }
+            // this.clickButtonsRefresh();
+            if (this.objectType === 'horizontal') {
+              const currentJflowConfigTable = this.JflowControlField.filter((item) => {
+                if (item.tableId === this.tableId) {
+                  return item;
+                } 
+              });
+              if (currentJflowConfigTable[0]) {
+                if (Number(currentJflowConfigTable[0].itemTableId) === (Number(this.itemInfo.tableid) || Number(this.itemInfo.id))) { // 需要刷新的是当前tab
+                  this.clickButtonsRefresh();
+                } else {
+                  const oUl = document.querySelector('.burgeon-tabs-panels-nav');
+
+                  if (Number(currentJflowConfigTable[0].itemTableId) === Number(currentJflowConfigTable[0].tableId)) { // 主表
+                    if (oUl) {
+                      oUl.children[1].click();
+                      // if (this.isRequest.length > 0 && this.isRequest[0] !== true) {
+                      setTimeout(() => {
+                        if (this.WebConf && this.WebConf.isCustomizeTab) {
+                          // 解决配置isCustomizeTab情况时，jflow配置子表切换主表时，需刷新主表重置所有子表
+                          this.updataMainTableForHorizontal();// 请求主表
+                        } else {
+                          this.clickButtonsRefresh();
+                        }
+                      }, 1000);
+                      // }
+                    }
+                  } else if (oUl) {
+                    this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
+
+                    this.tabPanel.map((tab, index) => {
+                      if (Number(currentJflowConfigTable[0].itemTableId) === Number(tab.tableid)) { // 配置的为子表
+                        if (index === 0) { // 当前激活tab为主表时，此方法可刷新主表
+                          this.clickButtonsRefresh();
+                          setTimeout(() => { // 需要等主表请求完成后，再切换子表
+                            for (let i = 0; i < oUl.children.length; i++) {
+                              if (tab.tabledesc === oUl.children[i].innerText) {
+                                oUl.children[i].click();
+                              // if (index !== 0) { // jflow配置由子表切换子表，需要重新触发切换的子表刷新，读取配置，
+                              //   debugger;
+                              //   setTimeout(() => {
+                              //     this.clickButtonsRefresh();
+                              //   }, 5000);
+                              // }
+                              }
+                            }
+                          }, 1000);
+                        } else { // 当前激活tab非主表时，说明，当前jflow配置由子表切换子表，
+                          new Promise((resolve, reject) => {
+                            this.getObjectTabForMainTable({
+                              itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: {}, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
+                            });
+                          }).then(() => {
+                            setTimeout(() => { // 需要等主表请求完成后，再切换子表
+                              for (let i = 0; i < oUl.children.length; i++) {
+                                if (tab.tabledesc === oUl.children[i].innerText) {
+                                  console.log('tabledesc', tab.tabledesc);
+                                  oUl.children[i].click();
+                                }
+                              }
+                            }, 1000);
+                          });
+                        }
+                      }
+                    });
+                  }
+                }
+              } else {
+                this.clickButtonsRefresh();
+              }
+            } else {
+              this.clickButtonsRefresh();
+            }
           }
 
           if (event.detail.type === 'save') {
@@ -3329,6 +3412,26 @@
             updateSessionObject('saveEventAfter', saveEventAfterData);
           }
         }
+      },
+      updataMainTableForHorizontal() {
+        let page = {};
+        if (this.objectType === 'horizontal') { // 横向布局
+          this.tabPanel.every((item) => {
+            if (this.itemName !== this.tableName && item.tablename === this.itemName) {
+              page = item.tablePageInfo;
+              return false;
+            }
+            return true;
+          });
+        } 
+
+        new Promise((resolve, reject) => {
+          this.getObjectTabForMainTable({
+            itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: 0, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject, isFirstRequest: true, isNotFirstRequest: false
+          });
+        }).then(() => {
+        });
+        this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
       },
       hideBackButton() {
         const clickMenuAddSingleObjectData = getSeesionObject('clickMenuAddSingleObject');
@@ -3370,6 +3473,7 @@
 
         return false;
       },
+      
       closeCurrentLoading() { // 关闭当前tab loading
         const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
         const dom = document.querySelector(`#${currentTableName}-loading`);
@@ -3502,6 +3606,7 @@
       if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
         this.buttonsReorganization(this.tabcmd);
       }
+      this.dataArray.refresh = this.refreshButtons;
       this.waListButtons(this.tabwebact);
       if (this.jflowPluginDataArray) {
         this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;

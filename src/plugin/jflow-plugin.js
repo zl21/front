@@ -282,6 +282,7 @@ async function jflowButtons(id, pid, flag, active, isApprover) { // jflow按钮�
 
             JflowControlField.push(obj);
             window.jflowPlugin.store.commit('global/updateJflowControlField', JflowControlField);
+            console.log(JflowControlField, new Date());
           } else { // 不在流程中去除相对应的配置
             let JflowControlField = JSON.parse(JSON.stringify(window.jflowPlugin.store.state.global.JflowControlField));
             const obj = {
@@ -868,13 +869,15 @@ function initiateLaunch(data) { // 业务系统流程发起
               }
             });
           });
+        } else {
+          DispatchEvent('jflowEvent', {
+            detail: {
+              type: 'search'
+            }
+          });
         }
 
-        DispatchEvent('jflowEvent', {
-          detail: {
-            type: 'search'
-          }
-        });
+        
         resolve(res);
       } else {
         resolve();
