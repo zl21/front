@@ -23,6 +23,7 @@ module.exports = {
   // target: 'http://r3.burgeon.cn:19999/', // 'http://106.15.154.165:19999/', // Cube
   // target: 'http://web.cmsqas.lining.com/', // 李宁
   // target: 'http://r3.burgeon.cn:28888/', // 李宁
+  // target: 'http://jflow-shangfei-r3.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://ark-share-dev.dev.burgeononline.com', // ArkShare环境
   // target: 'http://47.102.164.111:26666/', // 卡宾环境
 
@@ -39,7 +40,7 @@ module.exports = {
   enableInitializationRequest: true, // 是否开启初始化请求
   // enableCustomInterface: false // 是否开启自定义接口,
   customizeWaterMark: {}, // 启用外部自定义水印配置,
-  specifiedGlobalGateWay: '',
+  // specifiedGlobalGateWay: 'ad-app',
   encryptedPassword: false, // 是否允许login接口password加密
   isItemTableNewValidation: true, // 是否允许子表新增有必填项时，输入值才触发子表必填项校验，不输入值则只校验主表
   isCommonTable: true, // 是否开启普通表格，默认关闭

@@ -48,9 +48,9 @@
               obj.label = this.activeTab.label;
               obj.componentAttribute.isactive = this.tabPanel[0].componentAttribute.buttonsData.data.isactive;
               obj.componentAttribute.watermarkimg = this.tabPanel[0].componentAttribute.buttonsData.data.watermarkimg;
-              obj.componentAttribute.jflowWaterMark = this.jflowWaterMark;
+              // obj.componentAttribute.jflowWaterMark = this.jflowWaterMark;
               obj.componentAttribute.isMainTable = true;     
-              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.tabPanel[0].componentAttribute.panelData.data.isdefault || item.JflowReadonly;
+              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.tabPanel[0].componentAttribute.panelData.data.isdefault;
             } 
 
            

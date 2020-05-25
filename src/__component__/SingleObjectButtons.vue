@@ -1519,15 +1519,15 @@
           }
         } else {
           if (data) {
-            if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
-              const saveEventAfter = {
-                k: 'type',
-                v: data.type
-              };
-              updateSessionObject('saveEventAfter', saveEventAfter);
-            } else {
-              this.saveEventAfter = data.type;
-            }
+            // if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
+            //   const saveEventAfter = {
+            //     k: 'type',
+            //     v: data.type
+            //   };
+            //   updateSessionObject('saveEventAfter', saveEventAfter);
+            // } else {
+            this.saveEventAfter = data.type;
+            // }
           }
         
           const obj = {   
@@ -3374,7 +3374,7 @@
           }
         }
       },
-      updataMainTableForHorizontal() {
+      updataMainTableForHorizontal(fun) {
         let page = {};
         if (this.objectType === 'horizontal') { // 横向布局
           this.tabPanel.every((item) => {
@@ -3391,6 +3391,9 @@
             itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: 0, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject, isFirstRequest: true, isNotFirstRequest: false
           });
         }).then(() => {
+          if (fun) {
+            fun();
+          }
         });
         this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
       },
