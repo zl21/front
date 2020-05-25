@@ -34,20 +34,6 @@ module.exports = {
   ignoreGateWayPattern: [/\/jflow\/*/g, /\/api\/*/g], // 框架默认禁用的网关逻辑的正则模式匹配
   enableNetworkMonitor: true, // 是否开启网络监控功能
   enableModuleKA: true, // 默认启用keepAlive功能
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-  enableJflow: false, // 默认禁用JFlow插件功能
-  closeJflowIcon: false, // 控制是否是tab显示，既是否显示顶部的jflow图标
-  encryptionJflow: false, // 控制jflow传参是否加密
-  // jflowRequestDomain: 'http://jflow-zhixiao.dev.burgeononline.com', // jflow后台地址(知晓)
-  // jflowRequestDomain: 'http://jflow-qiaodan.dev.burgeononline.com', // jflow后台地址（乔丹）
-  // jflowRequestDomain: 'http://106.15.24.156:32940', // jflow后台地址(李宁)
-  jflowRequestDomain: 'http://jflow-syman-dev.dev.burgeononline.com/', // jflow后台地址(商飞)
-  
->>>>>>> origin/v1.4
->>>>>>> e1d4ce4c6b0674ba2c0d20fd0ce660492a276d28
   enableTabLists: true, // 是否启用Tab页签切换模块的能力，默认启用
   touristRoute: '/login', // 游客路由：等用户未登录的时候，需要跳转的页面
   enableInitializationRequest: true, // 是否开启初始化请求
