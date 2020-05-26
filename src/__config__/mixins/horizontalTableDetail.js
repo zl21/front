@@ -21,13 +21,13 @@ export default () => ({
     };
   },
   created() {
-   
-  },
-  mounted() {
     this[MODULE_COMPONENT_NAME] = getComponentName();
     this[INSTANCE_ROUTE] = router.currentRoute.fullPath;
     this[INSTANCE_ROUTE_QUERY] = router.currentRoute.params;
     this.noMounted = false;
+  },
+  mounted() {
+   
   },
   activated() {
     if (this.noMounted) { // 因进入单对象界面会触发activated生命周期，以下操作为切换tab时的处理逻辑，第一次加载组件不需要执行以下操作，故在mounted里加标示区分
