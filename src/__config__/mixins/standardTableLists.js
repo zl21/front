@@ -28,11 +28,14 @@ export default () => ({
       noMounted: true, // 进入单对象会同时触发mounted与actived两个生命周期，因此无法判断是否在切换tab
     };
   },
-  mounted() {
+  created() {
     this.noMounted = false;
     this[MODULE_COMPONENT_NAME] = getComponentName();
     this[INSTANCE_ROUTE] = router.currentRoute.fullPath;
     this[INSTANCE_ROUTE_QUERY] = router.currentRoute.params;
+  },
+  mounted() {
+    
   },
   methods: {
     ...mapActions(getComponentName(),
