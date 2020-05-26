@@ -53,8 +53,14 @@
               obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.tabPanel[0].componentAttribute.panelData.data.isdefault;
             } 
 
-           
-            obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.childReadonly;
+            if (enableJflow() && custommizedJflow()) {
+              // obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || item.JflowReadonly;
+              obj.componentAttribute.isMainTable = true;       
+              obj.componentAttribute.webConfSingle = this.WebConf;
+              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.tabPanel[0].componentAttribute.panelData.data.isdefault || item.JflowReadonly;
+            } else {
+              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.childReadonly;
+            }
             obj.componentAttribute.webConfSingle = this.tabPanel[index].componentAttribute.buttonsData.data.webconf;
             obj.componentAttribute.isreftabs = this.tabPanel[0].componentAttribute.buttonsData.data.isreftabs;
             obj.componentAttribute.tableName = item.tablename;
