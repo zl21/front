@@ -66,13 +66,22 @@
       :mask="true"
       :width="835"
     >
-      <div class="modalCotent">
+      <div
+        v-if="modaltype !== 'detail'"
+        class="modalCotent"
+      >
         <mutipleSelectPop
           v-if="openControl"
           ref="dialogtest"
           :is-mutiple="false"
           :is-use="false"
           @getResult="getResult"
+        />
+      </div>
+      <div else>
+        <CustomDetails
+          v-if="modaltype == 'detail'"
+          :item-details="detail"
         />
       </div>
 
@@ -386,6 +395,30 @@
                     }
                   },
                   '流程进度'
+                ),
+                h('span', {
+                  style: {
+                    width: '1px',
+                    height: '19px',
+                    display: 'inline-block',
+                    background: 'rgba(228,228,228,1)',
+                    margin: '0 16px'
+                  }
+                }),
+                h(
+                  'span',
+                  {
+                    style: {
+                      color: 'rgba(16, 142, 233, 1)',
+                      cursor: 'pointer'
+                    },
+                    on: {
+                      click: () => {
+                        this.openModal('detail', params.row);
+                      }
+                    }
+                  },
+                  '单据详情'
                 )
               ]
             )
@@ -469,7 +502,9 @@
         obj: {}, // 传给table的对象
 
         spinShow: false,
-        Agent: {} // 代理人信息
+        Agent: {}, // 代理人信息
+
+        detail: {}, // 点击的单据
       };
     },
     // computed: {
@@ -625,7 +660,7 @@
         // 输入框change事件
         this.tableSearch = event.target.value;
       },
-      openModal(type) {
+      openModal(type, detail) {
         this.modaltype = type;
         // eslint-disable-next-line no-unused-expressions
         type === 2
@@ -652,6 +687,12 @@
           this.tableSearch = '';
           this.openControl = true;
           this.componentData[0].pageNum = 1;
+        }
+
+        if (type === 'detail') {
+          this.openControl = true;
+          this.detail = detail;
+          this.modaltitle = '单据详情';
         }
       },
       // 设置外出代理人
