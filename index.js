@@ -15,8 +15,6 @@ import { removeSessionObject, getSeesionObject } from './src/__utils__/sessionSt
 import CompositeForm from './src/__component__/CompositeForm';
 import customizedModalConfig from './src/__config__/customizeDialog.config';
 import Loading from './src/__utils__/loading';
-Vue.use(BurgeonUi);
-Vue.use(VueDND);
 // css import
 import './node_modules/ag-grid/dist/styles/ag-grid.css';
 import './src/assets/r3.iconfont/iconfont.css';
@@ -29,7 +27,8 @@ import './src/assets/css/custom-ext.less';
 // import 'ztree/js/jquery.ztree.exhide.min';
 import jflowplugin from './src/plugin/jflow-plugin';
 
-
+Vue.use(BurgeonUi);
+Vue.use(VueDND);
 
 
 if (enableJflow() && jflowRequestDomain()) {
