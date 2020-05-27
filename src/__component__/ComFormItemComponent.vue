@@ -1169,17 +1169,18 @@
         } else if (refIndex !== -1) {
           if (items.validate.hidecolumn.ishide) {
             this.newFormItemLists[index].show = false;
+            this.newFormItemLists[index].item.props.showCol = false;
           } else {
             this.newFormItemLists[index].show = true;
+            this.newFormItemLists[index].item.props.showCol = true;
           }
           // 添加小组件的字段配置
           this.newFormItemLists[index].item.props.showCol = true;
+        } else if (items.validate.hidecolumn.ishide) {
+          this.newFormItemLists[index].show = true;
+          this.newFormItemLists[index].item.props.showCol = true;
         } else {
-          if (items.validate.hidecolumn.ishide) {
-            this.newFormItemLists[index].show = true;
-          } else {
-            this.newFormItemLists[index].show = false;
-          }
+          this.newFormItemLists[index].show = false;
           this.newFormItemLists[index].item.props.showCol = false;
         }
 
@@ -1201,8 +1202,7 @@
             this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
           }  
         }
-
-        if (items.props.webconf && items.props.webconf.clearWhenHidden) {
+        if (!items.props.showCol && items.props.webconf && items.props.webconf.clearWhenHidden) {
           //   清除页面 联动的值
           this.newFormItemLists[index].item.value = '';
           this.newFormItemLists[index].item.props.defaultSelected = [];

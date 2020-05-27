@@ -15,8 +15,8 @@
         class="Button"
         @click="customize"
       >
-        测试跳转到单对象界面 -->
-      <!-- </Button> -->
+        测试跳转到单对象界面
+      </Button> -->
     </div>
     <div class="content">
       <div class="contentLeft">
