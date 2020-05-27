@@ -67,7 +67,10 @@
       :mask="true"
       :width="835"
     >
-      <div class="modalCotent">
+      <div
+        v-if="modaltype !== 'detail'"
+        class="modalCotent"
+      >
         <mutipleSelectPop
           v-if="openControl"
           ref="dialogtest"
@@ -309,7 +312,9 @@
         obj: {}, // 传给table的对象
 
         spinShow: false,
-        Agent: {} // 代理人信息
+        Agent: {}, // 代理人信息
+
+        detail: {}, // 点击的单据
       };
     },
     methods: {
@@ -605,6 +610,10 @@
         });
       },
       ok() {
+        if (this.modaltype === 'detail') {
+          this.openControl = false; // 关闭弹框
+          return;
+        }
         if (!(this.resultData.list && this.resultData.list.length > 0)) {
           this.$Message.warning('请选择人员');
           return;
@@ -649,6 +658,12 @@
         }
         if (type === 3) {
           this.openControl = true;
+        }
+
+        if (type === 'detail') {
+          this.openControl = true;
+          this.detail = detail;
+          this.modaltitle = '单据详情';
         }
       },
       
