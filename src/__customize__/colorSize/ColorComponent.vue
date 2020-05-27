@@ -57,7 +57,7 @@
           icon="ios-add-circle-outline"
           @on-change="addColorInputChange"
           @on-click="addIconClick"
-            >
+        />
         <Button
           slot="prepend"
           @click="addColor"

@@ -408,14 +408,13 @@ export default {
 
     // 删除规则六： 关闭页签时，清除定制界面跳转单对象界面session中存储的对应关系
     const routeMapRecordForCustomizePage = getSeesionObject('routeMapRecordForCustomizePage');
-    if (routeMapRecordForCustomizePage[router.currentRoute.fullPath]) {
-      Object.keys(routeMapRecordForCustomizePage).map((item) => {
-        if (router.currentRoute.fullPath === item) {
-          deleteFromSessionObject('routeMapRecordForCustomizePage', router.currentRoute.fullPath);
-        }
-      });
-    }
-    
+    Object.keys(routeMapRecordForCustomizePage).map((item) => {
+      const index = tab.routeFullPath.lastIndexOf('\/');  
+      const tabPath = tab.routeFullPath.substring(0, index + 1);
+      if (item.includes(tabPath)) {
+        deleteFromSessionObject('routeMapRecordForCustomizePage', item);
+      }
+    });
     state.isRequest = [];// 清空修改数据验证
 
     const { openedMenuLists } = state;
@@ -635,8 +634,8 @@ export default {
           query
         };
         router.push(routeInfo);
-        return;
       }
+      return;
     }
     router.push({
       path

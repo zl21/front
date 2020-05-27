@@ -48,9 +48,9 @@
               obj.label = this.activeTab.label;
               obj.componentAttribute.isactive = this.tabPanel[0].componentAttribute.buttonsData.data.isactive;
               obj.componentAttribute.watermarkimg = this.tabPanel[0].componentAttribute.buttonsData.data.watermarkimg;
-              obj.componentAttribute.jflowWaterMark = this.jflowWaterMark;
+              // obj.componentAttribute.jflowWaterMark = this.jflowWaterMark;
               obj.componentAttribute.isMainTable = true;     
-              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.tabPanel[0].componentAttribute.panelData.data.isdefault || item.JflowReadonly;
+              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.tabPanel[0].componentAttribute.panelData.data.isdefault;
             } 
 
            
@@ -58,7 +58,7 @@
             obj.componentAttribute.webConfSingle = this.tabPanel[index].componentAttribute.buttonsData.data.webconf;
             obj.componentAttribute.isreftabs = this.tabPanel[0].componentAttribute.buttonsData.data.isreftabs;
             obj.componentAttribute.tableName = item.tablename;
-            obj.componentAttribute.formReadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || item.JflowReadonly;
+            obj.componentAttribute.formReadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly;
             obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
             obj.componentAttribute.itemInfo = item;
             obj.componentAttribute.childTableNames = this.childTableNames;
@@ -111,7 +111,6 @@
  
       tabClick(index) {
         let flag = false;
-
         if (this.isRequest.length > 0 && this.isRequest[index] === true) {
           flag = true;
         }
@@ -143,7 +142,7 @@
                 }
                 new Promise((resolve, reject) => {
                   this.getObjectTabForChildTableButtons({
-                    itemInfo: this.tabPanel[index], maintable: tableName, table: tablename, objid: itemId, tabIndex: index, resolve, reject
+                    maintable: tableName, table: tablename, objid: itemId, tabIndex: index, resolve, reject
                   });
                 }).then(() => {
                   const {
@@ -167,14 +166,14 @@
                 const { tablename, refcolid } = this.tabPanel[index];
                 new Promise((resolve, reject) => {
                   this.getObjectTabForChildTableButtons({
-                    itemInfo: this.tabPanel[index], maintable: tableName, table: tablename, objid: itemId, tabIndex: index, resolve, reject
+                    maintable: tableName, table: tablename, objid: itemId, tabIndex: index, resolve, reject
                   });
                 }).then(() => {
 
                 });
                
                 this.getItemObjForChildTableForm({
-                  itemInfo: this.tabPanel[index], table: tablename, objid: itemId, refcolid, tabIndex: index
+                  table: tablename, objid: itemId, refcolid, tabIndex: index
                 });
               }
             }
@@ -196,6 +195,7 @@
           });
         }).then((resData) => {
           // if (resData.webconf && resData.webconf.isCustomizeTab) {
+          //   console.log(111, this.tabPanels);
           //   this.isRequestUpdata({ tabPanel: this.tabPanels, index: 1 });
           // } else {
           this.isRequestUpdata({ tabPanel: this.tabPanels, index: 0 });

@@ -1519,15 +1519,15 @@
           }
         } else {
           if (data) {
-            if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
-              const saveEventAfter = {
-                k: 'type',
-                v: data.type
-              };
-              updateSessionObject('saveEventAfter', saveEventAfter);
-            } else {
-              this.saveEventAfter = data.type;
-            }
+            // if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
+            //   const saveEventAfter = {
+            //     k: 'type',
+            //     v: data.type
+            //   };
+            //   updateSessionObject('saveEventAfter', saveEventAfter);
+            // } else {
+            this.saveEventAfter = data.type;
+            // }
           }
         
           const obj = {   
@@ -3374,7 +3374,7 @@
           }
         }
       },
-      updataMainTableForHorizontal() {
+      updataMainTableForHorizontal(fun) {
         let page = {};
         if (this.objectType === 'horizontal') { // 横向布局
           this.tabPanel.every((item) => {
@@ -3385,12 +3385,14 @@
             return true;
           });
         } 
-
         new Promise((resolve, reject) => {
           this.getObjectTabForMainTable({
             itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: 0, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject, isFirstRequest: true, isNotFirstRequest: false
           });
         }).then(() => {
+          if (fun) {
+            fun();
+          }
         });
         this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
       },
@@ -3513,11 +3515,12 @@
         window.addEventListener('network', this.networkEventListener);// 监听接口
       }
       if (this.objectType === 'horizontal') { // 横向布局
-        this.tabPanel.forEach((item) => {
-          if (this.itemName !== this.tableName) {
-            const objreadonly = item.componentAttribute.buttonsData.data.objreadonly;
-            if (objreadonly) {
-              this.hideButtonsForcmds(['actionMODIFY', 'actionDELETE', 'actionIMPORT', 'actionCANCOPY']);
+        if (this.tabPanel.length > 0) {
+          this.tabPanel.forEach((item) => {
+            if (this.itemName !== this.tableName) {
+              const objreadonly = item.componentAttribute.buttonsData.data.objreadonly;
+              if (objreadonly) {
+                this.hideButtonsForcmds(['actionMODIFY', 'actionDELETE', 'actionIMPORT', 'actionCANCOPY']);
               // if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
               // this.tabcmd.cmds.forEach((item, index) => {
               //   if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT' || item === 'actionCANCOPY') {
@@ -3525,21 +3528,21 @@
               //   }
               // });
               // }
-            }
-
-            if (Version() === '1.4' && this.itemInfo && this.itemInfo.tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
-              if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
-                this.tabcmd.cmds.forEach((item, index) => {
-                  if (item !== 'actionMODIFY' || item !== 'actionEXPORT') {
-                    this.tabcmd.prem[index] = false;
-                  }
-                });
               }
-            }
+
+              if (Version() === '1.4' && this.itemInfo && this.itemInfo.tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
+                if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+                  this.tabcmd.cmds.forEach((item, index) => {
+                    if (item !== 'actionMODIFY' || item !== 'actionEXPORT') {
+                      this.tabcmd.prem[index] = false;
+                    }
+                  });
+                }
+              }
         
-            const { tabinlinemode } = this.itemInfo;
-            if (tabinlinemode === 'N') {
-              this.hideButtonsForcmds(['actionMODIFY', 'actionDELETE', 'actionIMPORT']);
+              const { tabinlinemode } = this.itemInfo;
+              if (tabinlinemode === 'N') {
+                this.hideButtonsForcmds(['actionMODIFY', 'actionDELETE', 'actionIMPORT']);
               // if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
               //   this.tabcmd.cmds.forEach((item, index) => {
               //     if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT') {
@@ -3547,13 +3550,15 @@
               //     }
               //   });
               // }
-            }
+              }
 
-            if (this.disableExport) {
-              this.hideButtonsForcmds(['actionEXPORT']);
+              if (this.disableExport) {
+                this.hideButtonsForcmds(['actionEXPORT']);
+              }
             }
-          }
-        });
+          });
+        }
+       
 
         if (this.webConfSingle) {
           if (this.webConfSingle.disableImport) {

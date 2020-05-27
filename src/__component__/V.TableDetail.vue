@@ -43,14 +43,15 @@
         </label>
         <AutomaticPathGenerationInput />
       </div> -->
+     
       <composite-form
         v-if="mainFormInfo.formData.isShow"
         class="compositeAllform"
         object-type="vertical"
         :is-main-table="true"
-        :objreadonly="mainFormInfo.buttonsData.data.objreadonly || mainFormInfo.formData.data.isdefault||mainFormInfo.JflowReadonly"
-        :readonly="mainFormInfo.buttonsData.data.objreadonly||mainFormInfo.JflowReadonly"
         :web-conf-single="mainFormInfo.buttonsData.data.webconf"
+        :objreadonly="mainFormInfo.buttonsData.data.objreadonly || mainFormInfo.formData.data.isdefault"
+        :readonly="mainFormInfo.buttonsData.data.objreadonly"
         :default-set-value="updateData[this.$route.params.tableName]? updateData[this.$route.params.tableName].changeData:{}"
         :master-name="$route.params.tableName"
         :master-id="$route.params.itemId"
@@ -155,14 +156,6 @@
             obj.componentAttribute.webConfSingle = this.mainFormInfo.buttonsData.data.webconf;
           }
           obj.componentAttribute.webConfSingle = obj.componentAttribute.buttonsData.data.webconf;
-          
-          // if (enableJflow() && custommizedJflow()) {
-          //   obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly || item.JflowReadonly;
-          // } else {
-          //   obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly || this.childReadonly || item.JflowReadonly;
-          // }
-          // obj.componentAttribute.formReadonly = this.mainFormInfo.buttonsData.data.objreadonly || item.JflowReadonly;
-        
           obj.componentAttribute.childTableNames = this.childTableNames;
           obj.componentAttribute.mainFormPaths = this.formPaths;
           obj.componentAttribute.tooltipForItemTable = this.tooltipForItem;
@@ -307,7 +300,7 @@
               if (refTab.tabrelation !== '1:1') {
                 getButtonDataPromise = new Promise((rec, rej) => {
                   this.getObjectTabForRefTable({
-                    table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej, itemInfo: refTab
+                    table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej
                   });
                 });
               }
@@ -337,11 +330,11 @@
             } else if (refTab.tabrelation === '1:1') {
               getButtonDataPromise = new Promise((rec, rej) => {
                 this.getObjectTabForRefTable({
-                  table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej, itemInfo: refTab
+                  table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej
                 });
               });
               this.getItemObjForChildTableForm({
-                itemInfo: refTab, table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, tabIndex: index
+                table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, tabIndex: index
               });
             }
           }

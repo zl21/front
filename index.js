@@ -212,7 +212,9 @@ const getGateWayServiceId = () => {
       }, 0);
     } else {
       network.get('/p/c/get_service_id').then((res) => {
-        window.sessionStorage.setItem('serviceId', res.data.data.serviceId);
+        if (res.data && res.data.data && res.data.data.serviceId) {
+          window.sessionStorage.setItem('serviceId', res.data.data.serviceId);
+        }
         getCategory();
         setTimeout(() => {
           init();
