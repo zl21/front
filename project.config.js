@@ -18,11 +18,7 @@ module.exports = {
   // target: 'http://139.224.169.76:28888', // 沁园
   // target: 'http://10.14.5.196', // 商飞开发环境
   // target: 'http://10.14.3.71', // 商飞预发环境
-<<<<<<< HEAD
   target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 商飞测试环境
-=======
-  // target: 'http://jflow-shangfei-yf-r3.dev.burgeononline.com/', // 商飞测试环境
->>>>>>> origin/v1.4
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop网关开启环境
   // target: 'http://r3.burgeon.cn:19999/', // 'http://106.15.154.165:19999/', // Cube
   // target: 'http://web.cmsqas.lining.com/', // 李宁
@@ -38,17 +34,6 @@ module.exports = {
   ignoreGateWayPattern: [/\/jflow\/*/g, /\/api\/*/g], // 框架默认禁用的网关逻辑的正则模式匹配
   enableNetworkMonitor: true, // 是否开启网络监控功能
   enableModuleKA: true, // 默认启用keepAlive功能
-<<<<<<< HEAD
-=======
-  enableJflow: false, // 默认禁用JFlow插件功能
-  closeJflowIcon: false, // 控制是否是tab显示，既是否显示顶部的jflow图标
-  encryptionJflow: false, // 控制jflow传参是否加密
-  // jflowRequestDomain: 'http://jflow-zhixiao.dev.burgeononline.com', // jflow后台地址(知晓)
-  // jflowRequestDomain: 'http://jflow-qiaodan.dev.burgeononline.com', // jflow后台地址（乔丹）
-  // jflowRequestDomain: 'http://106.15.24.156:32940', // jflow后台地址(李宁)
-  jflowRequestDomain: 'http://jflow-syman-dev.dev.burgeononline.com/', // jflow后台地址(商飞)
-  
->>>>>>> origin/v1.4
   enableTabLists: true, // 是否启用Tab页签切换模块的能力，默认启用
   touristRoute: '/login', // 游客路由：等用户未登录的时候，需要跳转的页面
   enableInitializationRequest: true, // 是否开启初始化请求
@@ -63,6 +48,4 @@ module.exports = {
   layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
   backDashboardRoute: [], // 配置刷新浏览器回到Dashboard界面
   custommizedRequestURL: {}, // 配置内置自定义界面requestURL
-
-
 };
