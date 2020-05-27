@@ -1566,9 +1566,9 @@
                 return false;
               }
               // 隐藏且配置了this._items.props.webconf
-              if (!this._items.props.showCol && this._items.props.webconf && this._items.props.webconf.clearWhenHidden) {
-                return false;
-              }
+              // if (this._items.props.webconf && this._items.props.webconf.clearWhenHidden) {
+              //   return false;
+              // }
               if (item.COLUMN_TYPE === 0) {
                 // 数组形式
                 if (this._items.props.defaultSelected) {
