@@ -80,7 +80,7 @@
       </div>
       <div else>
         <CustomDetails
-          v-if="modaltype == 'detail'"
+          v-if="modaltype == 'detail' && openControl"
           :item-details="detail"
         />
       </div>
