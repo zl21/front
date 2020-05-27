@@ -2856,10 +2856,18 @@
           if (this.updateData[itemName].add && this.updateData[itemName].add[itemName]) {
             itemAdd = Object.values(this.updateData[itemName].add[itemName]);
           }
+
+          
           if (itemModify.length > 0 && itemAdd.length < 1) { // 子表表格编辑修改
+            let check = null;
+            if (this.itemInfo.tabrelation === '1:1') {
+              check = this.verifyRequiredInformation(); 
+            } else {
+              check = this.itemTableCheckFunc();
+            }
             if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) {
               this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
-            } else if (this.itemTableCheckFunc()) {
+            } else if (check) {
               this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
             }
           } else
