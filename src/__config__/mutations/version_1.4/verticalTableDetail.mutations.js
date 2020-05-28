@@ -120,10 +120,10 @@ export default {
       componentAttribute.buttonsData.data.isItemTableVertical = true;
       componentAttribute.buttonsData.data = data;
     } else {
-      componentAttribute.buttonsData.isShow = true;
+      // componentAttribute.buttonsData.isShow = true;
       componentAttribute.buttonsData.data = data;
-      componentAttribute.buttonsData.data.isItemTableVertical = true;
-      componentAttribute.buttonsData.backButton = false;// false不显示返回按钮，true显示
+      // componentAttribute.buttonsData.data.isItemTableVertical = true;
+      // componentAttribute.buttonsData.backButton = false;// false不显示返回按钮，true显示
     }
   },
   updateFormDataForRefTable(state, data) { // 更新子表表单数据
