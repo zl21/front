@@ -115,8 +115,16 @@ export default {
   },
   updateRefButtonsData(state, data) { // 更新子表按钮数据
     const { componentAttribute } = state.tabPanels[data.tabIndex];
-    componentAttribute.buttonsData.isShow = false;
-    componentAttribute.buttonsData.data = data;
+    if (data.jflowButton && data.jflowButton.length > 0) {
+      componentAttribute.buttonsData.isShow = true;
+      componentAttribute.buttonsData.data.isItemTableVertical = true;
+      componentAttribute.buttonsData.data = data;
+    } else {
+      componentAttribute.buttonsData.isShow = true;
+      componentAttribute.buttonsData.data = data;
+      componentAttribute.buttonsData.data.isItemTableVertical = true;
+      componentAttribute.buttonsData.backButton = false;// false不显示返回按钮，true显示
+    }
   },
   updateFormDataForRefTable(state, data) { // 更新子表表单数据
     const { componentAttribute } = state.tabPanels[data.tabIndex];

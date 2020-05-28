@@ -734,9 +734,17 @@
         }
       },
       clickExtraposition(obj) { // jflow方法
+        let currentItemInfo = {};
+        if (this.objectType === 'horizontal') {
+          currentItemInfo = this.itemInfo;
+        } else if (this.isItemTable) {
+          currentItemInfo = this.itemInfo;
+        }
+         
         DispatchEvent('jflowPlugin', {
           detail: {
-            obj
+            obj,
+            currentItemInfo, // 当前操作的子表或主表信息
           }
         });
       },
@@ -3495,6 +3503,7 @@
 
       this.setDisableButtons();
       if (this.isItemTable) {
+        console.log(444, this.itemInfo);
         this.dataArray.refresh = false;
         this.dataArray.back = false;
       }
@@ -3573,7 +3582,7 @@
       if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
         this.buttonsReorganization(this.tabcmd);
       }
-      this.dataArray.refresh = this.refreshButtons;
+      // this.dataArray.refresh = this.refreshButtons;
       this.waListButtons(this.tabwebact);
       // if (this.jflowPluginDataArray) {//jflowOld
       //   this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;
