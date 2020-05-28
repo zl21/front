@@ -14,6 +14,7 @@ packageTime: '2020.05.19.11.00':支持jflow转派到自定义主表，
                                 框架向上抛出文件上传组件props   draggingTag参数为设置当前拖拽唯一标示，type:String
                                 支持框架内置自定义界面配置custommizedRequestURL:{'当前requestUrl':'配置url'}
 packageTime: '2020.05.24.17.53':修改配置isSave校验规则
+packageTime: '2020.05.28.11.25':支持单对象子表1:1模式默认值保存
 
 
 
