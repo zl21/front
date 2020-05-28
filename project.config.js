@@ -21,7 +21,7 @@ module.exports = {
   // target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop网关开启环境
   // target: 'http://r3.burgeon.cn:19999/', // 'http://106.15.154.165:19999/', // Cube
-  // target: 'http://web.cmsqas.lining.com/', // 李宁
+  // target: 'http://cmsqas.lining.com', // 李宁
   // target: 'http://r3.burgeon.cn:28888/', // 李宁
   // target: 'http://jflow-shangfei-r3.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://ark-share-dev.dev.burgeononline.com', // ArkShare环境

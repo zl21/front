@@ -638,7 +638,7 @@
                 //  id 转number
                 if (current.item.value.length < 2) {
                   // eslint-disable-next-line no-restricted-globals
-                  if (isNaN(Number(obj[current.item.field]))) {
+                  if (isNaN(Number(obj[current.item.field])) || obj[current.item.field] === '' || obj[current.item.field] === null) {
                     obj[current.item.field] = obj[current.item.field];
                   } else {
                     obj[current.item.field] = Number(obj[current.item.field]);
@@ -1160,6 +1160,7 @@
           } else if (value === '') {
             value = undefined;
           }
+
           if (items.validate.hidecolumn.ishide) {
             this.newFormItemLists[index].show = !eval(Number(value) + expression + refval);
           } else {
@@ -1208,6 +1209,7 @@
           this.newFormItemLists[index].item.props.defaultSelected = [];
           this.dataProcessing(this.newFormItemLists[index], index);
         }
+
         if (type === 'mounted') {
           this.VerificationFormInt('mounted');
         }  

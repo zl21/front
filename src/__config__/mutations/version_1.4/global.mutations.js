@@ -594,9 +594,9 @@ export default {
         // })[0];
         const dom = document.querySelector(`#${router.currentRoute.params.tableName}_TAB`);
         dom.click();
-        if (state.openedMenuLists.length > 1) { // 框架路由tab逻辑为刷新浏览器保留最后一个打开的tab页签，则关闭当前会自动激活前一个
-          router.push(CustomizePagePath);
-        }
+        // if (state.openedMenuLists.length > 1) { // 框架路由tab逻辑为刷新浏览器保留最后一个打开的tab页签，则关闭当前会自动激活前一个
+        router.push(CustomizePagePath);
+        // }
         
         // state.openedMenuLists.map((menu) => {
         //   if (menu.routeFullPath === CustomizePagePath) {
