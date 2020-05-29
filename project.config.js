@@ -19,7 +19,7 @@ module.exports = {
   // target: 'http://10.14.3.71', // 商飞预发环境
   // target: 'http://jflow-shangfei-r3.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop网关开启环境
-  target: 'http://r3.burgeon.cn:19999/', // 'http://106.15.154.165:19999/', // Cube
+  target: 'http://47.102.39.243:19093/', // 'http://106.15.154.165:19999/', // Cube
   // target: 'http://web.cmsqas.lining.com/', // 李宁
   // target: 'http://ark-share-dev.dev.burgeononline.com', // ArkShare环境
 
