@@ -21,6 +21,7 @@
       :is-item-table-vertical="buttonsData.data.isItemTableVertical"
       :back-button="buttonsData.data.backButton"
       :is-item-table="isItemTable"
+      :web-conf-single="webConfSingle"
     />
     <!-- 子表表格新增区域form -->
     <compositeForm  
@@ -40,6 +41,7 @@
       :isreftabs="isreftabs"
       :child-table-name="tableName"
       :from="from"
+      :web-conf-single="webConfSingle"
       @on-formEnter="enterClick"
       @formChange="formChange"
       @InitializationForm="initForm"
@@ -74,15 +76,15 @@
         @formChange="formPanelChange"
         @InitializationForm="initFormPanel"
         @VerifyMessage="verifyFormPanel"
-      />d
+      />
     </div>
-    <!-- 左右结构主表和子表的form(面板) -->
+    <!-- 左右结构主表和子表1:1模式的form(面板) -->
     <compositeForm
       v-if="panelData.isShow&&!componentName"
       :is-main-table="isMainTable"
       :object-type="type"
-      :objreadonly="itemReadOnlyForJflow"
-      :readonly="itemReadOnlyForJflow"
+      :objreadonly="objreadonly"
+      :readonly="formReadonly"
       :default-set-value="changeData"
       :master-name="currentPageRoute.tableName"
       :master-id="currentPageRoute.itemId"
@@ -98,6 +100,7 @@
       @InitializationForm="initFormPanel"
       @VerifyMessage="verifyFormPanel"
     />
+    <!-- 明细表格 -->
     <component
       :is="objectTableComponent"
       v-if="tableData.isShow"
@@ -111,6 +114,7 @@
       :jflow-button="buttonsData.data.jflowButton"
       :readonly="buttonsData.data.objreadonly || !getActionModify"
       :objreadonly="objreadonly"
+      :web-conf-single="webConfSingle"
       :status="status"
       :tabwebact="buttonsData.data.tabwebact"
       :tooltip-for-item-table="tooltipForItemTable"
@@ -219,6 +223,10 @@
         type: Object,
         default: () => ({})
       },
+      webConfSingle: {
+        type: Object,
+        default: () => ({})
+      },
       tableData: {
         type: Object,
         default: () => ({})
@@ -281,47 +289,47 @@
         // } 
         return tabCurrentIndex;
       },
-      itemReadOnlyForJflow() {
-        let flag = false;
-        if(enableJflow() && custommizedJflow()) {
-          const { tableId } = router.currentRoute.params;
-          if(this.objreadonlyForJflow.length > 0) {
-            this.objreadonlyForJflow.map((item) => {
-              let id = null;
-              if(this.itemInfo.id) {
-                id = Number(this.itemInfo.id);
-              }else{
-                id = this.itemInfo.tableid;
-              }
-              // if (this.type === 'vertical') {
-              //   id = this.itemInfo.tableid;
-              // }else{
-              //   id = Number(this.itemInfo.id);
-              // }
-              if(item.tableId === tableId) {
-                if(item.itemTableId === id) {
-                  flag = item.readonly;
-                }else{
-                  flag = this.objreadonly;
-                }
-              }else{
-                flag = this.objreadonly;
-              }
-            });
-          }else{
-            // jflow配置表为不存在的子表ID时，控制所有表字段为不可编辑状态
-            this.JflowControlField.map((q) => {
-              if(tableId === q.tableId) {
-                flag = true;
-                return flag;
-              }
-            });
-          }
-        }else{
-          flag = this.objreadonly;
-        }
-        return flag;
-      }, 
+      // itemReadOnlyForJflow() {
+      //   let flag = false;
+      //   if(enableJflow() && custommizedJflow()) {
+      //     const { tableId } = router.currentRoute.params;
+      //     if(this.objreadonlyForJflow.length > 0) {
+      //       this.objreadonlyForJflow.map((item) => {
+      //         let id = null;
+      //         if(this.itemInfo.id) {
+      //           id = Number(this.itemInfo.id);
+      //         }else{
+      //           id = this.itemInfo.tableid;
+      //         }
+      //         // if (this.type === 'vertical') {
+      //         //   id = this.itemInfo.tableid;
+      //         // }else{
+      //         //   id = Number(this.itemInfo.id);
+      //         // }
+      //         if(item.tableId === tableId) {
+      //           if(item.itemTableId === id) {
+      //             flag = item.readonly;
+      //           }else{
+      //             flag = this.objreadonly;
+      //           }
+      //         }else{
+      //           flag = this.objreadonly;
+      //         }
+      //       });
+      //     }else{
+      //       // jflow配置表为不存在的子表ID时，控制所有表字段为不可编辑状态
+      //       this.JflowControlField.map((q) => {
+      //         if(tableId === q.tableId) {
+      //           flag = true;
+      //           return flag;
+      //         }
+      //       });
+      //     }
+      //   }else{
+      //     flag = this.objreadonly;
+      //   }
+      //   return flag;
+      // }, 
 
       tabPanelsAll() {
         return this.$store.state[this[MODULE_COMPONENT_NAME]].tabPanels;

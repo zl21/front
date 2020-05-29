@@ -7,7 +7,7 @@ import Vue from 'vue';
 import { DispatchEvent } from '../__utils__/dispatchEvent';
 import { Version } from '../constants/global';
 import CreateButton from './button';
-import todoList from './todoList';
+import { todoList, BacklogData } from './todoList';
 import '../__plugin__/InstanceManagementList/utils/dateApi';
 import network from '../__utils__/network';
 import mainComponent from '../__plugin__/InstanceManagementList/mainComponent';
@@ -282,7 +282,7 @@ async function jflowButtons(id, pid, flag, active, isApprover) { // jflow按钮�
 
             JflowControlField.push(obj);
             window.jflowPlugin.store.commit('global/updateJflowControlField', JflowControlField);
-            console.log(JflowControlField);
+            console.log(JflowControlField, new Date());
           } else { // 不在流程中去除相对应的配置
             let JflowControlField = JSON.parse(JSON.stringify(window.jflowPlugin.store.state.global.JflowControlField));
             const obj = {
@@ -337,6 +337,7 @@ function RoutingGuard(router) { // 路由守卫
   });
 }
 async function jflowsave(flag, request) {
+  window.vm.$Spin.show();
   await new Promise((resolve, reject) => {
     // console.log(request.data.ids);
     // const params = new URLSearchParams(request.data);
@@ -367,6 +368,7 @@ async function jflowsave(flag, request) {
         ruleField: 'V',
         webActionId: 0
       }).then((res) => {
+      window.vm.$Spin.hide();
       if (res.data.resultCode !== 0) {
         window.R3message({
           title: '错误',
@@ -603,7 +605,7 @@ function uuidGenerator() {
 
 function AxiosGuard(axios) { // axios拦截
   axios.interceptors.request.use(async (config) => {
-    if (config.url.indexOf('jflow') >= 0) { // 所有jflow接口都添加accessToken
+    if (config.url.startsWith('/jflow')) { // 所有jflow接口都添加accessToken
       config.headers.accountName = 'guest';
       
       if (encryptionJflow) {
@@ -806,6 +808,7 @@ async function jflowRefresh() { // 刷新业务系统
 */
 
 function initiateLaunch(data) { // 业务系统流程发起
+  window.vm.$Spin.show();
   return new Promise((resolve, reject) => {
     let obj = {
       // eslint-disable-next-line no-nested-ternary
@@ -827,6 +830,7 @@ function initiateLaunch(data) { // 业务系统流程发起
 
     obj = Object.assign(obj, data);
     axios.post('/jflow/p/cs/process/launch', obj).then((res) => {
+      window.vm.$Spin.hide();
       if (window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' && res.data.resultCode === 0 && res.data.notice) {
         window.R3message({
           title: '错误',
@@ -865,13 +869,15 @@ function initiateLaunch(data) { // 业务系统流程发起
               }
             });
           });
+        } else {
+          DispatchEvent('jflowEvent', {
+            detail: {
+              type: 'search'
+            }
+          });
         }
 
-        DispatchEvent('jflowEvent', {
-          detail: {
-            type: 'search'
-          }
-        });
+        
         resolve(res);
       } else {
         resolve();
@@ -895,6 +901,7 @@ function initLists(e) { // 小图标的展示
       
   window.initiateLaunch = initiateLaunch;
   window.jflowRefresh = jflowRefresh;
+  window.BacklogData = BacklogData;
   // !closeJflowIcon ? todoList(store, router) : null; // 添加待办列表菜单
 
   // axios.post('/jflow/p/sys/properties', {})

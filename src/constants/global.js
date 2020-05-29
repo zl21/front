@@ -1,6 +1,9 @@
 import project from '../../project.config';
 import configForColumn from './extentionPropertyForColumn';
 import configForTable from './extentionPropertyForTable';
+import backDashboardRoutes from '../__config__/backDashboardRoute.config';
+import custommizedRequestURL from '../__config__/custommizedRequestURL.config';
+
 
 export const functionPowerRequestURL = () => (window.ProjectConfig && window.ProjectConfig.functionPowerRequestURL ? window.ProjectConfig.functionPowerRequestURL : project.functionPowerRequestURL);
 export const Version = () => (window.ProjectConfig && window.ProjectConfig.Version ? window.ProjectConfig.Version : project.Version);
@@ -93,6 +96,14 @@ export const defaultQuietRoutes = [
 ];
 
 // 导出表的拓展属性、字段扩展属性配置。
-export const extentionForTable = () => (window.ProjectConfig && window.ProjectConfig.extentionForTable ? window.ProjectConfig.extentionForTable : configForTable);
 
 export const extentionForColumn = () => (window.ProjectConfig && window.ProjectConfig.extentionForColumn ? window.ProjectConfig.extentionForColumn : configForColumn);
+
+
+// 导出表的拓展属性、字段扩展属性配置。
+export const extentionForTable = () => (window.ProjectConfig && window.ProjectConfig.extentionForTable ? window.ProjectConfig.extentionForTable : configForTable);
+
+// 配置路由刷新浏览器回到dashboard界面
+export const backDashboardRoute = () => (window.ProjectConfig && window.ProjectConfig.backDashboardRoute ? window.ProjectConfig.backDashboardRoute.concat(backDashboardRoutes) : backDashboardRoutes);
+// 配置内置自定义界面requestURL
+export const custommizedRequestUrl = () => (window.ProjectConfig && window.ProjectConfig.custommizedRequestURL ? window.ProjectConfig.custommizedRequestURL : custommizedRequestURL);

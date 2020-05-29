@@ -44,14 +44,14 @@
         </label>
         <AutomaticPathGenerationInput />
       </div> -->
-     
       <composite-form
         v-if="mainFormInfo.formData.isShow"
         class="compositeAllform"
         object-type="vertical"
         :is-main-table="true"
-        :objreadonly="mainFormInfo.isMainTableObjreadonly?false:(mainFormInfo.buttonsData.data.objreadonly||objReadonlyForJflow)"
-        :readonly="mainFormInfo.isMainTableObjreadonly?false:(mainFormInfo.buttonsData.data.objreadonly||objReadonlyForJflow)"
+        :objreadonly="mainFormInfo.buttonsData.data.objreadonly || mainFormInfo.formData.data.isdefault||mainFormInfo.JflowReadonly"
+        :readonly="mainFormInfo.buttonsData.data.objreadonly||mainFormInfo.JflowReadonly"
+        :web-conf-single="mainFormInfo.buttonsData.data.webconf"
         :default-set-value="updateData[this.$route.params.tableName]? updateData[this.$route.params.tableName].changeData:{}"
         :master-name="$route.params.tableName"
         :master-id="$route.params.itemId"
@@ -155,25 +155,7 @@
         return '';
       },
 
-      objReadonlyForJflow() {
-        // 判断jflow配置中包含当前表，则将当前表（子表及主表）置为不可编辑
-        if (enableJflow() && custommizedJflow()) {
-          let flag = false;
-          this.tabPanel.map((item) => {
-            if (this.JflowControlField.length > 0) {
-              this.JflowControlField.map((jflowData) => {
-                // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
-                if (this[INSTANCE_ROUTE_QUERY].tableId === jflowData.tableId && (item.tabrelation === '1:1' || item.tableid === this[INSTANCE_ROUTE_QUERY].tableId)) {
-                  flag = true;
-                }
-              });
-            }
-          });
-          return this.mainFormInfo.buttonsData.data.objreadonly || this.mainFormInfo.formData.data.isdefault || flag;
-        }
-        return this.mainFormInfo.buttonsData.data.objreadonly || this.mainFormInfo.formData.data.isdefault;
-      },
-
+    
       tabPanels() {
         const arr = [];
         if (this.tabPanel[0] && this.tabPanel[0].vuedisplay && this.tabPanel[0].vuedisplay === 'TabItem') {
@@ -190,10 +172,25 @@
           obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
           if (this.mainFormInfo.buttonsData) {
             obj.componentAttribute.isreftabs = this.mainFormInfo.buttonsData.data.isreftabs;
-            obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly || this.childReadonly || this.objReadonlyForJflow;
-            obj.componentAttribute.formReadonly = this.mainFormInfo.buttonsData.data.objreadonly || this.objReadonlyForJflow;
+            if (enableJflow() && custommizedJflow()) {
+              // this.childReadonly为老版本jflow控制所有主子表是否可编辑，新版本jflow需要单表控制，与老版本冲突
+              obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly || item.JflowReadonly;
+            } else {
+              obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly || this.childReadonly || item.JflowReadonly;
+            }
+            obj.componentAttribute.formReadonly = this.mainFormInfo.buttonsData.data.objreadonly || item.JflowReadonly;
             obj.componentAttribute.status = this.mainFormInfo.buttonsData.data.status;
+            obj.componentAttribute.webConfSingle = this.mainFormInfo.buttonsData.data.webconf;
           }
+          obj.componentAttribute.webConfSingle = obj.componentAttribute.buttonsData.data.webconf;
+          
+          // if (enableJflow() && custommizedJflow()) {
+          //   obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly || item.JflowReadonly;
+          // } else {
+          //   obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly || this.childReadonly || item.JflowReadonly;
+          // }
+          // obj.componentAttribute.formReadonly = this.mainFormInfo.buttonsData.data.objreadonly || item.JflowReadonly;
+        
           obj.componentAttribute.childTableNames = this.childTableNames;
           obj.componentAttribute.mainFormPaths = this.formPaths;
           obj.componentAttribute.tooltipForItemTable = this.tooltipForItem;
@@ -338,7 +335,7 @@
               if (refTab.tabrelation !== '1:1') {
                 getButtonDataPromise = new Promise((rec, rej) => {
                   this.getObjectTabForRefTable({
-                    table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej
+                    table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej, itemInfo: refTab
                   });
                 });
               }
@@ -368,11 +365,11 @@
             } else if (refTab.tabrelation === '1:1') {
               getButtonDataPromise = new Promise((rec, rej) => {
                 this.getObjectTabForRefTable({
-                  table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej
+                  table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej, itemInfo: refTab
                 });
               });
               this.getItemObjForChildTableForm({
-                table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, tabIndex: index
+                itemInfo: refTab, table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, tabIndex: index
               });
             }
           }

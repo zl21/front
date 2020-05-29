@@ -18,8 +18,9 @@
             @on-change="pageChangeEvent"
             @on-page-size-change="pageSizeChangeEvent"
           />
+         
           <ul
-            v-if="!isHorizontal && !objreadonly"
+            v-if="!isHorizontal && !readonly"
             class="detail-buttons"
           >
             <a
@@ -66,7 +67,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            />
+                  >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -271,7 +272,10 @@
       };
     },
     props: {
-
+      webConfSingle: {// 当前子表webconf
+        type: Object,
+        default: () => ({})
+      },
       tabwebact: {// 自定义类型按钮
         type: Object,
         default: () => ({})
@@ -377,6 +381,7 @@
       isHorizontal() { // 是否是左右结构
         return this.type === pageType.Horizontal;
       },
+      
       buttonGroups() { // 按钮组的数据组合
         // let tabIndex = null;
         // if (this.WebConf && this.WebConf.isCustomizeTab && this.type === 'horizontal') {
@@ -410,21 +415,21 @@
               } else if (tabcmd.prem[index]) {
                 const type = item.split('action');
                 const str = `CMD_${type[1].toUpperCase()}`;
-                if (str !== 'CMD_MODIFY') { // 保存不显示
-                  const buttonConfig = JSON.stringify(buttonmap[str]);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
-                  let buttonConfigInfo = JSON.parse(buttonConfig);
-                  if (str === 'CMD_DELETE') { // 删除 -> 删除明细
-                    buttonConfigInfo = buttonmap.CMD_REF_DELETE;
-                  }
-                  if (tabcmd.paths) {
-                    buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
-                  }
-                  buttonConfigInfo.path = this.buttonPath[item];
-                  buttonConfigInfo.eName = item;
-                  buttonGroupShow.push(
-                    buttonConfigInfo
-                  );
+                // if (str !== 'CMD_MODIFY') { // 保存不显示
+                const buttonConfig = JSON.stringify(buttonmap[str]);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
+                let buttonConfigInfo = JSON.parse(buttonConfig);
+                if (str === 'CMD_DELETE') { // 删除 -> 删除明细
+                  buttonConfigInfo = buttonmap.CMD_REF_DELETE;
                 }
+                if (tabcmd.paths) {
+                  buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
+                }
+                buttonConfigInfo.path = this.buttonPath[item];
+                buttonConfigInfo.eName = item;
+                buttonGroupShow.push(
+                  buttonConfigInfo
+                );
+                // }
               }
               return item;
             });
@@ -444,6 +449,22 @@
               buttonGroupShow.splice(index, 1);
             }
           });
+        }
+        if (this.webConfSingle) {
+          if (this.webConfSingle.disableExport) {
+            buttonGroupShow.forEach((item, index) => {
+              if (item.eName === 'actionEXPORT') {
+                buttonGroupShow.splice(index, 1);
+              }
+            });
+          }
+          if (this.webConfSingle.disableImport) {
+            buttonGroupShow.forEach((item, index) => {
+              if (item.eName === 'actionIMPORT') {
+                buttonGroupShow.splice(index, 1);
+              }
+            });
+          }
         }
         let buttons = '';
         if (this.tabwebact && this.tabwebact.objtabbutton && this.tabwebact.objtabbutton.length > 0) { // 接入自定义按钮渲染逻辑
@@ -810,11 +831,16 @@
         }
       },
       clickSave(data) {
-        this.saveButtonPath = data.requestUrlPath;
+        if (data && data.requestUrlPath) {
+          if (data.requestUrlPath) {
+            this.saveButtonPath = data.requestUrlPath;
+          } else if (data.type) {
+            this.saveEventAfter = data.type;
+          }
+        }
         const dom = document.getElementById('actionMODIFY');
         const myEvent = new Event('click');
         dom.dispatchEvent(myEvent);
-        this.saveEventAfter = data.type;
       },
       objTabActionSlientForItemTable(data) {
         if (data.detail.type === 'resolve') {
@@ -844,6 +870,9 @@
       },
       buttonEvent(obj) {
         switch (obj.eName || obj.vuedisplay || obj.isJflow) {
+        case 'actionMODIFY': // 保存
+          this.objectMODIFY();
+          break;
         case 'actionIMPORT': // 导入
           this.objectIMPORT();
           break;
@@ -872,6 +901,9 @@
         default:
           break;
         }
+      },
+      objectMODIFY() { // 保存
+        this.clickSave();
       },
       clickExtraposition(obj) { // jflow方法
         DispatchEvent('jflowPlugin', {
@@ -3024,7 +3056,8 @@
                     },
                     url: getGateway('/p/cs/batchUpload'),
                     valuedata: this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val) : []
-                  }
+                  },
+                  webConfSingle: this.webConfSingle
                 },
                 on: {
                   filechange: (val) => {

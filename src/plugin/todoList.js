@@ -1,6 +1,6 @@
 
 let jflowRouter = {};
-function todoList(store, router) {
+function todoListInit(store, router) {
   jflowRouter = router;
   createIcon(store);
 }
@@ -33,30 +33,30 @@ function openTodoLists() {
   });
 }
 
-function pollBacklogData(store) {
+function pollBacklogData() {
   window.jflowPlugin.axios.post('/jflow/p/cs/task/backlog/list', {
     page: 1, pageSize: 10, searchType: '0,1', excuStatus: 0, isPoll: true, userId: JSON.parse(window.localStorage.getItem('userInfo')).id
   }).then((res) => {
     if (res.data.resultCode === 0 && res.data.data.total > 0) {
-      let data = store.state.global.navigatorSetting.concat([]);
+      let data = window.jflowPlugin.store.state.global.navigatorSetting.concat([]);
       data = [{
         icon: 'iconlogo-jflow',
         callback: openTodoLists,
         count: res.data.data.total 
       }];
-      store.commit('global/changeNavigatorSetting', data);
+      window.jflowPlugin.store.commit('global/changeNavigatorSetting', data);
     } else {
-      let data = store.state.global.navigatorSetting.concat([]);
+      let data = window.jflowPlugin.store.state.global.navigatorSetting.concat([]);
       data = [{
         icon: 'iconlogo-jflow',
         callback: openTodoLists,
         count: 0
       }];
-      store.commit('global/changeNavigatorSetting', data);
+      window.jflowPlugin.store.commit('global/changeNavigatorSetting', data);
     }
   });
 }
 
 export const BacklogData = pollBacklogData;
 
-export default todoList;
+export const todoList = todoListInit;

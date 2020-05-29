@@ -19,6 +19,7 @@
           :ref="'component_'+index"
           :index="index"
           :type="type"
+          :web-conf-single="webConfSingle"
           :items="item.item"
           @inputChange="inputChange"
         />
@@ -159,6 +160,10 @@
       }
     },
     props: {
+      webConfSingle: {// 当前子表webConf
+        type: Object,
+        default: () => ({})
+      },
       defaultColumn: { // 默认列数
         type: Number,
         default: 4
@@ -431,17 +436,18 @@
 
           if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
             // 计算
-            if (old === undefined) {
-              return false;
-            }
-            if (
-              val[item.validate.dynamicforcompute.computecolumn]
-              === old[item.validate.dynamicforcompute.computecolumn]
-            ) {
-              this.dynamicforcompute(item, val, i, old);
-            } else {
-              // this.formDataChange();
-            }
+            // if (old === undefined) {
+            //   return false;
+            // }
+            // if (
+            //   val[item.validate.dynamicforcompute.computecolumn]
+            //   === old[item.validate.dynamicforcompute.computecolumn]
+            // ) {
+            //   this.dynamicforcompute(item, val, i, old);
+            // } else {
+            //   // this.formDataChange();
+            // }
+            // this.dynamicforcompute(item, val, i, old);
           } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
             //  联动隐藏
             return false;
@@ -471,6 +477,7 @@
         });
       },
       setformUrl(item, val) {
+        // 联动  来源数据后台查询
         if (item.props.webconf && item.props.webconf.formRequest) {
           const isCopyCheck = this.isCopy();
           if (this.actived && isCopyCheck) {
@@ -488,6 +495,7 @@
         return true;
       },
       inputget(formIndex, index, items) {
+        // 获取input
         const elDiv = this.$refs[`component_${index}`][0]
           && this.$refs[`component_${index}`][0].$el;
         if (!elDiv) {
@@ -502,6 +510,7 @@
         return onfousInput;
       },  
       formInit() {
+        // 表单初始化
         const val = this.getStateData();
         setTimeout(() => {
           if (this.actived === false) {
@@ -511,11 +520,23 @@
           }
         }, 50);
       }, 
+      setDynamicForcompute(data, current) {
+        // 监听 计算
+        if (current.item && Object.hasOwnProperty.call(current.item.validate, 'dynamicforcompute')) {
+          setTimeout(() => {
+            window.eventType(`${this[MODULE_COMPONENT_NAME]}Dynam`, window, {
+              ...current.item.validate,
+              data: Object.assign(JSON.parse(JSON.stringify(this.getStateData())), data)
+            });
+          }, 200);
+        }
+      },
       mountdataFormInt() {
         this.actived = false;
         setTimeout(() => {
           //  传form 默认值
           const Item = this.newFormItemLists.reduce((arr, item) => {
+            this.setDynamicForcompute({}, item);
             const setLabel = this.getLable(item);
             arr = Object.assign(arr, setLabel);
             return arr;
@@ -617,7 +638,7 @@
                 //  id 转number
                 if (current.item.value.length < 2) {
                   // eslint-disable-next-line no-restricted-globals
-                  if (isNaN(Number(obj[current.item.field]))) {
+                  if (isNaN(Number(obj[current.item.field])) || obj[current.item.field] === '' || obj[current.item.field] === null) {
                     obj[current.item.field] = obj[current.item.field];
                   } else {
                     obj[current.item.field] = Number(obj[current.item.field]);
@@ -911,7 +932,7 @@
       },
       inputChange(value, items, index) {
         this.indexItem = index;
-        this.newFormItemLists[index].item.value = value;   
+        this.newFormItemLists[index].item.value = value; 
         this.newFormItemLists = this.newFormItemLists.concat([]);
         this.dataProcessing(this.newFormItemLists[index], index);
         return true;
@@ -932,18 +953,18 @@
         //   }
         // }
       },
-      dynamicforcompute(items, json) {
+      dynamicforcompute(data) {
         // 被计算 属性 加减乘除
 
-        const str = items.validate.dynamicforcompute.refcolumns.reduce(
+        const str = data.dynamicforcompute.refcolumns.reduce(
           (temp, current) => {
-            temp = temp.replace(new RegExp(current, 'g'), Number(json[current]));
+            temp = temp.replace(new RegExp(current, 'g'), ((Number(data.data[current]) * 1000) / 1000));
             return temp;
           },
-          items.validate.dynamicforcompute.express
+          data.dynamicforcompute.express
         );
         const _index = this.newFormItemLists.findIndex(
-          option => option.item.field === items.validate.dynamicforcompute.computecolumn
+          option => option.item.field === data.dynamicforcompute.computecolumn
         );
         
         if (this.newFormItemLists[_index]) {
@@ -953,12 +974,14 @@
           } else if (eval(str) === 0) {
             DyNvalue = 0;
           } else {
-            DyNvalue = eval(str);
+            DyNvalue = eval(str).toFixed(2);
           }
-          setTimeout(() => {
-            this.newFormItemLists[_index].item.value = DyNvalue;
-            this.dataProcessing(this.newFormItemLists[_index], 'none');
-          }, 10);
+          if (this.newFormItemLists[_index].item.value !== DyNvalue) {
+            setTimeout(() => {
+              this.newFormItemLists[_index].item.value = DyNvalue;
+              this.dataProcessing(this.newFormItemLists[_index], 'none');
+            }, 10);
+          }
         }
       },
       setJson(item, val) {
@@ -1137,6 +1160,7 @@
           } else if (value === '') {
             value = undefined;
           }
+
           if (items.validate.hidecolumn.ishide) {
             this.newFormItemLists[index].show = !eval(Number(value) + expression + refval);
           } else {
@@ -1146,17 +1170,18 @@
         } else if (refIndex !== -1) {
           if (items.validate.hidecolumn.ishide) {
             this.newFormItemLists[index].show = false;
+            this.newFormItemLists[index].item.props.showCol = false;
           } else {
             this.newFormItemLists[index].show = true;
+            this.newFormItemLists[index].item.props.showCol = true;
           }
           // 添加小组件的字段配置
           this.newFormItemLists[index].item.props.showCol = true;
+        } else if (items.validate.hidecolumn.ishide) {
+          this.newFormItemLists[index].show = true;
+          this.newFormItemLists[index].item.props.showCol = true;
         } else {
-          if (items.validate.hidecolumn.ishide) {
-            this.newFormItemLists[index].show = true;
-          } else {
-            this.newFormItemLists[index].show = false;
-          }
+          this.newFormItemLists[index].show = false;
           this.newFormItemLists[index].item.props.showCol = false;
         }
 
@@ -1178,13 +1203,13 @@
             this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
           }  
         }
-
-        if (items.props.webconf && items.props.webconf.clearWhenHidden) {
+        if (!items.props.showCol && items.props.webconf && items.props.webconf.clearWhenHidden) {
           //   清除页面 联动的值
           this.newFormItemLists[index].item.value = '';
           this.newFormItemLists[index].item.props.defaultSelected = [];
           this.dataProcessing(this.newFormItemLists[index], index);
         }
+
         if (type === 'mounted') {
           this.VerificationFormInt('mounted');
         }  

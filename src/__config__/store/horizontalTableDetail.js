@@ -39,6 +39,7 @@ export default () => ({
     isHideTempStorage: false, // 为true时隐藏单对象配置的暂存按钮
     clickSaveFunction: {},
     testUpdata: {},
+    updatavVerifyRequiredInformation: {},
     saveInfo: {}, // 保存按钮接口返回信息
     singlePageMainTableButtonData: {}
   },

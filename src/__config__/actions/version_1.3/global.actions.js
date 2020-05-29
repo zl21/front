@@ -1,5 +1,7 @@
-import network, { urlSearchParams } from '../../../__utils__/network';
-import { enableHistoryAndFavorite, enableInitializationRequest } from '../../../constants/global';
+import network, { urlSearchParams, GetTableName } from '../../../__utils__/network';
+import { enableHistoryAndFavorite, enableInitializationRequest, getTouristRoute } from '../../../constants/global';
+import { removeSessionObject } from '../../../__utils__/sessionStorage';
+import router from '../../router.config';
 
 export default {
   getHistoryAndFavorite({ commit }) {
@@ -85,11 +87,12 @@ export default {
                       exportTask.resultMsg = JSON.parse(exportTask.resultMsg);
                       if (exportTask.resultMsg.code === 0) {
                         if (exportTask.file) {
-                          exportTask.file = JSON.parse(exportTask.file);
+                          const file = JSON.parse(exportTask.file);
+                          // exportTask.file = JSON.parse(JSON.stringify(file));
                           const eleLink = document.createElement('a');
                           eleLink.download = 'download';
                           eleLink.style.display = 'none';
-                          eleLink.href = exportTask.file[0].url;
+                          eleLink.href = file[0].url;
                           document.body.appendChild(eleLink);
                           eleLink.click();
                           document.body.removeChild(eleLink);
@@ -98,8 +101,11 @@ export default {
                         const errorList = [];
                         if (exportTask.file) {
                           reject();
-                          exportTask.file = JSON.parse(exportTask.file);
-                          errorList.push({ message: `<a href="${exportTask.file[0].url}" download="download" style="color: #0F8EE9">${exportTask.resultMsg.message}（下载报错信息）</a>` });
+                          // exportTask.file = JSON.parse(exportTask.file);
+
+                          const file = JSON.parse(exportTask.file);
+                          // exportTask.file = JSON.parse(JSON.stringify(file));
+                          errorList.push({ message: `<a href="${file[0].url}" download="download" style="color: #0F8EE9">${exportTask.resultMsg.message}（下载报错信息）</a>` });
                         } else if (!exportTask.file) {
                           const message = JSON.stringify(exportTask.resultMsg);
                           window.vm.$Modal.fcError({
@@ -218,11 +224,14 @@ export default {
                         });
                       }
                     } else if (exportTask.file) {
-                      exportTask.file = JSON.parse(exportTask.file);
+                      // exportTask.file = JSON.parse(exportTask.file);
+                      const file = JSON.parse(exportTask.file);
+                      // exportTask.file = JSON.parse(JSON.stringify(file));
+
                       const eleLink = document.createElement('a');
                       eleLink.download = 'download';
                       eleLink.style.display = 'none';
-                      eleLink.href = exportTask.file[0].url;
+                      eleLink.href = file[0].url;
                       document.body.appendChild(eleLink);
                       eleLink.click();
                       document.body.removeChild(eleLink);
@@ -259,6 +268,41 @@ export default {
         commit('updateTaskMessageCount', res.data.data);
       }
     });
-  }
+  },
+  signout({ commit }) {
+    network
+      .get('/p/cs/logout')
+      .then(() => {
+        window.sessionStorage.setItem('loginStatus', false);
+        commit('emptyTabs');
+        router.push({ path: getTouristRoute() });
+        removeSessionObject('saveNetwork');
+        GetTableName('');
+        commit('updataUserInfoMessage', {});
+        window.localStorage.removeItem('userInfo');
+        commit('updateJflowControlField', []);
+        // 清空updataTreeId
+        removeSessionObject('TreeId');
+        removeSessionObject('routeMapRecordForCustomizePages');
+
+        commit('updateTreeTableListData', []);
+      })
+      .catch(() => {
+        window.sessionStorage.setItem('loginStatus', false);
+        commit('emptyTabs');
+        commit('updataUserInfoMessage', {});
+        router.push({ path: getTouristRoute() });
+        removeSessionObject('saveNetwork');
+        GetTableName('');
+        commit('updataUserInfoMessage', {});
+        window.localStorage.removeItem('userInfo');
+        commit('updateJflowControlField', []);
+        // 清空updataTreeId
+        removeSessionObject('TreeId');
+        removeSessionObject('routeMapRecordForCustomizePages');
+
+        commit('updateTreeTableListData', []);
+      });
+  },
  
 };
