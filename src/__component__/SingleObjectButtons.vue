@@ -3527,6 +3527,15 @@
           });
         }
       },
+      showButtonsForcmds(data) { // 显示标准类型元数据配置按钮
+        if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+          this.tabcmd.cmds.map((item, index) => {
+            if (data.includes(item)) {
+              this.tabcmd.prem[index] = true;
+            }
+          });
+        }
+      },
       setDisableButtons() {
         if (this.objectType === 'horizontal') {
           if (this.itemInfo.id && this.itemInfo.id === this.tableId) { // 当前激活 tab为主表
@@ -3545,15 +3554,22 @@
         } else if (this.WebConf && this.WebConf.disableImport) {
           this.hideButtonsForcmds(['actionIMPORT']);
         }
+      },
+      showSingleButtons(data) {
+        this.showButtonsForcmds(data.default.names);
       }
     },  
     beforeDestroy() {
       window.removeEventListener('jflowClick', this.jflowClick);
       window.removeEventListener('network', this.networkEventListener);
-      window.addEventListener('globalNoticeCopy', this.hideListenerLoading);
+      window.removeEventListener('globalNoticeCopy', this.hideListenerLoading);
       window.removeEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
+      window.removeEventListener('showSingleButtons', this.showSingleButtons);
     },
     mounted() {
+      if (custommizedJflow()) {
+        this.hideButtonsForcmds(['actionSUBMIT']);
+      }
       this.setDisableButtons();
       if (this.isItemTable) {
         this.dataArray.refresh = false;
@@ -3571,6 +3587,7 @@
       this.hideBackButton();
       // this.dataArray.jflowButton = this.jflowButton;
       if (!this._inactive) {
+        window.addEventListener('showSingleButtons', this.showSingleButtons);
         window.addEventListener('jflowClick', this.jflowClick);
         window.addEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
         window.addEventListener('globalNoticeCopy', this.hideListenerLoading);
