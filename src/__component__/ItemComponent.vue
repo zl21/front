@@ -321,10 +321,11 @@
         />
       </template> -->
       <!-- 上传文件 -->
-
       <Docfile
         v-if="_items.type === 'docfile'"
         :ref="_items.field"
+        :item-webconf="_items.props.webconf"
+        :web-conf-single="webConfSingle"
         :dataitem="_items.props.itemdata"
         @filechange="filechange"
       />
@@ -360,6 +361,10 @@
     },
     inject: [MODULE_COMPONENT_NAME],
     props: {
+      webConfSingle: {// 当前子表webConf
+        type: Object,
+        default: () => ({})
+      },
       labelWidth: {
         type: Number,
         default: 120
@@ -1561,9 +1566,9 @@
                 return false;
               }
               // 隐藏且配置了this._items.props.webconf
-              if (!this._items.props.showCol && this._items.props.webconf && this._items.props.webconf.clearWhenHidden) {
-                return false;
-              }
+              // if (this._items.props.webconf && this._items.props.webconf.clearWhenHidden) {
+              //   return false;
+              // }
               if (item.COLUMN_TYPE === 0) {
                 // 数组形式
                 if (this._items.props.defaultSelected) {
@@ -1645,6 +1650,13 @@
             this.$parent.hidecolumn(this._items, this.index, e.value.data, 'mounted');
           }, 10);
         }
+      },
+      setListenerDynam(e) {
+        if (this._items.props.colname === e.value.dynamicforcompute.computecolumn) {
+          setTimeout(() => {
+            this.$parent.dynamicforcompute(e.value);
+          }, 10);
+        }
       }
       
     },
@@ -1652,6 +1664,7 @@
       window.removeEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetProps);
       window.removeEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
       window.removeEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
+      window.removeEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
     },
     created() {
     // console.log(this.type,this.formIndex);
@@ -1660,6 +1673,7 @@
       window.addEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetProps);
       window.addEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
       window.addEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
+      window.addEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
     }
   };
 </script>

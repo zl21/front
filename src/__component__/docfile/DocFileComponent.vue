@@ -6,9 +6,17 @@
         <li
           v-for="(option,index) in docList.valuedata"
           :key="index"
-          v-dragging="{ item: option, list: docList.valuedata, }"
+          v-dragging="{ item: option, list: docList.valuedata,group: draggingTag }"
         >
-          <a :href="option.url">{{ option.name }}</a>
+          <a
+            v-if="getDocFileWebConf"
+            :href="`${getDocFileWebConfUrl}?url=${option.url}`"
+            target="_blank"
+          >{{ option.name }}</a>
+          <a
+            v-else
+            :href="option.url"
+          >{{ option.name }}</a>
           <i
             v-if="docList.readonly!== true && option.name"
             class="iconfont iconios-close-circle-outline"
@@ -47,19 +55,43 @@
 
 <script>
   import Upload from '../../__utils__/upload';
-  import { Version } from '../../constants/global';
+  import {
+    Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, INSTANCE_ROUTE
+  } from '../../constants/global';
+  import store from '../../__config__/store.config';
 
-  const fkHttpRequest = () => require(`../../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+  const apiVersion = Version();
+  const fkHttpRequest = () => require(`../../__config__/actions/version_${apiVersion}/formHttpRequest/fkHttpRequest.js`);
 
 
   export default {
     name: 'Docfile',
+    inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, INSTANCE_ROUTE],
     
     props: {
       dataitem: {
         type: Object,
         default() {
           return {};
+        }
+      },
+      itemWebconf: {// 表单字段webconf
+        type: Object,
+        default() {
+          return {};
+        }
+      },
+      webConfSingle: {// 当前子表webConf
+        type: Object,
+        default: () => ({})
+      },
+      draggingTag: {// 拖拽group属性标示，如果当前界面多次使用了当前组件，需保持标示唯一性
+        type: String,
+        default: () => {
+          if (this && this.dataitem && this.dataitem.colname) {
+            return this.dataitem.colname;
+          }
+          return toString(new Date().getTime());
         }
       }
     },
@@ -79,7 +111,30 @@
       };
     },
     computed: {
-      
+      // getDocFileWebConf() {
+      //   if (this.itemWebconf && this.itemWebconf.docFile) {
+      //     return this.itemWebconf.docFile.isPreview;
+      //   }
+      //   return false;
+      // },
+      // getDocFileWebConfUrl() {
+      //   if (this.itemWebconf && this.itemWebconf.docFile) {
+      //     return this.itemWebconf.docFile.url;
+      //   }
+      //   return null;
+      // }
+      getDocFileWebConf() {
+        if (this.webConfSingle && this.webConfSingle.docFile) {
+          return this.webConfSingle.docFile.isPreview;
+        }
+        return false;
+      },
+      getDocFileWebConfUrl() {
+        if (this.webConfSingle && this.webConfSingle.docFile) {
+          return this.webConfSingle.docFile.url;
+        }
+        return null;
+      }
     },
     watch: {
       dataitem: {
@@ -113,8 +168,12 @@
       uploadFileChange(e) {
         // 上传图片
         const fileInformationUploaded = e.target.files;
+        if (!this.checkFile(e.target.files)) {
+          return false;
+        }
         const url = this.docList.url;
         const sendData = this.docList.sendData;
+        
         const aUploadParame = Object.assign(
           {},
           {
@@ -122,6 +181,7 @@
             url,
             multiple: true,
             length: this.docList.ImageSize,
+            imgSize: this.docList.filesize,
             sendData,
             fileName: 'files',
             success: this.success,

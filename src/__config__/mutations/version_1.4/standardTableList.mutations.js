@@ -1,5 +1,6 @@
 
 export default {
+  
   updateFailInfo({ ag }, failInfo) {
     ag.datas.deleteFailInfo = failInfo;
     ag.datas = Object.assign({}, ag.datas);
@@ -78,7 +79,9 @@ export default {
     // 双击条状判断
     buttons.objTableUrl = data.tableurl;
   },
-
+  updataSelectIdArr({ buttons }, id) {
+    buttons.selectIdArr.push(id);
+  },
   setActiveTabActionValue({
     buttons
   }, obj) {
@@ -184,5 +187,7 @@ export default {
   updateWebconfDynamicRouting({ webconf }, data) {
     webconf.dynamicRouting = data.dynamicRouting;
   }, // 修改state中dynamicRouting的值
-  
+  updataWebConf(state, data) {
+    state.webConf = data;
+  }
 };

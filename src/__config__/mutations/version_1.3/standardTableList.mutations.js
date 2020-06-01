@@ -1,5 +1,8 @@
 
 export default {
+  updataSelectIdArr(state, id) {
+    state.selectIdArr.push(id);
+  },
   updateFailInfo({ ag }, failInfo) {
     ag.datas.deleteFailInfo = failInfo;
     ag.datas = Object.assign({}, ag.datas);
@@ -184,5 +187,7 @@ export default {
   updateWebconfDynamicRouting({ webconf }, data) {
     webconf.dynamicRouting = data.dynamicRouting;
   }, // 修改state中dynamicRouting的值
-  
+  updataWebConf(state, data) {
+    state.webConf = data;
+  }
 };

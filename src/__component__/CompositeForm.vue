@@ -6,6 +6,7 @@
 <template>
   <div>
     <template v-if="type === 'PanelForm'">
+      <!-- 面板内 -->
       <Collapse
         v-for="(item,index) in computdefaultData"
         :key="index"
@@ -37,6 +38,7 @@
                 :child-table-name="childTableName"
                 :refcolval-data="refcolvaData"
                 :mapp-status="setMapping"
+                :web-conf-single="webConfSingle"
                 :is-main-table="isMainTableForm"
                 :partent-vue="partentVue"
                 :condition="conditiontype"
@@ -55,6 +57,7 @@
         </Panel>
       </Collapse>
     </template>
+    <!-- 面板外 -->
     <template v-if="type !== 'PanelForm'">
       <template v-if="FormItemComponent!==''">
         <component
@@ -69,6 +72,7 @@
           :child-table-name="childTableNameForm"
           :verifymessageform="VerifyMessageForm"
           :set-objreadonly="setObjreadonly"
+          :web-conf-single="webConfSingle"
           :mapp-status="setMapping"
           :partent-vue="partentVue"
           :module-form-type="moduleFormType"
@@ -110,6 +114,10 @@
         default() {
           return '';
         }
+      },
+      webConfSingle: {// 当前子表webConf
+        type: Object,
+        default: () => ({})
       },
       isMainTable: {
         // 是否 主表
@@ -544,6 +552,14 @@
         }
         return true;
       },
+      setDynamicForcompute(data, current) {
+        if (current.item && Object.hasOwnProperty.call(current.item.validate, 'dynamicforcompute')) {
+          window.eventType(`${this[MODULE_COMPONENT_NAME]}Dynam`, window, {
+            ...current.item.validate,
+            data: Object.assign(JSON.parse(JSON.stringify(this.refcolvalAll)), data)
+          });
+        }
+      },
       formDataChange(data, setdefval, current, label) {
         // 表单数据修改  判断vuex 里面是否有input name
         if (current.item.props.isuppercase && data[current.item.field]) {
@@ -568,6 +584,8 @@
           return false;
         }
 
+        // 计算逻辑
+        this.setDynamicForcompute(data, current);
 
         // 修改联动的值
         this.setChangeValue(data, current);
@@ -1364,7 +1382,9 @@
             expression = current.item.validate.hidecolumn.expression;
           }
           if (expression !== '=') {
-            return eval(val.replace(/\s+/g, '') + expression + refval.replace(/\s+/g, ''));
+            if (val) {
+              return eval(val.replace(/\s+/g, '') + expression + refval.replace(/\s+/g, ''));
+            }
           }
          
 
@@ -1828,12 +1848,14 @@
           item.type = 'docfile';
           const valuedata = this.defaultValue(current) || [];
           const filesLength = Number(current.webconf && current.webconf.filesLength);
+          const filesize = Number(current.webconf && 1024 * 1024 * Number(current.webconf.filesize));
           let readonly = current.readonly;
           readonly = checkIsReadonly;
           item.props.itemdata = {
             colname: current.colname,
             readonly,
             filesLength,
+            filesize,
             masterName: this.masterName,
             objId: this.masterId,
             sendData: {
@@ -2136,6 +2158,7 @@
           item.props.type = 'ImageUpload';
           const valuedata = this.defaultValue(current);
           const ImageSize = Number(current.webconf && current.webconf.ImageSize);
+          // const imgSize = Number(current.webconf && 0.05 * 1024 * 1024);
 
           let readonly = current.readonly;
           readonly = checkIsReadonly;

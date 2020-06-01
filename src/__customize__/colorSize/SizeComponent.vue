@@ -59,6 +59,7 @@
 
 <script>
   import network, { urlSearchParams } from '../../__utils__/network';
+  import { custommizedRequestUrl } from '../../constants/global';
 
   export default {
     name: 'SizeComponent',
@@ -173,7 +174,9 @@
             FLAG: 2
           }
         };
-        network.get('/p/cs/cspecobjload', { params })
+        const URL = custommizedRequestUrl()['/p/cs/cspecobjload'];
+
+        network.get(URL || '/p/cs/cspecobjload', { params })
           .then((res) => {
             if (res.data.code === 0) {
               this.leftTableData = res.data.data;

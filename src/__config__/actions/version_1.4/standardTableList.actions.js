@@ -47,25 +47,40 @@ export default {
         commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
         commit('updateDefaultButtonsdatas', queryData.datas);
         commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
-        if (queryData.datas.webconf && queryData.datas.webconf.commonTable) {
-          commit('updateWebconfCommonTable', queryData.datas.webconf);
-        }
-        if (queryData.datas.webconf && queryData.datas.webconf.dynamicRouting) {
-          commit('updateWebconfDynamicRouting', queryData.datas.webconf);
+        if (queryData.datas.webconf) {
+          if (queryData.datas.webconf.commonTable) {
+            commit('updateWebconfCommonTable', queryData.datas.webconf);
+          }
+          if (queryData.datas.webconf.dynamicRouting) {
+            commit('updateWebconfDynamicRouting', queryData.datas.webconf);
+          }
+          commit('updataWebConf', queryData.datas.webconf);
         }
         resolve();
       }
     });
   },
   getExportQueryForButtons({ commit },
-    { OBJ, resolve, reject }) {
-    network.post('/p/cs/export', urlSearchParams(
+    {
+      OBJ, resolve, reject, buttonsData
+    }) {
+    let jflowpath = '';
+    let requestUrlPath = '';
+    if (buttonsData) {
+      if (buttonsData.jflowpath) {
+        jflowpath = buttonsData.jflowpath;
+      }
+      if (buttonsData.requestUrlPath) {
+        requestUrlPath = buttonsData.requestUrlPath;
+      }
+    }
+    network.post(jflowpath || requestUrlPath || '/p/cs/export', urlSearchParams(
       OBJ
     )).then((res) => {
       if (res.data.code === 0) {
         resolve();
-        const data = res.data.data;
-        commit('updateButtonsExport', data);
+        const datas = res.data.data;
+        commit('updateButtonsExport', datas);
       } else {
         reject();
       }
@@ -74,10 +89,20 @@ export default {
     });
   },
   getBatchDeleteForButtons({ commit }, {
-    tableName, selectIdArr, resolve, reject
+    tableName, selectIdArr, resolve, reject, data
   }) { // 调用删除明细接口
     const ids = selectIdArr.map(d => parseInt(d));
-    network.post('/p/cs/batchDelete',
+    let jflowpath = '';
+    let requestUrlPath = '';
+    if (data) {
+      if (data.jflowpath) {
+        jflowpath = data.jflowpath;
+      }
+      if (data.requestUrlPath) {
+        requestUrlPath = data.requestUrlPath;
+      }
+    }
+    network.post(jflowpath || requestUrlPath || '/p/cs/batchDelete',
       {
         tableName,
         ids
@@ -186,18 +211,28 @@ export default {
     });
   },
   batchVoidForButtons({ commit }, {
-    tableName, ids, resolve, reject
+    tableName, ids, resolve, reject, data
   }) { // 调用作废接口
-    network.post('/p/cs/batchVoid',
+    let jflowpath = '';
+    let requestUrlPath = '';
+    if (data) {
+      if (data.jflowpath) {
+        jflowpath = data.jflowpath;
+      }
+      if (data.requestUrlPath) {
+        requestUrlPath = data.requestUrlPath;
+      }
+    }
+    network.post(jflowpath || requestUrlPath || '/p/cs/batchVoid',
       { tableName, ids }).then((res) => {
-      const data = res.data;
+      const datas = res.data;
       if (res.data.code === 0) {
         resolve();
-        commit('batchVoidForButtonsData', data);
+        commit('batchVoidForButtonsData', datas);
         commit('onSelectionChangedAssignment', {});
       } else {
         reject();
-        commit('batchVoidForButtonsData', data.data);
+        commit('batchVoidForButtonsData', datas.data);
         commit('onSelectionChangedAssignment', {});
       }
     });
@@ -234,8 +269,20 @@ export default {
   },
  
   batchUnSubmitForButtons({ commit },
-    { obj, resolve, reject }) {
-    network.post('/p/cs/batchUnSubmit',
+    {
+      obj, resolve, reject, data
+    }) {
+    let jflowpath = '';
+    let requestUrlPath = '';
+    if (data) {
+      if (data.jflowpath) {
+        jflowpath = data.jflowpath;
+      }
+      if (data.requestUrlPath) {
+        requestUrlPath = data.requestUrlPath;
+      }
+    }
+    network.post(jflowpath || requestUrlPath || '/p/cs/batchUnSubmit',
       obj).then((res) => {
       if (res.data.code === 0) {
         resolve(res);

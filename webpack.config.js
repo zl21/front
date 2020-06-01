@@ -1,6 +1,7 @@
 const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -9,7 +10,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const projectConfig = require('./project.config');
 
 const target = projectConfig.target; // 框架研发网关开启环境
-const proxyLists = ['/p/c'];
+const proxyLists = ['/p/c', '/frr-center'];
 const proxyListsForGateway = ['/ad-app/p/c', '/asynctask/p/cs'];
 const proxyListsForIShop = ['/ishopad-app', '/ishopplatform/p/c', '/ishopbill/p/c', '/ishopbase/p/c'];
 const proxyListsForPalmCloud = ['/mboscloud-app'];
@@ -31,11 +32,13 @@ module.exports = env => ({
     'vue-router': 'VueRouter',
     axios: 'axios',
     // 'ag-grid': 'agGrid',
-    'burgeon-ui': 'Ark'
+    'burgeon-ui': 'Ark',
+    jquery: '$',
+    ztree: 'ztree',
   },
   devServer: {
     compress: true,
-    port: 8088,
+    port: 8198,
     host: '0.0.0.0',
     open: true,
     historyApiFallback: {
@@ -88,13 +91,12 @@ module.exports = env => ({
         context: '/jflow',
         // target: 'http://106.15.24.156:32940', // 重新占单
         // target: 'http://106.15.24.156:32940', // 李宁环境
-        target: 'http://jflow-shangfei.dev.burgeononline.com/', // 商飞环境
+        // target: 'http://jflow-shangfei-yf.dev.burgeononline.com/', // 商飞环境
+        // target: 'http://jflow-shangfei.dev.burgeononline.com/', // 新版jflow
+        target: 'http://jflow-shangfei-r3.dev.burgeononline.com/', // 商飞环境
+        // target: ' http://jflow-syman-dev.dev.burgeononline.com/', // 商飞测试环境
         // target: ' http://47.102.164.111:26665/', // 卡宾环境
-
-       
         // target: ' http://zhixiao-jflow.pro.burgeononline.com/', // 知晓环境
-
-                
         // target: 'http://jflow-qiaodan.dev.burgeononline.com', // 乔丹测试环境
         changeOrigin: true
       }]
@@ -181,6 +183,12 @@ module.exports = env => ({
         ignore: ['.*'],
       },
     ]),
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+      jquery: 'jquery',
+      'window.jQuery': 'jquery'
+    })
   ],
   mode: env && env.production ? 'production' : 'development',
   resolve: {

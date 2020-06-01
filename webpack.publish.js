@@ -49,7 +49,19 @@ module.exports = () => ({
       commonjs2: 'burgeon-ui',
       amd: 'burgeon-ui',
       root: 'Ark'
-    }
+    },
+    ztree: {
+      commonjs: 'ztree',
+      commonjs2: 'ztree',
+      amd: 'ztree',
+      root: 'ztree'
+    },
+    jquery: {
+      commonjs: 'jquery',
+      commonjs2: 'jquery',
+      amd: 'jquery',
+      root: '$'
+    },
   },
   module: {
     rules: [

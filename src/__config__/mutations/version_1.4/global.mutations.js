@@ -25,6 +25,10 @@ export default {
   //   // data.treeId:勾选的树结构列表ID
   //   state.treeIds.push(data);
   // },
+ 
+  updataOpenedMenuLists(state, data) {
+    state.openedMenuLists = data;
+  },
   updateTreeTableListData(state) {
     state.treeTableListData = [];
   },
@@ -244,14 +248,15 @@ export default {
     state.openedMenuLists.forEach((d) => { d.isActive = false; });
     state.openedMenuLists[index] = openedMenuInfo;
     state.openedMenuLists = state.openedMenuLists.concat([]);
-    state.activeTab = {
-      isActive: openedMenuInfo.isActive,
-      keepAliveModuleName: openedMenuInfo.keepAliveModuleName,
-      label: openedMenuInfo.label,
-      routeFullPath: openedMenuInfo.routeFullPath,
-      routePrefix: openedMenuInfo.routePrefix,
-      tableName: openedMenuInfo.tableName,
-    };
+    state.activeTab = openedMenuInfo;
+    // state.activeTab = {
+    //   isActive: openedMenuInfo.isActive,
+    //   keepAliveModuleName: openedMenuInfo.keepAliveModuleName,
+    //   label: openedMenuInfo.label,
+    //   routeFullPath: openedMenuInfo.routeFullPath,
+    //   routePrefix: openedMenuInfo.routePrefix,
+    //   tableName: openedMenuInfo.tableName,
+    // };
   },
   increaseOpenedMenuLists(state, {
     label, keepAliveModuleName, tableName, routeFullPath, routePrefix
@@ -308,7 +313,7 @@ export default {
     window.sessionStorage.removeItem('addRouteToEditor');
     window.sessionStorage.removeItem('routeMapRecord');
     window.sessionStorage.removeItem('routeMapRecordForSingleObject');
-  
+    window.sessionStorage.removeItem('routeMapRecordForCustomizePage');
     // 清空updataTreeId
     removeSessionObject('TreeId');
   },
@@ -364,15 +369,16 @@ export default {
     const routeMapRecordForHideBackButtonData = getSeesionObject('routeMapRecordForHideBackButton');
     Object.keys(routeMapRecordForHideBackButtonData).map((item) => {
       const routeFullPath = state.activeTab.routeFullPath;
-      if (routeFullPath === item) {
-        deleteFromSessionObject('routeMapRecordForHideBackButton', routeFullPath);
+      const index = routeFullPath.lastIndexOf('/');
+      const routeFullPathRes = routeFullPath.substring(0, index + 1);
+      if (item.includes(routeFullPathRes)) { //
+        // 外键跳转与单对象跳转同一个单对象界面时，外键逻辑为不显示返回按钮，自定义跳转为返回到来源自定义界面，点击返回时，应清除对应的外键关系
+        deleteFromSessionObject('routeMapRecordForHideBackButton', item);
         // window.sessionStorage.setItem('ignore', true);
       }
     });
     // 删除规则三：关闭页签时，清除动态路由跳转类型跳转的session中存储的对应关系。
     const isDynamicRouting = Boolean(window.sessionStorage.getItem('dynamicRoutingIsBack'));// 动态路由跳转的单对象界面返回列表界面标记
-    
-    
     const routeMapRecord = getSeesionObject('routeMapRecord');
     if (!isDynamicRouting) { // 非动态路由返回之前的关闭tab需清除routeMapRecord对应关系，动态路由返回的routeMapRecord对应关系在返回监听时刷新接口之后清除
       Object.keys(routeMapRecord).map((item) => {
@@ -398,7 +404,16 @@ export default {
         deleteFromSessionObject('routeMapRecordForSingleObject', tabRouteFullPath);
       }
     });
-    
+
+    // 删除规则六： 关闭页签时，清除定制界面跳转单对象界面session中存储的对应关系
+    const routeMapRecordForCustomizePage = getSeesionObject('routeMapRecordForCustomizePage');
+    Object.keys(routeMapRecordForCustomizePage).map((item) => {
+      const index = tab.routeFullPath.lastIndexOf('\/');  
+      const tabPath = tab.routeFullPath.substring(0, index + 1);
+      if (item.includes(tabPath)) {
+        deleteFromSessionObject('routeMapRecordForCustomizePage', item);
+      }
+    });
     state.isRequest = [];// 清空修改数据验证
 
     const { openedMenuLists } = state;
@@ -441,7 +456,7 @@ export default {
     // tableId:主表ID,
     // id:明细ID,
     // label:显示名称, 
-    // serviceId:网关
+    // gateWay:网关
     const keepAliveModuleName = `S.${tableName}.${tableId}`;
     if (state.keepAliveLabelMaps[keepAliveModuleName] === undefined) {
       state.keepAliveLabelMaps[keepAliveModuleName] = `${label}`;
@@ -452,15 +467,13 @@ export default {
       };
       updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
     }
-    const serviceIdMap = getSeesionObject('serviceIdMap');
-    if (serviceId && JSON.stringify(serviceIdMap) !== '{}' && serviceIdMap !== null) {
-      const serviceIdMapObj = {
-        k: tableName,
-        v: serviceId
-      };
-      updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
-      state.serviceIdMap = Object.assign({}, state.serviceIdMap, serviceIdMap);
-    }
+    // if (state.serviceIdMap[tableName] === undefined) {
+    //   const serviceIdMapObj = {
+    //     k: tableName,
+    //     v: serviceId
+    //   };
+    //   updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
+    // }
     let path = '';
     if (type === 'tableDetailHorizontal') {
       path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
@@ -476,7 +489,7 @@ export default {
       const query = {
         isBack: true
       };
-      state.treeTableListData.map((item) => {
+      state.treeTableListData.map((item) => { // 支持树结构列表界面单对象返回列表
         if (item.value === tableName && item.id === Number(tableId)) {
           query.isTreeTable = true;
         }
@@ -485,13 +498,13 @@ export default {
         path,
         query
       };
-
+  
       router.push(routeInfo);
     }
   },
   tabOpen(state, {// 打开一个新tab添加路由
-    type, tableName, tableId, id, customizedModuleName, customizedModuleId, linkName,
-    linkId, url, label, serviceId
+    back, type, tableName, tableId, id, customizedModuleName, customizedModuleId, linkName,
+    linkId, url, label, serviceId, dynamicRoutingForCustomizePage
   }) {
     // back:返回标志, 
     // type:跳转类型,
@@ -499,7 +512,15 @@ export default {
     // tableId:主表ID,
     // id:明细ID,
     // label:显示名称, 
-    // serviceId:网关
+    // serviceId:网关,
+    // customizedModuleName:自定义界面组件名称
+    // customizedModuleId:自定义界面ID，
+    // linkName:外链界面名称，
+    // linkId:外链界面ID,
+    // label：中文tab名称，
+    // url:固定格式url（按照框架路由规则拼接好的）,
+    // serviceId
+    // dynamicRoutingForCustomizePage:自定义界面跳转至单对象界面，为true时可返回来源的单对象界面
     const keepAliveModuleName = `S.${tableName}.${tableId}`;
     if (state.keepAliveLabelMaps[keepAliveModuleName] === undefined) {
       state.keepAliveLabelMaps[keepAliveModuleName] = `${label}`;
@@ -511,15 +532,13 @@ export default {
      
       updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
     }
-    const serviceIdMap = getSeesionObject('serviceIdMap');
-    if (serviceId && JSON.stringify(serviceIdMap) !== '{}' && serviceIdMap !== null) {
-      const serviceIdMapObj = {
-        k: tableName,
-        v: serviceId
-      };
-      updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
-      state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
-    }
+    // if (state.serviceIdMap[tableName] === undefined) {
+    //   const serviceIdMapObj = {
+    //     k: tableName,
+    //     v: serviceId
+    //   };
+    //   updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
+    // }
     let path = '';
     if (type === STANDARD_TABLE_LIST_PREFIX || type === 'S') {
       if (url) {
@@ -527,28 +546,96 @@ export default {
       } else {
         path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
       }
-    } else if (type === 'tableDetailHorizontal' || type === 'H') {
+    } 
+    if (type === 'tableDetailHorizontal' || type === 'H') {
+      if (dynamicRoutingForCustomizePage) {
+        window.sessionStorage.setItem('dynamicRoutingForCustomizePage', true);
+      }
+
       if (url) {
         path = `${url.toUpperCase()}`;
       } else {
         path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
       }
-    } else if (type === 'tableDetailVertical' || type === 'V') {
+    } 
+    if (type === 'tableDetailVertical' || type === 'V') {
+      if (dynamicRoutingForCustomizePage) {
+        window.sessionStorage.setItem('dynamicRoutingForCustomizePage', true);
+      }
       if (url) {
         path = `${url.toUpperCase()}`;
       } else {
         path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
       }
-    } else if (type === 'tableDetailAction') {
+    }
+    if (type === 'tableDetailAction' || type === 'C') {
       if (url) {
         path = `${url.toUpperCase()}`;
       } else {
         path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${customizedModuleId}`;
       }
-    } else if (type === 'tableDetailUrl') {
-      path = `${LINK_MODULE_PREFIX}/${linkName.toUpperCase()}/${linkId}`;
+    } 
+    if (type === 'tableDetailUrl' || type === 'URL') {
+      if (url) {
+        path = `${url.toUpperCase()}`;
+      } else {
+        path = `${LINK_MODULE_PREFIX}/${linkName.toUpperCase()}/${linkId}`;
+      }
     }
-    
+    if (back) {
+      const routeMapRecordForCustomizePage = getSeesionObject('routeMapRecordForCustomizePage');
+     
+      if (routeMapRecordForCustomizePage[router.currentRoute.fullPath]) {
+        const CustomizePagePath = routeMapRecordForCustomizePage[router.currentRoute.fullPath];
+        Object.keys(routeMapRecordForCustomizePage).map((item) => {
+          if (router.currentRoute.fullPath === item) {
+            deleteFromSessionObject('routeMapRecordForCustomizePage', router.currentRoute.fullPath);
+          }
+        });
+      
+        // const flag = state.openedMenuLists.filter((d, i) => { // 判断单对象界面要返回来源定制界面是否在前一个
+        //   if (d.tableName === router.currentRoute.params.tableName) {
+        //     d.index = i;
+        //     if (i !== 0 && state.openedMenuLists[i - 1].routeFullPath === CustomizePagePath) { // 当自定义及界面要跳转的单对象界面位置不是第一个时
+        //       return true;
+        //     }
+        //   }
+        //   return false;
+        // })[0];
+        const dom = document.querySelector(`#${router.currentRoute.params.tableName}_TAB`);
+        dom.click();
+        // if (state.openedMenuLists.length > 1) { // 框架路由tab逻辑为刷新浏览器保留最后一个打开的tab页签，则关闭当前会自动激活前一个
+        router.push(CustomizePagePath);
+        // }
+        
+        // state.openedMenuLists.map((menu) => {
+        //   if (menu.routeFullPath === CustomizePagePath) {
+        //     menu.isActive = true;
+        //     state.activeTab = menu;
+        //     // setTimeout(() => {
+        //     //   state.openedMenuLists.splice(index, 1);
+        //     //   console.log(3, state.openedMenuLists);
+        //     // }, 500);
+        //   }
+        // });
+      } else {
+        path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
+        const query = {
+          isBack: true
+        };
+        state.treeTableListData.map((item) => { // 支持树结构列表界面单对象返回列表
+          if (item.value === tableName && item.id === Number(tableId)) {
+            query.isTreeTable = true;
+          }
+        });
+        const routeInfo = {
+          path,
+          query
+        };
+        router.push(routeInfo);
+      }
+      return;
+    }
     router.push({
       path
     });
