@@ -282,7 +282,6 @@
                   }
                 }
               }
-              console.log(333, this.itemInfo);
               // if(this.itemInfo)
             } 
             this.setDisableButtons();
@@ -858,6 +857,11 @@
             });
             this.upData();
             this.clearEditData();
+          } else {
+            this.clearEditData();
+            const message = '刷新成功';
+            this.clearItemEditData();
+            this.upData(`${message}`);
           }
         } else {
           this.clearEditData();
@@ -936,9 +940,13 @@
               });
             });
           } else if (tabrelation === '1:1') {
-            this.getObjectTabForChildTableButtons({
-              itemInfo: this.itemInfo, maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex: this.currentTabIndex
+            const promise = new Promise((resolve, reject) => {
+              this.getObjectTabForChildTableButtons({
+                itemInfo: this.itemInfo, maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex: this.currentTabIndex, resolve, reject
+              });
             });
+
+           
             this.getItemObjForChildTableForm({
               itemInfo: this.itemInfo, table: tablename, objid: this.itemId, refcolid, tabIndex: this.currentTabIndex
             });

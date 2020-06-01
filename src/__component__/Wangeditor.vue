@@ -61,6 +61,9 @@
     watch: {
       valuedata() {
         this.textHtml = this.valuedata;
+        if (this.valuedata === '') {
+          this.editor.txt.html(this.textHtml);
+        }
       }
 
     },
