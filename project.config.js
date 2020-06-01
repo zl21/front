@@ -57,7 +57,9 @@ module.exports = {
   cbs: undefined, // 框架回调，形如 { loginCb: function() {} }
   layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
   backDashboardRoute: [], // 配置刷新浏览器回到Dashboard界面
-  custommizedRequestURL: {}, // 配置内置自定义界面requestURL
+  custommizedRequestURL: {
+    '/p/cs/cprospecload':
+  }, // 配置内置自定义界面requestURL
 
 
 };
