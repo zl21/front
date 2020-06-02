@@ -1037,9 +1037,18 @@
               }
               // 权限查询
               searchObject = this.setSeachObject(searchObject, current);
+              let serviceId = null;
+              if (current) {
+                if (current.serviceId) {
+                  serviceId = current.serviceId;
+                } else if (current.fkobj && current.fkobj.serviceId) {
+                  serviceId = current.fkobj.serviceId;
+                }
+              }
+              
               fkHttpRequest().fkQueryList({
                 searchObject,
-                serviceId: current.serviceId || current.fkobj.serviceId,
+                serviceId,
                 success: (res) => {
                   this.freshDropDownSelectFilterData(res, index, current);
                 }
