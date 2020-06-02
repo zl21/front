@@ -163,6 +163,7 @@
           if (this.sizeData.length === 0) {
             this.getSizeData(this.rightTableDataForSize);
           }
+          this.getColorData(this.rightTableDataForColor);
         }
       
         const params = {

@@ -148,18 +148,19 @@
                       @mousedown.stop="colImgOut(item)"
                     >
                       <i
-                        v-show="item.flag &&item.URL == ''"
+                        v-show="item.flag&&item.URL"
                         class="iconfont iconios-close-circle"
                         @click.stop="colImgDelete(item,index)"
                         @mousedown.stop
                       />
-                      
+                     
                       <Poptip
                         v-model="item.flag"
                         placement="right"
                         title
                         trigger="hover"
                         transfer
+                        popper-class="el-popover-img"
                       >
                         <span
                           v-if="!item.URL"
@@ -183,12 +184,11 @@
                         </span>
                        
                         <div
-                          v-if="item.URL"
                           :style="{backgroundSize:'auto 100%',backgroundImage: 'url('+item.URL+'?x-oss-process=image/quality,q_80)',height:'64px',width:'64px'}"
                           :title="item.NAME" 
                         />
                         <div
-                          v-if="item.URL=== ''"
+                          v-if="item.URL"
                           slot="content"
                           :style="{backgroundSize:'auto 100%',backgroundImage: 'url('+item.URL+'?x-oss-process=image/quality,q_80)',height:'300px',width:'300px'}"
                           :title="item.NAME"
@@ -225,6 +225,7 @@
 </template>
 
 <script>
+  import axios from 'axios';
   import network, { urlSearchParams } from '../../__utils__/network';
   import { custommizedRequestUrl, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY } from '../../constants/global';
   import store from '../../__config__/store.config';
@@ -243,6 +244,10 @@
       const { itemId } = this.$route.params;
       this.objId = itemId;
       if (!this._inactive) {
+        this.$dragging.$on('dragged', (res) => {
+          this.proImg = res.value.list;
+          this.saveObj.IMAGE = JSON.stringify(this.proImg);
+        });
         window.addEventListener('tabClick', this.tabClick);
       }
     },
@@ -455,11 +460,12 @@
 
         return temp;
       },
-      objectSave(params) { // 保存
+      objectSave() { // 保存
         console.log(333, this.saveObj);
         this.proImg.forEach(((item) => {
           item.flag = false;
         }));
+        debugger;
         if (this.saveObj.IMAGE_SKU) {
           const arr = this.reaptData(JSON.parse(this.saveObj.IMAGE_SKU));
 
@@ -588,15 +594,15 @@
           if (value === undefined) {
             return;
           }
-          network.post('/p/cs/upload2', data).then((res) => {
-                                                     this.proImg.push({
-                                                       NAME: res.data.data.Name,
-                                                       URL: res.data.data.Url,
-                                                       flag: false
-                                                     });
-                                                     this.saveObj.IMAGE = JSON.stringify(this.proImg);
-                                                   },
-                                                   false);
+          axios.post('/p/cs/upload2', data).then((res) => {
+                                                   this.proImg.push({
+                                                     NAME: res.data.data.Name,
+                                                     URL: res.data.data.Url,
+                                                     flag: false
+                                                   });
+                                                   this.saveObj.IMAGE = JSON.stringify(this.proImg);
+                                                 },
+                                                 false);
           setTimeout(() => {
             document.querySelector(`#proImg${this.objId}`).value = '';
           }, 200);
