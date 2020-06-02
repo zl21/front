@@ -845,6 +845,11 @@
           ) {
             this._items.event.clear();
           }
+        } else if (
+          Object.prototype.hasOwnProperty.call(this._items.event, 'valuechange')
+          && typeof this._items.event.valuechange === 'function'
+        ) {
+          this._items.event.valuechange(item);
         }
         this.valueChange();
         // if (
