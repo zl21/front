@@ -115,8 +115,8 @@
         network.get(URL || '/p/cs/cprospecload', { params })
           .then((res) => {
             if (res.data.code === 0) {
+              this.getImage(res.data.data.COLOR);
               this.rightTableDataForSize = res.data.data.SIZE;
-              this.rightTableDataForColor = res.data.data.COLOR;
             }
           });
       }, // 获取颜色和尺寸数据
@@ -141,6 +141,31 @@
           return obj;
         });
       },
+      getImage(colorData) {
+        const { itemId } = this.$route.params;
+        const url = custommizedRequestUrl()['/p/cs/proImage'];
+        network.post(url || '/p/cs/proImage', urlSearchParams({
+          param: {
+            PS_C_PRO_ID: itemId
+          }
+        })).then((res) => {
+          if (res.data.code === 0) {
+            if (res.data.data.IMAGE_SKU) {
+              const images = JSON.parse(res.data.data.IMAGE_SKU);
+              if (images && images.length > 0 && colorData && colorData.length > 0) {
+                colorData.map((color) => {
+                  images.map((image) => {
+                    if (color.ID === image.ID) {
+                      color.image = image.URL;
+                    }
+                  });
+                });
+              }
+              this.rightTableDataForColor = colorData;
+            }
+          }
+        });
+      },
       produceCode() {
         const { tableName, itemId } = this.$route.params;
         let rightTableDataForColorRes = null;
@@ -152,9 +177,9 @@
           this.getColorData(rightTableDataForColorRes);
           // }
 
-          if (this.sizeData.length === 0) {
-            this.getSizeData(this.rightTableDataForSize);
-          }
+          // if (this.sizeData.length === 0) {
+          this.getSizeData(this.rightTableDataForSize);
+          // }
         }
         
         if (this.$refs.tabPanels.$refs.size) {

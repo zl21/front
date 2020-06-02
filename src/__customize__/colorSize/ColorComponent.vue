@@ -1,6 +1,9 @@
 /* eslint-disable vue/html-self-closing */
 <template>
-  <div class="color_container">
+  <div
+    ref="colorComponent"
+    class="color_container"
+  >
     <div class="left_container">
       <div class="left_button">
         <Button
@@ -20,6 +23,7 @@
           highlight-row
           :data="leftTableData"
           @on-row-click="leftTableRowClick"
+          @on-row-dblclick="rightSingle"
         />
       </div>
     </div>
@@ -58,7 +62,7 @@
           @on-change="addColorInputChange"
           @on-click="addIconClick"
           @on-enter="addIconClick"
-            >
+           >
         <Button
           slot="prepend"
           @click="addColor"
@@ -77,6 +81,7 @@
           highlight-row
           :height="rightTableHeight"
           @on-row-click="rightTableRowClick"
+          @on-row-dblclick="leftSingle"
         />
       </div>
     </div>
@@ -135,7 +140,8 @@
           },
           {
             title: '颜色图片',
-            key: 'image'
+            render: this.mainImageRender()
+            // key: 'image'
           },
         ], // 右边表格的表头
         rightTableData: [], // 右边表格数据
@@ -160,7 +166,6 @@
     watch: {
       rightTableDataForColor: {
         handler(val) {
-          console.log(1, val);
           this.rightTableData = val;
           // this.getData(val);
         },
@@ -183,28 +188,47 @@
           this.rightTableData.push(this.leftTableData[this.leftTableSelectIndex]);
           this.leftTableData.splice(this.leftTableSelectIndex, 1);
           this.leftTableSelectIndex = null;
+          this.$parent.$parent.rightTableDataForColor = this.rightTableData;
         }
       }, // 单个向右的icon点击触发
       rightDouble() {
         this.rightTableData = this.rightTableData.concat(this.leftTableData);
         this.leftTableData = [];
+        this.$parent.$parent.rightTableDataForColor = this.rightTableData;
       }, // 两个向右的icon点击触发
       leftSingle() {
         if (this.rightTableSelectIndex !== null) {
-          this.leftTableData.push(this.rightTableData[this.rightTableSelectIndex]);
+          const currentData = this.rightTableData[this.rightTableSelectIndex];
+          if (currentData.image) {
+            delete currentData.image;
+          }
+          this.leftTableData.push(currentData);
           this.rightTableData.splice(this.rightTableSelectIndex, 1);
           this.rightTableSelectIndex = null;
+          this.$parent.$parent.rightTableDataForColor = this.rightTableData;
         }
       }, // 单个向左的icon点击触发
       leftDouble() {
+        //  const currentData = this.rightTableData[this.rightTableSelectIndex];
+        //   if (currentData.image) {
+        //     delete currentData.image;
+        //   }
+        this.rightTableData.map((item) => {
+          if (item.image) {
+            delete item.image;
+          }
+        });
         this.leftTableData = this.leftTableData.concat(this.rightTableData);
         this.rightTableData = [];
+        this.$parent.$parent.rightTableDataForColor = this.rightTableData;
       }, // 两个向左的icon点击触发
       leftTableRowClick(val, index) {
         this.leftTableSelectIndex = index;
+        this.$parent.$parent.rightTableDataForColor = this.rightTableData;
       }, // 左边表格单选触发
       rightTableRowClick(val, index) {
         this.rightTableSelectIndex = index;
+        this.$parent.$parent.rightTableDataForColor = this.rightTableData;
       }, // 右边表格单选触发
       listAllColor() {
         const { itemId } = this.$route.params;
@@ -292,6 +316,49 @@
       //       }
       //     });
       // }, // 获取右边表格的数据
+      mainImageRender() {
+        return (h, params) => {
+          // debugger;
+          const colname = params.row;
+          if (colname.image) {
+            return h('div', [
+              h('Poptip', {
+                style: {},
+                props: {
+                  trigger: 'hover',
+                  transfer: true,
+                  content: 'content',
+                  placement: 'right'
+                },
+                scopedSlots: {
+                  default: () => h('img', {
+                    style: {
+                      height: '46px',
+                      width: '46px',
+                      'margin-top': '4px'
+                    },
+                    domProps: {
+                      src: colname.image
+                    }
+                  }),
+                  content: () => h('img', {
+                    style: {
+                      width: '120px',
+                      height: '120px',
+                      margin: '8px 0px',
+                      'vertical-align': 'middle',
+                    },
+                    domProps: {
+                      src: colname.image
+                    }
+                  }),
+                },
+              })
+            ]);
+          }
+        };
+      }, // 图片render
+
       mainColorRender() {
         return (h, params) => h('Select', {
           style: {
