@@ -818,6 +818,18 @@
                     }
                   });
                 },
+                clear: () => {
+                  this.formItemsLists[itemIndex].item.props.Selected = [];
+                  this.formItemsLists[itemIndex].item.value = '';
+                },
+                valuechange: ($this) => {
+                  // 弹窗多选
+                  this.formItemsLists[itemIndex].item.props.Selected = $this.selected || [];
+                  this.formItemsLists[itemIndex].item.value = $this.value;
+                  // this.formItemsLists = this.formItemsLists.concat([]);
+
+                  console.log(itemIndex, this.formItemsLists[itemIndex].item.props);
+                },
                 'on-popper-hide': ($this) => {
                   // 初始化清空数据
                   this.formItemsLists[itemIndex].item.props.data = {};
@@ -949,9 +961,12 @@
                 obj.item.props.defaultSelected = this.defaultValue(current) || [];
                 break;
               case 'pop':
+                obj.item.props = current;
                 obj.item.props.blurType = false;
                 obj.item.props.optionTip = false;
                 obj.item.props.enterType = true;
+                obj.item.props.fkdisplay = 'pop';
+                console.log(111);
                 obj.item.props.show = false;
                 // 失去光标是否保存
                 obj.item.props.dialog = {
@@ -970,12 +985,12 @@
                 obj.item.props.AutoData = [];
                 obj.item.props.fkobj = {
                   colid: current.colid,
-                  reftable: current.reftable,
-                  serviceId: current.serviceId,
-                  reftableid: current.reftableid,
+                  reftable: current.fkobj.reftable,
+                  serviceId: current.fkobj.serviceId,
+                  reftableid: current.fkobj.reftableid,
                   show: false,
                   url:
-                    `${current.serviceId ? (`/${current.serviceId}`) : ''
+                    `${current.fkobj.serviceId ? (`/${current.fkobj.serviceId}`) : ''
                     }/p/cs/menuimport`
                 };
                 obj.item.props.datalist = [];
