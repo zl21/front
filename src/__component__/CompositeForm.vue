@@ -1807,7 +1807,7 @@
           return arr;
         }
 
-
+        console.log('tag');
         return this.defaultSetValue[item.colname] || item.valuedata || item.defval || item.default || '';
       // wewe
       },

@@ -58,7 +58,7 @@ module.exports = {
   layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
   backDashboardRoute: [], // 配置刷新浏览器回到Dashboard界面
   custommizedRequestURL: {
-    '/p/cs/cprospecload':
+   
   }, // 配置内置自定义界面requestURL
 
 

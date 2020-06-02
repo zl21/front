@@ -1,13 +1,14 @@
 <template>
   <div class="pro_desc">
-    <!-- <div class="buttonGroup">
+    <div class="buttonGroup">
       <Button
         v-for="(item, index) in buttonGroup"
         :key="index"
         @click="buttonClick(item)"
         v-text="item.name"
       />
-    </div> -->
+    </div>
+    
     <div class="content">
       <!-- 商品／颜色主图 -->
       <Collapse
@@ -225,10 +226,13 @@
 
 <script>
   import network, { urlSearchParams } from '../../__utils__/network';
-  import { custommizedRequestUrl } from '../../constants/global';
+  import { custommizedRequestUrl, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY } from '../../constants/global';
+  import store from '../../__config__/store.config';
 
   export default {
     name: 'ProDesc',
+    inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY],  
+
     created() {
       const { itemId } = this.$route.params;
       if (itemId !== 'New') {
@@ -238,9 +242,9 @@
     mounted() {
       const { itemId } = this.$route.params;
       this.objId = itemId;
-      if (!this._inactive) {
-        window.addEventListener('customizeClick', this.clickCustomize);
-      }
+      // if (!this._inactive) {
+      //   window.addEventListener('customizeClick', this.clickCustomize);
+      // }
     },
     props: {
       itemInfo: {// 当前子表信息
@@ -252,6 +256,13 @@
     },
     data() {
       return {
+        buttonGroup: [
+          { name: '保存', eName: 'save' },
+          { name: '刷新', eName: 'refresh' },
+          { name: '返回', eName: 'back' }
+
+
+        ],
         saveParams: {},
         dialogShow: false,
         // dialogConfig: {
@@ -282,13 +293,28 @@
     components: {
     },
     methods: {
-      clickCustomize(event) {
-        if (event.type === 'save') {
-          this.saveParams = event.detail;
-          this.objectSave(event.detail);
+      buttonClick(data) {
+        if (data.eName === 'save') {
+          this.objectSave();
+        } else if (data.eName === 'refresh') {
+          this.getData('refresh');
+        } else {
+          const param = {
+            tableId: '23276',
+            tableName: 'PS_C_PRO',
+            back: true,
+          };
+          store.commit('global/tabOpen', param);
         }
       },
-      getData() {
+      // clickCustomize(event) {
+      //   // store.commit(`${this[MODULE_COMPONENT_NAME]}/updateModifyData`, { tableName: this.itemInfo.tablename, value: this.saveObj });
+      //   if (event.detail.type === 'save') {
+      //     this.saveParams = event.detail;
+      //     this.objectSave(event.detail);
+      //   }
+      // },
+      getData(type) {
         // 获取数据
        
         const { itemId } = this.$route.params;
@@ -313,6 +339,24 @@
                   this.$set(item, 'flag', false);
                 });
               } 
+            
+
+              if (res.data.data.DETAILDESC) { // 更新框架表单修改数据
+                const values = {};
+                // values[this.itemInfo.tablename] = { DETAILDESC: res.data.data.DETAILDESC };
+                // store.commit(`${this[MODULE_COMPONENT_NAME]}/updateModifyData`, { 
+                //   tableName: this.itemInfo.tablename,
+                //   value: values,
+                // });
+                if (type === 'refresh') {
+                  // store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { 
+                  //   tableName: this.itemInfo.tablename,
+                  //   value: values,
+                  // });
+                }
+              }
+              
+             
               // else if (!this.modify) {
               //   this.proImg.push({
               //     NAME: '默认图片',
@@ -333,6 +377,8 @@
             params
           }).then((col) => {
             if (col.data.code === 0) {
+              const indexTab = null;
+            
               this.colorList = [];
               this.colorList = col.data.data.COLOR;
 
@@ -394,6 +440,7 @@
         return temp;
       },
       objectSave(params) { // 保存
+        console.log(333, this.saveObj);
         this.proImg.forEach(((item) => {
           item.flag = false;
         }));
@@ -430,7 +477,9 @@
             this.saveObj.IMAGE = null;
           }
         }
-        this.saveObj.DETAILDESC = params.itemTableParame.modify[this.itemInfo.tablename];
+        const edit = store.state[`${this[MODULE_COMPONENT_NAME]}`].updateData[this.itemInfo.tablename].modify[this.itemInfo.tablename];
+        this.saveObj.DETAILDESC = edit.DETAILDESC;
+
         if (this.video) this.saveObj.VIDEO = this.video;
         else this.saveObj.VIDEO = '';
         const obj = {
@@ -623,9 +672,9 @@
       },
      
     },
-    beforeDestroy() {
-      window.removeEventListener('customizeClick', this.clickCustomize);
-    },
+    // beforeDestroy() {
+    //   window.removeEventListener('customizeClick', this.clickCustomize);
+    // },
   };
 </script>
 
