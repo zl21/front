@@ -10,13 +10,13 @@
       >
         {{ item.webdesc }}
       </Button>
-      <!-- <Button
+      <Button
         type="fcdefault"
         class="Button"
         @click="customize"
       >
         测试跳转到单对象界面
-      </Button> -->
+      </Button>
     </div>
     <div class="content">
       <div class="contentLeft">
@@ -976,8 +976,8 @@
       }, // 点击按钮触发
       customize() {
         const param = {
-          url: '/SYSTEM/TABLE_DETAIL/H/AD_TABLE/992/24407',
-          type: 'H',
+          url: '/CUSTOMIZED/PERMISSIONS/2997?type=sensitive&name=2',
+          type: 'C',
           dynamicRoutingForCustomizePage: true
         };
         store.commit('global/tabOpen', param);

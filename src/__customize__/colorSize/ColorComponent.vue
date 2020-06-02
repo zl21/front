@@ -57,7 +57,7 @@
           icon="ios-add-circle-outline"
           @on-change="addColorInputChange"
           @on-click="addIconClick"
-            >
+        />
         <Button
           slot="prepend"
           @click="addColor"
@@ -159,8 +159,9 @@
     watch: {
       rightTableDataForColor: {
         handler(val) {
+          console.log(1, val);
           this.rightTableData = val;
-          this.getData(val);
+          // this.getData(val);
         },
         deep: true
       },
@@ -217,15 +218,15 @@
           .then((res) => {
             if (res.data.code === 0) {
               let colorData = res.data.data;
-
-              if (this.rightTableData.length > 0) {
-                colorData = colorData.filter((item) => {
-                  const idList = this.rightTableData.map(v => v.id);
-                  return !idList.includes(item.id);
-                });
-
-                this.leftTableData = colorData;
-              } else {
+              if (this.rightTableData && this.rightTableData.length > 0) {
+                if (colorData && colorData.length > 0) {
+                  colorData = colorData.filter((item) => {
+                    const idList = this.rightTableData.map(v => v.ID);
+                    return !idList.includes(item.ID);
+                  });
+                  this.leftTableData = colorData;
+                }
+              } else if (colorData) {
                 this.leftTableData = colorData;
               }
             }
@@ -297,7 +298,7 @@
           props: {
             transfer: true,
             clearable: true,
-            value: ''
+            value: params.row.MAINCOLOR,
           },
           nativeOn: {
             click: (e) => {
@@ -305,7 +306,11 @@
             }
           },
           on: {
-            'on-change': (event, data) => {
+            'on-change': (event) => {
+              params.row.MAINCOLOR = event;
+              this.rightTableData[params.index].MAINCOLOR = event;
+              // params.row.MAINCOLOR = event;
+              // this.getData(params.row);
             }
           }
         }, this.selectOptionRender(h));
@@ -324,7 +329,8 @@
           style: {
           },
           props: {
-            value: ''
+            value: params.row.FABCOLOR,
+
           },
           nativeOn: {
             click: (e) => {
@@ -332,7 +338,11 @@
             }
           },
           on: {
-            'on-change': (event, data) => {
+            'on-blur': (event, e) => {
+              params.row.FABCOLOR = e.currentValue;
+              this.rightTableData[params.index].FABCOLOR = e.currentValue;
+              // params.row.FABCOLOR = event.data;
+              // this.getData(params.row);
             }
           }
         });

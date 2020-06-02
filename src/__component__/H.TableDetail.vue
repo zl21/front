@@ -126,9 +126,8 @@
                 Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
               }
             }
-           
             if (webactType === 'HALF') { // 如果是自定义tab全定制界面时，不需要引入公共组件,半定制界面需要引入公共组件
-              this.updateButtonsDataForCustomization({ tabIndex: index, isShowValue: true });
+              this.updateButtonsDataForCustomization({ tabIndex: index, isShowValue: false });
             }
             obj.component = `tapComponent.${item.tablename}`;
             obj.cilckCallback = this.tabClick;
@@ -168,7 +167,8 @@
         this.updateTabCurrentIndex(index);
         DispatchEvent('tabClick', {
           detail: {
-            data: this.tabPanel[index]
+            data: this.tabPanel[index],
+            index
           }
         });
         if (!flag) {
