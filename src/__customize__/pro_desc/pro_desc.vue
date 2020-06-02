@@ -1,13 +1,14 @@
 <template>
   <div class="pro_desc">
-    <!-- <div class="buttonGroup">
+    <div class="buttonGroup">
       <Button
         v-for="(item, index) in buttonGroup"
         :key="index"
         @click="buttonClick(item)"
         v-text="item.name"
       />
-    </div> -->
+    </div>
+    
     <div class="content">
       <!-- 商品／颜色主图 -->
       <Collapse
@@ -147,18 +148,19 @@
                       @mousedown.stop="colImgOut(item)"
                     >
                       <i
-                        v-show="item.flag &&item.URL == ''"
+                        v-show="item.flag&&item.URL"
                         class="iconfont iconios-close-circle"
                         @click.stop="colImgDelete(item,index)"
                         @mousedown.stop
                       />
-                      
+                     
                       <Poptip
                         v-model="item.flag"
                         placement="right"
                         title
                         trigger="hover"
                         transfer
+                        popper-class="el-popover-img"
                       >
                         <span
                           v-if="!item.URL"
@@ -182,12 +184,11 @@
                         </span>
                        
                         <div
-                          v-if="item.URL"
                           :style="{backgroundSize:'auto 100%',backgroundImage: 'url('+item.URL+'?x-oss-process=image/quality,q_80)',height:'64px',width:'64px'}"
                           :title="item.NAME" 
                         />
                         <div
-                          v-if="item.URL=== ''"
+                          v-if="item.URL"
                           slot="content"
                           :style="{backgroundSize:'auto 100%',backgroundImage: 'url('+item.URL+'?x-oss-process=image/quality,q_80)',height:'300px',width:'300px'}"
                           :title="item.NAME"
@@ -224,11 +225,15 @@
 </template>
 
 <script>
+  import axios from 'axios';
   import network, { urlSearchParams } from '../../__utils__/network';
-  import { custommizedRequestUrl } from '../../constants/global';
+  import { custommizedRequestUrl, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY } from '../../constants/global';
+  import store from '../../__config__/store.config';
 
   export default {
     name: 'ProDesc',
+    inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY],  
+
     created() {
       const { itemId } = this.$route.params;
       if (itemId !== 'New') {
@@ -239,7 +244,11 @@
       const { itemId } = this.$route.params;
       this.objId = itemId;
       if (!this._inactive) {
-        window.addEventListener('customizeClick', this.clickCustomize);
+        this.$dragging.$on('dragged', (res) => {
+          this.proImg = res.value.list;
+          this.saveObj.IMAGE = JSON.stringify(this.proImg);
+        });
+        window.addEventListener('tabClick', this.tabClick);
       }
     },
     props: {
@@ -252,6 +261,14 @@
     },
     data() {
       return {
+        tabIndex: null,
+        buttonGroup: [
+          { name: '保存', eName: 'save' },
+          { name: '刷新', eName: 'refresh' },
+          { name: '返回', eName: 'back' }
+
+
+        ],
         saveParams: {},
         dialogShow: false,
         // dialogConfig: {
@@ -282,13 +299,43 @@
     components: {
     },
     methods: {
-      clickCustomize(event) {
-        if (event.type === 'save') {
-          this.saveParams = event.detail;
-          this.objectSave(event.detail);
+      tabClick(tabData) {
+        this.tabIndex = tabData.detail.index;
+      },
+      buttonClick(data) {
+        if (data.eName === 'save') {
+          this.objectSave();
+        } else if (data.eName === 'refresh') {
+          this.refresh();
+        } else {
+          const param = {
+            tableId: '23276',
+            tableName: 'PS_C_PRO',
+            back: true,
+          };
+          store.commit('global/tabOpen', param);
         }
       },
-      getData() {
+      refresh() {
+        this.getData('refresh');
+        const { itemId } = this.$route.params;
+        const param = {
+          table: 'ps_c_pro_desc',
+          objid: itemId,
+          refcolid: -1,
+          tabIndex: this.tabIndex,
+          itemInfo: this.itemInfo
+        };
+        store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getItemObjForChildTableForm`, param);
+      },
+      // clickCustomize(event) {
+      //   // store.commit(`${this[MODULE_COMPONENT_NAME]}/updateModifyData`, { tableName: this.itemInfo.tablename, value: this.saveObj });
+      //   if (event.detail.type === 'save') {
+      //     this.saveParams = event.detail;
+      //     this.objectSave(event.detail);
+      //   }
+      // },
+      getData(type) {
         // 获取数据
        
         const { itemId } = this.$route.params;
@@ -313,6 +360,24 @@
                   this.$set(item, 'flag', false);
                 });
               } 
+            
+
+              if (res.data.data.DETAILDESC) { // 更新框架表单修改数据
+                const values = {};
+                values[this.itemInfo.tablename] = { DETAILDESC: res.data.data.DETAILDESC };
+                store.commit(`${this[MODULE_COMPONENT_NAME]}/updateModifyData`, { 
+                  tableName: this.itemInfo.tablename,
+                  value: values,
+                });
+                if (type === 'refresh') {
+                  store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { 
+                    tableName: this.itemInfo.tablename,
+                    value: values,
+                  });
+                }
+              }
+              
+             
               // else if (!this.modify) {
               //   this.proImg.push({
               //     NAME: '默认图片',
@@ -333,6 +398,8 @@
             params
           }).then((col) => {
             if (col.data.code === 0) {
+              const indexTab = null;
+            
               this.colorList = [];
               this.colorList = col.data.data.COLOR;
 
@@ -393,10 +460,12 @@
 
         return temp;
       },
-      objectSave(params) { // 保存
+      objectSave() { // 保存
+        console.log(333, this.saveObj);
         this.proImg.forEach(((item) => {
           item.flag = false;
         }));
+        debugger;
         if (this.saveObj.IMAGE_SKU) {
           const arr = this.reaptData(JSON.parse(this.saveObj.IMAGE_SKU));
 
@@ -430,7 +499,9 @@
             this.saveObj.IMAGE = null;
           }
         }
-        this.saveObj.DETAILDESC = params.itemTableParame.modify[this.itemInfo.tablename];
+        const edit = store.state[`${this[MODULE_COMPONENT_NAME]}`].updateData[this.itemInfo.tablename].modify[this.itemInfo.tablename];
+        this.saveObj.DETAILDESC = edit.DETAILDESC;
+
         if (this.video) this.saveObj.VIDEO = this.video;
         else this.saveObj.VIDEO = '';
         const obj = {
@@ -523,15 +594,15 @@
           if (value === undefined) {
             return;
           }
-          network.post('/p/cs/upload2', data).then((res) => {
-                                                     this.proImg.push({
-                                                       NAME: res.data.data.Name,
-                                                       URL: res.data.data.Url,
-                                                       flag: false
-                                                     });
-                                                     this.saveObj.IMAGE = JSON.stringify(this.proImg);
-                                                   },
-                                                   false);
+          axios.post('/p/cs/upload2', data).then((res) => {
+                                                   this.proImg.push({
+                                                     NAME: res.data.data.Name,
+                                                     URL: res.data.data.Url,
+                                                     flag: false
+                                                   });
+                                                   this.saveObj.IMAGE = JSON.stringify(this.proImg);
+                                                 },
+                                                 false);
           setTimeout(() => {
             document.querySelector(`#proImg${this.objId}`).value = '';
           }, 200);
@@ -624,7 +695,7 @@
      
     },
     beforeDestroy() {
-      window.removeEventListener('customizeClick', this.clickCustomize);
+      window.removeEventListener('customizeClick', this.tabClick);
     },
   };
 </script>

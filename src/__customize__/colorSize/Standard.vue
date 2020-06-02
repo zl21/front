@@ -131,6 +131,7 @@
           };
           return obj;
         });
+        // this.rightTableDataForColor = this.colorData;
       },
       getSizeData(val) {
         this.sizeData = val.map((item) => {
@@ -142,9 +143,29 @@
       },
       produceCode() {
         const { tableName, itemId } = this.$route.params;
-        if (this.sizeData.length === 0) {
-          this.getSizeData(this.rightTableDataForSize);
+        let rightTableDataForColorRes = null;
+        let rightTableDataForSizeRes = null;
+        if (this.$refs.tabPanels.$refs.color) {
+          rightTableDataForColorRes = this.$refs.tabPanels.$refs.color.rightTableData;
+          // this.colorData = rightTableDataForColorRes;
+          // if (this.colorData.length === 0) {
+          this.getColorData(rightTableDataForColorRes);
+          // }
+
+          if (this.sizeData.length === 0) {
+            this.getSizeData(this.rightTableDataForSize);
+          }
         }
+        
+        if (this.$refs.tabPanels.$refs.size) {
+          rightTableDataForSizeRes = this.$refs.tabPanels.$refs.size.rightTableData;
+          this.getSizeData(rightTableDataForSizeRes);
+          if (this.sizeData.length === 0) {
+            this.getSizeData(this.rightTableDataForSize);
+          }
+          this.getColorData(this.rightTableDataForColor);
+        }
+      
         const params = {
           param: {
             table: tableName,
@@ -156,8 +177,8 @@
           webaction: 'CskuGenerateCmd',
           actionid: '2005'
         };
+        console.log('tag', params);
         const URL = custommizedRequestUrl()['/p/cs/exeAction'];
-        
         network.post(URL || '/p/cs/exeAction', urlSearchParams(params))
           .then((res) => {
             if (res.data.code === 0) {

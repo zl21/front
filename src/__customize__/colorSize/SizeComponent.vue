@@ -120,7 +120,6 @@
     watch: {
       rightTableDataForSize: {
         handler(val) {
-          console.log('🐻', val);
           this.rightTableData = val;
           this.getData(val);
         },
