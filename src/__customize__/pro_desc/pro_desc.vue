@@ -242,9 +242,9 @@
     mounted() {
       const { itemId } = this.$route.params;
       this.objId = itemId;
-      // if (!this._inactive) {
-      //   window.addEventListener('customizeClick', this.clickCustomize);
-      // }
+      if (!this._inactive) {
+        window.addEventListener('tabClick', this.tabClick);
+      }
     },
     props: {
       itemInfo: {// 当前子表信息
@@ -256,6 +256,7 @@
     },
     data() {
       return {
+        tabIndex: null,
         buttonGroup: [
           { name: '保存', eName: 'save' },
           { name: '刷新', eName: 'refresh' },
@@ -293,11 +294,14 @@
     components: {
     },
     methods: {
+      tabClick(tabData) {
+        this.tabIndex = tabData.detail.index;
+      },
       buttonClick(data) {
         if (data.eName === 'save') {
           this.objectSave();
         } else if (data.eName === 'refresh') {
-          this.getData('refresh');
+          this.refresh();
         } else {
           const param = {
             tableId: '23276',
@@ -306,6 +310,18 @@
           };
           store.commit('global/tabOpen', param);
         }
+      },
+      refresh() {
+        this.getData('refresh');
+        const { itemId } = this.$route.params;
+        const param = {
+          table: 'ps_c_pro_desc',
+          objid: itemId,
+          refcolid: -1,
+          tabIndex: this.tabIndex,
+          itemInfo: this.itemInfo
+        };
+        store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getItemObjForChildTableForm`, param);
       },
       // clickCustomize(event) {
       //   // store.commit(`${this[MODULE_COMPONENT_NAME]}/updateModifyData`, { tableName: this.itemInfo.tablename, value: this.saveObj });
@@ -343,16 +359,16 @@
 
               if (res.data.data.DETAILDESC) { // 更新框架表单修改数据
                 const values = {};
-                // values[this.itemInfo.tablename] = { DETAILDESC: res.data.data.DETAILDESC };
-                // store.commit(`${this[MODULE_COMPONENT_NAME]}/updateModifyData`, { 
-                //   tableName: this.itemInfo.tablename,
-                //   value: values,
-                // });
+                values[this.itemInfo.tablename] = { DETAILDESC: res.data.data.DETAILDESC };
+                store.commit(`${this[MODULE_COMPONENT_NAME]}/updateModifyData`, { 
+                  tableName: this.itemInfo.tablename,
+                  value: values,
+                });
                 if (type === 'refresh') {
-                  // store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { 
-                  //   tableName: this.itemInfo.tablename,
-                  //   value: values,
-                  // });
+                  store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { 
+                    tableName: this.itemInfo.tablename,
+                    value: values,
+                  });
                 }
               }
               
@@ -672,9 +688,9 @@
       },
      
     },
-    // beforeDestroy() {
-    //   window.removeEventListener('customizeClick', this.clickCustomize);
-    // },
+    beforeDestroy() {
+      window.removeEventListener('customizeClick', this.tabClick);
+    },
   };
 </script>
 

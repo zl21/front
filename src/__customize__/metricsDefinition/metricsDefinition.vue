@@ -511,15 +511,16 @@
             },
             getData(n, type) {
                 const arr1 = this.childBoxList[n].childList;
-                const arrNew = this.list.filter(item => this.parentCheckedArr.some(ele => ele == item.ID));
+                // const arrNew = this.list.filter(item => this.parentCheckedArr.some(ele => ele == item.ID));
+                const arrNew = this.parentCheckedArr;
                 const tmp = [];
                 arrNew.map((item) => {
                     let ishas = false;
-                    arr1.map((ele) => {
+                 /*   arr1.map((ele) => {
                         if (ele.ID == item.ID) {
                             ishas = true;
                         }
-                    });
+                    });*/
                     if (!ishas) {
                         const o = {
                             ID: item.ID,
