@@ -180,7 +180,9 @@ export default {
       type
     })).then((res) => {
       const data = res.data;
-      commit('updateButtonSetFavoriteData', data);
+      if (data.code === 0) {
+        commit('updateButtonSetFavoriteData', data);
+      }
     });
   },
   getRemoveFavoriteDataForButtons({ commit }, { id, type }) { // 取消收藏

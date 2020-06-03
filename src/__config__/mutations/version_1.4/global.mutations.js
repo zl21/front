@@ -703,7 +703,10 @@ export default {
   },
   updateJflowControlField(state, data) {
     state.JflowControlField = data;
-  }
+  },
+  updateFavoriteData(state, data) { // 收藏
+    state.favorite = data.data;
+  },
 
   
 };
