@@ -6,7 +6,7 @@ module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
   projectIconPath: path.join(__dirname, './favicon.ico'), // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
-  // target: 'http://r3-8098.dev.burgeononline.com/', // 框架研发网关开启环境
+  target: 'http://r3-8098.dev.burgeononline.com/', // 框架研发网关开启环境
   // target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 新版本jflow测试环境
   // target: 'http://r3dev.qiaodan.com:28889', // 乔丹开发环境
   // target: 'http://r3dev.qiaodan.com:26666', // 乔丹开发环境
@@ -18,7 +18,7 @@ module.exports = {
   // target: 'http://139.224.169.76:28888', // 沁园
   // target: 'http://10.14.5.196', // 商飞开发环境
   // target: 'http://10.14.3.71', // 商飞预发环境
-  target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 商飞测试环境
+  // target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop网关开启环境
   // target: 'http://r3.burgeon.cn:19999/', // 'http://106.15.154.165:19999/', // Cube
   // target: 'http://cmsqas.lining.com', // 卡宾
@@ -49,8 +49,12 @@ module.exports = {
   cbs: undefined, // 框架回调，形如 { loginCb: function() {} }
   layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
   backDashboardRoute: [], // 配置刷新浏览器回到Dashboard界面
+<<<<<<< HEAD
   custommizedRequestURL: {
   }, // 配置内置自定义界面requestURL
 
 
+=======
+  custommizedRequestURL: {}, // 配置内置自定义界面requestURL
+>>>>>>> fcb7c4ecc0fd59add0c4be614936c5703a75f6db
 };
