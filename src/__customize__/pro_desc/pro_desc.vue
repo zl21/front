@@ -75,12 +75,12 @@
                       transfer
                     >
                       <div
-                        :style="{backgroundSize:'auto 100%',backgroundImage: 'url('+item.URL+'?x-oss-process=image/quality,q_80)',height:'64px',width:'64px'}"
+                        :style="{'background-position': 'center','background-repeat':'no-repeat','background-size':'auto 100%',backgroundImage: 'url('+item.URL+'?x-oss-process=image/quality,q_80)',height:'64px',width:'64px'}"
                         :title="item.NAME" 
                       />
                       <div
                         slot="content"
-                        :style="{backgroundSize:'auto 100%',backgroundImage: 'url('+item.URL+'?x-oss-process=image/quality,q_80)',height:'300px',width:'300px'}"
+                        :style="{'background-position': 'center','background-repeat':'no-repeat','background-size':'auto 100%',backgroundImage: 'url('+item.URL+'?x-oss-process=image/quality,q_80)',height:'300px',width:'300px',}"
                         :title="item.NAME"
                       />
 
@@ -184,13 +184,13 @@
                         </span>
                        
                         <div
-                          :style="{backgroundSize:'auto 100%',backgroundImage: 'url('+item.URL+'?x-oss-process=image/quality,q_80)',height:'64px',width:'64px'}"
+                          :style="{'background-position': 'center','background-repeat':'no-repeat','background-size':'auto 100%',backgroundImage: 'url('+item.URL+'?x-oss-process=image/quality,q_80)',height:'62px',width:'64px'}"
                           :title="item.NAME" 
                         />
                         <div
                           v-if="item.URL"
                           slot="content"
-                          :style="{backgroundSize:'auto 100%',backgroundImage: 'url('+item.URL+'?x-oss-process=image/quality,q_80)',height:'300px',width:'300px'}"
+                          :style="{'background-position': 'center','background-repeat':'no-repeat','background-size':'auto 100%',backgroundImage: 'url('+item.URL+'?x-oss-process=image/quality,q_80)',height:'300px',width:'300px'}"
                           :title="item.NAME"
                         />
                       </Poptip>
@@ -360,7 +360,9 @@
                   this.$set(item, 'flag', false);
                 });
               } 
-            
+              if (res.data.data.VIDEO) {
+                this.video = res.data.data.VIDEO;
+              }
 
               if (res.data.data.DETAILDESC) { // 更新框架表单修改数据
                 const values = {};
@@ -465,16 +467,14 @@
         this.proImg.forEach(((item) => {
           item.flag = false;
         }));
-        debugger;
         if (this.saveObj.IMAGE_SKU) {
           const arr = this.reaptData(JSON.parse(this.saveObj.IMAGE_SKU));
 
           if (arr.length > 0) {
-            arr.forEach((index, item) => {
-              if (index.URL == '') {
+            arr.forEach((index) => {
+              if (index.URL === '') {
                 index.URL = null;
               }
-
               delete index.flag;
             });
 
@@ -486,10 +486,10 @@
           if (JSON.parse(this.saveObj.IMAGE).length > 0) {
             const arr = JSON.parse(this.saveObj.IMAGE);
             if (arr.length > 0) {
-              arr.forEach((index, item) => {
+              arr.forEach((index) => {
                 delete index.flag;
               });
-              if (arr.length == 0) {
+              if (arr.length === 0) {
                 this.saveObj.IMAGE = null;
               } else {
                 this.saveObj.IMAGE = JSON.stringify(arr);
@@ -571,7 +571,7 @@
         // 主图上传
         const dom = document.querySelector(`#proImg${this.objId}`);
         const list = [...dom.files];
-        const values = dom.files[0];
+        // const values = dom.files[0];
         if (this.proImg.length + list.length > 15) {
           const message = `最多上传${15 - this.proImg.length}张图片`;
           const data = {
@@ -589,7 +589,8 @@
           }
           const data = new FormData();
           const path = `PS_C_PRO/${this.objId}/`;
-          data.append('file', values);
+          
+          data.append('file', value);
           data.append('path', path);
           if (value === undefined) {
             return;
