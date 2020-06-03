@@ -818,6 +818,18 @@
                     }
                   });
                 },
+                clear: () => {
+                  this.formItemsLists[itemIndex].item.props.Selected = [];
+                  this.formItemsLists[itemIndex].item.value = '';
+                },
+                valuechange: ($this) => {
+                  // 弹窗多选
+                  this.formItemsLists[itemIndex].item.props.Selected = $this.selected || [];
+                  this.formItemsLists[itemIndex].item.value = $this.value;
+                  // this.formItemsLists = this.formItemsLists.concat([]);
+
+                  console.log(itemIndex, this.formItemsLists[itemIndex].item.props);
+                },
                 'on-popper-hide': ($this) => {
                   // 初始化清空数据
                   this.formItemsLists[itemIndex].item.props.data = {};
@@ -949,11 +961,54 @@
                 obj.item.props.defaultSelected = this.defaultValue(current) || [];
                 break;
               case 'pop':
-                obj.item.props.fkobj = current.fkobj;
+                obj.item.props = current;
                 obj.item.props.blurType = false;
-
-                obj.item.props.fkobj.colid = current.colid;
+                obj.item.props.optionTip = false;
+                obj.item.props.enterType = true;
+                obj.item.props.fkdisplay = 'pop';
+                console.log(111);
+                obj.item.props.show = false;
+                // 失去光标是否保存
+                obj.item.props.dialog = {
+                  model: {
+                    title: current.fkdesc,
+                    width: 920,
+                    mask: true,
+                    draggable: true,
+                    closable: true,
+                    scrollable: true,
+                    maskClosable: false,
+                    'footer-hide': true
+                  }
+                };
+                //  单对象界面
+                obj.item.props.AutoData = [];
+                obj.item.props.fkobj = {
+                  colid: current.colid,
+                  reftable: current.fkobj.reftable,
+                  serviceId: current.fkobj.serviceId,
+                  reftableid: current.fkobj.reftableid,
+                  show: false,
+                  url:
+                    `${current.fkobj.serviceId ? (`/${current.fkobj.serviceId}`) : ''
+                    }/p/cs/menuimport`
+                };
+                obj.item.props.datalist = [];
                 obj.item.props.Selected = [];
+                if (current.refobjid && current.refobjid !== -1) {
+                  obj.item.props.Selected.push({
+                    ID: current.refobjid,
+                    Label: current.default
+                  });
+                  obj.item.value = current.default;
+                }
+                
+                // if (!item.props.readonly && !this.objreadonly) {
+                //   item.props.Selected.push(this.defaultValue(current)[0]);
+                //   item.value = this.defaultValue(current)[0].Label;
+                // } else {
+                //   item.value = this.defaultValue(current)[0].Label;
+                // }
                 break;
               case 'mop':
                 obj.item.props.fkobj = current.fkobj;
@@ -1067,6 +1122,9 @@
             ID: item.refobjid,
             Label: item.default
           });
+          if (item.fkobj && (item.fkobj.searchmodel === 'pop' || item.fkobj.searchmodel === 'mop')) {
+            return item.default;
+          }
           return arr;
         }
         // if(item.display === 'OBJ_FK' && item.fkobj){

@@ -17,6 +17,7 @@
   import { mapState, mapMutations } from 'vuex';
   import Vue from 'vue';
   import tabComponent from './SingleObjectTabComponent';
+  import { enableJflow, custommizedJflow } from '../constants/global';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
 
 
@@ -84,10 +85,8 @@
                 Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
               }
             }
-           
             if (webactType === 'HALF') { // 如果是自定义tab全定制界面时，不需要引入公共组件,半定制界面需要引入公共组件
               this.updateButtonsDataForCustomization({ tabIndex: index, isShowValue: false });
-              // obj.componentAttribute.buttonsData.isShow = false;
             }
             obj.component = `tapComponent.${item.tablename}`;
             obj.cilckCallback = this.tabClick;
@@ -126,7 +125,8 @@
         this.updateTabCurrentIndex(index);
         DispatchEvent('tabClick', {
           detail: {
-            data: this.tabPanel[index]
+            data: this.tabPanel[index],
+            index
           }
         });
         if (!flag) {

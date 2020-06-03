@@ -408,14 +408,13 @@ export default {
 
     // 删除规则六： 关闭页签时，清除定制界面跳转单对象界面session中存储的对应关系
     const routeMapRecordForCustomizePage = getSeesionObject('routeMapRecordForCustomizePage');
-    if (routeMapRecordForCustomizePage[router.currentRoute.fullPath]) {
-      Object.keys(routeMapRecordForCustomizePage).map((item) => {
-        if (router.currentRoute.fullPath === item) {
-          deleteFromSessionObject('routeMapRecordForCustomizePage', router.currentRoute.fullPath);
-        }
-      });
-    }
-    
+    Object.keys(routeMapRecordForCustomizePage).map((item) => {
+      const index = tab.routeFullPath.lastIndexOf('\/');  
+      const tabPath = tab.routeFullPath.substring(0, index + 1);
+      if (item.includes(tabPath)) {
+        deleteFromSessionObject('routeMapRecordForCustomizePage', item);
+      }
+    });
     state.isRequest = [];// 清空修改数据验证
 
     const { openedMenuLists } = state;
@@ -606,9 +605,9 @@ export default {
         // })[0];
         const dom = document.querySelector(`#${router.currentRoute.params.tableName}_TAB`);
         dom.click();
-        if (state.openedMenuLists.length > 1) { // 框架路由tab逻辑为刷新浏览器保留最后一个打开的tab页签，则关闭当前会自动激活前一个
-          router.push(CustomizePagePath);
-        }
+        // if (state.openedMenuLists.length > 1) { // 框架路由tab逻辑为刷新浏览器保留最后一个打开的tab页签，则关闭当前会自动激活前一个
+        router.push(CustomizePagePath);
+        // }
      
         // state.openedMenuLists.map((menu) => {
         //   if (menu.routeFullPath === CustomizePagePath) {
@@ -635,8 +634,8 @@ export default {
           query
         };
         router.push(routeInfo);
-        return;
       }
+      return;
     }
     router.push({
       path
@@ -703,5 +702,11 @@ export default {
   updateModifySearchFoldnum(state, data) {
     state.changeSearchFoldnum = data;
   },
-
+  updateJflowControlField(state, data) {
+    state.JflowControlField = data;
+  },
+  updateFavoriteData(state, data) { // 收藏
+    state.favorite = data.data;
+  },
+  
 };

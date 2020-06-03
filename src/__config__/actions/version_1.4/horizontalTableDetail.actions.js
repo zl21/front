@@ -255,9 +255,17 @@ export default {
                   ...mainTabale,
                 };
               } else if (tabrelation) { // 处理子表1:1模式逻辑
-                itemModify[itemName].ID = itemObjId;
+                let itemDefaultData = {};
+                if (Object.keys(itemDefault).length > 0) {
+                  itemDefaultData = itemDefault[itemName];
+                }
+                const itemModifyAssign = Object.assign({}, itemDefaultData, itemModify[itemName]);// 整合子表修改和默认值数据
+                itemModifyAssign.ID = itemObjId;
+                // itemModifyAssign[itemName] = {
+                //   ID: itemObjId
+                // };
                 const itemModifyRes = {}; 
-                itemModifyRes[itemName] = [itemModify[itemName]];
+                itemModifyRes[itemName] = [itemModifyAssign];
                 parames = {
                   ...mainTabale,
                   ...itemModifyRes
@@ -320,9 +328,18 @@ export default {
           if (temporaryStoragePath) {
             console.log('子表不支持暂存');
           } else if (tabrelation) { // 处理子表1:1模式逻辑
-            itemModify[itemName].ID = itemObjId;
+            const itemModifyDefault = itemCurrentParameter.default;
+            const itemModifyAssign = Object.assign({}, itemModifyDefault[itemName], itemModify[itemName]);// 整合子表修改和默认值数据
+            const itemModifyAssignData = {};
+            itemModifyAssignData[itemName] = itemModifyAssign;
+            itemModifyAssignData[itemName].ID = itemObjId;
             const itemModifyRes = {}; 
-            itemModifyRes[itemName] = [itemModify[itemName]];
+            itemModifyRes[itemName] = [itemModifyAssignData[itemName]];
+
+
+            // itemModify[itemName].ID = itemObjId;
+            // const itemModifyRes = {}; 
+            // itemModifyRes[itemName] = [itemModify[itemName]];
             parames = {
               table: tableName, // 主表表名
               objId, // 明细id

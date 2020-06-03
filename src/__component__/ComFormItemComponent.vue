@@ -638,7 +638,7 @@
                 //  id 转number
                 if (current.item.value.length < 2) {
                   // eslint-disable-next-line no-restricted-globals
-                  if (isNaN(Number(obj[current.item.field]))) {
+                  if (isNaN(Number(obj[current.item.field])) || obj[current.item.field] === '' || obj[current.item.field] === null) {
                     obj[current.item.field] = obj[current.item.field];
                   } else {
                     obj[current.item.field] = Number(obj[current.item.field]);
@@ -974,9 +974,10 @@
           } else if (eval(str) === 0) {
             DyNvalue = 0;
           } else {
-            DyNvalue = eval(str).toFixed(2);
+            const scale = this.newFormItemLists[_index].item.props.scale;
+            DyNvalue = eval(str).toFixed(scale);
           }
-          if (this.newFormItemLists[_index].item.value !== DyNvalue) {
+          if (Number(this.newFormItemLists[_index].item.value) !== Number(DyNvalue)) {
             setTimeout(() => {
               this.newFormItemLists[_index].item.value = DyNvalue;
               this.dataProcessing(this.newFormItemLists[_index], 'none');
@@ -1160,6 +1161,7 @@
           } else if (value === '') {
             value = undefined;
           }
+
           if (items.validate.hidecolumn.ishide) {
             this.newFormItemLists[index].show = !eval(Number(value) + expression + refval);
           } else {
@@ -1169,17 +1171,18 @@
         } else if (refIndex !== -1) {
           if (items.validate.hidecolumn.ishide) {
             this.newFormItemLists[index].show = false;
+            this.newFormItemLists[index].item.props.showCol = false;
           } else {
             this.newFormItemLists[index].show = true;
+            this.newFormItemLists[index].item.props.showCol = true;
           }
           // 添加小组件的字段配置
           this.newFormItemLists[index].item.props.showCol = true;
+        } else if (items.validate.hidecolumn.ishide) {
+          this.newFormItemLists[index].show = true;
+          this.newFormItemLists[index].item.props.showCol = true;
         } else {
-          if (items.validate.hidecolumn.ishide) {
-            this.newFormItemLists[index].show = true;
-          } else {
-            this.newFormItemLists[index].show = false;
-          }
+          this.newFormItemLists[index].show = false;
           this.newFormItemLists[index].item.props.showCol = false;
         }
 
@@ -1201,13 +1204,13 @@
             this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
           }  
         }
-
-        if (items.props.webconf && items.props.webconf.clearWhenHidden) {
+        if (!items.props.showCol && items.props.webconf && items.props.webconf.clearWhenHidden) {
           //   清除页面 联动的值
           this.newFormItemLists[index].item.value = '';
           this.newFormItemLists[index].item.props.defaultSelected = [];
           this.dataProcessing(this.newFormItemLists[index], index);
         }
+
         if (type === 'mounted') {
           this.VerificationFormInt('mounted');
         }  

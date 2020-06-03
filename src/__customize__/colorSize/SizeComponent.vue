@@ -11,6 +11,7 @@
           :data="leftTableData"
           highlight-row
           @on-row-click="leftTableRowClick"
+          @on-row-dblclick="rightSingle"
         />
       </div>
     </div>
@@ -51,6 +52,7 @@
           :data="rightTableData"
           highlight-row
           @on-row-click="rightTableRowClick"
+          @on-row-dblclick="leftSingle"
         />
       </div>
     </div>
@@ -120,7 +122,6 @@
     watch: {
       rightTableDataForSize: {
         handler(val) {
-          console.log('🐻', val);
           this.rightTableData = val;
           this.getData(val);
         },
@@ -143,28 +144,34 @@
           this.rightTableData.push(this.leftTableData[this.leftTableSelectIndex]);
           this.leftTableData.splice(this.leftTableSelectIndex, 1);
           this.leftTableSelectIndex = null;
+          this.$parent.$parent.rightTableDataForSize = this.rightTableData;
         }
       }, // 单个向右的icon点击触发
       rightDouble() {
         this.rightTableData = this.rightTableData.concat(this.leftTableData);
         this.leftTableData = [];
+        this.$parent.$parent.rightTableDataForSize = this.rightTableData;
       }, // 两个向右的icon点击触发
       leftSingle() {
         if (this.rightTableSelectIndex !== null) {
           this.leftTableData.push(this.rightTableData[this.rightTableSelectIndex]);
           this.rightTableData.splice(this.rightTableSelectIndex, 1);
           this.rightTableSelectIndex = null;
+          this.$parent.$parent.rightTableDataForSize = this.rightTableData;
         }
       }, // 单个向左的icon点击触发
       leftDouble() {
         this.leftTableData = this.leftTableData.concat(this.rightTableData);
         this.rightTableData = [];
+        this.$parent.$parent.rightTableDataForSize = this.rightTableData;
       }, // 两个向左的icon点击触发
       leftTableRowClick(val, index) {
         this.leftTableSelectIndex = index;
+        this.$parent.$parent.rightTableDataForSize = this.rightTableData;
       }, // 左边表格单选触发
       rightTableRowClick(val, index) {
         this.rightTableSelectIndex = index;
+        this.$parent.$parent.rightTableDataForSize = this.rightTableData;
       }, // 右边表格单选触发
       getLeftTableData() {
         const { itemId } = this.$route.params;
@@ -179,7 +186,18 @@
         network.get(URL || '/p/cs/cspecobjload', { params })
           .then((res) => {
             if (res.data.code === 0) {
-              this.leftTableData = res.data.data;
+              let sizeData = res.data.data;
+              if (this.rightTableData && this.rightTableData.length > 0) {
+                if (sizeData && sizeData.length > 0) {
+                  sizeData = sizeData.filter((item) => {
+                    const idList = this.rightTableData.map(v => v.ID);
+                    return !idList.includes(item.ID);
+                  });
+                  this.leftTableData = sizeData;
+                }
+              } else if (sizeData) {
+                this.leftTableData = sizeData;
+              }
             }
           });
       }, // 获取左边表格的数据

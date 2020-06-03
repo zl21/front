@@ -283,7 +283,6 @@
                   }
                 }
               }
-              console.log(333, this.itemInfo);
               // if(this.itemInfo)
             } 
             this.setDisableButtons();
@@ -893,6 +892,11 @@
             });
             this.upData();
             this.clearEditData();
+          } else {
+            this.clearEditData();
+            const message = '刷新成功';
+            this.clearItemEditData();
+            this.upData(`${message}`);
           }
         } else {
           this.clearEditData();
@@ -961,9 +965,13 @@
               });
             });
           } else if (tabrelation === '1:1') {
-            this.getObjectTabForChildTableButtons({
-              itemInfo: this.itemInfo, maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex: this.currentTabIndex
+            const promise = new Promise((resolve, reject) => {
+              this.getObjectTabForChildTableButtons({
+                itemInfo: this.itemInfo, maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex: this.currentTabIndex, resolve, reject
+              });
             });
+
+           
             this.getItemObjForChildTableForm({
               itemInfo: this.itemInfo, table: tablename, objid: this.itemId, refcolid, tabIndex: this.currentTabIndex
             });
@@ -2748,6 +2756,18 @@
         // 如果不清空，跳转到新增界面时会出现子表无请求的状况
       },
       objectSave(obj) { // 保存按钮事件逻辑
+        console.log(333, this.testUpdata());
+        if (!this.testUpdata() && this.itemInfo.webact) { // 兼容半定制界面，保存成功时通知外部
+          DispatchEvent('customizeClick', {
+            detail: {
+              type: 'save',
+              mainTableParame: this.currentParameter,
+              itemTableParame: this.itemCurrentParameter,
+            }
+          });
+        }
+
+
         if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
           if (this.verifyRequiredInformation()) { // 校验必填项
             this.mainTableNewSaveAndEditorNewSave();
@@ -2871,10 +2891,18 @@
           if (this.updateData[itemName].add && this.updateData[itemName].add[itemName]) {
             itemAdd = Object.values(this.updateData[itemName].add[itemName]);
           }
+
+          
           if (itemModify.length > 0 && itemAdd.length < 1) { // 子表表格编辑修改
+            let check = null;
+            if (this.itemInfo.tabrelation === '1:1') {
+              check = this.verifyRequiredInformation(); 
+            } else {
+              check = this.itemTableCheckFunc();
+            }
             if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) {
               this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
-            } else if (this.itemTableCheckFunc()) {
+            } else if (check) {
               this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
             }
           } else
@@ -3059,7 +3087,7 @@
                 type: 'save',
                 mainTableParame: this.currentParameter,
                 itemTableParame: this.itemCurrentParameter,
-                res
+                res,
               }
             });
           }
@@ -3536,6 +3564,15 @@
           });
         }
       },
+      showButtonsForcmds(data) { // 显示标准类型元数据配置按钮
+        if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+          this.tabcmd.cmds.map((item, index) => {
+            if (data.includes(item)) {
+              this.tabcmd.prem[index] = true;
+            }
+          });
+        }
+      },
       setDisableButtons() {
         if (this.objectType === 'horizontal') {
           if (this.itemInfo.id && this.itemInfo.id === this.tableId) { // 当前激活 tab为主表
@@ -3554,17 +3591,22 @@
         } else if (this.WebConf && this.WebConf.disableImport) {
           this.hideButtonsForcmds(['actionIMPORT']);
         }
+      },
+      showSingleButtons(data) {
+        this.showButtonsForcmds(data.default.names);
       }
     },  
     beforeDestroy() {
       window.removeEventListener('jflowClick', this.jflowClick);
       window.removeEventListener('network', this.networkEventListener);
-      window.addEventListener('globalNoticeCopy', this.hideListenerLoading);
+      window.removeEventListener('globalNoticeCopy', this.hideListenerLoading);
       window.removeEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
+      window.removeEventListener('showSingleButtons', this.showSingleButtons);
     },
     mounted() {
-      this.updataCurrentTableDetailInfo();
-
+      if (custommizedJflow()) {
+        this.hideButtonsForcmds(['actionSUBMIT']);
+      }
       this.setDisableButtons();
       if (this.isItemTable) {
         this.dataArray.refresh = false;
@@ -3581,6 +3623,7 @@
       }
       this.hideBackButton();
       if (!this._inactive) {
+        window.addEventListener('showSingleButtons', this.showSingleButtons);
         window.addEventListener('jflowClick', this.jflowClick);
         window.addEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
         window.addEventListener('globalNoticeCopy', this.hideListenerLoading);

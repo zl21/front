@@ -498,9 +498,16 @@ export default {
               }
             };
           } else if (tabrelation) { // 处理子表1:1模式逻辑
-            itemModify[itemName].ID = itemObjId;
+            // itemModify[itemName].ID = itemObjId;
+            // const itemModifyRes = {}; 
+            // itemModifyRes[itemName] = [itemModify[itemName]];
+            const itemModifyDefault = itemCurrentParameter.default;
+            const itemModifyAssign = Object.assign({}, itemModifyDefault[itemName], itemModify[itemName]);// 整合子表修改和默认值数据
+            const itemModifyAssignData = {};
+            itemModifyAssignData[itemName] = itemModifyAssign;
+            itemModifyAssignData[itemName].ID = itemObjId;
             const itemModifyRes = {}; 
-            itemModifyRes[itemName] = [itemModify[itemName]];
+            itemModifyRes[itemName] = [itemModifyAssignData[itemName]];
             parames = {
               table: tableName, // 主表表名
               objId, // 明细id

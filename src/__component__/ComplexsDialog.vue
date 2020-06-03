@@ -167,6 +167,7 @@
           id: [],
           list: [] 
         },
+        CONDITIONThis: {}, // 当前的条件
         idslist: [] // 选中所有的id
       };
     },
@@ -330,27 +331,55 @@
       setConDitions(type) {
         //  计算 this.sendMessage.CONDITION
         const ids = {};
-        this.chooseTreeData.forEach((item) => {
-          ids[item.AKNAME] = [];
-        });
-        Object.keys(ids).forEach((item) => {
-          ids[item] = this.chooseTreeData.reduce((arr, option) => {
-            if (option.AKNAME === item && option.ID) {
-              arr.push(option.ID);
-            } 
-            return arr;
-          }, []);
-        });
+        const exids = {};
+
+        this.CONDITIONThis = {};
+        // 去除排除后的计算
+        if (this.checkbox === false) {
+          this.chooseTreeData.forEach((item) => {
+            ids[item.AKNAME] = [];
+          });
+          Object.keys(ids).forEach((item) => {
+            ids[item] = this.chooseTreeData.reduce((arr, option) => {
+              if (option.AKNAME === item && option.ID) {
+                arr.push(option.ID);
+              } 
+              return arr;
+            }, []);
+          });
+        } else {
+          // 排除
+          if (type !== 'obj') {
+            this.chooseTreeData.forEach((item) => {
+              exids[item.AKNAME] = [];
+            });
+            Object.keys(exids).forEach((item) => {
+              exids[item] = this.chooseTreeData.reduce((arr, option) => {
+                if (option.AKNAME === item && option.ID) {
+                  arr.push(option.ID);
+                } 
+                return arr;
+              }, []);
+            });
+            this.EXCLUDE.push(exids);
+            this.CONDITIONThis = exids;
+          }
+        }
         if (type === 'obj') {
           this.CONDITIONTable = ids;
         } else {
           if (!Array.isArray(this.sendMessage.CONDITION)) {
             this.sendMessage.CONDITION = [];
           }
-          this.sendMessage.CONDITION.push(ids);
-          const _ids = { ...ids };
-          _ids.indexI = this.text.result.length;
-          this.CONDITIONList.push(_ids);
+          if (this.checkbox === false) {
+            this.sendMessage.CONDITION.push(ids);
+            const _ids = { ...ids };
+            this.CONDITIONThis = { ...ids };
+            _ids.indexI = this.text.result.length;
+            this.CONDITIONList.push(_ids);
+          } else {
+            // console.log(ids);
+          }
         }
       },
       clickTab(index) {
@@ -530,8 +559,6 @@
         if (this.chooseTreeData.length < 1) {
           return false;
         }
-      
-
         this.setConDitions();
 
         this.chooseTreeData = [];
@@ -544,27 +571,34 @@
             //     this.CONDITIONList[item] = this.sendMessage.CONDITION[item];
             //   }
             // });
-            this.EXCLUDE = '';
+            // this.EXCLUDE = '';
             this.text.result.push({
               exclude: false,
               id_list: [this.HRORG_ID],
-              screen: this.sendMessage.CONDITION,
+              screen: this.CONDITIONThis,
               screen_string: this.HRORG_STRING.join(',')
             });
             
             this.multipleScreenResultCheck(this.sendMessage, 1, 'all');
             this.clearTree();
           } else {
-            this.EXCLUDE = [];
-            this.HRORG_ID.forEach((x) => {
-              this.EXCLUDE.push({
-                [this.AKNAME]: [x]
-              });
-            });
+            // this.EXCLUDE = [];
+            // this.CONDITIONThis = {
+            //   [this.AKNAME]: []
+            // };
+            // this.EXCLUDE.push({
+            //   [this.AKNAME]: []
+            // });
+            // this.HRORG_ID.forEach((x) => {
+            //   if (this.checkbox) {
+            //     this.EXCLUDE[this.EXCLUDE.length - 1][this.AKNAME].push(x);
+            //     this.CONDITIONThis[this.AKNAME].push(x);
+            //   }
+            // });
             this.text.result.push({
               exclude: true,
               id_list: [this.HRORG_ID],
-              screen: this.EXCLUDE,
+              screen: this.CONDITIONThis,
               screen_string: this.HRORG_STRING.join(',')
             });
            
@@ -635,12 +669,21 @@
       deleteLi(index, row, type) {
         if (type !== 'td') {
           if (Array.isArray(row.ID)) {
-            this.CONDITIONList.forEach((item, i) => {
-              if (item.indexI === index) {
-                this.CONDITIONList.splice(i, 1);
-                this.sendMessage.CONDITION.splice(i, 1);
-              }
-            });
+            if (row.exclude === false) {
+              this.CONDITIONList.forEach((item, i) => {
+                if (JSON.stringify(item) === JSON.stringify(row.screen)) {
+                  this.CONDITIONList.splice(i, 1);
+                  this.sendMessage.CONDITION.splice(i, 1);
+                }
+              });
+            } else {
+              this.EXCLUDE.some((item, i) => {
+                if (JSON.stringify(item) === JSON.stringify(row.screen)) {
+                  this.EXCLUDE.splice(i, 1);
+                  // this.sendMessage.EXCLUDE.splice(i, 1);
+                }
+              });
+            }
           }
           this.text.result.splice(index, 1);
         }
@@ -815,7 +858,7 @@
         let CONDITION = [];
         if (!Array.isArray(obj.CONDITION)) {
           CONDITION = Object.keys(obj.CONDITION).reduce((arr, item) => {
-            arr.push({ [item]: obj.CONDITION[item] });
+            arr.push({ [item]: obj.CONDITION[item] });            
             return arr;
           }, []);
         } else {

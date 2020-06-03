@@ -872,7 +872,9 @@
       },
       reduceForm(array, current, index) {
         // 重新配置 表单的 事件及属性
-       
+        if (current.fkobj && current.fkobj.serviceId) {
+          current.serviceId = current.fkobj.serviceId;
+        }
         const obj = {};
         obj.row = current.row ? current.row : 1;
         obj.col = current.col ? current.col : 1;
@@ -1035,9 +1037,18 @@
               }
               // 权限查询
               searchObject = this.setSeachObject(searchObject, current);
+              let serviceId = null;
+              if (current) {
+                if (current.serviceId) {
+                  serviceId = current.serviceId;
+                } else if (current.fkobj && current.fkobj.serviceId) {
+                  serviceId = current.fkobj.serviceId;
+                }
+              }
+              
               fkHttpRequest().fkQueryList({
                 searchObject,
-                serviceId: current.serviceId,
+                serviceId,
                 success: (res) => {
                   this.freshDropDownSelectFilterData(res, index, current);
                 }
@@ -1807,7 +1818,7 @@
           return arr;
         }
 
-
+        console.log('tag');
         return this.defaultSetValue[item.colname] || item.valuedata || item.defval || item.default || '';
       // wewe
       },

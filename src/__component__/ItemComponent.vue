@@ -845,6 +845,11 @@
           ) {
             this._items.event.clear();
           }
+        } else if (
+          Object.prototype.hasOwnProperty.call(this._items.event, 'valuechange')
+          && typeof this._items.event.valuechange === 'function'
+        ) {
+          this._items.event.valuechange(item);
         }
         this.valueChange();
         // if (
@@ -1512,6 +1517,8 @@
       getWangeditorChangeItem(value) {
         // 富文本change
         this._items.value = value;
+        // 判断是刷新 还是change 事件触发
+        this._items.props.trigger = 'inputchange';
         this.valueChange();
       },
       enumerableValueChange(value) {
@@ -1566,9 +1573,9 @@
                 return false;
               }
               // 隐藏且配置了this._items.props.webconf
-              if (!this._items.props.showCol && this._items.props.webconf && this._items.props.webconf.clearWhenHidden) {
-                return false;
-              }
+              // if (this._items.props.webconf && this._items.props.webconf.clearWhenHidden) {
+              //   return false;
+              // }
               if (item.COLUMN_TYPE === 0) {
                 // 数组形式
                 if (this._items.props.defaultSelected) {

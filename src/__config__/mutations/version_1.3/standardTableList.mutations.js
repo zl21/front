@@ -93,10 +93,8 @@ export default {
     buttons.ExeActionDataForComponent = data;
   },
   updateButtonSetFavoriteData({ buttons }, data) { // 收藏
-    if (data.code === 0) {
-      buttons.dataArray.collectiImg = !buttons.dataArray.collectiImg;
-      this.state.global.favorite = data.data;
-    }
+    buttons.dataArray.collectiImg = !buttons.dataArray.collectiImg;
+    this.state.global.favorite = data.data;
   },
   setPrintValueForButtons({ buttons }, value) { // 控制打印按钮开关
     buttons.dataArray.printValue = value;

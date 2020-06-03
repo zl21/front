@@ -21,7 +21,7 @@ module.exports = {
   target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop网关开启环境
   // target: 'http://r3.burgeon.cn:19999/', // 'http://106.15.154.165:19999/', // Cube
-  // target: 'http://web.cmsqas.lining.com/', // 李宁
+  // target: 'http://cmsqas.lining.com', // 卡宾
   // target: 'http://r3.burgeon.cn:28888/', // 李宁
   // target: 'http://jflow-shangfei-r3.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://ark-share-dev.dev.burgeononline.com', // ArkShare环境
@@ -49,7 +49,8 @@ module.exports = {
   cbs: undefined, // 框架回调，形如 { loginCb: function() {} }
   layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
   backDashboardRoute: [], // 配置刷新浏览器回到Dashboard界面
-  custommizedRequestURL: {}, // 配置内置自定义界面requestURL
+  custommizedRequestURL: {
+  }, // 配置内置自定义界面requestURL
 
 
 };

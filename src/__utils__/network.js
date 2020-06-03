@@ -217,9 +217,9 @@ axios.interceptors.response.use(
         });
         removeSessionObject('userInfo');
         if (getProjectQuietRoutes().indexOf(router.currentRoute.path) === -1) {
-          // router.push(getTouristRoute());
-          if (!config.url.includes('/p/cs/logout')) {
-            store.dispatch('global/signout');
+          if (config.url !== '/p/cs/logout') {
+            // store.dispatch('global/signout');
+            router.push(getTouristRoute());
           }
         }
       } else if (status === 500 || status === 404) {

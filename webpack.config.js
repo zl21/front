@@ -17,7 +17,7 @@ const proxyListsForPalmCloud = ['/mboscloud-app'];
 const proxyListsForPalmZx = ['/zhixiao-app'];
 const proxyListForShangFei = ['/user-center', '/shangfei'];
 const proxyListForWuliu = ['/wuliu-admin'];
-const proxyListForArkShare = ['/arkshare-app'];
+const proxyListForKABIN = ['/r3/cabben/pt'];
 
 
 const indexProHtml = path.posix.join('/', 'index.pro.html');
@@ -83,7 +83,7 @@ module.exports = env => ({
         changeOrigin: true
       },
       {
-        context: proxyListForArkShare,
+        context: proxyListForKABIN,
         target,
         changeOrigin: true
       },
