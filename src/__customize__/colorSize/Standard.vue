@@ -162,6 +162,8 @@
                 });
               }
               this.rightTableDataForColor = colorData;
+            } else {
+              this.rightTableDataForColor = colorData;
             }
           }
         });

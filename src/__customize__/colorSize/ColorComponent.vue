@@ -62,7 +62,7 @@
           @on-change="addColorInputChange"
           @on-click="addIconClick"
           @on-enter="addIconClick"
-           >
+            >
         <Button
           slot="prepend"
           @click="addColor"
@@ -275,14 +275,14 @@
           this.$Message.warning('输入框内容不能为空');
           return;
         }
-        const params = {
-          PS_C_PRO_ID: itemId, // 主表表名
-          COLOR: this.addColorInputValue,
-          SELECTED: JSON.stringify(ecodes)
-        };
+        // const params = {
+        //   PS_C_PRO_ID: itemId, // 主表表名
+        //   COLOR: this.addColorInputValue,
+        //   SELECTED: escape(JSON.stringify(ecodes))
+        // };
         const URL = custommizedRequestUrl()['/p/cs/cclrquery'];
-        
-        network.get(URL || '/p/cs/cclrquery', { params })
+        const url = `${URL || '/p/cs/cclrquery'}?PS_C_PRO_ID=${itemId}&COLOR=${this.addColorInputValue}&SELECTED=${escape(JSON.stringify(ecodes))}`;
+        network.get(url)
           .then((res) => {
             if (res.data.code === 0) {
               const result = res.data;
