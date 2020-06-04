@@ -10,13 +10,13 @@
       >
         {{ item.webdesc }}
       </Button>
-      <Button
+      <!-- <Button
         type="fcdefault"
         class="Button"
         @click="customize"
       >
         测试跳转到单对象界面
-      </Button>
+      </Button> -->
     </div>
     <div class="content">
       <div class="contentLeft">
@@ -976,11 +976,18 @@
       }, // 点击按钮触发
       customize() {
         const param = {
-          url: '/CUSTOMIZED/PERMISSIONS/2997?type=sensitive&name=2',
+          url: '/cUSTOMIZED/pERMISSIONs/2997',
           type: 'C',
+          label: '茉莉',
           dynamicRoutingForCustomizePage: true
         };
         store.commit('global/tabOpen', param);
+        // const param = {
+        //   url: 'CUSTOMIZED/PERMISSIONS/2997?type=sensitive&name=2',
+        //   isMenu: true,
+        //   id: 111
+        // };
+        // store.commit('global/directionalRouter', param);
       },
       copyPerm() {
         this.copyPermission = true;
