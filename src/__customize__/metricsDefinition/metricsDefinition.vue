@@ -84,7 +84,7 @@
                                             <transition-group>
                                                 <li
                                                         v-for="(item1, i) in item.childList"
-                                                        :key="i"
+                                                        :key="`${i+1}`"
                                                         @dblclick.stop="dbClick(item,item1,idx,$event)"
                                                 >
                                                     <Checkbox :label="item1.ID">

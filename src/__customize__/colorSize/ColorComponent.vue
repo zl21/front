@@ -292,17 +292,11 @@
                 content: `${message}`
               };
               if (this.leftTableData.length > 0) {
-                res.data.data.map((item) => {
-                  this.leftTableData.map((v, i) => {
-                    if (item.id === v.id) {
-                      this.leftTableData.splice(i, 1);
-                    }
-                  });
-                });
+                const resData = res.data.data.map(r => r.ID);
+                this.leftTableData = this.leftTableData.filter(leftData => !resData.includes(leftData.ID));
               }
               this.addColorInputValue = '';
               this.rightTableData = this.rightTableData.concat(res.data.data);
-              console.log(3, this.rightTableData);
               this.$Message.success(data);
             }
           });
