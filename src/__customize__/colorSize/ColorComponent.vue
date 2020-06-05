@@ -62,7 +62,7 @@
           @on-change="addColorInputChange"
           @on-click="addIconClick"
           @on-enter="addIconClick"
-        />
+             >
         <Button
           slot="prepend"
           @click="addColor"
