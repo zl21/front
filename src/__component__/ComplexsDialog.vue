@@ -14,6 +14,7 @@
       @on-change-pageSize="changePageSize"
       @on-row-dblclick="rowdbclick"
       @on-row-click="rowclick"
+      @on-change="inputchange"
       @on-search="inputsearch"
       @on-checkbox-change="checkboxChange"
       @on-transfer-two="transfertwo"
@@ -168,7 +169,8 @@
           list: [] 
         },
         CONDITIONThis: {}, // 当前的条件
-        idslist: [] // 选中所有的id
+        idslist: [], // 选中所有的id
+        expand: [], // 当前打开的
       };
     },
     methods: {
@@ -186,7 +188,11 @@
           option.AKNAME = obj.AKNAME;
           option.children = [...obj.VALUE];
           option.children.forEach((item) => {
-            item.title = item.NAME.toString();
+            if (typeof item.NAME !== 'string' && item.NAME) {
+              item.title = item.NAME.toString();
+            } else {
+              item.title = item.NAME;
+            }
             item.index = i;
             item.AKNAME = obj.AKNAME;
           });
@@ -197,8 +203,8 @@
         this.treedataInt = JSON.parse(JSON.stringify(this.treedata));
       },
       clearTree() {
-        const treedata = this.treedataInt.reduce((arr, item) => {
-          item.expand = true;
+        const treedata = this.treedataInt.reduce((arr, item, i) => {
+          item.expand = this.treedata[i].expand;
           arr.push(item);
           return arr;
         }, []);
@@ -251,7 +257,6 @@
         if (data.ids) {
           this.idslist = data.ids.flat();
         }
-        // console.log(this.IN,'this.INthis.IN');
       },
       columnsDate(columns, index) {
         // 表格头部 数据重组
@@ -375,7 +380,7 @@
             this.sendMessage.CONDITION.push(ids);
             const _ids = { ...ids };
             this.CONDITIONThis = { ...ids };
-            _ids.indexI = this.text.result.length;
+            // _ids.indexI = this.text.result.length;
             this.CONDITIONList.push(_ids);
           } else {
             // console.log(ids);
@@ -524,6 +529,9 @@
         }
         return false;
       },
+      inputchange(event) {
+        this.sendMessage.GLOBAL = event.target.value.trim();
+      },
       inputsearch(event) {
         let str = '';
         if (this.canChinese) {
@@ -606,7 +614,7 @@
             this.clearTree();
           }
         } else {
-          this.sendMessage.EXCLUDE = '';
+          this.sendMessage.EXCLUDE = [];
           this.clearIndexPage();
           return false;
         }
@@ -718,7 +726,7 @@
         this.resultData.total = 0;
         this.sendMessage.CONDITION = [];
         this.CONDITIONTable = {};
-        this.EXCLUDE = '';
+        this.EXCLUDE = [];
         this.componentData[1].list = [];
         this.componentData[1].total = 0;
         this.componentData[1].pageNum = 1;
@@ -729,9 +737,10 @@
         //   初始化 默认值
         this.sendMessage.TABLENAME = this.sendMessage.reftable;
         const s_value = this.sendMessage;
-        
+        s_value.EXCLUDE = this.EXCLUDE;
         s_value.IN = this.IN;
         s_value.NOTIN = this.NOTIN;
+        this.text.EXCLUDE = this.EXCLUDE;
         return {
           value: s_value,
           text: JSON.stringify(this.text)
@@ -847,6 +856,8 @@
             if (obj.clear !== '1') {
               this.dateRestructure(res.data.data, index, name, 'clear');
             }
+            this.sendMessage.GLOBAL = '';
+
             this.tableLoading = false;
           }
         });
@@ -880,6 +891,7 @@
           serviceId: this.fkobj.serviceId,
           success: (res) => {
             this.tableLoading = false;
+            this.sendMessage.GLOBAL = '';
             this.dateRestructure(res.data.data, index, type);
           }
         });
@@ -929,6 +941,8 @@
           this.sendMessage = { ...JSON.parse(JSON.stringify(this.filter.value)) };  
           this.sendMessage.PAGENUM = 1;
           this.sendMessage.PAGESIZE = 50;
+          this.CONDITIONList = JSON.parse(JSON.stringify(this.sendMessage.CONDITION));
+          this.EXCLUDE = JSON.parse(JSON.stringify(this.sendMessage.EXCLUDE));
           this.sendMessage.TABLENAME = this.fkobj.reftable;
           this.multipleScreenResultCheckFiter(this.sendMessage, 1);
         }
