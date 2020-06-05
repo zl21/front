@@ -62,7 +62,7 @@
           @on-change="addColorInputChange"
           @on-click="addIconClick"
           @on-enter="addIconClick"
-            >
+        />
         <Button
           slot="prepend"
           @click="addColor"
@@ -292,12 +292,17 @@
                 content: `${message}`
               };
               if (this.leftTableData.length > 0) {
-                res.data.data = res.data.data.filter((item) => {
-                  const idList = this.leftTableData.map(v => v.id);
-                  return !idList.includes(item.id);
+                res.data.data.map((item) => {
+                  this.leftTableData.map((v, i) => {
+                    if (item.id === v.id) {
+                      this.leftTableData.splice(i, 1);
+                    }
+                  });
                 });
               }
-              this.rightTableData = res.data.data;
+              this.addColorInputValue = '';
+              this.rightTableData = this.rightTableData.concat(res.data.data);
+              console.log(3, this.rightTableData);
               this.$Message.success(data);
             }
           });
@@ -362,6 +367,7 @@
       mainColorRender() {
         return (h, params) => h('Select', {
           style: {
+            padding: '3px'
           },
           props: {
             transfer: true,

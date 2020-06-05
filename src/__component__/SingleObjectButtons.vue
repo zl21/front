@@ -3318,8 +3318,8 @@
             }
           }
         } else {
-          this.temporaryStorage = false;
-          this.dataArray.temporaryStorage = false;
+          // this.temporaryStorage = false;
+          // this.dataArray.temporaryStorage = false;
           // this.upData();//保存失败不刷新
         }
       },
