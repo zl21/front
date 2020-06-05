@@ -318,13 +318,17 @@ export default {
     //   v: item.ID
     // };
     deleteFromSessionObject('TreeId', tab.tableName);
-    const openedMenuListId = tab.keepAliveModuleName.split('.')[2];
-    state.JflowControlField = state.JflowControlField.filter((item) => {
-      if (item.tableId !== openedMenuListId) {
-        return item;
-      }
-    });
-
+    let openedMenuListId = null;
+    if (tab.keepAliveModuleName) {
+      openedMenuListId = tab.keepAliveModuleName.split('.')[2];
+    }
+    if (state.JflowControlField && state.JflowControlField.length && state.JflowControlField.length > 0) {
+      state.JflowControlField = state.JflowControlField.filter((item) => {
+        if (Number(item.tableId) !== Number(openedMenuListId)) {
+          return item;
+        }
+      }); 
+    }
     
     // window.sessionStorage.removeItem('dynamicRoutingIsBack');// 清除动态路由返回标记
 
@@ -390,7 +394,6 @@ export default {
       }
     });
     state.isRequest = [];// 清空修改数据验证
-
     const { openedMenuLists } = state;
     // 如果关闭某个Tab，则清空所有该模块可能的对应的keepAlive信息。
     state.keepAliveLists = state.keepAliveLists.filter(d => d.indexOf(tab.tableName) === -1);
