@@ -17,6 +17,7 @@ const proxyListsForPalmCloud = ['/mboscloud-app'];
 const proxyListsForPalmZx = ['/zhixiao-app'];
 const proxyListForShangFei = ['/user-center', '/shangfei'];
 const proxyListForWuliu = ['/wuliu-admin'];
+const proxyListForKABIN = ['/r3/cabben/pt'];
 
 
 const indexProHtml = path.posix.join('/', 'index.pro.html');
@@ -81,6 +82,12 @@ module.exports = env => ({
         target,
         changeOrigin: true
       },
+      {
+        context: proxyListForKABIN,
+        target,
+        changeOrigin: true
+      },
+      
       {
         context: '/api',
         // target: 'http://47.99.229.124:9093' // 打印

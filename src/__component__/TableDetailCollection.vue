@@ -18,7 +18,6 @@
             @on-change="pageChangeEvent"
             @on-page-size-change="pageSizeChangeEvent"
           />
-         
           <ul
             v-if="!isHorizontal && !readonly"
             class="detail-buttons"
@@ -290,6 +289,12 @@
         type: Boolean,
         default: false
       },
+      tableReadonly: {
+        // 表格是否可编辑
+        type: Boolean,
+        default: false
+      },
+      
       objreadonly: {
         // 主表按钮的
         type: Boolean,
@@ -1569,7 +1574,7 @@
           return this.customerurlRender(cellData);
         }
         // 给cell赋render
-        if (!cellData.ismodify || this.readonly || this.isMainTableReadonly || this.itemInfo.tabinlinemode === 'N') {
+        if (!cellData.ismodify || this.tableReadonly || this.isMainTableReadonly || this.itemInfo.tabinlinemode === 'N') {
           // 不可编辑状态 显示label
           if (cellData.isfk && cellData.fkdisplay !== 'mrp' && cellData.fkdisplay !== 'mop') {
             // 如果是外键关联 显示 别针icon

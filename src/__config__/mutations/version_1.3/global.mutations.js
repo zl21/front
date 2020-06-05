@@ -10,7 +10,7 @@ import {
   enableKeepAlive
 } from '../../../constants/global';
 import router from '../../router.config';
-import customize from '../../customize.config';
+import setCustomeLabel from '../../../__utils__/setCustomeLabel';
 import {
   getSeesionObject, updateSessionObject, deleteFromSessionObject, removeSessionObject 
 } from '../../../__utils__/sessionStorage';
@@ -70,36 +70,11 @@ export default {
         path
       });
       if (param.isMenu) {
-        const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
-        const externalModulesRes = {};// 外部配置
-        Object.keys(externalModules).forEach((key) => {
-          externalModulesRes[key.toUpperCase()] = externalModules[key];
-        });
-
-        const customizeRes = {};// 内部配置
-        Object.keys(customize).forEach((key) => {
-          customizeRes[key.toUpperCase()] = customize[key];
-        });
-        let customizeConfig = {};
-        if (externalModulesRes[customizedModuleName.toUpperCase()]) {
-          customizeConfig = externalModulesRes;
-        } else if (customizeRes[customizedModuleName.toUpperCase()]) {
-          customizeConfig = customizeRes;
-        }
-
-        Object.keys(customizeConfig).forEach((customizeName) => {
-          const nameToUpperCase = customizeName.toUpperCase();
-          if (nameToUpperCase === customizedModuleName) {
-            const labelName = customizeConfig[customizeName].labelName;
-            const name = `C.${customizedModuleName}.${param.id}`;
-            state.keepAliveLabelMaps[name] = `${labelName}`;
-            const keepAliveLabelMapsObj = {
-              k: name,
-              v: labelName
-            };
-            updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
-          }
-        });
+        const data = {
+          customizedModuleName,
+          customizedModuleId: param.id
+        };
+        setCustomeLabel(data);
       }
     }
   },
@@ -571,9 +546,33 @@ export default {
     }
     if (type === 'tableDetailAction' || type === 'C') {
       if (url) {
-        path = `${url.toUpperCase()}`;
+        if (url.includes('?')) {
+          // 以下逻辑为处理，传入的url中包含路由参数时，不改变参数部分，将基础路由信息转为大写
+          const urlRes = url.substring(url.indexOf('?'), 0);// 获取？之前路由信息，
+          const urlToUpperCase = urlRes.toUpperCase();// 将基础路由信息转大写
+          const urlNew = url.replace(urlRes, urlToUpperCase);// 替换原路由基础路由部分为转大写之后的字符
+          path = urlNew;
+          if (label) {
+            customizedModuleName = urlToUpperCase.split('/')[2];
+            customizedModuleId = urlToUpperCase.split('/')[3];
+          }
+        } else {
+          path = `${url.toUpperCase()}`;
+          if (label) {
+            customizedModuleName = path.split('/')[2];
+            customizedModuleId = path.split('/')[3];
+          }
+        }
       } else {
         path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${customizedModuleId}`;
+      }
+      if (label) {
+        const data = {
+          customizedModuleName,
+          customizedModuleId,
+          label
+        };
+        setCustomeLabel(data);
       }
     } 
     if (type === 'tableDetailUrl' || type === 'URL') {
@@ -704,6 +703,9 @@ export default {
   },
   updateJflowControlField(state, data) {
     state.JflowControlField = data;
-  }
+  },
+  updateFavoriteData(state, data) { // 收藏
+    state.favorite = data.data;
+  },
   
 };

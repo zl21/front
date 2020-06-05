@@ -976,11 +976,18 @@
       }, // 点击按钮触发
       customize() {
         const param = {
-          url: '/SYSTEM/TABLE_DETAIL/H/AD_TABLE/992/24407',
-          type: 'H',
+          url: '/cUSTOMIZED/pERMISSIONs/2997',
+          type: 'C',
+          label: '茉莉',
           dynamicRoutingForCustomizePage: true
         };
         store.commit('global/tabOpen', param);
+        // const param = {
+        //   url: 'CUSTOMIZED/PERMISSIONS/2997?type=sensitive&name=2',
+        //   isMenu: true,
+        //   id: 111
+        // };
+        // store.commit('global/directionalRouter', param);
       },
       copyPerm() {
         this.copyPermission = true;

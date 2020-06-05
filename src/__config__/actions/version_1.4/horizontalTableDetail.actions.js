@@ -352,11 +352,17 @@ export default {
                   ...mainTabale,
                 };
               } else if (tabrelation) { // 处理子表1:1模式逻辑
-                const itemModifyAssign = Object.assign({}, itemDefault[itemName], itemModify[itemName]);// 整合子表修改和默认值数据
-
-                itemModifyAssign[itemName].ID = itemObjId;
+                let itemDefaultData = {};
+                if (Object.keys(itemDefault).length > 0) {
+                  itemDefaultData = itemDefault[itemName];
+                }
+                const itemModifyAssign = Object.assign({}, itemDefaultData, itemModify[itemName]);// 整合子表修改和默认值数据
+                itemModifyAssign.ID = itemObjId;
+                // itemModifyAssign[itemName] = {
+                //   ID: itemObjId
+                // };
                 const itemModifyRes = {}; 
-                itemModifyRes[itemName] = [itemModifyAssign[itemName]];
+                itemModifyRes[itemName] = [itemModifyAssign];
                 parames = {
                   ...mainTabale,
                   ...itemModifyRes

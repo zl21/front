@@ -1,6 +1,9 @@
 /* eslint-disable vue/html-self-closing */
 <template>
-  <div class="color_container">
+  <div
+    ref="colorComponent"
+    class="color_container"
+  >
     <div class="left_container">
       <div class="left_button">
         <Button
@@ -20,6 +23,7 @@
           highlight-row
           :data="leftTableData"
           @on-row-click="leftTableRowClick"
+          @on-row-dblclick="rightSingle"
         />
       </div>
     </div>
@@ -57,7 +61,8 @@
           icon="ios-add-circle-outline"
           @on-change="addColorInputChange"
           @on-click="addIconClick"
-            >
+          @on-enter="addIconClick"
+             >
         <Button
           slot="prepend"
           @click="addColor"
@@ -76,6 +81,7 @@
           highlight-row
           :height="rightTableHeight"
           @on-row-click="rightTableRowClick"
+          @on-row-dblclick="leftSingle"
         />
       </div>
     </div>
@@ -134,7 +140,8 @@
           },
           {
             title: '颜色图片',
-            key: 'image'
+            render: this.mainImageRender()
+            // key: 'image'
           },
         ], // 右边表格的表头
         rightTableData: [], // 右边表格数据
@@ -160,7 +167,7 @@
       rightTableDataForColor: {
         handler(val) {
           this.rightTableData = val;
-          this.getData(val);
+          // this.getData(val);
         },
         deep: true
       },
@@ -181,28 +188,47 @@
           this.rightTableData.push(this.leftTableData[this.leftTableSelectIndex]);
           this.leftTableData.splice(this.leftTableSelectIndex, 1);
           this.leftTableSelectIndex = null;
+          this.$parent.$parent.rightTableDataForColor = this.rightTableData;
         }
       }, // 单个向右的icon点击触发
       rightDouble() {
         this.rightTableData = this.rightTableData.concat(this.leftTableData);
         this.leftTableData = [];
+        this.$parent.$parent.rightTableDataForColor = this.rightTableData;
       }, // 两个向右的icon点击触发
       leftSingle() {
         if (this.rightTableSelectIndex !== null) {
-          this.leftTableData.push(this.rightTableData[this.rightTableSelectIndex]);
+          const currentData = this.rightTableData[this.rightTableSelectIndex];
+          if (currentData.image) {
+            delete currentData.image;
+          }
+          this.leftTableData.push(currentData);
           this.rightTableData.splice(this.rightTableSelectIndex, 1);
           this.rightTableSelectIndex = null;
+          this.$parent.$parent.rightTableDataForColor = this.rightTableData;
         }
       }, // 单个向左的icon点击触发
       leftDouble() {
+        //  const currentData = this.rightTableData[this.rightTableSelectIndex];
+        //   if (currentData.image) {
+        //     delete currentData.image;
+        //   }
+        this.rightTableData.map((item) => {
+          if (item.image) {
+            delete item.image;
+          }
+        });
         this.leftTableData = this.leftTableData.concat(this.rightTableData);
         this.rightTableData = [];
+        this.$parent.$parent.rightTableDataForColor = this.rightTableData;
       }, // 两个向左的icon点击触发
       leftTableRowClick(val, index) {
         this.leftTableSelectIndex = index;
+        this.$parent.$parent.rightTableDataForColor = this.rightTableData;
       }, // 左边表格单选触发
       rightTableRowClick(val, index) {
         this.rightTableSelectIndex = index;
+        this.$parent.$parent.rightTableDataForColor = this.rightTableData;
       }, // 右边表格单选触发
       listAllColor() {
         const { itemId } = this.$route.params;
@@ -217,15 +243,15 @@
           .then((res) => {
             if (res.data.code === 0) {
               let colorData = res.data.data;
-
-              if (this.rightTableData.length > 0) {
-                colorData = colorData.filter((item) => {
-                  const idList = this.rightTableData.map(v => v.id);
-                  return !idList.includes(item.id);
-                });
-
-                this.leftTableData = colorData;
-              } else {
+              if (this.rightTableData && this.rightTableData.length > 0) {
+                if (colorData && colorData.length > 0) {
+                  colorData = colorData.filter((item) => {
+                    const idList = this.rightTableData.map(v => v.ID);
+                    return !idList.includes(item.ID);
+                  });
+                  this.leftTableData = colorData;
+                }
+              } else if (colorData) {
                 this.leftTableData = colorData;
               }
             }
@@ -249,14 +275,14 @@
           this.$Message.warning('输入框内容不能为空');
           return;
         }
-        const params = {
-          PS_C_PRO_ID: itemId, // 主表表名
-          COLOR: this.addColorInputValue,
-          SELECTED: JSON.stringify(ecodes)
-        };
+        // const params = {
+        //   PS_C_PRO_ID: itemId, // 主表表名
+        //   COLOR: this.addColorInputValue,
+        //   SELECTED: escape(JSON.stringify(ecodes))
+        // };
         const URL = custommizedRequestUrl()['/p/cs/cclrquery'];
-        
-        network.get(URL || '/p/cs/cclrquery', { params })
+        const url = `${URL || '/p/cs/cclrquery'}?PS_C_PRO_ID=${itemId}&COLOR=${this.addColorInputValue}&SELECTED=${escape(JSON.stringify(ecodes))}`;
+        network.get(url)
           .then((res) => {
             if (res.data.code === 0) {
               const result = res.data;
@@ -266,12 +292,17 @@
                 content: `${message}`
               };
               if (this.leftTableData.length > 0) {
-                res.data.data = res.data.data.filter((item) => {
-                  const idList = this.leftTableData.map(v => v.id);
-                  return !idList.includes(item.id);
+                res.data.data.map((item) => {
+                  this.leftTableData.map((v, i) => {
+                    if (item.id === v.id) {
+                      this.leftTableData.splice(i, 1);
+                    }
+                  });
                 });
               }
-              this.rightTableData = res.data.data;
+              this.addColorInputValue = '';
+              this.rightTableData = this.rightTableData.concat(res.data.data);
+              console.log(3, this.rightTableData);
               this.$Message.success(data);
             }
           });
@@ -290,14 +321,58 @@
       //       }
       //     });
       // }, // 获取右边表格的数据
+      mainImageRender() {
+        return (h, params) => {
+          // debugger;
+          const colname = params.row;
+          if (colname.image) {
+            return h('div', [
+              h('Poptip', {
+                style: {},
+                props: {
+                  trigger: 'hover',
+                  transfer: true,
+                  content: 'content',
+                  placement: 'right'
+                },
+                scopedSlots: {
+                  default: () => h('img', {
+                    style: {
+                      height: '46px',
+                      width: '46px',
+                      'margin-top': '4px'
+                    },
+                    domProps: {
+                      src: colname.image
+                    }
+                  }),
+                  content: () => h('img', {
+                    style: {
+                      width: '120px',
+                      height: '120px',
+                      margin: '8px 0px',
+                      'vertical-align': 'middle',
+                    },
+                    domProps: {
+                      src: colname.image
+                    }
+                  }),
+                },
+              })
+            ]);
+          }
+        };
+      }, // 图片render
+
       mainColorRender() {
         return (h, params) => h('Select', {
           style: {
+            padding: '3px'
           },
           props: {
             transfer: true,
             clearable: true,
-            value: ''
+            value: params.row.MAINCOLOR,
           },
           nativeOn: {
             click: (e) => {
@@ -305,7 +380,11 @@
             }
           },
           on: {
-            'on-change': (event, data) => {
+            'on-change': (event) => {
+              params.row.MAINCOLOR = event;
+              this.rightTableData[params.index].MAINCOLOR = event;
+              // params.row.MAINCOLOR = event;
+              // this.getData(params.row);
             }
           }
         }, this.selectOptionRender(h));
@@ -324,7 +403,8 @@
           style: {
           },
           props: {
-            value: ''
+            value: params.row.FABCOLOR,
+
           },
           nativeOn: {
             click: (e) => {
@@ -332,7 +412,11 @@
             }
           },
           on: {
-            'on-change': (event, data) => {
+            'on-blur': (event, e) => {
+              params.row.FABCOLOR = e.currentValue;
+              this.rightTableData[params.index].FABCOLOR = e.currentValue;
+              // params.row.FABCOLOR = event.data;
+              // this.getData(params.row);
             }
           }
         });

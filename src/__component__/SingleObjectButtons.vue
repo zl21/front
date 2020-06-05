@@ -2741,6 +2741,18 @@
         // 如果不清空，跳转到新增界面时会出现子表无请求的状况
       },
       objectSave(obj) { // 保存按钮事件逻辑
+        console.log(333, this.testUpdata());
+        if (!this.testUpdata() && this.itemInfo.webact) { // 兼容半定制界面，保存成功时通知外部
+          DispatchEvent('customizeClick', {
+            detail: {
+              type: 'save',
+              mainTableParame: this.currentParameter,
+              itemTableParame: this.itemCurrentParameter,
+            }
+          });
+        }
+
+
         if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
           if (this.verifyRequiredInformation()) { // 校验必填项
             this.mainTableNewSaveAndEditorNewSave();
@@ -3061,7 +3073,7 @@
                 type: 'save',
                 mainTableParame: this.currentParameter,
                 itemTableParame: this.itemCurrentParameter,
-                res
+                res,
               }
             });
           }
@@ -3306,8 +3318,8 @@
             }
           }
         } else {
-          this.temporaryStorage = false;
-          this.dataArray.temporaryStorage = false;
+          // this.temporaryStorage = false;
+          // this.dataArray.temporaryStorage = false;
           // this.upData();//保存失败不刷新
         }
       },

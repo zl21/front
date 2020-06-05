@@ -26,9 +26,10 @@ module.exports = {
   // target: 'http://jflow-shangfei-r3.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://ark-share-dev.dev.burgeononline.com', // ArkShare环境
   target: 'http://47.102.164.111:26666/', // 卡宾环境
+  // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop环境
 
   
-  Version: '1.4', // 版本号
+  Version: '1.3', // 版本号
   interlocks: true, // 是否打开三级联动装置
   enableGateWay: false, // 网关是否打开,
   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用功能
@@ -58,7 +59,6 @@ module.exports = {
   layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
   backDashboardRoute: [], // 配置刷新浏览器回到Dashboard界面
   custommizedRequestURL: {
-    '/p/cs/cprospecload':
   }, // 配置内置自定义界面requestURL
 
 
