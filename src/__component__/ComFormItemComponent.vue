@@ -974,9 +974,10 @@
           } else if (eval(str) === 0) {
             DyNvalue = 0;
           } else {
-            DyNvalue = eval(str).toFixed(2);
+            const scale = this.newFormItemLists[_index].item.props.scale;
+            DyNvalue = eval(str).toFixed(scale);
           }
-          if (this.newFormItemLists[_index].item.value !== DyNvalue) {
+          if (Number(this.newFormItemLists[_index].item.value) !== Number(DyNvalue)) {
             setTimeout(() => {
               this.newFormItemLists[_index].item.value = DyNvalue;
               this.dataProcessing(this.newFormItemLists[_index], 'none');

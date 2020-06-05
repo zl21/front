@@ -1512,6 +1512,8 @@
       getWangeditorChangeItem(value) {
         // 富文本change
         this._items.value = value;
+        // 判断是刷新 还是change 事件触发
+        this._items.props.trigger = 'inputchange';
         this.valueChange();
       },
       enumerableValueChange(value) {

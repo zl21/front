@@ -20,12 +20,12 @@ module.exports = {
   // target: 'http://10.14.3.71', // 商飞预发环境
   // target: 'http://jflow-shangfei-yf-r3.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop网关开启环境
-  target: 'http://r3.burgeon.cn:19999/', // 'http://106.15.154.165:19999/', // Cube
-  // target: 'http://cmsqas.lining.com', //卡宾
+  // target: 'http://r3.burgeon.cn:19999/', // 'http://106.15.154.165:19999/', // Cube
+  // target: 'http://cmsqas.lining.com', // 卡宾
   // target: 'http://r3.burgeon.cn:28888/', // 李宁
   // target: 'http://jflow-shangfei-r3.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://ark-share-dev.dev.burgeononline.com', // ArkShare环境
-  // target: 'http://47.102.164.111:26666/', // 卡宾环境
+  target: 'http://47.102.164.111:26666/', // 卡宾环境
 
   
   Version: '1.4', // 版本号
@@ -57,7 +57,9 @@ module.exports = {
   cbs: undefined, // 框架回调，形如 { loginCb: function() {} }
   layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
   backDashboardRoute: [], // 配置刷新浏览器回到Dashboard界面
-  custommizedRequestURL: {}, // 配置内置自定义界面requestURL
+  custommizedRequestURL: {
+    '/p/cs/cprospecload':
+  }, // 配置内置自定义界面requestURL
 
 
 };
