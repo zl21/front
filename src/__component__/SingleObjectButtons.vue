@@ -345,7 +345,6 @@
         LinkUrl: ({ LinkUrl }) => LinkUrl,
         exportTasks: ({ exportTasks }) => exportTasks,
         currentLoading: ({ currentLoading }) => currentLoading,
-        JflowControlField: ({ JflowControlField }) => JflowControlField,
         userInfo: ({ userInfo }) => userInfo,
 
         
