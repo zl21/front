@@ -30,6 +30,11 @@
                     <div class="list-header">
                         <!-- <Checkbox v-model="isParentAllChecked">可用字段</Checkbox> -->
                         可用字段
+                        <Input style="width: 92px; height:20px;"
+                               placeholder="输入字段名"
+                               :expand="false" v-model="fieldName" @on-enter="fieldQuery()">
+                            <Icon type="ios-search" @click="fieldQuery()" slot="suffix"/>
+                        </Input>
                     </div>
                     <div class="treeBox">
                         <Tree ref="treeAllCheck" @on-check-change="onCheckChange" :data="list"
@@ -79,7 +84,8 @@
                                             <transition-group>
                                                 <li
                                                         v-for="(item1, i) in item.childList"
-                                                        :key="i"
+                                                        :key="`${i+1}`"
+                                                        @dblclick.stop="dbClick(item,item1,idx,$event)"
                                                 >
                                                     <Checkbox :label="item1.ID">
                                                         {{ item1.DESCRIPTION }}
@@ -100,6 +106,11 @@
                         >
                             {{ item.setBtnTitle }}
                         </Button>
+                        <Checkbox
+                                :indeterminate="item.indeterminate"
+                                :value="item.checkBox"
+                                @click.prevent.native="checkBatchChange(idx)">是否全选
+                        </Checkbox>
                     </div>
                 </div>
             </div>
@@ -248,6 +259,8 @@
                 reportId: 1,
                 adTableInfo: {},
                 list: [],
+                queryList: [],
+                fieldName: "",
                 parentCheckedArr: [],
                 isParentAllChecked: false,
                 isParentBtnDisabled: true,
@@ -260,6 +273,7 @@
                         isChildBtnDisabled: true,
                         isSetDataDisabled: true,
                         childCheckedArr: [],
+                        indeterminate: false,
                         setBtnTitle: '分组字段设置'
                     },
                     {
@@ -270,6 +284,7 @@
                         isChildBtnDisabled: true,
                         isSetDataDisabled: true,
                         childCheckedArr: [],
+                        indeterminate: false,
                         setBtnTitle: '分组字段设置'
                     },
                     {
@@ -280,6 +295,7 @@
                         isChildBtnDisabled: true,
                         isSetDataDisabled: true,
                         childCheckedArr: [],
+                        indeterminate: false,
                         setBtnTitle: '分组字段设置'
                     },
                     {
@@ -290,6 +306,7 @@
                         isChildBtnDisabled: true,
                         isSetDataDisabled: true,
                         childCheckedArr: [],
+                        indeterminate: false,
                         setBtnTitle: '汇总字段设置'
                     }
                 ],
@@ -447,6 +464,15 @@
                 this.move("parent");
                 // this.parentCheckedArr=[];
             },
+            fieldQuery() {
+                let name = this.fieldName;
+                let tempList = this.queryList.filter((obj) => {
+                    return obj.DESCRIPTION.indexOf(name) !== -1;
+                });
+                this.list = JSON.parse(JSON.stringify(tempList));
+                this.parentCheckedArr = [];
+                this.isParentBtnDisabled = true;
+            },
             loadListData(item, callback) {
                 let params = {
                     refTableId: item.REF_TABLE_ID,
@@ -493,6 +519,7 @@
                                 }
                             });
                             this.list = columnInfoList || this.list;
+                            this.queryList = JSON.parse(JSON.stringify(this.list));
                             this.childBoxList.map((item) => {
                                 item.childList = dimensionFact[item.dataName] || item.childList;
                             });
@@ -507,6 +534,17 @@
                 } else {
                     this.childBoxList[n].isChildBtnDisabled = this.childBoxList[n].childCheckedArr.length == 0;
                     this.childBoxList[n].isSetDataDisabled = this.childBoxList[n].childCheckedArr.length == 0;
+                    let o = this.childBoxList[n];
+                    if (o.childCheckedArr.length === o.childList.length) {
+                        o.indeterminate = false;
+                        o.checkBox = true;
+                    } else if (o.childCheckedArr.length > 0) {
+                        o.indeterminate = true;
+                        o.checkBox = false;
+                    } else {
+                        o.indeterminate = false;
+                        o.checkBox = false;
+                    }
                 }
             },
             getData(n, type) {
@@ -560,6 +598,7 @@
                     item => !o.childCheckedArr.some(ele => ele == item.ID)
                 );
                 o.childCheckedArr = [];
+                o.indeterminate = false;
                 o.isChildBtnDisabled = true;
                 o.isSetDataDisabled = true;
                 this.childBoxList[n] = o;
@@ -587,6 +626,37 @@
                         }
                         this.$Message.error(data.message);
                     });
+            },
+            dbClick(item, item1, idx, event) {
+                console.log('dbClick::item', item);
+                console.log('dbClick::item1', item1);
+                console.log('dbClick::idx', idx);
+                if (!item.childCheckedArr.includes(item1.ID)) {
+                    item.childCheckedArr.push(item1.ID);
+                    item.isChildBtnDisabled = item.childCheckedArr.length == 0;
+                    item.isSetDataDisabled = item.childCheckedArr.length == 0;
+                }
+                this.showSetModal(idx);
+            },
+            checkBatchChange(n) {
+                this.groupForm = {};
+                this.factListForm = {};
+                this.currentIdx = n;
+                const o = this.childBoxList[n];
+                if (o.indeterminate) {
+                    o.checkBox = false;
+                } else {
+                    o.checkBox = !o.checkBox;
+                }
+                o.indeterminate = false;
+                if (o.checkBox) {
+                    o.childCheckedArr = o.childList.map(item => {
+                        return item.ID;
+                    });
+                } else {
+                    o.childCheckedArr = [];
+                }
+                o.isChildBtnDisabled = o.childCheckedArr.length === 0;
             },
             showSetModal(n) {
                 this.groupForm = {};

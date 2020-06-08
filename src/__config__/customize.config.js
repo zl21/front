@@ -43,6 +43,12 @@ export default {
     labelName: '任务记录',
     label: 'taskList'
 
-  }
+  },
+  PERMISSIONS: {
+    component: taskList,
+    labelName: '任务记录',
+    label: 'taskList'
+
+  },
   
 };

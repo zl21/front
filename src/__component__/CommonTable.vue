@@ -684,7 +684,7 @@
           // webconf配置docFile则走docFile配置程序，点击上传的文件取消下载功能，改为预览功能
           let getDocFileWebConfUrl = '';
           let getDocFileWebConf = false;
-          if (params.column.webconf.docFile && params.column.webconf.docFile.isPreview) {
+          if (params.column && params.column.webconf && params.column.webconf.docFile && params.column.webconf.docFile.isPreview) {
             getDocFileWebConf = params.column.webconf.docFile.isPreview;
             getDocFileWebConfUrl = params.column.webconf.docFile.url;
           }
