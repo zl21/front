@@ -329,7 +329,6 @@ export default {
           Object.keys(itemModify[itemName]).forEach((item) => {
             Object.keys(itemLabelBeforeRes[itemName]).forEach((itemBefore) => {
               if (item === itemBefore) {
-                console.log(444, itemBefore);
                 obj[itemBefore] = itemLabelBeforeRes[itemName][itemBefore];
                 obj.ID = itemObjId;
                 itemModifyResBefore[itemName] = [obj];
@@ -345,14 +344,21 @@ export default {
           itemModifyRes[itemName] = [itemModify[itemName]];
           itemModifyResAfter[itemName] = [itemModifyLabel[itemName]];
 
-
-          parames = {
-            table: tableName,
-            objid: objId,
-            data: itemModifyRes,
-            after: itemModifyResAfter,
-            before: itemModifyResBefore,
-          };
+          if (itemObjId === -1) {
+            parames = {
+              table: tableName,
+              objid: objId,
+              data: itemModifyRes,
+            };
+          } else {
+            parames = {
+              table: tableName,
+              objid: objId,
+              data: itemModifyRes,
+              after: itemModifyResAfter,
+              before: itemModifyResBefore,
+            };
+          }
         } else {
           parames = {
             table: tableName,

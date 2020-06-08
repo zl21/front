@@ -2931,7 +2931,10 @@
           if (messageTip) {
             if (messageTip.length > 0) {
               this.$Message.warning(messageTip[0]);
-              checkedInfo.validateForm.focus();
+              // checkedInfo.validateForm.focus();
+              if (checkedInfo && checkedInfo.validateForm) {
+                checkedInfo.validateForm.focus();
+              }
               return false;
             }
           }
@@ -2957,7 +2960,9 @@
                         if (itemMessageTip) {
                           if (itemMessageTip.length > 0) {
                             this.$Message.warning(itemMessageTip[0]);
-                            itemCheckedInfo.validateForm.focus();
+                            if (itemCheckedInfo && itemCheckedInfo.validateForm) {
+                              itemCheckedInfo.validateForm.focus();
+                            }
                             return false;
                           }
                         } if (Object.values(addInfo).length < 1) {
@@ -2971,7 +2976,9 @@
                       if (itemMessageTip) {
                         if (isItemTableNewValidation() && itemMessageTip.length > 0) {
                           this.$Message.warning(itemMessageTip[0]);
-                          itemCheckedInfo.validateForm.focus();
+                          if (itemCheckedInfo && itemCheckedInfo.validateForm) {
+                            itemCheckedInfo.validateForm.focus();
+                          }
                           return false;
                         } if (!isItemTableNewValidation()) {
                           const itemName = this.itemName;// 子表表名
@@ -2982,7 +2989,9 @@
 
                           if (itemAdd.length > 0 && itemMessageTip.length > 0) {
                             this.$Message.warning(itemMessageTip[0]);
-                            itemCheckedInfo.validateForm.focus();
+                            if (itemCheckedInfo && itemCheckedInfo.validateForm) {
+                              itemCheckedInfo.validateForm.focus();
+                            }
                             return false;
                           }     
                         }                             
@@ -2994,7 +3003,9 @@
                   if (itemMessageTip) {
                     if (itemMessageTip.length > 0) {
                       this.$Message.warning(itemMessageTip[0]);
-                      itemCheckedInfo.validateForm.focus();
+                      if (itemCheckedInfo && itemCheckedInfo.validateForm) {
+                        itemCheckedInfo.validateForm.focus();
+                      }
                       return false;
                     }
                   }
@@ -3003,7 +3014,9 @@
                   if (itemMessageTip) {
                     if (itemMessageTip.length > 0) {
                       this.$Message.warning(itemMessageTip[0]);
-                      itemCheckedInfo.validateForm.focus();
+                      if (itemCheckedInfo && itemCheckedInfo.validateForm) {
+                        itemCheckedInfo.validateForm.focus();
+                      }
                       return false;
                     }
                   }
@@ -3013,7 +3026,9 @@
                 if (itemMessageTip) {
                   if (itemMessageTip.length > 0) {
                     this.$Message.warning(itemMessageTip[0]);
-                    itemCheckedInfo.validateForm.focus();
+                    if (itemCheckedInfo && itemCheckedInfo.validateForm) {
+                      itemCheckedInfo.validateForm.focus();
+                    }
                     return false;
                   }
                 }
