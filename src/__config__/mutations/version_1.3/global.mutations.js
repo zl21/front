@@ -704,9 +704,6 @@ export default {
   updateModifySearchFoldnum(state, data) {
     state.changeSearchFoldnum = data;
   },
-  updateJflowControlField(state, data) {
-    state.JflowControlField = data;
-  },
   updateFavoriteData(state, data) { // 收藏
     state.favorite = data.data;
   },

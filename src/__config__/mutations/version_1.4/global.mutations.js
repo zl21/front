@@ -314,17 +314,6 @@ export default {
     //   v: item.ID
     // };
     deleteFromSessionObject('TreeId', tab.tableName);
-    let openedMenuListId = null;
-    if (tab.keepAliveModuleName) {
-      openedMenuListId = tab.keepAliveModuleName.split('.')[2];
-    }
-    if (state.JflowControlField && state.JflowControlField.length && state.JflowControlField.length > 0) {
-      state.JflowControlField = state.JflowControlField.filter((item) => {
-        if (Number(item.tableId) !== Number(openedMenuListId)) {
-          return item;
-        }
-      }); 
-    }
     
     // window.sessionStorage.removeItem('dynamicRoutingIsBack');// 清除动态路由返回标记
 
@@ -697,9 +686,6 @@ export default {
   },
   updateModifySearchFoldnum(state, data) {
     state.changeSearchFoldnum = data;
-  },
-  updateJflowControlField(state, data) {
-    state.JflowControlField = data;
   },
   updateFavoriteData(state, data) { // 收藏
     state.favorite = data.data;
