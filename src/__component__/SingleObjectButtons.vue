@@ -1295,15 +1295,7 @@
                   if (verifyRequiredInformation) {
                     if (this.testUpdata()) {
                       const type = 'objTabActionSlient';
-                      if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
-                        const objTabActionSlientData = {
-                          k: 'data',
-                          v: obj
-                        };
-                        updateSessionObject('objTabActionSlientData', objTabActionSlientData);
-                      } else {
-                        this.objTabActionSlientData = obj;
-                      }
+                      this.objTabActionSlientData = obj;
                       this.clickSave({ type });
                     } else {
                       this.errorconfirmDialog(obj);
@@ -3611,9 +3603,6 @@
       window.removeEventListener('showSingleButtons', this.showSingleButtons);
     },
     mounted() {
-      if (custommizedJflow()) {
-        this.hideButtonsForcmds(['actionSUBMIT']);
-      }
       this.setDisableButtons();
       if (this.isItemTable) {
         console.log(444, this.itemInfo);
