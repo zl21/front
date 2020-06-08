@@ -13,7 +13,6 @@ module.exports = {
   // target: 'http://r3-know-dev.dev.burgeononline.com/', // 知晓测试环境(启用网关)
   // target: 'http://zhixiao.burgeononline.com:32769/', // 知晓正式环境(启用网关)
   // target: 'http://dev.burgeononline.com:8098', // 掌云测试环境(启用网关)
-  // target: 'http://r3.burgeon.cn:28888', // 李宁
   // target: 'http://106.15.24.156:19093', // 李宁AD
   // target: 'http://139.224.169.76:28888', // 沁园
   // target: 'http://10.14.5.196', // 商飞开发环境
@@ -49,12 +48,8 @@ module.exports = {
   cbs: undefined, // 框架回调，形如 { loginCb: function() {} }
   layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
   backDashboardRoute: [], // 配置刷新浏览器回到Dashboard界面
-<<<<<<< HEAD
   custommizedRequestURL: {
   }, // 配置内置自定义界面requestURL
 
 
-=======
-  custommizedRequestURL: {}, // 配置内置自定义界面requestURL
->>>>>>> fcb7c4ecc0fd59add0c4be614936c5703a75f6db
 };
