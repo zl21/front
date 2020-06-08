@@ -216,7 +216,8 @@
         keepAliveLabelMaps: ({ keepAliveLabelMaps }) => keepAliveLabelMaps,
         LinkUrl: ({ LinkUrl }) => LinkUrl,
         exportTasks: ({ exportTasks }) => exportTasks,
-        changeSearchFoldnum: ({ changeSearchFoldnum }) => changeSearchFoldnum
+        changeSearchFoldnum: ({ changeSearchFoldnum }) => changeSearchFoldnum,
+        userInfo: ({ userInfo }) => userInfo,
       }),
       getCurrentLabel() {
         return this.keepAliveLabelMaps[this[MODULE_COMPONENT_NAME]];
@@ -2178,43 +2179,69 @@
         const errorDialogvalue = false;
         this.setErrorModalValue({ errorDialogvalue });
       },
+      serilizeUrl(url) { 
+        const urlObject = {};
+        if (/\?/.test(url)) {
+          const urlString = url.substring(url.indexOf('?') + 1); 
+          const urlArray = urlString.split('&');
+          for (let i = 0, len = urlArray.length; i < len; i++) {
+            const urlItem = urlArray[i];
+            const item = urlItem.split('=');
+            urlObject[item[0]] = item[1]; 
+          }
+          return urlObject;
+        }
+        return null; 
+      },
       objTabActionNavbar(tab) {
         if (tab.action) {
-          const actionType = tab.action.substring(0, tab.action.indexOf('/'));
-          const singleEditType = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
+          const a = 'SYSTEM/TABLE/AD_TABLE/992?AD_CLIENT_NAME=${AD_CLIENT_NAME}&AD_ORG_ID=${AD_ORG_ID}';
+          let tabAction = '';
+          tab.action = a;
+          if (tab.action.includes('?')) { // 如果当前url配置参数,将参数部分截取
+            if (this.userInfo && this.userInfo.userenv) {
+              const query = this.serilizeUrl(tab.action);
+              Object.keys(query).map((q) => {
+                Object.keys(this.userInfo.userenv).map((u) => {
+                  if (u.includes(q)) {
+                    tab.action = tab.action.replace(`{${q}}`, `{${this.userInfo.userenv[u]}}`);
+                  }
+                });
+              });
+            }
+          }
+          tabAction = tab.action;
+          const actionType = tabAction.substring(0, tabAction.indexOf('/'));
+          const singleEditType = tabAction.substring(tabAction.lastIndexOf('/') + 1, tabAction.length);
           if (actionType === 'SYSTEM') {
             if (singleEditType === ':itemId') {
               if (this.buttons.selectIdArr.length === 0) {
                 this.$Message.warning('请勾选ID');
-                return;
               } if (this.buttons.selectIdArr.length > 1) {
                 this.$Message.warning('只能勾选单个ID');
-                return;
               }
               const itemId = this.buttons.selectIdArr.filter(item => item);
-              const path = `/${tab.action.replace(/:itemId/, itemId)}`;
+              const path = `/${tabAction.replace(/:itemId/, itemId)}`;
               router.push(
                 path
               );
             } else {
-              const path = `/${tab.action}`;
+              const path = `/${tabAction}`;
               router.push(
                 path
               );
             }
           } else if (actionType === 'https:' || actionType === 'http:') {
             let linkUrl = '';
-            if (tab.action.indexOf(':itemId') !== -1) {
+            if (tabAction.indexOf(':itemId') !== -1) {
               if (this.buttons.selectIdArr.length === 0) {
                 this.$Message.warning('请勾选ID');
-                return;
               } if (this.buttons.selectIdArr.length > 1) {
                 this.$Message.warning('只能勾选单个ID');
-                return;
               }
-              linkUrl = `${tab.action.replace(':itemId', '')}?id=${this.buttons.selectIdArr.toString()}`;
+              linkUrl = `${tabAction.replace(':itemId', '')}?id=${this.buttons.selectIdArr.toString()}`;
             } else {
-              linkUrl = tab.action;
+              linkUrl = tabAction;
             }
             const type = 'tableDetailUrl';
             this.tabOpen({
@@ -2237,9 +2264,9 @@
             };
             window.sessionStorage.setItem('tableDetailUrlMessage', JSON.stringify(obj));
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-            const name = getLabel({ url: tab.action, id: tab.webid, type: 'customized' });
+            const name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
             this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
-            const path = getUrl({ url: tab.action, id: tab.webid, type: 'customized' });
+            const path = getUrl({ url: tabAction, id: tab.webid, type: 'customized' });
             const keepAliveLabelMapsObj = {
               k: name,
               v: tab.webdesc
