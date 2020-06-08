@@ -324,12 +324,14 @@ export default {
         } else if (tabrelation) {
           const itemLabelBeforeRes = parame.itemCurrentParameter.defaultLabel;// 子表修改的label
           const itemModifyResBefore = {};
+          const obj = {};
+
           Object.keys(itemModify[itemName]).forEach((item) => {
             Object.keys(itemLabelBeforeRes[itemName]).forEach((itemBefore) => {
               if (item === itemBefore) {
-                const obj = {};
-                obj.ID = itemObjId;
+                console.log(444, itemBefore);
                 obj[itemBefore] = itemLabelBeforeRes[itemName][itemBefore];
+                obj.ID = itemObjId;
                 itemModifyResBefore[itemName] = [obj];
               }
             });
