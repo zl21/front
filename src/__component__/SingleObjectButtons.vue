@@ -242,7 +242,7 @@
                       }
                     });
                   }
-                  if (Version() === '1.4' && this.itemInfo && this.itemInfo.tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮默认不显示
+                  if (this.itemInfo && this.itemInfo.tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮默认不显示
                     if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
                       this.tabcmd.cmds.forEach((item, index) => {
                         if (item !== 'actionMODIFY' && item !== 'actionEXPORT') {
@@ -1057,7 +1057,9 @@
             return true;
           });
         }
-        const { refcolid } = this.itemInfo;
+        const {
+          tablename, refcolid, tabrelation 
+        } = this.itemInfo;
      
         const searchdata = {
           column_include_uicontroller: true,
@@ -1065,10 +1067,22 @@
           range: page.pageSize,
         };
       
+        if (tabrelation === '1:1') {
+          const promise = new Promise((resolve, reject) => {
+            this.getObjectTabForChildTableButtons({
+              itemInfo: this.itemInfo, maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex: this.currentTabIndex, resolve, reject
+            });
+          });
 
-        this.getObjectTableItemForTableData({
-          table: this.itemName, objid: this.itemId, refcolid, searchdata, tabIndex: this.currentTabIndex
-        });
+           
+          this.getItemObjForChildTableForm({
+            itemInfo: this.itemInfo, table: tablename, objid: this.itemId, refcolid, tabIndex: this.currentTabIndex
+          });
+        } else {
+          this.getObjectTableItemForTableData({
+            table: this.itemName, objid: this.itemId, refcolid, searchdata, tabIndex: this.currentTabIndex
+          });
+        }
       },
 
       objectTrySubmit(obj) { // 按钮提交逻辑

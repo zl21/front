@@ -49,7 +49,6 @@ export const verticalTableDetailJflowConfigData = (data) => {
     }
     // resData.backButton = false;// 控制子表按钮返回按钮显示
     resData.jflowConfigrefreshButton = true;// 将主表刷新按钮删除
-  
     // 以上逻辑为当前jflow配置的为子表时，当前单据其余表按钮展示逻辑
     // 上下结构只有当前配置表展示按钮，其余子表不展示按钮，主表展示刷新/复制/返回
     // 刷新按钮显示jflow返回的刷新

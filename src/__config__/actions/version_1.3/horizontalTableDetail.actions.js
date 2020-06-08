@@ -93,6 +93,7 @@ export default {
           resData = horizontalItemTableButtons(data);
         }
         // 根据jflow配置条件控制按钮以及表单end🍓
+        commit('updateRefreshButtonForJflow', resData.jflowConfigrefreshButton);// jflow控制刷新按钮显示
         resData.tabIndex = tabIndex;
         commit('updateButtonsData', resData);
         resolve();
@@ -163,7 +164,7 @@ export default {
         }
         // 根据jflow配置条件控制按钮以及表单end🍓
         resData.tabIndex = tabIndex;
-        resData.objId = res.data ? res.data.id : null;
+        resData.id = res.data ? res.data.id : null;
         commit('updatePanelData', resData);
       }
     });
@@ -196,7 +197,6 @@ export default {
     } = parame;
     const sataTypeName = sataType ? sataType.sataType : '';
     let parames = {};
-   
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
       parames = {
