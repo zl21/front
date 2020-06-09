@@ -16,6 +16,7 @@ import {
 } from '../../../__utils__/sessionStorage';
 import { getLabel } from '../../../__utils__/url';
 import { DispatchEvent } from '../../../__utils__/dispatchEvent';
+import getUserenv from '../../../__utils__/getUserenv';
 
 
 export default {
@@ -41,7 +42,13 @@ export default {
     // id:勾选ID，
     // url:配置url,
     // isMenu,
-    // lablel:名称
+    // lablel:名称,
+    // type:link外链类型需要传类型，
+    // lingName:外链表名，
+    // linkId:外链表ID，
+    if (param && param.url && param.url.includes('?')) {
+      param.url = getUserenv({ url: param.url });
+    }
     const actionType = param.url.substring(0, param.url.indexOf('/'));
     const singleEditType = param.url.substring(param.url.lastIndexOf('/') + 1, param.url.length);
     if (actionType === 'SYSTEM') {
@@ -56,6 +63,32 @@ export default {
           path
         );
       }
+    } else if (actionType === 'https:' || actionType === 'http:') {
+      const name = `${LINK_MODULE_COMPONENT_PREFIX}.${param.lingName.toUpperCase()}.${param.linkId}`;     
+      // this.addKeepAliveLabelMaps({ name, label: param.lablel });
+      state.keepAliveLabelMaps[name] = `${param.lablel}`;
+      const linkUrl = param.url;
+      const linkId = param.linkId;
+      if (!this.LinkUrl[linkId]) {
+        this.increaseLinkUrl({ linkId, linkUrl });
+      }
+      const obj = {
+        linkName: param.lingName,
+        linkId: param.linkId,
+        linkUrl,
+        linkLabel: param.lablel
+      };
+      window.sessionStorage.setItem('tableDetailUrlMessage', JSON.stringify(obj));
+      // const type = 'tableDetailUrl';
+      // this.tabOpen({
+      //   type,
+      //   linkName: param.lingName,
+      //   linkId: param.linkId
+      // });
+      const path = `${LINK_MODULE_PREFIX}/${param.lingName.toUpperCase()}/${param.linkId}`;
+      router.push({
+        path
+      });
     } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
       const customizedModuleName = param.url.substring(param.url.indexOf('/') + 1, param.url.lastIndexOf('/'));
       const treeQuery = router.currentRoute.query;
@@ -72,7 +105,8 @@ export default {
       if (param.isMenu) {
         const data = {
           customizedModuleName,
-          customizedModuleId: param.id
+          customizedModuleId: param.id,
+          label: param.label
         };
         setCustomeLabel(data);
       }

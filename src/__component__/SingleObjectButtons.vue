@@ -104,7 +104,7 @@
 
   import { DispatchEvent } from '../__utils__/dispatchEvent';
   import { getKeepAliveModuleName } from '../__config__/router.navigation.guard';
-
+  import getUserenv from '../__utils__/getUserenv';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
 
@@ -561,7 +561,7 @@
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
 
-      ...mapMutations('global', ['deleteLoading', 'emptyTestData', 'tabCloseAppoint', 'decreasekeepAliveLists', 'copyDataForSingleObject', 'tabHref', 'tabOpen', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
+      ...mapMutations('global', ['deleteLoading', 'emptyTestData', 'tabCloseAppoint', 'decreasekeepAliveLists', 'copyDataForSingleObject', 'tabOpen', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
       imporSuccess(id) {
         if (Version() === '1.3') {
           if (id) {
@@ -1382,7 +1382,7 @@
         const serviceIdMap = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
         serviceIdMap[editTableName.toUpperCase()] = `${gateWay}`;
         window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMap));
-        this.tabHref({
+        this.tabOpen({
           type: 'tableDetailVertical',
           tableName: editTableName,
           tableId: editTableId,
@@ -1417,7 +1417,8 @@
       },
       objTabActionNavbar(tab) {
         const actionType = tab.action.substring(0, tab.action.indexOf('/'));
-
+        // const a = 'SYSTEM/TABLE/AD_TABLE/992?AD_CLIENT_NAME=${AD_CLIENT_NAME}&AD_ORG_ID=${AD_ORG_ID}&name=8888';
+        // tab.action = a;
         if (tab.action) {
           if (this.objectType === 'horizontal') { // 左右结构
             if (this.itemName === this.tableName) { // 主表
@@ -1446,16 +1447,21 @@
         }
       },
       routingHop(tab, id) {
-        const actionType = tab.action.substring(0, tab.action.indexOf('/'));
-        const singleEditType = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
+        let tabAction = '';
+        if (tab.action && tab.action.includes('?')) {
+          tabAction = getUserenv({ url: tab.action });
+        }
+        tabAction = tab.action;
+        const actionType = tabAction.substring(0, tabAction.indexOf('/'));
+        const singleEditType = tabAction.substring(tabAction.lastIndexOf('/') + 1, tabAction.length);
         if (actionType === 'SYSTEM') {
           if (singleEditType === ':itemId') {
-            const path = `/${tab.action.replace(/:itemId/, id)}`;
+            const path = `/${tabAction.replace(/:itemId/, id)}`;
             router.push(
               path
             );
           } else {
-            const path = `/${tab.action}`;
+            const path = `/${tabAction}`;
             router.push(
               path
             );
@@ -1463,7 +1469,7 @@
         } else if (actionType === 'https:' || actionType === 'http:') {
           const name = `${LINK_MODULE_COMPONENT_PREFIX}.${tab.webname.toUpperCase()}.${tab.webid}`;     
           this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
-          const linkUrl = tab.action;
+          const linkUrl = tabAction;
           const linkId = tab.webid;
           if (!this.LinkUrl[linkId]) {
             this.increaseLinkUrl({ linkId, linkUrl });
@@ -1482,9 +1488,10 @@
             linkId: tab.webid
           });
         } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-          const name = getLabel({ url: tab.action, id: tab.webid, type: 'customized' });
+          debugger;
+          const name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
           this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
-          const path = getUrl({ url: tab.action, id: tab.webid, type: 'customized' });
+          const path = getUrl({ url: tabAction, id: tab.webid, type: 'customized' });
           const keepAliveLabelMapsObj = {
             k: name,
             v: tab.webdesc
@@ -1953,7 +1960,7 @@
             this.copyModifyDataForSingleObject(modifyData);// 将复制修改过所保存的数据存到global中
             this.updateFormDataForRefshow();
             const type = 'tableDetailHorizontal';
-            this.tabHref({// 跳转路由，复制是新增逻辑
+            this.tabOpen({// 跳转路由，复制是新增逻辑
               type,
               tableName: this.tableName,
               tableId: this.tableId,
@@ -1968,7 +1975,7 @@
           // this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
           this.copyModifyDataForSingleObject(modifyData);// 将复制修改过所保存的数据存到global中
           const type = 'tableDetailVertical';
-          this.tabHref({
+          this.tabOpen({
             type,
             tableName: this.tableName,
             tableId: this.tableId,
@@ -2736,7 +2743,7 @@
         const id = 'New';
         if (this.objectType === 'horizontal') {
           const type = 'tableDetailHorizontal';
-          this.tabHref({
+          this.tabOpen({
             type,
             tableName: this.tableName,
             tableId: this.tableId,
@@ -2744,7 +2751,7 @@
           });
         } else if (this.objectType === 'vertical') {
           const type = 'tableDetailVertical';
-          this.tabHref({
+          this.tabOpen({
             type,
             tableName: this.tableName,
             tableId: this.tableId,
@@ -3175,7 +3182,7 @@
               label,
               id: this.buttonsData.newMainTableSaveData ? this.buttonsData.newMainTableSaveData.objId : this.itemId
             };
-            this.tabHref(tab);
+            this.tabOpen(tab);
           }
           const message = this.buttonsData.message;
           const data = {

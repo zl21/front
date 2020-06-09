@@ -165,6 +165,7 @@
   import { getUrl, getLabel } from '../__utils__/url';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
   import treeData from '../__config__/treeData.config';
+  import getUserenv from '../__utils__/getUserenv';
 
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
@@ -320,7 +321,7 @@
     },
     methods: {
       ...mapActions('global', ['updateAccessHistory', 'getExportedState', 'updataTaskMessageCount', 'getMenuLists']),
-      ...mapMutations('global', ['tabHref', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter']),
+      ...mapMutations('global', ['tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter']),
       // changeTreeConfigData(value) {//oldTree
       //   this.isChangeTreeConfigData = value;
       // },
@@ -497,7 +498,7 @@
         const treeTableListSelectId = treeIds[tableName];
         // }
         if (this.webconf.dynamicRouting) { // 配置了动态路由，双击表格走动态路由
-          // this.tabHref({
+          // this.tabOpen({
           //   type: 'tableDetailHorizontal',
           //   tableName: 'AD_TABLE',
           //   tableId: '992',
@@ -518,7 +519,7 @@
             const param = {
               url: tableurl,
               id,
-              lablel: row.OWNERID ? row.OWNERID.reftabdesc : null,
+              label: row.OWNERID ? row.OWNERID.reftabdesc : null,
               isMenu: true,
               treeTableListSelectId
             };
@@ -536,7 +537,7 @@
             };
             this.$Modal.fcWarning(data);
           }
-          this.tabHref({
+          this.tabOpen({
             type,
             label: row.OWNERID ? row.OWNERID.reftabdesc : null,
             tableName: row._TABLENAME.val,
@@ -566,7 +567,7 @@
               tableId,
               id
             };
-            this.tabHref(tab);
+            this.tabOpen(tab);
           } else {
             // 单对象上下结构
             const type = 'tableDetailVertical';
@@ -576,7 +577,7 @@
               tableId,
               id
             };
-            this.tabHref(tab);
+            this.tabOpen(tab);
           }
         }
       }, // ag表格行双击回调
@@ -647,7 +648,7 @@
           }
           window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
 
-          this.tabHref({
+          this.tabOpen({
             id: refobjid,
             tableName: reftablename,
             tableId: reftableid,
@@ -1678,23 +1679,26 @@
         const { tableName, tableId, } = this[INSTANCE_ROUTE_QUERY];
         if (obj.name === this.buttonMap.CMD_ADD.name) {
           // 新增
+          let tableurl = '';
+          tableurl = getUserenv({ url: this.ag.tableurl });
+          
           if (this.ag.tableurl) {
-            const actionType = this.ag.tableurl.substring(0, this.ag.tableurl.indexOf('/'));
-            const singleEditType = this.ag.tableurl.substring(this.ag.tableurl.lastIndexOf('/') + 1, this.ag.tableurl.length);
+            const actionType = tableurl.substring(0, tableurl.indexOf('/'));
+            const singleEditType = tableurl.substring(tableurl.lastIndexOf('/') + 1, tableurl.length);
             if (actionType === 'SYSTEM') {
               if (singleEditType === ':itemId') {
-                const path = `/${this.ag.tableurl.replace(/:itemId/, 'New')}`;
+                const path = `/${tableurl.replace(/:itemId/, 'New')}`;
                 router.push(
                   path
                 );
               } else {
-                const path = `/${this.ag.tableurl}`;
+                const path = `/${tableurl}`;
                 router.push(
                   path
                 );
               }
             } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-              const customizedModuleName = this.ag.tableurl.substring(this.ag.tableurl.indexOf('/') + 1, this.ag.tableurl.lastIndexOf('/'));
+              const customizedModuleName = tableurl.substring(tableurl.indexOf('/') + 1, tableurl.lastIndexOf('/'));
               const path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/New`;
               router.push({
                 path
@@ -1723,7 +1727,7 @@
             const label = `${this.activeTab.label}新增`;
             if (this.ag.datas.objdistype === 'tabpanle') { // 单对象左右结构
               const type = 'tableDetailHorizontal';
-              this.tabHref({
+              this.tabOpen({
                 type,
                 tableName,
                 tableId,
@@ -1732,7 +1736,7 @@
               });
             } else {
               const type = 'tableDetailVertical'; // 左右结构的单对项页面
-              this.tabHref({
+              this.tabOpen({
                 type,
                 tableName,
                 tableId,
@@ -2179,36 +2183,14 @@
         const errorDialogvalue = false;
         this.setErrorModalValue({ errorDialogvalue });
       },
-      serilizeUrl(url) { 
-        const urlObject = {};
-        if (/\?/.test(url)) {
-          const urlString = url.substring(url.indexOf('?') + 1); 
-          const urlArray = urlString.split('&');
-          for (let i = 0, len = urlArray.length; i < len; i++) {
-            const urlItem = urlArray[i];
-            const item = urlItem.split('=');
-            urlObject[item[0]] = item[1]; 
-          }
-          return urlObject;
-        }
-        return null; 
-      },
+     
       objTabActionNavbar(tab) {
         if (tab.action) {
-          const a = 'SYSTEM/TABLE/AD_TABLE/992?AD_CLIENT_NAME=${AD_CLIENT_NAME}&AD_ORG_ID=${AD_ORG_ID}';
+          // const a = 'SYSTEM/TABLE/AD_TABLE/992?AD_CLIENT_NAME=${AD_CLIENT_NAME}&AD_ORG_ID=${AD_ORG_ID}&name=8888';
           let tabAction = '';
-          tab.action = a;
-          if (tab.action.includes('?')) { // 如果当前url配置参数,将参数部分截取
-            if (this.userInfo && this.userInfo.userenv) {
-              const query = this.serilizeUrl(tab.action);
-              Object.keys(query).map((q) => {
-                Object.keys(this.userInfo.userenv).map((u) => {
-                  if (u.includes(q)) {
-                    tab.action = tab.action.replace(`{${q}}`, `{${this.userInfo.userenv[u]}}`);
-                  }
-                });
-              });
-            }
+          // tab.action = a;
+          if (tab.action && tab.action.includes('?')) {
+            tabAction = getUserenv({ url: tab.action });
           }
           tabAction = tab.action;
           const actionType = tabAction.substring(0, tabAction.indexOf('/'));
@@ -2217,8 +2199,10 @@
             if (singleEditType === ':itemId') {
               if (this.buttons.selectIdArr.length === 0) {
                 this.$Message.warning('请勾选ID');
+                return;
               } if (this.buttons.selectIdArr.length > 1) {
                 this.$Message.warning('只能勾选单个ID');
+                return;
               }
               const itemId = this.buttons.selectIdArr.filter(item => item);
               const path = `/${tabAction.replace(/:itemId/, itemId)}`;
@@ -2236,8 +2220,10 @@
             if (tabAction.indexOf(':itemId') !== -1) {
               if (this.buttons.selectIdArr.length === 0) {
                 this.$Message.warning('请勾选ID');
+                return;
               } if (this.buttons.selectIdArr.length > 1) {
                 this.$Message.warning('只能勾选单个ID');
+                return;
               }
               linkUrl = `${tabAction.replace(':itemId', '')}?id=${this.buttons.selectIdArr.toString()}`;
             } else {

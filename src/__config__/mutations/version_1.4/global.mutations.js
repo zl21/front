@@ -16,6 +16,7 @@ import {
 } from '../../../__utils__/sessionStorage';
 import { getLabel } from '../../../__utils__/url';
 import { DispatchEvent } from '../../../__utils__/dispatchEvent';
+import getUserenv from '../../../__utils__/getUserenv';
 
 
 export default {
@@ -53,7 +54,9 @@ export default {
     // type:link外链类型需要传类型，
     // lingName:外链表名，
     // linkId:外链表ID，
-    
+    if (param && param.url && param.url.includes('?')) {
+      param.url = getUserenv({ url: param.url });
+    }
     const actionType = param.url.substring(0, param.url.indexOf('/'));
     const singleEditType = param.url.substring(param.url.lastIndexOf('/') + 1, param.url.length);
     if (actionType === 'SYSTEM') {
@@ -70,7 +73,8 @@ export default {
       }
     } else if (actionType === 'https:' || actionType === 'http:') {
       const name = `${LINK_MODULE_COMPONENT_PREFIX}.${param.lingName.toUpperCase()}.${param.linkId}`;     
-      this.addKeepAliveLabelMaps({ name, label: param.lablel });
+      // this.addKeepAliveLabelMaps({ name, label: param.lablel });
+      state.keepAliveLabelMaps[name] = `${param.lablel}`;
       const linkUrl = param.url;
       const linkId = param.linkId;
       if (!this.LinkUrl[linkId]) {
@@ -109,7 +113,8 @@ export default {
       if (param.isMenu) {
         const data = {
           customizedModuleName,
-          customizedModuleId: param.id
+          customizedModuleId: param.id,
+          label: param.label
         };
         setCustomeLabel(data);
       }
@@ -545,6 +550,7 @@ export default {
     //   };
     //   updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
     // }
+   
     let path = '';
     if (type === STANDARD_TABLE_LIST_PREFIX || type === 'S') {
       if (url) {
@@ -666,6 +672,7 @@ export default {
       }
       return;
     }
+
     router.push({
       path
     });
