@@ -353,17 +353,30 @@
           }
         } else {
           this.$loading.hide(tableName);
-          if (response.data.path === 'undefined ===') {
-            this.errorMsg.errorUrl = '';
+          if (response.data) {
+            if (response.data.path) {
+              if (response.data.path === 'undefined ===') {
+                this.errorMsg.errorUrl = '';
+              } else {
+                this.errorMsg.errorUrl = `/p/cs/download?filename=${
+                  response.data.path
+                }`;
+              }
+            }
+            this.errorMsg.errorList = response.data.error || [
+              { rowIndex: 0, message: '' }
+            ];
           } else {
-            this.errorMsg.errorUrl = `/p/cs/download?filename=${
-              response.data.path
-            }`;
+            this.errorMsg.errorList = response.error || [
+              { rowIndex: 0, message: '' }
+            ];
           }
-          this.errorMsg.errorList = response.data.error || [
-            { rowIndex: 0, message: '' }
-          ];
           this.errorMsg.message = response.message;
+          this.$Modal.fcWarning({
+            title: '警告',
+            mask: true,
+            content: response.message
+          });
           this.clearFile();
         }
         this.$emit('confirmImport');
