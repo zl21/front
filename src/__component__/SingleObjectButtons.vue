@@ -733,11 +733,18 @@
       },
       clickExtraposition(obj) { // jflow方法
         let currentItemInfo = {};
-        if (this.objectType === 'horizontal') {
-          currentItemInfo = this.itemInfo;
-        } else if (this.isItemTable) {
-          currentItemInfo = this.itemInfo;
+        if (this.itemInfo) {
+          currentItemInfo = {
+            tableId: this.itemInfo.id ? this.itemInfo.id : this.itemInfo.tableid,
+            itemId: this.itemId,
+            tableName: this.itemInfo.tablename
+          };
         }
+        // if (this.objectType === 'horizontal') {
+        //   currentItemInfo = this.itemInfo;
+        // } else if (this.isItemTable) {
+        //   currentItemInfo = this.itemInfo;
+        // }
          
         DispatchEvent('jflowPlugin', {
           detail: {
