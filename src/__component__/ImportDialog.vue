@@ -372,11 +372,11 @@
             ];
           }
           this.errorMsg.message = response.message;
-          this.$Modal.fcWarning({
-            title: '警告',
-            mask: true,
-            content: response.message
-          });
+          // this.$Modal.fcWarning({
+          //   title: '警告',
+          //   mask: true,
+          //   content: response.message
+          // });
           this.clearFile();
         }
         this.$emit('confirmImport');
