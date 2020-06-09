@@ -3344,6 +3344,7 @@
             };
             updateSessionObject('saveEventAfter', saveEventAfterData);
             this.saveEventAfter = '';
+            this.clearEditData();// 清空store update数据
           } else { // 保存后的保存成功提示信息
             const message = this.buttonsData.message;
             this.clearEditData();// 清空store update数据

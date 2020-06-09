@@ -40,9 +40,9 @@ function restartProcess() {
 async function businessChange() {
   await network.post('/jflow/p/cs/business/change', {
     instanceId: global.jflowInfo.instanceId,
-    businessCode: global.routeInfo.itemId,
-    businessType: global.routeInfo.tableId,
-    businessTypeName: global.routeInfo.tableName,
+    businessCode: global.routeInfo.currentItemId,
+    businessType: global.routeInfo.currentTableId,
+    businessTypeName: global.routeInfo.currentTableName,
     async: true
   });
 }
@@ -98,6 +98,7 @@ async function buttonsResponse(e) {
 
 // 按钮点击逻辑处理
 function clickFunction(e) {
+  console.log(e);
   globalChange({ routeInfo: e.detail.currentItemInfo });
   if (e.detail.obj.isSave) { // 按钮存在保存前置事件时
     if (window.updatavVerifyRequiredInformation()) {
