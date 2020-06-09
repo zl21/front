@@ -308,9 +308,10 @@
         } else if (data.eName === 'refresh') {
           this.refresh();
         } else {
+          const { tableName, tableId } = this.$route.params;
           const param = {
-            tableId: '23276',
-            tableName: 'PS_C_PRO',
+            tableId,
+            tableName,
             back: true,
           };
           store.commit('global/tabOpen', param);
