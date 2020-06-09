@@ -568,22 +568,21 @@
       updataCurrentTableDetailInfo() { // 更新当前单对象信息
         if (this[INSTANCE_ROUTE_QUERY].tableName === this.$route.params.tableName && this.$route.meta.routePrefix.includes('/SYSTEM/TABLE_DETAIL/')) { // 当前路由包含单对象标记
           // 更新单对象界面信息
-          const moduleName = `S.${this[INSTANCE_ROUTE_QUERY].tableName}.${this[INSTANCE_ROUTE_QUERY].tableId}`;
-          const currentName = this.keepAliveLabelMaps[moduleName];
-          let currentTabName = '';
-          if (this[INSTANCE_ROUTE_QUERY].itemId === 'New') {
-            currentTabName = `${currentName}新增`;
-          } else {
-            currentTabName = `${currentName}编辑`;
-          }
-          DispatchEvent('updataCurrentTableDetailInfo', {
-            detail: {
-              userInfo: this.userInfo,
-              routeInfo: this[INSTANCE_ROUTE_QUERY],
-              activeTabInfo: currentTabName
-            }
-          });
-
+          // const moduleName = `S.${this[INSTANCE_ROUTE_QUERY].tableName}.${this[INSTANCE_ROUTE_QUERY].tableId}`;
+          // const currentName = this.keepAliveLabelMaps[moduleName];
+          // let currentTabName = '';
+          // if (this[INSTANCE_ROUTE_QUERY].itemId === 'New') {
+          //   currentTabName = `${currentName}新增`;
+          // } else {
+          //   currentTabName = `${currentName}编辑`;
+          // }
+          // DispatchEvent('updataCurrentTableDetailInfo', {
+          //   detail: {
+          //     userInfo: this.userInfo,
+          //     routeInfo: this[INSTANCE_ROUTE_QUERY],
+          //     activeTabInfo: currentTabName
+          //   }
+          // });
           this.updataCurrentTableDetailMethods();
         }
       },
