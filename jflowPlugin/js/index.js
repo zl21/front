@@ -221,11 +221,12 @@ const install = function install(Vue, options = {}) {
     });
     websocketInit();
   });
+
   // 获取业务系统数据
-  window.addEventListener('updataCurrentTableDetailInfo', (event) => {  
-    globalChange(event.detail);
-    jflowButtons();
-  });
+  // window.addEventListener('updataCurrentTableDetailInfo', (event) => {  
+  //   globalChange(event.detail);
+  //   jflowButtons();
+  // });
 };
 
 

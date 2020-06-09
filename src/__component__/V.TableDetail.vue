@@ -12,7 +12,7 @@
       :isactive="mainFormInfo.buttonsData.data.isactive"
       :watermarkimg="resetWaterMark"
       :item-name-group="childTableNames"
-      :item-info="tabPanel[tabCurrentIndex]"
+      :item-info="mainFormInfo"
       :tabwebact="mainFormInfo.buttonsData.data.tabwebact"
       :item-name="getItemName"
       :is-main-form="mainFormInfo"

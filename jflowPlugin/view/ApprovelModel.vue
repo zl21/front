@@ -366,15 +366,16 @@
         param.businessCode = global.routeInfo.itemId;
         param.businessType = global.routeInfo.tableId;
         param.businessName = global.routeInfo.tableName;
-        network.post(this.modalConfig.url, param).then((res) => {
+        network.post(this.modalConfig.url, param).then(async (res) => {
           this.buttonDisabled = false;
           if (res.data.resultCode === 0) {
             window.jflowPlugin.open({ control: false });
             this.$Message.success(res.data.resultMsg);
-            getJflowInfo();
+            await getJflowInfo();
             DispatchEvent('jflowClick', {
               detail: {
-                type: 'refresh'
+                type: 'refresh',
+                tableId: global.jflowInfo.businessType
               }
             });
           } else {
@@ -399,15 +400,16 @@
         param.businessType = global.routeInfo.tableId;
         param.businessName = global.routeInfo.tableName;
         param.description = this.returnContent; // 审批意见
-        network.post(this.modalConfig.url, param).then((res) => {
+        network.post(this.modalConfig.url, param).then(async (res) => {
           this.buttonDisabled = false;
           if (res.data.resultCode === 0) {
             window.jflowPlugin.open({ control: false });
             this.$Message.success(res.data.resultMsg);
-            getJflowInfo();
+            await getJflowInfo();
             DispatchEvent('jflowClick', {
               detail: {
-                type: 'refresh'
+                type: 'refresh',
+                tableId: global.jflowInfo.businessType
               }
             });
           } else {
@@ -432,15 +434,16 @@
         param.instanceId = global.jflowInfo.instanceId;
         param.userId = global.userInfo.id;
         param.delegateId = this.selectRow.ID; // 驳回节点id
-        network.post(this.modalConfig.url, param).then((res) => {
+        network.post(this.modalConfig.url, param).then(async (res) => {
           window.jflowPlugin.open({ control: false });
           if (res.data.resultCode === 0) {
             this.$Message.success(res.data.resultMsg);
             this.selectRow = {};
-            getJflowInfo();
+            await getJflowInfo();
             DispatchEvent('jflowClick', {
               detail: {
-                type: 'refresh'
+                type: 'refresh',
+                tableId: global.jflowInfo.businessType
               }
             });
           } else {
@@ -518,7 +521,7 @@
         };
 
         network.post('/jflow/p/cs/error/errAction', obj)
-          .then((res) => {
+          .then(async (res) => {
             if (res.data.resultCode === 0) {
               window.jflowPlugin.open({ control: false });
               this.selectCheck = 0;
@@ -526,10 +529,11 @@
               this.remark = null;
               if (res.data.resultCode === 0) {
                 this.$Message.success(res.data.resultMsg);
-                getJflowInfo();
+                await getJflowInfo();
                 DispatchEvent('jflowClick', {
                   detail: {
-                    type: 'refresh'
+                    type: 'refresh',
+                    tableId: global.jflowInfo.businessType
                   }
                 });
               } else {
@@ -565,16 +569,17 @@
             operaterName: global.userInfo.ename
           };
           network.post('/jflow/p/cs/error/modifyApprover', obj)
-            .then((res) => {
+            .then(async (res) => {
               if (res.data.resultCode === 0) {
                 window.jflowPlugin.open({ control: false });
                 this.ApproverLists = {};
                 this.remark = null;
                 this.$Message.success(res.data.resultMsg);
-                BacklogData();
+                await getJflowInfo();
                 DispatchEvent('jflowClick', {
                   detail: {
-                    type: 'refresh'
+                    type: 'refresh',
+                    tableId: global.jflowInfo.businessType
                   }
                 });
               } else {
@@ -623,15 +628,16 @@
             operaterName: global.userInfo.ename
           };
           network.post('/jflow/p/cs/error/invocationFail', obj)
-            .then((res) => {
+            .then(async (res) => {
               if (res.data.resultCode === 0) {
                 window.jflowPlugin.open({ control: false });
                 this.$Message.success(res.data.resultMsg);
                 this.remark = null;
-                BacklogData();
+                await getJflowInfo();
                 DispatchEvent('jflowClick', {
                   detail: {
-                    type: 'refresh'
+                    type: 'refresh',
+                    tableId: global.jflowInfo.businessType
                   }
                 });
               }
@@ -694,15 +700,16 @@
           .then((res) => {
             if (res.data.resultCode === 0) {
               window.jflowPlugin.open({ control: false });
-              setTimeout(() => {
+              setTimeout(async () => {
                 this.selectBackNode = null;
                 this.submitType = 0;
                 this.remark = null;
                 this.$Message.success(res.data.resultMsg);
-                BacklogData();
+                await getJflowInfo();
                 DispatchEvent('jflowClick', {
                   detail: {
-                    type: 'refresh'
+                    type: 'refresh',
+                    tableId: global.jflowInfo.businessType
                   }
                 });
               });

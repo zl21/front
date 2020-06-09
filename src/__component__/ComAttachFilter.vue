@@ -333,7 +333,7 @@
         }
       },
       attachFilterOk($this) {
-        this.resultData = Object.assign({}, this.$refs.complex);
+        // this.resultData = Object.assign({}, this.$refs.complex);
         if ($this._data.params) {
           const type = this.propsData.inputname.split(':').length > 1 ? this.propsData.inputname.split(':')[1] : 'ENAME';
           const value = $this._data.parms[type].val;
@@ -344,13 +344,13 @@
             }
           ];
           this.value = value;
-        } else if ($this._data.resultData.list.length > 0) {
-          const savemessage = JSON.parse(JSON.stringify($this.savemessage()));
-          const saveObjectmessage = $this.savObjemessage();
-          const saveType = JSON.parse($this.savObjemessage()).lists.result.length;
+        } else if (this.$refs.complex.resultData.list.length > 0) {
+          const savemessage = JSON.parse(JSON.stringify(this.$refs.complex.savemessage()));
+          const saveObjectmessage = this.$refs.complex.savObjemessage();
+          const saveType = JSON.parse(this.$refs.complex.savObjemessage()).lists.result.length;
           this.resultData = savemessage;
           if (saveType > 0) {
-            const value = `已经选中${$this._data.resultData.total}条数据`;
+            const value = `已经选中${this.$refs.complex.resultData.total}条数据`;
            
         
             if (!this.propsData.fkobj.saveType) {

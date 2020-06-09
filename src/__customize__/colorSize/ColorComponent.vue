@@ -292,12 +292,11 @@
                 content: `${message}`
               };
               if (this.leftTableData.length > 0) {
-                res.data.data = res.data.data.filter((item) => {
-                  const idList = this.leftTableData.map(v => v.id);
-                  return !idList.includes(item.id);
-                });
+                const resData = res.data.data.map(r => r.ID);
+                this.leftTableData = this.leftTableData.filter(leftData => !resData.includes(leftData.ID));
               }
-              this.rightTableData = res.data.data;
+              this.addColorInputValue = '';
+              this.rightTableData = this.rightTableData.concat(res.data.data);
               this.$Message.success(data);
             }
           });
@@ -362,6 +361,7 @@
       mainColorRender() {
         return (h, params) => h('Select', {
           style: {
+            padding: '3px'
           },
           props: {
             transfer: true,

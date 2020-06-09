@@ -72,7 +72,7 @@ async function buttonsResponse(e) {
     case '9': // 人工干预
       await getJflowInfo();
       window.jflowPlugin.open({// 同意和转派
-        control: true, type: item.button, url: item.url, instanceId: global.jflowInfo.instanceId, returnOption: global.jflowInfo.backNodeIds, id: global.routeInfo.id, item 
+        control: true, type: item.button, url: item.url, instanceId: global.jflowInfo.instanceId, returnOption: global.jflowInfo.backNodeIds, item 
       });
       break;
     case '5': // 流程进度
@@ -98,6 +98,7 @@ async function buttonsResponse(e) {
 
 // 按钮点击逻辑处理
 function clickFunction(e) {
+  globalChange({ routeInfo: e.detail.currentItemInfo });
   if (e.detail.obj.isSave) { // 按钮存在保存前置事件时
     if (window.updatavVerifyRequiredInformation()) {
       if (window.testUpdataValue()) {

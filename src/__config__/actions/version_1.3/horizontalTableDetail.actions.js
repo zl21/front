@@ -54,7 +54,23 @@ export default {
       ismaintable: 'n'
     })).then((res) => {
       if (res.data.code === 0) {
-        const resData = res.data.data;
+        let resData = res.data.data;
+        // 根据jflow配置条件控制按钮以及表单start🍓
+        if (objid !== 'New' && resData.JflowConfigData && resData.JflowConfigData.length > 0) {
+          const JflowConfigData = resData.JflowConfigData[0];
+          const data = {
+            JflowConfigData,
+            resData
+          };
+          if (Number(JflowConfigData.itemTableId) === Number(itemInfo.tableid)) { // 配置为子表
+            data.type = 'itemTable';
+          } else { // 配置为子表时，处理主表逻辑
+            data.type = 'mainTable';
+          }
+          resData = horizontalItemTableButtons(data);
+        }
+        // 根据jflow配置条件控制按钮以及表单end🍓
+        commit('updateRefreshButtonForJflow', resData.jflowConfigrefreshButton);// jflow控制刷新按钮显示
         resData.tabIndex = tabIndex;
         commit('updateButtonsData', resData);
         resolve();
@@ -106,10 +122,27 @@ export default {
       refcolid
     })).then((res) => {
       if (res.data.code === 0) {
-        const formData = res.data.data;
-        formData.tabIndex = tabIndex;
-        formData.objId = res.data ? res.data.id : null;
-        commit('updatePanelData', formData);
+        let resData = res.data.data;
+        // 根据jflow配置条件控制按钮以及表单start🍓
+        if (objid !== 'New' && resData.JflowConfigData && resData.JflowConfigData.length > 0) {
+          const JflowConfigData = resData.JflowConfigData[0];
+          const data = {
+            JflowConfigData,
+            resData
+          };
+          if (Number(JflowConfigData.itemTableId) === Number(itemInfo.tableid)) { // 配置为子表
+            // data.type = 'itemTable';
+            data.tableid = itemInfo.tableid;
+            resData = horizontalItemTableForm(data);
+          }
+          //  else { // 配置为子表时，处理主表逻辑
+          //   data.type = 'mainTable';
+          // }
+        }
+        // 根据jflow配置条件控制按钮以及表单end🍓
+        resData.tabIndex = tabIndex;
+        resData.id = res.data ? res.data.id : null;
+        commit('updatePanelData', resData);
       }
     });
   }, // 获取子表面板信息
@@ -141,7 +174,6 @@ export default {
     } = parame;
     const sataTypeName = sataType ? sataType.sataType : '';
     let parames = {};
-   
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
       parames = {
