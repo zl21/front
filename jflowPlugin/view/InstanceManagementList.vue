@@ -136,8 +136,10 @@
   z-index: 2000;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 
   .content {
+    height: 100%;
     flex: 1;
     display: flex;
     background: white;
@@ -168,12 +170,14 @@
     background: white;
     .ark-tabs-bar {
       height: 27px;
-      margin-bottom: 10px;
     }
     .ark-tabs-content-animated {
+      height: calc(~"100% - 43px");
       flex: 1;
       .ark-tabs-tabpane {
         display: flex;
+        height: 100%;
+        overflow: hidden;
       }
     }
   }
