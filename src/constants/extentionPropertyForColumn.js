@@ -82,8 +82,12 @@ export default [
       name: '关联表id',
       key: 'reftableid',
       type: 'input'
+    }, {
+      name: '路由ID（系统内不可重复）',
+      key: 'linkname',
+      type: 'input'
     }],
-    description: '列表界面指定字段显示链接，点击可进入对应界面',
+    description: '列表界面指定字段显示链接，点击可进入对应界面。（支持tabpanle、object、popwin、customized、link）',
     supportType:["byPage","sheetNo","select","object"]
   },
   {

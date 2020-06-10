@@ -17,6 +17,7 @@ import {
 import { getLabel } from '../../../__utils__/url';
 import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 import getUserenv from '../../../__utils__/getUserenv';
+import store from '../../store.config';
 
 
 export default {
@@ -54,6 +55,7 @@ export default {
     // type:link外链类型需要传类型，
     // lingName:外链表名，
     // linkId:外链表ID，
+    // query:路由参数
     if (param && param.url && param.url.includes('?')) {
       param.url = getUserenv({ url: param.url });
     }
@@ -75,10 +77,15 @@ export default {
       const name = `${LINK_MODULE_COMPONENT_PREFIX}.${param.lingName.toUpperCase()}.${param.linkId}`;     
       // this.addKeepAliveLabelMaps({ name, label: param.lablel });
       state.keepAliveLabelMaps[name] = `${param.lablel}`;
+      if (param.query) {
+        const query = `?objId=${param.query}`;
+        param.url = param.url.concat(query);
+        console.log(999, param.url);
+      }
       const linkUrl = param.url;
       const linkId = param.linkId;
-      if (!this.LinkUrl[linkId]) {
-        this.increaseLinkUrl({ linkId, linkUrl });
+      if (!store.state.global.LinkUrl[linkId]) {      
+        store.commit('global/increaseLinkUrl', { linkId, linkUrl });
       }
       const obj = {
         linkName: param.lingName,
@@ -87,12 +94,6 @@ export default {
         linkLabel: param.lablel
       };
       window.sessionStorage.setItem('tableDetailUrlMessage', JSON.stringify(obj));
-      // const type = 'tableDetailUrl';
-      // this.tabOpen({
-      //   type,
-      //   linkName: param.lingName,
-      //   linkId: param.linkId
-      // });
       const path = `${LINK_MODULE_PREFIX}/${param.lingName.toUpperCase()}/${param.linkId}`;
       router.push({
         path
