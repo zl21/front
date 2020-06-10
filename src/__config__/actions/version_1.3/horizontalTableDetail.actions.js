@@ -301,12 +301,13 @@ export default {
         } else if (tabrelation) {
           const itemLabelBeforeRes = parame.itemCurrentParameter.defaultLabel;// 子表修改的label
           const itemModifyResBefore = {};
+          const obj = {};
+
           Object.keys(itemModify[itemName]).forEach((item) => {
             Object.keys(itemLabelBeforeRes[itemName]).forEach((itemBefore) => {
               if (item === itemBefore) {
-                const obj = {};
-                obj.ID = itemObjId;
                 obj[itemBefore] = itemLabelBeforeRes[itemName][itemBefore];
+                obj.ID = itemObjId;
                 itemModifyResBefore[itemName] = [obj];
               }
             });
@@ -320,14 +321,21 @@ export default {
           itemModifyRes[itemName] = [itemModify[itemName]];
           itemModifyResAfter[itemName] = [itemModifyLabel[itemName]];
 
-
-          parames = {
-            table: tableName,
-            objid: objId,
-            data: itemModifyRes,
-            after: itemModifyResAfter,
-            before: itemModifyResBefore,
-          };
+          if (itemObjId === -1) {
+            parames = {
+              table: tableName,
+              objid: objId,
+              data: itemModifyRes,
+            };
+          } else {
+            parames = {
+              table: tableName,
+              objid: objId,
+              data: itemModifyRes,
+              after: itemModifyResAfter,
+              before: itemModifyResBefore,
+            };
+          }
         } else {
           parames = {
             table: tableName,
