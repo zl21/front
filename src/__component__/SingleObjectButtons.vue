@@ -1450,8 +1450,9 @@
         let tabAction = '';
         if (tab.action && tab.action.includes('?')) {
           tabAction = getUserenv({ url: tab.action });
+        } else {
+          tabAction = tab.action;
         }
-        tabAction = tab.action;
         const actionType = tabAction.substring(0, tabAction.indexOf('/'));
         const singleEditType = tabAction.substring(tabAction.lastIndexOf('/') + 1, tabAction.length);
         if (actionType === 'SYSTEM') {

@@ -18,7 +18,7 @@ const serilizeUrl = (url) => {
 const getUserenv = (param) => {
   // 参数说明
   // param:{
-  //   url:路由，
+  //   url:路由，SYSTEM/TABLE/AD_TABLE/992?AD_CLIENT_NAME={AD_CLIENT_NAME}&AD_ORG_ID={AD_ORG_ID}
   //   customizedModuleId：自定义界面ID，
   //   label：定义的自定义界面label
   // }
@@ -30,7 +30,7 @@ const getUserenv = (param) => {
         Object.keys(query).map((q) => {
           Object.keys(userenv).map((u) => {
             if (u.includes(q)) {
-              param.url = param.url.replace(`{${q}}`, `{${userenv[u]}}`);
+              param.url = param.url.replace(`{${q}}`, userenv[u]);
             }
           });
         });

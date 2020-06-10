@@ -1680,7 +1680,11 @@
         if (obj.name === this.buttonMap.CMD_ADD.name) {
           // 新增
           let tableurl = '';
-          tableurl = getUserenv({ url: this.ag.tableurl });
+          if (this.ag.tableurl.includes('?')) {
+            tableurl = getUserenv({ url: this.ag.tableurl });
+          } else {
+            tableurl = this.ag.tableurl;
+          }
           
           if (this.ag.tableurl) {
             const actionType = tableurl.substring(0, tableurl.indexOf('/'));
@@ -2186,13 +2190,14 @@
      
       objTabActionNavbar(tab) {
         if (tab.action) {
-          // const a = 'SYSTEM/TABLE/AD_TABLE/992?AD_CLIENT_NAME=${AD_CLIENT_NAME}&AD_ORG_ID=${AD_ORG_ID}&name=8888';
+          // const a = 'SYSTEM/TABLE/AD_TABLE/992?AD_CLIENT_NAME={AD_CLIENT_NAME}&AD_ORG_ID={AD_ORG_ID}';
           let tabAction = '';
           // tab.action = a;
           if (tab.action && tab.action.includes('?')) {
             tabAction = getUserenv({ url: tab.action });
+          } else {
+            tabAction = tab.action;
           }
-          tabAction = tab.action;
           const actionType = tabAction.substring(0, tabAction.indexOf('/'));
           const singleEditType = tabAction.substring(tabAction.lastIndexOf('/') + 1, tabAction.length);
           if (actionType === 'SYSTEM') {
