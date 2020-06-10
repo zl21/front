@@ -775,11 +775,17 @@
         // 去除 空字符串
         const defaultFormData = Object.keys(this.defaultFormData).reduce((arr, option) => {
           if (this.defaultFormData[option] !== '' && this.defaultFormData[option] !== undefined && this.defaultFormData[option] !== null) {
-            if (Array.isArray(this.defaultFormData[option])) {
-              if (Object.hasOwnProperty.call(this.defaultFormData[option], 'ID')) {
-                arr[option] = this.defaultFormData[option].ID;
-              } else {
-                arr[option] = this.defaultFormData[option][0];
+            if (this.defaultFormData[option][0] && Object.hasOwnProperty.call(this.defaultFormData[option][0], 'ID')) {
+              if (this.defaultFormData[option].length > 0) {
+                const arrValue = this.defaultFormData[option].reduce((all, optionII) => {
+                  all.push(optionII.ID);
+                  return all;
+                }, []);
+                if (arrValue.length > 1) {
+                  arr[option] = arrValue.join(',');
+                } else {
+                  arr[option] = arrValue.join('');
+                }
               }
             } else {
               arr[option] = this.defaultFormData[option];
@@ -806,7 +812,7 @@
           if (this.defaultSetValue[option]) {
             if (Array.isArray(this.defaultSetValue[option])) {
               if (this.defaultSetValue[option][0]) {
-                if (this.defaultSetValue[option][0].ID) {
+                if (this.defaultSetValue[option][0].ID || this.defaultSetValue[option][0].ID === '') {
                   arr[option] = this.defaultSetValue[option][0].ID;
                   if (this.defaultSetValue[option].length > 1) {
                     arr[option] = this.defaultSetValue[option].reduce((curry, item) => {
