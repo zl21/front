@@ -1297,9 +1297,6 @@
                   this.errorconfirmDialog(obj);
                 }
               } catch (error) {
-                if (!verifyRequiredInformation) {
-                  return;
-                }
                 this.errorconfirmDialog(obj);
               }
             } else {
