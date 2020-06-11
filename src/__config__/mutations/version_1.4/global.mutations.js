@@ -169,6 +169,9 @@ export default {
           if (c.type === 'action') {
           // 外部跳转链接URL的处理
             if (c.url) {
+              if (c.url.includes('?')) {
+                c.url = getUserenv({ url: c.url });
+              }
               const actionType = c.url.substring(0, c.url.indexOf('/'));
               if (actionType === 'https:' || actionType === 'http:') {
                 const linkUrl = {};
