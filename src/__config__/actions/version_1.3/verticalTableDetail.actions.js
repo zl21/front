@@ -626,9 +626,7 @@ export default {
             itemTableAdd[itemName]
           ];
         }
-        if (itemAddAndModify && itemAddAndModify[itemName]) {
-          itemAddAndModify[itemName] = itemTableAdd[itemName].concat(itemModify[itemName]);
-        }
+        itemAddAndModify[itemName] = itemTableAdd[itemName].concat(itemModify[itemName]);
         if (itemAdd[itemName]
           && itemAdd[itemName]
           && Object.values(itemAdd[itemName]).length > 0
