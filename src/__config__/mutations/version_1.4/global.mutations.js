@@ -80,7 +80,6 @@ export default {
       if (param.query) {
         const query = `?objId=${param.query}`;
         param.url = param.url.concat(query);
-        console.log(999, param.url);
       }
       const linkUrl = param.url;
       const linkId = param.linkId;
@@ -169,6 +168,7 @@ export default {
           if (c.type === 'action') {
           // 外部跳转链接URL的处理
             if (c.url) {
+              // c.url = `${c.url}?AD_CLIENT_NAME={AD_CLIENT_NAME}&AD_ORG_ID={AD_ORG_ID}`;
               if (c.url.includes('?')) {
                 c.url = getUserenv({ url: c.url });
               }

@@ -41,6 +41,7 @@
               this.$store.commit('global/updataUserInfoMessage', {
                 userInfo: res.data
               });
+              window.localStorage.setItem('userInfo', JSON.stringify(res.data));
             }
           });
         }
