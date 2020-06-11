@@ -218,6 +218,7 @@
 </template>
 <script>
   import ComplexBox from './complexPop';
+  import mutipleSelectPop from './MutipleSelectPop';
   import { BacklogData } from '../js/todoList';
   import { DispatchEvent } from '../utils/dispatchEvent';
   import network from '../utils/network';
@@ -226,7 +227,7 @@
 
   export default {
     name: 'ApprovelModel',
-    components: { ComplexBox },
+    components: { ComplexBox, mutipleSelectPop },
     props: {
       config: {
         type: Object,

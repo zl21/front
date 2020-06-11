@@ -760,16 +760,15 @@
   };
 </script>
 <style lang="less">
-
+.ark-spin-fix {
+  z-index: 100;
+}
 .TodoProcess {
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-
-  .ark-spin-fix {
-    z-index: 100;
-  }
   .btn-agent {
     display: flex;
     justify-content: space-between;
@@ -798,6 +797,7 @@
     position: relative;
     flex: 1;
     display: flex;
+    overflow: hidden;
     .table {
       flex: 1;
     }
