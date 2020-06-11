@@ -1689,14 +1689,13 @@
         const { tableName, tableId, } = this[INSTANCE_ROUTE_QUERY];
         if (obj.name === this.buttonMap.CMD_ADD.name) {
           // 新增
-          let tableurl = '';
-          if (this.ag.tableurl.includes('?')) {
-            tableurl = getUserenv({ url: this.ag.tableurl });
-          } else {
-            tableurl = this.ag.tableurl;
-          }
-          
           if (this.ag.tableurl) {
+            let tableurl = '';
+            if (this.ag.tableurl.includes('?')) {
+              tableurl = getUserenv({ url: this.ag.tableurl });
+            } else {
+              tableurl = this.ag.tableurl;
+            }
             const actionType = tableurl.substring(0, tableurl.indexOf('/'));
             const singleEditType = tableurl.substring(tableurl.lastIndexOf('/') + 1, tableurl.length);
             if (actionType === 'SYSTEM') {
