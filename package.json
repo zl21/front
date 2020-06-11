@@ -64,6 +64,7 @@
         "@babel/polyfill": "^7.7.0",
         "ag-grid": "^17.1.1",
         "ag-grid-enterprise": "^17.1.1",
+        "ark-ui": "0.0.4",
         "awe-dnd": "^0.3.4",
         "axios": "^0.18.0",
         "compressing": "^1.4.0",
