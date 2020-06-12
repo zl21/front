@@ -1223,9 +1223,9 @@
                 }
                 if (tabcmdData.jflowpaths) { // jflow对标准类型按钮配置path
                   const jflowpathsRes = JSON.parse(JSON.stringify(tabcmdData.jflowpaths));
-                  buttonConfigInfo.jflowUrlPath = jflowpathsRes[index];
+                  buttonConfigInfo.jflowpath = jflowpathsRes[index];
                 }
-                if (this.webConf && (this.webConf.disableImport && str === 'CMD_IMPORT') || (this.webConf.disableExport && str === 'CMD_EXPORT')) {
+                if (this.webConf && ((this.webConf.disableImport && str === 'CMD_IMPORT') || (this.webConf.disableExport && str === 'CMD_EXPORT'))) {
                   // 根据webConf控制列表界面导入导出按钮
                 } else {
                   buttonGroupShow.push(buttonConfigInfo);
@@ -1958,6 +1958,7 @@
       deleteTableList(data) { // 删除方法
         const tableName = this.buttons.tableName;
         const selectIdArr = this.buttons.selectIdArr;
+        debugger;
         const promise = new Promise((resolve, reject) => {
           this.getBatchDeleteForButtons({
             tableName, selectIdArr, resolve, reject, data
