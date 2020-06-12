@@ -362,14 +362,28 @@ export const urlSearchParams = (data) => {
 };
 //  判断网关
 function setUrlSeverId(gateWay, url, serviceconfig) {
-  if (gateWay && serviceconfig && serviceconfig.serviceId) {
-    return serviceconfig.serviceId ? `/${serviceconfig.serviceId}${url}` : url;
+  if (gateWay && serviceconfig) {
+    if (serviceconfig.noServiceId) {
+      return url;
+    }
+    if (serviceconfig.serviceId) {
+      return serviceconfig.serviceId ? `/${serviceconfig.serviceId}${url}` : url;
+    }
   }
   return gateWay ? `/${gateWay}${url}` : url;
 }
 
 function NetworkConstructor() {
   // equals to axios.post(url, config)
+  // 参数说明：
+  //  url：Request URL
+  //  config：参数 
+  //  serviceconfig：{网关设置
+  //    noServiceId:true,当前请求不拼接网关
+  //    serviceId：'',当前请求配置的网关
+  //   }
+  // 使用方法：
+  // network.post(URL,params,serviceconfig)
   this.post = (url, config, serviceconfig) => {
     const gateWay = matchGateWay(url);
     // 判断菜单网关 gateWay ？ serviceId 外键网关 ？
