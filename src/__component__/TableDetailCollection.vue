@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                  >
+                     >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -3861,8 +3861,13 @@
         });
       },
       objectIMPORT() { // 导入
-        this.importData.importDialog = true;
-        this.importData.importDialogTitle = this.itemInfo.tabledesc;
+        const { itemId } = router.currentRoute.params;
+        if (itemId === 'New') {
+          this.$Message.warning('请先保存主表');
+        } else {
+          this.importData.importDialog = true;
+          this.importData.importDialogTitle = this.itemInfo.tabledesc;
+        }
       },
       closeImportDialog() { // 关闭导入弹框
         this.importData.importDialog = false;
