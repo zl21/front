@@ -1958,7 +1958,6 @@
       deleteTableList(data) { // 删除方法
         const tableName = this.buttons.tableName;
         const selectIdArr = this.buttons.selectIdArr;
-        debugger;
         const promise = new Promise((resolve, reject) => {
           this.getBatchDeleteForButtons({
             tableName, selectIdArr, resolve, reject, data
