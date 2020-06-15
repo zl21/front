@@ -278,8 +278,13 @@ export default {
                 };
               }
             }
-          } else {
-            modify[tableName].Id = objId;
+          } else { // 因引起jflow报错ID改为大写
+            // if (enableJflow()) {
+            //   modify[tableName].ID = objId;
+            // } else {
+            //   modify[tableName].Id = objId;
+            // }
+            modify[tableName].ID = objId;
             parames = {
               ...modify,
             };

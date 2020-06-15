@@ -240,9 +240,19 @@ export default {
     });
   },
   batchSubmitForButtons({ commit }, {
-    url, tableName, ids, resolve, reject, moduleName, routeQuery, routePath
+    url, tableName, ids, resolve, reject, moduleName, routeQuery, routePath, data
   }) { // 调用提交接口
-    network.post(url || '/p/cs/batchSubmit', {
+    let jflowpath = '';
+    let requestUrlPath = '';
+    if (data) {
+      if (data.jflowpath) {
+        jflowpath = data.jflowpath;
+      }
+      if (data.requestUrlPath) {
+        requestUrlPath = data.requestUrlPath;
+      }
+    }
+    network.post(jflowpath || requestUrlPath || url || '/p/cs/batchSubmit', {
       tableName,
       ids
     }).then((res) => {
