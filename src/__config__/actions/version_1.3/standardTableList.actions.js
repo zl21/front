@@ -236,7 +236,7 @@ export default {
     });
   },
   batchSubmitForButtons({ commit }, {
-    url, tableName, ids, resolve, reject, moduleName, routeQuery, routePath,data
+    url, tableName, ids, resolve, reject, moduleName, routeQuery, routePath, data
   }) { // 调用提交接口
     let jflowpath = '';
     let requestUrlPath = '';
@@ -251,7 +251,7 @@ export default {
     network.post(jflowpath || requestUrlPath || url || '/p/cs/batchSubmit', {
       table: tableName, 
       objids: ids.join(',')
-    })).then((res) => {
+    }).then((res) => {
       if (res.data.code === 0) {
         resolve();
         commit('updateButtonbatchSubmitData', res.data);
