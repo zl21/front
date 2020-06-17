@@ -444,7 +444,7 @@
     },
     watch: {},
     methods: {
-      ...mapMutations('global', ['tabOpen', 'tabHref']),
+      ...mapMutations('global', ['tabOpen']),
       btnclick(obj) {
         this.$emit('btnclick', obj);
         // switch (obj.vuedisplay) {
@@ -597,7 +597,7 @@
                 const data = this.datas.row[params.index][cellData.colname];
                 if (cellData.objdistype === 'object') {
                   window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
-                  this.tabHref({
+                  this.tabOpen({
                     type: 'tableDetailVertical',
                     tableName: data.reftablename,
                     tableId: data.reftableid,
@@ -607,7 +607,7 @@
                   });
                 } else if (cellData.objdistype === 'tabpanle') {
                   window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
-                  this.tabHref({
+                  this.tabOpen({
                     type: 'tableDetailHorizontal',
                     tableName: data.reftablename,
                     tableId: data.reftableid,

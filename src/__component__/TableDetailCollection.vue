@@ -571,7 +571,7 @@
     },
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
-      ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'updateExportedState']),
+      ...mapMutations('global', ['copyDataForSingleObject', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'updateExportedState']),
       tableRowDbclick(row) {
         if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格走动态路由
           window.sessionStorage.setItem('dynamicRoutingForSinglePage', true);
@@ -599,7 +599,7 @@
             return;
           }
           // AD_TABLE/992/24369
-          // this.tabHref({
+          // this.tabOpen({
           //   type,
           //   label: row.reftabdesc,
           //   tableName: 'AD_TABLE',
@@ -607,7 +607,7 @@
           //   id:'New',
           //   serviceId: 'ad-app'
           // });
-          this.tabHref({
+          this.tabOpen({
             type,
             label: row.reftabdesc,
             tableName: row._TABLENAME,
@@ -2943,7 +2943,7 @@
               // customerurl跳转
               const data = cellData.customerurl;
               if (data.objdistype === 'object') {
-                this.tabHref({
+                this.tabOpen({
                   type: 'tableDetailVertical',
                   tableName: data.reftablename,
                   tableId: data.reftableid,
@@ -2951,7 +2951,7 @@
                   id: params.row[data.refobjid]
                 });
               } else if (data.objdistype === 'tabpanle') {
-                this.tabHref({
+                this.tabOpen({
                   type: 'tableDetailHorizontal',
                   tableName: data.reftablename,
                   tableId: data.reftableid,
