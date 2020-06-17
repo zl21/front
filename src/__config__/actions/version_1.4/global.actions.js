@@ -8,7 +8,7 @@ import router from '../../router.config';
 
 export default {
   getHistoryAndFavorite({ commit }) {
-    if (enableInitializationRequest()) {
+    if (enableInitializationRequest() && enableHistoryAndFavorite()) {
       network.post('/p/cs/getHistoryAndFavorite').then((res) => {
         if (res.data && res.data.data) {
           const { history, favorite } = res.data.data;
@@ -25,6 +25,7 @@ export default {
     }
   },
   updateAccessHistory({ commit, state }, { type, id }) {
+    debugger;
     if (enableHistoryAndFavorite()) {
       if (id === 'New') {
         id = '-1';

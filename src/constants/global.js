@@ -18,6 +18,9 @@ export const enableKeepAlive = () => (window.ProjectConfig && typeof window.Proj
 export const enableInitializationRequest = () => (window.ProjectConfig && typeof window.ProjectConfig.enableInitializationRequest === 'boolean' ? window.ProjectConfig.enableInitializationRequest : project.enableInitializationRequest);
 export const specifiedGlobalGateWay = () => (window.ProjectConfig && window.ProjectConfig.specifiedGlobalGateWay ? window.ProjectConfig.specifiedGlobalGateWay : project.specifiedGlobalGateWay);
 export const enableTabLists = () => (window.ProjectConfig && typeof window.ProjectConfig.enableTabLists === 'boolean' ? window.ProjectConfig.enableTabLists : project.enableTabLists);
+
+export const enableHistoryAndFavoriteUI = () => (window.ProjectConfig && typeof window.ProjectConfig.enableHistoryAndFavoriteUI === 'boolean' ? window.ProjectConfig.enableHistoryAndFavoriteUI : project.enableHistoryAndFavoriteUI);
+
 export const enableHistoryAndFavorite = () => (window.ProjectConfig && typeof window.ProjectConfig.enableHistoryAndFavorite === 'boolean' ? window.ProjectConfig.enableHistoryAndFavorite : project.enableHistoryAndFavorite);
 export const getTouristRoute = () => (window.ProjectConfig && window.ProjectConfig.touristRoute ? window.ProjectConfig.touristRoute : project.touristRoute);
 export const getCustomizeWaterMark = () => (window.ProjectConfig && window.ProjectConfig.customizeWaterMark ? window.ProjectConfig.customizeWaterMark : project.customizeWaterMark);
