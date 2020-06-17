@@ -24,11 +24,10 @@ const getUserenv = (param) => {
   // }
   const userInfoStorage = JSON.parse(window.localStorage.getItem('userInfo'));
   const userInfoStore = store.state.global.userInfo;
-  if ((userInfoStore && userInfoStore.userenv) || (userInfoStorage && userInfoStorage.userenv)) {
-    const userenv = userInfoStore.userenv || userInfoStorage.userenv;
+  if ((userInfoStorage && userInfoStorage.userenv && Object.keys(userInfoStorage.userenv).length > 0) || (userInfoStore && userInfoStore.userenv && Object.keys(userInfoStore.userenv).length > 0)) {
+    const userenv = userInfoStorage.userenv || userInfoStore.userenv;
     if (param.url && param.url.includes('?')) { // 如果当前url配置参数,将参数部分截取
       const query = serilizeUrl(param.url);
-
       if (Object.keys(query) && Object.keys(query).length > 0 && Object.keys(userenv) && Object.keys(userenv).length > 0) {
         Object.keys(query).map((q) => {
           Object.keys(userenv).map((u) => {

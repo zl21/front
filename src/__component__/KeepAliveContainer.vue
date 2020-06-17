@@ -28,6 +28,8 @@
   import VerticalTableDetail from './V.TableDetail';
   import HorizontalTableDetail from './H.TableDetail';
   import moduleName from '../__utils__/getModuleName';
+  import getUserenv from '../__utils__/getUserenv';
+
   import PageNotFound from './PageNotFound';
   import LinkPage from './linkPage';
 
@@ -147,7 +149,8 @@
         if (this.LinkUrl.length > 0) {
           this.LinkUrl.forEach((url) => {
             if (url[linkModuleId]) {
-              this.urlName = url[linkModuleId];
+              this.urlName = getUserenv({ url: url[linkModuleId] });
+              // this.urlName = url[linkModuleId];
               Vue.component(linkModuleName, LinkPage);
               this.currentModule = linkModuleName;
             }
