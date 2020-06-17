@@ -221,14 +221,14 @@ export default {
       let itemAdd = {};
       if (itemCurrentParameter) {
         itemModify = itemCurrentParameter.modify;// 子表修改
-        if (itemModify && itemModify[itemName] && itemModify[itemName].length && itemModify[itemName].length > 0) {
-          itemModify[itemName].map((item, i) => {
-            if (Object.keys(item).length === 1 && item.ID) {
-              itemModify[itemName] = [];
-            }
-          });
-          console.log(444, itemModify[itemName]);
-        }
+        // if (itemModify && itemModify[itemName] && itemModify[itemName].length && itemModify[itemName].length > 0) {
+        //   itemModify[itemName].map((item, i) => {
+        //     if (Object.keys(item) && Object.keys(item).length === 1 && item.ID) {
+        //       // itemModify[itemName] = [];
+        //     }
+        //   });
+        //   console.log(444, itemModify[itemName]);
+        // }
        
 
         itemAdd = itemCurrentParameter.add;// 子表新增
@@ -241,23 +241,23 @@ export default {
       let itemBeforeLabel = {};
       if (parame.itemCurrentParameter) {
         itemModifyLabel = parame.itemCurrentParameter.modifyLabel;// after值
-        if (itemModifyLabel && itemModifyLabel[itemName] && itemModifyLabel[itemName].length && itemModifyLabel[itemName].length > 0) {
-          itemModifyLabel[itemName].map((item, i) => {
-            if (Object.keys(item).length === 1 && item.ID) {
-              itemModifyLabel[itemName] = [];
-            }
-          });
-        }
-        console.log(444, itemModifyLabel[itemName]);
+        // if (itemModifyLabel && itemModifyLabel[itemName] && itemModifyLabel[itemName].length && itemModifyLabel[itemName].length > 0) {
+        //   itemModifyLabel[itemName].map((item, i) => {
+        //     if (Object.keys(item).length === 1 && item.ID) {
+        //       itemModifyLabel[itemName] = [];
+        //     }
+        //   });
+        // }
+        // console.log(444, itemModifyLabel[itemName]);
         itemBeforeLabel = parame.itemCurrentParameter.itemBeforeLabel;// before值
-        if (itemBeforeLabel && itemBeforeLabel[itemName] && itemBeforeLabel[itemName].length && itemBeforeLabel[itemName].length > 0) {
-          itemBeforeLabel[itemName].map((item, i) => {
-            if (Object.keys(item).length === 1 && item.ID) {
-              itemBeforeLabel[itemName] = [];
-            }
-          });
-          console.log(444, itemBeforeLabel[itemName]);
-        }
+        // if (itemBeforeLabel && itemBeforeLabel[itemName] && itemBeforeLabel[itemName].length && itemBeforeLabel[itemName].length > 0) {
+        //   itemBeforeLabel[itemName].map((item, i) => {
+        //     if (Object.keys(item).length === 1 && item.ID) {
+        //       itemBeforeLabel[itemName] = [];
+        //     }
+        //   });
+        //   console.log(444, itemBeforeLabel[itemName]);
+        // }
       }
       Object.keys(defaultLabelregroup).reduce((obj, item) => {
         Object.keys(modifyLabelregroup).forEach((modifyDataItem) => {

@@ -32,7 +32,7 @@ const setCustomeLabel = (param) => {
     if (nameToUpperCase === customizedModuleName) { // 匹配到配置文件中的自定义界面配置
       const labelName = param.label || customizeConfig[customizeName].labelName;//
       const name = `C.${customizedModuleName}.${param.customizedModuleId}`;
-      store.commit('global/addKeepAliveLabelMaps', `${labelName}`);
+      store.commit('global/addKeepAliveLabelMaps', { name, labelName });
       const keepAliveLabelMapsObj = {
         k: name,
         v: labelName

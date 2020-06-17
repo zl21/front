@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                     >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -1678,6 +1678,7 @@
                 const oldcurrentCheck = cellData.combobox.filter(ele => ele.limitdis === data.value);
                 const oldLimitval = oldcurrentCheck.length > 0 ? oldcurrentCheck[0].limitval : null;
                 this.putDataFromCell(limitval, oldLimitval, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                debugger;
                 this.putLabelDataFromCell(limitdesc, oldLimitval, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, limitval);
               }
             }
@@ -2085,8 +2086,14 @@
                   acc.push(cur.Label);
                   return acc;
                 }, []).join(',');
-                this.putDataFromCell(ids, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid.toString() : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
-                this.putLabelDataFromCell(labelValue, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, this.dataSource.row[params.index][cellData.colname].val);
+                const labelValueID = data.reduce((acc, cur) => {
+                  acc.push(cur.ID);
+                  return acc;
+                }, []).join(',');
+                this.putDataFromCell(ids, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid.toString() : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay, labelValueID);
+                console.log(8, data, value);
+
+                this.putLabelDataFromCell(labelValue, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, this.dataSource.row[params.index][cellData.colname].val, labelValueID);
               },
               'on-clear': (value) => {
                 if (this.fkSelectedChangeData[params.index]) {
@@ -2102,6 +2109,7 @@
                 this.copyDataSource.row[params.index][cellData.colname].val = '';
                 this.fkAutoData = [];
                 this.putDataFromCell(null, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
+                console.log(9, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, null);
                 this.putLabelDataFromCell('', this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, null);
               }
             }
@@ -2408,6 +2416,7 @@
                 if (value.transferDefaultSelected.length > 0) {
                   ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
                 }
+                alert(333);
                 this.copyDataSource.row[params.index][cellData.colname].val = data.reduce((acc, cur) => {
                   acc.push(cur.Label);
                   return acc;
@@ -2423,6 +2432,8 @@
                 this.putLabelDataFromCell(labelValue, oldIdValues, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, oldLabelValue);
               },
               'on-clear': (value) => {
+                alert(2222);
+
                 if (this.fkSelectedChangeData[params.index]) {
                   this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], {
                     [cellData.key]: [{
@@ -2436,6 +2447,8 @@
                 this.copyDataSource.row[params.index][cellData.colname].val = '';
                 this.fkAutoData = [];
                 this.putDataFromCell(null, this.dataSource.row[params.index][cellData.colname].refobjid !== -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
+                console.log(7, this.dataSource.row[params.index][cellData.colname].refobjid, this.dataSource.row[params.index][cellData.colname].refobjid > -1);
+                
                 this.putLabelDataFromCell('', this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, this.dataSource.row[params.index][cellData.colname].val);
               }
             }
@@ -3273,7 +3286,7 @@
         }
         return null;
       },
-      putDataFromCell(currentValue, oldValue, colname, IDValue, type, fkdisplay) {
+      putDataFromCell(currentValue, oldValue, colname, IDValue, type, fkdisplay, oldFkIdValue) {
         // 组装数据 存入store
         if (!currentValue) {
           if (fkdisplay === 'mrp' || fkdisplay === 'mop') {
@@ -3292,10 +3305,9 @@
         if (Version() === '1.3' && !oldValue) {
           oldValue = null;
         }
-
         if (this.afterSendData[this.tableName]) {
           const rowDatas = this.afterSendData[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
-          if (currentValue !== oldValue) {
+          if (currentValue !== oldValue || (fkdisplay === 'drp' && oldFkIdValue !== oldValue)) {
             if (rowDatas.length > 0) {
               rowDatas[0][colname] = currentValue;
             } else {
@@ -3306,15 +3318,33 @@
             }
           } else if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
             delete rowDatas[0][colname];
+            // if (rowDatas && rowDatas.length === 1 && rowDatas[0].ID) {
+            //   const rowDatasIndex = this.afterSendData[this.tableName].map((ele, i) => {
+            //     if (ele[EXCEPT_COLUMN_NAME] === IDValue) {
+            //       return i;
+            //     }
+            //   })[0];
+            //   delete rowDatas[0][colname];
+            // delete rowDatas[0].ID;
+            //   this.afterSendData[this.tableName] = this.afterSendData[this.tableName].filter((item, i) => i !== rowDatasIndex);
+            //   console.log(333, this.afterSendData[this.tableName]);
+            // }
+            this.afterSendData[this.tableName] = this.afterSendData[this.tableName].filter((item, i) => {
+              if (item && Object.keys(item).length && Object.keys(item).length === 1 && item.ID) {
+              } else {
+                return item;
+              }
+            });
+            console.log(5, this.afterSendData[this.tableName]);
           }
         } else {
           this.afterSendData[this.tableName] = [];
           const param = {};
-          param[EXCEPT_COLUMN_NAME] = IDValue;
-          if (currentValue !== oldValue) {
+          if (currentValue !== oldValue || (fkdisplay === 'drp' && oldFkIdValue !== oldValue)) {
+            param[EXCEPT_COLUMN_NAME] = IDValue;
             param[colname] = currentValue;
+            this.afterSendData[this.tableName].push(param);
           }
-          this.afterSendData[this.tableName].push(param);
         }
         // if (Version() === '1.3') {
         //
@@ -3359,12 +3389,20 @@
         // 表单验证
         this.verifyMessage();
       },
-      putLabelDataFromCell(currentValue, oldValue, colname, IDValue, oldIdValue) {
+      putLabelDataFromCell(currentValue, oldValue, colname, IDValue, oldIdValue, oldFkIdValue) {
+        // oldFkIdValue:修改过后的值
         // 组装数据 存入store
-        if (this.afterSendDataLabel[this.tableName]) {
+        if (this.afterSendDataLabel[this.tableName] && this.afterSendDataLabel[this.tableName].length && this.afterSendDataLabel[this.tableName].length > 0) {
           const rowDatas = this.afterSendDataLabel[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
           oldIdValue = oldIdValue || '';
-          if (currentValue !== oldIdValue) {
+          if (colname === 'ISACTIVE') {
+            if (currentValue === '是' && oldIdValue === 'Y') {
+              oldIdValue = '是';
+            } else if (currentValue === '否' && oldIdValue === 'N') {
+              oldIdValue = '否';
+            }
+          }
+          if (currentValue !== oldIdValue || (oldValue && oldFkIdValue && Number(oldFkIdValue) !== Number(oldValue))) {
             if (rowDatas.length > 0) {
               rowDatas[0][colname] = currentValue;
             } else {
@@ -3375,26 +3413,46 @@
             }
           } else if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
             delete rowDatas[0][colname];
+
+            // const rowDatasIndex = this.afterSendDataLabel[this.tableName].map((ele, i) => {
+            //   if (ele[EXCEPT_COLUMN_NAME] === IDValue) {
+            //     return i;
+            //   }
+            // })[0];
+            // delete rowDatas[0].ID;
+            this.afterSendDataLabel[this.tableName] = this.afterSendDataLabel[this.tableName].filter((item, i) => {
+              if (item && Object.keys(item).length && Object.keys(item).length === 1 && item.ID) {
+              } else {
+                return item;
+              }
+            });
+            // this.afterSendDataLabel[this.tableName] = this.afterSendDataLabel[this.tableName].filter((item, i) => i !== rowDatasIndex);
           }
         } else {
           this.afterSendDataLabel[this.tableName] = [];
           const param = {};
-          param[EXCEPT_COLUMN_NAME] = IDValue;
-          if (currentValue !== oldIdValue) {
+          if (currentValue !== oldIdValue || (oldValue && oldFkIdValue && Number(oldFkIdValue) !== Number(oldValue))) {
+            param[EXCEPT_COLUMN_NAME] = IDValue;
             param[colname] = currentValue;
+            this.afterSendDataLabel[this.tableName].push(param);
           }
-          this.afterSendDataLabel[this.tableName].push(param);
         }
         this.$emit(TABLE_DATA_CHANGE_LABEL, this.afterSendDataLabel);
 
-        this.putBeforeLabelDataFromCell(currentValue, oldValue, colname, IDValue, oldIdValue);
+        this.putBeforeLabelDataFromCell(currentValue, oldValue, colname, IDValue, oldIdValue, oldFkIdValue);
       }, // 获取label
-      putBeforeLabelDataFromCell(value, oldValue, colname, IDValue, oldIdValue) {
+      putBeforeLabelDataFromCell(value, oldValue, colname, IDValue, oldIdValue, oldFkIdValue) {
+        // console.log(777, value, oldValue, colname, IDValue, oldIdValue, oldFkIdValue);
+        
+        // if (oldIdValue === null) {
+        //   oldIdValue = '';
+        // }
         const tableDataSource = JSON.parse(JSON.stringify(this.dataSource));
         const currentValue = tableDataSource.row.find(item => item[EXCEPT_COLUMN_NAME].val === IDValue)[colname].val;
-        if (this.afterSendDataLabelBefore[this.tableName]) {
+
+        if (this.afterSendDataLabelBefore[this.tableName] && this.afterSendDataLabelBefore[this.tableName].length > 0) {
           const rowDatas = this.afterSendDataLabelBefore[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
-          if (value !== oldIdValue) {
+          if (value !== oldIdValue || (oldValue && oldFkIdValue && Number(oldFkIdValue) !== Number(oldValue))) {
             if (rowDatas.length > 0) {
               rowDatas[0][colname] = currentValue;
             } else {
@@ -3405,15 +3463,28 @@
             }
           } else if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
             delete rowDatas[0][colname];
+            // delete rowDatas[0].ID;
+            
+            // const rowDatasIndex = this.afterSendDataLabelBefore[this.tableName].map((ele, i) => {
+            //   if (ele[EXCEPT_COLUMN_NAME] === IDValue) {
+            //     return i;
+            //   }
+            // })[0];
+            this.afterSendDataLabelBefore[this.tableName] = this.afterSendDataLabelBefore[this.tableName].filter((item, i) => {
+              if (item && Object.keys(item).length && Object.keys(item).length === 1 && item.ID) {
+              } else {
+                return item;
+              }
+            });
           }
         } else {
           this.afterSendDataLabelBefore[this.tableName] = [];
           const param = {};
-          param[EXCEPT_COLUMN_NAME] = IDValue;
-          if (value !== oldIdValue) {
+          if (value !== oldIdValue || (oldValue && oldFkIdValue && Number(oldFkIdValue) !== Number(oldValue))) {
+            param[EXCEPT_COLUMN_NAME] = IDValue;
             param[colname] = currentValue;
+            this.afterSendDataLabelBefore[this.tableName].push(param);
           }
-          this.afterSendDataLabelBefore[this.tableName].push(param);
         }
         this.$emit(TABLE_DATA_CHANGE_LABEL_BEFORE, this.afterSendDataLabelBefore);
       }, // 改后对应改前的label
@@ -3663,18 +3734,20 @@
         // 表单验证
         const verifyData = [];
         const data = this.afterSendData[this.tableName];
-        data.map((ele) => {
-          Reflect.ownKeys(ele).forEach((key) => {
-            const value = ele[key];
-            if (value === null || value === undefined || value === '') {
-              const titleArray = this.dataSource.tabth.filter(col => col.colname === key && col.isnotnull && col.colname !== EXCEPT_COLUMN_NAME);
-              if (titleArray.length > 0) {
-                verifyData.push(`请输入${titleArray[0].name}`);
+        if (data && data.length > 0) {
+          data.map((ele) => {
+            Reflect.ownKeys(ele).forEach((key) => {
+              const value = ele[key];
+              if (value === null || value === undefined || value === '') {
+                const titleArray = this.dataSource.tabth.filter(col => col.colname === key && col.isnotnull && col.colname !== EXCEPT_COLUMN_NAME);
+                if (titleArray.length > 0) {
+                  verifyData.push(`请输入${titleArray[0].name}`);
+                }
               }
-            }
+            });
+            return ele;
           });
-          return ele;
-        });
+        }
         this.$emit(TABLE_VERIFY_MESSAGE, verifyData);
       },
       tableFormVerify() {

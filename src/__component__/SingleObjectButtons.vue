@@ -2825,19 +2825,26 @@
       mainTableEditorSaveIsreftabs(obj) { // 主表编辑保存存在子表
         const itemName = this.itemName;// 子表表名
         const itemCurrentParameter = this.itemCurrentParameter;// 子表参数
+        // const mainCUrrentParameter = this.currentParameter;
+
         const path = obj.requestUrlPath;// 配置的path
         const type = 'modify';
         const objId = this.itemId;
         if (this.objectType === 'vertical') {
           let itemModify = [];
           let itemAdd = [];
+          let mainModify = [];
+
           if (this.updateData[itemName].modify && this.updateData[itemName].modify[itemName]) {
             itemModify = Object.values(this.updateData[itemName].modify[itemName]);// 子表修改的值
           }
           if (this.updateData[itemName] && this.updateData[itemName].add[itemName]) {
             itemAdd = Object.values(this.updateData[itemName].add[itemName]);// 子表新增的值
           }
-          if (itemModify.length === 0 && itemAdd.length === 0) { // 主表修改
+          if (this.updateData[this.tableName] && this.updateData[this.tableName].modify && this.updateData[this.tableName].modify[this.tableName]) {
+            mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);// 主表修改的值
+          }
+          if (itemModify.length === 0 && itemAdd.length === 0 && mainModify.length > 0) { // 主表修改
             if (this.verifyRequiredInformation()) { // 纵向结构保存校验
               if (obj.requestUrlPath) { // 配置path
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
@@ -2901,19 +2908,20 @@
             } else if (check) {
               this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
             }
-          } else
-            if (this.verifyRequiredInformation()) {
-              if (itemAdd.length > 0 && itemModify.length > 0) { // 同时新增子表以及修改子表
-                if (this.verifyRequiredInformation() && this.itemTableCheckFunc()) { // 横向结构保存校验
-                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
-                }
-              }
-              if (itemAdd.length > 0 && itemModify.length < 1) { // 新增子表
-                if (this.verifyRequiredInformation()) { // 横向结构保存校验
-                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
-                }
+          } else if (itemModify.length === 0 && itemAdd.length === 0) {
+             
+          } else if (this.verifyRequiredInformation()) {
+            if (itemAdd.length > 0 && itemModify.length > 0) { // 同时新增子表以及修改子表
+              if (this.verifyRequiredInformation() && this.itemTableCheckFunc()) { // 横向结构保存校验
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
               }
             }
+            if (itemAdd.length > 0 && itemModify.length < 1) { // 新增子表
+              if (this.verifyRequiredInformation()) { // 横向结构保存校验
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
+              }
+            }
+          }
         }
       },
       verifyRequiredInformation() { // 验证表单必填项
