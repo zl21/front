@@ -1486,7 +1486,6 @@
             linkId: tab.webid
           });
         } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-          debugger;
           const name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
           this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
           const path = getUrl({ url: tabAction, id: tab.webid, type: 'customized' });

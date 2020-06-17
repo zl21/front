@@ -25,7 +25,6 @@ export default {
     }
   },
   updateAccessHistory({ commit, state }, { type, id }) {
-    debugger;
     if (enableHistoryAndFavorite()) {
       if (id === 'New') {
         id = '-1';
