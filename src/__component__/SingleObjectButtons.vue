@@ -2878,7 +2878,7 @@
             }
           }
         } else if (itemName === this.tableName) { // 主表修改
-          if (this.verifyRequiredInformation()) { // 横向结构保存校验
+          if (this.verifyRequiredInformation() && this.testUpdata()) { // 横向结构保存校验
             if (obj.requestUrlPath) { // 配置path
               this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
             } else { // 没有配置path
