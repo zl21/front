@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                 >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -1652,6 +1652,7 @@
         ]);
       },
       checkboxRender(cellData, tag) {
+        // 999
         // 复选框
         return (h, params) => h('div', [
           h(tag, {
@@ -1679,7 +1680,8 @@
                 const oldLimitval = oldcurrentCheck.length > 0 ? oldcurrentCheck[0].limitval : null;
                 this.putDataFromCell(limitval, oldLimitval, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
                 // debugger;
-                this.putLabelDataFromCell(limitdesc, oldLimitval, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, limitval);
+                const type = 'checkbox';
+                this.putLabelDataFromCell(limitdesc, oldLimitval, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, limitval, null, type);
               }
             }
           })
@@ -3387,11 +3389,11 @@
         // 表单验证
         this.verifyMessage();
       },
-      putLabelDataFromCell(currentValue, oldValue, colname, IDValue, oldIdValue, oldFkIdValue) {
+      putLabelDataFromCell(currentValue, oldValue, colname, IDValue, oldIdValue, oldFkIdValue, type) {
         // currentValue：当前修改的值
         // oldFkIdValue:修改过后的值的ID
+        // type:改动值的组件的类型
         // 组装数据 存入store
-        // debugger;
         if (this.afterSendDataLabel[this.tableName] && this.afterSendDataLabel[this.tableName].length && this.afterSendDataLabel[this.tableName].length > 0) {
           const rowDatas = this.afterSendDataLabel[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
           oldIdValue = oldIdValue || '';
@@ -3403,7 +3405,36 @@
           //     oldIdValue = '否';
           //   }
           // }
-          if ((currentValue !== oldIdValue || (oldValue && oldFkIdValue && Number(oldFkIdValue) !== Number(oldValue))) && (oldValue && oldIdValue && Number(oldValue) !== Number(oldIdValue))) {
+          if (type === 'checkbox') { // checkbox类型
+            // 有改动
+            if ((currentValue !== oldIdValue || (oldValue && oldFkIdValue && Number(oldFkIdValue) !== Number(oldValue))) && (oldValue && oldIdValue && Number(oldValue) !== Number(oldIdValue))) {
+              if (rowDatas.length > 0) {
+                rowDatas[0][colname] = currentValue;
+              } else {
+                const param = {};
+                param[EXCEPT_COLUMN_NAME] = IDValue;
+                param[colname] = currentValue;
+                this.afterSendDataLabel[this.tableName].push(param);
+              }
+            // 改动值相同
+            } else if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
+              delete rowDatas[0][colname];
+
+              // const rowDatasIndex = this.afterSendDataLabel[this.tableName].map((ele, i) => {
+              //   if (ele[EXCEPT_COLUMN_NAME] === IDValue) {
+              //     return i;
+              //   }
+              // })[0];
+              // delete rowDatas[0].ID;
+              this.afterSendDataLabel[this.tableName] = this.afterSendDataLabel[this.tableName].filter((item, i) => { // 改动值相同不抛出值
+                if (item && Object.keys(item).length && Object.keys(item).length === 1 && item.ID) {
+                } else {
+                  return item;
+                }
+              });
+            // this.afterSendDataLabel[this.tableName] = this.afterSendDataLabel[this.tableName].filter((item, i) => i !== rowDatasIndex);
+            }
+          } else if (currentValue !== oldIdValue || (oldValue && oldFkIdValue && Number(oldFkIdValue) !== Number(oldValue))) { // 除checkbox类型外，有改动
             if (rowDatas.length > 0) {
               rowDatas[0][colname] = currentValue;
             } else {
@@ -3412,7 +3443,7 @@
               param[colname] = currentValue;
               this.afterSendDataLabel[this.tableName].push(param);
             }
-          } else if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
+          } else if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) { // 除checkbox类型外，改动值相同
             delete rowDatas[0][colname];
 
             // const rowDatasIndex = this.afterSendDataLabel[this.tableName].map((ele, i) => {
@@ -3421,7 +3452,7 @@
             //   }
             // })[0];
             // delete rowDatas[0].ID;
-            this.afterSendDataLabel[this.tableName] = this.afterSendDataLabel[this.tableName].filter((item, i) => {
+            this.afterSendDataLabel[this.tableName] = this.afterSendDataLabel[this.tableName].filter((item, i) => { // 改动值相同不抛出值
               if (item && Object.keys(item).length && Object.keys(item).length === 1 && item.ID) {
               } else {
                 return item;
@@ -3440,11 +3471,9 @@
         }
         this.$emit(TABLE_DATA_CHANGE_LABEL, this.afterSendDataLabel);
 
-        this.putBeforeLabelDataFromCell(currentValue, oldValue, colname, IDValue, oldIdValue, oldFkIdValue);
+        this.putBeforeLabelDataFromCell(currentValue, oldValue, colname, IDValue, oldIdValue, oldFkIdValue, type);
       }, // 获取label
-      putBeforeLabelDataFromCell(value, oldValue, colname, IDValue, oldIdValue, oldFkIdValue) {
-        // console.log(777, value, oldValue, colname, IDValue, oldIdValue, oldFkIdValue);
-        
+      putBeforeLabelDataFromCell(value, oldValue, colname, IDValue, oldIdValue, oldFkIdValue, type) {
         // if (oldIdValue === null) {
         //   oldIdValue = '';
         // }
@@ -3453,8 +3482,26 @@
 
         if (this.afterSendDataLabelBefore[this.tableName] && this.afterSendDataLabelBefore[this.tableName].length > 0) {
           const rowDatas = this.afterSendDataLabelBefore[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
-
-          if ((value !== oldIdValue || (oldValue && oldFkIdValue && Number(oldFkIdValue) !== Number(oldValue))) && (oldValue && oldIdValue && Number(oldValue) !== Number(oldIdValue))) {
+          if (type === 'checkbox') {
+            if ((value !== oldIdValue || (oldValue && oldFkIdValue && Number(oldFkIdValue) !== Number(oldValue))) && (oldValue && oldIdValue && Number(oldValue) !== Number(oldIdValue))) {
+              if (rowDatas.length > 0) {
+                rowDatas[0][colname] = currentValue;
+              } else {
+                const param = {};
+                param[EXCEPT_COLUMN_NAME] = IDValue;
+                param[colname] = currentValue;
+                this.afterSendDataLabelBefore[this.tableName].push(param);
+              }
+            } else if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
+              delete rowDatas[0][colname];
+              this.afterSendDataLabelBefore[this.tableName] = this.afterSendDataLabelBefore[this.tableName].filter((item, i) => {
+                if (item && Object.keys(item).length && Object.keys(item).length === 1 && item.ID) {
+                } else {
+                  return item;
+                }
+              });
+            }
+          } else if (value !== oldIdValue || (oldValue && oldFkIdValue && Number(oldFkIdValue) !== Number(oldValue))) {
             if (rowDatas.length > 0) {
               rowDatas[0][colname] = currentValue;
             } else {
@@ -3465,13 +3512,6 @@
             }
           } else if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
             delete rowDatas[0][colname];
-            // delete rowDatas[0].ID;
-            
-            // const rowDatasIndex = this.afterSendDataLabelBefore[this.tableName].map((ele, i) => {
-            //   if (ele[EXCEPT_COLUMN_NAME] === IDValue) {
-            //     return i;
-            //   }
-            // })[0];
             this.afterSendDataLabelBefore[this.tableName] = this.afterSendDataLabelBefore[this.tableName].filter((item, i) => {
               if (item && Object.keys(item).length && Object.keys(item).length === 1 && item.ID) {
               } else {
