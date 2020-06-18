@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            />
+                 >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -1678,7 +1678,7 @@
                 const oldcurrentCheck = cellData.combobox.filter(ele => ele.limitdis === data.value);
                 const oldLimitval = oldcurrentCheck.length > 0 ? oldcurrentCheck[0].limitval : null;
                 this.putDataFromCell(limitval, oldLimitval, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                debugger;
+                // debugger;
                 this.putLabelDataFromCell(limitdesc, oldLimitval, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, limitval);
               }
             }
@@ -1829,7 +1829,6 @@
                 this.fkData = {};
               },
               'on-page-change': (value) => {
-                // debugger;
                 this.fkDropPageInfo.currentPageIndex = value;
                 this.getFKList(params, cellData);
               },
@@ -2206,7 +2205,6 @@
                 this.fkData = {};
               },
               'on-page-change': (value) => {
-                // debugger;
                 this.fkDropPageInfo.currentPageIndex = value;
                 this.getFKList(params, cellData);
               },
@@ -3390,19 +3388,22 @@
         this.verifyMessage();
       },
       putLabelDataFromCell(currentValue, oldValue, colname, IDValue, oldIdValue, oldFkIdValue) {
-        // oldFkIdValue:修改过后的值
+        // currentValue：当前修改的值
+        // oldFkIdValue:修改过后的值的ID
         // 组装数据 存入store
+        // debugger;
         if (this.afterSendDataLabel[this.tableName] && this.afterSendDataLabel[this.tableName].length && this.afterSendDataLabel[this.tableName].length > 0) {
           const rowDatas = this.afterSendDataLabel[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
           oldIdValue = oldIdValue || '';
-          if (colname === 'ISACTIVE') {
-            if (currentValue === '是' && oldIdValue === 'Y') {
-              oldIdValue = '是';
-            } else if (currentValue === '否' && oldIdValue === 'N') {
-              oldIdValue = '否';
-            }
-          }
-          if (currentValue !== oldIdValue || (oldValue && oldFkIdValue && Number(oldFkIdValue) !== Number(oldValue))) {
+          // if (colname === 'ISACTIVE') {
+          //   console.log(444, currentValue === '是' && (oldIdValue === 'Y' || oldIdValue === '1'));
+          //   if (currentValue === '是' && (oldIdValue === 'Y' || oldIdValue === '1')) {
+          //     oldIdValue = '是';
+          //   } else if (currentValue === '否' && (oldIdValue === 'N' || oldIdValue === '0')) {
+          //     oldIdValue = '否';
+          //   }
+          // }
+          if ((currentValue !== oldIdValue || (oldValue && oldFkIdValue && Number(oldFkIdValue) !== Number(oldValue))) && (oldValue && oldIdValue && Number(oldValue) !== Number(oldIdValue))) {
             if (rowDatas.length > 0) {
               rowDatas[0][colname] = currentValue;
             } else {
@@ -3452,7 +3453,8 @@
 
         if (this.afterSendDataLabelBefore[this.tableName] && this.afterSendDataLabelBefore[this.tableName].length > 0) {
           const rowDatas = this.afterSendDataLabelBefore[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
-          if (value !== oldIdValue || (oldValue && oldFkIdValue && Number(oldFkIdValue) !== Number(oldValue))) {
+
+          if ((value !== oldIdValue || (oldValue && oldFkIdValue && Number(oldFkIdValue) !== Number(oldValue))) && (oldValue && oldIdValue && Number(oldValue) !== Number(oldIdValue))) {
             if (rowDatas.length > 0) {
               rowDatas[0][colname] = currentValue;
             } else {
