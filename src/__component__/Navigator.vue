@@ -8,14 +8,14 @@
       :style="{ width: collapseHistoryAndFavorite ? '50px' : '180px' }"
     >
       <img
-        v-if="!collapseHistoryAndFavorite"
+        v-if="!collapseHistoryAndFavorite&&enableHistoryAndFavoriteUI"
         class="trigger"
         alt=""
         :src="imgSrc.closedImg"
         @click="doCollapseHistoryAndFavorite"
       >
       <img
-        v-if="collapseHistoryAndFavorite"
+        v-if="collapseHistoryAndFavorite&&enableHistoryAndFavoriteUI"
         class="trigger"
         alt=""
         :src="imgSrc.openedImg"
@@ -174,7 +174,7 @@
   import { routeTo } from '../__config__/event.config';
   import network, { urlSearchParams } from '../__utils__/network';
   import NavigatorSubMenu from './NavigatorSubMenu';
-  import { STANDARD_TABLE_LIST_PREFIX, Version } from '../constants/global';
+  import { STANDARD_TABLE_LIST_PREFIX, Version, enableHistoryAndFavoriteUI } from '../constants/global';
   import { updateSessionObject } from '../__utils__/sessionStorage';
 
 
@@ -236,6 +236,9 @@
         primaryMenuIndex: state => state.primaryMenuIndex,
         taskMessageCount: state => state.taskMessageCount,
       }),
+      enableHistoryAndFavoriteUI() {
+        return enableHistoryAndFavoriteUI();
+      },
       versionValue() {
         if (Version() === '1.4') {
           return false;
