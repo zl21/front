@@ -86,7 +86,6 @@ export default {
           });
           commit('updateTableFixedcolumns', JSON.parse(JSON.stringify(childTableFixedcolumns)));
         }
-        commit('updateRefreshButtonForJflow', resData.jflowConfigrefreshButton);// jflow控制刷新按钮显示
         resData.tabIndex = tabIndex;
         commit('updateButtonsData', resData);
         if (resolve) {
