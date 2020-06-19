@@ -329,6 +329,7 @@
         network.post(this.modalConfig.url, param).then(async (res) => {
           this.buttonDisabled = false;
           if (res.data.resultCode === 0) {
+            BacklogData();
             window.jflowPlugin.open({ control: false });
             this.$Message.success(res.data.resultMsg);
             await getJflowInfo();
@@ -371,6 +372,7 @@
         network.post(this.modalConfig.url, param).then(async (res) => {
           this.buttonDisabled = false;
           if (res.data.resultCode === 0) {
+            BacklogData();
             window.jflowPlugin.open({ control: false });
             this.$Message.success(res.data.resultMsg);
             await getJflowInfo();
@@ -405,6 +407,7 @@
         network.post(this.modalConfig.url, param).then(async (res) => {
           window.jflowPlugin.open({ control: false });
           if (res.data.resultCode === 0) {
+            BacklogData();
             this.$Message.success(res.data.resultMsg);
             this.selectRow = {};
             await getJflowInfo();
@@ -491,6 +494,7 @@
         network.post('/jflow/p/cs/error/errAction', obj)
           .then(async (res) => {
             if (res.data.resultCode === 0) {
+              BacklogData();
               window.jflowPlugin.open({ control: false });
               this.selectCheck = 0;
               this.selectedNode = null;
@@ -539,6 +543,7 @@
           network.post('/jflow/p/cs/error/modifyApprover', obj)
             .then(async (res) => {
               if (res.data.resultCode === 0) {
+                BacklogData();
                 window.jflowPlugin.open({ control: false });
                 this.ApproverLists = {};
                 this.remark = null;
@@ -598,6 +603,7 @@
           network.post('/jflow/p/cs/error/invocationFail', obj)
             .then(async (res) => {
               if (res.data.resultCode === 0) {
+                BacklogData();
                 window.jflowPlugin.open({ control: false });
                 this.$Message.success(res.data.resultMsg);
                 this.remark = null;
@@ -667,6 +673,7 @@
         network.post(url, obj)
           .then((res) => {
             if (res.data.resultCode === 0) {
+              BacklogData();
               window.jflowPlugin.open({ control: false });
               setTimeout(async () => {
                 this.selectBackNode = null;
