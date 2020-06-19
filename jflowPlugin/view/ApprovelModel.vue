@@ -297,47 +297,6 @@
       };
     },
     methods: {
-      // 表格体数据转化
-      transferTbody(data) {
-        this.componentData[0].total = data.totalRowCount;
-        this.componentData[0].pageOptions = data.selectrange;
-        this.componentData[0].list = [];
-        data.row.map((item) => {
-          const tem = {};
-          Object.keys(item).map((inner) => {
-            tem[inner] = item[inner].val;
-          });
-          if (this.APPROVEL_DRIVER_LIST && this.APPROVEL_DRIVER_LIST.length > 0) {
-            // 给表格设置默认选中
-            this.APPROVEL_DRIVER_LIST.map((inner) => {
-              if (tem.ID === inner.approve_value) {
-                tem._checked = true;
-              }
-            });
-          }
-          this.componentData[0].list.push(tem);
-        });
-      },
-      // 查找用户信息
-      findUser(param) {
-        this.tableLoading = true;
-        network.post('/jflow/p/c/identity/user/list', param).then((res) => {
-          this.tableLoading = false;
-          const data = res.data;
-          if (data.code === 0) {
-            this.transferTbody(data.data);
-          }
-        });
-      },
-      // 搜索
-      inputsearch(event, vm) {
-        const param = Object.assign(this.obj, {
-          page: this.componentData[0].pageNum,
-          pageSize: this.componentData[0].pageSize,
-          ENAME: event
-        });
-        this.findUser(param);
-      },
       ok() {
         if (this.type === '0' || this.type === '8') {
           this.buttonDisabled = true;
@@ -393,6 +352,14 @@
       },
       // 驳回
       back() {
+        if (!this.returnContent) {
+          this.$Modal.fcError({
+            title: '错误',
+            content: '审批意见不能为空!',
+            mask: true
+          });
+          return;
+        }
         const param = {};
         param.instanceId = global.jflowInfo.instanceId;
         param.userId = global.userInfo.id;

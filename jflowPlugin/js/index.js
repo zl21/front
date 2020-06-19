@@ -145,6 +145,7 @@ function initiateLaunch(data) { // 业务系统流程发起
       userName: global.userInfo.name,
       instanceId: global.jflowInfo.instanceId,
       initiatorName: global.userInfo.name,
+      initiatorText: global.userInfo.ename,
       changeUser: global.userInfo.id,
       // webActionId: data.webid,
       // businessTypeText: global.activeTabInfo.label.split('编辑')[0],
