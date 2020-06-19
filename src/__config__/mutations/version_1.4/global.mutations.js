@@ -27,7 +27,15 @@ export default {
   //   // data.treeId:勾选的树结构列表ID
   //   state.treeIds.push(data);
   // },
- 
+  updataSTDefaultQuery(state, data) {
+    // tableId:跳转目标表ID
+    // colid：目标表字段ID
+    // defaultValue：目标表设置的默认值
+   
+    
+    window.sessionStorage.setItem(data.tableId, JSON.stringify(data.values));
+    // updateSessionObject(data.tableId, param);
+  },
   updataOpenedMenuLists(state, data) {
     state.openedMenuLists = data;
   },
@@ -318,6 +326,12 @@ export default {
       });
     });
 
+    // 清除当前关闭的表单设置的跳转到标准列表表单默认值;
+    state.openedMenuLists.map((openedMenuList) => {
+      const openedMenuListId = openedMenuList.keepAliveModuleName.split('.')[2];
+      removeSessionObject(openedMenuListId);
+    });
+
     state.openedMenuLists = [];
     state.keepAliveLists = [];
     state.activeTab = {};
@@ -355,6 +369,11 @@ export default {
     //   k: tab.tableName,
     //   v: item.ID
     // };
+    // 清除当前关闭的表单设置的跳转到标准列表表单默认值;
+    const { tableId } = router.currentRoute.params;
+    removeSessionObject(tableId);
+
+
     deleteFromSessionObject('TreeId', tab.tableName);
     let openedMenuListId = null;
     if (tab.keepAliveModuleName) {
@@ -520,7 +539,7 @@ export default {
   },
   tabOpen(state, {// 打开一个新tab添加路由
     back, type, tableName, tableId, id, customizedModuleName, customizedModuleId, linkName,
-    linkId, url, label, serviceId, dynamicRoutingForCustomizePage
+    linkId, url, label, serviceId, dynamicRoutingForCustomizePage, isSetQuery, queryData
   }) {
     // back:返回标志, 
     // type:跳转类型,
@@ -536,10 +555,36 @@ export default {
     // url:固定格式url（按照框架路由规则拼接好的）,
     // serviceId
     // dynamicRoutingForCustomizePage:自定义界面跳转至单对象界面，为true时可返回来源的单对象界面
+    // isSetQuery:可设置目标界面为标准列表界面的表单默认值
+    // queryData：设置目标界面表单默认值数据
+    if ((type === 'S' || type === 'STANDARD_TABLE_LIST_PREFIX') && isSetQuery && queryData) {
+      if (queryData.values && queryData.values.length > 0) {
+        let flag = true;
+        queryData.values.some((item) => {
+          if (item.display === 'OBJ_FK' && !item.refobjid) {
+            const message = `设置默认值为外键类型，请配置默认值为${item.defaultValue}字段的refobjid值`;
+            window.R3message({
+              title: '错误',
+              content: message,
+              mask: true
+            });
+            flag = false;
+          }
+        });
+        if (!flag) {
+          return;
+        }
+        window.sessionStorage.setItem(queryData.tableId, JSON.stringify(queryData.values));// 将设置的默认参数存入sessionStorage
+      }
+    }
     const keepAliveModuleName = `S.${tableName}.${tableId}`;
     if (state.keepAliveLabelMaps[keepAliveModuleName] === undefined) {
-      state.keepAliveLabelMaps[keepAliveModuleName] = `${label}`;
-      state.serviceIdMap[tableName] = `${serviceId}`;
+      if (label) {
+        state.keepAliveLabelMaps[keepAliveModuleName] = `${label}`;
+      }
+      if (serviceId) {
+        state.serviceIdMap[tableName] = `${serviceId}`;
+      }
       const keepAliveLabelMapsObj = {
         k: keepAliveModuleName,
         v: label

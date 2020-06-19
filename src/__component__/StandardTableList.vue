@@ -38,6 +38,13 @@
       />
     </div>
     <div class="StandardTableListRootDiv">
+      <!-- <Button
+        id="hideRefresh"
+        type="fcdefault"
+        @click="a"
+      >
+        测试按钮
+      </Button> -->
       <ButtonGroup
         :data-array="buttons.dataArray"
         :id-array="idArray"
@@ -320,8 +327,37 @@
       },
     },
     methods: {
+      // a() {
+      //   // 插入列表界面默认值
+      //   const data = {
+      //     tableId: '992',
+      //     values: [
+      //       {
+      //         display: 'OBJ_FK',
+      //         colid: '99525',
+      //         defaultValue: '元数据',
+      //         refobjid: '666666'
+      //       }, {
+              
+      //         display: 'OBJ_FK',
+      //         colid: '99484',
+      //         defaultValue: '表',
+      //         refobjid: '888888'
+      //       }
+      //     ]
+      //   };
+      //   // this.updataSTDefaultQuery(data);
+      //   this.tabOpen({
+      //     type: 'S',
+      //     tableName: 'AD_TABLE',
+      //     tableId: '992',
+      //     isSetQuery: true,
+      //     queryData: data
+      //   });
+      // },
+     
       ...mapActions('global', ['updateAccessHistory', 'getExportedState', 'updataTaskMessageCount', 'getMenuLists']),
-      ...mapMutations('global', ['tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter']),
+      ...mapMutations('global', ['tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter', 'updataSTDefaultQuery']),
       // changeTreeConfigData(value) {//oldTree
       //   this.isChangeTreeConfigData = value;
       // },
@@ -1094,7 +1130,7 @@
       defaultValue(item) {
         // 设置表单的默认值
 
-
+        // OBJ_DATENUMBER OBJ_DATE OBJ_SELECT OBJ_FK
         if (item.display === 'OBJ_DATENUMBER') {
           // 日期控件
           if (item.default === '-1') {
