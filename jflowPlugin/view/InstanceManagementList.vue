@@ -60,6 +60,7 @@
  <script>
   import Vue from 'vue';
   import todoProcess from './TodoProcess';
+  import { global } from '../utils/global.config';
 
   export default {
     name: 'InstanceManagementList',
@@ -68,7 +69,7 @@
     },
     data() {
       return {
-        tabalive: 'todoList', // tab切换默认值
+        tabalive: null, // tab切换默认值
         tabConfig: [
           {
             label: '待我审批的',
@@ -102,29 +103,24 @@
       }
     },
     created() {
+      let type = null;
+      switch (global.displayList ? global.displayList.split(',')[0] : '1') {
+      case '1': 
+        type = 'todoList'; break;
+      case '2': 
+        type = 'approvalList'; break;
+      case '3': 
+        type = 'launchList'; break;
+      case '4': 
+        type = 'copyList'; break;
+      default: break;
+      }
+      this.tabalive = type;
+
       if (!Vue.component(this.tabalive)) {
         Vue.component(this.tabalive, Vue.extend(todoProcess));
       } 
       this.currentComponents = this.tabalive;
-    },
-    activated() {
-      // if (this.tabalive === '待我审批的') {
-      //   this.$refs.todo.getselectOption();
-      //   this.$refs.todo.queryLists();
-      //   this.$refs.todo.getAgent();
-      // }
-      // if (this.tabalive === ' 我已审批的') {
-      //   this.$refs.history.getselectOption();
-      //   this.$refs.history.queryLists();
-      // }
-      // if (this.tabalive === ' 我发起的') {
-      //   this.$refs.launch.getselectOption();
-      //   this.$refs.launch.queryLists();
-      // }
-      // if (this.tabalive === '抄送人') {
-      //   this.$refs.copy.getselectOption();
-      //   this.$refs.copy.queryLists();
-      // }
     }
   };
 </script>

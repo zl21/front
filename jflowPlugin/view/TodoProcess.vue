@@ -341,7 +341,9 @@
       // 获取表头数据
       getHeader() {
         const gridName = this.headerUrlMap[this.tabalive];
-        network.post(`/jflow/p/cs/sys/grid/header/${gridName}`, {}).then((res) => {
+        network.post(`/jflow/p/cs/sys/grid/header/${gridName}`, {
+          userId: global.userInfo.id
+        }).then((res) => {
           if (res.data.resultCode === 0) {
             res.data.data.headers = res.data.data.headers.map((item) => {
               // 待审批人
@@ -420,7 +422,7 @@
                       },
                       on: {
                         click: () => {
-                          if (params.row.formUrl.indexOf('SYSTEM') >= 0) { // 区分版本  1.4版本
+                          if (params.row.formUrl.includes('/SYSTEM')) {
                             window.getObjdisType({ table: params.row.formUrl.split('/')[4] }).then((res) => {
                               const distype = res === 'tabpanle' ? 'H' : 'V';
                               const arr = params.row.formUrl.split('/');
@@ -430,13 +432,8 @@
                               });
                             });
                           } else {
-                            const query = this.urlParse(params.row.formUrl);
-                            window.getObjdisType({ table: query.tableName }).then((res) => {
-                              const distype = res === 'tabpanle' ? 'H' : 'V';
-                              const formUrl = `/SYSTEM/TABLE_DETAIL/${distype}/${query.tableName}/${query.pid}/${query.id}`;
-                              window.vm.$router.push({
-                                path: formUrl
-                              });
+                            window.vm.$router.push({
+                              path: params.row.formUrl
                             });
                           }
                         }
@@ -483,7 +480,9 @@
       // 获取查询条件
       getFormLists() {
         const gridName = this.headerUrlMap[this.tabalive];
-        network.post(`/jflow/p/cs/sys/grid/search/area/${gridName}`, {})
+        network.post(`/jflow/p/cs/sys/grid/search/area/${gridName}`, {
+          userId: global.userInfo.id
+        })
           .then((res) => {
             res.data.data.searchArea = res.data.data.searchArea.map((item) => {
               const temp = {
@@ -523,7 +522,22 @@
       },
       // 业务关系下拉数据
       async getselectOption() {
-        await network.post('/jflow/p/cs/task/relation/list', {}).then((res) => {
+        let type = null;
+        switch (this.tabalive) {
+        case 'todoList': 
+          type = 0; break;
+        case 'approvalList': 
+          type = 1; break;
+        case 'launchList': 
+          type = 2; break;
+        case 'copyList': 
+          type = 3; break;
+        default: break;
+        }
+        await network.post('/jflow/p/cs/task/relation/list', {
+          userId: global.userInfo.id,
+          listType: type
+        }).then((res) => {
           if (res.data.resultCode === 0) {
             this.options = res.data.data.relations.map((item) => {
               item.value = item.businesskey;
@@ -733,11 +747,22 @@
       }
     },
     async created() {
-      this.getHeader();
-      await this.getselectOption();
-      this.getFormLists();
+      if (global.userInfo) {
+        this.getHeader();
+        await this.getselectOption();
+        this.getFormLists();
+      } else {
+        const timer = setInterval(async () => {
+          if (global.userInfo) {
+            clearInterval(timer);
+            this.getHeader();
+            await this.getselectOption();
+            this.getFormLists();
+          }
+        }, 10);
+      }
     },
-    activated() {
+    async activated() {
       if (global.userInfo) {
         this.queryLists();
         if (this.tabalive === 'todoList') {
@@ -745,7 +770,7 @@
           this.getAgent();
         }
       } else {
-        const timer = setInterval(() => {
+        const timer = setInterval(async () => {
           if (global.userInfo) {
             clearInterval(timer);
             this.queryLists();
