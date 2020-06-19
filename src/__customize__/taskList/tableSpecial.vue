@@ -427,7 +427,7 @@
     },
     watch: {},
     methods: {
-      ...mapMutations('global', ['tabOpen', 'tabHref', 'directionalRouter']),
+      ...mapMutations('global', ['tabOpen', 'directionalRouter']),
       deselectAll() {
         this.$refs.table.selectAll(false);
       }, // 取消表格全部选中
@@ -543,7 +543,7 @@
                 const data = this.datas.row[params.index][cellData.colname];
                 if (cellData.objdistype === 'object') {
                   window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
-                  this.tabHref({
+                  this.tabOpen({
                     type: 'tableDetailVertical',
                     tableName: data.reftablename,
                     tableId: data.reftableid,
@@ -553,7 +553,7 @@
                   });
                 } else if (cellData.objdistype === 'tabpanle') {
                   window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
-                  this.tabHref({
+                  this.tabOpen({
                     type: 'tableDetailHorizontal',
                     tableName: data.reftablename,
                     tableId: data.reftableid,

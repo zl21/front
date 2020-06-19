@@ -1,3 +1,5 @@
+import { getSeesionObject } from '../../../__utils__/sessionStorage';
+import router from '../../router.config';
 
 export default {
   updataSelectIdArr(state, id) {
@@ -30,6 +32,21 @@ export default {
 
   // 表单
   updateDefaultFormItemsLists({ formItems }, data) {
+    const { tableId } = router.currentRoute.params;
+
+    const getSTDefaultQuery = getSeesionObject(tableId);
+    if (data && data.length > 0 && getSTDefaultQuery && getSTDefaultQuery.length > 0) {
+      getSTDefaultQuery.map((c) => {
+        data.map((d) => {
+          if (Number(c.colid) === Number(d.colid)) {
+            d.default = c.defaultValue;
+            if (c.display && c.display === 'OBJ_FK') { // 如果是外键类型，需要配置refobjid
+              d.refobjid = c.refobjid;
+            }
+          }
+        });
+      });
+    }
     formItems.defaultFormItemsLists = data;
   },
   updateFormData({

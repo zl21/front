@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="showModule.HistoryAndFavorite"
+    v-if="isShow"
     class="history-and-favorite"
     :style="{ width: collapseHistoryAndFavorite ? '50px' : '180px' }"
   >
@@ -95,6 +95,7 @@
 <script>
   import { mapState, mapActions } from 'vuex';
   import { routeTo } from '../__config__/event.config';
+  import { enableHistoryAndFavoriteUI } from '../constants/global';
   
   export default {
     name: 'HistoryAndFavorite',
@@ -113,7 +114,13 @@
         history: ({ history }) => history.concat([]).reverse(),
         favorite: ({ favorite }) => favorite.concat([]).reverse(),
         showModule: ({ showModule }) => showModule,
-      })
+      }),
+      isShow() {
+        if (enableHistoryAndFavoriteUI() === false) {
+          return enableHistoryAndFavoriteUI();
+        }
+        return this.showModule.HistoryAndFavorite;
+      }
     },
     methods: {
       ...mapActions('global', ['getHistoryAndFavorite']),

@@ -471,7 +471,7 @@
       }
     },
     methods: {
-      ...mapMutations('global', ['tabHref', 'tabOpen', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
+      ...mapMutations('global', ['tabOpen', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
       routerNext(value) {
         // 路由跳转
         const props = this._items.props;

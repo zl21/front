@@ -330,7 +330,7 @@
       this.generateComponent();
     },
     methods: {
-      ...mapMutations('global', ['tabHref', 'decreasekeepAliveLists', 'emptyTestData']),
+      ...mapMutations('global', ['decreasekeepAliveLists', 'emptyTestData']),
 
       // ...mapActions(this[MODULE_COMPONENT_NAME], ['performMainTableSaveAction']),
       generateComponent() {
@@ -564,7 +564,7 @@
               id: this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData.newMainTableSaveData ? this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData.newMainTableSaveData.objId : itemId
             };
             // this.updateChangeData({ tableName: this.tableName, value: {} });
-            this.$store.commit('global/tabHref', tab);
+            this.$store.commit('global/tabOpen', tab);
             this.decreasekeepAliveLists(this[MODULE_COMPONENT_NAME]);
           }else if (this.type === 'horizontal') {
             const searchdata = {

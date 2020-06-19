@@ -17,7 +17,7 @@ module.exports = {
   // target: 'http://139.224.169.76:28888', // 沁园
   // target: 'http://10.14.5.196', // 商飞开发环境
   // target: 'http://10.14.3.71', // 商飞预发环境
-  target: 'http://syman-jflow-standard-web.dev.burgeononline.com/', // 商飞测试环境
+  // target: 'http://syman-jflow-standard-web.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop网关开启环境
   // target: 'http://r3.burgeon.cn:19999/', // 'http://106.15.154.165:19999/', // Cube
   // target: 'http://cmsqas.lining.com', // 卡宾
@@ -28,10 +28,11 @@ module.exports = {
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop环境
 
   
-  Version: '1.3', // 版本号
+  Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
-  enableGateWay: false, // 网关是否打开,
-  enableHistoryAndFavorite: true, // 是否开启收藏与最近使用功能
+  enableGateWay: true, // 网关是否打开,
+  enableHistoryAndFavorite: true, // 是否开启收藏与最近使用接口请求
+  enableHistoryAndFavoriteUI: true, // 是否显示收藏与最近使用UI
   ignoreGateWayPattern: [/\/jflow\/*/g, /\/api\/*/g], // 框架默认禁用的网关逻辑的正则模式匹配
   enableNetworkMonitor: true, // 是否开启网络监控功能
   enableModuleKA: true, // 默认启用keepAlive功能
@@ -43,7 +44,7 @@ module.exports = {
   // specifiedGlobalGateWay: 'ad-app',
   encryptedPassword: false, // 是否允许login接口password加密
   isItemTableNewValidation: true, // 是否允许子表新增有必填项时，输入值才触发子表必填项校验，不输入值则只校验主表
-  isCommonTable: true, // 是否开启普通表格，默认关闭
+  isCommonTable: false, // 是否开启普通表格，默认关闭
   custommizedJflow: true, // jflow定制版开关,默认为true
   functionPowerRequestURL: '', // 功能权限获取检索项数据接口名称
   cbs: undefined, // 框架回调，形如 { loginCb: function() {} }
