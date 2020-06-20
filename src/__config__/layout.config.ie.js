@@ -1,3 +1,4 @@
+// 此为文件为专为商飞定制的布局文件，目的是将body的全局滚动释放，不再采用一屏呈，布局内滚动的实现逻辑。此文件不会参与项目打包。
 import Navigator from '../__component__/Navigator';
 import ContentDisplayArea from '../__component__/ContentDisplayArea';
 import HistoryAndFavorite from '../__component__/HistoryAndFavorite';
