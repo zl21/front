@@ -47,6 +47,12 @@
   );
   export default {
     name: 'Content',
+    beforeCreate() {
+      if ('ActiveXObject' in window) {
+        document.documentElement.style.overflow = 'unset';
+        document.body.style.overflow = 'unset';
+      }
+    },
     render(h) {
       return renderSubLayout(h)(appLayout());
     }
