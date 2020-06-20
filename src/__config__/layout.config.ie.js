@@ -42,7 +42,7 @@ export default {
             weight: 1,
             style: {
               minHeight: `${window.innerHeight - 70}px`,
-              margin: '10px 10px 10px 190px',
+              margin: '10px',
               backgroundColor: '#fff',
               overflow: 'hidden'
             },

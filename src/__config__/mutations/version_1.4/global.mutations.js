@@ -7,7 +7,8 @@ import {
   CUSTOMIZED_MODULE_PREFIX,
   LINK_MODULE_COMPONENT_PREFIX,
   LINK_MODULE_PREFIX,
-  enableKeepAlive
+  enableKeepAlive,
+  enableHistoryAndFavoriteUI
 } from '../../../constants/global';
 import router from '../../router.config';
 import setCustomeLabel from '../../../__utils__/setCustomeLabel';
@@ -149,6 +150,12 @@ export default {
     if (showFavorites) {
       state.collapseHistoryAndFavorite = showFavorites;
     }
+    // 增加兼容IE逻辑
+    // if ('ActiveXObject' in window && enableHistoryAndFavoriteUI && state.collapseHistoryAndFavorite) {
+    //   document.getElementById('ContentDisplayArea').style.marginLeft = '60px';
+    // } else if ('ActiveXObject' in window  && enableHistoryAndFavoriteUI && !state.collapseHistoryAndFavorite) {
+    //   document.getElementById('ContentDisplayArea').style.marginLeft = '190px';
+    // }
     state.collapseHistoryAndFavorite = !state.collapseHistoryAndFavorite;
     DispatchEvent('doCollapseHistoryAndFavorite');
   },

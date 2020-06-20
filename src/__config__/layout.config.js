@@ -23,6 +23,7 @@ export default {
             component: HistoryAndFavorite,
           },
           {
+            id: 'ContentDisplayArea',
             weight: 1,
             style: { margin: '10px', backgroundColor: '#fff', overflow: 'hidden' },
             component: ContentDisplayArea,
