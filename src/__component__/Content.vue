@@ -32,9 +32,9 @@
         width: '100%',
       }}>
       {
-        layout.items.map(item => <div style={Object.assign(item.style || {}, {
-          width: `${item.width}px`,
-          height: `${item.height}px`,
+        layout.items.map(item => <div id={item.id} style={Object.assign(item.style || {}, {
+          width: item.width ? `${item.width}px` : Object.assign({}, item.style).width,
+          height: item.height ? `${item.height}px` : Object.assign({}, item.style).height,
           flexShrink: (item.width === undefined && item.height === undefined) ? item.weight : undefined,
           flexGrow: (item.width === undefined && item.height === undefined) ? item.weight : undefined,
           flexBasis: (item.width === undefined && item.height === undefined) ? `${item.weight}px` : undefined,
