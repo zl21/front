@@ -1201,7 +1201,6 @@
       filechange(value) {
         // 上传文件
         const _value = value.length > 0 ? value : '';
-        
         const fixedData = Array.isArray(_value) ? [..._value] : '';
         let parms = {
           objId: this._items.props.itemdata.objId,
@@ -1228,10 +1227,10 @@
             this.valueChange();
             if (childTableName && this.$parent.type === 'PanelForm') {
               // 主子表的子表修改（1:1）的情况下
-              const dom = document.getElementById('actionMODIFY');
               setTimeout(() => {
+                const dom = document.getElementById('actionMODIFY');
                 dom.click();
-              }, 300);
+              }, 500);
             }
           } else {
             this._items.props.itemdata.valuedata = [];
@@ -1262,10 +1261,11 @@
       },
       upSavefile(obj, fixedData, path) {
         // 保存文件
-        const dom = document.getElementById('actionMODIFY');
         setTimeout(() => {
+          const dom = document.getElementById('actionMODIFY');
           dom.click();
-        }, 300);
+        }, 500);
+        
 
         return false;
         // eslint-disable-next-line no-unreachable
@@ -1362,8 +1362,10 @@
                 ]);
                 this.valueImgChange();
                 if (childTableName && this.$parent.type === 'PanelForm') {
-                  const dom = document.getElementById('actionMODIFY');
-                  dom.click();
+                  setTimeout(() => {
+                    const dom = document.getElementById('actionMODIFY');
+                    dom.click();
+                  }, 500);
                 }
               } else {
                 this._items.props.itemdata.valuedata.push(
@@ -1482,8 +1484,11 @@
       },
       upSaveImg(obj, fixedData, path, index) {
         // 图片保存接口
-        const dom = document.getElementById('actionMODIFY');
-        dom.click();
+        setTimeout(() => {
+          const dom = document.getElementById('actionMODIFY');
+          dom.click();
+        }, 500);
+       
         return false;
         fkHttpRequest().fkObjectSave({
           searchObject: {

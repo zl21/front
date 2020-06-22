@@ -551,13 +551,19 @@
       VerificationFormInt(type) {
         //  form 计算 校验
         clearTimeout(this.setVerficaTime);
+        console.log(type, '555');
+        let check = false;
         this.setVerficaTime = setTimeout(() => {
           this.VerificationForm = [];
           this.newFormItemLists.forEach((item, index) => {
             if (item.item.required && item.show && !item.item.props.disabled) {
+              check = true;
               this.verificationMap(this.formIndex, index, item, type);
             }
           });
+          if (check === false) {
+            this.verifymessageform([], this.formIndex, type);
+          }
         }, 100);
       },
       verificationMap(formIndex, index, items, type) {
@@ -594,9 +600,8 @@
           fkdisplay: items.item.props.fkdisplay,
           onfousInput
         });
-        if (this.verifymessageform) {
-          this.verifymessageform(this.VerificationForm, this.formIndex, type);
-        }
+        
+        this.verifymessageform(this.VerificationForm, this.formIndex, type);
         return true;
       },
       setMapping(data) {
@@ -1083,8 +1088,11 @@
           //   this.newFormItemLists[formindex].item.props.regx = item.oldProps.regx;
           // }
         } 
+        const that = this;
         if (type === 'mounted') {
-          this.VerificationFormInt('mounted');
+          setTimeout(() => {
+            that.VerificationFormInt('mounted');
+          }, 100);
         } 
         return true;
       },
