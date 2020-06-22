@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                  >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -542,6 +542,7 @@
             this.fkSelectedChangeData = [];
           }
           const isTableRender = this.isTableRender;
+          console.log(333, this.dataSource.tabth, isTableRender);
           this.columns = this.filterColumns(this.dataSource.tabth, isTableRender); // 每列的属性
           setTimeout(() => {
             this.tabledata = this.filterData(this.dataSource.row); // 每列的数据
@@ -1588,6 +1589,9 @@
             // 不可编辑话 文件也是能照常render出来的，只能下载
             return this.docReadonlyRender(cellData, this.DISPLAY_ENUM[cellData.display].tag);
           }
+          if (cellData.display === 'text') {
+            return this.textRender(cellData, this.DISPLAY_ENUM[cellData.display].tag);
+          }
           return null;
         }
         if (cellData.isfk && cellData.fkdisplay) {
@@ -1600,6 +1604,51 @@
           return null;
         }
         return this.DISPLAY_ENUM[cellData.display].event(cellData, this.DISPLAY_ENUM[cellData.display].tag);
+      },
+      strLen(str) {  
+        let len = 0;  
+        for (let i = 0; i < str.length; i++) {  
+          if (str.charCodeAt(i) > 127 || str.charCodeAt(i) === 94) {  
+            len += 2;  
+          } else {  
+            len++;  
+          }  
+        }  
+        return len;  
+      },
+      textRender(cellData) {
+        // console.log(333, params.row.BILLNO);
+        return (h, params) => {
+          let maxlength = '';
+          
+          if (params.column.webconf && params.column.webconf.maxlength) {
+            maxlength = params.column.webconf.maxlength;
+          }
+          const d = document.createElement('div');// 创建dom
+          d.id = 'getWidth'; 
+          const dom = document.getElementById('getWidth');
+          dom.innerHTML = params.row[cellData.colname];// 
+          dom.style.display = 'none';
+
+          console.log(333, dom.clientWidth);
+
+          const width = maxlength ? `${maxlength * 13}px` : '';
+          const innerHTML = params.row[cellData.colname];
+          const overflow = maxlength ? 'hidden' : 'none';
+          return h('div', {
+            style: {
+              width,
+              overflow,
+              'text-overflow': 'ellipsis',
+              'white-space': 'nowrap'
+            },
+            domProps: {
+              innerHTML,
+              title: innerHTML.length > maxlength ? innerHTML : 'none'
+            },
+        
+          },);
+        };
       },
       inputRender(cellData, tag) {
         // 输入框
