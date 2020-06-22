@@ -117,7 +117,7 @@
           todoList: '/jflow/p/cs/task/backlog/list', // 待我审批
           approvalList: '/jflow/p/cs/task/history/list', // 我已审批
           launchList: '/jflow/p/cs/task/initiator/list', // 我发起的
-          copyList: '/jflow/p/cs/task/relation/list' // 我抄送的
+          copyList: '/jflow/p/cs/task/cslist' // 我抄送的
         },
         headerUrlMap: {
           todoList: 'upcoming',
@@ -130,9 +130,8 @@
         modaltitle: '', // 弹框标题
         // 待办-同意意见/驳回意见
         agree: '',
-        // 待办-驳回下拉数据
-        ApprovalData: [],
-        selectValue: '', // 选中的数据
+
+
         // 表单配置
         formLists: [],
         options: [], // 单据类型选项
@@ -297,33 +296,8 @@
           }
         },
         // findValue: "", //input搜索框的输入值
-        queryStyle: {
-          color: '#fd6442'
-        },
-        treedata: [],
-        loading: false, // z最大loading
-        tree_loading: true, // 左边的 的loading
-        tableLoading: false, // 中间的 的loading
-        componentData: [
-          {
-            tab: '筛选结果',
-            columns: [
-              { key: 'NAME', title: '用户名' },
-              { key: 'ENAME', title: '用户姓名' }
-            ],
-            list: [],
-            total: 0,
-            pageSize: 10,
-            pageNum: 1, // 当前页码
-            pageOptions: [10, 20, 50, 100],
-            height: 340
-          }
-        ],
+
         resultData: {}, // 选中结果
-        open: false, // 是否打开
-        tableSearch: '',
-        selectRow: {}, // 选中的行
-        obj: {}, // 传给table的对象
 
         spinShow: false,
         Agent: {}, // 代理人信息
@@ -632,8 +606,6 @@
           if (data.resultCode === 0) {
             this.openControl = false; // 关闭弹框
             this.resultData.list = [];
-            this.tableSearch = '';
-            // this.selectRow = {};
             this.$Message.success(data.resultMsg);
             this.queryLists();
             BacklogData(window.jflowPlugin.store);
@@ -711,7 +683,6 @@
         network.post('/jflow/p/c/agent/save', needdata).then((res) => {
           if (res.data.resultCode === 0) {
             this.resultData.list = [];
-            this.tableSearch = '';
             // this.getAgent();
             this.Agent = {
               AGENT_ENAME: needdata.AGENT_ENAME,
@@ -719,7 +690,6 @@
               USER_ID: global.userInfo.id
             };
             this.queryLists();
-            // this.selectRow={};
             this.$Message.success(res.data.resultMsg);
             this.openControl = false; // 关闭弹框
           } else {
