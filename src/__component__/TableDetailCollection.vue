@@ -1659,7 +1659,9 @@
               width: '100px'
             },
             domProps: {
-              id: `${params.index}-${params.column._index - 1}`
+              id: `${params.index}-${params.column._index - 1}`,
+              title: this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname].val : ''
+
             },
             props: {
               // value: this.afterSendData[this.tableName] && this.afterSendData[this.tableName][params.index] && this.afterSendData[this.tableName][params.index][cellData.colname] !== undefined ? this.afterSendData[this.tableName][params.index][cellData.colname] : params.row[cellData.colname],
