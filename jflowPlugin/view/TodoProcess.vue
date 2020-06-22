@@ -114,10 +114,10 @@
     data() {
       return {
         urlMap: { // 请求数据url映射
-          todoList: '/jflow/p/cs/task/backlog/list',
-          approvalList: '/jflow/p/cs/task/history/list',
-          launchList: '/jflow/p/cs/task/initiator/list',
-          copyList: '/jflow/p/cs/task/relation/list'
+          todoList: '/jflow/p/cs/task/backlog/list', // 待我审批
+          approvalList: '/jflow/p/cs/task/history/list', // 我已审批
+          launchList: '/jflow/p/cs/task/initiator/list', // 我发起的
+          copyList: '/jflow/p/cs/task/relation/list' // 我抄送的
         },
         headerUrlMap: {
           todoList: 'upcoming',

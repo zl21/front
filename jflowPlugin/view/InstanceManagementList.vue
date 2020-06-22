@@ -103,6 +103,12 @@
       }
     },
     created() {
+      this.tabConfig.map((item, index) => {
+        if (!global.displayList.includes(String(index + 1))) {
+          this.tabConfig.splice(index, 1);
+        }
+        return item;
+      });
       let type = null;
       switch (global.displayList ? global.displayList.split(',')[0] : '1') {
       case '1': 
