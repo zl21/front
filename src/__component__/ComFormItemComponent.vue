@@ -1070,6 +1070,10 @@
           item.required = item.oldProps._required;
           const itemProps = JSON.parse(JSON.stringify(item.props));
           item.props = Object.assign(itemProps, item.oldProps);
+          if (item.props.display === 'doc' || item.props.display === 'image') {
+            item.props.itemdata.disabled = item.oldProps.disabled;
+            item.props.itemdata.readonly = item.oldProps.readonly;
+          }
           window.eventType(`${this.moduleComponentName}setProps`, window, item);
 
           // this.newFormItemLists[formindex].item.props.disabled = item.oldProps.disabled;

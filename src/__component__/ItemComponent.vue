@@ -1622,9 +1622,14 @@
           });
         } else if (this._items.field === e.value.field) {
           // 表单修改属性
-          if (this._items.props.tableGetName !== e.value.tableName) {
+          if (!e.value.tableGetName) {
+            e.value.tableGetName = '';
+          }
+
+          if (this._items.props.tableGetName !== e.value.tableGetName) {
             return false;
           }
+
           this._items.required = e.value.required;
           if (e.value.regx) {
             this._items.props.regx = e.value.regx;
@@ -1632,6 +1637,10 @@
           // this._items.props = Object.assign(this._items.props, e.value.props);
           this._items.props.disabled = e.value.props.disabled;
           this._items.props.readonly = e.value.props.disabled;
+          if (e.value.props.display === 'doc' || e.value.props.display === 'image') {
+            this._items.props.itemdata.disabled = e.value.props.disabled;
+            this._items.props.itemdata.readonly = e.value.props.disabled;
+          }
         }
         return true;
       },
