@@ -345,7 +345,7 @@
           userId: global.userInfo.id
         }).then((res) => {
           if (res.data.resultCode === 0) {
-            res.data.data.headers = res.data.data.headers.map((item) => {
+            res.data.data.headers = res.data.data.headers.map((item, index) => {
               // 待审批人
               if (item.key === 'approverValue') {
                 item.render = (h, params) => h(
@@ -473,6 +473,11 @@
               )
             });
 
+            // 控制转派的选择模式
+            if (global.changePattern) {
+              res.data.data.headers.splice(0, 1);
+            }
+            
             this.columns = res.data.data.headers;
           }
         });

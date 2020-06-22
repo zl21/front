@@ -29,7 +29,9 @@ import './src/assets/css/custom-ext.less';
 import jflowPlugin from './jflowPlugin/js/index';
 
 
-Vue.use(jflowPlugin);
+Vue.use(jflowPlugin, {
+  changePattern: true
+});
 
 Vue.use(VueDND);
 
