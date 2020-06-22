@@ -5,6 +5,7 @@
       v-model="modalConfig.control"
       :title="type==='3'?'选择转派人':type==='9'?'人工干预':'审批意见'"
       :mask="true"
+      :mask-closable="false"
       :width="type==='3'?835:520"
       :ok-text="type === '9'?'提交':'确定'"
     >
@@ -260,29 +261,8 @@
         agreecontent: '',
         returnOption: '',
         returnContent: '', // 驳回审批意见
-        treedata: [],
-        loading: false, // z最大loading
-        tree_loading: true, // 左边的 的loading
-        tableLoading: false, // 中间的 的loading
-        componentData: [
-          {
-            tab: '筛选结果',
-            columns: [
-              { key: 'NAME', title: '用户名' },
-              { key: 'ENAME', title: '用户姓名' }
-            ],
-            list: [],
-            total: 0,
-            pageSize: 10,
-            pageNum: 1, // 当前页码
-            pageOptions: [10, 20, 50, 100],
-            height: 300
-          }
-        ],
-        resultData: {}, // 选中结果
-        selectRow: {}, // 选中的行
-        obj: {}, //
 
+        selectRow: {}, // 选中的行
 
         intervention: {}, // 人工干预数据
         selectCheck: 0, // 0同意 1驳回
@@ -359,6 +339,7 @@
             content: '审批意见不能为空!',
             mask: true
           });
+          this.buttonDisabled = false;
           return;
         }
         const param = {};
@@ -693,6 +674,7 @@
       },
     },
     created() {
+      console.log(this.config.type);
       if (this.config.type === '9') {
         this.getIntervention();
       }
