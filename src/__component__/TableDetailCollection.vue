@@ -1624,7 +1624,12 @@
           }
           const dom = document.createElement('div');// 创建dom
           dom.id = 'domID';
-          dom.innerHTML = params.row[cellData.colname].slice(0, maxlength);// 
+          dom.innerHTML = '';// 
+          if (params.row[cellData.colname] && params.row[cellData.colname].length > maxlength) {
+            dom.innerHTML = params.row[cellData.colname].slice(0, maxlength);
+          } else {
+            dom.innerHTML = params.row[cellData.colname];
+          }
           dom.style.width = 'auto';
           dom.style.display = 'inline';
           const parentNode = document.getElementsByTagName('body')[0];
@@ -1632,9 +1637,10 @@
           const getWIdth = dom.offsetWidth;
           dom.remove();
 
-          const width = maxlength > 0 ? `${getWIdth}px` : 'auto';
+          const width = maxlength > 0 ? `${getWIdth + 20}px` : 'auto';
           const innerHTML = params.row[cellData.colname];
           const overflow = maxlength ? 'hidden' : 'none';
+          console.log(99, maxlength, innerHTML, width);
 
           return h('div', {
             style: {
