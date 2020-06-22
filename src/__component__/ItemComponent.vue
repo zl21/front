@@ -1229,7 +1229,9 @@
             if (childTableName && this.$parent.type === 'PanelForm') {
               // 主子表的子表修改（1:1）的情况下
               const dom = document.getElementById('actionMODIFY');
-              dom.click();
+              setTimeout(() => {
+                dom.click();
+              }, 300);
             }
           } else {
             this._items.props.itemdata.valuedata = [];
@@ -1261,7 +1263,9 @@
       upSavefile(obj, fixedData, path) {
         // 保存文件
         const dom = document.getElementById('actionMODIFY');
-        dom.click();
+        setTimeout(() => {
+          dom.click();
+        }, 300);
 
         return false;
         // eslint-disable-next-line no-unreachable
@@ -1302,7 +1306,7 @@
       },
       readonlyImage() {
         // 判断是否能上传图片
-        if (!isNaN(this._items.props.itemdata.ImageSize)) {
+        if (!isNaN(this._items.props.itemdata.ImageSize) && this._items.props.itemdata.ImageSize !== null) {
           return !(this._items.props.itemdata.ImageSize > this._items.props.itemdata.valuedata.length);
         }
         return false;
