@@ -542,7 +542,6 @@
             this.fkSelectedChangeData = [];
           }
           const isTableRender = this.isTableRender;
-          console.log(333, this.dataSource.tabth, isTableRender);
           this.columns = this.filterColumns(this.dataSource.tabth, isTableRender); // 每列的属性
           setTimeout(() => {
             this.tabledata = this.filterData(this.dataSource.row); // 每列的数据
@@ -1617,24 +1616,26 @@
         return len;  
       },
       textRender(cellData) {
-        // console.log(333, params.row.BILLNO);
         return (h, params) => {
           let maxlength = '';
           
           if (params.column.webconf && params.column.webconf.maxlength) {
             maxlength = params.column.webconf.maxlength;
           }
-          const d = document.createElement('div');// 创建dom
-          d.id = 'getWidth'; 
-          const dom = document.getElementById('getWidth');
-          dom.innerHTML = params.row[cellData.colname];// 
-          dom.style.display = 'none';
+          const dom = document.createElement('div');// 创建dom
+          dom.id = 'domID';
+          dom.innerHTML = params.row[cellData.colname].slice(0, maxlength);// 
+          dom.style.width = 'auto';
+          dom.style.display = 'inline';
+          const parentNode = document.getElementsByTagName('body')[0];
+          parentNode.appendChild(dom);
+          const getWIdth = dom.offsetWidth;
+          dom.remove();
 
-          console.log(333, dom.clientWidth);
-
-          const width = maxlength ? `${maxlength * 13}px` : '';
+          const width = maxlength > 0 ? `${getWIdth}px` : 'auto';
           const innerHTML = params.row[cellData.colname];
           const overflow = maxlength ? 'hidden' : 'none';
+
           return h('div', {
             style: {
               width,
@@ -1644,7 +1645,7 @@
             },
             domProps: {
               innerHTML,
-              title: innerHTML.length > maxlength ? innerHTML : 'none'
+              title: innerHTML
             },
         
           },);
