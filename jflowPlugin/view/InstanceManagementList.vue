@@ -63,7 +63,6 @@
   import { global } from '../utils/global.config';
 
   export default {
-    name: 'InstanceManagementList',
     components: {
       todoProcess
     },

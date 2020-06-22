@@ -245,6 +245,20 @@
             this.searchData.pageSize = pageSize;
             this.queryLists();
           },
+          'on-row-click': (row) => {
+            if (global.changePattern) {
+              const self = this;
+              self.currentNodeId = String(row.nodeId);
+              self.data.map((item) => {
+                if (item.id === row.id) {
+                  item._check = true;
+                } else {
+                  item._check = false;
+                }
+                return item;
+              });
+            }
+          },
           'on-select': (selection, row) => {
             // 表格行选中事件
             const self = this;
