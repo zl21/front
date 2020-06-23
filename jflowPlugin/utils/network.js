@@ -1,3 +1,4 @@
+
 import axios from 'axios';
 import { global } from './global.config';
 
@@ -55,9 +56,10 @@ function apiEncryptable(url, data, method) {
     });
   }
 
+  const oriUrl = global.gateway ? `/${global.gateway}${url}` : url;
   return axios({
     method,
-    url,
+    oriUrl,
     headers: {
       accountName: 'guest',
       'Content-Type': 'application/json',
