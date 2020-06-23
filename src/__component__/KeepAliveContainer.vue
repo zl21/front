@@ -111,6 +111,9 @@
         const { routePrefix } = this.$route.meta;
         if (routePrefix !== CUSTOMIZED_MODULE_PREFIX) { return; }
         const componentName = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName}.${customizedModuleId}`;
+        // if (customizedModuleName === 'customizeReport') {
+     
+        // } else 
         if (Vue.component(componentName) === undefined) {
           const target = externalModules[customizedModuleName] || customizeModules[customizedModuleName];
           if (target) {

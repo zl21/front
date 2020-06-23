@@ -187,6 +187,7 @@ export default {
               if (c.url.includes('?')) {
                 c.url = getUserenv({ url: c.url });
               }
+              c.url = 'CUSTOMIZED/customizeReport';
               const actionType = c.url.substring(0, c.url.indexOf('/'));
               if (actionType === 'https:' || actionType === 'http:') {
                 const linkUrl = {};
@@ -194,6 +195,8 @@ export default {
                 state.LinkUrl.push(linkUrl); // 方便记录外部链接的跳转URL
                 a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
               } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
+                // CUSTOMIZED/customizeReport：润钱报表,c.id
+                // 报表类自定义界面根据id选择iframe加载的路径
                 // 自定义界面的处理
                 a[`${getLabel({ url: c.url, id: c.id, type: 'customized' })}`] = c.label;
               } else if (actionType === 'SYSTEM') {

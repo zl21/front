@@ -198,6 +198,8 @@ export default {
                 a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
               } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
                 // 自定义界面的处理
+                // CUSTOMIZED/customizeReport：润钱报表,c.id
+                // 报表类自定义界面根据id选择iframe加载的路径
                 a[`${getLabel({ url: c.url, id: c.id, type: 'customized' })}`] = c.label;
               } else if (actionType === 'SYSTEM') {
                 const i = c.url.substring(c.url.indexOf('/') + 1, c.url.lastIndexOf('/'));
