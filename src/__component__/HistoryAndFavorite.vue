@@ -95,8 +95,9 @@
 <script>
   import { mapState, mapActions } from 'vuex';
   import { routeTo } from '../__config__/event.config';
-  import { enableHistoryAndFavoriteUI } from '../constants/global';
+  import { enableHistoryAndFavoriteUI, enableHistoryAndFavorite } from '../constants/global';
   
+
   export default {
     name: 'HistoryAndFavorite',
     data() {

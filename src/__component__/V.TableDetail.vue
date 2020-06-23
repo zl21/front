@@ -174,11 +174,11 @@
             obj.componentAttribute.isreftabs = this.mainFormInfo.buttonsData.data.isreftabs;
             if (enableJflow() && custommizedJflow()) {
               // this.childReadonly为老版本jflow控制所有主子表是否可编辑，新版本jflow需要单表控制，与老版本冲突
-              obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly || item.JflowReadonly;
+              obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly || item.JflowReadonly || item.componentAttribute.buttonsData.data.objreadonly;
             } else {
-              obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly || this.childReadonly || item.JflowReadonly;
+              obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly || this.childReadonly || item.JflowReadonly || item.componentAttribute.buttonsData.data.objreadonly;
             }
-            obj.componentAttribute.formReadonly = this.mainFormInfo.buttonsData.data.objreadonly || item.JflowReadonly;
+            obj.componentAttribute.formReadonly = this.mainFormInfo.buttonsData.data.objreadonly || item.JflowReadonly || item.componentAttribute.buttonsData.data.objreadonly;
             obj.componentAttribute.status = this.mainFormInfo.buttonsData.data.status;
             obj.componentAttribute.webConfSingle = this.mainFormInfo.buttonsData.data.webconf;
           }
