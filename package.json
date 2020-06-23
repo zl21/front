@@ -1,7 +1,7 @@
 {
     "name": "burgeon-r3",
-    "version": "1.8.3",
-    "description": "A Project for R3 Erp.",
+    "version": "1.0.1",
+    "description": "jflow旧插件版本",
     "main": "r3.publish/r3.min.js",
     "files": [
         "r3.publish/r3.min.js",
@@ -27,12 +27,12 @@
         "@babel/plugin-proposal-optional-chaining": "^7.2.0",
         "@babel/plugin-syntax-dynamic-import": "^7.2.0",
         "@babel/preset-env": "^7.3.1",
-        "@syman/ark-ui": "^1.0.50",
         "babel-eslint": "^10.0.1",
         "babel-helper-vue-jsx-merge-props": "^2.0.3",
         "babel-loader": "^8.0.5",
         "babel-plugin-syntax-jsx": "^6.18.0",
         "babel-plugin-transform-vue-jsx": "^3.7.0",
+        "burgeon-ui": "^1.0.53",
         "clean-webpack-plugin": "^1.0.1",
         "copy-webpack-plugin": "^5.0.3",
         "css-loader": "^2.1.0",
@@ -64,7 +64,6 @@
         "@babel/polyfill": "^7.7.0",
         "ag-grid": "^17.1.1",
         "ag-grid-enterprise": "^17.1.1",
-        "ark-ui": "0.0.4",
         "awe-dnd": "^0.3.4",
         "axios": "^0.18.0",
         "compressing": "^1.4.0",
@@ -76,6 +75,6 @@
         "ztree": "^3.5.24"
     },
     "peerDependencies": {
-        "burgeon-ui": ">1.0.0"
+        "@syman/ark-ui": ">1.0.50"
     }
 }
