@@ -235,7 +235,7 @@
           tableName,
           back: true,
         };
-        this.$store.commit('global/tabHref', param);
+        this.$store.commit('global/tabOpen', param);
       }
     },
     watch: {},

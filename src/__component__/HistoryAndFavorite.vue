@@ -95,8 +95,8 @@
 <script>
   import { mapState, mapActions } from 'vuex';
   import { routeTo } from '../__config__/event.config';
+  import { enableHistoryAndFavoriteUI, enableHistoryAndFavorite } from '../constants/global';
   
-  import { enableHistoryAndFavorite } from '../constants/global';
 
   export default {
     name: 'HistoryAndFavorite',
@@ -117,8 +117,8 @@
         showModule: ({ showModule }) => showModule,
       }),
       isShow() {
-        if (enableHistoryAndFavorite() === false) {
-          return enableHistoryAndFavorite();
+        if (enableHistoryAndFavoriteUI() === false) {
+          return enableHistoryAndFavoriteUI();
         }
         return this.showModule.HistoryAndFavorite;
       }

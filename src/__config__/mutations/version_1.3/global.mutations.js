@@ -16,10 +16,21 @@ import {
 } from '../../../__utils__/sessionStorage';
 import { getLabel } from '../../../__utils__/url';
 import { DispatchEvent } from '../../../__utils__/dispatchEvent';
+import getUserenv from '../../../__utils__/getUserenv';
+import store from '../../store.config';
 
 
 export default {
- 
+  updataSTDefaultQuery(data) {
+    // tableId:跳转目标表ID
+    // colid：目标表字段ID
+    // defaultValue：目标表设置的默认值
+    const param = {
+      k: Number(data.colid),
+      v: data.defaultValue
+    };
+    updateSessionObject(data.tableId, param);
+  },
   updataOpenedMenuLists(state, data) {
     state.openedMenuLists = data;
   },
@@ -41,7 +52,14 @@ export default {
     // id:勾选ID，
     // url:配置url,
     // isMenu,
-    // lablel:名称
+    // lablel:名称,
+    // type:link外链类型需要传类型，
+    // lingName:外链表名，
+    // linkId:外链表ID，
+    // query:路由参数
+    if (param && param.url && param.url.includes('?')) {
+      param.url = getUserenv({ url: param.url });
+    }
     const actionType = param.url.substring(0, param.url.indexOf('/'));
     const singleEditType = param.url.substring(param.url.lastIndexOf('/') + 1, param.url.length);
     if (actionType === 'SYSTEM') {
@@ -56,6 +74,30 @@ export default {
           path
         );
       }
+    } else if (actionType === 'https:' || actionType === 'http:') {
+      const name = `${LINK_MODULE_COMPONENT_PREFIX}.${param.lingName.toUpperCase()}.${param.linkId}`;     
+      // this.addKeepAliveLabelMaps({ name, label: param.lablel });
+      state.keepAliveLabelMaps[name] = `${param.lablel}`;
+      if (param.query) {
+        const query = `?objId=${param.query}`;
+        param.url = param.url.concat(query);
+      }
+      const linkUrl = param.url;
+      const linkId = param.linkId;
+      if (!store.state.global.LinkUrl[linkId]) {      
+        store.commit('global/increaseLinkUrl', { linkId, linkUrl });
+      }
+      const obj = {
+        linkName: param.lingName,
+        linkId: param.linkId,
+        linkUrl,
+        linkLabel: param.lablel
+      };
+      window.sessionStorage.setItem('tableDetailUrlMessage', JSON.stringify(obj));
+      const path = `${LINK_MODULE_PREFIX}/${param.lingName.toUpperCase()}/${param.linkId}`;
+      router.push({
+        path
+      });
     } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
       const customizedModuleName = param.url.substring(param.url.indexOf('/') + 1, param.url.lastIndexOf('/'));
       const treeQuery = router.currentRoute.query;
@@ -72,7 +114,8 @@ export default {
       if (param.isMenu) {
         const data = {
           customizedModuleName,
-          customizedModuleId: param.id
+          customizedModuleId: param.id,
+          label: param.label
         };
         setCustomeLabel(data);
       }
@@ -105,6 +148,12 @@ export default {
     if (showFavorites) {
       state.collapseHistoryAndFavorite = showFavorites;
     }
+    // 增加兼容IE逻辑
+    // if ('ActiveXObject' in window && state.collapseHistoryAndFavorite) {
+    //   document.getElementById('ContentDisplayArea').style.marginLeft = '60px';
+    // } else if ('ActiveXObject' in window && !state.collapseHistoryAndFavorite) {
+    //   document.getElementById('ContentDisplayArea').style.marginLeft = '190px';
+    // }
     state.collapseHistoryAndFavorite = !state.collapseHistoryAndFavorite;
     DispatchEvent('doCollapseHistoryAndFavorite');
   },
@@ -137,6 +186,10 @@ export default {
                 c.url = `CUSTOMIZED/${c.url.substring(c.url.lastIndexOf('/') + 1)}`;
               } else {
                 actionType = c.url.substring(0, c.url.indexOf('/'));
+              }
+              // c.url = ' http://210.5.31.5:8001/index.html?USER_DESC={USER_DESC}&AD_ORG_ID={AD_ORG_ID}';
+              if (c.url.includes('?')) {
+                c.url = getUserenv({ url: c.url });
               }
               if (actionType === 'https:' || actionType === 'http:') {
                 const linkUrl = {};
@@ -483,14 +536,13 @@ export default {
   },
   tabOpen(state, {// 打开一个新tab添加路由
     back, type, tableName, tableId, id, customizedModuleName, customizedModuleId, linkName,
-    linkId, url, label, serviceId, dynamicRoutingForCustomizePage
+    linkId, url, label, serviceId, dynamicRoutingForCustomizePage, isSetQuery, queryData
   }) {
     // back:返回标志, 
     // type:跳转类型,
     // tableName:主表表名,
     // tableId:主表ID,
     // id:明细ID,
-    // label:显示名称, 
     // serviceId:网关,
     // customizedModuleName:自定义界面组件名称
     // customizedModuleId:自定义界面ID，
@@ -500,10 +552,36 @@ export default {
     // url:固定格式url（按照框架路由规则拼接好的）,
     // serviceId
     // dynamicRoutingForCustomizePage:自定义界面跳转至单对象界面，为true时可返回来源的单对象界面
+    // isSetQuery:可设置目标界面为标准列表界面的表单默认值
+    // queryData：设置目标界面表单默认值数据
+    if ((type === 'S' || type === 'STANDARD_TABLE_LIST_PREFIX') && isSetQuery && queryData) {
+      if (queryData.values && queryData.values.length > 0) {
+        let flag = true;
+        queryData.values.some((item) => {
+          if (item.display === 'OBJ_FK' && !item.refobjid) {
+            const message = `设置默认值为外键类型，请配置默认值为${item.defaultValue}字段的refobjid值`;
+            window.R3message({
+              title: '错误',
+              content: message,
+              mask: true
+            });
+            flag = false;
+          }
+        });
+        if (!flag) {
+          return;
+        }
+        window.sessionStorage.setItem(queryData.tableId, JSON.stringify(queryData.values));// 将设置的默认参数存入sessionStorage
+      }
+    }
     const keepAliveModuleName = `S.${tableName}.${tableId}`;
     if (state.keepAliveLabelMaps[keepAliveModuleName] === undefined) {
-      state.keepAliveLabelMaps[keepAliveModuleName] = `${label}`;
-      state.serviceIdMap[tableName] = `${serviceId}`;
+      if (label) {
+        state.keepAliveLabelMaps[keepAliveModuleName] = `${label}`;
+      }
+      if (serviceId) {
+        state.serviceIdMap[tableName] = `${serviceId}`;
+      }
       const keepAliveLabelMapsObj = {
         k: keepAliveModuleName,
         v: label
@@ -518,6 +596,7 @@ export default {
     //   };
     //   updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
     // }
+   
     let path = '';
     if (type === STANDARD_TABLE_LIST_PREFIX || type === 'S') {
       if (url) {
@@ -610,7 +689,7 @@ export default {
         // if (state.openedMenuLists.length > 1) { // 框架路由tab逻辑为刷新浏览器保留最后一个打开的tab页签，则关闭当前会自动激活前一个
         router.push(CustomizePagePath);
         // }
-     
+        
         // state.openedMenuLists.map((menu) => {
         //   if (menu.routeFullPath === CustomizePagePath) {
         //     menu.isActive = true;
@@ -639,6 +718,7 @@ export default {
       }
       return;
     }
+
     router.push({
       path
     });

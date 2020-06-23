@@ -30,10 +30,9 @@
        
      -->
     <form
-      v-if="docList.readonly!== true "
       ref="file"
     >
-      <label><i
+      <label :class="docList.readonly ? 'r3-filedoc-disabled' :''"><i
         class="iconfont iconmd-cloud-upload"
         data-target-tag="fkIcon"
       /><input
@@ -140,6 +139,8 @@
       dataitem: {
         handler() {
           this.docList = Object.assign({}, this.dataitem);
+          // this.docList.readonly = this.docList.disabled;
+
           this.setvaluedata();
         },
         deep: true
@@ -279,6 +280,7 @@
 <style lang="less">
 .r3-file-doc{
     color: #0f8ee9; 
+    
    label{
        cursor: pointer; 
    }
@@ -296,6 +298,10 @@
     cursor:pointer;
        
    }
+   .r3-filedoc-disabled{
+      color: #999;
+      cursor: not-allowed;
+    }
    input{
         opacity: 0;
         display: none
