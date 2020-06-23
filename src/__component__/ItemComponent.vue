@@ -1201,7 +1201,6 @@
       filechange(value) {
         // 上传文件
         const _value = value.length > 0 ? value : '';
-        
         const fixedData = Array.isArray(_value) ? [..._value] : '';
         let parms = {
           objId: this._items.props.itemdata.objId,
@@ -1228,8 +1227,10 @@
             this.valueChange();
             if (childTableName && this.$parent.type === 'PanelForm') {
               // 主子表的子表修改（1:1）的情况下
-              const dom = document.getElementById('actionMODIFY');
-              dom.click();
+              setTimeout(() => {
+                const dom = document.getElementById('actionMODIFY');
+                dom.click();
+              }, 500);
             }
           } else {
             this._items.props.itemdata.valuedata = [];
@@ -1260,8 +1261,11 @@
       },
       upSavefile(obj, fixedData, path) {
         // 保存文件
-        const dom = document.getElementById('actionMODIFY');
-        dom.click();
+        setTimeout(() => {
+          const dom = document.getElementById('actionMODIFY');
+          dom.click();
+        }, 500);
+        
 
         return false;
         // eslint-disable-next-line no-unreachable
@@ -1302,7 +1306,7 @@
       },
       readonlyImage() {
         // 判断是否能上传图片
-        if (!isNaN(this._items.props.itemdata.ImageSize)) {
+        if (!isNaN(this._items.props.itemdata.ImageSize) && this._items.props.itemdata.ImageSize !== null) {
           return !(this._items.props.itemdata.ImageSize > this._items.props.itemdata.valuedata.length);
         }
         return false;
@@ -1358,8 +1362,10 @@
                 ]);
                 this.valueImgChange();
                 if (childTableName && this.$parent.type === 'PanelForm') {
-                  const dom = document.getElementById('actionMODIFY');
-                  dom.click();
+                  setTimeout(() => {
+                    const dom = document.getElementById('actionMODIFY');
+                    dom.click();
+                  }, 500);
                 }
               } else {
                 this._items.props.itemdata.valuedata.push(
@@ -1478,8 +1484,11 @@
       },
       upSaveImg(obj, fixedData, path, index) {
         // 图片保存接口
-        const dom = document.getElementById('actionMODIFY');
-        dom.click();
+        setTimeout(() => {
+          const dom = document.getElementById('actionMODIFY');
+          dom.click();
+        }, 500);
+       
         return false;
         fkHttpRequest().fkObjectSave({
           searchObject: {
@@ -1622,9 +1631,14 @@
           });
         } else if (this._items.field === e.value.field) {
           // 表单修改属性
-          if (this._items.props.tableGetName !== e.value.tableName) {
+          if (!e.value.tableGetName) {
+            e.value.tableGetName = '';
+          }
+
+          if (this._items.props.tableGetName !== e.value.tableGetName) {
             return false;
           }
+
           this._items.required = e.value.required;
           if (e.value.regx) {
             this._items.props.regx = e.value.regx;
@@ -1632,6 +1646,10 @@
           // this._items.props = Object.assign(this._items.props, e.value.props);
           this._items.props.disabled = e.value.props.disabled;
           this._items.props.readonly = e.value.props.disabled;
+          if (e.value.props.display === 'doc' || e.value.props.display === 'image') {
+            this._items.props.itemdata.disabled = e.value.props.disabled;
+            this._items.props.itemdata.readonly = e.value.props.disabled;
+          }
         }
         return true;
       },

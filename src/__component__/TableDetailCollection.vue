@@ -1588,6 +1588,9 @@
             // 不可编辑话 文件也是能照常render出来的，只能下载
             return this.docReadonlyRender(cellData, this.DISPLAY_ENUM[cellData.display].tag);
           }
+          if (cellData.display === 'text') {
+            return this.textRender(cellData, this.DISPLAY_ENUM[cellData.display].tag);
+          }
           return null;
         }
         if (cellData.isfk && cellData.fkdisplay) {
@@ -1601,6 +1604,59 @@
         }
         return this.DISPLAY_ENUM[cellData.display].event(cellData, this.DISPLAY_ENUM[cellData.display].tag);
       },
+      strLen(str) {  
+        let len = 0;  
+        for (let i = 0; i < str.length; i++) {  
+          if (str.charCodeAt(i) > 127 || str.charCodeAt(i) === 94) {  
+            len += 2;  
+          } else {  
+            len++;  
+          }  
+        }  
+        return len;  
+      },
+      textRender(cellData) {
+        return (h, params) => {
+          let maxlength = '';
+          
+          if (params.column.webconf && params.column.webconf.maxlength) {
+            maxlength = params.column.webconf.maxlength;
+          }
+          const dom = document.createElement('div');// 创建dom
+          dom.id = 'domID';
+          dom.innerHTML = '';// 
+          if (params.row[cellData.colname] && params.row[cellData.colname].length > maxlength) {
+            dom.innerHTML = params.row[cellData.colname].slice(0, maxlength);
+          } else {
+            dom.innerHTML = params.row[cellData.colname];
+          }
+          dom.style.width = 'auto';
+          dom.style.display = 'inline';
+          const parentNode = document.getElementsByTagName('body')[0];
+          parentNode.appendChild(dom);
+          const getWIdth = dom.offsetWidth;
+          dom.remove();
+
+          const width = maxlength > 0 ? `${getWIdth + 20}px` : 'auto';
+          const innerHTML = params.row[cellData.colname];
+          const overflow = maxlength ? 'hidden' : 'none';
+          console.log(99, maxlength, innerHTML, width);
+
+          return h('div', {
+            style: {
+              width,
+              overflow,
+              'text-overflow': 'ellipsis',
+              'white-space': 'nowrap'
+            },
+            domProps: {
+              innerHTML,
+              title: innerHTML
+            },
+        
+          },);
+        };
+      },
       inputRender(cellData, tag) {
         // 输入框
         return (h, params) => h('div', [
@@ -1609,7 +1665,9 @@
               width: '100px'
             },
             domProps: {
-              id: `${params.index}-${params.column._index - 1}`
+              id: `${params.index}-${params.column._index - 1}`,
+              title: this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname].val : ''
+
             },
             props: {
               // value: this.afterSendData[this.tableName] && this.afterSendData[this.tableName][params.index] && this.afterSendData[this.tableName][params.index][cellData.colname] !== undefined ? this.afterSendData[this.tableName][params.index][cellData.colname] : params.row[cellData.colname],
