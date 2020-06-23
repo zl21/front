@@ -807,7 +807,9 @@
               field: current.colname,
               value: this.defaultValue(current),
               inputname: current.inputname,
-              props: {},
+              props: {
+                regx: /^-?([0-9]+|[0-9]{1,3}(,[0-9]{3})*)(.[0-9]{1,2})?$/
+              },
               event: {
                 keydown: (event) => {
                   // 输入框的keydown event, $this
