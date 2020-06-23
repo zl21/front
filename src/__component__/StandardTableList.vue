@@ -156,6 +156,7 @@
   import ErrorModal from './ErrorModal';
   import modifyDialog from './ModifyModal';
   import tree from './tree';
+  import regExp from '../constants/regExp';
 
   import {
     Version,
@@ -801,6 +802,8 @@
             obj.row = current.row ? current.row : 1;
             obj.col = current.col ? current.col : 1;
             obj.component = ItemComponent;
+            
+
             obj.item = {
               type: checkDisplay(current),
               title: current.coldesc,
@@ -808,7 +811,6 @@
               value: this.defaultValue(current),
               inputname: current.inputname,
               props: {
-                regx: /^-?([0-9]+|[0-9]{1,3}(,[0-9]{3})*)(.[0-9]{1,2})?$/
               },
               event: {
                 keydown: (event) => {
@@ -941,6 +943,33 @@
               },
               validate: {}
             };
+
+
+            // 输入控制
+            if (current.type === 'NUMBER' && !current.display) {
+              // 只能输入 正整数 
+              let string = '';
+              current.length = 100;
+
+              if (current.webconf && current.webconf.ispositive) {
+                string = `^\\d{0,${current.length}}(\\\.[0-9]{0,${
+                  current.scale
+                }})?$`;
+              } else {
+                string = `^(-|\\+)?\\d{0,${current.length - current.scale}}(\\\.[0-9]{0,${
+                  current.scale
+                }})?$`;
+              }
+              
+              const typeRegExp = new RegExp(string);
+              if (current.scale > 0) {
+                obj.item.props.regx = typeRegExp;
+              } else if (current.webconf && current.webconf.ispositive) {
+                obj.item.props.regx = regExp.Number;
+              } else {
+                obj.item.props.regx = regExp.Digital;
+              }
+            }
 
             // 带有combobox的添加到options属性中
             if (current.combobox) {
