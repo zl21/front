@@ -24,7 +24,7 @@ module.exports = {
   // target: 'http://r3.burgeon.cn:28888/', // 李宁
   // target: 'http://jflow-shangfei-r3.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://ark-share-dev.dev.burgeononline.com', // ArkShare环境
-  // target: 'http://47.102.164.111:26666/', // 卡宾环境
+  target: 'http://47.102.164.111:26666/', // 卡宾环境
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop环境
 
   
