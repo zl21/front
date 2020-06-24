@@ -187,7 +187,6 @@ export default {
               if (c.url.includes('?')) {
                 c.url = getUserenv({ url: c.url });
               }
-              c.url = 'CUSTOMIZED/customizeReport';
               const actionType = c.url.substring(0, c.url.indexOf('/'));
               if (actionType === 'https:' || actionType === 'http:') {
                 const linkUrl = {};
