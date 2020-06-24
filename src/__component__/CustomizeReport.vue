@@ -330,13 +330,10 @@
         }
         if (!objElement) {
           objElement = createObjElement();
-          console.log(333, objElement);
         }
         setTimeout(() => {
           if (objElement && objElement.contentDocument) {
             objElement.contentDocument.defaultView.onresize = function () {
-              console.log(11);
-
               if (typeof callback === 'function') {
                 clearTimeout(this.resizeDelay);
                 this.resizeDelay = setTimeout(callback, 50);
