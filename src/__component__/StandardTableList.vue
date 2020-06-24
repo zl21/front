@@ -190,6 +190,7 @@
     },
     data() {
       return {
+        urlArr: ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid'],
         tableButtons: [],
         // isChangeTreeConfigData: '',//oldTree
         treeShow: true,
@@ -1272,6 +1273,7 @@
                 if (tabcmdData.jflowpaths) { // jflow对标准类型按钮配置path
                   const jflowpathsRes = JSON.parse(JSON.stringify(tabcmdData.jflowpaths));
                   buttonConfigInfo.jflowpath = jflowpathsRes[index];
+                  this.urlArr.push(jflowpathsRes[index]);
                 }
                 if (this.webConf && ((this.webConf.disableImport && str === 'CMD_IMPORT') || (this.webConf.disableExport && str === 'CMD_EXPORT'))) {
                   // 根据webConf控制列表界面导入导出按钮
@@ -2325,10 +2327,10 @@
       networkEventListener(event) {
         if (this._inactive) { return; }
         const { detail } = event;
-        const { response } = detail;
-        const urlArr = ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid'];
+        // const { response } = detail;
+        // this.urlArr = ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid'];
         let merge = false;
-        if (urlArr.indexOf(detail.url || '') > -1) {
+        if (this.urlArr.indexOf(detail.url || '') > -1) {
           if (response && response.data && response.data.code === -1) {
             merge = true;
           }
