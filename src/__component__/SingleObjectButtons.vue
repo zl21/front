@@ -3411,6 +3411,29 @@
          
           if (event.detail.type === 'refresh') {
             this.clickButtonsRefresh();
+            if (event.detail.tableId) {
+              const oUl = document.querySelector('.ark-tabs-panels-nav');
+              if (oUl) {
+                for (let i = 0; i < oUl.children.length; i++) {
+                  this.tabPanel.some((item) => {
+                    if (item.id) {
+                      item.tableid = item.id;
+                    }
+                    if (Number(event.detail.tableId) === Number(item.tableid) && item.tabledesc === oUl.children[i].innerText) {
+                      oUl.children[i].click();
+                      return item;
+                    } if (Number(event.detail.tableId) === Number(this.tableId) && this.activeTab.label === oUl.children[i].innerText) {
+                      oUl.children[i].click();
+                      setTimeout(() => {
+                        const refreshButton = document.querySelector('#refresh');
+                        refreshButton.click();
+                        return item;
+                      }, 1000);
+                    }
+                  });
+                }
+              }
+            }
           }
 
           if (event.detail.type === 'save') {

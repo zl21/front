@@ -93,13 +93,13 @@
         @click="btnclick('refresh')"
         v-text="refresh"
       />
-      <Button
+      <!-- <Button
         id="hideRefresh"
         class="hide"
         type="fcdefault"
         @click="btnclick('refresh')"
         v-text="refresh"
-      />
+      /> -->
      
       <Button
         v-if="dataArray.temporaryStorage"

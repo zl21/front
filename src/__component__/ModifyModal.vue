@@ -70,6 +70,7 @@
     },
     data() {
       return {
+        buttonData: {}, // 按钮信息
         formList: {},
         newformList: {},
         formChangeData: {},
@@ -192,6 +193,7 @@
           searchdata: localdata
         };
         fkHttpRequest().fksaveModify({
+          buttonData: this.buttonData,
           searchObject,
           success: (res) => {
             this.loading = false;
@@ -218,6 +220,7 @@
           searchdata: localdata
         };
         fkHttpRequest().fksaveModify({
+          buttonData: this.buttonData,
           searchObject,
           success: (res) => {
             this.loading = false;
@@ -227,8 +230,9 @@
           }
         });
       },
-      open(router, ids, fixedcolumns, id) {
+      open(router, ids, fixedcolumns, id, buttonData) {
         //  打开弹窗
+        this.buttonData = buttonData;
         this.ids = ids;
         this.router = router;
         if (id === 'all') {

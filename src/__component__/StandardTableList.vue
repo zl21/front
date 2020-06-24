@@ -1891,7 +1891,7 @@
             this.modifyDialogshow = true;
             setTimeout(() => {
               this.$refs.dialogmodify.open(
-                this[INSTANCE_ROUTE_QUERY], this.buttons.selectIdArr.length, this.searchData.fixedcolumns, this.buttons.selectIdArr
+                this[INSTANCE_ROUTE_QUERY], this.buttons.selectIdArr.length, this.searchData.fixedcolumns, this.buttons.selectIdArr, obj
               );
             }, 200);
           } else {
@@ -1906,7 +1906,7 @@
                 this.modifyDialogshow = true;
                 setTimeout(() => {
                   this.$refs.dialogmodify.open(
-                    this[INSTANCE_ROUTE_QUERY], this.ag.datas.totalRowCount, this.searchData.fixedcolumns, 'all'
+                    this[INSTANCE_ROUTE_QUERY], this.ag.datas.totalRowCount, this.searchData.fixedcolumns, 'all', obj
                   );
                 }, 200);
               },
