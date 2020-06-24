@@ -401,7 +401,6 @@
         } else {
           tableId = actid;
         }
-        debugger;
         // window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
         window.sessionStorage.setItem('dynamicRouting', true);
         if (url) {
