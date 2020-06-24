@@ -1637,7 +1637,7 @@
           const getWIdth = dom.offsetWidth;
           dom.remove();
 
-          const width = maxlength > 0 ? `${getWIdth + 20}px` : 'auto';
+          const width = maxlength > 0 ? `${getWIdth + 18}px` : 'auto';
           const innerHTML = params.row[cellData.colname];
           const overflow = maxlength ? 'hidden' : 'none';
           console.log(99, maxlength, innerHTML, width);
