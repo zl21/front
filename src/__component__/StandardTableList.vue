@@ -2327,7 +2327,7 @@
       networkEventListener(event) {
         if (this._inactive) { return; }
         const { detail } = event;
-        // const { response } = detail;
+        const { response } = detail;
         // this.urlArr = ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid'];
         let merge = false;
         if (this.urlArr.indexOf(detail.url || '') > -1) {

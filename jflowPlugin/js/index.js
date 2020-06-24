@@ -212,11 +212,10 @@ function initLists() { // init
 }
 
 
-const install = function install(Vue, options = {}) {
+const install = async function install(Vue, options = {}) {
+  await globalChange(options);
   initLists();
   CreateButton();
-
-  globalChange(options);
   // 业务系统登录成功后创建右上角的小图标
   window.addEventListener('userReady', (event) => {
     globalChange({

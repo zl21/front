@@ -95,12 +95,6 @@ module.exports = env => ({
         changeOrigin: true
       },
       {
-        context: '/jflow/p/c/identity',
-        target: 'http://jflow-syman-dev.dev.burgeononline.com/',
-        changeOrigin: true
-
-      },
-      {
         context: '/jflow',
         // target: 'http://106.15.24.156:32940', // 重新占单
         // target: 'http://106.15.24.156:32940', // 李宁环境

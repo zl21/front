@@ -80,7 +80,6 @@ function NetworkConstructor() {
     }
     return response;
   });
-
   this.post = (url, config) => apiEncryptable(global.gateway ? `/${global.gateway}${url}` : url, config, 'post');
 
   this.get = (url, config) => apiEncryptable(global.gateway ? `/${global.gateway}${url}` : url, config, 'get');
