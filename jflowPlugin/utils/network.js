@@ -56,10 +56,10 @@ function apiEncryptable(url, data, method) {
     });
   }
 
-  const oriUrl = global.gateway ? `/${global.gateway}${url}` : url;
+  
   return axios({
     method,
-    oriUrl,
+    url,
     headers: {
       accountName: 'guest',
       'Content-Type': 'application/json',
@@ -81,9 +81,9 @@ function NetworkConstructor() {
     return response;
   });
 
-  this.post = (url, config) => apiEncryptable(url, config, 'post');
+  this.post = (url, config) => apiEncryptable(global.gateway ? `/${global.gateway}${url}` : url, config, 'post');
 
-  this.get = (url, config) => apiEncryptable(url, config, 'get');
+  this.get = (url, config) => apiEncryptable(global.gateway ? `/${global.gateway}${url}` : url, config, 'get');
 
   this.axios = axios;
 }
