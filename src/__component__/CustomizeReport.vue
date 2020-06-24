@@ -315,7 +315,7 @@
         const className = '__obj_element_resize_listener_class__';
         const createObjElement = () => {
           const objElement = document.createElement('object');
-          objElement.setAttribute('style', 'display: block; position: absolute; top: -100000px; left: -100000px; height: 100%; width: 100%; overflow: hidden;opacity: 1; pointer-events: none; z-index: -1;');
+          objElement.setAttribute('style', 'display: block; position: relative; top: -100000px; left: -100000px; height: 100%; width:100%; overflow: hidden;opacity: 1; pointer-events: none; z-index: -1;');
           objElement.type = 'text/html';
           objElement.data = 'about:blank';
           objElement.classList.add(className);
@@ -337,10 +337,10 @@
             objElement.contentDocument.defaultView.onresize = function () {
               console.log(11);
 
-              // if (typeof callback === 'function') {
-              //   clearTimeout(this.resizeDelay);
-              //   this.resizeDelay = setTimeout(callback, 50);
-              // }
+              if (typeof callback === 'function') {
+                clearTimeout(this.resizeDelay);
+                this.resizeDelay = setTimeout(callback, 50);
+              }
             };
           }
         }, 0);
@@ -348,7 +348,7 @@
       }
     },
     beforeMount() {
-      this.iframeId = `${this.$route.query.id}-report-iframe`;
+      this.iframeId = `${this.$route.params.customizedModuleId}-report-iframe`;
     },
     mounted() {
       this.fetchFilter();
