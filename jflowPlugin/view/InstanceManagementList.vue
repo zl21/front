@@ -99,33 +99,45 @@
           Vue.component(this.tabalive, Vue.extend(todoProcess));
         } 
         this.currentComponents = this.tabalive;
+      },
+      init() {
+        this.tabConfig.map((item, index) => {
+          if (!global.displayList.includes(String(index + 1))) {
+            this.tabConfig.splice(index, 1);
+          }
+          return item;
+        });
+        let type = null;
+        switch (global.displayList ? global.displayList.split(',')[0] : '1') {
+        case '1': 
+          type = 'todoList'; break;
+        case '2': 
+          type = 'approvalList'; break;
+        case '3': 
+          type = 'launchList'; break;
+        case '4': 
+          type = 'copyList'; break;
+        default: break;
+        }
+        this.tabalive = type;
+
+        if (!Vue.component(this.tabalive)) {
+          Vue.component(this.tabalive, Vue.extend(todoProcess));
+        } 
+        this.currentComponents = this.tabalive;
       }
     },
     created() {
-      this.tabConfig.map((item, index) => {
-        if (!global.displayList.includes(String(index + 1))) {
-          this.tabConfig.splice(index, 1);
-        }
-        return item;
-      });
-      let type = null;
-      switch (global.displayList ? global.displayList.split(',')[0] : '1') {
-      case '1': 
-        type = 'todoList'; break;
-      case '2': 
-        type = 'approvalList'; break;
-      case '3': 
-        type = 'launchList'; break;
-      case '4': 
-        type = 'copyList'; break;
-      default: break;
+      if (global.displayList) {
+        this.init();
+      } else {
+        const timer = setInterval(async () => {
+          if (global.displayList) {
+            clearInterval(timer);
+            this.init();
+          }
+        }, 10);
       }
-      this.tabalive = type;
-
-      if (!Vue.component(this.tabalive)) {
-        Vue.component(this.tabalive, Vue.extend(todoProcess));
-      } 
-      this.currentComponents = this.tabalive;
     }
   };
 </script>
