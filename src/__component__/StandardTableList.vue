@@ -591,8 +591,6 @@
               isMenu: true,
               treeTableListSelectId
             };
-
-
             this.directionalRouter(param);// 定向路由跳转方法
           } else if (this.ag.datas.objdistype === 'tabpanle') {
             // 单对象左右结构
@@ -683,7 +681,6 @@
             return;
           }
           window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
-
           this.tabOpen({
             id: refobjid,
             tableName: reftablename,
@@ -693,7 +690,7 @@
             serviceId
           });
         }
-        if (colDef.customerurl && Object.keys(colDef.customerurl).length > 0) {
+        if (colDef.customerurl && Object.keys(colDef.customerurl).length > 0) {//配置链接型字段
           const objdistype = colDef.customerurl.objdistype;
           if (objdistype === 'popwin') {
             // 自定义弹窗
