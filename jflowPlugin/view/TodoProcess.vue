@@ -135,93 +135,6 @@
         // 表单配置
         formLists: [],
         options: [], // 单据类型选项
-        // formLists: [
-        //   {
-        //     row: 1,
-        //     col: 1,
-        //     component: ItemComponent,
-        //     item: {
-        //       type: 'input',
-        //       title: '工作流编号',
-        //       filed: 'instanceId',
-        //       props: {
-        //         regx: /^[0-9]*$/
-        //       },
-        //       event: {
-        //         keydown: (event) => {
-        //           if (event.keyCode === 13) {
-        //             this.searchData.page = 1;
-        //             this.queryLists();
-        //           }
-        //         }
-        //       }
-        //     }
-        //   },
-        //   {
-        //     row: 1,
-        //     col: 1,
-        //     component: ItemComponent,
-        //     item: {
-        //       type: 'input',
-        //       title: '查询索引',
-        //       filed: 'businessNumber',
-        //       event: {
-        //         keydown: (event) => {
-        //           if (event.keyCode === 13) {
-        //             this.searchData.page = 1;
-        //             this.queryLists();
-        //           }
-        //         }
-        //       }
-        //     }
-            
-        //   },
-        //   {
-        //     row: 1,
-        //     col: 1,
-        //     component: ItemComponent,
-        //     item: {
-        //       type: 'select',
-        //       title: '单据类型',
-        //       filed: 'businessType',
-        //       options: [
-        //         { value: 0, label: '发送成功' },
-        //         { value: 1, label: '发送失败(待发送)' },
-        //         { value: 2, label: '消费成功' },
-        //         { value: 3, label: '消费失败(待消费)' }
-        //       ]
-        //     }
-        //   },
-        //   {
-        //     row: 1,
-        //     col: 1,
-        //     component: ItemComponent,
-        //     item: {
-        //       type: 'DatePicker',
-        //       title: '开始时间',
-        //       filed: 'createTime',
-        //       value: [new Date(new Date(new Date().getTime() - 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0)).minusDays(29).format('yyyy-MM-dd hh:mm:ss'), new Date(new Date().setHours(23, 59, 59)).format('yyyy-MM-dd hh:mm:ss')]
-        //     }
-        //   },
-        //   {
-        //     row: 1,
-        //     col: 1,
-        //     component: ItemComponent,
-        //     item: {
-        //       type: 'input',
-        //       title: '节点名称',
-        //       filed: 'nodeName',
-        //       event: {
-        //         keydown: (event) => {
-        //           if (event.keyCode === 13) {
-        //             this.searchData.page = 1;
-        //             this.queryLists();
-        //           }
-        //         }
-        //       }
-        //     }
-        //   }
-        // ],
         // 查询条件
         searchData: {
           page: 1,
@@ -293,6 +206,18 @@
               item._check = false;
               return item;
             });
+          },
+          'on-sort-change': (row) => {
+            if (row.order === 'normal') {
+              delete this.searchData.sortable;
+              delete this.searchData.sortType;
+            } else {
+              this.searchData.sortable = row.key;
+              this.searchData.sortType = row.order;
+            }
+            
+            this.searchData.page = 1;
+            this.queryLists();
           }
         },
         // findValue: "", //input搜索框的输入值
@@ -385,6 +310,12 @@
                   );
                 };
               }
+
+              // 处理默认排序
+              if (item.sortType && item.sortable) {
+                this.searchData.sortable = item.sortable;
+                this.searchData.sortType = item.sortType;
+              }
               return item;
             });
 
@@ -465,6 +396,7 @@
             if (global.changePattern) {
               res.data.data.headers.splice(0, 1);
             }
+            
             
             this.columns = res.data.data.headers;
           }
