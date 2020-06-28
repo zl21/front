@@ -24,6 +24,8 @@ import './src/assets/css/ag-theme-balham.less';
 import './src/assets/theme/custom.less';
 import './src/assets/css/loading.css';
 import './src/assets/css/custom-ext.less';
+import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
+
 
 // jflowPlugin
 import jflowPlugin from './jflowPlugin/js/index';
