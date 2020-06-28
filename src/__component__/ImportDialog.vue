@@ -573,7 +573,7 @@
   .ark-modal-body {
     padding: 20px !important;
   }
-  .ark-icon-ios-close {
+  .iconios-close {
     color: #999 !important;
   }
   .ark-modal-footer {
