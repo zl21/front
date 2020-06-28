@@ -197,7 +197,8 @@ function initLists() { // init
       globalChange(res.data.data);
       thirdlogin();
       createComponent();
-      if (res.data.data.msgPushLocation) {
+      // 判断是否配置了websocket
+      if (res.data.data.msgPushLocation && (res.data.data.msgPushLocation.startsWith('ws://') || res.data.data.msgPushLocation.startsWith('http') || res.data.data.msgPushLocation.startsWith('https'))) {
         websocketInit();
       } else {
         todoList();
