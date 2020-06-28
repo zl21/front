@@ -551,7 +551,6 @@
       VerificationFormInt(type) {
         //  form 计算 校验
         clearTimeout(this.setVerficaTime);
-        console.log(type, '555');
         let check = false;
         this.setVerficaTime = setTimeout(() => {
           this.VerificationForm = [];
