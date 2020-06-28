@@ -2781,8 +2781,17 @@
         // this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
         // 如果不清空，跳转到新增界面时会出现子表无请求的状况
       },
+      noClickSave() { // 校验是否是保存按钮调用的保存方法
+        const saveEventAfter = getSeesionObject('saveEventAfter');
+        if (this.saveEventAfter === 'submit' 
+          || saveEventAfter.type === 'submit'
+          || this.saveEventAfter === 'objTabActionSlient'
+          || saveEventAfter.type === 'objTabActionSlient') { // 提交操作
+          return true;
+        }
+        return false;
+      },
       objectSave(obj) { // 保存按钮事件逻辑
-        console.log(333, this.testUpdata());
         if (!this.testUpdata() && this.itemInfo.webact) { // 兼容半定制界面，保存成功时通知外部
           DispatchEvent('customizeClick', {
             detail: {
@@ -2810,7 +2819,6 @@
         const type = 'add';
         const path = this.dynamic.requestUrlPath;
         const objId = -1;
-
         if (!this.subtables()) { // 为false的情况下是没有子表
           // console.log('没有子表');
           if (this.dynamic.requestUrlPath) { // 配置path
@@ -2834,9 +2842,13 @@
         this.saveParameters();// 调用获取参数方法
         const path = obj.requestUrlPath;
         const type = 'modify';
+        let mainModify = {};// 主表修改的值
+        if (this.updateData && this.updateData[this.tableName] && this.updateData[this.tableName].modify && this.updateData[this.tableName].modify[this.tableName]) {
+          mainModify = Object.keys(this.updateData[this.tableName].modify[this.tableName]);
+        }
         if (!this.subtables()) { // 为false的情况下是没有子表
           // console.log('没有子表',);
-          if (this.verifyRequiredInformation()) {
+          if (this.verifyRequiredInformation() && mainModify.length > 0) {
             if (obj.requestUrlPath) { // 配置path
               // console.log('主表编辑保存,配置path的逻辑', obj.requestUrlPath);
               this.savaNewTable(type, path, this.itemId);
@@ -2855,19 +2867,32 @@
       mainTableEditorSaveIsreftabs(obj) { // 主表编辑保存存在子表
         const itemName = this.itemName;// 子表表名
         const itemCurrentParameter = this.itemCurrentParameter;// 子表参数
+        // const currentParameter = this.currentParameter;
         const path = obj.requestUrlPath;// 配置的path
         const type = 'modify';
         const objId = this.itemId;
+        let mainModify = {};// 主表修改的值
+        if (this.updateData && this.updateData[this.tableName] && this.updateData[this.tableName].modify && this.updateData[this.tableName].modify[this.tableName]) {
+          mainModify = Object.keys(this.updateData[this.tableName].modify[this.tableName]);
+        }
         if (this.objectType === 'vertical') {
           let itemModify = [];
           let itemAdd = [];
           if (this.updateData[itemName].modify && this.updateData[itemName].modify[itemName]) {
-            itemModify = Object.values(this.updateData[itemName].modify[itemName]);// 子表修改的值
+            itemModify = Object.keys(this.updateData[itemName].modify[itemName]);// 子表修改的值
           }
           if (this.updateData[itemName] && this.updateData[itemName].add[itemName]) {
-            itemAdd = Object.values(this.updateData[itemName].add[itemName]);// 子表新增的值
+            itemAdd = Object.keys(this.updateData[itemName].add[itemName]);// 子表新增的值
           }
-          if (itemModify.length === 0 && itemAdd.length === 0) { // 主表修改
+          if (this.noClickSave()) {
+            if (this.verifyRequiredInformation()) { // 纵向结构保存校验
+              if (obj.requestUrlPath) { // 配置path
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+              } else { // 没有配置path  
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+              }
+            }
+          } else if (itemModify.length === 0 && itemAdd.length === 0 && mainModify.length > 0) { // 主表修改
             if (this.verifyRequiredInformation()) { // 纵向结构保存校验
               if (obj.requestUrlPath) { // 配置path
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
@@ -2901,13 +2926,15 @@
             }
           }
         } else if (itemName === this.tableName) { // 主表修改
-          if (this.verifyRequiredInformation()) { // 横向结构保存校验
-            if (obj.requestUrlPath) { // 配置path
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-            } else { // 没有配置path
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+          if (mainModify.length > 0 || this.noClickSave()) { // 主表修改了值和提交或自定义按钮配置isSave时，调用保存
+            if (this.verifyRequiredInformation()) { // 横向结构保存校验
+              if (obj.requestUrlPath) { // 配置path
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+              } else { // 没有配置path
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+              }
             }
-          }
+          } 
         } else { // 子表修改
           let itemModify = [];// 子表修改的值
           let itemAdd = [];// 子表新增的值

@@ -188,7 +188,7 @@ export default {
         .map(d => d.children)
         .reduce((a, c) => a.concat(c))
         .reduce((a, c) => {
-          if (c.type === 'action') {
+          if (c.type === 'action' || c.type === 'rpt') {
           // 外部跳转链接URL的处理
             if (c.url) {
               // c.url = `${c.url}?AD_CLIENT_NAME={AD_CLIENT_NAME}&AD_ORG_ID={AD_ORG_ID}`;
@@ -201,8 +201,13 @@ export default {
                 linkUrl[c.id] = c.url;
                 state.LinkUrl.push(linkUrl); // 方便记录外部链接的跳转URL
                 a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
-              } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
+              } else if (actionType.toUpperCase() === 'CUSTOMIZED' || c.url === 'customizeReport') {
                 // 自定义界面的处理
+                // CUSTOMIZED/customizeReport：润钱报表,c.id
+                // 报表类自定义界面根据id选择iframe加载的路径
+                // 后端润乾报表配置已统一，在前端重置配置
+                c.url = 'CUSTOMIZED/customizeReport';
+                c.type = 'action';
                 a[`${getLabel({ url: c.url, id: c.id, type: 'customized' })}`] = c.label;
               } else if (actionType === 'SYSTEM') {
                 const i = c.url.substring(c.url.indexOf('/') + 1, c.url.lastIndexOf('/'));

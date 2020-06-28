@@ -14,6 +14,7 @@ import proDesc from '../__customize__/pro_desc/pro_desc.vue';
 import standard from '../__customize__/colorSize/Standard.vue';
 import taskList from '../__customize__/taskList/taskList.vue';
 import metricsDefinition from '../__customize__/metricsDefinition/metricsDefinition.vue';
+import customizeReport from '../__component__/CustomizeReport.vue';
 
 
 export default {
@@ -48,7 +49,9 @@ export default {
     component: taskList,
     labelName: '任务记录',
     label: 'taskList'
-
   },
-  
+  customizeReport: {
+    component: customizeReport,
+    label: 'customizeReport'
+  },
 };

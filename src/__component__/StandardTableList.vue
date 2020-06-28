@@ -156,6 +156,7 @@
   import ErrorModal from './ErrorModal';
   import modifyDialog from './ModifyModal';
   import tree from './tree';
+  import regExp from '../constants/regExp';
 
   import {
     Version,
@@ -592,8 +593,6 @@
               isMenu: true,
               treeTableListSelectId
             };
-
-
             this.directionalRouter(param);// 定向路由跳转方法
           } else if (this.ag.datas.objdistype === 'tabpanle') {
             // 单对象左右结构
@@ -684,7 +683,6 @@
             return;
           }
           window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
-
           this.tabOpen({
             id: refobjid,
             tableName: reftablename,
@@ -694,7 +692,7 @@
             serviceId
           });
         }
-        if (colDef.customerurl && Object.keys(colDef.customerurl).length > 0) {
+        if (colDef.customerurl && Object.keys(colDef.customerurl).length > 0) {//配置链接型字段
           const objdistype = colDef.customerurl.objdistype;
           if (objdistype === 'popwin') {
             // 自定义弹窗
@@ -802,13 +800,16 @@
             obj.row = current.row ? current.row : 1;
             obj.col = current.col ? current.col : 1;
             obj.component = ItemComponent;
+            
+
             obj.item = {
               type: checkDisplay(current),
               title: current.coldesc,
               field: current.colname,
               value: this.defaultValue(current),
               inputname: current.inputname,
-              props: {},
+              props: {
+              },
               event: {
                 keydown: (event) => {
                   // 输入框的keydown event, $this
@@ -940,6 +941,33 @@
               },
               validate: {}
             };
+
+
+            // 输入控制
+            if (current.type === 'NUMBER' && !current.display) {
+              // 只能输入 正整数 
+              let string = '';
+              current.length = 100;
+
+              if (current.webconf && current.webconf.ispositive) {
+                string = `^\\d{0,${current.length}}(\\\.[0-9]{0,${
+                  current.scale
+                }})?$`;
+              } else {
+                string = `^(-|\\+)?\\d{0,${current.length - current.scale}}(\\\.[0-9]{0,${
+                  current.scale
+                }})?$`;
+              }
+              
+              const typeRegExp = new RegExp(string);
+              if (current.scale > 0) {
+                obj.item.props.regx = typeRegExp;
+              } else if (current.webconf && current.webconf.ispositive) {
+                obj.item.props.regx = regExp.Number;
+              } else {
+                obj.item.props.regx = regExp.Digital;
+              }
+            }
 
             // 带有combobox的添加到options属性中
             if (current.combobox) {
