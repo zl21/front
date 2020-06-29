@@ -254,8 +254,9 @@
       // 获取表头数据
       getHeader() {
         const gridName = this.headerUrlMap[this.tabalive];
-        network.post(`/jflow/p/cs/sys/grid/header/${gridName}`, {
-          userId: global.userInfo.id
+        network.post('/jflow/p/cs/sys/grid/header', {
+          userId: global.userInfo.id,
+          gridName
         }).then((res) => {
           if (res.data.resultCode === 0) {
             res.data.data.headers = res.data.data.headers.map((item, index) => {
@@ -405,8 +406,9 @@
       // 获取查询条件
       getFormLists() {
         const gridName = this.headerUrlMap[this.tabalive];
-        network.post(`/jflow/p/cs/sys/grid/search/area/${gridName}`, {
-          userId: global.userInfo.id
+        network.post('/jflow/p/cs/sys/grid/search/area', {
+          userId: global.userInfo.id,
+          gridName
         })
           .then((res) => {
             res.data.data.searchArea = res.data.data.searchArea.map((item) => {

@@ -26,9 +26,9 @@ module.exports = {
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop环境
 
   
-  Version: '1.3', // 版本号
+  Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
-  enableGateWay: false, // 网关是否打开,
+  enableGateWay: true, // 网关是否打开,
   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用接口请求
   enableHistoryAndFavoriteUI: true, // 是否显示收藏与最近使用UI
   ignoreGateWayPattern: [/\/jflow\/*/g, /\/api\/*/g], // 框架默认禁用的网关逻辑的正则模式匹配
