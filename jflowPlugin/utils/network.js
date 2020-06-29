@@ -30,7 +30,7 @@ function apiEncryptable(url, data, method) {
     const aesKey = uuidGenerator();// 秘钥
     // 对传参进行aes加密
     const key = CryptoJS.enc.Utf8.parse(aesKey);// 将秘钥转换成Utf8字节数组
-    const encrypt = CryptoJS.AES.encrypt(JSON.stringify(config.data), key, {
+    const encrypt = CryptoJS.AES.encrypt(JSON.stringify(data), key, {
       mode: CryptoJS.mode.ECB,
       padding: CryptoJS.pad.Pkcs7
     });
