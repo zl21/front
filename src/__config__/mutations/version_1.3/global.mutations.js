@@ -211,8 +211,10 @@ export default {
                 // CUSTOMIZED/customizeReport：润钱报表,c.id
                 // 报表类自定义界面根据id选择iframe加载的路径
                 // 后端润乾报表配置已统一，在前端重置配置
-                c.url = 'CUSTOMIZED/customizeReport';
-                c.type = 'action';
+                if (c.url === 'customizeReport') {
+                  c.url = 'CUSTOMIZED/customizeReport';
+                  c.type = 'action';
+                }
                 a[`${getLabel({ url: c.url, id: c.id, type: 'customized' })}`] = c.label;
               } else if (actionType === 'SYSTEM') {
                 const i = c.url.substring(c.url.indexOf('/') + 1, c.url.lastIndexOf('/'));
