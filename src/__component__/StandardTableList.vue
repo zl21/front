@@ -1293,7 +1293,7 @@
                 this.setPrintValueForButtons(true);
               } else {
                 this.buttonMap[str].eName = item;
-                const buttonConfigInfo = this.buttonMap[str];
+                const buttonConfigInfo = JSON.parse(JSON.stringify(this.buttonMap[str]));
                 if (tabcmdData.paths) {
                   buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
                 }
