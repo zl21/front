@@ -23,7 +23,7 @@ import PluginModule from './plugin.config';
 import { updateSessionObject, getSeesionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
 
 
-const pluginModules = {};
+let pluginModules = {};
 
 const getKeepAliveModuleName = (routeInfo) => {
   const {
@@ -146,6 +146,9 @@ const getOriginModuleName = (to) => {
 Object.keys(PluginModule).forEach((key) => {
   pluginModules[key.toUpperCase()] = PluginModule[key];
 });
+if (window.ProjectConfig && window.ProjectConfig.externalPluginModules) { // 整合外部插件配置与框架插件配置
+  pluginModules = Object.assign({}, pluginModules, window.ProjectConfig.externalPluginModules);
+}
 
 export default (router) => {
   router.beforeEach((to, from, next) => {
