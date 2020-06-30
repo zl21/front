@@ -2,6 +2,7 @@
   <div class="InstanceManagementList">
     <div class="content">
       <Tabs
+        v-if="tabConfig.length > 0"
         :value="tabalive"
         @on-click="onClick"
       >
@@ -135,6 +136,8 @@
           if (global.displayList) {
             clearInterval(timer);
             this.init();
+          } else {
+            this.tabConfig = [];
           }
         }, 10);
       }
