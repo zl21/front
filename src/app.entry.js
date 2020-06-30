@@ -17,7 +17,7 @@ import { removeSessionObject, getSeesionObject } from './__utils__/sessionStorag
 import customizedModalConfig from './__config__/customizeDialog.config';
 import CompositeForm from './__component__/CompositeForm';
 import Loading from './__utils__/loading';
-import getObjdisType from './src/__utils__/getObjdisType';
+// import getObjdisType from './src/__utils__/getObjdisType';
 // css import
 import '../node_modules/ag-grid/dist/styles/ag-grid.css';
 import './assets/css/ag-theme-balham.less';
