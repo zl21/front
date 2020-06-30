@@ -692,7 +692,7 @@
             serviceId
           });
         }
-        if (colDef.customerurl && Object.keys(colDef.customerurl).length > 0) {//配置链接型字段
+        if (colDef.customerurl && Object.keys(colDef.customerurl).length > 0) { // 配置链接型字段
           const objdistype = colDef.customerurl.objdistype;
           if (objdistype === 'popwin') {
             // 自定义弹窗
@@ -1294,7 +1294,8 @@
                 this.setPrintValueForButtons(true);
               } else {
                 this.buttonMap[str].eName = item;
-                const buttonConfigInfo = this.buttonMap[str];
+                const buttonConfigInfo = JSON.parse(JSON.stringify(this.buttonMap[str]));
+                
                 if (tabcmdData.paths) {
                   buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
                 }
