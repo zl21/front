@@ -691,7 +691,7 @@
             serviceId
           });
         }
-        if (colDef.customerurl && Object.keys(colDef.customerurl).length > 0) {//配置链接型字段
+        if (colDef.customerurl && Object.keys(colDef.customerurl).length > 0) { // 配置链接型字段
           const objdistype = colDef.customerurl.objdistype;
           if (objdistype === 'popwin') {
             // 自定义弹窗
@@ -2328,23 +2328,48 @@
             };
             window.sessionStorage.setItem('tableDetailUrlMessage', JSON.stringify(obj));
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-            const name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
-            this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
-            const path = getUrl({ url: tabAction, id: tab.webid, type: 'customized' });
-            const keepAliveLabelMapsObj = {
-              k: name,
-              v: tab.webdesc
-            };
-            const undataFromPageCustomizeButtonInfo = {
-              k: name,
-              v: this[INSTANCE_ROUTE_QUERY]
-            };
-            updateSessionObject('undataFromPageCustomizeButtonInfo', undataFromPageCustomizeButtonInfo);// 将自定义按钮为跳转自定义界面类型的自定义按钮信息存入session
+            // const name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
+            // this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
+            // const path = getUrl({ url: tabAction, id: tab.webid, type: 'customized' });
+            // const keepAliveLabelMapsObj = {
+            //   k: name,
+            //   v: tab.webdesc
+            // };
+            // const undataFromPageCustomizeButtonInfo = {
+            //   k: name,
+            //   v: this[INSTANCE_ROUTE_QUERY]
+            // };
+            // updateSessionObject('undataFromPageCustomizeButtonInfo', undataFromPageCustomizeButtonInfo);// 将自定义按钮为跳转自定义界面类型的自定义按钮信息存入session
 
-            updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
-            router.push(
-              path
-            );
+            // updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
+            // router.push(
+            //   path
+            // );
+            if (singleEditType === ':itemId') {
+              if (this.buttons.selectIdArr.length === 0) {
+                this.$Message.warning('请勾选ID');
+                return;
+              } if (this.buttons.selectIdArr.length > 1) {
+                this.$Message.warning('只能勾选单个ID');
+                return;
+              }
+              const itemId = this.buttons.selectIdArr.filter(item => item);
+              const path = `${tabAction.replace(/:itemId/, itemId)}`;
+              const param = {
+                url: path,
+                id: itemId[0],
+                isMenu: true,
+              };
+              this.directionalRouter(param);// 定向路由跳转方法
+              // router.push(
+              //   path
+              // );
+            } else {
+              const path = `/${tabAction}`;
+              router.push(
+                path
+              );
+            }
           }
         }
       },
