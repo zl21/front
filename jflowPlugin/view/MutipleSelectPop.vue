@@ -212,7 +212,6 @@
   </div>
 </template>
 <script>
-  import { mapState } from 'vuex';
   import ZTree from '../ztree/zTree';
   import { fuzzySearch } from '../ztree/js/fuzzysearch';
   import network from '../utils/network';
@@ -296,7 +295,6 @@
           search: ''
         },
         treeData: [], // 组织树
-        showTree: this.open,
 
         // 角色树
         currentoRole: null, // 当前选中的角色  -->去除不需要字段
