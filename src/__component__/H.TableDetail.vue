@@ -210,19 +210,23 @@
     },
     mounted() {
       this.getMainTable(this.tabCurrentIndex, false);
-      setTimeout(() => {
+      const interval = setInterval(() => {
         const query = this.$route.query.ACTIVE;
         const oUl = document.querySelector('.ark-tabs-panels-nav');
         if (query && oUl) {
           for (let i = 0; i < oUl.children.length; i++) {
             this.tabPanels.forEach((item) => {
               if (Number(query) === item.tableid && item.tabledesc === oUl.children[i].innerText) {
+                clearInterval(interval);
                 oUl.children[i].click();
               }
             });
           }
         }
-      }, 1000);
+      }, 1000);// 每1秒轮询一次，10次结束，
+      setTimeout(() => {
+        clearInterval(interval);
+      }, 10000);
     },
     created() {
       // this.emptyTestData();

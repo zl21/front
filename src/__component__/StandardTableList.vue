@@ -156,6 +156,7 @@
   import ErrorModal from './ErrorModal';
   import modifyDialog from './ModifyModal';
   import tree from './tree';
+  import regExp from '../constants/regExp';
 
   import {
     Version,
@@ -190,6 +191,7 @@
     },
     data() {
       return {
+        urlArr: ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid'],
         tableButtons: [],
         // isChangeTreeConfigData: '',//oldTree
         treeShow: true,
@@ -591,8 +593,6 @@
               isMenu: true,
               treeTableListSelectId
             };
-
-
             this.directionalRouter(param);// 定向路由跳转方法
           } else if (this.ag.datas.objdistype === 'tabpanle') {
             // 单对象左右结构
@@ -683,7 +683,6 @@
             return;
           }
           window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
-
           this.tabOpen({
             id: refobjid,
             tableName: reftablename,
@@ -693,7 +692,7 @@
             serviceId
           });
         }
-        if (colDef.customerurl && Object.keys(colDef.customerurl).length > 0) {
+        if (colDef.customerurl && Object.keys(colDef.customerurl).length > 0) { // 配置链接型字段
           const objdistype = colDef.customerurl.objdistype;
           if (objdistype === 'popwin') {
             // 自定义弹窗
@@ -801,13 +800,16 @@
             obj.row = current.row ? current.row : 1;
             obj.col = current.col ? current.col : 1;
             obj.component = ItemComponent;
+            
+
             obj.item = {
               type: checkDisplay(current),
               title: current.coldesc,
               field: current.colname,
               value: this.defaultValue(current),
               inputname: current.inputname,
-              props: {},
+              props: {
+              },
               event: {
                 keydown: (event) => {
                   // 输入框的keydown event, $this
@@ -939,6 +941,33 @@
               },
               validate: {}
             };
+
+
+            // 输入控制
+            if (current.type === 'NUMBER' && !current.display) {
+              // 只能输入 正整数 
+              let string = '';
+              current.length = 100;
+
+              if (current.webconf && current.webconf.ispositive) {
+                string = `^\\d{0,${current.length}}(\\\.[0-9]{0,${
+                  current.scale
+                }})?$`;
+              } else {
+                string = `^(-|\\+)?\\d{0,${current.length - current.scale}}(\\\.[0-9]{0,${
+                  current.scale
+                }})?$`;
+              }
+              
+              const typeRegExp = new RegExp(string);
+              if (current.scale > 0) {
+                obj.item.props.regx = typeRegExp;
+              } else if (current.webconf && current.webconf.ispositive) {
+                obj.item.props.regx = regExp.Number;
+              } else {
+                obj.item.props.regx = regExp.Digital;
+              }
+            }
 
             // 带有combobox的添加到options属性中
             if (current.combobox) {
@@ -1265,13 +1294,15 @@
                 this.setPrintValueForButtons(true);
               } else {
                 this.buttonMap[str].eName = item;
-                const buttonConfigInfo = this.buttonMap[str];
+                const buttonConfigInfo = JSON.parse(JSON.stringify(this.buttonMap[str]));
+                
                 if (tabcmdData.paths) {
                   buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
                 }
                 if (tabcmdData.jflowpaths) { // jflow对标准类型按钮配置path
                   const jflowpathsRes = JSON.parse(JSON.stringify(tabcmdData.jflowpaths));
                   buttonConfigInfo.jflowpath = jflowpathsRes[index];
+                  this.urlArr.push(jflowpathsRes[index]);
                 }
                 if (this.webConf && ((this.webConf.disableImport && str === 'CMD_IMPORT') || (this.webConf.disableExport && str === 'CMD_EXPORT'))) {
                   // 根据webConf控制列表界面导入导出按钮
@@ -1889,7 +1920,7 @@
             this.modifyDialogshow = true;
             setTimeout(() => {
               this.$refs.dialogmodify.open(
-                this[INSTANCE_ROUTE_QUERY], this.buttons.selectIdArr.length, this.searchData.fixedcolumns, this.buttons.selectIdArr
+                this[INSTANCE_ROUTE_QUERY], this.buttons.selectIdArr.length, this.searchData.fixedcolumns, this.buttons.selectIdArr, obj
               );
             }, 200);
           } else {
@@ -1904,7 +1935,7 @@
                 this.modifyDialogshow = true;
                 setTimeout(() => {
                   this.$refs.dialogmodify.open(
-                    this[INSTANCE_ROUTE_QUERY], this.ag.datas.totalRowCount, this.searchData.fixedcolumns, 'all'
+                    this[INSTANCE_ROUTE_QUERY], this.ag.datas.totalRowCount, this.searchData.fixedcolumns, 'all', obj
                   );
                 }, 200);
               },
@@ -2326,9 +2357,9 @@
         if (this._inactive) { return; }
         const { detail } = event;
         const { response } = detail;
-        const urlArr = ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid'];
+        // this.urlArr = ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid'];
         let merge = false;
-        if (urlArr.indexOf(detail.url || '') > -1) {
+        if (this.urlArr.indexOf(detail.url || '') > -1) {
           if (response && response.data && response.data.code === -1) {
             merge = true;
           }

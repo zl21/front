@@ -17,7 +17,7 @@ import { removeSessionObject, getSeesionObject } from './__utils__/sessionStorag
 import customizedModalConfig from './__config__/customizeDialog.config';
 import CompositeForm from './__component__/CompositeForm';
 import Loading from './__utils__/loading';
-import getObjdisType from './src/__utils__/getObjdisType';
+// import getObjdisType from './src/__utils__/getObjdisType';
 // css import
 import '../node_modules/ag-grid/dist/styles/ag-grid.css';
 import './assets/css/ag-theme-balham.less';
@@ -103,6 +103,12 @@ const init = () => {
     }, 500);
   }
 };
+
+// 提前挂载方法
+window.changeNavigatorSetting = (data) => {
+  store.commit('global/changeNavigatorSetting', data);
+};
+
 const backTouristRoute = () => {
   // window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
   // router.push({ path: getTouristRoute() });
