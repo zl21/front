@@ -212,7 +212,7 @@
       this.getMainTable(this.tabCurrentIndex, false);
       const interval = setInterval(() => {
         const query = this.$route.query.ACTIVE;
-        const oUl = document.querySelector('.burgeon-tabs-panels-nav');
+        const oUl = document.querySelector('.ark-tabs-panels-nav');
         if (query && oUl) {
           for (let i = 0; i < oUl.children.length; i++) {
             this.tabPanels.forEach((item) => {
