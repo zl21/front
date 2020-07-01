@@ -386,7 +386,16 @@ function NetworkConstructor() {
       reqTime: now.getTime()
     };
 
-    return axios.post(matchedUrl, config);
+    let headers = {};
+    if (url.includes('/p/cs/objectTab') || url.includes('/p/cs/itemObj')) {
+      const { tableName } = router.currentRoute.params;
+      headers = {
+        headers: {
+          'maintable-name': tableName,
+        }
+      };
+    }
+    return axios.post(matchedUrl, config, headers);
   };
 
   // equals to axios.get(url, config)
