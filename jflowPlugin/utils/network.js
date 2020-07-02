@@ -62,7 +62,7 @@ function apiEncryptable(url, data, method) {
     url,
     headers: {
       accountName: 'guest',
-      'Content-Type': 'application/json',
+      'Content-Type': global.apiEncryptable ? 'text/html; charset=utf-8' : 'application/json',
     },
     data
   });
