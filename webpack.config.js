@@ -124,7 +124,8 @@ module.exports = env => ({
         // target: ' http://zhixiao-jflow.pro.burgeononline.com/', // 知晓环境
         // target: 'http://jflow-qiaodan.dev.burgeononline.com', // 乔丹测试环境
         changeOrigin: true
-      }]
+      }
+    ]
   },
   target: 'web',
   devtool: env && env.production ? 'source-map' : 'cheap-module-eval-source-map',
