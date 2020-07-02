@@ -168,14 +168,6 @@ function initiateLaunch(data) { // 业务系统流程发起
         return;
       }
       if (res.data.resultCode === 0) {
-        if (res.objids) {
-          window.R3message({
-            title: '提示',
-            content: '请稍等,正在审批······',
-            mask: true
-          });
-        }
-
         DispatchEvent('jflowClick', {
           detail: {
             type: 'refresh'

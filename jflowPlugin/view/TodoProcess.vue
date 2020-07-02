@@ -401,7 +401,7 @@
             });
 
             // 控制转派的选择模式
-            if (global.changePattern) {
+            if (global.changePattern && this.tabalive === 'todoList') {
               res.data.data.headers.splice(0, 1);
             }
             

@@ -136,8 +136,6 @@
           if (global.displayList) {
             clearInterval(timer);
             this.init();
-          } else {
-            this.tabConfig = [];
           }
         }, 10);
       }
