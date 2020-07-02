@@ -1218,7 +1218,7 @@
           // this.upData();
         });
       },
-      webactionClick(obj) { // 动作定义执行
+      webactionClick(obj) { // 动作定义执行'
         if (obj.confirm) {
           // 有提示
           let selete = [];
@@ -1520,9 +1520,9 @@
         } 
       },
 
-      clickSave({ data, event }) {
-        if (typeof (event) === 'function') {
-          this.saveCallBack = event;
+      clickSave(data) {
+        if (typeof (data.event) === 'function') {
+          this.saveCallBack = data.event;
         }
         if (data && data.requestUrlPath) {
           this.saveButtonPath = data.requestUrlPath;
@@ -1553,22 +1553,14 @@
           }
         } else {
           if (data) {
-            // if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
-            //   const saveEventAfter = {
-            //     k: 'type',
-            //     v: data.type
-            //   };
-            //   updateSessionObject('saveEventAfter', saveEventAfter);
-            // } else {
             this.saveEventAfter = data.type;
-            // }
           }
-        
           const obj = {   
             name: '保存',
             eName: this.saveInfo.name,
             requestUrlPath: this.saveInfo.paths 
           };
+
           this.objectSave(obj);
         }
       },
