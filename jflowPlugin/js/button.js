@@ -72,7 +72,7 @@ async function buttonsResponse(e) {
     case '9': // 人工干预
       await getJflowInfo();
       window.jflowPlugin.open({// 同意和转派
-        control: true, type: item.button, url: item.url, instanceId: global.jflowInfo.instanceId, returnOption: global.jflowInfo.backNodeIds, item 
+        control: true, type: item.button, url: item.url, instanceId: global.jflowInfo.instanceId, returnOption: global.jflowInfo.backNodeIds, item, nodeId: global.jflowInfo.nodeId
       });
       break;
     case '5': // 流程进度

@@ -47,6 +47,10 @@
         if (option.item) {
           this.modalConfig.item = option.item;
         }
+
+        if (option.nodeId) {
+          this.modalConfig.nodeId = String(option.nodeId);
+        }
         // this.modalConfig = option
         setTimeout(() => {
           this.modalConfigShow = option.control;
