@@ -17,32 +17,32 @@ import todoList from './todoList';
 
 
 function thirdlogin() { // 三方登录  获取accessToken
-  let data = {
+  const data = {
     username: 'guest'
   };
   const headers = {};
-  if (global.apiEncryptable) {
-    const aesKey = uuidGenerator();// 秘钥
-    // 对传参进行aes加密
-    const key = CryptoJS.enc.Utf8.parse(aesKey);// 将秘钥转换成Utf8字节数组
-    const encrypt = CryptoJS.AES.encrypt(JSON.stringify(data), key, {
-      mode: CryptoJS.mode.ECB,
-      padding: CryptoJS.pad.Pkcs7
-    });
-    data = encrypt.toString();// 加密后的数据
+  // if (global.apiEncryptable) {
+  //   const aesKey = uuidGenerator();// 秘钥
+  //   // 对传参进行aes加密
+  //   const key = CryptoJS.enc.Utf8.parse(aesKey);// 将秘钥转换成Utf8字节数组
+  //   const encrypt = CryptoJS.AES.encrypt(JSON.stringify(data), key, {
+  //     mode: CryptoJS.mode.ECB,
+  //     padding: CryptoJS.pad.Pkcs7
+  //   });
+  //   data = encrypt.toString();// 加密后的数据
         
         
-    // uuid加密 设置请求头
-    const uuidEncrypt = new JSEncrypt();
-    const PUBLIC_KEY = global.PUBLIC_KEY;
-    uuidEncrypt.setPublicKey(`
-        -----BEGIN PUBLIC KEY-----
-        ${PUBLIC_KEY}
-        -----END PUBLIC KEY-----`);
-    headers['encrypt-key'] = uuidEncrypt.encrypt(aesKey);
-    headers['encrypt-type'] = 'RSA';
-    headers['Content-Type'] = 'application/json';
-  }
+  //   // uuid加密 设置请求头
+  //   const uuidEncrypt = new JSEncrypt();
+  //   const PUBLIC_KEY = global.PUBLIC_KEY;
+  //   uuidEncrypt.setPublicKey(`
+  //       -----BEGIN PUBLIC KEY-----
+  //       ${PUBLIC_KEY}
+  //       -----END PUBLIC KEY-----`);
+  //   headers['encrypt-key'] = uuidEncrypt.encrypt(aesKey);
+  //   headers['encrypt-type'] = 'RSA';
+  //   headers['Content-Type'] = 'application/json';
+  // }
   
   network.post('/jflow/p/c/thirdlogin', data, {
     headers

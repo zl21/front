@@ -48,7 +48,7 @@ function apiEncryptable(url, data, method) {
       url,
       headers: {
         accountName: 'guest',
-        'Content-Type': 'application/json',
+        'Content-Type': 'text/plain',
         'encrypt-type': 'RSA',
         'encrypt-key': uuidEncrypt.encrypt(aesKey)
       },
