@@ -926,9 +926,21 @@
         } else {
           this.getRoleData();
         }
+      },
+
+      // 根据节点查询配置的角色
+      getRoleConfig() {
+        this.$network.post('/jflow/p/c/identity/groups/nodegroup', {
+          NODE_ID: this.nodeId
+        })
+          .then((res) => {
+            if (res.data.resultCode === 0) {
+              this.roleConfig = res.data.GROUP_STR;
+            }
+          });
       }
     },
-    mounted() {
+    async mounted() {
       // 加载组织树
       this.component[0].pageNum = 1;
       this.getTreeData();
@@ -942,6 +954,7 @@
         this.resultRightData = this.deepCopy(this.resultData);
       }
 
+      await this.getRoleConfig();
       // 获取人员信息
       this.findUser({});
     },
