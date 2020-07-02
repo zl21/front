@@ -74,6 +74,7 @@
         <mutipleSelectPop
           v-if="openControl"
           ref="dialogtest"
+          :node-id="currentNodeId"
           :is-use="false"
           :is-mutiple="false"
           @getResult="getResult"

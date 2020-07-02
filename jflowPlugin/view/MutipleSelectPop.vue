@@ -277,6 +277,10 @@
         type: Boolean,
         default: true
       },
+      nodeId: {
+        type: String,
+        default: null
+      }
     // isResultShow: {
     //   //result.list是否反显
     //   type: Boolean,
@@ -866,7 +870,8 @@
         this.treeLoading = true;
         let records = [];
         await network.post('/jflow/p/c/identity/org/treeload', {
-          ID: item ? item.ID : null
+          ID: item ? item.ID : null,
+          NODE_ID: this.nodeId
         }).then((res) => {
           this.treeLoading = false;
           if (res.data.resultCode === 0) {
