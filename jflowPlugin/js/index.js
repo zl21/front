@@ -138,12 +138,12 @@ function initiateLaunch(data) { // 业务系统流程发起
   return new Promise((resolve, reject) => {
     let obj = {
       // eslint-disable-next-line no-nested-ternary
-      businessCodes: global.routeInfo.itemId,
-      businessType: global.routeInfo.tableId,
-      businessTypeName: global.routeInfo.tableName,
+      businessCodes: global.routeInfo ? global.routeInfo.itemId : null,
+      businessType: global.routeInfo ? global.routeInfo.tableId : null,
+      businessTypeName: global.routeInfo ? global.routeInfo.tableName : null,
       initiator: global.userInfo.id,
       userName: global.userInfo.name,
-      instanceId: global.jflowInfo.instanceId,
+      instanceId: global.jflowInfo ? global.jflowInfo.instanceId : null,
       initiatorName: global.userInfo.name,
       initiatorText: global.userInfo.ename,
       changeUser: global.userInfo.id,
