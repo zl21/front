@@ -43,6 +43,7 @@
         <mutipleSelectPop
           v-if="modalConfig.control"
           ref="dialogtest"
+          :node-id="config.nodeId"
           :is-mutiple="false"
           :is-use="false"
           @getResult="getResult"
@@ -674,7 +675,6 @@
       },
     },
     created() {
-      console.log(this.config.type);
       if (this.config.type === '9') {
         this.getIntervention();
       }

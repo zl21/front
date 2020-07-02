@@ -939,8 +939,8 @@
       },
 
       // 根据节点查询配置的角色
-      getRoleConfig() {
-        network.post('/jflow/p/c/identity/groups/nodegroup', {
+      async getRoleConfig() {
+        await network.post('/jflow/p/c/identity/groups/nodegroup', {
           NODE_ID: this.nodeId
         })
           .then((res) => {
