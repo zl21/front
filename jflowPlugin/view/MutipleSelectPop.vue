@@ -392,7 +392,9 @@
               }
             }
           }
-        }
+        },
+
+        roleConfig: null // 人员过滤条件
       };
     },
     computed: {
@@ -826,6 +828,9 @@
       // 查找用户信息
       findUser(param) {
         this.tableLoading = true;
+        param = Object.assign(param, {
+          GROUPID: this.roleConfig
+        });
         network.post('/jflow/p/c/identity/user/list', param).then((res) => {
           this.tableLoading = false;
           const data = res.data;
@@ -930,7 +935,7 @@
 
       // 根据节点查询配置的角色
       getRoleConfig() {
-        this.$network.post('/jflow/p/c/identity/groups/nodegroup', {
+        network.post('/jflow/p/c/identity/groups/nodegroup', {
           NODE_ID: this.nodeId
         })
           .then((res) => {
