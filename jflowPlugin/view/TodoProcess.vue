@@ -387,7 +387,7 @@
                       on: {
                         click: () => {
                           window.open(
-                            `${global.localIp}/#/FlowChart?instanceId=${params.row.instanceId}`,
+                            `${global.localIp}/#/FlowChart?instanceId=${params.row.instanceId ? params.row.instanceId : params.row.lastInstanceId}`,
                             '_blank',
                             'width=861,height=612'
                           );

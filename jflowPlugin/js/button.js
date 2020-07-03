@@ -77,7 +77,7 @@ async function buttonsResponse(e) {
       break;
     case '5': // 流程进度
       await getJflowInfo();
-      window.open(`${global.localIp}/#/FlowChart?instanceId=${global.jflowInfo.instanceId}`, '_blank', 'width=861,height=612');
+      window.open(`${global.localIp}/#/FlowChart?instanceId=${global.jflowInfo.instanceId ? global.jflowInfo.instanceId : global.jflowInfo.lastInstanceId}`, '_blank', 'width=861,height=612');
       break;
     case '6': // 重启流程
     case 'submit': // 提交
