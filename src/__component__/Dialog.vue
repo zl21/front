@@ -30,6 +30,7 @@
         :obj-list="objList"
         :action-id="actionId"
         :item-id="itemId"
+        :popwin-message="popwinMessage"
         :obj-tab-action-dialog-config="objTabActionDialogConfig"
         @setTitle="setTitle"
         @closeActionDialog="closeActionDialog"
@@ -62,6 +63,10 @@
       },
       actionId: {// 获取自定按钮ID
         type: [Number, String],
+        default: () => ''
+      },
+      popwinMessage: {// 获取popwin类型打开自定义弹框传入元数据信息
+        type: String,
         default: () => ''
       },
       

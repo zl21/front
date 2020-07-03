@@ -123,6 +123,7 @@
     />
     <dialogComponent
       ref="dialogRef"
+      :popwin-message="popwinMessage"
       :title="dialogComponentNameConfig.title"
       :mask="dialogComponentNameConfig.mask"
       :content-text="dialogComponentNameConfig.contentText"
@@ -191,6 +192,7 @@
     },
     data() {
       return {
+        popwinMessage: '',
         tableButtons: [],
         // isChangeTreeConfigData: '',//oldTree
         treeShow: true,
@@ -699,6 +701,8 @@
             this.dialogComponentNameConfig.title = colDef.customerurl.reftabdesc;
             this.dialogComponentNameConfig.footerHide = true;
             this.dialogComponentName = colDef.customerurl.tableurl;
+            //  rowData
+            this.popwinMessage = colDef.customerurl.refobjid;// 将元数据配置的refobjid，字符串传入自定义弹框，供弹框作为参数使用
           } else if (objdistype === 'tabpanle') {
             // 左右结构单对象界面
             const type = 'tableDetailHorizontal';
