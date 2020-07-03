@@ -15,7 +15,7 @@ import CompositeForm from './src/__component__/CompositeForm';
 import customizedModalConfig from './src/__config__/customizeDialog.config';
 import Loading from './src/__utils__/loading';
 import getObjdisType from './src/__utils__/getObjdisType';
-
+import projectConfig from './project.config';
 
 // css import
 import './node_modules/ag-grid/dist/styles/ag-grid.css';
@@ -236,3 +236,11 @@ if (enableGateWay()) {
   getSubSystems();
   init();
 }
+
+const packageMessage = {
+  version: '1.8.4',
+  packageTime: '2020.07.03.13.33', 
+  user: 'npm', 
+  projectConfig  
+};
+window.packageMessage = packageMessage;
