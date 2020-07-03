@@ -10,7 +10,7 @@ class Upload {
     this.fileName = obj.fileName || 'file';
     this.img = new Image();
     this.length = obj.length; // 最多上传多少张
-    this.imgSize = obj.imgSize || 1024 * 1024 * 200; // 10MB;
+    this.imgSize = obj.imgSize || 1024 * 1024 * 10; // 10MB;
     this.type = obj.type || 'Image'; // 上传的文件类型
     this.checkimgSize = true;
     this.result = 0;
