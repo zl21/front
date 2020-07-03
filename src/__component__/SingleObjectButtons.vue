@@ -3418,7 +3418,7 @@
         }
       },
       jflowClick(event) {
-        if (!this._inactive && this._inactive !== null) { // 只处理当前激活的子表tab
+        if (!this._inactive) { // 只处理当前激活的子表tab
           if (event.detail.type === 'submit') {
             const promise = new Promise((resolve, reject) => {
               const submitButtonPath = (Version() === '1.4') ? this.defaultButtonData.tabcmd.paths[this.defaultButtonData.tabcmd.cmds.indexOf('actionSUBMIT')] : null;
