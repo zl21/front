@@ -1558,8 +1558,7 @@
           const obj = {   
             name: '保存',
             eName: this.saveInfo.name,
-            requestUrlPath: this.saveInfo.paths,
-            jflowPath: this.saveInfo.jflowPath 
+            requestUrlPath: this.saveInfo.paths
           };
           this.objectSave(obj);
         }
@@ -2843,11 +2842,11 @@
           if ((this.verifyRequiredInformation() && mainModify.length > 0) || this.noClickSave()) {
             if (obj.requestUrlPath) { // 配置path
               // console.log('主表编辑保存,配置path的逻辑', obj.requestUrlPath);
-              this.savaNewTable(type, obj.jflowPath ? obj.jflowPath : path, this.itemId);
+              this.savaNewTable(type, path, this.itemId);
             } else { // 没有配置path
               // console.log('主表编辑保存,没有配置path的逻辑');
               const objId = this.itemId;
-              this.savaNewTable(type, obj.jflowPath ? obj.jflowPath : path, objId);
+              this.savaNewTable(type, path, objId);
             }
           } 
         }
@@ -2879,17 +2878,17 @@
           if (this.noClickSave()) {
             if (this.verifyRequiredInformation()) { // 纵向结构保存校验
               if (obj.requestUrlPath) { // 配置path
-                this.savaNewTable(type, obj.jflowPath ? obj.jflowPath : path, objId, itemName, itemCurrentParameter);
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               } else { // 没有配置path  
-                this.savaNewTable(type, obj.jflowPath ? obj.jflowPath : path, objId, itemName, itemCurrentParameter);
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               }
             }
           } else if (itemModify.length === 0 && itemAdd.length === 0 && mainModify.length > 0) { // 主表修改
             if (this.verifyRequiredInformation()) { // 纵向结构保存校验
               if (obj.requestUrlPath) { // 配置path
-                this.savaNewTable(type, obj.jflowPath ? obj.jflowPath : path, objId, itemName, itemCurrentParameter);
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               } else { // 没有配置path  
-                this.savaNewTable(type, obj.jflowPath ? obj.jflowPath : path, objId, itemName, itemCurrentParameter);
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               }
             }
           } else { 
@@ -2921,9 +2920,9 @@
           if (mainModify.length > 0 || this.noClickSave()) { // 主表修改了值和提交或自定义按钮配置isSave时，调用保存
             if (this.verifyRequiredInformation()) { // 横向结构保存校验
               if (obj.requestUrlPath) { // 配置path
-                this.savaNewTable(type, obj.jflowPath ? obj.jflowPath : path, objId, itemName, itemCurrentParameter);
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               } else { // 没有配置path
-                this.savaNewTable(type, obj.jflowPath ? obj.jflowPath : path, objId, itemName, itemCurrentParameter);
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               }
             }
           } 
@@ -3094,13 +3093,13 @@
        * }
        */
       savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType) { // 主表新增保存方法
-        let buttonInfo = {};
-        if (this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '保存').length > 0) {
-          buttonInfo = this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '保存')[0];
-        } else if (this.dataArray.jflowButton.filter(d => d.button === '4').length > 0) {
-          buttonInfo = this.dataArray.jflowButton.filter(d => d.button === '4')[0];
-          buttonInfo.jflowpath = this.saveButtonJflowPath;
-        }
+        // let buttonInfo = {};
+        // if (this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '保存').length > 0) {
+        //   buttonInfo = this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '保存')[0];
+        // } else if (this.dataArray.jflowButton.filter(d => d.button === '4').length > 0) {
+        //   buttonInfo = this.dataArray.jflowButton.filter(d => d.button === '4')[0];
+        //   buttonInfo.jflowpath = this.saveButtonJflowPath;
+        // }
         const tableName = this.tableName;
         const objectType = this.objectType;
         const isreftabs = this.subtables();
@@ -3124,7 +3123,8 @@
           itemObjId: this.itemObjId,
           temporaryStoragePath: this.temporaryStoragePath, // 暂存path
           tabrelation, // 子表1:1标记
-          buttonInfo
+          // buttonInfo,
+          jflowPath: this.saveInfo.jflowPath
         };
         const promise = new Promise((resolve, reject) => {
           if (this.itemId === 'New') {
