@@ -171,22 +171,22 @@
           this.errorpawdgrade1 = 'red';
           return false;
         }
-        // if (this.newpaswd.length < 5) { // 密码长度小于6
-        //   this.pawdgrade = false;
-        //   this.errorpawdgrade1 = 'red';
-        //   this.pawdgrade1 = true;
-        //   return false;
-        // }
+        if (this.newpaswd.length < 5) { // 密码长度小于6
+          this.pawdgrade = false;
+          this.errorpawdgrade1 = 'red';
+          this.pawdgrade1 = true;
+          return false;
+        }
         if (this.againpaswd === '') { // 再次输入密码为空
           this.inconformity3 = true;
           return false;
         }
-        // if (!/[A-Za-z]/.test(this.newpaswd) || !/[0-9]/.test(this.newpaswd)) { // 只要有一位数字、一位字母，其他四位不管是啥
-        //   this.pawdgrade = false;
-        //   this.errorpawdgrade1 = 'red';
-        //   this.pawdgrade1 = true;
-        //   return false;
-        // }
+        if (!/[A-Za-z]/.test(this.newpaswd) || !/[0-9]/.test(this.newpaswd)) { // 只要有一位数字、一位字母，其他四位不管是啥
+          this.pawdgrade = false;
+          this.errorpawdgrade1 = 'red';
+          this.pawdgrade1 = true;
+          return false;
+        }
         if (this.newpaswd !== this.againpaswd) { // 两次密码不一样
           this.inconformity3 = true;
           return false;
