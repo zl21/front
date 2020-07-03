@@ -1507,6 +1507,7 @@
       },
 
       clickSave(data) {
+        debugger;
         if (data && data.requestUrlPath) {
           this.saveButtonPath = data.requestUrlPath;
         }
@@ -2825,7 +2826,7 @@
         }
         if (!this.subtables()) { // 为false的情况下是没有子表
           // console.log('没有子表',);
-          if (this.verifyRequiredInformation() && mainModify.length > 0) {
+          if ((this.verifyRequiredInformation() && mainModify.length > 0) || this.noClickSave()) {
             if (obj.requestUrlPath) { // 配置path
               // console.log('主表编辑保存,配置path的逻辑', obj.requestUrlPath);
               this.savaNewTable(type, path, this.itemId);
@@ -2834,7 +2835,7 @@
               const objId = this.itemId;
               this.savaNewTable(type, path, objId);
             }
-          }
+          } 
         }
         if (this.subtables()) { // 为true的情况下是存在子表
           this.mainTableEditorSaveIsreftabs(obj);
