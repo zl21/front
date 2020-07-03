@@ -1558,9 +1558,8 @@
           const obj = {   
             name: '保存',
             eName: this.saveInfo.name,
-            requestUrlPath: this.saveInfo.jflowPath 
+            requestUrlPath: this.saveInfo.paths
           };
-
           this.objectSave(obj);
         }
       },
@@ -2840,7 +2839,7 @@
         }
         if (!this.subtables()) { // 为false的情况下是没有子表
           // console.log('没有子表',);
-          if (this.verifyRequiredInformation() && mainModify.length > 0) {
+          if ((this.verifyRequiredInformation() && mainModify.length > 0) || this.noClickSave()) {
             if (obj.requestUrlPath) { // 配置path
               // console.log('主表编辑保存,配置path的逻辑', obj.requestUrlPath);
               this.savaNewTable(type, path, this.itemId);
@@ -2849,7 +2848,7 @@
               const objId = this.itemId;
               this.savaNewTable(type, path, objId);
             }
-          }
+          } 
         }
         if (this.subtables()) { // 为true的情况下是存在子表
           this.mainTableEditorSaveIsreftabs(obj);
@@ -3094,13 +3093,13 @@
        * }
        */
       savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType) { // 主表新增保存方法
-        let buttonInfo = {};
-        if (this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '保存').length > 0) {
-          buttonInfo = this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '保存')[0];
-        } else if (this.dataArray.jflowButton.filter(d => d.button === '4').length > 0) {
-          buttonInfo = this.dataArray.jflowButton.filter(d => d.button === '4')[0];
-          buttonInfo.jflowpath = this.saveButtonJflowPath;
-        }
+        // let buttonInfo = {};
+        // if (this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '保存').length > 0) {
+        //   buttonInfo = this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '保存')[0];
+        // } else if (this.dataArray.jflowButton.filter(d => d.button === '4').length > 0) {
+        //   buttonInfo = this.dataArray.jflowButton.filter(d => d.button === '4')[0];
+        //   buttonInfo.jflowpath = this.saveButtonJflowPath;
+        // }
         const tableName = this.tableName;
         const objectType = this.objectType;
         const isreftabs = this.subtables();
@@ -3124,7 +3123,8 @@
           itemObjId: this.itemObjId,
           temporaryStoragePath: this.temporaryStoragePath, // 暂存path
           tabrelation, // 子表1:1标记
-          buttonInfo
+          // buttonInfo,
+          jflowPath: this.saveInfo.jflowPath
         };
         const promise = new Promise((resolve, reject) => {
           if (this.itemId === 'New') {
@@ -3418,7 +3418,7 @@
         }
       },
       jflowClick(event) {
-        if (!this._inactive && this._inactive !== null) { // 只处理当前激活的子表tab
+        if (!this._inactive) { // 只处理当前激活的子表tab
           if (event.detail.type === 'submit') {
             const promise = new Promise((resolve, reject) => {
               const submitButtonPath = (Version() === '1.4') ? this.defaultButtonData.tabcmd.paths[this.defaultButtonData.tabcmd.cmds.indexOf('actionSUBMIT')] : null;
