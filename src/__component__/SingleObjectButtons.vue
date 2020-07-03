@@ -1558,9 +1558,8 @@
           const obj = {   
             name: '保存',
             eName: this.saveInfo.name,
-            requestUrlPath: this.saveInfo.jflowPath 
+            requestUrlPath: this.saveInfo.paths
           };
-
           this.objectSave(obj);
         }
       },
@@ -3094,13 +3093,13 @@
        * }
        */
       savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType) { // 主表新增保存方法
-        let buttonInfo = {};
-        if (this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '保存').length > 0) {
-          buttonInfo = this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '保存')[0];
-        } else if (this.dataArray.jflowButton.filter(d => d.button === '4').length > 0) {
-          buttonInfo = this.dataArray.jflowButton.filter(d => d.button === '4')[0];
-          buttonInfo.jflowpath = this.saveButtonJflowPath;
-        }
+        // let buttonInfo = {};
+        // if (this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '保存').length > 0) {
+        //   buttonInfo = this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '保存')[0];
+        // } else if (this.dataArray.jflowButton.filter(d => d.button === '4').length > 0) {
+        //   buttonInfo = this.dataArray.jflowButton.filter(d => d.button === '4')[0];
+        //   buttonInfo.jflowpath = this.saveButtonJflowPath;
+        // }
         const tableName = this.tableName;
         const objectType = this.objectType;
         const isreftabs = this.subtables();
@@ -3124,7 +3123,8 @@
           itemObjId: this.itemObjId,
           temporaryStoragePath: this.temporaryStoragePath, // 暂存path
           tabrelation, // 子表1:1标记
-          buttonInfo
+          // buttonInfo,
+          jflowPath: this.saveInfo.jflowPath
         };
         const promise = new Promise((resolve, reject) => {
           if (this.itemId === 'New') {
