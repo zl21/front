@@ -146,9 +146,11 @@ export default {
 
   updatePanelData(state, data) { // 更新子表面板数据
     state.itemObjId = data.id;
-    const { componentAttribute } = state.tabPanels[data.tabIndex];
-    componentAttribute.panelData.isShow = true;
-    componentAttribute.panelData.data = data;
+    if (data.tabIndex !== null) {
+      const { componentAttribute } = state.tabPanels[data.tabIndex];
+      componentAttribute.panelData.isShow = true;
+      componentAttribute.panelData.data = data;
+    }
   }, 
   
   updateTableData(state, data) {

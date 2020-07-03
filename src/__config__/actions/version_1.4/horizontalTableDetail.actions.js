@@ -412,6 +412,14 @@ export default {
         const data = res.data;
         resolve(res);
         commit('updateNewMainTableAddSaveData', { data, itemName });
+
+        // 更新id
+        if (isreftabs) {
+          const formData = res.data.data;
+          formData.id = formData.objId;
+          formData.tabIndex = null;
+          commit('updatePanelData', formData);
+        }
       } else {
         reject();
       }
