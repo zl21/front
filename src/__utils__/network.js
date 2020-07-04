@@ -1,9 +1,8 @@
-import axios from 'axios';
+import Axios from 'axios';
 import md5 from 'md5';
 import router from '../__config__/router.config';
 import store from '../__config__/store.config';
 import { singlePageNetworkConfig } from '../__config__/jflowConfig/singlePageNetworkConfig';
-
 
 import {
   ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, getTouristRoute, enableJflow, REQUEST_PENDDING_EXPIRE
@@ -13,6 +12,8 @@ import { addNetwork } from './indexedDB';
 import {
   updateSessionObject, removeSessionObject, getSeesionObject
 } from './sessionStorage';
+
+const axios = Axios.create();
 
 let tableNameForGet = '';
 const pendingRequestMap = {};
@@ -71,6 +72,7 @@ const dispatchR3Event = (data) => {
 
 axios.interceptors.response.use(
   (response) => {
+    console.log(11111);
     const { config } = response;
     const isJson = (config.headers['Content-Type'] || '').indexOf('application/json') > -1;
     let data = {};
