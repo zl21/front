@@ -100,7 +100,7 @@ class Upload {
   transformFileToFormData() {
     const formData = new FormData();
     this.file.forEach((item) => {
-      formData.append(this.fileName, item);
+      formData.append(this.fileName, item, item.name);
     });
     Object.keys(this.sendData).forEach((item) => {
       formData.append(item, this.sendData[item]);
