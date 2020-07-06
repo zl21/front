@@ -702,7 +702,10 @@
             this.dialogComponentNameConfig.footerHide = true;
             this.dialogComponentName = colDef.customerurl.tableurl;
             //  rowData
-            this.popwinMessage = colDef.customerurl.refobjid;// 将元数据配置的refobjid，字符串传入自定义弹框，供弹框作为参数使用
+            // const param = colDef.customerurl.refobjid.split(',');
+            // console.log(4, rowData, param);
+
+            // this.popwinMessage = colDef.customerurl.refobjid;// 将元数据配置的refobjid，字符串传入自定义弹框，供弹框作为参数使用
           } else if (objdistype === 'tabpanle') {
             // 左右结构单对象界面
             const type = 'tableDetailHorizontal';

@@ -72,7 +72,6 @@ const dispatchR3Event = (data) => {
 
 axios.interceptors.response.use(
   (response) => {
-    console.log(11111);
     const { config } = response;
     const isJson = (config.headers['Content-Type'] || '').indexOf('application/json') > -1;
     let data = {};
