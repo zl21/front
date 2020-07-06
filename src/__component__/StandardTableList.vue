@@ -524,6 +524,9 @@
         this.getQueryList();
       },
       onRowDoubleClick(colDef, row) {
+        if (this.buttons.stopOnRowDoubleClick) { // 配置actionView禁用表格双击事件
+          return;
+        }
         // const param = {
         //   url: 'CUSTOMIZED/FUNCTIONPERMISSION/1',
         //   isMenu: true,
@@ -1292,7 +1295,8 @@
           const buttonGroupShow = [];
           tabcmdData.cmds.forEach((item, index) => {
             if (item === 'actionView') {
-              this.buttons.detailState = tabcmdData.prem[index];
+              this.updatestopOnRowDoubleClickData(tabcmdData.prem[index]);
+              // this.buttons.detailState = ;
             } else if (tabcmdData.prem[index]) {
               const type = item.split('action');
               const str = `CMD_${type[1].toUpperCase()}`;
