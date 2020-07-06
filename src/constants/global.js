@@ -8,7 +8,6 @@ import custommizedRequestURL from '../__config__/custommizedRequestURL.config';
 export const functionPowerRequestURL = () => (window.ProjectConfig && window.ProjectConfig.functionPowerRequestURL ? window.ProjectConfig.functionPowerRequestURL : project.functionPowerRequestURL);
 export const Version = () => (window.ProjectConfig && window.ProjectConfig.Version ? window.ProjectConfig.Version : project.Version);
 export const interlocks = () => (window.ProjectConfig && typeof window.ProjectConfig.interlocks === 'boolean' ? window.ProjectConfig.interlocks : project.interlocks);
-export const enableGateWay = () => (window.ProjectConfig && typeof window.ProjectConfig.enableGateWay === 'boolean' ? window.ProjectConfig.enableGateWay : project.enableGateWay);
 export const jflowRequestDomain = () => (window.ProjectConfig && window.ProjectConfig.jflowRequestDomain ? window.ProjectConfig.jflowRequestDomain : project.jflowRequestDomain);
 export const enableJflow = () => (window.ProjectConfig && typeof window.ProjectConfig.enableJflow === 'boolean' ? window.ProjectConfig.enableJflow : project.enableJflow);
 export const enableCustomInterface = () => (window.ProjectConfig && typeof window.ProjectConfig.enableCustomInterface === 'boolean' ? window.ProjectConfig.enableCustomInterface : project.enableCustomInterface);
@@ -17,6 +16,17 @@ export const encryptionJflow = () => (window.ProjectConfig && typeof window.Proj
 export const enableKeepAlive = () => (window.ProjectConfig && typeof window.ProjectConfig.enableModuleKA === 'boolean' ? window.ProjectConfig.enableModuleKA : project.enableModuleKA);
 export const enableInitializationRequest = () => (window.ProjectConfig && typeof window.ProjectConfig.enableInitializationRequest === 'boolean' ? window.ProjectConfig.enableInitializationRequest : project.enableInitializationRequest);
 export const specifiedGlobalGateWay = () => (window.ProjectConfig && window.ProjectConfig.specifiedGlobalGateWay ? window.ProjectConfig.specifiedGlobalGateWay : project.specifiedGlobalGateWay);
+export const mock = () => (window.ProjectConfig && typeof window.ProjectConfig.mock === 'boolean' ? window.ProjectConfig.mock : project.mock);
+export const enableGateWay = () => {
+  if (mock()) {
+    return false;
+  }
+  if (window.ProjectConfig && typeof window.ProjectConfig.enableGateWay === 'boolean') {
+    return window.ProjectConfig.enableGateWay;
+  }
+  return project.enableGateWay;
+};
+
 export const enableTabLists = () => (window.ProjectConfig && typeof window.ProjectConfig.enableTabLists === 'boolean' ? window.ProjectConfig.enableTabLists : project.enableTabLists);
 
 export const enableHistoryAndFavoriteUI = () => (window.ProjectConfig && typeof window.ProjectConfig.enableHistoryAndFavoriteUI === 'boolean' ? window.ProjectConfig.enableHistoryAndFavoriteUI : project.enableHistoryAndFavoriteUI);

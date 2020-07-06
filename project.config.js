@@ -58,6 +58,5 @@ module.exports = {
   backDashboardRoute: [], // 配置刷新浏览器回到Dashboard界面
   custommizedRequestURL: {
   }, // 配置内置自定义界面requestURL
-
-
+  mock: false
 };
