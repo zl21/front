@@ -292,7 +292,9 @@ export default {
     }
   },
   decreasekeepAliveLists(state, name) {
-    state.keepAliveLists.splice(state.keepAliveLists.indexOf(name), 1);
+    if (enableKeepAlive() && state.keepAliveLists.includes(name)) {
+      state.keepAliveLists.splice(state.keepAliveLists.indexOf(name), 1);
+    }
   },
   toggleActiveMenu(state, index) {
     state.openedMenuLists.forEach((d) => { d.isActive = false; });
