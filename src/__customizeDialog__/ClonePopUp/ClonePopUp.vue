@@ -77,8 +77,8 @@
         default: () => ''
       },
       popwinMessage: {// 获取popwin类型打开自定义弹框传入元数据信息
-        type: String,
-        default: () => ''
+        type: Object,
+        default: () => {}
       },
     },
     data() {
@@ -218,7 +218,7 @@
       this.chineseName = ChineseDictionary;
     },
     mounted() {
-      console.log(444, this.popwinMessage);
+      console.log('popwinMessage', this.popwinMessage);
       this.o_table_name = this.findName(this.objList, '基本信息', '名称');
     },
     destroyed() {

@@ -192,7 +192,7 @@
     },
     data() {
       return {
-        popwinMessage: '',
+        popwinMessage: {},
         tableButtons: [],
         // isChangeTreeConfigData: '',//oldTree
         treeShow: true,
@@ -705,10 +705,16 @@
             this.dialogComponentNameConfig.footerHide = true;
             this.dialogComponentName = colDef.customerurl.tableurl;
             //  rowData
-            // const param = colDef.customerurl.refobjid.split(',');
-            // console.log(4, rowData, param);
-
-            // this.popwinMessage = colDef.customerurl.refobjid;// 将元数据配置的refobjid，字符串传入自定义弹框，供弹框作为参数使用
+            const param = colDef.customerurl.refobjid.split(',');
+            if (Object.keys(rowData).length > 0 && param && param.length > 0) {
+              this.popwinMessage = Object.keys(rowData).reduce((arr, obj) => {
+                if (param.includes(obj)) {
+                  arr[obj] = rowData[obj].val;
+                }
+                return arr;
+              }, {});
+            }
+            // 将元数据配置的refobjid，字符串，可配置多个字段，将配置的字段解析后传入自定义弹框，供弹框作为参数使用
           } else if (objdistype === 'tabpanle') {
             // 左右结构单对象界面
             const type = 'tableDetailHorizontal';

@@ -66,8 +66,8 @@
         default: () => ''
       },
       popwinMessage: {// 获取popwin类型打开自定义弹框传入元数据信息
-        type: String,
-        default: () => ''
+        type: Object,
+        default: () => {}
       },
       
       // showModal: {
