@@ -52,6 +52,5 @@ module.exports = {
   backDashboardRoute: [], // 配置刷新浏览器回到Dashboard界面
   custommizedRequestURL: {
   }, // 配置内置自定义界面requestURL
-
-
+  requestPenddingExpire: 1000 * 5, // 单位S
 };
