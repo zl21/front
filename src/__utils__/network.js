@@ -1,4 +1,4 @@
-import Axios from 'axios';
+import axios from 'axios';
 import md5 from 'md5';
 import router from '../__config__/router.config';
 import store from '../__config__/store.config';
@@ -12,7 +12,7 @@ import {
   updateSessionObject, removeSessionObject
 } from './sessionStorage';
 
-const axios = Axios.create();
+// const axios = Axios.create();
 
 let tableNameForGet = '';
 const pendingRequestMap = {};
@@ -71,7 +71,6 @@ const dispatchR3Event = (data) => {
 
 axios.interceptors.response.use(
   (response) => {
-    console.log(11111);
     const { config } = response;
     const isJson = (config.headers['Content-Type'] || '').indexOf('application/json') > -1;
     let data = {};
