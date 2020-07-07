@@ -203,6 +203,10 @@
       },
       // 取消
       onCancel() {
+        // 自定义弹框点iconX关闭时，需在定制界面内提供clickIconX（）方法，可在关闭弹框前执行clickIconX方法的相关逻辑
+        if (this.$refs.modalComponent.clickIconX && typeof this.$refs.modalComponent.clickIconX === 'function') {
+          this.$refs.modalComponent.clickIconX();
+        }
         if (typeof this.cancelFun === 'function') {
           this.cancelFun();
         }
