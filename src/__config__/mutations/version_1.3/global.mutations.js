@@ -807,5 +807,24 @@ export default {
   updateFavoriteData(state, data) { // 收藏
     state.favorite = data.data;
   },
-  
+  updateCustomizeMessage(state, data) { // 收藏
+    // type:类型
+    // value:更新的值
+    // type='customerurl', // 列表界面链接型字段配置objdistype === 'customized'，配置在customerurl.refobjid的字段，解析的值
+    // 不同的跳转方式应存到不同的类型中
+    // state.customizeMessage[data.customizedModuleId] = {
+    //   [data.type]: data.value
+    // };
+    // state.customizeMessage.push({
+    //   [data.customizedModuleId]: {
+    //     [data.type]: data.value
+    //   }
+    // });
+
+    const obj = {
+      k: data.customizedModuleId,
+      v: { [data.type]: data.value }
+    };
+    updateSessionObject('customizeMessage', obj);
+  },
 };

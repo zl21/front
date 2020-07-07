@@ -360,7 +360,7 @@
       // },
      
       ...mapActions('global', ['updateAccessHistory', 'getExportedState', 'updataTaskMessageCount', 'getMenuLists']),
-      ...mapMutations('global', ['tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter', 'updataSTDefaultQuery']),
+      ...mapMutations('global', ['updateCustomizeMessage', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter', 'updataSTDefaultQuery']),
       // changeTreeConfigData(value) {//oldTree
       //   this.isChangeTreeConfigData = value;
       // },
@@ -524,7 +524,7 @@
         this.getQueryList();
       },
       onRowDoubleClick(colDef, row) {
-        if (this.buttons.stopOnRowDoubleClick) { // 配置actionView禁用表格双击事件
+        if (!this.buttons.onRowDoubleClick) { // 配置actionView禁用表格双击事件
           return;
         }
         // const param = {
@@ -704,7 +704,6 @@
             this.dialogComponentNameConfig.title = colDef.customerurl.reftabdesc;
             this.dialogComponentNameConfig.footerHide = true;
             this.dialogComponentName = colDef.customerurl.tableurl;
-            //  rowData
             const param = colDef.customerurl.refobjid.split(',');
             if (Object.keys(rowData).length > 0 && param && param.length > 0) {
               this.popwinMessage = Object.keys(rowData).reduce((arr, obj) => {
@@ -739,12 +738,31 @@
             this.tabOpen(tab);
           } else if (objdistype === 'customized') {
             // 自定义界面
+            let customizeMessage = null;
+            const param = colDef.customerurl.refobjid.split(',');
+            if (Object.keys(rowData).length > 0 && param && param.length > 0) {
+              customizeMessage = Object.keys(rowData).reduce((arr, obj) => {
+                if (param.includes(obj)) {
+                  arr[obj] = rowData[obj].val;
+                }
+                return arr;
+              }, {});
+            }
+            // const customizedModuleName = colDef.customerurl.tableurl.split('/')[1];
+            const data = {
+              type: 'standardCustomerurlCustomized',
+              value: customizeMessage,
+              customizedModuleId: colDef.customerurl.reftableid
+            };
+            this.updateCustomizeMessage(data);
+            // 将元数据配置的refobjid，字符串，可配置多个字段，将配置的字段解析后用作lu y，供弹框作为参数使用
             const type = 'tableDetailAction';
+            
+            const url = `/${colDef.customerurl.tableurl.toUpperCase()}/${colDef.customerurl.reftableid}`;
             const tab = {
               type,
               label: colDef.customerurl.reftabdesc,
-              customizedModuleName: colDef.customerurl.tableurl,
-              customizedModuleId: colDef.customerurl.reftableid
+              url
             };
             this.tabOpen(tab);
           } else if (objdistype === 'link') { // 支持跳转外链界面配置动态参数
@@ -757,6 +775,12 @@
               linkId: rowData[colDef.customerurl.refobjid].val,
             };
             this.directionalRouter(param);// 定向路由跳转方法
+            const data = {
+              type: 'standardCustomerurlLink',
+              value: rowData,
+              customizedModuleId: colDef.customerurl.reftableid
+            };
+            this.updateCustomizeMessage(data);
           }
         }
       },
@@ -2344,6 +2368,12 @@
               linkLabel: tab.webdesc
             };
             window.sessionStorage.setItem('tableDetailUrlMessage', JSON.stringify(obj));
+            const data = {
+              type: 'standardCustomizeButtonLink',
+              value: tab,
+              customizedModuleId: tab.webid
+            };
+            this.updateCustomizeMessage(data);
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
             // const name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
             // this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
@@ -2362,6 +2392,8 @@
             // router.push(
             //   path
             // );
+            const itemId = this.buttons.selectIdArr.filter(item => item);
+
             if (singleEditType === ':itemId') {
               if (this.buttons.selectIdArr.length === 0) {
                 this.$Message.warning('请勾选ID');
@@ -2370,7 +2402,6 @@
                 this.$Message.warning('只能勾选单个ID');
                 return;
               }
-              const itemId = this.buttons.selectIdArr.filter(item => item);
               const path = `${tabAction.replace(/:itemId/, itemId)}`;
               const param = {
                 url: path,
@@ -2378,15 +2409,30 @@
                 isMenu: true,
               };
               this.directionalRouter(param);// 定向路由跳转方法
+             
               // router.push(
               //   path
               // );
             } else {
-              const path = `/${tabAction}`;
-              router.push(
-                path
-              );
+              const path = `${tabAction}/${tab.webid}`;
+              // router.push(
+              //   path
+              // );
+              const param = {
+                url: path,
+                id: tab.webid,
+                label: tab.webdesc,
+                isMenu: true,
+              };
+              this.directionalRouter(param);// 定向路由跳转方法
             }
+
+            const data = {
+              type: 'standardCustomizeButton',
+              value: tab,
+              customizedModuleId: itemId[0]
+            };
+            this.updateCustomizeMessage(data);
           }
         }
       },

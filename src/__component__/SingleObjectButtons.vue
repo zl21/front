@@ -561,7 +561,7 @@
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
 
-      ...mapMutations('global', ['deleteLoading', 'emptyTestData', 'tabCloseAppoint', 'decreasekeepAliveLists', 'copyDataForSingleObject', 'tabOpen', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
+      ...mapMutations('global', ['updateCustomizeMessage', 'deleteLoading', 'emptyTestData', 'tabCloseAppoint', 'decreasekeepAliveLists', 'copyDataForSingleObject', 'tabOpen', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
       imporSuccess(id) {
         if (Version() === '1.3') {
           if (id) {
@@ -1485,10 +1485,18 @@
             linkName: tab.webname,
             linkId: tab.webid
           });
+          const data = {
+            type: 'singleLinkButton',
+            value: tab,
+            customizedModuleId: tab.webid
+          };
+          this.updateCustomizeMessage(data);
         } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
           const name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
           this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
           const path = getUrl({ url: tabAction, id: tab.webid, type: 'customized' });
+          // 支持直接在跳转定制界面类型的按钮tab.action上配置参数
+          // 如：CUSTOMIZED/FUNCTIONPERMISSION？id=1&&name=2
           const keepAliveLabelMapsObj = {
             k: name,
             v: tab.webdesc
@@ -1503,11 +1511,16 @@
           router.push(
             path
           );
+          const data = {
+            type: 'singleCustomizeButton',
+            value: tab,
+            customizedModuleId: tab.webid
+          };
+          this.updateCustomizeMessage(data);
         } 
       },
 
       clickSave(data) {
-        debugger;
         if (data && data.requestUrlPath) {
           this.saveButtonPath = data.requestUrlPath;
         }

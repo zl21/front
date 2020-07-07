@@ -571,7 +571,7 @@
     },
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
-      ...mapMutations('global', ['copyDataForSingleObject', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'updateExportedState']),
+      ...mapMutations('global', ['updateCustomizeMessage', 'copyDataForSingleObject', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'updateExportedState']),
       tableRowDbclick(row) {
         if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格走动态路由
           window.sessionStorage.setItem('dynamicRoutingForSinglePage', true);
@@ -1148,6 +1148,12 @@
               linkName: tab.webname,
               linkId: tab.webid
             });
+            const data = {
+              type: 'singleLinkButton',
+              value: tab,
+              customizedModuleId: tab.webid
+            };
+            this.updateCustomizeMessage(data);
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
             const name = getLabel({ url: tab.action, id: tab.webid, type: 'customized' });
             this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
@@ -1160,6 +1166,12 @@
             router.push(
               path
             );
+            const data = {
+              type: 'singleCustomizeButton',
+              value: tab,
+              customizedModuleId: tab.webid
+            };
+            this.updateCustomizeMessage(data);
             // const customizedName = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
             // const name = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedName.toUpperCase()}.${tab.webid}`;
             // this.addKeepAliveLabelMaps({ name, label: tab.name });

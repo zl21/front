@@ -63,7 +63,7 @@ export default {
   updatestopOnRowDoubleClickData({
     buttons
   }, data) {
-    buttons.stopOnRowDoubleClick = data;
+    buttons.onRowDoubleClick = data;
   },
   updateButtonsTabcmd({
     buttons

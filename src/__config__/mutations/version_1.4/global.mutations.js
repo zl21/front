@@ -65,6 +65,7 @@ export default {
     // lingName:外链表名，
     // linkId:外链表ID，
     // query:路由参数
+    // 注：url前不能加/ ，格式应为'CUSTOMIZED/FUNCTIONPERMISSION/2299'
     if (param && param.url && param.url.includes('?')) {
       param.url = getUserenv({ url: param.url });
     }
@@ -350,6 +351,7 @@ export default {
     state.keepAliveLists = [];
     state.activeTab = {};
     router.push('/');
+    window.sessionStorage.removeItem('customizeMessage');
     window.sessionStorage.removeItem('routeMapRecordForHideBackButton');
     window.sessionStorage.removeItem('addRouteToEditor');
     window.sessionStorage.removeItem('routeMapRecord');
@@ -383,6 +385,13 @@ export default {
     //   k: tab.tableName,
     //   v: item.ID
     // };
+
+
+    // 清除配置界面提供给定制界面的参数信息
+    const { customizedModuleId } = router.currentRoute.params;
+    deleteFromSessionObject('customizeMessage', customizedModuleId);
+
+
     // 清除当前关闭的表单设置的跳转到标准列表表单默认值;
     const { tableId } = router.currentRoute.params;
     removeSessionObject(tableId);
@@ -613,7 +622,6 @@ export default {
     //   };
     //   updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
     // }
-   
     let path = '';
     if (type === STANDARD_TABLE_LIST_PREFIX || type === 'S') {
       if (url) {
@@ -735,7 +743,6 @@ export default {
       }
       return;
     }
-
     router.push({
       path
     });
@@ -807,6 +814,25 @@ export default {
   updateFavoriteData(state, data) { // 收藏
     state.favorite = data.data;
   },
+  updateCustomizeMessage(state, data) { // 收藏
+    // type:类型
+    // value:更新的值
+    // type='customerurl', // 列表界面链接型字段配置objdistype === 'customized'，配置在customerurl.refobjid的字段，解析的值
+    // 不同的跳转方式应存到不同的类型中
+    // state.customizeMessage[data.customizedModuleId] = {
+    //   [data.type]: data.value
+    // };
+    // state.customizeMessage.push({
+    //   [data.customizedModuleId]: {
+    //     [data.type]: data.value
+    //   }
+    // });
 
+    const obj = {
+      k: data.customizedModuleId,
+      v: { [data.type]: data.value }
+    };
+    updateSessionObject('customizeMessage', obj);
+  },
   
 };

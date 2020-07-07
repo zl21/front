@@ -24,7 +24,7 @@ export default () => ({
     colPosition: '',
     fixedColumn: '',
     buttons: {
-      stopOnRowDoubleClick: false,
+      onRowDoubleClick: true,
       exportdata: '', // 导出返回值
       dataArray: {
         printValue: false, // 是否显示打印
