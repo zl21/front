@@ -1486,7 +1486,7 @@
             linkId: tab.webid
           });
           const data = {
-            type: 'singleLinkButton',
+            type: 'singleCustomizeButtonLink',
             value: tab,
             customizedModuleId: tab.webid
           };

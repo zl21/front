@@ -388,8 +388,9 @@ export default {
 
 
     // 清除配置界面提供给定制界面的参数信息
-    const { customizedModuleId } = router.currentRoute.params;
+    const { customizedModuleId, linkModuleId } = router.currentRoute.params;
     deleteFromSessionObject('customizeMessage', customizedModuleId);
+    deleteFromSessionObject('customizeMessage', linkModuleId);
 
 
     // 清除当前关闭的表单设置的跳转到标准列表表单默认值;

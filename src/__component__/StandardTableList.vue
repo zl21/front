@@ -778,7 +778,7 @@
             const data = {
               type: 'standardCustomerurlLink',
               value: rowData,
-              customizedModuleId: colDef.customerurl.reftableid
+              customizedModuleId: rowData[colDef.customerurl.refobjid].val
             };
             this.updateCustomizeMessage(data);
           }

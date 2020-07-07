@@ -354,6 +354,7 @@ export default {
     state.keepAliveLists = [];
     state.activeTab = {};
     router.push('/');
+    window.sessionStorage.removeItem('customizeMessage');
     window.sessionStorage.removeItem('routeMapRecordForHideBackButton');
     window.sessionStorage.removeItem('addRouteToEditor');
     window.sessionStorage.removeItem('routeMapRecord');
@@ -388,6 +389,12 @@ export default {
     //   k: tab.tableName,
     //   v: item.ID
     // };
+    // 清除配置界面提供给定制界面的参数信息
+    const { customizedModuleId, linkModuleId } = router.currentRoute.params;
+    deleteFromSessionObject('customizeMessage', customizedModuleId);
+    deleteFromSessionObject('customizeMessage', linkModuleId);
+
+
     deleteFromSessionObject('TreeId', tab.tableName);
     let openedMenuListId = null;
     if (tab.keepAliveModuleName) {
