@@ -1488,7 +1488,8 @@
           const data = {
             type: 'singleCustomizeButtonLink',
             value: tab,
-            customizedModuleId: tab.webid
+            customizedModuleId: tab.webname.toUpperCase()
+            // 因外链界面tablinkName相同时，只激活一个tab,所以外链界面用linkName作为key存入session,避免因勾选的id不同存入多个，导致关闭当前tab时无法清除存入的多个
           };
           this.updateCustomizeMessage(data);
         } else if (actionType.toUpperCase() === 'CUSTOMIZED') {

@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                  >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -1153,7 +1153,9 @@
             const data = {
               type: 'singleLinkButton',
               value: tab,
-              customizedModuleId: tab.webid
+              customizedModuleId: tab.webname.toUpperCase()
+            // 因外链界面tablinkName相同时，只激活一个tab,所以外链界面用linkName作为key存入session,避免因勾选的id不同存入多个，导致关闭当前tab时无法清除存入的多个
+              
             };
             this.updateCustomizeMessage(data);
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
@@ -3085,8 +3087,10 @@
                 const datas = {
                   type: 'singleCustomerurlLink',
                   value: params.row,
-                  customizedModuleId: params.row[cellData.customerurl.refobjid]
+                  customizedModuleId: cellData.customerurl.linkname.toUpperCase()
                 };
+                // 因外链界面tablinkName相同时，只激活一个tab,所以外链界面用linkName作为key存入session,避免因勾选的id不同存入多个，导致关闭当前tab时无法清除存入的多个
+
                 this.updateCustomizeMessage(datas);
               } else if (data.objdistype === 'popwin') {
                 // 自定义弹窗
