@@ -12,6 +12,8 @@ import {
   updateSessionObject, removeSessionObject
 } from './sessionStorage';
 
+// const axios = Axios.create();
+
 let tableNameForGet = '';
 const pendingRequestMap = {};
 window.pendingRequestMap = pendingRequestMap;
