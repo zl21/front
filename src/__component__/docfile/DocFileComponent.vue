@@ -39,7 +39,7 @@
         type="file"
         multiple="multiple"
         :disabled="docList.readonly"
-        accept="*"
+        :accept="accept"
         @change.stop="uploadFileChange($event)"
       >上传附件</label>
       <span
@@ -92,6 +92,10 @@
           }
           return toString(new Date().getTime());
         }
+      },
+      accept: { // 文件上传格式控制
+        type: String,
+        default: '*'
       }
     },
     mounted() {
