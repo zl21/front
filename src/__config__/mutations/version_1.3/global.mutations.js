@@ -390,9 +390,11 @@ export default {
     //   v: item.ID
     // };
     // 清除配置界面提供给定制界面的参数信息
-    const { customizedModuleId, linkModuleId } = router.currentRoute.params;
-    deleteFromSessionObject('customizeMessage', customizedModuleId);
-    deleteFromSessionObject('customizeMessage', linkModuleId);
+    if (tab.keepAliveModuleName) {
+      const customizedModuleId = tab.keepAliveModuleName.split('.')[2];
+      deleteFromSessionObject('customizeMessage', customizedModuleId);// 定制界面
+    }
+    deleteFromSessionObject('customizeMessage', tab.tableName);// 外链界面
 
 
     deleteFromSessionObject('TreeId', tab.tableName);
