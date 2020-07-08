@@ -5,10 +5,10 @@ import navigationGuard from './router.navigation.guard';
 import { mock } from '../constants/global';
 
 Vue.use(VueRouter);
-const mode = () => (mock() ? 'hash' : 'history');
+const mode = mock() ? 'hash' : 'history';
 const router = new VueRouter({
   routes,
-  mode: mode()
+  mode
 });
 
 navigationGuard(router);

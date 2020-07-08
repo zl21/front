@@ -33,11 +33,11 @@ Vue.use(Loading);
 //   routes,
 //   mode: mock() ? 'hash' : 'history'
 // });
-const mode = () => (mock() ? 'hash' : 'history');
+const mode = mock() ? 'hash' : 'history';
 
 const createRouter = routes => new VueRouter({
   routes,
-  mode: mode()
+  mode
 });
 
 
@@ -206,9 +206,9 @@ export default (projectConfig = {
 
   // 挂载外部路由
   if (Object.prototype.toString.call(projectRoutes) === '[object Array]') {
-    router.matcher = () => createRouter(routerPrototype.concat(projectRoutes)).matcher;
+    router.matcher = createRouter(routerPrototype.concat(projectRoutes)).matcher;
   } else {
-    router.matcher = () => createRouter(routerPrototype).matcher;
+    router.matcher = createRouter(routerPrototype).matcher;
   }
 
   // 注册自定义全局弹框（模态框）组件

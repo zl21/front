@@ -28,8 +28,8 @@ const validateConfig = config => ({
 
 export default {
   version: '1.8.3',
-  packageTime: '2020.07.07.15.53', 
-  user: 'ishop',                     
+  packageTime: '2020.07.08.17.51', 
+  user: '测试',                     
   /**
    * @param projectConfig 项目配置
    * projectConfig: {
