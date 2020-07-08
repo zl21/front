@@ -103,7 +103,7 @@ class Upload {
       formData.append(this.fileName, item, item.name);
     });
     Object.keys(this.sendData).forEach((item) => {
-      formData.append(item, this.sendData[item]);
+      formData.append(item, `${this.sendData[item]}${new Date().getTime()}/`);
     });
     // 上传图片
     this.uploadImg(formData);
