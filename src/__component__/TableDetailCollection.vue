@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                 >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -1090,7 +1090,8 @@
               startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
               range: this.pageInfo.pageSize,
               fixedcolumns
-            }
+            },
+            tabIndex: this.currentTabIndex
           };
           if (this.currentOrderList.length > 0) {
             // 如果没有排序则不传该参数
@@ -1391,6 +1392,7 @@
         if (!data) {
           return [];
         }
+
         // 整合表头数据
         const columns = data
           .filter(ele => ele.name !== EXCEPT_COLUMN_NAME)
@@ -1405,15 +1407,16 @@
             if (ele.comment) {
               param.renderHeader = this.tooltipRenderHeader();
             }
+
             // warning 2019/06/17注释 数据后端已经排序好了 但是 ！！！ 点击后排序  刷新列表 默认展示的排序的图标颜色显示也会丢失
-            // if (this.dataSource.ordids && this.dataSource.ordids.length > 0) {
-            //   this.dataSource.ordids.map((order) => {
-            //     if (ele.colname === order.colname && param.title !== '序号') {
-            //       param.sortType = order.ordasc ? 'asc' : 'desc';
-            //     }
-            //     return order;
-            //   });
-            // }
+            if (this.dataSource.ordids && this.dataSource.ordids.length > 0) {
+              this.dataSource.ordids.map((order) => {
+                if (ele.colname === order.colname && param.title !== '序号') {
+                  param.sortType = order.ordasc ? 'asc' : 'desc';
+                }
+                return order;
+              });
+            }
             const item = Object.assign(ele, param);
             return item;
           });
@@ -3907,7 +3910,8 @@
             startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
             range: this.pageInfo.pageSize,
             fixedcolumns
-          }
+          },
+          tabIndex: this.currentTabIndex
         };
         if (this.currentOrderList.length > 0) {
           // 如果没有排序则不传该参数
