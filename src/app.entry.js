@@ -187,6 +187,23 @@ export default (projectConfig = {
   projectRoutes: undefined,
   externalModals: undefined
 }) => {
+  // 启动
+  if (enableJflow() && jflowRequestDomain()) {
+    Vue.use(jflowplugin, {
+      router,
+      axios,
+      store,
+      jflowIp: jflowRequestDomain(),
+      closeJflowIcon: closeJflowIcon(),
+      encryptionJflow: encryptionJflow()
+    });
+  }
+  if (enableGateWay()) {
+    getGateWayServiceId();
+  } else {
+    init();
+    getCategory();
+  }
   const globalComponent = projectConfig.globalComponent || {};
   const projectRoutes = projectConfig.projectRoutes || [];
   const externalModals = projectConfig.externalModals || {};
@@ -216,22 +233,4 @@ export default (projectConfig = {
   Object.keys(modalConfig).forEach((modalName) => {
     Vue.component(modalName, ((modalConfig[modalName] || {}).component) || {});
   });
-
-  // 启动
-  if (enableJflow() && jflowRequestDomain()) {
-    Vue.use(jflowplugin, {
-      router,
-      axios,
-      store,
-      jflowIp: jflowRequestDomain(),
-      closeJflowIcon: closeJflowIcon(),
-      encryptionJflow: encryptionJflow()
-    });
-  }
-  if (enableGateWay()) {
-    getGateWayServiceId();
-  } else {
-    init();
-    getCategory();
-  }
 };
