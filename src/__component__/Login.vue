@@ -42,6 +42,24 @@
         class="btn"
         @click="login"
       />
+      <Spin
+        v-show="spinShow"
+        fix
+      >
+        <div class="loader">
+          <svg
+            class="circular"
+            viewBox="25 25 50 50"
+          >
+            <circle
+              class="path"
+              fill="none"
+              stroke-width="5"
+              stroke-miterlimit="10"
+            />
+          </svg>
+        </div>
+      </Spin>
     </div>
   </div>
 </template>
@@ -52,9 +70,15 @@
   
   export default {
     name: 'Login',
+    data() {
+      return {
+        spinShow: false,
+      };
+    },
     methods: {
       
       login() {
+        this.spinShow = true;
         let message = {};
         if (this.$refs.username.value === '') {
           message = {
@@ -86,10 +110,12 @@
                     window.localStorage.setItem('userInfo', JSON.stringify(r.data.user.userenv));
                   }
                   window.sessionStorage.setItem('loginTime', `${Date.now()}`);
+                  this.spinShow = false;
                   window.location.href = window.location.origin;
                 }
               } else if (r.status === 200 && r.data.code === 0) {
                 window.sessionStorage.setItem('loginTime', `${Date.now()}`);
+                this.spinShow = false;
                 window.location.href = window.location.origin;
               }
             });
