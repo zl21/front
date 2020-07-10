@@ -1,3 +1,4 @@
+// 此loading专为表单而设计，不可用于除单对象和标准列表界面的其它地方
 import store from '../__config__/store.config';
 import router from '../__config__/router.config';
 
