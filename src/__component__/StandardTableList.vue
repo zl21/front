@@ -378,7 +378,8 @@
           delete this.searchData.reffixedcolumns;
         }
         this.searchData.startIndex = 0;
-        this.getQueryListForAg(this.searchData);
+        // this.getQueryListForAg(this.searchData);
+        this.getQueryListPromise(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
         // 按钮查找 查询第一页数据
         const { tableName } = this[INSTANCE_ROUTE_QUERY];
@@ -510,7 +511,8 @@
       getQueryList() {
         const { agTableElement } = this.$refs;
         agTableElement.showAgLoading();
-        this.getQueryListForAg(this.searchData);
+        // this.getQueryListForAg(this.searchData);
+        this.getQueryListPromise(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
       onPageChange(page) {
@@ -1771,8 +1773,20 @@
           this.searchData.startIndex = 0;
         }
         this.searchData.fixedcolumns = this.dataProcessing();
-        this.getQueryListForAg(this.searchData);
+        // this.getQueryListForAg(this.searchData);
+        this.getQueryListPromise(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+      },
+      getQueryListPromise(data) {
+        const promise = new Promise((resolve, reject) => {
+          this.$loading.show();
+          data.resolve = resolve;
+          data.reject = reject;
+          this.getQueryListForAg(data);
+        });
+        promise.then(() => {
+          this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+        });
       },
       dialogMessage(title, contentText, obj) {
         this.setErrorModalValue({
@@ -2463,7 +2477,8 @@
           if (selectIdArrLength === currentPageSizes && allPages === currentPage) { // 如果分页在最后一页并且删除当页全部
             this.searchData.startIndex = currentPageSize * ((total - selectIdArrLength) / currentPageSize - 1);
           }
-          this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
+          // this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
+          this.getQueryListPromise(Object.assign({}, this.searchData, { merge }));
           this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
         }
       },
@@ -2491,6 +2506,7 @@
       }
     },
     mounted() {
+      console.log(444, this.buttons.isBig);
       this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
       if (!this._inactive) {
         window.addEventListener('network', this.networkEventListener);
