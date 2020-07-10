@@ -112,22 +112,19 @@ export default {
   updateDefaultButton(state, data) {
     if (data && data.tabcmd && data.tabcmd.cmds) {
       const { itemId } = router.currentRoute.params;
-      
       data.tabcmd.cmds.some((b, i) => {
-        if (itemId === 'New') {
-          if (b === 'actionMODIFY') {
-            state.saveInfo = {
-              paths: data.tabcmd.paths && data.tabcmd.paths.length > 0 ? data.tabcmd.paths[0] : null,
-              name: 'actionMODIFY',
-              jflowPath: data.tabcmd.jflowpaths && data.tabcmd.jflowpaths.length > 0 ? data.tabcmd.jflowpaths[0] : null,
-            };
+        if (b === 'actionMODIFY') {
+          let index = '';
+          if (itemId === 'New') {
+            index = 0;
+          } else {
+            index = i;
           }
-        } else if (b === 'actionMODIFY') {
           state.saveInfo = {
-            paths: data.tabcmd.paths && data.tabcmd.paths.length > 0 ? data.tabcmd.paths[i] : null,
+            paths: data.tabcmd.paths && data.tabcmd.paths.length > 0 ? data.tabcmd.paths[index] : null,
             name: 'actionMODIFY',
-            jflowPath: data.tabcmd.jflowpaths && data.tabcmd.jflowpaths.length > 0 ? data.tabcmd.jflowpaths[i] : null,
-  
+            jflowPath: data.tabcmd.jflowpaths && data.tabcmd.jflowpaths.length > 0 ? data.tabcmd.jflowpaths[index] : null,
+
           };
         }
       });
