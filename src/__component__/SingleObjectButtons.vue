@@ -2368,10 +2368,10 @@
               this.dynamic.eName = 'actionMODIFY';
               this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
               if (this.tabcmd.paths) {
-                this.dynamic.requestUrlPath = this.tabcmd.paths[index];
+                this.dynamic.requestUrlPath = this.tabcmd.paths[0];
               }
               if (this.tabcmd.jflowpaths) {
-                this.dynamic.jflowpath = this.tabcmd.jflowpaths[index];
+                this.dynamic.jflowpath = this.tabcmd.jflowpaths[0];
               }
 
               this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(this.dynamic);
