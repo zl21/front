@@ -118,8 +118,7 @@
                   window.location.href = window.location.origin;
                 }
               } else if (r.status === 200 && r.data.code === 0) {
-                // this.spinShow = false;
-                return;
+                this.spinShow = false;
                 window.sessionStorage.setItem('loginTime', `${Date.now()}`);
                 window.location.href = window.location.origin;
               }

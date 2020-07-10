@@ -92,8 +92,17 @@ export default {
   },
   updateMainButtonsData(state, data) { // 更新主表按钮数据
     if (data && data.tabcmd && data.tabcmd.cmds) {
+      const { itemId } = router.currentRoute.params;
       data.tabcmd.cmds.some((b, i) => {
-        if (b === 'actionMODIFY') {
+        if (itemId === 'New') {
+          if (b === 'actionMODIFY') {
+            state.saveInfo = {
+              paths: data.tabcmd.paths && data.tabcmd.paths.length > 0 ? data.tabcmd.paths[0] : null,
+              name: 'actionMODIFY',
+              jflowPath: data.tabcmd.jflowpaths && data.tabcmd.jflowpaths.length > 0 ? data.tabcmd.jflowpaths[0] : null,
+            };
+          }
+        } else if (b === 'actionMODIFY') {
           state.saveInfo = {
             paths: data.tabcmd.paths && data.tabcmd.paths.length > 0 ? data.tabcmd.paths[i] : null,
             name: 'actionMODIFY',
