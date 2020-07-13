@@ -1749,6 +1749,8 @@
         });
         promise.then(() => {
           this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+        }, () => { // 状态为rejected时执行
+          this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
         });
       },
       dialogMessage(title, contentText, obj) {
