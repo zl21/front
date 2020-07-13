@@ -33,6 +33,8 @@ export default {
         commit('updateTableData', updateTableData);
       }
       resolve();
+    }).catch(() => {
+      reject();
     });
   },
   getTableQueryForForm({ commit }, { searchData, resolve }) {
