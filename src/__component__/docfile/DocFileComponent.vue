@@ -15,7 +15,7 @@
           >{{ option.name }}</a>
           <a
             v-else
-            :href="option.url"
+            :href="urlChange(option.url)"
           >{{ option.name }}</a>
           <i
             v-if="docList.readonly!== true && option.name"
@@ -159,6 +159,13 @@
     //   });
     // },
     methods: {
+      urlChange(url) { // 对下载的url地址进行转换，处理特殊字符
+        const arr = url.split('/');
+        let [last] = [...arr].reverse();
+        last = encodeURIComponent(last);
+        arr[arr.length - 1] = last;
+        return arr.join('/');
+      },
       filechange() {
         const valuedata = this.docList.valuedata;
         this.$emit('filechange', valuedata);
