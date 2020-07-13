@@ -2489,7 +2489,9 @@
         const { detail } = event;
         if (detail.url === '/p/cs/getTableQuery') {
           this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
-          this.searchClickData();
+          if (!this.buttons.isBig) {
+            this.searchClickData();
+          }
         }
       },
       // 监听jflow事件
@@ -2506,7 +2508,7 @@
       }
     },
     mounted() {
-      console.log(444, this.buttons.isBig);
+      // console.log(444, this.buttons.isBig);
       this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
       if (!this._inactive) {
         window.addEventListener('network', this.networkEventListener);

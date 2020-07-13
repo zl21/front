@@ -119,6 +119,8 @@
                 this.spinShow = false;
                 window.location.href = window.location.origin;
               }
+            }).catch(() => {
+              this.spinShow = false;
             });
           });
         }
