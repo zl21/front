@@ -953,7 +953,7 @@
           }
         } else { // 纵向布局
           this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
-          this.getObjectForMainTableForm({
+          this.getObjectForMainTableForm({// 获取主表表单
             table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex
           });
           // if (this.itemInfo.tabrelation === '1:1') {

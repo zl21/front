@@ -131,7 +131,7 @@ export default {
                   this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`][0](param);
                 }
               });
-              if (resData.reftabs[0].refcolid !== -1) { // 以下请求是上下结构获取子表信息（当配置自定义tab时，没有子表，不请求子表信息）
+              if (resData.reftabs[tabIndex].refcolid !== -1) { // 以下请求是上下结构获取子表信息（当配置自定义tab时，没有子表，不请求子表信息）
                 // commit('updateActiveRefFormInfo', resData.reftabs[0]);
                 // 获取第一个tab的子表表单
                
