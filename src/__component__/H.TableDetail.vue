@@ -17,7 +17,6 @@
   import { mapState, mapMutations } from 'vuex';
   import Vue from 'vue';
   import tabComponent from './SingleObjectTabComponent';
-  import { enableJflow, custommizedJflow } from '../constants/global';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
 
 
@@ -30,83 +29,34 @@
       ...mapState('global', {
         activeTab: ({ activeTab }) => activeTab,
         isRequest: ({ isRequest }) => isRequest,
-        JflowControlField: ({ JflowControlField }) => JflowControlField,
 
       }),
       resetWaterMark() {
         if (this.tabPanel[0].componentAttribute.buttonsData.data.watermarkimg) {
-          if (this.jflowWaterMark) {
-            return this.jflowWaterMark;
-          }
           return this.tabPanel[0].componentAttribute.buttonsData.data.watermarkimg;
-        }
-        if (this.jflowWaterMark) {
-          return this.jflowWaterMark;
         }
         return '';
       },
-      // objReadonlyForJflow() {
-      //   // 判断jflow配置中包含当前表，则将当前表（子表及主表）置为不可编辑
-      //   if (enableJflow() && custommizedJflow()) {
-      //     let flag = false;
-      //     this.tabPanel.map((item) => {
-      //       if (this.JflowControlField.length > 0) {
-      //         this.JflowControlField.map((jflowData) => {
-      //           // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
-      //           if (item.tableid === Number(jflowData.itemTableId) && (item.tabrelation === '1:1' || item.tableid === this.$route.params.tableId)) {
-      //             // jflow配置中需要修改字段的表为主表时item.tabrelation !== '1:1', 则可进入此判断;
-      //             flag = true;
-      //           } 
-      //         });
-      //       }
-      //     });
-      //     return flag;
-      //   }
-      //   return false;
-
-      //   // if (enableJflow() && custommizedJflow()) {
-      //   //   let flag = false;
-      //   //   if (this.JflowControlField.length > 0) {
-      //   //     this.JflowControlField.map((jflowData) => {
-      //   //       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
-      //   //       if (this[INSTANCE_ROUTE_QUERY].tableId === jflowData.tableId) { // 当前单对象界面是否在流程中
-      //   //         flag = true;
-      //   //       }
-      //   //     });
-      //   //   }
-      //   //   return flag;
-      //   // }
-      //   // return false;
-      // },
-
+      
       tabPanels() {
         const arr = [];
        
         if (this.tabPanel) {
-          // this.WebConf.isCustomizeTab = true;
           this.tabPanel.forEach((item, index) => {
             const obj = { ...item };
             if (index === 0) {
               obj.label = this.activeTab.label;
               obj.componentAttribute.isactive = this.tabPanel[0].componentAttribute.buttonsData.data.isactive;
               obj.componentAttribute.watermarkimg = this.tabPanel[0].componentAttribute.buttonsData.data.watermarkimg;
-              obj.componentAttribute.jflowWaterMark = this.jflowWaterMark;
+              // obj.componentAttribute.jflowWaterMark = this.jflowWaterMark;
               obj.componentAttribute.isMainTable = true;     
-              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.tabPanel[0].componentAttribute.panelData.data.isdefault || item.JflowReadonly;
+              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.tabPanel[0].componentAttribute.panelData.data.isdefault;
             } 
-
-            if (enableJflow() && custommizedJflow()) {
-              // obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || item.JflowReadonly;
-              obj.componentAttribute.isMainTable = true;       
-              obj.componentAttribute.webConfSingle = this.WebConf;
-              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.tabPanel[0].componentAttribute.panelData.data.isdefault || item.JflowReadonly;
-            } else {
-              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.childReadonly || item.componentAttribute.buttonsData.data.objreadonly;
-            }
+            obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.childReadonly;
             obj.componentAttribute.webConfSingle = this.tabPanel[index].componentAttribute.buttonsData.data.webconf;
             obj.componentAttribute.isreftabs = this.tabPanel[0].componentAttribute.buttonsData.data.isreftabs;
             obj.componentAttribute.tableName = item.tablename;
-            obj.componentAttribute.formReadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || item.JflowReadonly || item.componentAttribute.buttonsData.data.objreadonly;
+            obj.componentAttribute.formReadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly;
             obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
             obj.componentAttribute.itemInfo = item;
             obj.componentAttribute.childTableNames = this.childTableNames;
@@ -157,7 +107,6 @@
  
       tabClick(index) {
         let flag = false;
-
         if (this.isRequest.length > 0 && this.isRequest[index] === true) {
           flag = true;
         }
@@ -190,7 +139,7 @@
                 }
                 new Promise((resolve, reject) => {
                   this.getObjectTabForChildTableButtons({
-                    itemInfo: this.tabPanel[index], maintable: tableName, table: tablename, objid: itemId, tabIndex: index, resolve, reject
+                    maintable: tableName, table: tablename, objid: itemId, tabIndex: index, resolve, reject
                   });
                 }).then(() => {
                   const {
@@ -214,14 +163,14 @@
                 const { tablename, refcolid } = this.tabPanel[index];
                 new Promise((resolve, reject) => {
                   this.getObjectTabForChildTableButtons({
-                    itemInfo: this.tabPanel[index], maintable: tableName, table: tablename, objid: itemId, tabIndex: index, resolve, reject
+                    maintable: tableName, table: tablename, objid: itemId, tabIndex: index, resolve, reject
                   });
                 }).then(() => {
 
                 });
                
                 this.getItemObjForChildTableForm({
-                  itemInfo: this.tabPanel[index], table: tablename, objid: itemId, refcolid, tabIndex: index
+                  table: tablename, objid: itemId, refcolid, tabIndex: index
                 });
               }
             }
@@ -243,6 +192,7 @@
           });
         }).then((resData) => {
           // if (resData.webconf && resData.webconf.isCustomizeTab) {
+          //   console.log(111, this.tabPanels);
           //   this.isRequestUpdata({ tabPanel: this.tabPanels, index: 1 });
           // } else {
           this.isRequestUpdata({ tabPanel: this.tabPanels, index: 0 });
@@ -262,7 +212,7 @@
       this.getMainTable(this.tabCurrentIndex, false);
       const interval = setInterval(() => {
         const query = this.$route.query.ACTIVE;
-        const oUl = document.querySelector('.burgeon-tabs-panels-nav');
+        const oUl = document.querySelector('.ark-tabs-panels-nav');
         if (query && oUl) {
           for (let i = 0; i < oUl.children.length; i++) {
             this.tabPanels.forEach((item) => {
@@ -291,11 +241,11 @@
     flex: 1;
     height: 100%;
     overflow: hidden;
-    .burgeon-tabs-panels{
+    .ark-tabs-panels{
       height: 100%;
       display: flex;
       flex-direction: column;
-      .burgeon-tabs-panels-content{
+      .ark-tabs-panels-content{
         flex: 1;
         overflow: hidden;
         height: 100%;

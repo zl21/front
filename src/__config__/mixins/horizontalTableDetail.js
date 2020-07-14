@@ -57,9 +57,7 @@ export default () => ({
       tooltipForItem: ({ tooltipForItemTable }) => tooltipForItemTable,
       copyDataForReadOnly: ({ copyDataForReadOnly }) => copyDataForReadOnly,
       instanceId: ({ instanceId }) => instanceId,
-      jflowPluginDataArray: ({ jflowPluginDataArray }) => jflowPluginDataArray,
       refreshButton: ({ refreshButton }) => refreshButton,
-      jflowWaterMark: ({ jflowWaterMark }) => jflowWaterMark,
       defaultButtonData: ({ defaultButtonData }) => defaultButtonData,
       globalLoading: ({ globalLoading }) => globalLoading,
       testData: ({ testData }) => testData,
@@ -67,7 +65,6 @@ export default () => ({
       WebConf: ({ WebConf }) => WebConf,
       ExeActionDataForComponent: ({ ExeActionDataForComponent }) => ExeActionDataForComponent,
       itemObjId: ({ itemObjId }) => itemObjId,
-      jflowConfigrefreshButton: ({ jflowConfigrefreshButton }) => jflowConfigrefreshButton,
       isHideTempStorage: ({ isHideTempStorage }) => isHideTempStorage,
       saveInfo: ({ saveInfo }) => saveInfo,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
@@ -121,7 +118,6 @@ export default () => ({
         'seleteAddData',
         'emptyChangeData',
         'updateButtonGetActionData',
-        'updateRefreshButtonForJflow',
         'updataClickSave',
         'testUpdataValue',
         'updatavVerifyRequiredInformation'

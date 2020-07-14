@@ -3,12 +3,6 @@ import network, {
 } from '../../../__utils__/network';
 import getComponentName from '../../../__utils__/getModuleName';
 import { DispatchEvent } from '../../../__utils__/dispatchEvent';
-import verticalMainTableButtons from '../../jflowConfig/verticalPage/verticalMainTableButtons.jflowConfig';
-import verticalItemTableButtons from '../../jflowConfig/verticalPage/verticalItemTableButtons.jflowConfig';
-
-import verticalMainTableForm from '../../jflowConfig/verticalPage/verticalMainTableForm.jflowConfig';
-import verticalIItemTableForm from '../../jflowConfig/verticalPage/verticalItemTableForm.jflowConfig';
-
 
 let childTableFixedcolumns = {};
 
@@ -25,24 +19,7 @@ export default {
       table,
       objid: id,
     })).then((res) => {
-      let resData = res.data.data;
-      // 根据jflow配置条件控制表单start🍓
-      if (objid !== 'New' && resData.JflowConfigData && resData.JflowConfigData.length > 0) {
-        const JflowConfigData = resData.JflowConfigData[0];
-        const data = {
-          JflowConfigData,
-          resData,
-        };
-        if (JflowConfigData.itemTableId === JflowConfigData.tableId) { // 配置为主表
-          data.type = 'mainTable';
-        } else { // 配置为子表
-          data.type = 'itemTable';
-        }
-        resData = verticalMainTableForm(data);
-      }
-     
-      // 根据jflow配置条件控制表单end🍓
-
+      const resData = res.data.data;
       commit('updateCopyDataForRealdOnly', resData); // 复制按钮操作保存默认数据
       dispatch('updateObjectForMainTableForm').then(() => {
         commit('updateObjectForMainTableForm', resData);
@@ -72,27 +49,7 @@ export default {
       ismaintable: 'y',
     })).then((res) => {
       if (res.data.code === 0) {
-        let resData = res.data.data;
-        // 根据jflow配置条件控制按钮以及表单start🍓
-        if (objid !== 'New' && resData.JflowConfigData && resData.JflowConfigData.length > 0) {
-          const JflowConfigData = resData.JflowConfigData[0];
-          const data = {
-            JflowConfigData,
-            resData
-          };
-
-          if (JflowConfigData.itemTableId === JflowConfigData.tableId) { // 配置为主表
-            data.type = 'mainTable';
-          } else { // 配置为子表时，处理主表逻辑
-            data.type = 'itemTable';
-          }
-          resData = verticalMainTableButtons(data);
-        }
-        commit('updateRefreshButtonForJflow', resData.jflowConfigrefreshButton);// 接入jflow根据操作接口返回数据更改刷新按钮显示逻辑
-        commit('updataHideTempStorage', resData.isHideTempStorage);// jflow控制暂存按钮显示
-
-        // 根据jflow配置条件控制按钮以及表单end🍓
-
+        const resData = res.data.data;
         if (type === 'copy') {
           resData.type = 'copy';
           commit('updateMainButtonsData', resData);
@@ -117,14 +74,13 @@ export default {
             // console.log(111, webactType);
             // webactType !== 'ALL'
             const { vuedisplay } = resData.reftabs[tabIndex];
-            if (vuedisplay !== 'TabItem') { // 非自定义tab
+            if (vuedisplay !== 'TabItem') {
               const getObjectTabPromise = new Promise((rec, rej) => {
                 if (this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`] && this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`][0] === 'function') {
                   const param = {
                     table: firstReftab.tablename,
                     objid,
                     tabIndex,
-                    itemInfo: resData.reftabs[tabIndex],
                     rec,
                     rej
                   };
@@ -170,7 +126,6 @@ export default {
                     const tableParam = {
                       table: firstReftab.tablename,
                       objid,
-                      itemInfo: resData.reftabs[tabIndex],
                       refcolid: firstReftab.refcolid,
                       tabIndex
                     };
@@ -190,7 +145,6 @@ export default {
     table,
     objid,
     tabIndex,
-    itemInfo,
     rec,
     rej
   }) {
@@ -201,23 +155,7 @@ export default {
       ismaintable: 'n'
     })).then((res) => {
       if (res.data.code === 0) {
-        let resData = res.data.data;
-        // 根据jflow配置条件控制按钮以及表单start🍓
-        if (objid !== 'New' && resData.JflowConfigData && resData.JflowConfigData.length > 0) {
-          const JflowConfigData = resData.JflowConfigData[0];
-          if (Number(JflowConfigData.itemTableId) === Number(itemInfo.tableid)) { // 配置为子表
-            const data = {
-              JflowConfigData,
-              resData
-            };
-            data.type = 'itemTable';
-            resData = verticalItemTableButtons(data);
-          }
-        }
-        commit('updataHideTempStorage', resData.isHideTempStorage);// jflow控制暂存按钮显示
-        commit('updateRefreshButtonForJflow', resData.jflowConfigrefreshButton);// 将主表刷新按钮隐藏,接入jflow根据操作接口返回数据更改刷新按钮显示逻辑
-        // 根据jflow配置条件控制按钮以及表单end🍓
-
+        const resData = res.data.data;
         childTableFixedcolumns = {};
         if (resData.tabfilter && resData.tabfilter.length > 0) { // 只有1.4版本支持
           resData.tabfilter.forEach((item) => {
@@ -250,8 +188,9 @@ export default {
         resData.tabIndex = tabIndex;
         rec();
         commit('updateRefButtonsData', resData);
-      } 
-      rej();
+      } else {
+        rej();
+      }
     });
   },
   getFormDataForRefTable({
@@ -297,12 +236,11 @@ export default {
   },
 
   // 按钮
-  getItemObjForChildTableForm({// 请求子表1:1模式数据
+  getItemObjForChildTableForm({
     commit
   }, {
     table,
     objid,
-    itemInfo,
     refcolid,
     tabIndex
   }) { // 获取子表面板信息
@@ -314,22 +252,9 @@ export default {
       refcolid
     })).then((res) => {
       if (res.data.code === 0) {
-        let resData = res.data.data;
-        // 根据jflow配置条件控制按钮以及表单start🍓
-        if (objid !== 'New' && resData.JflowConfigData && resData.JflowConfigData.length > 0) {
-          const JflowConfigData = resData.JflowConfigData[0];
-          const data = {
-            JflowConfigData,
-            resData
-          };
-          if (Number(JflowConfigData.itemTableId) === Number(itemInfo.tableid)) { // 配置为子表
-            data.tableid = itemInfo.tableid;
-            resData = verticalIItemTableForm(data);
-          }
-        }
-        // 根据jflow配置条件控制按钮以及表单end🍓
-        resData.tabIndex = tabIndex;
-        commit('updatePanelData', resData);
+        const formData = res.data.data;
+        formData.tabIndex = tabIndex;
+        commit('updatePanelData', formData);
       }
     });
   },
@@ -341,7 +266,7 @@ export default {
     reject
   }) { // 主表保存
     const {
-      buttonInfo, tabrelation, itemObjId, tableName, temporaryStoragePath, objId, path, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup
+      tabrelation, itemObjId, tableName, temporaryStoragePath, objId, path, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup, jflowPath
     } = parame;
     let parames = {};
     if (type === 'add') { // 新增保存参数
@@ -689,11 +614,11 @@ export default {
         };
       }
     }
-    let jflowpath = '';
-    if (buttonInfo && buttonInfo.jflowpath) {
-      jflowpath = buttonInfo.jflowpath;
-    }
-    network.post(temporaryStoragePath || jflowpath || path || '/p/cs/objectSave', parames).then((res) => {
+    // let jflowpath = '';
+    // if (buttonInfo && buttonInfo.jflowpath) {
+    //   jflowpath = buttonInfo.jflowpath;
+    // }
+    network.post(temporaryStoragePath || jflowPath || path || '/p/cs/objectSave', parames).then((res) => {
       if (res.data.code === 0) {
         const data = res.data;
         resolve(res);

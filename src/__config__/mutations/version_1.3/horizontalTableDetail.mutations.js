@@ -1,5 +1,4 @@
 import router from '../../router.config';
-import { enableJflow, custommizedJflow } from '../../../constants/global';
 
 export default {
   updataSinglePageButtonsConfigForMainTable(state, data) {
@@ -426,32 +425,15 @@ export default {
     tablePageInfo.currentPageIndex = data.currentPageIndex;
     tablePageInfo.pageSize = data.pageSize;
   }, // 修改单对象表格页码
-  jflowPlugin(state, {
-    buttonsData, newButtons, instanceId, tabwebact
-  }) { // jflowPlugin按钮逻辑
-    if (!custommizedJflow()) {
-      state.jflowPluginDataArray = newButtons;
-      state.instanceId = instanceId;
-      if (instanceId) {
-        state.tabPanels[0].componentAttribute.buttonsData.data.tabwebact.objbutton = [];
-      } else {
-        state.tabPanels[0].componentAttribute.buttonsData.data.tabwebact = state.defaultButtonData.tabwebact;
-      }
-      state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
-    }
-  },
+ 
   updateRefreshButton(state, value) { // 控制刷新按钮开关
     state.refreshButton = value;
   },
-  updateRefreshButtonForJflow(state, value) { // 控制刷新按钮开关
-    state.jflowConfigrefreshButton = value;
-  },
+  
   updateChildTableReadonly(state, value) { // 更新childTableReadonly字段，控制字表可读性
     state.childTableReadonly = value;
   },
-  updateWatermarkimg(state, value) { // 修改水印
-    state.jflowWaterMark = value;
-  },
+ 
   updataGlobalLoading(state, value) { // 更新全局loading
     state.globalLoading = value;
   },

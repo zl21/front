@@ -1,18 +1,18 @@
-import Axios from 'axios';
+import axios from 'axios';
 import md5 from 'md5';
 import router from '../__config__/router.config';
 import store from '../__config__/store.config';
-import { singlePageNetworkConfig } from '../__config__/jflowConfig/singlePageNetworkConfig';
 
 import {
-  mock, ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, getTouristRoute, enableJflow, REQUEST_PENDDING_EXPIRE
+  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, REQUEST_PENDDING_EXPIRE, getTouristRoute
 } from '../constants/global';
 import { addNetwork } from './indexedDB';
 
 import {
-  updateSessionObject, removeSessionObject, getSeesionObject
+  updateSessionObject, removeSessionObject
 } from './sessionStorage';
 
+// const axios = Axios.create();
 
 let tableNameForGet = '';
 const pendingRequestMap = {};
@@ -68,13 +68,6 @@ const dispatchR3Event = (data) => {
     }));
   }, 10);
 };
-let axios = null;
-
-if (mock()) { // Ark-share需求：开启mock需对框架接口进行拦截处理，所以mock模式axios不需要重新创建，需使用全局的axios
-  axios = Axios;
-} else {
-  axios = Axios.create();
-}
 
 axios.interceptors.response.use(
   (response) => {
@@ -199,26 +192,13 @@ axios.interceptors.response.use(
       window.sessionStorage.setItem('loginStatus', true);
     }
     if (config.url.indexOf('/p/cs/getSubSystems') !== -1) {
-      if (response.status === 200 && response.data.data.length > 0) {} else {
+      if (response.status === 200 && response.data.data.length > 0) {
+
+      } else {
         updateSessionObject('saveNetwork', { k: 'name', v: '/p/cs/getSubSystems' });
         // window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
       }
     }
-    if (enableJflow()) {
-      const urlArray = [
-        '/p/cs/objectTab',
-        '/p/cs/getObject',
-        '/p/cs/itemObj',
-      ];
-      const url = urlArray.filter(u => config.url.indexOf(u) !== -1);
-      if (url && url.length > 0) {
-        const getJflowConfigData = singlePageNetworkConfig();
-        if (getJflowConfigData && getJflowConfigData.length > 0) {
-          response.data.data.JflowConfigData = getJflowConfigData;
-        }
-      }
-    }
-
     return response;
   },
   (error) => {
@@ -402,35 +382,22 @@ function NetworkConstructor() {
     });
     const now = new Date();
     if (pendingRequestMap[requestMd5] && now.getTime() - pendingRequestMap[requestMd5].reqTime < REQUEST_PENDDING_EXPIRE) {
-      if (enableJflow()) {
-        const businessTypes = JSON.parse(window.localStorage.getItem('businessTypes'));
-        let flag = false;
-        businessTypes.every((actionUrls) => {
-          if (!flag) { // 处理多个模版问题，存在一张表多个模版
-            actionUrls.action.every((jflowUrl) => {
-              if (jflowUrl === url && router.currentRoute.params.tableId === actionUrls.businessType) {
-                flag = true;
-                return axios.post(matchedUrl, config);
-              }
-
-              return true;
-            });
-          }
-          return true;
-        });
-
-        if (flag) {
-          return; 
-        }
-      } else {
-        return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
-      }
+      return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
     }
     pendingRequestMap[requestMd5] = {
       reqTime: now.getTime()
     };
 
-    return axios.post(matchedUrl, config);
+    let headers = {};
+    if (url.includes('/p/cs/objectTab') || url.includes('/p/cs/itemObj')) {
+      const { tableName } = router.currentRoute.params;
+      headers = {
+        headers: {
+          'maintable-name': tableName,
+        }
+      };
+    }
+    return axios.post(matchedUrl, config, headers);
   };
 
   // equals to axios.get(url, config)

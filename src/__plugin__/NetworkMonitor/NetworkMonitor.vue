@@ -143,7 +143,7 @@
       width: 100%;
       flex: 1;
       overflow: hidden;
-      .burgeon-table-cell span {
+      .ark-table-cell span {
         font-weight: 400;
       }
     }

@@ -12,11 +12,10 @@
       :isactive="mainFormInfo.buttonsData.data.isactive"
       :watermarkimg="resetWaterMark"
       :item-name-group="childTableNames"
-      :item-info="tabPanel[tabCurrentIndex]"
+      :item-info="mainFormInfo"
       :tabwebact="mainFormInfo.buttonsData.data.tabwebact"
       :item-name="getItemName"
       :is-main-form="mainFormInfo"
-      :jflow-button="buttons"
     />
     <div class="verticalTableDetailContent">
       <!-- 上下结构主表 form-->
@@ -44,14 +43,15 @@
         </label>
         <AutomaticPathGenerationInput />
       </div> -->
+     
       <composite-form
         v-if="mainFormInfo.formData.isShow"
         class="compositeAllform"
         object-type="vertical"
         :is-main-table="true"
-        :objreadonly="mainFormInfo.buttonsData.data.objreadonly || mainFormInfo.formData.data.isdefault||mainFormInfo.JflowReadonly"
-        :readonly="mainFormInfo.buttonsData.data.objreadonly||mainFormInfo.JflowReadonly"
         :web-conf-single="mainFormInfo.buttonsData.data.webconf"
+        :objreadonly="mainFormInfo.buttonsData.data.objreadonly || mainFormInfo.formData.data.isdefault"
+        :readonly="mainFormInfo.buttonsData.data.objreadonly"
         :default-set-value="updateData[this.$route.params.tableName]? updateData[this.$route.params.tableName].changeData:{}"
         :master-name="$route.params.tableName"
         :master-id="$route.params.itemId"
@@ -96,9 +96,6 @@
   
   import {
     MODULE_COMPONENT_NAME,
-    enableJflow,
-    custommizedJflow,
-    INSTANCE_ROUTE_QUERY
   } from '../constants/global';
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
 
@@ -111,26 +108,17 @@
   export default {
     // name: 'VTableDetail',
     watch: {
-      mainFormInfo: {// 原jflow
-        handler(val) {
-          this.buttons = val.buttonsData.data.jflowButton;
-        },
-        deep: true
-      },
     },
     data() {
       return {
         customizeValue: '',
         currentSingleButtonComponentName: null,
         from: 'singlePage',
-        buttons: []
       };
     },
     computed: {
       ...mapState('global', {
         isRequest: ({ isRequest }) => isRequest,
-        JflowControlField: ({ JflowControlField }) => JflowControlField,
-
       }),
       customizeDataRes() {
         const obj = {};
@@ -139,23 +127,13 @@
           return arr;
         }, []);
       },
-      maginTableJflowButtons() {
-        return this.mainFormInfo.buttonsData.data.jflowButton;
-      },
       resetWaterMark() {
         if (this.mainFormInfo.buttonsData.data.watermarkimg) {
-          if (this.jflowWaterMark) {
-            return this.jflowWaterMark;
-          }
           return this.mainFormInfo.buttonsData.data.watermarkimg;
-        }
-        if (this.jflowWaterMark) {
-          return this.jflowWaterMark;
         }
         return '';
       },
 
-    
       tabPanels() {
         const arr = [];
         if (this.tabPanel[0] && this.tabPanel[0].vuedisplay && this.tabPanel[0].vuedisplay === 'TabItem') {
@@ -172,25 +150,12 @@
           obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
           if (this.mainFormInfo.buttonsData) {
             obj.componentAttribute.isreftabs = this.mainFormInfo.buttonsData.data.isreftabs;
-            if (enableJflow() && custommizedJflow()) {
-              // this.childReadonly为老版本jflow控制所有主子表是否可编辑，新版本jflow需要单表控制，与老版本冲突
-              obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly || item.JflowReadonly || item.componentAttribute.buttonsData.data.objreadonly;
-            } else {
-              obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly || this.childReadonly || item.JflowReadonly || item.componentAttribute.buttonsData.data.objreadonly;
-            }
-            obj.componentAttribute.formReadonly = this.mainFormInfo.buttonsData.data.objreadonly || item.JflowReadonly || item.componentAttribute.buttonsData.data.objreadonly;
+            obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly || this.childReadonly;
+            obj.componentAttribute.formReadonly = this.mainFormInfo.buttonsData.data.objreadonly;
             obj.componentAttribute.status = this.mainFormInfo.buttonsData.data.status;
             obj.componentAttribute.webConfSingle = this.mainFormInfo.buttonsData.data.webconf;
           }
           obj.componentAttribute.webConfSingle = obj.componentAttribute.buttonsData.data.webconf;
-          
-          // if (enableJflow() && custommizedJflow()) {
-          //   obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly || item.JflowReadonly;
-          // } else {
-          //   obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly || this.childReadonly || item.JflowReadonly;
-          // }
-          // obj.componentAttribute.formReadonly = this.mainFormInfo.buttonsData.data.objreadonly || item.JflowReadonly;
-        
           obj.componentAttribute.childTableNames = this.childTableNames;
           obj.componentAttribute.mainFormPaths = this.formPaths;
           obj.componentAttribute.tooltipForItemTable = this.tooltipForItem;
@@ -247,7 +212,7 @@
 
       const interval = setInterval(() => {
         const query = this.$route.query.ACTIVE;
-        const oUl = document.querySelector('.burgeon-tabs-panels-nav');
+        const oUl = document.querySelector('.ark-tabs-panels-nav');
         if (query && oUl) {
           for (let i = 0; i < oUl.children.length; i++) {
             this.tabPanels.forEach((item) => {
@@ -344,7 +309,7 @@
               if (refTab.tabrelation !== '1:1') {
                 getButtonDataPromise = new Promise((rec, rej) => {
                   this.getObjectTabForRefTable({
-                    table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej, itemInfo: refTab
+                    table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej
                   });
                 });
               }
@@ -374,11 +339,11 @@
             } else if (refTab.tabrelation === '1:1') {
               getButtonDataPromise = new Promise((rec, rej) => {
                 this.getObjectTabForRefTable({
-                  table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej, itemInfo: refTab
+                  table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej
                 });
               });
               this.getItemObjForChildTableForm({
-                itemInfo: refTab, table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, tabIndex: index
+                table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, tabIndex: index
               });
             }
           }

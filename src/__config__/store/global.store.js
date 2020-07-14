@@ -40,69 +40,7 @@ export default () => ({
       queryDisNumber: null,
       switchValue: false// 为false时列表表单默认展开全部，为true时，展开设置行数
     },
-    objreadonlyForJflow: [
-      // {
-      //   tableName: '',
-      //   readonly: false,
-      //   itemTableName: ''
-      // }, 
-    ],
-    treeTableListData: [
-
-    ],
-    // objreadonlyForJflow: {
-    //   readonly: false,
-    //   itemTableName: ''
-    // }, 
-    JflowControlField: [
-      // {
-      //   tableId: 'BCP_CUSTOMER_JFLOW', // 当前表明
-      //   itemTableId: 'BCP_CUSTOMER_JFLOW', // 需要控制字段的表明
-      //   // BCP_CUSTOMER_CONTACT_JFLOW
-      //   isShow: [// 所有可见字段,字段返回值需为字符串
-      //     '169096', // 联系人
-      //     // 169132, // 可用
-      //     // 169096// 主表数据（竞争品牌）
-      //   ],
-      //   readonly: [// 所有可编辑字段,字段返回值需为字符串
-      //     '169096'
-      //     // 169143, // 联系人
-      //     // 169132, // 可用
-      //     // '169096', // 主表数据（竞争品牌）
-      //     // '169094',
-      //   ],
-      //   exeActionButton: ['2305'], // 自定义类型按钮,字段返回值需为字符串
-      //   jflowButton: [
-      //     {
-      //       button: 'fresh',
-      //       name: '888888888',
-      //       url: '',
-      //       isJflow: true
-      //     }
-      //   ], // jflow类型按钮
-      // },
-      // {
-      //   tableName: 'BCP_BIZ_CHANCE_JFLOW',
-      //   itemTableName: 'BCP_BIZ_CHANCE_JFLOW',
-      //   // BCP_CUSTOMER_CONTACT_JFLOW
-      //   isShow: [// 所有可见字段
-      //     // 166416, // 联系人
-      //     // 169132, // 可用
-      //     169171// 主表商机来源
-      //   ],
-      //   readonly: [// 所有可编辑字段
-      //     // 166416, // 联系人
-      //     // 169132, // 可用
-      //   ],
-      //   exeActionButton: []
-      // },
-      
-    ],  
-    // treeIds: [
-      
-    // ] 
- 
-    
+    treeTableListData: [],
   },
   mutations: mutations(),
   actions: actions(),

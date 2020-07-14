@@ -1,6 +1,6 @@
 
 
 const backDashBoard = [
-  '/PLUGIN/INSTANCEMANAGEMENTLIST'
+  // '/PLUGIN/INSTANCEMANAGEMENTLIST'
 ];
 export default backDashBoard;

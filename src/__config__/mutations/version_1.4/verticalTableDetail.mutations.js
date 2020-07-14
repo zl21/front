@@ -2,9 +2,6 @@ import { stringify } from 'querystring';
 import { cpus } from 'os';
 import { ComponentResolver } from 'ag-grid/dist/lib/components/framework/componentResolver';
 import router from '../../router.config';
-import { DispatchEvent } from '../../../__utils__/dispatchEvent';
-import { enableJflow, custommizedJflow } from '../../../constants/global';
-import getComponentName from '../../../__utils__/getModuleName';
 
 
 export default {
@@ -24,7 +21,6 @@ export default {
     const { tableName, tableId } = router.currentRoute.params;
     state.mainFormInfo.tablename = tableName;
     state.mainFormInfo.tableid = tableId;
-    state.mainFormInfo.JflowReadonly = data.JflowReadonly;// 增加字段控制主表是否可编辑🍓
     state.mainFormInfo.formData.isShow = data && data.addcolums && data.addcolums.length > 0;
     state.mainFormInfo.formData.data = Object.assign({}, data);
     state.updateData[tableName] = {
@@ -117,7 +113,6 @@ export default {
         }
       });
     }
-    
     // state.mainFormInfo.buttonsData.isShow = true;
     state.defaultButtonData = JSON.parse(JSON.stringify(data));
     if (!state.instanceId) {
@@ -126,19 +121,16 @@ export default {
   },
   updateRefButtonsData(state, data) { // 更新子表按钮数据
     const { componentAttribute } = state.tabPanels[data.tabIndex];
-    if (data.isShow) { // 处理jflow配置为子表时，子表显示按钮组
-      componentAttribute.buttonsData.isShow = data.isShow;
+    if (data.jflowButton && data.jflowButton.length > 0) {
+      componentAttribute.buttonsData.isShow = true;
+      componentAttribute.buttonsData.data.isItemTableVertical = true;
+      componentAttribute.buttonsData.data = data;
     } else {
-      componentAttribute.buttonsData.isShow = false;
+      // componentAttribute.buttonsData.isShow = true;
+      componentAttribute.buttonsData.data = data;
+      // componentAttribute.buttonsData.data.isItemTableVertical = true;
+      // componentAttribute.buttonsData.backButton = false;// false不显示返回按钮，true显示
     }
-    if (data.isItemTableVertical) { // 此字段用于单对象按钮组件控制样式
-      componentAttribute.buttonsData.isItemTableVertical = data.isItemTableVertical;
-    }
-    if (data.backButton === 'false') { // 处理jflow配置为子表时，将子表按钮组返回按钮删除
-      componentAttribute.buttonsData.data.backButton = false;
-    }
-    // componentAttribute.jflowButton = data.jflowButton;
-    componentAttribute.buttonsData.data = data;
   },
   updateFormDataForRefTable(state, data) { // 更新子表表单数据
     const { componentAttribute } = state.tabPanels[data.tabIndex];
@@ -458,32 +450,11 @@ export default {
   //     });
   //   });
   // }
-  jflowPlugin(state, {
-    buttonsData, newButtons, instanceId, tabwebact
-  }) { // jflowPlugin按钮逻辑
-    if (!custommizedJflow()) {
-      state.jflowPluginDataArray = newButtons;
-      state.instanceId = instanceId;
-      if (instanceId) {
-        state.mainFormInfo.buttonsData.data.tabwebact.objbutton = [];
-        // state.mainFormInfo.buttonsData.data.tabwebact.objbutton = tabwebact;
-      } else {
-        state.mainFormInfo.buttonsData.data.tabwebact = state.defaultButtonData.tabwebact;
-      }
-      state.mainFormInfo.buttonsData.data.tabcmd.prem = buttonsData;
-    }
-  },
   updateRefreshButton(state, value) { // 控制刷新按钮开关
     state.refreshButton = value;
   },
-  updateRefreshButtonForJflow(state, value) { // 控制刷新按钮开关
-    state.jflowConfigrefreshButton = value;
-  },
   updateChildTableReadonly(state, value) { // 更新childTableReadonly字段，控制字表可读性
     state.childTableReadonly = value;
-  },
-  updateWatermarkimg(state, value) { // 修改水印
-    state.jflowWaterMark = value;
   },
   updataGlobalLoading(state, value) { // 更新全局loading
     state.globalLoading = value;

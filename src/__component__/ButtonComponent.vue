@@ -35,18 +35,9 @@
         @click="btnclick('custom', item)"
         v-text="item.webdesc" 
       />
-      <!-- jflow插件按钮-->
-      <Button
-        v-for="(item) in dataArray.jflowPluginDataArray"
-        :key="item.button"
-        :ref="item"
-        type="fcdefault"
-        @click="btnclick('extraposition', item)"
-        v-text="item.name" 
-      />
       <!-- jflow配置按钮-->
       <Button
-        v-for="(item) in dataArray. jflowButton"
+        v-for="(item) in dataArray.jflowButton"
         :key="item.button"
         :ref="item"
         type="fcdefault"
@@ -102,13 +93,13 @@
         @click="btnclick('refresh')"
         v-text="refresh"
       />
-      <Button
+      <!-- <Button
         id="hideRefresh"
         class="hide"
         type="fcdefault"
         @click="btnclick('refresh')"
         v-text="refresh"
-      />
+      /> -->
      
       <Button
         v-if="dataArray.temporaryStorage"
@@ -427,10 +418,10 @@
     .hide{
       display:none;
     }
-    .burgeon-select-dropdown {
-      .burgeon-dropdown-menu {
+    .ark-select-dropdown {
+      .ark-dropdown-menu {
         min-width: 58px;
-        .burgeon-dropdown-item {
+        .ark-dropdown-item {
           padding: 5px 6px;
         }
       }
@@ -458,7 +449,7 @@
     .iconfont{
       font-size: 12px;
     }
-    .collection,.burgeon-btn-fcdefault{
+    .collection,.ark-btn-fcdefault{
       min-width: auto !important;
     }
   }

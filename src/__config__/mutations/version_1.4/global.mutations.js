@@ -131,7 +131,15 @@ export default {
     }
   },
   changeNavigatorSetting(state, data) {
-    state.navigatorSetting = data;
+    state.navigatorSetting.unshift(data[0]);
+    // 去重覆盖
+    state.navigatorSetting = state.navigatorSetting.filter((x, index, self) => {
+      const arrids = [];
+      state.navigatorSetting.forEach((item, i) => {
+        arrids.push(item.id);
+      });
+      return arrids.indexOf(x.id) === index;
+    });
   },
   changeSelectedPrimaryMenu(state, index) {
     state.primaryMenuIndex = index;
@@ -274,7 +282,9 @@ export default {
     }
   },
   decreasekeepAliveLists(state, name) {
-    state.keepAliveLists.splice(state.keepAliveLists.indexOf(name), 1);
+    if (enableKeepAlive() && state.keepAliveLists.includes(name)) {
+      state.keepAliveLists.splice(state.keepAliveLists.indexOf(name), 1);
+    }
   },
   toggleActiveMenu(state, index) {
     state.openedMenuLists.forEach((d) => { d.isActive = false; });
@@ -332,21 +342,11 @@ export default {
     });
   },
   emptyTabs(state) {
-    state.JflowControlField.map((item, index) => {
-      state.openedMenuLists.map((openedMenuList) => {
-        const openedMenuListId = openedMenuList.keepAliveModuleName.split('.')[2];
-        if (item.tableId === openedMenuListId) {
-          state.JflowControlField.splice(index, 1);
-        }
-      });
-    });
-
     // 清除当前关闭的表单设置的跳转到标准列表表单默认值;
     state.openedMenuLists.map((openedMenuList) => {
       const openedMenuListId = openedMenuList.keepAliveModuleName.split('.')[2];
       removeSessionObject(openedMenuListId);
     });
-
     state.openedMenuLists = [];
     state.keepAliveLists = [];
     state.activeTab = {};
@@ -372,10 +372,7 @@ export default {
     });
   },
   tabCloseAppoint(state, tab) {
-    // 关闭tab时需清楚jflow配置的对应表
     // tableName:'主表表明',
-    // routeFullPath:'/SYSTEM/TABLE_DETAIL/V/BCP_CUSTOMER_JFLOW/23968/5555832',
-
     // 关闭当前tab时,如果当前列表界面时树形结构列表界面，需清楚对应的treeID
     // const index = state.treeIds.indexOf(tab.tableName);
     // if (index > -1) {
@@ -401,17 +398,6 @@ export default {
 
 
     deleteFromSessionObject('TreeId', tab.tableName);
-    let openedMenuListId = null;
-    if (tab.keepAliveModuleName) {
-      openedMenuListId = tab.keepAliveModuleName.split('.')[2];
-    }
-    if (state.JflowControlField && state.JflowControlField.length && state.JflowControlField.length > 0) {
-      state.JflowControlField = state.JflowControlField.filter((item) => {
-        if (Number(item.tableId) !== Number(openedMenuListId)) {
-          return item;
-        }
-      }); 
-    }
     
     // window.sessionStorage.removeItem('dynamicRoutingIsBack');// 清除动态路由返回标记
 
@@ -782,6 +768,8 @@ export default {
     }
   },
   addKeepAliveLabelMaps(state, { name, label }) {
+    // name：C.AAO_SR_TEST.2326模块名称
+    // label：中文名
     state.keepAliveLabelMaps[name] = `${label}`;
   },
   addServiceIdMap(state, { tableName, gateWay }) {
@@ -810,9 +798,6 @@ export default {
   },
   updateModifySearchFoldnum(state, data) {
     state.changeSearchFoldnum = data;
-  },
-  updateJflowControlField(state, data) {
-    state.JflowControlField = data;
   },
   updateFavoriteData(state, data) { // 收藏
     state.favorite = data.data;

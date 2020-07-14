@@ -192,7 +192,7 @@
     },
     data() {
       return {
-        popwinMessage: {},
+        urlArr: ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid'],
         tableButtons: [],
         // isChangeTreeConfigData: '',//oldTree
         treeShow: true,
@@ -1338,14 +1338,16 @@
               } else {
                 this.buttonMap[str].eName = item;
                 const buttonConfigInfo = JSON.parse(JSON.stringify(this.buttonMap[str]));
+                
                 if (tabcmdData.paths) {
                   buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
                 }
                 if (tabcmdData.jflowpaths) { // jflow对标准类型按钮配置path
                   const jflowpathsRes = JSON.parse(JSON.stringify(tabcmdData.jflowpaths));
-                  buttonConfigInfo.jflowUrlPath = jflowpathsRes[index];
+                  buttonConfigInfo.jflowpath = jflowpathsRes[index];
+                  this.urlArr.push(jflowpathsRes[index]);
                 }
-                if (this.webConf && (this.webConf.disableImport && str === 'CMD_IMPORT') || (this.webConf.disableExport && str === 'CMD_EXPORT')) {
+                if (this.webConf && ((this.webConf.disableImport && str === 'CMD_IMPORT') || (this.webConf.disableExport && str === 'CMD_EXPORT'))) {
                   // 根据webConf控制列表界面导入导出按钮
                 } else {
                   buttonGroupShow.push(buttonConfigInfo);
@@ -1786,6 +1788,8 @@
         });
         promise.then(() => {
           this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+        }, () => { // 状态为rejected时执行
+          this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
         });
       },
       dialogMessage(title, contentText, obj) {
@@ -1973,7 +1977,7 @@
             this.modifyDialogshow = true;
             setTimeout(() => {
               this.$refs.dialogmodify.open(
-                this[INSTANCE_ROUTE_QUERY], this.buttons.selectIdArr.length, this.searchData.fixedcolumns, this.buttons.selectIdArr
+                this[INSTANCE_ROUTE_QUERY], this.buttons.selectIdArr.length, this.searchData.fixedcolumns, this.buttons.selectIdArr, obj
               );
             }, 200);
           } else {
@@ -1988,7 +1992,7 @@
                 this.modifyDialogshow = true;
                 setTimeout(() => {
                   this.$refs.dialogmodify.open(
-                    this[INSTANCE_ROUTE_QUERY], this.ag.datas.totalRowCount, this.searchData.fixedcolumns, 'all'
+                    this[INSTANCE_ROUTE_QUERY], this.ag.datas.totalRowCount, this.searchData.fixedcolumns, 'all', obj
                   );
                 }, 200);
               },
@@ -2391,64 +2395,23 @@
             };
             this.updateCustomizeMessage(data);
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-            // const name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
-            // this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
-            // const path = getUrl({ url: tabAction, id: tab.webid, type: 'customized' });
-            // const keepAliveLabelMapsObj = {
-            //   k: name,
-            //   v: tab.webdesc
-            // };
-            // const undataFromPageCustomizeButtonInfo = {
-            //   k: name,
-            //   v: this[INSTANCE_ROUTE_QUERY]
-            // };
-            // updateSessionObject('undataFromPageCustomizeButtonInfo', undataFromPageCustomizeButtonInfo);// 将自定义按钮为跳转自定义界面类型的自定义按钮信息存入session
-
-            // updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
-            // router.push(
-            //   path
-            // );
-            const itemId = this.buttons.selectIdArr.filter(item => item);
-
-            if (singleEditType === ':itemId') {
-              if (this.buttons.selectIdArr.length === 0) {
-                this.$Message.warning('请勾选ID');
-                return;
-              } if (this.buttons.selectIdArr.length > 1) {
-                this.$Message.warning('只能勾选单个ID');
-                return;
-              }
-              const path = `${tabAction.replace(/:itemId/, itemId)}`;
-              const param = {
-                url: path,
-                id: itemId[0],
-                isMenu: true,
-              };
-              this.directionalRouter(param);// 定向路由跳转方法
-             
-              // router.push(
-              //   path
-              // );
-            } else {
-              const path = `${tabAction}/${tab.webid}`;
-              // router.push(
-              //   path
-              // );
-              const param = {
-                url: path,
-                id: tab.webid,
-                label: tab.webdesc,
-                isMenu: true,
-              };
-              this.directionalRouter(param);// 定向路由跳转方法
-            }
-
-            const data = {
-              type: 'standardCustomizeButton',
-              value: tab,
-              customizedModuleId: itemId[0]
+            const name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
+            this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
+            const path = getUrl({ url: tabAction, id: tab.webid, type: 'customized' });
+            const keepAliveLabelMapsObj = {
+              k: name,
+              v: tab.webdesc
             };
-            this.updateCustomizeMessage(data);
+            const undataFromPageCustomizeButtonInfo = {
+              k: name,
+              v: this[INSTANCE_ROUTE_QUERY]
+            };
+            updateSessionObject('undataFromPageCustomizeButtonInfo', undataFromPageCustomizeButtonInfo);// 将自定义按钮为跳转自定义界面类型的自定义按钮信息存入session
+
+            updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
+            router.push(
+              path
+            );
           }
         }
       },
@@ -2458,9 +2421,9 @@
         if (this._inactive) { return; }
         const { detail } = event;
         const { response } = detail;
-        const urlArr = ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid'];
+        // this.urlArr = ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid'];
         let merge = false;
-        if (urlArr.indexOf(detail.url || '') > -1) {
+        if (this.urlArr.indexOf(detail.url || '') > -1) {
           if (response && response.data && response.data.code === -1) {
             merge = true;
           }
@@ -2494,12 +2457,6 @@
           }
         }
       },
-      // 监听jflow事件
-      jflowEvent(event) {
-        if (event.detail.type === 'search') {
-          this.searchClickData({ value: 'true' });
-        }
-      },
       // 监听update.ST.FailInfo事件
       updateSTFailInfo(event) {
         if (event.detail[MODULE_COMPONENT_NAME] === this[MODULE_COMPONENT_NAME]) {
@@ -2512,7 +2469,6 @@
       this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
       if (!this._inactive) {
         window.addEventListener('network', this.networkEventListener);
-        window.addEventListener('jflowEvent', this.jflowEvent);
         window.addEventListener('network', this.networkGetTableQuery);
         window.addEventListener('updateSTFailInfo', this.updateSTFailInfo);
       }
@@ -2536,7 +2492,6 @@
     beforeDestroy() {
       window.removeEventListener('network', this.networkEventListener);
       window.removeEventListener('network', this.networkGetTableQuery);
-      window.removeEventListener('jflowEvent', this.jflowEvent);
       window.removeEventListener('updateSTFailInfo', this.updateSTFailInfo);
     }
   };

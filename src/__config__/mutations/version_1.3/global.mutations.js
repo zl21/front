@@ -128,7 +128,15 @@ export default {
     state.exportTasks = exportTask;
   },
   changeNavigatorSetting(state, data) {
-    state.navigatorSetting = data;
+    state.navigatorSetting.unshift(data[0]);
+    // 去重覆盖
+    state.navigatorSetting = state.navigatorSetting.filter((x, index, self) => {
+      const arrids = [];
+      state.navigatorSetting.forEach((item, i) => {
+        arrids.push(item.id);
+      });
+      return arrids.indexOf(x.id) === index;
+    });
   },
   changeSelectedPrimaryMenu(state, index) {
     state.primaryMenuIndex = index;
@@ -284,7 +292,9 @@ export default {
     }
   },
   decreasekeepAliveLists(state, name) {
-    state.keepAliveLists.splice(state.keepAliveLists.indexOf(name), 1);
+    if (enableKeepAlive() && state.keepAliveLists.includes(name)) {
+      state.keepAliveLists.splice(state.keepAliveLists.indexOf(name), 1);
+    }
   },
   toggleActiveMenu(state, index) {
     state.openedMenuLists.forEach((d) => { d.isActive = false; });
@@ -342,14 +352,6 @@ export default {
     });
   },
   emptyTabs(state) {
-    state.JflowControlField.map((item, index) => {
-      state.openedMenuLists.map((openedMenuList) => {
-        const openedMenuListId = openedMenuList.keepAliveModuleName.split('.')[2];
-        if (item.tableId === openedMenuListId) {
-          state.JflowControlField.splice(index, 1);
-        }
-      });
-    });
     state.openedMenuLists = [];
     state.keepAliveLists = [];
     state.activeTab = {};
@@ -809,9 +811,6 @@ export default {
 
   updateModifySearchFoldnum(state, data) {
     state.changeSearchFoldnum = data;
-  },
-  updateJflowControlField(state, data) {
-    state.JflowControlField = data;
   },
   updateFavoriteData(state, data) { // 收藏
     state.favorite = data.data;

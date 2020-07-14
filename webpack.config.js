@@ -10,7 +10,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const projectConfig = require('./project.config');
 
 const target = projectConfig.target; // 框架研发网关开启环境
-const proxyLists = ['/p/c', '/frr-center'];
+const proxyLists = ['/p/c', '/frr-center', '/eplan-center'];
 const proxyListsForGateway = ['/ad-app/p/c', '/asynctask/p/cs'];
 const proxyListsForIShop = ['/ishopad-app', '/ishopplatform/p/c', '/ishopbill/p/c', '/ishopbase/p/c'];
 const proxyListsForPalmCloud = ['/mboscloud-app'];
@@ -39,7 +39,7 @@ module.exports = env => ({
   },
   devServer: {
     compress: true,
-    port: 8193,
+    port: 8199,
     host: '0.0.0.0',
     open: true,
     historyApiFallback: {
@@ -99,20 +99,33 @@ module.exports = env => ({
         target: 'http://106.15.24.156:19999', // 打印李宁环境
         changeOrigin: true
       },
-     
       {
         context: '/jflow',
         // target: 'http://106.15.24.156:32940', // 重新占单
         // target: 'http://106.15.24.156:32940', // 李宁环境
         // target: 'http://jflow-shangfei-yf.dev.burgeononline.com/', // 商飞环境
         // target: 'http://jflow-shangfei.dev.burgeononline.com/', // 新版jflow
-        target: 'http://jflow-shangfei-r3.dev.burgeononline.com/', // 商飞环境
+        target: 'http://10.14.6.84', // 商飞环境
         // target: ' http://jflow-syman-dev.dev.burgeononline.com/', // 商飞测试环境
         // target: ' http://47.102.164.111:26665/', // 卡宾环境
         // target: ' http://zhixiao-jflow.pro.burgeononline.com/', // 知晓环境
         // target: 'http://jflow-qiaodan.dev.burgeononline.com', // 乔丹测试环境
         changeOrigin: true
-      }]
+      },
+      {
+        context: '/asynctask',
+        // target: 'http://106.15.24.156:32940', // 重新占单
+        // target: 'http://106.15.24.156:32940', // 李宁环境
+        // target: 'http://jflow-shangfei-yf.dev.burgeononline.com/', // 商飞环境
+        // target: 'http://jflow-shangfei.dev.burgeononline.com/', // 新版jflow
+        target: 'http://10.14.6.84', // 商飞环境
+        // target: ' http://jflow-syman-dev.dev.burgeononline.com/', // 商飞测试环境
+        // target: ' http://47.102.164.111:26665/', // 卡宾环境
+        // target: ' http://zhixiao-jflow.pro.burgeononline.com/', // 知晓环境
+        // target: 'http://jflow-qiaodan.dev.burgeononline.com', // 乔丹测试环境
+        changeOrigin: true
+      }
+    ]
   },
   target: 'web',
   devtool: env && env.production ? 'source-map' : 'cheap-module-eval-source-map',

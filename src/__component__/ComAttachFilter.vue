@@ -432,10 +432,10 @@
   
 }
 .attachfiter-pop{
-  .burgeon-select-item-selected{
+  .ark-select-item-selected{
     color: #333333!important;
   }
-  .burgeon-select-item-focus{
+  .ark-select-item-focus{
     background-color: #fff!important;
   }
 

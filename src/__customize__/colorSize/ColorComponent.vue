@@ -62,7 +62,7 @@
           @on-change="addColorInputChange"
           @on-click="addIconClick"
           @on-enter="addIconClick"
-             >
+        />
         <Button
           slot="prepend"
           @click="addColor"
@@ -480,11 +480,11 @@
             .right_input {
                 width: 50%;
                 margin-bottom: 8px;
-                .burgeon-input-group {
+                .ark-input-group {
                     top: 0px;
                 }
-                .burgeon-input-group-prepend {
-                    .burgeon-btn {
+                .ark-input-group-prepend {
+                    .ark-btn {
                         display: flex;
                         align-items: center;
                         span {
@@ -495,10 +495,10 @@
             }
             .right_table {
                 flex: 1;
-                .burgeon-select-selection {
+                .ark-select-selection {
                     height: 22px;
                 }
-                .burgeon-input-wrapper > input {
+                .ark-input-wrapper > input {
                     height: 22px;
                 }
             }

@@ -58,6 +58,10 @@ export default {
    *     keyTwo: VueComponentTwo,
    *     ...
    *   }, // 如无自定义弹窗，此配置项可不传参。
+   *   externalPluginModules: {  // 项目引用插件界面
+   *     keyOne: VueComponentOne,
+   *     ...
+   *   }, // 如无自定义弹窗，此配置项可不传参。
    *   projectRoutes: [  // 项目自定义路由，一般情况下用不到此配置。
    *     {
    *       path: '/register',
@@ -67,8 +71,6 @@ export default {
    *   quietRoutes: [ '/register' ],  // 项目中针对403的请求，都会默认跳转到登录页面。处于静默路由列表的路由界面则不进行跳转。一般情况用不到此配置。默认值为[]，此配置项可不传参。
    *   Version： '1.4', // 后台框架API版本号，目前只支持['1.3', '1.4']其中一个。默认值是"1.4"，此配置项可不传参。
    *   enableGateWay: true, // 开启 | 关闭 网关(默认开启)，此配置项可不传参。
-   *   enableJflow: true, // 开启JFlow插件功能（默认关闭），此配置项可不传参。
-   *   jflowRequestDomain： 'http(s)://domain:port', // jflow请求转发的域名或者IP（只有在enableJflow为true时生效），此配置项可不传参。
    *   ignoreGateWayPattern: RegExp 正则表达是，表示项目中需要忽略网关规则的那些指定请求url。
    *   extentionForTable: [], // 项目自定义“表”扩展属性列表
    *   extentionForColumn: [], // 项目自定义“字段”扩展属性列表

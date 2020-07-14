@@ -27,11 +27,6 @@ export default () => ({
     defaultButtonData: [], // 业务系统按钮默认数据         
     CompositeForm: {}, // 表单实例
     anotherData: [], // 按钮显示的备份数据
-    jflowPluginDataArray: [],
-    instanceId: null, // jflow流程标志
-    refreshButton: true, // 为方便jflow控制，改为全局状态调用
-    jflowConfigrefreshButton: false,
-    jflowWaterMark: null, // jflow水印
     globalLoading: false,
     WebConf: {},
     ExeActionDataForComponent: {},

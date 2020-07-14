@@ -9,7 +9,6 @@
       :item-name-group="childTableNames"
       :item-name="tableName"
       :tabcmd="buttonsData.data.tabcmd"
-      :jflow-button="buttonsData.data.jflowButton"
       :disable-export="buttonsData.data.DisableEXPORT"
       :item-table-check-func="itemTableCheckFunc"
       :tabwebact="buttonsData.data.tabwebact"
@@ -111,7 +110,6 @@
       :data-source="tableData.data"
       :type="type"
       :item-info="itemInfo"
-      :jflow-button="buttonsData.data.jflowButton"
       :readonly="buttonsData.data.objreadonly"
       :table-readonly="!getActionModify"
       :objreadonly="objreadonly"
@@ -147,7 +145,7 @@
 
 
   import {
-    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, enableJflow, custommizedJflow, INSTANCE_ROUTE_QUERY
+    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY
   } from '../constants/global';
 
   const customizeModules = {};
@@ -256,10 +254,6 @@
         type: String,
         default: ''
       }, // 水印数据
-      jflowWaterMark: {
-        type: String,
-        default: ''
-      }, // jflow水印数据
       tooltipForItemTable: {
         type: Array,
         default: () => []
@@ -276,8 +270,6 @@
     inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY],  
     computed: { 
       ...mapState('global', {
-        objreadonlyForJflow: ({ objreadonlyForJflow }) => objreadonlyForJflow,
-        JflowControlField: ({ JflowControlField }) => JflowControlField,
       }),
       currentPageRoute() {
         return this[INSTANCE_ROUTE_QUERY];
@@ -290,60 +282,13 @@
         // } 
         return tabCurrentIndex;
       },
-      // itemReadOnlyForJflow() {
-      //   let flag = false;
-      //   if(enableJflow() && custommizedJflow()) {
-      //     const { tableId } = router.currentRoute.params;
-      //     if(this.objreadonlyForJflow.length > 0) {
-      //       this.objreadonlyForJflow.map((item) => {
-      //         let id = null;
-      //         if(this.itemInfo.id) {
-      //           id = Number(this.itemInfo.id);
-      //         }else{
-      //           id = this.itemInfo.tableid;
-      //         }
-      //         // if (this.type === 'vertical') {
-      //         //   id = this.itemInfo.tableid;
-      //         // }else{
-      //         //   id = Number(this.itemInfo.id);
-      //         // }
-      //         if(item.tableId === tableId) {
-      //           if(item.itemTableId === id) {
-      //             flag = item.readonly;
-      //           }else{
-      //             flag = this.objreadonly;
-      //           }
-      //         }else{
-      //           flag = this.objreadonly;
-      //         }
-      //       });
-      //     }else{
-      //       // jflow配置表为不存在的子表ID时，控制所有表字段为不可编辑状态
-      //       this.JflowControlField.map((q) => {
-      //         if(tableId === q.tableId) {
-      //           flag = true;
-      //           return flag;
-      //         }
-      //       });
-      //     }
-      //   }else{
-      //     flag = this.objreadonly;
-      //   }
-      //   return flag;
-      // }, 
 
       tabPanelsAll() {
         return this.$store.state[this[MODULE_COMPONENT_NAME]].tabPanels;
       },
       resetWaterMark() {
         if (this.watermarkimg) {
-          if (this.jflowWaterMark) {
-            return this.jflowWaterMark;
-          }
           return this.watermarkimg;
-        }
-        if (this.jflowWaterMark) {
-          return this.jflowWaterMark;
         }
         return '';
       },

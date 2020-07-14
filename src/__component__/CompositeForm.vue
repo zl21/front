@@ -16,7 +16,7 @@
       >
         <Panel
           :key="index"
-          class="Rburgeon-collapse-content-box"
+          class="Rark-collapse-content-box"
           :is-title-show="item.isTitleShow"
           title-type="center"
           :name="item.hrdisplay ==='expand' ? 'expand' :'false'"
@@ -534,7 +534,7 @@
         // if (!document.querySelector(`#${key}`)) {
         //   return false;
         // }
-        // const LinkageFormInput = documentkey.querySelector('.burgeon-icon-ios-close-circle');
+        // const LinkageFormInput = documentkey.querySelector('.ark-icon-ios-close-circle');
         // if (LinkageFormInput) {
         //   LinkageFormInput.click();
         // }
@@ -2503,7 +2503,7 @@
 </script>
 
 <style>
-.burgeon-collapse > .burgeon-collapse-item > .burgeon-collapse-header {
+.ark-collapse > .ark-collapse-item > .ark-collapse-header {
   text-align: center;
   padding: 0;
   margin: 0;
@@ -2516,10 +2516,10 @@
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
 }
-.Rburgeon-collapse-content-box .burgeon-collapse-content > .burgeon-collapse-content-box{
+.Rark-collapse-content-box .ark-collapse-content > .ark-collapse-content-box{
    padding-top: 8px!important;
 }
-.burgeon-collapse {
+.ark-collapse {
   margin-bottom: 10px;
 }
 </style>

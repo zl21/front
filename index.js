@@ -1,7 +1,5 @@
 import Vue from 'vue';
 import VueDND from 'awe-dnd';
-import BurgeonUi from 'burgeon-ui';
-import axios from 'axios';
 import { getGuid } from './src/__utils__/random';
 import router from './src/__config__/router.config';
 import store from './src/__config__/store.config';
@@ -9,12 +7,13 @@ import App from './src/App';
 import './src/constants/dateApi';
 import network from './src/__utils__/network';
 import {
-  backDashboardRoute, getTouristRoute, enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, encryptionJflow, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE, specifiedGlobalGateWay
+  backDashboardRoute, enableGateWay, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE, specifiedGlobalGateWay
 } from './src/constants/global';
 import { removeSessionObject, getSeesionObject } from './src/__utils__/sessionStorage';
 import CompositeForm from './src/__component__/CompositeForm';
 import customizedModalConfig from './src/__config__/customizeDialog.config';
 import Loading from './src/__utils__/loading';
+import getObjdisType from './src/__utils__/getObjdisType';
 import projectConfig from './project.config';
 
 // css import
@@ -24,25 +23,21 @@ import './src/assets/css/ag-theme-balham.less';
 import './src/assets/theme/custom.less';
 import './src/assets/css/loading.css';
 import './src/assets/css/custom-ext.less';
-// import 'ztree';
-// import 'ztree/css/metroStyle/metroStyle.css';
-// import 'ztree/js/jquery.ztree.exhide.min';
-import jflowplugin from './src/plugin/jflow-plugin';
+import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
+
+// jflowPlugin
+import jflowPlugin from './jflowPlugin/js/index';
 
 
-Vue.use(BurgeonUi);
 Vue.use(VueDND);
 
-if (enableJflow() && jflowRequestDomain()) {
-  Vue.use(jflowplugin, {
-    router,
-    axios,
-    store,
-    jflowIp: jflowRequestDomain(),
-    closeJflowIcon: closeJflowIcon(),
-    encryptionJflow: encryptionJflow()
-  });
-}
+
+Vue.use(jflowPlugin, {
+  changePattern: true, // 控制待办列表转派的选择模式 true为单选,false为多选
+  gateway: 'asynctask'
+});
+
+Vue.use(VueDND);
 
 
 // 注册自定义模态框组件
@@ -62,6 +57,12 @@ const createDOM = () => {
   document.body.appendChild(div);
   return div;
 };
+
+// 提前挂载方法
+window.changeNavigatorSetting = (data) => {
+  store.commit('global/changeNavigatorSetting', data);
+};
+
 
 const backTouristRoute = () => {
   // window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
@@ -148,6 +149,9 @@ const init = () => {
       ])
     });
   };
+  
+
+  window.getObjdisType = getObjdisType;
 };
 const getCategory = () => {
   if (enableInitializationRequest()) {

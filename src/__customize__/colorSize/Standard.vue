@@ -270,11 +270,11 @@
                 }
               }
         }
-        .burgeon-tabs-panels{
+        .ark-tabs-panels{
             height: 100%;
             display: flex;
             flex-direction: column;
-            .burgeon-tabs-panels-content{
+            .ark-tabs-panels-content{
                 flex: 1;
                 overflow: hidden;
             }

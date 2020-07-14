@@ -546,7 +546,7 @@
       }
     }
   }
-  // .burgeon-modal-header {
+  // .ark-modal-header {
   //   height: 30px !important;
   //   line-height: 30px !important;
   //   background: #f8f8f8 !important;
@@ -563,31 +563,31 @@
   //     border-top-left-radius: 10px !important;
   //     cursor: move !important;
   //   }
-  //   .burgeon-modal-header-inner {
+  //   .ark-modal-header-inner {
   //     line-height: 31px !important;
   //     font-size: 13px !important;
   //     color: #303133 !important;
   //     font-weight: normal;
   //   }
   // }
-  .burgeon-modal-body {
+  .ark-modal-body {
     padding: 20px !important;
   }
-  .burgeon-icon-ios-close {
+  .iconios-close {
     color: #999 !important;
   }
-  .burgeon-modal-footer {
+  .ark-modal-footer {
     border-top: none !important;
     padding: 0 20px 20px;
     margin: 10px 40px;
   }
-  .burgeon-btn-fcdefault {
+  .ark-btn-fcdefault {
     height: 24px !important;
     font-size: 12px !important;
     width: 66px !important;
     padding: 0 !important;
   }
-  .burgeon-modal-footer button > span {
+  .ark-modal-footer button > span {
     font-size: 12px;
   }
 }

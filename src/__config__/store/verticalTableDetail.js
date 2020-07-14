@@ -40,11 +40,6 @@ export default () => ({
     CompositeForm: {}, // 表单实例
     mappStatus: {},
     defaultButtonData: [], // 业务系统按钮默认数据
-    jflowPluginDataArray: [], // jflow按钮
-    instanceId: null, // jflow流程标志
-    jflowConfigrefreshButton: false,
-    refreshButton: true, // 为方便jflow控制，改为全局状态调用
-    jflowWaterMark: null, // jflow水印
     globalLoading: false,
     testData: false, // 校验是否更改过值
     WebConf: {},

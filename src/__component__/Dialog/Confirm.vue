@@ -129,15 +129,15 @@
 </script>
 
 <style lang="less">
-.burgeon-modal-footer {
+.ark-modal-footer {
   border: none;
 }
 
-.burgeon-modal-footer button > span {
+.ark-modal-footer button > span {
   font-size: 12px;
 }
 
-.burgeon-modal-footer button {
+.ark-modal-footer button {
   width: auto;
   border-radius: 2px;
   height: 26px;

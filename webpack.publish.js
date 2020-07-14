@@ -5,6 +5,9 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const copyWebpackPlugin = require('copy-webpack-plugin');
+
+
 
 module.exports = () => ({
   entry: {
@@ -123,6 +126,10 @@ module.exports = () => ({
     }),
     new CleanWebpackPlugin(['r3.publish']),
     new VueLoaderPlugin(),
+    new copyWebpackPlugin([{
+        from: path.resolve(__dirname, "./src/assets/theme/custom.less"),
+        to: path.resolve(__dirname, "./r3.publish/src/assets/theme")
+    }])
   ],
   mode: 'production',
   resolve: {

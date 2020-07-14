@@ -964,7 +964,7 @@
   };
 </script>
 <style lang="less">
-.burgeon--dialog {
+.ark--dialog {
     .iconbj_delete2{
         cursor: pointer;
         &:hover{
@@ -978,10 +978,10 @@
     .dialog_center .dialog_p10{
       padding:0px 0 6px 0px
     }
-    .burgeon-tabs-bar{
+    .ark-tabs-bar{
       margin-bottom: 10px
     }
-    .burgeon-tabs{
+    .ark-tabs{
       overflow: visible;
     }
     .dialog_center .dialog_center_bottom{
@@ -1001,14 +1001,14 @@
     .dialog_center{
       overflow: hidden;
     }
-    .burgeon--dialog .dialog_center .table{
+    .ark--dialog .dialog_center .table{
         height: 345px!important; 
     }
 }
   
 </style>
 <style lang="less" scoped>
-  .burgeon-select-item{
+  .ark-select-item{
     position: relative;
 
   }
@@ -1022,12 +1022,12 @@
   }
 
 
-  .burgeon--dialog {
+  .ark--dialog {
     
     .dialog_center .dialog_p10{
       padding:0px 0 6px 0px
     }
-    .burgeon-tabs-bar{
+    .ark-tabs-bar{
       margin-bottom: 0px
     }
     .right_center {
@@ -1051,7 +1051,7 @@
           }
       }
   }
-  .burgeon-poptip-body{
+  .ark-poptip-body{
       
       padding: 0px;
       .icon-bj_delete2{
@@ -1075,7 +1075,7 @@
       height: 26px;
       line-height: 26px;
  }
- .burgeon--dialog .dialog_center .dialog_center_bottom{
+ .ark--dialog .dialog_center .dialog_center_bottom{
      height: 26px;
       line-height: 26px;
  }

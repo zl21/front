@@ -85,7 +85,19 @@ export const fkModify = function fkModify(params) {
 };
 export const fksaveModify = function fksaveModify(params) {
   // 弹窗批量 保存
-  network.post('/p/cs/batchSave', params.searchObject).then((res) => {
+
+  let jflowpath = '';
+  let requestUrlPath = '';
+  if (params && params.buttonData) {
+    if (params.buttonData.jflowpath) {
+      jflowpath = params.buttonData.jflowpath;
+    }
+    if (params.buttonData.requestUrlPath) {
+      requestUrlPath = params.buttonData.requestUrlPath;
+    }
+  }
+
+  network.post(jflowpath || requestUrlPath || '/p/cs/batchSave', params.searchObject).then((res) => {
     if (typeof params.success === 'function') {
       params.success(res);
     }

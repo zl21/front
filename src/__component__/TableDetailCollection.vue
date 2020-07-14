@@ -1408,6 +1408,7 @@
         if (!data) {
           return [];
         }
+
         // 整合表头数据
         const columns = data
           .filter(ele => ele.name !== EXCEPT_COLUMN_NAME)
@@ -1422,6 +1423,7 @@
             if (ele.comment) {
               param.renderHeader = this.tooltipRenderHeader();
             }
+
             // warning 2019/06/17注释 数据后端已经排序好了 但是 ！！！ 点击后排序  刷新列表 默认展示的排序的图标颜色显示也会丢失
             if (this.dataSource.ordids && this.dataSource.ordids.length > 0) {
               this.dataSource.ordids.map((order) => {
@@ -4275,19 +4277,19 @@
                     display: flex;
                     // justify-content: space-around;
                     // align-content: stretch;
-                    .burgeon-select {
+                    .ark-select {
                         width: 120px;
                     }
                     .detail-search-input {
                         margin-left: 10px;
-                        .burgeon-input-group {
+                        .ark-input-group {
                             top: 0px;
                         }
-                        .burgeon-input-group-with-prepend {
+                        .ark-input-group-with-prepend {
                             width: 190px;
                         }
-                        .burgeon-input-group-prepend {
-                            .burgeon-btn {
+                        .ark-input-group-prepend {
+                            .ark-btn {
                                 display: flex;
                                 align-items: center;
                                 span {
@@ -4316,34 +4318,34 @@
 <style lang="less">
     .table-in {
         flex: 1;
-        tbody tr.burgeon-table-row-hover td {
+        tbody tr.ark-table-row-hover td {
             background-color: #ecf0f1;
         }
         thead th {
             font-weight: 400;
         }
-        .burgeon-input-wrapper > input {
+        .ark-input-wrapper > input {
             height: 22px;
         }
-        .burgeon-select-selection {
+        .ark-select-selection {
             height: 22px;
         }
-        .burgeon-table th, .burgeon-table td {
+        .ark-table th, .ark-table td {
             height: 26px;
         }
-        .burgeon-fkrp-select-icon {
+        .ark-fkrp-select-icon {
             top: 2px;
         }
-        .burgeon-fkrp-select .burgeon-icon-ios-close-circle {
+        .ark-fkrp-select .ark-icon-ios-close-circle {
             top: -2px;
         }
-        .burgeon-fkrp-poptip .fkrp-poptip-text {
+        .ark-fkrp-poptip .fkrp-poptip-text {
             top: 2px;
         }
-        .fkrp-poptip-two .burgeon-icon-ios-close-circle {
+        .fkrp-poptip-two .ark-icon-ios-close-circle {
             top: -2px;
         }
-        .burgeon-input-icon {
+        .ark-input-icon {
             top: -2px;
         }
     }

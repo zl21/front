@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import BurgeonUi from 'burgeon-ui';
 import axios from 'axios';
 
 import { getGuid } from './__utils__/random';
@@ -12,22 +11,21 @@ import './constants/dateApi';
 import network from './__utils__/network';
 import DispatchEvent from './__utils__/dispatchEvent';
 import {
-  mock, backDashboardRoute, getTouristRoute, enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, encryptionJflow, enableInitializationRequest, specifiedGlobalGateWay, HAS_BEEN_DESTROYED_MODULE
+  backDashboardRoute, getTouristRoute, enableGateWay, enableInitializationRequest, specifiedGlobalGateWay, HAS_BEEN_DESTROYED_MODULE
 } from './constants/global';
 import { removeSessionObject, getSeesionObject } from './__utils__/sessionStorage';
 import customizedModalConfig from './__config__/customizeDialog.config';
 import CompositeForm from './__component__/CompositeForm';
 import Loading from './__utils__/loading';
+// import getObjdisType from './src/__utils__/getObjdisType';
 // css import
 import '../node_modules/ag-grid/dist/styles/ag-grid.css';
 import './assets/css/ag-theme-balham.less';
 import './assets/css/loading.css';
 import './assets/css/custom-ext.less';
 
-import jflowplugin from './plugin/jflow-plugin';
 
 Vue.component('CompositeFormpop', CompositeForm);
-Vue.use(BurgeonUi);
 Vue.use(Loading);
 // const createRouter = routes => new VueRouter({
 //   routes,
@@ -111,6 +109,12 @@ const init = () => {
     }, 500);
   }
 };
+
+// 提前挂载方法
+window.changeNavigatorSetting = (data) => {
+  store.commit('global/changeNavigatorSetting', data);
+};
+
 const backTouristRoute = () => {
   // window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
   // router.push({ path: getTouristRoute() });
@@ -217,16 +221,6 @@ export default (projectConfig = {
     Vue.component(modalName, ((modalConfig[modalName] || {}).component) || {});
   });
   // 启动
-  if (enableJflow() && jflowRequestDomain()) {
-    Vue.use(jflowplugin, {
-      router,
-      axios,
-      store,
-      jflowIp: jflowRequestDomain(),
-      closeJflowIcon: closeJflowIcon(),
-      encryptionJflow: encryptionJflow()
-    });
-  }
   if (enableGateWay()) {
     getGateWayServiceId();
   } else {

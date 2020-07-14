@@ -1742,13 +1742,13 @@
     right: 3px;
   }
 }
-textarea.burgeon-input{
+textarea.ark-input{
     // height: 100%!important;
     resize:auto;
 }
 .height100{
     height: 100%!important;
-    .burgeon-input-wrapper{
+    .ark-input-wrapper{
     height: 100%!important;
     }
 }
@@ -1771,7 +1771,7 @@ textarea.burgeon-input{
   max-width:500px!important;
 }
 .attachfiter-pop{
-    .burgeon-select-item{
+    .ark-select-item{
         display: flex;
         width: 100%;
         align-items: center;

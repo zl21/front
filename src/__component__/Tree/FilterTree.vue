@@ -89,12 +89,12 @@
             margin-top: 10px;
             overflow-y: auto;
 
-            .burgeon-tree-title {
+            .ark-tree-title {
                 width: 100%;
                 font-size: 12px;
                 line-height: 26px;
             }
-            .burgeon-tree-title-selected, .burgeon-tree-title-selected:hover {
+            .ark-tree-title-selected, .ark-tree-title-selected:hover {
                 background-color: rgb(196, 226, 255);
             }
         }

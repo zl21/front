@@ -100,10 +100,14 @@ class Upload {
   transformFileToFormData() {
     const formData = new FormData();
     this.file.forEach((item) => {
-      formData.append(this.fileName, item);
+      formData.append(this.fileName, item, item.name);
     });
     Object.keys(this.sendData).forEach((item) => {
-      formData.append(item, this.sendData[item]);
+      if (item === 'path') {
+        formData.append(item, `${this.sendData[item]}${new Date().getTime()}/`);
+      } else {
+        formData.append(item, this.sendData[item]);
+      }
     });
     // 上传图片
     this.uploadImg(formData);

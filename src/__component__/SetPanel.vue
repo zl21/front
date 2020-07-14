@@ -220,11 +220,11 @@
       }
     }
   }
-  .burgeon-switch-checked {
+  .ark-switch-checked {
         border: 1px solid#19be6b !important;
     background-color: #19be6b !important;
 }
-    .burgeon-input-number-handler-wrap {
+    .ark-input-number-handler-wrap {
     opacity: 1 !important;
     background :red  !important;
 }
