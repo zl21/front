@@ -3145,10 +3145,10 @@
           if (this.itemInfo.webact) { // 兼容半定制界面，保存成功时通知外部
             DispatchEvent('customizeClick', {
               detail: {
-                type: 'save',
-                mainTableParame: this.currentParameter,
-                itemTableParame: this.itemCurrentParameter,
-                res,
+                type: 'save', // 类型为保存成功
+                mainTableParame: this.currentParameter, // 保存接口主表参数
+                itemTableParame: this.itemCurrentParameter, // 保存接口子表参数
+                res, // 接口返回res
               }
             });
           }
