@@ -98,6 +98,8 @@
           this.$Modal.fcError(message);
         } else if (this.$refs.username.value !== '' && this.$refs.password.value !== '') {
           const globalServiceId = window.sessionStorage.getItem('serviceId');
+          this.spinShow = true;
+
           network.post(enableGateWay() ? `/${globalServiceId}/p/c/getCaptcha` : '/p/c/getCaptcha').then((res) => {
             const randomKey = btoa(`${Math.random() * 10000000000}`).substring(0, 5);
             network.post(enableGateWay() ? `/${globalServiceId}/p/c/login` : '/p/c/login', urlSearchParams({
@@ -120,8 +122,11 @@
               } else if (r.status === 200 && r.data.code === 0) {
                 this.spinShow = false;
                 window.sessionStorage.setItem('loginTime', `${Date.now()}`);
+                this.spinShow = false;
                 window.location.href = window.location.origin;
               }
+            }).catch(() => {
+              this.spinShow = false;
             });
           });
         }

@@ -1499,10 +1499,19 @@
             linkName: tab.webname,
             linkId: tab.webid
           });
+          const data = {
+            type: 'singleCustomizeButtonLink',
+            value: tab,
+            customizedModuleId: tab.webname.toUpperCase()
+            // 因外链界面tablinkName相同时，只激活一个tab,所以外链界面用linkName作为key存入session,避免因勾选的id不同存入多个，导致关闭当前tab时无法清除存入的多个
+          };
+          this.updateCustomizeMessage(data);
         } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
           const name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
           this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
           const path = getUrl({ url: tabAction, id: tab.webid, type: 'customized' });
+          // 支持直接在跳转定制界面类型的按钮tab.action上配置参数
+          // 如：CUSTOMIZED/FUNCTIONPERMISSION？id=1&&name=2
           const keepAliveLabelMapsObj = {
             k: name,
             v: tab.webdesc
@@ -1517,6 +1526,12 @@
           router.push(
             path
           );
+          const data = {
+            type: 'singleCustomizeButton',
+            value: tab,
+            customizedModuleId: tab.webid
+          };
+          this.updateCustomizeMessage(data);
         } 
       },
 
@@ -3144,10 +3159,10 @@
           if (this.itemInfo.webact) { // 兼容半定制界面，保存成功时通知外部
             DispatchEvent('customizeClick', {
               detail: {
-                type: 'save',
-                mainTableParame: this.currentParameter,
-                itemTableParame: this.itemCurrentParameter,
-                res,
+                type: 'save', // 类型为保存成功
+                mainTableParame: this.currentParameter, // 保存接口主表参数
+                itemTableParame: this.itemCurrentParameter, // 保存接口子表参数
+                res, // 接口返回res
               }
             });
           }

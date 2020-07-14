@@ -123,6 +123,7 @@
     />
     <dialogComponent
       ref="dialogRef"
+      :popwin-message="popwinMessage"
       :title="dialogComponentNameConfig.title"
       :mask="dialogComponentNameConfig.mask"
       :content-text="dialogComponentNameConfig.contentText"
@@ -359,7 +360,7 @@
       // },
      
       ...mapActions('global', ['updateAccessHistory', 'getExportedState', 'updataTaskMessageCount', 'getMenuLists']),
-      ...mapMutations('global', ['tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter', 'updataSTDefaultQuery']),
+      ...mapMutations('global', ['updateCustomizeMessage', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter', 'updataSTDefaultQuery']),
       // changeTreeConfigData(value) {//oldTree
       //   this.isChangeTreeConfigData = value;
       // },
@@ -379,7 +380,6 @@
         this.searchData.startIndex = 0;
         // this.getQueryListForAg(this.searchData);
         this.getQueryListPromise(this.searchData);
-
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
         // 按钮查找 查询第一页数据
         const { tableName } = this[INSTANCE_ROUTE_QUERY];
@@ -513,7 +513,6 @@
         agTableElement.showAgLoading();
         // this.getQueryListForAg(this.searchData);
         this.getQueryListPromise(this.searchData);
-
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
       onPageChange(page) {
@@ -527,6 +526,9 @@
         this.getQueryList();
       },
       onRowDoubleClick(colDef, row) {
+        if (!this.buttons.onRowDoubleClick) { // 配置actionView禁用表格双击事件
+          return;
+        }
         // const param = {
         //   url: 'CUSTOMIZED/FUNCTIONPERMISSION/1',
         //   isMenu: true,
@@ -704,6 +706,16 @@
             this.dialogComponentNameConfig.title = colDef.customerurl.reftabdesc;
             this.dialogComponentNameConfig.footerHide = true;
             this.dialogComponentName = colDef.customerurl.tableurl;
+            const param = colDef.customerurl.refobjid.split(',');
+            if (Object.keys(rowData).length > 0 && param && param.length > 0) {
+              this.popwinMessage = Object.keys(rowData).reduce((arr, obj) => {
+                if (param.includes(obj)) {
+                  arr[obj] = rowData[obj].val;
+                }
+                return arr;
+              }, {});
+            }
+            // 将元数据配置的refobjid，字符串，可配置多个字段，将配置的字段解析后传入自定义弹框，供弹框作为参数使用
           } else if (objdistype === 'tabpanle') {
             // 左右结构单对象界面
             const type = 'tableDetailHorizontal';
@@ -728,12 +740,31 @@
             this.tabOpen(tab);
           } else if (objdistype === 'customized') {
             // 自定义界面
+            let customizeMessage = null;
+            const param = colDef.customerurl.refobjid.split(',');
+            if (Object.keys(rowData).length > 0 && param && param.length > 0) {
+              customizeMessage = Object.keys(rowData).reduce((arr, obj) => {
+                if (param.includes(obj)) {
+                  arr[obj] = rowData[obj].val;
+                }
+                return arr;
+              }, {});
+            }
+            // const customizedModuleName = colDef.customerurl.tableurl.split('/')[1];
+            const data = {
+              type: 'standardCustomerurlCustomized',
+              value: customizeMessage,
+              customizedModuleId: colDef.customerurl.reftableid
+            };
+            this.updateCustomizeMessage(data);
+            // 将元数据配置的refobjid，字符串，可配置多个字段，将配置的字段解析后用作lu y，供弹框作为参数使用
             const type = 'tableDetailAction';
+            
+            const url = `/${colDef.customerurl.tableurl.toUpperCase()}/${colDef.customerurl.reftableid}`;
             const tab = {
               type,
               label: colDef.customerurl.reftabdesc,
-              customizedModuleName: colDef.customerurl.tableurl,
-              customizedModuleId: colDef.customerurl.reftableid
+              url
             };
             this.tabOpen(tab);
           } else if (objdistype === 'link') { // 支持跳转外链界面配置动态参数
@@ -746,6 +777,13 @@
               linkId: rowData[colDef.customerurl.refobjid].val,
             };
             this.directionalRouter(param);// 定向路由跳转方法
+            const data = {
+              type: 'standardCustomerurlLink',
+              value: rowData,
+              customizedModuleId: colDef.customerurl.linkname.toUpperCase()
+              // 因外链界面tablinkName相同时，只激活一个tab,所以外链界面用linkName作为key存入session,避免因勾选的id不同存入多个，导致关闭当前tab时无法清除存入的多个
+            };
+            this.updateCustomizeMessage(data);
           }
         }
       },
@@ -1290,7 +1328,8 @@
           const buttonGroupShow = [];
           tabcmdData.cmds.forEach((item, index) => {
             if (item === 'actionView') {
-              this.buttons.detailState = tabcmdData.prem[index];
+              this.updatestopOnRowDoubleClickData(tabcmdData.prem[index]);
+              // this.buttons.detailState = ;
             } else if (tabcmdData.prem[index]) {
               const type = item.split('action');
               const str = `CMD_${type[1].toUpperCase()}`;
@@ -2348,6 +2387,13 @@
               linkLabel: tab.webdesc
             };
             window.sessionStorage.setItem('tableDetailUrlMessage', JSON.stringify(obj));
+            const data = {
+              type: 'standardCustomizeButtonLink',
+              value: tab,
+              customizedModuleId: tab.webname.toUpperCase()
+              // 因外链界面tablinkName相同时，只激活一个tab,所以外链界面用linkName作为key存入session,避免因勾选的id不同存入多个，导致关闭当前tab时无法清除存入的多个
+            };
+            this.updateCustomizeMessage(data);
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
             const name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
             this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
@@ -2396,7 +2442,6 @@
           }
           // this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
           this.getQueryListPromise(Object.assign({}, this.searchData, { merge }));
-
           this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
         }
       },
@@ -2407,7 +2452,9 @@
         const { detail } = event;
         if (detail.url === '/p/cs/getTableQuery') {
           this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
-          this.searchClickData();
+          if (!this.buttons.isBig) {
+            this.searchClickData();
+          }
         }
       },
       // 监听update.ST.FailInfo事件
@@ -2418,6 +2465,7 @@
       }
     },
     mounted() {
+      // console.log(444, this.buttons.isBig);
       this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
       if (!this._inactive) {
         window.addEventListener('network', this.networkEventListener);
