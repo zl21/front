@@ -113,12 +113,18 @@
                   window.sessionStorage.setItem('loginTime', `${Date.now()}`);
                   this.spinShow = false;
                   window.location.href = window.location.origin;
+                } else {
+                  this.spinShow = false;
                 }
               } else if (r.status === 200 && r.data.code === 0) {
                 window.sessionStorage.setItem('loginTime', `${Date.now()}`);
                 this.spinShow = false;
                 window.location.href = window.location.origin;
+              } else {
+                this.spinShow = false;
               }
+            }).catch(() => {
+              this.spinShow = false;
             });
           });
         }
