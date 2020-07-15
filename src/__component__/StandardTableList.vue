@@ -124,6 +124,7 @@
     <dialogComponent
       ref="dialogRef"
       :popwin-message="popwinMessage"
+      :id-array="this.buttons.selectIdArr"
       :title="dialogComponentNameConfig.title"
       :mask="dialogComponentNameConfig.mask"
       :content-text="dialogComponentNameConfig.contentText"
