@@ -10,9 +10,9 @@ import store from './__config__/store.config';
 import App from './App';
 import './constants/dateApi';
 import network from './__utils__/network';
-import DispatchEvent from './__utils__/dispatchEvent';
+import { DispatchEvent } from './__utils__/dispatchEvent';
 import {
-  mock, backDashboardRoute, getTouristRoute, enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, encryptionJflow, enableInitializationRequest, specifiedGlobalGateWay, HAS_BEEN_DESTROYED_MODULE
+  mock, backDashboardRoute, enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, encryptionJflow, enableInitializationRequest, specifiedGlobalGateWay, HAS_BEEN_DESTROYED_MODULE
 } from './constants/global';
 import { removeSessionObject, getSeesionObject } from './__utils__/sessionStorage';
 import customizedModalConfig from './__config__/customizeDialog.config';
