@@ -1786,6 +1786,8 @@
         });
         promise.then(() => {
           this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+        }, () => {
+          this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
         });
       },
       dialogMessage(title, contentText, obj) {
