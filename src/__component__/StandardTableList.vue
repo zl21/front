@@ -563,7 +563,6 @@
             const param = {
               url: tableurl,
               id,
-              label: row.OWNERID ? row.OWNERID.reftabdesc : null,
               isMenu: true,
               treeTableListSelectId
             };
@@ -583,11 +582,10 @@
           }
           this.tabOpen({
             type,
-            label: row.OWNERID ? row.OWNERID.reftabdesc : null,
             tableName: row._TABLENAME.val,
             tableId: row._TABLEID.val,
             id: row._OBJID.val,
-            serviceId: row.OWNERID ? row.OWNERID.serviceId : null
+            serviceId: row._SERVICEID ? row._SERVICEID.val : null
           });
         } else {
           const id = row.ID.val;
