@@ -586,7 +586,7 @@
             tableName: row._TABLENAME.val,
             tableId: row._TABLEID.val,
             id: row._OBJID.val,
-            serviceId: row._SERVICEID ? row._SERVICEID : null
+            serviceId: row._SERVICEID ? row._SERVICEID.val : null
           });
         } else {
           const id = row.ID.val;
@@ -594,7 +594,6 @@
             const param = {
               url: this.ag.tableurl,
               id,
-              lablel: row.OWNERID ? row.OWNERID.reftabdesc : null,
               isMenu: true,
               treeTableListSelectId
             };
