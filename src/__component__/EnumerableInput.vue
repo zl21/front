@@ -207,12 +207,12 @@
     computed: {
       isDefault() {
         // isdefault 是后台/p/cs/getObject接口的返回值，用于控制系统默认字段不可编辑。此处用于判断读写打印规则的设置逻辑。
-        if (this[INSTANCE_ROUTE].indexOf(VERTICAL_TABLE_DETAIL_PREFIX) > -1) {
-          return this.$store.state[this[MODULE_COMPONENT_NAME]].mainFormInfo.formData.data.isdefault;
-        }
-        if (this[INSTANCE_ROUTE].indexOf(HORIZONTAL_TABLE_DETAIL_PREFIX) > -1) {
-          return this.$store.state[this[MODULE_COMPONENT_NAME]].copyDataForReadOnly.isdefault;
-        }
+        // if (this[INSTANCE_ROUTE].indexOf(VERTICAL_TABLE_DETAIL_PREFIX) > -1) {
+        //   return this.$store.state[this[MODULE_COMPONENT_NAME]].mainFormInfo.formData.data.isdefault;
+        // }
+        // if (this[INSTANCE_ROUTE].indexOf(HORIZONTAL_TABLE_DETAIL_PREFIX) > -1) {
+        //   return this.$store.state[this[MODULE_COMPONENT_NAME]].copyDataForReadOnly.isdefault;
+        // }
         return false;
       }
     },

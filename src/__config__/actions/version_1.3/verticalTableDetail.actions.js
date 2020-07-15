@@ -128,11 +128,11 @@ export default {
                   this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`][0](param);
                 }
               });
-              if (resData.reftabs[0].refcolid !== -1) {
+              if (resData.reftabs[tabIndex].refcolid !== -1) {
                 // commit('updateActiveRefFormInfo', resData.reftabs[0]);
                 
                 // 获取第一个tab的子表列表数据
-                if (resData.reftabs[0].tabrelation === '1:m') {
+                if (resData.reftabs[tabIndex].tabrelation === '1:m') {
                   // 获取第一个tab的子表表单
                   if (this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`] && this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`][0] === 'function') {
                     const formParam = {
@@ -158,7 +158,7 @@ export default {
                       this._actions[`${moduleName || getComponentName()}/getObjectTableItemForTableData`][0](tableParam);
                     }
                   });
-                } else if (resData.reftabs[0].tabrelation === '1:1') {
+                } else if (resData.reftabs[tabIndex].tabrelation === '1:1') {
                   // 获取子表面板数据
                   if (this._actions[`${moduleName || getComponentName()}/getItemObjForChildTableForm`] && this._actions[`${moduleName || getComponentName()}/getItemObjForChildTableForm`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getItemObjForChildTableForm`][0] === 'function') {
                     const tableParam = {
@@ -455,7 +455,27 @@ export default {
           itemBeforeLabel = {};// before值
         } else {
           itemModifyLabel = parame.itemCurrentParameter.modifyLabel;// 子表修改的label
+          // if (itemModifyLabel && itemModifyLabel[itemName] && itemModifyLabel[itemName].length && itemModifyLabel[itemName].length > 0) {
+          //   itemModifyLabel[itemName] = itemModifyLabel[itemName].filter((item) => {
+          //     if (Object.keys(item).length === 1 && item.ID) {
+          //       // itemModifyLabel[itemName] = [];
+          //     } else {
+          //       return item;
+          //     }
+          //   });
+          // }
+          // console.log(444, itemModifyLabel[itemName]);
           itemBeforeLabel = parame.itemCurrentParameter.itemBeforeLabel;// before值
+          if (itemBeforeLabel && itemBeforeLabel[itemName] && itemBeforeLabel[itemName].length && itemBeforeLabel[itemName].length > 0) {
+            // itemBeforeLabel[itemName] = itemBeforeLabel[itemName].filter((item) => {
+            //   if (Object.keys(item).length === 1 && item.ID) {
+            //     // itemBeforeLabel[itemName] = [];
+            //   } else {
+            //     return item;
+            //   }
+            // });
+            // console.log(444, itemBeforeLabel[itemName]);
+          }
         }
       }
       const modifyLabelregroup = parame.modifyLabel[tableName];// 用于begore after字段翻译修改过后的中文label
@@ -482,6 +502,18 @@ export default {
         itemAdd = {};// 子表新增
       } else {
         itemModify = itemCurrentParameter ? itemCurrentParameter.modify : {};// 子表修改
+        
+        // if (itemModify && itemModify[itemName] && itemModify[itemName].length && itemModify[itemName].length > 0) {
+        //   itemModify[itemName] = itemModify[itemName].filter((item) => {
+        //     console.log(99, Object.keys(item).length, item.ID);
+
+        //     if (Object.keys(item).length === 1 && item.ID) {
+        //       // itemModify[itemName].splice(i, 1);
+        //     } else {
+        //       return item;
+        //     }
+        //   });
+        // }
         itemAdd = itemCurrentParameter ? itemCurrentParameter.add : {};// 子表新增
       }
       const sataTypeName = sataType ? sataType.sataType : '';

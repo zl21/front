@@ -10,7 +10,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const projectConfig = require('./project.config');
 
 const target = projectConfig.target; // 框架研发网关开启环境
-const proxyLists = ['/p/c', '/frr-center'];
+const proxyLists = ['/p/c', '/frr-center', '/user-center'];
 const proxyListsForGateway = ['/ad-app/p/c', '/asynctask/p/cs'];
 const proxyListsForIShop = ['/ishopad-app', '/ishopplatform/p/c', '/ishopbill/p/c', '/ishopbase/p/c'];
 const proxyListsForPalmCloud = ['/mboscloud-app'];
@@ -87,13 +87,19 @@ module.exports = env => ({
         target,
         changeOrigin: true
       },
-      
+      {
+        context: '/api/rpt',
+        // target: 'http://47.99.229.124:9093' // 打印
+        target: 'http://r3dev.qiaodan.com:26666', // 打印李宁环境
+        changeOrigin: true
+      },
       {
         context: '/api',
         // target: 'http://47.99.229.124:9093' // 打印
         target: 'http://106.15.24.156:19999', // 打印李宁环境
         changeOrigin: true
       },
+     
       {
         context: '/jflow',
         // target: 'http://106.15.24.156:32940', // 重新占单

@@ -42,6 +42,24 @@
         class="btn"
         @click="login"
       />
+      <Spin
+        v-show="spinShow"
+        fix
+      >
+        <div class="loader">
+          <svg
+            class="circular"
+            viewBox="25 25 50 50"
+          >
+            <circle
+              class="path"
+              fill="none"
+              stroke-width="5"
+              stroke-miterlimit="10"
+            />
+          </svg>
+        </div>
+      </Spin>
     </div>
   </div>
 </template>
@@ -52,6 +70,11 @@
   
   export default {
     name: 'Login',
+    data() {
+      return {
+        spinShow: false,
+      };
+    },
     methods: {
       
       login() {
@@ -70,6 +93,8 @@
           this.$Modal.fcError(message);
         } else if (this.$refs.username.value !== '' && this.$refs.password.value !== '') {
           const globalServiceId = window.sessionStorage.getItem('serviceId');
+          this.spinShow = true;
+
           network.post(enableGateWay() ? `/${globalServiceId}/p/c/getCaptcha` : '/p/c/getCaptcha').then((res) => {
             const randomKey = btoa(`${Math.random() * 10000000000}`).substring(0, 5);
             network.post(enableGateWay() ? `/${globalServiceId}/p/c/login` : '/p/c/login', urlSearchParams({
@@ -86,12 +111,20 @@
                     window.localStorage.setItem('userInfo', JSON.stringify(r.data.user.userenv));
                   }
                   window.sessionStorage.setItem('loginTime', `${Date.now()}`);
+                  this.spinShow = false;
                   window.location.href = window.location.origin;
+                } else {
+                  this.spinShow = false;
                 }
               } else if (r.status === 200 && r.data.code === 0) {
                 window.sessionStorage.setItem('loginTime', `${Date.now()}`);
+                this.spinShow = false;
                 window.location.href = window.location.origin;
+              } else {
+                this.spinShow = false;
               }
+            }).catch(() => {
+              this.spinShow = false;
             });
           });
         }

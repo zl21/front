@@ -131,7 +131,7 @@ export default {
                   this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`][0](param);
                 }
               });
-              if (resData.reftabs[0].refcolid !== -1) { // 以下请求是上下结构获取子表信息（当配置自定义tab时，没有子表，不请求子表信息）
+              if (resData.reftabs[tabIndex].refcolid !== -1) { // 以下请求是上下结构获取子表信息（当配置自定义tab时，没有子表，不请求子表信息）
                 // commit('updateActiveRefFormInfo', resData.reftabs[0]);
                 // 获取第一个tab的子表表单
                
@@ -344,6 +344,7 @@ export default {
       buttonInfo, tabrelation, itemObjId, tableName, temporaryStoragePath, objId, path, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup
     } = parame;
     let parames = {};
+    debugger;
     if (type === 'add') { // 新增保存参数
       const {
         add
@@ -576,8 +577,12 @@ export default {
             // itemModify[itemName].ID = itemObjId;
             // const itemModifyRes = {}; 
             // itemModifyRes[itemName] = [itemModify[itemName]];
-            const itemModifyDefault = itemCurrentParameter.default;
-            const itemModifyAssign = Object.assign({}, itemModifyDefault[itemName], itemModify[itemName]);// 整合子表修改和默认值数据
+            // const itemModifyDefault = itemCurrentParameter.default;
+            // const itemModifyAssign = Object.assign({}, itemModifyDefault[itemName], itemModify[itemName]);// 整合子表修改和默认值数据
+            // 子表1:1模式参数不需要传默认值
+
+            const itemModifyAssign = Object.assign({}, itemModify[itemName]);// 整合子表修改和默认值数据
+
             const itemModifyAssignData = {};
             itemModifyAssignData[itemName] = itemModifyAssign;
             itemModifyAssignData[itemName].ID = itemObjId;

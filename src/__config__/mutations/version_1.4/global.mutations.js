@@ -65,6 +65,7 @@ export default {
     // lingName:外链表名，
     // linkId:外链表ID，
     // query:路由参数
+    // 注：url前不能加/ ，格式应为'CUSTOMIZED/FUNCTIONPERMISSION/2299'
     if (param && param.url && param.url.includes('?')) {
       param.url = getUserenv({ url: param.url });
     }
@@ -180,7 +181,7 @@ export default {
         .map(d => d.children)
         .reduce((a, c) => a.concat(c))
         .reduce((a, c) => {
-          if (c.type === 'action') {
+          if (c.type === 'action' || c.type === 'rpt') {
           // 外部跳转链接URL的处理
             if (c.url) {
               // c.url = `${c.url}?AD_CLIENT_NAME={AD_CLIENT_NAME}&AD_ORG_ID={AD_ORG_ID}`;
@@ -193,8 +194,15 @@ export default {
                 linkUrl[c.id] = c.url;
                 state.LinkUrl.push(linkUrl); // 方便记录外部链接的跳转URL
                 a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
-              } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
+              } else if (actionType.toUpperCase() === 'CUSTOMIZED' || c.url === 'customizeReport') {
                 // 自定义界面的处理
+                // CUSTOMIZED/customizeReport：润钱报表,c.id
+                // 报表类自定义界面根据id选择iframe加载的路径
+                // 后端润乾报表配置已统一，在前端重置配置
+                if (c.url === 'customizeReport') {
+                  c.url = 'CUSTOMIZED/customizeReport';
+                  c.type = 'action';
+                }
                 a[`${getLabel({ url: c.url, id: c.id, type: 'customized' })}`] = c.label;
               } else if (actionType === 'SYSTEM') {
                 const i = c.url.substring(c.url.indexOf('/') + 1, c.url.lastIndexOf('/'));
@@ -343,6 +351,7 @@ export default {
     state.keepAliveLists = [];
     state.activeTab = {};
     router.push('/');
+    window.sessionStorage.removeItem('customizeMessage');
     window.sessionStorage.removeItem('routeMapRecordForHideBackButton');
     window.sessionStorage.removeItem('addRouteToEditor');
     window.sessionStorage.removeItem('routeMapRecord');
@@ -376,6 +385,16 @@ export default {
     //   k: tab.tableName,
     //   v: item.ID
     // };
+
+
+    // 清除配置界面提供给定制界面的参数信息
+    if (tab.keepAliveModuleName) {
+      const customizedModuleId = tab.keepAliveModuleName.split('.')[2];
+      deleteFromSessionObject('customizeMessage', customizedModuleId);// 定制界面
+    }
+    deleteFromSessionObject('customizeMessage', tab.tableName);// 外链界面
+
+
     // 清除当前关闭的表单设置的跳转到标准列表表单默认值;
     const { tableId } = router.currentRoute.params;
     removeSessionObject(tableId);
@@ -606,7 +625,6 @@ export default {
     //   };
     //   updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
     // }
-   
     let path = '';
     if (type === STANDARD_TABLE_LIST_PREFIX || type === 'S') {
       if (url) {
@@ -728,7 +746,6 @@ export default {
       }
       return;
     }
-
     router.push({
       path
     });
@@ -800,6 +817,25 @@ export default {
   updateFavoriteData(state, data) { // 收藏
     state.favorite = data.data;
   },
+  updateCustomizeMessage(state, data) { // 收藏
+    // type:类型
+    // value:更新的值
+    // type='customerurl', // 列表界面链接型字段配置objdistype === 'customized'，配置在customerurl.refobjid的字段，解析的值
+    // 不同的跳转方式应存到不同的类型中
+    // state.customizeMessage[data.customizedModuleId] = {
+    //   [data.type]: data.value
+    // };
+    // state.customizeMessage.push({
+    //   [data.customizedModuleId]: {
+    //     [data.type]: data.value
+    //   }
+    // });
 
+    const obj = {
+      k: data.customizedModuleId,
+      v: { [data.type]: data.value }
+    };
+    updateSessionObject('customizeMessage', obj);
+  },
   
 };

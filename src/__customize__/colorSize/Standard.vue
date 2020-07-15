@@ -222,8 +222,6 @@
       },
       clickTabPanelsColor(index, name, instance) {
         this.colorData = instance.rightTableData;
-        console.log('🍓', this.colorData);
-        console.log('🍓', this.sizeData);
       },
       clickTabPanelsSize(index, name, instance) {
         this.sizeData = instance.rightTableData;

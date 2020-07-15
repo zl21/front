@@ -1,18 +1,18 @@
-import axios from 'axios';
+import Axios from 'axios';
 import md5 from 'md5';
 import router from '../__config__/router.config';
 import store from '../__config__/store.config';
 import { singlePageNetworkConfig } from '../__config__/jflowConfig/singlePageNetworkConfig';
 
-
 import {
-  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, getTouristRoute, enableJflow, REQUEST_PENDDING_EXPIRE
+  mock, ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, getTouristRoute, enableJflow, REQUEST_PENDDING_EXPIRE
 } from '../constants/global';
 import { addNetwork } from './indexedDB';
 
 import {
   updateSessionObject, removeSessionObject, getSeesionObject
 } from './sessionStorage';
+
 
 let tableNameForGet = '';
 const pendingRequestMap = {};
@@ -68,6 +68,13 @@ const dispatchR3Event = (data) => {
     }));
   }, 10);
 };
+let axios = null;
+
+if (mock()) { // Ark-share需求：开启mock需对框架接口进行拦截处理，所以mock模式axios不需要重新创建，需使用全局的axios
+  axios = Axios;
+} else {
+  axios = Axios.create();
+}
 
 axios.interceptors.response.use(
   (response) => {

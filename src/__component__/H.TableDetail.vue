@@ -101,12 +101,12 @@
               obj.componentAttribute.webConfSingle = this.WebConf;
               obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.tabPanel[0].componentAttribute.panelData.data.isdefault || item.JflowReadonly;
             } else {
-              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.childReadonly;
+              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.childReadonly || item.componentAttribute.buttonsData.data.objreadonly;
             }
             obj.componentAttribute.webConfSingle = this.tabPanel[index].componentAttribute.buttonsData.data.webconf;
             obj.componentAttribute.isreftabs = this.tabPanel[0].componentAttribute.buttonsData.data.isreftabs;
             obj.componentAttribute.tableName = item.tablename;
-            obj.componentAttribute.formReadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || item.JflowReadonly;
+            obj.componentAttribute.formReadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || item.JflowReadonly || item.componentAttribute.buttonsData.data.objreadonly;
             obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
             obj.componentAttribute.itemInfo = item;
             obj.componentAttribute.childTableNames = this.childTableNames;
@@ -260,6 +260,25 @@
     },
     mounted() {
       this.getMainTable(this.tabCurrentIndex, false);
+      const interval = setInterval(() => {
+        const query = this.$route.query.ACTIVE;
+        const oUl = document.querySelector('.burgeon-tabs-panels-nav');
+        if (query && oUl) {
+          for (let i = 0; i < oUl.children.length; i++) {
+            this.tabPanels.forEach((item) => {
+              if (Number(query) === item.tableid && item.tabledesc === oUl.children[i].innerText) {
+                if (oUl.children[i].click && typeof oUl.children[i].click === 'function') {
+                  oUl.children[i].click();
+                  clearInterval(interval);
+                }
+              }
+            });
+          }
+        }
+      }, 1000);// 每1秒轮询一次，10次结束，
+      setTimeout(() => {
+        clearInterval(interval);
+      }, 10000);
     },
     created() {
       // this.emptyTestData();

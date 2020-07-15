@@ -123,6 +123,8 @@
     />
     <dialogComponent
       ref="dialogRef"
+      :popwin-message="popwinMessage"
+      :id-array="this.buttons.selectIdArr"
       :title="dialogComponentNameConfig.title"
       :mask="dialogComponentNameConfig.mask"
       :content-text="dialogComponentNameConfig.contentText"
@@ -156,6 +158,7 @@
   import ErrorModal from './ErrorModal';
   import modifyDialog from './ModifyModal';
   import tree from './tree';
+  import regExp from '../constants/regExp';
 
   import {
     Version,
@@ -190,6 +193,7 @@
     },
     data() {
       return {
+        popwinMessage: {},
         tableButtons: [],
         // isChangeTreeConfigData: '',//oldTree
         treeShow: true,
@@ -357,7 +361,7 @@
       // },
      
       ...mapActions('global', ['updateAccessHistory', 'getExportedState', 'updataTaskMessageCount', 'getMenuLists']),
-      ...mapMutations('global', ['tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter', 'updataSTDefaultQuery']),
+      ...mapMutations('global', ['updateCustomizeMessage', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter', 'updataSTDefaultQuery']),
       // changeTreeConfigData(value) {//oldTree
       //   this.isChangeTreeConfigData = value;
       // },
@@ -375,7 +379,8 @@
           delete this.searchData.reffixedcolumns;
         }
         this.searchData.startIndex = 0;
-        this.getQueryListForAg(this.searchData);
+        // this.getQueryListForAg(this.searchData);
+        this.getQueryListPromise(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
         // 按钮查找 查询第一页数据
         const { tableName } = this[INSTANCE_ROUTE_QUERY];
@@ -507,7 +512,8 @@
       getQueryList() {
         const { agTableElement } = this.$refs;
         agTableElement.showAgLoading();
-        this.getQueryListForAg(this.searchData);
+        // this.getQueryListForAg(this.searchData);
+        this.getQueryListPromise(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
       onPageChange(page) {
@@ -521,6 +527,9 @@
         this.getQueryList();
       },
       onRowDoubleClick(colDef, row) {
+        if (!this.buttons.onRowDoubleClick) { // 配置actionView禁用表格双击事件
+          return;
+        }
         // const param = {
         //   url: 'CUSTOMIZED/FUNCTIONPERMISSION/1',
         //   isMenu: true,
@@ -591,8 +600,6 @@
               isMenu: true,
               treeTableListSelectId
             };
-
-
             this.directionalRouter(param);// 定向路由跳转方法
           } else if (this.ag.datas.objdistype === 'tabpanle') {
             // 单对象左右结构
@@ -683,7 +690,6 @@
             return;
           }
           window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
-
           this.tabOpen({
             id: refobjid,
             tableName: reftablename,
@@ -693,7 +699,7 @@
             serviceId
           });
         }
-        if (colDef.customerurl && Object.keys(colDef.customerurl).length > 0) {
+        if (colDef.customerurl && Object.keys(colDef.customerurl).length > 0) { // 配置链接型字段
           const objdistype = colDef.customerurl.objdistype;
           if (objdistype === 'popwin') {
             // 自定义弹窗
@@ -701,6 +707,16 @@
             this.dialogComponentNameConfig.title = colDef.customerurl.reftabdesc;
             this.dialogComponentNameConfig.footerHide = true;
             this.dialogComponentName = colDef.customerurl.tableurl;
+            const param = colDef.customerurl.refobjid.split(',');
+            if (Object.keys(rowData).length > 0 && param && param.length > 0) {
+              this.popwinMessage = Object.keys(rowData).reduce((arr, obj) => {
+                if (param.includes(obj)) {
+                  arr[obj] = rowData[obj].val;
+                }
+                return arr;
+              }, {});
+            }
+            // 将元数据配置的refobjid，字符串，可配置多个字段，将配置的字段解析后传入自定义弹框，供弹框作为参数使用
           } else if (objdistype === 'tabpanle') {
             // 左右结构单对象界面
             const type = 'tableDetailHorizontal';
@@ -725,12 +741,31 @@
             this.tabOpen(tab);
           } else if (objdistype === 'customized') {
             // 自定义界面
+            let customizeMessage = null;
+            const param = colDef.customerurl.refobjid.split(',');
+            if (Object.keys(rowData).length > 0 && param && param.length > 0) {
+              customizeMessage = Object.keys(rowData).reduce((arr, obj) => {
+                if (param.includes(obj)) {
+                  arr[obj] = rowData[obj].val;
+                }
+                return arr;
+              }, {});
+            }
+            // const customizedModuleName = colDef.customerurl.tableurl.split('/')[1];
+            const data = {
+              type: 'standardCustomerurlCustomized',
+              value: customizeMessage,
+              customizedModuleId: colDef.customerurl.reftableid
+            };
+            this.updateCustomizeMessage(data);
+            // 将元数据配置的refobjid，字符串，可配置多个字段，将配置的字段解析后用作lu y，供弹框作为参数使用
             const type = 'tableDetailAction';
+            
+            const url = `/${colDef.customerurl.tableurl.toUpperCase()}/${colDef.customerurl.reftableid}`;
             const tab = {
               type,
               label: colDef.customerurl.reftabdesc,
-              customizedModuleName: colDef.customerurl.tableurl,
-              customizedModuleId: colDef.customerurl.reftableid
+              url
             };
             this.tabOpen(tab);
           } else if (objdistype === 'link') { // 支持跳转外链界面配置动态参数
@@ -743,6 +778,13 @@
               linkId: rowData[colDef.customerurl.refobjid].val,
             };
             this.directionalRouter(param);// 定向路由跳转方法
+            const data = {
+              type: 'standardCustomerurlLink',
+              value: rowData,
+              customizedModuleId: colDef.customerurl.linkname.toUpperCase()
+              // 因外链界面tablinkName相同时，只激活一个tab,所以外链界面用linkName作为key存入session,避免因勾选的id不同存入多个，导致关闭当前tab时无法清除存入的多个
+            };
+            this.updateCustomizeMessage(data);
           }
         }
       },
@@ -801,13 +843,16 @@
             obj.row = current.row ? current.row : 1;
             obj.col = current.col ? current.col : 1;
             obj.component = ItemComponent;
+            
+
             obj.item = {
               type: checkDisplay(current),
               title: current.coldesc,
               field: current.colname,
               value: this.defaultValue(current),
               inputname: current.inputname,
-              props: {},
+              props: {
+              },
               event: {
                 keydown: (event) => {
                   // 输入框的keydown event, $this
@@ -939,6 +984,33 @@
               },
               validate: {}
             };
+
+
+            // 输入控制
+            if (current.type === 'NUMBER' && !current.display) {
+              // 只能输入 正整数 
+              let string = '';
+              current.length = 100;
+
+              if (current.webconf && current.webconf.ispositive) {
+                string = `^\\d{0,${current.length}}(\\\.[0-9]{0,${
+                  current.scale
+                }})?$`;
+              } else {
+                string = `^(-|\\+)?\\d{0,${current.length - current.scale}}(\\\.[0-9]{0,${
+                  current.scale
+                }})?$`;
+              }
+              
+              const typeRegExp = new RegExp(string);
+              if (current.scale > 0) {
+                obj.item.props.regx = typeRegExp;
+              } else if (current.webconf && current.webconf.ispositive) {
+                obj.item.props.regx = regExp.Number;
+              } else {
+                obj.item.props.regx = regExp.Digital;
+              }
+            }
 
             // 带有combobox的添加到options属性中
             if (current.combobox) {
@@ -1257,7 +1329,8 @@
           const buttonGroupShow = [];
           tabcmdData.cmds.forEach((item, index) => {
             if (item === 'actionView') {
-              this.buttons.detailState = tabcmdData.prem[index];
+              this.updatestopOnRowDoubleClickData(tabcmdData.prem[index]);
+              // this.buttons.detailState = ;
             } else if (tabcmdData.prem[index]) {
               const type = item.split('action');
               const str = `CMD_${type[1].toUpperCase()}`;
@@ -1265,7 +1338,7 @@
                 this.setPrintValueForButtons(true);
               } else {
                 this.buttonMap[str].eName = item;
-                const buttonConfigInfo = this.buttonMap[str];
+                const buttonConfigInfo = JSON.parse(JSON.stringify(this.buttonMap[str]));
                 if (tabcmdData.paths) {
                   buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
                 }
@@ -1701,8 +1774,22 @@
           this.searchData.startIndex = 0;
         }
         this.searchData.fixedcolumns = this.dataProcessing();
-        this.getQueryListForAg(this.searchData);
+        // this.getQueryListForAg(this.searchData);
+        this.getQueryListPromise(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+      },
+      getQueryListPromise(data) {
+        const promise = new Promise((resolve, reject) => {
+          this.$loading.show();
+          data.resolve = resolve;
+          data.reject = reject;
+          this.getQueryListForAg(data);
+        });
+        promise.then(() => {
+          this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+        }, () => {
+          this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+        });
       },
       dialogMessage(title, contentText, obj) {
         this.setErrorModalValue({
@@ -2299,24 +2386,72 @@
               linkLabel: tab.webdesc
             };
             window.sessionStorage.setItem('tableDetailUrlMessage', JSON.stringify(obj));
+            const data = {
+              type: 'standardCustomizeButtonLink',
+              value: tab,
+              customizedModuleId: tab.webname.toUpperCase()
+              // 因外链界面tablinkName相同时，只激活一个tab,所以外链界面用linkName作为key存入session,避免因勾选的id不同存入多个，导致关闭当前tab时无法清除存入的多个
+            };
+            this.updateCustomizeMessage(data);
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-            const name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
-            this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
-            const path = getUrl({ url: tabAction, id: tab.webid, type: 'customized' });
-            const keepAliveLabelMapsObj = {
-              k: name,
-              v: tab.webdesc
-            };
-            const undataFromPageCustomizeButtonInfo = {
-              k: name,
-              v: this[INSTANCE_ROUTE_QUERY]
-            };
-            updateSessionObject('undataFromPageCustomizeButtonInfo', undataFromPageCustomizeButtonInfo);// 将自定义按钮为跳转自定义界面类型的自定义按钮信息存入session
+            // const name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
+            // this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
+            // const path = getUrl({ url: tabAction, id: tab.webid, type: 'customized' });
+            // const keepAliveLabelMapsObj = {
+            //   k: name,
+            //   v: tab.webdesc
+            // };
+            // const undataFromPageCustomizeButtonInfo = {
+            //   k: name,
+            //   v: this[INSTANCE_ROUTE_QUERY]
+            // };
+            // updateSessionObject('undataFromPageCustomizeButtonInfo', undataFromPageCustomizeButtonInfo);// 将自定义按钮为跳转自定义界面类型的自定义按钮信息存入session
 
-            updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
-            router.push(
-              path
-            );
+            // updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
+            // router.push(
+            //   path
+            // );
+            const itemId = this.buttons.selectIdArr.filter(item => item);
+
+            if (singleEditType === ':itemId') {
+              if (this.buttons.selectIdArr.length === 0) {
+                this.$Message.warning('请勾选ID');
+                return;
+              } if (this.buttons.selectIdArr.length > 1) {
+                this.$Message.warning('只能勾选单个ID');
+                return;
+              }
+              const path = `${tabAction.replace(/:itemId/, itemId)}`;
+              const param = {
+                url: path,
+                id: itemId[0],
+                isMenu: true,
+              };
+              this.directionalRouter(param);// 定向路由跳转方法
+             
+              // router.push(
+              //   path
+              // );
+            } else {
+              const path = `${tabAction}/${tab.webid}`;
+              // router.push(
+              //   path
+              // );
+              const param = {
+                url: path,
+                id: tab.webid,
+                label: tab.webdesc,
+                isMenu: true,
+              };
+              this.directionalRouter(param);// 定向路由跳转方法
+            }
+
+            const data = {
+              type: 'standardCustomizeButton',
+              value: tab,
+              customizedModuleId: itemId[0]
+            };
+            this.updateCustomizeMessage(data);
           }
         }
       },
@@ -2345,7 +2480,8 @@
           if (selectIdArrLength === currentPageSizes && allPages === currentPage) { // 如果分页在最后一页并且删除当页全部
             this.searchData.startIndex = currentPageSize * ((total - selectIdArrLength) / currentPageSize - 1);
           }
-          this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
+          // this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
+          this.getQueryListPromise(Object.assign({}, this.searchData, { merge }));
           this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
         }
       },
@@ -2356,7 +2492,9 @@
         const { detail } = event;
         if (detail.url === '/p/cs/getTableQuery') {
           this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
-          this.searchClickData();
+          if (!this.buttons.isBig) {
+            this.searchClickData();
+          }
         }
       },
       // 监听jflow事件
@@ -2373,6 +2511,7 @@
       }
     },
     mounted() {
+      // console.log(444, this.buttons.isBig);
       this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
       if (!this._inactive) {
         window.addEventListener('network', this.networkEventListener);
