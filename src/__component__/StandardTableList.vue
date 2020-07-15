@@ -594,7 +594,6 @@
             const param = {
               url: this.ag.tableurl,
               id,
-              lablel: row.OWNERID ? row.OWNERID.reftabdesc : null,
               isMenu: true,
               treeTableListSelectId
             };
