@@ -884,6 +884,9 @@
         const obj = {};
         obj.row = current.row ? current.row : 1;
         obj.col = current.col ? current.col : 1;
+         if (current.display === 'clob') {
+            obj.col = this.defaultColumnCol;
+          }
         obj.component = ItemComponent;
         obj.show = true;
         obj.item = {
