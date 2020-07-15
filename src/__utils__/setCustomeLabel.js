@@ -9,7 +9,7 @@ const setCustomeLabel = (param) => {
   //   customizedModuleId：自定义界面ID，
   //   label：定义的自定义界面label
   // }
-  const customizedModuleName = param.customizedModuleName;
+  const customizedModuleName = param.customizedModuleName.toUpperCase();
   const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
   const externalModulesRes = {};// 外部配置
   Object.keys(externalModules).forEach((key) => {
