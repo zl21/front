@@ -23,16 +23,8 @@ module.exports = {
   // target: 'http://jflow-shangfei-r3.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://ark-share-dev.dev.burgeononline.com', // ArkShare环境
   // target: 'http://47.102.164.111:26666/', // 卡宾环境
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
   // target: 'http://172.18.34.122:8001/', // ishop环境
-=======
-  target: 'http://10.14.6.84/', // 卡宾环境
-
-  
->>>>>>> 2c50ce2f9d4b92e5178f6c4e7492081b4bd7d687
->>>>>>> origin/v1.4
+  // target: 'http://10.14.6.84/', // 卡宾环境
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop环境
 
   
