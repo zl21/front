@@ -79,7 +79,8 @@ export default () => ({
         'closeImportDialog',
         'setAgTableErrorMessage',
         'setPrintValueForButtons',
-        'updataSelectIdArr'
+        'updataSelectIdArr',
+        'updatestopOnRowDoubleClickData'
       
         
       ]),
@@ -100,8 +101,6 @@ export default () => ({
       buttons: ({ buttons }) => buttons,
       webconf: ({ webconf }) => webconf, // 局部webconf，用于控制普通表格
       webConf: ({ webConf }) => webConf, // 列表界面webConf
-
-      
     }),
   },
   activated() {

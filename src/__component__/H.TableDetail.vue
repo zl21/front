@@ -217,8 +217,10 @@
           for (let i = 0; i < oUl.children.length; i++) {
             this.tabPanels.forEach((item) => {
               if (Number(query) === item.tableid && item.tabledesc === oUl.children[i].innerText) {
-                clearInterval(interval);
-                oUl.children[i].click();
+                if (oUl.children[i].click && typeof oUl.children[i].click === 'function') {
+                  oUl.children[i].click();
+                  clearInterval(interval);
+                }
               }
             });
           }

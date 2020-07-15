@@ -27,11 +27,17 @@ import './assets/css/custom-ext.less';
 
 Vue.component('CompositeFormpop', CompositeForm);
 Vue.use(Loading);
+// const createRouter = routes => new VueRouter({
+//   routes,
+//   mode: mock() ? 'hash' : 'history'
+// });
+const mode = mock() ? 'hash' : 'history';
 
 const createRouter = routes => new VueRouter({
   routes,
-  mode: 'history'
+  mode
 });
+
 
 const createDOM = () => {
   const div = document.createElement('div');
@@ -214,7 +220,6 @@ export default (projectConfig = {
   Object.keys(modalConfig).forEach((modalName) => {
     Vue.component(modalName, ((modalConfig[modalName] || {}).component) || {});
   });
-
   // 启动
   if (enableGateWay()) {
     getGateWayServiceId();
