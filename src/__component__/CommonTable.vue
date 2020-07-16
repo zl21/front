@@ -88,10 +88,10 @@
     name: 'CommonTable',
     components: { Dialog },
     props: {
-      buttonsData: {// 获取自定义按钮组
-        type: Array,
-        default: () => []
-      },
+      // buttonsData: {// 获取自定义按钮组
+      //   type: Array,
+      //   default: () => []
+      // },
       doTableSearch: {
         type: Function,
         default: () => {},
@@ -445,43 +445,43 @@
     watch: {},
     methods: {
       ...mapMutations('global', ['tabOpen']),
-      btnclick(obj) {
-        this.$emit('btnclick', obj);
-        // switch (obj.vuedisplay) {
-        // case 'slient':
-        //   this.$emit('objTabActionSlient', obj);
-        //   break;
-        // case 'dialog':
-        //   this.$emit('objTabActionDialog', obj);
-        //   break;
-        // case 'navbar':
-        //   this.$emit('objTabActionNavbar', obj);
-        //   break;
+      // btnclick(obj) {
+      //   this.$emit('btnclick', obj);
+      //   // switch (obj.vuedisplay) {
+      //   // case 'slient':
+      //   //   this.$emit('objTabActionSlient', obj);
+      //   //   break;
+      //   // case 'dialog':
+      //   //   this.$emit('objTabActionDialog', obj);
+      //   //   break;
+      //   // case 'navbar':
+      //   //   this.$emit('objTabActionNavbar', obj);
+      //   //   break;
        
-        // default:
-        //   break;
-        // }
-      },
-      buttonsRender() {
-        // 按钮组
-        return (h, info) => h('div',
-                              [
-                                h('buttons', {
-                                  on: {
-                                    btnclick: (obj) => {
-                                      obj.ID = info.row.ID;
-                                      this.btnclick(obj);
-                                    }
-                                  },
-                                  props: {
-                                    buttonsData: this.buttonsData
-                                    // value: info.row[info.column.colname] === 'true',
-                                    // size: 'small',
-                                    // loading: false
-                                  },
-                                })
-                              ]);
-      },
+      //   // default:
+      //   //   break;
+      //   // }
+      // },
+      // buttonsRender() {
+      //   // 按钮组
+      //   return (h, info) => h('div',
+      //                         [
+      //                           h('buttons', {
+      //                             on: {
+      //                               btnclick: (obj) => {
+      //                                 obj.ID = info.row.ID;
+      //                                 this.btnclick(obj);
+      //                               }
+      //                             },
+      //                             props: {
+      //                               buttonsData: this.buttonsData
+      //                               // value: info.row[info.column.colname] === 'true',
+      //                               // size: 'small',
+      //                               // loading: false
+      //                             },
+      //                           })
+      //                         ]);
+      // },
       deselectAll() {
         this.$refs.table.selectAll(false);
       }, // 取消表格全部选中
