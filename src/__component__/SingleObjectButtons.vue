@@ -148,7 +148,6 @@
           buttonGroupShowConfig: {// 标准按钮
             buttonGroupShow: []
           },
-          // jflowPluginDataArray: [], // jflow老版本按钮配置  jflowOld
           jflowButton: [], // jflow配置按钮
           btnclick: (type, item) => {
             const self = this;
@@ -199,11 +198,7 @@
           this.updataCurrentTableDetailInfo();
         }, 0);
       },
-      // backButton: {// jflowNew
-      //   handler(val) {
-      //     this.dataArray.back = val;
-      //   }
-      // },
+     
       isHideTempStorage: {// jflow控制暂存按钮显示
         handler(val) {
           if (val) {
@@ -217,16 +212,7 @@
           this.dataArray.jflowButton = val;
         }
       },
-      // jflowPluginDataArray: {// jflowOld
-      //   handler(val) {
-      //     this.dataArray.jflowPluginDataArray = val;
-      //   }
-      // },
-      // refreshButtons: {//jflowNew
-      //   handler(val) {
-      //     this.dataArray.refresh = val;
-      //   }
-      // },    
+    
       tabcmd: {
         handler(val) {
           this.hideBackButton();
@@ -369,11 +355,7 @@
         }
         return false;
       },
-      // getJflowConfigCurrentTab() {
-      //   const currentJflowConfig = this.JflowControlField.filter(item => item.tableId === this.tableId);
-      //   // 解决jflow配置由子表改为主表
-      //   return currentJflowConfig.itemTableId ? currentJflowConfig.itemTableId : null;
-      // },
+    
       waterMarkText() {
         const customizeWaterMark = getCustomizeWaterMark();
         const textMap = Object.assign({
@@ -450,12 +432,7 @@
         }
         return [];
       },
-      // refreshButtons() { // jflowOldAndNew
-      //   // if (this.jflowConfigrefreshButton) {
-      //   //   return false;
-      //   // }
-      //   // return this.refreshButton;
-      // },
+    
       tablePage() {
         let page = {};
         if (this.objectType === 'horizontal') { // 横向布局
@@ -1281,15 +1258,8 @@
               this.dialogMessage(title, contentText, objRes);
             } else if (JSON.parse(obj.confirm).isSave && this.testUpdata()) { // 静默执行保存
               type = 'objTabActionSlient';
-              // if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
-              //   const objTabActionSlientData = {
-              //     k: 'data',
-              //     v: obj
-              //   };
-              //   updateSessionObject('objTabActionSlientData', objTabActionSlientData);
-              // } else {
+             
               this.objTabActionSlientData = obj;
-              // }
               this.clickSave({ type });
             } else {
               this.buttonEvent(obj);
@@ -1545,15 +1515,7 @@
         const dom = document.getElementById('actionMODIFY');
         if (dom) {
           if (data) {
-            // if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
-            //   const saveEventAfter = {
-            //     k: 'type',
-            //     v: data.type
-            //   };
-            //   updateSessionObject('saveEventAfter', saveEventAfter);
-            // } else {
             this.saveEventAfter = data.type;
-            // }
             const myEvent = document.createEvent('HTMLEvents');
             myEvent.initEvent('click', false, true);
             dom.dispatchEvent(myEvent);
@@ -2195,9 +2157,7 @@
                         buttonConfigInfo.jflowpath = tabcmd.jflowpaths[index];
                       }
 
-                      if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
-                        this.updateRefreshButton(true);
-                      }
+                      this.updateRefreshButton(true);
                       // if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
                       //   this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                       // }
@@ -2229,9 +2189,7 @@
                         buttonConfigInfo.jflowpath = tabcmd.jflowpaths[index];
                       }
 
-                      if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
-                        this.updateRefreshButton(true);
-                      }
+                      this.updateRefreshButton(true);
                       if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && !this.isHideTempStorage) {
                         this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                       }
@@ -2241,12 +2199,6 @@
                   } else if (item === 'actionMODIFY' && tabcmd.jflowpaths) {
                     this.saveButtonJflowPath = tabcmd.jflowpaths[index];
                   }
-                  //  else {
-                  //   if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示 jflowOld
-                  //     this.updateRefreshButton(true);
-                  //   }
-                  //   this.dataArray.refresh = this.refreshButtons;//jflowOldAndNew
-                  // }
                 });
               }
             } else { // 横向布局主表不显示导入
@@ -2278,11 +2230,8 @@
                         buttonConfigInfo.jflowpath = tabcmd.jflowpaths[index];
                       }
 
-                      if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
-                        this.updateRefreshButton(true);
-                      }
+                      this.updateRefreshButton(true);
                      
-                      // this.dataArray.refresh = this.refreshButtons;//jflowOldAndNew
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
                   } else if (item === 'actionMODIFY' && tabcmd.jflowpaths) {
@@ -2321,11 +2270,8 @@
                       buttonConfigInfo.jflowpath = tabcmd.jflowpaths[index];
                     }
 
-                    if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
-                      this.updateRefreshButton(true);
-                    }
+                    this.updateRefreshButton(true);
                    
-                    // this.dataArray.refresh = this.refreshButtons;//jflowOldAndNew
                     this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                   }
                 } else if (item === 'actionMODIFY' && tabcmd.jflowpaths) {
@@ -3108,13 +3054,6 @@
        * }
        */
       savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType) { // 主表新增保存方法
-        // let buttonInfo = {};
-        // if (this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '保存').length > 0) {
-        //   buttonInfo = this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '保存')[0];
-        // } else if (this.dataArray.jflowButton.filter(d => d.button === '4').length > 0) {
-        //   buttonInfo = this.dataArray.jflowButton.filter(d => d.button === '4')[0];
-        //   buttonInfo.jflowpath = this.saveButtonJflowPath;
-        // }
         const tableName = this.tableName;
         const objectType = this.objectType;
         const isreftabs = this.subtables();
@@ -3166,32 +3105,13 @@
               }
             });
           }
-          // if (enableJflow()) { // jflow开启时，保存成功需通知
-          // DispatchEvent('jflowPlugin', {
-          //   detail: {
-          //     obj: {
-          //       button: 'save',
-          //       type: 'resolve'
-          //     }
-          //   }
-          // });
-          // }
+         
           DispatchEvent('objTabActionSlientForItemTable', {// 用于子表监听保存成功后执行相对应逻辑
             detail: {
               type: 'resolve',
             }
           });
         }, () => {
-          // if (enableJflow()) { // jflow开启时，保存失败需通知
-          // DispatchEvent('jflowPlugin', {
-          //   detail: {
-          //     obj: {
-          //       button: 'save',
-          //       type: 'reject'
-          //     }
-          //   }
-          // });
-          // }
           this.closeCurrentLoading();
           stop = true;
           removeMessage = true;
@@ -3628,7 +3548,6 @@
       
       // this.dataArray.back = this.backButton;
       if (this.jflowButton.length > 0) {
-        // this.dataArray.jflowPluginDataArray = [];
         this.dataArray.jflowButton = this.jflowButton;
       }
       this.hideBackButton();
@@ -3700,9 +3619,6 @@
       }
       // this.dataArray.refresh = this.refreshButtons;
       this.waListButtons(this.tabwebact);
-      // if (this.jflowPluginDataArray) {//jflowOld
-      //   this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;
-      // }
     },
     created() {
       this.ChineseDictionary = ChineseDictionary;
