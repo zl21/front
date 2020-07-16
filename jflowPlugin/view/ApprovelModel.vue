@@ -736,7 +736,7 @@
           display: inline-block;
           flex: 1;
 
-          .burgeon-select-selection{
+          .ark-select-selection{
             border-color: #dcdee2;
             box-shadow: none;
           }
@@ -744,7 +744,7 @@
           &:first-child{
             width: 60px;
             flex: none;
-            .burgeon-select-selection{
+            .ark-select-selection{
               background: #F9F9F9;
               border-top-right-radius: 0;
               border-bottom-right-radius: 0;
@@ -752,7 +752,7 @@
           }
 
           &:last-child{
-            .burgeon-select-selection{
+            .ark-select-selection{
               border-left: none;
               border-top-left-radius: 0;
               border-bottom-left-radius: 0;

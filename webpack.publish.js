@@ -47,10 +47,10 @@ module.exports = () => ({
       amd: 'axios',
       root: 'axios'
     },
-    'burgeon-ui': {
-      commonjs: 'burgeon-ui',
-      commonjs2: 'burgeon-ui',
-      amd: 'burgeon-ui',
+    'ark-ui': {
+      commonjs: 'ark-ui',
+      commonjs2: 'ark-ui',
+      amd: 'ark-ui',
       root: 'Ark'
     },
     ztree: {
