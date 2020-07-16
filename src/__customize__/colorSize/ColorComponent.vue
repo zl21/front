@@ -317,7 +317,6 @@
       // }, // 获取右边表格的数据
       mainImageRender() {
         return (h, params) => {
-          // debugger;
           const colname = params.row;
           if (colname.image) {
             return h('div', [

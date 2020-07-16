@@ -123,7 +123,7 @@
     <dialogComponent
       ref="dialogRef"
       :popwin-message="popwinMessage"
-      :id-array="this.buttons.selectIdArr"
+      :id-array="buttons.selectIdArr"
       :title="dialogComponentNameConfig.title"
       :mask="dialogComponentNameConfig.mask"
       :content-text="dialogComponentNameConfig.contentText"
@@ -192,6 +192,7 @@
     },
     data() {
       return {
+        popwinMessage: {},
         urlArr: ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid'],
         tableButtons: [],
         // isChangeTreeConfigData: '',//oldTree

@@ -174,7 +174,7 @@
   };
 </script>
 <style >
-.burgeon-tree-title-selected{
+.ark-tree-title-selected{
   background:red !important;
 }
 .treeContent{
