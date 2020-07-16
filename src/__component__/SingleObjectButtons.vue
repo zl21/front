@@ -565,7 +565,7 @@
       },
       updataCurrentTableDetailMethods() { // 更新单对象挂载window的方法（保持当前激活的单对象界面）
         window.updataClickSave = event => this.clickSave({ event });
-        window.testUpdataValue = () => (window.jflow ? true : this.testUpdata());
+        window.testUpdataValue = () => this.testUpdata();
         window.updatavVerifyRequiredInformation = () => this.verifyRequiredInformation();
       },
       imporSuccess(id) {
@@ -818,7 +818,6 @@
               || (this.updateData[this.itemName].add[this.itemName] && Object.keys(this.updateData[this.itemName].add[this.itemName]).length > 0)) { // 子表新增及修改
               this.isValue = true;// 子表修改了值
               console.log(' 子表修改了值');
-
               return true;
             }
           } else if (this.updateData[this.tableName].modify[this.tableName] && Object.keys(this.updateData[this.tableName].modify[this.tableName]).length > 0
