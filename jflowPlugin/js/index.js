@@ -181,6 +181,7 @@ function initLists() { // init
 
 const install = async function install(Vue, options = {}) {
   await globalChange(options);
+  window.jflow = true;
   initLists();
   CreateButton();
   // 业务系统登录成功后创建右上角的小图标
