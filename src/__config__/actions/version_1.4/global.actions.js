@@ -45,7 +45,6 @@ export default {
         GetTableName('');
         commit('updataUserInfoMessage', {});
         window.localStorage.removeItem('userInfo');
-        // commit('updateJflowControlField', []);
         // 清空updataTreeId
         removeSessionObject('TreeId');
         removeSessionObject('routeMapRecordForCustomizePages');
@@ -60,7 +59,6 @@ export default {
         GetTableName('');
         commit('updataUserInfoMessage', {});
         window.localStorage.removeItem('userInfo');
-        // commit('updateJflowControlField', []);
         // 清空updataTreeId
         removeSessionObject('TreeId');
         commit('updateTreeTableListData', []);
