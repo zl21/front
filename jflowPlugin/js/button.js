@@ -100,16 +100,18 @@ async function buttonsResponse(e) {
 function clickFunction(e) {
   globalChange({ routeInfo: e.detail.currentItemInfo });
   if (e.detail.obj.isSave) { // 按钮存在保存前置事件时
-    if (window.updatavVerifyRequiredInformation()) {
-      if (window.testUpdataValue()) {
-        window.updataClickSave(async () => {
-          await global.jflowInfo ? businessChange() : null;
+    setTimeout(() => {
+      if (window.updatavVerifyRequiredInformation()) {
+        if (window.testUpdataValue()) {
+          window.updataClickSave(async () => {
+            await global.jflowInfo ? businessChange() : null;
+            buttonsResponse(e);
+          });
+        } else {
           buttonsResponse(e);
-        });
-      } else {
-        buttonsResponse(e);
+        }
       }
-    }
+    }, 1000);
   } else {
     buttonsResponse(e);
   }
