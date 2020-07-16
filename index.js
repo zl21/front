@@ -29,9 +29,6 @@ import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
 import jflowPlugin from './jflowPlugin/js/index';
 
 
-Vue.use(VueDND);
-
-
 Vue.use(jflowPlugin, {
   changePattern: true, // 控制待办列表转派的选择模式 true为单选,false为多选
   gateway: 'asynctask'

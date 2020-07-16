@@ -269,7 +269,6 @@ export default {
       tabrelation, itemObjId, tableName, temporaryStoragePath, objId, path, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup, jflowPath
     } = parame;
     let parames = {};
-    debugger;
     if (type === 'add') { // 新增保存参数
       const {
         add
