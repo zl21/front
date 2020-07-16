@@ -82,7 +82,6 @@
         :buttons-data=" buttons.dataArray.waListButtonsConfig.waListButtons"
         :do-table-search="searchClickData"
         @CommonTableCustomizedDialog="commonTableCustomizedDialog"
-        @btnclick="btnclick"
       />
     </div>
    
@@ -415,22 +414,22 @@
       //   // };
       //   // this.updataTreeId(data);
       // },
-      btnclick(obj) { // 表格操作按钮组
-        this.updataSelectIdArr(obj.ID);
-        switch (obj.vuedisplay) {
-        case 'slient':
-          this.webActionSlient(obj);
-          break;
-        case 'dialog':
-          // 
-          break;
-        case 'navbar':
-          this.objTabActionNavbar(obj); // 新标签跳转
-          break;
-        default:
-          break;
-        }
-      },
+      // btnclick(obj) { // 表格操作按钮组
+      //   this.updataSelectIdArr(obj.ID);
+      //   switch (obj.vuedisplay) {
+      //   case 'slient':
+      //     this.webActionSlient(obj);
+      //     break;
+      //   case 'dialog':
+      //     // 
+      //     break;
+      //   case 'navbar':
+      //     this.objTabActionNavbar(obj); // 新标签跳转
+      //     break;
+      //   default:
+      //     break;
+      //   }
+      // },
       imporSuccess(id) {
         if (Version() === '1.3') {
           if (id) {
