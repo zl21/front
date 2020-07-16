@@ -41,8 +41,12 @@ module.exports = {
   enableInitializationRequest: true, // 是否开启初始化请求
   // enableCustomInterface: false // 是否开启自定义接口,
   customizeWaterMark: {}, // 启用外部自定义水印配置,
+<<<<<<< HEAD
   // specifiedGlobalGateWay: 'ad-app',
   specifiedGlobalGateWay: 'user-center',
+=======
+  // specifiedGlobalGateWay: 'user-center',
+>>>>>>> origin/v1.4
   encryptedPassword: false, // 是否允许login接口password加密
   isItemTableNewValidation: true, // 是否允许子表新增有必填项时，输入值才触发子表必填项校验，不输入值则只校验主表
   isCommonTable: false, // 是否开启普通表格，默认关闭

@@ -82,7 +82,6 @@
         :buttons-data=" buttons.dataArray.waListButtonsConfig.waListButtons"
         :do-table-search="searchClickData"
         @CommonTableCustomizedDialog="commonTableCustomizedDialog"
-        @btnclick="btnclick"
       />
     </div>
    
@@ -124,6 +123,7 @@
     <dialogComponent
       ref="dialogRef"
       :popwin-message="popwinMessage"
+      :id-array="this.buttons.selectIdArr"
       :title="dialogComponentNameConfig.title"
       :mask="dialogComponentNameConfig.mask"
       :content-text="dialogComponentNameConfig.contentText"
@@ -413,22 +413,22 @@
       //   // };
       //   // this.updataTreeId(data);
       // },
-      btnclick(obj) { // 表格操作按钮组
-        this.updataSelectIdArr(obj.ID);
-        switch (obj.vuedisplay) {
-        case 'slient':
-          this.webActionSlient(obj);
-          break;
-        case 'dialog':
-          // 
-          break;
-        case 'navbar':
-          this.objTabActionNavbar(obj); // 新标签跳转
-          break;
-        default:
-          break;
-        }
-      },
+      // btnclick(obj) { // 表格操作按钮组
+      //   this.updataSelectIdArr(obj.ID);
+      //   switch (obj.vuedisplay) {
+      //   case 'slient':
+      //     this.webActionSlient(obj);
+      //     break;
+      //   case 'dialog':
+      //     // 
+      //     break;
+      //   case 'navbar':
+      //     this.objTabActionNavbar(obj); // 新标签跳转
+      //     break;
+      //   default:
+      //     break;
+      //   }
+      // },
       imporSuccess(id) {
         if (Version() === '1.3') {
           if (id) {
@@ -563,7 +563,6 @@
             const param = {
               url: tableurl,
               id,
-              label: row.OWNERID ? row.OWNERID.reftabdesc : null,
               isMenu: true,
               treeTableListSelectId
             };
@@ -583,11 +582,10 @@
           }
           this.tabOpen({
             type,
-            label: row.OWNERID ? row.OWNERID.reftabdesc : null,
             tableName: row._TABLENAME.val,
             tableId: row._TABLEID.val,
             id: row._OBJID.val,
-            serviceId: row.OWNERID ? row.OWNERID.serviceId : null
+            serviceId: row._SERVICEID ? row._SERVICEID.val : null
           });
         } else {
           const id = row.ID.val;
@@ -595,7 +593,6 @@
             const param = {
               url: this.ag.tableurl,
               id,
-              lablel: row.OWNERID ? row.OWNERID.reftabdesc : null,
               isMenu: true,
               treeTableListSelectId
             };
