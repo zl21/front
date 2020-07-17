@@ -267,7 +267,7 @@ export default {
     } = parame;
     const sataTypeName = sataType ? sataType.sataType : '';
     let parames = {};
-
+    debugger;
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
       if (path) { // 没有子表    有path的参数
@@ -431,8 +431,12 @@ export default {
           if (temporaryStoragePath) {
             console.log('子表不支持暂存');
           } else if (tabrelation) { // 处理子表1:1模式逻辑
-            const itemModifyDefault = itemCurrentParameter.default;
-            const itemModifyAssign = Object.assign({}, itemModifyDefault[itemName], itemModify[itemName]);// 整合子表修改和默认值数据
+            // const itemModifyDefault = itemCurrentParameter.default;
+            // const itemModifyAssign = Object.assign({}, itemModifyDefault[itemName], itemModify[itemName]);// 整合子表修改和默认值数据
+
+            // 子表1:1模式参数不需要传默认值
+            const itemModifyAssign = Object.assign({}, itemModify[itemName]);// 整合子表修改和默认值数据
+
             const itemModifyAssignData = {};
             itemModifyAssignData[itemName] = itemModifyAssign;
             itemModifyAssignData[itemName].ID = itemObjId;
