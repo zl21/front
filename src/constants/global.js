@@ -58,7 +58,7 @@ export const CUSTOMIZED_MODULE_COMPONENT_PREFIX = 'C';
 export const PLUGIN_MODULE_COMPONENT_PREFIX = 'P';
 export const LINK_MODULE_COMPONENT_PREFIX = 'L';
 
-export const REQUEST_PENDDING_EXPIRE = 1000 * 10;
+export const REQUEST_PENDDING_EXPIRE = 1000 * 1;
 export const KEEP_MODULE_STATE_WHEN_CLICK_MENU = true; // 控制点击按钮菜单时如何显示已经打开的模块
 export const KEEP_SAVE_ITEM_TABLE_MANDATORY = false;// 控制当子表没有必填项点击保存时是否必须填写子表信息
 export const INSTANCE_ROUTE = 'instanceRoute';
