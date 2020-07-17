@@ -28,6 +28,7 @@ export const cbs = () => (window.ProjectConfig && window.ProjectConfig.cbs ? win
 export const layoutDirection = () => ((window.ProjectConfig && typeof window.ProjectConfig.layoutDirection === 'boolean' ? window.ProjectConfig.layoutDirection : project.layoutDirection) || false);
 export const contentConfig = () => (window.ProjectConfig && window.ProjectConfig.contentConfig ? window.ProjectConfig.contentConfig : project.contentConfig);
 export const REQUEST_PENDDING_EXPIRE = () => (window.ProjectConfig && window.ProjectConfig.requestPenddingExpire ? window.ProjectConfig.requestPenddingExpire : project.requestPenddingExpire);
+// export const REQUEST_PENDDING_EXPIRE = 1000 * 2;
 
 
 export const STANDARD_TABLE_LIST_PREFIX = '/SYSTEM/TABLE';
