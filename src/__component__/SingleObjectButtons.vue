@@ -565,7 +565,7 @@
       },
       updataCurrentTableDetailMethods() { // 更新单对象挂载window的方法（保持当前激活的单对象界面）
         window.updataClickSave = event => this.clickSave({ event });
-        window.testUpdataValue = () => (window.jflow ? true : this.testUpdata());
+        window.testUpdataValue = () => this.testUpdata();
         window.updatavVerifyRequiredInformation = () => this.verifyRequiredInformation();
       },
       imporSuccess(id) {
@@ -818,7 +818,6 @@
               || (this.updateData[this.itemName].add[this.itemName] && Object.keys(this.updateData[this.itemName].add[this.itemName]).length > 0)) { // 子表新增及修改
               this.isValue = true;// 子表修改了值
               console.log(' 子表修改了值');
-
               return true;
             }
           } else if (this.updateData[this.tableName].modify[this.tableName] && Object.keys(this.updateData[this.tableName].modify[this.tableName]).length > 0
@@ -936,6 +935,9 @@
                 itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
               });
             }).then(() => {
+              if (message) {
+                this.$Message.success(message);
+              }
             });
           } else if (tabrelation === '1:m') { // 子表
             this.getInputForitemForChildTableForm({ table: tablename, tabIndex: this.currentTabIndex, tabinlinemode });
@@ -956,6 +958,9 @@
               this.getObjectTableItemForTableData({
                 table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex: this.currentTabIndex
               });
+              if (message) {
+                this.$Message.success(message);
+              }
             });
           } else if (tabrelation === '1:1') {
             const promise = new Promise((resolve, reject) => {
@@ -963,10 +968,15 @@
                 itemInfo: this.itemInfo, maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex: this.currentTabIndex, resolve, reject
               });
             });
-
+ 
            
             this.getItemObjForChildTableForm({
               itemInfo: this.itemInfo, table: tablename, objid: this.itemId, refcolid, tabIndex: this.currentTabIndex
+            });
+            promise.then(() => {
+              if (message) {
+                this.$Message.success(message);
+              }
             });
           }
         } else { // 纵向布局
@@ -1004,16 +1014,19 @@
               itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
             });
           }).then(() => {
+            if (message) {
+              this.$Message.success(message);
+            }
           });
         
           // }
         }
         // this.closeCurrentLoading();//刷新后无需手动关闭loading，触发form后会收到监听
-        setTimeout(() => {
-          if (message) {
-            this.$Message.success(message);
-          }
-        }, 500);
+        // setTimeout(() => {
+        //   if (message) {
+        //     this.$Message.success(message);
+        //   }
+        // }, 500);
       },
       objectTabAction(obj) { // 按钮执行事件判断逻辑
         switch (obj.eName) {

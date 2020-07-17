@@ -41,6 +41,7 @@ export default {
     tabIndex,
     itemTabelPageInfo,
     moduleName,
+    resolve, reject
   }) {
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -136,6 +137,7 @@ export default {
             }
           }
         }
+        resolve();
       }
     });
   },
