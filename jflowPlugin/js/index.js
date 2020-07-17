@@ -13,7 +13,7 @@ import mainComponent from '../view/mainComponent';
 import InstanceManagementList from '../view/InstanceManagementList';
 import decryptionJflow from './decryptionJflow';
 import { global, globalChange } from '../utils/global.config';
-import todoList from './todoList';
+import todoList, { BacklogData } from './todoList';
 
 
 function thirdlogin() { // 三方登录  获取accessToken
@@ -175,6 +175,7 @@ function initLists() { // init
       window.conversionJflow = decryptionJflow; // 解密方法
       window.initiateLaunch = initiateLaunch; // 发起流程
       window.jflowRefresh = jflowRefresh; // 刷新
+      window.BacklogData = BacklogData; // 刷新待办数据
     });
 }
 
