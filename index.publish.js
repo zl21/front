@@ -27,8 +27,8 @@ const validateConfig = config => ({
 });
 
 export default {
-  version: '0.0.1',
-  packageTime: '2020.07.20.17.38', 
+  version: '1.0.0',
+  packageTime: '2020.07.20.18.45', 
   user: 'npm',                     
   /**
    * @param projectConfig 项目配置
