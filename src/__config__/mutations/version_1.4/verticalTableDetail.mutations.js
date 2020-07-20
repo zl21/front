@@ -95,18 +95,24 @@ export default {
   },
   updateMainButtonsData(state, data) { // 更新主表按钮数据
     if (data && data.tabcmd && data.tabcmd.cmds) {
+      const { itemId } = router.currentRoute.params;
       data.tabcmd.cmds.some((b, i) => {
         if (b === 'actionMODIFY') {
+          let index = '';
+          if (itemId === 'New') {
+            index = 0;
+          } else {
+            index = i;
+          }
           state.saveInfo = {
-            paths: data.tabcmd.paths && data.tabcmd.paths.length > 0 ? data.tabcmd.paths[i] : null,
+            paths: data.tabcmd.paths && data.tabcmd.paths.length > 0 ? data.tabcmd.paths[index] : null,
             name: 'actionMODIFY',
-            jflowPath: data.tabcmd.jflowpaths && data.tabcmd.jflowpaths.length > 0 ? data.tabcmd.jflowpaths[i] : null,
+            jflowPath: data.tabcmd.jflowpaths && data.tabcmd.jflowpaths.length > 0 ? data.tabcmd.jflowpaths[index] : null,
 
           };
         }
       });
     }
-    
     // state.mainFormInfo.buttonsData.isShow = true;
     state.defaultButtonData = JSON.parse(JSON.stringify(data));
     if (!state.instanceId) {

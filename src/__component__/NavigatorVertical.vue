@@ -402,12 +402,14 @@
       }
     },
     mounted() {
-      this.loadEnterpriseConfig();
       if (Version() === '1.3') {
         this.messageTimer = setInterval(() => {
           this.getMessageCount();
         }, 30000);
       }
+    },
+    created() {
+      this.loadEnterpriseConfig();
     },
     beforeDestroy() {
       clearInterval(this.messageTimer);

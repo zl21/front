@@ -59,6 +59,12 @@ export default {
   
 
   // 按钮组
+  updatestopOnRowDoubleClickData({
+    buttons
+  }, data) {
+    buttons.onRowDoubleClick = data;
+  },
+  
   updateButtonsTabcmd({
     buttons
   }, data) {

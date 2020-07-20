@@ -48,7 +48,6 @@
               obj.label = this.activeTab.label;
               obj.componentAttribute.isactive = this.tabPanel[0].componentAttribute.buttonsData.data.isactive;
               obj.componentAttribute.watermarkimg = this.tabPanel[0].componentAttribute.buttonsData.data.watermarkimg;
-              // obj.componentAttribute.jflowWaterMark = this.jflowWaterMark;
               obj.componentAttribute.isMainTable = true;     
               obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.tabPanel[0].componentAttribute.panelData.data.isdefault;
             } 
@@ -217,8 +216,10 @@
           for (let i = 0; i < oUl.children.length; i++) {
             this.tabPanels.forEach((item) => {
               if (Number(query) === item.tableid && item.tabledesc === oUl.children[i].innerText) {
-                clearInterval(interval);
-                oUl.children[i].click();
+                if (oUl.children[i].click && typeof oUl.children[i].click === 'function') {
+                  oUl.children[i].click();
+                  clearInterval(interval);
+                }
               }
             });
           }

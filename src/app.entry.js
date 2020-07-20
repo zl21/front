@@ -9,9 +9,9 @@ import store from './__config__/store.config';
 import App from './App';
 import './constants/dateApi';
 import network from './__utils__/network';
-import DispatchEvent from './__utils__/dispatchEvent';
+import { DispatchEvent } from './__utils__/dispatchEvent';
 import {
-  backDashboardRoute, getTouristRoute, enableGateWay, enableInitializationRequest, specifiedGlobalGateWay, HAS_BEEN_DESTROYED_MODULE
+  mock, backDashboardRoute, enableGateWay, enableInitializationRequest, specifiedGlobalGateWay, HAS_BEEN_DESTROYED_MODULE
 } from './constants/global';
 import { removeSessionObject, getSeesionObject } from './__utils__/sessionStorage';
 import customizedModalConfig from './__config__/customizeDialog.config';
@@ -27,11 +27,17 @@ import './assets/css/custom-ext.less';
 
 Vue.component('CompositeFormpop', CompositeForm);
 Vue.use(Loading);
+// const createRouter = routes => new VueRouter({
+//   routes,
+//   mode: mock() ? 'hash' : 'history'
+// });
+const mode = mock() ? 'hash' : 'history';
 
 const createRouter = routes => new VueRouter({
   routes,
-  mode: 'history'
+  mode
 });
+
 
 const createDOM = () => {
   const div = document.createElement('div');
@@ -214,7 +220,6 @@ export default (projectConfig = {
   Object.keys(modalConfig).forEach((modalName) => {
     Vue.component(modalName, ((modalConfig[modalName] || {}).component) || {});
   });
-
   // 启动
   if (enableGateWay()) {
     getGateWayServiceId();

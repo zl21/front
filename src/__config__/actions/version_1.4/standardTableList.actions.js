@@ -13,7 +13,7 @@ export default {
     network.post('/p/cs/setFixedColumn', urlSearchParams(data));
   },
   getQueryListForAg({ commit }, {
-    table, startIndex, range, fixedcolumns, column_include_uicontroller = true, orderby, merge = false, reffixedcolumns
+    table, startIndex, range, fixedcolumns, column_include_uicontroller = true, orderby, merge = false, reffixedcolumns, resolve, reject
   }) {
     network.post('/p/cs/QueryList', urlSearchParams({
       searchdata: {
@@ -32,6 +32,9 @@ export default {
       } else {
         commit('updateTableData', updateTableData);
       }
+      resolve();
+    }).catch(() => {
+      reject();
     });
   },
   getTableQueryForForm({ commit }, { searchData, resolve }) {

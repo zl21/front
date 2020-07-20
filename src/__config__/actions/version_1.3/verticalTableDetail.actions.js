@@ -40,6 +40,7 @@ export default {
     tabIndex,
     itemTabelPageInfo,
     moduleName,
+    resolve, reject
   }) {
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -85,11 +86,11 @@ export default {
                   this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`][0](param);
                 }
               });
-              if (resData.reftabs[0].refcolid !== -1) {
+              if (resData.reftabs[tabIndex].refcolid !== -1) {
                 // commit('updateActiveRefFormInfo', resData.reftabs[0]);
                 
                 // 获取第一个tab的子表列表数据
-                if (resData.reftabs[0].tabrelation === '1:m') {
+                if (resData.reftabs[tabIndex].tabrelation === '1:m') {
                   // 获取第一个tab的子表表单
                   if (this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`] && this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`][0] === 'function') {
                     const formParam = {
@@ -115,7 +116,7 @@ export default {
                       this._actions[`${moduleName || getComponentName()}/getObjectTableItemForTableData`][0](tableParam);
                     }
                   });
-                } else if (resData.reftabs[0].tabrelation === '1:1') {
+                } else if (resData.reftabs[tabIndex].tabrelation === '1:1') {
                   // 获取子表面板数据
                   if (this._actions[`${moduleName || getComponentName()}/getItemObjForChildTableForm`] && this._actions[`${moduleName || getComponentName()}/getItemObjForChildTableForm`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getItemObjForChildTableForm`][0] === 'function') {
                     const tableParam = {
@@ -131,6 +132,7 @@ export default {
             }
           }
         }
+        resolve();
       }
     });
   },

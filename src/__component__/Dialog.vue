@@ -30,6 +30,7 @@
         :obj-list="objList"
         :action-id="actionId"
         :item-id="itemId"
+        :popwin-message="popwinMessage"
         :obj-tab-action-dialog-config="objTabActionDialogConfig"
         @setTitle="setTitle"
         @closeActionDialog="closeActionDialog"
@@ -63,6 +64,10 @@
       actionId: {// 获取自定按钮ID
         type: [Number, String],
         default: () => ''
+      },
+      popwinMessage: {// 获取popwin类型打开自定义弹框传入元数据信息
+        type: Object,
+        default: () => {}
       },
       
       // showModal: {
@@ -171,6 +176,7 @@
       },
     },
     mounted() {
+
     },
     methods: {
       setValue(value) {
@@ -203,6 +209,10 @@
       },
       // 取消
       onCancel() {
+        // 自定义弹框点iconX关闭时，需在定制界面内提供clickIconX（）方法，可在关闭弹框前执行clickIconX方法的相关逻辑
+        if (this.$refs.modalComponent.clickIconX && typeof this.$refs.modalComponent.clickIconX === 'function') {
+          this.$refs.modalComponent.clickIconX();
+        }
         if (typeof this.cancelFun === 'function') {
           this.cancelFun();
         }

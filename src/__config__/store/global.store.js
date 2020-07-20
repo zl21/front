@@ -8,6 +8,7 @@ const actions = () => require(`../actions/version_${Version()}/global.actions`).
 export default () => ({
   namespaced: true,
   state: {
+    // customizeMessage: [], // 存入跳转到定制界面携带的参数    
     primaryMenuIndex: -1,
     collapseHistoryAndFavorite: false,
     history: [],

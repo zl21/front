@@ -12,6 +12,8 @@ import {
   updateSessionObject, removeSessionObject
 } from './sessionStorage';
 
+// const axios = Axios.create();
+
 let tableNameForGet = '';
 const pendingRequestMap = {};
 window.pendingRequestMap = pendingRequestMap;
@@ -68,6 +70,7 @@ const dispatchR3Event = (data) => {
 };
 
 axios.interceptors.response.use(
+  
   (response) => {
     const { config } = response;
     const isJson = (config.headers['Content-Type'] || '').indexOf('application/json') > -1;
@@ -111,7 +114,6 @@ axios.interceptors.response.use(
         console.warn(e);
       }
     }
-    delete pendingRequestMap[requestMd5];
     if (response.data.code === -1 || response.data.code === -2) {
       // window.vm.$Modal.fcError({
       //   mask: true,
@@ -202,13 +204,13 @@ axios.interceptors.response.use(
   (error) => {
     if (error.response) {
       const { status, config } = error.response;
-      const isJson = (config.headers['Content-Type'] || '').indexOf('application/json') > -1;
-      const requestMd5 = md5(JSON.stringify({
-        data: isJson ? JSON.parse(config.data) : config.data,
-        url: config.url,
-        method: config.method
-      }));
-      delete pendingRequestMap[requestMd5];
+      // const isJson = (config.headers['Content-Type'] || '').indexOf('application/json') > -1;
+      // const requestMd5 = md5(JSON.stringify({
+      //   data: isJson ? JSON.parse(config.data) : config.data,
+      //   url: config.url,
+      //   method: config.method
+      // }));
+      // delete pendingRequestMap[requestMd5];
       if (status === 403) {
         // 清楚对应登陆用户信息
         window.sessionStorage.setItem('loginStatus', false);
@@ -379,12 +381,23 @@ function NetworkConstructor() {
       method: 'post'
     });
     const now = new Date();
-    if (pendingRequestMap[requestMd5] && now.getTime() - pendingRequestMap[requestMd5].reqTime < REQUEST_PENDDING_EXPIRE) {
+   
+    
+    if (pendingRequestMap[requestMd5] && now.getTime() - pendingRequestMap[requestMd5].reqTime < REQUEST_PENDDING_EXPIRE()) {
       return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
+    }
+    // delete pendingRequestMap[requestMd5];
+    let lastTime = null;
+    if (pendingRequestMap[requestMd5]) {
+      lastTime = pendingRequestMap[requestMd5].reqTime;
     }
     pendingRequestMap[requestMd5] = {
       reqTime: now.getTime()
     };
+    if (Number(pendingRequestMap[requestMd5].reqTime) - Number(lastTime) < REQUEST_PENDDING_EXPIRE()) {
+      // delete pendingRequestMap[requestMd5];
+      return Promise.reject(new Error(`request: [${matchedUrl}] 与上次请求间隔小于${REQUEST_PENDDING_EXPIRE() / 1000}秒.`));
+    }
 
     let headers = {};
     if (url.includes('/p/cs/objectTab') || url.includes('/p/cs/itemObj')) {
@@ -414,12 +427,20 @@ function NetworkConstructor() {
       method: 'get'
     });
     const now = new Date();
-    if (pendingRequestMap[requestMd5] && now.getTime() - pendingRequestMap[requestMd5].reqTime < REQUEST_PENDDING_EXPIRE) {
+    if (pendingRequestMap[requestMd5] && now.getTime() - pendingRequestMap[requestMd5].reqTime < REQUEST_PENDDING_EXPIRE()) {
       return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
+    }
+    let lastTime = null;
+    if (pendingRequestMap[requestMd5]) {
+      lastTime = pendingRequestMap[requestMd5].reqTime;
     }
     pendingRequestMap[requestMd5] = {
       reqTime: now.getTime()
     };
+    if (Number(pendingRequestMap[requestMd5].reqTime) - Number(lastTime) < REQUEST_PENDDING_EXPIRE()) {
+      // delete pendingRequestMap[requestMd5];
+      return Promise.reject(new Error(`request: [${matchedUrl}] 与上次请求间隔小于${REQUEST_PENDDING_EXPIRE() / 1000}秒.`));
+    }
     return axios.get(matchedUrl, config);
   };
 
