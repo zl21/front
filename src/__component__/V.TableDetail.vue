@@ -204,9 +204,10 @@
       const { tableName, itemId } = this.$route.params;
       this.getObjectForMainTableForm({ table: tableName, objid: itemId });
 
-
-      this.getObjectTabForMainTable({
-        table: tableName, objid: itemId, tabIndex: this.tabCurrentIndex
+      const promise = new Promise((resolve, reject) => {
+        this.getObjectTabForMainTable({
+          table: tableName, objid: itemId, tabIndex: this.tabCurrentIndex, resolve, reject
+        });
       });
       this.isRequestUpdata({ tabPanel: this.tabPanels, index: 0 });
 
