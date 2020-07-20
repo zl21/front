@@ -1176,6 +1176,7 @@
                 that.upSaveImg(parms, '');
               } else {
                 const path = this.$parent.pathcheck !== '';
+                this._items.props.itemdata.valuedata.splice(index - 1, 1);
                 this.valueImgChange();
                 that.upSaveImg(parms, '', path, index);
               }
