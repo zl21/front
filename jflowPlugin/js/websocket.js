@@ -13,6 +13,7 @@ function websocketonerror(e) { // 连接建立失败重连
 
 function websocketonmessage(e) { // 数据接收
   const redata = JSON.parse(e.data);
+  console.log(redata);
   BacklogData(redata.data.count);
 }
 

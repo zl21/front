@@ -68,7 +68,6 @@
       :width="835"
     >
       <div
-        v-if="modaltype !== 'detail'"
         class="modalCotent"
       >
         <mutipleSelectPop
@@ -556,10 +555,6 @@
         });
       },
       ok() {
-        if (this.modaltype === 'detail') {
-          this.openControl = false; // 关闭弹框
-          return;
-        }
         if (!(this.resultData.list && this.resultData.list.length > 0)) {
           this.$Message.warning('请选择人员');
           return;

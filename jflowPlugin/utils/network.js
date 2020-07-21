@@ -56,13 +56,12 @@ function apiEncryptable(url, data, method) {
     });
   }
 
-  
   return axios({
     method,
     url,
     headers: {
       accountName: 'guest',
-      'Content-Type': global.apiEncryptable ? 'text/html; charset=utf-8' : 'application/json',
+      'Content-Type': 'application/json',
     },
     data
   });
