@@ -2442,7 +2442,7 @@
           if (!dom && this.from === 'singlePage') {
             // this.$route.params.tableName！==currentTableName说明调用刷新时，路由已切换到其它tab,此时不需要加loading
             if (this.$route.params.tableName === currentTableName) {
-              this.$loading.show(this.tableName);
+              this.$R3loading.show(this.tableName);
             }
           }
         }

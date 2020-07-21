@@ -70,11 +70,11 @@
       // const dom = document.getElementById('printframe');
       // if (dom.attachEvent) {  
       //   dom.attachEvent('onload', () => { // IE  
-      //     this.$loading.hide();
+      //     this.$R3loading.hide();
       //   });  
       // } else {  
       //   dom.onload = () => { // 非IE  
-      //     this.$loading.hide();
+      //     this.$R3loading.hide();
       //   };  
       // }
 

@@ -174,7 +174,7 @@
           this.$Modal.fcWarning(data);
           return;
         }
-        this.$loading.show();
+        this.$R3loading.show();
         const searchdata = {
           srctable: this.o_table_name, // 源表表名
           destable: this.t_table_name.trim(), // 目标表名
@@ -185,7 +185,7 @@
           .then((res) => {
             const { tableName } = this.$route.params;
             if (res.data.code !== 0) {
-              this.$loading.hide(tableName);
+              this.$R3loading.hide(tableName);
               return;
             }
             const data = {
@@ -193,7 +193,7 @@
               title: '成功',
               content: '克隆成功'
             };
-            this.$loading.hide(tableName);
+            this.$R3loading.hide(tableName);
             this.$Modal.fcSuccess(data);
             this.$emit('closeActionDialog', true); // 关闭弹框
           });

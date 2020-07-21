@@ -313,7 +313,7 @@
       //       if (!this.itemNameGroup.map(c => c.tableName).includes(this.itemName)) { // 子表不添加loading
       //         if (!dom && this.tableName === this.$route.params.tableName) {
       //           console.log(1);
-      //           this.$loading.show(this.tableName);
+      //           this.$R3loading.show(this.tableName);
       //         }
       //       }    
       //     }
@@ -577,7 +577,7 @@
               });
             });
             promises.then(() => {
-              this.$loading.hide(this.tableName);
+              this.$R3loading.hide(this.tableName);
               this.closeActionDialog();
               if (this.exportTasks.dialog) {
                 const message = {
@@ -617,11 +617,11 @@
               //   this.$Modal.fcError(data);
               // }
               this.closeActionDialog();
-              this.$loading.hide(this.tableName);
+              this.$R3loading.hide(this.tableName);
             });
           }
         } else {
-          this.$loading.hide(this.tableName);
+          this.$R3loading.hide(this.tableName);
         }
       },
       dialogComponentSaveSuccess(value) { // 自定义弹框执行确定按钮操作
@@ -1685,7 +1685,7 @@
           this.getObjTabActionSlientConfirm({
             tab, params, path: tab.action, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
           });
-          this.$loading.show(this.tableName);
+          this.$R3loading.show(this.tableName);
         });
         if (tab.cuscomponent) {
           const nextOperate = JSON.parse(// 配置信息
@@ -1693,7 +1693,7 @@
           );
 
           promise.then(() => {
-            this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
             if (nextOperate.success) {
               let successAction = null;
               let successActionParam = {};
@@ -1719,7 +1719,7 @@
               this.$Modal.fcSuccess(data);
             }
           }, () => {
-            this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
             if (nextOperate.failure) {
               let errorAction = null;
               let errorActionParam = {};
@@ -1762,7 +1762,7 @@
             this.$Modal.fcSuccess(data);
             if (tab.isrefrsh) {
               // 左右结构子表时，接收不到主表的表单监听，需要关闭loading
-              // this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+              // this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
               if (this.objectType === 'horizontal') {
                 const itemNames = this.itemNameGroup.map((c) => {
                   if (c.tableName !== this.tableName) {
@@ -1770,17 +1770,17 @@
                   }
                 });// 因左右结构itemNameGroup包含主表，上下结构不包括
                 if (itemNames.includes(this.itemName)) {
-                  this.$loading.hide(this.tableName);
+                  this.$R3loading.hide(this.tableName);
                 }
               }
 
               this.upData();
             } else {
               // this.upData();
-              this.$loading.hide(this.tableName);
+              this.$R3loading.hide(this.tableName);
             }
           }, () => {
-            this.$loading.hide(this.tableName);
+            this.$R3loading.hide(this.tableName);
           });
         }
       },
@@ -1846,12 +1846,12 @@
 
         const promise = new Promise((resolve, reject) => {
           this.getExportQueryForButtons({ OBJ, resolve, reject });
-          this.$loading.show(this.tableName);
+          this.$R3loading.show(this.tableName);
         });
         promise.then(() => {
           if (this.buttonsData.exportdata) {
             if (Version() === '1.4') {
-              this.$loading.hide(this.tableName);
+              this.$R3loading.hide(this.tableName);
               const eleLink = document.createElement('a');
               const path = getGateway(`/p/cs/download?filename=${this.buttonsData.exportdata}`);
               eleLink.setAttribute('href', encodeURI(path));
@@ -1866,7 +1866,7 @@
                 });
               });
               promises.then(() => {
-                this.$loading.hide(this.tableName);
+                this.$R3loading.hide(this.tableName);
                 if (this.exportTasks.dialog) {
                   const message = {
                     mask: true,
@@ -1896,7 +1896,7 @@
                   this.$Modal.fcSuccess(data);
                 }
               }, () => {
-                this.$loading.hide(this.tableName);
+                this.$R3loading.hide(this.tableName);
                 if (this.exportTasks.warningMsg) {
                   this.$Modal.fcError({
                     mask: true,
@@ -1932,10 +1932,10 @@
             }
             this.updateDeleteData({ tableName: this.itemName, value: {} });
           } else {
-            this.$loading.hide(this.tableName);
+            this.$R3loading.hide(this.tableName);
           }
         }, () => {
-          this.$loading.hide(this.tableName);
+          this.$R3loading.hide(this.tableName);
         });
       },
       objectCopy() { // 按钮复制功能
@@ -1985,12 +1985,12 @@
       copyForHorizontal() { // 横向结构接口 请求成功后复制逻辑
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
         this.copyDataForSingleObject({});// 清除global中复制所保存的数据
-        this.$loading.show(this.tableName);
+        this.$R3loading.show(this.tableName);
       },
       copyForVertical() { // 纵向结构接口 请求成功后复制逻辑
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
         this.copyDataForSingleObject({});// 清除global中复制所保存的数据
-        this.$loading.show(this.tableName);
+        this.$R3loading.show(this.tableName);
       },
       clickButtonsBack(stop) { // 按钮返回事件  
         if (stop) {
@@ -3095,7 +3095,7 @@
         };
         const promise = new Promise((resolve, reject) => {
           if (this.itemId === 'New') {
-            this.$loading.show(this.tableName);
+            this.$R3loading.show(this.tableName);
           }
           this.performMainTableSaveAction({ parame, resolve, reject });
         });
@@ -3485,7 +3485,7 @@
         const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
         const dom = document.querySelector(`#${currentTableName}-loading`);
         if (dom) {
-          this.$loading.hide(currentTableName);
+          this.$R3loading.hide(currentTableName);
         }
       },
       hideListenerLoading(value) { // 根据监听关闭loading
@@ -3493,9 +3493,9 @@
         // const dom = document.querySelector(`#${currentTableName}-loading`);
         if (value.detail.hideCopyLoading || value.detail.hideLoadingForButton) {
           // if (currentTableName) {
-          this.$loading.hide(currentTableName);
+          this.$R3loading.hide(currentTableName);
           // } else {
-          //   this.$loading.hide(this.instanceRouteQuery.tableName);
+          //   this.$R3loading.hide(this.instanceRouteQuery.tableName);
           // }
         }
       },
