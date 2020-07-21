@@ -629,7 +629,7 @@
               });
             });
             promises.then(() => {
-              this.$loading.hide(this.rouuterParams.tableName);
+              this.$R3loading.hide(this.rouuterParams.tableName);
               this.closeImportDialog();
               if (this.exportTasks.dialog) {
                 const message = {
@@ -668,12 +668,12 @@
               //   };
               //   this.$Modal.error(data);
               // }
-              this.$loading.hide(this.rouuterParams.tableName);
+              this.$R3loading.hide(this.rouuterParams.tableName);
               this.closeImportDialog();
             });
           }
         } else {
-          this.$loading.hide(this.rouuterParams.tableName);
+          this.$R3loading.hide(this.rouuterParams.tableName);
         }
       },
       getEditAbleId(data) {
@@ -954,7 +954,7 @@
           this.getObjTabActionSlientConfirm({
             tab, params, path: tab.action, resolve, reject
           });
-          this.$loading.show();
+          this.$R3loading.show();
         });
         if (tab.cuscomponent) {
           const nextOperate = JSON.parse(// 配置信息
@@ -962,7 +962,7 @@
           );
 
           promise.then(() => {
-            this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
             if (nextOperate.success) {
               let successAction = null;
               let successActionParam = {};
@@ -988,7 +988,7 @@
               this.$Modal.fcSuccess(data);
             }
           }, () => {
-            this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
             if (nextOperate.failure) {
               let errorAction = null;
               let errorActionParam = {};
@@ -1008,7 +1008,7 @@
           });
         } else {
           promise.then(() => {
-            this.$loading.hide(tableName);
+            this.$R3loading.hide(tableName);
             const message = this.objTabActionSlientConfirmData.message;
             const data = {
               mask: true,
@@ -1020,7 +1020,7 @@
               this.refresh();
             }
           }, () => {
-            this.$loading.hide(this.rouuterParams.tableName);
+            this.$R3loading.hide(this.rouuterParams.tableName);
           });
         }
       },
@@ -4043,13 +4043,13 @@
           menu: this.itemInfo.tabledesc
         };
         const promise = new Promise((resolve, reject) => {
-          this.$loading.show();
+          this.$R3loading.show();
           this.getExportQueryForButtons({ OBJ, resolve, reject });
         });
         promise.then(() => {
           if (this.buttonsData.exportdata) {
             if (Version() === '1.4') {
-              this.$loading.hide(this.rouuterParams.tableName);
+              this.$R3loading.hide(this.rouuterParams.tableName);
               this.searchCondition = null;
               this.searchInfo = '';
               this.currentPage = 1;
@@ -4068,7 +4068,7 @@
                 });
               });
               promises.then(() => {
-                this.$loading.hide(this.rouuterParams.tableName);
+                this.$R3loading.hide(this.rouuterParams.tableName);
                 if (this.exportTasks.dialog) {
                   const message = {
                     mask: true,
@@ -4106,12 +4106,12 @@
                     content: `${this.exportTasks.resultMsg}`,
                   });
                 }
-                this.$loading.hide(this.rouuterParams.tableName);
+                this.$R3loading.hide(this.rouuterParams.tableName);
               });
               this.getTabelList(1);
             }
           } else {
-            this.$loading.hide(this.rouuterParams.tableName);
+            this.$R3loading.hide(this.rouuterParams.tableName);
           }
         });
       },

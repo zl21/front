@@ -315,7 +315,7 @@
 
         if (id === 2527 || id === 2530) { // 直接打印
           let src = '';
-          this.$loading.show();
+          this.$R3loading.show();
           let api = '';
           if (printIdArray.length === 0) { // 直接打印 新增需求，如列表界面不勾选则传参加上筛选值
             api = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printIdArray}&userId=${this.userInfo.id}&searchData=${JSON.stringify(this.searchDatas)}`;
@@ -327,7 +327,7 @@
             if (res.status === 200) {
               if (this[MODULE_COMPONENT_NAME][0] === 'S') {
                 if (id === 2530) {
-                  this.$loading.hide(tableName);
+                  this.$R3loading.hide(tableName);
                   this.objTabActionDialog(tab);
                 } else { 
                   src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${this.idArray}&userId=${this.userInfo.id}`;
@@ -336,7 +336,7 @@
               } else {
                 const printId = this.itemId;
                 if (id === 2530) {
-                  this.$loading.hide(tableName);
+                  this.$R3loading.hide(tableName);
                   this.objTabActionDialog(tab);
                 } else {
                   src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printId}&userId=${this.userInfo.id}`;
@@ -344,10 +344,10 @@
                 }
               }
             } else {
-              this.$loading.hide(tableName);
+              this.$R3loading.hide(tableName);
             }
           }).catch(() => {
-            this.$loading.hide(tableName);
+            this.$R3loading.hide(tableName);
           });
         } else {
           this.objTabActionDialog(tab);
@@ -370,11 +370,11 @@
         const dom = document.getElementById('iFrame');
         if (dom.attachEvent) {  
           dom.attachEvent('onload', () => { // IE  
-            this.$loading.hide(tableName);
+            this.$R3loading.hide(tableName);
           });  
         } else {  
           dom.onload = () => { // 非IE  
-            this.$loading.hide(tableName);
+            this.$R3loading.hide(tableName);
           };  
         }
       },

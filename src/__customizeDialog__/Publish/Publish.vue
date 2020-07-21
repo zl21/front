@@ -84,10 +84,10 @@
           env: this.envValue, 
           objId: itemId, 
         };
-        this.$loading.show();
+        this.$R3loading.show();
         network.post('/p/cs/release', urlSearchParams(searchdata))
           .then((res) => {
-            this.$loading.hide(tableName);
+            this.$R3loading.hide(tableName);
             if (res.data.code !== 0) {
               return;
             }

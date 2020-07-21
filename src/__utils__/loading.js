@@ -10,9 +10,9 @@ Loading.installed = false;
 
 Loading.install = ((Vue) => { 
   if (Loading.installed) return;
-  Vue.prototype.$loading = {};
+  Vue.prototype.$R3loading = {};
 
-  Vue.prototype.$loading.show = (tableName) => {
+  Vue.prototype.$R3loading.show = (tableName) => {
     // 如果页面有loading则不继续执行{
     const currentTableName = tableName || router.currentRoute.params.tableName;
     //   currentTableName = store.state.global.activeTab.tableName;
@@ -56,7 +56,7 @@ Loading.install = ((Vue) => {
     Loading.installed = true;
   };
 
-  Vue.prototype.$loading.hide = (tableName) => {
+  Vue.prototype.$R3loading.hide = (tableName) => {
     const currentLoading = store.state.global.currentLoading;
     const currentTableName = tableName || router.currentRoute.params.tableName;
 
