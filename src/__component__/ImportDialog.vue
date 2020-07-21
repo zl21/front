@@ -307,7 +307,7 @@
         this.loading = true;
         // 上传文件
         const fileInformationUploaded = this.files;
-        this.$loading.show();
+        this.$R3loading.show();
         const url = `${getGateway('/p/cs/import')}`;
         const updataValue = this.singleValue ? 'Y' : 'N';
         const sendData = {
@@ -340,7 +340,7 @@
         const { tableName } = this.$route.params;
         if (response.code === 0) {
           if (Version() === '1.4') {
-            this.$loading.hide(tableName);
+            this.$R3loading.hide(tableName);
             this.closeDialog();
             this.fileName = '';
             this.$Modal.fcSuccess({
@@ -352,7 +352,7 @@
             this.$emit('imporSuccess', response.data);
           }
         } else {
-          this.$loading.hide(tableName);
+          this.$R3loading.hide(tableName);
           if (response.data) {
             if (response.data.path) {
               if (response.data.path === 'undefined ===') {
@@ -385,7 +385,7 @@
       // 上传失败
       handleError(e) {
         const { tableName } = this.$route.params;
-        this.$loading.hide(tableName);
+        this.$R3loading.hide(tableName);
         const emg = e;
         let formatJsonEmg = null;
         try {

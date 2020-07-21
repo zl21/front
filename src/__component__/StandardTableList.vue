@@ -440,7 +440,7 @@
             });
             promises.then(() => {          
               this.setImportDialogTitle(false);
-              this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+              this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
               if (this.exportTasks.dialog) {
                 const message = {
                   mask: true,
@@ -478,12 +478,12 @@
               //   };
               //   this.$Modal.fcError(data);
               // }
-              this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+              this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
               this.setImportDialogTitle(false);
             });
           }
         } else {
-          this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+          this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
         }
       },
       commonTableCustomizedDialog(params) {
@@ -1606,7 +1606,7 @@
         }
 
         let promise = new Promise((resolve, reject) => {
-          this.$loading.show();
+          this.$R3loading.show();
           this.getExeActionDataForButtons({
             item, obj, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
           });
@@ -1619,7 +1619,7 @@
             this.buttons.activeTabAction.cuscomponent
           );
           promise.then(() => {
-            this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
             if (nextOperate.success) {
               let successAction = null;
               let successActionParam = {};
@@ -1646,7 +1646,7 @@
               this.$Modal.fcSuccess(data);
             }
           }, () => {
-            this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
             if (nextOperate.failure) {
               let errorAction = null;
               let errorActionParam = {};
@@ -1667,7 +1667,7 @@
           });
         } else { // 没有配置动作定义调动作定义逻辑
           promise.then((res, actionName) => {
-            this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
             const message = this.buttons.ExeActionData;
             const data = {
               mask: true,
@@ -1693,7 +1693,7 @@
               this.searchClickData();
             }
           }, () => {
-            this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
           });
         }
       },
@@ -1779,15 +1779,15 @@
       },
       getQueryListPromise(data) {
         const promise = new Promise((resolve, reject) => {
-          this.$loading.show();
+          this.$R3loading.show();
           data.resolve = resolve;
           data.reject = reject;
           this.getQueryListForAg(data);
         });
         promise.then(() => {
-          this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+          this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
         }, () => { // 状态为rejected时执行
-          this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+          this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
         });
       },
       dialogMessage(title, contentText, obj) {
@@ -2003,7 +2003,7 @@
         }
       },
       batchExport(buttonsData) {
-        this.$loading.show();
+        this.$R3loading.show();
         let searchData = {};
         const { tableName } = this[INSTANCE_ROUTE_QUERY];
         // 导出
@@ -2032,7 +2032,7 @@
         promise.then(() => {
           if (this.buttons.exportdata) {
             if (Version() === '1.4') {
-              this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+              this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
               const eleLink = document.createElement('a');
               const path = getGateway(`/p/cs/download?filename=${this.buttons.exportdata}`);
               eleLink.setAttribute('href', path);
@@ -2047,7 +2047,7 @@
                 });
               });
               promises.then(() => {
-                this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+                this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
                 if (this.exportTasks.dialog) {
                   const message = {
                     mask: true,
@@ -2078,7 +2078,7 @@
                 }
               }, () => {
                 if (this.exportTasks.warningMsg) {
-                  this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+                  this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
                   const data = {
                     mask: true,
                     title: '错误',
@@ -2089,10 +2089,10 @@
               });
             }
           } else {
-            this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
           }
         }, () => {
-          this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+          this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
         });
       },
       deleteTableList(data) { // 删除方法
@@ -2116,14 +2116,14 @@
       batchVoid(data) {
         const tableName = this.buttons.tableName;
         const ids = this.buttons.selectIdArr.map(d => parseInt(d));
-        // this.$loading.show();
+        // this.$R3loading.show();
         const promise = new Promise((resolve, reject) => {
           this.batchVoidForButtons({
             tableName, ids, resolve, reject, data
           });
         });
         promise.then(() => {
-          // this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName)
+          // this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName)
           const message = this.buttons.batchVoidForButtonsData.message;
           const data = {
             mask: true,
