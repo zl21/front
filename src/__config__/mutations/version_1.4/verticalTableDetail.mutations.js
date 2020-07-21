@@ -121,9 +121,9 @@ export default {
   },
   updateRefButtonsData(state, data) { // 更新子表按钮数据
     const { componentAttribute } = state.tabPanels[data.tabIndex];
-    if (data.jflowButton && data.jflowButton.length > 0) {
+    if (data.tabwebact.jflowbutton && data.tabwebact.jflowbutton.length > 0) {
       componentAttribute.buttonsData.isShow = true;
-      componentAttribute.buttonsData.data.isItemTableVertical = true;
+      data.isItemTableVertical = true;
       componentAttribute.buttonsData.data = data;
     } else {
       // componentAttribute.buttonsData.isShow = true;

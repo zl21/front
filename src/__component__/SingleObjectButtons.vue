@@ -3551,7 +3551,6 @@
       this.updataCurrentTableDetailInfo();
       this.setDisableButtons();
       if (this.isItemTable) {
-        console.log(444, this.itemInfo);
         this.dataArray.refresh = false;
         this.dataArray.back = false;
       }
