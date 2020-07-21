@@ -983,7 +983,7 @@
 </script>
 <style lang="less">
 
-.ark-tree-arrow-open i:after{
+.burgeon-tree-arrow-open i:after{
   left: 6px;
   height: 19px;
   top: 11px;

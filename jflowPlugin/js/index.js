@@ -15,7 +15,6 @@ import decryptionJflow from './decryptionJflow';
 import { global, globalChange } from '../utils/global.config';
 import todoList, { BacklogData } from './todoList';
 
-
 function thirdlogin() { // 三方登录  获取accessToken
   const data = {
     username: 'guest'
@@ -89,10 +88,11 @@ function createComponent() { // 创建跟节点实例
   window.jflowPlugin = vm.$children[0];
 }
 
-function jflowRefresh() { // 刷新业务系统
+function jflowRefresh(tableId) { // 刷新业务系统
   DispatchEvent('jflowClick', {
     detail: {
-      type: 'refresh'
+      type: 'refresh',
+      tableId: tableId || (global.jflowInfo && global.jflowInfo.businessType ? global.jflowInfo.businessType : null)
     }
   });
 }
@@ -175,7 +175,8 @@ function initLists() { // init
       window.conversionJflow = decryptionJflow; // 解密方法
       window.initiateLaunch = initiateLaunch; // 发起流程
       window.jflowRefresh = jflowRefresh; // 刷新
-      window.BacklogData = BacklogData; // 刷新待办数据
+      window.BacklogData = BacklogData; // 刷新待办数字
+      // window.jflowPlugin.open({ control: false })  关闭弹窗方法
     });
 }
 
@@ -207,3 +208,5 @@ export function components() {
 }
 
 export const getJflowInfo = jflowButtons;
+
+export const refreshSystem = jflowRefresh;

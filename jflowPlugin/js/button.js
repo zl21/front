@@ -77,7 +77,14 @@ async function buttonsResponse(e) {
       break;
     case '5': // 流程进度
       await getJflowInfo();
-      window.open(`${global.localIp}/#/FlowChart?instanceId=${global.jflowInfo.instanceId ? global.jflowInfo.instanceId : global.jflowInfo.lastInstanceId}`, '_blank', 'width=861,height=612');
+      if (global.components && global.components.Process) {
+        window.jflowPlugin.open({// 同意和转派
+          control: true, type: item.button, url: item.url, instanceId: global.jflowInfo.instanceId, returnOption: global.jflowInfo.backNodeIds, item 
+        });
+      } else {
+        window.open(`${global.localIp}/#/FlowChart?instanceId=${global.jflowInfo.instanceId ? global.jflowInfo.instanceId : global.jflowInfo.lastInstanceId}`, '_blank', 'width=861,height=612');
+      } 
+      
       break;
     case '6': // 重启流程
     case 'submit': // 提交
@@ -100,20 +107,16 @@ async function buttonsResponse(e) {
 function clickFunction(e) {
   globalChange({ routeInfo: e.detail.currentItemInfo });
   if (e.detail.obj.isSave) { // 按钮存在保存前置事件时
-    window.vm.$Spin.show();
-    setTimeout(() => {
-      window.vm.$Spin.hide();
-      if (window.updatavVerifyRequiredInformation()) {
-        if (window.testUpdataValue()) {
-          window.updataClickSave(async () => {
-            await global.jflowInfo ? businessChange() : null;
-            buttonsResponse(e);
-          });
-        } else {
+    if (window.updatavVerifyRequiredInformation()) {
+      if (window.testUpdataValue()) {
+        window.updataClickSave(async () => {
+          await global.jflowInfo ? businessChange() : null;
           buttonsResponse(e);
-        }
+        });
+      } else {
+        buttonsResponse(e);
       }
-    }, 1000);
+    }
   } else {
     buttonsResponse(e);
   }
