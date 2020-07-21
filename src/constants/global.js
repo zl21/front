@@ -24,6 +24,7 @@ export const getCustomizeWaterMark = () => (window.ProjectConfig && window.Proje
 export const encryptedPassword = () => (window.ProjectConfig && window.ProjectConfig.encryptedPassword ? window.ProjectConfig.encryptedPassword : project.encryptedPassword);
 export const isItemTableNewValidation = () => (window.ProjectConfig && typeof window.ProjectConfig.isItemTableNewValidation === 'boolean' ? window.ProjectConfig.isItemTableNewValidation : project.isItemTableNewValidation);
 export const isCommonTable = () => (window.ProjectConfig && typeof window.ProjectConfig.isCommonTable === 'boolean' ? window.ProjectConfig.isCommonTable : project.isCommonTable);
+export const enableRestrictSave = () => (window.ProjectConfig && typeof window.ProjectConfig.enableRestrictSave === 'boolean' ? window.ProjectConfig.enableRestrictSave : project.enableRestrictSave);
 export const cbs = () => (window.ProjectConfig && window.ProjectConfig.cbs ? window.ProjectConfig.cbs : project.cbs || {});
 export const layoutDirection = () => ((window.ProjectConfig && typeof window.ProjectConfig.layoutDirection === 'boolean' ? window.ProjectConfig.layoutDirection : project.layoutDirection) || false);
 export const contentConfig = () => (window.ProjectConfig && window.ProjectConfig.contentConfig ? window.ProjectConfig.contentConfig : project.contentConfig);
