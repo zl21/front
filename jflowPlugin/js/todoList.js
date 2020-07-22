@@ -55,7 +55,7 @@ function createIcon() {
   pollBacklogData();
   setInterval(() => {
     pollBacklogData();
-  }, 100000);
+  }, global.pollInterval ? global.pollInterval * 1000 : 100000);
 }
 
 

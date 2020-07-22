@@ -215,6 +215,7 @@
   import ZTree from '../ztree/zTree';
   import { fuzzySearch } from '../ztree/js/fuzzysearch';
   import network from '../utils/network';
+  import { global } from '../utils/global.config';
 
   export default {
     name: 'Mutiple',
@@ -964,7 +965,11 @@
         this.resultRightData = this.deepCopy(this.resultData);
       }
 
-      await this.getRoleConfig();
+      // 
+      if (global.groupDeliver) {
+        await this.getRoleConfig();
+      }
+      
       // 获取人员信息
       this.findUser({});
     },

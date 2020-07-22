@@ -182,6 +182,7 @@ function initLists() { // init
 
 
 const install = async function install(Vue, options = {}) {
+  window.jflow = true;
   await globalChange(options);
   initLists();
   CreateButton();
