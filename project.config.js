@@ -4,7 +4,7 @@ module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
   projectIconPath: path.join(__dirname, './favicon.ico'), // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
-  // target: 'http://r3-8098.dev.burgeononline.com/', // 框架研发网关开启环境
+  target: 'http://r3-8098.dev.burgeononline.com/', // 框架研发网关开启环境
   // target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 新版本jflow测试环境
   // target: 'http://r3dev.qiaodan.com:28889', // 乔丹开发环境
   // target: 'http://r3dev.qiaodan.com:26666', // 乔丹开发环境
@@ -41,8 +41,8 @@ module.exports = {
   enableInitializationRequest: true, // 是否开启初始化请求
   // enableCustomInterface: false // 是否开启自定义接口,
   customizeWaterMark: {}, // 启用外部自定义水印配置,
-  // specifiedGlobalGateWay: 'ad-app',
-  specifiedGlobalGateWay: 'user-center',
+  specifiedGlobalGateWay: 'ad-app',
+  // specifiedGlobalGateWay: 'user-center',
   encryptedPassword: false, // 是否允许login接口password加密
   isItemTableNewValidation: true, // 是否允许子表新增有必填项时，输入值才触发子表必填项校验，不输入值则只校验主表
   isCommonTable: false, // 是否开启普通表格，默认关闭
@@ -54,4 +54,5 @@ module.exports = {
   custommizedRequestURL: {
   }, // 配置内置自定义界面requestURL
   requestPenddingExpire: 1000 * 0.5, // 单位S
+  enableRestrictSave: true, // 是否限制保存，默认为true,true:界面未修改值则点击保存按钮不调用保存服务，false:无论是否修改值都会调用保存服务
 };

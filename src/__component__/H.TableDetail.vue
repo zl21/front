@@ -3,6 +3,13 @@
     :id="currentTableName"
     class="horizontalTableDetail"
   >
+    <!-- <button @click="aa">
+      不可编辑
+    </button>
+    <button @click="bb">
+      同意
+    </button> -->
+    
     <TabPanels
       type="line"
       is-keep-alive
@@ -23,6 +30,7 @@
   export default {
     data() {
       return {
+        a: false
       };
     },
     computed: {
@@ -51,7 +59,7 @@
               obj.componentAttribute.isMainTable = true;     
               obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.tabPanel[0].componentAttribute.panelData.data.isdefault;
             } 
-            obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.childReadonly;
+            obj.componentAttribute.objreadonly = this.a;
             obj.componentAttribute.webConfSingle = this.tabPanel[index].componentAttribute.buttonsData.data.webconf;
             obj.componentAttribute.isreftabs = this.tabPanel[0].componentAttribute.buttonsData.data.isreftabs;
             obj.componentAttribute.tableName = item.tablename;
@@ -103,7 +111,28 @@
     methods: {
       
       ...mapMutations('global', ['isRequestUpdata', 'emptyTestData']),
- 
+      // aa() {
+      //   this.a = !this.a;
+      // },
+      // bb() {
+      //   if (window.updatavVerifyRequiredInformation() && window.testUpdataValue()) {
+      //     window.updataClickSave(() => {
+      //       alert('保存成功');
+      //       this.cc();
+      //     });
+      //   } else {
+      //     // this.cc();
+      //   }
+      // },
+      // cc() {
+      //   DispatchEvent('jflowClick', {
+      //     detail: {
+      //       type: 'refresh',
+      //       tableId: 23969
+      //     }
+      //   });
+      //   console.log(1);
+      // },
       tabClick(index) {
         let flag = false;
         if (this.isRequest.length > 0 && this.isRequest[index] === true) {
