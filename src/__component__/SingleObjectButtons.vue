@@ -733,6 +733,9 @@
         });
       },
       testUpdata() { // 校验是否修改过值
+        if (window.jflow) {
+          return true;
+        }
         this.isValue = null;
         const itemNames = this.itemNameGroup.map((c) => {
           if (c.tableName !== this.tableName) {
