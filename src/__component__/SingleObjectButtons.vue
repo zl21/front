@@ -97,7 +97,7 @@
   import WaterMark from './WaterMark.vue';
   import ImportDialog from './ImportDialog';
   import {
-    isItemTableNewValidation, INSTANCE_ROUTE, KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, LINK_MODULE_COMPONENT_PREFIX, getCustomizeWaterMark
+    enableRestrictSave, isItemTableNewValidation, INSTANCE_ROUTE, KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, LINK_MODULE_COMPONENT_PREFIX, getCustomizeWaterMark
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import { getUrl, getLabel } from '../__utils__/url';
@@ -733,6 +733,9 @@
         });
       },
       testUpdata() { // 校验是否修改过值
+        if (window.jflow) {
+          return true;
+        }
         this.isValue = null;
         const itemNames = this.itemNameGroup.map((c) => {
           if (c.tableName !== this.tableName) {
@@ -2812,6 +2815,10 @@
           mainModify = Object.keys(this.updateData[this.tableName].modify[this.tableName]);
         }
         if (!this.subtables()) { // 为false的情况下是没有子表
+          if (enableRestrictSave()) {
+            const tag = 'jflow';
+            mainModify.push(tag);
+          }
           // console.log('没有子表',);
           if ((this.verifyRequiredInformation() && mainModify.length > 0) || this.noClickSave()) {
             if (obj.requestUrlPath) { // 配置path
@@ -2840,6 +2847,7 @@
         if (this.updateData && this.updateData[this.tableName] && this.updateData[this.tableName].modify && this.updateData[this.tableName].modify[this.tableName]) {
           mainModify = Object.keys(this.updateData[this.tableName].modify[this.tableName]);
         }
+
         if (this.objectType === 'vertical') {
           let itemModify = [];
           let itemAdd = [];
@@ -2866,6 +2874,10 @@
               }
             }
           } else { 
+            if (enableRestrictSave()) {
+              const tag = 'jflow';
+              itemModify.push(tag);
+            }
             if (itemModify.length > 0 && itemAdd.length < 1) { // 子表表格编辑修改
               // 校验子表表格必填项
               if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) { // 配置了暂存按钮，不校验子表
@@ -2891,6 +2903,10 @@
             }
           }
         } else if (itemName === this.tableName) { // 主表修改
+          if (enableRestrictSave()) {
+            const tag = 'jflow';
+            mainModify.push(tag);
+          }
           if (mainModify.length > 0 || this.noClickSave()) { // 主表修改了值和提交或自定义按钮配置isSave时，调用保存
             if (this.verifyRequiredInformation()) { // 横向结构保存校验
               if (obj.requestUrlPath) { // 配置path
@@ -2909,7 +2925,11 @@
           if (this.updateData[itemName].add && this.updateData[itemName].add[itemName]) {
             itemAdd = Object.values(this.updateData[itemName].add[itemName]);
           }
-
+          if (enableRestrictSave()) {
+            const tag = 'jflow';
+            itemModify.push(tag);
+          }
+        
           
           if (itemModify.length > 0 && itemAdd.length < 1) { // 子表表格编辑修改
             let check = null;
@@ -3322,8 +3342,6 @@
             };
             updateSessionObject('objTabActionSlientData', data);
           } else if (typeof (this.saveCallBack) === 'function') {
-            this.saveCallBack();
-            this.saveCallBack = null;
             const saveEventAfterData = {
               k: 'type',
               v: {}
@@ -3331,6 +3349,10 @@
             updateSessionObject('saveEventAfter', saveEventAfterData);
             this.saveEventAfter = '';
             this.clearEditData();// 清空store update数据
+            this.saveCallBack();
+            this.saveCallBack = null;
+
+            console.log(2);
           } else { // 保存后的保存成功提示信息
             const message = this.buttonsData.message;
             this.clearEditData();// 清空store update数据
@@ -3551,7 +3573,6 @@
       this.updataCurrentTableDetailInfo();
       this.setDisableButtons();
       if (this.isItemTable) {
-        console.log(444, this.itemInfo);
         this.dataArray.refresh = false;
         this.dataArray.back = false;
       }
