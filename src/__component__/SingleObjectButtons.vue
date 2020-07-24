@@ -2865,19 +2865,21 @@
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               }
             }
-          } else if (itemModify.length === 0 && itemAdd.length === 0 && mainModify.length > 0) { // 主表修改
-            if (this.verifyRequiredInformation()) { // 纵向结构保存校验
-              if (obj.requestUrlPath) { // 配置path
-                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-              } else { // 没有配置path  
-                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-              }
-            }
-          } else { 
+          } else if (itemModify.length === 0 && itemAdd.length === 0) { // 主表修改
             if (!enableRestrictSave()) {
               const tag = 'jflow';
-              itemModify.push(tag);
+              mainModify.push(tag);
             }
+            if (mainModify.length > 0) {
+              if (this.verifyRequiredInformation()) { // 纵向结构保存校验
+                if (obj.requestUrlPath) { // 配置path
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+                } else { // 没有配置path  
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+                }
+              }
+            }
+          } else {
             if (itemModify.length > 0 && itemAdd.length < 1) { // 子表表格编辑修改
               // 校验子表表格必填项
               if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) { // 配置了暂存按钮，不校验子表
