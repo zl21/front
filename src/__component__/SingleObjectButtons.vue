@@ -733,7 +733,7 @@
         });
       },
       testUpdata() { // 校验是否修改过值
-        if (window.jflow) {
+        if (window.jflow && !enableRestrictSave()) {
           return true;
         }
         this.isValue = null;
@@ -2815,7 +2815,7 @@
           mainModify = Object.keys(this.updateData[this.tableName].modify[this.tableName]);
         }
         if (!this.subtables()) { // 为false的情况下是没有子表
-          if (enableRestrictSave()) {
+          if (!enableRestrictSave()) {
             const tag = 'jflow';
             mainModify.push(tag);
           }
@@ -2874,7 +2874,7 @@
               }
             }
           } else { 
-            if (enableRestrictSave()) {
+            if (!enableRestrictSave()) {
               const tag = 'jflow';
               itemModify.push(tag);
             }
@@ -2903,7 +2903,7 @@
             }
           }
         } else if (itemName === this.tableName) { // 主表修改
-          if (enableRestrictSave()) {
+          if (!enableRestrictSave()) {
             const tag = 'jflow';
             mainModify.push(tag);
           }
@@ -2925,7 +2925,7 @@
           if (this.updateData[itemName].add && this.updateData[itemName].add[itemName]) {
             itemAdd = Object.values(this.updateData[itemName].add[itemName]);
           }
-          if (enableRestrictSave()) {
+          if (!enableRestrictSave()) {
             const tag = 'jflow';
             itemModify.push(tag);
           }
