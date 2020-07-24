@@ -483,6 +483,14 @@
           this.getMessageCount();
         }, 30000);
       }
+      if (this.showModule && !this.showModule.Navigator) {
+        if (this.$el) {
+          this.$el.parentElement.hidden = true;
+          this.$el.parentElement.parentElement.hidden = true;
+          this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.firstElementChild.firstElementChild.style.padding = '0px';
+          this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.style.margin = '0px';
+        }
+      }
     },
     created() {
       this.loadEnterpriseConfig();
