@@ -733,7 +733,7 @@
         });
       },
       testUpdata() { // 校验是否修改过值
-        if (window.jflow) {
+        if (window.jflow && !enableRestrictSave()) {
           return true;
         }
         this.isValue = null;
@@ -2815,7 +2815,7 @@
           mainModify = Object.keys(this.updateData[this.tableName].modify[this.tableName]);
         }
         if (!this.subtables()) { // 为false的情况下是没有子表
-          if (enableRestrictSave()) {
+          if (!enableRestrictSave()) {
             const tag = 'jflow';
             mainModify.push(tag);
           }
@@ -2865,19 +2865,21 @@
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               }
             }
-          } else if (itemModify.length === 0 && itemAdd.length === 0 && mainModify.length > 0) { // 主表修改
-            if (this.verifyRequiredInformation()) { // 纵向结构保存校验
-              if (obj.requestUrlPath) { // 配置path
-                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-              } else { // 没有配置path  
-                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+          } else if (itemModify.length === 0 && itemAdd.length === 0) { // 主表修改
+            if (!enableRestrictSave()) {
+              const tag = 'jflow';
+              mainModify.push(tag);
+            }
+            if (mainModify.length > 0) {
+              if (this.verifyRequiredInformation()) { // 纵向结构保存校验
+                if (obj.requestUrlPath) { // 配置path
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+                } else { // 没有配置path  
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+                }
               }
             }
-          } else { 
-            if (enableRestrictSave()) {
-              const tag = 'jflow';
-              itemModify.push(tag);
-            }
+          } else {
             if (itemModify.length > 0 && itemAdd.length < 1) { // 子表表格编辑修改
               // 校验子表表格必填项
               if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) { // 配置了暂存按钮，不校验子表
@@ -2903,7 +2905,7 @@
             }
           }
         } else if (itemName === this.tableName) { // 主表修改
-          if (enableRestrictSave()) {
+          if (!enableRestrictSave()) {
             const tag = 'jflow';
             mainModify.push(tag);
           }
@@ -2925,7 +2927,7 @@
           if (this.updateData[itemName].add && this.updateData[itemName].add[itemName]) {
             itemAdd = Object.values(this.updateData[itemName].add[itemName]);
           }
-          if (enableRestrictSave()) {
+          if (!enableRestrictSave()) {
             const tag = 'jflow';
             itemModify.push(tag);
           }
