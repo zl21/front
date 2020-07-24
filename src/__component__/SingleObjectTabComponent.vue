@@ -1,5 +1,6 @@
 <template>
   <div class="tabComponent">
+    {{}}
     <component
       :is="objectButtonComponent"
       v-if="buttonsData.isShow&&componentType!=='ALL'"
