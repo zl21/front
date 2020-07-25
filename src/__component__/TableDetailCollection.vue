@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            />
+                      >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -3963,10 +3963,14 @@
           flag = true;
         }
         if (!flag) {
-          this.currentOrderList.push({
+          // this.currentOrderList.push({
+          //   column: `${tableName}.${value.key}`,
+          //   asc: value.order === 'asc'
+          // });
+          this.currentOrderList = [{
             column: `${tableName}.${value.key}`,
             asc: value.order === 'asc'
-          });
+          }];
         }
         const fixedcolumns = {};
         if (this.searchCondition) {
