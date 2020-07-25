@@ -733,7 +733,7 @@
         });
       },
       testUpdata() { // 校验是否修改过值
-        if (window.jflow && !enableRestrictSave()) {
+        if (!enableRestrictSave()) {
           return true;
         }
         this.isValue = null;
