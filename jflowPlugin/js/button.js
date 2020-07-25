@@ -108,11 +108,13 @@ function clickFunction(e) {
   globalChange({ routeInfo: e.detail.currentItemInfo });
   if (e.detail.obj.isSave) { // 按钮存在保存前置事件时
     window.vm.$Spin.show();
+    window.ProjectConfig.enableRestrictSave = false;
     setTimeout(() => {
       window.vm.$Spin.hide();
       if (window.updatavVerifyRequiredInformation()) {
         if (window.testUpdataValue()) {
           window.updataClickSave(async () => {
+            window.ProjectConfig.enableRestrictSave = true;
             await global.jflowInfo ? businessChange() : null;
             buttonsResponse(e);
           });
