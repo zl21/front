@@ -17,6 +17,7 @@
         <component
           :is="item.component"
           :ref="'component_'+index"
+          :class="item.item.field"
           :index="index"
           :type="type"
           :web-conf-single="webConfSingle"
@@ -877,7 +878,7 @@
         }
         return valueLabel;
       },
-      formRequest(key, obj, current, conf) {
+      formRequest(key, obj, current, conf, index) {
         // 走后台接口
         const jsonArr = this.setJson(current, this.formDataObject);
         // 拦截是否相同
@@ -912,11 +913,19 @@
           success: (res) => {
             const tableName = this.isMainTable ? '' : this.childTableName;
             if (res.length < 1) {
-              return false;
+              current.value = [{
+                ID: null,
+                Label: null
+              }];
+              if (document.getElementsByClassName(`${current.field}`)[0].getElementsByClassName('ark-icon-ios-close-circle').length > 0) {
+                document.getElementsByClassName(`${current.field}`)[0].getElementsByClassName('ark-icon-ios-close-circle')[0].click();
+                this.formRequest(key, obj, current, conf);
+              }
+            } else {
+              window.eventType(`${this.moduleComponentName}setProps`, window, {
+                type: 'equal', key, list: res, tableName 
+              });
             }
-            window.eventType(`${this.moduleComponentName}setProps`, window, {
-              type: 'equal', key, list: res, tableName 
-            });
           }
         });
         return true;
