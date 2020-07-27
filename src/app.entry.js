@@ -115,6 +115,11 @@ window.changeNavigatorSetting = (data) => {
   store.commit('global/changeNavigatorSetting', data);
 };
 
+// 修改配置图片的方法
+window.changeImageSetting = (data) => {
+  store.commit('global/updateImage', data);
+};
+
 const backTouristRoute = () => {
   // window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
   // router.push({ path: getTouristRoute() });

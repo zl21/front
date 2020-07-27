@@ -100,10 +100,7 @@
   import messagePanel from './messagePanel';
   import ComAutoComplete from './ComAutoComplete';
   import Dialog from './Dialog.vue';
-  import closedImg from '../assets/image/closed@2x.png';
-  import openedImg from '../assets/image/open@2x.png';
-  import logoImg from '../assets/image/logo.png';
-  import bannerImg from '../assets/image/banner.png';
+  
   import { routeTo } from '../__config__/event.config';
   import network, { urlSearchParams } from '../__utils__/network';
   import NavigatorSubMenu from './NavigatorSubMenu';
@@ -125,12 +122,12 @@
     data() {
       return {
         // primaryMenuShow: false,
-        imgSrc: {
-          closedImg,
-          openedImg,
-          logoImg,
-          bannerImg,
-        },
+        // imgSrc: {
+        //   closedImg,
+        //   openedImg,
+        //   logoImg,
+        //   bannerImg,
+        // },
         messagePanel: {
           show: false,
           list: [],
@@ -168,6 +165,7 @@
         userInfo: ({ userInfo }) => userInfo,
         primaryMenuIndex: state => state.primaryMenuIndex,
         taskMessageCount: state => state.taskMessageCount,
+        imgSrc: state => state.imgSrc
       }),
       versionValue() {
         if (Version() === '1.4') {
@@ -384,16 +382,6 @@
         }
         //
       },
-      loadEnterpriseConfig() {
-        const image = (window.ProjectConfig || {}).image || {
-          enterpriseLogo: undefined,
-          enterpriseBanner: undefined,
-        };
-        const enterpriseLogo = image.enterpriseLogo;
-        const enterpriseBanner = image.enterpriseBanner;
-        this.imgSrc.logoImg = enterpriseLogo || this.imgSrc.logoImg;
-        this.imgSrc.bannerImg = enterpriseBanner || this.imgSrc.bannerImg;
-      },
       getMessageCount() {
         if (!this.userInfo.id) {
           return;
@@ -407,9 +395,6 @@
           this.getMessageCount();
         }, 30000);
       }
-    },
-    created() {
-      this.loadEnterpriseConfig();
     },
     beforeDestroy() {
       clearInterval(this.messageTimer);
