@@ -2815,7 +2815,6 @@
           mainModify = Object.keys(this.updateData[this.tableName].modify[this.tableName]);
         }
         if (!this.subtables()) { // 为false的情况下是没有子表
-          debugger;
           if (!enableRestrictSave()) {
             if (!Array.isArray(this.mainModify)) {
               mainModify = [];
@@ -2912,7 +2911,6 @@
             }
           }
         } else if (itemName === this.tableName) { // 主表修改
-          debugger;
           if (!enableRestrictSave()) {
             if (!Array.isArray(this.mainModify)) {
               mainModify = [];
@@ -2938,7 +2936,6 @@
           if (this.updateData[itemName].add && this.updateData[itemName].add[itemName]) {
             itemAdd = Object.values(this.updateData[itemName].add[itemName]);
           }
-          debugger;
           if (!enableRestrictSave()) {
             if (!Array.isArray(this.itemModify)) {
               mainModify = [];
