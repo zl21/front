@@ -25,11 +25,14 @@ const validateConfig = config => ({
   isQualified: true,
   message: 'xxx'
 });
-
-export default {
+const packageMessage = {
   version: '1.8.3',
   packageTime: '2020.07.17.11.17', 
-  user: 'ishop',                     
+  user: 'ishop',   
+};
+
+export default {
+  ...packageMessage,      
   /**
    * @param projectConfig 项目配置
    * projectConfig: {
@@ -99,8 +102,8 @@ export default {
         return a;
       }, {});
     }
-    window.ProjectConfig = projectConfig;
-
+    
+    window.ProjectConfig = Object.assign({}, projectConfig, packageMessage);
     launchApp(projectConfig);
   },
   urlSearchParams,
