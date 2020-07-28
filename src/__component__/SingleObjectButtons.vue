@@ -2815,7 +2815,11 @@
           mainModify = Object.keys(this.updateData[this.tableName].modify[this.tableName]);
         }
         if (!this.subtables()) { // 为false的情况下是没有子表
+          debugger;
           if (!enableRestrictSave()) {
+            if (!Array.isArray(this.mainModify)) {
+              mainModify = [];
+            }
             const tag = 'jflow';
             mainModify.push(tag);
           }
@@ -2868,6 +2872,9 @@
           } else if (itemModify.length === 0 && itemAdd.length === 0) { // 主表修改
             if (!enableRestrictSave()) {
               const tag = 'jflow';
+              if (!Array.isArray(this.mainModify)) {
+                mainModify = [];
+              }
               mainModify.push(tag);
             }
             if (mainModify.length > 0) {
@@ -2905,7 +2912,11 @@
             }
           }
         } else if (itemName === this.tableName) { // 主表修改
+          debugger;
           if (!enableRestrictSave()) {
+            if (!Array.isArray(this.mainModify)) {
+              mainModify = [];
+            }
             const tag = 'jflow';
             mainModify.push(tag);
           }
@@ -2927,7 +2938,11 @@
           if (this.updateData[itemName].add && this.updateData[itemName].add[itemName]) {
             itemAdd = Object.values(this.updateData[itemName].add[itemName]);
           }
+          debugger;
           if (!enableRestrictSave()) {
+            if (!Array.isArray(this.itemModify)) {
+              mainModify = [];
+            }
             const tag = 'jflow';
             itemModify.push(tag);
           }

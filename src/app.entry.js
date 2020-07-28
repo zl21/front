@@ -115,6 +115,7 @@ window.changeNavigatorSetting = (data) => {
   store.commit('global/changeNavigatorSetting', data);
 };
 
+
 const backTouristRoute = () => {
   // window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
   // router.push({ path: getTouristRoute() });

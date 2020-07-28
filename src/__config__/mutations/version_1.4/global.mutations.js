@@ -802,7 +802,7 @@ export default {
   updateFavoriteData(state, data) { // 收藏
     state.favorite = data.data;
   },
-  updateCustomizeMessage(state, data) { // 收藏
+  updateCustomizeMessage(state, data) { 
     // type:类型
     // value:更新的值
     // type='customerurl', // 列表界面链接型字段配置objdistype === 'customized'，配置在customerurl.refobjid的字段，解析的值
@@ -822,5 +822,9 @@ export default {
     };
     updateSessionObject('customizeMessage', obj);
   },
+
+  updateImage(state, data) { // 修改框架的配置图片
+    state.imgSrc = Object.assign(state.imgSrc, data);
+  }
   
 };
