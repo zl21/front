@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                      >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -3049,27 +3049,27 @@
                 });
               } else if (data.objdistype === 'customized') {
                 // 自定义界面
-                let customizeMessage = null;
-                const param = cellData.customerurl.refobjid.split(',');
-                if (Object.keys(params.row).length > 0 && param && param.length > 0) {
-                  customizeMessage = Object.keys(params.row).reduce((arr, obj) => {
-                    if (param.includes(obj)) {
-                      arr[obj] = params.row[obj];
-                    }
-                    return arr;
-                  }, {});
-                }
-                // const customizedModuleName = colDef.customerurl.tableurl.split('/')[1];
+                // let customizeMessage = null;
+                // const param = cellData.customerurl.refobjid.split(',');
+                // if (Object.keys(params.row).length > 0 && param && param.length > 0) {
+                //   customizeMessage = Object.keys(params.row).reduce((arr, obj) => {
+                //     if (param.includes(obj)) {
+                //       arr[obj] = params.row[obj];
+                //     }
+                //     return arr;
+                //   }, {});
+                // }
+                // const customizedModuleName = cellData.customerurl.tableurl.split('/')[1];
                 const datas = {
                   type: 'singleCustomerurlCustomized',
-                  value: customizeMessage,
-                  customizedModuleId: cellData.customerurl.reftableid
+                  value: params.row,
+                  customizedModuleId: params.row[cellData.customerurl.refobjid].val
                 };
                 this.updateCustomizeMessage(datas);
                 // 将元数据配置的refobjid，字符串，可配置多个字段，将配置的字段解析后用作lu y，供弹框作为参数使用
                 const type = 'tableDetailAction';
             
-                const url = `/${cellData.customerurl.tableurl.toUpperCase()}/${cellData.customerurl.reftableid}`;
+                const url = `/${cellData.customerurl.tableurl.toUpperCase()}/${params.row[cellData.customerurl.refobjid].val}`;
                 const tab = {
                   type,
                   label: cellData.customerurl.reftabdesc,
@@ -3083,7 +3083,7 @@
                   lablel: cellData.customerurl.reftabdesc,
                   isMenu: true,
                   lingName: cellData.customerurl.linkname,
-                  linkId: params.row[cellData.customerurl.refobjid],
+                  linkId: params.row[cellData.customerurl.refobjid].val,
                 };
                 this.directionalRouter(param);// 定向路由跳转方法
                 const datas = {
