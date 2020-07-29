@@ -359,9 +359,9 @@
                 this.errorMsg.errorUrl = '';
               } else {
                 const gatewayth = getGateway('/p/cs/downloadImportTemplate');
-                this.errorMsg.errorUrl = `${gatewayth}/p/cs/download?filename=${
+                this.errorMsg.errorUrl = this.urlChange(`${gatewayth}/p/cs/download?filename=${
                   response.data.path
-                }`;
+                }`);
               }
             }
             this.errorMsg.errorList = response.data.error || [
@@ -381,6 +381,14 @@
           this.clearFile();
         }
         this.$emit('confirmImport');
+      },
+      urlChange(url) { // 对下载的url地址进行转换，处理特殊字符
+        const arr = url.split('/');
+
+        let [last] = [...arr].reverse();
+        last = encodeURIComponent(last);
+        arr[arr.length - 1] = last;
+        return arr.join('/');
       },
       // 上传失败
       handleError(e) {
