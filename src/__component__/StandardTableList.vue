@@ -738,27 +738,28 @@
             this.tabOpen(tab);
           } else if (objdistype === 'customized') {
             // 自定义界面
-            let customizeMessage = null;
-            const param = colDef.customerurl.refobjid.split(',');
-            if (Object.keys(rowData).length > 0 && param && param.length > 0) {
-              customizeMessage = Object.keys(rowData).reduce((arr, obj) => {
-                if (param.includes(obj)) {
-                  arr[obj] = rowData[obj].val;
-                }
-                return arr;
-              }, {});
-            }
+            // let customizeMessage = null;
+            // const param = colDef.customerurl.refobjid.split(',');
+            // if (Object.keys(rowData).length > 0 && param && param.length > 0) {
+            //   customizeMessage = Object.keys(rowData).reduce((arr, obj) => {
+            //     if (param.includes(obj)) {
+            //       arr[obj] = rowData[obj].val;
+            //     }
+            //     return arr;
+            //   }, {});
+            // }
             // const customizedModuleName = colDef.customerurl.tableurl.split('/')[1];
             const data = {
               type: 'standardCustomerurlCustomized',
-              value: customizeMessage,
-              customizedModuleId: colDef.customerurl.reftableid
+              value: rowData,
+              customizedModuleId: rowData[colDef.customerurl.refobjid].val
             };
+
             this.updateCustomizeMessage(data);
             // 将元数据配置的refobjid，字符串，可配置多个字段，将配置的字段解析后用作lu y，供弹框作为参数使用
             const type = 'tableDetailAction';
-            
-            const url = `/${colDef.customerurl.tableurl.toUpperCase()}/${colDef.customerurl.reftableid}`;
+           
+            const url = `/${colDef.customerurl.tableurl.toUpperCase()}/${rowData[colDef.customerurl.refobjid].val}`;
             const tab = {
               type,
               label: colDef.customerurl.reftabdesc,
