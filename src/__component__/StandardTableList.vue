@@ -598,6 +598,12 @@
               treeTableListSelectId
             };
             this.directionalRouter(param);// 定向路由跳转方法
+            const data = {
+              type: 'standardTableurlCustomized',
+              value: row,
+              customizedModuleId: id
+            };
+            this.updateCustomizeMessage(data);
           } else if (this.ag.datas.objdistype === 'tabpanle') {
             // 单对象左右结构
             const type = 'tableDetailHorizontal';
@@ -738,27 +744,28 @@
             this.tabOpen(tab);
           } else if (objdistype === 'customized') {
             // 自定义界面
-            let customizeMessage = null;
-            const param = colDef.customerurl.refobjid.split(',');
-            if (Object.keys(rowData).length > 0 && param && param.length > 0) {
-              customizeMessage = Object.keys(rowData).reduce((arr, obj) => {
-                if (param.includes(obj)) {
-                  arr[obj] = rowData[obj].val;
-                }
-                return arr;
-              }, {});
-            }
+            // let customizeMessage = null;
+            // const param = colDef.customerurl.refobjid.split(',');
+            // if (Object.keys(rowData).length > 0 && param && param.length > 0) {
+            //   customizeMessage = Object.keys(rowData).reduce((arr, obj) => {
+            //     if (param.includes(obj)) {
+            //       arr[obj] = rowData[obj].val;
+            //     }
+            //     return arr;
+            //   }, {});
+            // }
             // const customizedModuleName = colDef.customerurl.tableurl.split('/')[1];
             const data = {
               type: 'standardCustomerurlCustomized',
-              value: customizeMessage,
-              customizedModuleId: colDef.customerurl.reftableid
+              value: rowData,
+              customizedModuleId: rowData[colDef.customerurl.refobjid].val
             };
+
             this.updateCustomizeMessage(data);
             // 将元数据配置的refobjid，字符串，可配置多个字段，将配置的字段解析后用作lu y，供弹框作为参数使用
             const type = 'tableDetailAction';
-            
-            const url = `/${colDef.customerurl.tableurl.toUpperCase()}/${colDef.customerurl.reftableid}`;
+           
+            const url = `/${colDef.customerurl.tableurl.toUpperCase()}/${rowData[colDef.customerurl.refobjid].val}`;
             const tab = {
               type,
               label: colDef.customerurl.reftabdesc,
@@ -2393,23 +2400,65 @@
             };
             this.updateCustomizeMessage(data);
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-            const name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
-            this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
-            const path = getUrl({ url: tabAction, id: tab.webid, type: 'customized' });
-            const keepAliveLabelMapsObj = {
-              k: name,
-              v: tab.webdesc
-            };
-            const undataFromPageCustomizeButtonInfo = {
-              k: name,
-              v: this[INSTANCE_ROUTE_QUERY]
-            };
-            updateSessionObject('undataFromPageCustomizeButtonInfo', undataFromPageCustomizeButtonInfo);// 将自定义按钮为跳转自定义界面类型的自定义按钮信息存入session
+            // const name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
+            // this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
+            // const path = getUrl({ url: tabAction, id: tab.webid, type: 'customized' });
+            // const keepAliveLabelMapsObj = {
+            //   k: name,
+            //   v: tab.webdesc
+            // };
+            // const undataFromPageCustomizeButtonInfo = {
+            //   k: name,
+            //   v: this[INSTANCE_ROUTE_QUERY]
+            // };
+            // updateSessionObject('undataFromPageCustomizeButtonInfo', undataFromPageCustomizeButtonInfo);// 将自定义按钮为跳转自定义界面类型的自定义按钮信息存入session
 
-            updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
-            router.push(
-              path
-            );
+            // updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
+            // router.push(
+            //   path
+            // );
+
+            const itemId = this.buttons.selectIdArr.filter(item => item);
+
+            if (singleEditType === ':itemId') {
+              if (this.buttons.selectIdArr.length === 0) {
+                this.$Message.warning('请勾选ID');
+                return;
+              } if (this.buttons.selectIdArr.length > 1) {
+                this.$Message.warning('只能勾选单个ID');
+                return;
+              }
+              const path = `${tabAction.replace(/:itemId/, itemId)}`;
+              const param = {
+                url: path,
+                id: itemId[0],
+                isMenu: true,
+              };
+              this.directionalRouter(param);// 定向路由跳转方法
+             
+              // router.push(
+              //   path
+              // );
+            } else {
+              const path = `${tabAction}/${tab.webid}`;
+              // router.push(
+              //   path
+              // );
+              const param = {
+                url: path,
+                id: tab.webid,
+                label: tab.webdesc,
+                isMenu: true,
+              };
+              this.directionalRouter(param);// 定向路由跳转方法
+            }
+
+            const data = {
+              type: 'standardCustomizeButton',
+              value: tab,
+              customizedModuleId: itemId[0]
+            };
+            this.updateCustomizeMessage(data);
           }
         }
       },
