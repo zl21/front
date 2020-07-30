@@ -99,8 +99,8 @@ export default {
         return a;
       }, {});
     }
-    window.ProjectConfig = projectConfig;
-
+    
+    window.ProjectConfig = Object.assign({}, projectConfig, packageMessage);
     launchApp(projectConfig);
   },
   urlSearchParams,

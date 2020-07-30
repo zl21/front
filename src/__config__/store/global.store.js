@@ -1,6 +1,10 @@
 /* eslint-disable import/no-dynamic-require */
 
 import { Version } from '../../constants/global';
+import closedImg from '../../assets/image/closed@2x.png';
+import openedImg from '../../assets/image/open@2x.png';
+import logoImg from '../../assets/image/logo.png';
+import bannerImg from '../../assets/image/banner.png';
 
 const mutations = () => require(`../mutations/version_${Version()}/global.mutations`).default;
 const actions = () => require(`../actions/version_${Version()}/global.actions`).default;
@@ -41,6 +45,13 @@ export default () => ({
       switchValue: false// 为false时列表表单默认展开全部，为true时，展开设置行数
     },
     treeTableListData: [],
+
+    imgSrc: {
+      logoImg,
+      bannerImg,
+      closedImg,
+      openedImg
+    }
   },
   mutations: mutations(),
   actions: actions(),

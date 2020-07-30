@@ -192,12 +192,6 @@
     data() {
       return {
         // primaryMenuShow: false,
-        imgSrc: {
-          closedImg,
-          openedImg,
-          logoImg,
-          bannerImg,
-        },
         messagePanel: {
           show: false,
           list: [],
@@ -235,6 +229,7 @@
         userInfo: ({ userInfo }) => userInfo,
         primaryMenuIndex: state => state.primaryMenuIndex,
         taskMessageCount: state => state.taskMessageCount,
+        imgSrc: state => state.imgSrc
       }),
       enableHistoryAndFavoriteUI() {
         return enableHistoryAndFavoriteUI();
@@ -454,22 +449,6 @@
         }
         //
       },
-      loadEnterpriseConfig() {
-        const image = (window.ProjectConfig || {}).image || {
-          enterpriseLogo: undefined,
-          enterpriseBanner: undefined,
-          expandImg: undefined,
-          collapseImg: undefined,
-        };
-        const expandImg = image.expandImg;
-        const collapseImg = image.collapseImg;
-        const enterpriseLogo = image.enterpriseLogo;
-        const enterpriseBanner = image.enterpriseBanner;
-        this.imgSrc.logoImg = enterpriseLogo || this.imgSrc.logoImg;
-        this.imgSrc.bannerImg = enterpriseBanner || this.imgSrc.bannerImg;
-        this.imgSrc.closedImg = collapseImg || this.imgSrc.closedImg;
-        this.imgSrc.openedImg = expandImg || this.imgSrc.openedImg;
-      },
       getMessageCount() {
         if (!this.userInfo.id) {
           return;
@@ -491,9 +470,6 @@
           this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.style.margin = '0px';
         }
       }
-    },
-    created() {
-      this.loadEnterpriseConfig();
     },
     beforeDestroy() {
       clearInterval(this.messageTimer);
