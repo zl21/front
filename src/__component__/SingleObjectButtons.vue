@@ -950,6 +950,8 @@
                 itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
               });
             }).then(() => {
+              debugger;
+
               if (message) {
                 this.$Message.success(message);
               }
