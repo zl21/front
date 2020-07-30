@@ -64,6 +64,7 @@
     >
       <i
         class="iconfont iconbj_delete "
+        title="关闭所有已打开的单据"
         style="color:#ff6049"
       />
       <!-- <img

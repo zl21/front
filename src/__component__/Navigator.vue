@@ -10,6 +10,7 @@
       <img
         v-if="!collapseHistoryAndFavorite&&enableHistoryAndFavoriteUI"
         class="trigger"
+        title="收起收藏夹与最近使用"
         alt=""
         :src="imgSrc.closedImg"
         @click="doCollapseHistoryAndFavorite"
@@ -18,6 +19,7 @@
         v-if="collapseHistoryAndFavorite&&enableHistoryAndFavoriteUI"
         class="trigger"
         alt=""
+        title="展开收藏夹与最近使用"
         :src="imgSrc.openedImg"
         @click="doCollapseHistoryAndFavorite"
       >
@@ -137,6 +139,7 @@
     >
       <i
         class="iconfont iconmd-person"
+        title="设置"
       />
     </div>
     <Drawer
