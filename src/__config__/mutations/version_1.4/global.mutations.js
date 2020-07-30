@@ -824,7 +824,13 @@ export default {
   },
 
   updateImage(state, data) { // 修改框架的配置图片
-    state.imgSrc = Object.assign(state.imgSrc, data);
+    const images = {
+      logoImg: data.enterpriseLogo,
+      bannerImg: data.enterpriseBanner,
+      closedImg: data.collapseImg,
+      openedImg: data.expandImg
+    };
+    state.imgSrc = Object.assign(state.imgSrc, images);
   }
   
 };
