@@ -108,6 +108,11 @@ const init = () => {
       store.commit('global/updataOpenedMenuLists', []);
     }, 500);
   }
+
+  // 初始化图片配置
+  if (window.ProjectConfig.image) {
+    store.commit('global/updateImage', window.ProjectConfig.image);
+  }
 };
 
 // 提前挂载方法
