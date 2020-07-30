@@ -25,11 +25,14 @@ const validateConfig = config => ({
   isQualified: true,
   message: 'xxx'
 });
+const packageMessage = {
+  version: '1.0.3',
+  packageTime: '2020.07.29.11.19', 
+  user: 'npm',   
+};
 
 export default {
-  version: '1.0.1',
-  packageTime: '2020.07.24.11.25', 
-  user: 'npm',                     
+  ...packageMessage,      
   /**
    * @param projectConfig 项目配置
    * projectConfig: {
