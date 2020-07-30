@@ -598,6 +598,12 @@
               treeTableListSelectId
             };
             this.directionalRouter(param);// 定向路由跳转方法
+            const data = {
+              type: 'standardTableurlCustomized',
+              value: row,
+              customizedModuleId: id
+            };
+            this.updateCustomizeMessage(data);
           } else if (this.ag.datas.objdistype === 'tabpanle') {
             // 单对象左右结构
             const type = 'tableDetailHorizontal';
