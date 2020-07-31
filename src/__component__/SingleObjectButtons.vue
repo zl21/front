@@ -97,7 +97,19 @@
   import WaterMark from './WaterMark.vue';
   import ImportDialog from './ImportDialog';
   import {
-    enableRestrictSave, isItemTableNewValidation, INSTANCE_ROUTE, KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, LINK_MODULE_COMPONENT_PREFIX, getCustomizeWaterMark
+    PLUGIN_MODULE_PREFIX,
+    CUSTOMIZED_MODULE_PREFIX,
+    VERTICAL_TABLE_DETAIL_PREFIX,
+    HORIZONTAL_TABLE_DETAIL_PREFIX, 
+    STANDARD_TABLE_LIST_PREFIX, 
+    enableRestrictSave, 
+    isItemTableNewValidation,
+    INSTANCE_ROUTE,
+    KEEP_SAVE_ITEM_TABLE_MANDATORY,
+    Version, MODULE_COMPONENT_NAME, 
+    INSTANCE_ROUTE_QUERY,
+    LINK_MODULE_COMPONENT_PREFIX,
+    getCustomizeWaterMark
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import { getUrl, getLabel } from '../__utils__/url';
@@ -938,6 +950,8 @@
                 itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
               });
             }).then(() => {
+              debugger;
+
               if (message) {
                 this.$Message.success(message);
               }
@@ -2020,7 +2034,6 @@
         const currentRoute = this.activeTab.routeFullPath;
         const keepAliveModuleName = getKeepAliveModuleName(this.$router.currentRoute);
         const tabUrl = keepAliveModuleName.substring(0, 1);
-     
 
         // 单对象界面配置动态路由
         const routeMapRecordForSingleObject = getSeesionObject('routeMapRecordForSingleObject');
@@ -2072,10 +2085,17 @@
           });
         }
         if (routeMapRecord[keepAliveModuleName]) {
+          const directionalRouterType = this.getDirectionalRouterType(routeMapRecord[keepAliveModuleName]);
           const param = {
-            type: tabUrl,
-            url: routeMapRecord[keepAliveModuleName]
+            // type: directionalRouterType,
+            // back: true,
+            url: routeMapRecord[keepAliveModuleName],
           };
+          if (directionalRouterType === 'S') {
+            param.back = true;
+          } else {
+            param.type = directionalRouterType;
+          }
           this.tabOpen(param);
           const deleteValue = {
             k: 'keepAliveModuleName',
@@ -2100,10 +2120,17 @@
           this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName });
           // this.clickButtonsRefresh();
         } else if (routeMapRecordForListNew.to) { // 动态路由（新增返回）
+          const directionalRouterType = this.getDirectionalRouterType(routeMapRecordForListNew.from);
           const param = {
-            type: tabUrl,
+            // type: directionalRouterType,
+            // back: true,
             url: routeMapRecordForListNew.from
           };
+          if (directionalRouterType === 'S') {
+            param.back = true;
+          } else {
+            param.type = directionalRouterType;
+          }
           this.tabOpen(param);
           if (routeMapRecordForListNew.from.indexOf('SYSTEM') > -1) { // 返回列表界面
             const deleteValue = {
@@ -2122,8 +2149,9 @@
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName });
         } else if (routeMapRecordForListModify.to) { // 列表动态路由（新增/复制保存成功后跳转到单对象界面执行返回操作）
+          const directionalRouterType = this.getDirectionalRouterType(routeMapRecordForListNew.from);
           const param = {
-            type: tabUrl,
+            type: directionalRouterType,
             url: routeMapRecord[routeMapRecordForListModify.to]
           };
           this.tabOpen(param);
@@ -2143,6 +2171,20 @@
           };
           this.tabOpen(param);
         }
+      },
+      getDirectionalRouterType(url) { // 根据路由获取对应的页面类型
+        // url：
+        let directionalRouterType = '';
+        if (url.indexOf(STANDARD_TABLE_LIST_PREFIX) > -1) {
+          directionalRouterType = 'S';
+        } else if (url.indexOf(HORIZONTAL_TABLE_DETAIL_PREFIX || VERTICAL_TABLE_DETAIL_PREFIX) > -1) {
+          directionalRouterType = 'V';
+        } else if (url.indexOf(CUSTOMIZED_MODULE_PREFIX) > -1) {
+          directionalRouterType = 'C';
+        } else if (url.indexOf(PLUGIN_MODULE_PREFIX) > -1) {
+          directionalRouterType = 'L';
+        }
+        return directionalRouterType;
       },
       getbuttonGroupData(tabcmd) { // 按钮渲染逻辑
         const tabcmdData = tabcmd;
@@ -2728,6 +2770,19 @@
         }
       },
       objectAdd() { // 新增
+        this.testUpdata();
+        if (this.isValue) {
+          this.Warning('修改的数据未保存,确定新增？', () => {
+            this.clickAdd();
+          });
+        } else {
+          this.clickAdd();
+        }
+      
+        // this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
+        // 如果不清空，跳转到新增界面时会出现子表无请求的状况
+      },
+      clickAdd() {
         const id = 'New';
         if (this.objectType === 'horizontal') {
           const type = 'tableDetailHorizontal';
@@ -2746,8 +2801,6 @@
             id
           });
         }
-        // this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
-        // 如果不清空，跳转到新增界面时会出现子表无请求的状况
       },
       noClickSave() { // 校验是否是保存按钮调用的保存方法
         const saveEventAfter = getSeesionObject('saveEventAfter');

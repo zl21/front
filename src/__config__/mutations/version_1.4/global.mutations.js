@@ -715,7 +715,11 @@ export default {
         //   }
         // });
       } else {
-        path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
+        if (url) {
+          path = `${url.toUpperCase()}`;
+        } else {
+          path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
+        }
         const query = {
           isBack: true
         };

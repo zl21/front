@@ -30,7 +30,9 @@ export default {
           }
         }
         commit('updateWebConf', resData.webconf);
-        resolve(resData);
+        if (resolve) {
+          resolve(resData);
+        }
         if (this._actions[`${moduleName || getComponentName()}/getObjectForMainTableForm`] && this._actions[`${moduleName || getComponentName()}/getObjectForMainTableForm`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getObjectForMainTableForm`][0] === 'function') {
           const param = {
             table,

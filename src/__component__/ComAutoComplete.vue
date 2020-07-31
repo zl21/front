@@ -31,6 +31,7 @@
       @click="searchBtn = false"
     >
       <i
+        title="查询功能名"
         class="iconfont iconmd-search"
       />
     </span>
