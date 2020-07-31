@@ -33,7 +33,7 @@ import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
 //   gateway: 'asynctask'
 // });
 
-Vue.use(VueDND);
+// Vue.use(VueDND);
 
 
 // 注册自定义模态框组件

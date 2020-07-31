@@ -966,7 +966,7 @@
       }
 
       // 
-      if (global.notGroupDeliver) {
+      if (!global.notGroupDeliver) {
         await this.getRoleConfig();
       }
       

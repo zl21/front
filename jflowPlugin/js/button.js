@@ -62,7 +62,6 @@ async function buttonsResponse(e) {
     case '-1': // 撤销
     case '7': // 作废
     case '2': // 结束流程
-      await getJflowInfo();
       mutipleOperate(item.url); 
       break;  
     case '1': // 驳回
@@ -70,13 +69,11 @@ async function buttonsResponse(e) {
     case '8': // 确认
     case '3': // 转派
     case '9': // 人工干预
-      await getJflowInfo();
       window.jflowPlugin.open({// 同意和转派
         control: true, type: item.button, url: item.url, instanceId: global.jflowInfo.instanceId, returnOption: global.jflowInfo.backNodeIds, item, nodeId: global.jflowInfo.nodeId
       });
       break;
     case '5': // 流程进度
-      await getJflowInfo();
       if (global.components && global.components.Process) {
         window.jflowPlugin.open({// 同意和转派
           control: true, type: item.button, url: item.url, instanceId: global.jflowInfo.instanceId, returnOption: global.jflowInfo.backNodeIds, item 
@@ -88,7 +85,6 @@ async function buttonsResponse(e) {
       break;
     case '6': // 重启流程
     case 'submit': // 提交
-      await getJflowInfo();
       restartProcess();
       break;
     case '4': // 保存
@@ -104,26 +100,29 @@ async function buttonsResponse(e) {
 
 
 // 按钮点击逻辑处理
-function clickFunction(e) {
+async function clickFunction(e) {
   globalChange({ routeInfo: e.detail.currentItemInfo });
   if (e.detail.obj.isSave) { // 按钮存在保存前置事件时
     window.vm.$Spin.show();
     window.ProjectConfig.enableRestrictSave = false;
-    setTimeout(() => {
+    setTimeout(async () => {
       window.vm.$Spin.hide();
       if (window.updatavVerifyRequiredInformation()) {
         if (window.testUpdataValue()) {
           window.updataClickSave(async () => {
             window.ProjectConfig.enableRestrictSave = true;
+            await getJflowInfo();
             await global.jflowInfo ? businessChange() : null;
             buttonsResponse(e);
           });
         } else {
+          await getJflowInfo();
           buttonsResponse(e);
         }
       }
     }, 1000);
   } else {
+    await getJflowInfo();
     buttonsResponse(e);
   }
 }
@@ -141,7 +140,6 @@ async function getTemplate() { // 获取模版信息
 
 // 触发事件
 async function initiateLaunch(event) {
-  await getJflowInfo();
   window.updataClickSave(async () => {
     if (global.jflowInfo.instanceId) {
       mutipleOperate(global.jflowInfo.affirmUrl);
