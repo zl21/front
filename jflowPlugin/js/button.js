@@ -100,12 +100,12 @@ async function buttonsResponse(e) {
 
 
 // 按钮点击逻辑处理
-function clickFunction(e) {
+async function clickFunction(e) {
   globalChange({ routeInfo: e.detail.currentItemInfo });
   if (e.detail.obj.isSave) { // 按钮存在保存前置事件时
     window.vm.$Spin.show();
     window.ProjectConfig.enableRestrictSave = false;
-    setTimeout(() => {
+    setTimeout(async () => {
       window.vm.$Spin.hide();
       if (window.updatavVerifyRequiredInformation()) {
         if (window.testUpdataValue()) {
