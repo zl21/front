@@ -358,8 +358,8 @@
               if (response.data.path === 'undefined ===') {
                 this.errorMsg.errorUrl = '';
               } else {
-                const gatewayth = getGateway('/p/cs/downloadImportTemplate');
-                this.errorMsg.errorUrl = this.urlChange(`${gatewayth}/p/cs/download?filename=${
+                const gatewayth = getGateway('/p/cs/download?filename');
+                this.errorMsg.errorUrl = this.urlChange(`${gatewayth}=${
                   response.data.path
                 }`);
               }
