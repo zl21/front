@@ -19,13 +19,13 @@
    
     <div>
       <div
+        v-for="(item,index) in navigatorSetting"
         v-if="navigatorSetting.length > 0"
-        class="tag right"
-        style="width:auto;display:flex"
+        :key="index"
+        class="tag right" 
       >
         <Badge 
-          v-for="(item,index) in navigatorSetting" 
-          :key="index"
+          
           style="width:40px;height:40px"
           :offset="['6px','-8px']"
           :count="item.count"

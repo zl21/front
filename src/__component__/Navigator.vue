@@ -56,13 +56,13 @@
       />
     </transition>
     <div
+      v-for="(item,index) in navigatorSetting"
       v-if="navigatorSetting.length > 0"
-      class="tag right"
+      :key="index"
+      class="tag right" 
       style="width:auto;display:flex"
     >
       <Badge 
-        v-for="(item,index) in navigatorSetting" 
-        :key="index"
         style="width:50px;height:50px"
         :offset="['6px','-8px']"
         :count="item.count"
