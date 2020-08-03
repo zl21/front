@@ -21,6 +21,7 @@
       <div
         v-if="navigatorSetting.length > 0"
         class="tag right"
+        style="width:auto;display:flex"
       >
         <Badge 
           v-for="(item,index) in navigatorSetting" 
