@@ -527,7 +527,7 @@
         type: Array,
         default: () => ([])
       },
-      itemInfo: {// 当前子表信息
+      itemInfo: {// 当前表信息
         type: Object,
         default: () => ({})
       },
@@ -721,16 +721,31 @@
       },
       clickExtraposition(obj) { // jflow方法
         let currentItemInfo = {};
-        if (this.itemInfo) {
-          currentItemInfo = {
-            tableId: this.tableId, // 主表ID
-            tableName: this.tableName, // 主表表名
-            itemId: this.itemId, // 主表明细ID
-            currentTableId: this.itemInfo.id ? this.itemInfo.id : this.itemInfo.tableid, // 当前表表ID
-            currentTableName: this.itemInfo.id ? this.tableName : this.itemInfo.tablename,
-            currentItemId: this.itemInfo.id ? this.itemId : this.itemObjId// 当前表明细ID
-          };
+        if (this.objectType === 'horizontal') {
+          if (this.itemInfo) {
+            currentItemInfo = {
+              tableId: this.tableId, // 主表ID
+              tableName: this.tableName, // 主表表名
+              itemId: this.itemId, // 主表明细ID
+              currentTableId: this.itemInfo.id ? this.itemInfo.id : this.itemInfo.tableid, // 当前表表ID
+              currentTableName: this.itemInfo.id ? this.tableName : this.itemInfo.tablename,
+              currentItemId: this.itemInfo.id ? this.itemId : this.itemObjId// 当前表明细ID
+            };
+          }
+        } else if (this.dataArray && this.dataArray.jflowButton && this.dataArray.jflowButton.length > 0) {
+          // 有jflowButton则认为编辑的表
+          if (this.itemInfo) {
+            currentItemInfo = {
+              tableId: this.tableId, // 主表ID
+              tableName: this.tableName, // 主表表名
+              itemId: this.itemId, // 主表明细ID
+              currentTableId: this.getCurrentItemInfo().tableid, // 当前表表ID
+              currentTableName: this.getCurrentItemInfo().tablename,
+              currentItemId: this.itemObjId// 当前表明细ID
+            };
+          }
         }
+       
         // if (this.objectType === 'horizontal') {
         //   currentItemInfo = this.itemInfo;
         // } else if (this.isItemTable) {
@@ -891,7 +906,8 @@
       refresh(type) {
         if (this.itemInfo.vuedisplay === 'TabItem') { // 兼容半定制界面
           // const webactType = this.itemInfo.webact.substring(0, this.itemInfo.webact.lastIndexOf('/'));
-          if (this.objectType === 'vertical') {
+          const webact = this.getCurrentItemInfo().webact;
+          if (this.objectType === 'vertical' && webact) {
             DispatchEvent('customizeClick', {
               detail: {
                 type: 'refresh'
@@ -914,7 +930,10 @@
       },
       upData(message) { // 页面刷新判断逻辑
         // this.emptyTestData();
-        DispatchEvent('tabRefreshClick');
+        const webact = this.getCurrentItemInfo().webact;
+        if (this.objectType === 'vertical' && webact) { // 兼容半定制界面，保存成功时通知外部
+          DispatchEvent('tabRefreshClick');
+        }
         // DispatchEvent('jflowPlugin', {
         //   detail: {
         //     type: 'fresh'
@@ -950,8 +969,6 @@
                 itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
               });
             }).then(() => {
-              debugger;
-
               if (message) {
                 this.$Message.success(message);
               }
@@ -1343,11 +1360,15 @@
         this.buttonEvent(obj);
       },
       buttonEvent(obj) {
-        DispatchEvent('objTabAction', {
-          detail: {
-            data: obj
-          }
-        });
+        const webact = this.getCurrentItemInfo().webact;
+        if (this.objectType === 'vertical' && webact) { // 兼容半定制界面，保存成功时通知外部
+          DispatchEvent('objTabAction', {
+            detail: {
+              data: obj
+            }
+          });
+        }
+      
         this.activeTabAction = obj;
         switch (obj.vuedisplay) {
         case 'slient':
@@ -2749,7 +2770,8 @@
           };
           this.$Modal.fcWarning(data);
         }
-        if (this.itemInfo.webact) { // 兼容半定制界面
+        const webact = this.getCurrentItemInfo().webact;
+        if (this.objectType === 'vertical' && webact) { // 兼容半定制界面
           DispatchEvent('customizeClick', {
             detail: {
               type: 'delete'
@@ -2812,16 +2834,23 @@
         }
         return false;
       },
-      objectSave(obj) { // 保存按钮事件逻辑
-        if (!this.testUpdata() && this.itemInfo.webact) { // 兼容半定制界面，保存成功时通知外部
-          DispatchEvent('customizeClick', {
-            detail: {
-              type: 'save',
-              mainTableParame: this.currentParameter,
-              itemTableParame: this.itemCurrentParameter,
-            }
-          });
+      getCurrentItemInfo() { // 获取当前子表信息
+        if (this.objectType === 'vertical') { // 上下结构需要获取的是当前子表
+          return this.itemInfo.buttonsData.data.reftabs[this.tabCurrentIndex];
         }
+        return this.itemInfo;
+      },
+      objectSave(obj) { // 保存按钮事件逻辑
+        // const webact = this.getCurrentItemInfo().webact;
+        // if (this.objectType === 'vertical' && webact) { // 兼容半定制界面，保存成功时通知外部
+        //   DispatchEvent('customizeClick', {
+        //     detail: {
+        //       type: 'save',
+        //       mainTableParame: this.currentParameter,
+        //       itemTableParame: this.itemCurrentParameter,
+        //     }
+        //   });
+        // }
 
 
         if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
@@ -2996,8 +3025,6 @@
             const tag = 'jflow';
             itemModify.push(tag);
           }
-        
-          
           if (itemModify.length > 0 && itemAdd.length < 1) { // 子表表格编辑修改
             let check = null;
             if (this.itemInfo.tabrelation === '1:1') {
@@ -3045,6 +3072,7 @@
             }
           }
         }
+
         if (this.subtables()) { // 存在子表时
           let tabinlinemode = '';
           this.tabPanel.forEach((item) => {
@@ -3104,7 +3132,7 @@
                       }
                     }
                   }
-                } else if (this.itemInfo.tabrelation === '1:1') {
+                } else if (this.getCurrentItemInfo().tabrelation === '1:1') {
                   const itemMessageTip = itemCheckedInfo.messageTip;
                   if (itemMessageTip) {
                     if (itemMessageTip.length > 0) {
@@ -3195,7 +3223,9 @@
           removeMessage = false;
 
           this.saveAfter(type, tableName, stop, removeMessage);
-          if (this.itemInfo.webact) { // 兼容半定制界面，保存成功时通知外部
+
+          const webact = this.getCurrentItemInfo().webact;
+          if (this.objectType === 'vertical' && webact) { // 兼容半定制界面，保存成功时通知外部
             DispatchEvent('customizeClick', {
               detail: {
                 type: 'save', // 类型为保存成功
@@ -3204,13 +3234,13 @@
                 res, // 接口返回res
               }
             });
+
+            DispatchEvent('objTabActionSlientForItemTable', {// 用于子表监听保存成功后执行相对应逻辑
+              detail: {
+                type: 'resolve',
+              }
+            });
           }
-         
-          DispatchEvent('objTabActionSlientForItemTable', {// 用于子表监听保存成功后执行相对应逻辑
-            detail: {
-              type: 'resolve',
-            }
-          });
         }, () => {
           this.closeCurrentLoading();
           stop = true;
