@@ -74,6 +74,7 @@
         :on-selection-changed="onSelectionChanged"
         :on-row-double-click="onRowDoubleClick"
         :on-sort-changed="onSortChange"
+        :is-big="buttons.isBig"
         :on-column-moved="onColumnMoved"
         :on-column-pinned="onColumnPinned"
         :on-column-visible-changed="onColumnVisibleChanged"
@@ -1200,6 +1201,9 @@
           if (this.isTreeList && this.treeShow) {
             this.$refs.tree.callMethod();
           }
+          if (this.buttons.isBig) {
+            searchData.closeIsBig = true;
+          }
           this.getTableQueryForForm({ searchData, resolve, reject });
         });
       },
@@ -1781,6 +1785,9 @@
         }
         this.searchData.fixedcolumns = this.dataProcessing();
         // this.getQueryListForAg(this.searchData);
+        if (this.buttons.isBig) {
+          this.updataIsBig(false);
+        }
         this.getQueryListPromise(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
@@ -2512,7 +2519,6 @@
       }
     },
     mounted() {
-      // console.log(444, this.buttons.isBig);
       this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
       if (!this._inactive) {
         window.addEventListener('network', this.networkEventListener);
