@@ -14,6 +14,7 @@ import ContentDisplayArea from './src/__component__/ContentDisplayArea';
 import ComAttachFilter from './src/__component__/ComAttachFilter';
 import DownComponent from './src/__component__/DownComponent';
 import WaterMark from './src/__component__/WaterMark';
+import ImportDialog from './src/__component__/ImportDialog';
 import SearchForm from './src/__component__/form/SearchForm';//
 import FilterTree from './src/__component__/Tree/FilterTree';
 import SelectTree from './src/__component__/Tree/SelectTree';
@@ -130,6 +131,7 @@ export default {
     SearchForm,
     FilterTree,
     SelectTree,
-    DocFile
+    DocFile,
+    ImportDialog
   }
 };
