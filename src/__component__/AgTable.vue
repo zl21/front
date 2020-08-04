@@ -17,9 +17,7 @@
       v-if="!isCommonTable&&!isBig"
       ref="agGridTableContainer"
       class="detailTable"
-    >
-      777
-    </div>
+    />
 
     <div
       v-if="isCommonTable&&!isBig"
