@@ -1532,6 +1532,7 @@
           item.display === 'text'
           || item.display === 'xml'
           || item.display === 'OBJ_FK'
+          || item.display === undefined
         ) {
           const casefkdisplay = item.fkdisplay || (item.fkobj && item.fkobj.fkdisplay);
           switch (casefkdisplay) {
