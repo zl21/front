@@ -26,7 +26,8 @@ module.exports = {
   // target: 'http://172.18.34.122:8001/', // ishop环境
   // target: 'http://10.14.6.84/', // 卡宾环境
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop环境
-
+  // target: 'http://47.103.175.111:26666/', // 千百度环境
+  
   
   Version: '1.3', // 版本号
   interlocks: true, // 是否打开三级联动装置
