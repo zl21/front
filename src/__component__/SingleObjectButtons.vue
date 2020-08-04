@@ -2845,7 +2845,7 @@
         return false;
       },
       getCurrentItemInfo() { // 获取当前子表信息
-        if (this.objectType === 'vertical') { // 上下结构需要获取的是当前子表
+        if (this.objectType === 'vertical' && this.itemInfo.buttonsData.data.reftabs.length > 0) { // 上下结构需要获取的是当前子表
           return this.itemInfo.buttonsData.data.reftabs[this.tabCurrentIndex];
         }
         return this.itemInfo;
