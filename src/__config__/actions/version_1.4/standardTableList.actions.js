@@ -44,6 +44,9 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const queryData = res.data.data;
+        if (searchData.closeIsBig) {
+          queryData.datas.isbig = false;
+        }
         commit('updateButtonsTabcmd', queryData.tabcmd);
         commit('updateButtonWaListButtons', queryData.waListButtons);
         commit('updateTableStatus4css', queryData.datas);

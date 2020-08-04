@@ -47,12 +47,11 @@
             >
               选择文件
             </Button>
-
+            <!-- name -->
             <input
               id="file"
               class="fileInput"
               type="file"
-              name
               accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
               @change="fileChange($event)"
               @click="clearFile"
@@ -136,36 +135,36 @@
   export default {
     name: 'ImportDialog',
     props: {
-      name: {
-        type: Boolean,
-        default: false
-      },
-      visible: {
+      // name: {
+      //   type: Boolean,
+      //   default: false
+      // },
+      visible: {// 是否打开弹框
         // 显示
         type: Boolean,
         default: false
       },
-      title: {
+      title: {// 弹框title
         // 标题
         type: String,
         default: ''
       },
-      tablename: {
+      tablename: {// /p/cs/downloadImportTemplate 用于下载模版,上传文件参数
         // 子表名
         type: String,
         default: ''
       },
-      mainTable: {
+      mainTable: {// 用于/p/cs/import参数上传文件
         // 主表名
         type: String,
         default: ''
       },
-      mainId: {
+      mainId: {// 用于/p/cs/import参数上传文件
         // 主表id
         type: [Number, String],
         default: -1
       },
-      width: {
+      width: {// 当前弹框参数
         // 宽度
         type: String,
         default: '630'

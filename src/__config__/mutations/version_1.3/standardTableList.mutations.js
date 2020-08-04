@@ -60,6 +60,9 @@ export default {
  
 
   // 按钮组
+  updataIsBig({ buttons }, value) {
+    buttons.isBig = value; // 更新是否为海量表
+  },
   updatestopOnRowDoubleClickData({
     buttons
   }, data) {

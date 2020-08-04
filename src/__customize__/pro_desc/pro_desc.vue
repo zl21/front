@@ -697,7 +697,7 @@
      
     },
     beforeDestroy() {
-      window.removeEventListener('customizeClick', this.tabClick);
+      window.removeEventListener('tabClick', this.tabClick);
     },
   };
 </script>

@@ -3,7 +3,7 @@ import { getSeesionObject } from '../../../__utils__/sessionStorage';
 import router from '../../router.config';
 
 export default {
-  
+
   updateFailInfo({ ag }, failInfo) {
     ag.datas.deleteFailInfo = failInfo;
     ag.datas = Object.assign({}, ag.datas);
@@ -69,6 +69,10 @@ export default {
     buttons
   }, data) {
     buttons.tabcmd = data;
+  },
+
+  updataIsBig({ buttons }, value) {
+    buttons.isBig = value; // 更新是否为海量表
   },
   updateButtonWaListButtons({ buttons }, data) { // 获取静默类型的按钮数据
     if (data) {

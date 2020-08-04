@@ -24,8 +24,7 @@ import './src/assets/css/loading.css';
 import './src/assets/css/custom-ext.less';
 import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
 
-
-Vue.use(VueDND);
+// Vue.use(VueDND);
 
 
 // 注册自定义模态框组件

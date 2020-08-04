@@ -9,19 +9,25 @@
       @on-page-size-change="pageSizeChange"
     />
     <div
-      v-if="!isCommonTable"
+      v-if="isBig"
+      class="isBig"
+    />
+   
+    <div
+      v-if="!isCommonTable&&!isBig"
       ref="agGridTableContainer"
       class="detailTable"
     />
 
     <div
-      v-if="isCommonTable"
+      v-if="isCommonTable&&!isBig"
       class="common-table"
     >
       <CommonTable
         ref="commonTable"
         :datas="datas"
         :buttons-data="buttonsData"
+        :is-big="isBig"
         :css-status="cssStatus"
         :error-arr="errorArr"
         :on-row-double-click="onRowDoubleClick"
@@ -203,11 +209,16 @@
       isCommonTable: {
         type: Boolean,
         default: false
-      } // 是否显示普通表格
+      }, // 是否显示普通表格
+      isBig: {// 是否海量
+        type: Boolean,
+        // default: false
+      }  
+
     },
     watch: {
       userConfigForAgTable(val) {
-        if (!this.isCommonTable) {
+        if (!this.isCommonTable && !this.isBig) {
           const { agGridTableContainer } = this.$refs;
           if (agGridTableContainer.agTable) {
             agGridTableContainer.agTable.dealWithPinnedColumns(true, val.fixedColumn || '');
@@ -215,7 +226,7 @@
         }
       },
       datas(val) {
-        if (!this.isCommonTable) {
+        if (!this.isCommonTable && !this.isBig) {
           this.agGridTable(val.tabth, val.row, val);
           setTimeout(() => {
             const { agGridTableContainer } = this.$refs;
@@ -324,7 +335,7 @@
         }
       }, // 每页条数改变
       showAgLoading() {
-        if (!this.isCommonTable) {
+        if (!this.isCommonTable && !this.isBig) {
           const { agGridTableContainer } = this.$refs;
           if (agGridTableContainer.agTable) {
             agGridTableContainer.agTable.showLoading();
@@ -338,7 +349,7 @@
       }
     },
     activated() {
-      if (!this.isCommonTable) {
+      if (!this.isCommonTable && !this.isBig) {
         const { agGridTableContainer } = this.$refs;
         if (agGridTableContainer.agTable) {
           agGridTableContainer.agTable.fixAgRenderChoke();
@@ -363,10 +374,16 @@
      flex: 1;
    }
  }
-  .detailTable {
+  .detailTable ,.isBig{
     border: 1px solid #d8d8d8;
     margin-top: 10px;
     height: 100%;
+    width: 100%;
+  }
+  .isBig{
+     background: url('../assets/image/isBig.png') no-repeat;
+     background-position: center 0;
+     background-size: auto 100%;
   }
 
  .queryDesc {
