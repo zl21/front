@@ -489,7 +489,6 @@
                       show = showHide;
                     }
                   }
-
                   // option.show = Object.hasOwnProperty.call(option.item.validate, 'hidecolumn') ? this.hidecolumn(option, i, j) : true;
                   if (option.item.props.display === 'none') {
                     show = false;
@@ -502,6 +501,8 @@
                   const showHide = this.hidecolumn(item, i);
                   if (item.item.validate.hidecolumn.ishide) {
                     show = !showHide;
+                  } else {
+                    show = showHide;
                   }
                 }
                 item.show = show;
@@ -1382,18 +1383,19 @@
       },
       hidecolumn(current) {
         //  隐藏判断
-
         if (Object.hasOwnProperty.call(current.item.validate, 'hidecolumn')) {
           const refcolumn = current.item.validate.hidecolumn.refcolumn;
           const refval = current.item.validate.hidecolumn.refval;
           const data = this.getValue(this.defaultDataInt);
           // 添加查询条件
-         
+          
           const refvalArr = refval.split(',');
+
           if (data[refcolumn]) {
             data[refcolumn] = data[refcolumn].toString();
           }
           let val = data[refcolumn];
+          console.log(current.item.title, data, refvalArr, val);
 
           if (current.item.validate.hidecolumn.match && current.item.validate.hidecolumn.match === 'label') {
             val = this.formItem[refcolumn];
