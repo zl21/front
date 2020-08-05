@@ -14,6 +14,8 @@ import CompositeForm from './src/__component__/CompositeForm';
 import customizedModalConfig from './src/__config__/customizeDialog.config';
 import Loading from './src/__utils__/loading';
 import getObjdisType from './src/__utils__/getObjdisType';
+import projectConfig from './project.config';
+
 
 // css import
 import './node_modules/ag-grid/dist/styles/ag-grid.css';
@@ -224,3 +226,4 @@ if (enableGateWay()) {
   getSubSystems();
   init();
 }
+window.ProjectConfig = projectConfig;

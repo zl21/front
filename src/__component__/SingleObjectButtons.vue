@@ -1068,6 +1068,16 @@
           this.objectAdd(obj);
           break;
         case 'actionMODIFY': // 保存
+          if (!this.testUpdata() && this.objectType === 'vertical') { // 主表无改动，通知自定义tab
+            const webact = this.getCurrentItemInfo().webact;
+            if (webact) { // 兼容半定制界面，保存成功时通知外部
+              DispatchEvent('customizeClick', {
+                detail: {
+                  type: 'save', // 类型为保存成功
+                }
+              });
+            }
+          }
           this.objectSave(obj);
           break;
 
@@ -2835,7 +2845,7 @@
         return false;
       },
       getCurrentItemInfo() { // 获取当前子表信息
-        if (this.objectType === 'vertical') { // 上下结构需要获取的是当前子表
+        if (this.objectType === 'vertical' && this.itemInfo.buttonsData.data.reftabs.length > 0) { // 上下结构需要获取的是当前子表
           return this.itemInfo.buttonsData.data.reftabs[this.tabCurrentIndex];
         }
         return this.itemInfo;
