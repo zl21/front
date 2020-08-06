@@ -170,10 +170,6 @@
   import messagePanel from './messagePanel';
   import ComAutoComplete from './ComAutoComplete';
   import Dialog from './Dialog.vue';
-  import closedImg from '../assets/image/closed@2x.png';
-  import openedImg from '../assets/image/open@2x.png';
-  import logoImg from '../assets/image/logo.png';
-  import bannerImg from '../assets/image/banner.png';
   import { routeTo } from '../__config__/event.config';
   import network, { urlSearchParams } from '../__utils__/network';
   import NavigatorSubMenu from './NavigatorSubMenu';
