@@ -382,8 +382,8 @@
   }
   .isBig{
      background: url('../assets/image/isBig.png') no-repeat;
-     background-position: center 0;
-     background-size: auto 100%;
+     background-position: center center;
+     background-size: 24%;
   }
 
  .queryDesc {
