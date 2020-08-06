@@ -65,7 +65,7 @@
 
   export default {
     name: 'Docfile',
-    inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, INSTANCE_ROUTE],
+    // inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, INSTANCE_ROUTE],
     
     props: {
       dataitem: {
