@@ -555,7 +555,7 @@ export default {
       DispatchEvent('batchSubmitForR3', {
         detail: {
           name: 'exeAction',
-          type: 'verticalTable',
+          type: 'horizontalTable',
           url: path || '/p/cs/objectSubmit',
           res,
           moduleName,
