@@ -45,11 +45,6 @@ export default {
     label: 'taskList'
 
   },
-  PERMISSIONS: {
-    component: taskList,
-    labelName: '任务记录',
-    label: 'taskList'
-  },
   customizeReport: {
     component: customizeReport,
     label: 'customizeReport'
