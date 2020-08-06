@@ -1001,6 +1001,7 @@
           // eslint-disable-next-line no-const-assign
           return JSON.parse(JSON.stringify(this.formDataObject));
         } 
+        // 获取当前表单数据及主表字段
         // eslint-disable-next-line no-const-assign
         return Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.getStateData('item'))));
       },
