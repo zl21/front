@@ -554,6 +554,7 @@
         return true;
       },
       setDynamicForcompute(data, current) {
+        // 判断是否通知联动计算
         if (current.item && Object.hasOwnProperty.call(current.item.validate, 'dynamicforcompute')) {
           window.eventType(`${this[MODULE_COMPONENT_NAME]}Dynam`, window, {
             ...current.item.validate,
@@ -689,6 +690,7 @@
               key: current.item.field,
               itemName: this.tableGetName
             };
+            // 清空值，
             this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/seleteAddData`, data);
           }
         } 
@@ -737,6 +739,7 @@
         });
       },
       getValue(defaultSetValue) {
+        // id 匹配
         const defaultSetValueData = Object.keys(JSON.parse(JSON.stringify(defaultSetValue))).reduce((arr, option) => {
           if (defaultSetValue[option]) {
             if (Array.isArray(defaultSetValue[option])) {
@@ -869,6 +872,7 @@
         // 注释
       },
       getObjId(current) {
+        // 获取当前id
         if (current.refcolval && current.refcolval.srccol === '$OBJID$') {
           if (this.$route.params.itemId.toLocaleUpperCase() === 'NEW') {
             return false;
@@ -1395,7 +1399,6 @@
             data[refcolumn] = data[refcolumn].toString();
           }
           let val = data[refcolumn];
-          console.log(current.item.title, data, refvalArr, val);
 
           if (current.item.validate.hidecolumn.match && current.item.validate.hidecolumn.match === 'label') {
             val = this.formItem[refcolumn];
@@ -1470,7 +1473,7 @@
         return true;
       },
       validateList(current) {
-        // 联动校验
+        // 联动判断
         if (Object.hasOwnProperty.call(current, 'dynamicforcompute')) {
           return {
             dynamicforcompute: current.dynamicforcompute
@@ -2435,6 +2438,7 @@
         return this.refcolvalAll;
       },
       setResize() {
+        // 页面布局重绘
         if (this.$el) {
           this.setdefaultColumnCol();
         }
@@ -2457,6 +2461,7 @@
       this.openLoading();
       setTimeout(() => {
         if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {
+          // 父子查询关系映射
           if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
             const data = {
               formList: this.LinkageForm,
