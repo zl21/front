@@ -1073,7 +1073,7 @@
             if (webact) { // 兼容半定制界面，保存成功时通知外部
               DispatchEvent('customizeClick', {
                 detail: {
-                  type: 'save', // 类型为保存成功
+                  type: 'save',
                 }
               });
             }
