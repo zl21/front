@@ -265,6 +265,11 @@ export default (router) => {
         }
         if (ready) {
           clearInterval(tempInterval);
+          if (routePrefix === PLUGIN_MODULE_PREFIX) {
+            if (window.ProjectConfig && window.ProjectConfig.externalPluginModules) { // 整合外部插件配置与框架插件配置
+              pluginModules = Object.assign({}, pluginModules, window.ProjectConfig.externalPluginModules);
+            }
+          }
           commit('global/increaseOpenedMenuLists', {
             label: routePrefix === PLUGIN_MODULE_PREFIX ? pluginModules[pluginModuleName].name : `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
             keepAliveModuleName,
