@@ -335,7 +335,7 @@
       // a() {
       //   // 插入列表界面默认值
       //   const data = {
-      //     tableId: '992',
+      //     // tableId: '992',
       //     values: [
       //       {
       //         display: 'OBJ_FK',
