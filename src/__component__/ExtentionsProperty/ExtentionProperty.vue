@@ -7,7 +7,7 @@
           :key="index"
           :class="{ active: index === currentIndex }"
           @click="scrollIntoView
-          (item, index)"
+            (item, index)"
         >
           {{ item.name }}
           <br>
@@ -57,6 +57,14 @@
             @dataChange="rootDataChange"
             @removeOption="removeOption"
           />
+          <ExtentionOptions
+            v-if="item.type === 'options-group'"
+            :id="`${item.key}-${index}-${guid}`"
+            :default-data="JSON.parse(JSON.stringify(rootData))[item.key]"
+            :option="item"
+            @dataChange="rootDataChange"
+            @removeOption="removeOption"
+          />
         </div>
       </template>
     </div>
@@ -74,6 +82,7 @@
   import ExtentionRadio from './ExtentionRadio';
   import ExtentionObjectGroup from './ExtentionObjectGroup';
   import ExtentionInputGroup from './ExtentionInputGroup';
+  import ExtentionOptions from './ExtentionOptions';
 
   const getGuid = () => Math.round(Math.random() * 10000000000);
   
@@ -90,7 +99,8 @@
       ExtentionInput,
       ExtentionRadio,
       ExtentionObjectGroup,
-      ExtentionInputGroup
+      ExtentionInputGroup,
+      ExtentionOptions
     },
     props: {
       options: {
