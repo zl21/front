@@ -588,7 +588,7 @@ export default {
         if (!flag) {
           return;
         }
-        window.sessionStorage.setItem(queryData.tableId, JSON.stringify(queryData.values));// 将设置的默认参数存入sessionStorage
+        window.sessionStorage.setItem(tableId, JSON.stringify(queryData.values));// 将设置的默认参数存入sessionStorage
       }
     }
     const keepAliveModuleName = `S.${tableName}.${tableId}`;
@@ -828,12 +828,14 @@ export default {
     updateSessionObject('customizeMessage', obj);
   },
   updateImage(state, data) { // 修改框架的配置图片
-    const images = {
-      logoImg: data.enterpriseLogo ? data.enterpriseLogo : state.imgSrc.logoImg,
-      bannerImg: data.enterpriseBanner ? data.enterpriseBanner : state.imgSrc.bannerImg,
-      closedImg: data.collapseImg ? data.collapseImg : state.imgSrc.closedImg,
-      openedImg: data.expandImg ? data.expandImg : state.imgSrc.openedImg
-    };
-    state.imgSrc = Object.assign(state.imgSrc, images);
+    if (data) {
+      const images = {
+        logoImg: data.enterpriseLogo ? data.enterpriseLogo : state.imgSrc.logoImg,
+        bannerImg: data.enterpriseBanner ? data.enterpriseBanner : state.imgSrc.bannerImg,
+        closedImg: data.collapseImg ? data.collapseImg : state.imgSrc.closedImg,
+        openedImg: data.expandImg ? data.expandImg : state.imgSrc.openedImg
+      };
+      state.imgSrc = Object.assign(state.imgSrc, images);
+    }
   }
 };
