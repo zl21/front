@@ -27,11 +27,15 @@ module.exports = {
   target: 'http://47.102.164.111:26666/', // 卡宾环境
   // target: 'http://172.18.34.122:8001/', // ishop环境
   // target: 'http://10.14.6.84/', // 卡宾环境
-  // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop环境
+  target: 'http://r3-ishop.dev.burgeononline.com/', // ishop环境
   // target: 'http://47.103.175.111:26666/', // 千百度环境
   
+<<<<<<< HEAD
   
   Version: '1.3', // 版本号
+=======
+  Version: '1.4', // 版本号
+>>>>>>> origin/theme_jflow_dev
   interlocks: true, // 是否打开三级联动装置
   enableGateWay: false, // 网关是否打开,
   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用接口请求
