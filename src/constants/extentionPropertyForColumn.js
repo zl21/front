@@ -312,10 +312,10 @@ export default [
     description: '控制单对象界面关联(店仓)外键字段下拉列表的数据权限',
     supportType: ['object']
   },
-  // {
-  //   name: '操作列按钮现实',
-  //   key: 'options',
-  //   type: 'options-group',
-  //   description: '控制列表操作列按钮根据字段过滤展示',
-  // },
+  {
+    name: '操作列按钮现实',
+    key: 'options',
+    type: 'options-group',
+    description: '控制列表操作列按钮根据字段过滤展示',
+  },
 ];
