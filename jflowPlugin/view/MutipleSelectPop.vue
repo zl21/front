@@ -96,7 +96,7 @@
             人员:
           </p>
           <Input
-            v-model="table.search"
+            v-model="obj.ENAME"
             search
             :placeholder="table.placeholder"
             @on-change="inputchange"
