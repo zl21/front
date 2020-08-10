@@ -25,16 +25,6 @@ import './src/assets/theme/custom.less';
 import './src/assets/css/loading.css';
 import './src/assets/css/custom-ext.less';
 import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
-<<<<<<< HEAD
-=======
-// import jflowPlugin from './jflowPlugin/js/index';s
-
-
-// Vue.use(jflowPlugin, {
-//   changePattern: true, // 控制待办列表转派的选择模式 true为单选,false为多选
-//   gateway: null
-// });
->>>>>>> origin/theme_jflow_dev
 
 // Vue.use(VueDND);
 
