@@ -8,9 +8,15 @@
         :placeholder="`请输入[${item.name}]${item.outputValueType === 'Array' ? '，以英文逗号(,)间隔' : ''}`"
         :type="item.inputType === 'Number' ? 'number' : 'text'"
         @input="inputChange"
+        @blur="inputBlur"
       >
     </div>
-    <div class="logInfo" v-if="logInfo !== ''">{{logInfo}}</div>
+    <div
+      v-if="logInfo !== ''"
+      class="logInfo"
+    >
+      {{ logInfo }}
+    </div>
   </div>
 </template>
 
@@ -23,6 +29,28 @@
       LabelForInput
     },
     methods: {
+      inputBlur(e) {
+        let value = '';
+        if (this.item.outputValueType === 'Array' && e.target.value !== '') {
+          value = e.target.value.split(',');
+        } else if (this.item.outputValueType === 'JSON' && e.target.value !== '') {
+          try {
+            value = JSON.parse(e.target.value);
+            this.logInfo = '';
+          } catch (exception) {
+            this.logInfo = `JSON格式错误：${exception}`;
+            return;
+          }
+        } else if (this.item.inputType === 'Number') {
+          value = parseInt(e.target.value, 10);
+        } else {
+          value = e.target.value;
+        }
+        this.$emit('inputBlur', {
+          key: this.item.key,
+          value
+        });
+      },
       inputChange(e) {
         let value = '';
         if (this.item.outputValueType === 'Array' && e.target.value !== '') {
