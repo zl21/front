@@ -132,6 +132,7 @@
                 <Table
                   ref="Table"
                   border
+                  width="360"
                   :columns="item.columns"
                   :highlight-row="true"
                   :click-timer-task="300"
