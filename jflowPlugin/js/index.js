@@ -138,6 +138,11 @@ function initiateLaunch(data) { // 业务系统流程发起
           content: res.data.data.records[0].notice,
           mask: true
         });
+        DispatchEvent('jflowClick', {
+          detail: {
+            type: 'refresh'
+          }
+        });
         resolve(res);
         return;
       }

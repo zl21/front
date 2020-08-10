@@ -361,14 +361,14 @@
             this.findUser(this.obj);
 
             // 加载角色树
-            if (this.roleSwitch) {
+            if (global.roleSwitch) {
               const tree = await this.getRoleData();
               const roleTree = $.fn.zTree.getZTreeObj('roleTree');
               roleTree.updateNode(tree);
             }
           },
           beforeExpand: async (treeId, treeNode) => {
-            if (this.asyncTree) {
+            if (global.asyncTree) {
               if (!(treeNode.children && treeNode.children.length > 0)) {
                 const tree = await this.getTreeData(treeNode);
                 const zTree = $.fn.zTree.getZTreeObj('organizationTree');
@@ -389,7 +389,7 @@
             this.findUser(this.obj);
           },
           beforeExpand: async (treeId, treeNode) => {
-            if (this.asyncTree) {
+            if (global.asyncTree) {
               if (!(treeNode.children && treeNode.children.length > 0)) {
                 const zTree = $.fn.zTree.getZTreeObj('roleTree');
                 const tree = await this.getRoleData(treeNode);
@@ -401,18 +401,6 @@
 
         roleConfig: null // 人员过滤条件
       };
-    },
-    computed: {
-      // ...mapState({
-      //   roleSwitch: state => state.roleSwitch,
-      //   asyncTree: state => state.asyncTree
-      // })
-      roleSwitch() {
-        return false;
-      },
-      asyncTree() {
-        return false;
-      }
     },
     methods: {
       deepCopy(obj) {
@@ -771,7 +759,7 @@
           });
         }
 
-        if (this.roleSwitch) {
+        if (global.roleSwitch) {
           const roleTree = $.fn.zTree.getZTreeObj('roleTree');
           const selectRoleNode = roleTree.getCheckedNodes(true);
           if (selectRoleNode && selectRoleNode.length > 0) {
@@ -804,7 +792,7 @@
           });
         }
 
-        if (this.roleSwitch) {
+        if (global.roleSwitch) {
           const roleTree = $.fn.zTree.getZTreeObj('roleTree');
           const selectRoleNode = roleTree.getCheckedNodes(true);
           if (selectRoleNode && selectRoleNode.length > 0) {
@@ -877,7 +865,7 @@
           this.treeLoading = false;
           if (res.data.resultCode === 0) {
             res.data.data.records.map((item) => {
-              if (this.asyncTree) {
+              if (global.asyncTree) {
                 item.children ? item.isParent = true : item.isParent = false;
                 item.children = [];
               }
@@ -910,7 +898,7 @@
           this.roleLoading = false;
           if (res.data.resultCode === 0) {
             res.data.data.records.map((item) => {
-              if (this.asyncTree) {
+              if (global.asyncTree) {
                 item.children ? item.isParent = true : item.isParent = false;
                 item.children = [];
               }
@@ -957,7 +945,7 @@
       this.getTreeData();
 
       // 获取角色数据
-      if (this.isUse && this.roleSwitch) {
+      if (this.isUse && global.roleSwitch) {
         this.getRoleData();
       }
     
