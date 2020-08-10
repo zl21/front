@@ -134,7 +134,11 @@
           // 初始化隐藏字段clearWhenHidden 清除功能 
           if (items.item.props.webconf && items.item.props.webconf.clearWhenHidden) {
             if (items.show === false) {
-              option[items.item.field] = '';
+              if (items.item.type === 'checkbox') {
+                option[items.item.field] = items.item.props.falseValue;
+              } else {
+                option[items.item.field] = '';
+              }
             }
           }
           return option;
@@ -1224,7 +1228,12 @@
         }
         if (!items.props.showCol && items.props.webconf && items.props.webconf.clearWhenHidden) {
           //   清除页面 联动的值
-          this.newFormItemLists[index].item.value = '';
+          if (items.type === 'checkbox') {
+            // 添加checkbox 的判断
+            this.newFormItemLists[index].item.value = items.props.falseValue;
+          } else {
+            this.newFormItemLists[index].item.value = '';
+          } 
           this.newFormItemLists[index].item.props.defaultSelected = [];
           this.dataProcessing(this.newFormItemLists[index], index);
         }

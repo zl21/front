@@ -254,10 +254,12 @@ export default {
         requestUrlPath = data.requestUrlPath;
       }
     }
-    network.post(jflowpath || requestUrlPath || url || '/p/cs/batchSubmit', {
-      table: tableName, 
-      objids: ids.join(',')
-    }).then((res) => {
+    network.post(jflowpath || requestUrlPath || url || '/p/cs/batchSubmit', urlSearchParams(
+      {
+        table: tableName, 
+        objids: ids.join(',')
+      }
+    )).then((res) => {
       if (res.data.code === 0) {
         resolve();
         commit('updateButtonbatchSubmitData', res.data);
