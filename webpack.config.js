@@ -105,7 +105,7 @@ module.exports = env => ({
         // target: 'http://106.15.24.156:32940', // 李宁环境
         // target: 'http://jflow-shangfei-yf.dev.burgeononline.com/', // 商飞环境
         // target: 'http://jflow-shangfei.dev.burgeononline.com/', // 新版jflow
-        target: 'http://r3.burgeon.cn:28888/', // 商飞环境
+        target: 'http://47.102.164.111:26661', // 商飞环境
         // target: ' http://jflow-syman-dev.dev.burgeononline.com/', // 商飞测试环境
         // target: ' http://47.102.164.111:26665/', // 卡宾环境
         // target: ' http://zhixiao-jflow.pro.burgeononline.com/', // 知晓环境
@@ -118,7 +118,7 @@ module.exports = env => ({
         // target: 'http://106.15.24.156:32940', // 李宁环境
         // target: 'http://jflow-shangfei-yf.dev.burgeononline.com/', // 商飞环境
         // target: 'http://jflow-shangfei.dev.burgeononline.com/', // 新版jflow
-        target: 'http://10.14.6.84', // 商飞环境
+        target: 'http://47.102.164.111:26661', // 商飞环境
         // target: ' http://jflow-syman-dev.dev.burgeononline.com/', // 商飞测试环境
         // target: ' http://47.102.164.111:26665/', // 卡宾环境
         // target: ' http://zhixiao-jflow.pro.burgeononline.com/', // 知晓环境
