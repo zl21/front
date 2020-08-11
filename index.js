@@ -30,7 +30,8 @@ import jflowPlugin from './jflowPlugin/js/index';
 
 Vue.use(jflowPlugin, {
   changePattern: true, // 控制待办列表转派的选择模式 true为单选,false为多选
-  gateway: null
+  gateway: null,
+  roleSwitch: false
 });
 
 // Vue.use(VueDND);
