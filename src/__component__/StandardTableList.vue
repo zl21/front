@@ -335,7 +335,7 @@
       // a() {
       //   // 插入列表界面默认值
       //   const data = {
-      //     tableId: '992',
+      //     // tableId: '992',
       //     values: [
       //       {
       //         display: 'OBJ_FK',
@@ -1847,7 +1847,7 @@
                 );
               }
             } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-              const customizedModuleName = tableurl.substring(tableurl.indexOf('/') + 1, tableurl.lastIndexOf('/'));
+              const customizedModuleName = tableurl.substring(tableurl.indexOf('/') + 1, tableurl.lastIndexOf('/')).toLocaleUpperCase();
               const path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/New`;
               router.push({
                 path
@@ -1859,7 +1859,6 @@
               window.sessionStorage.setItem('customizedMessage', JSON.stringify(obj));
               const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
               const customizeConfig = Object.keys(externalModules).length > 0 ? externalModules : customize;
-
               Object.keys(customizeConfig).forEach((customizeName) => {
                 const nameToUpperCase = customizeName.toUpperCase();
                 if (nameToUpperCase === customizedModuleName) {

@@ -229,4 +229,6 @@ if (enableGateWay()) {
 window.ProjectConfig = projectConfig;
 
 // 初始化配置的图片
-store.commit('global/updateImage', window.ProjectConfig.image);
+if (window.ProjectConfig && window.ProjectConfig.image) {
+  store.commit('global/updateImage', window.ProjectConfig.image);
+}

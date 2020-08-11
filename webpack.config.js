@@ -12,7 +12,7 @@ const projectConfig = require('./project.config');
 const target = projectConfig.target; // 框架研发网关开启环境
 const proxyLists = ['/p/c', '/frr-center', '/eplan-center'];
 const proxyListsForGateway = ['/ad-app/p/c', '/asynctask/p/cs'];
-const proxyListsForIShop = ['/ishopad-app', '/ishopplatform/p/c', '/ishopbill/p/c', '/ishopbase/p/c'];
+const proxyListsForIShop = ['/ishopad-app', '/ishopplatform/p/c', '/ishopbill/p/c', '/ishopbase/p/c', '/ishopcrm/p/cs/'];
 const proxyListsForPalmCloud = ['/mboscloud-app'];
 const proxyListsForPalmZx = ['/zhixiao-app'];
 const proxyListForShangFei = ['/user-center', '/shangfei'];
@@ -39,7 +39,7 @@ module.exports = env => ({
   },
   devServer: {
     compress: true,
-    port: 8199,
+    port: 8195,
     host: '0.0.0.0',
     open: true,
     historyApiFallback: {
@@ -105,7 +105,7 @@ module.exports = env => ({
         // target: 'http://106.15.24.156:32940', // 李宁环境
         // target: 'http://jflow-shangfei-yf.dev.burgeononline.com/', // 商飞环境
         // target: 'http://jflow-shangfei.dev.burgeononline.com/', // 新版jflow
-        target: 'http://10.14.6.84', // 商飞环境
+        target: 'http://r3.burgeon.cn:28888/', // 商飞环境
         // target: ' http://jflow-syman-dev.dev.burgeononline.com/', // 商飞测试环境
         // target: ' http://47.102.164.111:26665/', // 卡宾环境
         // target: ' http://zhixiao-jflow.pro.burgeononline.com/', // 知晓环境
