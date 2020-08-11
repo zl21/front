@@ -1171,7 +1171,7 @@
               });
             }
           },
-          validate: this.validateList(current)
+          validate: this.validateList({}, current)
         };
         this.propsType(current, obj.item);
         // ignoreDisableWhenEdit 去除不可编辑的状态 
@@ -1472,24 +1472,18 @@
         });
         return true;
       },
-      validateList(current) {
+      validateList(validateObj, current) {
         // 联动判断
         if (Object.hasOwnProperty.call(current, 'dynamicforcompute')) {
-          return {
-            dynamicforcompute: current.dynamicforcompute
-          };
+          validateObj.dynamicforcompute = current.dynamicforcompute;
         }
         if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
-          return {
-            hidecolumn: current.hidecolumn
-          };
+          validateObj.hidecolumn = current.hidecolumn;
         }
         if (Object.hasOwnProperty.call(current, 'refcolval')) {
-          return {
-            refcolval: current.refcolval
-          };
+          validateObj.refcolval = current.refcolval;
         }
-        return {};
+        return validateObj;
       },
       searchClickData() {
         // 按钮查找

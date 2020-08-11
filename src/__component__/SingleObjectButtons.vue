@@ -751,8 +751,12 @@
         // } else if (this.isItemTable) {
         //   currentItemInfo = this.itemInfo;
         // }
-         
-        DispatchEvent('jflowPlugin', {
+        let eventName = 'jflowPlugin';
+        if (obj && obj.jflowType && obj.jflowType === 'jflowLaunch') {
+          eventName = 'jflowLaunch';
+        }  
+              
+        DispatchEvent(eventName, {
           detail: {
             obj,
             currentItemInfo, // 当前操作的子表或主表信息
@@ -1407,11 +1411,8 @@
         }
       },
       jflowLaunch(obj) {
-        DispatchEvent('jflowLaunch', {
-          detail: {
-            data: obj
-          }
-        });
+        obj.jflowType = 'jflowLaunch';
+        this.clickExtraposition(obj);
       },
       objTabActionEdit(tab) {
         const editTableId = tab.action.lastIndexOf('/');
