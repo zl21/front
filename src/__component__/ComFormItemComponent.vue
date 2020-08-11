@@ -387,7 +387,7 @@
           // 监听页面配置的处理
           this.changeNumber = 0;
           // this.newFormItemLists = JSON.parse(JSON.stringify(this.formItemLists));
-          this.newFormItemLists = this.formItemLists;
+          this.newFormItemLists = this.deepClone(this.formItemLists);
         },
         deep: true
       },
@@ -1171,11 +1171,11 @@
         }
         const refvalArr = refval.split(',');
         const refIndex = refvalArr.findIndex(x => x.toString() === value);
+
         let expression = '=';
         if (items.validate.hidecolumn.expression) {
           expression = items.validate.hidecolumn.expression;
         }
-
         if (expression !== '=') {
           // eslint-disable-next-line use-isnan
           if (parseFloat(value) === 0) {
