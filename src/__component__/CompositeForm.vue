@@ -494,6 +494,16 @@
                     show = false;
                   }  
                   option.show = show;
+                  if (show === false) {
+                    if (option.item.props.webconf && option.item.props.webconf.clearWhenHidden) {
+                      if (option.item.type === 'checkbox') {
+                        // 添加checkbox 的判断
+                        option.item.value = option.item.props.falseValue;
+                      } else {
+                        option.item.value = '';
+                      } 
+                    }
+                  }
                 });
               } else {
                 let show = true;
@@ -506,6 +516,16 @@
                   }
                 }
                 item.show = show;
+                if (show === false) {
+                  if (item.item.props.webconf && item.item.props.webconf.clearWhenHidden) {
+                    if (item.item.type === 'checkbox') {
+                      // 添加checkbox 的判断
+                      item.item.value = item.item.props.falseValue;
+                    } else {
+                      item.item.value = '';
+                    } 
+                  }
+                }
               }
             });
           }

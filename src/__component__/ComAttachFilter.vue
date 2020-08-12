@@ -137,6 +137,20 @@
           this.propsData.componentType = myPopDialog;
         } else {
           this.propsData.componentType = Dialog;
+          if (this.defaultSelected[0] && this.defaultSelected[0].ID && /选中/.test(this.value)) {
+            const data = JSON.parse(this.defaultSelected[0].ID);
+            data.value.reftable = this.propsData.reftable;
+            data.value.reftableid = this.propsData.reftableid;
+            data.value.serviceId = this.propsData.serviceId;
+            this.filterDate = {
+              text: JSON.stringify(data.lists),
+              value: data.value,
+            };
+            this.resultData = {
+              text: JSON.stringify(data.lists),
+              value: data.value,
+            };
+          }
           this.propstype.show = true;
         }
       }
