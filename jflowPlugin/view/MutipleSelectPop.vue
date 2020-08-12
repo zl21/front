@@ -42,7 +42,7 @@
       </div>
     </div>
     <div
-      v-if="isUse && roleSwitch"
+      v-if="roleSwitch"
       class="dialog_left"
     >
       <p class="label">
@@ -167,7 +167,7 @@
           选择部门
         </Button>
         <Button
-          v-if="isUse && roleSwitch"
+          v-if="roleSwitch"
           class="operatebtn"
           type="primary"
           ghost
