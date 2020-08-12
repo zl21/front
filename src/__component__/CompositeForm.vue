@@ -1494,42 +1494,42 @@
       },
       validateList(validateObj, current) {
         // 联动判断
+        // if (Object.hasOwnProperty.call(current, 'dynamicforcompute')) {
+        //   return {
+        //     dynamicforcompute: current.dynamicforcompute
+        //   };
+        // }
+        // if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
+        //   return {
+        //     hidecolumn: current.hidecolumn
+        //   };
+        // }
+        // if (Object.hasOwnProperty.call(current, 'refcolval')) {
+        //   return {
+        //     refcolval: current.refcolval
+        //   };
+        // }
+        // return {};
+
         if (Object.hasOwnProperty.call(current, 'dynamicforcompute')) {
-          return {
-            dynamicforcompute: current.dynamicforcompute
-          };
+          validateObj.dynamicforcompute = current.dynamicforcompute;
         }
         if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
-          return {
-            hidecolumn: current.hidecolumn
-          };
+          validateObj.hidecolumn = current.hidecolumn;
         }
         if (Object.hasOwnProperty.call(current, 'refcolval')) {
-          return {
-            refcolval: current.refcolval
-          };
+          validateObj.refcolval = current.refcolval;
         }
-        return {};
-        
-        // if (Object.hasOwnProperty.call(current, 'dynamicforcompute')) {
-        //   validateObj.dynamicforcompute = current.dynamicforcompute;
-        // }
-        // if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
-        //   validateObj.hidecolumn = current.hidecolumn;
-        // }
-        // if (Object.hasOwnProperty.call(current, 'refcolval')) {
-        //   validateObj.refcolval = current.refcolval;
-        // }
-        // if (Object.hasOwnProperty.call(current, 'dynamicforcompute')) {
-        //   validateObj.dynamicforcompute = current.dynamicforcompute;
-        // }
-        // if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
-        //   validateObj.hidecolumn = current.hidecolumn;
-        // }
-        // if (Object.hasOwnProperty.call(current, 'refcolval')) {
-        //   validateObj.refcolval = current.refcolval;
-        // }
-        // return validateObj;
+        if (Object.hasOwnProperty.call(current, 'dynamicforcompute')) {
+          validateObj.dynamicforcompute = current.dynamicforcompute;
+        }
+        if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
+          validateObj.hidecolumn = current.hidecolumn;
+        }
+        if (Object.hasOwnProperty.call(current, 'refcolval')) {
+          validateObj.refcolval = current.refcolval;
+        }
+        return validateObj;
       },
       searchClickData() {
         // 按钮查找
