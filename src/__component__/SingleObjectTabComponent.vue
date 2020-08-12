@@ -1,6 +1,5 @@
 <template>
   <div class="tabComponent">
-    {{ tableName }}
     <component
       :is="objectButtonComponent"
       v-show="buttonsData.isShow&&componentType!=='ALL'"
