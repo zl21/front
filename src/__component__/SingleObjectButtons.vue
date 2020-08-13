@@ -1083,7 +1083,6 @@
               });
             }
           }
-          this.saveCallBack = null; // 清除保存回调，处理保存失败时候有回调的问题.仅限于当前时机清除，不可移动位置
           this.objectSave(obj);
           break;
 
@@ -1570,7 +1569,7 @@
       },
 
       clickSave(data) {
-        this.saveCallBack = null; // 清除保存回调，处理保存失败时候有回调的问题.仅限于当前时机清除，不可移动位置
+        // this.saveCallBack = null; // 清除保存回调，处理保存失败时候有回调的问题.仅限于当前时机清除，不可移动位置
         if (typeof (data.event) === 'function') {
           this.saveCallBack = data.event;
         }
@@ -3265,6 +3264,7 @@
               type: 'reject',
             }
           });
+          this.saveCallBack = null; // 清除jflow回调
         }).then(() => {
 
         });
