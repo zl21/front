@@ -1083,7 +1083,6 @@
               });
             }
           }
-          this.saveCallBack = null; // 清除保存回调，处理保存失败时候有回调的问题.仅限于当前时机清除，不可移动位置
           this.objectSave(obj);
           break;
 
@@ -1570,7 +1569,7 @@
       },
 
       clickSave(data) {
-        this.saveCallBack = null; // 清除保存回调，处理保存失败时候有回调的问题.仅限于当前时机清除，不可移动位置
+        // this.saveCallBack = null; // 清除保存回调，处理保存失败时候有回调的问题.仅限于当前时机清除，不可移动位置
         if (typeof (data.event) === 'function') {
           this.saveCallBack = data.event;
         }
@@ -3066,7 +3065,13 @@
             }
         }
       },
-      verifyRequiredInformation() { // 验证表单必填项
+      verifyRequiredInformation() {
+        // 因表单在失去焦点时进行校验必填以及表单赋值处理，故需要延时调用，给表单留出处理逻辑的时间
+        return setTimeout(() => {
+          this.getVerifyRequiredInformation();
+        }, 500);
+      },
+      getVerifyRequiredInformation() { // 验证表单必填项
         if (this.temporaryStorage) { // 配置了暂存则不校验
           this.temporaryStorage = false;
           return true;
@@ -3086,7 +3091,6 @@
             }
           }
         }
-        console.log(3444, this.itemName);
         if (this.subtables()) { // 存在子表时
           let tabinlinemode = '';
           this.tabPanel.forEach((item) => {
@@ -3265,6 +3269,7 @@
               type: 'reject',
             }
           });
+          this.saveCallBack = null; // 清除jflow回调
         }).then(() => {
 
         });

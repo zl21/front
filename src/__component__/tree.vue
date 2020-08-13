@@ -6,6 +6,7 @@
     <Ztree
       ref="zTree"
       :z-nodes="treeData"
+      :placeholder="placeholder"
       @clickTreeNode="clickTreeNode"
     />
   </div>
@@ -16,6 +17,7 @@
   export default {
     data() {
       return {
+        placeholder: '',
         treeNodeID: null, // 当前点击的节点ID
         Ids: [],
         resArr: [],
@@ -78,23 +80,13 @@
     },
     watch: {
       treeDatas: {
-        handler() {
-          if (this.treeDatas !== null) {
-            this.treeDatas().then((value) => {
-              this.treeData = value.data;
-              this.treeName = value.name;
-            });
-          }
+        handler(val) {
+          this.getTreeInfo();
         }
       },
     },
     mounted() {
-      if (this.treeDatas !== null) {
-        this.treeDatas().then((value) => {
-          this.treeData = value.data;
-          this.treeName = value.name;
-        });
-      }
+      this.getTreeInfo();
     },
     methods: {
       //  this.$emit('menuTreeChange', this.Ids, this.treeName, treeNodeID, flag);
@@ -104,7 +96,15 @@
       // treeNodeID：当前点击节点ID
       // flag:true:查询选中的节点，false:查询空
 
-
+      getTreeInfo() { // 获取树信息
+        if (this.treeDatas !== null) {
+          this.treeDatas().then((value) => {
+            this.treeData = value.data;
+            this.treeName = value.name;
+            this.placeholder = value.placeholder;
+          });
+        }
+      },
       callMethod() {
         this.$refs.zTree.callMethod(); 
       },
