@@ -93,6 +93,7 @@
             mask: true,
             title: '警告',
             content: '当前的操作会执行全量覆盖！是否继续？',
+            showCancel: true,
             onOk: () => {
               const datas = {
                 tableName,
