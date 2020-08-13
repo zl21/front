@@ -3065,7 +3065,13 @@
             }
         }
       },
-      verifyRequiredInformation() { // 验证表单必填项
+      verifyRequiredInformation() {
+        // 因表单在失去焦点时进行校验必填以及表单赋值处理，故需要延时调用，给表单留出处理逻辑的时间
+        return setTimeout(() => {
+          this.getVerifyRequiredInformation();
+        }, 500);
+      },
+      getVerifyRequiredInformation() { // 验证表单必填项
         if (this.temporaryStorage) { // 配置了暂存则不校验
           this.temporaryStorage = false;
           return true;
@@ -3085,7 +3091,6 @@
             }
           }
         }
-        console.log(3444, this.itemName);
         if (this.subtables()) { // 存在子表时
           let tabinlinemode = '';
           this.tabPanel.forEach((item) => {
