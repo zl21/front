@@ -438,12 +438,14 @@ export default {
     }
 
     // 删除规则五： 如果来源为插件界面，关闭当前tab时，应清除dynamicRoutingIsBack标记，以及dynamicRoutingIsBackForDelete内存储的当前表的关系
-    Object.keys(routeMapRecord).map((item) => {
-      const fromPath = routeMapRecord[item].substring(1, 7) === 'PLUGIN';
-      if (fromPath) {
-        deleteFromSessionObject('routeMapRecord', item);
-      }
-    });
+    // Object.keys(routeMapRecord).map((item) => {
+    //   const fromPath = routeMapRecord[item].substring(1, 7) === 'PLUGIN';
+    //   if (fromPath) {
+    //     debugger;
+
+    //     deleteFromSessionObject('routeMapRecord', item);
+    //   }
+    // });
 
     // 删除规则四：关闭页签时，清除单对象动态路由跳转类型跳转的session中存储的对应关系。
     const routeMapRecordForSingleObject = getSeesionObject('routeMapRecordForSingleObject');
@@ -669,6 +671,11 @@ export default {
           label
         };
         setCustomeLabel(data);
+      }
+    } 
+    if (type === 'P') {
+      if (url) {
+        path = `${url.toUpperCase()}`;
       }
     } 
     if (type === 'tableDetailUrl' || type === 'URL') {

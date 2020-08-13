@@ -2216,7 +2216,7 @@
         } else if (url.indexOf(CUSTOMIZED_MODULE_PREFIX) > -1) {
           directionalRouterType = 'C';
         } else if (url.indexOf(PLUGIN_MODULE_PREFIX) > -1) {
-          directionalRouterType = 'L';
+          directionalRouterType = 'P';
         }
         return directionalRouterType;
       },
