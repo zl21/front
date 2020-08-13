@@ -32,7 +32,6 @@ module.exports = {
   target: 'http://syman-jflow-standard.dev.burgeononline.com',
   
   
-  
   Version: '1.3', // 版本号
   interlocks: true, // 是否打开三级联动装置
   enableGateWay: true, // 网关是否打开,
