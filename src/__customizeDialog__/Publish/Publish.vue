@@ -50,7 +50,11 @@
       objList: {
         type: Array,
         default: () => []
-      }
+      },
+      idArray: {// 获取ID用于多选
+        type: [Array, Object],
+        default: () => {}
+      },
     },
     data() {
       return {
@@ -79,30 +83,57 @@
           this.$Modal.fcWarning(data);
           return;
         }
-        const { itemId,tableName } = router.currentRoute.params;
+
+        const { itemId, tableName } = router.currentRoute.params;
         const searchdata = {
           env: this.envValue, 
           objId: itemId, 
         };
+        if (this.idArray.length === 0) {
+          const data = {
+            mask: true,
+            title: '警告',
+            content: '当前的操作会执行全量覆盖！是否继续？',
+            onOk: () => {
+              const datas = {
+                tableName,
+                searchdata
+              };
+              this.publish(datas);
+            }
+          };
+          this.$Modal.fcWarning(data);
+        } else {
+          searchdata.ids = this.idArray;
+          const datas = {
+            tableName,
+            searchdata
+          };
+          this.publish(datas);
+        }
+      }, // 确定
+      publish(data) {
         this.$R3loading.show();
-        network.post('/p/cs/release', urlSearchParams(searchdata))
+        network.post('/p/cs/release', urlSearchParams(data.searchdata))
           .then((res) => {
-            this.$R3loading.hide(tableName);
+            this.$R3loading.hide(data.tableName);
             if (res.data.code !== 0) {
               return;
             }
             if (res.data.code === 0) {
               const message = res.data.message;
-              const data = {
+              const datas = {
                 mask: true,
                 title: '成功',
                 content: message
               };
-              this.$Modal.fcSuccess(data);
+              this.$Modal.fcSuccess(datas);
               this.$emit('closeActionDialog', true); // 关闭弹框
             }
+          }).catch(() => {
+            this.$R3loading.hide(data.tableName);
           });
-      }, // 确定
+      },
       cancel() {
         this.$emit('closeActionDialog', false); // 关闭弹框
       }, // 取消

@@ -151,7 +151,6 @@
         type: Boolean,
         default: () => false
       },
-      
     },
     data() {
       return {
@@ -169,14 +168,11 @@
       }
     },
     watch: {
-      dialogComponentName(val, oldval) {
+      dialogComponentName(val) {
         if (val) {
           this.getModalWidth();
         }
       },
-    },
-    mounted() {
-
     },
     methods: {
       setValue(value) {
