@@ -41,6 +41,7 @@
 <script>
   import ChineseDictionary from '../../assets/js/ChineseDictionary';
   import network, { urlSearchParams } from '../../__utils__/network';
+  import router from '../../__config__/router.config';
 
   export default {
     name: 'PublishPrintTemplate',
@@ -48,7 +49,11 @@
       objList: {
         type: Array,
         default: () => []
-      }
+      },
+      idArray: {// 获取ID用于多选
+        type: [Array, Object],
+        default: () => {}
+      },
     },
     data() {
       return {
@@ -77,26 +82,58 @@
           this.$Modal.fcWarning(data);
           return;
         }
+        
         const searchdata = {
           env: this.envValue, 
         };
-        network.post('/p/cs/print/release', urlSearchParams(searchdata))
+        const { tableName } = router.currentRoute.params;
+
+        if (this.idArray.length === 0) {
+          const data = {
+            mask: true,
+            title: '警告',
+            content: '当前的操作会执行全量覆盖！是否继续？',
+            onOk: () => {
+              const datas = {
+                tableName,
+                searchdata
+              };
+              this.publish(datas);
+            }
+          };
+          this.$Modal.fcWarning(data);
+        } else {
+          searchdata.ids = this.idArray;
+          const datas = {
+            tableName,
+            searchdata
+          };
+          this.publish(datas);
+        }
+        console.log(999, searchdata);
+      }, // 确定
+      publish(data) {
+        this.$R3loading.show();
+        network.post('/p/cs/print/release', urlSearchParams(data.searchdata))
           .then((res) => {
+            this.$R3loading.hide(data.tableName);
             if (res.data.code !== 0) {
               return;
             }
             if (res.data.code === 0) {
               const message = res.data.message;
-              const data = {
+              const datas = {
                 mask: true,
                 title: '成功',
                 content: message
               };
-              this.$Modal.fcSuccess(data);
+              this.$Modal.fcSuccess(datas);
               this.$emit('closeActionDialog', true); // 关闭弹框
             }
+          }).catch(() => {
+            this.$R3loading.hide(data.tableName);
           });
-      }, // 确定
+      },
       cancel() {
         this.$emit('closeActionDialog', false); // 关闭弹框
       }, // 取消

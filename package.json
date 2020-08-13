@@ -62,9 +62,9 @@
     },
     "dependencies": {
         "@babel/polyfill": "^7.7.0",
+        "@syman/ark-ui": "^1.0.54",
         "ag-grid": "^17.1.1",
         "ag-grid-enterprise": "^17.1.1",
-        "@syman/ark-ui": "^1.0.54",
         "awe-dnd": "^0.3.4",
         "axios": "^0.18.0",
         "compressing": "^1.4.0",

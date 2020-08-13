@@ -368,11 +368,17 @@ export default {
   },
   againClickOpenedMenuLists(state, {
     label,
-    keepAliveModuleName
+    keepAliveModuleName,
+    type
   }) {
     state.openedMenuLists.forEach((d) => {
       d.isActive = false;
-      if (d.label === label && d.keepAliveModuleName === keepAliveModuleName) {
+      let keepAliveModuleNameRes = '';
+      if (type === 'C') {
+        const index = keepAliveModuleName.lastIndexOf('\/');  
+        keepAliveModuleNameRes = keepAliveModuleName.substring(0, index + 1);
+      } 
+      if (d.label === label && (d.keepAliveModuleName === keepAliveModuleName || keepAliveModuleName.includes(keepAliveModuleNameRes))) {
         d.isActive = true;
       }
     });
@@ -393,8 +399,10 @@ export default {
     // };
     // 清除配置界面提供给定制界面的参数信息
     if (tab.keepAliveModuleName) {
-      const customizedModuleId = tab.keepAliveModuleName.split('.')[2];
-      deleteFromSessionObject('customizeMessage', customizedModuleId);// 定制界面
+      // const customizedModuleId = tab.keepAliveModuleName.split('.')[2];
+      const customizedModuleName = tab.keepAliveModuleName.split('.')[1];
+      // 配置界面跳转到定制界面（自定义界面，外链）将存入session中对应的信息删除，根据自定义界面customizedModuleName
+      deleteFromSessionObject('customizeMessage', customizedModuleName);// 定制界面
     }
     deleteFromSessionObject('customizeMessage', tab.tableName);// 外链界面
 
@@ -822,7 +830,7 @@ export default {
     // });
 
     const obj = {
-      k: data.customizedModuleId,
+      k: data.customizedModuleId ? data.customizedModuleId : data.customizedModuleName,
       v: { [data.type]: data.value }
     };
     updateSessionObject('customizeMessage', obj);
