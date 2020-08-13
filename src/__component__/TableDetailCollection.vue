@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                  >
+                    >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -3726,6 +3726,7 @@
         };
         fkHttpRequest().fkQueryList({
           searchObject: searchdata,
+          serviceId: cellData.serviceId,
           success: (res) => {
             this.fkData = res.data.data;
           }
