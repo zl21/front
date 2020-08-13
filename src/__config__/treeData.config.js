@@ -20,12 +20,12 @@ import json from './treeData.json';
 // 注意：返回值中的所有ENAME字段请改为title
 export default {
   // value：框架传入的参数，模糊查询的字符
-  BCP_BIZ_CHANCE: value => async () => {
+  C_STORE: value => async () => {
     // ....
     const treeData = {
       data: [], // 树结构列表数据
       name: 'ID', // 定义查询参数
-      placeholder: ''// placeholder自定义
+      placeholder: '9999'// placeholder自定义
     };
     // await network.post('api',)
     //   .then((res) => {

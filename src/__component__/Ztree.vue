@@ -3,7 +3,7 @@
     <Input
       id="key"
       v-model="inputValue"
-      placeholder="请输入角色"
+      :placeholder="placeholder"
       class="input"
       icon="ios-search"
       @on-click="search"
@@ -107,6 +107,10 @@
       //   type: String,
       //   default: ''
       // }, 
+      placeholder: {// 设置查询框placeholder
+        type: String,
+        default: () => '请输入角色'
+      },
       treeDatas: {
         type: Function,
         default: () => {}
