@@ -6,7 +6,7 @@ module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
   projectIconPath: path.join(__dirname, './favicon.ico'), // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
-  // target: 'http://r3-8098.dev.burgeononline.com/', // 框架研发网关开启环境
+  target: 'http://r3-8098.dev.burgeononline.com/', // 框架研发网关开启环境
   // target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 新版本jflow测试环境
   // target: 'http://r3dev.qiaodan.com:28889', // 乔丹开发环境
   // target: 'http://r3dev.qiaodan.com:26666', // 乔丹开发环境
@@ -24,11 +24,12 @@ module.exports = {
   // target: 'http://r3.burgeon.cn:28888/', // 李宁
   // target: 'http://jflow-shangfei-r3.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://ark-share-dev.dev.burgeononline.com', // ArkShare环境
-  // target: 'http://47.102.164.111:26666/', // 卡宾环境
+  // target: 'http://r3.burgeon.cn:28888/', // 卡宾环境
   // target: 'http://172.18.34.122:8001/', // ishop环境
   // target: 'http://10.14.6.84/', // 卡宾环境
-  target: 'http://r3-ishop.dev.burgeononline.com/', // ishop环境
+  // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop环境
   // target: 'http://47.103.175.111:26666/', // 千百度环境
+  // target: 'http://syman-jflow-standard.dev.burgeononline.com',
   
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
@@ -43,7 +44,7 @@ module.exports = {
   enableInitializationRequest: true, // 是否开启初始化请求
   // enableCustomInterface: false // 是否开启自定义接口,
   customizeWaterMark: {}, // 启用外部自定义水印配置,
-  // specifiedGlobalGateWay: 'ad-app',
+  specifiedGlobalGateWay: 'ad-app',
   // specifiedGlobalGateWay: 'user-center',
   encryptedPassword: false, // 是否允许login接口password加密
   isItemTableNewValidation: true, // 是否允许子表新增有必填项时，输入值才触发子表必填项校验，不输入值则只校验主表

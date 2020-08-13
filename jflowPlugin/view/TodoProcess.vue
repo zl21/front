@@ -342,25 +342,18 @@
                       on: {
                         click: () => {
                           if (params.row.formUrl.includes('/SYSTEM')) {
-                            // window.getObjdisType({ table: params.row.formUrl.split('/')[4] }).then((res) => {
-                            //   const distype = res === 'tabpanle' ? 'H' : 'V';
-                            //   const arr = params.row.formUrl.split('/');
-                            //   arr[3] = distype;
-                            //   window.vm.$router.push({
-                            //     path: arr.join('/')
-                            //   });
-                            // });
-
                             const distype = params.row.objdistype === 'tabpanle' ? 'H' : 'V';
                             const arr = params.row.formUrl.split('/');
                             arr[3] = distype;
                             window.vm.$router.push({
                               path: arr.join('/')
                             });
+                            window.sessionStorage.setItem('dynamicRouting', true);
                           } else {
                             window.vm.$router.push({
                               path: params.row.formUrl
                             });
+                            window.sessionStorage.setItem('dynamicRouting', true);
                           }
                         }
                       }

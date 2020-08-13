@@ -42,7 +42,7 @@
       </div>
     </div>
     <div
-      v-if="isUse && roleSwitch"
+      v-if="roleSwitch"
       class="dialog_left"
     >
       <p class="label">
@@ -96,7 +96,7 @@
             人员:
           </p>
           <Input
-            v-model="table.search"
+            v-model="obj.ENAME"
             search
             :placeholder="table.placeholder"
             @on-change="inputchange"
@@ -132,6 +132,7 @@
                 <Table
                   ref="Table"
                   border
+                  width="360"
                   :columns="item.columns"
                   :highlight-row="true"
                   :click-timer-task="300"
@@ -166,7 +167,7 @@
           选择部门
         </Button>
         <Button
-          v-if="isUse && roleSwitch"
+          v-if="roleSwitch"
           class="operatebtn"
           type="primary"
           ghost

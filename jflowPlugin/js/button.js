@@ -140,8 +140,11 @@ async function getTemplate() { // 获取模版信息
 
 // 触发事件
 async function initiateLaunch(event) {
+  globalChange({ routeInfo: event.detail.currentItemInfo });
+  window.ProjectConfig.enableRestrictSave = false;
   window.updataClickSave(async () => {
-    if (global.jflowInfo.instanceId) {
+    window.ProjectConfig.enableRestrictSave = true;
+    if (global.jflowInfo && global.jflowInfo.instanceId) {
       mutipleOperate(global.jflowInfo.affirmUrl);
     } else {
       // 触发按钮之前获取最新的模版信息
@@ -158,8 +161,8 @@ async function initiateLaunch(event) {
   
         triggerBt = triggerBt.filter((item, index, self) => self.indexOf(item) === index);
         
-        if (triggerBt.includes(String(event.detail.data.webid))) {
-          window.initiateLaunch({ webActionId: event.detail.data.webid });
+        if (triggerBt.includes(String(event.detail.obj.webid))) {
+          window.initiateLaunch({ webActionId: event.detail.obj.webid });
         } else {
           window.R3message({
             title: '错误',
