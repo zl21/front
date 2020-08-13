@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                  >
+             >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -153,6 +153,7 @@
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import { getUrl, getLabel } from '../__utils__/url';
   import { updateSessionObject } from '../__utils__/sessionStorage';
+  import getUserenv from '../__utils__/getUserenv';
 
 
   Vue.component('ComAttachFilter', ComAttachFilter);
@@ -1105,11 +1106,30 @@
       clearDialogComponentName() {
         this.dialogComponentName = null;
       },
+      isCheck() { // 校验是否勾选了明细
+        const id = this.tableRowSelectedIds.map(item => item.ID);
+        debugger;
+        if (id.length === 0) {
+          this.$Message.warning('请勾选ID');
+          return false;
+        } if (id.length > 1) {
+          this.$Message.warning('只能勾选单个ID');
+          return false;
+        }
+        return id;
+      },
       objTabActionNavbar(tab) {
-        if (tab.action) {
+        tab.action = 'CUSTOMIZED/FUNCTIONPERMISSION?id=1&&name=2';
+        let tabAction = '';
+        if (tab.action && tab.action.includes('?')) {
+          tabAction = getUserenv({ url: tab.action });
+        } else {
+          tabAction = tab.action;
+        }
+        if (tabAction) {
           // const { itemId } = router.currentRoute.params;
-          const actionType = tab.action.substring(0, tab.action.indexOf('/'));
-          const singleEditType = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
+          const actionType = tabAction.substring(0, tabAction.indexOf('/'));
+          let singleEditType = tabAction.substring(tabAction.lastIndexOf('/') + 1, tabAction.length);
           if (actionType === 'SYSTEM') {
             if (singleEditType === ':itemId') {
               if (this.tableRowSelectedIds.length === 0) {
@@ -1120,12 +1140,12 @@
                 return;
               }
               const itemId = this.tableRowSelectedIds.map(item => item.ID).toString();
-              const path = `/${tab.action.replace(/:itemId/, itemId)}`;
+              const path = `/${tabAction.replace(/:itemId/, itemId)}`;
               router.push(
                 path
               );
             } else {
-              const path = `/${tab.action}`;
+              const path = `/${tabAction}`;
               router.push(
                 path
               );
@@ -1133,7 +1153,7 @@
           } else if (actionType === 'https:' || actionType === 'http:') {
             const name = `${LINK_MODULE_COMPONENT_PREFIX}.${tab.webname.toUpperCase()}.${tab.webid}`;
             this.addKeepAliveLabelMaps({ name, label: tab.name });
-            const linkUrl = tab.action;
+            const linkUrl = tabAction;
             const linkId = tab.webid;
             if (!this.LinkUrl[linkId]) {
               this.increaseLinkUrl({ linkId, linkUrl });
@@ -1160,36 +1180,84 @@
             };
             this.updateCustomizeMessage(data);
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-            const name = getLabel({ url: tab.action, id: tab.webid, type: 'customized' });
+            const id = this.tableRowSelectedIds.map(item => item.ID).toString();
+
+            let path = tabAction;
+            let name = '';
+            if (tabAction && tabAction.includes('?')) {
+              singleEditType = tabAction.substring(tabAction.lastIndexOf('/') + 1, tabAction.lastIndexOf('?'));// 动态id标记，：itemId
+            }
+            if (this.itemInfo.tabrelation === '1:m') {
+              if (singleEditType === ':itemId') {
+                if (this.isCheck()) {
+                  path = `/${tabAction.replace(/:itemId/, id)}`;
+                  name = getLabel({ url: tabAction, id, type: 'customized' });
+                } else {
+                  return;
+                }
+              } else {
+                path = getUrl({ url: path, id: tab.webid, type: 'customized' });
+                name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
+              }
+            } else {
+              if (singleEditType === ':itemId') {
+                alert('当前跳转路径不可配置动态id，无可勾选的明细');
+                return;
+              }
+              path = getUrl({ url: path, id: tab.webid, type: 'customized' });
+              name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
+            }
             this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
-            const path = getUrl({ url: tab.action, id: tab.webid, type: 'customized' });
+
+
+            // 支持直接在跳转定制界面类型的按钮tabAction上配置参数
+            // 如：CUSTOMIZED/FUNCTIONPERMISSION？id=1&&name=2
             const keepAliveLabelMapsObj = {
               k: name,
               v: tab.webdesc
             };
+            const undataFromPageCustomizeButtonInfo = {
+              k: name,
+              v: this[INSTANCE_ROUTE_QUERY]
+            };
             updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
+            updateSessionObject('undataFromPageCustomizeButtonInfo', undataFromPageCustomizeButtonInfo);// 将自定义按钮为跳转自定义界面类型的自定义按钮信息存入session
+
             router.push(
               path
             );
+            const customizedModuleName = tabAction.split('/')[1];
             const data = {
               type: 'singleCustomizeButton',
               value: tab,
-              customizedModuleId: tab.webid
+              // customizedModuleId: tab.webid
+              customizedModuleName: customizedModuleName.toLocaleUpperCase()
+            // 自定义界面：相同自定义界面标记，ID不同时，只激活同一个tab
             };
             this.updateCustomizeMessage(data);
-            // const customizedName = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
-            // const name = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedName.toUpperCase()}.${tab.webid}`;
-            // this.addKeepAliveLabelMaps({ name, label: tab.name });
-            // const path = `/${tab.action.toUpperCase()}/${tab.webid}`;
-            // const obj = {
-            //   customizedName: name,
-            //   customizedLabel: tab.name
-            // };
-            // window.sessionStorage.setItem('customizedMessageForbutton', JSON.stringify(obj));
-            // router.push(
-            //   path
-            // );
-          }
+          } 
+          
+          
+          // else if (actionType.toUpperCase() === 'CUSTOMIZED') {
+          //   const name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
+          //   this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
+          //   const path = getUrl({ url: tabAction, id: tab.webid, type: 'customized' });
+          //   const keepAliveLabelMapsObj = {
+          //     k: name,
+          //     v: tab.webdesc
+          //   };
+          //   updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
+          //   router.push(
+          //     path
+          //   );
+          //   const data = {
+          //     type: 'singleCustomizeButton',
+          //     value: tab,
+          //     customizedModuleId: tab.webid
+          //   };
+          //   this.updateCustomizeMessage(data);
+         
+          // }
         }
 
 
@@ -2491,7 +2559,6 @@
                 if (value.transferDefaultSelected.length > 0) {
                   ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
                 }
-                alert(333);
                 this.copyDataSource.row[params.index][cellData.colname].val = data.reduce((acc, cur) => {
                   acc.push(cur.Label);
                   return acc;
@@ -2507,8 +2574,6 @@
                 this.putLabelDataFromCell(labelValue, oldIdValues, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, oldLabelValue);
               },
               'on-clear': (value) => {
-                alert(2222);
-
                 if (this.fkSelectedChangeData[params.index]) {
                   this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], {
                     [cellData.key]: [{

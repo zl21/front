@@ -755,12 +755,13 @@
             //     return arr;
             //   }, {});
             // }
-            // const customizedModuleName = colDef.customerurl.tableurl.split('/')[1];
+            const customizedModuleName = colDef.customerurl.tableurl.split('/')[1];
             const data = {
               type: 'standardCustomerurlCustomized',
               value: rowData,
-              customizedModuleId: rowData[colDef.customerurl.refobjid].val
+              customizedModuleName: customizedModuleName.toLocaleUpperCase()
             };
+            // 自定义界面：相同自定义界面标记，ID不同时，只激活同一个tab
 
             this.updateCustomizeMessage(data);
             // 将元数据配置的refobjid，字符串，可配置多个字段，将配置的字段解析后用作lu y，供弹框作为参数使用
@@ -786,7 +787,7 @@
             const data = {
               type: 'standardCustomerurlLink',
               value: rowData,
-              customizedModuleId: colDef.customerurl.linkname.toUpperCase()
+              customizedModuleName: colDef.customerurl.linkname.toUpperCase()
               // 因外链界面tablinkName相同时，只激活一个tab,所以外链界面用linkName作为key存入session,避免因勾选的id不同存入多个，导致关闭当前tab时无法清除存入的多个
             };
             this.updateCustomizeMessage(data);
@@ -2401,7 +2402,7 @@
             const data = {
               type: 'standardCustomizeButtonLink',
               value: tab,
-              customizedModuleId: tab.webname.toUpperCase()
+              customizedModuleName: tab.webname.toUpperCase()
               // 因外链界面tablinkName相同时，只激活一个tab,所以外链界面用linkName作为key存入session,避免因勾选的id不同存入多个，导致关闭当前tab时无法清除存入的多个
             };
             this.updateCustomizeMessage(data);
@@ -2423,7 +2424,6 @@
             // router.push(
             //   path
             // );
-
             const itemId = this.buttons.selectIdArr.filter(item => item);
 
             if (singleEditType === ':itemId') {
@@ -2458,11 +2458,14 @@
               };
               this.directionalRouter(param);// 定向路由跳转方法
             }
-
+            const customizedModuleName = tab.action.split('/')[1];
+            
             const data = {
               type: 'standardCustomizeButton',
               value: tab,
-              customizedModuleId: itemId[0]
+              // customizedModuleId: itemId[0]
+              customizedModuleName: customizedModuleName.toLocaleUpperCase()
+            // 自定义界面：相同自定义界面标记，ID不同时，只激活同一个tab
             };
             this.updateCustomizeMessage(data);
           }

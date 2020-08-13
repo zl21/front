@@ -553,7 +553,7 @@
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
 
-      ...mapMutations('global', ['deleteLoading', 'emptyTestData', 'tabCloseAppoint', 'decreasekeepAliveLists', 'copyDataForSingleObject', 'tabOpen', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
+      ...mapMutations('global', ['updateCustomizeMessage', 'deleteLoading', 'emptyTestData', 'tabCloseAppoint', 'decreasekeepAliveLists', 'copyDataForSingleObject', 'tabOpen', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
       updataCurrentTableDetailInfo() { // 更新当前单对象信息
         if (this[INSTANCE_ROUTE_QUERY].tableName === this.$route.params.tableName && this.$route.meta.routePrefix.includes('/SYSTEM/TABLE_DETAIL/')) { // 当前路由包含单对象标记
           // 更新单对象界面信息
@@ -1462,17 +1462,22 @@
         // const a = 'SYSTEM/TABLE/AD_TABLE/992?AD_CLIENT_NAME=${AD_CLIENT_NAME}&AD_ORG_ID=${AD_ORG_ID}&name=8888';
         // tab.action = a;
         if (tab.action) {
+          let id = [];
           if (this.objectType === 'horizontal') { // 左右结构
             if (this.itemName === this.tableName) { // 主表
               this.routingHop(tab, this.itemId);// 主表使用明细ID
-            } else { // 子表  
-              let id = [];
-              if (actionType === ('CUSTOMIZED' || 'https:' || 'http:')) {
+            } else { // 子表 
+              if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
+                id = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
+              }
+              const type = [
+                'CUSTOMIZED',
+                'https:', 
+                'http:'
+              ];
+              if (type.includes(actionType)) {
                 this.routingHop(tab, id);// 主表使用明细ID
               } else {
-                if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
-                  id = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
-                }
                 if (id.length === 0) {
                   this.$Message.warning('请勾选ID');
                   return;
@@ -1488,7 +1493,24 @@
           }
         }
       },
+      isCheck() { // 校验是否勾选了明细
+        let id = [];
+        if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
+          id = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
+        }
+        if (id.length === 0) {
+          this.$Message.warning('请勾选ID');
+          return false;
+        } if (id.length > 1) {
+          this.$Message.warning('只能勾选单个ID');
+          return false;
+        }
+        return id;
+      },
       routingHop(tab, id) {
+        // tab.action配置路径前不能加/
+        // /:itemId?id=1&&name=2
+        // tab.action = 'CUSTOMIZED/FUNCTIONPERMISSION/:itemId?id=1&&name=2';
         let tabAction = '';
         if (tab.action && tab.action.includes('?')) {
           tabAction = getUserenv({ url: tab.action });
@@ -1496,7 +1518,7 @@
           tabAction = tab.action;
         }
         const actionType = tabAction.substring(0, tabAction.indexOf('/'));
-        const singleEditType = tabAction.substring(tabAction.lastIndexOf('/') + 1, tabAction.length);
+        let singleEditType = tabAction.substring(tabAction.lastIndexOf('/') + 1, tabAction.length);
         if (actionType === 'SYSTEM') {
           if (singleEditType === ':itemId') {
             const path = `/${tabAction.replace(/:itemId/, id)}`;
@@ -1533,14 +1555,39 @@
           const data = {
             type: 'singleCustomizeButtonLink',
             value: tab,
-            customizedModuleId: tab.webname.toUpperCase()
+            customizedModuleName: tab.webname.toUpperCase()
             // 因外链界面tablinkName相同时，只激活一个tab,所以外链界面用linkName作为key存入session,避免因勾选的id不同存入多个，导致关闭当前tab时无法清除存入的多个
           };
           this.updateCustomizeMessage(data);
         } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-          const name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
+          let path = tabAction;
+          let name = '';
+          if (tab.action && tab.action.includes('?')) {
+            singleEditType = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.lastIndexOf('?'));// 动态id标记，：itemId
+          }
+          if (this.getCurrentItemInfo().tabrelation === '1:m') {
+            if (singleEditType === ':itemId') {
+              if (this.isCheck()) {
+                path = `/${tabAction.replace(/:itemId/, id)}`;
+                name = getLabel({ url: tab.action, id, type: 'customized' });
+              } else {
+                return;
+              }
+            } else {
+              path = getUrl({ url: path, id: tab.webid, type: 'customized' });
+              name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
+            }
+          } else {
+            if (singleEditType === ':itemId') {
+              alert('当前跳转路径不可配置动态id，无可勾选的明细');
+              return;
+            }
+            path = getUrl({ url: path, id: tab.webid, type: 'customized' });
+            name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
+          }
           this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
-          const path = getUrl({ url: tabAction, id: tab.webid, type: 'customized' });
+
+
           // 支持直接在跳转定制界面类型的按钮tab.action上配置参数
           // 如：CUSTOMIZED/FUNCTIONPERMISSION？id=1&&name=2
           const keepAliveLabelMapsObj = {
@@ -1557,10 +1604,13 @@
           router.push(
             path
           );
+          const customizedModuleName = tab.action.split('/')[1];
           const data = {
             type: 'singleCustomizeButton',
             value: tab,
-            customizedModuleId: tab.webid
+            // customizedModuleId: tab.webid
+            customizedModuleName: customizedModuleName.toLocaleUpperCase()
+            // 自定义界面：相同自定义界面标记，ID不同时，只激活同一个tab
           };
           this.updateCustomizeMessage(data);
         } 

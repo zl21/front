@@ -27,10 +27,19 @@ const getLabel = (value) => {
   let label = '';
   if (value.type === 'customized') {
     const index = value.url.lastIndexOf('/');
+    const actionType = value.url.substring(0, value.url.indexOf('/'));
+    const itemId = value.url.substring(value.url.lastIndexOf('/') + 1, value.url.length);// 动态id标记，：itemId
     let customizedModuleName = '';
     if (value.url.indexOf('?') !== -1) { // 自定义界面配置携带参数
-      const paramIndex = value.url.lastIndexOf('?');
-      customizedModuleName = value.url.substring(index + 1, paramIndex);
+      const itemId = value.url.substring(value.url.lastIndexOf('/') + 1, value.url.lastIndexOf('?'));// 动态id标记，：itemId
+      if (itemId === ':itemId') {
+        customizedModuleName = value.url.split('/')[1];
+      } else {
+        const paramIndex = value.url.lastIndexOf('?');
+        customizedModuleName = value.url.substring(index + 1, paramIndex);
+      }
+    } else if (itemId) { // 配置动态id的情况
+      customizedModuleName = value.url.split('/')[1];
     } else {
       customizedModuleName = value.url.substring(index + 1, value.url.length);
     }
