@@ -163,6 +163,7 @@ function initiateLaunch(data) { // 业务系统流程发起
 function initLists() { // init
   network.get('/jflow/p/sys/properties')
     .then((res) => {
+      delete res.data.data.roleSwitch;
       globalChange(res.data.data.ciphertextVO);
       delete res.data.data.ciphertextVO;
       globalChange(res.data.data);

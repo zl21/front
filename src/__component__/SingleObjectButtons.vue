@@ -205,11 +205,11 @@
           }
         }
       },
-      $route() {
-        setTimeout(() => {
-          this.updataCurrentTableDetailInfo();
-        }, 0);
-      },
+      // $route() {
+      //   setTimeout(() => {
+      //     this.updataCurrentTableDetailInfo();
+      //   }, 0);
+      // },
      
       isHideTempStorage: {// jflow控制暂存按钮显示
         handler(val) {
@@ -693,6 +693,7 @@
           this.clickButtonsTemporaryStorage();// 暂存按钮执行方法(暂存按钮根据webConf配置显示，同时与保存按钮显示逻辑相同)
         } else if (type === 'refresh') {
           this.clickButtonsRefresh(type);// 刷新按钮执行方法
+
           // DispatchEvent('clickButtonsRefresh');
         } else if (type === 'extraposition') {
           this.clickExtraposition(obj);// jflow按钮执行方法
@@ -751,8 +752,12 @@
         // } else if (this.isItemTable) {
         //   currentItemInfo = this.itemInfo;
         // }
-         
-        DispatchEvent('jflowPlugin', {
+        let eventName = 'jflowPlugin';
+        if (obj && obj.jflowType && obj.jflowType === 'jflowLaunch') {
+          eventName = 'jflowLaunch';
+        }  
+              
+        DispatchEvent(eventName, {
           detail: {
             obj,
             currentItemInfo, // 当前操作的子表或主表信息
@@ -1078,6 +1083,7 @@
               });
             }
           }
+          this.saveCallBack = null; // 清除保存回调，处理保存失败时候有回调的问题.仅限于当前时机清除，不可移动位置
           this.objectSave(obj);
           break;
 
@@ -1407,11 +1413,8 @@
         }
       },
       jflowLaunch(obj) {
-        DispatchEvent('jflowLaunch', {
-          detail: {
-            data: obj
-          }
-        });
+        obj.jflowType = 'jflowLaunch';
+        this.clickExtraposition(obj);
       },
       objTabActionEdit(tab) {
         const editTableId = tab.action.lastIndexOf('/');
@@ -1617,6 +1620,7 @@
       },
 
       clickSave(data) {
+        this.saveCallBack = null; // 清除保存回调，处理保存失败时候有回调的问题.仅限于当前时机清除，不可移动位置
         if (typeof (data.event) === 'function') {
           this.saveCallBack = data.event;
         }
@@ -3132,7 +3136,7 @@
             }
           }
         }
-
+        console.log(3444, this.itemName);
         if (this.subtables()) { // 存在子表时
           let tabinlinemode = '';
           this.tabPanel.forEach((item) => {
@@ -3717,7 +3721,7 @@
       },
       showSingleButtons(data) {
         this.showButtonsForcmds(data.default.names);
-      }
+      },
     },  
     beforeDestroy() {
       window.removeEventListener('jflowClick', this.jflowClick);
@@ -3727,7 +3731,6 @@
       window.removeEventListener('showSingleButtons', this.showSingleButtons);
     },
     mounted() {
-      this.updataCurrentTableDetailInfo();
       this.setDisableButtons();
       if (this.isItemTable) {
         this.dataArray.refresh = false;
@@ -3743,6 +3746,8 @@
       }
       this.hideBackButton();
       if (!this._inactive) {
+        window.addEventListener('showSingleButtons', this.tabClick);
+
         window.addEventListener('showSingleButtons', this.showSingleButtons);
         window.addEventListener('jflowClick', this.jflowClick);
         window.addEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
@@ -3810,6 +3815,9 @@
       }
       // this.dataArray.refresh = this.refreshButtons;
       this.waListButtons(this.tabwebact);
+    },
+    activated() {
+      this.updataCurrentTableDetailInfo();
     },
     created() {
       this.ChineseDictionary = ChineseDictionary;

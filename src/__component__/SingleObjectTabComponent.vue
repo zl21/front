@@ -2,7 +2,7 @@
   <div class="tabComponent">
     <component
       :is="objectButtonComponent"
-      v-if="buttonsData.isShow&&componentType!=='ALL'"
+      v-show="buttonsData.isShow&&componentType!=='ALL'"
       :object-type="type"
       class="objectButtons"
       :item-info="itemInfo"

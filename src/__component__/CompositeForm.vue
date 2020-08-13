@@ -494,6 +494,16 @@
                     show = false;
                   }  
                   option.show = show;
+                  if (show === false) {
+                    if (option.item.props.webconf && option.item.props.webconf.clearWhenHidden) {
+                      if (option.item.type === 'checkbox') {
+                        // 添加checkbox 的判断
+                        option.item.value = option.item.props.falseValue;
+                      } else {
+                        option.item.value = '';
+                      } 
+                    }
+                  }
                 });
               } else {
                 let show = true;
@@ -506,6 +516,16 @@
                   }
                 }
                 item.show = show;
+                if (show === false) {
+                  if (item.item.props.webconf && item.item.props.webconf.clearWhenHidden) {
+                    if (item.item.type === 'checkbox') {
+                      // 添加checkbox 的判断
+                      item.item.value = item.item.props.falseValue;
+                    } else {
+                      item.item.value = '';
+                    } 
+                  }
+                }
               }
             });
           }
@@ -1171,7 +1191,7 @@
               });
             }
           },
-          validate: this.validateList(current)
+          validate: this.validateList({}, current)
         };
         this.propsType(current, obj.item);
         // ignoreDisableWhenEdit 去除不可编辑的状态 
@@ -1472,7 +1492,7 @@
         });
         return true;
       },
-      validateList(current) {
+      validateList(validateObj, current) {
         // 联动判断
         if (Object.hasOwnProperty.call(current, 'dynamicforcompute')) {
           return {
@@ -1490,6 +1510,26 @@
           };
         }
         return {};
+        
+        // if (Object.hasOwnProperty.call(current, 'dynamicforcompute')) {
+        //   validateObj.dynamicforcompute = current.dynamicforcompute;
+        // }
+        // if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
+        //   validateObj.hidecolumn = current.hidecolumn;
+        // }
+        // if (Object.hasOwnProperty.call(current, 'refcolval')) {
+        //   validateObj.refcolval = current.refcolval;
+        // }
+        // if (Object.hasOwnProperty.call(current, 'dynamicforcompute')) {
+        //   validateObj.dynamicforcompute = current.dynamicforcompute;
+        // }
+        // if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
+        //   validateObj.hidecolumn = current.hidecolumn;
+        // }
+        // if (Object.hasOwnProperty.call(current, 'refcolval')) {
+        //   validateObj.refcolval = current.refcolval;
+        // }
+        // return validateObj;
       },
       searchClickData() {
         // 按钮查找
