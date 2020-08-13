@@ -83,7 +83,7 @@ export const routeTo = ({ type, info }, cb) => {
       break;
   }
   if (router.currentRoute.fullPath !== path) {
-    router.push({ path, query }).catch((e) => { console.error(e); });
+    router.push({ path, query }).catch((e) => { console.error('当前单据已打开'); });
   }
 };
 

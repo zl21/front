@@ -252,7 +252,14 @@ export default (router) => {
     }
 
     // 处理label逻辑。因为引入了框架插件界面，故而label显示逻辑会有些需要注意的地方。
-    if (dynamicModuleTag !== '' && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName).length === 0) {
+    // 跳转至定制界面的逻辑改为：只要单对象标记相同，不进行ID判断，只激活同一个单对象标记相同的界面
+    let keepAliveModuleNameRes = '';
+    if (dynamicModuleTag === 'C') {
+      const index = keepAliveModuleName.lastIndexOf('.');  
+      keepAliveModuleNameRes = keepAliveModuleName.substring(0, index);
+    } 
+   
+    if (dynamicModuleTag !== '' && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))).length === 0) {
       // 目标路由所对应的[功能模块]没有存在于openedMenuLists中，则将目标路由应该对应的模块信息写入openedMenuLists
       let tempInterval = -1;
       tempInterval = setInterval(() => {
@@ -279,16 +286,17 @@ export default (router) => {
           });
         }
       }, 125);
-    } else {
-      // 目标路由所对应的[功能模块]已经存在与openedMenuList中，则将需要处理openedMenuList中相匹配的索引值的激活状态。
-      // eslint-disable-next-line no-lonely-if
-      if (to.path !== '/') {
-        commit('global/againClickOpenedMenuLists', {
-          label: routePrefix === PLUGIN_MODULE_PREFIX ? pluginModules[pluginModuleName].name : `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
-          keepAliveModuleName
-        });
-      }
+    } 
+    // 目标路由所对应的[功能模块]已经存在与openedMenuList中，则将需要处理openedMenuList中相匹配的索引值的激活状态。
+    // eslint-disable-next-line no-lonely-if
+    if (to.path !== '/') { // 处理激活同一个tab对应表逻辑
+      commit('global/againClickOpenedMenuLists', {
+        label: routePrefix === PLUGIN_MODULE_PREFIX ? pluginModules[pluginModuleName].name : `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
+        keepAliveModuleName,
+        type: dynamicModuleTag
+      });
     }
+    
 
     next();
   });

@@ -184,11 +184,12 @@ const getCategory = () => {
       } else if (getSeesionObject('loginStatus') === true) {
         setMessage({ content: '当前用户无菜单权限,将为您跳转到登陆界面' });
       }
-    }).catch(() => { // 处理返回数据为空值情况，当返回数据为空时，避免直接跳转框架表单路由
-      if (getSeesionObject('loginStatus') === true) {
-        setMessage({ content: '当前用户无菜单权限,将为您跳转到登陆界面' });
-      }
     });
+    // .catch(() => { // 处理返回数据为空值情况，当返回数据为空时，避免直接跳转框架表单路由
+    //   if (getSeesionObject('loginStatus') === true) {
+    //     setMessage({ content: '当前用户无菜单权限,将为您跳转到登陆界面' });
+    //   }
+    // });
   }
 };
 
