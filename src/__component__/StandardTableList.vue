@@ -21,7 +21,6 @@
       v-if="isTreeList&&treeShow"
       ref="tree"
       :tree-datas="treeConfigData"
-      :placeholder="treeConfigData.placeholder"
       @menuTreeChange="menuTreeChange"
     />
     <div

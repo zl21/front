@@ -25,7 +25,7 @@
           clearable
           icon="ios-search"
           @on-change="searchInputChange"
-              >
+        />
         <span slot="prepend">检索</span>
         </Input>
         <div class="menuContainer">
@@ -976,9 +976,9 @@
       }, // 点击按钮触发
       customize() {
         const param = {
-          url: '/cUSTOMIZED/pERMISSIONs/2997',
-          type: 'C',
-          label: '茉莉',
+          url: '/SYSTEM/TABLE_DETAIL/V/USERS/10085/1020',
+          type: 'V',
+          label: '基础档案',
           dynamicRoutingForCustomizePage: true
         };
         store.commit('global/tabOpen', param);
