@@ -144,6 +144,7 @@ async function initiateLaunch(event) {
   window.ProjectConfig.enableRestrictSave = false;
   window.updataClickSave(async () => {
     window.ProjectConfig.enableRestrictSave = true;
+    await getJflowInfo();
     if (global.jflowInfo && global.jflowInfo.instanceId) {
       mutipleOperate(global.jflowInfo.affirmUrl);
     } else {
