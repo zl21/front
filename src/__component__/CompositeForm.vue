@@ -1494,42 +1494,42 @@
       },
       validateList(validateObj, current) {
         // 联动判断
+        // if (Object.hasOwnProperty.call(current, 'dynamicforcompute')) {
+        //   return {
+        //     dynamicforcompute: current.dynamicforcompute
+        //   };
+        // }
+        // if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
+        //   return {
+        //     hidecolumn: current.hidecolumn
+        //   };
+        // }
+        // if (Object.hasOwnProperty.call(current, 'refcolval')) {
+        //   return {
+        //     refcolval: current.refcolval
+        //   };
+        // }
+        // return {};
+
         if (Object.hasOwnProperty.call(current, 'dynamicforcompute')) {
-          return {
-            dynamicforcompute: current.dynamicforcompute
-          };
+          validateObj.dynamicforcompute = current.dynamicforcompute;
         }
         if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
-          return {
-            hidecolumn: current.hidecolumn
-          };
+          validateObj.hidecolumn = current.hidecolumn;
         }
         if (Object.hasOwnProperty.call(current, 'refcolval')) {
-          return {
-            refcolval: current.refcolval
-          };
+          validateObj.refcolval = current.refcolval;
         }
-        return {};
-        
-        // if (Object.hasOwnProperty.call(current, 'dynamicforcompute')) {
-        //   validateObj.dynamicforcompute = current.dynamicforcompute;
-        // }
-        // if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
-        //   validateObj.hidecolumn = current.hidecolumn;
-        // }
-        // if (Object.hasOwnProperty.call(current, 'refcolval')) {
-        //   validateObj.refcolval = current.refcolval;
-        // }
-        // if (Object.hasOwnProperty.call(current, 'dynamicforcompute')) {
-        //   validateObj.dynamicforcompute = current.dynamicforcompute;
-        // }
-        // if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
-        //   validateObj.hidecolumn = current.hidecolumn;
-        // }
-        // if (Object.hasOwnProperty.call(current, 'refcolval')) {
-        //   validateObj.refcolval = current.refcolval;
-        // }
-        // return validateObj;
+        if (Object.hasOwnProperty.call(current, 'dynamicforcompute')) {
+          validateObj.dynamicforcompute = current.dynamicforcompute;
+        }
+        if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
+          validateObj.hidecolumn = current.hidecolumn;
+        }
+        if (Object.hasOwnProperty.call(current, 'refcolval')) {
+          validateObj.refcolval = current.refcolval;
+        }
+        return validateObj;
       },
       searchClickData() {
         // 按钮查找
@@ -1655,7 +1655,7 @@
       },
       defaultValue(item) {
         // 组件的默认值  
-        // const checkIsReadonly = this.isReadonly(item);
+        const checkIsReadonly = this.isReadonly(item);
 
         // if (item.readonly === true && item.fkdisplay) {
         //   //  不可编辑 变成 input
@@ -1803,7 +1803,7 @@
         //   }
         //   return item.defval || item.valuedata || item.default || '';
         // }
-        if (this.readonly && item.fkdisplay === 'mop') {
+        if (checkIsReadonly && item.fkdisplay === 'mop') {
           if (item.valuedata && /total/.test(item.valuedata)) {
             const valuedata = JSON.parse(item.valuedata);
             return `已经选中${valuedata.total}条` || '';
@@ -1874,7 +1874,6 @@
           return arr;
         }
 
-        console.log('tag');
         return this.defaultSetValue[item.colname] || item.valuedata || item.defval || item.default || '';
       // wewe
       },

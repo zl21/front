@@ -29,7 +29,7 @@ module.exports = {
   // target: 'http://172.18.34.122:8001/', // ishop环境
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop环境
   // target: 'http://47.103.175.111:26666/', // 千百度环境
-  target: 'http://syman-jflow-standard.dev.burgeononline.com',
+  // target: 'http://syman-jflow-standard.dev.burgeononline.com',
   
   
   

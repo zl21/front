@@ -26,7 +26,7 @@ import './src/assets/css/loading.css';
 import './src/assets/css/custom-ext.less';
 import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
 
-// Vue.use(VueDND);
+Vue.use(VueDND);
 
 
 // 注册自定义模态框组件
@@ -178,11 +178,12 @@ const getCategory = () => {
       } else if (getSeesionObject('loginStatus') === true) {
         setMessage({ content: '当前用户无菜单权限,将为您跳转到登陆界面' });
       }
-    }).catch(() => { // 处理返回数据为空值情况，当返回数据为空时，避免直接跳转框架表单路由
-      if (getSeesionObject('loginStatus') === true) {
-        setMessage({ content: '当前用户无菜单权限,将为您跳转到登陆界面' });
-      }
     });
+    // .catch(() => { // 处理返回数据为空值情况，当返回数据为空时，避免直接跳转框架表单路由
+    //   if (getSeesionObject('loginStatus') === true) {
+    //     setMessage({ content: '当前用户无菜单权限,将为您跳转到登陆界面' });
+    //   }
+    // });
   }
 };
 
@@ -226,6 +227,12 @@ if (enableGateWay()) {
   getSubSystems();
   init();
 }
+const packageMessage = {
+  version: '1.8.6',
+  packageTime: '2020.08.14.14.44', 
+  user: 'AD',   
+};
+projectConfig.packageMessage = packageMessage;
 window.ProjectConfig = projectConfig;
 
 // 初始化配置的图片
