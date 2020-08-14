@@ -578,7 +578,7 @@
       updataCurrentTableDetailMethods() { // 更新单对象挂载window的方法（保持当前激活的单对象界面）
         window.updataClickSave = event => this.clickSave({ event });
         window.testUpdataValue = () => this.testUpdata();
-        window.updatavVerifyRequiredInformation = () => this.verifyRequiredInformation();
+        window.updatavVerifyRequiredInformation = () => this.getVerifyRequiredInformation();
       },
       imporSuccess(id) {
         if (Version() === '1.3') {
@@ -2266,7 +2266,7 @@
         } else if (url.indexOf(CUSTOMIZED_MODULE_PREFIX) > -1) {
           directionalRouterType = 'C';
         } else if (url.indexOf(PLUGIN_MODULE_PREFIX) > -1) {
-          directionalRouterType = 'L';
+          directionalRouterType = 'P';
         }
         return directionalRouterType;
       },

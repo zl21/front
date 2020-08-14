@@ -345,15 +345,15 @@
                             const distype = params.row.objdistype === 'tabpanle' ? 'H' : 'V';
                             const arr = params.row.formUrl.split('/');
                             arr[3] = distype;
+                            window.sessionStorage.setItem('dynamicRouting', true);
                             window.vm.$router.push({
                               path: arr.join('/')
                             });
-                            window.sessionStorage.setItem('dynamicRouting', true);
                           } else {
+                            window.sessionStorage.setItem('dynamicRouting', true);
                             window.vm.$router.push({
                               path: params.row.formUrl
                             });
-                            window.sessionStorage.setItem('dynamicRouting', true);
                           }
                         }
                       }

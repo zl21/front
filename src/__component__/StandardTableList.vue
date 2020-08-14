@@ -1336,6 +1336,15 @@
         const tabcmdData = this.buttons.tabcmd;
         if (tabcmdData.cmds) {
           const buttonGroupShow = [];
+          // 导入导出按钮配置规则：disableImport：true(隐藏导入按钮) false(显示导入按钮)，导出按钮和导入按钮保持一致
+          if (this.webConf) {
+            if (this.webConf.disableImport) {
+              tabcmdData.prem[7] = false;
+            }
+            if (this.webConf.disableExport) {
+              tabcmdData.prem[8] = false;
+            }
+          }
           tabcmdData.cmds.forEach((item, index) => {
             if (item === 'actionView') {
               this.updatestopOnRowDoubleClickData(tabcmdData.prem[index]);
@@ -1357,6 +1366,7 @@
                   buttonConfigInfo.jflowpath = jflowpathsRes[index];
                   this.urlArr.push(jflowpathsRes[index]);
                 }
+              
                 if (this.webConf && ((this.webConf.disableImport && str === 'CMD_IMPORT') || (this.webConf.disableExport && str === 'CMD_EXPORT'))) {
                   // 根据webConf控制列表界面导入导出按钮
                 } else {
@@ -1365,6 +1375,23 @@
               }
             }
           });
+       
+          if (this.webConf) {
+            if (this.webConf.disableExport === false) {
+              const buttonConfigInfo = {
+                eName: 'actionEXPORT',
+                name: '导出'
+              };
+              buttonGroupShow.push(buttonConfigInfo);
+            }
+            if (this.webConf.disableImport === false) {
+              const buttonConfigInfo = {
+                eName: 'actionIMPORT',
+                name: '导入'
+              };
+              buttonGroupShow.push(buttonConfigInfo);
+            }
+          } 
           this.updateDefaultButtonGroupData(buttonGroupShow);
           this.collectTablelist();
         }

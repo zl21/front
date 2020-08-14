@@ -38,7 +38,6 @@ function restartProcess() {
 
 // 业务系统的保存需要通知jflow
 async function businessChange() {
-  console.log(global);
   await network.post('/jflow/p/cs/business/change', {
     instanceId: global.jflowInfo.instanceId,
     businessCode: global.routeInfo.currentItemId,

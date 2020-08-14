@@ -29,7 +29,7 @@ import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
 
 // Vue.use(jflowPlugin, {
 //   changePattern: true, // 控制待办列表转派的选择模式 true为单选,false为多选
-//   gateway: null,
+//   gateway: 'ad-app',
 //   roleSwitch: false
 // });
 
@@ -234,6 +234,12 @@ if (enableGateWay()) {
   getSubSystems();
   init();
 }
+const packageMessage = {
+  version: '1.8.6',
+  packageTime: '2020.08.14.14.44', 
+  user: 'AD',   
+};
+projectConfig.packageMessage = packageMessage;
 window.ProjectConfig = projectConfig;
 
 // 初始化配置的图片
