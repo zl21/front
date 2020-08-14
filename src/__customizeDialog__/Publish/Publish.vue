@@ -1,4 +1,5 @@
 <template>
+  <!-- 版本管理，单对象界面Publish -->
   <div class="publishContent">
     <div class="pop-title">
       <div class="pop-input">
@@ -89,30 +90,30 @@
           env: this.envValue, 
           objId: itemId, 
         };
-        if (this.idArray.length === 0) {
-          const data = {
-            mask: true,
-            title: '警告',
-            content: '当前的操作会执行全量覆盖！是否继续？',
-            showCancel: true,
-            onOk: () => {
-              const datas = {
-                tableName,
-                searchdata
-              };
-              this.publish(datas);
-            }
-          };
-          this.$Modal.fcWarning(data);
-        } else {
-          searchdata.ids = this.idArray.map(d => parseInt(d));
+        // if (this.idArray.length === 0) {
+        //   const data = {
+        //     mask: true,
+        //     title: '警告',
+        //     content: '当前的操作会执行全量覆盖！是否继续？',
+        //     showCancel: true,
+        //     onOk: () => {
+        //       const datas = {
+        //         tableName,
+        //         searchdata
+        //       };
+        //       this.publish(datas);
+        //     }
+        //   };
+        //   this.$Modal.fcWarning(data);
+        // } else {
+        //   searchdata.ids = this.idArray.map(d => parseInt(d));
 
-          const datas = {
-            tableName,
-            searchdata
-          };
-          this.publish(datas);
-        }
+        const datas = {
+          tableName,
+          searchdata
+        };
+        this.publish(datas);
+        // }
       }, // 确定
       publish(data) {
         this.$R3loading.show();

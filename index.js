@@ -25,13 +25,13 @@ import './src/assets/theme/custom.less';
 import './src/assets/css/loading.css';
 import './src/assets/css/custom-ext.less';
 import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
-import jflowPlugin from './jflowPlugin/js/index';
+// import jflowPlugin from './jflowPlugin/js/index';
 
-Vue.use(jflowPlugin, {
-  changePattern: true, // 控制待办列表转派的选择模式 true为单选,false为多选
-  gateway: 'ad-app',
-  roleSwitch: false
-});
+// Vue.use(jflowPlugin, {
+//   changePattern: true, // 控制待办列表转派的选择模式 true为单选,false为多选
+//   gateway: 'ad-app',
+//   roleSwitch: false
+// });
 
 Vue.use(VueDND);
 
@@ -234,9 +234,9 @@ if (enableGateWay()) {
   init();
 }
 const packageMessage = {
-  version: '1.8.3',
-  packageTime: '2020.07.17.11.17', 
-  user: 'ishop',   
+  version: '1.8.6',
+  packageTime: '2020.08.14.14.44', 
+  user: 'AD',   
 };
 projectConfig.packageMessage = packageMessage;
 window.ProjectConfig = projectConfig;
