@@ -733,18 +733,15 @@
               currentItemId: this.itemInfo.id ? this.itemId : this.itemObjId// 当前表明细ID
             };
           }
-        } else if (this.dataArray && this.dataArray.jflowButton && this.dataArray.jflowButton.length > 0) {
-          // 有jflowButton则认为编辑的表
-          if (this.itemInfo) {
-            currentItemInfo = {
-              tableId: this.tableId, // 主表ID
-              tableName: this.tableName, // 主表表名
-              itemId: this.itemId, // 主表明细ID
-              currentTableId: this.getCurrentItemInfo().tableid, // 当前表表ID
-              currentTableName: this.getCurrentItemInfo().tablename,
-              currentItemId: this.itemObjId// 当前表明细ID
-            };
-          }
+        } else if (this.itemInfo) { // 有jflowButton则认为编辑的表
+          currentItemInfo = {
+            tableId: this.tableId, // 主表ID
+            tableName: this.tableName, // 主表表名
+            itemId: this.itemId, // 主表明细ID
+            currentTableId: this.getCurrentItemInfo().tableid, // 当前表表ID
+            currentTableName: this.getCurrentItemInfo().tablename,
+            currentItemId: this.itemObjId// 当前表明细ID
+          };
         }
        
         // if (this.objectType === 'horizontal') {

@@ -140,6 +140,7 @@ async function getTemplate() { // 获取模版信息
 
 // 触发事件
 async function initiateLaunch(event) {
+  console.log(event);
   globalChange({ routeInfo: event.detail.currentItemInfo });
   window.ProjectConfig.enableRestrictSave = false;
   window.updataClickSave(async () => {
@@ -161,7 +162,7 @@ async function initiateLaunch(event) {
         });
   
         triggerBt = triggerBt.filter((item, index, self) => self.indexOf(item) === index);
-        
+
         if (triggerBt.includes(String(event.detail.obj.webid))) {
           window.initiateLaunch({ webActionId: event.detail.obj.webid });
         } else {
