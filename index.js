@@ -233,6 +233,12 @@ if (enableGateWay()) {
   getSubSystems();
   init();
 }
+const packageMessage = {
+  version: '1.8.3',
+  packageTime: '2020.07.17.11.17', 
+  user: 'ishop',   
+};
+projectConfig.packageMessage = packageMessage;
 window.ProjectConfig = projectConfig;
 
 // 初始化配置的图片

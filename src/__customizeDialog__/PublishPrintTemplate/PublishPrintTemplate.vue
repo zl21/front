@@ -104,14 +104,14 @@
           };
           this.$Modal.fcWarning(data);
         } else {
-          searchdata.ids = this.idArray;
+          // searchdata.ids = this.idArray;
+          searchdata.ids = this.idArray.map(d => parseInt(d));
           const datas = {
             tableName,
             searchdata
           };
           this.publish(datas);
         }
-        console.log(999, searchdata);
       }, // 确定
       publish(data) {
         this.$R3loading.show();
