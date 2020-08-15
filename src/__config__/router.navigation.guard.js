@@ -290,6 +290,9 @@ export default (router) => {
     // 目标路由所对应的[功能模块]已经存在与openedMenuList中，则将需要处理openedMenuList中相匹配的索引值的激活状态。
     // eslint-disable-next-line no-lonely-if
     if (to.path !== '/') { // 处理激活同一个tab对应表逻辑
+      if (window.ProjectConfig && window.ProjectConfig.externalPluginModules) { // 整合外部插件配置与框架插件配置
+        pluginModules = Object.assign({}, pluginModules, window.ProjectConfig.externalPluginModules);
+      }
       commit('global/againClickOpenedMenuLists', {
         label: routePrefix === PLUGIN_MODULE_PREFIX ? pluginModules[pluginModuleName].name : `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
         keepAliveModuleName,
