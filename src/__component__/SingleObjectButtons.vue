@@ -578,7 +578,7 @@
       updataCurrentTableDetailMethods() { // 更新单对象挂载window的方法（保持当前激活的单对象界面）
         window.updataClickSave = event => this.clickSave({ event });
         window.testUpdataValue = () => this.testUpdata();
-        window.updatavVerifyRequiredInformation = () => this.getVerifyRequiredInformation();
+        window.updatavVerifyRequiredInformation = () => this.verifyRequiredInformation();
       },
       imporSuccess(id) {
         if (Version() === '1.3') {
@@ -2911,13 +2911,16 @@
         //     }
         //   });
         // }
-        if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
-          if (this.verifyRequiredInformation()) { // 校验必填项
-            this.mainTableNewSaveAndEditorNewSave();
+        // 因表单失去焦点触发联动校验需一定的时间处理，故校验逻辑需要延时，因延时是异步的，无法return值，所以在调用保存时，处理延时逻辑
+        setTimeout(() => {
+          if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
+            if (this.verifyRequiredInformation()) { // 校验必填项
+              this.mainTableNewSaveAndEditorNewSave();
+            }
+          } else if (this.itemId !== '-1') { // 主表编辑保存
+            this.mainTableEditorSave(obj);
           }
-        } else if (this.itemId !== '-1') { // 主表编辑保存
-          this.mainTableEditorSave(obj);
-        }
+        }, 600);
       },
       mainTableNewSaveAndEditorNewSave() { // 新增保存
         this.saveParameters();// 调用获取参数方法
