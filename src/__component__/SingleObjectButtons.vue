@@ -578,7 +578,7 @@
       updataCurrentTableDetailMethods() { // 更新单对象挂载window的方法（保持当前激活的单对象界面）
         window.updataClickSave = event => this.clickSave({ event });
         window.testUpdataValue = () => this.testUpdata();
-        window.updatavVerifyRequiredInformation = () => this.getVerifyRequiredInformation();
+        window.updatavVerifyRequiredInformation = () => this.verifyRequiredInformation();
       },
       imporSuccess(id) {
         if (Version() === '1.3') {
