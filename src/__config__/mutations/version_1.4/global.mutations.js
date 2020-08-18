@@ -8,7 +8,8 @@ import {
   LINK_MODULE_COMPONENT_PREFIX,
   LINK_MODULE_PREFIX,
   enableKeepAlive,
-  enableHistoryAndFavoriteUI
+  enableHistoryAndFavoriteUI,
+  enableActivateSameCustomizePage
 } from '../../../constants/global';
 import router from '../../router.config';
 import setCustomeLabel from '../../../__utils__/setCustomeLabel';
@@ -374,7 +375,13 @@ export default {
       } 
       // d.label === label &&
       // 去除对label的限制，自定义配置，自定义标识相同，label不同，也可认为是同一个自定义界面
-      if (d.keepAliveModuleName === keepAliveModuleName || d.keepAliveModuleName.includes(keepAliveModuleNameRes)) {
+      let flag = false;
+      if (enableActivateSameCustomizePage()) {
+        if (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes)) {
+          flag = true;
+        }
+      }
+      if (d.keepAliveModuleName === keepAliveModuleName || flag) {
         d.isActive = true;
       }
     });

@@ -380,7 +380,7 @@ export default {
       } 
       // d.label === label &&
       // 去除对label的限制，自定义配置，自定义标识相同，label不同，也可认为是同一个自定义界面
-      if (d.keepAliveModuleName === keepAliveModuleName || d.keepAliveModuleName.includes(keepAliveModuleNameRes)) {
+      if (d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
         d.isActive = true;
       }
     });
