@@ -204,7 +204,7 @@
         searchData: {
           table: '',
           startIndex: 0,
-          range: 10,
+          // range: 10,
           orderby: undefined
         },
         formItemsLists: [],
@@ -1826,7 +1826,11 @@
           data.reject = reject;
           this.getQueryListForAg(data);
         });
-        promise.then(() => {
+        promise.then((res) => {
+          if (!this.searchData.range) {
+            this.searchData.range = res.data.datas.defaultrange;
+          }
+          
           this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
         }, () => { // 状态为rejected时执行
           this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);

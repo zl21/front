@@ -25,7 +25,7 @@ module.exports = {
   // target: 'http://jflow-shangfei-r3.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://ark-share-dev.dev.burgeononline.com', // ArkShare环境
   // target: 'http://r3.burgeon.cn:28888/', // lining环境
-  // target: 'http://47.102.164.111:26666/', // 卡宾
+  target: 'http://47.102.164.111:26666/', // 卡宾
   // target: 'http://172.18.34.122:8001/', // ishop环境
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop环境
   // target: 'http://47.103.175.111:26666/', // 千百度环境
@@ -45,7 +45,7 @@ module.exports = {
   enableInitializationRequest: true, // 是否开启初始化请求
   // enableCustomInterface: false // 是否开启自定义接口,
   customizeWaterMark: {}, // 启用外部自定义水印配置,
-  specifiedGlobalGateWay: 'ad-app',
+  // specifiedGlobalGateWay: 'ad-app',
   // specifiedGlobalGateWay: 'user-center',
   encryptedPassword: false, // 是否允许login接口password加密
   isItemTableNewValidation: true, // 是否允许子表新增有必填项时，输入值才触发子表必填项校验，不输入值则只校验主表
