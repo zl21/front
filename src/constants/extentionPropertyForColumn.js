@@ -317,6 +317,6 @@ export default [
     key: 'fuzzytype',
     type: 'radio',
     enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
-    description: '控制列表模糊查询匹配是否为全匹配'
+    description: '控制列表模糊查询匹配是否为全模糊'
   },
 ];
