@@ -1831,7 +1831,7 @@
             if (Version() === '1.3') {
               this.searchData.range = res.data.datas.defaultrange;
             } else {
-              this.searchData.range = res.data.defaultrange;
+              this.searchData.range = res.data.data.defaultrange;
             }
           }
           
