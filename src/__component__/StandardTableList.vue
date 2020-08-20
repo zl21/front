@@ -518,14 +518,11 @@
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
       onPageChange(page) {
-        debugger;
         const { range } = this.searchData;
         this.searchData.startIndex = range * (page - 1);
         this.getQueryList();
       },
       onPageSizeChange(pageSize) {
-        debugger;
-
         this.searchData.startIndex = 0;
         this.searchData.range = pageSize;
         this.getQueryList();
@@ -1829,7 +1826,11 @@
           data.reject = reject;
           this.getQueryListForAg(data);
         });
-        promise.then(() => {
+        promise.then((res) => {
+          if (!this.searchData.range) {
+            this.searchData.range = res.data.datas.defaultrange;
+          }
+          
           this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
         }, () => { // 状态为rejected时执行
           this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);

@@ -32,7 +32,7 @@ export default {
       } else {
         commit('updateTableData', updateTableData);
       }
-      resolve();
+      resolve(res);
     }).catch(() => {
       reject();
     });
