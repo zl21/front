@@ -19,7 +19,7 @@ export default {
       searchdata: {
         table,
         startindex: startIndex || 0,
-        range: range || 10,
+        range,
         fixedcolumns,
         reffixedcolumns,
         column_include_uicontroller,
@@ -32,7 +32,7 @@ export default {
       } else {
         commit('updateTableData', updateTableData);
       }
-      resolve();
+      resolve(res);
     }).catch(() => {
       reject();
     });
