@@ -204,7 +204,7 @@
         searchData: {
           table: '',
           startIndex: 0,
-          range: 10,
+          // range: 10,
           orderby: undefined
         },
         formItemsLists: [],
@@ -518,11 +518,14 @@
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
       onPageChange(page) {
+        debugger;
         const { range } = this.searchData;
         this.searchData.startIndex = range * (page - 1);
         this.getQueryList();
       },
       onPageSizeChange(pageSize) {
+        debugger;
+
         this.searchData.startIndex = 0;
         this.searchData.range = pageSize;
         this.getQueryList();
