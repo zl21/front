@@ -1,5 +1,6 @@
 import store from './store.config';
 import {
+  enableActivateSameCustomizePage,
   CUSTOMIZED_MODULE_PREFIX,
   STANDARD_TABLE_LIST_PREFIX,
   STANDARD_COMMONTABLE_LIST_PREFIX,
@@ -195,7 +196,12 @@ export default (router) => {
 
     // 处理 keepAliveModuleName：目标路由的模块默认都要加入keepAlive列表
     if (!keepAliveLists.includes(keepAliveModuleName) && keepAliveModuleName !== '') {
-      commit('global/increaseKeepAliveLists', keepAliveModuleName);
+      const data = {
+        name: keepAliveModuleName, 
+        to,
+        dynamicModuleTag
+      };
+      commit('global/increaseKeepAliveLists', data);
     }
 
     // 判断是否状态中已经存在某个模块，不存在则创建。用户自定义界面不创建
@@ -255,12 +261,21 @@ export default (router) => {
     // 跳转至定制界面的逻辑改为：只要单对象标记相同，不进行ID判断，只激活同一个单对象标记相同的界面
     let keepAliveModuleNameRes = '';
     if (dynamicModuleTag === 'C') {
-      const index = keepAliveModuleName.lastIndexOf('.');  
-      keepAliveModuleNameRes = keepAliveModuleName.substring(0, index);
+      keepAliveModuleNameRes = keepAliveModuleName.split('.')[1];
     } 
-   
-    if (dynamicModuleTag !== '' && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))).length === 0) {
+    // 通过activateSameCustomizePage配置路由到自定义界面，如果自定义界面标识相同，是否只激活同一个tab,默认为true,只激活同一个tab
+    let activateSameCustomizePageFlag = false;
+    if (enableActivateSameCustomizePage()) {
+      // 当前打开的tab的keepAliveModuleName===要跳转页面的keepAliveModuleName，或是当前是自定义界面的keepAliveModuleName包含当前要跳转的自定义界面的标识，不必keepAliveModuleName相等，包含自定义界面的标识即可
+      if (dynamicModuleTag !== '' && openedMenuLists.length > 0 && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))).length > 0) {
+        activateSameCustomizePageFlag = true;
+      }
+    }
+  
+    if (dynamicModuleTag !== '' && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName).length === 0 && !activateSameCustomizePageFlag) {
+      // 新开tab
       // 目标路由所对应的[功能模块]没有存在于openedMenuLists中，则将目标路由应该对应的模块信息写入openedMenuLists
+  
       let tempInterval = -1;
       tempInterval = setInterval(() => {
         let ready = null;
@@ -286,17 +301,17 @@ export default (router) => {
           });
         }
       }, 125);
-    } 
-    // 目标路由所对应的[功能模块]已经存在与openedMenuList中，则将需要处理openedMenuList中相匹配的索引值的激活状态。
-    // eslint-disable-next-line no-lonely-if
-    if (to.path !== '/') { // 处理激活同一个tab对应表逻辑
+    } else if (to.path !== '/') { // 处理激活同一个tab对应表逻辑
+      // 目标路由所对应的[功能模块]已经存在与openedMenuList中，则将需要处理openedMenuList中相匹配的索引值的激活状态。
+      // 不新开tab
       if (window.ProjectConfig && window.ProjectConfig.externalPluginModules) { // 整合外部插件配置与框架插件配置
         pluginModules = Object.assign({}, pluginModules, window.ProjectConfig.externalPluginModules);
       }
       commit('global/againClickOpenedMenuLists', {
         label: routePrefix === PLUGIN_MODULE_PREFIX ? pluginModules[pluginModuleName].name : `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
         keepAliveModuleName,
-        type: dynamicModuleTag
+        type: dynamicModuleTag,
+        fullPath: to.fullPath,
       });
     }
     

@@ -83,9 +83,10 @@ export default {
         param.url = param.url.concat(query);
       }
       const linkUrl = param.url;
-      const linkId = param.linkId;
-      if (!store.state.global.LinkUrl[linkId]) {      
-        store.commit('global/increaseLinkUrl', { linkId, linkUrl });
+      // const linkId = param.linkId;
+      const linkModuleName = param.lingName.toUpperCase();
+      if (!store.state.global.LinkUrl[linkModuleName]) {      
+        store.commit('global/increaseLinkUrl', { linkModuleName, linkUrl });
       }
       const obj = {
         linkName: param.lingName,
@@ -211,7 +212,7 @@ export default {
               }
               if (actionType === 'https:' || actionType === 'http:') {
                 const linkUrl = {};
-                linkUrl[c.id] = c.url;
+                linkUrl[c.value.toUpperCase()] = c.url;
                 state.LinkUrl.push(linkUrl); // 方便记录外部链接的跳转URL
                 a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
               } else if (actionType.toUpperCase() === 'CUSTOMIZED' || c.url === 'customizeReport') {
@@ -274,7 +275,7 @@ export default {
       const name = `L.${tableDetailUrlMessage.linkName.toUpperCase()}.${tableDetailUrlMessage.linkId}`;
       state.keepAliveLabelMaps[name] = `${labelName}`;
       const linkUrl = {};
-      linkUrl[tableDetailUrlMessage.linkId] = tableDetailUrlMessage.linkUrl;
+      linkUrl[tableDetailUrlMessage.linkName.toUpperCase()] = tableDetailUrlMessage.linkUrl;
       state.LinkUrl.push(linkUrl); // 方便记录外部链接的跳转URL
       state.keepAliveLabelMaps[name] = `${tableDetailUrlMessage.linkLabel}`;
     }
@@ -286,9 +287,9 @@ export default {
     linkType[linkId] = linkUrl;
     state.LinkUrl.push(linkType);
   },
-  increaseKeepAliveLists(state, name) {
-    if (enableKeepAlive() && !state.keepAliveLists.includes(name)) {
-      state.keepAliveLists = state.keepAliveLists.concat([name]);
+  increaseKeepAliveLists(state, data) {
+    if (enableKeepAlive() && !state.keepAliveLists.includes(data.name)) {
+      state.keepAliveLists = state.keepAliveLists.concat([data.name]);
     }
   },
   decreasekeepAliveLists(state, name) {
@@ -380,7 +381,7 @@ export default {
       } 
       // d.label === label &&
       // 去除对label的限制，自定义配置，自定义标识相同，label不同，也可认为是同一个自定义界面
-      if (d.keepAliveModuleName === keepAliveModuleName || d.keepAliveModuleName.includes(keepAliveModuleNameRes)) {
+      if (d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
         d.isActive = true;
       }
     });

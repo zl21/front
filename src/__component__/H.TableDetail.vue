@@ -205,9 +205,12 @@
           }
         }
         if (this.WebConf && this.WebConf.isCustomizeTab) {
+          console.log('未打开过当前子表tab', index);
+
           const i = index - 1;
           this.isRequestUpdata({ tabPanel: this.tabPanels, index: i });
         } else {
+          console.log('已打开过当前子表tab', index, this.WebConf, !flag);
           this.isRequestUpdata({ tabPanel: this.tabPanels, index });
         }
       }, // tab切换触发的方法
