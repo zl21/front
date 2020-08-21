@@ -12,7 +12,7 @@
 <script>
   
   export default {
-    name: 'LinkPage',
+    // name: 'LinkPage',
     data() {
       return {
         
@@ -24,8 +24,10 @@
         default: ''
       },
     },
-    mounted() {
-     
+   
+    activated() {
+      const { linkModuleId } = this.$route.params;
+      this.$store.dispatch('global/updateAccessHistory', { type: 'action', id: linkModuleId });
     }
   };
 </script>

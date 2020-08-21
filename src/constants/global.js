@@ -30,6 +30,7 @@ export const layoutDirection = () => ((window.ProjectConfig && typeof window.Pro
 export const contentConfig = () => (window.ProjectConfig && window.ProjectConfig.contentConfig ? window.ProjectConfig.contentConfig : project.contentConfig);
 export const REQUEST_PENDDING_EXPIRE = () => (window.ProjectConfig && window.ProjectConfig.requestPenddingExpire ? window.ProjectConfig.requestPenddingExpire : project.requestPenddingExpire);
 // export const REQUEST_PENDDING_EXPIRE = 1000 * 2;
+export const enableActivateSameCustomizePage = () => (window.ProjectConfig && typeof window.ProjectConfig.enableActivateSameCustomizePage === 'boolean' ? window.ProjectConfig.enableActivateSameCustomizePage : project.enableActivateSameCustomizePage);
 
 
 export const STANDARD_TABLE_LIST_PREFIX = '/SYSTEM/TABLE';

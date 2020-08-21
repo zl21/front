@@ -1154,12 +1154,13 @@
             const name = `${LINK_MODULE_COMPONENT_PREFIX}.${tab.webname.toUpperCase()}.${tab.webid}`;
             this.addKeepAliveLabelMaps({ name, label: tab.name });
             const linkUrl = tabAction;
-            const linkId = tab.webid;
-            if (!this.LinkUrl[linkId]) {
-              this.increaseLinkUrl({ linkId, linkUrl });
+            // const linkId = tab.webid;
+            const linkModuleName = tab.webname.toUpperCase();
+            if (!this.LinkUrl[linkModuleName]) {
+              this.increaseLinkUrl({ linkModuleName, linkUrl });
             }
             const obj = {
-              linkName: tab.webname,
+              linkName: tab.webname.toUpperCase(),
               linkId: tab.webid,
               linkUrl,
               linkLabel: tab.name
