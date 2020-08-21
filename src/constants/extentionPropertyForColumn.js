@@ -314,7 +314,7 @@ export default [
   },
   {
     name: '列表查询匹配规则',
-    key: 'fuzzytype',
+    key: 'fuzzy_match_all',
     type: 'radio',
     enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
     description: '控制列表模糊查询匹配是否为全模糊'
