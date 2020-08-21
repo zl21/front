@@ -40,8 +40,8 @@
         const { linkModuleName, linkModuleId } = this.$route.params;
         if (this.LinkUrl.length > 0) {
           this.LinkUrl.forEach((url) => {
-            if (url[linkModuleId]) {
-              this.urlName = url[linkModuleId];
+            if (url[linkModuleName]) {
+              this.urlName = url[linkModuleName];
             }
           });
         }

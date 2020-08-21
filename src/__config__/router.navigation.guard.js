@@ -196,7 +196,12 @@ export default (router) => {
 
     // 处理 keepAliveModuleName：目标路由的模块默认都要加入keepAlive列表
     if (!keepAliveLists.includes(keepAliveModuleName) && keepAliveModuleName !== '') {
-      commit('global/increaseKeepAliveLists', keepAliveModuleName);
+      const data = {
+        name: keepAliveModuleName, 
+        to,
+        dynamicModuleTag
+      };
+      commit('global/increaseKeepAliveLists', data);
     }
 
     // 判断是否状态中已经存在某个模块，不存在则创建。用户自定义界面不创建
@@ -266,6 +271,7 @@ export default (router) => {
         activateSameCustomizePageFlag = true;
       }
     }
+  
     if (dynamicModuleTag !== '' && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName).length === 0 && !activateSameCustomizePageFlag) {
       // 新开tab
       // 目标路由所对应的[功能模块]没有存在于openedMenuLists中，则将目标路由应该对应的模块信息写入openedMenuLists
@@ -304,7 +310,8 @@ export default (router) => {
       commit('global/againClickOpenedMenuLists', {
         label: routePrefix === PLUGIN_MODULE_PREFIX ? pluginModules[pluginModuleName].name : `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
         keepAliveModuleName,
-        type: dynamicModuleTag
+        type: dynamicModuleTag,
+        fullPath: to.fullPath,
       });
     }
     
