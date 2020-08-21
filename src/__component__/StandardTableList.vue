@@ -1337,11 +1337,12 @@
         if (tabcmdData.cmds) {
           const buttonGroupShow = [];
           // 导入导出按钮配置规则：disableImport：true(隐藏导入按钮) false(显示导入按钮)，导出按钮和导入按钮保持一致
+          
           if (this.webConf) {
-            if (this.webConf.disableImport) {
+            if (this.webConf.disableImport || this.webConf.disableImport === false) {
               tabcmdData.prem[7] = false;
             }
-            if (this.webConf.disableExport) {
+            if (this.webConf.disableExport || this.webConf.disableExport === false) {
               tabcmdData.prem[8] = false;
             }
           }
