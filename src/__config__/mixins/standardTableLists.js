@@ -95,7 +95,8 @@ export default () => ({
         'page-size-opts': ag.datas.selectrange || [10, 25, 50, 100],
         'show-elevator': true,
         'show-sizer': true,
-        'show-total': true
+        'show-total': true,
+        'page-size': ag.datas.defaultrange || 10
       }),
       formItems: ({ formItems }) => formItems,
       buttons: ({ buttons }) => buttons,

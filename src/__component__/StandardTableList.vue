@@ -204,7 +204,7 @@
         searchData: {
           table: '',
           startIndex: 0,
-          range: 10,
+          // range: 10,
           orderby: undefined
         },
         formItemsLists: [],
@@ -727,7 +727,7 @@
             const tab = {
               type,
               tableName: colDef.customerurl.reftablename,
-              tableId,
+              tableId: colDef.customerurl.reftableid,
               label: colDef.customerurl.reftabdesc,
               id: rowData[colDef.customerurl.refobjid].val
             };
@@ -738,7 +738,7 @@
             const tab = {
               type,
               tableName: colDef.customerurl.reftablename,
-              tableId,
+              tableId: colDef.customerurl.reftableid,
               label: colDef.customerurl.reftabdesc,
               id: rowData[colDef.customerurl.refobjid].val
             };
@@ -1401,6 +1401,8 @@
         this.onSelectionChangedAssignment({ rowIdArray, rowArray });
       },
       buttonClick(type, obj) {
+        this.setActiveTabActionValue({});// 点击按钮前清除上一次按钮存的信息
+
         if (type === 'fix') {
           this.AddDetailClick(obj);
         } else if (type === 'custom') {
@@ -1826,7 +1828,15 @@
           data.reject = reject;
           this.getQueryListForAg(data);
         });
-        promise.then(() => {
+        promise.then((res) => {
+          if (!this.searchData.range) {
+            if (Version() === '1.3') {
+              this.searchData.range = res.data.datas.defaultrange;
+            } else {
+              this.searchData.range = res.data.data.defaultrange;
+            }
+          }
+          
           this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
         }, () => { // 状态为rejected时执行
           this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
@@ -2414,10 +2424,10 @@
             });
             const name = `${LINK_MODULE_COMPONENT_PREFIX}.${tab.webname.toUpperCase()}.${tab.webid}`;
             this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
-            const linkId = tab.webid;
-
-            if (!this.LinkUrl[linkId]) {
-              this.increaseLinkUrl({ linkId, linkUrl });
+            // const linkId = tab.webid;
+            const linkModuleName = tab.webname.toUpperCase();
+            if (!this.LinkUrl[linkModuleName]) {
+              this.increaseLinkUrl({ linkModuleName, linkUrl });
             }
             const obj = {
               linkName: tab.webname,

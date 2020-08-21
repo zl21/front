@@ -21,6 +21,7 @@
     STANDARD_COMMONTABLE_LIST_PREFIX,
     VERTICAL_TABLE_DETAIL_PREFIX,
     HORIZONTAL_TABLE_DETAIL_PREFIX,
+    LINK_MODULE_COMPONENT_PREFIX,
     CUSTOMIZED_MODULE_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, PLUGIN_MODULE_PREFIX, PLUGIN_MODULE_COMPONENT_PREFIX,
     LINK_MODULE_PREFIX
   } from '../constants/global';
@@ -154,22 +155,29 @@
         this.currentModule = componentName;
       },
       generateLinkComponent() {
-        const { linkModuleName, linkModuleId } = this.$route.params;
+        const { linkModuleName } = this.$route.params;
+        const componentName = `${LINK_MODULE_COMPONENT_PREFIX}.${linkModuleName}`;
+
         if (this.LinkUrl.length > 0) {
           this.LinkUrl.forEach((url) => {
-            if (url[linkModuleId]) {
-              this.urlName = getUserenv({ url: url[linkModuleId] });
+            if (url[linkModuleName]) {
+              this.urlName = getUserenv({ url: url[linkModuleName] });
+              if (Vue.component(componentName) === undefined) {
+                Vue.component(componentName, LinkPage);
+              }
+              this.currentModule = componentName;
+
               // this.urlName = url[linkModuleId];
-              Vue.component(linkModuleName, LinkPage);
-              this.currentModule = linkModuleName;
             }
           });
         }
         const { routePrefix } = this.$route.meta;
         if (routePrefix !== LINK_MODULE_PREFIX) { return; }
         if (!this.urlName) {
-          Vue.component(linkModuleName, PageNotFound);
-          this.currentModule = linkModuleName;
+          if (Vue.component(componentName) === undefined) {
+            Vue.component(componentName, PageNotFound);
+          }
+          this.currentModule = componentName;
         }
       },
     },
@@ -219,11 +227,5 @@
         }
       }
     },
-    activated() {
-      const { linkModuleId } = this.$route.params;
-      if (linkModuleId) {
-        this.$store.dispatch('global/updateAccessHistory', { type: 'action', id: linkModuleId });
-      }
-    }
   };
 </script>

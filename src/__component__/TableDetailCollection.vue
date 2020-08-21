@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                    >
+                   >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -1154,12 +1154,13 @@
             const name = `${LINK_MODULE_COMPONENT_PREFIX}.${tab.webname.toUpperCase()}.${tab.webid}`;
             this.addKeepAliveLabelMaps({ name, label: tab.name });
             const linkUrl = tabAction;
-            const linkId = tab.webid;
-            if (!this.LinkUrl[linkId]) {
-              this.increaseLinkUrl({ linkId, linkUrl });
+            // const linkId = tab.webid;
+            const linkModuleName = tab.webname.toUpperCase();
+            if (!this.LinkUrl[linkModuleName]) {
+              this.increaseLinkUrl({ linkModuleName, linkUrl });
             }
             const obj = {
-              linkName: tab.webname,
+              linkName: tab.webname.toUpperCase(),
               linkId: tab.webid,
               linkUrl,
               linkLabel: tab.name
@@ -3128,13 +3129,13 @@
                 const datas = {
                   type: 'singleCustomerurlCustomized',
                   value: params.row,
-                  customizedModuleId: params.row[cellData.customerurl.refobjid].val
+                  customizedModuleId: params.row[cellData.customerurl.refobjid]
                 };
                 this.updateCustomizeMessage(datas);
                 // 将元数据配置的refobjid，字符串，可配置多个字段，将配置的字段解析后用作lu y，供弹框作为参数使用
                 const type = 'tableDetailAction';
             
-                const url = `/${cellData.customerurl.tableurl.toUpperCase()}/${params.row[cellData.customerurl.refobjid].val}`;
+                const url = `/${cellData.customerurl.tableurl.toUpperCase()}/${params.row[cellData.customerurl.refobjid]}`;
                 const tab = {
                   type,
                   label: cellData.customerurl.reftabdesc,
@@ -3148,7 +3149,7 @@
                   lablel: cellData.customerurl.reftabdesc,
                   isMenu: true,
                   lingName: cellData.customerurl.linkname,
-                  linkId: params.row[cellData.customerurl.refobjid].val,
+                  linkId: params.row[cellData.customerurl.refobjid],
                 };
                 this.directionalRouter(param);// 定向路由跳转方法
                 const datas = {
