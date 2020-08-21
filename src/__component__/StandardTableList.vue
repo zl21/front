@@ -1828,7 +1828,11 @@
         });
         promise.then((res) => {
           if (!this.searchData.range) {
-            this.searchData.range = res.data.datas.defaultrange;
+            if (Version() === '1.3') {
+              this.searchData.range = res.data.datas.defaultrange;
+            } else {
+              this.searchData.range = res.data.data.defaultrange;
+            }
           }
           
           this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);

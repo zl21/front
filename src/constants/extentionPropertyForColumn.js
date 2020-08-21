@@ -313,10 +313,17 @@ export default [
     supportType: ['object']
   },
   {
-    name: '列表查询匹配规则',
-    key: 'fuzzytype',
-    type: 'radio',
-    enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
-    description: '控制列表模糊查询匹配是否为全模糊'
+    name: '列表查询规则',
+    key: 'queryrule',
+    type: 'input-group',
+    inputLists: [
+      {
+        name: '匹配是否为全模糊',
+        key: 'fuzzy_match_all',
+        type: 'radio',
+        enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
+      }      
+    ],
+    description: '列表查询规则'
   },
 ];
