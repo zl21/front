@@ -313,7 +313,7 @@ export default [
     supportType: ['object']
   },
   {
-    name: '列表查询匹配规则',
+    name: '列表查询规则',
     key: 'queryrule',
     type: 'input-group',
     inputLists: [
@@ -324,6 +324,6 @@ export default [
         enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
       }      
     ],
-    description: '控制列表查询规则'
+    description: '列表查询规则'
   },
 ];
