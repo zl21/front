@@ -7,7 +7,8 @@ import {
   CUSTOMIZED_MODULE_PREFIX,
   LINK_MODULE_COMPONENT_PREFIX,
   LINK_MODULE_PREFIX,
-  enableKeepAlive
+  enableKeepAlive,
+  enableActivateSameCustomizePage
 } from '../../../constants/global';
 import router from '../../router.config';
 import setCustomeLabel from '../../../__utils__/setCustomeLabel';
@@ -83,12 +84,13 @@ export default {
         param.url = param.url.concat(query);
       }
       const linkUrl = param.url;
-      const linkId = param.linkId;
-      if (!store.state.global.LinkUrl[linkId]) {      
-        store.commit('global/increaseLinkUrl', { linkId, linkUrl });
+      // const linkId = param.linkId;
+      const linkModuleName = param.lingName.toUpperCase();
+      if (!store.state.global.LinkUrl[linkModuleName]) {      
+        store.commit('global/increaseLinkUrl', { linkModuleName, linkUrl });
       }
       const obj = {
-        linkName: param.lingName,
+        linkName: param.lingName.toUpperCase(),
         linkId: param.linkId,
         linkUrl,
         linkLabel: param.lablel
@@ -211,7 +213,7 @@ export default {
               }
               if (actionType === 'https:' || actionType === 'http:') {
                 const linkUrl = {};
-                linkUrl[c.id] = c.url;
+                linkUrl[c.value.toUpperCase()] = c.url;
                 state.LinkUrl.push(linkUrl); // 方便记录外部链接的跳转URL
                 a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
               } else if (actionType.toUpperCase() === 'CUSTOMIZED' || c.url === 'customizeReport') {
@@ -274,22 +276,38 @@ export default {
       const name = `L.${tableDetailUrlMessage.linkName.toUpperCase()}.${tableDetailUrlMessage.linkId}`;
       state.keepAliveLabelMaps[name] = `${labelName}`;
       const linkUrl = {};
-      linkUrl[tableDetailUrlMessage.linkId] = tableDetailUrlMessage.linkUrl;
+      linkUrl[tableDetailUrlMessage.linkName.toUpperCase()] = tableDetailUrlMessage.linkUrl;
       state.LinkUrl.push(linkUrl); // 方便记录外部链接的跳转URL
       state.keepAliveLabelMaps[name] = `${tableDetailUrlMessage.linkLabel}`;
     }
     state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('keepAliveLabelMaps'));
     // state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
   },
-  increaseLinkUrl(state, { linkId, linkUrl }) {
+  increaseLinkUrl(state, { linkModuleName, linkUrl }) {
     const linkType = {};
-    linkType[linkId] = linkUrl;
+    linkType[linkModuleName] = linkUrl;
     state.LinkUrl.push(linkType);
   },
-  increaseKeepAliveLists(state, name) {
-    if (enableKeepAlive() && !state.keepAliveLists.includes(name)) {
-      state.keepAliveLists = state.keepAliveLists.concat([name]);
+  increaseKeepAliveLists(state, data) {
+    let keepAliveModuleNameRes = '';
+    if (data.dynamicModuleTag === 'H' || data.dynamicModuleTag === 'V' || data.dynamicModuleTag === 'C') {
+      const index = data.name.lastIndexOf('.');
+      keepAliveModuleNameRes = data.name.substring(0, index + 1);
+    } else {
+      keepAliveModuleNameRes = data.name;
     }
+    if (enableKeepAlive()) {
+      if (state.keepAliveLists.filter(k => k.includes(keepAliveModuleNameRes)).length > 0) {
+        state.keepAliveLists.filter((a, i) => {
+          if (a.includes(keepAliveModuleNameRes)) {
+            state.keepAliveLists.splice(i, 1);
+          }
+        });
+        state.keepAliveLists = state.keepAliveLists.concat([data.name]);
+      } else {
+        state.keepAliveLists = state.keepAliveLists.concat([data.name]);
+      }
+    } 
   },
   decreasekeepAliveLists(state, name) {
     if (enableKeepAlive() && state.keepAliveLists.includes(name)) {
@@ -369,7 +387,8 @@ export default {
   againClickOpenedMenuLists(state, {
     label,
     keepAliveModuleName,
-    type
+    type,
+    fullPath,
   }) {
     state.openedMenuLists.forEach((d) => {
       d.isActive = false;
@@ -378,10 +397,21 @@ export default {
         // const index = keepAliveModuleName.lastIndexOf('.');  
         keepAliveModuleNameRes = keepAliveModuleName.split('.')[1];
       } 
+    
       // d.label === label &&
       // 去除对label的限制，自定义配置，自定义标识相同，label不同，也可认为是同一个自定义界面
-      if (d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
+      let flag = false;
+      if (enableActivateSameCustomizePage()) {
+        if (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes)) {
+          flag = true;
+        }
+      }
+      if (d.keepAliveModuleName === keepAliveModuleName || flag) {
+        if (type === 'L' || type === 'C') { // 外链界面和自定义你界面匹配进行规则匹配时不加id，则不同id,模块名相同时，需要手动更新path,保证路由匹配正确fullPath
+          d.routeFullPath = fullPath;
+        }
         d.isActive = true;
+        state.activeTab = d;
       }
     });
   },
