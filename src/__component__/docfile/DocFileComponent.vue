@@ -160,7 +160,7 @@
     // },
     methods: {
       urlChange(url) { // 对下载的url地址进行转换，处理特殊字符
-        const arr = url.split('/');
+        const arr = url.split('?')[0].split('/');
         let [last] = [...arr].reverse();
         last = encodeURIComponent(last);
         arr[arr.length - 1] = last;
