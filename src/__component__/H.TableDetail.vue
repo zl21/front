@@ -115,7 +115,7 @@
       //   this.a = !this.a;
       // },
       // bb() {
-      //   if (window.updatavVerifyRequiredInformation() && window.testUpdataValue()) {
+      //   if (window.updataVerifyRequiredInformation() && window.testUpdataValue()) {
       //     window.updataClickSave(() => {
       //       alert('保存成功');
       //       this.cc();
