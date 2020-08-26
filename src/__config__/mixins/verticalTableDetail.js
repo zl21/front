@@ -122,7 +122,7 @@ export default () => ({
         'updateButtonGetActionData',
         'updataClickSave',
         'testUpdataValue',
-        'updatavVerifyRequiredInformation'
+        'updataVerifyRequiredInformation'
 
         // 'resetFormReadOnlyAttribute'
 
