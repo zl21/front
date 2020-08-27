@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import global from './store/global.store';
+import globalstore from './store/customizeGlobal';
 
 Vue.use(Vuex);
 
@@ -8,7 +9,9 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   strict: true,
   modules: {
-    global: global()
+    global: global(),
+    customize: globalstore
+
   }
 });
 
