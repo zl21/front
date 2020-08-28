@@ -3740,7 +3740,6 @@
       this.updataClickSave(this.clickSave);
       this.testUpdataValue(this.testUpdata);
       this.updataVerifyRequiredInformation(this.verifyRequiredInformation);
-      this.updatavVerifyRequiredInformation(this.verifyRequiredInformation);
       // this.dataArray.back = this.backButton;
       if (this.jflowButton.length > 0) {
         this.dataArray.jflowButton = this.jflowButton;
