@@ -9,26 +9,27 @@ import store from './src/__config__/store.config';
 import router from './src/__config__/router.config';
 import extentionForColumn from './src/constants/extentionPropertyForColumn';
 import extentionForTable from './src/constants/extentionPropertyForTable';
-import PopDialog from './src/__component__/PopDialog';
-import ContentDisplayArea from './src/__component__/ContentDisplayArea';
-import ComAttachFilter from './src/__component__/ComAttachFilter';
-import DownComponent from './src/__component__/DownComponent';
-import WaterMark from './src/__component__/WaterMark';
-import ImportDialog from './src/__component__/ImportDialog';
-import SearchForm from './src/__component__/form/SearchForm';//
-import FilterTree from './src/__component__/Tree/FilterTree';
-import SelectTree from './src/__component__/Tree/SelectTree';
+import PopDialog from './src/__component__/PopDialog.vue';
+import ContentDisplayArea from './src/__component__/ContentDisplayArea.vue';
+import ComAttachFilter from './src/__component__/ComAttachFilter.vue';
+import DownComponent from './src/__component__/DownComponent.vue';
+import WaterMark from './src/__component__/WaterMark.vue';
+import ImportDialog from './src/__component__/ImportDialog.vue';
+import SearchForm from './src/__component__/form/SearchForm.vue';//
+import FilterTree from './src/__component__/Tree/FilterTree.vue';
+import SelectTree from './src/__component__/Tree/SelectTree.vue';
 import DocFile from './src/__component__/docfile/DocFileComponent.vue';
 import { menuClick } from './src/__config__/event.config';
 
+import { getKeepAliveModuleName } from './src/__config__/router.navigation.guard';
 
 const validateConfig = config => ({
   isQualified: true,
   message: 'xxx'
 });
 const packageMessage = {
-  version: '1.0.24',
-  packageTime: '2020.08.21.18.25', 
+  version: '1.0.25',
+  packageTime: '2020.08.28.19.34', 
   user: 'npm',   
 };
 
@@ -117,6 +118,7 @@ export default {
   updateSessionObject, // 更新sessionStorage存储数据，参数{k:'key',v:'value'}
   deleteFromSessionObject, // 删除sessionStorage存储数据deleteFromSessionObject('name','需要删除的key')
   removeSessionObject, // 删除sessionStorage存储数据removeSessionObject('name')
+  getKeepAliveModuleName,
   store,
   config: {
     extentionForColumn,
