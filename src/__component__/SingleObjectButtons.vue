@@ -579,6 +579,7 @@
         window.updataClickSave = event => this.clickSave({ event });
         window.testUpdataValue = () => this.testUpdata();
         window.updataVerifyRequiredInformation = () => this.verifyRequiredInformation();
+        window.updatavVerifyRequiredInformation = () => this.verifyRequiredInformation();
       },
       imporSuccess(id) {
         if (Version() === '1.3') {
