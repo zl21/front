@@ -21,6 +21,7 @@ import SelectTree from './src/__component__/Tree/SelectTree.vue';
 import DocFile from './src/__component__/docfile/DocFileComponent.vue';
 import { menuClick } from './src/__config__/event.config';
 
+import { getKeepAliveModuleName } from './src/__config__/router.navigation.guard';
 
 const validateConfig = config => ({
   isQualified: true,
@@ -117,6 +118,7 @@ export default {
   updateSessionObject, // 更新sessionStorage存储数据，参数{k:'key',v:'value'}
   deleteFromSessionObject, // 删除sessionStorage存储数据deleteFromSessionObject('name','需要删除的key')
   removeSessionObject, // 删除sessionStorage存储数据removeSessionObject('name')
+  getKeepAliveModuleName,
   store,
   config: {
     extentionForColumn,
