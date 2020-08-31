@@ -7,7 +7,8 @@ import {
   CUSTOMIZED_MODULE_PREFIX,
   LINK_MODULE_COMPONENT_PREFIX,
   LINK_MODULE_PREFIX,
-  enableKeepAlive
+  enableKeepAlive,
+  enableActivateSameCustomizePage
 } from '../../../constants/global';
 import router from '../../router.config';
 import setCustomeLabel from '../../../__utils__/setCustomeLabel';
@@ -381,7 +382,11 @@ export default {
       } 
       // d.label === label &&
       // 去除对label的限制，自定义配置，自定义标识相同，label不同，也可认为是同一个自定义界面
-      if (d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
+      if (enableActivateSameCustomizePage()) {
+        if (d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
+          d.isActive = true;
+        }
+      } else if (d.label === label && d.keepAliveModuleName === keepAliveModuleName) {
         d.isActive = true;
       }
     });
