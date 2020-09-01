@@ -271,7 +271,7 @@
       },
       treeConfigData() {
         const treeQuery = this.$router.currentRoute.query;
-        if (treeQuery.isTreeTable) {
+        if (treeQuery.isTreeTable || window.isTree) {
           if (window.ProjectConfig && window.ProjectConfig.externalTreeDatas) {
             const { tableName } = this.$router.currentRoute.params;
             return window.ProjectConfig.externalTreeDatas[tableName]();
