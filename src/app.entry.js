@@ -54,10 +54,7 @@ const init = () => {
     store,
     render: createElement => createElement(App)
   }).$mount(rootDom);
-  // 初始化图片配置
-  if (window.ProjectConfig.image) {
-    store.commit('global/updateImage', window.ProjectConfig.image);
-  }
+  
   
   window.R3message = (data) => {
     window.vm.$Modal.fcError({
@@ -213,6 +210,11 @@ export default (projectConfig = {
       d.component = globalComponent.Login;
     }
   });
+
+  // 初始化图片配置
+  if (projectConfig.image) {
+    store.commit('global/updateImage', projectConfig.image);
+  }
 
   // 挂载外部路由
   if (Object.prototype.toString.call(projectRoutes) === '[object Array]') {
