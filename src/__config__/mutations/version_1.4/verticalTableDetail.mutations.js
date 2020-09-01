@@ -11,8 +11,8 @@ export default {
   testUpdataValue(state, func) {
     state.testUpdata = func;
   },
-  updatavVerifyRequiredInformation(state, func) {
-    state.updatavVerifyRequiredInformation = func;
+  updataVerifyRequiredInformation(state, func) {
+    state.updataVerifyRequiredInformation = func;
   },
   updataHideTempStorage(state, value) { // 控制单对象界面暂存按钮
     state.isHideTempStorage = value;
