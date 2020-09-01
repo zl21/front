@@ -54,6 +54,11 @@ const init = () => {
     store,
     render: createElement => createElement(App)
   }).$mount(rootDom);
+  // 初始化图片配置
+  if (window.ProjectConfig.image) {
+    store.commit('global/updateImage', window.ProjectConfig.image);
+  }
+  
   window.R3message = (data) => {
     window.vm.$Modal.fcError({
       mask: data.mask,
@@ -107,11 +112,6 @@ const init = () => {
     setTimeout(() => {
       store.commit('global/updataOpenedMenuLists', []);
     }, 500);
-  }
-
-  // 初始化图片配置
-  if (window.ProjectConfig.image) {
-    store.commit('global/updateImage', window.ProjectConfig.image);
   }
 };
 
