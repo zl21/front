@@ -55,7 +55,7 @@
 <script>
   import Upload from '../../__utils__/upload';
   import {
-    Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, INSTANCE_ROUTE
+    Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, INSTANCE_ROUTE, encodeControl
   } from '../../constants/global';
   import store from '../../__config__/store.config';
 
@@ -160,11 +160,14 @@
     // },
     methods: {
       urlChange(url) { // 对下载的url地址进行转换，处理特殊字符
-        const arr = url.split('/');
-        let [last] = [...arr].reverse();
-        last = encodeURIComponent(last);
-        arr[arr.length - 1] = last;
-        return arr.join('/');
+        if (encodeControl()) {
+          const arr = url.split('?')[0].split('/');
+          let [last] = [...arr].reverse();
+          last = encodeURIComponent(last);
+          arr[arr.length - 1] = last;
+          return arr.join('/');
+        }
+        return url;
       },
       filechange() {
         const valuedata = this.docList.valuedata;

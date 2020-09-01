@@ -578,6 +578,7 @@
       updataCurrentTableDetailMethods() { // 更新单对象挂载window的方法（保持当前激活的单对象界面）
         window.updataClickSave = event => this.clickSave({ event });
         window.testUpdataValue = () => this.testUpdata();
+        window.updataVerifyRequiredInformation = () => this.verifyRequiredInformation();
         window.updatavVerifyRequiredInformation = () => this.verifyRequiredInformation();
       },
       imporSuccess(id) {
@@ -3738,8 +3739,7 @@
       }
       this.updataClickSave(this.clickSave);
       this.testUpdataValue(this.testUpdata);
-      this.updatavVerifyRequiredInformation(this.verifyRequiredInformation);
-      
+      this.updataVerifyRequiredInformation(this.verifyRequiredInformation);
       // this.dataArray.back = this.backButton;
       if (this.jflowButton.length > 0) {
         this.dataArray.jflowButton = this.jflowButton;

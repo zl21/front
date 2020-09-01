@@ -120,7 +120,7 @@ export default () => ({
         'updateButtonGetActionData',
         'updataClickSave',
         'testUpdataValue',
-        'updatavVerifyRequiredInformation'
+        'updataVerifyRequiredInformation'
       ]),
   },
   beforeDestroy() {

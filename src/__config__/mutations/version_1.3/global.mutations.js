@@ -400,16 +400,11 @@ export default {
     
       // d.label === label &&
       // 去除对label的限制，自定义配置，自定义标识相同，label不同，也可认为是同一个自定义界面
-      let flag = false;
       if (enableActivateSameCustomizePage()) {
-        if (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes)) {
-          flag = true;
+        if (d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
+          d.isActive = true;
         }
-      }
-      if (d.keepAliveModuleName === keepAliveModuleName || flag) {
-        if (type === 'L' || type === 'C') { // 外链界面和自定义你界面匹配进行规则匹配时不加id，则不同id,模块名相同时，需要手动更新path,保证路由匹配正确fullPath
-          d.routeFullPath = fullPath;
-        }
+      } else if (d.label === label && d.keepAliveModuleName === keepAliveModuleName) {
         d.isActive = true;
         state.activeTab = d;
       }
