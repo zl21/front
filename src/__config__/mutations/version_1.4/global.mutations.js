@@ -410,6 +410,7 @@ export default {
     });
   },
   tabCloseAppoint(state, tab) {
+    // forbidden:禁止关闭当前tab时自动激活最后一个tab
     // tableName:'主表表明',
     // 关闭当前tab时,如果当前列表界面时树形结构列表界面，需清楚对应的treeID
     // const index = state.treeIds.indexOf(tab.tableName);
@@ -519,7 +520,7 @@ export default {
         }
       } else if (item.routeFullPath === tabRouteFullPath) {
         openedMenuLists.splice(index, 1);
-        if (tabRouteFullPath) {
+        if (tabRouteFullPath && !tab.forbidden) {
           if (openedMenuLists.length > 0) {
             if (index === 0) {
               state.activeTab = openedMenuLists[index]; // 关闭当前tab时始终打开的是最后一个tab

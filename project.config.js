@@ -32,9 +32,9 @@ module.exports = {
   // target: 'http://syman-jflow-standard.dev.burgeononline.com',
   
   
-  Version: '1.4', // 版本号
+  Version: '1.3', // 版本号
   interlocks: true, // 是否打开三级联动装置
-  enableGateWay: true, // 网关是否打开,
+  enableGateWay: false, // 网关是否打开,
   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用接口请求
   enableHistoryAndFavoriteUI: true, // 是否显示收藏与最近使用UI
   ignoreGateWayPattern: [/\/jflow\/*/g, /\/api\/*/g], // 框架默认禁用的网关逻辑的正则模式匹配
@@ -65,6 +65,6 @@ module.exports = {
   //     name: '工作流'
   //   },
   // },
-  enableActivateSameCustomizePage: true, // 跳转自定义界面，当自定义界面标识相同，是否只激活同一个tab,默认为false,自定义界面ID不同会打开多个tab
+  enableActivateSameCustomizePage: false, // 跳转自定义界面，当自定义界面标识相同，是否只激活同一个tab,默认为false,自定义界面ID不同会打开多个tab
 
 };
