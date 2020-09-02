@@ -211,19 +211,27 @@ axios.interceptors.response.use(
       //   method: config.method
       // }));
       // delete pendingRequestMap[requestMd5];
-      if (status === 403) {
-        // 清楚对应登陆用户信息
-        window.sessionStorage.setItem('loginStatus', false);
-        store.commit('global/updataUserInfoMessage', {
-          userInfo: {}
-        });
-        removeSessionObject('userInfo');
-        if (getProjectQuietRoutes().indexOf(router.currentRoute.path) === -1) {
-          if (config.url !== '/p/cs/logout') {
-            // store.dispatch('global/signout');
-            router.push(getTouristRoute());
+      if (status === 403 && getProjectQuietRoutes().indexOf(router.currentRoute.path) === -1) {
+        window.vm.$Modal.fcWarning({
+          title: '警告',
+          content: '您已失去会话，是否退出登录?',
+          mask: true,
+          showCancel: true,
+          onOk: () => {
+            // 清楚对应登陆用户信息
+            window.sessionStorage.setItem('loginStatus', false);
+            store.commit('global/updataUserInfoMessage', {
+              userInfo: {}
+            });
+            removeSessionObject('userInfo');
+            if (getProjectQuietRoutes().indexOf(router.currentRoute.path) === -1) {
+              if (config.url !== '/p/cs/logout') {
+                // store.dispatch('global/signout');
+                router.push(getTouristRoute());
+              }
+            }
           }
-        }
+        });
       } else if (status === 500 || status === 404) {
       // 如果http状态码正常，则直接返回数据
         const emg = error.response.data.message || error.response.data.msg;
@@ -341,7 +349,7 @@ export const urlSearchParams = (data) => {
   Object.keys(data).forEach((key) => {
     const dataType = Object.prototype.toString.call(data[key]);
     if (dataType === '[object Object]' || dataType === '[object Array]') {
-      data[key] = JSON.stringify(data[key]);
+      data[key] = JSON.stringify(typeof data[key] === 'string' ? data[key].trim() : data[key]);
     }
     params.append(key, data[key]);
   });
