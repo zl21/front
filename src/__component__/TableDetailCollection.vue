@@ -1208,14 +1208,14 @@
               path = getUrl({ url: path, id: tab.webid, type: 'customized' });
               name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
             }
-            this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
+            this.addKeepAliveLabelMaps({ name, label: tab.name });
 
 
             // 支持直接在跳转定制界面类型的按钮tabAction上配置参数
             // 如：CUSTOMIZED/FUNCTIONPERMISSION？id=1&&name=2
             const keepAliveLabelMapsObj = {
               k: name,
-              v: tab.webdesc
+              v: tab.name
             };
             const undataFromPageCustomizeButtonInfo = {
               k: name,
