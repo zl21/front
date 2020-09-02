@@ -386,7 +386,7 @@ export default {
         if (d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
           d.isActive = true;
         }
-      } else if (d.label === label && d.keepAliveModuleName === keepAliveModuleName) {
+      } else if (d.keepAliveModuleName === keepAliveModuleName) {
         d.isActive = true;
       }
     });
