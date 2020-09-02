@@ -66,7 +66,7 @@
         @InitializationForm="InitializationForm"
         @VerifyMessage="verifyFormPanelMain"
       />
-      <div>
+      <div class="verticalTabs">
         <TabPanels
           v-show="tabPanels.length > 0"
           ref="tabPanel"
@@ -363,6 +363,12 @@
     .verticalTableDetailContent{
       flex: 1;
       overflow: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .verticalTabs{
+      flex: 1;
     }
     .tabPanel {
       margin: 10px 0;

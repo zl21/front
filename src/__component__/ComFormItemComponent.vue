@@ -892,7 +892,7 @@
         
         const refcolumn = conf.refcolumn.split(',');
         const ASSIGN = refcolumn.reduce((arr, item) => {
-          arr[item] = jsonArr[item] || '';
+          arr[item] = typeof jsonArr[item] === 'string' ? jsonArr[item].trim() : jsonArr[item] || '';
           return arr;
         }, {});
         //          ID: obj[current.field] || obj[current.inputname],
@@ -915,6 +915,18 @@
           url: conf.url,
           searchObject: data,
           success: (res) => {
+            if (res.code && res.code === -1) {
+              current.value = [{
+                ID: null,
+                Label: null
+              }];
+              if (document.getElementsByClassName(`${current.field}`)[0].getElementsByClassName('ark-icon-ios-close-circle').length > 0) {
+                document.getElementsByClassName(`${current.field}`)[0].getElementsByClassName('ark-icon-ios-close-circle')[0].click();
+                this.formRequest(key, obj, current, conf);
+              }
+
+              return;
+            }
             const tableName = this.isMainTable ? '' : this.childTableName;
             if (res.length < 1) {
               current.value = [{
