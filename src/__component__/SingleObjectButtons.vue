@@ -553,7 +553,7 @@
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
 
-      ...mapMutations('global', ['updateCustomizeMessage', 'deleteLoading', 'emptyTestData', 'tabCloseAppoint', 'decreasekeepAliveLists', 'copyDataForSingleObject', 'tabOpen', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
+      ...mapMutations('global', ['updateCustomizeMessage', 'deleteLoading', 'tabCloseAppoint', 'decreasekeepAliveLists', 'copyDataForSingleObject', 'tabOpen', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
       updataCurrentTableDetailInfo() { // 更新当前单对象信息
         if (this[INSTANCE_ROUTE_QUERY].tableName === this.$route.params.tableName && this.$route.meta.routePrefix.includes('/SYSTEM/TABLE_DETAIL/')) { // 当前路由包含单对象标记
           // 更新单对象界面信息

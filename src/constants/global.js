@@ -3,6 +3,7 @@ import configForColumn from './extentionPropertyForColumn';
 import configForTable from './extentionPropertyForTable';
 import backDashboardRoutes from '../__config__/backDashboardRoute.config';
 import custommizedRequestURL from '../__config__/custommizedRequestURL.config';
+import connectorConfig from './connector';
 
 
 export const functionPowerRequestURL = () => (window.ProjectConfig && window.ProjectConfig.functionPowerRequestURL ? window.ProjectConfig.functionPowerRequestURL : project.functionPowerRequestURL);
@@ -111,3 +112,5 @@ export const extentionForTable = () => (window.ProjectConfig && window.ProjectCo
 export const backDashboardRoute = () => (window.ProjectConfig && window.ProjectConfig.backDashboardRoute ? window.ProjectConfig.backDashboardRoute.concat(backDashboardRoutes) : backDashboardRoutes);
 // 配置内置自定义界面requestURL
 export const custommizedRequestUrl = () => (window.ProjectConfig && window.ProjectConfig.custommizedRequestURL ? window.ProjectConfig.custommizedRequestURL : custommizedRequestURL);
+
+export const connector = () => (window.ProjectConfig && window.ProjectConfig.connector ? window.ProjectConfig.connector : connectorConfig);

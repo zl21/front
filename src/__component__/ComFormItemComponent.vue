@@ -892,7 +892,7 @@
         
         const refcolumn = conf.refcolumn.split(',');
         const ASSIGN = refcolumn.reduce((arr, item) => {
-          arr[item] = jsonArr[item] || '';
+          arr[item] = typeof jsonArr[item] === 'string' ? jsonArr[item].trim() : jsonArr[item] || '';
           return arr;
         }, {});
         //          ID: obj[current.field] || obj[current.inputname],
