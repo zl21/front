@@ -1119,7 +1119,7 @@
         return id;
       },
       objTabActionNavbar(tab) {
-        tab.action = 'CUSTOMIZED/FUNCTIONPERMISSION?id=1&&name=2';
+        // tab.action = 'CUSTOMIZED/FUNCTIONPERMISSION?id=1&&name=2';
         let tabAction = '';
         if (tab.action && tab.action.includes('?')) {
           tabAction = getUserenv({ url: tab.action });

@@ -280,7 +280,7 @@ export default {
   },
   increaseKeepAliveLists(state, data) {
     let keepAliveModuleNameRes = '';
-    if (data.dynamicModuleTag === 'H' || data.dynamicModuleTag === 'V' || data.dynamicModuleTag === 'C') {
+    if (enableActivateSameCustomizePage() && (data.dynamicModuleTag === 'H' || data.dynamicModuleTag === 'V' || data.dynamicModuleTag === 'C')) {
       const index = data.name.lastIndexOf('.');
       keepAliveModuleNameRes = data.name.substring(0, index + 1);
     } else {

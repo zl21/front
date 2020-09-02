@@ -288,10 +288,31 @@ export default {
     linkType[linkId] = linkUrl;
     state.LinkUrl.push(linkType);
   },
+  // increaseKeepAliveLists(state, data) {
+  //   if (enableKeepAlive() && !state.keepAliveLists.includes(data.name)) {
+  //     state.keepAliveLists = state.keepAliveLists.concat([data.name]);
+  //   }
+  // },
   increaseKeepAliveLists(state, data) {
-    if (enableKeepAlive() && !state.keepAliveLists.includes(data.name)) {
-      state.keepAliveLists = state.keepAliveLists.concat([data.name]);
+    let keepAliveModuleNameRes = '';
+    if (enableActivateSameCustomizePage() && (data.dynamicModuleTag === 'H' || data.dynamicModuleTag === 'V' || data.dynamicModuleTag === 'C')) {
+      const index = data.name.lastIndexOf('.');
+      keepAliveModuleNameRes = data.name.substring(0, index + 1);
+    } else {
+      keepAliveModuleNameRes = data.name;
     }
+    if (enableKeepAlive()) {
+      if (state.keepAliveLists.filter(k => k.includes(keepAliveModuleNameRes)).length > 0) {
+        state.keepAliveLists.filter((a, i) => {
+          if (a.includes(keepAliveModuleNameRes)) {
+            state.keepAliveLists.splice(i, 1);
+          }
+        });
+        state.keepAliveLists = state.keepAliveLists.concat([data.name]);
+      } else {
+        state.keepAliveLists = state.keepAliveLists.concat([data.name]);
+      }
+    } 
   },
   decreasekeepAliveLists(state, name) {
     if (enableKeepAlive() && state.keepAliveLists.includes(name)) {
