@@ -34,7 +34,7 @@ module.exports = env => ({
     axios: 'axios',
     // 'ag-grid': 'agGrid',
     'ark-ui': 'Ark',
-    jquery: '$',
+    // jquery: '$',
     ztree: 'ztree',
   },
   devServer: {
@@ -196,12 +196,12 @@ module.exports = env => ({
         ignore: ['.*'],
       },
     ]),
-    new webpack.ProvidePlugin({
-      $: 'jquery',
-      jQuery: 'jquery',
-      jquery: 'jquery',
-      'window.jQuery': 'jquery'
-    })
+    // new webpack.ProvidePlugin({
+    //   $: 'jquery',
+    //   jQuery: 'jquery',
+    //   jquery: 'jquery',
+    //   'window.jQuery': 'jquery'
+    // })
   ],
   mode: env && env.production ? 'production' : 'development',
   resolve: {

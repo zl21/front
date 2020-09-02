@@ -12,7 +12,6 @@
  * @returns
  */	
 
-import $ from 'jquery';
 
 export const fuzzySearch = (zTreeId, searchField, isHighLight, isExpand) => {
   const zTreeObj = $.fn.zTree.getZTreeObj(zTreeId);// get the ztree object by ztree id
