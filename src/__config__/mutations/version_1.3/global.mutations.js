@@ -480,7 +480,7 @@ export default {
         deleteFromSessionObject('routeMapRecordForCustomizePage', item);
       }
     });
-    state.isRequest = [];// 清空修改数据验证
+    // state.isRequest = [];// 清空修改数据验证
     const { openedMenuLists } = state;
     // 如果关闭某个Tab，则清空所有该模块可能的对应的keepAlive信息。
     state.keepAliveLists = state.keepAliveLists.filter(d => d.indexOf(tab.tableName) === -1);

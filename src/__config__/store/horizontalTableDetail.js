@@ -36,7 +36,9 @@ export default () => ({
     testUpdata: {},
     updataVerifyRequiredInformation: {},
     saveInfo: {}, // 保存按钮接口返回信息
-    singlePageMainTableButtonData: {}
+    singlePageMainTableButtonData: {},
+    isRequest: [], // 记录当前tab是否点击过关系
+
   },
   actions: actions(),
   mutations: mutations()

@@ -23,7 +23,7 @@
   /* eslint-disable no-lonely-if */
   import { mapState, mapMutations } from 'vuex';
   import Vue from 'vue';
-  import tabComponent from './SingleObjectTabComponent';
+  import tabComponent from './SingleObjectTabComponent.vue';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
 
 
@@ -36,7 +36,7 @@
     computed: {
       ...mapState('global', {
         activeTab: ({ activeTab }) => activeTab,
-        isRequest: ({ isRequest }) => isRequest,
+        // isRequest: ({ isRequest }) => isRequest,
 
       }),
       resetWaterMark() {
@@ -110,7 +110,7 @@
     },
     methods: {
       
-      ...mapMutations('global', ['isRequestUpdata', 'emptyTestData']),
+      // ...mapMutations('global', ['isRequestUpdata', 'emptyTestData']),
       // aa() {
       //   this.a = !this.a;
       // },
