@@ -148,17 +148,17 @@
 
 <script>
   import { mapActions, mapState, mapMutations } from 'vuex';
-  import ButtonGroup from './ButtonComponent';
-  import AgTable from './AgTable';
-  import FormItemComponent from './FormItemComponent';
-  import ItemComponent from './ItemComponent';
+  import ButtonGroup from './ButtonComponent.vue';
+  import AgTable from './AgTable.vue';
+  import FormItemComponent from './FormItemComponent.vue';
+  import ItemComponent from './ItemComponent.vue';
   import buttonmap from '../assets/js/buttonmap';
   import dialogComponent from './Dialog.vue';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
-  import ImportDialog from './ImportDialog';
-  import ErrorModal from './ErrorModal';
-  import modifyDialog from './ModifyModal';
-  import tree from './tree';
+  import ImportDialog from './ImportDialog.vue';
+  import ErrorModal from './ErrorModal.vue';
+  import modifyDialog from './ModifyModal.vue';
+  import tree from './tree.vue';
   import regExp from '../constants/regExp';
 
   import {
@@ -326,6 +326,8 @@
             // 符合记录规则一：由列表界面跳转到单对象界面，如果目标单对象界面和列表界面属于不同的表（Table不同），则将此种关系维护到路由记录“栈”。
             // 所返回的列表界面符合以上逻辑关系，则刷新当前列表界面
             if (this.$route.query.isBack) {
+              this.$route.query = {};
+              console.log(this.$route);
               this.searchClickData({ value: 'true' });
             }
           }
