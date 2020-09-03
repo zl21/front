@@ -67,6 +67,8 @@ export default () => ({
       itemObjId: ({ itemObjId }) => itemObjId,
       isHideTempStorage: ({ isHideTempStorage }) => isHideTempStorage,
       saveInfo: ({ saveInfo }) => saveInfo,
+      isRequest: ({ isRequest }) => isRequest,
+
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur) => {
         acc.push({ tableName: cur.tablename });
         return acc;
@@ -122,8 +124,9 @@ export default () => ({
         'updateButtonGetActionData',
         'updataClickSave',
         'testUpdataValue',
-        'updatavVerifyRequiredInformation'
-
+        'updataVerifyRequiredInformation',
+        'isRequestUpdata',
+        'emptyTestData'
         // 'resetFormReadOnlyAttribute'
 
       ]),

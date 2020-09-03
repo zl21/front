@@ -271,7 +271,7 @@
       },
       treeConfigData() {
         const treeQuery = this.$router.currentRoute.query;
-        if (treeQuery.isTreeTable) {
+        if (treeQuery.isTreeTable || window.isTree) {
           if (window.ProjectConfig && window.ProjectConfig.externalTreeDatas) {
             const { tableName } = this.$router.currentRoute.params;
             return window.ProjectConfig.externalTreeDatas[tableName]();
@@ -2445,18 +2445,18 @@
             };
             this.updateCustomizeMessage(data);
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-            // const name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
+            const name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
             // this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
             // const path = getUrl({ url: tabAction, id: tab.webid, type: 'customized' });
             // const keepAliveLabelMapsObj = {
             //   k: name,
             //   v: tab.webdesc
             // };
-            // const undataFromPageCustomizeButtonInfo = {
-            //   k: name,
-            //   v: this[INSTANCE_ROUTE_QUERY]
-            // };
-            // updateSessionObject('undataFromPageCustomizeButtonInfo', undataFromPageCustomizeButtonInfo);// 将自定义按钮为跳转自定义界面类型的自定义按钮信息存入session
+            const undataFromPageCustomizeButtonInfo = {
+              k: name,
+              v: this[INSTANCE_ROUTE_QUERY]
+            };
+            updateSessionObject('undataFromPageCustomizeButtonInfo', undataFromPageCustomizeButtonInfo);// 将自定义按钮为跳转自定义界面类型的自定义按钮信息存入session
 
             // updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
             // router.push(

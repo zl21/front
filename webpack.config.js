@@ -34,12 +34,12 @@ module.exports = env => ({
     axios: 'axios',
     // 'ag-grid': 'agGrid',
     'ark-ui': 'Ark',
-    jquery: '$',
+    // jquery: '$',
     ztree: 'ztree',
   },
   devServer: {
     compress: true,
-    port: 8196,
+    port: 8199,
     host: '0.0.0.0',
     open: true,
     historyApiFallback: {
@@ -196,12 +196,12 @@ module.exports = env => ({
         ignore: ['.*'],
       },
     ]),
-    new webpack.ProvidePlugin({
-      $: 'jquery',
-      jQuery: 'jquery',
-      jquery: 'jquery',
-      'window.jQuery': 'jquery'
-    })
+    // new webpack.ProvidePlugin({
+    //   $: 'jquery',
+    //   jQuery: 'jquery',
+    //   jquery: 'jquery',
+    //   'window.jQuery': 'jquery'
+    // })
   ],
   mode: env && env.production ? 'production' : 'development',
   resolve: {

@@ -47,9 +47,10 @@ export default () => ({
     itemObjId: null, // 子表1:1ID
     isHideTempStorage: false, // 为true时隐藏单对象配置的暂存按钮
     clickSaveFunction: {},
-    updatavVerifyRequiredInformation: {},
+    updataVerifyRequiredInformation: {},
     saveInfo: {},
     testUpdata: {},
+    isRequest: [], // 记录当前tab是否点击过关系
   },
   actions: actions(),
   mutations: mutations()

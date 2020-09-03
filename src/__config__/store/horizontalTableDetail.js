@@ -34,9 +34,11 @@ export default () => ({
     isHideTempStorage: false, // 为true时隐藏单对象配置的暂存按钮
     clickSaveFunction: {},
     testUpdata: {},
-    updatavVerifyRequiredInformation: {},
+    updataVerifyRequiredInformation: {},
     saveInfo: {}, // 保存按钮接口返回信息
-    singlePageMainTableButtonData: {}
+    singlePageMainTableButtonData: {},
+    isRequest: [], // 记录当前tab是否点击过关系
+
   },
   actions: actions(),
   mutations: mutations()

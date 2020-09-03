@@ -135,12 +135,12 @@
   import { mapMutations, mapState, } from 'vuex';
 
   import router from '../__config__/router.config';
-  import tableDetailCollection from './TableDetailCollection';
-  import singleObjectButtons from './SingleObjectButtons';
-  import compositeForm from './CompositeForm';
+  import tableDetailCollection from './TableDetailCollection.vue';
+  import singleObjectButtons from './SingleObjectButtons.vue';
+  import compositeForm from './CompositeForm.vue';
   import horizontalMixins from '../__config__/mixins/horizontalTableDetail';
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
-  import CompontentNotFound from './CompontentNotFound';
+  import CompontentNotFound from './CompontentNotFound.vue';
   import CustomizeModule from '../__config__/customize.config';
 
 
@@ -330,7 +330,7 @@
       this.generateComponent();
     },
     methods: {
-      ...mapMutations('global', ['decreasekeepAliveLists', 'emptyTestData']),
+      ...mapMutations('global', ['decreasekeepAliveLists']),
 
       // ...mapActions(this[MODULE_COMPONENT_NAME], ['performMainTableSaveAction']),
       generateComponent() {

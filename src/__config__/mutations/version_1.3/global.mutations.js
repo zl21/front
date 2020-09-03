@@ -7,7 +7,8 @@ import {
   CUSTOMIZED_MODULE_PREFIX,
   LINK_MODULE_COMPONENT_PREFIX,
   LINK_MODULE_PREFIX,
-  enableKeepAlive
+  enableKeepAlive,
+  enableActivateSameCustomizePage
 } from '../../../constants/global';
 import router from '../../router.config';
 import setCustomeLabel from '../../../__utils__/setCustomeLabel';
@@ -287,10 +288,31 @@ export default {
     linkType[linkId] = linkUrl;
     state.LinkUrl.push(linkType);
   },
+  // increaseKeepAliveLists(state, data) {
+  //   if (enableKeepAlive() && !state.keepAliveLists.includes(data.name)) {
+  //     state.keepAliveLists = state.keepAliveLists.concat([data.name]);
+  //   }
+  // },
   increaseKeepAliveLists(state, data) {
-    if (enableKeepAlive() && !state.keepAliveLists.includes(data.name)) {
-      state.keepAliveLists = state.keepAliveLists.concat([data.name]);
+    let keepAliveModuleNameRes = '';
+    if (enableActivateSameCustomizePage() && (data.dynamicModuleTag === 'H' || data.dynamicModuleTag === 'V' || data.dynamicModuleTag === 'C')) {
+      const index = data.name.lastIndexOf('.');
+      keepAliveModuleNameRes = data.name.substring(0, index + 1);
+    } else {
+      keepAliveModuleNameRes = data.name;
     }
+    if (enableKeepAlive()) {
+      if (state.keepAliveLists.filter(k => k.includes(keepAliveModuleNameRes)).length > 0) {
+        state.keepAliveLists.filter((a, i) => {
+          if (a.includes(keepAliveModuleNameRes)) {
+            state.keepAliveLists.splice(i, 1);
+          }
+        });
+        state.keepAliveLists = state.keepAliveLists.concat([data.name]);
+      } else {
+        state.keepAliveLists = state.keepAliveLists.concat([data.name]);
+      }
+    } 
   },
   decreasekeepAliveLists(state, name) {
     if (enableKeepAlive() && state.keepAliveLists.includes(name)) {
@@ -381,7 +403,11 @@ export default {
       } 
       // d.label === label &&
       // 去除对label的限制，自定义配置，自定义标识相同，label不同，也可认为是同一个自定义界面
-      if (d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
+      if (enableActivateSameCustomizePage()) {
+        if (d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
+          d.isActive = true;
+        }
+      } else if (d.keepAliveModuleName === keepAliveModuleName) {
         d.isActive = true;
       }
     });
@@ -476,7 +502,7 @@ export default {
         deleteFromSessionObject('routeMapRecordForCustomizePage', item);
       }
     });
-    state.isRequest = [];// 清空修改数据验证
+    // state.isRequest = [];// 清空修改数据验证
     const { openedMenuLists } = state;
     // 如果关闭某个Tab，则清空所有该模块可能的对应的keepAlive信息。
     state.keepAliveLists = state.keepAliveLists.filter(d => d.indexOf(tab.tableName) === -1);

@@ -10,8 +10,8 @@ export default {
   testUpdataValue(state, func) {
     state.testUpdata = func;
   },
-  updatavVerifyRequiredInformation(state, func) {
-    state.updatavVerifyRequiredInformation = func;
+  updataVerifyRequiredInformation(state, func) {
+    state.updataVerifyRequiredInformation = func;
   },
 
   updataHideTempStorage(state, value) { // 控制单对象界面暂存按钮
@@ -461,5 +461,25 @@ export default {
   },
   updateButtonGetActionData(state, data) {
     state.ExeActionDataForComponent = data;
+  },
+  isRequestUpdata(state, { tabPanel, index }) {
+    let arr = [];
+    arr = tabPanel.map(item => item.isRequest);
+    if (index === 0) {
+      arr[0] = true;
+    }
+    arr[index] = true;
+    const oldRequestData = state.isRequest;
+    if (oldRequestData.length > 0) {
+      arr.forEach((a, i) => {
+        if (arr[i] !== true) {
+          arr[i] = oldRequestData[i];
+        }
+      }); 
+    }
+    state.isRequest = arr;
+  },
+  emptyTestData(state) { // 清空TestData
+    state.isRequest = [];
   },
 };
