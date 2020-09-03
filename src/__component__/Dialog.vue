@@ -29,7 +29,7 @@
         :id-array="idArray"
         :obj-list="objList"
         :action-id="actionId"
-        :select-row-data="buttons.selectArr"
+        :select-row-data="selectRowData"
         :item-id="itemId"
         :popwin-message="popwinMessage"
         :obj-tab-action-dialog-config="objTabActionDialogConfig"
