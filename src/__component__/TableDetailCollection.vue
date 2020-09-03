@@ -1108,7 +1108,6 @@
       },
       isCheck() { // 校验是否勾选了明细
         const id = this.tableRowSelectedIds.map(item => item.ID);
-        debugger;
         if (id.length === 0) {
           this.$Message.warning('请勾选ID');
           return false;

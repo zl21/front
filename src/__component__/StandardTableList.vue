@@ -125,6 +125,7 @@
       ref="dialogRef"
       :popwin-message="popwinMessage"
       :id-array="buttons.selectIdArr"
+      :select-row-data="buttons.selectArr"
       :title="dialogComponentNameConfig.title"
       :mask="dialogComponentNameConfig.mask"
       :content-text="dialogComponentNameConfig.contentText"
