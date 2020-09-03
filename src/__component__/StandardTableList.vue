@@ -992,6 +992,10 @@
               validate: {}
             };
 
+            if (current.webconf) {
+              obj.item.props.webconf = current.webconf;
+            }
+
 
             // 输入控制
             if (current.type === 'NUMBER' && !current.display) {
