@@ -416,13 +416,14 @@
         // 将设置的props和默认props进行assign
         const item = this.items;
         // const item = this.items;
-        
         item.props = Object.assign(
           {},
           item.type ? dataProp[item.type] && dataProp[item.type].props : {},
           this.items.props
         );
-        item.props.placeholder = `${dataProp[item.type].props.placeholder}${item.title}`;
+
+        const placeholder = this.items.props.webconf && this.items.props.webconf.placeholder ? this.items.props.webconf.placeholder : null;
+        item.props.placeholder = placeholder || `${dataProp[item.type].props.placeholder}${item.title}`;
         if (item.type === 'docfile') {
           if (!Array.isArray(item.props.itemdata.valuedata)) {
             item.props.itemdata.valuedata = [];
