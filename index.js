@@ -78,6 +78,12 @@ const setMessage = (data) => {
 };
 const init = () => {
   removeSessionObject(HAS_BEEN_DESTROYED_MODULE);
+
+  // 初始化配置的图片
+  if (projectConfig && projectConfig.image) {
+    store.commit('global/updateImage', projectConfig.image);
+  }
+
   const rootDom = createDOM();
   window.vm = new Vue({
     router,
@@ -234,8 +240,3 @@ const packageMessage = {
 };
 projectConfig.packageMessage = packageMessage;
 window.ProjectConfig = projectConfig;
-
-// 初始化配置的图片
-if (window.ProjectConfig && window.ProjectConfig.image) {
-  store.commit('global/updateImage', window.ProjectConfig.image);
-}

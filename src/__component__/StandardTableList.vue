@@ -125,6 +125,7 @@
       ref="dialogRef"
       :popwin-message="popwinMessage"
       :id-array="buttons.selectIdArr"
+      :select-row-data="buttons.selectArr"
       :title="dialogComponentNameConfig.title"
       :mask="dialogComponentNameConfig.mask"
       :content-text="dialogComponentNameConfig.contentText"
@@ -147,17 +148,17 @@
 
 <script>
   import { mapActions, mapState, mapMutations } from 'vuex';
-  import ButtonGroup from './ButtonComponent';
-  import AgTable from './AgTable';
-  import FormItemComponent from './FormItemComponent';
-  import ItemComponent from './ItemComponent';
+  import ButtonGroup from './ButtonComponent.vue';
+  import AgTable from './AgTable.vue';
+  import FormItemComponent from './FormItemComponent.vue';
+  import ItemComponent from './ItemComponent.vue';
   import buttonmap from '../assets/js/buttonmap';
   import dialogComponent from './Dialog.vue';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
-  import ImportDialog from './ImportDialog';
-  import ErrorModal from './ErrorModal';
-  import modifyDialog from './ModifyModal';
-  import tree from './tree';
+  import ImportDialog from './ImportDialog.vue';
+  import ErrorModal from './ErrorModal.vue';
+  import modifyDialog from './ModifyModal.vue';
+  import tree from './tree.vue';
   import regExp from '../constants/regExp';
 
   import {
@@ -271,7 +272,7 @@
       },
       treeConfigData() {
         const treeQuery = this.$router.currentRoute.query;
-        if (treeQuery.isTreeTable) {
+        if (treeQuery.isTreeTable || window.isTree) {
           if (window.ProjectConfig && window.ProjectConfig.externalTreeDatas) {
             const { tableName } = this.$router.currentRoute.params;
             return window.ProjectConfig.externalTreeDatas[tableName]();
@@ -325,6 +326,8 @@
             // 符合记录规则一：由列表界面跳转到单对象界面，如果目标单对象界面和列表界面属于不同的表（Table不同），则将此种关系维护到路由记录“栈”。
             // 所返回的列表界面符合以上逻辑关系，则刷新当前列表界面
             if (this.$route.query.isBack) {
+              this.$route.query = {};
+              console.log(this.$route);
               this.searchClickData({ value: 'true' });
             }
           }
@@ -991,6 +994,10 @@
               validate: {}
             };
 
+            if (current.webconf) {
+              obj.item.props.webconf = current.webconf;
+            }
+
 
             // 输入控制
             if (current.type === 'NUMBER' && !current.display) {
@@ -1223,6 +1230,15 @@
             ];
             return timeRange;
           }
+
+          // 设置默认值
+          if (item.daterange) {
+            const timeRange = [
+              new Date().setNewFormt(new Date().minusDays(Number(item.daterange)).toIsoDateString(), '-', ''),
+              new Date().setNewFormt(new Date().toIsoDateString(), '-', '')
+            ];
+            return timeRange;
+          }
         }
         if (item.display === 'OBJ_DATE') {
           if (item.default === '-1') {
@@ -1239,8 +1255,8 @@
 
         if (item.display === 'OBJ_SELECT' && item.default) {
           // 处理select的默认值
-          const arr = [];
-          arr.push(item.default);
+          let arr = [];
+          arr = item.default.split(',');
           return arr;
         }
 
@@ -1827,6 +1843,8 @@
           this.$R3loading.show();
           data.resolve = resolve;
           data.reject = reject;
+          data.isolr = this.buttons.isSolr;
+          
           this.getQueryListForAg(data);
         });
         promise.then((res) => {
@@ -1837,7 +1855,6 @@
               this.searchData.range = res.data.data.defaultrange;
             }
           }
-          
           this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
         }, () => { // 状态为rejected时执行
           this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);

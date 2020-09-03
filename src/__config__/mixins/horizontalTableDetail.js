@@ -67,6 +67,9 @@ export default () => ({
       itemObjId: ({ itemObjId }) => itemObjId,
       isHideTempStorage: ({ isHideTempStorage }) => isHideTempStorage,
       saveInfo: ({ saveInfo }) => saveInfo,
+      isRequest: ({ isRequest }) => isRequest,
+
+      
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
         if (idx > 0) {
           acc.push({ tableName: cur.tablename });
@@ -120,7 +123,9 @@ export default () => ({
         'updateButtonGetActionData',
         'updataClickSave',
         'testUpdataValue',
-        'updataVerifyRequiredInformation'
+        'updataVerifyRequiredInformation',
+        'isRequestUpdata',
+        'emptyTestData'
       ]),
   },
   beforeDestroy() {

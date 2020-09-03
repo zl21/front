@@ -29,6 +29,7 @@
         :id-array="idArray"
         :obj-list="objList"
         :action-id="actionId"
+        :select-row-data="selectRowData"
         :item-id="itemId"
         :popwin-message="popwinMessage"
         :obj-tab-action-dialog-config="objTabActionDialogConfig"
@@ -53,6 +54,11 @@
         type: [Array, Object],
         default: () => {}
       },
+      selectRowData: {// 获取ID用于多选,获取勾选的明细对应的row内的数据
+        type: [Array, Object],
+        default: () => {}
+      },
+      
       objTabActionDialogConfig: {// 当前自定义按钮配置信息
         type: [Object],
         default: () => {}

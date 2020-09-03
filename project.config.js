@@ -31,7 +31,6 @@ module.exports = {
   // target: 'http://47.103.175.111:26666/', // 千百度环境
   // target: 'http://syman-jflow-standard.dev.burgeononline.com',
   
-  
   Version: '1.3', // 版本号
   interlocks: true, // 是否打开三级联动装置
   enableGateWay: false, // 网关是否打开,
@@ -63,6 +62,6 @@ module.exports = {
   //     name: '工作流'
   //   },
   // },
-  enableActivateSameCustomizePage: true, // 跳转自定义界面，当自定义界面标识相同，是否只激活同一个tab,默认为false,自定义界面ID不同会打开多个tab
-
+  enableActivateSameCustomizePage: false, // 跳转自定义界面，当自定义界面标识相同，是否只激活同一个tab,默认为false,自定义界面ID不同会打开多个tab
+  logoutTips: false // 失去会话是否需要登出提示 默认false直接登出
 };

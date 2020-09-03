@@ -421,6 +421,9 @@
           item.type ? dataProp[item.type] && dataProp[item.type].props : {},
           this.items.props
         );
+
+        const placeholder = this.items.props.webconf && this.items.props.webconf.placeholder ? this.items.props.webconf.placeholder : null;
+        item.props.placeholder = placeholder || `${dataProp[item.type].props.placeholder}${item.title}`;
         if (item.type === 'docfile') {
           if (!Array.isArray(item.props.itemdata.valuedata)) {
             item.props.itemdata.valuedata = [];

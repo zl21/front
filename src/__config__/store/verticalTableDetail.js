@@ -50,6 +50,7 @@ export default () => ({
     updataVerifyRequiredInformation: {},
     saveInfo: {},
     testUpdata: {},
+    isRequest: [], // 记录当前tab是否点击过关系
   },
   actions: actions(),
   mutations: mutations()

@@ -66,7 +66,7 @@
         @InitializationForm="InitializationForm"
         @VerifyMessage="verifyFormPanelMain"
       />
-      <div>
+      <div class="verticalTabs">
         <TabPanels
           v-show="tabPanels.length > 0"
           ref="tabPanel"
@@ -91,8 +91,8 @@
   import { mapState, mapMutations } from 'vuex';
   import Vue from 'vue';
   // import getComponentName from '../__utils__/getModuleName';
-  import tabComponent from './SingleObjectTabComponent';
-  import AutomaticPathGenerationInput from './AutomaticPathGenerationInput';
+  import tabComponent from './SingleObjectTabComponent.vue';
+  import AutomaticPathGenerationInput from './AutomaticPathGenerationInput.vue';
   
   import {
     MODULE_COMPONENT_NAME,
@@ -100,8 +100,8 @@
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
 
   import customizeData from '../__config__/customize.config';
-  import singleObjectButtons from './SingleObjectButtons';
-  import compositeForm from './CompositeForm';
+  import singleObjectButtons from './SingleObjectButtons.vue';
+  import compositeForm from './CompositeForm.vue';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
 
  
@@ -117,9 +117,9 @@
       };
     },
     computed: {
-      ...mapState('global', {
-        isRequest: ({ isRequest }) => isRequest,
-      }),
+      // ...mapState('global', {
+      //   isRequest: ({ isRequest }) => isRequest,
+      // }),
       customizeDataRes() {
         const obj = {};
         return Object.keys(customizeData).reduce((arr, key) => {
@@ -232,7 +232,7 @@
       }, 10000);
     },
     methods: {
-      ...mapMutations('global', ['isRequestUpdata', 'emptyTestData']),
+      // ...mapMutations('global', ['isRequestUpdata', 'emptyTestData']),
 
       itemTableCheckFunc() {
         if (this.$refs.tabPanel) {
@@ -363,6 +363,12 @@
     .verticalTableDetailContent{
       flex: 1;
       overflow: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .verticalTabs{
+      flex: 1;
     }
     .tabPanel {
       margin: 10px 0;

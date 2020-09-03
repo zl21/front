@@ -13,7 +13,7 @@ export default {
     network.post('/p/cs/setFixedColumn', urlSearchParams(data));
   },
   getQueryListForAg({ commit }, {
-    table, startIndex, range, fixedcolumns, column_include_uicontroller = true, orderby, merge = false, reffixedcolumns, resolve, reject
+    table, startIndex, range, fixedcolumns, column_include_uicontroller = true, orderby, merge = false, reffixedcolumns, isolr, resolve, reject
   }) {
     network.post('/p/cs/QueryList', urlSearchParams({
       searchdata: {
@@ -23,9 +23,28 @@ export default {
         fixedcolumns,
         reffixedcolumns,
         column_include_uicontroller,
-        orderby
+        orderby,
+        isolr
       }
-    })).then((res) => {
+    })).then(async (res) => {
+      // 存在es检索，展示合计总计
+      if (isolr) {
+        await network.post('/p/cs/QueryList', urlSearchParams({
+          searchdata: {
+            table,
+            startindex: startIndex || 0,
+            range,
+            fixedcolumns,
+            reffixedcolumns,
+            column_include_uicontroller,
+            orderby,
+            isolr,
+            getsumfileds: true
+          }
+        })).then((response) => {
+          res.data.datas.fullRangeSubTotalRow = response.data.datas.fullRangeSubTotalRow;
+        });
+      }
       const updateTableData = res.data.data;
       if (merge) {
         commit('updateTableDataWithMerge', updateTableData);

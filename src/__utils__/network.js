@@ -4,7 +4,7 @@ import router from '../__config__/router.config';
 import store from '../__config__/store.config';
 
 import {
-  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, REQUEST_PENDDING_EXPIRE, getTouristRoute
+  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, REQUEST_PENDDING_EXPIRE, getTouristRoute, logoutTips
 } from '../constants/global';
 import { addNetwork } from './indexedDB';
 
@@ -212,16 +212,39 @@ axios.interceptors.response.use(
       // }));
       // delete pendingRequestMap[requestMd5];
       if (status === 403) {
-        // 清楚对应登陆用户信息
-        window.sessionStorage.setItem('loginStatus', false);
-        store.commit('global/updataUserInfoMessage', {
-          userInfo: {}
-        });
-        removeSessionObject('userInfo');
-        if (getProjectQuietRoutes().indexOf(router.currentRoute.path) === -1) {
-          if (config.url !== '/p/cs/logout') {
-            // store.dispatch('global/signout');
-            router.push(getTouristRoute());
+        if (logoutTips() && getProjectQuietRoutes().indexOf(router.currentRoute.path) === -1) {
+          window.vm.$Modal.fcWarning({
+            title: '警告',
+            content: '您已失去会话，是否退出登录?',
+            mask: true,
+            showCancel: true,
+            onOk: () => {
+              // 清楚对应登陆用户信息
+              window.sessionStorage.setItem('loginStatus', false);
+              store.commit('global/updataUserInfoMessage', {
+                userInfo: {}
+              });
+              removeSessionObject('userInfo');
+              if (getProjectQuietRoutes().indexOf(router.currentRoute.path) === -1) {
+                if (config.url !== '/p/cs/logout') {
+                  // store.dispatch('global/signout');
+                  router.push(getTouristRoute());
+                }
+              }
+            }
+          });
+        } else {
+          // 清楚对应登陆用户信息
+          window.sessionStorage.setItem('loginStatus', false);
+          store.commit('global/updataUserInfoMessage', {
+            userInfo: {}
+          });
+          removeSessionObject('userInfo');
+          if (getProjectQuietRoutes().indexOf(router.currentRoute.path) === -1) {
+            if (config.url !== '/p/cs/logout') {
+              // store.dispatch('global/signout');
+              router.push(getTouristRoute());
+            }
           }
         }
       } else if (status === 500 || status === 404) {
@@ -341,7 +364,7 @@ export const urlSearchParams = (data) => {
   Object.keys(data).forEach((key) => {
     const dataType = Object.prototype.toString.call(data[key]);
     if (dataType === '[object Object]' || dataType === '[object Array]') {
-      data[key] = JSON.stringify(data[key]);
+      data[key] = JSON.stringify(typeof data[key] === 'string' ? data[key].trim() : data[key]);
     }
     params.append(key, data[key]);
   });

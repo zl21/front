@@ -280,7 +280,7 @@ export default {
   },
   increaseKeepAliveLists(state, data) {
     let keepAliveModuleNameRes = '';
-    if (data.dynamicModuleTag === 'H' || data.dynamicModuleTag === 'V' || data.dynamicModuleTag === 'C') {
+    if (enableActivateSameCustomizePage() && (data.dynamicModuleTag === 'H' || data.dynamicModuleTag === 'V' || data.dynamicModuleTag === 'C')) {
       const index = data.name.lastIndexOf('.');
       keepAliveModuleNameRes = data.name.substring(0, index + 1);
     } else {
@@ -381,8 +381,7 @@ export default {
   againClickOpenedMenuLists(state, {
     label,
     keepAliveModuleName,
-    type,
-    fullPath,
+    type
   }) {
     state.openedMenuLists.forEach((d) => {
       d.isActive = false;
@@ -391,25 +390,20 @@ export default {
         // const index = keepAliveModuleName.lastIndexOf('.');  
         keepAliveModuleNameRes = keepAliveModuleName.split('.')[1];
       } 
-    
       // d.label === label &&
       // 去除对label的限制，自定义配置，自定义标识相同，label不同，也可认为是同一个自定义界面
-      let flag = false;
       if (enableActivateSameCustomizePage()) {
-        if (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes)) {
-          flag = true;
+        if (d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
+          d.isActive = true;
         }
-      }
-      if (d.keepAliveModuleName === keepAliveModuleName || flag) {
-        if (type === 'L' || type === 'C') { // 外链界面和自定义你界面匹配进行规则匹配时不加id，则不同id,模块名相同时，需要手动更新path,保证路由匹配正确fullPath
-          d.routeFullPath = fullPath;
-        }
+      } else if (d.keepAliveModuleName === keepAliveModuleName) {
+        // d.label === label &&
         d.isActive = true;
-        state.activeTab = d;
       }
     });
   },
   tabCloseAppoint(state, tab) {
+    // forbidden:禁止关闭当前tab时自动激活最后一个tab
     // tableName:'主表表明',
     // 关闭当前tab时,如果当前列表界面时树形结构列表界面，需清楚对应的treeID
     // const index = state.treeIds.indexOf(tab.tableName);
@@ -504,7 +498,7 @@ export default {
         deleteFromSessionObject('routeMapRecordForCustomizePage', item);
       }
     });
-    state.isRequest = [];// 清空修改数据验证
+    // state.isRequest = [];// 清空修改数据验证
     const { openedMenuLists } = state;
     // 如果关闭某个Tab，则清空所有该模块可能的对应的keepAlive信息。
     state.keepAliveLists = state.keepAliveLists.filter(d => d.indexOf(tab.tableName) === -1);
@@ -519,7 +513,7 @@ export default {
         }
       } else if (item.routeFullPath === tabRouteFullPath) {
         openedMenuLists.splice(index, 1);
-        if (tabRouteFullPath) {
+        if (tabRouteFullPath && !tab.forbidden) {
           if (openedMenuLists.length > 0) {
             if (index === 0) {
               state.activeTab = openedMenuLists[index]; // 关闭当前tab时始终打开的是最后一个tab
@@ -827,26 +821,26 @@ export default {
     // state.serviceIdMap[tableName] = `${gateWay}`;
   },
 
-  isRequestUpdata(state, { tabPanel, index }) {
-    let arr = [];
-    arr = tabPanel.map(item => item.isRequest);
-    if (index === 0) {
-      arr[0] = true;
-    }
-    arr[index] = true;
-    const oldRequestData = state.isRequest;
-    if (oldRequestData.length > 0) {
-      arr.forEach((a, i) => {
-        if (arr[i] !== true) {
-          arr[i] = oldRequestData[i];
-        }
-      }); 
-    }
-    state.isRequest = arr;
-  },
-  emptyTestData(state) { // 清空TestData
-    state.isRequest = [];
-  },
+  // isRequestUpdata(state, { tabPanel, index }) {
+  //   let arr = [];
+  //   arr = tabPanel.map(item => item.isRequest);
+  //   if (index === 0) {
+  //     arr[0] = true;
+  //   }
+  //   arr[index] = true;
+  //   const oldRequestData = state.isRequest;
+  //   if (oldRequestData.length > 0) {
+  //     arr.forEach((a, i) => {
+  //       if (arr[i] !== true) {
+  //         arr[i] = oldRequestData[i];
+  //       }
+  //     }); 
+  //   }
+  //   state.isRequest = arr;
+  // },
+  // emptyTestData(state) { // 清空TestData
+  //   state.isRequest = [];
+  // },
   updateModifySearchFoldnum(state, data) {
     state.changeSearchFoldnum = data;
   },
