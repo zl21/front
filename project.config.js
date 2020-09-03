@@ -31,7 +31,6 @@ module.exports = {
   // target: 'http://47.103.175.111:26666/', // 千百度环境
   // target: 'http://syman-jflow-standard.dev.burgeononline.com',
   
-  
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
   enableGateWay: true, // 网关是否打开,

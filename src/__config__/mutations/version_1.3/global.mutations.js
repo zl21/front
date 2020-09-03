@@ -288,9 +288,14 @@ export default {
     linkType[linkModuleName] = linkUrl;
     state.LinkUrl.push(linkType);
   },
+  // increaseKeepAliveLists(state, data) {
+  //   if (enableKeepAlive() && !state.keepAliveLists.includes(data.name)) {
+  //     state.keepAliveLists = state.keepAliveLists.concat([data.name]);
+  //   }
+  // },
   increaseKeepAliveLists(state, data) {
     let keepAliveModuleNameRes = '';
-    if (data.dynamicModuleTag === 'H' || data.dynamicModuleTag === 'V' || data.dynamicModuleTag === 'C') {
+    if (enableActivateSameCustomizePage() && (data.dynamicModuleTag === 'H' || data.dynamicModuleTag === 'V' || data.dynamicModuleTag === 'C')) {
       const index = data.name.lastIndexOf('.');
       keepAliveModuleNameRes = data.name.substring(0, index + 1);
     } else {
@@ -411,6 +416,7 @@ export default {
     });
   },
   tabCloseAppoint(state, tab) {
+    // forbidden:禁止关闭当前tab时自动激活最后一个tab
     // 关闭tab时需清楚jflow配置的对应表
     // tableName:'主表表明',
     // routeFullPath:'/SYSTEM/TABLE_DETAIL/V/BCP_CUSTOMER_JFLOW/23968/5555832',
@@ -514,8 +520,8 @@ export default {
         }
       } else if (item.routeFullPath === tabRouteFullPath) {
         openedMenuLists.splice(index, 1);
-        if (tabRouteFullPath) {
-          if (openedMenuLists.length > 0) {
+        if (tabRouteFullPath && !tab.forbidden) {
+          if (openedMenuLists.length > 0) {         
             if (index === 0) {
               state.activeTab = openedMenuLists[index]; // 关闭当前tab时始终打开的是最后一个tab
             } else {
