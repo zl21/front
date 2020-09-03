@@ -31,6 +31,7 @@ export const layoutDirection = () => ((window.ProjectConfig && typeof window.Pro
 export const contentConfig = () => (window.ProjectConfig && window.ProjectConfig.contentConfig ? window.ProjectConfig.contentConfig : project.contentConfig);
 export const REQUEST_PENDDING_EXPIRE = () => (window.ProjectConfig && window.ProjectConfig.requestPenddingExpire ? window.ProjectConfig.requestPenddingExpire : project.requestPenddingExpire);
 export const encodeControl = () => (window.ProjectConfig && typeof window.ProjectConfig.encodeControl === 'boolean' ? window.ProjectConfig.encodeControl : project.encodeControl);
+export const logoutTips = () => (window.ProjectConfig && typeof window.ProjectConfig.logoutTips === 'boolean' ? window.ProjectConfig.logoutTips : project.logoutTips);
 // export const REQUEST_PENDDING_EXPIRE = 1000 * 2;
 export const enableActivateSameCustomizePage = () => (window.ProjectConfig && typeof window.ProjectConfig.enableActivateSameCustomizePage === 'boolean' ? window.ProjectConfig.enableActivateSameCustomizePage : project.enableActivateSameCustomizePage);
 

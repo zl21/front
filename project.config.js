@@ -65,5 +65,5 @@ module.exports = {
   //   },
   // },
   enableActivateSameCustomizePage: false, // 跳转自定义界面，当自定义界面标识相同，是否只激活同一个tab,默认为false,自定义界面ID不同会打开多个tab
-
+  logoutTips: false // 失去会话是否需要登出提示 默认false直接登出
 };

@@ -137,7 +137,8 @@
         // 将设置的props和默认props进行assign
         const item = JSON.parse(JSON.stringify(this.items));
         // const item = this.items;
-        item.props = Object.assign({}, dataProp[item.type].props, this.items.props);
+        item.props.placeholder = `${dataProp[item.type].props.placeholder}${item.title}`;
+        item.props = Object.assign({}, dataProp[item.type].props, item);
         item.event = Object.assign({}, this.items.event);
         if (item.type === 'DatePicker') {
           if (
