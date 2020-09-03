@@ -1223,6 +1223,15 @@
             ];
             return timeRange;
           }
+
+          // 设置默认值
+          if (item.daterange) {
+            const timeRange = [
+              new Date().setNewFormt(new Date().minusDays(Number(item.daterange)).toIsoDateString(), '-', ''),
+              new Date().setNewFormt(new Date().toIsoDateString(), '-', '')
+            ];
+            return timeRange;
+          }
         }
         if (item.display === 'OBJ_DATE') {
           if (item.default === '-1') {
@@ -1239,8 +1248,8 @@
 
         if (item.display === 'OBJ_SELECT' && item.default) {
           // 处理select的默认值
-          const arr = [];
-          arr.push(item.default);
+          let arr = [];
+          arr = item.default.split(',');
           return arr;
         }
 
@@ -1827,6 +1836,8 @@
           this.$R3loading.show();
           data.resolve = resolve;
           data.reject = reject;
+          data.isolr = this.buttons.isSolr;
+          
           this.getQueryListForAg(data);
         });
         promise.then((res) => {
@@ -1837,7 +1848,6 @@
               this.searchData.range = res.data.data.defaultrange;
             }
           }
-          
           this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
         }, () => { // 状态为rejected时执行
           this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
