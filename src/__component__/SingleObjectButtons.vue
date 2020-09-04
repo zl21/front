@@ -91,11 +91,11 @@
 
   import { mapMutations, mapState, mapActions } from 'vuex';
   import buttonmap from '../assets/js/buttonmap';
-  import ButtonGroup from './ButtonComponent';
+  import ButtonGroup from './ButtonComponent.vue';
   import router from '../__config__/router.config';
   import Dialog from './Dialog.vue';
   import WaterMark from './WaterMark.vue';
-  import ImportDialog from './ImportDialog';
+  import ImportDialog from './ImportDialog.vue';
   import {
     PLUGIN_MODULE_PREFIX,
     CUSTOMIZED_MODULE_PREFIX,
@@ -109,7 +109,8 @@
     Version, MODULE_COMPONENT_NAME, 
     INSTANCE_ROUTE_QUERY,
     LINK_MODULE_COMPONENT_PREFIX,
-    getCustomizeWaterMark
+    getCustomizeWaterMark,
+    enableActivateSameCustomizePage
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import { getUrl, getLabel } from '../__utils__/url';
@@ -1611,9 +1612,15 @@
             type: 'singleCustomizeButton',
             value: tab,
             // customizedModuleId: tab.webid
-            customizedModuleName: customizedModuleName.toLocaleUpperCase()
+            // customizedModuleName: customizedModuleName.toLocaleUpperCase()
             // 自定义界面：相同自定义界面标记，ID不同时，只激活同一个tab
           };
+
+          if (enableActivateSameCustomizePage()) {
+            data.customizedModuleName = customizedModuleName.toLocaleUpperCase();
+          } else {
+            data.customizedModuleId = id;
+          }
           this.updateCustomizeMessage(data);
         } 
       },

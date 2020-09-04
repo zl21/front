@@ -139,7 +139,7 @@
   // import { setTimeout } from 'timers';
   import regExp from '../constants/regExp';
   import {
-    Version, LINK_MODULE_COMPONENT_PREFIX, INSTANCE_ROUTE_QUERY,
+    Version, LINK_MODULE_COMPONENT_PREFIX, INSTANCE_ROUTE_QUERY, enableActivateSameCustomizePage
   } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
   import ComplexsDialog from './ComplexsDialog'; // emit 选中的行
@@ -1231,9 +1231,14 @@
               type: 'singleCustomizeButton',
               value: tab,
               // customizedModuleId: tab.webid
-              customizedModuleName: customizedModuleName.toLocaleUpperCase()
+              // customizedModuleName: customizedModuleName.toLocaleUpperCase()
             // 自定义界面：相同自定义界面标记，ID不同时，只激活同一个tab
             };
+            if (enableActivateSameCustomizePage()) {
+              data.customizedModuleName = customizedModuleName.toLocaleUpperCase();
+            } else {
+              data.customizedModuleId = id;
+            }
             this.updateCustomizeMessage(data);
           } 
           
@@ -3124,12 +3129,17 @@
                 //     return arr;
                 //   }, {});
                 // }
-                // const customizedModuleName = cellData.customerurl.tableurl.split('/')[1];
+                const customizedModuleName = cellData.customerurl.tableurl.split('/')[1];
                 const datas = {
                   type: 'singleCustomerurlCustomized',
                   value: params.row,
-                  customizedModuleId: params.row[cellData.customerurl.refobjid]
+                  // customizedModuleId: params.row[cellData.customerurl.refobjid]
                 };
+                if (enableActivateSameCustomizePage()) {
+                  datas.customizedModuleName = customizedModuleName.toLocaleUpperCase();
+                } else {
+                  datas.customizedModuleId = params.row[cellData.customerurl.refobjid];
+                }
                 this.updateCustomizeMessage(datas);
                 // 将元数据配置的refobjid，字符串，可配置多个字段，将配置的字段解析后用作lu y，供弹框作为参数使用
                 const type = 'tableDetailAction';
