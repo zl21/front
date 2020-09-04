@@ -416,13 +416,17 @@
         // 将设置的props和默认props进行assign
         const item = this.items;
         // const item = this.items;
-        
         item.props = Object.assign(
           {},
           item.type ? dataProp[item.type] && dataProp[item.type].props : {},
           this.items.props
         );
-        item.props.placeholder = `${dataProp[item.type].props.placeholder}${item.title}`;
+
+
+        const placeholder = this.items.props.webconf && this.items.props.webconf.placeholder ? this.items.props.webconf.placeholder : null;
+        item.props.placeholder = placeholder || `${(dataProp[item.type] && dataProp[item.type].props) ? dataProp[item.type].props.placeholder : '请输入'}${item.title}`;
+        
+
         if (item.type === 'docfile') {
           if (!Array.isArray(item.props.itemdata.valuedata)) {
             item.props.itemdata.valuedata = [];
@@ -1228,13 +1232,15 @@
               ...this._items.props.itemdata.valuedata
             ]);
             this.valueChange();
-            if (childTableName && this.$parent.type === 'PanelForm') {
-              // 主子表的子表修改（1:1）的情况下
-              setTimeout(() => {
-                const dom = document.getElementById('actionMODIFY');
-                dom.click();
-              }, 500);
-            }
+
+            // 去除上传后的保存
+            // if (childTableName && this.$parent.type === 'PanelForm') {
+            //   // 主子表的子表修改（1:1）的情况下
+            //   setTimeout(() => {
+            //     const dom = document.getElementById('actionMODIFY');
+            //     dom.click();
+            //   }, 500);
+            // }
           } else {
             this._items.props.itemdata.valuedata = [];
             this._items.props.itemdata.valuedata = fixedData;
@@ -1246,7 +1252,8 @@
               this._items.value = '';
             }
             this.valueChange();
-            this.upSavefile(parms, fixedData, path, value);
+            // 去除上传后的保存
+            // this.upSavefile(parms, fixedData, path, value);
           }
         } else {
           const _fixedData = fixedData || '';
@@ -1364,18 +1371,20 @@
                   ...this._items.props.itemdata.valuedata
                 ]);
                 this.valueImgChange();
-                if (childTableName && this.$parent.type === 'PanelForm') {
-                  setTimeout(() => {
-                    const dom = document.getElementById('actionMODIFY');
-                    dom.click();
-                  }, 500);
-                }
+                // 去除图片上传成功后的保存
+                // if (childTableName && this.$parent.type === 'PanelForm') {
+                //   setTimeout(() => {
+                //     const dom = document.getElementById('actionMODIFY');
+                //     dom.click();
+                //   }, 500);
+                // }
               } else {
                 this._items.props.itemdata.valuedata.push(
                   fixedData[fixedData.length - 1]
                 );
                 this.valueImgChange();
-                this.upSaveImg();
+                // 去除图片上传成功后的保存
+                // this.upSaveImg();
               }
             } else {
               this._items.props.itemdata.valuedata.push(

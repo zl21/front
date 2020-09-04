@@ -268,7 +268,8 @@ const DropDownSelectFilter = {
     // 是否将弹层放置于 body 内
     transfer: true,
     // 是否开启回车默认选中第一条
-    enterType: false
+    enterType: false,
+    placeholder: '请选择'
   }
 };
 // 下拉框
@@ -299,7 +300,8 @@ const DropMultiSelectFilter = {
     // 是否将弹层放置于 body 内
     transfer: true,
     // 是否开启回车默认选中第一条
-    enterType: false
+    enterType: false,
+    placeholder: '请选择',
   }
 };
 
@@ -317,7 +319,7 @@ const AttachFilter = {
     // 是否显示筛选提示弹窗 true、false
     filterTip: true,
     // 是否选中后禁止编辑 true、false
-    placeholder: null,
+    placeholder: '请选择',
     // 模糊查询的文字信息，支持多列              item.props.AutoData = [];
     AutoData: [],
     // 定义选中展示的文字的key
@@ -365,8 +367,9 @@ const ImageUpload = {
       height: 200,
       colname: 'IMAGE',
       readonly: false,
-      valuedata: []
-    }
+      valuedata: [],
+    },
+    placeholder: '请选择',
   }
 };
 
@@ -377,7 +380,8 @@ const Wangeditor = {
   title: '', // 必填!
   value: '',
   props: {
-    height: 200
+    height: 200,
+    placeholder: '请选择',
   }
 };
 // 读写规则
@@ -387,7 +391,8 @@ const EnumerableInput = {
   title: '', // 必填!
   value: '',
   props: {
-    height: 200
+    height: 200,
+    placeholder: '请选择',
   }
 };
 
@@ -398,7 +403,8 @@ const ExtentionInput = {
   title: '', // 必填!
   value: '',
   props: {
-    height: 200
+    height: 200,
+    placeholder: '请选择',
   }
 };
 
