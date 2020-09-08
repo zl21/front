@@ -322,6 +322,12 @@ export default [
         key: 'fuzzy_match_all',
         type: 'radio',
         enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
+      },
+      {
+        name: '查询时是否必填',
+        key: 'required',
+        type: 'radio',
+        enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
       }      
     ],
     description: '列表查询规则'
