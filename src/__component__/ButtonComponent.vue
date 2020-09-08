@@ -4,12 +4,19 @@
   >
     <div class="R3-button-group">
       <!-- //查找 -->
+      <!-- <Poptip
+        trigger="hover"
+        content="content"
+        placement="bottom-start"
+      > -->
       <Button
         v-if="dataArray.search"
         type="posdefault"
         @click="btnclick('search')"
         v-text="search"
       />
+      <!-- </Poptip> -->
+     
       <Button
         v-show="dataArray.reset"
         id="reset"
@@ -452,6 +459,7 @@
     .collection,.ark-btn-fcdefault{
       min-width: auto !important;
     }
+  
   }
-
+ 
 </style>
