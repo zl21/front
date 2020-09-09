@@ -43,7 +43,6 @@ const matchGateWay = (url) => {
       if (tableNameForGet) {
         tableNameForGet = '';
       }
-      console.log(serviceIdMapApi, url);
       return serviceIdMapApi || undefined;
     }
   } else if (customizedModuleName) {

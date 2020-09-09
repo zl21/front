@@ -73,6 +73,7 @@
         }
       },
       inputGroupValueChange({ key, value }) {
+        console.log(key, value);
         if (this.option.key === '__root__') {
           this.$emit('dataChange', { key, value });
           return;
