@@ -9,7 +9,7 @@ import {
 import { addNetwork } from './indexedDB';
 
 import {
-  updateSessionObject, removeSessionObject
+  updateSessionObject, removeSessionObject, getSeesionObject
 } from './sessionStorage';
 
 // const axios = Axios.create();
@@ -187,13 +187,12 @@ axios.interceptors.response.use(
       fulfilled: true,
       rejected: false,
     });
-
-    if (config.url.indexOf('/p/c/login') !== -1) {
+    if (config.url.indexOf('/p/c/login') !== -1 && response.status === 200) {
       window.sessionStorage.setItem('loginStatus', true);
     }
     if (config.url.indexOf('/p/cs/getSubSystems') !== -1) {
       if (response.status === 200 && response.data.data.length > 0) {
-
+      
       } else {
         updateSessionObject('saveNetwork', { k: 'name', v: '/p/cs/getSubSystems' });
         // window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记

@@ -545,7 +545,8 @@
             id = itemId;
           }
           const message = this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData.message;
-          this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
+          // this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
+          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/emptyTestData`);
 
           // 保存成功后路由跳转到编辑界面
           if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面

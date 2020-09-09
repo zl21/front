@@ -12,6 +12,9 @@
       <WaterMark
         :text="waterMarkText"
         :color="waterMarkColor"
+        :top="waterMarkTop"
+        :left="waterMarkLeft"
+        :width="waterMarkWidth"
       />
     </div>
     <ButtonGroup
@@ -368,7 +371,31 @@
         }
         return false;
       },
-    
+      waterMarkTop() {
+        const customizeWaterMark = getCustomizeWaterMark();
+        const src = this.watermarkimg.split('/')[3].split('.')[0];
+        if (customizeWaterMark[src] && customizeWaterMark[src].top) {
+          return customizeWaterMark[src].top;
+        }
+        return '42px';
+      },
+      waterMarkLeft() {
+        const customizeWaterMark = getCustomizeWaterMark();
+        const src = this.watermarkimg.split('/')[3].split('.')[0];
+        if (customizeWaterMark[src] && customizeWaterMark[src].left) {
+          return customizeWaterMark[src].left;
+        }
+        return '11px';
+      },
+      waterMarkWidth() {
+        const customizeWaterMark = getCustomizeWaterMark();
+        const src = this.watermarkimg.split('/')[3].split('.')[0];
+        if (customizeWaterMark[src] && customizeWaterMark[src].width) {
+          return customizeWaterMark[src].width;
+        }
+        return '80px';
+      },
+      
       waterMarkText() {
         const customizeWaterMark = getCustomizeWaterMark();
         const textMap = Object.assign({
