@@ -167,7 +167,8 @@
     LINK_MODULE_COMPONENT_PREFIX, MODULE_COMPONENT_NAME,
     INSTANCE_ROUTE_QUERY,
     INSTANCE_ROUTE,
-    isCommonTable
+    isCommonTable,
+    enableActivateSameCustomizePage
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import customize from '../__config__/customize.config';
@@ -600,11 +601,18 @@
               treeTableListSelectId
             };
             this.directionalRouter(param);// 定向路由跳转方法
+            
             const data = {
               type: 'standardTableurlCustomized',
               value: row,
-              customizedModuleId: id
+              // customizedModuleId: id
             };
+            if (enableActivateSameCustomizePage()) {
+              const customizedModuleName = this.ag.tableurl.split('/')[1];
+              data.customizedModuleName = customizedModuleName.toLocaleUpperCase();
+            } else {
+              data.customizedModuleId = id;
+            }
             this.updateCustomizeMessage(data);
           } else if (this.ag.datas.objdistype === 'tabpanle') {
             // 单对象左右结构
@@ -760,8 +768,13 @@
             const data = {
               type: 'standardCustomerurlCustomized',
               value: rowData,
-              customizedModuleName: customizedModuleName.toLocaleUpperCase()
+              // customizedModuleName: customizedModuleName.toLocaleUpperCase()
             };
+            if (enableActivateSameCustomizePage()) {
+              data.customizedModuleName = customizedModuleName.toLocaleUpperCase();
+            } else {
+              data.customizedModuleId = rowData[colDef.customerurl.refobjid].val;
+            }
             // 自定义界面：相同自定义界面标记，ID不同时，只激活同一个tab
 
             this.updateCustomizeMessage(data);
@@ -1097,7 +1110,6 @@
                 obj.item.props.optionTip = false;
                 obj.item.props.enterType = true;
                 obj.item.props.fkdisplay = 'pop';
-                console.log(111);
                 obj.item.props.show = false;
                 // 失去光标是否保存
                 obj.item.props.dialog = {
@@ -1836,14 +1848,31 @@
         this.getQueryListPromise(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
+      requiredCheck(data) { // 查询条件必填校验
+        return new Promise((resolve, reject) => {
+          this.formItems.defaultFormItemsLists.map((item) => {
+            if (item.webconf && item.webconf.required && !this.formItems.data[item.colname]) {
+              this.$Modal.fcError({
+                title: '错误',
+                content: `查询条件[${item.coldesc}]不能为空!`,
+                mask: true
+              });
+
+              reject();
+            }
+          });
+          resolve();
+        });
+      },
       getQueryListPromise(data) {
         const promise = new Promise((resolve, reject) => {
-          this.$R3loading.show();
-          data.resolve = resolve;
-          data.reject = reject;
-          data.isolr = this.buttons.isSolr;
-          
-          this.getQueryListForAg(data);
+          this.requiredCheck().then(() => {
+            this.$R3loading.show();
+            data.resolve = resolve;
+            data.reject = reject;
+            data.isolr = this.buttons.isSolr;
+            this.getQueryListForAg(data);
+          });
         });
         promise.then((res) => {
           if (!this.searchData.range) {
@@ -2458,6 +2487,7 @@
               customizedModuleName: tab.webname.toUpperCase()
               // 因外链界面tablinkName相同时，只激活一个tab,所以外链界面用linkName作为key存入session,避免因勾选的id不同存入多个，导致关闭当前tab时无法清除存入的多个
             };
+          
             this.updateCustomizeMessage(data);
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
             const name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
@@ -2517,9 +2547,14 @@
               type: 'standardCustomizeButton',
               value: tab,
               // customizedModuleId: itemId[0]
-              customizedModuleName: customizedModuleName.toLocaleUpperCase()
+              // customizedModuleName: customizedModuleName.toLocaleUpperCase()
             // 自定义界面：相同自定义界面标记，ID不同时，只激活同一个tab
             };
+            if (enableActivateSameCustomizePage()) {
+              data.customizedModuleName = customizedModuleName.toLocaleUpperCase();
+            } else {
+              data.customizedModuleId = itemId[0];
+            }
             this.updateCustomizeMessage(data);
           }
         }

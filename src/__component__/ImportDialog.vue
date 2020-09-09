@@ -130,7 +130,7 @@
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import network, { urlSearchParams, getGateway } from '../__utils__/network';
   import Upload from '../__utils__/upload';
-  import { Version } from '../constants/global';
+  import { Version, encodeControl } from '../constants/global';
 
   export default {
     name: 'ImportDialog',
@@ -382,11 +382,14 @@
         this.$emit('confirmImport');
       },
       urlChange(url) { // 对下载的url地址进行转换，处理特殊字符
-        const arr = url.split('/');
-        let [last] = [...arr].reverse();
-        last = encodeURIComponent(last);
-        arr[arr.length - 1] = last;
-        return arr.join('/');
+        if (encodeControl()) {
+          const arr = url.split('?')[0].split('/');
+          let [last] = [...arr].reverse();
+          last = encodeURIComponent(last);
+          arr[arr.length - 1] = last;
+          return arr.join('/');
+        }
+        return url;
       },
       // 上传失败
       handleError(e) {

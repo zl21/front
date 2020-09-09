@@ -431,12 +431,23 @@ export default {
     //   v: item.ID
     // };
     // 清除配置界面提供给定制界面的参数信息
-    if (tab.keepAliveModuleName) {
-      // const customizedModuleId = tab.keepAliveModuleName.split('.')[2];
-      const customizedModuleName = tab.keepAliveModuleName.split('.')[1];
-      // 配置界面跳转到定制界面（自定义界面，外链）将存入session中对应的信息删除，根据自定义界面customizedModuleName
-      deleteFromSessionObject('customizeMessage', customizedModuleName);// 定制界面
+    if (enableActivateSameCustomizePage()) {
+      if (tab.keepAliveModuleName) {
+        const customizedModuleName = tab.keepAliveModuleName.split('.')[1];
+        deleteFromSessionObject('customizeMessage', customizedModuleName);// 定制界面
+      }
+    } else {
+      const customizedModuleId = tab.keepAliveModuleName.split('.')[2];
+      deleteFromSessionObject('customizeMessage', customizedModuleId);// 定制界面
     }
+
+
+    // if (tab.keepAliveModuleName) {
+    //   // const customizedModuleId = tab.keepAliveModuleName.split('.')[2];
+    //   const customizedModuleName = tab.keepAliveModuleName.split('.')[1];
+    //   // 配置界面跳转到定制界面（自定义界面，外链）将存入session中对应的信息删除，根据自定义界面customizedModuleName
+    //   deleteFromSessionObject('customizeMessage', customizedModuleName);// 定制界面
+    // }
     deleteFromSessionObject('customizeMessage', tab.tableName);// 外链界面
 
 
