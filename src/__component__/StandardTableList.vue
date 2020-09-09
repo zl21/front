@@ -1110,7 +1110,6 @@
                 obj.item.props.optionTip = false;
                 obj.item.props.enterType = true;
                 obj.item.props.fkdisplay = 'pop';
-                console.log(111);
                 obj.item.props.show = false;
                 // 失去光标是否保存
                 obj.item.props.dialog = {
@@ -1849,14 +1848,31 @@
         this.getQueryListPromise(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
+      requiredCheck(data) { // 查询条件必填校验
+        return new Promise((resolve, reject) => {
+          this.formItems.defaultFormItemsLists.map((item) => {
+            if (item.webconf && item.webconf.required && !this.formItems.data[item.colname]) {
+              this.$Modal.fcError({
+                title: '错误',
+                content: `查询条件[${item.coldesc}]不能为空!`,
+                mask: true
+              });
+
+              reject();
+            }
+          });
+          resolve();
+        });
+      },
       getQueryListPromise(data) {
         const promise = new Promise((resolve, reject) => {
-          this.$R3loading.show();
-          data.resolve = resolve;
-          data.reject = reject;
-          data.isolr = this.buttons.isSolr;
-          
-          this.getQueryListForAg(data);
+          this.requiredCheck().then(() => {
+            this.$R3loading.show();
+            data.resolve = resolve;
+            data.reject = reject;
+            data.isolr = this.buttons.isSolr;
+            this.getQueryListForAg(data);
+          });
         });
         promise.then((res) => {
           if (!this.searchData.range) {
