@@ -38,15 +38,16 @@ const matchGateWay = (url) => {
     return globalServiceId || undefined;
   }
   if (tableName || tableNameForGet) {
-    if (serviceIdMap[tableName || tableNameForGet] !== 'undefined') {
+    if (serviceIdMap[tableName || tableNameForGet]) {
       const serviceIdMapApi = serviceIdMap[tableName || tableNameForGet];
       if (tableNameForGet) {
         tableNameForGet = '';
       }
+      console.log(serviceIdMapApi, url);
       return serviceIdMapApi || undefined;
     }
   } else if (customizedModuleName) {
-    if (serviceIdMap[customizedModuleName] !== 'undefined') {
+    if (serviceIdMap[customizedModuleName]) {
       const serviceIdMapApi = serviceIdMap[customizedModuleName];
       return serviceIdMapApi || undefined;
     }
