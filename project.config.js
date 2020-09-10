@@ -43,7 +43,16 @@ module.exports = {
   touristRoute: '/login', // 游客路由：等用户未登录的时候，需要跳转的页面
   enableInitializationRequest: true, // 是否开启初始化请求
   // enableCustomInterface: false // 是否开启自定义接口,
-  customizeWaterMark: {}, // 启用外部自定义水印配置,
+  customizeWaterMark: {
+    // extremely: {
+    //   text: '大家',
+    //   color: '#2d8cf0',
+    //   top: '10px',
+    //   left: '10px',
+    //   width: '50px'
+    // }
+  }, // 启用外部自定义水印配置,
+  // specifiedGlobalGateWay: 'ad-app',
   // specifiedGlobalGateWay: 'user-center',
   encryptedPassword: false, // 是否允许login接口password加密
   isItemTableNewValidation: true, // 是否允许子表新增有必填项时，输入值才触发子表必填项校验，不输入值则只校验主表

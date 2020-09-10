@@ -4,12 +4,19 @@
   >
     <div class="R3-button-group">
       <!-- //查找 -->
+      <!-- <Poptip
+        trigger="hover"
+        content="content"
+        placement="bottom-start"
+      > -->
       <Button
         v-if="dataArray.search"
         type="posdefault"
         @click="btnclick('search')"
         v-text="search"
       />
+      <!-- </Poptip> -->
+     
       <Button
         v-show="dataArray.reset"
         id="reset"
@@ -34,7 +41,13 @@
         type="fcdefault"
         @click="btnclick('custom', item)"
         v-text="item.webdesc" 
-      />
+      >
+        <!-- <Poptip
+          trigger="hover"
+          content="waListButtonsAnnotation"
+          placement="bottom-start"
+        /> -->
+      </Button>
       <!-- jflow配置按钮-->
       <Button
         v-for="(item) in dataArray.jflowButton"
@@ -452,6 +465,7 @@
     .collection,.ark-btn-fcdefault{
       min-width: auto !important;
     }
+  
   }
-
+ 
 </style>

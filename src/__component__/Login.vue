@@ -67,6 +67,7 @@
 <script>
   import { enableGateWay, Version, encryptedPassword } from '../constants/global';
   import network, { urlSearchParams } from '../__utils__/network';
+  import { getSeesionObject, removeSessionObject } from '../__utils__/sessionStorage';
   
   export default {
     name: 'Login',
@@ -124,8 +125,9 @@
               } else if (r.status === 200 && r.data.code === 0) {
                 this.spinShow = false;
                 window.sessionStorage.setItem('loginTime', `${Date.now()}`);
-                this.spinShow = false;
                 window.location.href = window.location.origin;
+               
+                // window.location.reload();
               } else {
                 this.spinShow = false;
               }
