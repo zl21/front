@@ -964,6 +964,11 @@
         const webact = this.getCurrentItemInfo().webact;
         if (this.objectType === 'vertical' && webact) { // 兼容半定制界面，保存成功时通知外部
           DispatchEvent('tabRefreshClick');
+          DispatchEvent('customizeClick', {
+            detail: {
+              type: 'refresh',
+            }
+          });
         }
         // DispatchEvent('jflowPlugin', {
         //   detail: {
