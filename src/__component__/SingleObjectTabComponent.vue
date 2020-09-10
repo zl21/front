@@ -584,15 +584,26 @@
             // });
           } else if (itemId === 'New') {
             this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getObjectForMainTableForm`, { table: tableName, objid: id, tabIndex });
-            this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getObjectTabForMainTable`, { table: tableName, objid: id, tabIndex });
+            new Promise((resolve, reject) => {
+              this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getObjectTabForMainTable`, {
+                table: tableName, objid: id, tabIndex, resolve, reject 
+              });
+            }).then(() => {
+            });
           } else {
             this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getObjectForMainTableForm`, { table: tableName, objid: itemId, tabIndex });
-            this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getObjectTabForMainTable`, { table: tableName, objid: itemId, tabIndex });
+            new Promise((resolve, reject) => {
+              this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getObjectTabForMainTable`, {
+                table: tableName, objid: itemId, tabIndex, resolve, reject 
+              });
+            }).then(() => {
+            });
           }
           // console.log(this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData);
           // const objIdSave = this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData.newMainTableSaveData.objId ? this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData.newMainTableSaveData.objId : itemId;
-
-          this.$Message.success(message);
+          if(message) {
+            this.$Message.success(message);
+          }
           // this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId });
           // this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId });
           // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getObjectTableItemForTableData`, {

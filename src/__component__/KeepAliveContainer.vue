@@ -25,14 +25,14 @@
     CUSTOMIZED_MODULE_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, PLUGIN_MODULE_PREFIX, PLUGIN_MODULE_COMPONENT_PREFIX,
     LINK_MODULE_PREFIX
   } from '../constants/global';
-  import StandardTableList from './StandardTableList';
-  import VerticalTableDetail from './V.TableDetail';
-  import HorizontalTableDetail from './H.TableDetail';
+  import StandardTableList from './StandardTableList.vue';
+  import VerticalTableDetail from './V.TableDetail.vue';
+  import HorizontalTableDetail from './H.TableDetail.vue';
   import moduleName from '../__utils__/getModuleName';
   import getUserenv from '../__utils__/getUserenv';
 
-  import PageNotFound from './PageNotFound';
-  import LinkPage from './linkPage';
+  import PageNotFound from './PageNotFound.vue';
+  import LinkPage from './linkPage.vue';
 
   import CustomizeModule from '../__config__/customize.config';
   import PluginModule from '../__config__/plugin.config';
