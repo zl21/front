@@ -153,7 +153,14 @@ if (window.ProjectConfig && window.ProjectConfig.externalPluginModules) { // 整
 
 export default (router) => {
   router.beforeEach((to, from, next) => {
-    if (to.path === '/login' && getSeesionObject('loginStatus') === true) {
+    if (to.path && getSeesionObject('loginStatus') !== true && to.path.indexOf('/login') === -1 && to.paht !== '/') {
+      const data = {
+        k: 'path',
+        v: to.path
+      };
+      updateSessionObject('savePath', data);
+    }
+    if (to.path === '/login' && getSeesionObject('loginStatus') === true) { // 当页面处于登录状态时，则无法回到登录界面，可退出登录进行操作
       window.location.href = window.location.origin;
       return;
     }

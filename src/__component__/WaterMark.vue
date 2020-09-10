@@ -4,8 +4,15 @@
     :style="waterMarkStyle"
   >
     <i class="iconfont iconbj_docstate" />
-    <div class="textTip" :class="{ smallText: textArr.length >= 5 }">
-      <div v-for="(item, index) in textArr" :key="index">
+    <div
+      class="textTip"
+      :style="position"
+      :class="{ smallText: textArr.length >= 5 }"
+    >
+      <div
+        v-for="(item, index) in textArr"
+        :key="index"
+      >
         {{ item }}
       </div>
     </div>
@@ -26,6 +33,18 @@
       text: {
         type: String,
         default: '文字'
+      },
+      width: {
+        type: String,
+        default: '80px'
+      },
+      top: {
+        type: String,
+        default: '42px'
+      },
+      left: {
+        type: String,
+        default: '11px'
       }
     },
     components: {},
@@ -37,6 +56,9 @@
       },
       textArr() {
         return this.text.split('');
+      },
+      position() {
+        return { width: this.width, top: this.top, left: this.left };
       }
     }
   };
@@ -52,11 +74,12 @@
             position: absolute;
             transform: rotate(-30deg);
             font-size: 20px;
-            top: 42px;
-            left: 11px;
-            width: 80px;
+            // top: 42px;
+            // left: 11px;
+            // width: 80px;
             display: flex;
             justify-content: space-around;
+            flex-wrap: wrap;
         }
         .smallText {
           font-size: 14px;

@@ -257,7 +257,7 @@ export default {
           return a;
         }, {});
     }
-
+   
     // 以下逻辑是为了解决菜单外路由跳转提供信息
     const tableDetailUrlMessage = getSeesionObject('tableDetailUrlMessage');
     if (JSON.stringify(tableDetailUrlMessage) !== '{}') { // 取按钮跳转外链label
@@ -271,6 +271,13 @@ export default {
     }
     state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('keepAliveLabelMaps'));
     state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
+    const path = getSeesionObject('savePath').path;
+    if (path) {
+      router.push(path);
+      // window.location.replace(window.location.href);
+      // window.location.reload();
+      removeSessionObject('savePath');
+    }
   },
   
   increaseLinkUrl(state, { linkModuleName, linkUrl }) {
