@@ -347,6 +347,7 @@
               mask: true,
               content: response.message
             });
+            this.$emit('confirmImport');
           } else {
             this.$emit('imporSuccess', response.data);
           }
@@ -378,8 +379,8 @@
           //   content: response.message
           // });
           this.clearFile();
+          this.$emit('confirmImport');
         }
-        this.$emit('confirmImport');
       },
       urlChange(url) { // 对下载的url地址进行转换，处理特殊字符
         if (encodeControl()) {

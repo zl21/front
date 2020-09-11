@@ -472,6 +472,7 @@
                 };
                 this.$Modal.fcSuccess(data);
               }
+              this.searchClickData();
             }, () => {
               // if (this.exportTasks.warningMsg) {
               //   const data = {
@@ -2173,6 +2174,7 @@
                   };
                   this.$Modal.fcSuccess(data);
                 }
+                this.searchClickData();
               }, () => {
                 if (this.exportTasks.warningMsg) {
                   this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
