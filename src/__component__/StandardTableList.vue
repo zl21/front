@@ -1851,7 +1851,8 @@
       requiredCheck(data) { // 查询条件必填校验
         return new Promise((resolve, reject) => {
           this.formItems.defaultFormItemsLists.map((item) => {
-            if (item.webconf && item.webconf.required && !this.formItems.data[item.colname]) {
+            const value = Array.isArray(this.formItems.data[item.colname]) ? this.formItems.data[item.colname][0] : (Object.prototype.toString.call(this.formItems.data[item.colname]) === '[Object Object]' ? Object.keys(this.formItems.data[item.colname]).length > 0 : this.formItems.data[item.colname]);
+            if (item.webconf && item.webconf.required && !value) {
               this.$Modal.fcError({
                 title: '错误',
                 content: `查询条件[${item.coldesc}]不能为空!`,
@@ -2594,7 +2595,7 @@
       networkGetTableQuery(event) {
         if (this._inactive) { return; }
         const { detail } = event;
-        if (detail.url === '/p/cs/getTableQuery') {
+        if (detail.url === '/p/cs/getTableQuery' && (detail.response && detail.response.data.data.tabcmd)) {
           this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
           if (!this.buttons.isBig) {
             this.searchClickData();
