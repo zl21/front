@@ -224,8 +224,6 @@
           }
         }, // 弹框配置信息
 
-        searchDBdata: {}, // indexDB存储数据
-
       };
     },
     computed: {
@@ -1896,7 +1894,7 @@
       getQueryListPromise(data) {
         const promise = new Promise((resolve, reject) => {
           this.requiredCheck().then(() => {
-            this.$R3loading.show();
+            // this.$R3loading.show(this.searchData.table);
             data.resolve = resolve;
             data.reject = reject;
             data.isolr = this.buttons.isSolr;
@@ -1905,6 +1903,9 @@
               const search = JSON.parse(JSON.stringify(this.$refs.FormItemComponent.formDataObject));
               search.R3UserId = `${this.userInfo.id}_${this.searchData.table}`;
               addSearch(search);
+
+              this.updateSearchDBdata({});
+              this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
             }
             
 
@@ -2629,13 +2630,23 @@
       },
 
       // getTableQuery监听,做第一次数据查询
-      networkGetTableQuery(event) {
+      async networkGetTableQuery(event) {
         if (this._inactive) { return; }
         const { detail } = event;
         if (detail.url === '/p/cs/getTableQuery' && (detail.response && detail.response.data.data.tabcmd)) {
           this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
-          
-          if (!this.buttons.isBig) {
+          const enableKAQueryDataForUserFlag = Version() === '1.4' ? !!(detail.response.data.data.datas.webconf && detail.response.data.data.datas.webconf.enableKAQueryDataForUser) : !!(detail.response.data.datas.webconf && detail.response.data.datas.webconf.enableKAQueryDataForUser);
+          if (enableKAQueryDataForUser() || enableKAQueryDataForUserFlag) {
+            await querySearch(`${this.$store.state.global.userInfo.id}_${this.searchData.table}`).then((response) => {
+              if (response) {
+                this.updateSearchDBdata(response);
+                this.updateFormData(response);
+              }
+              if (!this.buttons.isBig) {
+                this.searchClickData();
+              }
+            });
+          } else if (!this.buttons.isBig) {
             this.searchClickData();
           }
         }
@@ -2646,15 +2657,6 @@
           this.updateFailInfo(event.detail.failInfo);
         }
       }
-    },
-    beforeMount() {
-      const id = this.$store.state.global.userInfo.id || JSON.parse(window.localStorage.getItem('userInfo')).id;
-      querySearch(`${id}_${this[INSTANCE_ROUTE_QUERY].tableName}`).then((res) => {
-        if (res) {
-          this.searchDBdata = res;
-          this.updateFormData(res);
-        }
-      });
     },
     mounted() {
       this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;

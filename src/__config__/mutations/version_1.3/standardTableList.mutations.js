@@ -212,5 +212,8 @@ export default {
   }, // 修改state中dynamicRouting的值
   updataWebConf(state, data) {
     state.webConf = data;
+  },
+  updateSearchDBdata(state, data) {
+    state.searchDBdata = data;
   }
 };
