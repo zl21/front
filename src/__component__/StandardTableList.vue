@@ -168,7 +168,8 @@
     INSTANCE_ROUTE_QUERY,
     INSTANCE_ROUTE,
     isCommonTable,
-    enableActivateSameCustomizePage
+    enableActivateSameCustomizePage,
+    enableKAQueryDataForUser
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import customize from '../__config__/customize.config';
@@ -178,6 +179,7 @@
   import { DispatchEvent } from '../__utils__/dispatchEvent';
   import treeData from '../__config__/treeData.config';
   import getUserenv from '../__utils__/getUserenv';
+  import { addSearch, querySearch } from '../__utils__/indexedDB';
 
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
@@ -221,6 +223,9 @@
           confirm: () => {
           }
         }, // 弹框配置信息
+
+        searchDBdata: {}, // indexDB存储数据
+
       };
     },
     computed: {
@@ -472,6 +477,7 @@
                 };
                 this.$Modal.fcSuccess(data);
               }
+              this.searchClickData();
             }, () => {
               // if (this.exportTasks.warningMsg) {
               //   const data = {
@@ -940,8 +946,6 @@
                   this.formItemsLists[itemIndex].item.props.Selected = $this.selected || [];
                   this.formItemsLists[itemIndex].item.value = $this.value;
                   // this.formItemsLists = this.formItemsLists.concat([]);
-
-                  console.log(itemIndex, this.formItemsLists[itemIndex].item.props);
                 },
                 'on-popper-hide': ($this) => {
                   // 初始化清空数据
@@ -1169,6 +1173,28 @@
               }
             }
 
+            // 设置indexDB默认查询条件 
+            if (enableKAQueryDataForUser() || this.webConf.enableKAQueryDataForUser) {
+              Object.keys(this.searchDBdata).map((temp) => {
+                if (temp === obj.item.field && this.searchDBdata[temp]) {
+                  obj.item.value = this.searchDBdata[temp];
+                }
+
+                if (current.display === 'OBJ_FK' && temp === obj.item.field && this.searchDBdata[temp]) {
+                  switch (current.fkobj.searchmodel) {
+                  case 'drp':
+                    obj.item.props.defaultSelected = this.searchDBdata[temp];
+                    break;
+                  case 'mrp':
+                    obj.item.props.defaultSelected = this.searchDBdata[temp];
+                    break;
+                  default:
+                    break;
+                  }
+                }
+              });
+            }
+            
             array.push(obj);
             return array;
           },
@@ -1285,6 +1311,8 @@
         // if(item.display === 'OBJ_FK' && item.fkobj){
         //     return '';
         // }
+
+        
         return item.default;
       },
       getTableQuery() {
@@ -1872,6 +1900,14 @@
             data.resolve = resolve;
             data.reject = reject;
             data.isolr = this.buttons.isSolr;
+
+            if (enableKAQueryDataForUser() || this.webConf.enableKAQueryDataForUser) {
+              const search = JSON.parse(JSON.stringify(this.$refs.FormItemComponent.formDataObject));
+              search.R3UserId = `${this.userInfo.id}_${this.searchData.table}`;
+              addSearch(search);
+            }
+            
+
             this.getQueryListForAg(data);
           });
         });
@@ -2173,6 +2209,7 @@
                   };
                   this.$Modal.fcSuccess(data);
                 }
+                this.searchClickData();
               }, () => {
                 if (this.exportTasks.warningMsg) {
                   this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
@@ -2597,6 +2634,7 @@
         const { detail } = event;
         if (detail.url === '/p/cs/getTableQuery' && (detail.response && detail.response.data.data.tabcmd)) {
           this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
+          
           if (!this.buttons.isBig) {
             this.searchClickData();
           }
@@ -2609,14 +2647,25 @@
         }
       }
     },
+    beforeMount() {
+      const id = this.$store.state.global.userInfo.id || JSON.parse(window.localStorage.getItem('userInfo')).id;
+      querySearch(`${id}_${this[INSTANCE_ROUTE_QUERY].tableName}`).then((res) => {
+        if (res) {
+          this.searchDBdata = res;
+          this.updateFormData(res);
+        }
+      });
+    },
     mounted() {
       this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
+      
       if (!this._inactive) {
         window.addEventListener('network', this.networkEventListener);
         window.addEventListener('network', this.networkGetTableQuery);
         window.addEventListener('updateSTFailInfo', this.updateSTFailInfo);
       }
       this.updateUserConfig({ type: 'table', id: this[INSTANCE_ROUTE_QUERY].tableId });
+      
       const promise = new Promise((resolve, reject) => {
         const searchData = this.searchData;
         this.getTableQueryForForm({ searchData, resolve, reject });

@@ -1,6 +1,7 @@
 
 import { getSeesionObject } from '../../../__utils__/sessionStorage';
 import router from '../../router.config';
+import store from '../../store.config';
 
 export default {
 
@@ -30,7 +31,7 @@ export default {
   // },
 
   // 表单
-  updateDefaultFormItemsLists({ formItems }, data) {
+  async updateDefaultFormItemsLists({ formItems, userInfo }, data) {
     const { tableId } = router.currentRoute.params;
 
     const getSTDefaultQuery = getSeesionObject(tableId);
@@ -46,6 +47,7 @@ export default {
         });
       });
     }
+    
     formItems.defaultFormItemsLists = data;
   },
   updateFormData({

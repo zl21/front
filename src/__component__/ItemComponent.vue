@@ -175,6 +175,7 @@
         <DropDownSelectFilter
           v-if="_items.props.fk_type === 'drp'"
           :ref="_items.field"
+          :class-name="'R3-'+_items.field"
           :data="_items.props.data"
           :single="_items.props.single"
           :placeholder="_items.props.placeholder"
@@ -203,6 +204,7 @@
           v-if="_items.props.fk_type === 'mrp'"
           :ref="_items.field"
           :data="_items.props.data"
+          :class-name="'R3-'+_items.field"
           :single="_items.props.single"
           :placeholder="_items.props.placeholder"
           :total-row-count="_items.props.totalRowCount"
