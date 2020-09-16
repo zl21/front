@@ -116,6 +116,7 @@ export const querySearch = async (R3UserId = null) => new Promise((resolve, reje
         return;
       }
       if (new Date() - result.createTime >= (Number(dateStorageTime() ? dateStorageTime() : 1) * 24 * 1000 * 60 * 60)) {
+        transaction.objectStore('search').delete(R3UserId);
         resolve(null);
       } else {
         delete result.R3UserId;
