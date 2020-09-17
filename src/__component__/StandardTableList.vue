@@ -2636,9 +2636,9 @@
       async networkGetTableQuery(event) {
         if (this._inactive) { return; }
         const { detail } = event;
-        if (detail.url === '/p/cs/getTableQuery' && (detail.response && detail.response.data.data.tabcmd)) {
+        if (detail.url === '/p/cs/getTableQuery' && (Version() === '1.4' ? detail.response.data.data.tabcmd : detail.response.data.tabcmd)) {
           this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
-          const enableKAQueryDataForUserFlag = Version() === '1.4' ? !!(detail.response.data.data.datas.webconf && detail.response.data.data.datas.webconf.enableKAQueryDataForUser) : !!(detail.response.data.datas.webconf && detail.response.data.datas.webconf.enableKAQueryDataForUser);
+          const enableKAQueryDataForUserFlag = Version() === '1.4' ? !!(detail.response.data.data.datas.webconf && detail.response.data.datas.webconf.enableKAQueryDataForUser) : !!(detail.response.data.datas.webconf && detail.response.data.datas.webconf.enableKAQueryDataForUser);
           if (enableKAQueryDataForUser() || enableKAQueryDataForUserFlag) {
             await querySearch(`${this.$store.state.global.userInfo.id}_${this.searchData.table}`).then((response) => {
               if (response) {
