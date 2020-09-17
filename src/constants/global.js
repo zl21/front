@@ -34,6 +34,7 @@ export const encodeControl = () => (window.ProjectConfig && typeof window.Projec
 export const logoutTips = () => (window.ProjectConfig && typeof window.ProjectConfig.logoutTips === 'boolean' ? window.ProjectConfig.logoutTips : project.logoutTips);
 export const enableKAQueryDataForUser = () => (window.ProjectConfig && typeof window.ProjectConfig.enableKAQueryDataForUser === 'boolean' ? window.ProjectConfig.enableKAQueryDataForUser : project.enableKAQueryDataForUser);
 export const dateStorageTime = () => (window.ProjectConfig && window.ProjectConfig.dateStorageTime ? window.ProjectConfig.dateStorageTime : project.dateStorageTime);
+export const ossRealtimeSave = () => (window.ProjectConfig && typeof window.ProjectConfig.ossRealtimeSave === 'boolean' ? window.ProjectConfig.ossRealtimeSave : project.ossRealtimeSave);
 // export const REQUEST_PENDDING_EXPIRE = 1000 * 2;
 export const enableActivateSameCustomizePage = () => (window.ProjectConfig && typeof window.ProjectConfig.enableActivateSameCustomizePage === 'boolean' ? window.ProjectConfig.enableActivateSameCustomizePage : project.enableActivateSameCustomizePage);
 
