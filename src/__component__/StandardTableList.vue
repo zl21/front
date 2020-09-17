@@ -2639,6 +2639,8 @@
           if (enableKAQueryDataForUser() || enableKAQueryDataForUserFlag) {
             await querySearch(`${this.$store.state.global.userInfo.id}_${this.searchData.table}`).then((response) => {
               if (response) {
+                // 过滤部分处理不了的类型字段
+                delete response.undefined; // 过滤配置的下拉多字段类型
                 this.updateSearchDBdata(response);
                 this.updateFormData(response);
               }
