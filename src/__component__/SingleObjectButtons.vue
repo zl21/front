@@ -1101,7 +1101,15 @@
       objectTabAction(obj) { // 按钮执行事件判断逻辑
         switch (obj.eName) {
         case 'actionADD': // 新增
-          this.objectAdd(obj);
+          if (this.isValue) {
+            this.Warning('修改的数据未保存,确定新增？', () => {
+              this.objectAdd(obj);
+            });
+          } else {
+            this.objectAdd(obj);
+            this.isValue = null;
+          }
+          
           break;
         case 'actionMODIFY': // 保存
           if (!this.testUpdata() && this.objectType === 'vertical') { // 主表无改动，通知自定义tab
