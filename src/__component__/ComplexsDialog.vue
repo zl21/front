@@ -965,7 +965,7 @@
       this.loading = true;
       this.init();
 
-      if (this.default) {
+      if (this.default && this.default.length > 0) {
         const arr = this.default.reduce((array, current) => {
           array.push({
             ID: current.ID,
