@@ -350,7 +350,7 @@
   import Docfile from './docfile/DocFileComponent';
 
 
-  import { Version, MODULE_COMPONENT_NAME } from '../constants/global';
+  import { Version, MODULE_COMPONENT_NAME, ossRealtimeSave } from '../constants/global';
   import EnumerableInput from './EnumerableInput';
   import ExtentionInput from './ExtentionInput';
 
@@ -1236,14 +1236,16 @@
             ]);
             this.valueChange();
 
-            // 去除上传后的保存
-            // if (childTableName && this.$parent.type === 'PanelForm') {
-            //   // 主子表的子表修改（1:1）的情况下
-            //   setTimeout(() => {
-            //     const dom = document.getElementById('actionMODIFY');
-            //     dom.click();
-            //   }, 500);
-            // }
+            // 上传后是否保存控制
+            if (!ossRealtimeSave()) {
+              if (childTableName && this.$parent.type === 'PanelForm') {
+                // 主子表的子表修改（1:1）的情况下
+                setTimeout(() => {
+                  const dom = document.getElementById('actionMODIFY');
+                  dom.click();
+                }, 500);
+              }
+            }
           } else {
             this._items.props.itemdata.valuedata = [];
             this._items.props.itemdata.valuedata = fixedData;
@@ -1374,13 +1376,16 @@
                   ...this._items.props.itemdata.valuedata
                 ]);
                 this.valueImgChange();
-                // 去除图片上传成功后的保存
-                // if (childTableName && this.$parent.type === 'PanelForm') {
-                //   setTimeout(() => {
-                //     const dom = document.getElementById('actionMODIFY');
-                //     dom.click();
-                //   }, 500);
-                // }
+
+                if (!ossRealtimeSave()) {
+                  // 去除图片上传成功后的保存
+                  if (childTableName && this.$parent.type === 'PanelForm') {
+                    setTimeout(() => {
+                      const dom = document.getElementById('actionMODIFY');
+                      dom.click();
+                    }, 500);
+                  }
+                }
               } else {
                 this._items.props.itemdata.valuedata.push(
                   fixedData[fixedData.length - 1]

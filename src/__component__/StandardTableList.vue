@@ -1174,6 +1174,9 @@
             // 设置indexDB默认查询条件 
             if (enableKAQueryDataForUser() || this.webConf.enableKAQueryDataForUser) {
               Object.keys(this.searchDBdata).map((temp) => {
+                if (temp === obj.item.field && obj.item.value) {
+                  return temp;
+                }
                 if (temp === obj.item.field && this.searchDBdata[temp]) {
                   obj.item.value = this.searchDBdata[temp];
                 }
@@ -2639,10 +2642,24 @@
           if (enableKAQueryDataForUser() || enableKAQueryDataForUserFlag) {
             await querySearch(`${this.$store.state.global.userInfo.id}_${this.searchData.table}`).then((response) => {
               if (response) {
+                const lists = Version() === '1.4' ? detail.response.data.data.datas.dataarry : detail.response.data.datas.dataarry;
+                lists.map((item) => {
+                  if (item.default) {
+                    delete response[item.colname];
+                  }
+                  
+                  if (item.display === 'OBJ_FK' && response[item.colname]) {
+                    response[item.colname] = response[item.colname].reduce((array, current) => {
+                      array.push(current.ID);
+                      return array;
+                    }, []);
+                  }
+                  return item;
+                });
                 // 过滤部分处理不了的类型字段
                 delete response.undefined; // 过滤配置的下拉多字段类型
                 this.updateSearchDBdata(response);
-                this.updateFormData(response);
+                this.updateFormData(Object.assign({}, this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists), response));
               }
               if (!this.buttons.isBig) {
                 this.searchClickData();
