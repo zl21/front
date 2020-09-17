@@ -157,7 +157,6 @@
       generateLinkComponent() {
         const { linkModuleName } = this.$route.params;
         const componentName = `${LINK_MODULE_COMPONENT_PREFIX}.${linkModuleName}`;
-
         if (this.LinkUrl.length > 0) {
           this.LinkUrl.forEach((url) => {
             if (url[linkModuleName]) {
@@ -175,7 +174,7 @@
         if (routePrefix !== LINK_MODULE_PREFIX) { return; }
         if (!this.urlName) {
           if (Vue.component(componentName) === undefined) {
-            Vue.component(componentName, PageNotFound);
+            Vue.component('PageNotFound', PageNotFound);
           }
           this.currentModule = componentName;
         }
@@ -192,6 +191,7 @@
         handler(val) {
           if (val && val.length > 0) {
             const { routePrefix } = this.$route.meta;
+            console.log(333, val, routePrefix, LINK_MODULE_PREFIX);
             if (routePrefix === LINK_MODULE_PREFIX) {
               this.generateComponent();
             }

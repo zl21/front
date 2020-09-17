@@ -153,7 +153,7 @@ if (window.ProjectConfig && window.ProjectConfig.externalPluginModules) { // 整
 
 export default (router) => {
   router.beforeEach((to, from, next) => {
-    if (to.path && getSeesionObject('loginStatus') !== true && to.path.indexOf('/login') === -1 && to.paht !== '/') {
+    if (to.path && getSeesionObject('loginStatus') !== true && to.path.indexOf('/login') === -1 && to.path !== '/') {
       const data = {
         k: 'path',
         v: to.path
