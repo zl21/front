@@ -941,9 +941,26 @@
                 },
                 valuechange: ($this) => {
                   // 弹窗多选
-                  this.formItemsLists[itemIndex].item.props.Selected = $this.selected || [];
-                  this.formItemsLists[itemIndex].item.value = $this.value;
+                  // this.formItemsLists[itemIndex].item.props.Selected = $this.selected || [];
+                  // this.formItemsLists[itemIndex].item.value = $this.value;
                   // this.formItemsLists = this.formItemsLists.concat([]);
+                  if (!$this.value) {
+                    // this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
+                    return false;
+                  }
+                  const searchObject = {
+                    ak: $this.value,
+                    colid: current.colid,
+                    fixedcolumns: {}
+                  };
+
+                  fkHttpRequest().fkFuzzyquerybyak({
+                    searchObject: this.setSeachObject(searchObject, current),
+                    serviceId: current.fkobj.serviceId,
+                    success: (res) => {
+                      // this.freshDropDownSelectFilterAutoData(res, itemIndex);
+                    }
+                  });
                 },
                 'on-popper-hide': ($this) => {
                   // 初始化清空数据
@@ -1844,7 +1861,7 @@
             if (
               !temp.item.field
               && temp.item.type === 'select'
-              && item.indexOf(':ENAME') < 0
+              && item.indexOf(':') < 0
             ) {
               // 处理合并型select
               value = jsonData[item].map(option => `=${option}`);
@@ -1904,6 +1921,12 @@
 
             if (enableKAQueryDataForUser() || this.webConf.enableKAQueryDataForUser) {
               const search = JSON.parse(JSON.stringify(this.$refs.FormItemComponent.formDataObject));
+
+              this.formItemsLists.map((temp) => {
+                if (temp.item.type === 'AttachFilter') {
+                  delete search[temp.item.field];
+                }
+              });
               search.R3UserId = `${this.userInfo.id}_${this.searchData.table}`;
               addSearch(search);
 
@@ -2636,9 +2659,10 @@
       async networkGetTableQuery(event) {
         if (this._inactive) { return; }
         const { detail } = event;
+
         if (detail.url === '/p/cs/getTableQuery' && (Version() === '1.4' ? detail.response.data.data.tabcmd : detail.response.data.tabcmd)) {
           this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
-          const enableKAQueryDataForUserFlag = Version() === '1.4' ? !!(detail.response.data.data.datas.webconf && detail.response.data.datas.webconf.enableKAQueryDataForUser) : !!(detail.response.data.datas.webconf && detail.response.data.datas.webconf.enableKAQueryDataForUser);
+          const enableKAQueryDataForUserFlag = Version() === '1.4' ? !!(detail.response.data.data.datas.webconf && detail.response.data.data.datas.webconf.enableKAQueryDataForUser) : !!(detail.response.data.datas.webconf && detail.response.data.datas.webconf.enableKAQueryDataForUser);
           if (enableKAQueryDataForUser() || enableKAQueryDataForUserFlag) {
             await querySearch(`${this.$store.state.global.userInfo.id}_${this.searchData.table}`).then((response) => {
               if (response) {
@@ -2648,11 +2672,15 @@
                     delete response[item.colname];
                   }
                   
-                  if (item.display === 'OBJ_FK' && response[item.colname]) {
+                  if (item.display === 'OBJ_FK' && response[item.colname] && item.fkobj.fkdisplay !== 'mrp') {
                     response[item.colname] = response[item.colname].reduce((array, current) => {
                       array.push(current.ID);
                       return array;
                     }, []);
+                  }
+
+                  if (item.display === 'OBJ_FK' && item.fkobj.fkdisplay !== 'mrp') {
+                    delete response[item.colname];
                   }
                   return item;
                 });

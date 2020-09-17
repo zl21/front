@@ -32,6 +32,7 @@
           ref="complex"
           :fkobj="propsData.fkobj"
           :filter="filterDate"
+          :default="selected"
         />
       </div>
     </AttachFilter>
@@ -127,6 +128,7 @@
         // }
 
         this.propsData = JSON.parse(JSON.stringify(this.propstype));
+
         if (this.propsData.disabled) {
           this.showDisabled = this.propsData.disabled;
         } else {

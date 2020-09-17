@@ -50,7 +50,13 @@
       canChinese: {
         type: Boolean,
         default: true
-      }// 是否可以模糊搜索中文
+      }, // 是否可以模糊搜索中文
+      default: {
+        type: Array,
+        default() {
+          return [];
+        }
+      }
     },
     computed: {
       Tree() {
@@ -958,6 +964,38 @@
     created() {
       this.loading = true;
       this.init();
+
+      if (this.default && this.default.length > 0) {
+        const arr = this.default.reduce((array, current) => {
+          array.push({
+            ID: current.ID,
+            exclude: false,
+            id_list: [current.ID],
+            screen: current.ID,
+            screen_string: current.Label
+          });
+          this.text.result.push({
+            exclude: false,
+            id_list: [current.ID],
+            screen: current.ID,
+            screen_string: current.Label
+          });
+
+          this.IN.push(current.ID);
+          return array;
+        }, []);
+
+        this.resultData.total = this.default.length;
+
+        const lastItem = arr[arr.length - 1];
+        if (lastItem.screen_string.indexOf('已经选中') >= 0) {
+          arr.pop();
+          this.text.result.pop();
+          this.IN.pop();
+        }
+
+        this.resultData.list = arr;
+      }
     }
 
 
