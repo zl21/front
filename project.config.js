@@ -6,7 +6,7 @@ module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
   projectIconPath: path.join(__dirname, './favicon.ico'), // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
-  target: 'http://zhixiaoqa.dev.syman.cn/', // 框架研发网关开启环境
+  target: 'http://r3-8098.dev.burgeononline.com/', // 框架研发网关开启环境
   // target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 新版本jflow测试环境
   // target: 'http://r3dev.qiaodan.com:28888', // 乔丹开发环境
   // target: 'http://r3dev.qiaodan.com:26666', // 乔丹开发环境
@@ -73,5 +73,7 @@ module.exports = {
   //   },
   // },
   enableActivateSameCustomizePage: false, // 跳转自定义界面，当自定义界面标识相同，是否只激活同一个tab,默认为false,自定义界面ID不同会打开多个tab
-  logoutTips: false // 失去会话是否需要登出提示 默认false直接登出
+  logoutTips: false, // 失去会话是否需要登出提示 默认false直接登出
+  enableKAQueryDataForUser: false, // 是否开启存储全表查询条件
+  dateStorageTime: 1, // 查询条件存储时间，默认1天,建议不要设置太大影响性能
 };
