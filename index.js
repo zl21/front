@@ -235,7 +235,7 @@ if (enableGateWay()) {
 }
 const packageMessage = {
   version: '1.8.7',
-  packageTime: '2020.08.21.18.35', 
+  packageTime: '2020.09.21.09.39', 
   user: 'AD',   
 };
 projectConfig.packageMessage = packageMessage;
