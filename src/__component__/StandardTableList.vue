@@ -951,19 +951,19 @@
                     // this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
                     return false;
                   }
-                  const searchObject = {
-                    ak: $this.value,
-                    colid: current.colid,
-                    fixedcolumns: {}
-                  };
 
-                  fkHttpRequest().fkFuzzyquerybyak({
-                    searchObject: this.setSeachObject(searchObject, current),
-                    serviceId: current.fkobj.serviceId,
-                    success: (res) => {
-                      // this.freshDropDownSelectFilterAutoData(res, itemIndex);
-                    }
-                  });
+                  // const searchObject = {
+                  //   ak: $this.value,
+                  //   colid: current.colid,
+                  //   fixedcolumns: {}
+                  // };
+                  // fkHttpRequest().fkFuzzyquerybyak({
+                  //   searchObject: this.setSeachObject(searchObject, current),
+                  //   serviceId: current.fkobj.serviceId,
+                  //   success: (res) => {
+                  //     // this.freshDropDownSelectFilterAutoData(res, itemIndex);
+                  //   }
+                  // });
                 },
                 'on-popper-hide': ($this) => {
                   // 初始化清空数据
