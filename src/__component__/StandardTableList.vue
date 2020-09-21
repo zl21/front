@@ -944,9 +944,9 @@
                 },
                 valuechange: ($this) => {
                   // 弹窗多选
-                  // this.formItemsLists[itemIndex].item.props.Selected = $this.selected || [];
-                  // this.formItemsLists[itemIndex].item.value = $this.value;
-                  // this.formItemsLists = this.formItemsLists.concat([]);
+                  this.formItemsLists[itemIndex].item.props.Selected = $this.selected || [];
+                  this.formItemsLists[itemIndex].item.value = $this.value;
+                  this.formItemsLists = this.formItemsLists.concat([]);
                   if (!$this.value) {
                     // this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
                     return false;
@@ -1184,7 +1184,6 @@
                 obj.item.props.datalist = [];
                 obj.item.props.Selected = [];
                 obj.item.props.filterDate = {};
-
                 break;
               default:
                 break;
@@ -1332,7 +1331,6 @@
         // if(item.display === 'OBJ_FK' && item.fkobj){
         //     return '';
         // }
-
         
         return item.default;
       },

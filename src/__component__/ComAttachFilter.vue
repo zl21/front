@@ -118,7 +118,6 @@
       propstype() {
         // 将设置的props和默认props进行assign
         // const item = this.items;
-        
         this.value = (this.defaultSelected[0] && this.defaultSelected[0].Label) || '';
         
         this.selected = this.defaultSelected;
@@ -140,10 +139,12 @@
         } else {
           this.propsData.componentType = Dialog;
           if (this.defaultSelected[0] && this.defaultSelected[0].ID && /选中/.test(this.value)) {
-            const data = JSON.parse(this.defaultSelected[0].ID);
-            data.value.reftable = this.propsData.reftable;
-            data.value.reftableid = this.propsData.reftableid;
-            data.value.serviceId = this.propsData.serviceId;
+            const data = JSON.parse(this.defaultSelected[0].ID); 
+
+            // 谢世华  目前发现为无用代码
+            // data.value.reftable = this.propsData.reftable;
+            // data.value.reftableid = this.propsData.reftableid;
+            // data.value.serviceId = this.propsData.serviceId;
             this.filterDate = {
               text: JSON.stringify(data.lists),
               value: data.value,
@@ -190,7 +191,8 @@
       // AttachFilter event
       attachFilterChange(value) {
         this.value = value;
-        this.valueChange('change');
+        // 谢世华  为了处理标准列表界面字段数据消失问题
+        // this.valueChange('change');
       },
       attachFilterSelected(row) {
         this.value = row.label;
@@ -407,7 +409,7 @@
       }
     },
     created() {
-      this.propsData = this.propstype;
+      this.propsData = JSON.parse(JSON.stringify(this.propstype));
       this.value = this.defaultValue;
       if (this.propsData.disabled) {
         this.showDisabled = this.propsData.disabled;

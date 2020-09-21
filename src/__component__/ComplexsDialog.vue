@@ -527,7 +527,7 @@
         return false;
       },
       verify(arr, id, type) {
-        if (!arr.some(x => x === id)) {
+        if (!arr.some(x => x == id)) {
           return true;
         }
         if (type === 'tip') {
