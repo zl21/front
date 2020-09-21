@@ -800,9 +800,11 @@ export default {
       return;
     }
 
-    router.push({
-      path
-    });
+    if (path) {
+      router.push({
+        path
+      });
+    }
   },
   updataUserInfoMessage(state, { userInfo }) {
     state.userInfo = userInfo;

@@ -127,6 +127,7 @@
       :id-array="buttons.selectIdArr"
       :select-row-data="buttons.selectArr"
       :title="dialogComponentNameConfig.title"
+      :obj-tab-action-dialog-config="objTabActionDialogConfig"
       :mask="dialogComponentNameConfig.mask"
       :content-text="dialogComponentNameConfig.contentText"
       :footer-hide="dialogComponentNameConfig.footerHide"
@@ -198,6 +199,7 @@
     data() {
       return {
         popwinMessage: {},
+        objTabActionDialogConfig: {}, // 自定义按钮配置
         urlArr: ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid'],
         tableButtons: [],
         // isChangeTreeConfigData: '',//oldTree
@@ -575,6 +577,7 @@
               treeTableListSelectId
             };
             this.directionalRouter(param);// 定向路由跳转方法
+            return;
           } else if (row._OBJTYPE && row._OBJTYPE.val === 'object') {
             // 单对象上下结构
             type = 'tableDetailVertical';
@@ -1498,6 +1501,7 @@
         this.dialogComponentNameConfig.footerHide = true;
         // this.actionDialog.show = true;
         // this.actionDialog.title = tab.webdesc;
+        this.objTabActionDialogConfig = tab;
         if (tab.action.indexOf('?') >= 0) {
           this.dialogComponent = this.getCustomizeComponent(tab.action.split('/')[0]);
         } else {
