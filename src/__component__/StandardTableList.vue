@@ -2601,7 +2601,7 @@
       networkGetTableQuery(event) {
         if (this._inactive) { return; }
         const { detail } = event;
-        if (detail.url === '/p/cs/getTableQuery' && (detail.response && detail.response.data.data.tabcmd)) {
+        if (detail.url === '/p/cs/getTableQuery' && (Version() === '1.4' ? detail.response.data.data.tabcmd : detail.response.data.tabcmd)) {
           this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
           if (!this.buttons.isBig) {
             this.searchClickData();
