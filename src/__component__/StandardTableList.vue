@@ -127,6 +127,7 @@
       :id-array="buttons.selectIdArr"
       :select-row-data="buttons.selectArr"
       :title="dialogComponentNameConfig.title"
+      :obj-tab-action-dialog-config="objTabActionDialogConfig"
       :mask="dialogComponentNameConfig.mask"
       :content-text="dialogComponentNameConfig.contentText"
       :footer-hide="dialogComponentNameConfig.footerHide"
@@ -198,6 +199,7 @@
     data() {
       return {
         popwinMessage: {},
+        objTabActionDialogConfig: {}, // 自定义按钮配置
         urlArr: ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid'],
         tableButtons: [],
         // isChangeTreeConfigData: '',//oldTree
@@ -1499,6 +1501,7 @@
         this.dialogComponentNameConfig.footerHide = true;
         // this.actionDialog.show = true;
         // this.actionDialog.title = tab.webdesc;
+        this.objTabActionDialogConfig = tab;
         if (tab.action.indexOf('?') >= 0) {
           this.dialogComponent = this.getCustomizeComponent(tab.action.split('/')[0]);
         } else {
@@ -2660,7 +2663,6 @@
       async networkGetTableQuery(event) {
         if (this._inactive) { return; }
         const { detail } = event;
-
         if (detail.url === '/p/cs/getTableQuery' && (Version() === '1.4' ? detail.response.data.data.tabcmd : detail.response.data.tabcmd)) {
           this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
           const enableKAQueryDataForUserFlag = Version() === '1.4' ? !!(detail.response.data.data.datas.webconf && detail.response.data.data.datas.webconf.enableKAQueryDataForUser) : !!(detail.response.data.datas.webconf && detail.response.data.datas.webconf.enableKAQueryDataForUser);
