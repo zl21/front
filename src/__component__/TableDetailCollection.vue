@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                   >
+                            >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -680,6 +680,7 @@
       getEditAbleId(data) {
         this.columnEditElementId = {};
         this.editElementId = [];
+        console.log(3333, data.row);
         data.row.forEach((rowItem, rowIdx) => {
           data.tabth.forEach((tabthItem, tabthIdx) => {
             if (tabthItem.display === 'text' || tabthItem.fkdisplay === 'drp' || tabthItem.fkdisplay === 'mrp'
