@@ -811,7 +811,7 @@
         this.sendMessage.PAGESIZE = 50;
         
         this.treeChecked();
-        this.multipleSelectionTable(this.sendMessage, 0);
+        // this.multipleSelectionTable(this.sendMessage, 0);
       },
       multipleSetMultiQuery(obj) {
         multipleComple().multipleSetMultiQuery({
