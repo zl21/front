@@ -1101,7 +1101,15 @@
       objectTabAction(obj) { // 按钮执行事件判断逻辑
         switch (obj.eName) {
         case 'actionADD': // 新增
-          this.objectAdd(obj);
+          if (this.isValue) {
+            this.Warning('修改的数据未保存,确定新增？', () => {
+              this.objectAdd(obj);
+            });
+          } else {
+            this.objectAdd(obj);
+            this.isValue = null;
+          }
+          
           break;
         case 'actionMODIFY': // 保存
           if (!this.testUpdata() && this.objectType === 'vertical') { // 主表无改动，通知自定义tab
@@ -3045,15 +3053,16 @@
           if (this.updateData[itemName] && this.updateData[itemName].add[itemName]) {
             itemAdd = Object.keys(this.updateData[itemName].add[itemName]);// 子表新增的值
           }
-          if (this.noClickSave()) {
-            if (this.verifyRequiredInformation()) { // 纵向结构保存校验
-              if (obj.requestUrlPath) { // 配置path
-                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-              } else { // 没有配置path  
-                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-              }
-            }
-          } else if (itemModify.length === 0 && itemAdd.length === 0) { // 主表修改
+          // if (this.noClickSave()) {
+          //   if (this.verifyRequiredInformation()) { // 纵向结构保存校验
+          //     if (obj.requestUrlPath) { // 配置path
+          //       this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+          //     } else { // 没有配置path  
+          //       this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+          //     }
+          //   }
+          // } else 
+          if (itemModify.length === 0 && itemAdd.length === 0) { // 主表修改
             if (!enableRestrictSave()) {
               const tag = 'jflow';
               if (!Array.isArray(this.mainModify)) {
@@ -3071,29 +3080,46 @@
               }
             }
           } else {
+            let flag = false;// 是否符合以下某一个判断条件，用于非保存动作进行的保存（提交），如果没有，按照提交逻辑，不管是否修改字段，都要进行一次保存，如未修改过任何值，则进行一次主表保存
             if (itemModify.length > 0 && itemAdd.length < 1) { // 子表表格编辑修改
               // 校验子表表格必填项
               if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) { // 配置了暂存按钮，不校验子表
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+                flag = true;
               } else if (this.itemTableCheckFunc()) { // 未配置暂存按钮，子表必须校验
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+                flag = true;
               }
             }
             // const add = Object.assign({}, this.updateData[itemName].add[itemName], this.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
             if (itemAdd.length > 0 && itemModify.length < 1) { // 子表新增
               if (this.verifyRequiredInformation()) { // 纵向结构保存校验
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
+                flag = true;
               }
             }
             if (itemAdd.length > 0 && itemModify.length > 0) {
               if (this.verifyRequiredInformation()) { // 纵向结构保存校验
                 if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) { // 配置了暂存按钮，不校验子表
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
+                  flag = true;
                 } else if (this.itemTableCheckFunc()) { // 未配置暂存按钮，子表必须校验
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
+                  flag = true;
                 }
               }
             }
+
+            
+            if (this.noClickSave() && !flag) { // 当前为非保存按钮调用的保存操作，如flag=false则认为不符合以上任何判断可以进行保存的条件，则无条件调用一次主表保存
+              if (this.verifyRequiredInformation()) { // 纵向结构保存校验
+                if (obj.requestUrlPath) { // 配置path
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+                } else { // 没有配置path  
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+                }
+              }
+            } 
           }
         } else if (itemName === this.tableName) { // 主表修改
           if (!enableRestrictSave()) {
@@ -3153,7 +3179,7 @@
                 }
               }
             }
-        }
+        } 
       },
 
       verifyRequiredInformation() { // 验证表单必填项

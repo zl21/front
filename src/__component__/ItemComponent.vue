@@ -74,7 +74,7 @@
         :rows="_items.props.row"
         :autosize="_items.props.autosize"
         :autofocus="_items.props.autofocus"
-        :placeholder="_items.props.placeholder"
+        :placeholder="!_items.props.disabled? _items.props.placeholder:''"
         :size="_items.props.size"
         :maxlength="_items.props.maxlength"
         :icon="_items.props.icon"
@@ -110,7 +110,7 @@
         :multiple="_items.props.multiple"
         :multiple-type="_items.props.multipleType"
         :disabled="_items.props.disabled"
-        :placeholder="_items.props.placeholder"
+        :placeholder="!_items.props.disabled? _items.props.placeholder:''"
         :not-found-text="_items.props['not-found-text']"
         :label-in-value="_items.props['label-in-value']"
         :choose-all="items.props.chooseAll"
@@ -139,7 +139,7 @@
         :transfer="_items.props.transfer"
         :format="_items.props.format"
         :placement="_items.props.placement"
-        :placeholder="_items.props.placeholder"
+        :placeholder="!_items.props.disabled? _items.props.placeholder:''"
         :options="_items.props.options"
         :open="_items.props.open"
         :confirm="_items.props.confirm"
@@ -160,7 +160,7 @@
         :steps="_items.props.steps"
         :format="_items.props.format"
         :placement="_items.props.placement"
-        :placeholder="_items.props.placeholder"
+        :placeholder="!_items.props.disabled? _items.props.placeholder:''"
         :open="_items.props.open"
         :confirm="_items.props.confirm"
         :size="_items.props.size"
@@ -177,7 +177,7 @@
           :ref="_items.field"
           :data="_items.props.data"
           :single="_items.props.single"
-          :placeholder="_items.props.placeholder"
+          :placeholder="!_items.props.disabled? _items.props.placeholder:''"
           :total-row-count="_items.props.totalRowCount"
           :page-size="_items.props.pageSize"
           :auto-data="_items.props.AutoData"
@@ -204,7 +204,7 @@
           :ref="_items.field"
           :data="_items.props.data"
           :single="_items.props.single"
-          :placeholder="_items.props.placeholder"
+          :placeholder="!_items.props.disabled? _items.props.placeholder:''"
           :total-row-count="_items.props.totalRowCount"
           :page-size="_items.props.pageSize"
           :auto-data="_items.props.AutoData"
@@ -348,7 +348,7 @@
   import Docfile from './docfile/DocFileComponent';
 
 
-  import { Version, MODULE_COMPONENT_NAME } from '../constants/global';
+  import { Version, MODULE_COMPONENT_NAME, ossRealtimeSave } from '../constants/global';
   import EnumerableInput from './EnumerableInput';
   import ExtentionInput from './ExtentionInput';
 
@@ -1233,12 +1233,16 @@
               ...this._items.props.itemdata.valuedata
             ]);
             this.valueChange();
-            if (childTableName && this.$parent.type === 'PanelForm') {
-              // 主子表的子表修改（1:1）的情况下
-              setTimeout(() => {
-                const dom = document.getElementById('actionMODIFY');
-                dom.click();
-              }, 500);
+
+            // 上传后是否保存控制
+            if (!ossRealtimeSave()) {
+              if (childTableName && this.$parent.type === 'PanelForm') {
+                // 主子表的子表修改（1:1）的情况下
+                setTimeout(() => {
+                  const dom = document.getElementById('actionMODIFY');
+                  dom.click();
+                }, 500);
+              }
             }
           } else {
             this._items.props.itemdata.valuedata = [];
@@ -1251,7 +1255,8 @@
               this._items.value = '';
             }
             this.valueChange();
-            this.upSavefile(parms, fixedData, path, value);
+            // 去除上传后的保存
+            // this.upSavefile(parms, fixedData, path, value);
           }
         } else {
           const _fixedData = fixedData || '';
@@ -1369,18 +1374,23 @@
                   ...this._items.props.itemdata.valuedata
                 ]);
                 this.valueImgChange();
-                if (childTableName && this.$parent.type === 'PanelForm') {
-                  setTimeout(() => {
-                    const dom = document.getElementById('actionMODIFY');
-                    dom.click();
-                  }, 500);
+
+                if (!ossRealtimeSave()) {
+                  // 去除图片上传成功后的保存
+                  if (childTableName && this.$parent.type === 'PanelForm') {
+                    setTimeout(() => {
+                      const dom = document.getElementById('actionMODIFY');
+                      dom.click();
+                    }, 500);
+                  }
                 }
               } else {
                 this._items.props.itemdata.valuedata.push(
                   fixedData[fixedData.length - 1]
                 );
                 this.valueImgChange();
-                this.upSaveImg();
+                // 去除图片上传成功后的保存
+                // this.upSaveImg();
               }
             } else {
               this._items.props.itemdata.valuedata.push(

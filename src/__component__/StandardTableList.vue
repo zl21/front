@@ -127,6 +127,7 @@
       :id-array="buttons.selectIdArr"
       :select-row-data="buttons.selectArr"
       :title="dialogComponentNameConfig.title"
+      :obj-tab-action-dialog-config="objTabActionDialogConfig"
       :mask="dialogComponentNameConfig.mask"
       :content-text="dialogComponentNameConfig.contentText"
       :footer-hide="dialogComponentNameConfig.footerHide"
@@ -196,6 +197,7 @@
     data() {
       return {
         popwinMessage: {},
+        objTabActionDialogConfig: {}, // 自定义按钮配置
         urlArr: ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid'],
         tableButtons: [],
         // isChangeTreeConfigData: '',//oldTree
@@ -472,6 +474,7 @@
                 };
                 this.$Modal.fcSuccess(data);
               }
+              this.searchClickData();
             }, () => {
               // if (this.exportTasks.warningMsg) {
               //   const data = {
@@ -571,6 +574,7 @@
               treeTableListSelectId
             };
             this.directionalRouter(param);// 定向路由跳转方法
+            return;
           } else if (row._OBJTYPE && row._OBJTYPE.val === 'object') {
             // 单对象上下结构
             type = 'tableDetailVertical';
@@ -1110,7 +1114,6 @@
                 obj.item.props.optionTip = false;
                 obj.item.props.enterType = true;
                 obj.item.props.fkdisplay = 'pop';
-                console.log(111);
                 obj.item.props.show = false;
                 // 失去光标是否保存
                 obj.item.props.dialog = {
@@ -1453,6 +1456,7 @@
         this.dialogComponentNameConfig.footerHide = true;
         // this.actionDialog.show = true;
         // this.actionDialog.title = tab.webdesc;
+        this.objTabActionDialogConfig = tab;
         if (tab.action.indexOf('?') >= 0) {
           this.dialogComponent = this.getCustomizeComponent(tab.action.split('/')[0]);
         } else {
@@ -1849,14 +1853,32 @@
         this.getQueryListPromise(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
+      requiredCheck(data) { // 查询条件必填校验
+        return new Promise((resolve, reject) => {
+          this.formItems.defaultFormItemsLists.map((item) => {
+            const value = Array.isArray(this.formItems.data[item.colname]) ? this.formItems.data[item.colname][0] : (Object.prototype.toString.call(this.formItems.data[item.colname]) === '[Object Object]' ? Object.keys(this.formItems.data[item.colname]).length > 0 : this.formItems.data[item.colname]);
+            if (item.webconf && item.webconf.required && !value) {
+              this.$Modal.fcError({
+                title: '错误',
+                content: `查询条件[${item.coldesc}]不能为空!`,
+                mask: true
+              });
+
+              reject();
+            }
+          });
+          resolve();
+        });
+      },
       getQueryListPromise(data) {
         const promise = new Promise((resolve, reject) => {
-          this.$R3loading.show();
-          data.resolve = resolve;
-          data.reject = reject;
-          data.isolr = this.buttons.isSolr;
-          
-          this.getQueryListForAg(data);
+          this.requiredCheck().then(() => {
+            this.$R3loading.show();
+            data.resolve = resolve;
+            data.reject = reject;
+            data.isolr = this.buttons.isSolr;
+            this.getQueryListForAg(data);
+          });
         });
         promise.then((res) => {
           if (!this.searchData.range) {
@@ -2156,6 +2178,7 @@
                   };
                   this.$Modal.fcSuccess(data);
                 }
+                this.searchClickData();
               }, () => {
                 if (this.exportTasks.warningMsg) {
                   this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
@@ -2578,7 +2601,7 @@
       networkGetTableQuery(event) {
         if (this._inactive) { return; }
         const { detail } = event;
-        if (detail.url === '/p/cs/getTableQuery') {
+        if (detail.url === '/p/cs/getTableQuery' && (detail.response && detail.response.data.data.tabcmd)) {
           this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
           if (!this.buttons.isBig) {
             this.searchClickData();

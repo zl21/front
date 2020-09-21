@@ -187,7 +187,7 @@ axios.interceptors.response.use(
       fulfilled: true,
       rejected: false,
     });
-    if (config.url.indexOf('/p/c/login') !== -1 && response.status === 200) {
+    if (config.url.indexOf('/p/c/login') !== -1 && response.status === 200 && response.data.data) {
       window.sessionStorage.setItem('loginStatus', true);
     }
     if (config.url.indexOf('/p/cs/getSubSystems') !== -1) {

@@ -1,5 +1,8 @@
 <template>
-  <div class="radioItemWrapper" ref="radioItemWrapper">
+  <div
+    ref="radioItemWrapper"
+    class="radioItemWrapper"
+  >
     <label
       v-for="(radio, index) in option.enumerateValue"
       :key="index"
@@ -45,6 +48,7 @@
     },
     methods: {
       radioValueChange(value) {
+        console.log(value);
         this.$emit('radioValueChange', { key: this.option.key, value });
       }
     },
