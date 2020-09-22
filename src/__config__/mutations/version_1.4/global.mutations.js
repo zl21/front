@@ -272,7 +272,7 @@ export default {
     state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('keepAliveLabelMaps'));
     state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
     const path = getSeesionObject('savePath').path;
-    if (path) {
+    if (path && path !== router.currentRoute.path) {
       router.push(path);
       // window.location.replace(window.location.href);
       // window.location.reload();
