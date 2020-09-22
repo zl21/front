@@ -139,20 +139,23 @@
         } else {
           this.propsData.componentType = Dialog;
           if (this.defaultSelected[0] && this.defaultSelected[0].ID && /选中/.test(this.value)) {
-            const data = JSON.parse(this.defaultSelected[0].ID); 
+            const data = this.defaultSelected[0].ID; 
+            // 谢世华  修改处理默认值逻辑
+            
+            if (data.value) {
+              data.value.reftable = this.propsData.reftable;
+              data.value.reftableid = this.propsData.reftableid;
+              data.value.serviceId = this.propsData.serviceId;
 
-            // 谢世华  目前发现为无用代码
-            // data.value.reftable = this.propsData.reftable;
-            // data.value.reftableid = this.propsData.reftableid;
-            // data.value.serviceId = this.propsData.serviceId;
-            this.filterDate = {
-              text: JSON.stringify(data.lists),
-              value: data.value,
-            };
-            this.resultData = {
-              text: JSON.stringify(data.lists),
-              value: data.value,
-            };
+              this.filterDate = {
+                text: JSON.stringify(data.lists),
+                value: data.value,
+              };
+              this.resultData = {
+                text: JSON.stringify(data.lists),
+                value: data.value,
+              };
+            }
           }
           this.propstype.show = true;
         }
@@ -183,6 +186,8 @@
           },
           serviceId: this.propsData.fkobj.serviceId,
           success: (res) => {
+            this.propsData.hidecolumns = ['id', 'value', 'ENAME']; 
+            this.propsData.columnsKey = ['ECODE'];
             this.propsData.AutoData = res.data.data;
           }
         });
@@ -192,7 +197,9 @@
       attachFilterChange(value) {
         this.value = value;
         // 谢世华  为了处理标准列表界面字段数据消失问题
-        // this.valueChange('change');
+        if (value.indexOf('已经选中') >= 0) {
+          this.valueChange('change');
+        }
       },
       attachFilterSelected(row) {
         this.value = row.label;

@@ -1268,6 +1268,15 @@
           if (this.buttons.isBig) {
             searchData.closeIsBig = true;
           }
+
+          if (enableKAQueryDataForUser() || this.webConf.enableKAQueryDataForUser) {
+            const search = {};
+            search.R3UserId = `${this.userInfo.id}_${this.searchData.table}`;
+            addSearch(search);
+
+            this.updateSearchDBdata({});
+            this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
+          }
           this.getTableQueryForForm({ searchData, resolve, reject });
         });
       },
