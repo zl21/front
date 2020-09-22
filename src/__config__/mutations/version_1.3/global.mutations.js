@@ -270,7 +270,8 @@ export default {
         }, {});
     }
     const path = getSeesionObject('savePath').path;
-    if (path) {
+
+    if (path && path !== router.currentRoute.path) {
       router.push(path);
       // window.location.replace(window.location.href);
       // window.location.reload();
