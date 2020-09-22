@@ -319,9 +319,15 @@ export default [
     inputLists: [
       {
         name: '匹配是否为全模糊',
-        key: 'fuzzy_match_all',
-        type: 'radio',
-        enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
+        key: 'matchrule',
+        type: 'select',
+        selectOptions: [
+          { text: '-- 请选择 --', value: '' },
+          { text: '全匹配', value: '0' },
+          { text: '左匹配', value: '1' },
+          { text: '右匹配', value: '2' },
+          { text: '全模糊', value: '3' },
+        ]
       },
       {
         name: '查询时是否必填',

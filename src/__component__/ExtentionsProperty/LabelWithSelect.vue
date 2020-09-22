@@ -3,8 +3,8 @@
     <div class="cell">
       <LabelForInput :item="item" />
       <select
-        class="select"
         ref="select"
+        class="select"
         @change="selectValueChange"
       >
         <option
@@ -43,7 +43,11 @@
       }
     },
     mounted() {
-      this.$refs.select.value = this.defaultData;
+      if (this.defaultData && this.defaultData === '__empty__') {
+        this.$refs.select.value = '';
+      } else {
+        this.$refs.select.value = this.defaultData;
+      }
     }
   };
 </script>
