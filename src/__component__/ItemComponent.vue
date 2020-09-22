@@ -283,6 +283,7 @@
         @deleteImg="deleteImg"
         @uploadFileChangeSuccess="uploadFileChangeSuccess"
         @uploadFileChangeOnerror="uploadFileChangeOnerror"
+        @dblclick="uploadFileDblclick"
       />
       <!--读写规则  -->
       <EnumerableInput
@@ -1700,6 +1701,10 @@
             this.$parent.dynamicforcompute(e.value);
           }, 10);
         }
+      },
+
+      uploadFileDblclick(array = []) {
+        console.log(array);
       }
       
     },
