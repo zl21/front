@@ -318,7 +318,7 @@ export default [
     type: 'input-group',
     inputLists: [
       {
-        name: '匹配是否为全模糊',
+        name: '匹配规则',
         key: 'matchrule',
         type: 'select',
         selectOptions: [
