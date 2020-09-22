@@ -127,6 +127,7 @@
       :id-array="buttons.selectIdArr"
       :select-row-data="buttons.selectArr"
       :title="dialogComponentNameConfig.title"
+      :obj-tab-action-dialog-config="objTabActionDialogConfig"
       :mask="dialogComponentNameConfig.mask"
       :content-text="dialogComponentNameConfig.contentText"
       :footer-hide="dialogComponentNameConfig.footerHide"
@@ -198,6 +199,7 @@
     data() {
       return {
         popwinMessage: {},
+        objTabActionDialogConfig: {}, // 自定义按钮配置
         urlArr: ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid'],
         tableButtons: [],
         // isChangeTreeConfigData: '',//oldTree
@@ -575,6 +577,7 @@
               treeTableListSelectId
             };
             this.directionalRouter(param);// 定向路由跳转方法
+            return;
           } else if (row._OBJTYPE && row._OBJTYPE.val === 'object') {
             // 单对象上下结构
             type = 'tableDetailVertical';
@@ -941,26 +944,26 @@
                 },
                 valuechange: ($this) => {
                   // 弹窗多选
-                  // this.formItemsLists[itemIndex].item.props.Selected = $this.selected || [];
-                  // this.formItemsLists[itemIndex].item.value = $this.value;
-                  // this.formItemsLists = this.formItemsLists.concat([]);
+                  this.formItemsLists[itemIndex].item.props.Selected = $this.selected || [];
+                  this.formItemsLists[itemIndex].item.value = $this.value;
+                  this.formItemsLists = this.formItemsLists.concat([]);
                   if (!$this.value) {
                     // this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
                     return false;
                   }
-                  const searchObject = {
-                    ak: $this.value,
-                    colid: current.colid,
-                    fixedcolumns: {}
-                  };
 
-                  fkHttpRequest().fkFuzzyquerybyak({
-                    searchObject: this.setSeachObject(searchObject, current),
-                    serviceId: current.fkobj.serviceId,
-                    success: (res) => {
-                      // this.freshDropDownSelectFilterAutoData(res, itemIndex);
-                    }
-                  });
+                  // const searchObject = {
+                  //   ak: $this.value,
+                  //   colid: current.colid,
+                  //   fixedcolumns: {}
+                  // };
+                  // fkHttpRequest().fkFuzzyquerybyak({
+                  //   searchObject: this.setSeachObject(searchObject, current),
+                  //   serviceId: current.fkobj.serviceId,
+                  //   success: (res) => {
+                  //     // this.freshDropDownSelectFilterAutoData(res, itemIndex);
+                  //   }
+                  // });
                 },
                 'on-popper-hide': ($this) => {
                   // 初始化清空数据
@@ -1181,7 +1184,6 @@
                 obj.item.props.datalist = [];
                 obj.item.props.Selected = [];
                 obj.item.props.filterDate = {};
-
                 break;
               default:
                 break;
@@ -1266,6 +1268,15 @@
           if (this.buttons.isBig) {
             searchData.closeIsBig = true;
           }
+
+          if (enableKAQueryDataForUser() || this.webConf.enableKAQueryDataForUser) {
+            const search = {};
+            search.R3UserId = `${this.userInfo.id}_${this.searchData.table}`;
+            addSearch(search);
+
+            this.updateSearchDBdata({});
+            this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
+          }
           this.getTableQueryForForm({ searchData, resolve, reject });
         });
       },
@@ -1329,7 +1340,6 @@
         // if(item.display === 'OBJ_FK' && item.fkobj){
         //     return '';
         // }
-
         
         return item.default;
       },
@@ -1498,6 +1508,7 @@
         this.dialogComponentNameConfig.footerHide = true;
         // this.actionDialog.show = true;
         // this.actionDialog.title = tab.webdesc;
+        this.objTabActionDialogConfig = tab;
         if (tab.action.indexOf('?') >= 0) {
           this.dialogComponent = this.getCustomizeComponent(tab.action.split('/')[0]);
         } else {
