@@ -4,7 +4,7 @@ import configForTable from './extentionPropertyForTable';
 import backDashboardRoutes from '../__config__/backDashboardRoute.config';
 import custommizedRequestURL from '../__config__/custommizedRequestURL.config';
 import connectorConfig from './connector';
-
+import standardTableListsC from '../__config__/mixins/standardTableListsCustomize';
 
 export const functionPowerRequestURL = () => (window.ProjectConfig && window.ProjectConfig.functionPowerRequestURL ? window.ProjectConfig.functionPowerRequestURL : project.functionPowerRequestURL);
 export const Version = () => (window.ProjectConfig && window.ProjectConfig.Version ? window.ProjectConfig.Version : project.Version);
@@ -116,3 +116,5 @@ export const backDashboardRoute = () => (window.ProjectConfig && window.ProjectC
 export const custommizedRequestUrl = () => (window.ProjectConfig && window.ProjectConfig.custommizedRequestURL ? window.ProjectConfig.custommizedRequestURL : custommizedRequestURL);
 
 export const connector = () => (window.ProjectConfig && window.ProjectConfig.connector ? window.ProjectConfig.connector : connectorConfig);
+
+export const standardTableListsCustomize = () => (window.ProjectConfig && window.ProjectConfig.standardTableListsCustomize ? window.ProjectConfig.standardTableListsCustomize : standardTableListsC);
