@@ -285,6 +285,7 @@
         @deleteImg="deleteImg"
         @uploadFileChangeSuccess="uploadFileChangeSuccess"
         @uploadFileChangeOnerror="uploadFileChangeOnerror"
+        @dblclick="uploadFileDblclick"
       />
       <!--读写规则  -->
       <EnumerableInput
@@ -336,7 +337,9 @@
 </template>
 
 <script>
+  
   import { mapMutations } from 'vuex';
+  
   import dataProp from '../__config__/props.config';
   // 弹窗多选面板
   // import Dialog from './ComplexsDialog';
@@ -351,8 +354,10 @@
 
 
   import { Version, MODULE_COMPONENT_NAME, ossRealtimeSave } from '../constants/global';
+  import createModal from './PreviewPicture/index.js';
   import EnumerableInput from './EnumerableInput';
   import ExtentionInput from './ExtentionInput';
+
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -1710,7 +1715,12 @@
             this.$parent.dynamicforcompute(e.value);
           }, 10);
         }
-      }
+      },
+
+      uploadFileDblclick(array = []) { // 图片预览双击
+        createModal(array, this.items);
+      },
+
       
     },
     beforeDestroy() {
@@ -1825,4 +1835,6 @@ textarea.ark-input{
 
     }
 }
+
+
 </style>

@@ -68,6 +68,7 @@
         "axios": "^0.18.0",
         "compressing": "^1.5.1",
         "md5": "^2.3.0",
+        "v-viewer": "^1.5.1",
         "vue": "^2.6.12",
         "vue-router": "^3.4.3",
         "vuedraggable": "^2.24.1",
