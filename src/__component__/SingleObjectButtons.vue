@@ -3070,7 +3070,7 @@
               }
               mainModify.push(tag);
             }
-            if (mainModify.length > 0) {
+            if (mainModify.length > 0 || this.noClickSave()) { // 主表修改了值和提交或自定义按钮配置isSave时，调用保存
               if (this.verifyRequiredInformation()) { // 纵向结构保存校验
                 if (obj.requestUrlPath) { // 配置path
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
