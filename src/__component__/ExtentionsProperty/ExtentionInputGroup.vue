@@ -21,6 +21,14 @@
           :default-data="setDefaultData(option,item)"
           @radioValueChange="inputGroupValueChange"
         />
+        <LabelWithSelect
+          v-if="item.type === 'select'"
+          :key="index"
+          :item="item"
+          :index="index"
+          :default-data="setDefaultData(option,item)"
+          @selectValueChange="inputGroupValueChange"
+        />
         <ExtentionObjectGroup
           v-if="item.type === 'object-group'"
           :key="index"
@@ -39,6 +47,7 @@
   import Description from './Description';
   import LabelWithInput from './LabelWithInput';
   import LabelWithRadio from './LabelWithRadio';
+  import LabelWithSelect from './LabelWithSelect';
   import ExtentionObjectGroup from './ExtentionObjectGroup';
   
   export default {
@@ -47,6 +56,7 @@
       Description,
       LabelWithInput,
       LabelWithRadio,
+      LabelWithSelect,
       ExtentionObjectGroup
     },
     methods: {

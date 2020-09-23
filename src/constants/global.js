@@ -5,6 +5,8 @@ import backDashboardRoutes from '../__config__/backDashboardRoute.config';
 import custommizedRequestURL from '../__config__/custommizedRequestURL.config';
 import connectorConfig from './connector';
 import standardTableListsC from '../__config__/mixins/standardTableListsCustomize';
+import verticalTableDetailC from '../__config__/mixins/verticalTableDetailCustomize';
+
 
 export const functionPowerRequestURL = () => (window.ProjectConfig && window.ProjectConfig.functionPowerRequestURL ? window.ProjectConfig.functionPowerRequestURL : project.functionPowerRequestURL);
 export const Version = () => (window.ProjectConfig && window.ProjectConfig.Version ? window.ProjectConfig.Version : project.Version);
@@ -118,3 +120,5 @@ export const custommizedRequestUrl = () => (window.ProjectConfig && window.Proje
 export const connector = () => (window.ProjectConfig && window.ProjectConfig.connector ? window.ProjectConfig.connector : connectorConfig);
 
 export const standardTableListsCustomize = () => (window.ProjectConfig && window.ProjectConfig.standardTableListsCustomize ? window.ProjectConfig.standardTableListsCustomize : standardTableListsC);
+
+export const verticalTableDetailCustomize = () => (window.ProjectConfig && window.ProjectConfig.verticalTableDetailCustomize ? window.ProjectConfig.verticalTableDetailCustomize : verticalTableDetailC);

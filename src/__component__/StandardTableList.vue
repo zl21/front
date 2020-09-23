@@ -46,6 +46,7 @@
         测试按钮
       </Button> -->
       <ButtonGroup
+        ref="R3ButtonGroup"
         :data-array="buttons.dataArray"
         :id-array="idArray"
         :search-datas="dataProcessing()"

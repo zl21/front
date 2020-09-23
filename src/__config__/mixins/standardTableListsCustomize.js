@@ -3,7 +3,6 @@ import router from '../router.config';
 import {
   STANDARD_TABLE_COMPONENT_PREFIX, STANDARD_COMMONTABLE_COMPONENT_PREFIX, MODULE_COMPONENT_NAME, INSTANCE_ROUTE, INSTANCE_ROUTE_QUERY 
 } from '../../constants/global';
-import store from '../store.config';
 
 
 export default () => ({
@@ -19,6 +18,7 @@ export default () => ({
  
   },
   mounted() {
+    alert;
   },
   methods: {
   },
