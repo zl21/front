@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueDND from 'awe-dnd';
+import Viewer from 'v-viewer';
 import { getGuid } from './src/__utils__/random';
 import router from './src/__config__/router.config';
 import store from './src/__config__/store.config';
@@ -15,6 +16,7 @@ import customizedModalConfig from './src/__config__/customizeDialog.config';
 import Loading from './src/__utils__/loading';
 import getObjdisType from './src/__utils__/getObjdisType';
 import projectConfig from './project.config';
+import './node_modules/viewerjs/dist/viewer.css';
 
 
 // css import
@@ -25,6 +27,8 @@ import './src/assets/theme/custom.less';
 import './src/assets/css/loading.css';
 import './src/assets/css/custom-ext.less';
 import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
+
+Vue.use(Viewer);
 // import jflowPlugin from './jflowPlugin/js/index';
 
 // Vue.use(jflowPlugin, {

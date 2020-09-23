@@ -335,9 +335,9 @@
 </template>
 
 <script>
-  import Vue from 'vue';
+  
   import { mapMutations } from 'vuex';
-  import { Modal } from 'ark-ui';
+  
   import dataProp from '../__config__/props.config';
   // 弹窗多选面板
   // import Dialog from './ComplexsDialog';
@@ -349,15 +349,13 @@
   import ComAttachFilter from './ComAttachFilter';
   //   上传文件
   import Docfile from './docfile/DocFileComponent';
-  import 'viewerjs/dist/viewer.css';
-  import Viewer from 'v-viewer';
 
 
   import { Version, MODULE_COMPONENT_NAME, ossRealtimeSave } from '../constants/global';
+  import createModal from './PreviewPicture/index.js';
   import EnumerableInput from './EnumerableInput';
   import ExtentionInput from './ExtentionInput';
 
-  Vue.use(Viewer);
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -1710,89 +1708,7 @@
       },
 
       uploadFileDblclick(array = []) { // 图片预览双击
-        console.log(array, this);
-        this.createModal();
-      },
-      createModal() {
-        // 获取body并且创建一个新的div节点
-        if (!document.getElementById('imgPreview')) {
-          const body = document.body;
-          const bindPhone = document.createElement('div');
-          
-          // 给创建的div设置id=message，并且添加到body后
-          bindPhone.setAttribute('id', 'imgPreview');
-          body.appendChild(bindPhone);
-        }
-
-        const sourceImages = [];
-        const base = parseInt((Math.random() * 60), 10) + 10;
-        for (let i = 0; i < 10; i++) {
-          sourceImages.push({
-            thumbnail: `https://picsum.photos/id/${base + i}/346/216`,
-            source: `https://picsum.photos/id/${base + i}/1440/900`
-          });
-        }
-
-        const options = {
-          inline: true,
-          button: true,
-          navbar: true,
-          title: false,
-          toolbar: true,
-          tooltip: true,
-          movable: true,
-          zoomable: true,
-          rotatable: true,
-          scalable: true,
-          transition: true,
-          fullscreen: true,
-          keyboard: true,
-          url: 'data-source'
-        };
-        
-
-        return new Vue({
-          render: h => h(
-            Modal,
-            {
-              props: {
-                value: true,
-                'class-name': this.items.field,
-                draggable: true,
-                title: '图片预览',
-                'z-index': 10001
-              }
-            }, 
-            h(Viewer, {
-                props: {
-                  images: sourceImages,
-                  options
-                },
-                class: 'viewer',
-                ref: `${this.items.field}_viewer`,
-                on: {
-                  inited: (viewer) => {
-                    console.log(viewer);
-                  }
-                }
-              }, 
-              h('figure', {
-                class: 'images'
-              }, sourceImages.map(item => h('div', {
-                class: 'image-wrapper',
-                props: {
-                  key: 'source'
-                }
-              }, h('img', {
-                class: 'image',
-                props: {
-                  src: item.thumbnail,
-                  'data-source': item.source
-                }
-              })))))
-            
-          )
-        }).$mount('#imgPreview');
+        createModal(array, this.items);
       },
 
       
@@ -1909,4 +1825,6 @@ textarea.ark-input{
 
     }
 }
+
+
 </style>
