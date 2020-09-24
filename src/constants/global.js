@@ -119,6 +119,6 @@ export const custommizedRequestUrl = () => (window.ProjectConfig && window.Proje
 
 export const connector = () => (window.ProjectConfig && window.ProjectConfig.connector ? window.ProjectConfig.connector : connectorConfig);
 
-export const standardTableListsCustomize = () => (window.ProjectConfig && window.ProjectConfig.standardTableListsCustomize ? window.ProjectConfig.standardTableListsCustomize : standardTableListsC);
+export const standardTableListsCustomize = () => (window.ProjectConfig && window.ProjectConfig.standardTableListsCustomize ? window.ProjectConfig.standardTableListsCustomize : standardTableListsC());
 
-export const verticalTableDetailCustomize = () => (window.ProjectConfig && window.ProjectConfig.verticalTableDetailCustomize ? window.ProjectConfig.verticalTableDetailCustomize : verticalTableDetailC);
+export const verticalTableDetailCustomize = () => (window.ProjectConfig && window.ProjectConfig.verticalTableDetailCustomize ? window.ProjectConfig.verticalTableDetailCustomize : verticalTableDetailC());
