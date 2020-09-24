@@ -277,12 +277,11 @@
       treeConfigData() {
         const treeQuery = this.$router.currentRoute.query;
         if (treeQuery.isTreeTable || window.isTree) {
-          if (window.ProjectConfig && window.ProjectConfig.externalTreeDatas) {
-            const { tableName } = this.$router.currentRoute.params;
+          const { tableName } = this.$router.currentRoute.params;
+          if (window.ProjectConfig && window.ProjectConfig.externalTreeDatas && window.ProjectConfig.externalTreeDatas[tableName]) {
             return window.ProjectConfig.externalTreeDatas[tableName]();
           }
           if (treeData) {
-            const { tableName } = this.$router.currentRoute.params;
             if (treeData[tableName]) {
               return treeData[tableName]();
             }
