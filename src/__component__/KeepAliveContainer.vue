@@ -191,7 +191,6 @@
         handler(val) {
           if (val && val.length > 0) {
             const { routePrefix } = this.$route.meta;
-            console.log(333, val, routePrefix, LINK_MODULE_PREFIX);
             if (routePrefix === LINK_MODULE_PREFIX) {
               this.generateComponent();
             }
