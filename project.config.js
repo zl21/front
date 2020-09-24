@@ -77,4 +77,5 @@ module.exports = {
   enableKAQueryDataForUser: false, // 是否开启存储全表查询条件
   dateStorageTime: 1, // 查询条件存储时间，默认1天,建议不要设置太大影响性能
   blockFullOperation: true, // 禁止不选数据时的批量修改操作
+  ossRealtimeSave: true
 };

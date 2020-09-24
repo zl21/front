@@ -72,7 +72,6 @@
       inited(viewer) {
         this.$viewer = viewer;
         setTimeout(() => {
-
           // 模拟弹窗拖拽，处理fixed在transform下失效的问题
           const offset = this.getOffset(this.$parent.$el.getElementsByClassName('ark-modal-content')[0]);
           const a = {
@@ -94,6 +93,8 @@
   }
    .viewer {
     height: 300px;
+    width: 100%;
+    overflow: hidden;
     .images {
       height: 100%;
       display: flex;

@@ -1188,9 +1188,11 @@
                   this._items.value = '';
                 }
                 this.valueChange();
-                if (childTableName && this.$parent.type === 'PanelForm') {
-                  const dom = document.getElementById('actionMODIFY');
-                  dom.click();
+                if (!ossRealtimeSave) {
+                  if (childTableName && this.$parent.type === 'PanelForm') {
+                    const dom = document.getElementById('actionMODIFY');
+                    dom.click();
+                  }
                 }
               } else if (this.$parent.pathcheck === '') {
                 // parms.path = '/p/cs/objectSave';
@@ -1289,10 +1291,12 @@
       },
       upSavefile(obj, fixedData, path) {
         // 保存文件
-        setTimeout(() => {
-          const dom = document.getElementById('actionMODIFY');
-          dom.click();
-        }, 500);
+        if (!ossRealtimeSave()) {
+          setTimeout(() => {
+            const dom = document.getElementById('actionMODIFY');
+            dom.click();
+          }, 500);
+        }
         
 
         return false;
@@ -1517,10 +1521,13 @@
       },
       upSaveImg(obj, fixedData, path, index) {
         // 图片保存接口
-        setTimeout(() => {
-          const dom = document.getElementById('actionMODIFY');
-          dom.click();
-        }, 500);
+        if (!ossRealtimeSave) {
+          setTimeout(() => {
+            const dom = document.getElementById('actionMODIFY');
+            dom.click();
+          }, 500);
+        }
+        
        
         return false;
         fkHttpRequest().fkObjectSave({
@@ -1718,6 +1725,7 @@
       },
 
       uploadFileDblclick(array = []) { // 图片预览双击
+        console.log(123123);
         const { itemId } = this.$route.params;
         const obj = {
           field: `${this.items.field}_${itemId}`
