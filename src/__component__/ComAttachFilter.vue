@@ -289,10 +289,6 @@
         this.value = '';
         this.resultData = {};
         this.selected = [
-          {
-            Label: '',
-            ID: ''
-          }
         ];
         this.filterDate = {};
         // this.valueChange('clear');
@@ -345,7 +341,7 @@
         return true;
       },
       attachFile() {
-
+        
       },
       attachFilterCancel($this) {
         this.filterDate = {};

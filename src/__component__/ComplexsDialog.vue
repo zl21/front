@@ -948,7 +948,8 @@
           this.sendMessage.PAGENUM = 1;
           this.sendMessage.PAGESIZE = 50;
           this.CONDITIONList = JSON.parse(JSON.stringify(this.sendMessage.CONDITION));
-          this.EXCLUDE = JSON.parse(JSON.stringify(this.sendMessage.EXCLUDE));
+          // 谢世华， this.sendMessage中不存在EXCLUDE字段会保存，暂时注释
+          // this.EXCLUDE = JSON.parse(JSON.stringify(this.sendMessage.EXCLUDE));
           this.sendMessage.TABLENAME = this.fkobj.reftable;
           this.multipleScreenResultCheckFiter(this.sendMessage, 1);
         }

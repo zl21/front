@@ -944,8 +944,9 @@
                   this.formItemsLists[itemIndex].item.value = '';
                 },
                 valuechange: ($this) => {
+                  console.log($this);
                   // 弹窗多选
-                  this.formItemsLists[itemIndex].item.props.Selected = $this.selected || [];
+                  this.formItemsLists[itemIndex].item.props.Selected = ($this.selected && $this.selected.length > 0) ? $this.selected : [];
                   this.formItemsLists[itemIndex].item.value = $this.value;
                   this.formItemsLists = this.formItemsLists.concat([]);
                   if (!$this.value) {
