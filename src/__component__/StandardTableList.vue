@@ -170,6 +170,7 @@
     INSTANCE_ROUTE,
     isCommonTable,
     enableActivateSameCustomizePage,
+    enableKAQueryDataForUser,
     blockFullOperation
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
