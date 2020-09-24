@@ -899,5 +899,8 @@ export default {
       };
       state.imgSrc = Object.assign(state.imgSrc, images);
     }
+  },
+  updatePreviewPicture(state, data) {
+    state.previewPictureInstance = data;
   }
 };

@@ -171,10 +171,11 @@ imageComponent.prototype.init = function (params) {
   if(!isIE()){
     imgSmall.ondblclick = function (event) {
       let item = {
-        field: params.column.colId
+        field: `${params.column.colId}_${params.options.datas.row[params.rowIndex].ID.val}`
       }
-      createModal(JSON.parse(params.value,item))
-      event.stopPropagation()
+      createModal(JSON.parse(params.value),item)
+      event.stopPropagation();
+      event.preventDefault()
     }
   }
 

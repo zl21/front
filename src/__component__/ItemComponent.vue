@@ -1708,7 +1708,11 @@
       },
 
       uploadFileDblclick(array = []) { // 图片预览双击
-        createModal(array, this.items);
+        const { itemId } = this.$route.params;
+        const obj = {
+          field: `${this.items.field}_${itemId}`
+        };
+        createModal(array, obj);
       },
 
       
