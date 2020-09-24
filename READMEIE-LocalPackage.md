@@ -29,6 +29,8 @@ next: 1.附件上传一次保存  ossRealtimeSave参数
       3.查询条件必填控制
       4.修复异步导入刷新问题
       5.修复框架初始化时报错
+
+9.25: 1.blockFullOperation  禁止不选数据时的批量修改操作 默认false
       
 
 
