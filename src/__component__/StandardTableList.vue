@@ -170,7 +170,7 @@
     INSTANCE_ROUTE,
     isCommonTable,
     enableActivateSameCustomizePage,
-    enableKAQueryDataForUser
+    blockFullOperation
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import customize from '../__config__/customize.config';
@@ -2150,6 +2150,14 @@
               );
             }, 200);
           } else {
+            if (blockFullOperation()) { // 控制批量修改在未选择数据时，不做处理
+              this.$Modal.fcWarning({
+                mask: true,
+                title: '警告',
+                content: '请选择批量修改数据!'
+              });
+              return;
+            }
             this.$Modal.fcWarning({
               mask: true,
               title: '警告',
