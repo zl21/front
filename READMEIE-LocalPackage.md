@@ -31,6 +31,7 @@ next: 1.附件上传一次保存  ossRealtimeSave参数
       5.修复框架初始化时报错
 
 9.25: 1.blockFullOperation  禁止不选数据时的批量修改操作 默认false
+      2. 新增有数据修改时增加提示
       
 
 9.19: 1.存储查询条件
