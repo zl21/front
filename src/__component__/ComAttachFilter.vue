@@ -186,8 +186,7 @@
           },
           serviceId: this.propsData.fkobj.serviceId,
           success: (res) => {
-            this.propsData.hidecolumns = ['id', 'value', 'ENAME']; 
-            this.propsData.columnsKey = ['ECODE'];
+            this.propsData.hidecolumns = ['id', 'value']; 
             this.propsData.AutoData = res.data.data;
           }
         });
