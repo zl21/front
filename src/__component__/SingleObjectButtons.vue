@@ -3316,7 +3316,7 @@
         const isreftabs = this.subtables();
         const itemNameGroup = this.itemNameGroup;
         let tabrelation = false;
-        if (this.itemInfo.tabrelation === '1:1') {
+        if (this.getCurrentItemInfo().tabrelation === '1:1') {
           tabrelation = true;
         }
         const parame = {
