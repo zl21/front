@@ -1188,11 +1188,9 @@
                   this._items.value = '';
                 }
                 this.valueChange();
-                if (!ossRealtimeSave) {
-                  if (childTableName && this.$parent.type === 'PanelForm') {
-                    const dom = document.getElementById('actionMODIFY');
-                    dom.click();
-                  }
+                if (childTableName && this.$parent.type === 'PanelForm') {
+                  const dom = document.getElementById('actionMODIFY');
+                  dom.click();
                 }
               } else if (this.$parent.pathcheck === '') {
                 // parms.path = '/p/cs/objectSave';
