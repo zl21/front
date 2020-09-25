@@ -3070,7 +3070,7 @@
               }
               mainModify.push(tag);
             }
-            if (mainModify.length > 0) {
+            if (mainModify.length > 0 || this.noClickSave()) { // 主表修改了值和提交或自定义按钮配置isSave时，调用保存
               if (this.verifyRequiredInformation()) { // 纵向结构保存校验
                 if (obj.requestUrlPath) { // 配置path
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
@@ -3316,7 +3316,7 @@
         const isreftabs = this.subtables();
         const itemNameGroup = this.itemNameGroup;
         let tabrelation = false;
-        if (this.itemInfo.tabrelation === '1:1') {
+        if (this.getCurrentItemInfo().tabrelation === '1:1') {
           tabrelation = true;
         }
         const parame = {
