@@ -103,7 +103,7 @@
   import mutipleSelectPop from './MutipleSelectPop';
   import network from '../utils/network';
   import { BacklogData } from '../js/todoList';
-  import { global } from '../utils/global.config';
+  import { global, globalChange } from '../utils/global.config';
 
   export default {
     components: { FormItemComponent, StandardTable, mutipleSelectPop },
@@ -341,6 +341,13 @@
                       },
                       on: {
                         click: () => {
+                          globalChange({
+                            jflowInfo: {
+                              instanceId: params.row.instanceId,
+                              nodeId: params.row.nodeId,
+                              taskId: params.row.id
+                            }
+                          });
                           if (params.row.formUrl.includes('/SYSTEM')) {
                             const distype = params.row.objdistype === 'tabpanle' ? 'H' : 'V';
                             const arr = params.row.formUrl.split('/');

@@ -9,6 +9,20 @@ function uuidGenerator() {
   return originStr.replace(/x/g, match => originChar.charAt(Math.floor(Math.random() * len)));
 }
 
+axios.interceptors.request.use((config) => {
+  const arr = ['/p/cs/getObject',
+    '/p/cs/objectTab',
+    '/p/cs/itemObj'];
+  if ((global.jflowInfo && global.jflowInfo.instanceId) && arr.filter(item => config.url.includes(item)).length > 0) { // 在流程中时，处理jflow逻辑，增加请求头
+    config.headers.jflow_event_param = JSON.stringify({
+      instanceId: global.jflowInfo.instanceId,
+      nodeId: global.jflowInfo.nodeId,
+      taskId: global.jflowInfo.taskId
+    });
+  }
+  return config;
+});
+
 export const getGateway = url => url;
 
 // 当post请求content-Type: application/x-www-form-urlencoded时，需要将JSON参赛转换成如下函数输入的形式。
