@@ -5,7 +5,7 @@ import store from '../../__config__/store.config';
 // 图片预览
 import PreviewPicture from './index.vue';
 
-export default (array = [], items = {}) => {
+export default (array = [], items = {}, index) => {
   const { tableName } = router.currentRoute.params;
 
   // 判断是否已经存在对应的预览图片
@@ -56,7 +56,8 @@ export default (array = [], items = {}) => {
         }, '图片预览'),
         h(PreviewPicture, {
           props: {
-            images: array
+            images: array,
+            defaultIndex: index
           }
         })
       ]

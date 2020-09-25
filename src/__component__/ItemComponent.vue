@@ -1724,13 +1724,12 @@
         }
       },
 
-      uploadFileDblclick(array = []) { // 图片预览双击
-        console.log(123123);
+      uploadFileDblclick(array = [], index) { // 图片预览双击
         const { itemId } = this.$route.params;
         const obj = {
           field: `${this.items.field}_${itemId}`
         };
-        createModal(array, obj);
+        createModal(array, obj, index);
       },
 
       
