@@ -31,6 +31,7 @@ next: 1.附件上传一次保存  ossRealtimeSave参数
       5.修复框架初始化时报错
 
 9.25: 1.blockFullOperation  禁止不选数据时的批量修改操作 默认false
+      2.修复单对象上下结构未修改值无法提交问题
       
 
 
