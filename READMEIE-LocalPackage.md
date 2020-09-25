@@ -32,6 +32,7 @@ next: 1.附件上传一次保存  ossRealtimeSave参数
 
 9.25: 1.blockFullOperation  禁止不选数据时的批量修改操作 默认false
       2.修复单对象上下结构未修改值无法提交问题
+      3. 新增有数据修改时增加提示
       
 
 
