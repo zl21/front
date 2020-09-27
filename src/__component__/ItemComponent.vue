@@ -1519,12 +1519,10 @@
       },
       upSaveImg(obj, fixedData, path, index) {
         // 图片保存接口
-        if (!ossRealtimeSave) {
-          setTimeout(() => {
-            const dom = document.getElementById('actionMODIFY');
-            dom.click();
-          }, 500);
-        }
+        setTimeout(() => {
+          const dom = document.getElementById('actionMODIFY');
+          dom.click();
+        }, 500);
         
        
         return false;
