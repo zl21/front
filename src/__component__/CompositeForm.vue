@@ -15,6 +15,7 @@
         @on-change="CollapseClose(index,item.hrdisplay)"
       >
         <Panel
+          v-if="item.childs && item.childs.length > 0"
           :key="index"
           class="Rark-collapse-content-box"
           :is-title-show="item.isTitleShow"
