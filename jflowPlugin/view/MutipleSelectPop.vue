@@ -403,6 +403,11 @@
         roleConfig: null // 人员过滤条件
       };
     },
+    computed: {
+      roleSwitch() {
+        return global.roleSwitch;
+      }
+    },
     methods: {
       deepCopy(obj) {
         // 实现深拷贝
