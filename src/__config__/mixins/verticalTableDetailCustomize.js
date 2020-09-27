@@ -7,11 +7,11 @@ import {
 
 export default () => ({
   provide: {
-    type: 'verticalTableDetail'
+    type8888: 'verticalTableDetail'
   },
   data() {
     return {
-      type: 'verticalTableDetail'
+      type888: 'verticalTableDetail'
     };
   },
   created() {
