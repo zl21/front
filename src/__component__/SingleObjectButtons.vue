@@ -1437,6 +1437,11 @@
         case 'dialog':
           this.objTabActionDialog(obj);
           break;
+        case 'js':
+          if (this.runScript && typeof this.runScript === 'function') {
+            this.runScript(obj);
+          }
+          break;
         case 'navbar':
           this.objTabActionNavbar(obj);
           break;
