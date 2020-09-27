@@ -37,6 +37,8 @@ import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
 
 // Vue.use(VueDND);
 
+Vue.use(Viewer);
+
 
 // 注册自定义模态框组件
 const registerCustomizedModal = () => {
