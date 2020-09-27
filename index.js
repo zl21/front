@@ -35,7 +35,7 @@ import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
 //   roleSwitch: false
 // });
 
-// Vue.use(VueDND);
+Vue.use(VueDND);
 
 Vue.use(Viewer);
 

@@ -179,12 +179,13 @@
           return false;
         }
 
-        const arr = this.accept.split(',');
+        
         for (let i = 0; i < files.length; i++) {
           const idx = files[i].name.lastIndexOf('.'); 
           let ext = files[i].name.substr(idx + 1).toUpperCase();   
           ext = ext.toLowerCase(); 
           const accept = this.itemWebconf && this.itemWebconf.UploadAccept ? this.itemWebconf.UploadAccept : this.accept;
+          const arr = accept.split(',');
           if (accept !== '*' && !arr.includes(ext)) {
             this.$Message.info(`${files[i].name}不支持上传`);
             return false;
