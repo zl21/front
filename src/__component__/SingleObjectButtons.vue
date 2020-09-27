@@ -789,8 +789,6 @@
         if (obj && obj.jflowType && obj.jflowType === 'jflowLaunch') {
           eventName = 'jflowLaunch';
         }  
-        console.log(333, currentItemInfo);
-        return;
         DispatchEvent(eventName, {
           detail: {
             obj,
