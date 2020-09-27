@@ -25,15 +25,15 @@ import './src/assets/theme/custom.less';
 import './src/assets/css/loading.css';
 import './src/assets/css/custom-ext.less';
 import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
-import jflowPlugin from './jflowPlugin/js/index';
+// import jflowPlugin from './jflowPlugin/js/index';
 
-Vue.use(jflowPlugin, {
-  changePattern: true, // 控制待办列表转派的选择模式 true为单选,false为多选
-  gateway: '',
-  roleSwitch: false
-});
+// Vue.use(jflowPlugin, {
+//   changePattern: true, // 控制待办列表转派的选择模式 true为单选,false为多选
+//   gateway: '',
+//   roleSwitch: false
+// });
 
-Vue.use(VueDND);
+// Vue.use(VueDND);
 
 
 // 注册自定义模态框组件
