@@ -764,17 +764,23 @@
           }
         } else if (this.itemInfo) { // 有jflowButton则认为编辑的表
           let objId = '';
+          let currentTableId = '';
+          let currentTableName = '';
           if (this.itemInfo.tableid !== this.tableId) {
             objId = this.itemObjId;
+            currentTableId = this.getCurrentItemInfo().tableid;
+            currentTableName = this.getCurrentItemInfo().tablename;
           } else {
             objId = this.itemId;
+            currentTableId = this.tableId;
+            currentTableName = this.tableName;
           }
           currentItemInfo = {
             tableId: this.tableId, // 主表ID
             tableName: this.tableName, // 主表表名
             itemId: this.itemId, // 主表明细ID
-            currentTableId: this.getCurrentItemInfo().tableid, // 当前表表ID
-            currentTableName: this.getCurrentItemInfo().tablename,
+            currentTableId, // 当前表表ID
+            currentTableName,
             // currentItemId: this.itemObjId// 当前表明细ID
             currentItemId: objId
           };
