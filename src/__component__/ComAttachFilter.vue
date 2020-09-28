@@ -342,12 +342,21 @@
         return true;
       },
       attachFile(index, res, instance) {
-        console.log(index, res, instance);
         if (res.code !== 0) {
           this.$Modal.fcError({
             title: '错误',
             content: res.message,
             mask: true
+          });
+        } else {
+          fkHttpRequest().fkGetMultiQuery({
+            searchObject: {
+              tableid: this.propsData.fkobj.reftableid
+            },
+            serviceId: this.propsData.serviceId,
+            success: (response) => {
+              this.freshDropDownPopFilterData(response);
+            }
           });
         }
       },
