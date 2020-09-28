@@ -69,6 +69,7 @@
   import myPopDialog from './PopDialog';
   import dataProp from '../__config__/props.config';
   import { Version } from '../constants/global';
+  import Upload from '../__utils__/upload';
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -340,8 +341,15 @@
         }
         return true;
       },
-      attachFile() {
-        
+      attachFile(index, res, instance) {
+        console.log(index, res, instance);
+        if (res.code !== 0) {
+          this.$Modal.fcError({
+            title: '错误',
+            content: res.message,
+            mask: true
+          });
+        }
       },
       attachFilterCancel($this) {
         this.filterDate = {};

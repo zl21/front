@@ -463,14 +463,14 @@
             
 
             item.props.dialog.model['footer-hide'] = false;
-            // item.props.datalist.forEach((option, i) => {
-            //   if (option.value === '导入') {
-            //     item.props.datalist[i].url = item.props.fkobj.url;
-            //     item.props.datalist[i].sendData = {
-            //       table: item.props.fkobj.reftable
-            //     };
-            //   }
-            // });
+            item.props.datalist.forEach((option, i) => {
+              if (option.value === '导入') {
+                item.props.datalist[i].url = item.props.fkobj.url;
+                item.props.datalist[i].sendData = {
+                  table: item.props.fkobj.reftable
+                };
+              }
+            });
           }
         }
         // eslint-disable-next-line no-empty
