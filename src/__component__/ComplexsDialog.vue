@@ -177,6 +177,8 @@
         CONDITIONThis: {}, // 当前的条件
         idslist: [], // 选中所有的id
         expand: [], // 当前打开的
+
+        flag: true
       };
     },
     methods: {
@@ -223,6 +225,11 @@
       treeChecked() {
         // tree_lists 树形结构重新组合
         this.treedata.forEach((item, index) => {
+          if (index < this.treedata.length - 1) {
+            this.flag = false;
+          } else {
+            this.flag = true;
+          }
           this.$refs.dialog.$refs.Tree.handleCheck({ checked: false, nodeKey: this.treedata[`${index}`].nodeKey });
         });
       },
@@ -331,6 +338,9 @@
         return row[aknameArr];
       },
       changeTtree(obj) {
+        if (!this.flag) {
+          return; 
+        }
         this.treeId(obj);
         this.treeSelectData = obj;
         this.chooseTreeData = obj;
