@@ -944,7 +944,6 @@
                   this.formItemsLists[itemIndex].item.value = '';
                 },
                 valuechange: ($this) => {
-                  console.log($this);
                   // 弹窗多选
                   this.formItemsLists[itemIndex].item.props.Selected = ($this.selected && $this.selected.length > 0) ? $this.selected : [];
                   this.formItemsLists[itemIndex].item.value = $this.value;
@@ -1182,7 +1181,7 @@
                 obj.item.props.fkobj.colid = current.colid;
                 obj.item.props.blurType = false;
                 // obj.item.props.fkobj.saveType = 'object';
-                obj.item.props.fkobj.url = '/p/cs/menuimport';  //处理导入接口  去除网关`/${obj.item.props.fkobj.serviceId}/p/cs/menuimport`
+                obj.item.props.fkobj.url = '/p/cs/menuimport'; // 处理导入接口  去除网关`/${obj.item.props.fkobj.serviceId}/p/cs/menuimport`
                 obj.item.props.datalist = [];
                 obj.item.props.Selected = [];
                 obj.item.props.filterDate = {};

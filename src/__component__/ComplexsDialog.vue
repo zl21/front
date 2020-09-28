@@ -975,7 +975,6 @@
     created() {
       this.loading = true;
       this.init();
-
       if (this.default && this.default.length > 0) {
         const arr = this.default.reduce((array, current) => {
           array.push({
@@ -983,7 +982,8 @@
             exclude: false,
             id_list: [current.ID],
             screen: current.ID,
-            screen_string: current.Label
+            screen_string: current.Label,
+            ENAME: current.Label
           });
           this.text.result.push({
             exclude: false,
@@ -1006,6 +1006,9 @@
         }
 
         this.resultData.list = arr;
+
+        // 获取选中结果
+        this.multipleScreenResultCheck(this.sendMessage, 1, 'all');
       }
     }
 
