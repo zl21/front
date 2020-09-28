@@ -166,7 +166,11 @@
       valueChange(type) {
         window.clearTimeout(this.clickTimer);
         this.clickTimer = window.setTimeout(() => {
-          this.$emit('valuechange', { value: this.value, selected: this.selected, type }, this);
+          if (type === 'clear') {
+            this.$emit('valuechange', { value: null, selected: [], type }, this);
+          } else {
+            this.$emit('valuechange', { value: this.value, selected: this.selected, type }, this);
+          }
         }, 200);
       },
       attachFilterInput(value) {
@@ -292,7 +296,7 @@
         this.selected = [
         ];
         this.filterDate = {};
-        // this.valueChange('clear');
+        this.valueChange('clear');
       },
       attachFilterPopperShow(value, instance) {
         if (Array.isArray(instance.datalist)) {
