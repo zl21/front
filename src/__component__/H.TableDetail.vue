@@ -58,7 +58,9 @@
               obj.componentAttribute.watermarkimg = this.tabPanel[0].componentAttribute.buttonsData.data.watermarkimg;
               obj.componentAttribute.isMainTable = true;     
               obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.tabPanel[0].componentAttribute.panelData.data.isdefault;
-            } 
+            } else {
+              obj.componentAttribute.watermarkimg = obj.componentAttribute.buttonsData.data.watermarkimg;// 子表水印
+            }
 
             obj.componentAttribute.webConfSingle = this.tabPanel[index].componentAttribute.buttonsData.data.webconf;
             obj.componentAttribute.isreftabs = this.tabPanel[0].componentAttribute.buttonsData.data.isreftabs;
@@ -205,12 +207,9 @@
           }
         }
         if (this.WebConf && this.WebConf.isCustomizeTab) {
-          console.log('未打开过当前子表tab', index);
-
           const i = index - 1;
           this.isRequestUpdata({ tabPanel: this.tabPanels, index: i });
         } else {
-          console.log('已打开过当前子表tab', index, this.WebConf, !flag);
           this.isRequestUpdata({ tabPanel: this.tabPanels, index });
         }
       }, // tab切换触发的方法

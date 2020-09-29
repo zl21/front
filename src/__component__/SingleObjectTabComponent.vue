@@ -1,7 +1,7 @@
 <template>
   <div class="tabComponent">
     <div
-      v-if="type === 'vertical'"
+      v-if="itemInfo.tabrelation==='1:1'&&watermarkimg"
       class="submit-img"
     >
       <WaterMark
@@ -189,10 +189,6 @@
       WaterMark
     },
     props: {
-      watermarkimg: {// 水印
-        type: String,
-        default: ''
-      },
       tabPanel: {
         type: Array,
         default() {
@@ -291,30 +287,34 @@
     computed: { 
       ...mapState('global', {
       }),
-      watermarkImg() { // 匹配水印图片路径
-        return this.watermarkimg;
-      },
       waterMarkTop() {
         const customizeWaterMark = getCustomizeWaterMark();
-        const src = this.watermarkimg.split('/')[3].split('.')[0];
-        if (customizeWaterMark[src] && customizeWaterMark[src].top) {
-          return customizeWaterMark[src].top;
+        if(this.watermarkimg) {
+          const src = this.watermarkimg.split('/')[3].split('.')[0];
+          if (customizeWaterMark[src] && customizeWaterMark[src].top) {
+            return customizeWaterMark[src].top;
+          }
         }
+       
         return '42px';
       },
       waterMarkLeft() {
         const customizeWaterMark = getCustomizeWaterMark();
-        const src = this.watermarkimg.split('/')[3].split('.')[0];
-        if (customizeWaterMark[src] && customizeWaterMark[src].left) {
-          return customizeWaterMark[src].left;
+        if(this.watermarkimg) {
+          const src = this.watermarkimg.split('/')[3].split('.')[0];
+          if (customizeWaterMark[src] && customizeWaterMark[src].left) {
+            return customizeWaterMark[src].left;
+          }
         }
         return '11px';
       },
       waterMarkWidth() {
         const customizeWaterMark = getCustomizeWaterMark();
-        const src = this.watermarkimg.split('/')[3].split('.')[0];
-        if (customizeWaterMark[src] && customizeWaterMark[src].width) {
-          return customizeWaterMark[src].width;
+        if(this.watermarkimg) {
+          const src = this.watermarkimg.split('/')[3].split('.')[0];
+          if (customizeWaterMark[src] && customizeWaterMark[src].width) {
+            return customizeWaterMark[src].width;
+          }
         }
         return '80px';
       },
@@ -908,6 +908,16 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+     .submit-img { //no-active
+    position: absolute;
+    top: 30px;
+    right:0px;
+    width: 104px;
+    z-index: 1000;
+    img {
+      width: 100%;
+    }
+  }
     .objectButtons {
       .buttonList {
         padding-left: 0;
