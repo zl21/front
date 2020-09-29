@@ -15,6 +15,7 @@
         @on-change="CollapseClose(index,item.hrdisplay)"
       >
         <Panel
+          v-if="item.childs && item.childs.length > 0"
           :key="index"
           class="Rark-collapse-content-box"
           :is-title-show="item.isTitleShow"
@@ -535,8 +536,8 @@
         // 修改联动值
         // this.getStateData();
 
-        const mappStatus = this.$store.state[this[MODULE_COMPONENT_NAME]].mappStatus || [];
-        const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
+        const mappStatus = (this.$store.state[this[MODULE_COMPONENT_NAME]] && this.$store.state[this[MODULE_COMPONENT_NAME]].mappStatus) || [];
+        const LinkageForm = (this.$store.state[this[MODULE_COMPONENT_NAME]] && this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm) || {};
 
         const key = mappStatus[Object.keys(data)[0]];
         const LinkageFormItem = LinkageForm[key];
