@@ -29,8 +29,8 @@ const validateConfig = config => ({
   message: 'xxx'
 });
 const packageMessage = {
-  version: '1.1.0',
-  packageTime: '2020.09.25.10.07', 
+  version: '1.1.1',
+  packageTime: '2020.09.29.17.02', 
   user: 'npm',   
 };
 
