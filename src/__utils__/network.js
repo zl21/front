@@ -4,7 +4,7 @@ import router from '../__config__/router.config';
 import store from '../__config__/store.config';
 
 import {
-  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, REQUEST_PENDDING_EXPIRE, getTouristRoute, logoutTips
+  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, REQUEST_PENDDING_EXPIRE, getTouristRoute, logoutTips, Version
 } from '../constants/global';
 import { addNetwork } from './indexedDB';
 
@@ -187,8 +187,13 @@ axios.interceptors.response.use(
       fulfilled: true,
       rejected: false,
     });
-    if (config.url.indexOf('/p/c/login') !== -1 && response.status === 200 && response.data.data) {
-      window.sessionStorage.setItem('loginStatus', true);
+    if (config.url.indexOf('/p/c/login') !== -1 && response.status === 200) {
+      // 由于 1.3与 1.4登录 接口返回值层级不同，所以需要单独做逻辑处理
+      if (Version() === '1.4' && response.data.data) {
+        window.sessionStorage.setItem('loginStatus', true);
+      } else if (Version() === '1.3' && response.data) {
+        window.sessionStorage.setItem('loginStatus', true);
+      }
     }
     if (config.url.indexOf('/p/cs/getSubSystems') !== -1) {
       if (response.status === 200 && response.data.data.length > 0) {
