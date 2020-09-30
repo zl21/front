@@ -536,8 +536,8 @@
         // 修改联动值
         // this.getStateData();
 
-        const mappStatus = this.$store.state[this[MODULE_COMPONENT_NAME]].mappStatus || [];
-        const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
+        const mappStatus = (this.$store.state[this[MODULE_COMPONENT_NAME]] && this.$store.state[this[MODULE_COMPONENT_NAME]].mappStatus) || [];
+        const LinkageForm = (this.$store.state[this[MODULE_COMPONENT_NAME]] && this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm) || {};
 
         const key = mappStatus[Object.keys(data)[0]];
         const LinkageFormItem = LinkageForm[key];

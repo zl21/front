@@ -39,6 +39,8 @@ export default {
       .get('/p/cs/logout')
       .then(() => {
         window.sessionStorage.setItem('loginStatus', false);
+        window.localStorage.setItem('loginStatus', false);
+
         commit('emptyTabs');
         router.push({ path: getTouristRoute() });
         removeSessionObject('saveNetwork');
@@ -52,6 +54,8 @@ export default {
       })
       .catch(() => {
         window.sessionStorage.setItem('loginStatus', false);
+        window.localStorage.setItem('loginStatus', false);
+
         commit('emptyTabs');
         commit('updataUserInfoMessage', {});
         router.push({ path: getTouristRoute() });
