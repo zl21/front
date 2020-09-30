@@ -213,6 +213,8 @@ export function components() {
   return InstanceManagementList;
 }
 
-export const getJflowInfo = jflowButtons;
+export const freshJflowButton = jflowButtons;
 
 export const refreshSystem = jflowRefresh;
+
+export const getJflowInfo = () => global.jflowInfo;
