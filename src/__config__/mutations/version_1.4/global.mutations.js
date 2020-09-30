@@ -1,3 +1,4 @@
+import { ComponentResolver } from 'ag-grid/dist/lib/components/framework/componentResolver';
 import {
   VERTICAL_TABLE_DETAIL_PREFIX,
   HORIZONTAL_TABLE_DETAIL_PREFIX,
@@ -330,15 +331,17 @@ export default {
     // };
   },
   increaseOpenedMenuLists(state, {
-    label, keepAliveModuleName, tableName, routeFullPath, routePrefix
+    label, keepAliveModuleName, tableName, routeFullPath, routePrefix, itemId
   }) {
+    console.log(444, itemId);
     const notExist = state.openedMenuLists.filter(d => d.label === label && d.keepAliveModuleName === keepAliveModuleName).length === 0;
     const currentTabInfo = {
       label,
       keepAliveModuleName,
       tableName,
       routeFullPath,
-      routePrefix
+      routePrefix,
+      itemId,
     };
     if (notExist) {
       state.openedMenuLists = state.openedMenuLists
@@ -388,8 +391,10 @@ export default {
   againClickOpenedMenuLists(state, {
     label,
     keepAliveModuleName,
-    type
+    type,
+    itemId
   }) {
+    console.log(999, itemId);
     state.openedMenuLists.forEach((d) => {
       d.isActive = false;
       let keepAliveModuleNameRes = '';
@@ -515,37 +520,6 @@ export default {
       const tabPath = tab.routeFullPath.substring(0, index + 1);
       if (item.includes(tabPath)) {
         deleteFromSessionObject('routeMapRecordForCustomizePage', item);
-      }
-    });
-    // state.isRequest = [];// 清空修改数据验证
-    const { openedMenuLists } = state;
-    // 如果关闭某个Tab，则清空所有该模块可能的对应的keepAlive信息。
-    state.keepAliveLists = state.keepAliveLists.filter(d => d.indexOf(tab.tableName) === -1);
-    openedMenuLists.forEach((item, index) => {
-      if (tab.stopRouterPush) {
-        const { tableName } = router.currentRoute.params;
-        if (item.tableName === tableName) {
-          state.activeTab = openedMenuLists[index];
-        }
-        if (item.routeFullPath === tabRouteFullPath) {
-          openedMenuLists.splice(index, 1);
-        }
-      } else if (item.routeFullPath === tabRouteFullPath) {
-        openedMenuLists.splice(index, 1);
-        if (tabRouteFullPath && !tab.forbidden) {
-          if (openedMenuLists.length > 0) {
-            if (index === 0) {
-              state.activeTab = openedMenuLists[index]; // 关闭当前tab时始终打开的是最后一个tab
-            } else {
-              state.activeTab = openedMenuLists[index - 1]; // 关闭当前tab时始终打开的是最后一个tab
-            }
-            router.push({
-              path: state.activeTab.routeFullPath,
-            });
-          } else {
-            router.push('/');
-          }
-        }
       }
     });
   }, // 关闭当前tab

@@ -15,7 +15,8 @@ import {
   PLUGIN_MODULE_PREFIX,
   PLUGIN_MODULE_COMPONENT_PREFIX,
   LINK_MODULE_PREFIX,
-  LINK_MODULE_COMPONENT_PREFIX
+  LINK_MODULE_COMPONENT_PREFIX,
+  enableOpenNewTab
 } from '../constants/global';
 import standardTableListModule from './store/standardTableList.store';
 import verticalTableDetailModule from './store/verticalTableDetail';
@@ -171,7 +172,7 @@ export default (router) => {
     const { commit } = store;
     const { keepAliveLists, openedMenuLists } = store.state.global;
     const {
-      tableName, tableId, itemId, customizedModuleName, pluginModuleName, linkModuleName,
+      tableName, tableId, itemId, customizedModuleName, pluginModuleName, linkModuleName, customizedModuleId, pluginModuleId, linkModuleId
     } = to.params;
     const preventRegisterModule = [CUSTOMIZED_MODULE_PREFIX, PLUGIN_MODULE_PREFIX, LINK_MODULE_PREFIX];
     const { routePrefix } = to.meta;
@@ -219,15 +220,15 @@ export default (router) => {
     // 处理 openedMenuLists
     let existModuleIndex = -1;
     const existModule = openedMenuLists.filter((d, i) => {
-      if (d.tableName === tableName) {
+      if (d.tableName === tableName) { 
         // 已存在打开的模块界面，但是并不是同一个界面
         existModuleIndex = i;
         return true;
       }
       return false;
     })[0];
-
-    if (existModuleIndex !== -1 && KEEP_MODULE_STATE_WHEN_CLICK_MENU) {
+    if (existModuleIndex !== -1 && KEEP_MODULE_STATE_WHEN_CLICK_MENU && !enableOpenNewTab()) { // 列表界面打开同表单对象逻辑
+      // enableOpenNewTab用于判断 列表界面打开 同表 单对象是否新开tab,默认为false
       // Condition One:
       // 如果目标路由界面所对应的[表]已经存在于已经打开的菜单列表中(不论其当前是列表状态还是编辑状态)
       // 则都应该显示其当前对应的状态页。
@@ -303,7 +304,8 @@ export default (router) => {
             keepAliveModuleName,
             tableName: tableName || customizedModuleName || pluginModuleName || linkModuleName,
             routeFullPath: to.fullPath,
-            routePrefix
+            routePrefix,
+            itemId: itemId || customizedModuleId || pluginModuleId || linkModuleId
           });
         }
       }, 125);
@@ -318,6 +320,7 @@ export default (router) => {
         keepAliveModuleName,
         type: dynamicModuleTag,
         fullPath: to.fullPath,
+        itemId: itemId || customizedModuleId || pluginModuleId || linkModuleId
       });
     }
     
