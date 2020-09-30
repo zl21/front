@@ -17,6 +17,8 @@ import { removeSessionObject, getSeesionObject } from './__utils__/sessionStorag
 import customizedModalConfig from './__config__/customizeDialog.config';
 import CompositeForm from './__component__/CompositeForm';
 import Loading from './__utils__/loading';
+import { getLocalObject } from './__utils__/localStorage';
+
 // import getObjdisType from './src/__utils__/getObjdisType';
 // css import
 import '../node_modules/ag-grid/dist/styles/ag-grid.css';
@@ -157,7 +159,8 @@ const getCategory = () => {
           .reduce((a, c) => { a[c.value.toUpperCase()] = c.serviceId; return a; }, {});
         window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMaps));
         DispatchEvent('gatewayReady');
-      } else if (getSeesionObject('loginStatus') === true) {
+      } else if (getLocalObject('loginStatus') === true) {
+        // getSeesionObject('loginStatus') === true
         setMessage({ content: '当前用户无菜单权限,将为您跳转到登陆界面' });
       }
     }).catch(() => {

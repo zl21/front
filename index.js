@@ -10,6 +10,8 @@ import {
   backDashboardRoute, enableGateWay, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE, specifiedGlobalGateWay
 } from './src/constants/global';
 import { removeSessionObject, getSeesionObject } from './src/__utils__/sessionStorage';
+import { getLocalObject } from './src/__utils__/localStorage';
+
 import CompositeForm from './src/__component__/CompositeForm';
 import customizedModalConfig from './src/__config__/customizeDialog.config';
 import Loading from './src/__utils__/loading';
@@ -190,7 +192,8 @@ const getCategory = () => {
         const getServiceIdMap = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
         const serviceIdMapRes = Object.assign({}, getServiceIdMap, serviceIdMaps);
         window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMapRes));
-      } else if (getSeesionObject('loginStatus') === true) {
+      } else if (getLocalObject('loginStatus') === true) {
+        // getSeesionObject('loginStatus') === true
         setMessage({ content: '当前用户无菜单权限,将为您跳转到登陆界面' });
       }
     });
