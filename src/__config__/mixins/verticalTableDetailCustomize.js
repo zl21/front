@@ -20,8 +20,7 @@ export default () => ({
   mounted() {
   },
   methods: {
-    runScript() {
-      debugger;
+    AAA() {
     }
   },
   computed: {
