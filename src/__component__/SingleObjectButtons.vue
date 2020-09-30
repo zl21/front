@@ -1450,8 +1450,8 @@
           this.objTabActionDialog(obj);
           break;
         case 'js':
-          if (this.runScript && typeof this.runScript === 'function') {
-            this.runScript(obj);
+          if (obj.action && this[obj.action] && this[obj.action] === 'function') {
+            this[obj.action](obj);
           }
           break;
         case 'navbar':
