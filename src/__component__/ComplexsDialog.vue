@@ -50,7 +50,13 @@
       canChinese: {
         type: Boolean,
         default: true
-      }// 是否可以模糊搜索中文
+      }, // 是否可以模糊搜索中文
+      default: {
+        type: Array,
+        default() {
+          return [];
+        }
+      }
     },
     computed: {
       Tree() {
@@ -171,6 +177,8 @@
         CONDITIONThis: {}, // 当前的条件
         idslist: [], // 选中所有的id
         expand: [], // 当前打开的
+
+        flag: true
       };
     },
     methods: {
@@ -217,6 +225,11 @@
       treeChecked() {
         // tree_lists 树形结构重新组合
         this.treedata.forEach((item, index) => {
+          if (index < this.treedata.length - 1) {
+            this.flag = false;
+          } else {
+            this.flag = true;
+          }
           this.$refs.dialog.$refs.Tree.handleCheck({ checked: false, nodeKey: this.treedata[`${index}`].nodeKey });
         });
       },
@@ -325,6 +338,9 @@
         return row[aknameArr];
       },
       changeTtree(obj) {
+        if (!this.flag) {
+          return; 
+        }
         this.treeId(obj);
         this.treeSelectData = obj;
         this.chooseTreeData = obj;
@@ -521,7 +537,7 @@
         return false;
       },
       verify(arr, id, type) {
-        if (!arr.some(x => x === id)) {
+        if (!arr.some(x => x == id)) {
           return true;
         }
         if (type === 'tip') {
@@ -811,7 +827,7 @@
         this.sendMessage.PAGESIZE = 50;
         
         this.treeChecked();
-        this.multipleSelectionTable(this.sendMessage, 0);
+        // this.multipleSelectionTable(this.sendMessage, 0);
       },
       multipleSetMultiQuery(obj) {
         multipleComple().multipleSetMultiQuery({
@@ -942,7 +958,8 @@
           this.sendMessage.PAGENUM = 1;
           this.sendMessage.PAGESIZE = 50;
           this.CONDITIONList = JSON.parse(JSON.stringify(this.sendMessage.CONDITION));
-          this.EXCLUDE = JSON.parse(JSON.stringify(this.sendMessage.EXCLUDE));
+          // 谢世华， this.sendMessage中不存在EXCLUDE字段会保存，暂时注释
+          // this.EXCLUDE = JSON.parse(JSON.stringify(this.sendMessage.EXCLUDE));
           this.sendMessage.TABLENAME = this.fkobj.reftable;
           this.multipleScreenResultCheckFiter(this.sendMessage, 1);
         }
@@ -958,6 +975,41 @@
     created() {
       this.loading = true;
       this.init();
+      if (this.default && this.default.length > 0) {
+        const arr = this.default.reduce((array, current) => {
+          array.push({
+            ID: current.ID,
+            exclude: false,
+            id_list: [current.ID],
+            screen: current.ID,
+            screen_string: current.Label,
+            ENAME: current.Label
+          });
+          this.text.result.push({
+            exclude: false,
+            id_list: [current.ID],
+            screen: current.ID,
+            screen_string: current.Label
+          });
+
+          this.IN.push(current.ID);
+          return array;
+        }, []);
+
+        this.resultData.total = this.default.length;
+
+        const lastItem = arr[arr.length - 1];
+        if (lastItem.screen_string.indexOf('已经选中') >= 0) {
+          arr.pop();
+          this.text.result.pop();
+          this.IN.pop();
+        }
+
+        this.resultData.list = arr;
+
+        // 获取选中结果
+        this.multipleScreenResultCheck(this.sendMessage, 1, 'all');
+      }
     }
 
 

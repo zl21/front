@@ -8,6 +8,7 @@ import loadingSVG from '../image/loading.svg';
 import { getKeepAliveModuleName } from '../../__config__/router.navigation.guard';
 import store from '../../__config__/store.config';
 import router from '../../__config__/router.config';
+import createModal from '../../__component__/PreviewPicture/index.js';
 
 // 设置enterprise key
 // const { Grid, LicenseManager } = agGrid;
@@ -159,7 +160,29 @@ imageComponent.prototype.init = function (params) {
     imgSmall.setAttribute('src', `${url}?x-oss-process=image/resize,w_${config.smallImageSize}`);
     eGui.appendChild(imgSmall);
   }
+
+  function isIE(){
+    if (window.navigator.userAgent.indexOf("MSIE")>=1) 
+    return true; 
+    else
+    return false; 
+  }
+
+  if(!isIE()){
+    imgSmall.ondblclick = function (event) {
+      let item = {
+        field: `${params.column.colId}_${params.options.datas.row[params.rowIndex].ID.val}`
+      }
+      createModal(JSON.parse(params.value),item)
+      event.stopPropagation();
+      event.preventDefault()
+    }
+  }
+
+
 };
+
+
 
 imageComponent.prototype.getGui = function () {
   return this.eGui;

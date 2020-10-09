@@ -32,6 +32,8 @@ export const contentConfig = () => (window.ProjectConfig && window.ProjectConfig
 export const REQUEST_PENDDING_EXPIRE = () => (window.ProjectConfig && window.ProjectConfig.requestPenddingExpire ? window.ProjectConfig.requestPenddingExpire : project.requestPenddingExpire);
 export const encodeControl = () => (window.ProjectConfig && typeof window.ProjectConfig.encodeControl === 'boolean' ? window.ProjectConfig.encodeControl : project.encodeControl);
 export const logoutTips = () => (window.ProjectConfig && typeof window.ProjectConfig.logoutTips === 'boolean' ? window.ProjectConfig.logoutTips : project.logoutTips);
+export const enableKAQueryDataForUser = () => (window.ProjectConfig && typeof window.ProjectConfig.enableKAQueryDataForUser === 'boolean' ? window.ProjectConfig.enableKAQueryDataForUser : project.enableKAQueryDataForUser);
+export const dateStorageTime = () => (window.ProjectConfig && window.ProjectConfig.dateStorageTime ? window.ProjectConfig.dateStorageTime : project.dateStorageTime);
 export const ossRealtimeSave = () => (window.ProjectConfig && typeof window.ProjectConfig.ossRealtimeSave === 'boolean' ? window.ProjectConfig.ossRealtimeSave : project.ossRealtimeSave);
 export const blockFullOperation = () => (window.ProjectConfig && typeof window.ProjectConfig.blockFullOperation === 'boolean' ? window.ProjectConfig.blockFullOperation : project.blockFullOperation);
 // export const REQUEST_PENDDING_EXPIRE = 1000 * 2;
