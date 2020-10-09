@@ -341,12 +341,28 @@
                       },
                       on: {
                         click: () => {
+                          let obj = {};
+                          const key = `${params.row.businessValue}${params.row.businessCode}`;
+                          if (global.jflowInfo) {
+                            obj = Object.assign({}, obj, global.jflowInfo);
+                            obj = Object.assign({}, obj, {
+                              [key]: {
+                                instanceId: params.row.instanceId,
+                                nodeId: params.row.nodeId,
+                                taskId: params.row.id
+                              }
+                            });
+                          } else {
+                            obj = Object.assign({}, obj, {
+                              [key]: {
+                                instanceId: params.row.instanceId,
+                                nodeId: params.row.nodeId,
+                                taskId: params.row.id
+                              }
+                            });
+                          }
                           globalChange({
-                            jflowInfo: {
-                              instanceId: params.row.instanceId,
-                              nodeId: params.row.nodeId,
-                              taskId: params.row.id
-                            }
+                            jflowInfo: obj
                           });
                           if (params.row.formUrl.includes('/SYSTEM')) {
                             const distype = params.row.objdistype === 'tabpanle' ? 'H' : 'V';

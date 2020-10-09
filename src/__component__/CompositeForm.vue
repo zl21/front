@@ -9,7 +9,7 @@
       <!-- 面板内 -->
       <Collapse
         v-for="(item,index) in computdefaultData"
-        v-if="checkPanelShow(item)"
+        v-show="checkPanelShow(item)"
         :key="index"
         v-model="item.showHrdisplay "
         active-key="index"
