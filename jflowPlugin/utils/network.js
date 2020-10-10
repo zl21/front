@@ -14,7 +14,7 @@ axios.interceptors.request.use((config) => {
   
   if (global.jflowInfo) {
     const routeInfo = window.vm.$router.currentRoute.params;
-    jflowInfo = global.jflowInfo[`${routeInfo.tableName}${routeInfo.itemId}`];
+    jflowInfo = global.jflowInfoMap[`${routeInfo.tableName}${routeInfo.itemId}`];
   }
   if (jflowInfo && Object.keys(jflowInfo).length > 0) {
     config.headers.jflow_event_param = JSON.stringify({

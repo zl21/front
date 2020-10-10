@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                            >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -1725,6 +1725,7 @@
           }
           dom.style.width = 'auto';
           dom.style.display = 'inline';
+          dom.style.textAligin = cellData.type === 'NUMBER' ? 'right' : 'left';
           const parentNode = document.getElementsByTagName('body')[0];
           parentNode.appendChild(dom);
           const getWIdth = dom.offsetWidth;
