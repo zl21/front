@@ -12,7 +12,7 @@ function uuidGenerator() {
 axios.interceptors.request.use((config) => {
   let jflowInfo = null;
   
-  if (global.jflowInfo) {
+  if (global.jflowInfoMap) {
     const routeInfo = window.vm.$router.currentRoute.params;
     jflowInfo = global.jflowInfoMap[`${routeInfo.tableName}${routeInfo.itemId}`];
   }
