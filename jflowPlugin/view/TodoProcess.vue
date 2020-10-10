@@ -343,8 +343,8 @@
                         click: () => {
                           let obj = {};
                           const key = `${params.row.businessValue}${params.row.businessCode}`;
-                          if (global.jflowInfo) {
-                            obj = Object.assign({}, obj, global.jflowInfo);
+                          if (global.jflowInfoMap) {
+                            obj = Object.assign({}, obj, global.jflowInfoMap);
                             obj = Object.assign({}, obj, {
                               [key]: {
                                 instanceId: params.row.instanceId,
@@ -362,7 +362,12 @@
                             });
                           }
                           globalChange({
-                            jflowInfo: obj
+                            jflowInfoMap: obj,
+                            jflowInfo: {
+                              instanceId: params.row.instanceId,
+                              nodeId: params.row.nodeId,
+                              taskId: params.row.id
+                            }
                           });
                           if (params.row.formUrl.includes('/SYSTEM')) {
                             const distype = params.row.objdistype === 'tabpanle' ? 'H' : 'V';
