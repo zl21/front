@@ -119,7 +119,12 @@
       propstype() {
         // 将设置的props和默认props进行assign
         // const item = this.items;
-        this.value = this.defaultSelected && this.defaultSelected.length > 0 ? `已经选中${this.defaultSelected.length}条数据` : '';
+        if (this.propstype.fkdisplay === 'pop') {
+          this.value = this.defaultSelected && this.defaultSelected.length > 0 ? this.defaultSelected[0].Label : '';
+        } else {
+          this.value = this.defaultSelected && this.defaultSelected.length > 0 ? `已经选中${this.defaultSelected.length}条数据` : '';
+        }
+        
         
         this.selected = this.defaultSelected;
         // if (this.selected[0].Label && /total/.test(this.selected[0].Label)) {
@@ -460,7 +465,7 @@
           // this.propsData.disabled = true;
         }
       }
-      console.log(this.defaultSelected[0]);
+
       if (this.defaultSelected[0] && this.defaultSelected[0].ID && /选中/.test(this.defaultSelected[0].Label)) {
         const data = Array.isArray(this.defaultSelected[0].ID) ? this.defaultSelected[0].ID : JSON.parse(this.defaultSelected[0].ID); 
         // 谢世华  修改处理默认值逻辑
