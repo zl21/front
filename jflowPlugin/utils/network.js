@@ -17,7 +17,7 @@ axios.interceptors.request.use((config) => {
     jflowInfo = global.jflowInfoMap[`${routeInfo.tableName}${routeInfo.itemId}`];
   }
   if (jflowInfo && Object.keys(jflowInfo).length > 0) {
-    config.headers.jflow_event_param = JSON.stringify({
+    config.headers['jflow-event-param'] = JSON.stringify({
       instanceId: jflowInfo.instanceId,
       nodeId: jflowInfo.nodeId,
       taskId: jflowInfo.taskId
