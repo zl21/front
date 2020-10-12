@@ -67,11 +67,14 @@
   import { layoutDirection, enableInitializationRequest } from '../constants/global';
   import network, { urlSearchParams } from '../__utils__/network';
   import moduleName from '../__utils__/getModuleName';
+  import fsApi from '../constants/fs';
 
-
+  // const test = fsApi.checkFile('../__config__/mixins/test.js');
+  // console.log(test);
   export default {
     name: 'SetPanel',
     props: ['panel'],
+    mixins: [fsApi.checkFile('SetPanel.js')],
     computed: {
       ...mapState('global', {
         userInfo: ({ userInfo }) => userInfo,
