@@ -107,7 +107,7 @@ module.exports = env => ({
         // target: 'http://syman-jflow-standard.dev.burgeononline.com', // 新版jflow
         // target: 'http://jflow-dev-1-4.dev.burgeononline.com', // 商飞环境
         // target: ' http://jflow-syman-dev.dev.burgeononline.com/', // 商飞测试环境
-        target: 'http://zhixiaoqa.dev.syman.cn/', // 卡宾环境
+        target: 'http://r3.burgeon.cn:28888/', // 卡宾环境
         // target: ' http://zhixiao-jflow.pro.burgeononline.com/', // 知晓环境
         // target: 'http://jflow-qiaodan.dev.burgeononline.com', // 乔丹测试环境
         changeOrigin: true
