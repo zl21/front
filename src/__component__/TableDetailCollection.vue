@@ -1725,7 +1725,6 @@
           }
           dom.style.width = 'auto';
           dom.style.display = 'inline';
-          dom.style.textAligin = cellData.type === 'NUMBER' ? 'right' : 'left';
           const parentNode = document.getElementsByTagName('body')[0];
           parentNode.appendChild(dom);
           const getWIdth = dom.offsetWidth;
@@ -1737,10 +1736,14 @@
 
           return h('div', {
             style: {
-              width,
+              // width,
               overflow,
               'text-overflow': 'ellipsis',
-              'white-space': 'nowrap'
+              'white-space': 'nowrap',
+              'text-align': cellData.type === 'NUMBER' ? 'right' : 'left'
+            },
+            class: {
+              numberTd: cellData.type === 'NUMBER'
             },
             domProps: {
               innerHTML,
