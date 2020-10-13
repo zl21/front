@@ -1,14 +1,6 @@
-import { mapState, mapActions, mapMutations } from 'vuex';
-import router from '../router.config';
-import {
-  STANDARD_TABLE_COMPONENT_PREFIX, STANDARD_COMMONTABLE_COMPONENT_PREFIX, MODULE_COMPONENT_NAME, INSTANCE_ROUTE, INSTANCE_ROUTE_QUERY 
-} from '../../constants/global';
-
 
 export default () => ({
-  provide: {
-    a: 1
-  },
+
   data() {
     return {
       a: 1
@@ -18,9 +10,23 @@ export default () => ({
  
   },
   mounted() {
-    alert;
+    console.log(this);
+    // this.$refs.agTableElement.bigBackground = null;
+    // this.$nextTick(() => {
+    //   console.log(213123);
+    //   this.$refs.agTableElement.datas.tabth = [];
+    //   setTimeout(() => {
+    //     const ag = JSON.parse(JSON.stringify(this.$store.state['S.GUIGEZU.24442'].ag));
+    //     ag.datas.tabth = [];
+    //     console.log(ag);
+    //     this.$store.commit('S.GUIGEZU.24442/updateTableData', ag.datas);
+    //   }, 2000);
+    // });
   },
   methods: {
+    optionsClick(row) {
+      console.log(row);
+    }
   },
   computed: {
    

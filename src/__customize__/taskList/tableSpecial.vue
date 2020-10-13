@@ -324,6 +324,11 @@
                     if (typeof this.onSingleCellClick === 'function') {
                       this.onSingleCellClick(params.row);
                     }
+
+                    if (this.optionsClick && typeof this.onSingleCellClick === 'function') {
+                      this.optionsClick(params.row);
+                      return;
+                    }
                     // window.open(params.row.URL);
                     let url = '';
                     if (params.row.URL.indexOf('http') !== -1) {

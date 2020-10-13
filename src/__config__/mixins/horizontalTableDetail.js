@@ -4,7 +4,7 @@ import getComponentName from '../../__utils__/getModuleName';
 import store from '../store.config';
 import router from '../router.config';
 import {
-  MODULE_COMPONENT_NAME, INSTANCE_ROUTE, HAS_BEEN_DESTROYED_MODULE, INSTANCE_ROUTE_QUERY 
+  MODULE_COMPONENT_NAME, INSTANCE_ROUTE, HAS_BEEN_DESTROYED_MODULE, INSTANCE_ROUTE_QUERY, customizeMixins 
 } from '../../constants/global';
 import { updateSessionObject } from '../../__utils__/sessionStorage';
 
@@ -15,6 +15,7 @@ export default () => ({
     [INSTANCE_ROUTE_QUERY]: router.currentRoute.params,
 
   },
+  mixins: [customizeMixins().horizontalTableDetailCustomize ? customizeMixins().horizontalTableDetailCustomize : false],
   data() {
     return {
       noMounted: true, // 进入单对象会同时触发mounted与actived两个生命周期，因此无法判断是否在切换tab
