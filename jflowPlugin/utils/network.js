@@ -10,16 +10,20 @@ function uuidGenerator() {
 }
 
 axios.interceptors.request.use((config) => {
-  const arr = ['/p/cs/getObject',
-    '/p/cs/objectTab',
-    '/p/cs/itemObj'];
-  if ((global.jflowInfo && global.jflowInfo.instanceId) && arr.filter(item => config.url.includes(item)).length > 0) { // 在流程中时，处理jflow逻辑，增加请求头
-    config.headers.jflow_event_param = JSON.stringify({
-      instanceId: global.jflowInfo.instanceId,
-      nodeId: global.jflowInfo.nodeId,
-      taskId: global.jflowInfo.taskId
+  let jflowInfo = null;
+  
+  if (global.jflowInfoMap) {
+    const routeInfo = window.vm.$router.currentRoute.params;
+    jflowInfo = global.jflowInfoMap[`${routeInfo.tableName}${routeInfo.itemId}`];
+  }
+  if (jflowInfo && Object.keys(jflowInfo).length > 0) {
+    config.headers['jflow-event-param'] = JSON.stringify({
+      instanceId: jflowInfo.instanceId,
+      nodeId: jflowInfo.nodeId,
+      taskId: jflowInfo.taskId
     });
   }
+  
   return config;
 });
 

@@ -83,7 +83,8 @@ export default () => ({
         'setPrintValueForButtons',
         'updataSelectIdArr',
         'updatestopOnRowDoubleClickData',
-        'updataIsBig'
+        'updataIsBig',
+        'updateSearchDBdata'
         
       ]),
   },
@@ -104,6 +105,7 @@ export default () => ({
       buttons: ({ buttons }) => buttons,
       webconf: ({ webconf }) => webconf, // 局部webconf，用于控制普通表格
       webConf: ({ webConf }) => webConf, // 列表界面webConf
+      searchDBdata: ({ searchDBdata }) => searchDBdata, // 列表的存储查询条件
     }),
   },
   activated() {

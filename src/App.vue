@@ -6,9 +6,9 @@
 
 <script>
   import { hideMenu, launchNetworkMonitor } from './__config__/event.config';
-  import { emptyRecord } from './__utils__/indexedDB';
+  import { emptyRecord, emptySearch } from './__utils__/indexedDB';
   import network from './__utils__/network';
-  import { enableInitializationRequest, cbs } from './constants/global';
+  import { enableInitializationRequest, cbs, dateStorageTime } from './constants/global';
   import DispatchEvent from './__utils__/dispatchEvent';
   
   export default {
@@ -22,7 +22,7 @@
       }
       hideMenu();
       launchNetworkMonitor();
-      emptyRecord(Date.now() - 1000 * 60 * 60);
+      emptyRecord(Date.now() - Number(dateStorageTime() ? dateStorageTime() : 1) * 24 * 1000 * 60 * 60);
     },
     created() {
       this.getUserInfo();

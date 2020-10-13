@@ -2,7 +2,7 @@
 import { DispatchEvent } from '../utils/dispatchEvent';
 import network from '../utils/network';
 import { global, globalChange } from '../utils/global.config';
-import { getJflowInfo } from './index';
+import { freshJflowButton } from './index';
 // 撤销/结束/作废
 function mutipleOperate(url) {
   const param = {};
@@ -111,18 +111,18 @@ async function clickFunction(e) {
         if (window.testUpdataValue()) {
           window.updataClickSave(async () => {
             window.ProjectConfig.enableRestrictSave = true;
-            await getJflowInfo();
+            await freshJflowButton();
             await global.jflowInfo ? businessChange() : null;
             buttonsResponse(e);
           });
         } else {
-          await getJflowInfo();
+          await freshJflowButton();
           buttonsResponse(e);
         }
       }
     }, 1000);
   } else {
-    await getJflowInfo();
+    await freshJflowButton();
     buttonsResponse(e);
   }
 }
@@ -140,12 +140,11 @@ async function getTemplate() { // 获取模版信息
 
 // 触发事件
 async function initiateLaunch(event) {
-  console.log(event);
   globalChange({ routeInfo: event.detail.currentItemInfo });
   window.ProjectConfig.enableRestrictSave = false;
   window.updataClickSave(async () => {
     window.ProjectConfig.enableRestrictSave = true;
-    await getJflowInfo();
+    await freshJflowButton();
     if (global.jflowInfo && global.jflowInfo.instanceId) {
       mutipleOperate(global.jflowInfo.affirmUrl);
     } else {

@@ -89,11 +89,27 @@ function createComponent() { // 创建跟节点实例
 }
 
 function jflowRefresh(tableId) { // 刷新业务系统
-  DispatchEvent('jflowClick', {
-    detail: {
-      type: 'refresh',
-      tableId: tableId || (global.jflowInfo && global.jflowInfo.businessType ? global.jflowInfo.businessType : null)
+  // 更新jflow请求头信息
+  jflowButtons().then(() => {
+    if (global.jflowInfoMap && global.jflowInfoMap[`${global.routeInfo.tableName}${global.routeInfo.itemId}`]) {
+      let obj = {};
+      const key = `${global.routeInfo.tableId}${global.routeInfo.itemId}`;
+      obj = Object.assign({}, obj, global.jflowInfoMap);
+      obj = Object.assign({}, obj, {
+        [key]: {
+          instanceId: global.jflowInfo.instanceId,
+          nodeId: global.jflowInfo.nodeId,
+          taskId: global.jflowInfo.id
+        }
+      });
     }
+
+    DispatchEvent('jflowClick', {
+      detail: {
+        type: 'refresh',
+        tableId: tableId || (global.jflowInfo && global.jflowInfo.businessType ? global.jflowInfo.businessType : null)
+      }
+    });
   });
 }
 
@@ -213,8 +229,8 @@ export function components() {
   return InstanceManagementList;
 }
 
-export const getJflowInfo = jflowButtons;
+export const freshJflowButton = jflowButtons;
 
 export const refreshSystem = jflowRefresh;
 
-export const getGlobalInfo = () => global.jflowInfo;
+export const getJflowInfo = () => global.jflowInfo;

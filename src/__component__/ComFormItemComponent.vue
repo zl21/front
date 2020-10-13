@@ -1057,7 +1057,7 @@
         });
         item.props.required = item.required || false;
         const props = JSON.parse(JSON.stringify(item.props));
-        const checkoutProps = Object.keys(item.props.webconf.setAttributes.props).every(setItem => item.props.webconf.setAttributes.props[setItem] === props[setItem]);
+        const checkoutProps = Object.keys(item.props.webconf.setAttributes.props).every(setItem => String(item.props.webconf.setAttributes.props[setItem]) === String(props[setItem]));
         if (!item.oldProps) {
           item.oldProps = Object.keys(item.props.webconf.setAttributes.props).reduce((arr, i) => {
             arr[i] = props[i] || false;

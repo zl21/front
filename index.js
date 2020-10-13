@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueDND from 'awe-dnd';
+import Viewer from 'v-viewer';
 import { getGuid } from './src/__utils__/random';
 import router from './src/__config__/router.config';
 import store from './src/__config__/store.config';
@@ -15,6 +16,7 @@ import customizedModalConfig from './src/__config__/customizeDialog.config';
 import Loading from './src/__utils__/loading';
 import getObjdisType from './src/__utils__/getObjdisType';
 import projectConfig from './project.config';
+import './node_modules/viewerjs/dist/viewer.css';
 
 
 // css import
@@ -25,17 +27,19 @@ import './src/assets/theme/custom.less';
 import './src/assets/css/loading.css';
 import './src/assets/css/custom-ext.less';
 import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
-// import jflowPlugin from './jflowPlugin/js/index';
+import jflowPlugin from './jflowPlugin/js/index';
 // import './src/__utils__/encryptingParameter';
 
 
-// Vue.use(jflowPlugin, {
-//   changePattern: true, // 控制待办列表转派的选择模式 true为单选,false为多选
-//   gateway: '',
-//   roleSwitch: false
-// });
+Vue.use(jflowPlugin, {
+  changePattern: true, // 控制待办列表转派的选择模式 true为单选,false为多选
+  gateway: '',
+  roleSwitch: false
+});
 
 Vue.use(VueDND);
+
+Vue.use(Viewer);
 
 
 // 注册自定义模态框组件

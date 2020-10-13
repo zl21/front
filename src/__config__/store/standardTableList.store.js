@@ -111,7 +111,8 @@ export default () => ({
       commonTable: false, // 普通表格开关
       dynamicRouting: false, // 表格时候开启动态路由
     },
-    webConf: {}
+    webConf: {},
+    searchDBdata: {}, // 存储indexDB的查询条件
   },
   actions: actions(),
   mutations: mutations()

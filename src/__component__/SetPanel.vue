@@ -12,6 +12,7 @@
           <i class="iconfont iconmd-key explanatory" />修改密码
         </p>
       </div>
+      <component :is="customizeComponent" />
       <div
         v-if="!layoutDirection"
         class="panel-item"
@@ -98,7 +99,9 @@
           show: false,
           list: []
         },
-        showFavorites: false
+        showFavorites: false,
+
+        customizeComponent: null
       };
     },
     mounted() {
