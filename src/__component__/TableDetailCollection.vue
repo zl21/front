@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                           >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -154,6 +154,7 @@
   import { getUrl, getLabel } from '../__utils__/url';
   import { updateSessionObject } from '../__utils__/sessionStorage';
   import getUserenv from '../__utils__/getUserenv';
+  import createModal from './PreviewPicture/index.js';
 
 
   Vue.component('ComAttachFilter', ComAttachFilter);
@@ -3197,7 +3198,16 @@
           if (!params.row[cellData.colname]) {
             return null;
           }
-          return h('div', [
+          return h('div', {
+            on: {
+              dblclick: () => {
+                const item = {
+                  field: `${params.column.colname}_${params.row.ID}`
+                };
+                createModal(JSON.parse(params.row.IMAGE), item);
+              }
+            }
+          }, [
             h(tag, {
               style: {
                 width: '40px'
