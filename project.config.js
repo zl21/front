@@ -2,8 +2,6 @@
 
 const path = require('path');
 
-const a = require('./src/__config__/mixins/standardTableListsCustomize').default;
-
 module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
   projectIconPath: path.join(__dirname, './favicon.ico'), // 项目icon,
@@ -82,7 +80,7 @@ module.exports = {
   customizeMixins: { // 获取所有外部接入的mixins对象
     setPanel: null,
     verticalTableDetailCustomize: null,
-    standardTableListsCustomize: a(),
+    standardTableListsCustomize: null,
     horizontalTableDetailCustomize: null,
     taskList: null
   },
