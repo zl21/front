@@ -216,3 +216,5 @@ export function components() {
 export const getJflowInfo = jflowButtons;
 
 export const refreshSystem = jflowRefresh;
+
+export const getGlobalInfo = () => global.jflowInfo;

@@ -763,13 +763,26 @@
             };
           }
         } else if (this.itemInfo) { // 有jflowButton则认为编辑的表
+          let objId = '';
+          let currentTableId = '';
+          let currentTableName = '';
+          if (this.itemInfo.tableid !== this.tableId) {
+            objId = this.itemObjId;
+            currentTableId = this.getCurrentItemInfo().tableid;
+            currentTableName = this.getCurrentItemInfo().tablename;
+          } else {
+            objId = this.itemId;
+            currentTableId = this.tableId;
+            currentTableName = this.tableName;
+          }
           currentItemInfo = {
             tableId: this.tableId, // 主表ID
             tableName: this.tableName, // 主表表名
             itemId: this.itemId, // 主表明细ID
-            currentTableId: this.getCurrentItemInfo().tableid, // 当前表表ID
-            currentTableName: this.getCurrentItemInfo().tablename,
-            currentItemId: this.itemObjId// 当前表明细ID
+            currentTableId, // 当前表表ID
+            currentTableName,
+            // currentItemId: this.itemObjId// 当前表明细ID
+            currentItemId: objId
           };
         }
        
@@ -782,7 +795,6 @@
         if (obj && obj.jflowType && obj.jflowType === 'jflowLaunch') {
           eventName = 'jflowLaunch';
         }  
-              
         DispatchEvent(eventName, {
           detail: {
             obj,
@@ -1436,6 +1448,11 @@
           break;
         case 'dialog':
           this.objTabActionDialog(obj);
+          break;
+        case 'js':
+          if (obj.action && this[obj.action] && typeof this[obj.action] === 'function') {
+            this[obj.action](obj);
+          }
           break;
         case 'navbar':
           this.objTabActionNavbar(obj);
@@ -2945,7 +2962,8 @@
         return false;
       },
       getCurrentItemInfo() { // 获取当前子表信息
-        if (this.objectType === 'vertical' && this.itemInfo.buttonsData.data.reftabs.length > 0) { // 上下结构需要获取的是当前子表
+        if (this.objectType === 'vertical' && this.itemInfo.buttonsData && this.itemInfo.buttonsData.data && this.itemInfo.buttonsData.data.reftabs && this.itemInfo.buttonsData.data.reftabs.length > 0) { // 上下结构需要获取的是当前子表
+          console.log(1111, this.itemInfo);
           return this.itemInfo.buttonsData.data.reftabs[this.tabCurrentIndex];
         }
         return this.itemInfo;
@@ -3797,6 +3815,7 @@
       window.removeEventListener('showSingleButtons', this.showSingleButtons);
     },
     mounted() {
+      // console.log(9999, this.getCurrentItemInfo());
       this.setDisableButtons();
       if (this.isItemTable) {
         this.dataArray.refresh = false;
