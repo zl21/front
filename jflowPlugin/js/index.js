@@ -93,14 +93,27 @@ function jflowRefresh(tableId) { // 刷新业务系统
   jflowButtons().then(() => {
     if (global.jflowInfoMap && global.jflowInfoMap[`${global.routeInfo.tableName}${global.routeInfo.itemId}`]) {
       let obj = {};
-      const key = `${global.routeInfo.tableId}${global.routeInfo.itemId}`;
+      const key = `${global.routeInfo.tableName}${global.routeInfo.itemId}`;
       obj = Object.assign({}, obj, global.jflowInfoMap);
-      obj = Object.assign({}, obj, {
-        [key]: {
+      
+      if (obj[key]) {
+        obj[key] = {
           instanceId: global.jflowInfo.instanceId,
           nodeId: global.jflowInfo.nodeId,
           taskId: global.jflowInfo.id
-        }
+        };
+      } else {
+        obj = Object.assign({}, obj, {
+          [key]: {
+            instanceId: global.jflowInfo.instanceId,
+            nodeId: global.jflowInfo.nodeId,
+            taskId: global.jflowInfo.id
+          }
+        });
+      }
+
+      globalChange({
+        jflowInfoMap: obj
       });
     }
 
