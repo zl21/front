@@ -157,7 +157,6 @@
   import createModal from './PreviewPicture/index.js';
 
 
-
   Vue.component('ComAttachFilter', ComAttachFilter);
   Vue.component('TableDocFile', Docfile);
 
@@ -3200,7 +3199,7 @@
           if (!params.row[cellData.colname]) {
             return null;
           }
-          return h('div',{
+          return h('div', {
             on: {
               dblclick: () => {
                 const item = {
