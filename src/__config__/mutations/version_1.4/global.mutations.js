@@ -1,4 +1,3 @@
-import { ComponentResolver } from 'ag-grid/dist/lib/components/framework/componentResolver';
 import {
   VERTICAL_TABLE_DETAIL_PREFIX,
   HORIZONTAL_TABLE_DETAIL_PREFIX,
@@ -10,7 +9,8 @@ import {
   LINK_MODULE_PREFIX,
   enableKeepAlive,
   enableHistoryAndFavoriteUI,
-  enableActivateSameCustomizePage
+  enableActivateSameCustomizePage,
+  enableOpenNewTab
 } from '../../../constants/global';
 import router from '../../router.config';
 import setCustomeLabel from '../../../__utils__/setCustomeLabel';
@@ -333,14 +333,13 @@ export default {
   increaseOpenedMenuLists(state, {
     label, keepAliveModuleName, tableName, routeFullPath, routePrefix, itemId
   }) {
-    console.log(444, itemId);
     const notExist = state.openedMenuLists.filter(d => d.label === label && d.keepAliveModuleName === keepAliveModuleName).length === 0;
     const currentTabInfo = {
       label,
       keepAliveModuleName,
       tableName,
       routeFullPath,
-      routePrefix,
+      routePrefix,      
       itemId,
     };
     if (notExist) {
@@ -394,7 +393,6 @@ export default {
     type,
     itemId
   }) {
-    console.log(999, itemId);
     state.openedMenuLists.forEach((d) => {
       d.isActive = false;
       let keepAliveModuleNameRes = '';
@@ -520,6 +518,47 @@ export default {
       const tabPath = tab.routeFullPath.substring(0, index + 1);
       if (item.includes(tabPath)) {
         deleteFromSessionObject('routeMapRecordForCustomizePage', item);
+      }
+    });
+    // state.isRequest = [];// 清空修改数据验证
+    const { openedMenuLists } = state;
+    // 如果关闭某个Tab，则清空所有该模块可能的对应的keepAlive信息。
+    state.keepAliveLists = state.keepAliveLists.filter((d) => {
+      if (!(d.indexOf(tab.tableName) !== -1 && d.indexOf(tab.itemId) !== -1) && enableOpenNewTab()) {
+        if (tab.routePrefix !== '/LINK') { // 除外链界面，外链界面keepAliveName不包含linkId,无法匹配出id进行判断
+        // 返回当前keepAliveLists不包含要关闭的tab对应的keepAliveName,
+          return d;
+        }
+      } if (d.indexOf(tab.tableName) === -1) {
+        return d;
+      }
+    });
+
+    openedMenuLists.forEach((item, index) => {
+      if (tab.stopRouterPush) { // 关闭当前tab时不进行路由跳转
+        const { tableName } = router.currentRoute.params;
+        if (item.tableName === tableName) {
+          state.activeTab = openedMenuLists[index];
+        }
+        if (item.routeFullPath === tabRouteFullPath) {
+          openedMenuLists.splice(index, 1);
+        }
+      } else if (item.routeFullPath === tabRouteFullPath) {
+        openedMenuLists.splice(index, 1);
+        if (tabRouteFullPath && !tab.forbidden) {
+          if (openedMenuLists.length > 0) {
+            if (index === 0) {
+              state.activeTab = openedMenuLists[index]; // 关闭当前tab时始终打开的是最后一个tab
+            } else {
+              state.activeTab = openedMenuLists[index - 1]; // 关闭当前tab时始终打开的是最后一个tab
+            }
+            router.push({
+              path: state.activeTab.routeFullPath,
+            });
+          } else {
+            router.push('/');
+          }
+        }
       }
     });
   }, // 关闭当前tab
