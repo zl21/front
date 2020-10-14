@@ -2,7 +2,7 @@
 import { DispatchEvent } from '../utils/dispatchEvent';
 import network from '../utils/network';
 import { global, globalChange } from '../utils/global.config';
-import { freshJflowButton } from './index';
+import { freshJflowButton, refreshSystem } from './index';
 // 撤销/结束/作废
 function mutipleOperate(url) {
   const param = {};
@@ -16,11 +16,7 @@ function mutipleOperate(url) {
   network.post(url, param).then((res) => {
     if (res.data.resultCode === 0) {
       window.vm.$Message.success(res.data.resultMsg);
-      DispatchEvent('jflowClick', {
-        detail: {
-          type: 'refresh'
-        }
-      });
+      refreshSystem();
     } else {
       window.R3message({
         title: '错误',
