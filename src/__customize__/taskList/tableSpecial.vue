@@ -325,7 +325,7 @@
                       this.onSingleCellClick(params.row);
                     }
 
-                    if (this.optionsClick && typeof this.onSingleCellClick === 'function') { // 处理外部接入逻辑
+                    if (this.optionsClick && typeof this.optionsClick === 'function') { // 处理外部接入逻辑
                       this.optionsClick(params.row).then(() => {
                         let url = '';
                         if (params.row.URL.indexOf('http') !== -1) {
