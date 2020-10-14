@@ -48,6 +48,7 @@
   import network from '../__utils__/network';
   import store from '../__config__/store.config';
   import DispatchEvent from '../__utils__/dispatchEvent';
+  import createModal from './PreviewPicture/index.js';
 
   Vue.component('buttons', Vue.extend(ButtonComponent));
   export default {
@@ -633,7 +634,18 @@
           if (!params.row[colname]) {
             return null;
           }
-          return h('div', [
+          return h('div', {
+            on: {
+              dblclick: (event) => {
+                const item = {
+                  field: `${params.column.colname}_${params.row.ID}`
+                };
+                createModal(JSON.parse(params.row[colname]), item);
+
+                event.stopPropagation();
+              }
+            }
+          }, [
             h('Poptip', {
               style: {},
               props: {
