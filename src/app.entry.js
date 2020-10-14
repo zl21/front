@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import axios from 'axios';
+import Viewer from 'v-viewer';
 
 import { getGuid } from './__utils__/random';
 import router from './__config__/router.config';
@@ -20,6 +20,7 @@ import Loading from './__utils__/loading';
 // import getObjdisType from './src/__utils__/getObjdisType';
 // css import
 import '../node_modules/ag-grid/dist/styles/ag-grid.css';
+import '../node_modules/viewerjs/dist/viewer.css';
 import './assets/css/ag-theme-balham.less';
 import './assets/css/loading.css';
 import './assets/css/custom-ext.less';
@@ -27,6 +28,7 @@ import './assets/css/custom-ext.less';
 
 Vue.component('CompositeFormpop', CompositeForm);
 Vue.use(Loading);
+Vue.use(Viewer);
 // const createRouter = routes => new VueRouter({
 //   routes,
 //   mode: mock() ? 'hash' : 'history'

@@ -90,7 +90,22 @@ export default () => ({
   },
   computed: {
     ...mapState(getComponentName(), {
-      ag: ({ ag }) => ag,
+      ag: ({ ag, userConfigForAgTable }) => {
+        // 处理标准表格的隐藏列逻辑
+        const data = JSON.parse(JSON.stringify(ag));
+        if (isCommonTable() && userConfigForAgTable && userConfigForAgTable.hideColumn && data.datas.tabth) {
+          userConfigForAgTable.hideColumn.split(',').every((item) => {
+            data.datas.tabth = data.datas.tabth.filter((temp) => {
+              if (temp.colname !== item) {
+                return true;
+              }
+              return false;
+            });
+            return true;
+          });
+        }
+        return data;
+      },
       userConfigForAgTable: ({ userConfigForAgTable }) => userConfigForAgTable,
       pageAttribute: ({ ag }) => ({
         current: (ag.datas.start + ag.datas.defaultrange) / ag.datas.defaultrange || 1,
