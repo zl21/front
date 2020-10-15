@@ -249,7 +249,7 @@
               item.ID = item.id_list[0] ? item.id_list[0] : item.id_list;
               return item;
             });
-            this.resultData.total = data.data.total;
+            this.resultData.total = this.resultData.list.length;
           }
         }
         if (type !== 'search') {
