@@ -439,15 +439,15 @@ export default {
     //   v: item.ID
     // };
     // 清除配置界面提供给定制界面的参数信息
-    if (enableActivateSameCustomizePage()) {
-      if (tab.keepAliveModuleName) {
-        const customizedModuleName = tab.keepAliveModuleName.split('.')[1];
-        deleteFromSessionObject('customizeMessage', customizedModuleName);// 定制界面
-      }
-    } else {
-      const customizedModuleId = tab.keepAliveModuleName.split('.')[2];
-      deleteFromSessionObject('customizeMessage', customizedModuleId);// 定制界面
-    }
+    // if (enableActivateSameCustomizePage()) {
+    //   if (tab.keepAliveModuleName) {
+    //     const customizedModuleName = tab.keepAliveModuleName.split('.')[1];
+    //     deleteFromSessionObject('customizeMessage', customizedModuleName);// 定制界面
+    //   }
+    // } else {
+    //   const customizedModuleId = tab.keepAliveModuleName.split('.')[2];
+    //   deleteFromSessionObject('customizeMessage', customizedModuleId);// 定制界面
+    // }
 
 
     // if (tab.keepAliveModuleName) {
