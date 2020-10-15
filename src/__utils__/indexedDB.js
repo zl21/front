@@ -6,17 +6,33 @@ const open = (name, version) => window.indexedDB.open(name, version);
 
 let db = null;
 const initDB = () => {
-  const dbRequest = open(DB_NAME, 1);
-  dbRequest.onsuccess = (event) => { db = event.target.result; };
-  dbRequest.onerror = (error) => { console.error(error); };
-  dbRequest.onupgradeneeded = (event) => {
+  try {
+    const dbRequest = open(DB_NAME, 1);
+    dbRequest.onsuccess = (event) => { db = event.target.result; };
+    dbRequest.onerror = (error) => { console.error(error); };
+    dbRequest.onupgradeneeded = (event) => {
     // 创建search表  设置R3UserId为主键
-    const store = event.target.result.createObjectStore('search', { keyPath: 'R3UserId' });
+      const store = event.target.result.createObjectStore('search', { keyPath: 'R3UserId' });
 
-    const objectStore = event.target.result.createObjectStore(DB_SCHEMA_NETWORK, { autoIncrement: true });
-    objectStore.createIndex('timecost', 'timecost', { unique: false });
-    objectStore.createIndex('recordDateTime', 'recordDateTime', { unique: false });
-  };
+      const objectStore = event.target.result.createObjectStore(DB_SCHEMA_NETWORK, { autoIncrement: true });
+      objectStore.createIndex('timecost', 'timecost', { unique: false });
+      objectStore.createIndex('recordDateTime', 'recordDateTime', { unique: false });
+    };
+  } catch {
+    window.indexedDB.deleteDatabase(DB_NAME);
+
+    const dbRequest = open(DB_NAME, 1);
+    dbRequest.onsuccess = (event) => { db = event.target.result; };
+    dbRequest.onerror = (error) => { console.error(error); };
+    dbRequest.onupgradeneeded = (event) => {
+    // 创建search表  设置R3UserId为主键
+      const store = event.target.result.createObjectStore('search', { keyPath: 'R3UserId' });
+
+      const objectStore = event.target.result.createObjectStore(DB_SCHEMA_NETWORK, { autoIncrement: true });
+      objectStore.createIndex('timecost', 'timecost', { unique: false });
+      objectStore.createIndex('recordDateTime', 'recordDateTime', { unique: false });
+    };
+  }
 };
 
 export const addNetwork = (data = []) => {
