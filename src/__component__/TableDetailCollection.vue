@@ -2617,7 +2617,10 @@
             },
             props: {
               defaultValue: this.copyDataSource.row[params.index][cellData.colname].val,
-              defaultSelected: this.copyDataSource.row[params.index][cellData.colname].defaultSelected ? this.copyDataSource.row[params.index][cellData.colname].defaultSelected : [],
+              defaultSelected: this.copyDataSource.row[params.index][cellData.colname].val ? [{
+                ID: this.copyDataSource.row[params.index][cellData.colname].val,
+                Label: '已经选中'
+              }] : [],
               propstype: {
                 optionTip: true,
                 // 是否显示输入完成后是否禁用 true、false
