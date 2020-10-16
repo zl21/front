@@ -31,7 +31,8 @@ module.exports = {
     'no-extend-native':'off',
     'no-eval':'off',
     'import/no-dynamic-require':'off',
-    'no-console':'off'
+    'no-console':'off',
+    'vue/no-async-in-computed-properties': 'off'
   },
   overrides: [
     {

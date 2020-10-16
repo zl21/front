@@ -46,6 +46,7 @@
         测试按钮
       </Button> -->
       <ButtonGroup
+        ref="R3ButtonGroup"
         :data-array="buttons.dataArray"
         :id-array="idArray"
         :search-datas="dataProcessing()"
@@ -280,12 +281,11 @@
       treeConfigData() {
         const treeQuery = this.$router.currentRoute.query;
         if (treeQuery.isTreeTable || window.isTree) {
-          if (window.ProjectConfig && window.ProjectConfig.externalTreeDatas) {
-            const { tableName } = this.$router.currentRoute.params;
+          const { tableName } = this.$router.currentRoute.params;
+          if (window.ProjectConfig && window.ProjectConfig.externalTreeDatas && window.ProjectConfig.externalTreeDatas[tableName]) {
             return window.ProjectConfig.externalTreeDatas[tableName]();
           }
           if (treeData) {
-            const { tableName } = this.$router.currentRoute.params;
             if (treeData[tableName]) {
               return treeData[tableName]();
             }
@@ -946,7 +946,7 @@
                 valuechange: ($this) => {
                   // 弹窗多选
                   this.formItemsLists[itemIndex].item.props.Selected = ($this.selected && $this.selected.length > 0) ? $this.selected : [];
-                  this.formItemsLists[itemIndex].item.value = $this.value;
+                  this.formItemsLists[itemIndex].item.value = $this.value; // `已经选中${$this.selected.length}条数据`
                   this.formItemsLists = this.formItemsLists.concat([]);
                   if (!$this.value) {
                     // this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');

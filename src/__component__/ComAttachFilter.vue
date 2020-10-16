@@ -119,7 +119,14 @@
       propstype() {
         // 将设置的props和默认props进行assign
         // const item = this.items;
-        this.value = (this.defaultSelected[0] && this.defaultSelected[0].Label) || '';
+        if (this.propstype.fkdisplay === 'pop') {
+          this.value = this.defaultSelected && this.defaultSelected.length > 0 ? this.defaultSelected[0].Label : '';
+        } else if ((this.defaultSelected && this.defaultSelected.length > 0) && this.resultData && Object.keys(this.resultData).length > 0) {
+          this.value = `已经选中${this.resultData.value.IN.length}条数据`;
+        } else {
+          this.value = this.defaultSelected && this.defaultSelected.length > 0 ? Array.isArray(this.defaultSelected[0].ID) ? `已经选中${this.defaultSelected[0].ID.length}条数据` : `已经选中${this.defaultSelected.length}条数据` : '';
+        }
+        
         
         this.selected = this.defaultSelected;
         // if (this.selected[0].Label && /total/.test(this.selected[0].Label)) {
@@ -140,7 +147,8 @@
         } else {
           this.propsData.componentType = Dialog;
           if (this.defaultSelected[0] && this.defaultSelected[0].ID && /选中/.test(this.value)) {
-            const data = this.defaultSelected[0].ID; 
+            // const data = this.defaultSelected[0].ID; 
+            const data = Array.isArray(this.defaultSelected[0].ID) ? this.defaultSelected[0].ID : JSON.parse(this.defaultSelected[0].ID); 
             // 谢世华  修改处理默认值逻辑
             
             if (data.value) {
@@ -160,7 +168,8 @@
           }
           this.propstype.show = true;
         }
-      }
+      },
+      deep: true
     },
     methods: {
       valueChange(type) {
@@ -169,7 +178,8 @@
           if (type === 'clear') {
             this.$emit('valuechange', { value: null, selected: [], type }, this);
           } else {
-            this.$emit('valuechange', { value: this.value, selected: this.selected, type }, this);
+            // 处理弹窗单选数据
+            this.$emit('valuechange', { value: this.propstype.fkdisplay === 'pop' ? ((this.selected && this.selected.length > 0) ? this.selected[0].ID : '') : this.value, selected: this.selected, type }, this);
           }
         }, 200);
       },
@@ -427,8 +437,12 @@
               ID: ''
             }
           ];
+          this.attachFilterClear();
         }
-        // this.valueChange();
+
+        if (this.propstype.fkdisplay === 'pop') {
+          this.valueChange();
+        }
       }
     },
     created() {
@@ -457,6 +471,25 @@
       if (this.selected[0] && this.selected[0].ID) {
         if (this.propstype.fkdisplay !== 'pop') {
           // this.propsData.disabled = true;
+        }
+      }
+
+      if (this.defaultSelected[0] && this.defaultSelected[0].ID && /选中/.test(this.defaultSelected[0].Label)) {
+        const data = Array.isArray(this.defaultSelected[0].ID) ? this.defaultSelected[0].ID : JSON.parse(this.defaultSelected[0].ID); 
+        // 谢世华  修改处理默认值逻辑
+        if (data.value) {
+          data.value.reftable = this.propsData.reftable;
+          data.value.reftableid = this.propsData.reftableid;
+          data.value.serviceId = this.propsData.serviceId;
+
+          this.filterDate = {
+            text: JSON.stringify(data.lists),
+            value: data.value,
+          };
+          this.resultData = {
+            text: JSON.stringify(data.lists),
+            value: data.value,
+          };
         }
       }
     }

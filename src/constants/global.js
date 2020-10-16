@@ -36,6 +36,7 @@ export const enableKAQueryDataForUser = () => (window.ProjectConfig && typeof wi
 export const dateStorageTime = () => (window.ProjectConfig && window.ProjectConfig.dateStorageTime ? window.ProjectConfig.dateStorageTime : project.dateStorageTime);
 export const ossRealtimeSave = () => (window.ProjectConfig && typeof window.ProjectConfig.ossRealtimeSave === 'boolean' ? window.ProjectConfig.ossRealtimeSave : project.ossRealtimeSave);
 export const blockFullOperation = () => (window.ProjectConfig && typeof window.ProjectConfig.blockFullOperation === 'boolean' ? window.ProjectConfig.blockFullOperation : project.blockFullOperation);
+export const customizeMixins = () => (window.ProjectConfig && window.ProjectConfig.customizeMixins ? window.ProjectConfig.customizeMixins : project.customizeMixins || {});
 // export const REQUEST_PENDDING_EXPIRE = 1000 * 2;
 export const enableActivateSameCustomizePage = () => (window.ProjectConfig && typeof window.ProjectConfig.enableActivateSameCustomizePage === 'boolean' ? window.ProjectConfig.enableActivateSameCustomizePage : project.enableActivateSameCustomizePage);
 
@@ -61,7 +62,7 @@ export const KEEP_SAVE_ITEM_TABLE_MANDATORY = false;// 控制当子表没有必�
 export const INSTANCE_ROUTE = 'instanceRoute';
 export const INSTANCE_ROUTE_QUERY = 'instanceRouteQuery';
 export const MODULE_COMPONENT_NAME = 'moduleComponentName';
-export const DB_NAME = 'R3';
+export const DB_NAME = 'r3';
 export const DB_SCHEMA_NETWORK = 'Network';
 export const ENABLE_NETWORK_MONITOR = () => (window.ProjectConfig && typeof window.ProjectConfig.enableNetworkMonitor === 'boolean' ? window.ProjectConfig.enableNetworkMonitor : project.enableNetworkMonitor);
 export const SLOW_NETWORK_THRESHOLD = 0;

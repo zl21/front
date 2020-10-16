@@ -861,9 +861,10 @@
 
       },
       attachFilterInput(item) {
+        // console.log(item);
         this._items.value = item.value;
         this._items.props.Selected = item.selected;
-        if (item.value === '') {
+        if (!item.value) {
           if (
             Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
             && typeof this._items.event.clear === 'function'

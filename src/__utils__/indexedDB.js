@@ -6,8 +6,10 @@ const open = (name, version) => window.indexedDB.open(name, version);
 
 let db = null;
 const initDB = () => {
-  const dbRequest = open(DB_NAME, 1);
-  dbRequest.onsuccess = (event) => { db = event.target.result; };
+  const dbRequest = open(DB_NAME, 2);
+  dbRequest.onsuccess = (event) => {
+    db = event.target.result;
+  };
   dbRequest.onerror = (error) => { console.error(error); };
   dbRequest.onupgradeneeded = (event) => {
     // 创建search表  设置R3UserId为主键
@@ -86,7 +88,7 @@ export const emptyRecord = (interval = new Date(new Date().toDateString()).getTi
 
 // 新增查询条件
 export const addSearch = (data = {}) => {
-  if (db) {
+  if (db && db.objectStoreNames.contains('search')) {
     const transaction = db.transaction('search', 'readwrite');
     const dbStore = transaction.objectStore('search');
     dbStore.get(data.R3UserId).onsuccess = (event) => {
@@ -106,7 +108,7 @@ export const addSearch = (data = {}) => {
 
 // 查询存储条件
 export const querySearch = async (R3UserId = null) => new Promise((resolve, reject) => {
-  if (db) {
+  if (db && db.objectStoreNames.contains('search')) {
     const transaction = db.transaction('search', 'readwrite');
     const dbStore = transaction.objectStore('search').get(R3UserId);
     dbStore.onsuccess = (event) => {
@@ -135,7 +137,7 @@ export const querySearch = async (R3UserId = null) => new Promise((resolve, reje
 
 // 清空七天前的查询条件
 export const emptySearch = (interval = new Date(new Date().toDateString()).getTime()) => new Promise((resolve, reject) => {
-  if (db) {
+  if (db && db.objectStoreNames.contains('search')) {
     const transaction = db.transaction(['search'], 'readwrite');
     const dbStore = transaction.objectStore('search');
     const recordDateTimeKeyRange = IDBKeyRange.upperBound(interval, true);
@@ -158,7 +160,6 @@ export const emptySearch = (interval = new Date(new Date().toDateString()).getTi
     // reject(new Error(`DataBase is not available at this moment. ENABLE_NETWORK_MONITOR = ${ENABLE_NETWORK_MONITOR()}, db = ${db}`));
   }
 });
-
 
 if (ENABLE_NETWORK_MONITOR() && window.indexedDB) {
   initDB();
