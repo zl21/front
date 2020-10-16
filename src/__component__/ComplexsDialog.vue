@@ -249,7 +249,7 @@
               item.ID = item.id_list[0] ? item.id_list[0] : item.id_list;
               return item;
             });
-            this.resultData.total = this.resultData.list.length;
+            this.resultData.total = data.data.total;
           }
         }
         if (type !== 'search') {
@@ -901,7 +901,8 @@
               PAGESIZE: this.componentData[1].pageSize,
               EXCLUDE: this.EXCLUDE,
               IN: this.IN,
-              NOTIN: this.NOTIN
+              NOTIN: this.NOTIN,
+              init: this.type === 'init'
             }
           },
           serviceId: this.fkobj.serviceId,
@@ -1008,7 +1009,7 @@
         this.resultData.list = arr;
 
         // 获取选中结果
-        this.multipleScreenResultCheck(this.sendMessage, 1, 'all');
+        this.multipleScreenResultCheck(this.sendMessage, 1, 'init');
       }
     }
 
