@@ -51,6 +51,7 @@ export default () => ({
     saveInfo: {},
     testUpdata: {},
     isRequest: [], // 记录当前tab是否点击过关系
+    scrollPosition: '', // 当前单对象界面滚动位置
   },
   actions: actions(),
   mutations: mutations()

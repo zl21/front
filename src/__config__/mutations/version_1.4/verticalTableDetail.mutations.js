@@ -516,5 +516,7 @@ export default {
   emptyTestData(state) { // 清空TestData
     state.isRequest = [];
   },
-  
+  updateScrollPosition(state, scrollPositionValue) { // 更新当前单对象滚动位置
+    state.scrollPosition = scrollPositionValue;
+  }
 };
