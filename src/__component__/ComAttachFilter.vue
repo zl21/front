@@ -121,8 +121,10 @@
         // const item = this.items;
         if (this.propstype.fkdisplay === 'pop') {
           this.value = this.defaultSelected && this.defaultSelected.length > 0 ? this.defaultSelected[0].Label : '';
+        } else if ((this.defaultSelected && this.defaultSelected.length > 0) && this.resultData && Object.keys(this.resultData).length > 0) {
+          this.value = `已经选中${this.resultData.value.IN.length}条数据`;
         } else {
-          this.value = this.defaultSelected && this.defaultSelected.length > 0 ? `已经选中${this.defaultSelected.length}条数据` : '';
+          this.value = this.defaultSelected && this.defaultSelected.length > 0 ? Array.isArray(this.defaultSelected[0].ID) ? `已经选中${this.defaultSelected[0].ID.length}条数据` : `已经选中${this.defaultSelected.length}条数据` : '';
         }
         
         
@@ -166,7 +168,8 @@
           }
           this.propstype.show = true;
         }
-      }
+      },
+      deep: true
     },
     methods: {
       valueChange(type) {
@@ -175,7 +178,8 @@
           if (type === 'clear') {
             this.$emit('valuechange', { value: null, selected: [], type }, this);
           } else {
-            this.$emit('valuechange', { value: this.value, selected: this.selected, type }, this);
+            // 处理弹窗单选数据
+            this.$emit('valuechange', { value: this.propstype.fkdisplay === 'pop' ? ((this.selected && this.selected.length > 0) ? this.selected[0].ID : '') : this.value, selected: this.selected, type }, this);
           }
         }, 200);
       },
@@ -433,8 +437,12 @@
               ID: ''
             }
           ];
+          this.attachFilterClear();
         }
-        // this.valueChange();
+
+        if (this.propstype.fkdisplay === 'pop') {
+          this.valueChange();
+        }
       }
     },
     created() {

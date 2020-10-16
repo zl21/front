@@ -68,7 +68,6 @@
   import network, { urlSearchParams } from '../__utils__/network';
   import moduleName from '../__utils__/getModuleName';
 
-
   export default {
     name: 'SetPanel',
     props: ['panel'],

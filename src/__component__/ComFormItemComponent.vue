@@ -1015,7 +1015,8 @@
         if (item.props.tableGetName) {
           // 子表明细联动
           // eslint-disable-next-line no-const-assign
-          return JSON.parse(JSON.stringify(this.formDataObject));
+          // return JSON.parse(JSON.stringify(this.formDataObject));  此逻辑是获取单个panel表单的数据，更换成获取整个的表单的数据
+          return JSON.parse(JSON.stringify(this.refcolvalData));
         } 
         // 获取当前表单数据及主表字段
         // eslint-disable-next-line no-const-assign

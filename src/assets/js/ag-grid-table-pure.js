@@ -223,11 +223,13 @@ const mopFkComponent = function() {};
 mopFkComponent.prototype.init = function(params) {
   const eGui = document.createElement('span');
   this.eGui = eGui;
-  const { data, columnName } = params;
+  const { data, column } = params;
+  const columnName = column.colId
   if (data[columnName] && data[columnName].refobjid) {
     try {
-      const info =  JSON.parse(data[columnName].refobjid);
-      eGui.innerHTML = info.lists.result.map(d => d.screen_string).toString();
+      // const info =  JSON.parse(data[columnName].refobjid);
+      // eGui.innerHTML = info.lists.result.map(d => d.screen_string).toString();
+      eGui.innerHTML = params.value;
     } catch (e) {
       eGui.innerHTML = params.value;
       console.error(e);

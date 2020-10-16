@@ -227,7 +227,17 @@ export default {
         resolve(res, actionName);
         commit('updateButtonExeActionData', res.data.message);
       } else {
-        commit('updateButtonExeActionData', res.data.message);
+        if (res.data.data.length > 0) {
+          const deleteFailInfo = res.data.data;
+          DispatchEvent('updateSTFailInfo', {
+            detail: {
+              failInfo: deleteFailInfo,
+              moduleComponentName: moduleName
+            }
+          });
+        } else {
+          commit('updateButtonExeActionData', res.data.message);
+        }
         reject(res, actionName);
       }
       DispatchEvent('exeActionForR3', {
