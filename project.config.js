@@ -1,9 +1,6 @@
 
 
 const path = require('path');
-const verticalTableDetailCustomize = require('./src/__config__/mixins/verticalMixinForScrollPosition').default;
-const horizontalTableDetailCustomize = require('./src/__config__/mixins/horizontalMixinForScrollPosition').default;
-const standardMixinForBigBackground = require('./src/__config__/mixins/standardMixinForBigBackground').default;
 
 
 module.exports = {
@@ -83,9 +80,9 @@ module.exports = {
   blockFullOperation: false, // 禁止不选数据时的批量修改操作,
   customizeMixins: { // 获取所有外部接入的mixins对象
     setPanel: null,
-    verticalTableDetailCustomize: verticalTableDetailCustomize(),
-    standardTableListsCustomize: standardMixinForBigBackground(),
-    horizontalTableDetailCustomize: horizontalTableDetailCustomize(),
+    verticalTableDetailCustomize: null,
+    standardTableListsCustomize: null,
+    horizontalTableDetailCustomize: null,
     taskList: null
   },
   ossRealtimeSave: true
