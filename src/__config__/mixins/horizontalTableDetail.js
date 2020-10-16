@@ -15,7 +15,7 @@ export default () => ({
     [INSTANCE_ROUTE_QUERY]: router.currentRoute.params,
 
   },
-  mixins: [customizeMixins().horizontalTableDetailCustomize ? customizeMixins().horizontalTableDetailCustomize : false],
+  // mixins: [customizeMixins().horizontalTableDetailCustomize ? customizeMixins().horizontalTableDetailCustomize : false],
   data() {
     return {
       noMounted: true, // 进入单对象会同时触发mounted与actived两个生命周期，因此无法判断是否在切换tab
