@@ -3211,7 +3211,7 @@
                 const item = {
                   field: `${params.column.colname}_${params.row.ID}`
                 };
-                createModal(JSON.parse(params.row.IMAGE), item);
+                createModal(JSON.parse(params.row[cellData.colname]), item);
               }
             }
           }, [
