@@ -901,7 +901,8 @@
               PAGESIZE: this.componentData[1].pageSize,
               EXCLUDE: this.EXCLUDE,
               IN: this.IN,
-              NOTIN: this.NOTIN
+              NOTIN: this.NOTIN,
+              init: this.type === 'init'
             }
           },
           serviceId: this.fkobj.serviceId,
@@ -1008,7 +1009,7 @@
         this.resultData.list = arr;
 
         // 获取选中结果
-        this.multipleScreenResultCheck(this.sendMessage, 1, 'all');
+        this.multipleScreenResultCheck(this.sendMessage, 1, 'init');
       }
     }
 

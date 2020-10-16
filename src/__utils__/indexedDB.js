@@ -6,12 +6,16 @@ const open = (name, version) => window.indexedDB.open(name, version);
 
 let db = null;
 const initDB = () => {
-  const dbRequest = open(DB_NAME, 1);
+  const dbRequest = open(DB_NAME, 2);
   dbRequest.onsuccess = (event) => { db = event.target.result; };
   dbRequest.onerror = (error) => { console.error(error); };
   dbRequest.onupgradeneeded = (event) => {
+    db = event.target.result;
     // 创建search表  设置R3UserId为主键
-    const store = event.target.result.createObjectStore('search', { keyPath: 'R3UserId' });
+    if (!db.objectStoreNames.contains('search')) {
+      const store = event.target.result.createObjectStore('search', { keyPath: 'R3UserId' });
+    }
+      
 
     const objectStore = event.target.result.createObjectStore(DB_SCHEMA_NETWORK, { autoIncrement: true });
     objectStore.createIndex('timecost', 'timecost', { unique: false });

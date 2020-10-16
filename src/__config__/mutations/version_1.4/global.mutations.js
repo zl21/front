@@ -368,10 +368,11 @@ export default {
   },
   emptyTabs(state) {
     // 清除当前关闭的表单设置的跳转到标准列表表单默认值;
-    state.openedMenuLists.map((openedMenuList) => {
-      const openedMenuListId = openedMenuList.keepAliveModuleName.split('.')[2];
-      removeSessionObject(openedMenuListId);
-    });
+    // state.openedMenuLists.map((openedMenuList) => {
+    //   const openedMenuListId = openedMenuList.keepAliveModuleName.split('.')[2];
+    //   removeSessionObject(openedMenuListId);
+    // });
+    
     state.openedMenuLists = [];
     state.keepAliveLists = [];
     state.activeTab = {};
@@ -424,15 +425,15 @@ export default {
 
 
     // 清除配置界面提供给定制界面的参数信息
-    if (enableActivateSameCustomizePage()) {
-      if (tab.keepAliveModuleName) {
-        const customizedModuleName = tab.keepAliveModuleName.split('.')[1];
-        deleteFromSessionObject('customizeMessage', customizedModuleName);// 定制界面
-      }
-    } else {
-      const customizedModuleId = tab.keepAliveModuleName.split('.')[2];
-      deleteFromSessionObject('customizeMessage', customizedModuleId);// 定制界面
-    }
+    // if (enableActivateSameCustomizePage()) {
+    //   if (tab.keepAliveModuleName) {
+    //     const customizedModuleName = tab.keepAliveModuleName.split('.')[1];
+    //     deleteFromSessionObject('customizeMessage', customizedModuleName);// 定制界面
+    //   }
+    // } else {
+    //   const customizedModuleId = tab.keepAliveModuleName.split('.')[2];
+    //   deleteFromSessionObject('customizeMessage', customizedModuleId);// 定制界面
+    // }
 
 
     // if (tab.keepAliveModuleName) {

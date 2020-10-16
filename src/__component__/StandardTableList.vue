@@ -945,9 +945,8 @@
                 },
                 valuechange: ($this) => {
                   // 弹窗多选
-
                   this.formItemsLists[itemIndex].item.props.Selected = ($this.selected && $this.selected.length > 0) ? $this.selected : [];
-                  this.formItemsLists[itemIndex].item.value = `已经选中${$this.selected.length}条数据`;
+                  this.formItemsLists[itemIndex].item.value = $this.value; // `已经选中${$this.selected.length}条数据`
                   this.formItemsLists = this.formItemsLists.concat([]);
                   if (!$this.value) {
                     // this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
