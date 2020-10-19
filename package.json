@@ -6,7 +6,9 @@
     "files": [
         "r3.publish/r3.min.js",
         "r3.publish/r3.min.js.map",
-        "r3.publish/r3.min.css"
+        "r3.publish/r3.min.css",
+        "r3.publish/src/assets/image",
+        "r3.publish/src/assets/theme"
     ],
     "scripts": {
         "start": "webpack-dev-server --progress --env.develop",
@@ -68,6 +70,7 @@
         "axios": "^0.18.0",
         "compressing": "^1.5.1",
         "md5": "^2.3.0",
+        "v-viewer": "^1.5.1",
         "vue": "^2.6.12",
         "vue-router": "^3.4.3",
         "vuedraggable": "^2.24.1",

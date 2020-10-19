@@ -1,6 +1,8 @@
 /* eslint-disable camelcase */
 import network, { urlSearchParams } from '../../../__utils__/network';
 import { DispatchEvent } from '../../../__utils__/dispatchEvent';
+import { querySearch } from '../../../__utils__/indexedDB';
+import { enableKAQueryDataForUser } from '../../../constants/global';
 
 export default {
   setColHide(store, data) {
@@ -88,28 +90,57 @@ export default {
     network.post('/p/cs/getTableQuery', urlSearchParams({
       table: searchData.table,
       getcmd: 'y'
-    })).then((res) => {
+    })).then(async (res) => {
       if (res.data.code === 0) {
-        const queryData = res.data;
-        if (searchData.closeIsBig) {
-          queryData.datas.isbig = false;
-        }
-        commit('updateButtonsTabcmd', queryData.tabcmd);
-        commit('updateButtonWaListButtons', queryData.waListButtons);
-        commit('updateTableStatus4css', queryData.datas);
-        commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
-        commit('updateDefaultButtonsdatas', queryData.datas);
-        commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
-        if (queryData.datas.webconf) {
-          if (queryData.datas.webconf.commonTable) {
-            commit('updateWebconfCommonTable', queryData.datas.webconf);
+        if (enableKAQueryDataForUser() || (res.data.datas.webconf && res.data.datas.webconf.enableKAQueryDataForUser)) {
+          await querySearch(`${this.state.global.userInfo.id}_${searchData.table}`).then((response) => {
+            if (response) {
+              commit('updateSearchDBdata', response);
+            }
+  
+            const queryData = res.data;
+            if (searchData.closeIsBig) {
+              queryData.datas.isbig = false;
+            }
+            commit('updateButtonsTabcmd', queryData.tabcmd);
+            commit('updateButtonWaListButtons', queryData.waListButtons);
+            commit('updateTableStatus4css', queryData.datas);
+            commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
+            commit('updateDefaultButtonsdatas', queryData.datas);
+            commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
+            if (queryData.datas.webconf) {
+              if (queryData.datas.webconf.commonTable) {
+                commit('updateWebconfCommonTable', queryData.datas.webconf);
+              }
+              if (queryData.datas.webconf.dynamicRouting) {
+                commit('updateWebconfDynamicRouting', queryData.datas.webconf);
+              }
+              commit('updataWebConf', queryData.datas.webconf);
+            }
+            resolve();
+          });
+        } else {
+          const queryData = res.data;
+          if (searchData.closeIsBig) {
+            queryData.datas.isbig = false;
           }
-          if (queryData.datas.webconf.dynamicRouting) {
-            commit('updateWebconfDynamicRouting', queryData.datas.webconf);
+          commit('updateButtonsTabcmd', queryData.tabcmd);
+          commit('updateButtonWaListButtons', queryData.waListButtons);
+          commit('updateTableStatus4css', queryData.datas);
+          commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
+          commit('updateDefaultButtonsdatas', queryData.datas);
+          commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
+          if (queryData.datas.webconf) {
+            if (queryData.datas.webconf.commonTable) {
+              commit('updateWebconfCommonTable', queryData.datas.webconf);
+            }
+            if (queryData.datas.webconf.dynamicRouting) {
+              commit('updateWebconfDynamicRouting', queryData.datas.webconf);
+            }
+            commit('updataWebConf', queryData.datas.webconf);
           }
-          commit('updataWebConf', queryData.datas.webconf);
+          resolve();
         }
-        resolve();
       }
     });
   },
@@ -196,7 +227,17 @@ export default {
         resolve(res, actionName);
         commit('updateButtonExeActionData', res.data.message);
       } else {
-        commit('updateButtonExeActionData', res.data.message);
+        if (res.data.data.length > 0) {
+          const deleteFailInfo = res.data.data;
+          DispatchEvent('updateSTFailInfo', {
+            detail: {
+              failInfo: deleteFailInfo,
+              moduleComponentName: moduleName
+            }
+          });
+        } else {
+          commit('updateButtonExeActionData', res.data.message);
+        }
         reject(res, actionName);
       }
       DispatchEvent('exeActionForR3', {

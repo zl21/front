@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                            >
+                       >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -154,6 +154,7 @@
   import { getUrl, getLabel } from '../__utils__/url';
   import { updateSessionObject } from '../__utils__/sessionStorage';
   import getUserenv from '../__utils__/getUserenv';
+  import createModal from './PreviewPicture/index.js';
 
 
   Vue.component('ComAttachFilter', ComAttachFilter);
@@ -680,7 +681,6 @@
       getEditAbleId(data) {
         this.columnEditElementId = {};
         this.editElementId = [];
-        console.log(3333, data.row);
         data.row.forEach((rowItem, rowIdx) => {
           data.tabth.forEach((tabthItem, tabthIdx) => {
             if (tabthItem.display === 'text' || tabthItem.fkdisplay === 'drp' || tabthItem.fkdisplay === 'mrp'
@@ -1736,10 +1736,14 @@
 
           return h('div', {
             style: {
-              width,
+              // width,
               overflow,
               'text-overflow': 'ellipsis',
-              'white-space': 'nowrap'
+              'white-space': 'nowrap',
+              'text-align': cellData.type === 'NUMBER' ? 'right' : 'left'
+            },
+            class: {
+              numberTd: cellData.type === 'NUMBER'
             },
             domProps: {
               innerHTML,
@@ -2612,7 +2616,10 @@
             },
             props: {
               defaultValue: this.copyDataSource.row[params.index][cellData.colname].val,
-              defaultSelected: this.copyDataSource.row[params.index][cellData.colname].defaultSelected ? this.copyDataSource.row[params.index][cellData.colname].defaultSelected : [],
+              defaultSelected: this.copyDataSource.row[params.index][cellData.colname].val ? [{
+                ID: this.copyDataSource.row[params.index][cellData.colname].val,
+                Label: `已经选中${JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).total}条数据`
+              }] : [],
               propstype: {
                 optionTip: true,
                 // 是否显示输入完成后是否禁用 true、false
@@ -3197,7 +3204,16 @@
           if (!params.row[cellData.colname]) {
             return null;
           }
-          return h('div', [
+          return h('div', {
+            on: {
+              dblclick: () => {
+                const item = {
+                  field: `${params.column.colname}_${params.row.ID}`
+                };
+                createModal(JSON.parse(params.row[cellData.colname]), item);
+              }
+            }
+          }, [
             h(tag, {
               style: {
                 width: '40px'

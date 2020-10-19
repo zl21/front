@@ -11,6 +11,7 @@
     <div
       v-if="isBig"
       class="isBig"
+      :style=" { backgroundImage : 'url( ' + bigBackground + ') '} "
     />
    
     <div
@@ -70,12 +71,14 @@
   /* eslint-disable no-lonely-if */
 
   import agTable from '../assets/js/ag-grid-table-pure';
-  import CommonTable from './CommonTable';
+  import CommonTable from './CommonTable.vue';
+  import isBigImg from '../assets/image/isBig.png';
 
   export default {
     name: 'AgTable',
     data() {
       return {
+        bigBackground: isBigImg
         // isCommonTable: true, // 是否显示普通表格
         // isCommonTable: false, // 是否显示普通表格
       };
@@ -381,7 +384,7 @@
     width: 100%;
   }
   .isBig{
-     background: url('../assets/image/isBig.png') no-repeat;
+     background-repeat: no-repeat;
      background-position: center center;
      background-size: 24%;
   }

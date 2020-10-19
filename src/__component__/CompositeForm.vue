@@ -9,13 +9,13 @@
       <!-- 面板内 -->
       <Collapse
         v-for="(item,index) in computdefaultData"
+        v-show="checkPanelShow(item)"
         :key="index"
         v-model="item.showHrdisplay "
         active-key="index"
         @on-change="CollapseClose(index,item.hrdisplay)"
       >
         <Panel
-          v-if="item.childs && item.childs.length > 0"
           :key="index"
           class="Rark-collapse-content-box"
           :is-title-show="item.isTitleShow"
@@ -1538,7 +1538,7 @@
           this.$emit('on-formEnter');
         }, 200);
       },
-      checkDisplay(item) {
+      checkDisplay(item) { // 判断组件展示类型
         // 组件显示类型
         let str = '';
         const checkIsReadonly = this.isReadonly(item);
@@ -1610,6 +1610,10 @@
         }
 
         return str;
+      },
+      checkPanelShow(item) {
+        const arr = item.childs.filter(item => item.show);
+        return arr && arr.length > 0;
       },
       setLabel(key, value, item) {
         return false;

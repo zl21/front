@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueDND from 'awe-dnd';
+import Viewer from 'v-viewer';
 import { getGuid } from './src/__utils__/random';
 import router from './src/__config__/router.config';
 import store from './src/__config__/store.config';
@@ -17,6 +18,7 @@ import customizedModalConfig from './src/__config__/customizeDialog.config';
 import Loading from './src/__utils__/loading';
 import getObjdisType from './src/__utils__/getObjdisType';
 import projectConfig from './project.config';
+import './node_modules/viewerjs/dist/viewer.css';
 
 
 // css import
@@ -38,6 +40,8 @@ import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
 // });
 
 Vue.use(VueDND);
+
+Vue.use(Viewer);
 
 
 // 注册自定义模态框组件

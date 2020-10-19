@@ -341,7 +341,28 @@
                       },
                       on: {
                         click: () => {
+                          let obj = {};
+                          const key = `${params.row.businessValue}${params.row.businessCode}`;
+                          if (global.jflowInfoMap) {
+                            obj = Object.assign({}, obj, global.jflowInfoMap);
+                            obj = Object.assign({}, obj, {
+                              [key]: {
+                                instanceId: params.row.instanceId,
+                                nodeId: params.row.nodeId,
+                                taskId: params.row.id
+                              }
+                            });
+                          } else {
+                            obj = Object.assign({}, obj, {
+                              [key]: {
+                                instanceId: params.row.instanceId,
+                                nodeId: params.row.nodeId,
+                                taskId: params.row.id
+                              }
+                            });
+                          }
                           globalChange({
+                            jflowInfoMap: obj,
                             jflowInfo: {
                               instanceId: params.row.instanceId,
                               nodeId: params.row.nodeId,

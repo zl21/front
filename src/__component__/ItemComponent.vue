@@ -285,6 +285,7 @@
         @deleteImg="deleteImg"
         @uploadFileChangeSuccess="uploadFileChangeSuccess"
         @uploadFileChangeOnerror="uploadFileChangeOnerror"
+        @dblclick="uploadFileDblclick"
       />
       <!--读写规则  -->
       <EnumerableInput
@@ -336,7 +337,9 @@
 </template>
 
 <script>
+  
   import { mapMutations } from 'vuex';
+  
   import dataProp from '../__config__/props.config';
   // 弹窗多选面板
   // import Dialog from './ComplexsDialog';
@@ -351,8 +354,10 @@
 
 
   import { Version, MODULE_COMPONENT_NAME, ossRealtimeSave } from '../constants/global';
+  import createModal from './PreviewPicture/index.js';
   import EnumerableInput from './EnumerableInput';
   import ExtentionInput from './ExtentionInput';
+
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -458,19 +463,27 @@
             
 
             item.props.dialog.model['footer-hide'] = false;
-            // item.props.datalist.forEach((option, i) => {
-            //   if (option.value === '导入') {
-            //     item.props.datalist[i].url = item.props.fkobj.url;
-            //     item.props.datalist[i].sendData = {
-            //       table: item.props.fkobj.reftable
-            //     };
-            //   }
-            // });
+            item.props.datalist.forEach((option, i) => {
+              if (option.value === '导入') {
+                item.props.datalist[i].url = item.props.fkobj.url;
+                item.props.datalist[i].sendData = {
+                  table: item.props.fkobj.reftable
+                };
+              }
+            });
           }
         }
         // eslint-disable-next-line no-empty
         if (item.type === 'Wangeditor') {
           item.componentType = WangeditorVue;
+        }
+
+        if (item.type === 'input' && (item.props.webconf && item.props.webconf.display === 'YearMonth')) {
+          item.type = 'DatePicker';
+          item.props = Object.assign({}, item.props, {
+            type: 'month',
+            clearable: true
+          });
         }
         item.event = Object.assign({}, this.items.event);
 
@@ -848,9 +861,10 @@
 
       },
       attachFilterInput(item) {
+        // console.log(item);
         this._items.value = item.value;
         this._items.props.Selected = item.selected;
-        if (item.value === '') {
+        if (!item.value) {
           if (
             Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
             && typeof this._items.event.clear === 'function'
@@ -1279,10 +1293,12 @@
       },
       upSavefile(obj, fixedData, path) {
         // 保存文件
-        setTimeout(() => {
-          const dom = document.getElementById('actionMODIFY');
-          dom.click();
-        }, 500);
+        if (!ossRealtimeSave()) {
+          setTimeout(() => {
+            const dom = document.getElementById('actionMODIFY');
+            dom.click();
+          }, 500);
+        }
         
 
         return false;
@@ -1511,6 +1527,7 @@
           const dom = document.getElementById('actionMODIFY');
           dom.click();
         }, 500);
+        
        
         return false;
         fkHttpRequest().fkObjectSave({
@@ -1705,7 +1722,16 @@
             this.$parent.dynamicforcompute(e.value);
           }, 10);
         }
-      }
+      },
+
+      uploadFileDblclick(array = [], index) { // 图片预览双击
+        const { itemId } = this.$route.params;
+        const obj = {
+          field: `${this.items.field}_${itemId}`
+        };
+        createModal(array, obj, index);
+      },
+
       
     },
     beforeDestroy() {
@@ -1820,4 +1846,6 @@ textarea.ark-input{
 
     }
 }
+
+
 </style>
