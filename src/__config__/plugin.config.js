@@ -23,12 +23,12 @@ export default {
       '../__plugin__/Print/printPreview.vue'
     )
   },
-  INSTANCEMANAGEMENTLIST: {
-    name: '待办列表', // 菜单Tab显示的label
-    component: () => import(
-      /* webpackChunkName: 'NetworkMonitor' */
-      /* webpackMode: 'eager' */
-      '../../jflowPlugin/view/InstanceManagementList.vue'
-    )
-  }
+  // INSTANCEMANAGEMENTLIST: {
+  //   name: '待办列表', // 菜单Tab显示的label
+  //   component: () => import(
+  //     /* webpackChunkName: 'NetworkMonitor' */
+  //     /* webpackMode: 'eager' */
+  //     '../../jflowPlugin/view/InstanceManagementList.vue'
+  //   )
+  // }
 };
