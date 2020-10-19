@@ -1275,7 +1275,9 @@
             }
             this.valueChange();
             // 去除上传后的保存
-            // this.upSavefile(parms, fixedData, path, value);
+            if (!ossRealtimeSave()) {
+              this.upSavefile(parms, fixedData, path, value);
+            }
           }
         } else {
           const _fixedData = fixedData || '';

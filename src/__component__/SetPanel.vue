@@ -12,6 +12,7 @@
           <i class="iconfont iconmd-key explanatory" />修改密码
         </p>
       </div>
+      <component :is="customizeComponent" />
       <div
         v-if="!layoutDirection"
         class="panel-item"
@@ -64,13 +65,14 @@
 
 <script>
   import { mapState, mapMutations, mapActions } from 'vuex';
-  import { layoutDirection, enableInitializationRequest } from '../constants/global';
+  import { layoutDirection, enableInitializationRequest, customizeMixins } from '../constants/global';
   import network, { urlSearchParams } from '../__utils__/network';
   import moduleName from '../__utils__/getModuleName';
 
   export default {
     name: 'SetPanel',
     props: ['panel'],
+    mixins: [customizeMixins().setPanel ? customizeMixins().setPanel : false],
     computed: {
       ...mapState('global', {
         userInfo: ({ userInfo }) => userInfo,
@@ -97,7 +99,9 @@
           show: false,
           list: []
         },
-        showFavorites: false
+        showFavorites: false,
+
+        customizeComponent: null
       };
     },
     mounted() {

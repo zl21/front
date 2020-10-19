@@ -1,4 +1,4 @@
-import { Modal } from 'ark-ui';
+
 import Vue from 'vue';
 import router from '../../__config__/router.config';
 import store from '../../__config__/store.config';
@@ -25,7 +25,7 @@ export default (array = [], items = {}, index) => {
 
   new Vue({
     render: h => h(
-      Modal,
+      'Modal',
       {
         props: {
           value: true,

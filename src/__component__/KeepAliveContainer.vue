@@ -23,7 +23,8 @@
     HORIZONTAL_TABLE_DETAIL_PREFIX,
     LINK_MODULE_COMPONENT_PREFIX,
     CUSTOMIZED_MODULE_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, PLUGIN_MODULE_PREFIX, PLUGIN_MODULE_COMPONENT_PREFIX,
-    LINK_MODULE_PREFIX
+    LINK_MODULE_PREFIX,
+    customizeMixins,
   } from '../constants/global';
   import StandardTableList from './StandardTableList.vue';
   import VerticalTableDetail from './V.TableDetail.vue';
@@ -80,29 +81,34 @@
         const { routePrefix } = this.$route.meta;
         let mixins = {};
         let component = {};
+        let mixinsCustomize = {};
         switch (routePrefix) {
         case STANDARD_TABLE_LIST_PREFIX:
           mixins = SMixins();
           component = StandardTableList;
+          mixinsCustomize = customizeMixins().standardTableListsCustomize ? customizeMixins().standardTableListsCustomize : {};
           break;
         case STANDARD_COMMONTABLE_LIST_PREFIX:
           mixins = SMixins();
           component = StandardTableList;
+          mixinsCustomize = customizeMixins().standardTableListsCustomize ? customizeMixins().standardTableListsCustomize : {};
           break;
         case VERTICAL_TABLE_DETAIL_PREFIX:
           mixins = VMixins();
           component = VerticalTableDetail;
+          mixinsCustomize = customizeMixins().verticalTableDetailCustomize ? customizeMixins().verticalTableDetailCustomize : {};
           break;
         case HORIZONTAL_TABLE_DETAIL_PREFIX:
           component = HorizontalTableDetail;
           mixins = HMixins();
+          mixinsCustomize = customizeMixins().horizontalTableDetailCustomize ? customizeMixins().horizontalTableDetailCustomize : {};
           break;
         default:
           break;
         }
         if ([STANDARD_TABLE_LIST_PREFIX, STANDARD_COMMONTABLE_LIST_PREFIX, VERTICAL_TABLE_DETAIL_PREFIX, HORIZONTAL_TABLE_DETAIL_PREFIX].indexOf(routePrefix) === -1) { return; }
         if (Vue.component(componentName) === undefined) {
-          Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins], isKeepAliveModel: true }, component)));
+          Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins, mixinsCustomize], isKeepAliveModel: true }, component)));
         }
         this.currentModule = componentName;
       },
