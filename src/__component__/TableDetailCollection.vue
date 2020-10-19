@@ -3259,6 +3259,7 @@
       },
       docRender(cellData, tag) {
         const that = this;
+        console.log(cellData, tag);
         return (h, params) => h('div', {
           style: {
             display: 'flex'
@@ -3306,7 +3307,8 @@
                     url: getGateway('/p/cs/batchUpload'),
                     valuedata: this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val) : []
                   },
-                  webConfSingle: this.webConfSingle
+                  webConfSingle: this.webConfSingle,
+                  accept: cellData.webconf && cellData.webconf.UploadAccept
                 },
                 on: {
                   filechange: (val) => {
