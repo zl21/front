@@ -1015,7 +1015,8 @@
         if (item.props.tableGetName) {
           // 子表明细联动
           // eslint-disable-next-line no-const-assign
-          return JSON.parse(JSON.stringify(this.formDataObject));
+          // return JSON.parse(JSON.stringify(this.formDataObject));  此逻辑是获取单个panel表单的数据，更换成获取整个的表单的数据
+          return JSON.parse(JSON.stringify(this.refcolvalData));
         } 
         // 获取当前表单数据及主表字段
         // eslint-disable-next-line no-const-assign
@@ -1057,7 +1058,7 @@
         });
         item.props.required = item.required || false;
         const props = JSON.parse(JSON.stringify(item.props));
-        const checkoutProps = Object.keys(item.props.webconf.setAttributes.props).every(setItem => item.props.webconf.setAttributes.props[setItem] === props[setItem]);
+        const checkoutProps = Object.keys(item.props.webconf.setAttributes.props).every(setItem => String(item.props.webconf.setAttributes.props[setItem]) === String(props[setItem]));
         if (!item.oldProps) {
           item.oldProps = Object.keys(item.props.webconf.setAttributes.props).reduce((arr, i) => {
             arr[i] = props[i] || false;

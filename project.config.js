@@ -2,11 +2,12 @@
 
 const path = require('path');
 
+
 module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
   projectIconPath: path.join(__dirname, './favicon.ico'), // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
-  target: 'http://r3-8098.dev.burgeononline.com/', // 框架研发网关开启环境
+  target: 'http://r3-8098.dev.syman.cn/', // 框架研发网关开启环境
   // target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 新版本jflow测试环境
   // target: 'http://r3dev.qiaodan.com:28888', // 乔丹开发环境
   // target: 'http://r3dev.qiaodan.com:26666', // 乔丹开发环境
@@ -40,7 +41,7 @@ module.exports = {
   enableNetworkMonitor: true, // 是否开启网络监控功能
   enableModuleKA: true, // 默认启用keepAlive功能
   enableTabLists: true, // 是否启用Tab页签切换模块的能力，默认启用
-  touristRoute: '/login', // 游客路由：等用户未登录的时候，需要跳转的页面
+  touristRoute: '/Login', // 游客路由：等用户未登录的时候，需要跳转的页面
   enableInitializationRequest: true, // 是否开启初始化请求
   // enableCustomInterface: false // 是否开启自定义接口,
   customizeWaterMark: {
@@ -76,5 +77,13 @@ module.exports = {
   logoutTips: false, // 失去会话是否需要登出提示 默认false直接登出
   enableKAQueryDataForUser: false, // 是否开启存储全表查询条件
   dateStorageTime: 1, // 查询条件存储时间，默认1天,建议不要设置太大影响性能
-  blockFullOperation: false, // 禁止不选数据时的批量修改操作
+  blockFullOperation: false, // 禁止不选数据时的批量修改操作,
+  customizeMixins: { // 获取所有外部接入的mixins对象
+    setPanel: null,
+    verticalTableDetailCustomize: null,
+    standardTableListsCustomize: null,
+    horizontalTableDetailCustomize: null,
+    taskList: null
+  },
+  ossRealtimeSave: true
 };

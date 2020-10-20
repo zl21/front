@@ -90,7 +90,7 @@ export default {
         store.commit('global/increaseLinkUrl', { linkModuleName, linkUrl });
       }
       const obj = {
-        linkName: param.lingName,
+        linkName: param.lingName.toUpperCase(),
         linkId: param.linkId,
         linkUrl,
         linkLabel: param.lablel
@@ -291,9 +291,9 @@ export default {
     state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('keepAliveLabelMaps'));
     // state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
   },
-  increaseLinkUrl(state, { linkId, linkUrl }) {
+  increaseLinkUrl(state, { linkModuleName, linkUrl }) {
     const linkType = {};
-    linkType[linkId] = linkUrl;
+    linkType[linkModuleName] = linkUrl;
     state.LinkUrl.push(linkType);
   },
   // increaseKeepAliveLists(state, data) {
@@ -400,7 +400,8 @@ export default {
   againClickOpenedMenuLists(state, {
     label,
     keepAliveModuleName,
-    type
+    type,
+    fullPath,
   }) {
     state.openedMenuLists.forEach((d) => {
       d.isActive = false;
@@ -409,6 +410,7 @@ export default {
         // const index = keepAliveModuleName.lastIndexOf('.');  
         keepAliveModuleNameRes = keepAliveModuleName.split('.')[1];
       } 
+    
       // d.label === label &&
       // 去除对label的限制，自定义配置，自定义标识相同，label不同，也可认为是同一个自定义界面
       if (enableActivateSameCustomizePage()) {
@@ -417,6 +419,7 @@ export default {
         }
       } else if (d.keepAliveModuleName === keepAliveModuleName) {
         d.isActive = true;
+        state.activeTab = d;
       }
     });
   },
@@ -436,15 +439,15 @@ export default {
     //   v: item.ID
     // };
     // 清除配置界面提供给定制界面的参数信息
-    if (enableActivateSameCustomizePage()) {
-      if (tab.keepAliveModuleName) {
-        const customizedModuleName = tab.keepAliveModuleName.split('.')[1];
-        deleteFromSessionObject('customizeMessage', customizedModuleName);// 定制界面
-      }
-    } else {
-      const customizedModuleId = tab.keepAliveModuleName.split('.')[2];
-      deleteFromSessionObject('customizeMessage', customizedModuleId);// 定制界面
-    }
+    // if (enableActivateSameCustomizePage()) {
+    //   if (tab.keepAliveModuleName) {
+    //     const customizedModuleName = tab.keepAliveModuleName.split('.')[1];
+    //     deleteFromSessionObject('customizeMessage', customizedModuleName);// 定制界面
+    //   }
+    // } else {
+    //   const customizedModuleId = tab.keepAliveModuleName.split('.')[2];
+    //   deleteFromSessionObject('customizeMessage', customizedModuleId);// 定制界面
+    // }
 
 
     // if (tab.keepAliveModuleName) {
@@ -901,5 +904,8 @@ export default {
       };
       state.imgSrc = Object.assign(state.imgSrc, images);
     }
+  },
+  updatePreviewPicture(state, data) {
+    state.previewPictureInstance = data;
   }
 };

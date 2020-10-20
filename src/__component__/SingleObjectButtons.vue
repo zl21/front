@@ -710,6 +710,11 @@
         }
       },
       buttonClick(type, obj) { // 根据按钮类型不同执行的事件逻辑
+        DispatchEvent('R3SingleButtonClick', {
+          detail: {
+            type, obj
+          }
+        });
         if (type === 'fix') {
           this.objectTabAction(obj);// 标准按钮执行方法
         } else if (type === 'custom') {
@@ -1448,6 +1453,11 @@
           break;
         case 'dialog':
           this.objTabActionDialog(obj);
+          break;
+        case 'js':
+          if (obj.action && this[obj.action] && typeof this[obj.action] === 'function') {
+            this[obj.action](obj);
+          }
           break;
         case 'navbar':
           this.objTabActionNavbar(obj);

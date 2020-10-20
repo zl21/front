@@ -191,7 +191,7 @@ export default {
         .map(d => d.children)
         .reduce((a, c) => a.concat(c))
         .reduce((a, c) => {
-          if (c.type === 'action' || c.type === 'rpt') {
+          if (c.type === 'action') {
           // 外部跳转链接URL的处理
             if (c.url) {
               // c.url = `${c.url}?AD_CLIENT_NAME={AD_CLIENT_NAME}&AD_ORG_ID={AD_ORG_ID}`;
@@ -204,15 +204,15 @@ export default {
                 linkUrl[c.value.toUpperCase()] = c.url;
                 state.LinkUrl.push(linkUrl); // 方便记录外部链接的跳转URL
                 a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
-              } else if (actionType.toUpperCase() === 'CUSTOMIZED' || c.url === 'customizeReport') {
+              } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
                 // 自定义界面的处理
                 // CUSTOMIZED/customizeReport：润钱报表,c.id
                 // 报表类自定义界面根据id选择iframe加载的路径
                 // 后端润乾报表配置已统一，在前端重置配置
-                if (c.url === 'customizeReport') {
-                  c.url = 'CUSTOMIZED/customizeReport';
-                  c.type = 'action';
-                }
+                // if (c.url === 'customizeReport') {
+                //   c.url = 'CUSTOMIZED/customizeReport';
+                //   c.type = 'action';
+                // }
                 a[`${getLabel({ url: c.url, id: c.id, type: 'customized' })}`] = c.label;
               } else if (actionType === 'SYSTEM') {
                 const i = c.url.substring(c.url.indexOf('/') + 1, c.url.lastIndexOf('/'));
@@ -232,6 +232,10 @@ export default {
           } else if (c.type === 'commonTable') {
             // 标准列表的处理(普通表格)
             a[`${STANDARD_COMMONTABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
+          } else if (c.type === 'rpt' && c.url) {
+            c.url = `CUSTOMIZED/${c.url.toUpperCase()}?type=rpt`;
+            c.type = 'action';
+            a[`${getLabel({ url: c.url, id: c.id, type: 'customized' })}`] = c.label;
           }
           return a;
         }, {});
@@ -368,10 +372,11 @@ export default {
   },
   emptyTabs(state) {
     // 清除当前关闭的表单设置的跳转到标准列表表单默认值;
-    state.openedMenuLists.map((openedMenuList) => {
-      const openedMenuListId = openedMenuList.keepAliveModuleName.split('.')[2];
-      removeSessionObject(openedMenuListId);
-    });
+    // state.openedMenuLists.map((openedMenuList) => {
+    //   const openedMenuListId = openedMenuList.keepAliveModuleName.split('.')[2];
+    //   removeSessionObject(openedMenuListId);
+    // });
+    
     state.openedMenuLists = [];
     state.keepAliveLists = [];
     state.activeTab = {};
@@ -424,15 +429,15 @@ export default {
 
 
     // 清除配置界面提供给定制界面的参数信息
-    if (enableActivateSameCustomizePage()) {
-      if (tab.keepAliveModuleName) {
-        const customizedModuleName = tab.keepAliveModuleName.split('.')[1];
-        deleteFromSessionObject('customizeMessage', customizedModuleName);// 定制界面
-      }
-    } else {
-      const customizedModuleId = tab.keepAliveModuleName.split('.')[2];
-      deleteFromSessionObject('customizeMessage', customizedModuleId);// 定制界面
-    }
+    // if (enableActivateSameCustomizePage()) {
+    //   if (tab.keepAliveModuleName) {
+    //     const customizedModuleName = tab.keepAliveModuleName.split('.')[1];
+    //     deleteFromSessionObject('customizeMessage', customizedModuleName);// 定制界面
+    //   }
+    // } else {
+    //   const customizedModuleId = tab.keepAliveModuleName.split('.')[2];
+    //   deleteFromSessionObject('customizeMessage', customizedModuleId);// 定制界面
+    // }
 
 
     // if (tab.keepAliveModuleName) {
@@ -899,5 +904,8 @@ export default {
       };
       state.imgSrc = Object.assign(state.imgSrc, images);
     }
+  },
+  updatePreviewPicture(state, data) {
+    state.previewPictureInstance = data;
   }
 };

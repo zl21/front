@@ -22,6 +22,9 @@ import verticalTableDetailModule from './store/verticalTableDetail';
 import horizontalTableDetailModule from './store/horizontalTableDetail';
 import PluginModule from './plugin.config';
 import { updateSessionObject, getSeesionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
+import {
+  updateLocalObject, getLocalObject, deleteFromLocalObject, removeLocalObject  
+} from '../__utils__/localStorage';
 
 
 let pluginModules = {};
@@ -153,14 +156,18 @@ if (window.ProjectConfig && window.ProjectConfig.externalPluginModules) { // 整
 
 export default (router) => {
   router.beforeEach((to, from, next) => {
-    if (to.path && getSeesionObject('loginStatus') !== true && to.path.indexOf('/login') === -1 && to.path !== '/') {
+    // if (Object.keys(getSeesionObject('loginStatus')) && Object.keys(getSeesionObject('loginStatus')).length === 0) {
+    //   debugger;
+    // }
+    const lgoinText = '/login'.toUpperCase();
+    if (to.path && getLocalObject('loginStatus') !== true && (to.path.indexOf(lgoinText) !== -1) && to.path !== '/') {
       const data = {
         k: 'path',
         v: to.path
       };
       updateSessionObject('savePath', data);
     }
-    if (to.path === '/login' && getSeesionObject('loginStatus') === true) { // 当页面处于登录状态时，则无法回到登录界面，可退出登录进行操作
+    if (to.path.indexOf(lgoinText) !== -1 && getLocalObject('loginStatus') === true) { // 当页面处于登录状态时，则无法回到登录界面，可退出登录进行操作
       window.location.href = window.location.origin;
       return;
     }
