@@ -89,7 +89,7 @@ const routes = [
       }]
   },
   {
-    path: '/login',
+    path: '/Login',
     component: Login
   },
   {
