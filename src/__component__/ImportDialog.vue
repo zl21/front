@@ -280,6 +280,7 @@
             const url = `${getGateway('/p/cs/download')}?filename=${
               res.data.data
             }`;
+            console.log(2222, url);
             window.location = url;
           }
         });
