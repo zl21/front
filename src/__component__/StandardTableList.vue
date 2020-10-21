@@ -1984,6 +1984,7 @@
         const { tableName, tableId, } = this[INSTANCE_ROUTE_QUERY];
         if (obj.name === this.buttonMap.CMD_ADD.name) {
           // 新增
+          debugger;
           if (this.ag.tableurl) {
             let tableurl = '';
             if (this.ag.tableurl.includes('?')) {
@@ -2011,11 +2012,11 @@
               router.push({
                 path
               });
-              const obj = {
+              const objs = {
                 customizedModuleName,
                 id: 'New'
               };
-              window.sessionStorage.setItem('customizedMessage', JSON.stringify(obj));
+              window.sessionStorage.setItem('customizedMessage', JSON.stringify(objs));
               const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
               const customizeConfig = Object.keys(externalModules).length > 0 ? externalModules : customize;
               Object.keys(customizeConfig).forEach((customizeName) => {
