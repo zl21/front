@@ -30,8 +30,8 @@ const validateConfig = config => ({
 });
 const packageMessage = {
   version: '1.8.3',
-  packageTime: '2020.07.17.11.17', 
-  user: 'ishop',   
+  packageTime: '2020.10.21.11.20', 
+  user: 'local',   
 };
 
 export default {

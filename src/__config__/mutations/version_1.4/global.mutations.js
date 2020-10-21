@@ -842,6 +842,11 @@ export default {
     // name：C.AAO_SR_TEST.2326模块名称
     // label：中文名
     state.keepAliveLabelMaps[name] = `${label}`;
+    const keepAliveLabelMapsObj = {
+      k: name,
+      v: label
+    };
+    updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
   },
   addServiceIdMap(state, { tableName, gateWay }) {
     // state.serviceIdMap[tableName] = `${gateWay}`;

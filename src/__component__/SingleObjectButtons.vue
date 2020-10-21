@@ -1455,8 +1455,8 @@
           this.objTabActionDialog(obj);
           break;
         case 'js':
-          if (obj.action && this[obj.action] && typeof this[obj.action] === 'function') {
-            this[obj.action](obj);
+          if (obj.action && this.$parent[obj.action] && typeof this.$parent[obj.action] === 'function') {
+            this.$parent[obj.action](obj);
           }
           break;
         case 'navbar':
