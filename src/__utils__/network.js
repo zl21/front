@@ -191,8 +191,10 @@ axios.interceptors.response.use(
       // 由于 1.3与 1.4登录 接口返回值层级不同，所以需要单独做逻辑处理
       if (Version() === '1.4' && response.data.data) {
         window.sessionStorage.setItem('loginStatus', true);
+        window.localStorage.setItem('loginStatus', true);
       } else if (Version() === '1.3' && response.data) {
         window.sessionStorage.setItem('loginStatus', true);
+        window.localStorage.setItem('loginStatus', true);
       }
     }
     if (config.url.indexOf('/p/cs/getSubSystems') !== -1) {
@@ -225,6 +227,8 @@ axios.interceptors.response.use(
             onOk: () => {
               // 清楚对应登陆用户信息
               window.sessionStorage.setItem('loginStatus', false);
+        window.localStorage.setItem('loginStatus', false);
+
               store.commit('global/updataUserInfoMessage', {
                 userInfo: {}
               });
@@ -240,6 +244,8 @@ axios.interceptors.response.use(
         } else {
           // 清楚对应登陆用户信息
           window.sessionStorage.setItem('loginStatus', false);
+        window.localStorage.setItem('loginStatus', false);
+
           store.commit('global/updataUserInfoMessage', {
             userInfo: {}
           });
