@@ -1456,7 +1456,7 @@
           break;
         case 'js':
           if (obj.action && this.$parent[obj.action] && typeof this.$parent[obj.action] === 'function') {
-            this[obj.action](obj);
+            this.$parent[obj.action](obj);
           }
           break;
         case 'navbar':
