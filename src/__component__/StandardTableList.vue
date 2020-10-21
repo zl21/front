@@ -162,6 +162,8 @@
   import modifyDialog from './ModifyModal.vue';
   import tree from './tree.vue';
   import regExp from '../constants/regExp';
+  import getObjdisType from '../__utils__/getObjdisType';
+
 
   import {
     Version,
@@ -1980,11 +1982,13 @@
         this.$Modal.fcWarning(data);
         // this.$refs.dialogRefs.open();
       },
+      getSingleObjectPageType() {
+        
+      },
       AddDetailClick(obj) {
         const { tableName, tableId, } = this[INSTANCE_ROUTE_QUERY];
         if (obj.name === this.buttonMap.CMD_ADD.name) {
           // 新增
-          debugger;
           if (this.ag.tableurl) {
             let tableurl = '';
             if (this.ag.tableurl.includes('?')) {
@@ -2016,7 +2020,7 @@
                 customizedModuleName,
                 id: 'New'
               };
-              window.sessionStorage.setItem('customizedMessage', JSON.stringify(objs));
+              window.sessionStorage.setItem('customizedMessage', JSON.stringify(obj));
               const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
               const customizeConfig = Object.keys(externalModules).length > 0 ? externalModules : customize;
               Object.keys(customizeConfig).forEach((customizeName) => {
@@ -2033,25 +2037,32 @@
           } else {
             const id = 'New';
             const label = `${this.activeTab.label}新增`;
-            if (this.ag.datas.objdistype === 'tabpanle') { // 单对象左右结构
-              const type = 'tableDetailHorizontal';
-              this.tabOpen({
-                type,
-                tableName,
-                tableId,
-                label,
-                id
+            let type = '';
+            if (this.buttons.isBig) { // 配置海量 
+              window.getObjdisType({ table: tableName }).then((res) => {
+                type = res === 'tabpanle' ? 'H' : 'V';  
+                this.tabOpen({
+                  type,
+                  tableName,
+                  tableId,
+                  label,
+                  id
+                });
               });
+            } else if (this.ag.datas.objdistype === 'tabpanle') { // 单对象左右结构
+              type = 'tableDetailHorizontal';
             } else {
-              const type = 'tableDetailVertical'; // 左右结构的单对项页面
-              this.tabOpen({
-                type,
-                tableName,
-                tableId,
-                label,
-                id
-              });
+              type = 'tableDetailVertical'; // 左右结构的单对项页面
             }
+
+           
+            this.tabOpen({
+              type,
+              tableName,
+              tableId,
+              label,
+              id
+            });
             return;
           }
         }
