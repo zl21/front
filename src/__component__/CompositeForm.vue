@@ -863,6 +863,7 @@
 
         this.getStateData();
         this.defaultFormData = Object.assign(defaultFormData, defaultSetValue);
+        this.formData = Object.assign({}, this.defaultFormData);
         // 默认值
         
         this.copyInt = false;
