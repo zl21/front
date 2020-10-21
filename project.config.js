@@ -85,5 +85,5 @@ module.exports = {
     horizontalTableDetailCustomize: null,
     taskList: null
   },
-  ossRealtimeSave: true
+  ossRealtimeSave: false
 };
