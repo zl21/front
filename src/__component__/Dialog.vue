@@ -2,7 +2,6 @@
   <Modal
     v-model="showModal"
     :title="titleName"
-    :z-index="zIndex"
     :title-align="titleAlign"
     :scrollable="scrollable"
     :closable="closable"
@@ -84,10 +83,10 @@
       //   type: String,
       //   default: () => 'auto'
       // },
-      zIndex: { // 层级
-        type: Number,
-        default: 1000
-      },
+      // zIndex: { // 层级
+      //   type: Number,
+      //   default: 1000
+      // },
       objList: {// 需要从外部获取的信息
         type: Array,
         default: () => []
