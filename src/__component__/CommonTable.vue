@@ -446,7 +446,7 @@
     mounted() {
       const myObserver = new ResizeObserver(((entries) => {
         entries.forEach(() => {
-          this.$refs.table.handleResize ? this.$refs.table.handleResize() : null;
+          (this.$refs.table && this.$refs.table.handleResize) ? this.$refs.table.handleResize() : null;
         });
       }));
       myObserver.observe(document.getElementsByClassName('commonTable')[0]); // dom
