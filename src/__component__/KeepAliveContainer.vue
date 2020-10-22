@@ -115,6 +115,7 @@
       generateCustomizedComponent() {
         const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
         const { customizedModuleName, customizedModuleId } = this.$route.params;
+        const { query } = this.$route;
         const { routePrefix } = this.$route.meta;
         if (routePrefix !== CUSTOMIZED_MODULE_PREFIX) { return; }
         const componentName = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName}.${customizedModuleId}`;
@@ -122,7 +123,14 @@
      
         // } else 
         if (Vue.component(componentName) === undefined) {
-          const target = externalModules[customizedModuleName] || customizeModules[customizedModuleName];
+          let target = null;
+          if (query.type === 'rpt') { // rpt类型特殊处理 
+            // 元数据当前表type配置为rpt时，按照自定义界面逻辑执行路由逻辑，与自定义界面区别是，不再按照url内配置的"CUSTOMIZE/"后的自定义标示来加载自定义界面配置文件中的对应字段，
+            // 而是根据路由的参数判断为rpt类型，则加载固定前端配置文件内的字段customizeReport字段对应的组件
+            target = externalModules.CUSTOMIZEREPORT || customizeModules.CUSTOMIZEREPORT;
+          } else {
+            target = externalModules[customizedModuleName] || customizeModules[customizedModuleName];
+          }
           if (target) {
             if (typeof target.component === 'function') {
               Vue.component(componentName, target.component);

@@ -37,7 +37,7 @@
                 :isreftabs="isreftabsForm"
                 :set-objreadonly="setObjreadonly"
                 :child-table-name="childTableName"
-                :refcolval-data="refcolvaData"
+                :refcolval-data="formData"
                 :mapp-status="setMapping"
                 :web-conf-single="webConfSingle"
                 :is-main-table="isMainTableForm"
@@ -863,6 +863,7 @@
 
         this.getStateData();
         this.defaultFormData = Object.assign(defaultFormData, defaultSetValue);
+        this.formData = Object.assign({}, this.defaultFormData);
         // 默认值
         
         this.copyInt = false;
