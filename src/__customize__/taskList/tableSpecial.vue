@@ -43,6 +43,7 @@
   import { mapMutations } from 'vuex';
   import Dialog from '../../__component__/Dialog';
   import getObjdisType from '../../__utils__/getObjdisType.js';
+  import { customizeMixins } from '../../constants/global';
 
   export default {
     data() {
@@ -59,6 +60,7 @@
         }, // 弹框配置信息
       };
     },
+    mixins: [customizeMixins().taskList ? customizeMixins().taskList : false],
     name: 'CommonTable',
     components: { Dialog },
     props: {
@@ -321,12 +323,50 @@
               cur.render = (h, params) => h('a', {
                 on: {
                   click: () => {
-                    if (typeof this.onSingleCellClick === 'function') {
-                      this.onSingleCellClick(params.row);
-                    }
-
-                    if (this.optionsClick && typeof this.optionsClick === 'function') { // 处理外部接入逻辑
+                    if (this.optionsClick && typeof this.optionsClick === 'function') {
                       this.optionsClick(params.row).then(() => {
+                        if (typeof this.onSingleCellClick === 'function') {
+                          this.onSingleCellClick(params.row);
+                        }
+
+                        if (this.optionsClick && typeof this.optionsClick === 'function') { // 处理外部接入逻辑
+                          this.optionsClick(params.row).then(() => {
+                            let url = '';
+                            if (params.row.URL.indexOf('http') !== -1) {
+                              url = params.row.URL;
+                              window.open(url);
+                            } else {
+                              if (params.row.URL.indexOf('/SYSTEM/TABLE_DETAIL') !== -1) { // 判断是不是标准单对象页面
+                                getObjdisType({ table: params.row.URL.split('/')[4] }).then((res) => {
+                                  const distype = res === 'tabpanle' ? 'H' : 'V';
+                                  const arr = params.row.URL.split('/');
+                                  arr[3] = distype;
+                                  url = arr.join('/');
+                                  url = url.substr(1);
+                                  const param = {
+                                    url,
+                                    id: params.row.ID,
+                                    lablel: null,
+                                    isMenu: true
+                                  };
+                                  this.directionalRouter(param);// 定向路由跳转方法
+                                });
+                              } else {
+                                url = params.row.URL;
+                                url = url.substr(1);
+                                const param = {
+                                  url,
+                                  id: params.row.ID,
+                                  lablel: null,
+                                  isMenu: true
+                                };
+                                this.directionalRouter(param);// 定向路由跳转方法
+                              }
+                            }
+                          });
+                          return;
+                        }
+                        // window.open(params.row.URL);
                         let url = '';
                         if (params.row.URL.indexOf('http') !== -1) {
                           url = params.row.URL;
@@ -360,20 +400,71 @@
                           }
                         }
                       });
-                      return;
-                    }
-                    // window.open(params.row.URL);
-                    let url = '';
-                    if (params.row.URL.indexOf('http') !== -1) {
-                      url = params.row.URL;
-                      window.open(url);
                     } else {
-                      if (params.row.URL.indexOf('/SYSTEM/TABLE_DETAIL') !== -1) { // 判断是不是标准单对象页面
-                        getObjdisType({ table: params.row.URL.split('/')[4] }).then((res) => {
-                          const distype = res === 'tabpanle' ? 'H' : 'V';
-                          const arr = params.row.URL.split('/');
-                          arr[3] = distype;
-                          url = arr.join('/');
+                      if (typeof this.onSingleCellClick === 'function') {
+                        this.onSingleCellClick(params.row);
+                      }
+
+                      if (this.optionsClick && typeof this.optionsClick === 'function') { // 处理外部接入逻辑
+                        this.optionsClick(params.row).then(() => {
+                          let url = '';
+                          if (params.row.URL.indexOf('http') !== -1) {
+                            url = params.row.URL;
+                            window.open(url);
+                          } else {
+                            if (params.row.URL.indexOf('/SYSTEM/TABLE_DETAIL') !== -1) { // 判断是不是标准单对象页面
+                              getObjdisType({ table: params.row.URL.split('/')[4] }).then((res) => {
+                                const distype = res === 'tabpanle' ? 'H' : 'V';
+                                const arr = params.row.URL.split('/');
+                                arr[3] = distype;
+                                url = arr.join('/');
+                                url = url.substr(1);
+                                const param = {
+                                  url,
+                                  id: params.row.ID,
+                                  lablel: null,
+                                  isMenu: true
+                                };
+                                this.directionalRouter(param);// 定向路由跳转方法
+                              });
+                            } else {
+                              url = params.row.URL;
+                              url = url.substr(1);
+                              const param = {
+                                url,
+                                id: params.row.ID,
+                                lablel: null,
+                                isMenu: true
+                              };
+                              this.directionalRouter(param);// 定向路由跳转方法
+                            }
+                          }
+                        });
+                        return;
+                      }
+                      // window.open(params.row.URL);
+                      let url = '';
+                      if (params.row.URL.indexOf('http') !== -1) {
+                        url = params.row.URL;
+                        window.open(url);
+                      } else {
+                        if (params.row.URL.indexOf('/SYSTEM/TABLE_DETAIL') !== -1) { // 判断是不是标准单对象页面
+                          getObjdisType({ table: params.row.URL.split('/')[4] }).then((res) => {
+                            const distype = res === 'tabpanle' ? 'H' : 'V';
+                            const arr = params.row.URL.split('/');
+                            arr[3] = distype;
+                            url = arr.join('/');
+                            url = url.substr(1);
+                            const param = {
+                              url,
+                              id: params.row.ID,
+                              lablel: null,
+                              isMenu: true
+                            };
+                            this.directionalRouter(param);// 定向路由跳转方法
+                          });
+                        } else {
+                          url = params.row.URL;
                           url = url.substr(1);
                           const param = {
                             url,
@@ -382,17 +473,7 @@
                             isMenu: true
                           };
                           this.directionalRouter(param);// 定向路由跳转方法
-                        });
-                      } else {
-                        url = params.row.URL;
-                        url = url.substr(1);
-                        const param = {
-                          url,
-                          id: params.row.ID,
-                          lablel: null,
-                          isMenu: true
-                        };
-                        this.directionalRouter(param);// 定向路由跳转方法
+                        }
                       }
                     }
                   }
