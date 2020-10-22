@@ -58,7 +58,6 @@ module.exports = {
   encryptedPassword: false, // 是否允许login接口password加密
   isItemTableNewValidation: true, // 是否允许子表新增有必填项时，输入值才触发子表必填项校验，不输入值则只校验主表
   isCommonTable: false, // 是否开启普通表格，默认关闭
-  custommizedJflow: true, // jflow定制版开关,默认为true
   functionPowerRequestURL: '', // 功能权限获取检索项数据接口名称
   cbs: undefined, // 框架回调，形如 { loginCb: function() {} }
   layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
@@ -75,7 +74,7 @@ module.exports = {
   // },
   enableActivateSameCustomizePage: false, // 跳转自定义界面，当自定义界面标识相同，是否只激活同一个tab,默认为false,自定义界面ID不同会打开多个tab
   logoutTips: false, // 失去会话是否需要登出提示 默认false直接登出
-  enableKAQueryDataForUser: true, // 是否开启存储全表查询条件
+  enableKAQueryDataForUser: false, // 是否开启存储全表查询条件
   dateStorageTime: 1, // 查询条件存储时间，默认1天,建议不要设置太大影响性能
   blockFullOperation: false, // 禁止不选数据时的批量修改操作,
   customizeMixins: { // 获取所有外部接入的mixins对象
@@ -85,5 +84,5 @@ module.exports = {
     horizontalTableDetailCustomize: null,
     taskList: null
   },
-  ossRealtimeSave: true
+  ossRealtimeSave: false
 };
