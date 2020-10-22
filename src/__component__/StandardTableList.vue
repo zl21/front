@@ -46,6 +46,7 @@
         测试按钮
       </Button> -->
       <ButtonGroup
+        ref="R3ButtonGroup"
         :data-array="buttons.dataArray"
         :id-array="idArray"
         :search-datas="dataProcessing()"
@@ -161,6 +162,8 @@
   import modifyDialog from './ModifyModal.vue';
   import tree from './tree.vue';
   import regExp from '../constants/regExp';
+  import getObjdisType from '../__utils__/getObjdisType';
+
 
   import {
     Version,
@@ -170,6 +173,7 @@
     INSTANCE_ROUTE,
     isCommonTable,
     enableActivateSameCustomizePage,
+    enableKAQueryDataForUser,
     blockFullOperation
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
@@ -180,6 +184,7 @@
   import { DispatchEvent } from '../__utils__/dispatchEvent';
   import treeData from '../__config__/treeData.config';
   import getUserenv from '../__utils__/getUserenv';
+  import { addSearch, querySearch } from '../__utils__/indexedDB';
 
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
@@ -224,6 +229,7 @@
           confirm: () => {
           }
         }, // 弹框配置信息
+
       };
     },
     computed: {
@@ -277,12 +283,11 @@
       treeConfigData() {
         const treeQuery = this.$router.currentRoute.query;
         if (treeQuery.isTreeTable || window.isTree) {
-          if (window.ProjectConfig && window.ProjectConfig.externalTreeDatas) {
-            const { tableName } = this.$router.currentRoute.params;
+          const { tableName } = this.$router.currentRoute.params;
+          if (window.ProjectConfig && window.ProjectConfig.externalTreeDatas && window.ProjectConfig.externalTreeDatas[tableName]) {
             return window.ProjectConfig.externalTreeDatas[tableName]();
           }
           if (treeData) {
-            const { tableName } = this.$router.currentRoute.params;
             if (treeData[tableName]) {
               return treeData[tableName]();
             }
@@ -942,11 +947,26 @@
                 },
                 valuechange: ($this) => {
                   // 弹窗多选
-                  this.formItemsLists[itemIndex].item.props.Selected = $this.selected || [];
-                  this.formItemsLists[itemIndex].item.value = $this.value;
-                  // this.formItemsLists = this.formItemsLists.concat([]);
+                  this.formItemsLists[itemIndex].item.props.Selected = ($this.selected && $this.selected.length > 0) ? $this.selected : [];
+                  this.formItemsLists[itemIndex].item.value = $this.value; // `已经选中${$this.selected.length}条数据`
+                  this.formItemsLists = this.formItemsLists.concat([]);
+                  if (!$this.value) {
+                    // this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
+                    return false;
+                  }
 
-                  console.log(itemIndex, this.formItemsLists[itemIndex].item.props);
+                  // const searchObject = {
+                  //   ak: $this.value,
+                  //   colid: current.colid,
+                  //   fixedcolumns: {}
+                  // };
+                  // fkHttpRequest().fkFuzzyquerybyak({
+                  //   searchObject: this.setSeachObject(searchObject, current),
+                  //   serviceId: current.fkobj.serviceId,
+                  //   success: (res) => {
+                  //     // this.freshDropDownSelectFilterAutoData(res, itemIndex);
+                  //   }
+                  // });
                 },
                 'on-popper-hide': ($this) => {
                   // 初始化清空数据
@@ -1163,17 +1183,41 @@
                 obj.item.props.fkobj.colid = current.colid;
                 obj.item.props.blurType = false;
                 // obj.item.props.fkobj.saveType = 'object';
-                obj.item.props.fkobj.url = `/${obj.item.props.fkobj.serviceId}/p/cs/menuimport`;
+                obj.item.props.fkobj.url = '/p/cs/menuimport'; // 处理导入接口  去除网关`/${obj.item.props.fkobj.serviceId}/p/cs/menuimport`
                 obj.item.props.datalist = [];
                 obj.item.props.Selected = [];
                 obj.item.props.filterDate = {};
-
                 break;
               default:
                 break;
               }
             }
 
+            // 设置indexDB默认查询条件 
+            if (enableKAQueryDataForUser() || this.webConf.enableKAQueryDataForUser) {
+              Object.keys(this.searchDBdata).map((temp) => {
+                if (temp === obj.item.field && obj.item.value) {
+                  return temp;
+                }
+                if (temp === obj.item.field && this.searchDBdata[temp]) {
+                  obj.item.value = this.searchDBdata[temp];
+                }
+
+                if (current.display === 'OBJ_FK' && temp === obj.item.field && this.searchDBdata[temp]) {
+                  switch (current.fkobj.searchmodel) {
+                  case 'drp':
+                    obj.item.props.defaultSelected = this.searchDBdata[temp];
+                    break;
+                  case 'mrp':
+                    obj.item.props.defaultSelected = this.searchDBdata[temp];
+                    break;
+                  default:
+                    break;
+                  }
+                }
+              });
+            }
+            
             array.push(obj);
             return array;
           },
@@ -1226,6 +1270,15 @@
           }
           if (this.buttons.isBig) {
             searchData.closeIsBig = true;
+          }
+
+          if (enableKAQueryDataForUser() || this.webConf.enableKAQueryDataForUser) {
+            const search = {};
+            search.R3UserId = `${this.userInfo.id}_${this.searchData.table}`;
+            addSearch(search);
+
+            this.updateSearchDBdata({});
+            this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
           }
           this.getTableQueryForForm({ searchData, resolve, reject });
         });
@@ -1290,6 +1343,7 @@
         // if(item.display === 'OBJ_FK' && item.fkobj){
         //     return '';
         // }
+        
         return item.default;
       },
       getTableQuery() {
@@ -1821,7 +1875,7 @@
             if (
               !temp.item.field
               && temp.item.type === 'select'
-              && item.indexOf(':ENAME') < 0
+              && item.indexOf(':') < 0
             ) {
               // 处理合并型select
               value = jsonData[item].map(option => `=${option}`);
@@ -1874,10 +1928,27 @@
       getQueryListPromise(data) {
         const promise = new Promise((resolve, reject) => {
           this.requiredCheck().then(() => {
-            this.$R3loading.show();
+            // this.$R3loading.show(this.searchData.table);
             data.resolve = resolve;
             data.reject = reject;
             data.isolr = this.buttons.isSolr;
+
+            if (enableKAQueryDataForUser() || this.webConf.enableKAQueryDataForUser) {
+              const search = JSON.parse(JSON.stringify(this.$refs.FormItemComponent.formDataObject));
+
+              this.formItemsLists.map((temp) => {
+                if (temp.item.type === 'AttachFilter') {
+                  delete search[temp.item.field];
+                }
+              });
+              search.R3UserId = `${this.userInfo.id}_${this.searchData.table}`;
+              addSearch(search);
+
+              this.updateSearchDBdata({});
+              this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
+            }
+            
+
             this.getQueryListForAg(data);
           });
         });
@@ -1911,6 +1982,9 @@
         this.$Modal.fcWarning(data);
         // this.$refs.dialogRefs.open();
       },
+      getSingleObjectPageType() {
+        
+      },
       AddDetailClick(obj) {
         const { tableName, tableId, } = this[INSTANCE_ROUTE_QUERY];
         if (obj.name === this.buttonMap.CMD_ADD.name) {
@@ -1942,7 +2016,7 @@
               router.push({
                 path
               });
-              const obj = {
+              const objs = {
                 customizedModuleName,
                 id: 'New'
               };
@@ -1963,25 +2037,32 @@
           } else {
             const id = 'New';
             const label = `${this.activeTab.label}新增`;
-            if (this.ag.datas.objdistype === 'tabpanle') { // 单对象左右结构
-              const type = 'tableDetailHorizontal';
-              this.tabOpen({
-                type,
-                tableName,
-                tableId,
-                label,
-                id
+            let type = '';
+            if (this.buttons.isBig) { // 配置海量 
+              window.getObjdisType({ table: tableName }).then((res) => {
+                type = res === 'tabpanle' ? 'H' : 'V';  
+                this.tabOpen({
+                  type,
+                  tableName,
+                  tableId,
+                  label,
+                  id
+                });
               });
+            } else if (this.ag.datas.objdistype === 'tabpanle') { // 单对象左右结构
+              type = 'tableDetailHorizontal';
             } else {
-              const type = 'tableDetailVertical'; // 左右结构的单对项页面
-              this.tabOpen({
-                type,
-                tableName,
-                tableId,
-                label,
-                id
-              });
+              type = 'tableDetailVertical'; // 左右结构的单对项页面
             }
+
+           
+            this.tabOpen({
+              type,
+              tableName,
+              tableId,
+              label,
+              id
+            });
             return;
           }
         }
@@ -2607,12 +2688,43 @@
       },
 
       // getTableQuery监听,做第一次数据查询
-      networkGetTableQuery(event) {
+      async networkGetTableQuery(event) {
         if (this._inactive) { return; }
         const { detail } = event;
         if (detail.url === '/p/cs/getTableQuery' && (Version() === '1.4' ? detail.response.data.data.tabcmd : detail.response.data.tabcmd)) {
           this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
-          if (!this.buttons.isBig) {
+          const enableKAQueryDataForUserFlag = Version() === '1.4' ? !!(detail.response.data.data.datas.webconf && detail.response.data.data.datas.webconf.enableKAQueryDataForUser) : !!(detail.response.data.datas.webconf && detail.response.data.datas.webconf.enableKAQueryDataForUser);
+          if (enableKAQueryDataForUser() || enableKAQueryDataForUserFlag) {
+            await querySearch(`${this.$store.state.global.userInfo.id}_${this.searchData.table}`).then((response) => {
+              if (response) {
+                const lists = Version() === '1.4' ? detail.response.data.data.datas.dataarry : detail.response.data.datas.dataarry;
+                lists.map((item) => {
+                  if (item.default) {
+                    delete response[item.colname];
+                  }
+                  
+                  if (item.display === 'OBJ_FK' && response[item.colname] && item.fkobj.fkdisplay !== 'mrp') {
+                    response[item.colname] = response[item.colname].reduce((array, current) => {
+                      array.push(current.ID);
+                      return array;
+                    }, []);
+                  }
+
+                  if (item.display === 'OBJ_FK' && item.fkobj.fkdisplay !== 'mrp') {
+                    delete response[item.colname];
+                  }
+                  return item;
+                });
+                // 过滤部分处理不了的类型字段
+                delete response.undefined; // 过滤配置的下拉多字段类型
+                this.updateSearchDBdata(response);
+                this.updateFormData(Object.assign({}, this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists), response));
+              }
+              if (!this.buttons.isBig) {
+                this.searchClickData();
+              }
+            });
+          } else if (!this.buttons.isBig) {
             this.searchClickData();
           }
         }
@@ -2626,12 +2738,14 @@
     },
     mounted() {
       this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
+      
       if (!this._inactive) {
         window.addEventListener('network', this.networkEventListener);
         window.addEventListener('network', this.networkGetTableQuery);
         window.addEventListener('updateSTFailInfo', this.updateSTFailInfo);
       }
       this.updateUserConfig({ type: 'table', id: this[INSTANCE_ROUTE_QUERY].tableId });
+      
       const promise = new Promise((resolve, reject) => {
         const searchData = this.searchData;
         this.getTableQueryForForm({ searchData, resolve, reject });

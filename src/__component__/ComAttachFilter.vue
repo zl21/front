@@ -32,6 +32,7 @@
           ref="complex"
           :fkobj="propsData.fkobj"
           :filter="filterDate"
+          :default="selected"
         />
       </div>
     </AttachFilter>
@@ -68,6 +69,7 @@
   import myPopDialog from './PopDialog';
   import dataProp from '../__config__/props.config';
   import { Version } from '../constants/global';
+  import Upload from '../__utils__/upload';
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -117,8 +119,14 @@
       propstype() {
         // 将设置的props和默认props进行assign
         // const item = this.items;
+        if (this.propstype.fkdisplay === 'pop') {
+          this.value = this.defaultSelected && this.defaultSelected.length > 0 ? this.defaultSelected[0].Label : '';
+        } else if ((this.defaultSelected && this.defaultSelected.length > 0) && this.resultData && Object.keys(this.resultData).length > 0) {
+          this.value = `已经选中${this.resultData.value.IN.length}条数据`;
+        } else {
+          this.value = this.defaultSelected && this.defaultSelected.length > 0 ? Array.isArray(this.defaultSelected[0].ID) ? `已经选中${this.defaultSelected[0].ID.length}条数据` : `已经选中${this.defaultSelected.length}条数据` : '';
+        }
         
-        this.value = (this.defaultSelected[0] && this.defaultSelected[0].Label) || '';
         
         this.selected = this.defaultSelected;
         // if (this.selected[0].Label && /total/.test(this.selected[0].Label)) {
@@ -127,6 +135,7 @@
         // }
 
         this.propsData = JSON.parse(JSON.stringify(this.propstype));
+
         if (this.propsData.disabled) {
           this.showDisabled = this.propsData.disabled;
         } else {
@@ -138,28 +147,40 @@
         } else {
           this.propsData.componentType = Dialog;
           if (this.defaultSelected[0] && this.defaultSelected[0].ID && /选中/.test(this.value)) {
-            const data = JSON.parse(this.defaultSelected[0].ID);
-            data.value.reftable = this.propsData.reftable;
-            data.value.reftableid = this.propsData.reftableid;
-            data.value.serviceId = this.propsData.serviceId;
-            this.filterDate = {
-              text: JSON.stringify(data.lists),
-              value: data.value,
-            };
-            this.resultData = {
-              text: JSON.stringify(data.lists),
-              value: data.value,
-            };
+            // const data = this.defaultSelected[0].ID; 
+            const data = Array.isArray(this.defaultSelected[0].ID) ? this.defaultSelected[0].ID : JSON.parse(this.defaultSelected[0].ID); 
+            // 谢世华  修改处理默认值逻辑
+            
+            if (data.value) {
+              data.value.reftable = this.propsData.reftable;
+              data.value.reftableid = this.propsData.reftableid;
+              data.value.serviceId = this.propsData.serviceId;
+
+              this.filterDate = {
+                text: JSON.stringify(data.lists),
+                value: data.value,
+              };
+              this.resultData = {
+                text: JSON.stringify(data.lists),
+                value: data.value,
+              };
+            }
           }
           this.propstype.show = true;
         }
-      }
+      },
+      deep: true
     },
     methods: {
       valueChange(type) {
         window.clearTimeout(this.clickTimer);
         this.clickTimer = window.setTimeout(() => {
-          this.$emit('valuechange', { value: this.value, selected: this.selected, type }, this);
+          if (type === 'clear') {
+            this.$emit('valuechange', { value: null, selected: [], type }, this);
+          } else {
+            // 处理弹窗单选数据
+            this.$emit('valuechange', { value: this.propstype.fkdisplay === 'pop' ? ((this.selected && this.selected.length > 0) ? this.selected[0].ID : '') : this.value, selected: this.selected, type }, this);
+          }
         }, 200);
       },
       attachFilterInput(value) {
@@ -180,6 +201,7 @@
           },
           serviceId: this.propsData.fkobj.serviceId,
           success: (res) => {
+            this.propsData.hidecolumns = ['id', 'value']; 
             this.propsData.AutoData = res.data.data;
           }
         });
@@ -188,7 +210,10 @@
       // AttachFilter event
       attachFilterChange(value) {
         this.value = value;
-        this.valueChange('change');
+        // 谢世华  为了处理标准列表界面字段数据消失问题
+        if (value.indexOf('已经选中') >= 0) {
+          this.valueChange('change');
+        }
       },
       attachFilterSelected(row) {
         this.value = row.label;
@@ -279,13 +304,9 @@
         this.value = '';
         this.resultData = {};
         this.selected = [
-          {
-            Label: '',
-            ID: ''
-          }
         ];
         this.filterDate = {};
-        // this.valueChange('clear');
+        this.valueChange('clear');
       },
       attachFilterPopperShow(value, instance) {
         if (Array.isArray(instance.datalist)) {
@@ -334,8 +355,24 @@
         }
         return true;
       },
-      attachFile() {
-
+      attachFile(index, res, instance) {
+        if (res.code !== 0) {
+          this.$Modal.fcError({
+            title: '错误',
+            content: res.message,
+            mask: true
+          });
+        } else {
+          fkHttpRequest().fkGetMultiQuery({
+            searchObject: {
+              tableid: this.propsData.fkobj.reftableid
+            },
+            serviceId: this.propsData.serviceId,
+            success: (response) => {
+              this.freshDropDownPopFilterData(response);
+            }
+          });
+        }
       },
       attachFilterCancel($this) {
         this.filterDate = {};
@@ -400,12 +437,16 @@
               ID: ''
             }
           ];
+          this.attachFilterClear();
         }
-        // this.valueChange();
+
+        if (this.propstype.fkdisplay === 'pop') {
+          this.valueChange();
+        }
       }
     },
     created() {
-      this.propsData = this.propstype;
+      this.propsData = JSON.parse(JSON.stringify(this.propstype));
       this.value = this.defaultValue;
       if (this.propsData.disabled) {
         this.showDisabled = this.propsData.disabled;
@@ -430,6 +471,25 @@
       if (this.selected[0] && this.selected[0].ID) {
         if (this.propstype.fkdisplay !== 'pop') {
           // this.propsData.disabled = true;
+        }
+      }
+
+      if (this.defaultSelected[0] && this.defaultSelected[0].ID && /选中/.test(this.defaultSelected[0].Label)) {
+        const data = Array.isArray(this.defaultSelected[0].ID) ? this.defaultSelected[0].ID : JSON.parse(this.defaultSelected[0].ID); 
+        // 谢世华  修改处理默认值逻辑
+        if (data.value) {
+          data.value.reftable = this.propsData.reftable;
+          data.value.reftableid = this.propsData.reftableid;
+          data.value.serviceId = this.propsData.serviceId;
+
+          this.filterDate = {
+            text: JSON.stringify(data.lists),
+            value: data.value,
+          };
+          this.resultData = {
+            text: JSON.stringify(data.lists),
+            value: data.value,
+          };
         }
       }
     }

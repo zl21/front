@@ -1,9 +1,10 @@
 import { mapState, mapActions, mapMutations } from 'vuex';
 import router from '../router.config';
 import {
-  STANDARD_TABLE_COMPONENT_PREFIX, STANDARD_COMMONTABLE_COMPONENT_PREFIX, MODULE_COMPONENT_NAME, INSTANCE_ROUTE, INSTANCE_ROUTE_QUERY 
+  isCommonTable, STANDARD_TABLE_COMPONENT_PREFIX, STANDARD_COMMONTABLE_COMPONENT_PREFIX, MODULE_COMPONENT_NAME, INSTANCE_ROUTE, INSTANCE_ROUTE_QUERY, customizeMixins
 } from '../../constants/global';
 import store from '../store.config';
+
 
 const getComponentName = () => {
   const { tableName, tableId } = router.currentRoute.params;
@@ -23,6 +24,7 @@ export default () => ({
     [INSTANCE_ROUTE]: router.currentRoute.fullPath,
     [INSTANCE_ROUTE_QUERY]: router.currentRoute.params,
   },
+  // mixins: [customizeMixins().standardTableListsCustomize ? customizeMixins().standardTableListsCustomize : false],
   data() {
     return {
       noMounted: true, // 进入单对象会同时触发mounted与actived两个生命周期，因此无法判断是否在切换tab
@@ -81,13 +83,29 @@ export default () => ({
         'setPrintValueForButtons',
         'updataSelectIdArr',
         'updatestopOnRowDoubleClickData',
-        'updataIsBig'
+        'updataIsBig',
+        'updateSearchDBdata'
         
       ]),
   },
   computed: {
     ...mapState(getComponentName(), {
-      ag: ({ ag }) => ag,
+      ag: ({ ag, userConfigForAgTable }) => {
+        // 处理标准表格的隐藏列逻辑
+        const data = JSON.parse(JSON.stringify(ag));
+        if (isCommonTable() && userConfigForAgTable && userConfigForAgTable.hideColumn && data.datas.tabth) {
+          userConfigForAgTable.hideColumn.split(',').every((item) => {
+            data.datas.tabth = data.datas.tabth.filter((temp) => {
+              if (temp.colname !== item) {
+                return true;
+              }
+              return false;
+            });
+            return true;
+          });
+        }
+        return data;
+      },
       userConfigForAgTable: ({ userConfigForAgTable }) => userConfigForAgTable,
       pageAttribute: ({ ag }) => ({
         current: (ag.datas.start + ag.datas.defaultrange) / ag.datas.defaultrange || 1,
@@ -102,6 +120,7 @@ export default () => ({
       buttons: ({ buttons }) => buttons,
       webconf: ({ webconf }) => webconf, // 局部webconf，用于控制普通表格
       webConf: ({ webConf }) => webConf, // 列表界面webConf
+      searchDBdata: ({ searchDBdata }) => searchDBdata, // 列表的存储查询条件
     }),
   },
   activated() {

@@ -51,7 +51,9 @@ export default () => ({
       bannerImg,
       closedImg,
       openedImg
-    }
+    },
+
+    previewPictureInstance: [] // 记录图片预览实例
   },
   mutations: mutations(),
   actions: actions(),
