@@ -38,12 +38,18 @@ export const fkDelMultiQuery = function fkDelMultiQuery(params) {
   });
 };
 export const fkQueuploadProgressry = function fkQueuploadProgressry(params) {
-  network.post('/p/cs/uploadProgress', urlSearchParams(params.searchObject), { serviceId: params.serviceId }).then((res) => {
-    if (typeof params.success === 'function') {
-      res.data.data = res.data && res.data.datas;
-      params.success(res);
+  params.success({
+    data: {
+      code: 0,
+      data: 100
     }
   });
+  // network.post('/p/cs/uploadProgress', urlSearchParams(params.searchObject), { serviceId: params.serviceId }).then((res) => {
+  //   if (typeof params.success === 'function') {
+  //     res.data.data = res.data && res.data.datas;
+  //     params.success(res);
+  //   }
+  // });
 };
 export const fkObjectSave = function fkObjectSave(params) {
   network.post('/p/cs/objectSave', params.searchObject, { serviceId: params.serviceId }).then((res) => {
