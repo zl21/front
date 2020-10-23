@@ -581,7 +581,7 @@
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
 
-      ...mapMutations('global', ['updateCustomizeMessage', 'deleteLoading', 'tabCloseAppoint', 'decreasekeepAliveLists', 'copyDataForSingleObject', 'tabOpen', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
+      ...mapMutations('global', ['directionalRouter', 'updateCustomizeMessage', 'deleteLoading', 'tabCloseAppoint', 'decreasekeepAliveLists', 'copyDataForSingleObject', 'tabOpen', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
       updataCurrentTableDetailInfo() { // 更新当前单对象信息
         if (this[INSTANCE_ROUTE_QUERY].tableName === this.$route.params.tableName && this.$route.meta.routePrefix.includes('/SYSTEM/TABLE_DETAIL/')) { // 当前路由包含单对象标记
           // 更新单对象界面信息
@@ -1571,6 +1571,7 @@
         return id;
       },
       routingHop(tab, id) {
+
         // tab.action配置路径前不能加/
         // /:itemId?id=1&&name=2
         // tab.action = 'CUSTOMIZED/FUNCTIONPERMISSION/:itemId?id=1&&name=2';
@@ -1596,7 +1597,7 @@
           }
         } else if (actionType === 'https:' || actionType === 'http:') {
           const name = `${LINK_MODULE_COMPONENT_PREFIX}.${tab.webname.toUpperCase()}.${tab.webid}`;     
-          this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
+          // this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
           const linkUrl = tabAction;
           // const linkId = tab.webid;
           const linkModuleName = tab.webname.toUpperCase();
@@ -1650,26 +1651,35 @@
             path = getUrl({ url: path, id: tab.webid, type: 'customized' });
             name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
           }
-          this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
+          // this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
 
 
           // 支持直接在跳转定制界面类型的按钮tab.action上配置参数
           // 如：CUSTOMIZED/FUNCTIONPERMISSION？id=1&&name=2
-          const keepAliveLabelMapsObj = {
-            k: name,
-            v: tab.webdesc
-          };
+          // const keepAliveLabelMapsObj = {
+          //   k: name,
+          //   v: tab.webdesc
+          // };
           const undataFromPageCustomizeButtonInfo = {
             k: name,
             v: this[INSTANCE_ROUTE_QUERY]
           };
-          updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
+          // updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
           updateSessionObject('undataFromPageCustomizeButtonInfo', undataFromPageCustomizeButtonInfo);// 将自定义按钮为跳转自定义界面类型的自定义按钮信息存入session
 
-          router.push(
-            path
-          );
+          // router.push(
+          //   path
+          // );
           const customizedModuleName = tab.action.split('/')[1];
+
+          const urlRes = `${actionType}/${customizedModuleName.toLocaleUpperCase()}/${tab.webid}`;
+          const param = {
+            url: urlRes,
+            id: tab.webid,
+            // label: tab.webdesc,
+            isMenu: true,
+          };
+          this.directionalRouter(param);// 定向路由跳转方法
           const data = {
             type: 'singleCustomizeButton',
             value: tab,
