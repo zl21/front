@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueDND from 'awe-dnd';
 import Viewer from 'v-viewer';
+import md5 from 'md5';
 import { getGuid } from './src/__utils__/random';
 import router from './src/__config__/router.config';
 import store from './src/__config__/store.config';
@@ -30,7 +31,9 @@ import './src/assets/css/loading.css';
 import './src/assets/css/custom-ext.less';
 import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
 // import jflowPlugin from './jflowPlugin/js/index';
-// import './src/__utils__/encryptingParameter';
+import './src/__utils__/encryptingParameter';
+
+window.MD5 = md5; 
 
 
 // Vue.use(jflowPlugin, {

@@ -1,0 +1,12 @@
+{
+  "proxy": [
+    {
+      "route": "/p/:uri(^c.*)/*",
+      "domain": "http://r3-8098.dev.syman.cn"
+    },
+    {
+      "route": "/:gateway/p/:uri(^c.*)/*",
+      "domain": "http://r3-8098.dev.syman.cn"
+    }
+  ]
+}
