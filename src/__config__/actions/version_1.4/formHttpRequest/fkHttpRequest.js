@@ -51,16 +51,22 @@ export const fkDelMultiQuery = function fkDelMultiQuery(params) {
     });
 };
 export const fkQueuploadProgressry = function fkQueuploadProgressry(params) {
-  // 上传图片
-  network
-    .post('/p/cs/uploadProgress', urlSearchParams(params.searchObject), {
-      serviceId: params.serviceId
-    })
-    .then((res) => {
-      if (typeof params.success === 'function') {
-        params.success(res);
-      }
-    });
+  // 获取上传图片进度
+  params.success({
+    data: {
+      code: 0,
+      data: 100
+    }
+  });
+  // network
+  //   .post('/p/cs/uploadProgress', urlSearchParams(params.searchObject), {
+  //     serviceId: params.serviceId
+  //   })
+  //   .then((res) => {
+  //     if (typeof params.success === 'function') {
+  //       params.success(res);
+  //     }
+  //   });
 };
 export const fkObjectSave = function fkObjectSave(params) {
   // 保存
