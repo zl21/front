@@ -31,7 +31,7 @@ import './src/assets/css/loading.css';
 import './src/assets/css/custom-ext.less';
 import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
 // import jflowPlugin from './jflowPlugin/js/index';
-import './src/__utils__/encryptingParameter';
+// import './src/__utils__/encryptingParameter';
 
 window.MD5 = md5; 
 
