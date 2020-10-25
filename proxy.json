@@ -2,11 +2,15 @@
   "proxy": [
     {
       "route": "/p/:uri(^c.*)/*",
-      "domain": "http://r3-8098.dev.syman.cn"
+      "domain": "http://10.3.10.105:8080"
     },
     {
       "route": "/:gateway/p/:uri(^c.*)/*",
-      "domain": "http://r3-8098.dev.syman.cn"
+      "domain": "http://10.3.10.105:8080"
+    },
+    {
+      "route": "/api/rpt/:uri(^c.*)/*",
+      "domain": "http://106.15.24.156:19999"
     }
   ]
 }
