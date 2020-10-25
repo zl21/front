@@ -249,19 +249,9 @@
           return false;
         }
         uploadIds = uploadIds.join(',');
-        fkHttpRequest().batchUploadProgress({
-          searchObject: {
-            uploadIds
-          },
-          success: (data) => {
-            if (data.code === 0) {
-              this.docList.valuedata.push(...filelist);
-              filelist = [];
-              this.filechange();
-            }
-          }
-
-        });
+        this.docList.valuedata.push(...filelist);
+        filelist = [];
+        this.filechange();
         // console.log(result);
         this.$refs.file.reset();
       },

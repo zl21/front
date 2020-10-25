@@ -98,6 +98,7 @@ export default {
     buttons
   }, data) {
     buttons.isBig = data.isbig; // 是否为海量表
+    buttons.isBigStatus = data.isbig; // 是否为海量表
     buttons.isSolr = data.isolr; // 是否获取合计
     buttons.showBigDefaultIcon = data.isbig;
     buttons.tabledesc = buttons.tabcmd.desc;
