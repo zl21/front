@@ -2038,7 +2038,7 @@
             const id = 'New';
             const label = `${this.activeTab.label}新增`;
             let type = '';
-            if (this.buttons.isBig) { // 配置海量 
+            if (this.buttons.isBigStatus) { // 配置海量 
               window.getObjdisType({ table: tableName }).then((res) => {
                 type = res === 'tabpanle' ? 'H' : 'V';  
                 this.tabOpen({
@@ -2633,7 +2633,7 @@
               const param = {
                 url: path,
                 id: tab.webid,
-                label: tab.webdesc,
+                // label: tab.webdesc,
                 isMenu: true,
               };
               this.directionalRouter(param);// 定向路由跳转方法
