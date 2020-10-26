@@ -62,6 +62,7 @@ export default () => ({
       searchobj: {}, // 查询条件
       isFold: false,
       isBig: false,
+      isBigStatus: false,
       isSolr: false, // 合计是否同时在检索中请求
       objTableUrl: '', // 判断双击跳转是否是单对象
       activeTabAction: {},

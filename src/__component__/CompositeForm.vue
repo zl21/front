@@ -37,7 +37,7 @@
                 :isreftabs="isreftabsForm"
                 :set-objreadonly="setObjreadonly"
                 :child-table-name="childTableName"
-                :refcolval-data="refcolvaData"
+                :refcolval-data="formData"
                 :mapp-status="setMapping"
                 :web-conf-single="webConfSingle"
                 :is-main-table="isMainTableForm"

@@ -1275,7 +1275,9 @@
             }
             this.valueChange();
             // 去除上传后的保存
-            // this.upSavefile(parms, fixedData, path, value);
+            if (!ossRealtimeSave()) {
+              this.upSavefile(parms, fixedData, path, value);
+            }
           }
         } else {
           const _fixedData = fixedData || '';
@@ -1353,75 +1355,65 @@
           this.$Message.info(`只能上传${this._items.props.itemdata.ImageSize}张图片`);
           return false;
         }
-        fkHttpRequest().fkQueuploadProgressry({
-          searchObject: {
-            uploadId: resultData.data.UploadId
-          },
-          // eslint-disable-next-line consistent-return
-          success: (res) => {
-            if (res.data.code !== 0) {
-              return false;
-            }
+       
 
-            const valuedata = this._items.props.itemdata.valuedata;
-            const fixedData = Array.isArray(valuedata) ? [...valuedata] : [];
-            fixedData.push({
-              NAME: resultData.data.Name,
-              URL: resultData.data.Url
-            });
-            //
-            // eslint-disable-next-line no-unused-vars
-            const parms = {
-              objId: this._items.props.itemdata.objId,
-              table: this._items.props.itemdata.masterName
-            };
-            //  判断parms 是否 需要保存
-            // parms = this.pathsCheckout(parms, fixedData);
-            if (
-              this.$route.params
-              && this.$route.params.itemId.toLocaleLowerCase() !== 'new'
-            ) {
-              //  判断是否需要调用保存
-
-              // eslint-disable-next-line no-unused-vars
-              const path = this.$parent.pathcheck !== '';
-              const childTableName = this.$parent.isMainTable === false ? this.$parent.childTableName : false;
-              if (this.$parent.isreftabs && childTableName !== false) {
-                //  主子表 子表
-                this._items.props.itemdata.valuedata.push(
-                  fixedData[fixedData.length - 1]
-                );
-                this._items.value = JSON.stringify([
-                  ...this._items.props.itemdata.valuedata
-                ]);
-                this.valueImgChange();
-
-                if (!ossRealtimeSave()) {
-                  // 去除图片上传成功后的保存
-                  if (childTableName && this.$parent.type === 'PanelForm') {
-                    setTimeout(() => {
-                      const dom = document.getElementById('actionMODIFY');
-                      dom.click();
-                    }, 500);
-                  }
-                }
-              } else {
-                this._items.props.itemdata.valuedata.push(
-                  fixedData[fixedData.length - 1]
-                );
-                this.valueImgChange();
-                // 去除图片上传成功后的保存
-                // this.upSaveImg();
-              }
-            } else {
-              this._items.props.itemdata.valuedata.push(
-                fixedData[fixedData.length - 1]
-              );
-              this.valueImgChange();
-            }
-          }
-
+        const valuedata = this._items.props.itemdata.valuedata;
+        const fixedData = Array.isArray(valuedata) ? [...valuedata] : [];
+        fixedData.push({
+          NAME: resultData.data.Name,
+          URL: resultData.data.Url
         });
+        //
+        // eslint-disable-next-line no-unused-vars
+        const parms = {
+          objId: this._items.props.itemdata.objId,
+          table: this._items.props.itemdata.masterName
+        };
+        //  判断parms 是否 需要保存
+        // parms = this.pathsCheckout(parms, fixedData);
+        if (
+          this.$route.params
+          && this.$route.params.itemId.toLocaleLowerCase() !== 'new'
+        ) {
+          //  判断是否需要调用保存
+
+          // eslint-disable-next-line no-unused-vars
+          const path = this.$parent.pathcheck !== '';
+          const childTableName = this.$parent.isMainTable === false ? this.$parent.childTableName : false;
+          if (this.$parent.isreftabs && childTableName !== false) {
+            //  主子表 子表
+            this._items.props.itemdata.valuedata.push(
+              fixedData[fixedData.length - 1]
+            );
+            this._items.value = JSON.stringify([
+              ...this._items.props.itemdata.valuedata
+            ]);
+            this.valueImgChange();
+
+            if (!ossRealtimeSave()) {
+              // 去除图片上传成功后的保存
+              if (childTableName && this.$parent.type === 'PanelForm') {
+                setTimeout(() => {
+                  const dom = document.getElementById('actionMODIFY');
+                  dom.click();
+                }, 500);
+              }
+            }
+          } else {
+            this._items.props.itemdata.valuedata.push(
+              fixedData[fixedData.length - 1]
+            );
+            this.valueImgChange();
+            // 去除图片上传成功后的保存
+            // this.upSaveImg();
+          }
+        } else {
+          this._items.props.itemdata.valuedata.push(
+            fixedData[fixedData.length - 1]
+          );
+          this.valueImgChange();
+        }
+
         return true;
       },
       pathsCheckout(parms, data) {
