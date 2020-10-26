@@ -124,6 +124,8 @@
         // } else 
         if (Vue.component(componentName) === undefined) {
           let target = null;
+          const mixinsCustomize = customizeMixins().taskList ? customizeMixins().taskList : {};
+          
           if (query.type === 'rpt') { // rpt类型特殊处理 
             // 元数据当前表type配置为rpt时，按照自定义界面逻辑执行路由逻辑，与自定义界面区别是，不再按照url内配置的"CUSTOMIZE/"后的自定义标示来加载自定义界面配置文件中的对应字段，
             // 而是根据路由的参数判断为rpt类型，则加载固定前端配置文件内的字段customizeReport字段对应的组件
@@ -135,11 +137,11 @@
             if (typeof target.component === 'function') {
               Vue.component(componentName, target.component);
               Vue.component(componentName)().then((result) => {
-                Vue.component(componentName, Vue.extend(Object.assign({ mixins: [CMixins()] }, result.default)));
+                Vue.component(componentName, Vue.extend(Object.assign({ mixins: [CMixins(), target.label === 'taskList' ? mixinsCustomize : {}] }, result.default)));
               });
               this.currentModule = componentName;
             } else {
-              Vue.component(componentName, Vue.extend(Object.assign({ mixins: [CMixins()] }, target.component)));
+              Vue.component(componentName, Vue.extend(Object.assign({ mixins: [CMixins(), target.label === 'taskList' ? mixinsCustomize : {}] }, target.component)));
               this.currentModule = componentName;
             }
           } else {
