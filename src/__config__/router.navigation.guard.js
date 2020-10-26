@@ -224,7 +224,6 @@ export default (router) => {
     if (preventRegisterModule.indexOf(routePrefix) === -1 && dynamicModuleTag !== '' && store.state[keepAliveModuleName] === undefined) {
       store.registerModule(keepAliveModuleName, moduleGenerator[dynamicModuleTag]());
     }
-
     // 处理 openedMenuLists
     let existModuleIndex = -1;
     const existModule = openedMenuLists.filter((d, i) => {
