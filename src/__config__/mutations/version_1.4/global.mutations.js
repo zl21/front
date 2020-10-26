@@ -299,7 +299,9 @@ export default {
       keepAliveModuleNameRes = data.name;
     }
     if (enableKeepAlive()) {
-      if (state.keepAliveLists.filter(k => k.includes(keepAliveModuleNameRes)).length > 0) {
+      if (state.openedMenuLists.length > 6 && enableOpenNewTab()) { // 新开tab限制为6个，超过6个后，替换最后一个
+        state.keepAliveLists.splice(state.keepAliveLists.length - 1, 1, data.name);
+      } else if (state.keepAliveLists.filter(k => k.includes(keepAliveModuleNameRes)).length > 0) {
         state.keepAliveLists.filter((a, i) => {
           if (a.includes(keepAliveModuleNameRes)) {
             state.keepAliveLists.splice(i, 1);
@@ -347,10 +349,16 @@ export default {
       itemId,
     };
     if (notExist) {
-      state.openedMenuLists = state.openedMenuLists
-        .map(d => Object.assign({}, d, { isActive: false }))
-        .concat([Object.assign({}, currentTabInfo, { isActive: true })]);
-      state.activeTab = currentTabInfo;
+      if (state.openedMenuLists.length > 6 && enableOpenNewTab()) { // 新开tab限制为6个，超过6个后，替换最后一个
+        state.activeTab = currentTabInfo;
+        currentTabInfo.isActive = true;
+        state.openedMenuLists.splice(state.openedMenuLists.length - 1, 1, currentTabInfo);
+      } else {
+        state.openedMenuLists = state.openedMenuLists
+          .map(d => Object.assign({}, d, { isActive: false }))
+          .concat([Object.assign({}, currentTabInfo, { isActive: true })]);
+        state.activeTab = currentTabInfo;
+      }
     }
   },
   updateActiveMenu({

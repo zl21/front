@@ -208,6 +208,7 @@ export default (router) => {
     const originModuleName = getOriginModuleName(to); // 单对象界面对应的原标准列表界面的moduleComponentName
     const keepAliveModuleName = getKeepAliveModuleName(to); // 当前界面对应的keepAliveModuleName，即模块的moduleComponentName
     const dynamicModuleTag = getDynamicModuleTag(to); // 当前界面对应的路由标识。
+  
 
     // 处理 keepAliveModuleName：目标路由的模块默认都要加入keepAlive列表
     if (!keepAliveLists.includes(keepAliveModuleName) && keepAliveModuleName !== '') {

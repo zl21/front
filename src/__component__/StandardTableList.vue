@@ -2633,7 +2633,7 @@
               const param = {
                 url: path,
                 id: tab.webid,
-                label: tab.webdesc,
+                // label: tab.webdesc,
                 isMenu: true,
               };
               this.directionalRouter(param);// 定向路由跳转方法
