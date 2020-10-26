@@ -58,7 +58,6 @@ module.exports = {
   encryptedPassword: false, // 是否允许login接口password加密
   isItemTableNewValidation: false, // 是否允许子表新增有必填项时，输入值才触发子表必填项校验，不输入值则只校验主表
   isCommonTable: false, // 是否开启普通表格，默认关闭
-  custommizedJflow: true, // jflow定制版开关,默认为true
   functionPowerRequestURL: '', // 功能权限获取检索项数据接口名称
   cbs: undefined, // 框架回调，形如 { loginCb: function() {} }
   layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
@@ -86,5 +85,5 @@ module.exports = {
     horizontalTableDetailCustomize: null,
     taskList: null
   },
-  ossRealtimeSave: true
+  ossRealtimeSave: false
 };

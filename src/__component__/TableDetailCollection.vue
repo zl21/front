@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                       >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -139,7 +139,7 @@
   // import { setTimeout } from 'timers';
   import regExp from '../constants/regExp';
   import {
-    Version, LINK_MODULE_COMPONENT_PREFIX, INSTANCE_ROUTE_QUERY, enableActivateSameCustomizePage
+    Version, LINK_MODULE_COMPONENT_PREFIX, INSTANCE_ROUTE_QUERY, enableActivateSameCustomizePage, ossRealtimeSave
   } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
   import ComplexsDialog from './ComplexsDialog'; // emit 选中的行
@@ -1208,26 +1208,32 @@
               path = getUrl({ url: path, id: tab.webid, type: 'customized' });
               name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
             }
-            this.addKeepAliveLabelMaps({ name, label: tab.name });
+            // this.addKeepAliveLabelMaps({ name, label: tab.name });
 
 
             // 支持直接在跳转定制界面类型的按钮tabAction上配置参数
             // 如：CUSTOMIZED/FUNCTIONPERMISSION？id=1&&name=2
-            const keepAliveLabelMapsObj = {
-              k: name,
-              v: tab.name
-            };
+            // const keepAliveLabelMapsObj = {
+            //   k: name,
+            //   v: tab.name
+            // };
             const undataFromPageCustomizeButtonInfo = {
               k: name,
               v: this[INSTANCE_ROUTE_QUERY]
             };
-            updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
+            // updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
             updateSessionObject('undataFromPageCustomizeButtonInfo', undataFromPageCustomizeButtonInfo);// 将自定义按钮为跳转自定义界面类型的自定义按钮信息存入session
 
-            router.push(
-              path
-            );
+           
             const customizedModuleName = tabAction.split('/')[1];
+            const urlRes = `${actionType}/${customizedModuleName.toLocaleUpperCase()}/${tab.webid}`;
+            const param = {
+              url: urlRes,
+              id: tab.webid,
+              // label: tab.webdesc,
+              isMenu: true,
+            };
+            this.directionalRouter(param);// 定向路由跳转方法
             const data = {
               type: 'singleCustomizeButton',
               value: tab,
@@ -3259,6 +3265,7 @@
       },
       docRender(cellData, tag) {
         const that = this;
+        console.log(cellData, tag);
         return (h, params) => h('div', {
           style: {
             display: 'flex'
@@ -3306,14 +3313,18 @@
                     url: getGateway('/p/cs/batchUpload'),
                     valuedata: this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val) : []
                   },
-                  webConfSingle: this.webConfSingle
+                  webConfSingle: this.webConfSingle,
+                  accept: cellData.webconf && cellData.webconf.UploadAccept
                 },
                 on: {
                   filechange: (val) => {
                     this.copyDataSource.row[params.index][cellData.colname].val = JSON.stringify(val);
                     this.putDataFromCell(val.length > 0 ? JSON.stringify(val) : '', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
                     this.putLabelDataFromCell(val.length > 0 ? JSON.stringify(val) : '', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                    DispatchEvent('childTableSaveFile', { detail: { type: 'save' } });
+                    
+                    if (!ossRealtimeSave()) {
+                      DispatchEvent('childTableSaveFile', { detail: { type: 'save' } });
+                    }
                   }
                 }
               }),

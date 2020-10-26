@@ -443,6 +443,14 @@
       }, // 总计和合计
     },
     watch: {},
+    mounted() {
+      const myObserver = new ResizeObserver(((entries) => {
+        entries.forEach(() => {
+          (this.$refs.table && this.$refs.table.handleResize) ? this.$refs.table.handleResize() : null;
+        });
+      }));
+      myObserver.observe(document.getElementsByClassName('commonTable')[0]); // dom
+    },
     methods: {
       ...mapMutations('global', ['tabOpen']),
       // btnclick(obj) {
