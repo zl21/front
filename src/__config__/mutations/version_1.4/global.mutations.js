@@ -332,7 +332,7 @@ export default {
     //   keepAliveModuleName: openedMenuInfo.keepAliveModuleName,
     //   label: openedMenuInfo.label,
     //   routeFullPath: openedMenuInfo.routeFullPath,
-    //   routePrefix: openedMenuInfo.routePrefix,
+    //   routePrefix: openedMenuInfo.routePrefix,openedMenuLists
     //   tableName: openedMenuInfo.tableName,
     // };
   },
@@ -352,6 +352,9 @@ export default {
       if (state.openedMenuLists.length > 6 && enableOpenNewTab()) { // 新开tab限制为6个，超过6个后，替换最后一个
         state.activeTab = currentTabInfo;
         currentTabInfo.isActive = true;
+        state.openedMenuLists.forEach((d, i) => {//将所有
+          d.isActive = false;
+        });
         state.openedMenuLists.splice(state.openedMenuLists.length - 1, 1, currentTabInfo);
       } else {
         state.openedMenuLists = state.openedMenuLists

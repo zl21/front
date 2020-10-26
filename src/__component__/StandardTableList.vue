@@ -688,7 +688,7 @@
         this.updateAgConfig({ key: 'hideColumn', value: hideCols });
       },
       onCellSingleClick(colDef, rowData, target) {
-        const { tableId } = this[INSTANCE_ROUTE_QUERY];
+        // const { tableId } = this[INSTANCE_ROUTE_QUERY];
         if (target.getAttribute('data-target-tag') === 'fkIcon') {
           window.sessionStorage.setItem('dynamicRouting', true);
           const {
