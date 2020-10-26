@@ -9,7 +9,8 @@ import {
   LINK_MODULE_PREFIX,
   enableKeepAlive,
   enableHistoryAndFavoriteUI,
-  enableActivateSameCustomizePage
+  enableActivateSameCustomizePage,
+  enableOpenNewTab
 } from '../../../constants/global';
 import router from '../../router.config';
 import setCustomeLabel from '../../../__utils__/setCustomeLabel';
@@ -298,7 +299,9 @@ export default {
       keepAliveModuleNameRes = data.name;
     }
     if (enableKeepAlive()) {
-      if (state.keepAliveLists.filter(k => k.includes(keepAliveModuleNameRes)).length > 0) {
+      if (state.openedMenuLists.length > 6 && enableOpenNewTab()) { // 新开tab限制为6个，超过6个后，替换最后一个
+        state.keepAliveLists.splice(state.keepAliveLists.length - 1, 1, data.name);
+      } else if (state.keepAliveLists.filter(k => k.includes(keepAliveModuleNameRes)).length > 0) {
         state.keepAliveLists.filter((a, i) => {
           if (a.includes(keepAliveModuleNameRes)) {
             state.keepAliveLists.splice(i, 1);
@@ -334,7 +337,7 @@ export default {
     // };
   },
   increaseOpenedMenuLists(state, {
-    label, keepAliveModuleName, tableName, routeFullPath, routePrefix
+    label, keepAliveModuleName, tableName, routeFullPath, routePrefix, itemId
   }) {
     const notExist = state.openedMenuLists.filter(d => d.label === label && d.keepAliveModuleName === keepAliveModuleName).length === 0;
     const currentTabInfo = {
@@ -342,13 +345,20 @@ export default {
       keepAliveModuleName,
       tableName,
       routeFullPath,
-      routePrefix
+      routePrefix,      
+      itemId,
     };
     if (notExist) {
-      state.openedMenuLists = state.openedMenuLists
-        .map(d => Object.assign({}, d, { isActive: false }))
-        .concat([Object.assign({}, currentTabInfo, { isActive: true })]);
-      state.activeTab = currentTabInfo;
+      if (state.openedMenuLists.length > 6 && enableOpenNewTab()) { // 新开tab限制为6个，超过6个后，替换最后一个
+        state.activeTab = currentTabInfo;
+        currentTabInfo.isActive = true;
+        state.openedMenuLists.splice(state.openedMenuLists.length - 1, 1, currentTabInfo);
+      } else {
+        state.openedMenuLists = state.openedMenuLists
+          .map(d => Object.assign({}, d, { isActive: false }))
+          .concat([Object.assign({}, currentTabInfo, { isActive: true })]);
+        state.activeTab = currentTabInfo;
+      }
     }
   },
   updateActiveMenu({
@@ -393,7 +403,8 @@ export default {
   againClickOpenedMenuLists(state, {
     label,
     keepAliveModuleName,
-    type
+    type,
+    itemId
   }) {
     state.openedMenuLists.forEach((d) => {
       d.isActive = false;
@@ -525,9 +536,19 @@ export default {
     // state.isRequest = [];// 清空修改数据验证
     const { openedMenuLists } = state;
     // 如果关闭某个Tab，则清空所有该模块可能的对应的keepAlive信息。
-    state.keepAliveLists = state.keepAliveLists.filter(d => d.indexOf(tab.tableName) === -1);
+    state.keepAliveLists = state.keepAliveLists.filter((d) => {
+      if (!(d.indexOf(tab.tableName) !== -1 && d.indexOf(tab.itemId) !== -1) && enableOpenNewTab()) {
+        if (tab.routePrefix !== '/LINK') { // 除外链界面，外链界面keepAliveName不包含linkId,无法匹配出id进行判断
+        // 返回当前keepAliveLists不包含要关闭的tab对应的keepAliveName,
+          return d;
+        }
+      } if (d.indexOf(tab.tableName) === -1) {
+        return d;
+      }
+    });
+
     openedMenuLists.forEach((item, index) => {
-      if (tab.stopRouterPush) {
+      if (tab.stopRouterPush) { // 关闭当前tab时不进行路由跳转
         const { tableName } = router.currentRoute.params;
         if (item.tableName === tableName) {
           state.activeTab = openedMenuLists[index];
