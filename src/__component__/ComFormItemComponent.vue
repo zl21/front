@@ -884,7 +884,8 @@
       },
       formRequest(key, obj, current, conf, index) {
         // 走后台接口
-        const jsonArr = this.setJson(current, this.formDataObject);
+        // const jsonArr = this.setJson(current, this.formDataObject);  通过setJson获取整个表单数据会有问题，改成获取当前panel数据
+        const jsonArr = JSON.parse(JSON.stringify(this.formDataObject));
         // 拦截是否相同
         // if (this.formDataObject[key] === obj[key]) {
         //   return false;
