@@ -115,7 +115,7 @@ module.exports = env => ({
     ]
   },
   target: 'web',
-  devtool: env && env.production ? 'source-map' : 'cheap-module-eval-source-map',
+  devtool: 'cheap-module-eval-source-map', // env && env.production ? 'source-map' : 'cheap-module-eval-source-map'
   output: {
     filename: '[name].js',
     chunkFilename: '[name].js',
