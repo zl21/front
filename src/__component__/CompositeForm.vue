@@ -98,7 +98,7 @@
   import { Version, MODULE_COMPONENT_NAME } from '../constants/global';
 
   import regExp from '../constants/regExp';
-  import { getGateway } from '../__utils__/network';
+  import network, { getGateway } from '../__utils__/network';
   import ItemComponent from './ItemComponent';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
 
@@ -1033,7 +1033,7 @@
                 }
               });
             },
-            'on-show': ($this) => {
+            'on-show': async ($this) => {
               // 当外键下拉站开始去请求数据
               this.getStateData(); // 获取主表信息
               let Fitem = [];
@@ -1047,9 +1047,55 @@
               Fitem[index].item.props.data = {};
               Fitem[index].item.props.totalRowCount = 0;
               let searchObject = {};
-              const check = this.getLinkData(current);
+              let result = {}; // 扩展通过接口获取请求参数，暂存数据
+              
 
-              if (check[1]) {
+              let check = [];
+
+              if (current.webconf && current.webconf.refcolval_custom) {
+                const item = Object.assign({}, current);
+                item.refcolval = {
+                  expre: 'equal',
+                  fixcolumn: current.webconf.refcolval_custom.srccols,
+                  srccol: current.webconf.refcolval_custom.srccols
+                };
+                check = this.getLinkData(item);
+                // eslint-disable-next-line func-names
+                (function (instance) {
+                  setTimeout(() => {
+                    if (!check[0]) {
+                      instance.handleIconClick();
+                    }
+                  }, 0);
+                }($this));
+
+                if (!check[0]) {
+                  return;
+                }
+
+                await network.post(current.webconf.refcolval_custom.url, {
+                  data: {
+                    fixedcolumns: {
+                      [current.webconf.refcolval_custom.srccols]: check[1]
+                    }
+                  }
+                }).then((res) => {
+                  if (res.data.code === 0) {
+                    result = res.data.fixedcolumns;
+                  }
+                });
+              }
+              
+
+              if (current.webconf && current.webconf.refcolval_custom) {
+                searchObject = {
+                  isdroplistsearch: true,
+                  refcolid: current.colid,
+                  fixedcolumns: result,
+                  startindex: 0,
+                  range: $this.pageSize
+                };
+              } else if (check[1]) {
                 const query = current.refcolval.expre === 'equal' ? `=${check[1]}` : '';
                 searchObject = {
                   isdroplistsearch: true,
@@ -1337,7 +1383,6 @@
             return [false];
           }
         }
-
         if (Object.hasOwnProperty.call(current, 'refcolval')) {
           let refcolval = {};
           const checkGetObjId = this.getObjId(current);
