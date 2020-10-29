@@ -35,6 +35,7 @@ import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
 
 window.MD5 = md5; 
 
+Vue.config.devtools = true;
 
 // Vue.use(jflowPlugin, {
 //   changePattern: true, // 控制待办列表转派的选择模式 true为单选,false为多选
