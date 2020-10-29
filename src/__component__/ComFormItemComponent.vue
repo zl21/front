@@ -884,7 +884,8 @@
       },
       formRequest(key, obj, current, conf, index) {
         // 走后台接口
-        const jsonArr = this.setJson(current, this.formDataObject);
+        // const jsonArr = this.setJson(current, this.formDataObject);  通过setJson获取整个表单数据会有问题，改成获取当前panel数据
+        const jsonArr = JSON.parse(JSON.stringify(this.formDataObject));
         // 拦截是否相同
         // if (this.formDataObject[key] === obj[key]) {
         //   return false;
@@ -1015,7 +1016,7 @@
         if (item.props.tableGetName) {
           // 子表明细联动
           // eslint-disable-next-line no-const-assign
-          // return JSON.parse(JSON.stringify(this.formDataObject));  此逻辑是获取单个panel表单的数据，更换成获取整个的表单的数据
+          // return JSON.parse(JSON.stringify(this.formDataObject)); // 此逻辑是获取单个panel表单的数据，更换成获取整个的表单的数据
           return JSON.parse(JSON.stringify(this.refcolvalData));
         } 
         // 获取当前表单数据及主表字段
