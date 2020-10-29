@@ -19,7 +19,7 @@ import CompositeForm from './__component__/CompositeForm';
 import Loading from './__utils__/loading';
 import { getLocalObject } from './__utils__/localStorage';
 
-import getObjdisType from './src/__utils__/getObjdisType';
+import getObjdisType from './__utils__/getObjdisType';
 // css import
 import '../node_modules/ag-grid/dist/styles/ag-grid.css';
 import '../node_modules/viewerjs/dist/viewer.css';
