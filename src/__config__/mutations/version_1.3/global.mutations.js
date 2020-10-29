@@ -44,8 +44,16 @@ export default {
       state.currentLoading.push(tableName); 
     }
   },
+  // deleteLoading(state, tableName) {
+  //   state.currentLoading.splice(tableName, 1);
+  // },
   deleteLoading(state, tableName) {
-    state.currentLoading.splice(tableName, 1);
+    const index = state.currentLoading.indexOf(tableName);
+    if (index > -1) {
+      state.currentLoading.splice(index, 1);
+    }
+
+    // state.currentLoading.splice(tableName, 1);
   },
   updateIgnoreMsg(state) {
     state.taskMessageCount -= 1;
@@ -541,7 +549,18 @@ export default {
     // state.isRequest = [];// 清空修改数据验证
     const { openedMenuLists } = state;
     // 如果关闭某个Tab，则清空所有该模块可能的对应的keepAlive信息。
-    state.keepAliveLists = state.keepAliveLists.filter(d => d.indexOf(tab.tableName) === -1);
+    // state.keepAliveLists = state.keepAliveLists.filter(d => d.indexOf(tab.tableName) === -1);
+    state.keepAliveLists = state.keepAliveLists.filter((d) => {
+      if (!((d.indexOf(tab.tableName) !== -1 && d.indexOf(tab.itemId) !== -1) || (d.indexOf(tab.tableName) !== -1 && tab.routePrefix === '/SYSTEM/TABLE')) && enableOpenNewTab()) {
+        if (tab.routePrefix !== '/LINK') { // 除外链界面，外链界面keepAliveName不包含linkId,无法匹配出id进行判断
+        // 返回当前keepAliveLists不包含要关闭的tab对应的keepAliveName,
+          return d;
+        } 
+      } if (d.indexOf(tab.tableName) === -1) {
+        return d;
+      }
+    });
+
     openedMenuLists.forEach((item, index) => {
       if (tab.stopRouterPush) {
         const { tableName } = router.currentRoute.params;
