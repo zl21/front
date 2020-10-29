@@ -154,7 +154,8 @@
             obj.componentAttribute.formReadonly = this.mainFormInfo.buttonsData.data.objreadonly;
             obj.componentAttribute.status = this.mainFormInfo.buttonsData.data.status;
             obj.componentAttribute.webConfSingle = this.mainFormInfo.buttonsData.data.webconf;
-          }
+          } 
+          obj.componentAttribute.watermarkimg = obj.componentAttribute.panelData.data.watermarkimg;// 子表水印
           obj.componentAttribute.webConfSingle = obj.componentAttribute.buttonsData.data.webconf;
           obj.componentAttribute.childTableNames = this.childTableNames;
           obj.componentAttribute.mainFormPaths = this.formPaths;

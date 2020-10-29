@@ -334,7 +334,7 @@
             }
             // 符合记录规则一：由列表界面跳转到单对象界面，如果目标单对象界面和列表界面属于不同的表（Table不同），则将此种关系维护到路由记录“栈”。
             // 所返回的列表界面符合以上逻辑关系，则刷新当前列表界面
-            if (this.$route.query.isBack) {
+            if (this.$route.query.isBack || this.$route.query.ISBACK) {
               this.searchClickData({ value: 'true' });
             }
           }
@@ -2020,7 +2020,7 @@
                 customizedModuleName,
                 id: 'New'
               };
-              window.sessionStorage.setItem('customizedMessage', JSON.stringify(obj));
+              window.sessionStorage.setItem('customizedMessage', JSON.stringify(objs));
               const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
               const customizeConfig = Object.keys(externalModules).length > 0 ? externalModules : customize;
               Object.keys(customizeConfig).forEach((customizeName) => {
