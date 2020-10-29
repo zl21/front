@@ -37,7 +37,7 @@
                 :isreftabs="isreftabsForm"
                 :set-objreadonly="setObjreadonly"
                 :child-table-name="childTableName"
-                :refcolval-data="formData"
+                :refcolval-data="refcolvaData"
                 :mapp-status="setMapping"
                 :web-conf-single="webConfSingle"
                 :is-main-table="isMainTableForm"
@@ -600,7 +600,8 @@
             }
           }
         }
-        this.refcolvaData = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), data);
+
+        this.refcolvaData = Object.assign(JSON.parse(JSON.stringify(this.formData)), data);
         if (!this.mountChecked && this.conditiontype !== 'list') {
           // 区分是否是默认值的change 拦截
           this.labelForm = {};
@@ -795,7 +796,7 @@
         setTimeout(() => {
           this.mountChecked = true;
         }, 200);
-        this.refcolvaData = {};
+        // this.refcolvaData = {};
         this.defaultFormData = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), value);
         // 去除 空字符串
         const defaultFormData = Object.keys(this.defaultFormData).reduce((arr, option) => {
@@ -864,6 +865,7 @@
         this.getStateData();
         this.defaultFormData = Object.assign(defaultFormData, defaultSetValue);
         this.formData = Object.assign({}, this.defaultFormData);
+        this.refcolvaData = Object.assign({}, this.defaultFormData);
         // 默认值
         
         this.copyInt = false;
