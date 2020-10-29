@@ -15,7 +15,7 @@ import {
 } from './constants/global';
 import { removeSessionObject, getSeesionObject } from './__utils__/sessionStorage';
 import customizedModalConfig from './__config__/customizeDialog.config';
-import CompositeForm from './__component__/CompositeForm';
+import CompositeForm from './__component__/CompositeForm.vue';
 import Loading from './__utils__/loading';
 import { getLocalObject } from './__utils__/localStorage';
 
