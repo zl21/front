@@ -312,7 +312,7 @@ export default (router) => {
             tableName: tableName || customizedModuleName || pluginModuleName || linkModuleName,
             routeFullPath: to.fullPath,
             routePrefix,
-            itemId: itemId || customizedModuleId || pluginModuleId || linkModuleId
+            itemId: itemId || customizedModuleId || pluginModuleId || linkModuleId,
           });
         }
       }, 125);

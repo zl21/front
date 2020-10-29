@@ -540,11 +540,11 @@ export default {
     const { openedMenuLists } = state;
     // 如果关闭某个Tab，则清空所有该模块可能的对应的keepAlive信息。
     state.keepAliveLists = state.keepAliveLists.filter((d) => {
-      if (!(d.indexOf(tab.tableName) !== -1 && d.indexOf(tab.itemId) !== -1) && enableOpenNewTab()) {
+      if (!((d.indexOf(tab.tableName) !== -1 && d.indexOf(tab.itemId) !== -1) || (d.indexOf(tab.tableName) !== -1 && tab.routePrefix === '/SYSTEM/TABLE')) && enableOpenNewTab()) {
         if (tab.routePrefix !== '/LINK') { // 除外链界面，外链界面keepAliveName不包含linkId,无法匹配出id进行判断
         // 返回当前keepAliveLists不包含要关闭的tab对应的keepAliveName,
           return d;
-        }
+        } 
       } if (d.indexOf(tab.tableName) === -1) {
         return d;
       }
