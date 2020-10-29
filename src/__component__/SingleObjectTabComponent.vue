@@ -1,5 +1,17 @@
 <template>
   <div class="tabComponent">
+    <div
+      v-if="itemInfo.tabrelation==='1:1'&&watermarkimg"
+      class="submit-img"
+    >
+      <WaterMark
+        :text="waterMarkText"
+        :color="waterMarkColor"
+        :top="waterMarkTop"
+        :left="waterMarkLeft"
+        :width="waterMarkWidth"
+      />
+    </div>
     <component
       :is="objectButtonComponent"
       v-if="buttonsData.isShow&&componentType!=='ALL'"
@@ -142,9 +154,11 @@
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
   import CompontentNotFound from './CompontentNotFound.vue';
   import CustomizeModule from '../__config__/customize.config';
+  import WaterMark from './WaterMark.vue';
 
 
   import {
+    getCustomizeWaterMark,
     KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY
   } from '../constants/global';
 
@@ -166,11 +180,13 @@
         objectTableComponent: '', // 单对象表格组件
         customizeComponent: '', // 自定义组件
         isRequest: false,
+       
         // tableName: this[INSTANCE_ROUTE_QUERY].tableName
       };
     },
     components: {
-      compositeForm
+      compositeForm,
+      WaterMark
     },
     props: {
       tabPanel: {
@@ -271,6 +287,105 @@
     computed: { 
       ...mapState('global', {
       }),
+      waterMarkTop() {
+        const customizeWaterMark = getCustomizeWaterMark();
+        if(this.watermarkimg) {
+          const src = this.watermarkimg.split('/')[3].split('.')[0];
+          if (customizeWaterMark[src] && customizeWaterMark[src].top) {
+            return customizeWaterMark[src].top;
+          }
+        }
+       
+        return '42px';
+      },
+      waterMarkLeft() {
+        const customizeWaterMark = getCustomizeWaterMark();
+        if(this.watermarkimg) {
+          const src = this.watermarkimg.split('/')[3].split('.')[0];
+          if (customizeWaterMark[src] && customizeWaterMark[src].left) {
+            return customizeWaterMark[src].left;
+          }
+        }
+        return '11px';
+      },
+      waterMarkWidth() {
+        const customizeWaterMark = getCustomizeWaterMark();
+        if(this.watermarkimg) {
+          const src = this.watermarkimg.split('/')[3].split('.')[0];
+          if (customizeWaterMark[src] && customizeWaterMark[src].width) {
+            return customizeWaterMark[src].width;
+          }
+        }
+        return '80px';
+      },
+      
+      waterMarkText() {
+        const customizeWaterMark = getCustomizeWaterMark();
+        const textMap = Object.assign({
+          accepet: '已验收',
+          back: '已退回',
+          box: '已装箱',
+          boxing: '装箱中',
+          charge: '已记账',
+          check: '已收银',
+          completed: '已完成',
+          confirm: '已确认',
+          execute: '已执行',
+          executing: '执行中',
+          extremely: '异常终止',
+          Inventory: '已盈亏',
+          send: '已发出',
+          submit: '已提交',
+          system: '系统',
+          terminate: '已终止',
+          examine: '审批中',
+          void: '已作废',
+          agreement: '已同意',
+          reject: '已驳回',
+        }, Object.keys(customizeWaterMark).reduce((a, c) => {
+          a[c] = customizeWaterMark[c].text;
+          return a;
+        }, {}));
+        if (this.watermarkimg.includes('/static/img/')) {
+          const src = this.watermarkimg.split('/')[3].split('.')[0];
+          return textMap[src];
+        }
+        return '';
+      }, // 水印组件的文字
+      waterMarkColor() {
+        const customizeWaterMark = getCustomizeWaterMark();
+        const colorMap = Object.assign({
+          accepet: '#e80000',
+          back: '#979797',
+          box: '#e80000',
+          boxing: '#09a155',
+          charge: '#e80000',
+          check: '#e80000',
+          completed: '#e80000',
+          confirm: '#e80000',
+          execute: '#e80000',
+          executing: '#09a155',
+          extremely: '#979797',
+          Inventory: '#e80000',
+          send: '#e80000',
+          submit: '#e80000',
+          system: '#e80000',
+          terminate: '#e80000',
+          void: '#979797',
+          examine: '#FF9900',
+          agreement: '#09A155',
+          reject: '#ED4014',
+        }, Object.keys(customizeWaterMark).reduce((a, c) => {
+          a[c] = customizeWaterMark[c].color;
+          return a;
+        }, {}));
+        if (this.watermarkimg.includes('/static/img/')) {
+          const src = this.watermarkimg.split('/')[3].split('.')[0];
+          return colorMap[src];
+        }
+        return '';
+      }, // 水印组件的颜色
+
       currentPageRoute() {
         return this[INSTANCE_ROUTE_QUERY];
       },
@@ -793,6 +908,16 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+     .submit-img { //no-active
+    position: absolute;
+    top: 30px;
+    right:0px;
+    width: 104px;
+    z-index: 1000;
+    img {
+      width: 100%;
+    }
+  }
     .objectButtons {
       .buttonList {
         padding-left: 0;

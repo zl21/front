@@ -2020,7 +2020,7 @@
                 customizedModuleName,
                 id: 'New'
               };
-              window.sessionStorage.setItem('customizedMessage', JSON.stringify(obj));
+              window.sessionStorage.setItem('customizedMessage', JSON.stringify(objs));
               const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
               const customizeConfig = Object.keys(externalModules).length > 0 ? externalModules : customize;
               Object.keys(customizeConfig).forEach((customizeName) => {
