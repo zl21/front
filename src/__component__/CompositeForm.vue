@@ -1085,6 +1085,8 @@
                     result = res.data.fixedcolumns;
                   }
                 });
+              } else {
+                check = this.getLinkData(current);
               }
               
 
