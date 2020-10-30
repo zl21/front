@@ -18,6 +18,7 @@ import customizedModalConfig from './src/__config__/customizeDialog.config';
 import Loading from './src/__utils__/loading';
 import getObjdisType from './src/__utils__/getObjdisType';
 import projectConfig from './project.config';
+import { addSearch } from './src/__utils__/indexedDB';
 import './node_modules/viewerjs/dist/viewer.css';
 
 
@@ -65,6 +66,11 @@ const createDOM = () => {
 // 提前挂载方法
 window.changeNavigatorSetting = (data) => {
   store.commit('global/changeNavigatorSetting', data);
+};
+
+// 挂在indexDB方法
+window.indexedDB = {
+  addSearch
 };
 
 
