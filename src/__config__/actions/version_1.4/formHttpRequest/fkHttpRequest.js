@@ -51,7 +51,7 @@ export const fkDelMultiQuery = function fkDelMultiQuery(params) {
     });
 };
 export const fkQueuploadProgressry = function fkQueuploadProgressry(params) {
-  // 上传图片
+  // 获取上传图片进度
   network
     .post('/p/cs/uploadProgress', urlSearchParams(params.searchObject), {
       serviceId: params.serviceId

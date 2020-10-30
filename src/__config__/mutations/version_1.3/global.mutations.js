@@ -420,6 +420,20 @@ export default {
     // 清空updataTreeId
     removeSessionObject('TreeId');
   },
+  logoutEmptyTabs(state) { // 退出登录时候调用
+    state.openedMenuLists = [];
+    state.keepAliveLists = [];
+    state.activeTab = {};
+    // router.push('/');
+    window.sessionStorage.removeItem('customizeMessage');
+    window.sessionStorage.removeItem('routeMapRecordForHideBackButton');
+    window.sessionStorage.removeItem('addRouteToEditor');
+    window.sessionStorage.removeItem('routeMapRecord');
+    window.sessionStorage.removeItem('routeMapRecordForSingleObject');
+    window.sessionStorage.removeItem('routeMapRecordForCustomizePage');
+    // 清空updataTreeId
+    removeSessionObject('TreeId');
+  },
   againClickOpenedMenuLists(state, {
     label,
     keepAliveModuleName,

@@ -170,7 +170,6 @@ export default (router) => {
     }
     if (to.path.indexOf(lgoinText) !== -1 && getLocalObject('loginStatus') === true) { // 当页面处于登录状态时，则无法回到登录界面，可退出登录进行操作
       window.location.href = window.location.origin;
-      return;
     }
     if (router.getMatchedComponents(to.path).length === 0) {
       next('/');
@@ -269,7 +268,6 @@ export default (router) => {
         next();
       }
       // Step Three: 结束本次路由守卫。
-      return;
     }
 
     // 处理label逻辑。因为引入了框架插件界面，故而label显示逻辑会有些需要注意的地方。
