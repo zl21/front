@@ -69,7 +69,7 @@ window.changeNavigatorSetting = (data) => {
 };
 
 // 挂在indexDB方法
-window.indexedDB = {
+window.indexedDBApi = {
   addSearch
 };
 
