@@ -20,6 +20,8 @@ import Loading from './__utils__/loading';
 import { getLocalObject } from './__utils__/localStorage';
 
 import getObjdisType from './__utils__/getObjdisType';
+
+import { addSearch } from './__utils__/indexedDB';
 // css import
 import '../node_modules/ag-grid/dist/styles/ag-grid.css';
 import '../node_modules/viewerjs/dist/viewer.css';
@@ -121,6 +123,11 @@ const init = () => {
 // 提前挂载方法
 window.changeNavigatorSetting = (data) => {
   store.commit('global/changeNavigatorSetting', data);
+};
+
+// 挂在indexDB方法
+window.indexedDB = {
+  addSearch
 };
 
 
