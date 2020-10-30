@@ -316,7 +316,8 @@ export default {
   // },
   increaseKeepAliveLists(state, data) {
     let keepAliveModuleNameRes = '';
-    if (enableActivateSameCustomizePage() && (data.dynamicModuleTag === 'H' || data.dynamicModuleTag === 'V' || data.dynamicModuleTag === 'C')) {
+    // if (enableActivateSameCustomizePage() && (data.dynamicModuleTag === 'H' || data.dynamicModuleTag === 'V' || data.dynamicModuleTag === 'C')) {
+    if ((enableActivateSameCustomizePage()) && data.dynamicModuleTag === 'C') { // 只处理自定义界面情况，
       const index = data.name.lastIndexOf('.');
       keepAliveModuleNameRes = data.name.substring(0, index + 1);
     } else {
@@ -416,6 +417,20 @@ export default {
     window.sessionStorage.removeItem('routeMapRecordForSingleObject');
     window.sessionStorage.removeItem('routeMapRecordForCustomizePage');
   
+    // 清空updataTreeId
+    removeSessionObject('TreeId');
+  },
+  logoutEmptyTabs(state) { // 退出登录时候调用
+    state.openedMenuLists = [];
+    state.keepAliveLists = [];
+    state.activeTab = {};
+    // router.push('/');
+    window.sessionStorage.removeItem('customizeMessage');
+    window.sessionStorage.removeItem('routeMapRecordForHideBackButton');
+    window.sessionStorage.removeItem('addRouteToEditor');
+    window.sessionStorage.removeItem('routeMapRecord');
+    window.sessionStorage.removeItem('routeMapRecordForSingleObject');
+    window.sessionStorage.removeItem('routeMapRecordForCustomizePage');
     // 清空updataTreeId
     removeSessionObject('TreeId');
   },
@@ -550,14 +565,25 @@ export default {
     const { openedMenuLists } = state;
     // 如果关闭某个Tab，则清空所有该模块可能的对应的keepAlive信息。
     // state.keepAliveLists = state.keepAliveLists.filter(d => d.indexOf(tab.tableName) === -1);
-    state.keepAliveLists = state.keepAliveLists.filter((d) => {
-      if (!((d.indexOf(tab.tableName) !== -1 && d.indexOf(tab.itemId) !== -1) || (d.indexOf(tab.tableName) !== -1 && tab.routePrefix === '/SYSTEM/TABLE')) && enableOpenNewTab()) {
-        if (tab.routePrefix !== '/LINK') { // 除外链界面，外链界面keepAliveName不包含linkId,无法匹配出id进行判断
-        // 返回当前keepAliveLists不包含要关闭的tab对应的keepAliveName,
-          return d;
-        } 
-      } if (d.indexOf(tab.tableName) === -1) {
-        return d;
+    state.keepAliveLists.map((k, i) => {
+      console.log(333, state.keepAliveLists);
+      const typeKeepAlive = k.split('.')[0];
+      let itemId = null;
+      if (tab.routePrefix.indexOf('/CUSTOMIZED') !== -1) {
+        itemId = k.split('.')[2];
+      } else {
+        itemId = k.split('.')[3];
+      }
+      if (!enableActivateSameCustomizePage()) { // 自定义界面根据itemId不同，开启多个tab页签
+        if ((tab.routePrefix === '/SYSTEM/TABLE' || tab.routePrefix === '/LINK') && (typeKeepAlive === 'S' || typeKeepAlive === 'L') && k.indexOf(tab.tableName) !== -1) { // 当前删除的是列表界面,外链界面因为路由无携带linId，和列表界面保持一致
+          state.keepAliveLists.splice(i, 1);
+        } else if (tab.routePrefix.indexOf('/SYSTEM/TABLE_DETAIL') !== -1 && (typeKeepAlive === 'V' || typeKeepAlive === 'H') && tab.itemId === itemId) { // 单对象,判断要关闭的keepAlive的类型，在数组中找到这个类型的数据，找到相同明细ID进行删除
+          state.keepAliveLists.splice(i, 1);
+        } else if (tab.routePrefix.indexOf('/CUSTOMIZED') !== -1 && (typeKeepAlive === tab.keepAliveModuleName.split('.')[0]) && tab.itemId === itemId) {
+          state.keepAliveLists.splice(i, 1);
+        }
+      } else if (k.indexOf(tab.tableName) !== -1) { // 列表打开本表单对象界面，关闭时，根据表明清除列表以及列表对应的单对象keepAlive
+        state.keepAliveLists.splice(i, 1);
       }
     });
 

@@ -95,7 +95,7 @@
 <script>
   // import { setTimeout } from 'timers';
   import FormItemComponent from './ComFormItemComponent';
-  import { Version, MODULE_COMPONENT_NAME } from '../constants/global';
+  import { Version, MODULE_COMPONENT_NAME, secondaryLinkage } from '../constants/global';
 
   import regExp from '../constants/regExp';
   import network, { getGateway } from '../__utils__/network';
@@ -363,6 +363,7 @@
         if (current.disabled || current.readonly) {
           return true;
         }
+        
         return current.disabled || false;
       },
       childForm(option) {

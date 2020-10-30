@@ -1033,7 +1033,6 @@
         if (!Array.isArray(field)) {
           return false;
         }
-
         const checkout = field.every((option) => {
           let optionValue = jsonArr[option.refcolumn];
           if (optionValue === undefined) {
@@ -1060,6 +1059,7 @@
         item.props.required = item.required || false;
         const props = JSON.parse(JSON.stringify(item.props));
         const checkoutProps = Object.keys(item.props.webconf.setAttributes.props).every(setItem => String(item.props.webconf.setAttributes.props[setItem]) === String(props[setItem]));
+        
         if (!item.oldProps) {
           item.oldProps = Object.keys(item.props.webconf.setAttributes.props).reduce((arr, i) => {
             arr[i] = props[i] || false;
@@ -1071,6 +1071,7 @@
           // eslint-disable-next-line no-prototype-builtins
           if (!Object.hasOwnProperty('readonly', item.oldProps)) {
             item.oldProps.readonly = props.readonly;
+            item.oldProps.disabled = props.readonly;
           }
 
           if (item.required === undefined) {
@@ -1084,6 +1085,10 @@
           // if (item.props.webconf.setAttributes.props.value === '') {
           //   item.value = '';
           // }
+          if (item.props.webconf.setAttributes.props.hasOwnProperty('disabled') || item.props.webconf.setAttributes.props.hasOwnProperty('readonly')) {
+            item.props.webconf.setAttributes.props.disabled = item.props.webconf.setAttributes.props.hasOwnProperty('disabled') ? item.props.webconf.setAttributes.props.disabled : item.props.webconf.setAttributes.props.readonly;
+            item.props.webconf.setAttributes.props.disabled = item.props.webconf.setAttributes.props.hasOwnProperty('readonly') ? item.props.webconf.setAttributes.props.readonly : item.props.webconf.setAttributes.props.disabled;
+          }
           
           item.props = Object.assign(props, item.props.webconf.setAttributes.props);
           if (item.oldProps.regx) {
