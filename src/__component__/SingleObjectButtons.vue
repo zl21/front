@@ -113,7 +113,8 @@
     INSTANCE_ROUTE_QUERY,
     LINK_MODULE_COMPONENT_PREFIX,
     getCustomizeWaterMark,
-    enableActivateSameCustomizePage
+    enableActivateSameCustomizePage,
+    enableOpenNewTab
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import { getUrl, getLabel } from '../__utils__/url';
@@ -1571,7 +1572,6 @@
         return id;
       },
       routingHop(tab, id) {
-
         // tab.action配置路径前不能加/
         // /:itemId?id=1&&name=2
         // tab.action = 'CUSTOMIZED/FUNCTIONPERMISSION/:itemId?id=1&&name=2';
@@ -3458,7 +3458,9 @@
           if (message) {
             this.$Message.success(data);
           }
-          this.decreasekeepAliveLists(this[MODULE_COMPONENT_NAME]);
+          if (!enableOpenNewTab()) {
+            this.decreasekeepAliveLists(this[MODULE_COMPONENT_NAME]);
+          }
         } else {
           this.saveEventAfterClick(stop, removeMessage);// 保存成功后执行的事件
         }
