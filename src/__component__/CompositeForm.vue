@@ -360,10 +360,8 @@
         if (this.objreadonly) {
           return true;
         }
-        if (!secondaryLinkage()) {
-          if (current.disabled || current.readonly) {
-            return true;
-          }
+        if (current.disabled || current.readonly) {
+          return true;
         }
         
         return current.disabled || false;
