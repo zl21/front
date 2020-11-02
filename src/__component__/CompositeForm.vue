@@ -1075,16 +1075,16 @@
                 }
 
                 await network.post(current.webconf.refcolval_custom.url, {
-                  data: {
-                    fixedcolumns: {
-                      [current.webconf.refcolval_custom.srccols]: check[1]
-                    }
+                  fixedcolumns: {
+                    [current.webconf.refcolval_custom.srccols]: check[1]
                   }
                 }).then((res) => {
                   if (res.data.code === 0) {
                     result = res.data.fixedcolumns;
                   }
                 });
+              } else {
+                check = this.getLinkData(current);
               }
               
 

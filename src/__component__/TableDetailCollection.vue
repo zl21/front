@@ -661,6 +661,7 @@
                 };
                 this.$Message.success(data);
               }
+              this.refresh();
             }, () => {
               // if (this.exportTasks.warningMsg) {
               //   const data = {

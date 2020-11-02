@@ -277,7 +277,7 @@ export default {
         window.sessionStorage.setItem('loginStatus', false);
         window.localStorage.setItem('loginStatus', false);
 
-        commit('logoutEmptyTabs');
+        commit('emptyTabs');
         router.push({ path: getTouristRoute() });
         removeSessionObject('saveNetwork');
         GetTableName('');
