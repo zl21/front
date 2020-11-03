@@ -1934,7 +1934,7 @@
             data.isolr = this.buttons.isSolr;
 
             if (enableKAQueryDataForUser() || this.webConf.enableKAQueryDataForUser) {
-              const search = JSON.parse(JSON.stringify(this.$refs.FormItemComponent.formDataObject));
+              const search = JSON.parse(JSON.stringify(this.searchData.fixedcolumns));
 
               this.formItemsLists.map((temp) => {
                 if (temp.item.type === 'AttachFilter') {
@@ -2701,6 +2701,10 @@
                 lists.map((item) => {
                   if (item.default) {
                     delete response[item.colname];
+                  }
+
+                  if (item.display === 'OBJ_FK' && response[item.inputname]) {
+                    delete response[item.inputname];
                   }
                   
                   if (item.display === 'OBJ_FK' && response[item.colname] && item.fkobj.fkdisplay !== 'mrp') {
