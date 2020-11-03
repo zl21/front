@@ -2336,8 +2336,7 @@
           window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
           if (!enableOpenNewTab()) {
             this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName });
-
+            this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName });
           }
         } else if (routeMapRecordForSingleObjectModify) { // 单对象动态路由新增以及复制保存后跳转到编辑界面的返回需回到动态路由对应的界面
           router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectModify]);
@@ -3477,6 +3476,10 @@
               types = 'tableDetailVertical';
             }
             const label = `${this.activeTab.label.replace('新增', '编辑')}`;
+            if (enableOpenNewTab()) {
+              // 当开启同表新开tab模式，为解决新增成功后跳转到新开的编辑界面后，新增界面loading未关闭问题
+              this.$R3loading.hide(tableName);
+            }
 
             const tab = {
               type: types,
