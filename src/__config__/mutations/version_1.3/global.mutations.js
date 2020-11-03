@@ -420,20 +420,6 @@ export default {
     // 清空updataTreeId
     removeSessionObject('TreeId');
   },
-  logoutEmptyTabs(state) { // 退出登录时候调用
-    state.openedMenuLists = [];
-    state.keepAliveLists = [];
-    state.activeTab = {};
-    // router.push('/');
-    window.sessionStorage.removeItem('customizeMessage');
-    window.sessionStorage.removeItem('routeMapRecordForHideBackButton');
-    window.sessionStorage.removeItem('addRouteToEditor');
-    window.sessionStorage.removeItem('routeMapRecord');
-    window.sessionStorage.removeItem('routeMapRecordForSingleObject');
-    window.sessionStorage.removeItem('routeMapRecordForCustomizePage');
-    // 清空updataTreeId
-    removeSessionObject('TreeId');
-  },
   againClickOpenedMenuLists(state, {
     label,
     keepAliveModuleName,
@@ -462,10 +448,7 @@ export default {
   },
   tabCloseAppoint(state, tab) {
     // forbidden:禁止关闭当前tab时自动激活最后一个tab
-    // 关闭tab时需清楚jflow配置的对应表
     // tableName:'主表表明',
-    // routeFullPath:'/SYSTEM/TABLE_DETAIL/V/BCP_CUSTOMER_JFLOW/23968/5555832',
-
     // 关闭当前tab时,如果当前列表界面时树形结构列表界面，需清楚对应的treeID
     // const index = state.treeIds.indexOf(tab.tableName);
     // if (index > -1) {
@@ -475,6 +458,8 @@ export default {
     //   k: tab.tableName,
     //   v: item.ID
     // };
+
+
     // 清除配置界面提供给定制界面的参数信息
     // if (enableActivateSameCustomizePage()) {
     //   if (tab.keepAliveModuleName) {
@@ -490,10 +475,16 @@ export default {
     // if (tab.keepAliveModuleName) {
     //   // const customizedModuleId = tab.keepAliveModuleName.split('.')[2];
     //   const customizedModuleName = tab.keepAliveModuleName.split('.')[1];
-    //   // 配置界面跳转到定制界面（自定义界面，外链）将存入session中对应的信息删除，根据自定义界面customizedModuleName
     //   deleteFromSessionObject('customizeMessage', customizedModuleName);// 定制界面
+    //   // deleteFromSessionObject('customizeMessage', customizedModuleId);// 定制界面
     // }
+    
     deleteFromSessionObject('customizeMessage', tab.tableName);// 外链界面
+
+
+    // 清除当前关闭的表单设置的跳转到标准列表表单默认值;
+    const { tableId } = router.currentRoute.params;
+    removeSessionObject(tableId);
 
 
     deleteFromSessionObject('TreeId', tab.tableName);
@@ -540,6 +531,8 @@ export default {
     // Object.keys(routeMapRecord).map((item) => {
     //   const fromPath = routeMapRecord[item].substring(1, 7) === 'PLUGIN';
     //   if (fromPath) {
+    //     debugger;
+
     //     deleteFromSessionObject('routeMapRecord', item);
     //   }
     // });
@@ -564,20 +557,36 @@ export default {
     // state.isRequest = [];// 清空修改数据验证
     const { openedMenuLists } = state;
     // 如果关闭某个Tab，则清空所有该模块可能的对应的keepAlive信息。
-    // state.keepAliveLists = state.keepAliveLists.filter(d => d.indexOf(tab.tableName) === -1);
+    // state.keepAliveLists = state.keepAliveLists.filter((d) => {
+    //   debugger;
+    //   if ((d.indexOf(tab.tableName) !== -1 && d.indexOf(tab.itemId) !== -1) && enableOpenNewTab()) {
+    //     if (tab.routePrefix !== '/LINK') { // 除外链界面，外链界面keepAliveName不包含linkId,无法匹配出id进行判断
+    //     // 返回当前keepAliveLists不包含要关闭的tab对应的keepAliveName,
+    //       return d;
+    //     } 
+    //   } if (d.indexOf(tab.tableName) === -1) {//不满足删除条件
+    //     return d;
+    //   }
+    // });
+    // const index = state.keepAliveLists.indexOf(tab.tableName);
+    // if()
+  
     state.keepAliveLists.map((k, i) => {
       console.log(333, state.keepAliveLists);
       const typeKeepAlive = k.split('.')[0];
       let itemId = null;
+      let tableName = null;
       if (tab.routePrefix.indexOf('/CUSTOMIZED') !== -1) {
         itemId = k.split('.')[2];
       } else {
         itemId = k.split('.')[3];
+        tableName = k.split('.')[1];
       }
+      console.log(444, tableName);
       if (!enableActivateSameCustomizePage()) { // 自定义界面根据itemId不同，开启多个tab页签
         if ((tab.routePrefix === '/SYSTEM/TABLE' || tab.routePrefix === '/LINK') && (typeKeepAlive === 'S' || typeKeepAlive === 'L') && k.indexOf(tab.tableName) !== -1) { // 当前删除的是列表界面,外链界面因为路由无携带linId，和列表界面保持一致
           state.keepAliveLists.splice(i, 1);
-        } else if (tab.routePrefix.indexOf('/SYSTEM/TABLE_DETAIL') !== -1 && (typeKeepAlive === 'V' || typeKeepAlive === 'H') && tab.itemId === itemId) { // 单对象,判断要关闭的keepAlive的类型，在数组中找到这个类型的数据，找到相同明细ID进行删除
+        } else if (tab.routePrefix.indexOf('/SYSTEM/TABLE_DETAIL') !== -1 && (typeKeepAlive === 'V' || typeKeepAlive === 'H') && tab.itemId === itemId && tab.tableName === tableName) { // 单对象,判断要关闭的keepAlive的类型，在数组中找到这个类型的数据，找到相同明细ID进行删除
           state.keepAliveLists.splice(i, 1);
         } else if (tab.routePrefix.indexOf('/CUSTOMIZED') !== -1 && (typeKeepAlive === tab.keepAliveModuleName.split('.')[0]) && tab.itemId === itemId) {
           state.keepAliveLists.splice(i, 1);
@@ -586,9 +595,11 @@ export default {
         state.keepAliveLists.splice(i, 1);
       }
     });
-
+    // if (index > -1) {
+    //   state.keepAliveLists.splice(index, 1);
+    // }
     openedMenuLists.forEach((item, index) => {
-      if (tab.stopRouterPush) {
+      if (tab.stopRouterPush) { // 关闭当前tab时不进行路由跳转
         const { tableName } = router.currentRoute.params;
         if (item.tableName === tableName) {
           state.activeTab = openedMenuLists[index];
@@ -599,7 +610,7 @@ export default {
       } else if (item.routeFullPath === tabRouteFullPath) {
         openedMenuLists.splice(index, 1);
         if (tabRouteFullPath && !tab.forbidden) {
-          if (openedMenuLists.length > 0) {         
+          if (openedMenuLists.length > 0) {
             if (index === 0) {
               state.activeTab = openedMenuLists[index]; // 关闭当前tab时始终打开的是最后一个tab
             } else {
@@ -672,7 +683,7 @@ export default {
   },
   tabOpen(state, {// 打开一个新tab添加路由
     back, type, tableName, tableId, id, customizedModuleName, customizedModuleId, linkName,
-    linkId, url, label, serviceId, dynamicRoutingForCustomizePage, isSetQuery, queryData
+    linkId, url, label, serviceId, dynamicRoutingForCustomizePage, isSetQuery, queryData, NToUpperCase
   }) {
     // back:返回标志, 
     // type:跳转类型,
@@ -689,7 +700,8 @@ export default {
     // serviceId
     // dynamicRoutingForCustomizePage:自定义界面跳转至单对象界面，为true时可返回来源的单对象界面
     // isSetQuery:可设置目标界面为标准列表界面的表单默认值
-    // queryData：设置目标界面表单默认值数据
+    // queryData：设置目标界面表单默认值数据,
+    // NToUpperCase:url不转大写
     if ((type === 'S' || type === 'STANDARD_TABLE_LIST_PREFIX') && isSetQuery && queryData) {
       if (queryData.values && queryData.values.length > 0) {
         let flag = true;
@@ -842,7 +854,9 @@ export default {
         // });
       } else {
         if (url) {
-          path = `${url.toUpperCase()}`;
+          if (!NToUpperCase) {
+            path = `${url.toUpperCase()}`;
+          }
         } else {
           path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
         }

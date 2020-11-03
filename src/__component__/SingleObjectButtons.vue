@@ -202,6 +202,13 @@
     },
     
     watch: {
+      $route() {
+        setTimeout(() => {
+          if (this.$route.query.isBack || this.$route.query.ISBACK) {
+            this.upData();
+          }
+        }, 0);
+      },
       isItemTable: {
         handler(val) {
           if (val) {
@@ -1616,7 +1623,8 @@
           this.tabOpen({
             type,
             linkName: tab.webname,
-            linkId: tab.webid
+            linkId: tab.webid,
+            linkLabel: tab.webdesc
           });
           const data = {
             type: 'singleCustomizeButtonLink',
@@ -2135,13 +2143,23 @@
             this.copyModifyDataForSingleObject(modifyData);// 将复制修改过所保存的数据存到global中
             this.updateFormDataForRefshow();
             const type = 'tableDetailHorizontal';
-            this.tabOpen({// 跳转路由，复制是新增逻辑
-              type,
-              tableName: this.tableName,
-              tableId: this.tableId,
-              label,
-              id
-            });
+            if (enableOpenNewTab()) {
+              const url = `/SYSTEM/TABLE_DETAIL/H/${this.tableName}/${this.tableId}/${id}`;
+              this.tabOpen({// 跳转路由，复制是新增逻辑
+                back: true,
+                NToUpperCase: true,
+                url,
+                id
+              });
+            } else {
+              this.tabOpen({// 跳转路由，复制是新增逻辑
+                type,
+                tableName: this.tableName,
+                tableId: this.tableId,
+                label,
+                id
+              });
+            }
           }
         } else { // 纵向布局
           const copyData = { ...this.mainFormInfo.formData };
@@ -2150,13 +2168,24 @@
           // this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
           this.copyModifyDataForSingleObject(modifyData);// 将复制修改过所保存的数据存到global中
           const type = 'tableDetailVertical';
-          this.tabOpen({
-            type,
-            tableName: this.tableName,
-            tableId: this.tableId,
-            label,
-            id
-          });
+          if (enableOpenNewTab()) {
+            const url = `/SYSTEM/TABLE_DETAIL/V/${this.tableName}/${this.tableId}/${id}`;
+            this.tabOpen({
+              url,
+              type,
+              label,
+              back: true,
+              NToUpperCase: true,
+            });
+          } else {
+            this.tabOpen({// 跳转路由，复制是新增逻辑
+              type,
+              tableName: this.tableName,
+              tableId: this.tableId,
+              label,
+              id
+            });
+          }
         }
         this.updataGlobalLoading(true);
         this.changeCopy(true);
@@ -2305,8 +2334,11 @@
             deleteFromSessionObject('routeMapRecord', routeMapRecordForListNew.to);// 清除动态路由对应关系
           }
           window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
-          this.decreasekeepAliveLists(keepAliveModuleName);
+          if (!enableOpenNewTab()) {
+            this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName });
+
+          }
         } else if (routeMapRecordForSingleObjectModify) { // 单对象动态路由新增以及复制保存后跳转到编辑界面的返回需回到动态路由对应的界面
           router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectModify]);
           this.decreasekeepAliveLists(keepAliveModuleName);
@@ -3197,7 +3229,12 @@
             if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) {
               this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
             } else if (check) {
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+              // 解决jflow调用保存失效问题，同意弹出框点击取消后，调用保存失效，原因为参数缺少当前子表表名，aciton内判断逻辑无法向下执行
+              const itemCurrentParameterRes = Object.assign({}, itemCurrentParameter);
+              Object.keys(itemCurrentParameterRes.modify).length === 0 ? itemCurrentParameterRes.modify = {
+                [itemName]: {}
+              } : null;
+              this.savaNewTable(type, path, objId, itemName, itemCurrentParameterRes, { sataType: 'modify' });
             }
           } else
             if (this.verifyRequiredInformation()) {

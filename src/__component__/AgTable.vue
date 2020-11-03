@@ -352,14 +352,16 @@
       }
     },
     activated() {
-      if (!this.isCommonTable && !this.isBig) {
-        const { agGridTableContainer } = this.$refs;
-        if (agGridTableContainer.agTable) {
-          agGridTableContainer.agTable.fixAgRenderChoke();
-          agGridTableContainer.agTable.fixContainerHeight();
+      setTimeout(() => {
+        if (!this.isCommonTable && !this.isBig) {
+          const { agGridTableContainer } = this.$refs;
+          if (agGridTableContainer.agTable) {
+            agGridTableContainer.agTable.fixAgRenderChoke();
+            agGridTableContainer.agTable.fixContainerHeight();
+          }
         }
-      }
-    }
+      }, 500);
+    },
   };
 </script>
 
