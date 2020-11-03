@@ -3229,7 +3229,12 @@
             if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) {
               this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
             } else if (check) {
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+              // 解决jflow调用保存失效问题，同意弹出框点击取消后，调用保存失效，原因为参数缺少当前子表表名，aciton内判断逻辑无法向下执行
+              const itemCurrentParameterRes = Object.assign({}, itemCurrentParameter);
+              Object.keys(itemCurrentParameterRes.modify).length === 0 ? itemCurrentParameterRes.modify = {
+                [itemName]: {}
+              } : null;
+              this.savaNewTable(type, path, objId, itemName, itemCurrentParameterRes, { sataType: 'modify' });
             }
           } else
             if (this.verifyRequiredInformation()) {
