@@ -44,4 +44,4 @@ function atob(str) {
 
 const decrypt = str => decodeURIComponent(atob(atob(str).substring(btoa(window.MD5(Math.random())).length)));
 
-window.decrypt = decrypt;
+export { decrypt };
