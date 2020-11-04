@@ -606,7 +606,7 @@
       inputEnter(event, $this) {
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'enter')
-          && typeof this._items.event.enter === 'function'
+          && typeof this._items.event.enter === 'function' && this._items.props.type === 'textarea'
         ) {
           this._items.event.enter(event, $this);
         }
