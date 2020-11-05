@@ -227,7 +227,7 @@ axios.interceptors.response.use(
             onOk: () => {
               // 清楚对应登陆用户信息
               window.sessionStorage.setItem('loginStatus', false);
-        window.localStorage.setItem('loginStatus', false);
+              window.localStorage.setItem('loginStatus', false);
 
               store.commit('global/updataUserInfoMessage', {
                 userInfo: {}
@@ -244,7 +244,7 @@ axios.interceptors.response.use(
         } else {
           // 清楚对应登陆用户信息
           window.sessionStorage.setItem('loginStatus', false);
-        window.localStorage.setItem('loginStatus', false);
+          window.localStorage.setItem('loginStatus', false);
 
           store.commit('global/updataUserInfoMessage', {
             userInfo: {}
@@ -417,7 +417,8 @@ function NetworkConstructor() {
    
     
     if (pendingRequestMap[requestMd5] && now.getTime() - pendingRequestMap[requestMd5].reqTime < REQUEST_PENDDING_EXPIRE()) {
-      return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
+      // return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
+      return new Promise(() => {});
     }
     // delete pendingRequestMap[requestMd5];
     let lastTime = null;
@@ -429,7 +430,8 @@ function NetworkConstructor() {
     };
     if (Number(pendingRequestMap[requestMd5].reqTime) - Number(lastTime) < REQUEST_PENDDING_EXPIRE()) {
       // delete pendingRequestMap[requestMd5];
-      return Promise.reject(new Error(`request: [${matchedUrl}] 与上次请求间隔小于${REQUEST_PENDDING_EXPIRE() / 1000}秒.`));
+      // return Promise.reject(new Error(`request: [${matchedUrl}] 与上次请求间隔小于${REQUEST_PENDDING_EXPIRE() / 1000}秒.`));
+      return new Promise(() => {});
     }
 
     let headers = {};
@@ -469,7 +471,8 @@ function NetworkConstructor() {
     });
     const now = new Date();
     if (pendingRequestMap[requestMd5] && now.getTime() - pendingRequestMap[requestMd5].reqTime < REQUEST_PENDDING_EXPIRE()) {
-      return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
+      // return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
+      return new Promise(() => {});
     }
     let lastTime = null;
     if (pendingRequestMap[requestMd5]) {
@@ -480,7 +483,8 @@ function NetworkConstructor() {
     };
     if (Number(pendingRequestMap[requestMd5].reqTime) - Number(lastTime) < REQUEST_PENDDING_EXPIRE()) {
       // delete pendingRequestMap[requestMd5];
-      return Promise.reject(new Error(`request: [${matchedUrl}] 与上次请求间隔小于${REQUEST_PENDDING_EXPIRE() / 1000}秒.`));
+      // return Promise.reject(new Error(`request: [${matchedUrl}] 与上次请求间隔小于${REQUEST_PENDDING_EXPIRE() / 1000}秒.`));
+      return new Promise(() => {});
     }
     return axios.get(matchedUrl, config);
   };
