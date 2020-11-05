@@ -1934,10 +1934,14 @@
             data.isolr = this.buttons.isSolr;
 
             if (enableKAQueryDataForUser() || this.webConf.enableKAQueryDataForUser) {
-              const search = JSON.parse(JSON.stringify(this.searchData.fixedcolumns));
+              const search = JSON.parse(JSON.stringify(this.$refs.FormItemComponent.formDataObject));
 
               this.formItemsLists.map((temp) => {
                 if (temp.item.type === 'AttachFilter') {
+                  delete search[temp.item.field];
+                }
+
+                if (temp.item.type === 'DropDownSelectFilter' && !Array.isArray(search[temp.item.field])) {
                   delete search[temp.item.field];
                 }
               });
@@ -2703,8 +2707,8 @@
                     delete response[item.colname];
                   }
 
-                  if (item.display === 'OBJ_FK' && response[item.inputname]) {
-                    delete response[item.inputname];
+                  if (item.display === 'OBJ_FK' && response[item.colname] && !Array.isArray(response[item.colname])) {
+                    delete response[item.colname];
                   }
                   
                   if (item.display === 'OBJ_FK' && response[item.colname] && item.fkobj.fkdisplay !== 'mrp') {
@@ -2714,8 +2718,20 @@
                     }, []);
                   }
 
-                  if (item.display === 'OBJ_FK' && item.fkobj.fkdisplay !== 'mrp') {
-                    delete response[item.colname];
+
+                  // 处理select类型
+                  if (item.display === 'OBJ_SELECT' && response[item.colname]) {
+                    response[item.colname] = response[item.colname].map(temp => temp = temp.replace(/\=/g, ''));
+                  }
+
+                  // 处理外健
+                  if (item.display === 'OBJ_FK' && response[item.colname] && item.fkobj.fkdisplay !== 'mrp') {
+                    item.default = response[item.colname][0].Label;
+                    item.refobjid = response[item.colname][0].ID;
+                  }
+
+                  if (!item.default && response[item.colname]) {
+                    item.default = response[item.colname];
                   }
                   return item;
                 });

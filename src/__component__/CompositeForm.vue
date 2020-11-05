@@ -931,12 +931,14 @@
               // 输入框的keydown event, $this
               if (event.keyCode === 13) {
                 // enter回车查询
+
+                if (current.display === 'textarea') {
+                  return;
+                }
                 if (this.type === 'PanelForm') {
                   // 是否是面板
                   //  组建是否获取光标
-                  if (current.display === 'textarea') {
-                    return;
-                  }
+                  
                   this.focusItem(index, current, array);
                 }
                 this.searchClickData();
