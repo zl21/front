@@ -1013,7 +1013,8 @@
         const {
           tablename, refcolid, tabrelation, tabinlinemode
         } = this.itemInfo;
-        // 通知
+        
+        // 通知表格刷新
         DispatchEvent('tabRefreshClick');
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.currentTabIndex === 0) { // 主表
