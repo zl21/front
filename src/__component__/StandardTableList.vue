@@ -1928,7 +1928,7 @@
       getQueryListPromise(data) {
         const promise = new Promise((resolve, reject) => {
           this.requiredCheck().then(() => {
-            // this.$R3loading.show(this.searchData.table);
+            this.$R3loading.show(this.searchData.table);
             data.resolve = resolve;
             data.reject = reject;
             data.isolr = this.buttons.isSolr;
