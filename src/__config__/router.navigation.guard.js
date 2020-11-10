@@ -267,6 +267,7 @@ export default (router) => {
         next();
       }
       // Step Three: 结束本次路由守卫。
+      return;
     }
 
     // 处理label逻辑。因为引入了框架插件界面，故而label显示逻辑会有些需要注意的地方。
