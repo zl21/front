@@ -31,6 +31,7 @@ module.exports = {
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop环境
   // target: 'http://47.103.175.111:26666/', // 千百度环境
   // target: 'http://syman-jflow-standard.dev.burgeononline.com',
+  // target: 'http://139.196.221.193:38888/', // 巧厨环境
   
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
