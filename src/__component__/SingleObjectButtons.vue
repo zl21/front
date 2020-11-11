@@ -3900,7 +3900,6 @@
       window.removeEventListener('showSingleButtons', this.showSingleButtons);
     },
     mounted() {
-      console.log(9999, this);
       this.setDisableButtons();
       if (this.isItemTable) {
         this.dataArray.refresh = false;
