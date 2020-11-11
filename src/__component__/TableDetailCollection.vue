@@ -1743,7 +1743,7 @@
 
           return h('div', {
             style: {
-              // width,
+              width,
               overflow,
               'text-overflow': 'ellipsis',
               'white-space': 'nowrap',

@@ -281,7 +281,7 @@
       <ImageUpload
         v-if="_items.type === 'ImageUpload'"
         :ref="_items.field"
-        :dataitem="_items.props.itemdata"
+        :dataitem="Object.assign(_items.props.itemdata,{readonly: _items.props.readonly})"
         @deleteImg="deleteImg"
         @uploadFileChangeSuccess="uploadFileChangeSuccess"
         @uploadFileChangeOnerror="uploadFileChangeOnerror"

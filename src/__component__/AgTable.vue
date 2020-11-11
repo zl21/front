@@ -229,16 +229,18 @@
         }
       },
       datas(val) {
-        if (!this.isCommonTable && !this.isBig) {
-          this.agGridTable(val.tabth, val.row, val);
-          setTimeout(() => {
-            const { agGridTableContainer } = this.$refs;
-            if (agGridTableContainer && agGridTableContainer.agTable) {
-              agGridTableContainer.agTable.fixContainerHeight();
-              agGridTableContainer.agTable.emptyAllFilters();
-            }
-          }, 30);
-        }
+        setTimeout(() => {
+          if (!this.isCommonTable && !this.isBig) {
+            this.agGridTable(val.tabth, val.row, val);
+            setTimeout(() => {
+              const { agGridTableContainer } = this.$refs;
+              if (agGridTableContainer && agGridTableContainer.agTable) {
+                agGridTableContainer.agTable.fixContainerHeight();
+                agGridTableContainer.agTable.emptyAllFilters();
+              }
+            }, 50);
+          }
+        }, 30);
       },
     },
     methods: {
@@ -360,7 +362,7 @@
             agGridTableContainer.agTable.fixContainerHeight();
           }
         }
-      }, 500);
+      }, 800);
     },
   };
 </script>

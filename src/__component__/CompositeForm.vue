@@ -931,12 +931,14 @@
               // 输入框的keydown event, $this
               if (event.keyCode === 13) {
                 // enter回车查询
+
+                if (current.display === 'textarea') {
+                  return;
+                }
                 if (this.type === 'PanelForm') {
                   // 是否是面板
                   //  组建是否获取光标
-                  if (current.display === 'textarea') {
-                    return;
-                  }
+                  
                   this.focusItem(index, current, array);
                 }
                 this.searchClickData();
@@ -1049,7 +1051,6 @@
               Fitem[index].item.props.totalRowCount = 0;
               let searchObject = {};
               let result = {}; // 扩展通过接口获取请求参数，暂存数据
-              
 
               let check = [];
 
@@ -1081,6 +1082,7 @@
                 }).then((res) => {
                   if (res.data.code === 0) {
                     result = res.data.fixedcolumns;
+                    current.fixedcolumns = result;
                   }
                 });
               } else {
@@ -1141,6 +1143,9 @@
               
 
               return false;
+            },
+            'on-popper-hide': () => {
+              delete current.fixedcolumns;
             },
             blur: (event, $this, item) => {
               // 失去光标 单对象 外键 value 清除
@@ -1233,6 +1238,11 @@
               }              
               // 权限查询
               searchObject = this.setSeachObject(searchObject, current);
+
+              
+              if (current.fixedcolumns) {
+                searchObject = Object.assign(searchObject, { fixedcolumns: current.fixedcolumns });
+              }
               fkHttpRequest().fkQueryList({
                 searchObject,
                 serviceId: current.serviceId,
