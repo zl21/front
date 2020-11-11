@@ -38,8 +38,6 @@ export default {
     network
       .get('/p/cs/logout')
       .then(() => {
-        router.push({ path: getTouristRoute() });
-
         window.sessionStorage.setItem('loginStatus', false);
         window.localStorage.setItem('loginStatus', false);
   
@@ -52,10 +50,9 @@ export default {
         removeSessionObject('TreeId');
         removeSessionObject('routeMapRecordForCustomizePages');
         commit('updateTreeTableListData', []);
+        router.push({ path: getTouristRoute() });
       })
       .catch(() => {
-        router.push({ path: getTouristRoute() });
-
         window.sessionStorage.setItem('loginStatus', false);
         window.localStorage.setItem('loginStatus', false);
 
@@ -69,6 +66,7 @@ export default {
         removeSessionObject('TreeId');
         commit('updateTreeTableListData', []);
         removeSessionObject('routeMapRecordForCustomizePages');
+        router.push({ path: getTouristRoute() });
       });
   }
   
