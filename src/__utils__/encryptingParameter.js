@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 
 XMLHttpRequest.prototype.realSend = XMLHttpRequest.prototype.send;
 // here "this" points to the XMLHttpRequest Object.
@@ -31,3 +32,16 @@ const newSend = function (data) {
 };
 
 XMLHttpRequest.prototype.send = newSend;
+
+
+function btoa(str) {
+  return new Buffer.from(str).toString('base64');
+}
+
+function atob(str) {
+  return new Buffer.from(str, 'base64').toString();
+}
+
+const decrypt = str => decodeURIComponent(atob(atob(str).substring(btoa(window.MD5(Math.random())).length)));
+
+export { decrypt };
