@@ -38,11 +38,12 @@ export default {
     network
       .get('/p/cs/logout')
       .then(() => {
+        router.push({ path: getTouristRoute() });
+
         window.sessionStorage.setItem('loginStatus', false);
         window.localStorage.setItem('loginStatus', false);
-
+  
         commit('emptyTabs');
-        router.push({ path: getTouristRoute() });
         removeSessionObject('saveNetwork');
         GetTableName('');
         commit('updataUserInfoMessage', {});
@@ -53,12 +54,13 @@ export default {
         commit('updateTreeTableListData', []);
       })
       .catch(() => {
+        router.push({ path: getTouristRoute() });
+
         window.sessionStorage.setItem('loginStatus', false);
         window.localStorage.setItem('loginStatus', false);
 
         commit('emptyTabs');
         commit('updataUserInfoMessage', {});
-        router.push({ path: getTouristRoute() });
         removeSessionObject('saveNetwork');
         GetTableName('');
         commit('updataUserInfoMessage', {});
