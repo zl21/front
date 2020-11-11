@@ -53,7 +53,9 @@ export default () => ({
       openedImg
     },
 
-    previewPictureInstance: [] // 记录图片预览实例
+    previewPictureInstance: [], // 记录图片预览实例
+    sameNewPage: false,
+    switchTag: false
   },
   mutations: mutations(),
   actions: actions(),

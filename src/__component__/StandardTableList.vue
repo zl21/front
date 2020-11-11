@@ -1490,7 +1490,7 @@
         this.setActiveTabActionValue({});// 点击按钮前清除上一次按钮存的信息
 
         if (type === 'fix') {
-          this.AddDetailClick(obj);
+          this.AddDetailClick(type, obj);
         } else if (type === 'custom') {
           this.webactionClick(type, obj);
         } else if (type === 'Collection') {
@@ -1928,7 +1928,7 @@
       getQueryListPromise(data) {
         const promise = new Promise((resolve, reject) => {
           this.requiredCheck().then(() => {
-            // this.$R3loading.show(this.searchData.table);
+            this.$R3loading.show(this.searchData.table);
             data.resolve = resolve;
             data.reject = reject;
             data.isolr = this.buttons.isSolr;
@@ -1985,7 +1985,12 @@
       getSingleObjectPageType() {
         
       },
-      AddDetailClick(obj) {
+      AddDetailClick(type, obj) {
+        DispatchEvent('R3StandardButtonClick', {
+          detail: {
+            type, obj
+          }
+        });
         const { tableName, tableId, } = this[INSTANCE_ROUTE_QUERY];
         if (obj.name === this.buttonMap.CMD_ADD.name) {
           // 新增
@@ -2046,7 +2051,7 @@
                   tableName,
                   tableId,
                   label,
-                  id
+                  id,
                 });
               });
             } else if (this.ag.datas.objdistype === 'tabpanle') { // 单对象左右结构
@@ -2061,7 +2066,7 @@
               tableName,
               tableId,
               label,
-              id
+              id,
             });
             return;
           }

@@ -7,7 +7,7 @@ import {
   STANDARD_TABLE_LIST_PREFIX,
   PLUGIN_MODULE_PREFIX,
   LINK_MODULE_PREFIX,
-  STANDARD_COMMONTABLE_LIST_PREFIX
+  STANDARD_COMMONTABLE_LIST_PREFIX,
 } from '../constants/global';
 
 export const hideMenu = () => {

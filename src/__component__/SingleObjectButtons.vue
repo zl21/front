@@ -202,13 +202,23 @@
     },
     
     watch: {
-      $route() {
-        setTimeout(() => {
-          if (this.$route.query.isBack || this.$route.query.ISBACK) {
-            this.upData();
-          }
-        }, 0);
-      },
+      // $route() {
+      //   console.log(3333, this.$route.params.itemId === 'New' , this.sameNewPage , !this._inactive);
+
+      //   setTimeout(() => {
+      //     if (this.$route.params.itemId === 'New' && this.sameNewPage && !this._inactive) {
+      //       debugger;
+      //       // this.upData();
+      //       const dom = document.getElementById('refresh');
+      //       if (dom) {
+      //         const event = document.createEvent('HTMLEvents');
+      //         event.initEvent('click', false, true);
+      //         dom.dispatchEvent(event);
+      //         this.$store.commit('global/updataNewTagForNewTab', false);
+      //       }
+      //     }
+      //   }, 1000);
+      // },
       isItemTable: {
         handler(val) {
           if (val) {
@@ -1604,7 +1614,7 @@
           }
         } else if (actionType === 'https:' || actionType === 'http:') {
           const name = `${LINK_MODULE_COMPONENT_PREFIX}.${tab.webname.toUpperCase()}.${tab.webid}`;     
-          // this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
+          this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
           const linkUrl = tabAction;
           // const linkId = tab.webid;
           const linkModuleName = tab.webname.toUpperCase();
@@ -2299,17 +2309,23 @@
           } else { // 从插件界面双击进入单对象界面时，返回时需清除routeMapRecord对应关系
             deleteFromSessionObject('routeMapRecord', keepAliveModuleName);
           }
-          this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName });
+          if (!enableOpenNewTab()) {
+            this.decreasekeepAliveLists(keepAliveModuleName);
+            this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName });
+          }
         } else if (routeMapRecordForSingleObject[currentPath]) {
           router.push(routeMapRecordForSingleObject[currentPath]);
-          this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName });
+          if (!enableOpenNewTab()) {
+            this.decreasekeepAliveLists(keepAliveModuleName);
+            this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName });
+          }
           // this.clickButtonsRefresh();
         } else if (routeMapRecordForSingleObjectNew) {
           router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectNew]);
-          this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName });
+          if (!enableOpenNewTab()) {
+            this.decreasekeepAliveLists(keepAliveModuleName);
+            this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName });
+          }
           // this.clickButtonsRefresh();
         } else if (routeMapRecordForListNew.to) { // 动态路由（新增返回）
           const directionalRouterType = this.getDirectionalRouterType(routeMapRecordForListNew.from);
@@ -2340,8 +2356,10 @@
           }
         } else if (routeMapRecordForSingleObjectModify) { // 单对象动态路由新增以及复制保存后跳转到编辑界面的返回需回到动态路由对应的界面
           router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectModify]);
-          this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName });
+          if (!enableOpenNewTab()) {
+            this.decreasekeepAliveLists(keepAliveModuleName);
+            this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName });
+          }
         } else if (routeMapRecordForListModify.to) { // 列表动态路由（新增/复制保存成功后跳转到单对象界面执行返回操作）
           const directionalRouterType = this.getDirectionalRouterType(routeMapRecordForListNew.from);
           const param = {
@@ -2355,8 +2373,10 @@
           };
           updateSessionObject('dynamicRoutingIsBackForDelete', deleteValue);
           window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
-          this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName });
+          if (!enableOpenNewTab()) {
+            this.decreasekeepAliveLists(keepAliveModuleName);
+            this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName });
+          }
         } else {
           const param = {
             tableId,
@@ -2954,14 +2974,19 @@
       },
       deleteSuccessEvent() {
         const value = this.hideBackButton();
+        const keepAliveModuleName = this.activeTab.keepAliveModuleName;
+        const currentRoute = this.$router.currentRoute.path;
+
         if (value) {
-          const keepAliveModuleName = this.activeTab.keepAliveModuleName;
-          const currentRoute = this.$router.currentRoute.path;
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({ tableName: this.tableName, routeFullPath: currentRoute });
         } else {
           const stop = true;
           this.clickButtonsBack(stop);
+          if (enableOpenNewTab()) {
+            this.decreasekeepAliveLists(keepAliveModuleName);
+            this.tabCloseAppoint({ tableName: this.tableName, routeFullPath: currentRoute });
+          }
         }
       },
       objectAdd() { // 新增
@@ -3476,11 +3501,6 @@
               types = 'tableDetailVertical';
             }
             const label = `${this.activeTab.label.replace('新增', '编辑')}`;
-            if (enableOpenNewTab()) {
-              // 当开启同表新开tab模式，为解决新增成功后跳转到新开的编辑界面后，新增界面loading未关闭问题
-              this.$R3loading.hide(tableName);
-            }
-
             const tab = {
               type: types,
               tableName,
@@ -3488,6 +3508,11 @@
               label,
               id: this.buttonsData.newMainTableSaveData ? this.buttonsData.newMainTableSaveData.objId : this.itemId
             };
+            if (enableOpenNewTab()) {
+              // 当开启同表新开tab模式，为解决新增成功后跳转到新开的编辑界面后，新增界面loading未关闭问题
+              this.$R3loading.hide(tableName);
+              this.upData();// 为解决新增保存后新开tab，新增界面信息未清除问题
+            }
             this.tabOpen(tab);
           }
           const message = this.buttonsData.message;
@@ -3872,7 +3897,7 @@
       window.removeEventListener('showSingleButtons', this.showSingleButtons);
     },
     mounted() {
-      // console.log(9999, this.getCurrentItemInfo());
+      console.log(9999, this);
       this.setDisableButtons();
       if (this.isItemTable) {
         this.dataArray.refresh = false;

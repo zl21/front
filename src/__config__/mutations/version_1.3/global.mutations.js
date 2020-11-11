@@ -23,6 +23,12 @@ import store from '../../store.config';
 
 
 export default {
+  updataNewTagForNewTab(state, data) {
+    state.sameNewPage = data;
+  },
+  updataSwitchTag(state, data) {
+    state.switchTag = data;
+  },
   updataSTDefaultQuery(data) {
     // tableId:跳转目标表ID
     // colid：目标表字段ID
@@ -316,7 +322,6 @@ export default {
   // },
   increaseKeepAliveLists(state, data) {
     let keepAliveModuleNameRes = '';
-    // if (enableActivateSameCustomizePage() && (data.dynamicModuleTag === 'H' || data.dynamicModuleTag === 'V' || data.dynamicModuleTag === 'C')) {
     if ((enableActivateSameCustomizePage()) && data.dynamicModuleTag === 'C') { // 只处理自定义界面情况，
       const index = data.name.lastIndexOf('.');
       keepAliveModuleNameRes = data.name.substring(0, index + 1);
@@ -326,13 +331,31 @@ export default {
     if (enableKeepAlive()) {
       if (state.openedMenuLists.length > 6 && enableOpenNewTab()) { // 新开tab限制为6个，超过6个后，替换最后一个
         state.keepAliveLists.splice(state.keepAliveLists.length - 1, 1, data.name);
-      } else if (state.keepAliveLists.filter(k => k.includes(keepAliveModuleNameRes)).length > 0) {
+      } 
+      // else if (state.sameNewPage) {
+      //   if (!state.keepAliveLists.includes(data.name)) {
+      //     debugger;
+      //     state.keepAliveLists = state.keepAliveLists.concat([data.name]);
+      //   }
+      // state.keepAliveLists.map((d, i) => { // 将所有tab置为失活状态
+      //   if (d === data.name) {
+      //     debugger;
+      //     state.keepAliveLists.splice(i, 1);// 替换最后一个tab
+      //   }
+      // });
+      // state.keepAliveLists = state.keepAliveLists.concat([data.name]);
+        
+      // setTimeout(() => {
+      // state.keepAliveLists.push(data.name);
+      // }, 10);
+      // } 
+      else if (state.keepAliveLists.filter(k => k.includes(keepAliveModuleNameRes)).length > 0) {
         state.keepAliveLists.filter((a, i) => {
           if (a.includes(keepAliveModuleNameRes)) {
             state.keepAliveLists.splice(i, 1);
           }
         });
-        state.keepAliveLists = state.keepAliveLists.concat([data.name]);
+        // state.keepAliveLists = state.keepAliveLists.concat([data.name]);
       } else {
         state.keepAliveLists = state.keepAliveLists.concat([data.name]);
       }
@@ -572,21 +595,23 @@ export default {
     // if()
   
     state.keepAliveLists.map((k, i) => {
-      console.log(333, state.keepAliveLists);
       const typeKeepAlive = k.split('.')[0];
       let itemId = null;
       let tableName = null;
-      if (tab.routePrefix.indexOf('/CUSTOMIZED') !== -1) {
+      let currentType = null;
+      if (tab.routePrefix && tab.routePrefix.indexOf('/CUSTOMIZED') !== -1) {
         itemId = k.split('.')[2];
       } else {
         itemId = k.split('.')[3];
         tableName = k.split('.')[1];
-      }
-      console.log(444, tableName);
-      if (!enableActivateSameCustomizePage()) { // 自定义界面根据itemId不同，开启多个tab页签
+        currentType = tab.keepAliveModuleName[0];
+      } 
+      if (!enableActivateSameCustomizePage() && tab.routePrefix) { // 自定义界面根据itemId不同，开启多个tab页签
         if ((tab.routePrefix === '/SYSTEM/TABLE' || tab.routePrefix === '/LINK') && (typeKeepAlive === 'S' || typeKeepAlive === 'L') && k.indexOf(tab.tableName) !== -1) { // 当前删除的是列表界面,外链界面因为路由无携带linId，和列表界面保持一致
           state.keepAliveLists.splice(i, 1);
-        } else if (tab.routePrefix.indexOf('/SYSTEM/TABLE_DETAIL') !== -1 && (typeKeepAlive === 'V' || typeKeepAlive === 'H') && tab.itemId === itemId && tab.tableName === tableName) { // 单对象,判断要关闭的keepAlive的类型，在数组中找到这个类型的数据，找到相同明细ID进行删除
+        } else if (tab.routePrefix.indexOf('/SYSTEM/TABLE_DETAIL') !== -1 && typeKeepAlive === currentType && tab.itemId === itemId && tab.tableName === tableName) { // 单对象,判断要关闭的keepAlive的类型，在数组中找到这个类型的数据，找到相同明细ID进行删除
+          state.keepAliveLists.splice(i, 1);
+        } else if (tab.routePrefix.indexOf('/SYSTEM/TABLE_DETAIL') !== -1 && typeKeepAlive === currentType && tab.itemId === itemId && tab.tableName === tableName) { // 单对象,判断要关闭的keepAlive的类型，在数组中找到这个类型的数据，找到相同明细ID进行删除
           state.keepAliveLists.splice(i, 1);
         } else if (tab.routePrefix.indexOf('/CUSTOMIZED') !== -1 && (typeKeepAlive === tab.keepAliveModuleName.split('.')[0]) && tab.itemId === itemId) {
           state.keepAliveLists.splice(i, 1);
@@ -683,7 +708,7 @@ export default {
   },
   tabOpen(state, {// 打开一个新tab添加路由
     back, type, tableName, tableId, id, customizedModuleName, customizedModuleId, linkName,
-    linkId, url, label, serviceId, dynamicRoutingForCustomizePage, isSetQuery, queryData, NToUpperCase
+    linkId, url, label, serviceId, dynamicRoutingForCustomizePage, isSetQuery, queryData, NToUpperCase,
   }) {
     // back:返回标志, 
     // type:跳转类型,
@@ -701,7 +726,7 @@ export default {
     // dynamicRoutingForCustomizePage:自定义界面跳转至单对象界面，为true时可返回来源的单对象界面
     // isSetQuery:可设置目标界面为标准列表界面的表单默认值
     // queryData：设置目标界面表单默认值数据,
-    // NToUpperCase:url不转大写
+    // NToUpperCase:url不转大写,
     if ((type === 'S' || type === 'STANDARD_TABLE_LIST_PREFIX') && isSetQuery && queryData) {
       if (queryData.values && queryData.values.length > 0) {
         let flag = true;
@@ -744,7 +769,6 @@ export default {
     //   };
     //   updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
     // }
-   
     let path = '';
     if (type === STANDARD_TABLE_LIST_PREFIX || type === 'S') {
       if (url) {
@@ -774,11 +798,6 @@ export default {
         path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
       }
     }
-    if (type === 'P') {
-      if (url) {
-        path = `${url.toUpperCase()}`;
-      }
-    } 
     if (type === 'tableDetailAction' || type === 'C') {
       if (url) {
         if (url.includes('?')) {
@@ -810,6 +829,11 @@ export default {
         setCustomeLabel(data);
       }
     } 
+    if (type === 'P') {
+      if (url) {
+        path = `${url.toUpperCase()}`;
+      }
+    } 
     if (type === 'tableDetailUrl' || type === 'URL') {
       if (url) {
         path = `${url.toUpperCase()}`;
@@ -819,6 +843,7 @@ export default {
     }
     if (back) {
       const routeMapRecordForCustomizePage = getSeesionObject('routeMapRecordForCustomizePage');
+     
       if (routeMapRecordForCustomizePage[router.currentRoute.fullPath]) {
         const CustomizePagePath = routeMapRecordForCustomizePage[router.currentRoute.fullPath];
         Object.keys(routeMapRecordForCustomizePage).map((item) => {
@@ -856,6 +881,8 @@ export default {
         if (url) {
           if (!NToUpperCase) {
             path = `${url.toUpperCase()}`;
+          } else {
+            path = url;
           }
         } else {
           path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
@@ -876,7 +903,6 @@ export default {
       }
       return;
     }
-
     if (path) {
       router.push({
         path
