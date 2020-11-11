@@ -2,9 +2,9 @@
   <div class="set-panel">
     <div class="panel-main">
       <div class="panel-item">
-        <p :title="userInfo.ename">
+        <p :title="getEname">
           <i class="iconfont iconmd-contact explanatory" />
-          欢迎: {{ userInfo.ename }}
+          欢迎: {{ getEname }}
         </p>
       </div>
       <div class="panel-item">
@@ -77,7 +77,13 @@
       ...mapState('global', {
         userInfo: ({ userInfo }) => userInfo,
         collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
-      })
+      }),
+      getEname() {
+        if (this.serInfo) {
+          return this.userInfo.ename;
+        }
+        return null;
+      }
     },
     watch: {
       num7() {
