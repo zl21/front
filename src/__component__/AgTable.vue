@@ -13,9 +13,8 @@
       class="isBig"
       :style=" { backgroundImage : 'url( ' + bigBackground + ') '} "
     />
-   
     <div
-      v-if="!isCommonTable&&!isBig"
+      v-show="isAg"
       ref="agGridTableContainer"
       class="detailTable"
     />
@@ -78,7 +77,7 @@
     name: 'AgTable',
     data() {
       return {
-        bigBackground: isBigImg
+        bigBackground: isBigImg,
         // isCommonTable: true, // 是否显示普通表格
         // isCommonTable: false, // 是否显示普通表格
       };
@@ -86,7 +85,14 @@
     components: {
       CommonTable
     },
-    computed: {},
+    computed: {
+      isAg() {
+        if (!this.isCommonTable && !this.isBig) {
+          return true;
+        }
+        return false;
+      }
+    },
     props: {
       doTableSearch: {
         type: Function,
@@ -229,22 +235,22 @@
         }
       },
       datas(val) {
-        setTimeout(() => {
-          if (!this.isCommonTable && !this.isBig) {
-            this.agGridTable(val.tabth, val.row, val);
-            setTimeout(() => {
-              const { agGridTableContainer } = this.$refs;
-              if (agGridTableContainer && agGridTableContainer.agTable) {
-                agGridTableContainer.agTable.fixContainerHeight();
-                agGridTableContainer.agTable.emptyAllFilters();
-              }
-            }, 50);
-          }
-        }, 30);
+        if (!this.isCommonTable && !this.isBig) {
+          this.agGridTable(val.tabth, val.row, val);
+          setTimeout(() => {
+            const { agGridTableContainer } = this.$refs;
+            if (agGridTableContainer && agGridTableContainer.agTable) {
+              agGridTableContainer.agTable.fixContainerHeight();
+              agGridTableContainer.agTable.emptyAllFilters();
+            }
+          }, 30);
+        }
       },
     },
     methods: {
-
+      a() {
+        this.click = !this.click;
+      },
       btnclick(obj) {
         this.$emit('btnclick', obj);
       },
@@ -354,15 +360,13 @@
       }
     },
     activated() {
-      setTimeout(() => {
-        if (!this.isCommonTable && !this.isBig) {
-          const { agGridTableContainer } = this.$refs;
-          if (agGridTableContainer.agTable) {
-            agGridTableContainer.agTable.fixAgRenderChoke();
-            agGridTableContainer.agTable.fixContainerHeight();
-          }
+      if (!this.isCommonTable && !this.isBig) {
+        const { agGridTableContainer } = this.$refs;
+        if (agGridTableContainer.agTable) {
+          agGridTableContainer.agTable.fixAgRenderChoke();
+          agGridTableContainer.agTable.fixContainerHeight();
         }
-      }, 800);
+      }
     },
   };
 </script>
