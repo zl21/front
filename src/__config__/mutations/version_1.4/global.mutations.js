@@ -305,7 +305,7 @@ export default {
       keepAliveModuleNameRes = data.name;
     }
     if (enableKeepAlive()) {
-      if (state.openedMenuLists.length > 3 && enableOpenNewTab()) { // 新开tab限制为6个，超过6个后，替换最后一个
+      if (state.openedMenuLists.length > 6 && enableOpenNewTab()) { // 新开tab限制为6个，超过6个后，替换最后一个
         state.keepAliveLists.splice(state.keepAliveLists.length - 1, 1, data.name);
       } 
       // else if (state.sameNewPage) {
@@ -374,7 +374,7 @@ export default {
       sameNewPage
     };
     if (notExist || state.sameNewPage || sameNewPage) {
-      if (state.openedMenuLists.length > 3 && enableOpenNewTab()) { // 新开tab限制为6个，超过6个后，替换最后一个
+      if (state.openedMenuLists.length > 6 && enableOpenNewTab()) { // 新开tab限制为6个，超过6个后，替换最后一个
         state.activeTab = currentTabInfo;
         currentTabInfo.isActive = true;
         state.openedMenuLists.forEach((d, i) => { // 将所有tab置为失活状态
