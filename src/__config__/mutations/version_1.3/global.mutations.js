@@ -604,7 +604,9 @@ export default {
       } else {
         itemId = k.split('.')[3];
         tableName = k.split('.')[1];
-        currentType = tab.keepAliveModuleName[0];
+        if (tab.keepAliveModuleName) {
+          currentType = tab.keepAliveModuleName[0];
+        }
       } 
       if (!enableActivateSameCustomizePage() && tab.routePrefix) { // 自定义界面根据itemId不同，开启多个tab页签
         if ((tab.routePrefix === '/SYSTEM/TABLE' || tab.routePrefix === '/LINK') && (typeKeepAlive === 'S' || typeKeepAlive === 'L') && k.indexOf(tab.tableName) !== -1) { // 当前删除的是列表界面,外链界面因为路由无携带linId，和列表界面保持一致

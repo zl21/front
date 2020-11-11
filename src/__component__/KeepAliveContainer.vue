@@ -4,6 +4,7 @@
   >
     <component
       :is="currentModule"
+      v-if="show"
       :url-name="urlName"
     />
   </keep-alive>
@@ -55,11 +56,12 @@
       return {
         currentModule: null,
         urlName: '',
+        show: true
       };
     },
    
     computed: {
-      ...mapState('global', ['keepAliveLists', 'menuLists', 'LinkUrl', 'primaryMenuIndex', 'keepAliveLabelMaps'])
+      ...mapState('global', ['sameNewPage', 'keepAliveLists', 'menuLists', 'LinkUrl', 'primaryMenuIndex', 'keepAliveLabelMaps'])
     },
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
@@ -109,7 +111,26 @@
         if ([STANDARD_TABLE_LIST_PREFIX, STANDARD_COMMONTABLE_LIST_PREFIX, VERTICAL_TABLE_DETAIL_PREFIX, HORIZONTAL_TABLE_DETAIL_PREFIX].indexOf(routePrefix) === -1) { return; }
         if (Vue.component(componentName) === undefined) {
           Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins, mixinsCustomize], isKeepAliveModel: true }, component)));
-        }
+        } 
+        // else if (this.sameNewPage) {
+        //   this.$store.commit('global/updataNewTagForNewTab', false);
+        //   setTimeout(() => {
+        //     // Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins, mixinsCustomize], isKeepAliveModel: true }, component)));
+        //     // const a = window.vm.$children[0].$children[0].$children[2].$children[1].$children;
+        //     // a.map((item, i) => {
+        //     //   if (item.moduleComponentName === moduleName()) {
+        //     //     a.splice(i, 1);
+        //     //   }
+        //     // });
+        //     if (!this.keepAliveLists.include(componentName)) {
+        //       Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins, mixinsCustomize], isKeepAliveModel: true }, component)));
+        //     }
+        //     this.currentModule = componentName;
+        //     this.$forceUpdate();
+        //     // this.show = false;
+        //     // this.show = true;
+        //   }, 500);
+        // }
         this.currentModule = componentName;
       },
       generateCustomizedComponent() {

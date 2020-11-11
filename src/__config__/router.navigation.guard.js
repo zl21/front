@@ -215,6 +215,9 @@ export default (router) => {
           if (d.keepAliveModuleName === keepAliveModuleName// 模块名相同
              && ((`${d.routeFullPath}?isBack=true` === to.fullPath || `${to.fullPath}?isBack=true` === d.routeFullPath) 
              || (`${router.currentRoute.fullPath}?isBack=true` === to.fullPath || `${to.fullPath}?isBack=true` === router.currentRoute.fullPath) 
+             || (`${router.currentRoute.fullPath}?isBack=true` === to.fullPath)
+             || (to.fullPath.includes('?isBack=true') && d.routeFullPath === to.fullPath)
+
              )// 当前处于激活状态的不是即将要打开的新增tab或者复制tab
           // 当前激活的tab不是即将打开的tab，用于区分新增和复制
           ) {

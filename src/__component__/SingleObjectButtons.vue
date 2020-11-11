@@ -721,7 +721,7 @@
           //     this.getbuttonGroupData(buttonData);
           //   }
           // }
-          if (this.copy === true) {
+          if (this.copy === true && this[MODULE_COMPONENT_NAME].includes('New')) {
             this.updateRefreshButton(false);
             this.addButtonShow(buttonData);
           }
@@ -877,35 +877,36 @@
                 < Object.keys(addItemDataLength).length// 子表add>default
               ) {
                 this.isValue = true;// 子表修改了值
-                return true;
                 console.log('新增时，子表add>default,修改了值');
+                return true;
               } if (JSON.stringify(defaultItemDataLength) !== JSON.stringify(addItemDataLength)) {
                 this.isValue = true;// 左右结构，主表或子表修改了值
-                return true;
                 console.log('新增时，主表或子表add=default,修改了默认值');
+                return true;
               }
             } else if (defaultMainDataLength && Object.keys(defaultMainDataLength).length > 0) {
               if (Object.keys(defaultMainDataLength).length < Object.keys(addMainDataLength).length) { // 主表add>default
                 this.isValue = true;// 主表修改了值
-                return true;
                 console.log('新增时，主表add>default,修改了值');
-              } if (JSON.stringify(defaultMainDataLength) !== JSON.stringify(addMainDataLength)) {
-                this.isValue = true;// 主表修改了值
                 return true;
+              } if ((JSON.stringify(defaultMainDataLength) !== JSON.stringify(addMainDataLength)) && Object.keys(addMainDataLength) && Object.keys(addMainDataLength).length && Object.keys(addMainDataLength).length > 0) {
+                // 
+                this.isValue = true;// 主表修改了值
                 console.log('新增时，主表add=default,修改了默认值');
+                return true;
               } if (addItemDataLength && Object.keys(addItemDataLength).length > 0) {
                 this.isValue = true;// 主表修改了值
-                return true;
                 console.log('新增时，子表修改了值');
+                return true;
               }
             } else if (addItemDataLength && Object.keys(addItemDataLength).length > 0) {
               this.isValue = true;// 子表修改了值
-              return true;
               console.log('新增时，子表修改了值');
+              return true;
             } else if (addMainDataLength && Object.keys(addMainDataLength).length > 0) {
               this.isValue = true;// 主表修改了值
-              return true;
               console.log('新增时，主表修改了值');
+              return true;
             }
           } 
         } else if (this.objectType === 'horizontal') { // 横向布局
@@ -3497,6 +3498,13 @@
         if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
           // this.updateChangeData({ tableName: this.tableName, value: {} });
           if (!stop) { // 如果保存失败，不执行以下操作
+            if (enableOpenNewTab()) {
+              // 当开启同表新开tab模式，为解决新增成功后跳转到新开的编辑界面后，新增界面loading未关闭问题
+              this.$R3loading.hide(tableName);
+              this.clearEditData();// 清空store update数据
+
+              this.upData();// 为解决新增保存后新开tab，新增界面信息未清除问题
+            }
             let types = '';
             if (this.objectType === 'horizontal') {
               types = 'tableDetailHorizontal';
@@ -3511,11 +3519,6 @@
               label,
               id: this.buttonsData.newMainTableSaveData ? this.buttonsData.newMainTableSaveData.objId : this.itemId
             };
-            if (enableOpenNewTab()) {
-              // 当开启同表新开tab模式，为解决新增成功后跳转到新开的编辑界面后，新增界面loading未关闭问题
-              this.$R3loading.hide(tableName);
-              this.upData();// 为解决新增保存后新开tab，新增界面信息未清除问题
-            }
             this.tabOpen(tab);
           }
           const message = this.buttonsData.message;
