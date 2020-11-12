@@ -225,21 +225,21 @@ export default (router) => {
             // const doms = document.querySelector(`.${a}`);
             // doms.click();
             sameNewPage = true;
-            commit('global/updataNewTagForNewTab', sameNewPage);
+            // commit('global/updataNewTagForNewTab', sameNewPage);
             commit('global/decreasekeepAliveLists', d.keepAliveModuleName);
             // if (!preventRegisterModule.includes(d.routePrefix)) {
             delete store.state[keepAliveModuleName];
             //   store.unregisterModule(keepAliveModuleName);
             // }
-            const a = window.vm.$children[0].$children[0].$children[2].$children[1].$children;
-            a.map((item, i) => {
-              if (item.moduleComponentName === d.keepAliveModuleName) {
-                a.splice(i, 1);
-              }
-            });
-            commit('global/tabCloseAppoint', {
-              routeFullPath: d.routeFullPath, stopRouterPush: true, keepAliveModuleName: d.keepAliveModuleName, tableName, routePrefix: d.routePrefix, itemId
-            });
+            // const a = window.vm.$children[0].$children[0].$children[2].$children[1].$children;
+            // a.map((item, i) => {
+            //   if (item.moduleComponentName === d.keepAliveModuleName) {
+            //     a.splice(i, 1);
+            //   }
+            // });
+            // commit('global/tabCloseAppoint', {
+            //   routeFullPath: d.routeFullPath, stopRouterPush: true, keepAliveModuleName: d.keepAliveModuleName, tableName, routePrefix: d.routePrefix, itemId
+            // });
           }
         });
       }
@@ -248,135 +248,133 @@ export default (router) => {
     //   return;
     // }
    
-    setTimeout(() => {
-      // 处理 keepAliveModuleName：目标路由的模块默认都要加入keepAlive列表
-      if ((!keepAliveLists.includes(keepAliveModuleName) && keepAliveModuleName !== '')) {
-        const data = {
-          name: keepAliveModuleName, 
-          to,
-          dynamicModuleTag,
+    // 处理 keepAliveModuleName：目标路由的模块默认都要加入keepAlive列表
+    if ((!keepAliveLists.includes(keepAliveModuleName) && keepAliveModuleName !== '')) {
+      const data = {
+        name: keepAliveModuleName, 
+        to,
+        dynamicModuleTag,
         // sameNewPage
-        };
-        commit('global/increaseKeepAliveLists', data);
-      }
+      };
+      commit('global/increaseKeepAliveLists', data);
+    }
 
 
-      // 判断是否状态中已经存在某个模块，不存在则创建。用户自定义界面不创建
-      if (preventRegisterModule.indexOf(routePrefix) === -1 && dynamicModuleTag !== '' && store.state[keepAliveModuleName] === undefined) {
-        store.registerModule(keepAliveModuleName, moduleGenerator[dynamicModuleTag]());
-      }
+    // 判断是否状态中已经存在某个模块，不存在则创建。用户自定义界面不创建
+    if (preventRegisterModule.indexOf(routePrefix) === -1 && dynamicModuleTag !== '' && store.state[keepAliveModuleName] === undefined) {
+      store.registerModule(keepAliveModuleName, moduleGenerator[dynamicModuleTag]());
+    }
      
-      // 处理 openedMenuLists
-      let existModuleIndex = -1;
-      const existModule = openedMenuLists.filter((d, i) => {
-        if (d.tableName === tableName) { 
+    // 处理 openedMenuLists
+    let existModuleIndex = -1;
+    const existModule = openedMenuLists.filter((d, i) => {
+      if (d.tableName === tableName) { 
         // 已存在打开的模块界面，但是并不是同一个界面
-          existModuleIndex = i;
-          return true;
-        }
-        return false;
-      })[0];
-      if (existModuleIndex !== -1 && KEEP_MODULE_STATE_WHEN_CLICK_MENU && !enableOpenNewTab()) { // 列表界面打开同表单对象逻辑
+        existModuleIndex = i;
+        return true;
+      }
+      return false;
+    })[0];
+    if (existModuleIndex !== -1 && KEEP_MODULE_STATE_WHEN_CLICK_MENU && !enableOpenNewTab()) { // 列表界面打开同表单对象逻辑
       // enableOpenNewTab用于判断 列表界面打开 同表 单对象是否新开tab,默认为false
       // Condition One:
       // 如果目标路由界面所对应的[表]已经存在于已经打开的菜单列表中(不论其当前是列表状态还是编辑状态)
       // 则都应该显示其当前对应的状态页。
-        if (routePrefix === (STANDARD_TABLE_LIST_PREFIX || STANDARD_COMMONTABLE_LIST_PREFIX) && existModule.routePrefix !== (STANDARD_TABLE_LIST_PREFIX || STANDARD_COMMONTABLE_LIST_PREFIX) && !isBack) {
+      if (routePrefix === (STANDARD_TABLE_LIST_PREFIX || STANDARD_COMMONTABLE_LIST_PREFIX) && existModule.routePrefix !== (STANDARD_TABLE_LIST_PREFIX || STANDARD_COMMONTABLE_LIST_PREFIX) && !isBack) {
         // 非返回逻辑
         // Step One: 处理菜单Tab页签的显示逻辑。
-          commit('global/forceUpdateOpenedMenuLists', {
-            openedMenuInfo: Object.assign({}, existModule, { isActive: true }),
-            index: existModuleIndex
-          });
-          // Step Two: 按照用户所点击的路由原意进行跳转。
-          next({ path: existModule.routeFullPath });
-        } else {
+        commit('global/forceUpdateOpenedMenuLists', {
+          openedMenuInfo: Object.assign({}, existModule, { isActive: true }),
+          index: existModuleIndex
+        });
+        // Step Two: 按照用户所点击的路由原意进行跳转。
+        next({ path: existModule.routeFullPath });
+      } else {
         // [返回][新增]动作需要清除当前明细界面模块的keepAlive（且to与form不相同）
-          if ((isBack && to.params.tableName === from.params.tableName) || (paramItemId === 'New' && fromParamItemId !== 'undefined' && paramTableId === fromParamTableId)) {
-            commit('global/decreasekeepAliveLists', fromKeepAliveModuleName);
-          }
-          // Step One: 处理菜单Tab页签的显示逻辑。
-          commit('global/forceUpdateOpenedMenuLists', {
-            openedMenuInfo: {
-              isActive: true,
-              label: `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
-              keepAliveModuleName,
-              tableName,
-              routeFullPath: to.fullPath, // 由to.path改为to.fullPath为取带query的路径
-              routePrefix
-            },
-            index: existModuleIndex
-          });
-          // Step Two: 按照用户所点击的路由原意进行跳转。
-          next();
+        if ((isBack && to.params.tableName === from.params.tableName) || (paramItemId === 'New' && fromParamItemId !== 'undefined' && paramTableId === fromParamTableId)) {
+          commit('global/decreasekeepAliveLists', fromKeepAliveModuleName);
         }
-        // Step Three: 结束本次路由守卫。
-        return;
+        // Step One: 处理菜单Tab页签的显示逻辑。
+        commit('global/forceUpdateOpenedMenuLists', {
+          openedMenuInfo: {
+            isActive: true,
+            label: `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
+            keepAliveModuleName,
+            tableName,
+            routeFullPath: to.fullPath, // 由to.path改为to.fullPath为取带query的路径
+            routePrefix
+          },
+          index: existModuleIndex
+        });
+        // Step Two: 按照用户所点击的路由原意进行跳转。
+        next();
       }
+      // Step Three: 结束本次路由守卫。
+      return;
+    }
     
-      // 处理label逻辑。因为引入了框架插件界面，故而label显示逻辑会有些需要注意的地方。
-      // 跳转至定制界面的逻辑改为：只要单对象标记相同，不进行ID判断，只激活同一个单对象标记相同的界面
-      let keepAliveModuleNameRes = '';
-      if (dynamicModuleTag === 'C') {
-        keepAliveModuleNameRes = keepAliveModuleName.split('.')[1];
-      } 
-      // 通过activateSameCustomizePage配置路由到自定义界面，如果自定义界面标识相同，是否只激活同一个tab,默认为true,只激活同一个tab
-      let activateSameCustomizePageFlag = false;
-      if (enableActivateSameCustomizePage()) {
+    // 处理label逻辑。因为引入了框架插件界面，故而label显示逻辑会有些需要注意的地方。
+    // 跳转至定制界面的逻辑改为：只要单对象标记相同，不进行ID判断，只激活同一个单对象标记相同的界面
+    let keepAliveModuleNameRes = '';
+    if (dynamicModuleTag === 'C') {
+      keepAliveModuleNameRes = keepAliveModuleName.split('.')[1];
+    } 
+    // 通过activateSameCustomizePage配置路由到自定义界面，如果自定义界面标识相同，是否只激活同一个tab,默认为true,只激活同一个tab
+    let activateSameCustomizePageFlag = false;
+    if (enableActivateSameCustomizePage()) {
       // 当前打开的tab的keepAliveModuleName===要跳转页面的keepAliveModuleName，或是当前是自定义界面的keepAliveModuleName包含当前要跳转的自定义界面的标识，不必keepAliveModuleName相等，包含自定义界面的标识即可
-        if (dynamicModuleTag !== '' && openedMenuLists.length > 0 && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))).length > 0) {
-          activateSameCustomizePageFlag = true;
-        }
+      if (dynamicModuleTag !== '' && openedMenuLists.length > 0 && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))).length > 0) {
+        activateSameCustomizePageFlag = true;
       }
-      if ((dynamicModuleTag !== '' && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName).length === 0 && !activateSameCustomizePageFlag)) {
+    }
+    if ((dynamicModuleTag !== '' && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName).length === 0 && !activateSameCustomizePageFlag)) {
       // 新开tab
       // 目标路由所对应的[功能模块]没有存在于openedMenuLists中，则将目标路由应该对应的模块信息写入openedMenuLists
   
-        let tempInterval = -1;
-        tempInterval = setInterval(() => {
-          let ready = null;
-          const saveNetwork = getSeesionObject('saveNetwork').name;
-          if (saveNetwork) {
-            ready = true;
-          } else {
-            ready = JSON.stringify(store.state.global.keepAliveLabelMaps) !== '{}';
-          }
-          if (ready) {
-            clearInterval(tempInterval);
-            if (routePrefix === PLUGIN_MODULE_PREFIX) {
-              if (window.ProjectConfig && window.ProjectConfig.externalPluginModules) { // 整合外部插件配置与框架插件配置
-                pluginModules = Object.assign({}, pluginModules, window.ProjectConfig.externalPluginModules);
-              }
+      let tempInterval = -1;
+      tempInterval = setInterval(() => {
+        let ready = null;
+        const saveNetwork = getSeesionObject('saveNetwork').name;
+        if (saveNetwork) {
+          ready = true;
+        } else {
+          ready = JSON.stringify(store.state.global.keepAliveLabelMaps) !== '{}';
+        }
+        if (ready) {
+          clearInterval(tempInterval);
+          if (routePrefix === PLUGIN_MODULE_PREFIX) {
+            if (window.ProjectConfig && window.ProjectConfig.externalPluginModules) { // 整合外部插件配置与框架插件配置
+              pluginModules = Object.assign({}, pluginModules, window.ProjectConfig.externalPluginModules);
             }
-            commit('global/increaseOpenedMenuLists', {
-              label: routePrefix === PLUGIN_MODULE_PREFIX ? pluginModules[pluginModuleName].name : `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
-              keepAliveModuleName,
-              tableName: tableName || customizedModuleName || pluginModuleName || linkModuleName,
-              routeFullPath: to.fullPath,
-              routePrefix,
-              itemId: itemId || customizedModuleId || pluginModuleId || linkModuleId,
-              sameNewPage
-            });
           }
-        }, 125);
-      } else if (to.path !== '/') { // 处理激活同一个tab对应表逻辑
+          commit('global/increaseOpenedMenuLists', {
+            label: routePrefix === PLUGIN_MODULE_PREFIX ? pluginModules[pluginModuleName].name : `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
+            keepAliveModuleName,
+            tableName: tableName || customizedModuleName || pluginModuleName || linkModuleName,
+            routeFullPath: to.fullPath,
+            routePrefix,
+            itemId: itemId || customizedModuleId || pluginModuleId || linkModuleId,
+            sameNewPage
+          });
+        }
+      }, 125);
+    } else if (to.path !== '/') { // 处理激活同一个tab对应表逻辑
       // 目标路由所对应的[功能模块]已经存在与openedMenuList中，则将需要处理openedMenuList中相匹配的索引值的激活状态。
       // 不新开tab
-        if (window.ProjectConfig && window.ProjectConfig.externalPluginModules) { // 整合外部插件配置与框架插件配置
-          pluginModules = Object.assign({}, pluginModules, window.ProjectConfig.externalPluginModules);
-        }
-        commit('global/againClickOpenedMenuLists', {
-          label: routePrefix === PLUGIN_MODULE_PREFIX ? pluginModules[pluginModuleName].name : `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
-          keepAliveModuleName,
-          type: dynamicModuleTag,
-          fullPath: to.fullPath,
-          itemId: itemId || customizedModuleId || pluginModuleId || linkModuleId
-        });
+      if (window.ProjectConfig && window.ProjectConfig.externalPluginModules) { // 整合外部插件配置与框架插件配置
+        pluginModules = Object.assign({}, pluginModules, window.ProjectConfig.externalPluginModules);
       }
+      commit('global/againClickOpenedMenuLists', {
+        label: routePrefix === PLUGIN_MODULE_PREFIX ? pluginModules[pluginModuleName].name : `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
+        keepAliveModuleName,
+        type: dynamicModuleTag,
+        fullPath: to.fullPath,
+        itemId: itemId || customizedModuleId || pluginModuleId || linkModuleId
+      });
+    }
     
 
-      next();
-    }, 0);
+    next();
   });
 
   // 增加后置路由守卫

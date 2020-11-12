@@ -157,7 +157,7 @@
           this.updataSwitchTag(true);
           router.push({ path: tag.routeFullPath });
           this.switchTabForActiveTab(item);
-          this.updataSwitchTag(false);
+          // this.updataSwitchTag(false);
         }
       },
       handleClose(tag) {
