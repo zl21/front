@@ -396,7 +396,6 @@ export default (router) => {
     }
     const isDynamicRouting = Boolean(window.sessionStorage.getItem('dynamicRouting'));
     // const ignore = Boolean(window.sessionStorage.getItem('ignore'));
-
     if (isDynamicRouting && (isFromStandardTable || isFromPlugin) && isTableDetail && isNotFromSameTable) {
       window.sessionStorage.removeItem('dynamicRouting');
       const routeMapRecordForSingleObject = getSeesionObject('routeMapRecordForSingleObject');

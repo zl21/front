@@ -2248,11 +2248,11 @@
         const currentPath = this.$router.currentRoute.path;
 
        
-        const SinglePageRouteNew = currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));  
-        const SinglePageRouteModify = currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));  
+        const SinglePageRouteNew = enableOpenNewTab() ? currentPath : currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));  
+        const SinglePageRouteModify = enableOpenNewTab() ? currentPath : currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));  
 
-        const newListPageRouteNew = keepAliveModuleName.substring(keepAliveModuleName.indexOf('.') + 1, keepAliveModuleName.lastIndexOf('.'));
-        const newListPageRouteMOdify = keepAliveModuleName.substring(keepAliveModuleName.indexOf('.') + 1, keepAliveModuleName.lastIndexOf('.'));        
+        const newListPageRouteNew = enableOpenNewTab() ? keepAliveModuleName : keepAliveModuleName.substring(keepAliveModuleName.indexOf('.') + 1, keepAliveModuleName.lastIndexOf('.'));
+        const newListPageRouteMOdify = enableOpenNewTab() ? keepAliveModuleName : keepAliveModuleName.substring(keepAliveModuleName.indexOf('.') + 1, keepAliveModuleName.lastIndexOf('.'));        
 
 
         let routeMapRecordForSingleObjectNew = '';
