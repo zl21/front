@@ -11,6 +11,7 @@
 </template>
 
 <script>
+
   import Vue from 'vue';
   import { mapState, mapActions, mapMutations } from 'vuex';
   import SMixins from '../__config__/mixins/standardTableLists';
@@ -26,6 +27,7 @@
     CUSTOMIZED_MODULE_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, PLUGIN_MODULE_PREFIX, PLUGIN_MODULE_COMPONENT_PREFIX,
     LINK_MODULE_PREFIX,
     customizeMixins,
+    enableOpenNewTab
   } from '../constants/global';
   import StandardTableList from './StandardTableList.vue';
   import VerticalTableDetail from './V.TableDetail.vue';
@@ -56,16 +58,17 @@
       return {
         currentModule: null,
         urlName: '',
+        sameNewPage: false,
         show: true
       };
     },
    
     computed: {
-      ...mapState('global', ['sameNewPage', 'keepAliveLists', 'menuLists', 'LinkUrl', 'primaryMenuIndex', 'keepAliveLabelMaps'])
+      ...mapState('global', ['switchTag', 'openedMenuLists', 'keepAliveLists', 'menuLists', 'LinkUrl', 'primaryMenuIndex', 'keepAliveLabelMaps'])
     },
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
-      ...mapMutations('global', ['increaseLinkUrl', 'addKeepAliveLabelMaps']),
+      ...mapMutations('global', ['increaseLinkUrl', 'addKeepAliveLabelMaps', 'updataSwitchTag']),
       generateComponent() {
         const { routePrefix } = this.$route.meta;
         if ([STANDARD_TABLE_LIST_PREFIX, STANDARD_COMMONTABLE_LIST_PREFIX, VERTICAL_TABLE_DETAIL_PREFIX, HORIZONTAL_TABLE_DETAIL_PREFIX].indexOf(routePrefix) !== -1) {
@@ -111,7 +114,13 @@
         if ([STANDARD_TABLE_LIST_PREFIX, STANDARD_COMMONTABLE_LIST_PREFIX, VERTICAL_TABLE_DETAIL_PREFIX, HORIZONTAL_TABLE_DETAIL_PREFIX].indexOf(routePrefix) === -1) { return; }
         if (Vue.component(componentName) === undefined) {
           Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins, mixinsCustomize], isKeepAliveModel: true }, component)));
-        } 
+        } else if (this.sameNewPage) {
+          this.sameNewPage = false;
+          this.show = false;
+         
+          Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins, mixinsCustomize], isKeepAliveModel: true }, component)));
+          this.show = true;
+        }
         // else if (this.sameNewPage) {
         //   this.$store.commit('global/updataNewTagForNewTab', false);
         //   setTimeout(() => {
@@ -220,8 +229,42 @@
     mounted() {
       this.generateComponent();
     },
+   
     watch: {
-      $route() {
+      
+      $route(to, from) {
+        if (enableOpenNewTab() && !this.switchTag) {
+          if (!this.switchTag) {
+            this.updataSwitchTag(false);
+
+            if (to.params.itemId === 'New') { // 当前打开的新增界面，需要判断是否已经存在该表的新增界面,存在即开启新tab,并关闭原有存在的该表新增界面tab
+              this.openedMenuLists.map((d) => {
+                if ((d.itemId === to.params.itemId && d.tableName === to.params.tableName)// 模块名相同
+                  && ((`${d.routeFullPath}?isBack=true` === to.fullPath || `${to.fullPath}?isBack=true` === d.routeFullPath) 
+                  || (`${this.$router.currentRoute.fullPath}?isBack=true` === to.fullPath || `${to.fullPath}?isBack=true` === this.$router.currentRoute.fullPath) 
+                  || (`${this.$router.currentRoute.fullPath}?isBack=true` === to.fullPath)
+                  || (to.fullPath.includes('?isBack=true') && d.routeFullPath === to.fullPath)
+                  || (d.routeFullPath.includes('?isBack=true') && d.routeFullPath === to.fullPath)
+
+                  )// 当前处于激活状态的不是即将要打开的新增tab或者复制tab
+                // 当前激活的tab不是即将打开的tab，用于区分新增和复制
+                ) {
+                  const getVueCompontent = window.vm.$children[0].$children[0].$children[2].$children[1].$children;
+                  getVueCompontent.map((item, i) => {
+                    if (item.moduleComponentName === moduleName()) {
+                      getVueCompontent.splice(i, 1);
+                    }
+                  });
+                  this.sameNewPage = true;
+                }
+              });
+            } 
+          } else {
+            this.updataSwitchTag(false);
+          }
+        } else {
+          this.updataSwitchTag(false);
+        }
         this.generateComponent();
       },
       LinkUrl: {
