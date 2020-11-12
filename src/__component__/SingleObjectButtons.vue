@@ -2313,23 +2313,23 @@
           } else { // 从插件界面双击进入单对象界面时，返回时需清除routeMapRecord对应关系
             deleteFromSessionObject('routeMapRecord', keepAliveModuleName);
           }
-          if (!enableOpenNewTab()) {
-            this.decreasekeepAliveLists(keepAliveModuleName);
-            this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName });
-          }
+          // if (!enableOpenNewTab()) {
+          this.decreasekeepAliveLists(keepAliveModuleName);
+          this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName });
+          // }
         } else if (routeMapRecordForSingleObject[currentPath]) {
           router.push(routeMapRecordForSingleObject[currentPath]);
-          if (!enableOpenNewTab()) {
-            this.decreasekeepAliveLists(keepAliveModuleName);
-            this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName });
-          }
+          // if (!enableOpenNewTab()) {
+          this.decreasekeepAliveLists(keepAliveModuleName);
+          this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName });
+          // }
           // this.clickButtonsRefresh();
         } else if (routeMapRecordForSingleObjectNew) {
           router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectNew]);
-          if (!enableOpenNewTab()) {
-            this.decreasekeepAliveLists(keepAliveModuleName);
-            this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName });
-          }
+          // if (!enableOpenNewTab()) {
+          this.decreasekeepAliveLists(keepAliveModuleName);
+          this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName });
+          // }
           // this.clickButtonsRefresh();
         } else if (routeMapRecordForListNew.to) { // 动态路由（新增返回）
           const directionalRouterType = this.getDirectionalRouterType(routeMapRecordForListNew.from);
@@ -2354,16 +2354,16 @@
             deleteFromSessionObject('routeMapRecord', routeMapRecordForListNew.to);// 清除动态路由对应关系
           }
           window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
-          if (!enableOpenNewTab()) {
-            this.decreasekeepAliveLists(keepAliveModuleName);
-            this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName });
-          }
+          // if (!enableOpenNewTab()) {
+          this.decreasekeepAliveLists(keepAliveModuleName);
+          this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName });
+          // }
         } else if (routeMapRecordForSingleObjectModify) { // 单对象动态路由新增以及复制保存后跳转到编辑界面的返回需回到动态路由对应的界面
           router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectModify]);
-          if (!enableOpenNewTab()) {
-            this.decreasekeepAliveLists(keepAliveModuleName);
-            this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName });
-          }
+          // if (!enableOpenNewTab()) {
+          this.decreasekeepAliveLists(keepAliveModuleName);
+          this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName });
+          // }
         } else if (routeMapRecordForListModify.to) { // 列表动态路由（新增/复制保存成功后跳转到单对象界面执行返回操作）
           const directionalRouterType = this.getDirectionalRouterType(routeMapRecordForListNew.from);
           const param = {
@@ -2377,10 +2377,10 @@
           };
           updateSessionObject('dynamicRoutingIsBackForDelete', deleteValue);
           window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
-          if (!enableOpenNewTab()) {
-            this.decreasekeepAliveLists(keepAliveModuleName);
-            this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName });
-          }
+          // if (!enableOpenNewTab()) {
+          this.decreasekeepAliveLists(keepAliveModuleName);
+          this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName });
+          // }
         } else {
           const param = {
             tableId,
