@@ -740,7 +740,7 @@
         } else if (type === 'Collection') {
           this.clickButtonsCollect();// 收藏按钮执行方法
         } else if (type === 'back') {
-          this.clickButtonsBack();// 返回按钮执行方法
+          this.clickButtonsBack({ type, obj });// 返回按钮执行方法
         } else if (type === 'temporaryStorage') {
           this.clickButtonsTemporaryStorage();// 暂存按钮执行方法(暂存按钮根据webConf配置显示，同时与保存按钮显示逻辑相同)
         } else if (type === 'refresh') {
@@ -2215,23 +2215,23 @@
         this.copyDataForSingleObject({});// 清除global中复制所保存的数据
         this.$R3loading.show(this.tableName);
       },
-      clickButtonsBack(stop) { // 按钮返回事件  
+      clickButtonsBack({ stop, type, obj }) { // 按钮返回事件  
         if (stop) {
-          this.back();
+          this.back({ stop, type, obj });
           this.isValue = null;
         } else {
           this.testUpdata();
           if (this.isValue) {
             this.Warning('修改的数据未保存,确定返回？', () => {
-              this.back();
+              this.back({ stop, type, obj });
             });
           } else {
-            this.back();
+            this.back({ stop, type, obj });
             this.isValue = null;
           }
         }
       },
-      back() {
+      back({ stop, type, obj }) {
         this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
         const { tableId, tableName } = this.$route.params;
         // 列表界面配置动态路由
@@ -2290,6 +2290,7 @@
             }
           });
         }
+        debugger;
         if (routeMapRecord[keepAliveModuleName]) {
           const directionalRouterType = this.getDirectionalRouterType(routeMapRecord[keepAliveModuleName]);
           const param = {
@@ -2381,7 +2382,13 @@
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName });
           // }
-        } else {
+        } else if (enableOpenNewTab()) {
+          const keepAliveModuleNameForOpenNewTab = this.activeTab.keepAliveModuleName;
+          const currentRouteForOpenNewTab = this.$router.currentRoute.path;
+          const routePrefix = this.$router.currentRoute.meta.routePrefix;
+          this.decreasekeepAliveLists(keepAliveModuleNameForOpenNewTab);
+          this.tabCloseAppoint({ tableName: this.tableName, routeFullPath: currentRouteForOpenNewTab, routePrefix });
+        } else if (type === 'back') {
           const param = {
             tableId,
             tableName,
@@ -2986,11 +2993,11 @@
           this.tabCloseAppoint({ tableName: this.tableName, routeFullPath: currentRoute });
         } else {
           const stop = true;
-          this.clickButtonsBack(stop);
-          if (enableOpenNewTab()) {
-            this.decreasekeepAliveLists(keepAliveModuleName);
-            this.tabCloseAppoint({ tableName: this.tableName, routeFullPath: currentRoute, routePrefix });
-          }
+          this.clickButtonsBack({ stop });
+          // if (enableOpenNewTab()) {
+          //   this.decreasekeepAliveLists(keepAliveModuleName);
+          //   this.tabCloseAppoint({ tableName: this.tableName, routeFullPath: currentRoute, routePrefix });
+          // }
         }
       },
       objectAdd() { // 新增
