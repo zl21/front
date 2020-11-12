@@ -2980,7 +2980,7 @@
         const value = this.hideBackButton();
         const keepAliveModuleName = this.activeTab.keepAliveModuleName;
         const currentRoute = this.$router.currentRoute.path;
-
+        const routePrefix = this.$router.currentRoute.meta.routePrefix;
         if (value) {
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({ tableName: this.tableName, routeFullPath: currentRoute });
@@ -2989,7 +2989,7 @@
           this.clickButtonsBack(stop);
           if (enableOpenNewTab()) {
             this.decreasekeepAliveLists(keepAliveModuleName);
-            this.tabCloseAppoint({ tableName: this.tableName, routeFullPath: currentRoute });
+            this.tabCloseAppoint({ tableName: this.tableName, routeFullPath: currentRoute, routePrefix });
           }
         }
       },
