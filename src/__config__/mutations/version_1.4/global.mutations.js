@@ -24,6 +24,7 @@ import store from '../../store.config';
 
 
 export default {
+ 
   updataNewTagForNewTab(state, data) {
     state.sameNewPage = data;
   },
@@ -267,6 +268,8 @@ export default {
           }
           return a;
         }, {});
+      const arr = Object.keys(state.keepAliveLabelMaps);
+      state.allMenu = arr; 
     }
    
     // 以下逻辑是为了解决菜单外路由跳转提供信息
@@ -638,7 +641,7 @@ export default {
         if (item.routeFullPath === tabRouteFullPath) {
           openedMenuLists.splice(index, 1);
         }
-      } else if (item.routeFullPath === tabRouteFullPath) {
+      } else if (item.routeFullPath.includes(tabRouteFullPath) || tabRouteFullPath.includes(item.routeFullPath)) {
         openedMenuLists.splice(index, 1);
         if (tabRouteFullPath && !tab.forbidden) {
           if (openedMenuLists.length > 0) {

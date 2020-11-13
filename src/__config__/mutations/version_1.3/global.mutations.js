@@ -287,6 +287,8 @@ export default {
           }
           return a;
         }, {});
+      const arr = Object.keys(state.keepAliveLabelMaps);
+      state.allMenu = arr; 
     }
     const path = getSeesionObject('savePath').path;
 
@@ -634,7 +636,7 @@ export default {
         if (item.routeFullPath === tabRouteFullPath) {
           openedMenuLists.splice(index, 1);
         }
-      } else if (item.routeFullPath === tabRouteFullPath) {
+      } else if (item.routeFullPath.includes(tabRouteFullPath) || tabRouteFullPath.includes(item.routeFullPath)) {
         openedMenuLists.splice(index, 1);
         if (tabRouteFullPath && !tab.forbidden) {
           if (openedMenuLists.length > 0) {
