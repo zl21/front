@@ -522,7 +522,6 @@ export default {
     // window.sessionStorage.removeItem('dynamicRoutingIsBack');// 清除动态路由返回标记
 
     const tabRouteFullPath = tab.routeFullPath;
-
     // 删除规则一：关闭页签时，菜单跳转到单对象后新增保存跳转到编辑界面，清除session中存储的对应关系。
     const clickMenuAddSingleObjectData = getSeesionObject('clickMenuAddSingleObject');
     Object.values(clickMenuAddSingleObjectData).map((item) => {
@@ -536,6 +535,11 @@ export default {
     // 删除规则二：关闭页签时，清除外键类型跳转的session中存储的对应关系。
     const routeMapRecordForHideBackButtonData = getSeesionObject('routeMapRecordForHideBackButton');
     Object.keys(routeMapRecordForHideBackButtonData).map((item) => {
+      if (enableOpenNewTab()) { // 打补丁处理同表tab新开，外键跳转到单对象，再由单对象列表重新打开此单对象时，动态路由维护的关系未清除，导致关闭当前界面，再重新打开此明细时，不显示返回按钮
+        if (item === tab.routeFullPath) {
+          deleteFromSessionObject('routeMapRecordForHideBackButton', item);
+        }
+      }
       const routeFullPath = state.activeTab.routeFullPath;
       const index = routeFullPath.lastIndexOf('/');
       const routeFullPathRes = routeFullPath.substring(0, index + 1);
@@ -556,7 +560,15 @@ export default {
         }
       });
     }
-
+    if (enableOpenNewTab()) { // 打补丁处理同表tab新开，外键跳转到单对象，再由单对象列表重新打开此单对象时，动态路由维护的关系未清除，导致关闭当前界面，再重新打开此明细时，不显示返回按钮
+      if (!isDynamicRouting) { // 非动态路由返回之前的关闭tab需清除routeMapRecord对应关系，动态路由返回的routeMapRecord对应关系在返回监听时刷新接口之后清除
+        Object.keys(routeMapRecord).map((item) => {
+          if (item === tab.keepAliveModuleName) {
+            deleteFromSessionObject('routeMapRecord', item);
+          }
+        });
+      }
+    }
     // 删除规则五： 如果来源为插件界面，关闭当前tab时，应清除dynamicRoutingIsBack标记，以及dynamicRoutingIsBackForDelete内存储的当前表的关系
     // Object.keys(routeMapRecord).map((item) => {
     //   const fromPath = routeMapRecord[item].substring(1, 7) === 'PLUGIN';
@@ -633,6 +645,15 @@ export default {
     //   state.keepAliveLists.splice(index, 1);
     // }
     openedMenuLists.forEach((item, index) => {
+      let samePath = false;
+      if (enableOpenNewTab()) {
+        if (`${item.routeFullPath}?isBack=true` === tabRouteFullPath || `${tabRouteFullPath}?isBack=true` === item.routeFullPath || item.routeFullPath === tabRouteFullPath) {
+          samePath = true;
+        }
+      } else if (item.routeFullPath === tabRouteFullPath) {
+        samePath = true;
+      }
+      
       if (tab.stopRouterPush) { // 关闭当前tab时不进行路由跳转
         const { tableName } = router.currentRoute.params;
         if (item.tableName === tableName) {
@@ -641,7 +662,7 @@ export default {
         if (item.routeFullPath === tabRouteFullPath) {
           openedMenuLists.splice(index, 1);
         }
-      } else if (item.routeFullPath.includes(tabRouteFullPath) || tabRouteFullPath.includes(item.routeFullPath)) {
+      } else if (samePath) {
         openedMenuLists.splice(index, 1);
         if (tabRouteFullPath && !tab.forbidden) {
           if (openedMenuLists.length > 0) {
