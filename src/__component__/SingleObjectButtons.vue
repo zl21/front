@@ -722,6 +722,7 @@
           //   }
           // }
           if (this.copy === true && this[MODULE_COMPONENT_NAME].includes('New')) {
+            console.log(4444, this.[INSTANCE_ROUTE_QUERY], this.[INSTANCE_ROUTE]);
             this.updateRefreshButton(false);
             this.addButtonShow(buttonData);
           }
@@ -2290,7 +2291,6 @@
             }
           });
         }
-        debugger;
         if (routeMapRecord[keepAliveModuleName]) {
           const directionalRouterType = this.getDirectionalRouterType(routeMapRecord[keepAliveModuleName]);
           const param = {
@@ -3992,7 +3992,19 @@
         this.buttonsReorganization(this.tabcmd);
       }
       // this.dataArray.refresh = this.refreshButtons;
-      this.waListButtons(this.tabwebact);
+
+
+      if (this.objectType === 'horizontal') { // 横向布局
+        if (this.itemId === 'New') { // 新增按钮渲染逻辑
+        } else { // 编辑按钮渲染逻辑
+          this.waListButtons(this.tabwebact);
+        }
+      } else if (this.objectType === 'vertical') {
+        if (this.itemId === 'New') { // 编辑按钮渲染逻辑
+        } else { // 新增按钮渲染逻辑
+          this.waListButtons(this.tabwebact);
+        }
+      }
     },
     activated() {
       this.updataCurrentTableDetailInfo();
