@@ -366,8 +366,7 @@
         exportTasks: ({ exportTasks }) => exportTasks,
         currentLoading: ({ currentLoading }) => currentLoading,
         userInfo: ({ userInfo }) => userInfo,
-
-        
+        allMenu: ({ allMenu }) => allMenu,
       }),
       currentTabIndex() {
         // if (this.WebConf && this.WebConf.isCustomizeTab && this.objectType === 'horizontal') {
@@ -2387,7 +2386,21 @@
           const currentRouteForOpenNewTab = this.$router.currentRoute.path;
           const routePrefix = this.$router.currentRoute.meta.routePrefix;
           this.decreasekeepAliveLists(keepAliveModuleNameForOpenNewTab);
-          this.tabCloseAppoint({ tableName: this.tableName, routeFullPath: currentRouteForOpenNewTab, routePrefix });
+          this.tabCloseAppoint({
+            tableName: this.tableName, routeFullPath: currentRouteForOpenNewTab, routePrefix, keepAliveModuleName 
+          });
+        
+          if (type === 'back') {
+            //
+            if (this.currentMenuExists({ tableName })) {
+              const param = {
+                tableId,
+                tableName,
+                back: true,
+              };
+              this.tabOpen(param);
+            }
+          }
         } else if (type === 'back') {
           const param = {
             tableId,
@@ -2396,6 +2409,14 @@
           };
           this.tabOpen(param);
         }
+      },
+      currentMenuExists(data) { // 判断当前表是否配置在菜单内
+        // data.tableName:当前表名
+        const name = this.allMenu.filter(d => d.includes(data.tableName));
+        if (name.length > 0) {
+          return true;
+        }
+        return false;
       },
       getDirectionalRouterType(url) { // 根据路由获取对应的页面类型
         // url：
