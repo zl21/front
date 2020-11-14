@@ -1013,7 +1013,9 @@
         const {
           tablename, refcolid, tabrelation, tabinlinemode
         } = this.itemInfo;
-       
+        
+        // 通知表格刷新
+        DispatchEvent('tabRefreshClick');
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.currentTabIndex === 0) { // 主表
             this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
@@ -1071,6 +1073,7 @@
           this.getObjectForMainTableForm({// 获取主表表单
             table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex
           });
+          
           // if (this.itemInfo.tabrelation === '1:1') {
           //   // enableRequestItemTable:因此方法是主子表同时请求，加此标记为不请求子表相关接口
           //   // if (this.itemInfo.vuedisplay !== 'TabItem') {
@@ -1571,7 +1574,6 @@
         return id;
       },
       routingHop(tab, id) {
-
         // tab.action配置路径前不能加/
         // /:itemId?id=1&&name=2
         // tab.action = 'CUSTOMIZED/FUNCTIONPERMISSION/:itemId?id=1&&name=2';
