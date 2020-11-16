@@ -328,7 +328,10 @@ export default {
       // state.keepAliveLists.push(data.name);
       // }, 10);
       // } 
-      else if (state.keepAliveLists.filter(k => k.includes(keepAliveModuleNameRes)).length > 0) {
+      
+      else if (state.keepAliveLists.filter(k => (k.includes('?isBack=true') && k.includes(keepAliveModuleNameRes)) || k === keepAliveModuleNameRes).length > 0) {
+        // 处理同表tab新开逻辑，新增与复制内容进行重新激活时，对应的缓存模块问题，k.includes('?isBack=true') && k.includes(keepAliveModuleNameRes)) 
+        // 处理模块名是包含关系时报错k === keepAliveModuleNameRes；如：a.11与a.1
         state.keepAliveLists.filter((a, i) => {
           if (a.includes(keepAliveModuleNameRes)) {
             state.keepAliveLists.splice(i, 1);
@@ -363,6 +366,7 @@ export default {
     //   tableName: openedMenuInfo.tableName,
     // };
   },
+  
   increaseOpenedMenuLists(state, {
     label, keepAliveModuleName, tableName, routeFullPath, routePrefix, itemId, sameNewPage
   }) {
@@ -390,20 +394,6 @@ export default {
           .map(d => Object.assign({}, d, { isActive: false }))
           .concat([Object.assign({}, currentTabInfo, { isActive: true })]);
         state.activeTab = currentTabInfo;
-
-        return;
-        state.activeTab = currentTabInfo;
-        currentTabInfo.isActive = true;
-        state.openedMenuLists.forEach((d, i) => { // 将所有tab置为失活状态
-          d.isActive = false;
-          if (d.keepAliveModuleName === keepAliveModuleName) {
-            state.openedMenuLists.splice(i, 1);// 替换最后一个tab
-          }
-        });
-        state.keepAliveLists.push(currentTabInfo.keepAliveModuleName);
-
-        currentTabInfo.label = 'summer';
-        state.openedMenuLists.push(currentTabInfo);
       } else {
         state.openedMenuLists = state.openedMenuLists
           .map(d => Object.assign({}, d, { isActive: false }))
