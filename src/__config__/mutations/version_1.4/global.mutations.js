@@ -343,6 +343,15 @@ export default {
       }
     } 
   },
+  spliceMenuLists(state, menu) {
+    state.activeTab = menu;
+    state.openedMenuLists.forEach((d, i) => { // 将所有tab置为失活状态
+      d.isActive = false;
+      if (d.keepAliveModuleName === menu.keepAliveModuleName) {
+        state.openedMenuLists.splice(i, 1, menu);// 替换最后一个tab
+      }
+    });
+  },
   decreasekeepAliveLists(state, name) {
     if (enableKeepAlive() && state.keepAliveLists.includes(name)) {
       state.keepAliveLists.splice(state.keepAliveLists.indexOf(name), 1);
