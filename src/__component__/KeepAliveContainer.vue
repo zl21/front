@@ -240,14 +240,16 @@
             if (to.params.itemId === 'New') { // 当前打开的新增界面，需要判断是否已经存在该表的新增界面,存在即开启新tab,并关闭原有存在的该表新增界面tab
               this.openedMenuLists.map((d) => {
                 if ((d.itemId === to.params.itemId && d.tableName === to.params.tableName)// 模块名相同
-                  && ((`${d.routeFullPath}?isBack=true` === to.fullPath || `${to.fullPath}?isBack=true` === d.routeFullPath) 
-                  || (`${this.$router.currentRoute.fullPath}?isBack=true` === to.fullPath || `${to.fullPath}?isBack=true` === this.$router.currentRoute.fullPath) 
+                  && (
+                    `${d.routeFullPath}?isBack=true` === to.fullPath 
+                  || `${to.fullPath}?isBack=true` === d.routeFullPath
+                  || (`${this.$router.currentRoute.fullPath}?isBack=true` === to.fullPath 
+                  || `${to.fullPath}?isBack=true` === this.$router.currentRoute.fullPath) 
                   || (`${this.$router.currentRoute.fullPath}?isBack=true` === to.fullPath)
                   || (to.fullPath.includes('?isBack=true') && d.routeFullPath === to.fullPath)
-                  || (d.routeFullPath.includes('?isBack=true') && d.routeFullPath === to.fullPath)
-
+                  // || (d.routeFullPath.includes('?isBack=true') && d.routeFullPath === to.fullPath)
                   )// 当前处于激活状态的不是即将要打开的新增tab或者复制tab
-                // 当前激活的tab不是即将打开的tab，用于区分新增和复制
+                  // 当前激活的tab不是即将打开的tab，用于区分新增和复制
                 ) {
                   const getVueCompontent = window.vm.$children[0].$children[0].$children[2].$children[1].$children;
                   getVueCompontent.map((item, i) => {
@@ -256,6 +258,17 @@
                     }
                   });
                   this.sameNewPage = true;
+
+                  const currentTabInfo = {
+                    isActive: true,
+                    itemId: to.params.itemId,
+                    keepAliveModuleName: d.keepAliveModuleName,
+                    label: d.label,
+                    routePrefix: d.routePrefix,
+                    tableName: d.tableName,
+                    routeFullPath: to.fullPath
+                  };
+                  this.$store.commit('global/spliceMenuLists', currentTabInfo);// 更新当前ActiveTab
                 }
               });
             } 

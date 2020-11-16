@@ -2382,7 +2382,8 @@
           this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName });
           // }
         } else if (enableOpenNewTab()) {
-          const keepAliveModuleNameForOpenNewTab = this.activeTab.keepAliveModuleName;
+          const keepAliveModuleNameForOpenNewTab = this[MODULE_COMPONENT_NAME];
+          console.log(33333, keepAliveModuleNameForOpenNewTab);
           const currentRouteForOpenNewTab = this.$router.currentRoute.path;
           const routePrefix = this.$router.currentRoute.meta.routePrefix;
           this.decreasekeepAliveLists(keepAliveModuleNameForOpenNewTab);

@@ -351,7 +351,10 @@ export default {
       // state.keepAliveLists.push(data.name);
       // }, 10);
       // } 
-      else if (state.keepAliveLists.filter(k => k.includes(keepAliveModuleNameRes)).length > 0) {
+      
+      else if (state.keepAliveLists.filter(k => (k.includes('?isBack=true') && k.includes(keepAliveModuleNameRes)) || k === keepAliveModuleNameRes).length > 0) {
+        // 处理同表tab新开逻辑，新增与复制内容进行重新激活时，对应的缓存模块问题，k.includes('?isBack=true') && k.includes(keepAliveModuleNameRes)) 
+        // 处理模块名是包含关系时报错k === keepAliveModuleNameRes；如：a.11与a.1
         state.keepAliveLists.filter((a, i) => {
           if (a.includes(keepAliveModuleNameRes)) {
             state.keepAliveLists.splice(i, 1);
@@ -362,6 +365,15 @@ export default {
         state.keepAliveLists = state.keepAliveLists.concat([data.name]);
       }
     } 
+  },
+  spliceMenuLists(state, menu) {
+    state.activeTab = menu;
+    state.openedMenuLists.forEach((d, i) => { // 将所有tab置为失活状态
+      d.isActive = false;
+      if (d.keepAliveModuleName === menu.keepAliveModuleName) {
+        state.openedMenuLists.splice(i, 1, menu);// 替换最后一个tab
+      }
+    });
   },
   decreasekeepAliveLists(state, name) {
     if (enableKeepAlive() && state.keepAliveLists.includes(name)) {

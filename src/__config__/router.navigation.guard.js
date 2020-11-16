@@ -226,8 +226,9 @@ export default (router) => {
             // doms.click();
             sameNewPage = true;
             // commit('global/updataNewTagForNewTab', sameNewPage);
+            
             commit('global/decreasekeepAliveLists', d.keepAliveModuleName);
-            commit('global/switchTabForActiveTab', d);// 更新当前ActiveTab
+            // commit('global/switchTabForActiveTab', d);// 更新当前ActiveTab
 
             
             // if (!preventRegisterModule.includes(d.routePrefix)) {
