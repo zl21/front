@@ -2383,7 +2383,6 @@
           // }
         } else if (enableOpenNewTab()) {
           const keepAliveModuleNameForOpenNewTab = this[MODULE_COMPONENT_NAME];
-          console.log(33333, keepAliveModuleNameForOpenNewTab);
           const currentRouteForOpenNewTab = this.$router.currentRoute.path;
           const routePrefix = this.$router.currentRoute.meta.routePrefix;
           this.decreasekeepAliveLists(keepAliveModuleNameForOpenNewTab);
@@ -2393,11 +2392,15 @@
         
           if (type === 'back') {
             //
+             
             if (this.currentMenuExists({ tableName })) {
+              const url = `/SYSTEM/TABLE/${this.tableName}/${this.tableId}`;
               const param = {
                 tableId,
                 tableName,
                 back: true,
+                url,
+                NToUpperCase: true,
               };
               this.tabOpen(param);
             }
