@@ -251,6 +251,7 @@
                   )// 当前处于激活状态的不是即将要打开的新增tab或者复制tab
                   // 当前激活的tab不是即将打开的tab，用于区分新增和复制
                 ) {
+                  debugger;
                   const getVueCompontent = window.vm.$children[0].$children[0].$children[2].$children[1].$children;
                   getVueCompontent.map((item, i) => {
                     if (item.moduleComponentName === moduleName()) {
