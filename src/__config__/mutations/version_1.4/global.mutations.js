@@ -266,12 +266,13 @@ export default {
           } else {
             a[c.value.toUpperCase()] = c.serviceId;
           }
+          if (!c.isHidden) {
+            state.allMenu[c.value.toUpperCase()] = c.serviceId;
+          }
           return a;
         }, {});
       const arr = Object.keys(state.keepAliveLabelMaps);
-      state.allMenu = arr; 
     }
-   
     // 以下逻辑是为了解决菜单外路由跳转提供信息
     const tableDetailUrlMessage = getSeesionObject('tableDetailUrlMessage');
     if (JSON.stringify(tableDetailUrlMessage) !== '{}') { // 取按钮跳转外链label

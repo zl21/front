@@ -2234,6 +2234,8 @@
       back({ stop, type, obj }) {
         this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
         const { tableId, tableName } = this.$route.params;
+        const { routePrefix } = this.$route.meta;
+       
         // 列表界面配置动态路由
         const routeMapRecord = getSeesionObject('routeMapRecord');
         
@@ -2302,7 +2304,6 @@
           } else {
             param.type = directionalRouterType;
           }
-          this.tabOpen(param);
           const deleteValue = {
             k: 'keepAliveModuleName',
             v: keepAliveModuleName
@@ -2315,20 +2316,30 @@
           }
           // if (!enableOpenNewTab()) {
           this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName });
+          this.tabCloseAppoint({
+            routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName, routePrefix
+          });
+          this.tabOpen(param);
+
           // }
         } else if (routeMapRecordForSingleObject[currentPath]) {
-          router.push(routeMapRecordForSingleObject[currentPath]);
           // if (!enableOpenNewTab()) {
           this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName });
+          this.tabCloseAppoint({
+            routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName, routePrefix
+          });
+          router.push(routeMapRecordForSingleObject[currentPath]);
+
           // }
           // this.clickButtonsRefresh();
         } else if (routeMapRecordForSingleObjectNew) {
-          router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectNew]);
           // if (!enableOpenNewTab()) {
           this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName });
+          this.tabCloseAppoint({
+            routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName, routePrefix
+          });
+          router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectNew]);
+
           // }
           // this.clickButtonsRefresh();
         } else if (routeMapRecordForListNew.to) { // 动态路由（新增返回）
@@ -2343,7 +2354,6 @@
           } else {
             param.type = directionalRouterType;
           }
-          this.tabOpen(param);
           if (routeMapRecordForListNew.from.indexOf('SYSTEM') > -1) { // 返回列表界面
             const deleteValue = {
               k: 'keepAliveModuleName',
@@ -2355,14 +2365,22 @@
           }
           window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
           // if (!enableOpenNewTab()) {
+            
           this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName });
+          this.tabCloseAppoint({
+            routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName, routePrefix
+          });
+          this.tabOpen(param);
+
           // }
         } else if (routeMapRecordForSingleObjectModify) { // 单对象动态路由新增以及复制保存后跳转到编辑界面的返回需回到动态路由对应的界面
-          router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectModify]);
           // if (!enableOpenNewTab()) {
           this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName });
+          this.tabCloseAppoint({
+            routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName, routePrefix
+          });
+          router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectModify]);
+
           // }
         } else if (routeMapRecordForListModify.to) { // 列表动态路由（新增/复制保存成功后跳转到单对象界面执行返回操作）
           const directionalRouterType = this.getDirectionalRouterType(routeMapRecordForListNew.from);
@@ -2370,7 +2388,6 @@
             type: directionalRouterType,
             url: routeMapRecord[routeMapRecordForListModify.to]
           };
-          this.tabOpen(param);
           const deleteValue = {
             k: 'keepAliveModuleName',
             v: routeMapRecordForListModify.to
@@ -2379,12 +2396,15 @@
           window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
           // if (!enableOpenNewTab()) {
           this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName });
+          this.tabCloseAppoint({
+            routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName, routePrefix
+          });
+          this.tabOpen(param);
+
           // }
         } else if (enableOpenNewTab()) {
           const keepAliveModuleNameForOpenNewTab = this[MODULE_COMPONENT_NAME];
           const currentRouteForOpenNewTab = this.$router.currentRoute.path;
-          const routePrefix = this.$router.currentRoute.meta.routePrefix;
           this.decreasekeepAliveLists(keepAliveModuleNameForOpenNewTab);
           this.tabCloseAppoint({
             tableName: this.tableName, routeFullPath: currentRouteForOpenNewTab, routePrefix, keepAliveModuleName 
@@ -2416,7 +2436,7 @@
       },
       currentMenuExists(data) { // 判断当前表是否配置在菜单内
         // data.tableName:当前表名
-        const name = this.allMenu.filter(d => d.includes(data.tableName));
+        const name = Object.keys(this.allMenu).filter(d => d.includes(data.tableName));
         if (name.length > 0) {
           return true;
         }
@@ -3015,7 +3035,7 @@
         const routePrefix = this.$router.currentRoute.meta.routePrefix;
         if (value) {
           this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ tableName: this.tableName, routeFullPath: currentRoute });
+          this.tabCloseAppoint({ tableName: this.tableName, routeFullPath: currentRoute, routePrefix });
         } else {
           const stop = true;
           this.clickButtonsBack({ stop });
