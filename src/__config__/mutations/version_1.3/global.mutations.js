@@ -204,28 +204,12 @@ export default {
         .reduce((a, c) => {
           if (c.type === 'action') {
           // 外部跳转链接URL的处理
-          // 润乾报表配置
-            // dataSource: "report"
-            // id: 32
-            // label: "财务月对账单(应收)"
-            // menuId: 32
-            // orignalType: "rpt"
-            // realMenuId: "R_M_32"
-            // type: "rpt"
-            // url: "customizeReport"
-            // value: "customizeReport"
             if (c.url) {
-              let actionType = '';
-              if (c.url.includes('/m/action/')) {
-                actionType = 'CUSTOMIZED';
-                c.url = `CUSTOMIZED/${c.url.substring(c.url.lastIndexOf('/') + 1)}`;
-              } else {
-                actionType = c.url.substring(0, c.url.indexOf('/'));
-              }
-              // c.url = ' http://210.5.31.5:8001/index.html?USER_DESC={USER_DESC}&AD_ORG_ID={AD_ORG_ID}';
+              // c.url = `${c.url}?AD_CLIENT_NAME={AD_CLIENT_NAME}&AD_ORG_ID={AD_ORG_ID}`;
               if (c.url.includes('?')) {
                 c.url = getUserenv({ url: c.url });
               }
+              const actionType = c.url.substring(0, c.url.indexOf('/'));
               if (actionType === 'https:' || actionType === 'http:') {
                 const linkUrl = {};
                 linkUrl[c.value.toUpperCase()] = c.url;
@@ -250,7 +234,7 @@ export default {
               }
             }
           } else if (c.type === 'table') {
-          // 标准列表的处理
+            // 标准列表的处理
             a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
           } else if (c.type === 'tree') {
             // 树形结构列表的处理
@@ -285,18 +269,12 @@ export default {
           } else {
             a[c.value.toUpperCase()] = c.serviceId;
           }
+          if (!c.isHidden) {
+            state.allMenu[c.value.toUpperCase()] = c.serviceId;
+          }
           return a;
         }, {});
       const arr = Object.keys(state.keepAliveLabelMaps);
-      state.allMenu = arr; 
-    }
-    const path = getSeesionObject('savePath').path;
-
-    if (path && path !== router.currentRoute.path) {
-      router.push(path);
-      // window.location.replace(window.location.href);
-      // window.location.reload();
-      removeSessionObject('savePath');
     }
     // 以下逻辑是为了解决菜单外路由跳转提供信息
     const tableDetailUrlMessage = getSeesionObject('tableDetailUrlMessage');
@@ -310,7 +288,14 @@ export default {
       state.keepAliveLabelMaps[name] = `${tableDetailUrlMessage.linkLabel}`;
     }
     state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('keepAliveLabelMaps'));
-    // state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
+    state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
+    const path = getSeesionObject('savePath').path;
+    if (path && path !== router.currentRoute.path) {
+      router.push(path);
+      // window.location.replace(window.location.href);
+      // window.location.reload();
+      removeSessionObject('savePath');
+    }
   },
   increaseLinkUrl(state, { linkModuleName, linkUrl }) {
     const linkType = {};
