@@ -309,7 +309,7 @@ export default {
       keepAliveModuleNameRes = data.name;
     }
     if (enableKeepAlive()) {
-      if (state.openedMenuLists.length > 6 && enableOpenNewTab()) { // 新开tab限制为6个，超过6个后，替换最后一个
+      if (state.openedMenuLists.length > 3 && enableOpenNewTab()) { // 新开tab限制为6个，超过6个后，替换最后一个
         state.keepAliveLists.splice(state.keepAliveLists.length - 1, 1, data.name);
       } 
       // else if (state.sameNewPage) {
@@ -391,7 +391,7 @@ export default {
       sameNewPage
     };
     if (notExist || state.sameNewPage || sameNewPage) {
-      if (state.openedMenuLists.length > 6 && enableOpenNewTab()) { // 新开tab限制为6个，超过6个后，替换最后一个
+      if (state.openedMenuLists.length > 3 && enableOpenNewTab()) { // 新开tab限制为6个，超过6个后，替换最后一个
         state.activeTab = currentTabInfo;
         currentTabInfo.isActive = true;
         state.openedMenuLists.forEach((d, i) => { // 将所有tab置为失活状态
@@ -627,12 +627,12 @@ export default {
           currentType = tab.keepAliveModuleName[0];
         }
       } 
-      if (!enableActivateSameCustomizePage() && tab.routePrefix) { // 自定义界面根据itemId不同，开启多个tab页签
+      if (!enableActivateSameCustomizePage() && tab.routePrefix && enableOpenNewTab()) { // 自定义界面根据itemId不同，开启多个tab页签
         if ((tab.routePrefix === '/SYSTEM/TABLE' || tab.routePrefix === '/LINK') && (typeKeepAlive === 'S' || typeKeepAlive === 'L') && k.indexOf(tab.tableName) !== -1) { // 当前删除的是列表界面,外链界面因为路由无携带linId，和列表界面保持一致
           state.keepAliveLists.splice(i, 1);
-        } else if (tab.routePrefix.indexOf('/SYSTEM/TABLE_DETAIL') !== -1 && typeKeepAlive === currentType && tab.itemId === itemId && tab.tableName === tableName) { // 单对象,判断要关闭的keepAlive的类型，在数组中找到这个类型的数据，找到相同明细ID进行删除
+        } else if (tab.routePrefix.indexOf('/SYSTEM/TABLE_DETAIL/V') !== -1 && typeKeepAlive === currentType && tab.itemId === itemId && tab.tableName === tableName) { // 单对象,判断要关闭的keepAlive的类型，在数组中找到这个类型的数据，找到相同明细ID进行删除
           state.keepAliveLists.splice(i, 1);
-        } else if (tab.routePrefix.indexOf('/SYSTEM/TABLE_DETAIL') !== -1 && typeKeepAlive === currentType && tab.itemId === itemId && tab.tableName === tableName) { // 单对象,判断要关闭的keepAlive的类型，在数组中找到这个类型的数据，找到相同明细ID进行删除
+        } else if (tab.routePrefix.indexOf('/SYSTEM/TABLE_DETAIL/H') !== -1 && typeKeepAlive === currentType && tab.itemId === itemId && tab.tableName === tableName) { // 单对象,判断要关闭的keepAlive的类型，在数组中找到这个类型的数据，找到相同明细ID进行删除
           state.keepAliveLists.splice(i, 1);
         } else if (tab.routePrefix.indexOf('/CUSTOMIZED') !== -1 && (typeKeepAlive === tab.keepAliveModuleName.split('.')[0]) && tab.itemId === itemId) {
           state.keepAliveLists.splice(i, 1);

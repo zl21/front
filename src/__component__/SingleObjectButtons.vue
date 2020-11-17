@@ -2314,10 +2314,11 @@
           } else { // 从插件界面双击进入单对象界面时，返回时需清除routeMapRecord对应关系
             deleteFromSessionObject('routeMapRecord', keepAliveModuleName);
           }
-          // if (!enableOpenNewTab()) {
-          this.decreasekeepAliveLists(keepAliveModuleName);
+          if (!enableOpenNewTab()) {
+            this.decreasekeepAliveLists(keepAliveModuleName);
+          }
           this.tabCloseAppoint({
-            routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName, routePrefix
+            routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName, routePrefix, itemId: this.itemId, tableName: this.tableName
           });
           this.tabOpen(param);
 
@@ -2326,7 +2327,7 @@
           // if (!enableOpenNewTab()) {
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({
-            routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName, routePrefix
+            routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName, routePrefix, itemId: this.itemId, tableName: this.tableName
           });
           router.push(routeMapRecordForSingleObject[currentPath]);
 
@@ -2336,7 +2337,7 @@
           // if (!enableOpenNewTab()) {
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({
-            routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName, routePrefix
+            routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName, routePrefix, itemId: this.itemId, tableName: this.tableName
           });
           router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectNew]);
 
@@ -2368,7 +2369,7 @@
             
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({
-            routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName, routePrefix
+            routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName, routePrefix, itemId: this.itemId, tableName: this.tableName
           });
           this.tabOpen(param);
 
@@ -2377,7 +2378,7 @@
           // if (!enableOpenNewTab()) {
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({
-            routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName, routePrefix
+            routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName, routePrefix, itemId: this.itemId, tableName: this.tableName
           });
           router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectModify]);
 
@@ -2397,7 +2398,7 @@
           // if (!enableOpenNewTab()) {
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({
-            routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName, routePrefix
+            routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName, routePrefix, itemId: this.itemId, tableName: this.tableName
           });
           this.tabOpen(param);
 
@@ -2407,7 +2408,7 @@
           const currentRouteForOpenNewTab = this.$router.currentRoute.path;
           this.decreasekeepAliveLists(keepAliveModuleNameForOpenNewTab);
           this.tabCloseAppoint({
-            tableName: this.tableName, routeFullPath: currentRouteForOpenNewTab, routePrefix, keepAliveModuleName 
+            tableName: this.tableName, routeFullPath: currentRouteForOpenNewTab, routePrefix, keepAliveModuleName, itemId: this.itemId, tableName: this.tableName
           });
         
           if (type === 'back') {
@@ -3035,7 +3036,9 @@
         const routePrefix = this.$router.currentRoute.meta.routePrefix;
         if (value) {
           this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ tableName: this.tableName, routeFullPath: currentRoute, routePrefix });
+          this.tabCloseAppoint({
+            tableName: this.tableName, routeFullPath: currentRoute, routePrefix, itemId: this.itemId, tableName: this.tableName
+          });
         } else {
           const stop = true;
           this.clickButtonsBack({ stop });
