@@ -375,8 +375,17 @@ export default (router) => {
         fullPath: to.fullPath,
         itemId: itemId || customizedModuleId || pluginModuleId || linkModuleId
       });
+      if (enableOpenNewTab()) {
+        // 处理同表新开tab要跳转的表已打开时，需更新activeTab
+        const existModuleForOpenNewTab = openedMenuLists.filter((d, i) => {
+          if (d.keepAliveModuleName === keepAliveModuleName) { 
+            // 已存在打开的模块界面，但是并不是同一个界面
+            return true;
+          }
+        })[0];
+        commit('global/switchTabForActiveTab', existModuleForOpenNewTab);// 更新当前ActiveTab
+      }
     }
-    
 
     next();
   });
