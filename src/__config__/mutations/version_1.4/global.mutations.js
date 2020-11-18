@@ -309,8 +309,20 @@ export default {
       keepAliveModuleNameRes = data.name;
     }
     if (enableKeepAlive()) {
-      if (state.openedMenuLists.length > 6 && enableOpenNewTab()) { // 新开tab限制为6个，超过6个后，替换最后一个
-        state.keepAliveLists.splice(state.keepAliveLists.length - 1, 1, data.name);
+      if (state.openedMenuLists.length > 6 && state.openedMenuLists.length === 7 && enableOpenNewTab()) { // 新开tab限制为6个，超过6个后，替换最后一个
+        const spliceFlag = state.openedMenuLists.filter((d, i) => {
+          if (d.keepAliveModuleName === data.name) {
+            if (state.keepAliveLists[data.name]) {
+              state.keepAliveLists.splice(i, 1, data.name);
+            } else {
+              state.keepAliveLists = state.keepAliveLists.concat([data.name]);
+            }
+          }
+        }).length === 0;
+      
+        if (spliceFlag) {
+          state.keepAliveLists.splice(state.keepAliveLists.length - 1, 1, data.name);
+        } 
       } 
       // else if (state.sameNewPage) {
       //   if (!state.keepAliveLists.includes(data.name)) {
@@ -349,7 +361,7 @@ export default {
     state.openedMenuLists.forEach((d, i) => { // 将所有tab置为失活状态
       d.isActive = false;
       if (d.keepAliveModuleName === menu.keepAliveModuleName) {
-        state.openedMenuLists.splice(i, 1, menu);// 替换最后一个tab
+        state.openedMenuLists.splice(i, 1, menu);// 替换当前一个tab
       }
     });
   },
