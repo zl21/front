@@ -384,7 +384,7 @@ export default {
     // };
   },
   increaseOpenedMenuLists(state, {
-    label, keepAliveModuleName, tableName, routeFullPath, routePrefix, itemId
+    label, keepAliveModuleName, tableName, routeFullPath, routePrefix, itemId, sameNewPage
   }) {
     const notExist = state.openedMenuLists.filter(d => d.label === label && d.keepAliveModuleName === keepAliveModuleName).length === 0;
     const currentTabInfo = {
@@ -394,12 +394,22 @@ export default {
       routeFullPath,
       routePrefix,      
       itemId,
+      sameNewPage
     };
-    if (notExist) {
+    if (notExist || state.sameNewPage || sameNewPage) {
       if (state.openedMenuLists.length > 6 && enableOpenNewTab()) { // 新开tab限制为6个，超过6个后，替换最后一个
         state.activeTab = currentTabInfo;
         currentTabInfo.isActive = true;
-        state.openedMenuLists.splice(state.openedMenuLists.length - 1, 1, currentTabInfo);
+        state.openedMenuLists.forEach((d, i) => { // 将所有tab置为失活状态
+          d.isActive = false;
+        });
+        state.openedMenuLists.splice(state.openedMenuLists.length - 1, 1, currentTabInfo);// 替换最后一个tab
+      } else if (state.sameNewPage || sameNewPage) {
+        // state.keepAliveLists.push(currentTabInfo.keepAliveModuleName);
+        state.openedMenuLists = state.openedMenuLists
+          .map(d => Object.assign({}, d, { isActive: false }))
+          .concat([Object.assign({}, currentTabInfo, { isActive: true })]);
+        state.activeTab = currentTabInfo;
       } else {
         state.openedMenuLists = state.openedMenuLists
           .map(d => Object.assign({}, d, { isActive: false }))
