@@ -8,7 +8,7 @@
       :set-height="setHeight"
       :row-all="rowAll"
       :default-spread="defaultSpread"
-      :search-foldnum="searchFoldnum"
+      :search-foldnum="Number(searchFoldnum)"
     >
       <div
         slot="dwonContent"
@@ -35,7 +35,7 @@
       </div>
     </DownComponent>
     <div
-      v-if="searchFoldnum === 0"
+      v-if="Number(searchFoldnum) === 0"
       class="FormItemComponent"
       :style="setWidth"
     >
@@ -82,7 +82,7 @@
       },
       // 计算属性的 getter
       dataColRol() {
-        const list = layoutAlgorithm(this.defaultColumn, this.newFormItemLists);
+        const list = layoutAlgorithm(Number(this.defaultColumn), this.newFormItemLists);
         return Object.keys(list).reduce((temp, current) => {
           // 计算显示行数
           this.rowAll = list[current].row + list[current].y - 1;
@@ -112,7 +112,7 @@
     },
     props: {
       defaultColumn: {
-        type: Number,
+        type: [Number, String],
         default: 4
       },
       formItemsData: {
