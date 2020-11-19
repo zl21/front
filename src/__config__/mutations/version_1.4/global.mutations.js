@@ -323,26 +323,7 @@ export default {
         if (spliceFlag) {
           state.keepAliveLists.splice(state.keepAliveLists.length - 1, 1, data.name);
         } 
-      } 
-      // else if (state.sameNewPage) {
-      //   if (!state.keepAliveLists.includes(data.name)) {
-      //     debugger;
-      //     state.keepAliveLists = state.keepAliveLists.concat([data.name]);
-      //   }
-      // state.keepAliveLists.map((d, i) => { // 将所有tab置为失活状态
-      //   if (d === data.name) {
-      //     debugger;
-      //     state.keepAliveLists.splice(i, 1);// 替换最后一个tab
-      //   }
-      // });
-      // state.keepAliveLists = state.keepAliveLists.concat([data.name]);
-        
-      // setTimeout(() => {
-      // state.keepAliveLists.push(data.name);
-      // }, 10);
-      // } 
-      
-      else if (state.keepAliveLists.filter(k => (k.includes('?isBack=true') && k.includes(keepAliveModuleNameRes)) || k === keepAliveModuleNameRes).length > 0) {
+      } else if (enableOpenNewTab() && state.keepAliveLists.filter(k => (k.includes('?isBack=true') && k.includes(keepAliveModuleNameRes)) || k === keepAliveModuleNameRes).length > 0) {
         // 处理同表tab新开逻辑，新增与复制内容进行重新激活时，对应的缓存模块问题，k.includes('?isBack=true') && k.includes(keepAliveModuleNameRes)) 
         // 处理模块名是包含关系时报错k === keepAliveModuleNameRes；如：a.11与a.1
         state.keepAliveLists.filter((a, i) => {
@@ -351,6 +332,13 @@ export default {
           }
         });
         // state.keepAliveLists = state.keepAliveLists.concat([data.name]);
+      } else if (state.keepAliveLists.filter(k => k.includes(keepAliveModuleNameRes)).length > 0) {
+        state.keepAliveLists.filter((a, i) => {
+          if (a.includes(keepAliveModuleNameRes)) {
+            state.keepAliveLists.splice(i, 1);
+          }
+        });
+        state.keepAliveLists = state.keepAliveLists.concat([data.name]);
       } else {
         state.keepAliveLists = state.keepAliveLists.concat([data.name]);
       }
@@ -467,7 +455,8 @@ export default {
     label,
     keepAliveModuleName,
     type,
-    itemId
+    itemId,
+    fullPath
   }) {
     state.openedMenuLists.forEach((d) => {
       d.isActive = false;
@@ -481,6 +470,9 @@ export default {
       if (enableActivateSameCustomizePage()) {
         if (d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
           d.isActive = true;
+          d.keepAliveModuleName = keepAliveModuleName;
+          d.itemId = itemId;
+          d.routeFullPath = fullPath;
         }
       } else if (d.keepAliveModuleName === keepAliveModuleName) {
         // d.label === label &&
