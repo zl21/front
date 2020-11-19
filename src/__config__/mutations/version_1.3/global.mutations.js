@@ -334,7 +334,8 @@ export default {
           }
         });
         // state.keepAliveLists = state.keepAliveLists.concat([data.name]);
-      } else if (state.keepAliveLists.filter(k => k.includes(keepAliveModuleNameRes)).length > 0) {
+      } else if (data.dynamicModuleTag === 'C' && enableActivateSameCustomizePage() && state.keepAliveLists.filter(k => k.includes(keepAliveModuleNameRes)).length > 0) {
+        // 该判断enableActivateSameCustomizePage：false使用，只针对定制界面根据id不同可开启多个
         state.keepAliveLists.filter((a, i) => {
           if (a.includes(keepAliveModuleNameRes)) {
             state.keepAliveLists.splice(i, 1);
@@ -433,6 +434,12 @@ export default {
     });
   },
   emptyTabs(state) {
+    // 清除当前关闭的表单设置的跳转到标准列表表单默认值;
+    // state.openedMenuLists.map((openedMenuList) => {
+    //   const openedMenuListId = openedMenuList.keepAliveModuleName.split('.')[2];
+    //   removeSessionObject(openedMenuListId);
+    // });
+    
     state.openedMenuLists = [];
     state.keepAliveLists = [];
     state.activeTab = {};
@@ -443,7 +450,6 @@ export default {
     window.sessionStorage.removeItem('routeMapRecord');
     window.sessionStorage.removeItem('routeMapRecordForSingleObject');
     window.sessionStorage.removeItem('routeMapRecordForCustomizePage');
-  
     // 清空updataTreeId
     removeSessionObject('TreeId');
   },
@@ -624,7 +630,7 @@ export default {
           currentType = tab.keepAliveModuleName[0];
         }
       } 
-      if (!enableActivateSameCustomizePage() && tab.routePrefix && enableOpenNewTab()) { // 自定义界面根据itemId不同，开启多个tab页签
+      const filtrate = () => {
         if ((tab.routePrefix === '/SYSTEM/TABLE' || tab.routePrefix === '/LINK') && (typeKeepAlive === 'S' || typeKeepAlive === 'L') && k.indexOf(tab.tableName) !== -1) { // 当前删除的是列表界面,外链界面因为路由无携带linId，和列表界面保持一致
           state.keepAliveLists.splice(i, 1);
         } else if (tab.routePrefix.indexOf('/SYSTEM/TABLE_DETAIL/V') !== -1 && typeKeepAlive === currentType && tab.itemId === itemId && tab.tableName === tableName) { // 单对象,判断要关闭的keepAlive的类型，在数组中找到这个类型的数据，找到相同明细ID进行删除
@@ -634,6 +640,12 @@ export default {
         } else if (tab.routePrefix.indexOf('/CUSTOMIZED') !== -1 && (typeKeepAlive === tab.keepAliveModuleName.split('.')[0]) && tab.itemId === itemId) {
           state.keepAliveLists.splice(i, 1);
         }
+      };
+
+      if (!enableActivateSameCustomizePage() && tab.routePrefix && enableOpenNewTab()) { // 自定义界面根据itemId不同，开启多个tab页签
+        filtrate();
+      } else if (enableOpenNewTab()) {
+        filtrate();
       } else if (k.indexOf(tab.tableName) !== -1) { // 列表打开本表单对象界面，关闭时，根据表明清除列表以及列表对应的单对象keepAlive
         state.keepAliveLists.splice(i, 1);
       }

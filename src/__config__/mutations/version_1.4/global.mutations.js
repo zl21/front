@@ -332,7 +332,8 @@ export default {
           }
         });
         // state.keepAliveLists = state.keepAliveLists.concat([data.name]);
-      } else if (state.keepAliveLists.filter(k => k.includes(keepAliveModuleNameRes)).length > 0) {
+      } else if (data.dynamicModuleTag === 'C' && enableActivateSameCustomizePage() && state.keepAliveLists.filter(k => k.includes(keepAliveModuleNameRes)).length > 0) {
+        // 该判断enableActivateSameCustomizePage：false使用，只针对定制界面根据id不同可开启多个
         state.keepAliveLists.filter((a, i) => {
           if (a.includes(keepAliveModuleNameRes)) {
             state.keepAliveLists.splice(i, 1);
@@ -467,7 +468,7 @@ export default {
       } 
       // d.label === label &&
       // 去除对label的限制，自定义配置，自定义标识相同，label不同，也可认为是同一个自定义界面
-      if (enableActivateSameCustomizePage()) {
+      if (enableActivateSameCustomizePage() && type === 'C') {
         if (d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
           d.isActive = true;
           d.keepAliveModuleName = keepAliveModuleName;
@@ -631,7 +632,7 @@ export default {
           currentType = tab.keepAliveModuleName[0];
         }
       } 
-      if (!enableActivateSameCustomizePage() && tab.routePrefix && enableOpenNewTab()) { // 自定义界面根据itemId不同，开启多个tab页签
+      const filtrate = () => {
         if ((tab.routePrefix === '/SYSTEM/TABLE' || tab.routePrefix === '/LINK') && (typeKeepAlive === 'S' || typeKeepAlive === 'L') && k.indexOf(tab.tableName) !== -1) { // 当前删除的是列表界面,外链界面因为路由无携带linId，和列表界面保持一致
           state.keepAliveLists.splice(i, 1);
         } else if (tab.routePrefix.indexOf('/SYSTEM/TABLE_DETAIL/V') !== -1 && typeKeepAlive === currentType && tab.itemId === itemId && tab.tableName === tableName) { // 单对象,判断要关闭的keepAlive的类型，在数组中找到这个类型的数据，找到相同明细ID进行删除
@@ -641,6 +642,12 @@ export default {
         } else if (tab.routePrefix.indexOf('/CUSTOMIZED') !== -1 && (typeKeepAlive === tab.keepAliveModuleName.split('.')[0]) && tab.itemId === itemId) {
           state.keepAliveLists.splice(i, 1);
         }
+      };
+
+      if (!enableActivateSameCustomizePage() && tab.routePrefix && enableOpenNewTab()) { // 自定义界面根据itemId不同，开启多个tab页签
+        filtrate();
+      } else if (enableOpenNewTab()) {
+        filtrate();
       } else if (k.indexOf(tab.tableName) !== -1) { // 列表打开本表单对象界面，关闭时，根据表明清除列表以及列表对应的单对象keepAlive
         state.keepAliveLists.splice(i, 1);
       }
