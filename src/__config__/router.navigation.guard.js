@@ -251,7 +251,6 @@ export default (router) => {
     // if (sameNewPage) {
     //   return;
     // }
-   
     // 处理 keepAliveModuleName：目标路由的模块默认都要加入keepAlive列表
     if ((!keepAliveLists.includes(keepAliveModuleName) && keepAliveModuleName !== '')) {
       const data = {
