@@ -314,9 +314,14 @@ export default {
           if (d.keepAliveModuleName === data.name) {
             if (state.keepAliveLists[data.name]) {
               state.keepAliveLists.splice(i, 1, data.name);
-            } else {
-              state.keepAliveLists = state.keepAliveLists.concat([data.name]);
-            }
+              return true;
+            } 
+            state.keepAliveLists = state.keepAliveLists.concat([data.name]);
+            return true;
+          } if ((enableActivateSameCustomizePage()) && data.dynamicModuleTag === 'C' && d.keepAliveModuleName.includes(keepAliveModuleNameRes)) {
+            // enableActivateSameCustomizePage:true,定制界面ID不同，只激活同一个tab时
+            state.keepAliveLists.splice(i, 1, data.name);
+            return true;
           }
         }).length === 0;
       
