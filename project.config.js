@@ -64,6 +64,7 @@ module.exports = {
   layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
   backDashboardRoute: [], // 配置刷新浏览器回到Dashboard界面
   custommizedRequestURL: {
+    
   }, // 配置内置自定义界面requestURL
   requestPenddingExpire: 1000 * 0.5, // 单位S
   enableRestrictSave: true, // 是否限制保存，默认为true,true:界面未修改值则点击保存按钮不调用保存服务，false:无论是否修改值都会调用保存服务

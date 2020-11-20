@@ -58,8 +58,8 @@
         :form-items-data="formItems.data"
         :form-item-lists="formItemsLists"
         :default-spread="changeSearchFoldnum.switchValue"
-        :default-column="4"
-        :search-foldnum="changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum"
+        :default-column="Number(4)"
+        :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
         @formDataChange="formDataChange"
       />
       <AgTable

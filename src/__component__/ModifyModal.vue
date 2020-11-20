@@ -199,6 +199,8 @@
             this.loading = false;
             if (res.data.code === 0) {
               this.$emit('on-save-success', res.data);
+            } else if (res.data.error) {
+              this.$emit('on-oncancle-success', this);
             }
           }
         });
