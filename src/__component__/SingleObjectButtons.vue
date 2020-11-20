@@ -2405,7 +2405,7 @@
           // }
         } else if (enableOpenNewTab()) {
           const keepAliveModuleNameForOpenNewTab = this[MODULE_COMPONENT_NAME];
-          const currentRouteForOpenNewTab = this.$router.currentRoute.path;
+          const currentRouteForOpenNewTab = this.$router.currentRoute.fullPath;
           this.decreasekeepAliveLists(keepAliveModuleNameForOpenNewTab);
           const closeParame = {
             tableName: this.tableName, routeFullPath: currentRouteForOpenNewTab, routePrefix, keepAliveModuleName, itemId: this.itemId
