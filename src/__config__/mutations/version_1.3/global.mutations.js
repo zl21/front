@@ -316,18 +316,22 @@ export default {
           if (d.keepAliveModuleName === data.name) {
             if (state.keepAliveLists[data.name]) {
               state.keepAliveLists.splice(i, 1, data.name);
+              state.keepAliveLists = state.keepAliveLists.concat([data.name]);
               return true;
             } 
             state.keepAliveLists = state.keepAliveLists.concat([data.name]);
-            return true;
           } if ((enableActivateSameCustomizePage()) && data.dynamicModuleTag === 'C' && d.keepAliveModuleName.includes(keepAliveModuleNameRes)) {
             // enableActivateSameCustomizePage:true,定制界面ID不同，只激活同一个tab时
-            state.keepAliveLists.splice(i, 1, data.name);
+            state.keepAliveLists.map((kp, i) => {
+              if (kp === d.keepAliveModuleName) {
+                state.keepAliveLists.splice(i, 1);
+              }
+            });
+            state.keepAliveLists = state.keepAliveLists.concat([data.name]);
             return true;
           }
-        }).length === 0;
-      
-        if (spliceFlag) {
+        });
+        if (spliceFlag.length === 0) {
           state.keepAliveLists.splice(state.keepAliveLists.length - 1, 1, data.name);
         } 
       } else if (enableOpenNewTab() && state.keepAliveLists.filter(k => (k.includes('?isBack=true') && k.includes(keepAliveModuleNameRes)) || k === keepAliveModuleNameRes).length > 0) {
