@@ -2407,13 +2407,13 @@
           const keepAliveModuleNameForOpenNewTab = this[MODULE_COMPONENT_NAME];
           const currentRouteForOpenNewTab = this.$router.currentRoute.path;
           this.decreasekeepAliveLists(keepAliveModuleNameForOpenNewTab);
-          this.tabCloseAppoint({
-            tableName: this.tableName, routeFullPath: currentRouteForOpenNewTab, routePrefix, keepAliveModuleName, itemId: this.itemId, tableName: this.tableName
-          });
+          const closeParame = {
+            tableName: this.tableName, routeFullPath: currentRouteForOpenNewTab, routePrefix, keepAliveModuleName, itemId: this.itemId
+          };
         
           if (type === 'back') {
-            //
-             
+            closeParame.stopRouterPush = true;
+            this.tabCloseAppoint(closeParame);
             if (this.currentMenuExists({ tableName })) {
               const url = `/SYSTEM/TABLE/${this.tableName}/${this.tableId}`;
               const param = {
@@ -2425,6 +2425,8 @@
               };
               this.tabOpen(param);
             }
+          } else {
+            this.tabCloseAppoint(closeParame);
           }
         } else if (type === 'back') {
           const param = {

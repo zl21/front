@@ -392,7 +392,7 @@ export default {
       itemId,
       sameNewPage
     };
-    if (notExist || state.sameNewPage || sameNewPage) {
+    if (notExist) {
       if (state.openedMenuLists.length > 6 && enableOpenNewTab()) { // 新开tab限制为6个，超过6个后，替换最后一个
         state.activeTab = currentTabInfo;
         currentTabInfo.isActive = true;
