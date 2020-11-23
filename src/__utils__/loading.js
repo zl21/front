@@ -45,7 +45,9 @@ Loading.install = ((Vue) => {
     const dom = document.querySelector(`#${currentTableName}`);
 
     // dom.style = 'height: 100%; padding: 0px 15px; overflow: none; position: relative;';
-    dom.appendChild(tpl);
+    if (dom) {
+      dom.appendChild(tpl);
+    }
 
     // 阻止遮罩滑动
     // document.querySelector(`#${currentTableName}-loading`).addEventListener('touchmove', (e) => {
