@@ -8,11 +8,19 @@
       @on-change="pageChange"
       @on-page-size-change="pageSizeChange"
     />
-    <div
+    <!-- <div
       v-if="isBig"
       class="isBig"
       :style=" { backgroundImage : 'url( ' + bigBackground + ') '} "
-    />
+    /> -->
+    <div
+      v-if="isBig" 
+      class="isBig"
+    >
+      <img
+        :src="bigBackground"  
+      >
+    </div>
    
     <div
       v-if="!isCommonTable&&!isBig"
@@ -384,9 +392,19 @@
     width: 100%;
   }
   .isBig{
-     background-repeat: no-repeat;
-     background-position: center center;
-     background-size: 24%;
+    //  background-repeat: no-repeat;
+    //  background-position: center center;
+    //  background-size: 24%;
+    display: flex;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+
+    >img{
+      width: 25%;
+      height: 65%;
+    }
   }
 
  .queryDesc {
