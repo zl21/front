@@ -37,7 +37,9 @@ Loading.install = ((Vue) => {
     // <div  class="vue-loading">
     //    <div class="R3-Loading loader "></div>
     // </div>`;
-    tpl.setAttribute('id', `${currentTableName}-loading`);
+    if (tpl) {
+      tpl.setAttribute('id', `${currentTableName}-loading`);
+    }
     // tpl.setAttribute('class', 'vue-loading');
 
 
