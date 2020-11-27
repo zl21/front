@@ -17,6 +17,7 @@ import WaterMark from './src/__component__/WaterMark.vue';
 import VerticalMenu from './src/__component__/VerticalMenu.vue';
 import NavigatorVertical from './src/__component__/NavigatorVertical.vue';
 import NaVertical from './src/__component__/NaVertical.vue';
+import ComAutoComplete from './src/__component__/ComAutoComplete.vue';
 
 import ImportDialog from './src/__component__/ImportDialog.vue';
 import SearchForm from './src/__component__/form/SearchForm.vue';//
@@ -143,6 +144,7 @@ export default {
     ImportDialog,
     VerticalMenu,
     NavigatorVertical,
-    NaVertical
+    NaVertical,
+    ComAutoComplete
   }
 };
