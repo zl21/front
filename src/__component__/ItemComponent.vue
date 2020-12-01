@@ -1380,7 +1380,8 @@
           // eslint-disable-next-line no-unused-vars
           const path = this.$parent.pathcheck !== '';
           const childTableName = this.$parent.isMainTable === false ? this.$parent.childTableName : false;
-          if (this.$parent.isreftabs && childTableName !== false) {
+          if (this.$parent.isreftabs) { // 上传图片后不区分主子表，都会调用保存服务
+            //  && childTableName !== false
             //  主子表 子表
             this._items.props.itemdata.valuedata.push(
               fixedData[fixedData.length - 1]
@@ -1392,7 +1393,9 @@
 
             if (!ossRealtimeSave()) {
               // 去除图片上传成功后的保存
-              if (childTableName && this.$parent.type === 'PanelForm') {
+              
+              // childTableName &&
+              if (this.$parent.type === 'PanelForm') {
                 setTimeout(() => {
                   const dom = document.getElementById('actionMODIFY');
                   dom.click();

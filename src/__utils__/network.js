@@ -15,6 +15,7 @@ import {
 // const axios = Axios.create();
 
 let tableNameForGet = '';
+let closeMessage = false;
 const pendingRequestMap = {};
 window.pendingRequestMap = pendingRequestMap;
 
@@ -114,16 +115,17 @@ axios.interceptors.response.use(
         console.warn(e);
       }
     }
-    if (response.data.code === -1 || response.data.code === -2) {
+
+    if ((response.data.code === -1 || response.data.code === -2)) {
       // window.vm.$Modal.fcError({
       //   mask: true,
       //   title: '错误',
       //   content: response.data.message || response.data.msg || 'No Error Message.'
       // });
       let errorHTML = Array.isArray(response.data.error || response.data.data) && (response.data.error || response.data.data).reduce((arr, x) => {
-        arr.push(`<p>objid${x.objid}:${x.message}</p>`); return arr; 
+        arr.push(`<p>${x.objid ? `objid${x.objid}` : '修改失败'}:${x.message}</p>`); return arr; 
       }, []).join('') || '';
-      if (config.url !== '/ad-app/p/cs/batchSave') {
+      if (!config.url.includes('/p/cs/batchSave')) {
         errorHTML = '';
       }
       window.vm.$Modal.fcError({
@@ -404,7 +406,8 @@ function NetworkConstructor() {
   //   }
   // 使用方法：
   // network.post(URL,params,serviceconfig)
-  this.post = (url, config, serviceconfig) => {
+  this.post = (url, config, serviceconfig, close) => {
+    closeMessage = close;
     const gateWay = matchGateWay(url);
     // 判断菜单网关 gateWay ？ serviceId 外键网关 ？
     const matchedUrl = setUrlSeverId(gateWay, url, serviceconfig);

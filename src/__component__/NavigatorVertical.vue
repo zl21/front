@@ -6,20 +6,6 @@
     <div
       class="left"
     >
-      <!-- <img
-        v-if="!collapseHistoryAndFavorite"
-        class="trigger"
-        alt=""
-        :src="imgSrc.closedImg"
-        @click="doCollapseHistoryAndFavorite"
-      >
-      <img
-        v-if="collapseHistoryAndFavorite"
-        class="trigger"
-        alt=""
-        :src="imgSrc.openedImg"
-        @click="doCollapseHistoryAndFavorite"
-      > -->
       <div id="navBrandImg">
         <img
           v-if="!collapseHistoryAndFavorite"
@@ -35,7 +21,8 @@
         >
       </div>
     </div>
-    <div class="middle">
+    <VerticalMenu />
+    <!-- <div class="middle">
       <div style="">
         <NavigatorPrimaryMenu
           v-for="(menu, index) in menuLists"
@@ -46,77 +33,30 @@
           @togglePrimaryMenu="togglePrimaryMenu"
         />
       </div>
-    </div>
-    <transition name="fade">
+    </div> -->
+    <!-- <transition name="fade">
       <NavigatorSubMenu
         v-show="primaryMenuIndex!==-1"
         :data="togglePrimaryMenuData || []"
       />
-    </transition>
-    
-    <!-- <div
-      :class="searchBtn ? 'tag right' :'tag tag-search right' "
-    >
-      <template v-if="searchBtn === false">
-        <AutoComplete
-          ref="AutoComplete"
-          v-model="keyWord"
-          class="nav-search"
-          icon="ios-search"
-          placeholder="请输入要查询的功能名"
-          @on-click="searchBtn = true"
-          @on-keydown="enter"
-          @on-change="searchData"
-        >
-          <Option
-            v-for="(item,index) in searchList"
-            :key="index"
-            :value="index"
-            :lable="item.desc"
-            @on-select-selected="routerNext"
-          >
-            {{ item.desc }}
-          </Option>
-        </AutoComplete>
-      </template>
-      
-      <span
-        v-if="searchBtn === true"
-        class="buttonIcon"
-        @click="searchBtn = false"
-      >
-        <i
-          class="iconfont iconbj_search"
-        />
-      </span>
-    </div> -->
+    </transition> -->
   </div>
 </template>
 
 <script>
   import { mapState, mapMutations, mapActions } from 'vuex';
-  import NavigatorPrimaryMenu from './NavigatorPrimaryMenu';
-  import SetPanel from './SetPanel';
-  import messagePanel from './messagePanel';
-  import ComAutoComplete from './ComAutoComplete';
-  import Dialog from './Dialog.vue';
   
   import { routeTo } from '../__config__/event.config';
   import network, { urlSearchParams } from '../__utils__/network';
-  import NavigatorSubMenu from './NavigatorSubMenu';
   import { STANDARD_TABLE_LIST_PREFIX, Version } from '../constants/global';
   import { updateSessionObject } from '../__utils__/sessionStorage';
 
+  import VerticalMenu from './VerticalMenu.vue';
 
   export default {
     name: 'Navigator',
     components: {
-      NavigatorPrimaryMenu,
-      SetPanel,
-      Dialog,
-      NavigatorSubMenu,
-      messagePanel,
-      ComAutoComplete
+      VerticalMenu
     },
     
     data() {
@@ -278,8 +218,6 @@
           const result = res.data;
           if (result.code === 0) {
             self.messagePanel.list = self.messagePanel.list.concat(result.datas.row);
-            console.log(99, self.messagePanel.list);
-
             self.messagePanel.start = result.datas.start + result.datas.rowCount;
             self.messagePanel.total = result.datas.totalRowCount;
           //            self.panel.start = result.start

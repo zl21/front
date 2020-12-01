@@ -45,6 +45,7 @@
 </template>
 
 <script>
+  import { DispatchEvent } from '../__utils__/dispatchEvent';
 
   export default {
     // name: 'DialogComponent',
@@ -62,7 +63,7 @@
         type: [Object],
         default: () => {}
       },
-      itemId: {// 获取当前子表表名
+      itemId: {// 获取当前子表ID
         type: String,
         default: () => ''
       },
@@ -218,12 +219,20 @@
           this.cancelFun();
         }
       },
-      closeActionDialog(value) {
+      closeActionDialog(value, failInfo, moduleComponentName) {
+        if (failInfo && failInfo.length > 0) {
+          DispatchEvent('updateSTFailInfo', {// 自定义弹框支持列表界面报错在对应明细显示报错信息
+            detail: {
+              failInfo,
+              moduleComponentName
+            }
+          });
+        }
         this.$emit('clearDialogComponentName');
         this.showModal = false;
         if (value === true && this.isrefrsh) {
           this.$emit('dialogComponentSaveSuccess');
-        }
+        } 
       },
       
    

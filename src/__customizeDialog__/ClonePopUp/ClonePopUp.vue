@@ -60,9 +60,11 @@
 <script>
   import ChineseDictionary from '../../assets/js/ChineseDictionary';
   import network, { urlSearchParams } from '../../__utils__/network';
+  import { MODULE_COMPONENT_NAME } from '../../constants/global';
 
   export default {
     name: 'ClonePopUp',
+    inject: [MODULE_COMPONENT_NAME],
     props: {
       objList: {
         type: Array,
@@ -185,6 +187,17 @@
           .then((res) => {
             const { tableName } = this.$route.params;
             if (res.data.code !== 0) {
+              // const failInfo = [
+              //   {
+              //     message: '2测试A已有用户组用户关系记录，不允许删除！', // 报错信息
+              //     objid: 11// 对应明细ID
+              //   }
+              // ];
+              // const moduleComponentName = this[MODULE_COMPONENT_NAME];// 当前模块名称
+              // this.$emit('closeActionDialog', true, failInfo, moduleComponentName); // 关闭弹框
+              this.$emit('closeActionDialog', true); // 关闭弹框
+              
+            
               this.$R3loading.hide(tableName);
               return;
             }
