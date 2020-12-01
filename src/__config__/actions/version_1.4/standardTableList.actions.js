@@ -48,6 +48,9 @@ export default {
         });
       }
       const updateTableData = res.data.data;
+      if (updateTableData.row === '') {
+        updateTableData.row = [];
+      }
       if (merge) {
         commit('updateTableDataWithMerge', updateTableData);
       } else {
