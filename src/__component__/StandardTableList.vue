@@ -2035,7 +2035,7 @@
               Object.keys(customizeConfig).forEach((customizeName) => {
                 const nameToUpperCase = customizeName.toUpperCase();
                 if (nameToUpperCase === customizedModuleName) {
-                  const labelName = customizeConfig[customizeName].labelName;
+                  const labelName = `${customizeConfig[customizeName].labelName}新增`;
                   const name = `C.${customizedModuleName}.New`;
                   this.addKeepAliveLabelMaps({ name, label: labelName });
                   // this.addServiceIdMap({ name, label: labelName });
