@@ -2289,6 +2289,7 @@
             this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
           }
         }, () => {
+          this.searchClickData();
           this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
         });
       },
