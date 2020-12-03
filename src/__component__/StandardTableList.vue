@@ -2030,7 +2030,7 @@
               Object.keys(customizeConfig).forEach((customizeName) => {
                 const nameToUpperCase = customizeName.toUpperCase();
                 if (nameToUpperCase === customizedModuleName) {
-                  const labelName = `${customizeConfig[customizeName].labelName}新增`;
+                  const labelName = `${customizeConfig[customizeName].labelName}`;
                   const name = `C.${customizedModuleName}.New`;
                   this.addKeepAliveLabelMaps({ name, label: labelName });
                   // this.addServiceIdMap({ name, label: labelName });
@@ -2289,6 +2289,7 @@
             this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
           }
         }, () => {
+          this.searchClickData();
           this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
         });
       },

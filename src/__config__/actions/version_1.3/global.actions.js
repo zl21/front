@@ -48,7 +48,7 @@ export default {
         } else {
           network.post('/p/cs/getObject', urlSearchParams({ table: 'CP_C_TASK', objid })).then((res) => {
             const data = res.data;
-            resolve();
+            // resolve();
             if (data.code === 0) { 
               // 筛选信息验证导出是否成功
               data.data.addcolums.filter(item => item.parentdesc === '基本信息')[0].childs.forEach((b) => {
