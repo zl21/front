@@ -2047,9 +2047,16 @@
 
 
         const promise = new Promise((resolve, reject) => {
-          this.getExportQueryForButtons({ OBJ, resolve, reject });
+          this.getExportQueryForButtons({ resolve, reject });
           this.$R3loading.show(this.tableName);
         });
+        const { tablename } = this.itemInfo;
+             
+        const searchdata = {
+          column_include_uicontroller: true,
+          startindex: 0,
+          range: page.pageSize,
+        };
         promise.then(() => {
           if (this.buttonsData.exportdata) {
             if (Version() === '1.4') {
@@ -2119,13 +2126,6 @@
                 }
                 return true;
               });
-              const { tablename } = this.itemInfo;
-             
-              const searchdata = {
-                column_include_uicontroller: true,
-                startindex: 0,
-                range: page.pageSize,
-              };
           
 
               this.getObjectTableItemForTableData({
@@ -2137,6 +2137,9 @@
             this.$R3loading.hide(this.tableName);
           }
         }, () => {
+          this.getObjectTableItemForTableData({
+            table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex: this.currentTabIndex
+          });
           this.$R3loading.hide(this.tableName);
         });
       },
