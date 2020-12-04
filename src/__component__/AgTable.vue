@@ -78,15 +78,15 @@
 <script>
   /* eslint-disable no-lonely-if */
 
+  import { mapState } from 'vuex';
   import agTable from '../assets/js/ag-grid-table-pure';
   import CommonTable from './CommonTable.vue';
-  import isBigImg from '../assets/image/isBig.png';
 
   export default {
     name: 'AgTable',
     data() {
       return {
-        bigBackground: isBigImg,
+        // bigBackground: require('../assets/image/isBig.png')
         // isCommonTable: true, // 是否显示普通表格
         // isCommonTable: false, // 是否显示普通表格
       };
@@ -100,7 +100,10 @@
           return true;
         }
         return false;
-      }
+      },
+      ...mapState(('global'), {
+        bigBackground: (({ imgSrc }) => imgSrc.bigDataImg)
+      })
     },
     props: {
       doTableSearch: {
