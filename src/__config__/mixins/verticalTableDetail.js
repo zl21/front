@@ -135,7 +135,8 @@ export default () => ({
         'updataVerifyRequiredInformation',
         'isRequestUpdata',
         'emptyTestData',
-        'updateScrollPosition'
+        'updateScrollPosition',
+        'updateLabelData'
         // 'resetFormReadOnlyAttribute'
 
       ]),

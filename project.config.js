@@ -34,6 +34,7 @@ module.exports = {
   // target: 'http://139.196.221.193:38888/', // 巧厨环境
   // target: 'http://47.103.6.45:27777/', // 森马测试环境
   
+  
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
   enableGateWay: true, // 网关是否打开,
@@ -87,5 +88,8 @@ module.exports = {
     horizontalTableDetailCustomize: null,
     taskList: null
   },
-  ossRealtimeSave: true
+  ossRealtimeSave: false,
+  filterUrlForNetwork: {// 过滤不需要用框架报错提示信息的接口请求
+    // AD_COLUMN: '/ad-app/p/cs/QueryList'
+  }, 
 };

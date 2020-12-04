@@ -1063,7 +1063,8 @@ export default {
         logoImg: data.enterpriseLogo ? data.enterpriseLogo : state.imgSrc.logoImg,
         bannerImg: data.enterpriseBanner ? data.enterpriseBanner : state.imgSrc.bannerImg,
         closedImg: data.collapseImg ? data.collapseImg : state.imgSrc.closedImg,
-        openedImg: data.expandImg ? data.expandImg : state.imgSrc.openedImg
+        openedImg: data.expandImg ? data.expandImg : state.imgSrc.openedImg,
+        bigDataImg: data.bigDataImg ? data.bigDataImg : state.imgSrc.bigDataImg
       };
       state.imgSrc = Object.assign(state.imgSrc, images);
     }

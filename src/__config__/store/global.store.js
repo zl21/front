@@ -3,6 +3,7 @@
 import { Version } from '../../constants/global';
 import closedImg from '../../assets/image/closed@2x.png';
 import openedImg from '../../assets/image/open@2x.png';
+import bigDataImg from '../../assets/image/isBig.png';
 import logoImg from '../../assets/image/logo.png';
 import bannerImg from '../../assets/image/banner.png';
 
@@ -51,7 +52,8 @@ export default () => ({
       logoImg,
       bannerImg,
       closedImg,
-      openedImg
+      openedImg,
+      bigDataImg
     },
 
     previewPictureInstance: [], // 记录图片预览实例
