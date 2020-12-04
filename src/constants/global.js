@@ -6,41 +6,6 @@ import custommizedRequestURL from '../__config__/custommizedRequestURL.config';
 import connectorConfig from './connector';
 
 
-export const functionPowerRequestURL = () => (window.ProjectConfig && window.ProjectConfig.functionPowerRequestURL ? window.ProjectConfig.functionPowerRequestURL : project.functionPowerRequestURL);
-export const Version = () => (window.ProjectConfig && window.ProjectConfig.Version ? window.ProjectConfig.Version : project.Version);
-export const interlocks = () => (window.ProjectConfig && typeof window.ProjectConfig.interlocks === 'boolean' ? window.ProjectConfig.interlocks : project.interlocks);
-export const enableGateWay = () => (window.ProjectConfig && typeof window.ProjectConfig.enableGateWay === 'boolean' ? window.ProjectConfig.enableGateWay : project.enableGateWay);
-export const enableCustomInterface = () => (window.ProjectConfig && typeof window.ProjectConfig.enableCustomInterface === 'boolean' ? window.ProjectConfig.enableCustomInterface : project.enableCustomInterface);
-export const enableKeepAlive = () => (window.ProjectConfig && typeof window.ProjectConfig.enableModuleKA === 'boolean' ? window.ProjectConfig.enableModuleKA : project.enableModuleKA);
-export const enableInitializationRequest = () => (window.ProjectConfig && typeof window.ProjectConfig.enableInitializationRequest === 'boolean' ? window.ProjectConfig.enableInitializationRequest : project.enableInitializationRequest);
-export const specifiedGlobalGateWay = () => (window.ProjectConfig && window.ProjectConfig.specifiedGlobalGateWay ? window.ProjectConfig.specifiedGlobalGateWay : project.specifiedGlobalGateWay);
-export const mock = () => (window.ProjectConfig && typeof window.ProjectConfig.mock === 'boolean' ? window.ProjectConfig.mock : project.mock);
-export const enableTabLists = () => (window.ProjectConfig && typeof window.ProjectConfig.enableTabLists === 'boolean' ? window.ProjectConfig.enableTabLists : project.enableTabLists);
-
-export const enableHistoryAndFavoriteUI = () => (window.ProjectConfig && typeof window.ProjectConfig.enableHistoryAndFavoriteUI === 'boolean' ? window.ProjectConfig.enableHistoryAndFavoriteUI : project.enableHistoryAndFavoriteUI);
-
-export const enableHistoryAndFavorite = () => (window.ProjectConfig && typeof window.ProjectConfig.enableHistoryAndFavorite === 'boolean' ? window.ProjectConfig.enableHistoryAndFavorite : project.enableHistoryAndFavorite);
-export const getTouristRoute = () => (window.ProjectConfig && window.ProjectConfig.touristRoute ? window.ProjectConfig.touristRoute : project.touristRoute);
-export const getCustomizeWaterMark = () => (window.ProjectConfig && window.ProjectConfig.customizeWaterMark ? window.ProjectConfig.customizeWaterMark : project.customizeWaterMark);
-export const encryptedPassword = () => (window.ProjectConfig && window.ProjectConfig.encryptedPassword ? window.ProjectConfig.encryptedPassword : project.encryptedPassword);
-export const isItemTableNewValidation = () => (window.ProjectConfig && typeof window.ProjectConfig.isItemTableNewValidation === 'boolean' ? window.ProjectConfig.isItemTableNewValidation : project.isItemTableNewValidation);
-export const isCommonTable = () => (window.ProjectConfig && typeof window.ProjectConfig.isCommonTable === 'boolean' ? window.ProjectConfig.isCommonTable : project.isCommonTable);
-export const enableRestrictSave = () => (window.ProjectConfig && typeof window.ProjectConfig.enableRestrictSave === 'boolean' ? window.ProjectConfig.enableRestrictSave : project.enableRestrictSave);
-export const cbs = () => (window.ProjectConfig && window.ProjectConfig.cbs ? window.ProjectConfig.cbs : project.cbs || {});
-export const layoutDirection = () => ((window.ProjectConfig && typeof window.ProjectConfig.layoutDirection === 'boolean' ? window.ProjectConfig.layoutDirection : project.layoutDirection) || false);
-export const contentConfig = () => (window.ProjectConfig && window.ProjectConfig.contentConfig ? window.ProjectConfig.contentConfig : project.contentConfig);
-export const REQUEST_PENDDING_EXPIRE = () => (window.ProjectConfig && window.ProjectConfig.requestPenddingExpire ? window.ProjectConfig.requestPenddingExpire : project.requestPenddingExpire);
-export const encodeControl = () => (window.ProjectConfig && typeof window.ProjectConfig.encodeControl === 'boolean' ? window.ProjectConfig.encodeControl : project.encodeControl);
-export const logoutTips = () => (window.ProjectConfig && typeof window.ProjectConfig.logoutTips === 'boolean' ? window.ProjectConfig.logoutTips : project.logoutTips);
-export const enableKAQueryDataForUser = () => (window.ProjectConfig && typeof window.ProjectConfig.enableKAQueryDataForUser === 'boolean' ? window.ProjectConfig.enableKAQueryDataForUser : project.enableKAQueryDataForUser);
-export const dateStorageTime = () => (window.ProjectConfig && window.ProjectConfig.dateStorageTime ? window.ProjectConfig.dateStorageTime : project.dateStorageTime);
-export const ossRealtimeSave = () => (window.ProjectConfig && typeof window.ProjectConfig.ossRealtimeSave === 'boolean' ? window.ProjectConfig.ossRealtimeSave : project.ossRealtimeSave);
-export const blockFullOperation = () => (window.ProjectConfig && typeof window.ProjectConfig.blockFullOperation === 'boolean' ? window.ProjectConfig.blockFullOperation : project.blockFullOperation);
-export const customizeMixins = () => (window.ProjectConfig && window.ProjectConfig.customizeMixins ? window.ProjectConfig.customizeMixins : project.customizeMixins || {});
-// export const REQUEST_PENDDING_EXPIRE = 1000 * 2;
-export const enableActivateSameCustomizePage = () => (window.ProjectConfig && typeof window.ProjectConfig.enableActivateSameCustomizePage === 'boolean' ? window.ProjectConfig.enableActivateSameCustomizePage : project.enableActivateSameCustomizePage);
-
-
 export const STANDARD_TABLE_LIST_PREFIX = '/SYSTEM/TABLE';
 export const STANDARD_COMMONTABLE_LIST_PREFIX = '/SYSTEM/COMMONTABLE';
 export const HORIZONTAL_TABLE_DETAIL_PREFIX = '/SYSTEM/TABLE_DETAIL/H';
@@ -107,9 +72,9 @@ export const defaultQuietRoutes = [
 ];
 
 // 导出表的拓展属性、字段扩展属性配置。
+export const getFilterUrlForNetworkData = () => (window.ProjectConfig && window.ProjectConfig.filterUrlForNetwork ? window.ProjectConfig.filterUrlForNetwork : project.filterUrlForNetwork);
 
 export const extentionForColumn = () => (window.ProjectConfig && window.ProjectConfig.extentionForColumn ? window.ProjectConfig.extentionForColumn : configForColumn);
-
 
 // 导出表的拓展属性、字段扩展属性配置。
 export const extentionForTable = () => (window.ProjectConfig && window.ProjectConfig.extentionForTable ? window.ProjectConfig.extentionForTable : configForTable);
@@ -120,3 +85,36 @@ export const backDashboardRoute = () => (window.ProjectConfig && window.ProjectC
 export const custommizedRequestUrl = () => (window.ProjectConfig && window.ProjectConfig.custommizedRequestURL ? window.ProjectConfig.custommizedRequestURL : custommizedRequestURL);
 
 export const connector = () => (window.ProjectConfig && window.ProjectConfig.connector ? window.ProjectConfig.connector : connectorConfig);
+export const functionPowerRequestURL = () => (window.ProjectConfig && window.ProjectConfig.functionPowerRequestURL ? window.ProjectConfig.functionPowerRequestURL : project.functionPowerRequestURL);
+export const Version = () => (window.ProjectConfig && window.ProjectConfig.Version ? window.ProjectConfig.Version : project.Version);
+export const interlocks = () => (window.ProjectConfig && typeof window.ProjectConfig.interlocks === 'boolean' ? window.ProjectConfig.interlocks : project.interlocks);
+export const enableGateWay = () => (window.ProjectConfig && typeof window.ProjectConfig.enableGateWay === 'boolean' ? window.ProjectConfig.enableGateWay : project.enableGateWay);
+export const enableCustomInterface = () => (window.ProjectConfig && typeof window.ProjectConfig.enableCustomInterface === 'boolean' ? window.ProjectConfig.enableCustomInterface : project.enableCustomInterface);
+export const enableKeepAlive = () => (window.ProjectConfig && typeof window.ProjectConfig.enableModuleKA === 'boolean' ? window.ProjectConfig.enableModuleKA : project.enableModuleKA);
+export const enableInitializationRequest = () => (window.ProjectConfig && typeof window.ProjectConfig.enableInitializationRequest === 'boolean' ? window.ProjectConfig.enableInitializationRequest : project.enableInitializationRequest);
+export const specifiedGlobalGateWay = () => (window.ProjectConfig && window.ProjectConfig.specifiedGlobalGateWay ? window.ProjectConfig.specifiedGlobalGateWay : project.specifiedGlobalGateWay);
+export const mock = () => (window.ProjectConfig && typeof window.ProjectConfig.mock === 'boolean' ? window.ProjectConfig.mock : project.mock);
+export const enableTabLists = () => (window.ProjectConfig && typeof window.ProjectConfig.enableTabLists === 'boolean' ? window.ProjectConfig.enableTabLists : project.enableTabLists);
+
+export const enableHistoryAndFavoriteUI = () => (window.ProjectConfig && typeof window.ProjectConfig.enableHistoryAndFavoriteUI === 'boolean' ? window.ProjectConfig.enableHistoryAndFavoriteUI : project.enableHistoryAndFavoriteUI);
+
+export const enableHistoryAndFavorite = () => (window.ProjectConfig && typeof window.ProjectConfig.enableHistoryAndFavorite === 'boolean' ? window.ProjectConfig.enableHistoryAndFavorite : project.enableHistoryAndFavorite);
+export const getTouristRoute = () => (window.ProjectConfig && window.ProjectConfig.touristRoute ? window.ProjectConfig.touristRoute : project.touristRoute);
+export const getCustomizeWaterMark = () => (window.ProjectConfig && window.ProjectConfig.customizeWaterMark ? window.ProjectConfig.customizeWaterMark : project.customizeWaterMark);
+export const encryptedPassword = () => (window.ProjectConfig && window.ProjectConfig.encryptedPassword ? window.ProjectConfig.encryptedPassword : project.encryptedPassword);
+export const isItemTableNewValidation = () => (window.ProjectConfig && typeof window.ProjectConfig.isItemTableNewValidation === 'boolean' ? window.ProjectConfig.isItemTableNewValidation : project.isItemTableNewValidation);
+export const isCommonTable = () => (window.ProjectConfig && typeof window.ProjectConfig.isCommonTable === 'boolean' ? window.ProjectConfig.isCommonTable : project.isCommonTable);
+export const enableRestrictSave = () => (window.ProjectConfig && typeof window.ProjectConfig.enableRestrictSave === 'boolean' ? window.ProjectConfig.enableRestrictSave : project.enableRestrictSave);
+export const cbs = () => (window.ProjectConfig && window.ProjectConfig.cbs ? window.ProjectConfig.cbs : project.cbs || {});
+export const layoutDirection = () => ((window.ProjectConfig && typeof window.ProjectConfig.layoutDirection === 'boolean' ? window.ProjectConfig.layoutDirection : project.layoutDirection) || false);
+export const contentConfig = () => (window.ProjectConfig && window.ProjectConfig.contentConfig ? window.ProjectConfig.contentConfig : project.contentConfig);
+export const REQUEST_PENDDING_EXPIRE = () => (window.ProjectConfig && window.ProjectConfig.requestPenddingExpire ? window.ProjectConfig.requestPenddingExpire : project.requestPenddingExpire);
+export const encodeControl = () => (window.ProjectConfig && typeof window.ProjectConfig.encodeControl === 'boolean' ? window.ProjectConfig.encodeControl : project.encodeControl);
+export const logoutTips = () => (window.ProjectConfig && typeof window.ProjectConfig.logoutTips === 'boolean' ? window.ProjectConfig.logoutTips : project.logoutTips);
+export const enableKAQueryDataForUser = () => (window.ProjectConfig && typeof window.ProjectConfig.enableKAQueryDataForUser === 'boolean' ? window.ProjectConfig.enableKAQueryDataForUser : project.enableKAQueryDataForUser);
+export const dateStorageTime = () => (window.ProjectConfig && window.ProjectConfig.dateStorageTime ? window.ProjectConfig.dateStorageTime : project.dateStorageTime);
+export const ossRealtimeSave = () => (window.ProjectConfig && typeof window.ProjectConfig.ossRealtimeSave === 'boolean' ? window.ProjectConfig.ossRealtimeSave : project.ossRealtimeSave);
+export const blockFullOperation = () => (window.ProjectConfig && typeof window.ProjectConfig.blockFullOperation === 'boolean' ? window.ProjectConfig.blockFullOperation : project.blockFullOperation);
+export const customizeMixins = () => (window.ProjectConfig && window.ProjectConfig.customizeMixins ? window.ProjectConfig.customizeMixins : project.customizeMixins || {});
+// export const REQUEST_PENDDING_EXPIRE = 1000 * 2;
+export const enableActivateSameCustomizePage = () => (window.ProjectConfig && typeof window.ProjectConfig.enableActivateSameCustomizePage === 'boolean' ? window.ProjectConfig.enableActivateSameCustomizePage : project.enableActivateSameCustomizePage);
