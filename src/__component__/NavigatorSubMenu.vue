@@ -23,7 +23,7 @@
         class="item"
         @click="routeTo(endMenu)"
       >
-        {{ subMenu.label.replace(/'&nbsp;'/g,'\xa0') }} 
+        {{ endMenu.label.replace(/'&nbsp;'/g,'\xa0') }} 
       </li>
     </ul>
   </div>
