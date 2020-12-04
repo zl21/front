@@ -4,7 +4,7 @@ import router from '../__config__/router.config';
 import store from '../__config__/store.config';
 
 import {
-  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, REQUEST_PENDDING_EXPIRE, getTouristRoute, logoutTips, Version
+  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, REQUEST_PENDDING_EXPIRE, getTouristRoute, logoutTips, Version, getFilterUrlForNetworkData
 } from '../constants/global';
 import { addNetwork } from './indexedDB';
 
@@ -115,57 +115,53 @@ axios.interceptors.response.use(
         console.warn(e);
       }
     }
-
-    if ((response.data.code === -1 || response.data.code === -2)) {
-      // window.vm.$Modal.fcError({
-      //   mask: true,
-      //   title: '错误',
-      //   content: response.data.message || response.data.msg || 'No Error Message.'
-      // });
-      let errorHTML = Array.isArray(response.data.error || response.data.data) && (response.data.error || response.data.data).reduce((arr, x) => {
-        arr.push(`<p>${x.objid ? `objid${x.objid}` : '修改失败'}:${x.message}</p>`); return arr; 
-      }, []).join('') || '';
-      if (!config.url.includes('/p/cs/batchSave')) {
-        errorHTML = '';
-      }
-      window.vm.$Modal.fcError({
-        mask: true,
-        titleAlign: 'center',
-        title: '错误',
-        // content: formatJsonEmg
-        render: h => h('div', [
-          h('div', {
-            style: {
-              padding: '10px 20px 0',
-              display: 'flex',
-              // alignItems: 'center',
-              lineHeight: '16px'
-            }
-          }, [
+    if (router.currentRoute.params && router.currentRoute.params.tableName) {
+      if (getFilterUrlForNetworkData()[router.currentRoute.params.tableName] !== response.config.url) {
+        if ((response.data.code === -1 || response.data.code === -2)) {
+          let errorHTML = Array.isArray(response.data.error || response.data.data) && (response.data.error || response.data.data).reduce((arr, x) => {
+            arr.push(`<p>${x.objid ? `objid${x.objid}` : '修改失败'}:${x.message}</p>`); return arr; 
+          }, []).join('') || '';
+          if (!config.url.includes('/p/cs/batchSave')) {
+            errorHTML = '';
+          }
+          window.vm.$Modal.fcError({
+            mask: true,
+            titleAlign: 'center',
+            title: '错误',
+            // content: formatJsonEmg
+            render: h => h('div', [
+              h('div', {
+                style: {
+                  padding: '10px 20px 0',
+                  display: 'flex',
+                  // alignItems: 'center',
+                  lineHeight: '16px'
+                }
+              }, [
               
-            h('i', {
-              props: {
-              },
-              style: {
-                marginRight: '5px',
-                display: 'inline-block',
-                'font-size': '28px',
-                'margin-right': ' 10px',
-                'line-height': ' 1',
-                padding: ' 10px 0',
-                color: 'red'
-              },
-              class: 'iconfont iconbj_error fcError '
-            }),
-            h('div', {
-              attrs: {
-                // rows: 8,
-                // readonly: 'readonly',
-              },
-              domProps: {
-                innerHTML: response.data.message + errorHTML !== 'undefined' ? response.data.message + errorHTML : (response.data.msg + errorHTML || 'No Error Message.'),
-              },
-              style: `width: 80%;
+                h('i', {
+                  props: {
+                  },
+                  style: {
+                    marginRight: '5px',
+                    display: 'inline-block',
+                    'font-size': '28px',
+                    'margin-right': ' 10px',
+                    'line-height': ' 1',
+                    padding: ' 10px 0',
+                    color: 'red'
+                  },
+                  class: 'iconfont iconbj_error fcError '
+                }),
+                h('div', {
+                  attrs: {
+                    // rows: 8,
+                    // readonly: 'readonly',
+                  },
+                  domProps: {
+                    innerHTML: response.data.message + errorHTML !== 'undefined' ? response.data.message + errorHTML : (response.data.msg + errorHTML || 'No Error Message.'),
+                  },
+                  style: `width: 80%;
                     margin: 1px;
                     margin-bottom: -8px;
                     box-sizing: border-box;
@@ -175,14 +171,15 @@ axios.interceptors.response.use(
                     max-width: 300px;
                     overflow: auto;
                     `
-            })
-          ])
+                })
+              ])
 
-        ])
+            ])
          
-      });
+          });
+        }
+      }
     }
-
     dispatchR3Event({
       url: config.url,
       response: JSON.parse(JSON.stringify(response)),

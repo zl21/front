@@ -202,6 +202,18 @@ export default {
       }
     }
   },
+  updateLabelData(state, data) { // 清空1.3修改前后的label
+    if (state.updateData[data.tableName]) {
+      if (Object.values(data.value).length === 0) {
+        state.updateData[data.tableName].modifyLabel[data.tableName] = data.value;
+        state.updateData[data.tableName].itemBeforeLabel[data.tableName] = data.value;
+      } else {
+        state.updateData[data.tableName].modifyLabel = data.value;
+        state.updateData[data.tableName].itemBeforeLabel = data.value;
+      }
+    }
+  },
+
   updateChangeData(state, data) {
     if (state.updateData[data.tableName]) {
       state.updateData[data.tableName].changeData = data.value;

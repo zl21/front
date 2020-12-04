@@ -88,5 +88,8 @@ module.exports = {
     horizontalTableDetailCustomize: null,
     taskList: null
   },
-  ossRealtimeSave: false
+  ossRealtimeSave: false,
+  filterUrlForNetwork: {// 过滤不需要用框架报错提示信息的接口请求
+    // AD_COLUMN: '/ad-app/p/cs/QueryList'
+  }, 
 };

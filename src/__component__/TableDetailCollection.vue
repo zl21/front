@@ -1384,6 +1384,11 @@
                     },
                     tabIndex: this.currentTabIndex
                   });
+
+
+                  this.updateModifyData({ tableName: this.tableName, value: {} });
+                  this.updateDeleteData({ tableName: this.tableName, value: {} });
+                  this.updateLabelData({ tableName: this.tableName, value: {} });
                 }
               }
             });
