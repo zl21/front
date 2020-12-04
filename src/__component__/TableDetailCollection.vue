@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            />
+                   >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -1384,6 +1384,11 @@
                     },
                     tabIndex: this.currentTabIndex
                   });
+
+
+                  this.updateModifyData({ tableName: this.tableName, value: {} });
+                  this.updateDeleteData({ tableName: this.tableName, value: {} });
+                  this.updateLabelData({ tableName: this.tableName, value: {} });
                 }
               }
             });
