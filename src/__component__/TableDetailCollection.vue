@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            />
+                   >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -271,7 +271,7 @@
 
         columnEditElementId: {}, // 保存每列的可编辑元素的id
         editElementId: [], // 表格可编辑元素id 用于回车键使用
-        rouuterParams: {}
+        routerParams: {}
       };
     },
     props: {
@@ -631,7 +631,7 @@
               });
             });
             promises.then(() => {
-              this.$R3loading.hide(this.rouuterParams.tableName);
+              this.$R3loading.hide(this.routerParams.tableName);
               this.closeImportDialog();
               if (this.exportTasks.dialog) {
                 const message = {
@@ -671,12 +671,12 @@
               //   };
               //   this.$Modal.error(data);
               // }
-              this.$R3loading.hide(this.rouuterParams.tableName);
+              this.$R3loading.hide(this.routerParams.tableName);
               this.closeImportDialog();
             });
           }
         } else {
-          this.$R3loading.hide(this.rouuterParams.tableName);
+          this.$R3loading.hide(this.routerParams.tableName);
         }
       },
       getEditAbleId(data) {
@@ -1023,7 +1023,7 @@
               this.refresh();
             }
           }, () => {
-            this.$R3loading.hide(this.rouuterParams.tableName);
+            this.$R3loading.hide(this.routerParams.tableName);
           });
         }
       },
@@ -1384,6 +1384,11 @@
                     },
                     tabIndex: this.currentTabIndex
                   });
+
+
+                  this.updateModifyData({ tableName: this.tableName, value: {} });
+                  this.updateDeleteData({ tableName: this.tableName, value: {} });
+                  this.updateLabelData({ tableName: this.tableName, value: {} });
                 }
               }
             });
@@ -4158,7 +4163,7 @@
         promise.then(() => {
           if (this.buttonsData.exportdata) {
             if (Version() === '1.4') {
-              this.$R3loading.hide(this.rouuterParams.tableName);
+              this.$R3loading.hide(this.routerParams.tableName);
               this.searchCondition = null;
               this.searchInfo = '';
               this.currentPage = 1;
@@ -4173,11 +4178,11 @@
               this.updateExportedState({});
               const promises = new Promise((resolve, reject) => {
                 this.getExportedState({
-                  objid: this.buttonsData.exportdata, id: this.buttonsData.exportdata, resolve, reject
+                  objid: '0000', resolve, reject
                 });
               });
               promises.then(() => {
-                this.$R3loading.hide(this.rouuterParams.tableName);
+                this.$R3loading.hide(this.routerParams.tableName);
                 if (this.exportTasks.dialog) {
                   const message = {
                     mask: true,
@@ -4215,13 +4220,17 @@
                     content: `${this.exportTasks.resultMsg}`,
                   });
                 }
-                this.$R3loading.hide(this.rouuterParams.tableName);
+                this.$R3loading.hide(this.routerParams.tableName);
               });
               this.getTabelList(1);
             }
           } else {
-            this.$R3loading.hide(this.rouuterParams.tableName);
+            this.$R3loading.hide(this.routerParams.tableName);
           }
+        }, () => {
+          // 导出失败时，刷新当前表格
+          this.getTabelList(1);
+          this.$R3loading.hide(this.routerParams.tableName);
         });
       },
       objectIMPORT() { // 导入
@@ -4329,7 +4338,7 @@
         window.addEventListener('changePageForSelete', this.changePageForSeleteDataForButton);
       }
       const { itemId, tableName, tableId } = this.$route.params;
-      this.rouuterParams = {
+      this.routerParams = {
         tableName,
         itemId,
         tableId

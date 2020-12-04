@@ -126,7 +126,8 @@ export default () => ({
         'testUpdataValue',
         'updataVerifyRequiredInformation',
         'isRequestUpdata',
-        'emptyTestData'
+        'emptyTestData',
+        'updateLabelData'
       ]),
   },
   beforeDestroy() {
