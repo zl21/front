@@ -48,6 +48,9 @@ export default {
         });
       }
       const updateTableData = res.data.datas;
+      if (updateTableData.row === '') {
+        updateTableData.row = [];
+      }
       if (merge) {
         commit('updateTableDataWithMerge', updateTableData);
       } else {
@@ -76,9 +79,8 @@ export default {
     })).then((res) => {
       setTimeout(() => {
         const ag = { ...state.ag };
-        console.log(ag);
         ag.datas.fullRangeSubTotalRow = res.data.datas.fullRangeSubTotalRow;
-      
+       
         commit('updateTableData', ag);
       }, 2000);
       // resolve();

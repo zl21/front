@@ -241,6 +241,12 @@
           } else {
             return false;
           }
+        } else {
+          this.$Modal.fcError({
+            title: '错误',
+            content: res.message,
+            mask: true
+          });
         }        
         if (!this.checkFile(filelist)) {
           return false;

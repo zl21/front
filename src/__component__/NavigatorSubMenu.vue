@@ -14,7 +14,7 @@
         v-if="subMenu.children.length>0&&subMenu.children.filter(c=>!c.isHidden).length>0"
         class="title"
       >
-        {{ subMenu.label }}  
+        {{ subMenu.label.replace(/'&nbsp;'/g,'\xa0') }}  
       </li>
       <li
         v-for="(endMenu, endIndex) in subMenu.children"
@@ -23,7 +23,7 @@
         class="item"
         @click="routeTo(endMenu)"
       >
-        {{ endMenu.label }} 
+        {{ endMenu.label.replace(/'&nbsp;'/g,'\xa0') }} 
       </li>
     </ul>
   </div>

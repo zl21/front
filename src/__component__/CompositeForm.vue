@@ -95,7 +95,9 @@
 <script>
   // import { setTimeout } from 'timers';
   import FormItemComponent from './ComFormItemComponent';
-  import { Version, MODULE_COMPONENT_NAME, secondaryLinkage } from '../constants/global';
+  import {
+    Version, MODULE_COMPONENT_NAME, secondaryLinkage, custommizedRequestUrl 
+  } from '../constants/global';
 
   import regExp from '../constants/regExp';
   import network, { getGateway } from '../__utils__/network';
@@ -2292,6 +2294,7 @@
 
           let readonly = current.readonly;
           readonly = checkIsReadonly;
+          const path = custommizedRequestUrl()['/p/cs/upload2'] || '/p/cs/upload2';
           item.props.itemdata = {
             colname: current.colname,
             width: (current.col / this.defaultColumnCol) > 0.4 ? 200 : 140,
@@ -2302,9 +2305,12 @@
             masterName: this.masterName,
             objId: this.masterId,
             sendData: {
-              path: `${this.masterName}/${this.masterId}/`
+              path: `${this.masterName}/${this.masterId}/`,
+              column: current.colname,
+              tableName: this.$route.params.tableName
             },
-            url: getGateway('/p/cs/upload2'),
+
+            url: getGateway(path),
             valuedata
           };
         }

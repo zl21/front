@@ -31,6 +31,9 @@ module.exports = {
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop环境
   // target: 'http://47.103.175.111:26666/', // 千百度环境
   // target: 'http://syman-jflow-standard.dev.burgeononline.com',
+  // target: 'http://139.196.221.193:38888/', // 巧厨环境
+  // target: 'http://47.103.6.45:27777/', // 森马测试环境
+  
   
   Version: '1.3', // 版本号
   interlocks: true, // 是否打开三级联动装置
@@ -63,6 +66,7 @@ module.exports = {
   layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
   backDashboardRoute: [], // 配置刷新浏览器回到Dashboard界面
   custommizedRequestURL: {
+    
   }, // 配置内置自定义界面requestURL
   requestPenddingExpire: 1000 * 0.5, // 单位S
   enableRestrictSave: true, // 是否限制保存，默认为true,true:界面未修改值则点击保存按钮不调用保存服务，false:无论是否修改值都会调用保存服务
@@ -84,5 +88,8 @@ module.exports = {
     horizontalTableDetailCustomize: null,
     taskList: null
   },
-  ossRealtimeSave: false
+  ossRealtimeSave: false,
+  filterUrlForNetwork: {// 过滤不需要用框架报错提示信息的接口请求
+    // AD_COLUMN: '/ad-app/p/cs/QueryList'
+  }, 
 };

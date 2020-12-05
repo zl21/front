@@ -245,7 +245,7 @@
                       }
                     });
                   }
-                  if (this.itemInfo && this.itemInfo.tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮默认不显示
+                  if (this.itemInfo && this.getCurrentItemInfo().tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮默认不显示
                     if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
                       this.tabcmd.cmds.forEach((item, index) => {
                         if (item !== 'actionMODIFY' && item !== 'actionEXPORT') {
@@ -256,7 +256,7 @@
                   }
                 });
                 if (this.itemName !== this.tableName) { // 子表
-                  const { tabrelation } = this.itemInfo;
+                  const { tabrelation } = this.getCurrentItemInfo();
                   if (tabrelation === '1:m') { // 子表
                     val.cmds.forEach((item, index) => {
                       if (item === 'actionEXPORT') {
@@ -1013,7 +1013,9 @@
         const {
           tablename, refcolid, tabrelation, tabinlinemode
         } = this.itemInfo;
-       
+        
+        // 通知表格刷新
+        DispatchEvent('tabRefreshClick');
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.currentTabIndex === 0) { // 主表
             this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
@@ -1071,6 +1073,7 @@
           this.getObjectForMainTableForm({// 获取主表表单
             table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex
           });
+          
           // if (this.itemInfo.tabrelation === '1:1') {
           //   // enableRequestItemTable:因此方法是主子表同时请求，加此标记为不请求子表相关接口
           //   // if (this.itemInfo.vuedisplay !== 'TabItem') {
@@ -1571,7 +1574,6 @@
         return id;
       },
       routingHop(tab, id) {
-
         // tab.action配置路径前不能加/
         // /:itemId?id=1&&name=2
         // tab.action = 'CUSTOMIZED/FUNCTIONPERMISSION/:itemId?id=1&&name=2';
@@ -1845,7 +1847,7 @@
               obj[this.tableName] = {
                 ID: this.itemId
               };
-            } else if (this.itemInfo.tabrelation === '1:1') { // 子表静默逻辑    // 没有表格
+            } else if (this.getCurrentItemInfo().tabrelation === '1:1') { // 子表静默逻辑    // 没有表格
               obj = {
                 tableName: this.itemName, // 子表表名
                 ids
@@ -2028,6 +2030,13 @@
           this.getExportQueryForButtons({ OBJ, resolve, reject });
           this.$R3loading.show(this.tableName);
         });
+        const { tablename } = this.itemInfo;
+             
+        const searchdata = {
+          column_include_uicontroller: true,
+          startindex: 0,
+          range: page.pageSize,
+        };
         promise.then(() => {
           if (this.buttonsData.exportdata) {
             if (Version() === '1.4') {
@@ -2097,13 +2106,6 @@
                 }
                 return true;
               });
-              const { tablename } = this.itemInfo;
-             
-              const searchdata = {
-                column_include_uicontroller: true,
-                startindex: 0,
-                range: page.pageSize,
-              };
           
 
               this.getObjectTableItemForTableData({
@@ -2115,6 +2117,9 @@
             this.$R3loading.hide(this.tableName);
           }
         }, () => {
+          this.getObjectTableItemForTableData({
+            table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex: this.currentTabIndex
+          });
           this.$R3loading.hide(this.tableName);
         });
       },
@@ -2355,7 +2360,7 @@
           // tabcmdData.cmds.forEach((item, index) => {
           if (this.objectType === 'horizontal') { // 横向布局
             if (this.itemName !== this.tableName) { // 子表
-              const { tabrelation } = this.itemInfo;
+              const { tabrelation } = this.getCurrentItemInfo();
               if (tabrelation === '1:m') { // 子表1:m显示导入按钮
                 tabcmdData.cmds.forEach((item, index) => {
                   if (tabcmdData.prem[index]) {
@@ -3119,7 +3124,12 @@
               if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) { // 配置了暂存按钮，不校验子表
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
                 flag = true;
-              } else if (this.itemTableCheckFunc()) { // 未配置暂存按钮，子表必须校验
+              } else if (this.getCurrentItemInfo().tabrelation === '1:1') { // 1:1模式，不能再调用this.itemTableCheckFunc()检验，需重新定义逻辑
+                if (this.verifyRequiredInformation()) { 
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+                  flag = true;
+                }
+              } else if (this.itemTableCheckFunc()) { // 未配置暂存按钮，子表必须校验,1:m
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
                 flag = true;
               }
@@ -3189,7 +3199,7 @@
           }
           if (itemModify.length > 0 && itemAdd.length < 1) { // 子表表格编辑修改
             let check = null;
-            if (this.itemInfo.tabrelation === '1:1') {
+            if (this.getCurrentItemInfo().tabrelation === '1:1') {
               check = this.verifyRequiredInformation(); 
             } else {
               check = this.itemTableCheckFunc();
@@ -3874,7 +3884,7 @@
               // }
               }
 
-              if (Version() === '1.4' && this.itemInfo && this.itemInfo.tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
+              if (Version() === '1.4' && this.itemInfo && this.getCurrentItemInfo().tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
                 if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
                   this.tabcmd.cmds.forEach((item, index) => {
                     if (item !== 'actionMODIFY' || item !== 'actionEXPORT') {

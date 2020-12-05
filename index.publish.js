@@ -14,6 +14,11 @@ import ContentDisplayArea from './src/__component__/ContentDisplayArea.vue';
 import ComAttachFilter from './src/__component__/ComAttachFilter.vue';
 import DownComponent from './src/__component__/DownComponent.vue';
 import WaterMark from './src/__component__/WaterMark.vue';
+import VerticalMenu from './src/__component__/VerticalMenu.vue';
+import NavigatorVertical from './src/__component__/NavigatorVertical.vue';
+import NaVertical from './src/__component__/NaVertical.vue';
+import ComAutoComplete from './src/__component__/ComAutoComplete.vue';
+
 import ImportDialog from './src/__component__/ImportDialog.vue';
 import SearchForm from './src/__component__/form/SearchForm.vue';//
 import FilterTree from './src/__component__/Tree/FilterTree.vue';
@@ -29,8 +34,8 @@ const validateConfig = config => ({
   message: 'xxx'
 });
 const packageMessage = {
-  version: '1.3.16',
-  packageTime: '2020.11.10.13.26', 
+  version: '1.3.23',
+  packageTime: '2020.12.04.17.57', 
   user: 'npm',   
 };
 
@@ -136,6 +141,10 @@ export default {
     FilterTree,
     SelectTree,
     DocFile,
-    ImportDialog
+    ImportDialog,
+    VerticalMenu,
+    NavigatorVertical,
+    NaVertical,
+    ComAutoComplete
   }
 };

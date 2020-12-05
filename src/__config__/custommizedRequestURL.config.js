@@ -3,4 +3,5 @@ export default {
   // '/p/cs/cspecobjload': '/r3/cabben/pt/cspecobjload',
   // '/p/cs/proImage': '/r3/cabben/pt/proImage',
   // '/p/cs/cclrquery': '/r3/cabben/pt/cclrquery'
+  // '/p/cs/upload2': '/kabin/upload2'
 };

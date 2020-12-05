@@ -8,11 +8,19 @@
       @on-change="pageChange"
       @on-page-size-change="pageSizeChange"
     />
-    <div
+    <!-- <div
       v-if="isBig"
       class="isBig"
       :style=" { backgroundImage : 'url( ' + bigBackground + ') '} "
-    />
+    /> -->
+    <div
+      v-if="isBig" 
+      class="isBig"
+    >
+      <img
+        :src="bigBackground"  
+      >
+    </div>
    
     <div
       v-if="!isCommonTable&&!isBig"
@@ -70,15 +78,15 @@
 <script>
   /* eslint-disable no-lonely-if */
 
+  import { mapState } from 'vuex';
   import agTable from '../assets/js/ag-grid-table-pure';
   import CommonTable from './CommonTable.vue';
-  import isBigImg from '../assets/image/isBig.png';
 
   export default {
     name: 'AgTable',
     data() {
       return {
-        bigBackground: isBigImg
+        // bigBackground: require('../assets/image/isBig.png')
         // isCommonTable: true, // 是否显示普通表格
         // isCommonTable: false, // 是否显示普通表格
       };
@@ -86,7 +94,11 @@
     components: {
       CommonTable
     },
-    computed: {},
+    computed: {
+      ...mapState(('global'), {
+        bigBackground: (({ imgSrc }) => imgSrc.bigDataImg)
+      })
+    },
     props: {
       doTableSearch: {
         type: Function,
@@ -384,9 +396,19 @@
     width: 100%;
   }
   .isBig{
-     background-repeat: no-repeat;
-     background-position: center center;
-     background-size: 24%;
+    //  background-repeat: no-repeat;
+    //  background-position: center center;
+    //  background-size: 24%;
+    display: flex;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+
+    >img{
+      width: 25%;
+      height: 65%;
+    }
   }
 
  .queryDesc {
