@@ -118,3 +118,4 @@ export const blockFullOperation = () => (window.ProjectConfig && typeof window.P
 export const customizeMixins = () => (window.ProjectConfig && window.ProjectConfig.customizeMixins ? window.ProjectConfig.customizeMixins : project.customizeMixins || {});
 // export const REQUEST_PENDDING_EXPIRE = 1000 * 2;
 export const enableActivateSameCustomizePage = () => (window.ProjectConfig && typeof window.ProjectConfig.enableActivateSameCustomizePage === 'boolean' ? window.ProjectConfig.enableActivateSameCustomizePage : project.enableActivateSameCustomizePage);
+export const enableOpenNewTab = () => (window.ProjectConfig && typeof window.ProjectConfig.enableOpenNewTab === 'boolean' ? window.ProjectConfig.enableOpenNewTab : project.enableOpenNewTab);
