@@ -123,7 +123,6 @@ axios.interceptors.response.use(
     // window.ProjectConfig = {
     //   filterUrlForNetworkScript: FilterUrlForNetwork
     // };
-    console.log(888, filterUrlForNetworkScript());
     if (filterUrlForNetworkScript(filterUrlParams)) {
       if ((response.data.code === -1 || response.data.code === -2)) {
         let errorHTML = Array.isArray(response.data.error || response.data.data) && (response.data.error || response.data.data).reduce((arr, x) => {
