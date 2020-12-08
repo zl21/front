@@ -90,6 +90,21 @@ module.exports = {
   },
   ossRealtimeSave: false,
   filterUrlForNetwork: {// 过滤不需要用框架报错提示信息的接口请求
-    // AD_COLUMN: '/ad-app/p/cs/QueryList'
+    // configPage: {// 自定义弹框
+    //   AD_COLUMN: ['/ad-app/p/cs/QueryList', '/ad-app/p/cs/getTableQuery'],
+    // },
+    // customizePage: ['FUNCTIONPERMISSION'], // 自定义界面
   }, 
+  filterUrlForNetworkScript: () => true, // 框架默认true,
+  // (data) => {
+  //   if (data.router.params) {
+  //     if (data.router.params.tableName && data.config().configPage[data.router.params.tableName].filter(u => u === data.url).length > 0) { // 筛选出配置界面不需要根据框架code报错提示框的接口
+  //       return false;
+  //     } if (data.router.params.customizedModuleName && data.router.meta.routePrefix === '/CUSTOMIZED' && data.config().customizePage.filter(r => data.router.params.customizedModuleName.toLocaleLowerCase() === r.toLocaleLowerCase()).length > 0) {
+  //       // 筛选出定制界面不需要根据框架code报错提示框的接口
+  //       return false;
+  //     }
+  //   }
+  //   return true;
+  // }
 };
