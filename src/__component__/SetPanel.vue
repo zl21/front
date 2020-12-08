@@ -79,7 +79,7 @@
         collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
       }),
       getEname() {
-        if (this.serInfo) {
+        if (this.userInfo) {
           return this.userInfo.ename;
         }
         return null;
