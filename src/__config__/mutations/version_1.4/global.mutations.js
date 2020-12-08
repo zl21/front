@@ -37,6 +37,22 @@ export default {
   //   // data.treeId:勾选的树结构列表ID
   //   state.treeIds.push(data);
   // },
+  changgCurrentTabName(state, data) {//修改当前表对应Tab名称
+    if (data.keepAliveModuleName && data.label) {
+      const obj = {
+        name: data.keepAliveModuleName,
+        label: data.label
+      };
+      this.commit('global/addKeepAliveLabelMaps', obj);
+      state.activeTab.label = data.label;
+      state.keepAliveLabelMaps[data.keepAliveModuleName] = data.label;
+      state.openedMenuLists.filter((TabData) => {
+        if (TabData.keepAliveModuleName === data.keepAliveModuleName) {
+          TabData.label = data.label;
+        }
+      });
+    }
+  },
   updataSTDefaultQuery(state, data) {
     // tableId:跳转目标表ID
     // colid：目标表字段ID
@@ -997,6 +1013,7 @@ export default {
     }
   },
   addKeepAliveLabelMaps(state, { name, label }) {
+    debugger;
     // name：C.AAO_SR_TEST.2326模块名称
     // label：中文名
     state.keepAliveLabelMaps[name] = `${label}`;
