@@ -37,7 +37,7 @@ export default {
   //   // data.treeId:勾选的树结构列表ID
   //   state.treeIds.push(data);
   // },
-  changgCurrentTabName(state, data) {//修改当前表对应Tab名称
+  changgCurrentTabName(state, data) { // 修改当前表对应Tab名称
     if (data.keepAliveModuleName && data.label) {
       const obj = {
         name: data.keepAliveModuleName,
