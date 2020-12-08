@@ -22,6 +22,22 @@ import store from '../../store.config';
 
 
 export default {
+  changgCurrentTabName(state, data) { // 修改当前表对应Tab名称
+    if (data.keepAliveModuleName && data.label) {
+      const obj = {
+        name: data.keepAliveModuleName,
+        label: data.label
+      };
+      this.commit('global/addKeepAliveLabelMaps', obj);
+      state.activeTab.label = data.label;
+      state.keepAliveLabelMaps[data.keepAliveModuleName] = data.label;
+      state.openedMenuLists.filter((TabData) => {
+        if (TabData.keepAliveModuleName === data.keepAliveModuleName) {
+          TabData.label = data.label;
+        }
+      });
+    }
+  },
   updataSTDefaultQuery(data) {
     // tableId:跳转目标表ID
     // colid：目标表字段ID
