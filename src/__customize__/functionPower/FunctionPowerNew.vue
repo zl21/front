@@ -304,13 +304,15 @@
 <script>
   /* eslint-disable arrow-parens,no-lonely-if,no-empty */
   // import network, { urlSearchParams } from '../../__utils__/network';
-  import { Version } from '../../constants/global';
+  import { Version ,MODULE_COMPONENT_NAME} from '../../constants/global';
   import store from '../../__config__/store.config';
 
   const functionPowerActions = () => require(`../../__config__/actions/version_${Version()}/functionPower.actions.js`);
 
 
   export default {
+    inject: [MODULE_COMPONENT_NAME],
+
     data() {
       return {
         isSaveError: false, // 是否保存失败
@@ -975,13 +977,24 @@
         }
       }, // 点击按钮触发
       customize() {
-        const param = {
-          url: '/SYSTEM/TABLE_DETAIL/V/USERS/10085/1020',
-          type: 'V',
-          label: '基础档案',
-          dynamicRoutingForCustomizePage: true
+          const data = {
+          label: '测试',
+          keepAliveModuleName: this.[MODULE_COMPONENT_NAME]
         };
-        store.commit('global/tabOpen', param);
+        store.commit('global/changgCurrentTabName', data);
+
+
+        // const param = {
+        //   url: '/SYSTEM/TABLE_DETAIL/V/USERS/10085/1020',
+        //   type: 'V',
+        //   label: '基础档案',
+        //   dynamicRoutingForCustomizePage: true
+        // };
+        // store.commit('global/tabOpen', param);
+
+
+
+
         // const param = {
         //   url: 'CUSTOMIZED/PERMISSIONS/2997?type=sensitive&name=2',
         //   isMenu: true,

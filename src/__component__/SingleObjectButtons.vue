@@ -2420,9 +2420,9 @@
           };
         
           if (type === 'back') {
-            closeParame.stopRouterPush = true;
             this.tabCloseAppoint(closeParame);
             if (this.currentMenuExists({ tableName })) {
+              closeParame.stopRouterPush = true;// 筛选到菜单内配置了当前单对象对应的标准列表界面，则可返回到其列表界面，反之，回到前一个tab
               const url = `/SYSTEM/TABLE/${this.tableName}/${this.tableId}`;
               const param = {
                 tableId,
