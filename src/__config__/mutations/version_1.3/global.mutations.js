@@ -22,7 +22,7 @@ import store from '../../store.config';
 
 
 export default {
-  changgCurrentTabName(state, data) { // 修改当前表对应Tab名称
+  changeCurrentTabName(state, data) { // 修改当前表对应Tab名称
     if (data.keepAliveModuleName && data.label) {
       const obj = {
         name: data.keepAliveModuleName,
