@@ -10,13 +10,13 @@
       >
         {{ item.webdesc }}
       </Button>
-      <!-- <Button
+      <Button
         type="fcdefault"
         class="Button"
         @click="customize"
       >
-        测试跳转到单对象界面
-      </Button> -->
+        测试
+      </Button>
     </div>
     <div class="content">
       <div class="contentLeft">
@@ -25,7 +25,7 @@
           clearable
           icon="ios-search"
           @on-change="searchInputChange"
-              >
+        />
         <span slot="prepend">检索</span>
         </Input>
         <div class="menuContainer">
@@ -304,7 +304,7 @@
 <script>
   /* eslint-disable arrow-parens,no-lonely-if,no-empty */
   // import network, { urlSearchParams } from '../../__utils__/network';
-  import { Version ,MODULE_COMPONENT_NAME} from '../../constants/global';
+  import { Version, MODULE_COMPONENT_NAME } from '../../constants/global';
   import store from '../../__config__/store.config';
 
   const functionPowerActions = () => require(`../../__config__/actions/version_${Version()}/functionPower.actions.js`);
@@ -977,11 +977,11 @@
         }
       }, // 点击按钮触发
       customize() {
-          const data = {
+        const data = {
           label: '测试',
           keepAliveModuleName: this.[MODULE_COMPONENT_NAME]
         };
-        store.commit('global/changgCurrentTabName', data);
+        store.commit('global/changeCurrentTabName', data);
 
 
         // const param = {
@@ -991,8 +991,6 @@
         //   dynamicRoutingForCustomizePage: true
         // };
         // store.commit('global/tabOpen', param);
-
-
 
 
         // const param = {
