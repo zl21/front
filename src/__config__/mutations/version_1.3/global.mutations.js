@@ -40,6 +40,10 @@ export default {
       state.openedMenuLists.filter((TabData) => {
         if (TabData.keepAliveModuleName === data.keepAliveModuleName) {
           TabData.label = data.label;
+        } else if (enableActivateSameCustomizePage() && TabData.keepAliveModuleName.includes(data.customizedModuleName) && TabData.keepAliveModuleName !== data.keepAliveModuleName) {
+          TabData.label = data.label;
+          TabData.keepAliveModuleName = data.keepAliveModuleName;
+          // 如果开启自定义界面标识相同激活同一个定制界面，则该逻辑为检测打开的tab与目标界面的自定义界面标识相同，🆔不同时，已打开的自定义界面重新被激活时，可替换为来源界面设置的labelName
         }
       });
     }
@@ -132,6 +136,14 @@ export default {
       });
     } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
       const customizedModuleName = param.url.substring(param.url.indexOf('/') + 1, param.url.lastIndexOf('/'));
+      if (param.isMenu) {
+        const data = {
+          customizedModuleName,
+          customizedModuleId: param.id,
+          label: param.label
+        };
+        setCustomeLabel(data);
+      }
       const treeQuery = router.currentRoute.query;
       let path = '';
       if (treeQuery.isTreeTable) {
@@ -143,14 +155,6 @@ export default {
       router.push({
         path
       });
-      if (param.isMenu) {
-        const data = {
-          customizedModuleName,
-          customizedModuleId: param.id,
-          label: param.label
-        };
-        setCustomeLabel(data);
-      }
     }
   },
   updateTaskMessageCount(state, updateTaskMessageCount) { // 更新我的任务数量
@@ -496,6 +500,7 @@ export default {
       if (enableActivateSameCustomizePage()) {
         if (d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
           d.isActive = true;
+          this.commit('global/changeCurrentTabName', { keepAliveModuleName, label: label || state.keepAliveLabelMaps[keepAliveModuleName], customizedModuleName: keepAliveModuleNameRes });
         }
       } else if (d.keepAliveModuleName === keepAliveModuleName) {
         d.isActive = true;
@@ -1004,7 +1009,15 @@ export default {
     }
   },
   addKeepAliveLabelMaps(state, { name, label }) {
+    // name：C.AAO_SR_TEST.2326模块名称
+    // label：中文名
     state.keepAliveLabelMaps[name] = `${label}`;
+    const keepAliveLabelMapsObj = {
+      k: name,
+      v: label
+    };
+    updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
+    state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('keepAliveLabelMaps'));
   },
   addServiceIdMap(state, { tableName, gateWay }) {
     state.serviceIdMap[tableName] = `${gateWay}`;
