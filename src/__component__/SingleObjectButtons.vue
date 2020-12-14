@@ -1379,7 +1379,6 @@
                   contentText = `${confirm.desc.replace('{isselect}', selete.length)}`;
                 } else {
                   contentText = `${JSON.parse(obj.confirm).desc}`;
-                  console.log(contentText);
                 }
                 this.dialogMessage(title, contentText, obj);
               } else {
@@ -2780,6 +2779,7 @@
               }
             } else if (this.updateData[this.itemName].delete[this.itemName].length > 0) { // 子表删除
               this.saveParameters();// 调用获取参数方法
+              const { tablename, refcolid, tabinlinemode } = this.getCurrentItemInfo();
               if (obj.requestUrlPath) { // 有path
                 this.saveParameters();// 调用获取参数方法
                 const data = {
@@ -2804,11 +2804,11 @@
                         reject
                       });
                     });
+
                     promise.then(() => {
                       const deleteMessage = this.buttonsData.deleteData;
                       if (deleteMessage) {
                         this.$Message.success(`${deleteMessage}`);
-                        const { tablename, refcolid, tabinlinemode } = this.getCurrentItemInfo();
                         DispatchEvent('changePageForSelete', {
                           detail: {
                             tableName: this.tableName
@@ -2832,6 +2832,9 @@
                       if (deleteMessage) {
                         this.$Message.success(`${deleteMessage}`);
                       }
+                      this.updateModifyData({ tableName: tablename, value: {} });
+                      this.updateDeleteData({ tableName: tablename, value: {} });
+                      this.updateLabelData({ tableName: tablename, value: {} });
                     });
                   }
                 };
@@ -2866,7 +2869,7 @@
                         this.$Message.success(`${deleteMessage}`);
                         // this.clickButtonsBack();
                         // this.getQueryListForAg(searchData);
-                        const { tablename, refcolid, tabinlinemode } = this.getCurrentItemInfo();
+                        // const { tablename, refcolid, tabinlinemode } = this.getCurrentItemInfo();
                         DispatchEvent('changePageForSelete', {
                           detail: {
                             tableName: this.tableName
@@ -2883,11 +2886,15 @@
                         this.getInputForitemForChildTableForm({ table: tablename, tabIndex: this.currentTabIndex, tabinlinemode });
                         this.updateDeleteData({ tableName: this.itemName, value: {} });
                       }
-                    }, () => {
+                    }, (res) => {
+                      // this.$parent.$refs.objectTableRef.reloadErrorTips(res.data.data);
                       const deleteMessage = this.buttonsData.deleteData;
                       if (deleteMessage) {
                         this.$Message.success(`${deleteMessage}`);
                       }
+                      this.updateModifyData({ tableName: tablename, value: {} });
+                      this.updateDeleteData({ tableName: tablename, value: {} });
+                      this.updateLabelData({ tableName: tablename, value: {} });
                     });
                   }
                 };
@@ -3103,7 +3110,6 @@
       },
       getCurrentItemInfo() { // 获取当前子表信息
         if (this.objectType === 'vertical' && this.itemInfo.buttonsData && this.itemInfo.buttonsData.data && this.itemInfo.buttonsData.data.reftabs && this.itemInfo.buttonsData.data.reftabs.length > 0) { // 上下结构需要获取的是当前子表
-          console.log(1111, this.itemInfo);
           return this.itemInfo.buttonsData.data.reftabs[this.tabCurrentIndex];
         }
         return this.itemInfo;
@@ -3755,7 +3761,6 @@
             this.saveCallBack();
             this.saveCallBack = null;
 
-            console.log(2);
           } else { // 保存后的保存成功提示信息
             const message = this.buttonsData.message;
             this.clearEditData();// 清空store update数据
