@@ -10,7 +10,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const projectConfig = require('./project.config');
 
 const target = projectConfig.target; // 框架研发网关开启环境
-const proxyLists = ['/p/c', '/frr-center', '/eplan-center', '/ad-app'];
+const proxyLists = ['/p/c', '/frr-center', '/eplan-center', '/ad-app', '/r3/qiaochu/acsc/sale/'];
 const proxyListsForGateway = ['/ad-app/p/c', '/asynctask/p/cs'];
 const proxyListsForIShop = ['/ishopad-app', '/ishopplatform/p/c', '/ishopbill/p/c', '/ishopbase/p/c', '/ishopcrm/p/cs/'];
 const proxyListsForPalmCloud = ['/mboscloud-app'];
@@ -39,7 +39,7 @@ module.exports = env => ({
   },
   devServer: {
     compress: true,
-    port: 8191,
+    port: 8199,
     host: '0.0.0.0',
     open: true,
     historyApiFallback: {
