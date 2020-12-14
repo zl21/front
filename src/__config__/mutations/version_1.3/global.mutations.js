@@ -28,6 +28,7 @@ export default {
   },
   updataSwitchTag(state, data) {
     state.switchTag = data;
+  },
   changeCurrentTabName(state, data) { // 修改当前表对应Tab名称
     if (data.keepAliveModuleName && data.label) {
       const obj = {
