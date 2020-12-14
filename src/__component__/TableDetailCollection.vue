@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                   >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -1613,7 +1613,7 @@
       filterBeforeData() {
         // 分页数据初始化
         this.updateTablePageInfo({
-          currentPageIndex: (this.dataSource.start / this.dataSource.defaultrange) + 1,
+          currentPageIndex: Math.floor((this.dataSource.start / this.dataSource.defaultrange)) + 1,
           pageSize: this.dataSource.defaultrange
         });
         // 组装beforeData
