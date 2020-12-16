@@ -425,6 +425,10 @@ function NetworkConstructor() {
     
     if (pendingRequestMap[requestMd5] && now.getTime() - pendingRequestMap[requestMd5].reqTime < REQUEST_PENDDING_EXPIRE()) {
       // return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
+      if (router.currentRoute.params.tableName) {
+        window.vm.$R3loading.hide(router.currentRoute.params.tableName);
+      }
+      
       return new Promise(() => {});
     }
     // delete pendingRequestMap[requestMd5];
@@ -438,6 +442,9 @@ function NetworkConstructor() {
     if (Number(pendingRequestMap[requestMd5].reqTime) - Number(lastTime) < REQUEST_PENDDING_EXPIRE()) {
       // delete pendingRequestMap[requestMd5];
       // return Promise.reject(new Error(`request: [${matchedUrl}] 与上次请求间隔小于${REQUEST_PENDDING_EXPIRE() / 1000}秒.`));
+      if (router.currentRoute.params.tableName) {
+        window.vm.$R3loading.hide(router.currentRoute.params.tableName);
+      }
       return new Promise(() => {});
     }
 
@@ -479,6 +486,9 @@ function NetworkConstructor() {
     const now = new Date();
     if (pendingRequestMap[requestMd5] && now.getTime() - pendingRequestMap[requestMd5].reqTime < REQUEST_PENDDING_EXPIRE()) {
       // return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
+      if (router.currentRoute.params.tableName) {
+        window.vm.$R3loading.hide(router.currentRoute.params.tableName);
+      }
       return new Promise(() => {});
     }
     let lastTime = null;
@@ -491,6 +501,9 @@ function NetworkConstructor() {
     if (Number(pendingRequestMap[requestMd5].reqTime) - Number(lastTime) < REQUEST_PENDDING_EXPIRE()) {
       // delete pendingRequestMap[requestMd5];
       // return Promise.reject(new Error(`request: [${matchedUrl}] 与上次请求间隔小于${REQUEST_PENDDING_EXPIRE() / 1000}秒.`));
+      if (router.currentRoute.params.tableName) {
+        window.vm.$R3loading.hide(router.currentRoute.params.tableName);
+      }
       return new Promise(() => {});
     }
     return axios.get(matchedUrl, config);
