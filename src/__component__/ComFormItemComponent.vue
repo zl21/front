@@ -916,6 +916,7 @@
           url: conf.url,
           searchObject: data,
           success: (res) => {
+            // code =-2 目标字段未查询到，不清空来源字段值， [] 清空来源字段值
             if (res.code && res.code === -1) {
               current.value = [{
                 ID: null,
@@ -929,7 +930,7 @@
               return;
             }
             const tableName = this.isMainTable ? '' : this.childTableName;
-            if (res.length < 1) {
+            if (res && res.length < 1 && res.code !== -2) {
               current.value = [{
                 ID: null,
                 Label: null
