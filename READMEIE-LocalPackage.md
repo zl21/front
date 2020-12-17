@@ -86,6 +86,11 @@ next: 1.附件上传一次保存  ossRealtimeSave参数
 12.7
      1.重新制定filterUrlForNetwork配置
 
+
+12.17
+     1.修复单对象明细有checkbox类型字段，取消勾选后，删除失败再保存报错
+     2.解决字段联动问题是否清除目标字段问题
+
  
 
 
