@@ -131,44 +131,55 @@ axios.interceptors.response.use(
         if (!config.url.includes('/p/cs/batchSave')) {
           errorHTML = '';
         }
-        window.vm.$Modal.fcError({
-          mask: true,
-          titleAlign: 'center',
-          title: '错误',
-          // content: formatJsonEmg
-          render: h => h('div', [
-            h('div', {
-              style: {
-                padding: '10px 20px 0',
-                display: 'flex',
-                // alignItems: 'center',
-                lineHeight: '16px'
-              }
-            }, [
-              
-              h('i', {
-                props: {
-                },
-                style: {
-                  marginRight: '5px',
-                  display: 'inline-block',
-                  'font-size': '28px',
-                  'margin-right': ' 10px',
-                  'line-height': ' 1',
-                  padding: ' 10px 0',
-                  color: 'red'
-                },
-                class: 'iconfont iconbj_error fcError '
-              }),
+        let Modalflag = true;
+        let innerHTML = '';
+
+        if (response.data.message + errorHTML !== 'undefined') {
+          innerHTML = response.data.message + errorHTML;
+        } else if (response.data.msg + errorHTML !== 'undefined') {
+          innerHTML = response.data.msg + errorHTML;
+        } else {
+          Modalflag = false;
+        }
+        if (Modalflag) {
+          window.vm.$Modal.fcError({
+            mask: true,
+            titleAlign: 'center',
+            title: '错误',
+            // content: formatJsonEmg
+            render: h => h('div', [
               h('div', {
-                attrs: {
+                style: {
+                  padding: '10px 20px 0',
+                  display: 'flex',
+                  // alignItems: 'center',
+                  lineHeight: '16px'
+                }
+              }, [
+              
+                h('i', {
+                  props: {
+                  },
+                  style: {
+                    marginRight: '5px',
+                    display: 'inline-block',
+                    'font-size': '28px',
+                    'margin-right': ' 10px',
+                    'line-height': ' 1',
+                    padding: ' 10px 0',
+                    color: 'red'
+                  },
+                  class: 'iconfont iconbj_error fcError '
+                }),
+                h('div', {
+                  attrs: {
                   // rows: 8,
                   // readonly: 'readonly',
-                },
-                domProps: {
-                  innerHTML: response.data.message + errorHTML !== 'undefined' ? response.data.message + errorHTML : (response.data.msg + errorHTML || 'No Error Message.'),
-                },
-                style: `width: 80%;
+                  },
+                  domProps: {
+                    innerHTML,
+                  },
+                  style: `width: 80%;
                     margin: 1px;
                     margin-bottom: -8px;
                     box-sizing: border-box;
@@ -178,12 +189,13 @@ axios.interceptors.response.use(
                     max-width: 300px;
                     overflow: auto;
                     `
-              })
-            ])
+                })
+              ])
 
-          ])
+            ])
          
-        });
+          });
+        }
       }
     }
     
