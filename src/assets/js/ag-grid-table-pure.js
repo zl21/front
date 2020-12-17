@@ -990,16 +990,16 @@ const initializeAgTable = (container, opt) => {
           agGridDiv.querySelector('.ag-tool-panel').remove();
           agTable.dealWithPinnedColumns(true);
         }, // 当表格渲染好之后，触发onGridReady
-        onBodyScroll(params) {
-          const { columnApi, direction } = params;
-          clearTimeout(updateBodyScrollDelay);
-          if (direction === 'horizontal') {
-            updateBodyScrollDelay = setTimeout(() => {
-              columnApi.autoSizeAllColumns();
-            }, 10); // 当检测到滚动条为横向滚动时，自适应当前视口范围内的所有列
-          }
-          agGridTableContainer.setAttribute('data-scroll-left', params.left);
-        }, // 当表体发生滚动时候触发该事件
+        // onBodyScroll(params) {
+        //   const { columnApi, direction } = params;
+        //   clearTimeout(updateBodyScrollDelay);
+        //   if (direction === 'horizontal') {
+        //     updateBodyScrollDelay = setTimeout(() => {
+        //       columnApi.autoSizeAllColumns();
+        //     }, 10); // 当检测到滚动条为横向滚动时，自适应当前视口范围内的所有列
+        //   }
+        //   agGridTableContainer.setAttribute('data-scroll-left', params.left);
+        // }, // 当表体发生滚动时候触发该事件
         onVirtualColumnsChanged(params) {
           // const allVirtualCols = params.columnApi.getAllDisplayedVirtualColumns();
           // const currentLastVirtualColumn = allVirtualCols[allVirtualCols.length - 1].colId;

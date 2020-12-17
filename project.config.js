@@ -33,6 +33,7 @@ module.exports = {
   // target: 'http://syman-jflow-standard.dev.burgeononline.com',
   // target: 'http://139.196.221.193:38888/', // 巧厨环境
   // target: 'http://47.103.6.45:27777/', // 森马测试环境
+  // target: 'http://47.103.6.45:26666/', // 森马开发环境
   
   
   Version: '1.3', // 版本号
