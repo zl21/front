@@ -23,7 +23,7 @@
     </div>
    
     <div
-      v-if="!isCommonTable&&!isBig"
+      v-show="!isCommonTable&&!isBig"
       ref="agGridTableContainer"
       class="detailTable"
     />
