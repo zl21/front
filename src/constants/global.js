@@ -4,6 +4,7 @@ import configForTable from './extentionPropertyForTable';
 import backDashboardRoutes from '../__config__/backDashboardRoute.config';
 import custommizedRequestURL from '../__config__/custommizedRequestURL.config';
 import connectorConfig from './connector';
+import navMenuConfig from '../__config__/navMenu.config';
 
 
 export const STANDARD_TABLE_LIST_PREFIX = '/SYSTEM/TABLE';
@@ -119,3 +120,4 @@ export const customizeMixins = () => (window.ProjectConfig && window.ProjectConf
 export const enableActivateSameCustomizePage = () => (window.ProjectConfig && typeof window.ProjectConfig.enableActivateSameCustomizePage === 'boolean' ? window.ProjectConfig.enableActivateSameCustomizePage : project.enableActivateSameCustomizePage);
 export const filterUrlForNetworkScript = data => (window.ProjectConfig && window.ProjectConfig.filterUrlForNetworkScript ? window.ProjectConfig.filterUrlForNetworkScript(data) : project.filterUrlForNetworkScript);
 export const getFilterUrlForNetworkData = () => (window.ProjectConfig && window.ProjectConfig.filterUrlForNetwork ? window.ProjectConfig.filterUrlForNetwork : project.filterUrlForNetwork);
+export const navConfig = () => (window.ProjectConfig && window.ProjectConfig.navMenuConfig ? window.ProjectConfig.navMenuConfig : navMenuConfig);

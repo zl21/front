@@ -21,7 +21,7 @@
         :key="`endMenu-${endIndex}`"
         class="item"
         @click="routeTo(endMenu)"
-        v-html="endMenu.label.replace(/&nbsp\;/g,'\xa0')"
+        v-html="renderLabel(endMenu.label, navConfig[endMenu.value])"
       />
     </ul>
   </div>
@@ -31,6 +31,7 @@
   import { mapMutations, mapState } from 'vuex';
   import { routeTo } from '../__config__/event.config';
   import { updateSessionObject } from '../__utils__/sessionStorage';
+  import { navConfig } from '../constants/global';
 
 
   export default {
@@ -41,6 +42,11 @@
         type: Array,
         default: () => []
       }
+    },
+    data() {
+      return {
+        navConfig: navConfig()
+      };
     },
     // watch: {
     //   data: {
@@ -66,6 +72,23 @@
     },
     methods: {
       ...mapMutations('global', ['increaseKeepAliveLists', 'hideMenu', 'increaseOpenedMenuLists', 'changeSelectedPrimaryMenu']),
+
+      // 渲染label
+      renderLabel(label, itemConfig) {
+        const text = label.replace(/&nbsp\;/g, '\xa0');
+
+        if (Object.prototype.toString.call(itemConfig) !== '[object Object]' || itemConfig.indent === undefined) {
+          return text;
+        }
+
+        const indent = itemConfig.indent;
+        const textArr = [text]; 
+        for (let i = 0; i < indent; i++) {
+          textArr.unshift('&nbsp;');
+        }
+        return textArr.join('');
+      },
+
       toggleSubMenu() {
         this.changeSelectedPrimaryMenu(1);
       },
