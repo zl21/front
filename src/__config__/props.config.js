@@ -24,7 +24,7 @@ const input = {
     // 将用户的输入转换为 Number 类型。在有正则的时候：1）该输入框为空的时候，值为空字符串。2）input方法不可用。
     number: false,
     // 自动获取焦点
-    autofocus: true,
+    autofocus: false,
     // 原生的自动完成功能，可选值为 off 和 on
     autocomplete: 'off',
     // 占位文本
