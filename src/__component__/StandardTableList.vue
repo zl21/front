@@ -523,7 +523,7 @@
       },
       getQueryList() {
         const { agTableElement } = this.$refs;
-        agTableElement.showAgLoading();
+        // agTableElement.$refs.agTableElement.showAgLoading();//去除普通表格loading,因查询接口会唤起框架统一loading，两种loading冲突
         // this.getQueryListForAg(this.searchData);
         this.getQueryListPromise(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
