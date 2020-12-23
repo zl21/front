@@ -1102,7 +1102,7 @@
                 };
               } else if (check[1]) {
                 // 处理外健关联字段的多选联动
-                const query = current.refcolval.expre === 'equal' ? (check[1].split(',').length > 1 ? `${check[1]}` : `=${check[1]}`) : '';
+                const query = current.refcolval.expre === 'equal' ? (String(check[1]).indexOf(',') ? `${check[1]}` : `=${check[1]}`) : '';
                 searchObject = {
                   isdroplistsearch: true,
                   refcolid: current.colid,
