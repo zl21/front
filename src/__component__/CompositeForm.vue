@@ -1397,7 +1397,7 @@
           }
         }
         if (Object.hasOwnProperty.call(current, 'refcolval')) {
-          const refcolval = {};
+          let refcolval = {};
           const checkGetObjId = this.getObjId(current);
           // 判断 来源值是否是 objid，新增不需要
           if (checkGetObjId !== false) {
