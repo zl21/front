@@ -1063,6 +1063,7 @@
                   fixcolumn: current.webconf.refcolval_custom.srccols,
                   srccol: current.webconf.refcolval_custom.srccols
                 };
+
                 check = this.getLinkData(item);
                 // eslint-disable-next-line func-names
                 (function (instance) {
@@ -1078,9 +1079,7 @@
                 }
 
                 await network.post(current.webconf.refcolval_custom.url, {
-                  fixedcolumns: {
-                    [current.webconf.refcolval_custom.srccols]: check[1]
-                  }
+                  fixedcolumns: check[1]
                 }).then((res) => {
                   if (res.data.code === 0) {
                     result = res.data.fixedcolumns;
@@ -1398,7 +1397,7 @@
           }
         }
         if (Object.hasOwnProperty.call(current, 'refcolval')) {
-          let refcolval = {};
+          const refcolval = {};
           const checkGetObjId = this.getObjId(current);
           // 判断 来源值是否是 objid，新增不需要
           if (checkGetObjId !== false) {
@@ -1407,17 +1406,41 @@
 
           if (current.refcolval.maintable) {
             this.getStateData(); // 获取主表信息
-            refcolval = this.refcolvalAll[current.refcolval.srccol]
-              ? this.refcolvalAll[current.refcolval.srccol]
-              : '';
+
+            // 判断来源字段是否是多字段的联动
+            current.refcolval.srccol.split(',').map((item) => {
+              refcolval[item] = this.refcolvalAll[item]; 
+              return item;
+            });
+            
+            // refcolval = this.refcolvalAll[current.refcolval.srccol]
+            //     ? this.refcolvalAll[current.refcolval.srccol]
+            //     : '';
+            
             // if (this.refcolvalAll[current.refcolval.srccol] === undefined) {
             //   const data = Object.assign(this.defaultFormData, this.formData);
             //   refcolval = data[current.refcolval.srccol]; 
             // }
           } else {
+            // 判断来源字段是否是多字段的联动
             const data = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), this.formData);
-            refcolval = data[current.refcolval.srccol]; 
+
+            current.refcolval.srccol.split(',').map((item) => {
+              refcolval[item] = data[item];
+              return item;
+            });
+
+            // if (current.refcolval.srccol.includes(',')) {
+            //   console.log(data, current.refcolval.srccol);
+            // } else {
+                
+            // }
           }
+
+          if (current.webconf && current.webconf.refcolval_custom) {
+            return [true, refcolval];
+          }
+
           const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
 
           let LinkageFormInput = {};
