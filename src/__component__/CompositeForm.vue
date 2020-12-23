@@ -1407,9 +1407,13 @@
           if (current.refcolval.maintable) {
             this.getStateData(); // 获取主表信息
 
-            // 判断来源字段是否是多字段的联动
+            // 判断来源字段是否是多字段的联动,srccol以前是单个字段,现在有可能是多个字段
             current.refcolval.srccol.split(',').map((item) => {
-              refcolval[item] = this.refcolvalAll[item]; 
+              if (current.webconf && current.webconf.refcolval_custom) {
+                refcolval[item] = this.refcolvalAll[item]; 
+              } else {
+                refcolval = this.refcolvalAll[item]; 
+              }
               return item;
             });
             
@@ -1422,11 +1426,16 @@
             //   refcolval = data[current.refcolval.srccol]; 
             // }
           } else {
-            // 判断来源字段是否是多字段的联动
+            // 判断来源字段是否是多字段的联动,srccol以前是单个字段,现在有可能是多个字段
             const data = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), this.formData);
 
             current.refcolval.srccol.split(',').map((item) => {
-              refcolval[item] = data[item];
+              if (current.webconf && current.webconf.refcolval_custom) {
+                refcolval[item] = data[item];
+              } else {
+                refcolval = data[item];
+              }
+              
               return item;
             });
 
