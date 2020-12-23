@@ -118,6 +118,7 @@ const init = () => {
       store.commit('global/updataOpenedMenuLists', []);
     }, 500);
   }
+  DispatchEvent('initReady');
 };
 
 // 提前挂载方法

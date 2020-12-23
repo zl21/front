@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                  >
+                >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -2043,14 +2043,16 @@
                           value.transferDefaultSelected = [];
                         }
                         this.fkAutoData = [];
+                        const serviceId = this.copyDataSource.tabth.find(item => item.colname === params.column.colname).serviceId;
                         fkHttpRequest().fkFuzzyquerybyak({
                           searchObject: {
                             ak: data,
                             colid: this.dataSource.row[params.index][cellData.colname].colid,
                             fixedcolumns: {
                               whereKeys: this.getMainRefobjid(params, cellData)
-                            }
+                            },
                           },
+                          serviceId,
                           success: (res) => {
                             this.fkAutoData = res.data.data;
                             const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
@@ -2097,14 +2099,16 @@
                         value.transferDefaultSelected = [];
                       }
                       this.fkAutoData = [];
+                      const serviceId = this.copyDataSource.tabth.find(item => item.colname === params.column.colname).serviceId;
                       fkHttpRequest().fkFuzzyquerybyak({
                         searchObject: {
                           ak: data,
                           colid: this.dataSource.row[params.index][cellData.colname].colid,
                           fixedcolumns: {
                             whereKeys: this.getMainRefobjid(params, cellData)
-                          }
+                          },
                         },
+                        serviceId,
                         success: (res) => {
                           this.fkAutoData = res.data.data;
                           const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
@@ -2140,14 +2144,17 @@
                       value.transferDefaultSelected = [];
                     }
                     this.fkAutoData = [];
+                    
+                    const serviceId = this.copyDataSource.tabth.find(item => item.colname === params.column.colname).serviceId;
                     fkHttpRequest().fkFuzzyquerybyak({
                       searchObject: {
                         ak: data,
                         colid: this.dataSource.row[params.index][cellData.colname].colid,
                         fixedcolumns: {
                           whereKeys: this.getMainRefobjid(params, cellData)
-                        }
+                        },
                       },
+                      serviceId,
                       success: (res) => {
                         this.fkAutoData = res.data.data;
                         const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
@@ -2180,14 +2187,16 @@
                     value.transferDefaultSelected = [];
                   }
                   this.fkAutoData = [];
+                  const serviceId = this.copyDataSource.tabth.find(item => item.colname === params.column.colname).serviceId;
                   fkHttpRequest().fkFuzzyquerybyak({
                     searchObject: {
                       ak: data,
                       colid: this.dataSource.row[params.index][cellData.colname].colid,
                       fixedcolumns: {
                         whereKeys: this.getMainRefobjid(params, cellData)
-                      }
+                      },
                     },
+                    serviceId,
                     success: (res) => {
                       this.fkAutoData = res.data.data;
                       const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
@@ -2419,14 +2428,21 @@
                           value.transferDefaultSelected = [];
                         }
                         this.fkAutoData = [];
+                        
+              
+                        const serviceId = this.copyDataSource.tabth.find(item => item.colname === params.column.colname).serviceId;
+
                         fkHttpRequest().fkFuzzyquerybyak({
                           searchObject: {
                             ak: data,
                             colid: this.dataSource.row[params.index][cellData.colname].colid,
                             fixedcolumns: {
                               whereKeys: this.getMainRefobjid(params, cellData)
-                            }
+                            },
+
                           },
+                          serviceId,
+
                           success: (res) => {
                             this.fkAutoData = res.data.data;
                             const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
@@ -2458,14 +2474,17 @@
                         value.transferDefaultSelected = [];
                       }
                       this.fkAutoData = [];
+                      const serviceId = this.copyDataSource.tabth.find(item => item.colname === params.column.colname).serviceId;
                       fkHttpRequest().fkFuzzyquerybyak({
                         searchObject: {
                           ak: data,
                           colid: this.dataSource.row[params.index][cellData.colname].colid,
                           fixedcolumns: {
                             whereKeys: this.getMainRefobjid(params, cellData)
-                          }
+                          },
                         },
+                        serviceId,
+
                         success: (res) => {
                           this.fkAutoData = res.data.data;
                           const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
@@ -2486,14 +2505,16 @@
                       value.transferDefaultSelected = [];
                     }
                     this.fkAutoData = [];
+                    const serviceId = this.copyDataSource.tabth.find(item => item.colname === params.column.colname).serviceId;
                     fkHttpRequest().fkFuzzyquerybyak({
                       searchObject: {
                         ak: data,
                         colid: this.dataSource.row[params.index][cellData.colname].colid,
                         fixedcolumns: {
                           whereKeys: this.getMainRefobjid(params, cellData)
-                        }
+                        },
                       },
+                      serviceId,
                       success: (res) => {
                         this.fkAutoData = res.data.data;
                         const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
@@ -2511,14 +2532,16 @@
                     value.transferDefaultSelected = [];
                   }
                   this.fkAutoData = [];
+                  const serviceId = this.copyDataSource.tabth.find(item => item.colname === params.column.colname).serviceId;
                   fkHttpRequest().fkFuzzyquerybyak({
                     searchObject: {
                       ak: data,
                       colid: this.dataSource.row[params.index][cellData.colname].colid,
                       fixedcolumns: {
                         whereKeys: this.getMainRefobjid(params, cellData)
-                      }
+                      },
                     },
+                    serviceId,
                     success: (res) => {
                       this.fkAutoData = res.data.data;
                       const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
@@ -2898,14 +2921,16 @@
                   this.copyDataSource.row[params.index][cellData.colname].Selected = [];
                   return;
                 }
+                const serviceId = this.copyDataSource.tabth.find(item => item.colname === params.column.colname).serviceId;
                 fkHttpRequest().fkFuzzyquerybyak({
                   searchObject: {
                     ak: data,
                     colid: this.copyDataSource.row[params.index][cellData.colname].colid,
                     fixedcolumns: {
                       whereKeys: this.getMainRefobjid(params, cellData)
-                    }
+                    },
                   },
+                  serviceId,
                   success: (res) => {
                     this.fkAutoData = res.data.data;
                     const autoData = this.fkAutoData.filter(ele => (data && ele.value.toUpperCase().indexOf(data.toUpperCase()) > -1));
