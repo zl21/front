@@ -639,7 +639,7 @@
 
         // let v1.4外键 及number
         if (!this.formData[current.item.field] && Version() === '1.4') {
-          if (current.item.props.number === true || current.item.props.fkdisplay === 'pop' || current.item.props.fkdisplay === 'drp') {
+          if (current.item.props.number === true && (current.item.props.fkdisplay === 'pop' || current.item.props.fkdisplay === 'drp')) {
             this.formData[current.item.field] = 0;
           } else if (current.item.props.fkdisplay) {
             this.formData[current.item.field] = '';
@@ -946,7 +946,7 @@
                 this.searchClickData();
               }
             },
-            clear: ($this, item) => {
+            clear: ($this, items) => {
               this.getStateData(); // 获取主表信息
               // let Fitem = [];
               // if (current.formIndex !== 'inpubobj') {
