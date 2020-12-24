@@ -373,8 +373,16 @@
 
       *{
         flex-shrink: 0;
+      }
+
+      .verticalFormPanel{
+        flex: none;
+      }
+      
+      .tabComponent,.ark-tabs-panels{
         height: auto;
       }
+      
 
       .verticalFormPanel{
         flex: none;
