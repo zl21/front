@@ -13,18 +13,16 @@
       <li
         v-if="subMenu.children.length>0&&subMenu.children.filter(c=>!c.isHidden).length>0"
         class="title"
-      >
-        {{ subMenu.label.replace(/'&nbsp;'/g,'\xa0') }}  
-      </li>
+        v-html="subMenu.label.replace(/&nbsp\;/g,'\xa0')"
+      />
       <li
         v-for="(endMenu, endIndex) in subMenu.children"
         v-if="!endMenu.isHidden"
         :key="`endMenu-${endIndex}`"
         class="item"
         @click="routeTo(endMenu)"
-      >
-        {{ endMenu.label.replace(/'&nbsp;'/g,'\xa0') }} 
-      </li>
+        v-html="endMenu.label.replace(/&nbsp\;/g,'\xa0')"
+      />
     </ul>
   </div>
 </template>

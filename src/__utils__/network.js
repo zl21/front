@@ -4,10 +4,10 @@ import router from '../__config__/router.config';
 import store from '../__config__/store.config';
 
 import {
-  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, REQUEST_PENDDING_EXPIRE, getTouristRoute, logoutTips, Version, getFilterUrlForNetworkData
+  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, REQUEST_PENDDING_EXPIRE, getTouristRoute, logoutTips, Version, filterUrlForNetworkScript, getFilterUrlForNetworkData
 } from '../constants/global';
 import { addNetwork } from './indexedDB';
-
+// import FilterUrlForNetwork from '../launchApplicationConfig/filterUrlForNetwork';
 import {
   updateSessionObject, removeSessionObject, getSeesionObject
 } from './sessionStorage';
@@ -115,15 +115,33 @@ axios.interceptors.response.use(
         console.warn(e);
       }
     }
-    if (router.currentRoute.params && router.currentRoute.params.tableName) {
-      if (getFilterUrlForNetworkData()[router.currentRoute.params.tableName] !== response.config.url) {
-        if ((response.data.code === -1 || response.data.code === -2)) {
-          let errorHTML = Array.isArray(response.data.error || response.data.data) && (response.data.error || response.data.data).reduce((arr, x) => {
-            arr.push(`<p>${x.objid ? `objid${x.objid}` : '修改失败'}:${x.message}</p>`); return arr; 
-          }, []).join('') || '';
-          if (!config.url.includes('/p/cs/batchSave')) {
-            errorHTML = '';
-          }
+    const filterUrlParams = {
+      url: response.config.url,
+      router: router.currentRoute,
+      config: getFilterUrlForNetworkData
+    };
+    // window.ProjectConfig = {
+    //   filterUrlForNetworkScript: FilterUrlForNetwork
+    // };
+    if (filterUrlForNetworkScript(filterUrlParams)) {
+      if ((response.data.code === -1 || response.data.code === -2)) {
+        let errorHTML = Array.isArray(response.data.error || response.data.data) && (response.data.error || response.data.data).reduce((arr, x) => {
+          arr.push(`<p>${x.objid ? `objid${x.objid}` : '修改失败'}:${x.message}</p>`); return arr; 
+        }, []).join('') || '';
+        if (!config.url.includes('/p/cs/batchSave')) {
+          errorHTML = '';
+        }
+        let Modalflag = true;
+        let innerHTML = '';
+
+        if (response.data.message + errorHTML !== 'undefined') {
+          innerHTML = response.data.message + errorHTML;
+        } else if (response.data.msg + errorHTML !== 'undefined') {
+          innerHTML = response.data.msg + errorHTML;
+        } else {
+          Modalflag = false;
+        }
+        if (Modalflag) {
           window.vm.$Modal.fcError({
             mask: true,
             titleAlign: 'center',
@@ -155,11 +173,11 @@ axios.interceptors.response.use(
                 }),
                 h('div', {
                   attrs: {
-                    // rows: 8,
-                    // readonly: 'readonly',
+                  // rows: 8,
+                  // readonly: 'readonly',
                   },
                   domProps: {
-                    innerHTML: response.data.message + errorHTML !== 'undefined' ? response.data.message + errorHTML : (response.data.msg + errorHTML || 'No Error Message.'),
+                    innerHTML,
                   },
                   style: `width: 80%;
                     margin: 1px;
@@ -180,6 +198,7 @@ axios.interceptors.response.use(
         }
       }
     }
+    
     dispatchR3Event({
       url: config.url,
       response: JSON.parse(JSON.stringify(response)),
@@ -197,7 +216,7 @@ axios.interceptors.response.use(
       }
     }
     if (config.url.indexOf('/p/cs/getSubSystems') !== -1) {
-      if (response.status === 200 && response.data.data.length > 0) {
+      if (response.status === 200 && response.data.data && response.data.data.length > 0) {
       
       } else {
         updateSessionObject('saveNetwork', { k: 'name', v: '/p/cs/getSubSystems' });
@@ -418,6 +437,10 @@ function NetworkConstructor() {
     
     if (pendingRequestMap[requestMd5] && now.getTime() - pendingRequestMap[requestMd5].reqTime < REQUEST_PENDDING_EXPIRE()) {
       // return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
+      if (router.currentRoute.params.tableName) {
+        window.vm.$R3loading.hide(router.currentRoute.params.tableName);
+      }
+      
       return new Promise(() => {});
     }
     // delete pendingRequestMap[requestMd5];
@@ -431,6 +454,9 @@ function NetworkConstructor() {
     if (Number(pendingRequestMap[requestMd5].reqTime) - Number(lastTime) < REQUEST_PENDDING_EXPIRE()) {
       // delete pendingRequestMap[requestMd5];
       // return Promise.reject(new Error(`request: [${matchedUrl}] 与上次请求间隔小于${REQUEST_PENDDING_EXPIRE() / 1000}秒.`));
+      if (router.currentRoute.params.tableName) {
+        window.vm.$R3loading.hide(router.currentRoute.params.tableName);
+      }
       return new Promise(() => {});
     }
 
@@ -472,6 +498,9 @@ function NetworkConstructor() {
     const now = new Date();
     if (pendingRequestMap[requestMd5] && now.getTime() - pendingRequestMap[requestMd5].reqTime < REQUEST_PENDDING_EXPIRE()) {
       // return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
+      if (router.currentRoute.params.tableName) {
+        window.vm.$R3loading.hide(router.currentRoute.params.tableName);
+      }
       return new Promise(() => {});
     }
     let lastTime = null;
@@ -484,6 +513,9 @@ function NetworkConstructor() {
     if (Number(pendingRequestMap[requestMd5].reqTime) - Number(lastTime) < REQUEST_PENDDING_EXPIRE()) {
       // delete pendingRequestMap[requestMd5];
       // return Promise.reject(new Error(`request: [${matchedUrl}] 与上次请求间隔小于${REQUEST_PENDDING_EXPIRE() / 1000}秒.`));
+      if (router.currentRoute.params.tableName) {
+        window.vm.$R3loading.hide(router.currentRoute.params.tableName);
+      }
       return new Promise(() => {});
     }
     return axios.get(matchedUrl, config);

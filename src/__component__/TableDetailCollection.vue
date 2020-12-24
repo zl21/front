@@ -388,6 +388,7 @@
         return this.dataSource.isSubTotalEnabled;
       },
       isHorizontal() { // 是否是左右结构
+        console.log(55, pageType.Horizontal);
         return this.type === pageType.Horizontal;
       },
       
@@ -544,6 +545,7 @@
             this.afterSendDataLabelBefore = {};
             this.verifyTipObj = {};
             this.fkSelectedChangeData = [];
+            this.isRefreshClick = false;
           }
           const isTableRender = this.isTableRender;
           this.columns = this.filterColumns(this.dataSource.tabth, isTableRender); // 每列的属性
@@ -1346,6 +1348,9 @@
                 if (res.data.code === -1) {
                   // 删除失败
                   this.reloadErrorTips(res.data.data);
+                  this.updateModifyData({ tableName: this.tableName, value: {} });
+                  this.updateDeleteData({ tableName: this.tableName, value: {} });
+                  this.updateLabelData({ tableName: this.tableName, value: {} });
                 } else {
                   const deleteMessage = res.data.message;
                   this.$Message.success(`${deleteMessage}`);
@@ -1613,7 +1618,7 @@
       filterBeforeData() {
         // 分页数据初始化
         this.updateTablePageInfo({
-          currentPageIndex: (this.dataSource.start / this.dataSource.defaultrange) + 1,
+          currentPageIndex: Math.floor((this.dataSource.start / this.dataSource.defaultrange)) + 1,
           pageSize: this.dataSource.defaultrange
         });
         // 组装beforeData
@@ -3506,6 +3511,9 @@
         // 因为 要刷新render 就要修改this.dataSource.tabth  直接修改会报不能修改异步结果，所以需要store.commit 修改数据源
         const assignDataSource = Object.assign({}, this.dataSource);
         assignDataSource.tabth.timestamp = new Date().getTime(); // 确保会改变并刷新
+
+        this.isRefreshClick = true;// 清除删除前修改的存储在表格组件内用于存入模块状态内的表格数据，不清除则下次修改表格数据时，会再次抛出上一次的，因为删除失败是模拟刷新，通过数据重新的方式触发表格数据更新，不是通过接口的方式 
+
         if (this.isHorizontal) {
           this.updateTableData(assignDataSource);
         } else {

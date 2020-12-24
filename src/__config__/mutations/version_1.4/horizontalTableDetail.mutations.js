@@ -373,7 +373,8 @@ export default {
     state.buttonsData.exportdata = data;
   },
   updatetooltipForItemTableData(state, data) { // 表格操作单条明细失败返回值
-    state.tooltipForItemTable = data;
+    const datas = data || [];
+    state.tooltipForItemTable = datas;
   },
   updateSubmitData(state, submitData) { // 提交
     state.buttonsData.submitData = submitData;

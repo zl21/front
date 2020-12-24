@@ -72,7 +72,6 @@ export const defaultQuietRoutes = [
 ];
 
 // 导出表的拓展属性、字段扩展属性配置。
-export const getFilterUrlForNetworkData = () => (window.ProjectConfig && window.ProjectConfig.filterUrlForNetwork ? window.ProjectConfig.filterUrlForNetwork : project.filterUrlForNetwork);
 
 export const extentionForColumn = () => (window.ProjectConfig && window.ProjectConfig.extentionForColumn ? window.ProjectConfig.extentionForColumn : configForColumn);
 
@@ -118,3 +117,5 @@ export const blockFullOperation = () => (window.ProjectConfig && typeof window.P
 export const customizeMixins = () => (window.ProjectConfig && window.ProjectConfig.customizeMixins ? window.ProjectConfig.customizeMixins : project.customizeMixins || {});
 // export const REQUEST_PENDDING_EXPIRE = 1000 * 2;
 export const enableActivateSameCustomizePage = () => (window.ProjectConfig && typeof window.ProjectConfig.enableActivateSameCustomizePage === 'boolean' ? window.ProjectConfig.enableActivateSameCustomizePage : project.enableActivateSameCustomizePage);
+export const filterUrlForNetworkScript = data => (window.ProjectConfig && window.ProjectConfig.filterUrlForNetworkScript ? window.ProjectConfig.filterUrlForNetworkScript(data) : project.filterUrlForNetworkScript);
+export const getFilterUrlForNetworkData = () => (window.ProjectConfig && window.ProjectConfig.filterUrlForNetwork ? window.ProjectConfig.filterUrlForNetwork : project.filterUrlForNetwork);

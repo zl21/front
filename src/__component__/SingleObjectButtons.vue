@@ -274,7 +274,7 @@
                     });
                   }
                 }
-                const { tabinlinemode } = this.itemInfo;
+                const { tabinlinemode } = this.getCurrentItemInfo();
                 if (tabinlinemode === 'N') {
                   if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
                     this.tabcmd.cmds.forEach((item, index) => {
@@ -1012,7 +1012,7 @@
         }
         const {
           tablename, refcolid, tabrelation, tabinlinemode
-        } = this.itemInfo;
+        } = this.getCurrentItemInfo();
         
         // 通知表格刷新
         DispatchEvent('tabRefreshClick');
@@ -1198,7 +1198,7 @@
         }
         const {
           tablename, refcolid, tabrelation 
-        } = this.itemInfo;
+        } = this.getCurrentItemInfo();
      
         const searchdata = {
           column_include_uicontroller: true,
@@ -1360,7 +1360,6 @@
                   contentText = `${confirm.desc.replace('{isselect}', selete.length)}`;
                 } else {
                   contentText = `${JSON.parse(obj.confirm).desc}`;
-                  console.log(contentText);
                 }
                 this.dialogMessage(title, contentText, obj);
               } else {
@@ -1987,20 +1986,16 @@
           this.tabPanel.every((item) => {
             if (this.itemName !== this.tableName && item.tablename === this.itemName) {
               page = item.tablePageInfo;
-              return false;
             }
-            return true;
           });
         } else {
           this.tabPanel.every((item) => {
             if (item.tablename === this.itemName) {
               page = item.tablePageInfo;
-              return false;
             }
-            return true;
           });
         }
-        const { refcolid, tabledesc } = this.itemInfo;
+        const { refcolid, tabledesc } = this.getCurrentItemInfo();
         const itemSelected = Object.values(this.updateData[this.itemName].delete[this.itemName]).reduce((item, obj) => {
           item.push(obj.ID);
           return item;
@@ -2030,13 +2025,22 @@
           this.getExportQueryForButtons({ OBJ, resolve, reject });
           this.$R3loading.show(this.tableName);
         });
-        const { tablename } = this.itemInfo;
+        const { tablename } = this.getCurrentItemInfo();
              
-        const searchdata = {
-          column_include_uicontroller: true,
-          startindex: 0,
-          range: page.pageSize,
-        };
+        let pageRes = {}; 
+        let searchdata = {};  
+        if (this.objectType === 'horizontal') { // 横向布局
+          this.tabPanel.every((item) => {
+            if (this.itemName !== this.tableName && item.tablename === this.itemName) {
+              pageRes = item.tablePageInfo;
+            }
+          }); 
+          searchdata = {
+            column_include_uicontroller: true,
+            startindex: 0,
+            range: pageRes.pageSize,
+          };
+        }
         promise.then(() => {
           if (this.buttonsData.exportdata) {
             if (Version() === '1.4') {
@@ -2098,14 +2102,14 @@
             
             this.clearItemTableSearchValue();// 清除子表搜索框值
             if (this.objectType === 'horizontal') { // 横向布局
-              let page = {};
-              this.tabPanel.every((item) => {
-                if (this.itemName !== this.tableName && item.tablename === this.itemName) {
-                  page = item.tablePageInfo;
-                  return false;
-                }
-                return true;
-              });
+              // let page = {};
+              // this.tabPanel.every((item) => {
+              //   if (this.itemName !== this.tableName && item.tablename === this.itemName) {
+              //     page = item.tablePageInfo;
+              //     return false;
+              //   }
+              //   return true;
+              // });
           
 
               this.getObjectTableItemForTableData({
@@ -2667,6 +2671,7 @@
               }
             } else if (this.updateData[this.itemName].delete[this.itemName].length > 0) { // 子表删除
               this.saveParameters();// 调用获取参数方法
+              const { tablename, refcolid, tabinlinemode } = this.getCurrentItemInfo();
               if (obj.requestUrlPath) { // 有path
                 this.saveParameters();// 调用获取参数方法
                 const data = {
@@ -2691,11 +2696,11 @@
                         reject
                       });
                     });
+
                     promise.then(() => {
                       const deleteMessage = this.buttonsData.deleteData;
                       if (deleteMessage) {
                         this.$Message.success(`${deleteMessage}`);
-                        const { tablename, refcolid, tabinlinemode } = this.itemInfo;
                         DispatchEvent('changePageForSelete', {
                           detail: {
                             tableName: this.tableName
@@ -2719,6 +2724,9 @@
                       if (deleteMessage) {
                         this.$Message.success(`${deleteMessage}`);
                       }
+                      this.updateModifyData({ tableName: tablename, value: {} });
+                      this.updateDeleteData({ tableName: tablename, value: {} });
+                      this.updateLabelData({ tableName: tablename, value: {} });
                     });
                   }
                 };
@@ -2753,7 +2761,7 @@
                         this.$Message.success(`${deleteMessage}`);
                         // this.clickButtonsBack();
                         // this.getQueryListForAg(searchData);
-                        const { tablename, refcolid, tabinlinemode } = this.itemInfo;
+                        // const { tablename, refcolid, tabinlinemode } = this.getCurrentItemInfo();
                         DispatchEvent('changePageForSelete', {
                           detail: {
                             tableName: this.tableName
@@ -2770,11 +2778,15 @@
                         this.getInputForitemForChildTableForm({ table: tablename, tabIndex: this.currentTabIndex, tabinlinemode });
                         this.updateDeleteData({ tableName: this.itemName, value: {} });
                       }
-                    }, () => {
+                    }, (res) => {
+                      // this.$parent.$refs.objectTableRef.reloadErrorTips(res.data.data);
                       const deleteMessage = this.buttonsData.deleteData;
                       if (deleteMessage) {
                         this.$Message.success(`${deleteMessage}`);
                       }
+                      this.updateModifyData({ tableName: tablename, value: {} });
+                      this.updateDeleteData({ tableName: tablename, value: {} });
+                      this.updateLabelData({ tableName: tablename, value: {} });
                     });
                   }
                 };
@@ -2983,7 +2995,6 @@
       },
       getCurrentItemInfo() { // 获取当前子表信息
         if (this.objectType === 'vertical' && this.itemInfo.buttonsData && this.itemInfo.buttonsData.data && this.itemInfo.buttonsData.data.reftabs && this.itemInfo.buttonsData.data.reftabs.length > 0) { // 上下结构需要获取的是当前子表
-          console.log(1111, this.itemInfo);
           return this.itemInfo.buttonsData.data.reftabs[this.tabCurrentIndex];
         }
         return this.itemInfo;
@@ -3627,7 +3638,6 @@
             this.saveCallBack();
             this.saveCallBack = null;
 
-            console.log(2);
           } else { // 保存后的保存成功提示信息
             const message = this.buttonsData.message;
             this.clearEditData();// 清空store update数据
@@ -3845,7 +3855,6 @@
       window.removeEventListener('showSingleButtons', this.showSingleButtons);
     },
     mounted() {
-      // console.log(9999, this.getCurrentItemInfo());
       this.setDisableButtons();
       if (this.isItemTable) {
         this.dataArray.refresh = false;
@@ -3884,7 +3893,7 @@
               // }
               }
 
-              if (Version() === '1.4' && this.itemInfo && this.getCurrentItemInfo().tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
+              if (Version() === '1.4' && this.getCurrentItemInfo() && this.getCurrentItemInfo().tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
                 if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
                   this.tabcmd.cmds.forEach((item, index) => {
                     if (item !== 'actionMODIFY' || item !== 'actionEXPORT') {
@@ -3894,7 +3903,7 @@
                 }
               }
         
-              const { tabinlinemode } = this.itemInfo;
+              const { tabinlinemode } = this.getCurrentItemInfo();
               if (tabinlinemode === 'N') {
                 this.hideButtonsForcmds(['actionMODIFY', 'actionDELETE', 'actionIMPORT']);
               // if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
