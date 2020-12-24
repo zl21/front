@@ -356,7 +356,7 @@
   };
 </script>
 
-<style lang="less" >
+<style lang="less" scoped >
   .verticalTableDetail {
    height: 100%;
     display: flex;
@@ -384,7 +384,7 @@
       }
       
 
-      .verticalFormPanel{
+      /deep/ .verticalFormPanel{
         flex: none;
       }
     }
