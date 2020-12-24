@@ -23,7 +23,7 @@
     </div>
    
     <div
-      v-if="!isCommonTable&&!isBig"
+      v-show="!isCommonTable&&!isBig"
       ref="agGridTableContainer"
       class="detailTable"
     />
@@ -274,7 +274,7 @@
         datas.colPosition = self.userConfigForAgTable.colPosition; // 移动列
         datas.pinnedPosition = self.userConfigForAgTable.fixedColumn; // 固定列
         // selectIdArr
-        return agTable(this.$refs.agGridTableContainer, {
+        const agTableRes = agTable(this.$refs.agGridTableContainer, {
           cssStatus: self.legend, // 颜色配置信息
           defaultSort: arr, // 默认排序
           datas, //  所有返回数据
@@ -333,9 +333,12 @@
               self.onColumnPinned(ColumnPinned);
             }
           },
-        })
-          .setCols(th) // 设置数据列
-          .setRows(row); // 设置数据行
+        });
+        if (agTableRes && agTableRes.setCols) {
+          return agTableRes.setCols(th) // 设置数据列
+            .setRows(row); // 设置数据行
+        }
+        return null;
       },
       pageChange(pageNum) {
         const self = this;

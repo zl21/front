@@ -16,7 +16,6 @@ export const fkQueryList = function fkQueryList(params) {
 
 export const fkFuzzyquerybyak = function fkFuzzyquerybyak(params) {
   const timeOut = new Date().getTime();
-
   network
     .post('/p/cs/fuzzyquerybyak', urlSearchParams(params.searchObject), {
       serviceId: params.serviceId

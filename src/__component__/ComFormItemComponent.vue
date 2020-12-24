@@ -625,6 +625,7 @@
       },
       dataProcessing(current, type) {
         // change 后台传值
+        
         let obj = {};
         if (current.item.field) {
           // 当存在field时直接生成对象
@@ -681,7 +682,9 @@
               // 模糊查询
               delete obj[current.item.field];
               obj[current.item.inputname] = current.item.value;
-            } 
+            } else {
+              obj[current.item.field] = '';
+            }
 
           // 单对象界面 不需要
           // else {
@@ -729,6 +732,7 @@
             }, {})
           );
         }
+
         this.changeFormData = obj;
         if (current.item.props.number) {
           this.changeFormData = Number(obj[Object.keys(obj)[0]]);

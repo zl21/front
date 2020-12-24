@@ -356,7 +356,7 @@
   };
 </script>
 
-<style lang="less" scoped>
+<style lang="less" scoped >
   .verticalTableDetail {
    height: 100%;
     display: flex;
@@ -370,6 +370,23 @@
 
     .verticalTabs{
       flex: 1;
+
+      *{
+        flex-shrink: 0;
+      }
+
+      .verticalFormPanel{
+        flex: none;
+      }
+      
+      .tabComponent,.ark-tabs-panels{
+        height: auto;
+      }
+      
+
+      /deep/ .verticalFormPanel{
+        flex: none;
+      }
     }
     .tabPanel {
       margin: 10px 0;

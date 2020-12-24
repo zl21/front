@@ -639,7 +639,7 @@
 
         // let v1.4外键 及number
         if (!this.formData[current.item.field] && Version() === '1.4') {
-          if (current.item.props.number === true || current.item.props.fkdisplay === 'pop' || current.item.props.fkdisplay === 'drp') {
+          if (current.item.props.number === true && (current.item.props.fkdisplay === 'pop' || current.item.props.fkdisplay === 'drp')) {
             this.formData[current.item.field] = 0;
           } else if (current.item.props.fkdisplay) {
             this.formData[current.item.field] = '';
@@ -946,7 +946,7 @@
                 this.searchClickData();
               }
             },
-            clear: ($this, item) => {
+            clear: ($this, items) => {
               this.getStateData(); // 获取主表信息
               // let Fitem = [];
               // if (current.formIndex !== 'inpubobj') {
@@ -1063,6 +1063,7 @@
                   fixcolumn: current.webconf.refcolval_custom.srccols,
                   srccol: current.webconf.refcolval_custom.srccols
                 };
+
                 check = this.getLinkData(item);
                 // eslint-disable-next-line func-names
                 (function (instance) {
@@ -1078,9 +1079,7 @@
                 }
 
                 await network.post(current.webconf.refcolval_custom.url, {
-                  fixedcolumns: {
-                    [current.webconf.refcolval_custom.srccols]: check[1]
-                  }
+                  fixedcolumns: check[1]
                 }).then((res) => {
                   if (res.data.code === 0) {
                     result = res.data.fixedcolumns;
@@ -1102,7 +1101,7 @@
                 };
               } else if (check[1]) {
                 // 处理外健关联字段的多选联动
-                const query = current.refcolval.expre === 'equal' ? (check[1].split(',').length > 1 ? `${check[1]}` : `=${check[1]}`) : '';
+                const query = current.refcolval.expre === 'equal' ? (String(check[1]).indexOf(',') ? `${check[1]}` : `=${check[1]}`) : '';
                 searchObject = {
                   isdroplistsearch: true,
                   refcolid: current.colid,
@@ -1407,17 +1406,50 @@
 
           if (current.refcolval.maintable) {
             this.getStateData(); // 获取主表信息
-            refcolval = this.refcolvalAll[current.refcolval.srccol]
-              ? this.refcolvalAll[current.refcolval.srccol]
-              : '';
+
+            // 判断来源字段是否是多字段的联动,srccol以前是单个字段,现在有可能是多个字段
+            current.refcolval.srccol.split(',').map((item) => {
+              if (current.webconf && current.webconf.refcolval_custom) {
+                refcolval[item] = this.refcolvalAll[item]; 
+              } else {
+                refcolval = this.refcolvalAll[item]; 
+              }
+              return item;
+            });
+            
+            // refcolval = this.refcolvalAll[current.refcolval.srccol]
+            //     ? this.refcolvalAll[current.refcolval.srccol]
+            //     : '';
+            
             // if (this.refcolvalAll[current.refcolval.srccol] === undefined) {
             //   const data = Object.assign(this.defaultFormData, this.formData);
             //   refcolval = data[current.refcolval.srccol]; 
             // }
           } else {
+            // 判断来源字段是否是多字段的联动,srccol以前是单个字段,现在有可能是多个字段
             const data = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), this.formData);
-            refcolval = data[current.refcolval.srccol]; 
+
+            current.refcolval.srccol.split(',').map((item) => {
+              if (current.webconf && current.webconf.refcolval_custom) {
+                refcolval[item] = data[item];
+              } else {
+                refcolval = data[item];
+              }
+              
+              return item;
+            });
+
+            // if (current.refcolval.srccol.includes(',')) {
+            //   console.log(data, current.refcolval.srccol);
+            // } else {
+                
+            // }
           }
+
+          if (current.webconf && current.webconf.refcolval_custom) {
+            return [true, refcolval];
+          }
+
           const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
 
           let LinkageFormInput = {};
