@@ -155,11 +155,12 @@
   import CompontentNotFound from './CompontentNotFound.vue';
   import CustomizeModule from '../__config__/customize.config';
   import WaterMark from './WaterMark.vue';
+  import { DispatchEvent } from '../__utils__/dispatchEvent';
 
 
   import {
     getCustomizeWaterMark,
-    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY
+    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, notificationOfMain
   } from '../constants/global';
 
   const customizeModules = {};
@@ -822,6 +823,11 @@
         }
       },
       formPanelChange(val, changeVal, valLabel) {
+        if(notificationOfMain() && this.$route.params.tableName === this.tableName) {
+          DispatchEvent('notificationOfMain', {
+            detail: val
+          });
+        }
         const { tableName } = this;
         const { itemId } = this[INSTANCE_ROUTE_QUERY];
         const obj = {};

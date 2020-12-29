@@ -1446,8 +1446,22 @@
             // }
           }
 
-          if (current.webconf && current.webconf.refcolval_custom) {
-            return [true, refcolval];
+          if (current.webconf && current.webconf.refcolval_custom) { // 处理多来源字段的返回值以及必填处理
+            let flag = false;
+            let srccol = null;
+            current.webconf.refcolval_custom.srccols.split(',').map((item) => {
+              if (!refcolval[item] && !flag) {
+                flag = true;
+                srccol = item;
+              }
+            });
+
+            if (flag) {
+              refcolval = null;
+              current.refcolval.srccol = srccol;
+            } else {
+              return [true, refcolval];
+            }
           }
 
           const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
@@ -1541,8 +1555,18 @@
         if (!value) {
           return false;
         }
+
+        // 二级联动多个来源字段的模糊搜索处理
+        if (current.webconf && current.webconf.refcolval_custom) {
+          current.refcolval = {
+            expre: 'equal',
+            fixcolumn: current.webconf.refcolval_custom.srccols,
+            srccol: current.webconf.refcolval_custom.srccols
+          };
+        }
         let sendData = {};
         const check = this.getLinkData(current);
+        console.log(check, current);
         if (!check[0] && !check[1]) {
           document.activeElement.value = '';
         }

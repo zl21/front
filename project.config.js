@@ -91,6 +91,7 @@ module.exports = {
     taskList: null
   },
   ossRealtimeSave: false,
+  notificationOfMain: false, // 是否开启主表数据修改通知
   filterUrlForNetwork: {// 过滤不需要用框架报错提示信息的接口请求
     // configPage: {// 自定义弹框
     //   AD_COLUMN: ['/ad-app/p/cs/QueryList', '/ad-app/p/cs/getTableQuery'],

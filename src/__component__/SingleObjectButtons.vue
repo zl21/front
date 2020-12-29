@@ -3637,7 +3637,6 @@
             this.clearEditData();// 清空store update数据
             this.saveCallBack();
             this.saveCallBack = null;
-
           } else { // 保存后的保存成功提示信息
             const message = this.buttonsData.message;
             this.clearEditData();// 清空store update数据
@@ -3855,6 +3854,8 @@
       window.removeEventListener('showSingleButtons', this.showSingleButtons);
     },
     mounted() {
+      this.updataCurrentTableDetailInfo();
+
       this.setDisableButtons();
       if (this.isItemTable) {
         this.dataArray.refresh = false;

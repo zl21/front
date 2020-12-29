@@ -106,6 +106,11 @@
       getSizeAndColorRightTableData() {
         const { itemId } = this.$route.params;
 
+        // 新增主表数据时，颜色尺寸不调用接口        
+        if (itemId === 'New') {
+          return;
+        }
+
         const params = {
           param: {
             PS_C_PRO_ID: itemId
