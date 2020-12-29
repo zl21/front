@@ -1450,7 +1450,7 @@
             let flag = false;
             let srccol = null;
             current.webconf.refcolval_custom.srccols.split(',').map((item) => {
-              if (!refcolval[item]) {
+              if (!refcolval[item] && !flag) {
                 flag = true;
                 srccol = item;
               }
