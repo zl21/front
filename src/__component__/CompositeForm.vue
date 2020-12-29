@@ -1449,13 +1449,11 @@
           if (current.webconf && current.webconf.refcolval_custom) { // 处理多来源字段的返回值以及必填处理
             let flag = false;
             let srccol = null;
-            current.webconf.refcolval_custom.srccols.split(',').every((item) => {
+            current.webconf.refcolval_custom.srccols.split(',').map((item) => {
               if (!refcolval[item]) {
                 flag = true;
                 srccol = item;
-                return false;
               }
-              return true;
             });
 
             if (flag) {
@@ -1557,8 +1555,16 @@
         if (!value) {
           return false;
         }
+        if (current.webconf && current.webconf.refcolval_custom) {
+          current.refcolval = {
+            expre: 'equal',
+            fixcolumn: current.webconf.refcolval_custom.srccols,
+            srccol: current.webconf.refcolval_custom.srccols
+          };
+        }
         let sendData = {};
         const check = this.getLinkData(current);
+        console.log(check, current);
         if (!check[0] && !check[1]) {
           document.activeElement.value = '';
         }
