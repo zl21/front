@@ -1555,6 +1555,8 @@
         if (!value) {
           return false;
         }
+
+        // 二级联动多个来源字段的模糊搜索
         if (current.webconf && current.webconf.refcolval_custom) {
           current.refcolval = {
             expre: 'equal',
