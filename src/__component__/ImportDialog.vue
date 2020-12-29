@@ -36,9 +36,12 @@
           </div> -->
           <div class="el-upload__tip">
             {{ ChineseDictionary.IMPORTTITLE }}
-            <a
-              @click.stop="downloadTemplate"
-            >{{ ChineseDictionary.DOWNTEMPLATE }}</a>
+            <span
+              class="downloadTemplate"
+              @click="downloadTemplate"
+            >
+              {{ ChineseDictionary.DOWNTEMPLATE }}
+            </span>
           </div>
           <div class="upload-panel">
             <Button
@@ -288,11 +291,12 @@
       },
       downLoad(path) {
         const eleLink = document.createElement('a');
+        // eleLink.id = 'expertFile';
         eleLink.setAttribute('href', path);
         eleLink.style.display = 'none';
         document.body.appendChild(eleLink);
         eleLink.click();
-        document.body.removeChild(eleLink);
+        // document.getElementById('expertFile').remove();
       },
       // 提交上传文件请求
       submitUpload() {
@@ -486,6 +490,9 @@
       margin-top: 10px;
       font-size: 12px;
       color: #575757;
+      .downloadTemplate{
+        color: #2D8cF0;
+      }
       .inputValue{
         border: none;
         border-bottom: 1px solid #b8b8b8;
