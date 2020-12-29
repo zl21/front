@@ -95,7 +95,7 @@
   import AutomaticPathGenerationInput from './AutomaticPathGenerationInput.vue';
   
   import {
-    MODULE_COMPONENT_NAME,
+    MODULE_COMPONENT_NAME, notificationOfMain
   } from '../constants/global';
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
 
@@ -260,6 +260,13 @@
         }
       },
       formChange(val, changeVal, valLabel) {
+        // 主表数据修改时抛出event事件
+        if (notificationOfMain()) {
+          DispatchEvent('notificationOfMain', {
+            detail: val
+          });
+        }
+
         const { tableName, itemId } = this.$route.params;
         const obj = {};
         const objLabel = {};
