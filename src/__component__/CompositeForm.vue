@@ -1446,8 +1446,24 @@
             // }
           }
 
-          if (current.webconf && current.webconf.refcolval_custom) {
-            return [true, refcolval];
+          if (current.webconf && current.webconf.refcolval_custom) { // 处理多来源字段的返回值以及必填处理
+            let flag = false;
+            let srccol = null;
+            current.webconf.refcolval_custom.srccols.split(',').every((item) => {
+              if (!refcolval[item]) {
+                flag = true;
+                srccol = item;
+                return false;
+              }
+              return true;
+            });
+
+            if (flag) {
+              refcolval = null;
+              current.refcolval.srccol = srccol;
+            } else {
+              return [true, refcolval];
+            }
           }
 
           const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
