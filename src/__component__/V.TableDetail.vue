@@ -95,7 +95,7 @@
   import AutomaticPathGenerationInput from './AutomaticPathGenerationInput.vue';
   
   import {
-    MODULE_COMPONENT_NAME,
+    MODULE_COMPONENT_NAME, notificationOfMain
   } from '../constants/global';
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
 
@@ -260,6 +260,13 @@
         }
       },
       formChange(val, changeVal, valLabel) {
+        // 主表数据修改时抛出event事件
+        if (notificationOfMain()) {
+          DispatchEvent('notificationOfMain', {
+            detail: val
+          });
+        }
+
         const { tableName, itemId } = this.$route.params;
         const obj = {};
         const objLabel = {};
@@ -356,7 +363,7 @@
   };
 </script>
 
-<style lang="less" >
+<style lang="less" scoped >
   .verticalTableDetail {
    height: 100%;
     display: flex;
@@ -373,10 +380,18 @@
 
       *{
         flex-shrink: 0;
-        height: auto;
       }
 
       .verticalFormPanel{
+        flex: none;
+      }
+      
+      .tabComponent,.ark-tabs-panels{
+        height: auto;
+      }
+      
+
+      /deep/ .verticalFormPanel{
         flex: none;
       }
     }

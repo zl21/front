@@ -281,10 +281,18 @@
             const url = `${getGateway('/p/cs/download')}?filename=${
               res.data.data
             }`;
-            console.log(2222, url);
-            window.location = url;
+            // window.location = url;
+            this.downLoad(url);
           }
         });
+      },
+      downLoad(path) {
+        const eleLink = document.createElement('a');
+        eleLink.setAttribute('href', path);
+        eleLink.style.display = 'none';
+        document.body.appendChild(eleLink);
+        eleLink.click();
+        document.body.removeChild(eleLink);
       },
       // 提交上传文件请求
       submitUpload() {

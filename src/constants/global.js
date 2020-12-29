@@ -121,3 +121,4 @@ export const enableActivateSameCustomizePage = () => (window.ProjectConfig && ty
 export const filterUrlForNetworkScript = data => (window.ProjectConfig && window.ProjectConfig.filterUrlForNetworkScript ? window.ProjectConfig.filterUrlForNetworkScript(data) : project.filterUrlForNetworkScript);
 export const getFilterUrlForNetworkData = () => (window.ProjectConfig && window.ProjectConfig.filterUrlForNetwork ? window.ProjectConfig.filterUrlForNetwork : project.filterUrlForNetwork);
 export const navConfig = () => (window.ProjectConfig && window.ProjectConfig.navMenuConfig ? window.ProjectConfig.navMenuConfig : navMenuConfig);
+export const notificationOfMain = () => (window.ProjectConfig && typeof window.ProjectConfig.notificationOfMain === 'boolean' ? window.ProjectConfig.notificationOfMain : project.notificationOfMain);
