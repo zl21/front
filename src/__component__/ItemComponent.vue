@@ -1741,10 +1741,12 @@
     // console.log(this.type,this.formIndex);
     },
     mounted() {
-      // 处理字段联动时多个来源字段联动禁用模糊搜索
-      if (this.items.props.webconf && this.items.props.webconf.refcolval_custom && this.items.props.webconf.refcolval_custom.srccols.split(',').length > 1) {
-        this.$el.getElementsByTagName('input')[0].disabled = true;
-      }
+      this.$nextTick(() => {
+        // 处理字段联动时多个来源字段联动禁用模糊搜索
+        if (this.items.props.webconf && this.items.props.webconf.refcolval_custom && this.items.props.webconf.refcolval_custom.srccols.split(',').length > 1) {
+          this.$el.getElementsByTagName('input')[0].readOnly = true;
+        }
+      });
       window.addEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetProps);
       window.addEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
       window.addEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
