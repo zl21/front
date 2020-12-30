@@ -521,6 +521,7 @@
       color: #575757;
       .downloadTemplate{
         color: #2D8cF0;
+        cursor:pointer
       }
       .inputValue{
         border: none;
