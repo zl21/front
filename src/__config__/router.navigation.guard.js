@@ -25,6 +25,7 @@ import { updateSessionObject, getSeesionObject, deleteFromSessionObject } from '
 import {
   updateLocalObject, getLocalObject, deleteFromLocalObject, removeLocalObject  
 } from '../__utils__/localStorage';
+import setCustomeLabel from '../__utils__/setCustomeLabel';
 
 
 let pluginModules = {};
@@ -177,7 +178,7 @@ export default (router) => {
     const { commit } = store;
     const { keepAliveLists, openedMenuLists } = store.state.global;
     const {
-      tableName, tableId, itemId, customizedModuleName, pluginModuleName, linkModuleName,
+      tableName, tableId, itemId, customizedModuleName, pluginModuleName, linkModuleName, customizedModuleId
     } = to.params;
     const preventRegisterModule = [CUSTOMIZED_MODULE_PREFIX, PLUGIN_MODULE_PREFIX, LINK_MODULE_PREFIX];
     const { routePrefix } = to.meta;
@@ -275,6 +276,11 @@ export default (router) => {
     let keepAliveModuleNameRes = '';
     if (dynamicModuleTag === 'C') {
       keepAliveModuleNameRes = keepAliveModuleName.split('.')[1];
+      const data = {
+        customizedModuleName,
+        customizedModuleId,
+      };
+      setCustomeLabel(data);
     } 
     // 通过activateSameCustomizePage配置路由到自定义界面，如果自定义界面标识相同，是否只激活同一个tab,默认为true,只激活同一个tab
     let activateSameCustomizePageFlag = false;
@@ -287,7 +293,7 @@ export default (router) => {
     if (dynamicModuleTag !== '' && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName).length === 0 && !activateSameCustomizePageFlag) {
       // 新开tab
       // 目标路由所对应的[功能模块]没有存在于openedMenuLists中，则将目标路由应该对应的模块信息写入openedMenuLists
-  
+     
       let tempInterval = -1;
       tempInterval = setInterval(() => {
         let ready = null;
@@ -304,6 +310,7 @@ export default (router) => {
               pluginModules = Object.assign({}, pluginModules, window.ProjectConfig.externalPluginModules);
             }
           }
+         
           commit('global/increaseOpenedMenuLists', {
             label: routePrefix === PLUGIN_MODULE_PREFIX ? pluginModules[pluginModuleName].name : `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
             keepAliveModuleName,
