@@ -3409,10 +3409,11 @@
           // this.closeCurrentLoading();//保存成功后不需要清除loading,调刷新时会触发表单，表单会触发监听，监听会关闭loading
           stop = false;
           removeMessage = false;
-
+          
           this.saveAfter(type, tableName, stop, removeMessage);
 
           const webact = this.getCurrentItemInfo().webact;
+          
           if (this.objectType === 'vertical' && webact) { // 兼容半定制界面，保存成功时通知外部
             DispatchEvent('customizeClick', {
               detail: {
@@ -3467,14 +3468,28 @@
             }
             const label = `${this.activeTab.label.replace('新增', '编辑')}`;
 
-            const tab = {
-              type: types,
-              tableName,
-              tableId: this.tableId,
-              label,
-              id: this.buttonsData.newMainTableSaveData ? this.buttonsData.newMainTableSaveData.objId : this.itemId
-            };
-            this.tabOpen(tab);
+            // 处理新增时候执行回调但是不跳转界面
+            if (typeof (this.saveCallBack) === 'function') {
+              this.saveCallBack().then(() => {
+                const tab = {
+                  type: types,
+                  tableName,
+                  tableId: this.tableId,
+                  label,
+                  id: this.buttonsData.newMainTableSaveData ? this.buttonsData.newMainTableSaveData.objId : this.itemId
+                };
+                this.tabOpen(tab);
+              });
+            } else {
+              const tab = {
+                type: types,
+                tableName,
+                tableId: this.tableId,
+                label,
+                id: this.buttonsData.newMainTableSaveData ? this.buttonsData.newMainTableSaveData.objId : this.itemId
+              };
+              this.tabOpen(tab);
+            }
           }
           const message = this.buttonsData.message;
           const data = {
