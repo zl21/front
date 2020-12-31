@@ -3480,6 +3480,7 @@
                 };
                 this.tabOpen(tab);
               });
+              this.saveCallBack = null;
             } else {
               const tab = {
                 type: types,
