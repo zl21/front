@@ -30,14 +30,17 @@ const setCustomeLabel = (param) => {
   Object.keys(customizeConfig).forEach((customizeName) => {
     const nameToUpperCase = customizeName.toUpperCase();
     if (nameToUpperCase === customizedModuleName) { // 匹配到配置文件中的自定义界面配置
-      const labelName = param.label || customizeConfig[customizeName].labelName;//
-      const name = `C.${customizedModuleName}.${param.customizedModuleId}`;
-      store.commit('global/addKeepAliveLabelMaps', { name, label: `${labelName}` });
-      const keepAliveLabelMapsObj = {
-        k: name,
-        v: labelName
-      };
-      updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
+      const labelName = param.label || customizeConfig[customizeName].labelName;
+
+      if (labelName) {
+        const name = `C.${customizedModuleName}.${param.customizedModuleId}`;
+        store.commit('global/addKeepAliveLabelMaps', { name, label: `${labelName}` });
+        const keepAliveLabelMapsObj = {
+          k: name,
+          v: labelName
+        };
+        updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
+      }
     }
   });
 };

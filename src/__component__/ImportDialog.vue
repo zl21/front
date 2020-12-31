@@ -285,18 +285,47 @@
               res.data.data
             }`;
             // window.location = url;
-            this.downLoad(url);
+            this.downloadUrlFile(url);
           }
         });
       },
-      downLoad(path) {
-        const eleLink = document.createElement('a');
-        // eleLink.id = 'expertFile';
-        eleLink.setAttribute('href', path);
-        eleLink.style.display = 'none';
-        document.body.appendChild(eleLink);
-        eleLink.click();
-        // document.getElementById('expertFile').remove();
+      // downLoad(path) {
+      //   const eleLink = document.createElement('a');
+      //   // eleLink.id = 'expertFile';
+      //   eleLink.setAttribute('href', path);
+      //   eleLink.style.display = 'none';
+      //   document.body.appendChild(eleLink);
+      //   eleLink.click();
+      //   // document.getElementById('expertFile').remove();
+      // },
+      downloadUrlFile(url) {
+        const self = this;
+        const domFrame = window.parent.document.getElementById('downLoadListFrame');
+        if (domFrame != null) {
+          window.parent.document.body.removeChild(domFrame);
+        }
+        const downloadFile = {};
+        if (typeof downloadFile.iframe === 'undefined') {
+          const iframe = document.createElement('iframe');
+          iframe.setAttribute('id', 'downLoadListFrame');
+          self.addEvent('load', iframe, () => { self.iframeLoad(iframe); });
+          iframe.src = url;
+          downloadFile.iframe = iframe;
+          document.body.appendChild(downloadFile.iframe);
+          setTimeout(() => {
+            iframe.src = '';
+          }, 1000);
+        }
+      },
+      // 判断iframe的src
+      iframeLoad(iframe) {
+        const src = (iframe.src) ? iframe.src : iframe.contentWindow.locatiion.href;
+        console.log('src::', src);
+      },
+      // 调用方法时绑定iframe的load事件
+      addEvent(eventName, element, fn) {
+        if (element.attachEvent) element.attachEvent(`on${eventName}`, fn);
+        else element.addEventListener(eventName, fn, false);
       },
       // 提交上传文件请求
       submitUpload() {
@@ -492,6 +521,7 @@
       color: #575757;
       .downloadTemplate{
         color: #2D8cF0;
+        cursor:pointer
       }
       .inputValue{
         border: none;

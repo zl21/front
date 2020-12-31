@@ -248,6 +248,7 @@
             if (agGridTableContainer && agGridTableContainer.agTable) {
               agGridTableContainer.agTable.fixContainerHeight();
               agGridTableContainer.agTable.emptyAllFilters();
+              agGridTableContainer.agTable.dealWithPinnedColumns(true, val.fixedColumn || '');
             }
           }, 30);
         }
