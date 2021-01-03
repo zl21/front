@@ -3470,7 +3470,7 @@
 
             // 处理新增时候执行回调但是不跳转界面
             if (typeof (this.saveCallBack) === 'function') {
-              this.saveCallBack().then(() => {
+              this.saveCallBack(this.buttonsData.newMainTableSaveData ? this.buttonsData.newMainTableSaveData.objId : this.itemId).then(() => {
                 const tab = {
                   type: types,
                   tableName,
