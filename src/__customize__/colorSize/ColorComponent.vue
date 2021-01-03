@@ -267,7 +267,11 @@
 
       }, // 手动新增颜色输入框改变时触发
       addIconClick() {
+        
         const { itemId } = this.$route.params;
+        if (itemId == 'New') {
+          return;
+        }
         let ecodes = [];
         if (this.rightTableData.length > 0) {
           ecodes = this.rightTableData.map(item => item.ECODE);
