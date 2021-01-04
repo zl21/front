@@ -29,7 +29,7 @@ export const fkFuzzyquerybyak = function fkFuzzyquerybyak(params) {
     })
     .catch((err) => {
       if (axios.isCancel(err)) {
-        console.log('Rquest canceled'\); // 请求如果被取消，这里是返回取消的message
+        console.log('Rquest canceled'); // 请求如果被取消，这里是返回取消的message
       } else {
         // handle error
         console.log(err);
