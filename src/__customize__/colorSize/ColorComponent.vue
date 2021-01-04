@@ -232,6 +232,9 @@
       }, // 右边表格单选触发
       listAllColor() {
         const { itemId } = this.$route.params;
+        if (itemId == 'New') {
+          return;
+        }
         const params = {
           param: {
             PS_C_PRO_ID: itemId,
@@ -264,7 +267,11 @@
 
       }, // 手动新增颜色输入框改变时触发
       addIconClick() {
+        
         const { itemId } = this.$route.params;
+        if (itemId == 'New') {
+          return;
+        }
         let ecodes = [];
         if (this.rightTableData.length > 0) {
           ecodes = this.rightTableData.map(item => item.ECODE);

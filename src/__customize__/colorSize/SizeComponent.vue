@@ -175,6 +175,9 @@
       }, // 右边表格单选触发
       getLeftTableData() {
         const { itemId } = this.$route.params;
+        if (itemId == 'New') {
+          return;
+        }
         const params = {
           param: {
             PS_C_PRO_ID: itemId,
