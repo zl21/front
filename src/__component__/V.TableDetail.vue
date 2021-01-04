@@ -309,7 +309,7 @@
           //   return;
           // }
 
-          if (webactType !== 'ALL') {
+          if (webactType === 'HALF' || !webactType) {
             const { itemId } = this.$route.params;
             const refTab = this.tabPanel[index];
             let getButtonDataPromise = null;
