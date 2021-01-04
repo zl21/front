@@ -258,7 +258,6 @@ export default {
             a[`${getLabel({ url: c.url, id: c.id, type: 'customized' })}`] = c.label;
             customizedModuleName = `${getLabel({ url: c.url, id: c.id, type: 'customized' })}`;
           }
-          console.log('路由参数', a, c);
           const data = {
             customizedModuleName,
             customizedModuleId,
