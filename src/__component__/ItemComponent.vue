@@ -332,12 +332,24 @@
         :dataitem="_items.props.itemdata"
         @filechange="filechange"
       />
+
+      <!-- 自定义组件 -->
+      <component
+        :is="_items.componentName"
+        v-if="_items.type === 'customization'"
+        :ref="_items.field"
+        :options="{
+          ..._items,
+          webConfSingle,
+          index,
+          formIndex,
+        }"
+      />
     </div>
   </div>
 </template>
 
 <script>
-  
   import { mapMutations } from 'vuex';
   
   import dataProp from '../__config__/props.config';
@@ -346,17 +358,19 @@
   // 弹窗单选
   // import myPopDialog from './PopDialog';
   // 富文本编辑
-  import WangeditorVue from './Wangeditor';
+  import WangeditorVue from './Wangeditor.vue';
   //   弹窗单选 弹窗多选
-  import ComAttachFilter from './ComAttachFilter';
+  import ComAttachFilter from './ComAttachFilter.vue';
   //   上传文件
-  import Docfile from './docfile/DocFileComponent';
+  import Docfile from './docfile/DocFileComponent.vue';
 
 
-  import { Version, MODULE_COMPONENT_NAME, ossRealtimeSave } from '../constants/global';
-  import createModal from './PreviewPicture/index.js';
-  import EnumerableInput from './EnumerableInput';
-  import ExtentionInput from './ExtentionInput';
+  import {
+    Version, MODULE_COMPONENT_NAME, ossRealtimeSave 
+  } from '../constants/global';
+  import createModal from './PreviewPicture/index';
+  import EnumerableInput from './EnumerableInput.vue';
+  import ExtentionInput from './ExtentionInput.vue';
 
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
@@ -1738,7 +1752,7 @@
       window.removeEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
     },
     created() {
-    // console.log(this.type,this.formIndex);
+      // console.log(this.type,this.formIndex);
     },
     mounted() {
       this.$nextTick(() => {
