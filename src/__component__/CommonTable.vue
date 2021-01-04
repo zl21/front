@@ -304,6 +304,7 @@
                   acc.push(Object.assign({
                     title: cur.name,
                     key: cur.colname,
+                    fixed: 'right',
                     render: this.buttonRender()
                   }, cur));
                   break;

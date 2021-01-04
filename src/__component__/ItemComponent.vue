@@ -559,6 +559,7 @@
       },
       valueChange() {
         // 值发生改变时触发  只要是item中的value改变就触发该方法，是为了让父组件数据同步
+        // console.log(this._items);
         this.$emit('inputChange', this._items.value, this._items, this.index);
       },
       // input event
@@ -869,7 +870,7 @@
             Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
             && typeof this._items.event.clear === 'function'
           ) {
-            this._items.event.clear();
+            this._items.event.clear(this, this._items);
           }
         } else if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'valuechange')
@@ -1740,6 +1741,12 @@
     // console.log(this.type,this.formIndex);
     },
     mounted() {
+      this.$nextTick(() => {
+        // 处理字段联动时多个来源字段联动禁用模糊搜索
+        if (this.items.props.webconf && this.items.props.webconf.refcolval_custom && this.items.props.webconf.refcolval_custom.srccols.split(',').length > 1) {
+          this.$el.getElementsByTagName('input')[0].readOnly = true;
+        }
+      });
       window.addEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetProps);
       window.addEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
       window.addEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);

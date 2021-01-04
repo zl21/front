@@ -639,7 +639,7 @@
 
         // let v1.4外键 及number
         if (!this.formData[current.item.field] && Version() === '1.4') {
-          if (current.item.props.number === true || current.item.props.fkdisplay === 'pop' || current.item.props.fkdisplay === 'drp') {
+          if (current.item.props.number === true && (current.item.props.fkdisplay === 'pop' || current.item.props.fkdisplay === 'drp')) {
             this.formData[current.item.field] = 0;
           } else if (current.item.props.fkdisplay) {
             this.formData[current.item.field] = '';
@@ -946,7 +946,7 @@
                 this.searchClickData();
               }
             },
-            clear: ($this, item) => {
+            clear: ($this, items) => {
               this.getStateData(); // 获取主表信息
               // let Fitem = [];
               // if (current.formIndex !== 'inpubobj') {
@@ -1397,7 +1397,7 @@
           }
         }
         if (Object.hasOwnProperty.call(current, 'refcolval')) {
-          const refcolval = {};
+          let refcolval = {};
           const checkGetObjId = this.getObjId(current);
           // 判断 来源值是否是 objid，新增不需要
           if (checkGetObjId !== false) {
@@ -1446,8 +1446,22 @@
             // }
           }
 
-          if (current.webconf && current.webconf.refcolval_custom) {
-            return [true, refcolval];
+          if (current.webconf && current.webconf.refcolval_custom) { // 处理多来源字段的返回值以及必填处理
+            let flag = false;
+            let srccol = null;
+            current.webconf.refcolval_custom.srccols.split(',').map((item) => {
+              if (!refcolval[item] && !flag) {
+                flag = true;
+                srccol = item;
+              }
+            });
+
+            if (flag) {
+              refcolval = null;
+              current.refcolval.srccol = srccol;
+            } else {
+              return [true, refcolval];
+            }
           }
 
           const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
@@ -1541,13 +1555,27 @@
         if (!value) {
           return false;
         }
+
+        // 二级联动多个来源字段的模糊搜索处理
+        if (current.webconf && current.webconf.refcolval_custom) {
+          current.refcolval = {
+            expre: 'equal',
+            fixcolumn: current.webconf.refcolval_custom.srccols,
+            srccol: current.webconf.refcolval_custom.srccols
+          };
+        }
         let sendData = {};
         const check = this.getLinkData(current);
+        // console.log(check, current);
         if (!check[0] && !check[1]) {
           document.activeElement.value = '';
         }
         if (check[1]) {
-          const query = current.refcolval.expre === 'equal' ? `=${check[1]}` : '';
+          let query = current.refcolval.expre === 'equal' ? `=${check[1]}` : '';
+          // 二级联动多个来源字段的模糊搜索处理
+          if (current.webconf && current.webconf.refcolval_custom) {
+            query = current.refcolval.expre === 'equal' ? `=${check[1][current.webconf.refcolval_custom.srccols]}` : '';
+          }
           sendData = {
             ak: value,
             colid: current.colid,

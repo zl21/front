@@ -120,7 +120,7 @@
       :content-text="buttons.dialogConfig.contentText"
       :footer-hide="buttons.dialogConfig.footerHide"
       :confirm="buttons.dialogConfig.confirm"
-      @confirmDialog="errorconfirmDialog()"
+      @confirmDialog="confirmDialog()"
     />
     <dialogComponent
       ref="dialogRef"
@@ -1513,7 +1513,7 @@
         // this.actionDialog.title = tab.webdesc;
         this.objTabActionDialogConfig = tab;
         if (tab.action.indexOf('?') >= 0) {
-          this.dialogComponent = this.getCustomizeComponent(tab.action.split('/')[0]);
+          // this.dialogComponent = this.getCustomizeComponent(tab.action.split('/')[0]);
         } else {
           const url = tab.action;
           const index = url.lastIndexOf('\/');
@@ -1980,7 +1980,7 @@
           content: this.buttons.dialogConfig.contentText,
           showCancel: true,
           onOk: () => {
-            this.errorconfirmDialog(obj);
+            this.confirmDialog(obj);
           }
         };
         this.$Modal.fcWarning(data);
@@ -2396,7 +2396,7 @@
           this.getToFavoriteDataForButtons(params);
         }
       },
-      errorconfirmDialog(obj) {
+      confirmDialog(obj) {
         // this.$nextTick(() => {
         if (this.buttons.selectIdArr.length > 0) {
           if (

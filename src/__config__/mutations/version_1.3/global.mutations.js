@@ -222,6 +222,8 @@ export default {
         .map(d => d.children)
         .reduce((a, c) => a.concat(c))
         .reduce((a, c) => {
+          let customizedModuleName;
+          const customizedModuleId = c.id;
           if (c.type === 'action') {
           // 外部跳转链接URL的处理
             if (c.url) {
@@ -235,6 +237,7 @@ export default {
                 linkUrl[c.value.toUpperCase()] = c.url;
                 state.LinkUrl.push(linkUrl); // 方便记录外部链接的跳转URL
                 a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
+                customizedModuleName = `${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`;
               } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
                 // 自定义界面的处理
                 // CUSTOMIZED/customizeReport：润钱报表,c.id
@@ -245,28 +248,41 @@ export default {
                 //   c.type = 'action';
                 // }
                 a[`${getLabel({ url: c.url, id: c.id, type: 'customized' })}`] = c.label;
+                customizedModuleName = `${getLabel({ url: c.url, id: c.id, type: 'customized' })}`;
               } else if (actionType === 'SYSTEM') {
                 const i = c.url.substring(c.url.indexOf('/') + 1, c.url.lastIndexOf('/'));
                 const id = i.substring(i.lastIndexOf('/') + 1, i.length);
                 const n = i.substring(i.indexOf('/') + 1, i.lastIndexOf('/'));
                 const name = n.substring(n.lastIndexOf('/') + 1, n.length);
                 a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${name}.${id}`] = c.label;
+                customizedModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${name}.${id}`;
               }
             }
           } else if (c.type === 'table') {
             // 标准列表的处理
             a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
+            customizedModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`;
           } else if (c.type === 'tree') {
             // 树形结构列表的处理
             a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
+            customizedModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`;
             state.treeTableListData.push(c);
           } else if (c.type === 'commonTable') {
             // 标准列表的处理(普通表格)
             a[`${STANDARD_COMMONTABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
+            customizedModuleName = `${STANDARD_COMMONTABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`;
           } else if (c.type === 'rpt' && c.url) {
             c.url = `CUSTOMIZED/${c.url.toUpperCase()}?type=rpt`;
             c.type = 'action';
             a[`${getLabel({ url: c.url, id: c.id, type: 'customized' })}`] = c.label;
+            customizedModuleName = `${getLabel({ url: c.url, id: c.id, type: 'customized' })}`;
+          }
+          const data = {
+            customizedModuleName,
+            customizedModuleId,
+          };
+          if (customizedModuleName) {
+            setCustomeLabel(data);
           }
           return a;
         }, {});

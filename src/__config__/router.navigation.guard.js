@@ -26,6 +26,7 @@ import { updateSessionObject, getSeesionObject, deleteFromSessionObject } from '
 import {
   updateLocalObject, getLocalObject, deleteFromLocalObject, removeLocalObject  
 } from '../__utils__/localStorage';
+import setCustomeLabel from '../__utils__/setCustomeLabel';
 
 
 let pluginModules = {};
@@ -333,7 +334,7 @@ export default (router) => {
     if ((dynamicModuleTag !== '' && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName).length === 0 && !activateSameCustomizePageFlag)) {
       // 新开tab
       // 目标路由所对应的[功能模块]没有存在于openedMenuLists中，则将目标路由应该对应的模块信息写入openedMenuLists
-  
+     
       let tempInterval = -1;
       tempInterval = setInterval(() => {
         let ready = null;
@@ -350,6 +351,7 @@ export default (router) => {
               pluginModules = Object.assign({}, pluginModules, window.ProjectConfig.externalPluginModules);
             }
           }
+         
           commit('global/increaseOpenedMenuLists', {
             label: routePrefix === PLUGIN_MODULE_PREFIX ? pluginModules[pluginModuleName].name : `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
             keepAliveModuleName,
