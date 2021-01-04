@@ -22,14 +22,14 @@ export const fkFuzzyquerybyak = function fkFuzzyquerybyak(params) {
       params.success(res, timeOut);
     }
   })
-  .catch((err) => {
-    if (axios.isCancel(err)) {
-      console.log('Rquest canceled'\); // 请求如果被取消，这里是返回取消的message
-    } else {
+    .catch((err) => {
+      if (axios.isCancel(err)) {
+        console.log('Rquest canceled'); // 请求如果被取消，这里是返回取消的message
+      } else {
       // handle error
-      console.log(err);
-    }
-  });
+        console.log(err);
+      }
+    });
 };
 export const fkGetMultiQuery = function fkGetMultiQuery(params) {
   network.post('/p/cs/getMultiQuery', urlSearchParams(params.searchObject), { serviceId: params.serviceId }).then((res) => {
