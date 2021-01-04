@@ -1568,12 +1568,16 @@
         }
         let sendData = {};
         const check = this.getLinkData(current);
-        console.log(check, current);
+        // console.log(check, current);
         if (!check[0] && !check[1]) {
           document.activeElement.value = '';
         }
         if (check[1]) {
-          const query = current.refcolval.expre === 'equal' ? `=${check[1]}` : '';
+          let query = current.refcolval.expre === 'equal' ? `=${check[1]}` : '';
+          // 二级联动多个来源字段的模糊搜索处理
+          if (current.webconf && current.webconf.refcolval_custom) {
+            query = current.refcolval.expre === 'equal' ? `=${check[1][current.webconf.refcolval_custom.srccols]}` : '';
+          }
           sendData = {
             ak: value,
             colid: current.colid,

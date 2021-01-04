@@ -161,9 +161,13 @@
           obj.componentAttribute.mainFormPaths = this.formPaths;
           obj.componentAttribute.tooltipForItemTable = this.tooltipForItem;
           obj.componentAttribute.type = 'vertical';
+
           if (obj.vuedisplay === 'TabItem') { // 配置自定义tab
-            Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
-            obj.componentAttribute.componentName = obj.webact.substring(obj.webact.lastIndexOf('/') + 1, obj.webact.length);
+            const webact = obj.webact ? obj.webact.split('/')[0].toUpperCase() : '';// 自定义子表标识
+            if (webact === 'HALF' || webact === 'ALL') {
+              Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
+              obj.componentAttribute.componentName = obj.webact.substring(obj.webact.lastIndexOf('/') + 1, obj.webact.length);
+            } 
           } else if (Vue.component(`tapComponent.${item.tablename}`) === undefined) {
             Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
           }
@@ -309,7 +313,7 @@
           //   return;
           // }
 
-          if (webactType !== 'ALL') {
+          if (webactType === 'HALF' || !webactType) {
             const { itemId } = this.$route.params;
             const refTab = this.tabPanel[index];
             let getButtonDataPromise = null;

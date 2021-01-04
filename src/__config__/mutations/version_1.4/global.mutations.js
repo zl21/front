@@ -255,7 +255,6 @@ export default {
             setCustomeLabel(data);
           }
           
-          console.log('sssss', a, c);
           return a;
         }, {});
 

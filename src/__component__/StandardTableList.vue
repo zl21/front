@@ -2746,9 +2746,20 @@
               }
             });
           } else if (!this.buttons.isBig) {
-            this.searchClickData();
+            // 初始化调用时，ie环境下增加500ms延时调用
+            if (this.isIE()) {
+              setTimeout(() => {
+                this.searchClickData();
+              }, 500);
+            } else {
+              this.searchClickData();
+            }
           }
         }
+      },
+      isIE() {
+        if (!!window.ActiveXObject || 'ActiveXObject' in window) return true;
+        return false;
       },
       // 监听update.ST.FailInfo事件
       updateSTFailInfo(event) {

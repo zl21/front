@@ -148,6 +148,10 @@
       },
       getImage(colorData) {
         const { itemId } = this.$route.params;
+        // 新增主表数据时，颜色尺寸不调用接口        
+        if (itemId === 'New') {
+          return;
+        }
         const url = custommizedRequestUrl()['/p/cs/proImage'];
         network.post(url || '/p/cs/proImage', urlSearchParams({
           param: {
@@ -175,6 +179,9 @@
       },
       produceCode() {
         const { tableName, itemId } = this.$route.params;
+        if (itemId == 'New') {
+          return;
+        }
         let rightTableDataForColorRes = null;
         let rightTableDataForSizeRes = null;
         if (this.$refs.tabPanels.$refs.color) {
