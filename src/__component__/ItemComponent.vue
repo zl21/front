@@ -1757,7 +1757,7 @@
     mounted() {
       this.$nextTick(() => {
         // 处理字段联动时多个来源字段联动禁用模糊搜索
-        if (this.items.props.webconf && this.items.props.webconf.refcolval_custom && this.items.props.webconf.refcolval_custom.srccols.split(',').length > 1) {
+        if (this.items.props.webconf && this.items.props.webconf.refcolval_custom) {
           this.$el.getElementsByTagName('input')[0].readOnly = true;
         }
       });

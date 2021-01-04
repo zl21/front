@@ -169,7 +169,7 @@
             if (this.tabPanel[index].webact) { // 自定义tab全定制，tab切换时不需要请求
               webactType = this.tabPanel[index].webact.substring(0, this.tabPanel[index].webact.lastIndexOf('/'));
             }
-            if (webactType !== 'ALL') {
+            if (webactType === 'HALF' || !webactType) {
               if (this.tabPanel[index].tabrelation === '1:m') { // 有表格
                 const { tableName, itemId } = this.$route.params;
                 const {
