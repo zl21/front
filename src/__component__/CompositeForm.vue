@@ -1566,7 +1566,7 @@
         }
         let sendData = {};
         const check = this.getLinkData(current);
-        console.log(check, current);
+        // console.log(check, current);
         if (!check[0] && !check[1]) {
           document.activeElement.value = '';
         }

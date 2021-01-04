@@ -12,6 +12,9 @@ import {
   updateSessionObject, removeSessionObject, getSeesionObject
 } from './sessionStorage';
 
+const CancelToken = axios.CancelToken;
+window.cancle = null;
+
 // const axios = Axios.create();
 
 let tableNameForGet = '';
@@ -476,6 +479,12 @@ function NetworkConstructor() {
         }
       };
     }
+
+    headers = Object.assign({}, headers, {
+      cancelToken: new CancelToken(((c) => { // 在axios封装的函数中写上这句就可以了
+        window.cancle = c;
+      }))
+    });
     
     return axios.post(matchedUrl, config, headers);
   };

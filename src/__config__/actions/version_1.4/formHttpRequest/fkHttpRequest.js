@@ -1,3 +1,4 @@
+import axios from 'axios';
 import network, { urlSearchParams } from '../../../../__utils__/network';
 
 export const fkQueryList = function fkQueryList(params) {
@@ -15,6 +16,7 @@ export const fkQueryList = function fkQueryList(params) {
 };
 
 export const fkFuzzyquerybyak = function fkFuzzyquerybyak(params) {
+  window.cancle();
   const timeOut = new Date().getTime();
   network
     .post('/p/cs/fuzzyquerybyak', urlSearchParams(params.searchObject), {
@@ -23,6 +25,14 @@ export const fkFuzzyquerybyak = function fkFuzzyquerybyak(params) {
     .then((res) => {
       if (typeof params.success === 'function') {
         params.success(res, timeOut);
+      }
+    })
+    .catch((err) => {
+      if (axios.isCancel(err)) {
+        console.log('Rquest canceled'\); // 请求如果被取消，这里是返回取消的message
+      } else {
+        // handle error
+        console.log(err);
       }
     });
 };
