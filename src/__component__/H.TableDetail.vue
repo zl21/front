@@ -76,10 +76,21 @@
               webactType = obj.webact.substring(0, obj.webact.lastIndexOf('/')).toUpperCase();
             }
             if (obj.vuedisplay === 'TabItem') { // 引入自定义组件
-              Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
-              obj.componentAttribute.componentName = obj.webact.substring(obj.webact.lastIndexOf('/') + 1, obj.webact.length);// 自定义组件名称
-              obj.componentAttribute.componentType = webactType;// 自定义组件类型ALL/HALF
-              obj.componentAttribute.itemInfo = item;
+              const webact = obj.webact ? obj.webact.split('/')[0] : '';// 自定义子表标识
+              if (webact === 'HALF' || webact === 'ALL') {
+                Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
+                obj.componentAttribute.componentName = obj.webact.substring(obj.webact.lastIndexOf('/') + 1, obj.webact.length);// 自定义组件名称
+                obj.componentAttribute.componentType = webactType;// 自定义组件类型ALL/HALF
+                obj.componentAttribute.itemInfo = item;
+              } 
+              // else {
+              //   const data = {
+              //     mask: true,
+              //     title: '警告',
+              //     content: '当前子表webact信息配置错误，请检查元数据配置'
+              //   };
+              //   this.$Modal.fcWarning(data);
+              // }
             } else {
               if (Vue.component(`tapComponent.${item.tablename}`) === undefined) {
                 Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
@@ -158,7 +169,7 @@
             if (this.tabPanel[index].webact) { // 自定义tab全定制，tab切换时不需要请求
               webactType = this.tabPanel[index].webact.substring(0, this.tabPanel[index].webact.lastIndexOf('/'));
             }
-            if (webactType !== 'ALL') {
+            if (webactType === 'HALF' || !webactType) {
               if (this.tabPanel[index].tabrelation === '1:m') { // 有表格
                 const { tableName, itemId } = this.$route.params;
                 const {
