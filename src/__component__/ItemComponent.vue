@@ -332,12 +332,24 @@
         :dataitem="_items.props.itemdata"
         @filechange="filechange"
       />
+
+      <!-- 自定义组件 -->
+      <component
+        :is="_items.componentName"
+        v-if="_items.type === 'customization'"
+        :ref="_items.field"
+        :options="{
+          ..._items,
+          webConfSingle,
+          index,
+          formIndex,
+        }"
+      />
     </div>
   </div>
 </template>
 
 <script>
-  
   import { mapMutations } from 'vuex';
   
   import dataProp from '../__config__/props.config';
@@ -346,17 +358,19 @@
   // 弹窗单选
   // import myPopDialog from './PopDialog';
   // 富文本编辑
-  import WangeditorVue from './Wangeditor';
+  import WangeditorVue from './Wangeditor.vue';
   //   弹窗单选 弹窗多选
-  import ComAttachFilter from './ComAttachFilter';
+  import ComAttachFilter from './ComAttachFilter.vue';
   //   上传文件
-  import Docfile from './docfile/DocFileComponent';
+  import Docfile from './docfile/DocFileComponent.vue';
 
 
-  import { Version, MODULE_COMPONENT_NAME, ossRealtimeSave } from '../constants/global';
-  import createModal from './PreviewPicture/index.js';
-  import EnumerableInput from './EnumerableInput';
-  import ExtentionInput from './ExtentionInput';
+  import {
+    Version, MODULE_COMPONENT_NAME, ossRealtimeSave 
+  } from '../constants/global';
+  import createModal from './PreviewPicture/index';
+  import EnumerableInput from './EnumerableInput.vue';
+  import ExtentionInput from './ExtentionInput.vue';
 
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
@@ -857,6 +871,14 @@
         ) {
           this._items.event['on-show']($this);
         }
+        this.$nextTick(() => {
+          // 处理字段联动时多个来源字段联动禁用模糊搜索
+          if (this.items.props.webconf && this.items.props.webconf.refcolval_custom) {
+            if (document.getElementsByClassName(`R3_${this.items.field}`).length > 0) {
+              document.getElementsByClassName(`R3_${this.items.field}`)[0].getElementsByTagName('input')[0].readOnly = true;
+            }
+          }
+        });
       },
       ComAttachFilterkeydown() {
 
@@ -1738,7 +1760,7 @@
       window.removeEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
     },
     created() {
-    // console.log(this.type,this.formIndex);
+      // console.log(this.type,this.formIndex);
     },
     mounted() {
       this.$nextTick(() => {
