@@ -10,8 +10,8 @@
         >
           <a
             v-if="getDocFileWebConf"
-            :href="`${getDocFileWebConfUrl}?url=${option.url}`"
             target="_blank"
+            @click="downloadUrlFile(`${getDocFileWebConfUrl}?url=${option.url}`)"
           >{{ option.name }}</a>
           <a
             v-else
