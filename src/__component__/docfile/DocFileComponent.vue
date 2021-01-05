@@ -15,7 +15,7 @@
           >{{ option.name }}</a>
           <a
             v-else
-            :href="urlChange(option.url)"
+            @click="urlChange(option.url)"
           >{{ option.name }}</a>
           <i
             v-if="docList.readonly!== true && option.name"
@@ -159,6 +159,35 @@
     //   });
     // },
     methods: {
+      downloadUrlFile(url) {
+        const self = this;
+        const domFrame = window.parent.document.getElementById('downLoadListFrame');
+        if (domFrame != null) {
+          window.parent.document.body.removeChild(domFrame);
+        }
+        const downloadFile = {};
+        if (typeof downloadFile.iframe === 'undefined') {
+          const iframe = document.createElement('iframe');
+          iframe.setAttribute('id', 'downLoadListFrame');
+          self.addEvent('load', iframe, () => { self.iframeLoad(iframe); });
+          iframe.src = url;
+          downloadFile.iframe = iframe;
+          document.body.appendChild(downloadFile.iframe);
+          setTimeout(() => {
+            iframe.src = '';
+          }, 1000);
+        }
+      },
+      // 判断iframe的src
+      iframeLoad(iframe) {
+        const src = (iframe.src) ? iframe.src : iframe.contentWindow.locatiion.href;
+        // console.log('src::', src);
+      },
+      // 调用方法时绑定iframe的load事件
+      addEvent(eventName, element, fn) {
+        if (element.attachEvent) element.attachEvent(`on${eventName}`, fn);
+        else element.addEventListener(eventName, fn, false);
+      },
       urlChange(url) { // 对下载的url地址进行转换，处理特殊字符
         if (encodeControl()) {
           const arr = url.split('?')[0].split('/');
@@ -167,6 +196,8 @@
           arr[arr.length - 1] = last;
           return arr.join('/');
         }
+
+        this.downloadUrlFile(url);
         return url;
       },
       filechange() {
