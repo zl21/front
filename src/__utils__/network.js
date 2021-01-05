@@ -433,7 +433,7 @@ function NetworkConstructor() {
     const requestMd5 = getRequestMd5({
       data: config instanceof URLSearchParams ? config.toString() : config,
       url: matchedUrl,
-      method: 'post'
+      method: 'post',
     });
     const now = new Date();
    
