@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -2742,8 +2742,8 @@
               id: `${params.index}-${params.column._index - 1}`
             },
             props: {
-              defaultValue: this.copyDataSource.row[params.index][cellData.colname].val,
-              defaultSelected: this.copyDataSource.row[params.index][cellData.colname].defaultSelected ? this.copyDataSource.row[params.index][cellData.colname].defaultSelected : [],
+              defaultValue: this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname].val : undefined,
+              defaultSelected: (this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname].defaultSelected : undefined) ? this.copyDataSource.row[params.index][cellData.colname].defaultSelected : [],
               propstype: {
                 // 是否显示输入完成后是否禁用 true、false
                 show: true,
@@ -2771,7 +2771,7 @@
                 fkobj: {
                   refobjid: cellData.refobjid,
                   reftable: cellData.reftable,
-                  colid: this.dataSource.row[params.index][cellData.colname].colid,
+                  colid: this.dataSource.row[params.index] ? this.dataSource.row[params.index][cellData.colname].colid : undefined,
                   reftableid: cellData.reftableid,
                   saveType: 'object',
                   show: true,
