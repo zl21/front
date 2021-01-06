@@ -745,7 +745,6 @@
           this.clickButtonsTemporaryStorage();// 暂存按钮执行方法(暂存按钮根据webConf配置显示，同时与保存按钮显示逻辑相同)
         } else if (type === 'refresh') {
           this.clickButtonsRefresh(type);// 刷新按钮执行方法
-
           // DispatchEvent('clickButtonsRefresh');
         } else if (type === 'extraposition') {
           this.clickExtraposition(obj);// jflow按钮执行方法
@@ -3560,6 +3559,8 @@
 
         });
       },
+
+      // 保存后的回调
       saveAfter(type, tableName, stop, removeMessage) {
         if (!stop) { // 保存失败时，不清空store里面存的参数，
           // this.clearEditData();// 清空store update数据
@@ -3579,7 +3580,6 @@
               // 当开启同表新开tab模式，为解决新增成功后跳转到新开的编辑界面后，新增界面loading未关闭问题
               this.$R3loading.hide(tableName);
               this.clearEditData();// 清空store update数据
-
               this.upData();// 为解决新增保存后新开tab，新增界面信息未清除问题
             }
             let types = '';
