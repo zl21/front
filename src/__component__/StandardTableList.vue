@@ -204,7 +204,7 @@
       return {
         popwinMessage: {},
         objTabActionDialogConfig: {}, // 自定义按钮配置
-        urlArr: ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid'],
+        urlArr: ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid', '/p/cs/exeAction'],
         tableButtons: [],
         // isChangeTreeConfigData: '',//oldTree
         treeShow: true,

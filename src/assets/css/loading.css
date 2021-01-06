@@ -1,6 +1,6 @@
 
 .vue-loading {
-    z-index: 1106;
+    z-index: 1010;
     transition: opacity .3s;
     background-color: rgba(255, 255, 255, 0.8);
     width: 100%;
