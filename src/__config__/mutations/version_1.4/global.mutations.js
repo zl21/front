@@ -411,7 +411,8 @@ export default {
   againClickOpenedMenuLists(state, {
     label,
     keepAliveModuleName,
-    type
+    type,
+    fullPath
   }) {
     state.openedMenuLists.forEach((d) => {
       d.isActive = false;
@@ -429,6 +430,8 @@ export default {
       } else if (d.keepAliveModuleName === keepAliveModuleName) {
         // d.label === label &&
         d.isActive = true;
+        d.routeFullPath = fullPath;
+        state.activeTab = d;
       }
     });
   },

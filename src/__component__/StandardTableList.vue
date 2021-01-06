@@ -351,21 +351,15 @@
       //         display: 'OBJ_FK',
       //         colid: '99525',
       //         defaultValue: '元数据',
-      //         refobjid: '666666'
-      //       }, {
-              
-      //         display: 'OBJ_FK',
-      //         colid: '99484',
-      //         defaultValue: '表',
-      //         refobjid: '888888'
+      //         refobjid: '666666'// OBJ_FK类型
       //       }
       //     ]
       //   };
       //   // this.updataSTDefaultQuery(data);
       //   this.tabOpen({
       //     type: 'S',
-      //     tableName: 'AD_TABLE',
-      //     tableId: '992',
+      //     tableName: 'SHANGPIN',
+      //     tableId: '24445',
       //     isSetQuery: true,
       //     queryData: data
       //   });
