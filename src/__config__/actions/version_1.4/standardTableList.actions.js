@@ -199,12 +199,7 @@ export default {
       } else if (res.data.code === -1) {
         if (res.data.data.length > 0) {
           const deleteFailInfo = res.data.data;
-          DispatchEvent('updateSTFailInfo', {
-            detail: {
-              failInfo: deleteFailInfo,
-              moduleComponentName: moduleName
-            }
-          });
+          commit('updateFailInfo', deleteFailInfo);
         } else {
           commit('updateButtonExeActionData', res.data.message);
         }
