@@ -35,8 +35,8 @@ const validateConfig = config => ({
 });
 const packageMessage = {
   version: '1.8.3',
-  packageTime: '2021.01.06.16.11', 
-  user: 'wuliu',   
+  packageTime: '2021.01.06.16.36', 
+  user: 'sms-platform',   
 };
 
 export default {
