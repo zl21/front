@@ -32,11 +32,11 @@ module.exports = {
   // target: 'http://47.103.175.111:26666/', // 千百度环境
   // target: 'http://syman-jflow-standard.dev.burgeononline.com',
   // target: 'http://139.196.221.193:38888/', // 巧厨环境
-  target: 'http://47.103.6.45:27777/', // 森马测试环境
+  // target: 'http://47.103.6.45:27777/', // 森马测试环境
   // target: 'http://47.103.6.45:26666/', // 森马开发环境
   // target: 'http://r3dev.qiaodan.com:26666/', // 乔丹
   // target: 'http://oneretail-test.dev.syman.cn/', // 微淘氪
-  // target: 'http://101.133.142.45:27777/', // 乔丹
+  target: 'http://101.133.142.45:27777/', // 乔丹
   
   Version: '1.3', // 版本号
   interlocks: true, // 是否打开三级联动装置
