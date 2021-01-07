@@ -2411,26 +2411,14 @@
 
         // 自定义表单项组件的类型
         if (current.cusurl !== undefined && current.cusurl !== '') {
-          const componentName = this.getComponentName(current.cusurl);
+          const componentName = current.cusurl;
           item.type = 'customization';
           item.componentName = componentName;
-          console.log('自定义组件', componentName, formItemConfig());
           const formConfig = formItemConfig();
           const targetComponent = (formConfig[componentName] && formConfig[componentName].component) || CustomizeFormItemPlaceholder;
-          console.log('🚀 ~ file: CompositeForm.vue ~ line 2394 ~ propsType ~ targetComponent', targetComponent);
           Vue.component(componentName, targetComponent);
         }
-
-        console.log(`${item.title}`, current, item);
         return item;
-      },
-
-      // 获取组件名称
-      getComponentName(url) {
-        let componentName = '';
-        const urlArray = url.split('/');
-        componentName = urlArray[1];
-        return componentName;
       },
 
       getTableQuery() {
