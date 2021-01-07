@@ -1196,9 +1196,10 @@
             // 设置indexDB默认查询条件 
             if (enableKAQueryDataForUser() || this.webConf.enableKAQueryDataForUser) {
               Object.keys(this.searchDBdata).map((temp) => {
-                if (temp === obj.item.field && obj.item.value) {
-                  return temp;
-                }
+                // console.log(obj.item);
+                // if (temp === obj.item.field && obj.item.value) {
+                //   return temp;
+                // }
                 if (temp === obj.item.field && this.searchDBdata[temp]) {
                   obj.item.value = this.searchDBdata[temp];
                 }
