@@ -977,13 +977,19 @@
         }
       }, // 点击按钮触发
       customize() {
-        const data = {
-          label: '测试',
-          keepAliveModuleName: this.[MODULE_COMPONENT_NAME]
-        };
-        store.commit('global/changeCurrentTabName', data);
-
-
+        // const { fullPath } = this.$route;// 获取当前路由fullPath
+        // const { keepAliveModuleName, tableName } = this.$store.state.global.activeTab;// 获取当前缓存模块名称，自定义标识
+        // const params = {
+        //   routeFullPath: fullPath, // 当前路由fullPath
+        //   keepAliveModuleName, // 当前模块名称
+        //   tableName, // 当前自定义表标识
+        //   event: () => {
+        //     alert(177);
+        //   }
+        // };
+        // store.commit('global/tabCloseAppoint', params);
+    
+        // return;
         // const param = {
         //   url: '/SYSTEM/TABLE_DETAIL/V/USERS/10085/1020',
         //   type: 'V',
@@ -991,8 +997,6 @@
         //   dynamicRoutingForCustomizePage: true
         // };
         // store.commit('global/tabOpen', param);
-
-
         // const param = {
         //   url: 'CUSTOMIZED/PERMISSIONS/2997?type=sensitive&name=2',
         //   isMenu: true,
@@ -1000,6 +1004,7 @@
         // };
         // store.commit('global/directionalRouter', param);
       },
+    
       copyPerm() {
         this.copyPermission = true;
       }, // 复制权限

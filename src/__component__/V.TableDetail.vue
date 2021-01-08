@@ -8,7 +8,7 @@
       :tabcmd="mainFormInfo.buttonsData.data.tabcmd"
       object-type="vertical"
       :item-table-check-func="itemTableCheckFunc"
-      :isreftabs="mainFormInfo.buttonsData.data.reftabs && mainFormInfo.buttonsData.data.reftabs.length > 0"
+      :isreftabs="mainFormInfo.buttonsData.data.isreftabs"
       :isactive="mainFormInfo.buttonsData.data.isactive"
       :watermarkimg="resetWaterMark"
       :item-name-group="childTableNames"
