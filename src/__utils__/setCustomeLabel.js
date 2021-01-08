@@ -1,6 +1,6 @@
 import store from '../__config__/store.config';
 import customize from '../__config__/customize.config';
-import { updateSessionObject } from './sessionStorage';
+import { getSeesionObject, updateSessionObject } from './sessionStorage';
 
 const setCustomeLabel = (param) => {
   // 参数说明
@@ -40,6 +40,12 @@ const setCustomeLabel = (param) => {
           v: labelName
         };
         updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
+      } else {
+        const name = `C.${customizedModuleName}.${param.customizedModuleId}`;
+        const locaLabelObj = getSeesionObject('keepAliveLabelMaps');
+        if (locaLabelObj.name) {
+          store.commit('global/addKeepAliveLabelMaps', { name, label: `${labelName}` });
+        }
       }
     }
   });
