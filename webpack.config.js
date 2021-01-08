@@ -39,7 +39,7 @@ module.exports = env => ({
   },
   devServer: {
     compress: true,
-    port: 8202,
+    port: 8201,
     host: '0.0.0.0',
     open: true,
     historyApiFallback: {

@@ -1958,6 +1958,7 @@
           });
         });
         promise.then((res) => {
+          this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
           if (!this.searchData.range) {
             if (Version() === '1.3') {
               this.searchData.range = res.data.datas.defaultrange;
@@ -2688,8 +2689,7 @@
             this.searchData.startIndex = currentPageSize * ((total - selectIdArrLength) / currentPageSize - 1);
           }
           // this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
-          this.getQueryListPromise(Object.assign({}, this.searchData, { merge }));
-          this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+          this.getQueryListPromise(Object.assign({}, this.searchData, { merge }));                 
         }
       },
 

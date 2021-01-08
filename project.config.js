@@ -36,7 +36,9 @@ module.exports = {
   // target: 'http://47.103.6.45:26666/', // 森马开发环境
   // target: 'http://r3dev.qiaodan.com:26666/', // 乔丹
   // target: 'http://oneretail-test.dev.syman.cn/', // 微淘氪
-  target: 'http://101.133.142.45:27777/', // 乔丹
+  // target: 'http://101.133.142.45:27777/', // 乔丹
+  target: 'http://r3.ecsemir.com/', // 森马
+  
   
   Version: '1.3', // 版本号
   interlocks: true, // 是否打开三级联动装置
