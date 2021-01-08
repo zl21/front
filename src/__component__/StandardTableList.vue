@@ -1743,6 +1743,7 @@
         if (item.ID) {
           this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
         }
+
         if (this.buttons.activeTabAction.cuscomponent) { // 如果接口cuscomponent有值，逻辑为自定义调自定义
           const nextOperate = JSON.parse(// 配置信息
             this.buttons.activeTabAction.cuscomponent
@@ -2685,8 +2686,10 @@
           if (currentPageSizes === 0) {
             currentPageSizes = currentPageSize;
           }
+
           if (selectIdArrLength === currentPageSizes && allPages === currentPage) { // 如果分页在最后一页并且删除当页全部
             this.searchData.startIndex = currentPageSize * ((total - selectIdArrLength) / currentPageSize - 1);
+            this.searchData.startIndex = this.searchData.startIndex >= 0 ? this.searchData.startIndex : 0;
           }
           // this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
           this.getQueryListPromise(Object.assign({}, this.searchData, { merge }));                 
