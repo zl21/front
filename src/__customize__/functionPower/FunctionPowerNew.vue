@@ -27,7 +27,7 @@
           @on-change="searchInputChange"
               >
         <span slot="prepend">检索</span>
-        <Input>
+        </Input>
         <div class="menuContainer">
           <Tree
             ref="menuTree"
