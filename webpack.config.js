@@ -23,6 +23,7 @@ const proxyListForKABIN = ['/r3/cabben/pt'];
 const indexProHtml = path.posix.join('/', 'index.pro.html');
 const indexHtml = path.posix.join('/', 'index.html');
 
+
 module.exports = env => ({
   entry: {
     index: './index.js',
@@ -196,6 +197,9 @@ module.exports = env => ({
         ignore: ['.*'],
       },
     ]),
+    new webpack.DefinePlugin({
+      'process.env.BUILD_ENV': JSON.stringify(process.env.BUILD_ENV)
+    })
     // new webpack.ProvidePlugin({
     //   $: 'jquery',
     //   jQuery: 'jquery',

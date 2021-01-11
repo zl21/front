@@ -11,9 +11,9 @@
         "r3.publish/src/assets/theme"
     ],
     "scripts": {
-        "start": "webpack-dev-server --progress --env.develop",
+        "start": " webpack-dev-server --progress --env.develop",
         "build": "webpack --color --progress --config webpack.config.js --env.production",
-        "build:publish": "webpack --color --progress --config webpack.publish.js",
+        "build:publish": "cross-env BUILD_ENV=publish webpack --color --progress --config webpack.publish.js  --env.NODE_ENV=production",
         "zip": "node doZip.js"
     },
     "repository": {
@@ -69,6 +69,7 @@
         "awe-dnd": "^0.3.4",
         "axios": "^0.18.0",
         "compressing": "^1.5.1",
+        "cross-env": "^7.0.3",
         "md5": "^2.3.0",
         "v-viewer": "^1.5.1",
         "vue": "^2.6.12",
