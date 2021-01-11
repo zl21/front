@@ -1,6 +1,6 @@
 {
     "name": "@syman/burgeon-r3",
-    "version": "1.4.28",
+    "version": "1.4.29",
     "description": "A Project for R3 Erp.",
     "main": "r3.publish/r3.min.js",
     "files": [
