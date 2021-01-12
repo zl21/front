@@ -35,8 +35,8 @@ const validateConfig = config => ({
 });
 const packageMessage = {
   version: '1.8.3',
-  packageTime: '2021.01.06.16.36', 
-  user: 'sms-platform',   
+  packageTime: new Date().setNewFormt('yyyy-MM-dd hh:mm:ss'), 
+  user: 'local',   
 };
 
 export default {

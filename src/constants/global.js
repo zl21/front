@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import project from '../../project.config';
 import configForColumn from './extentionPropertyForColumn';
 import configForTable from './extentionPropertyForTable';
@@ -5,7 +6,7 @@ import backDashboardRoutes from '../__config__/backDashboardRoute.config';
 import custommizedRequestURL from '../__config__/custommizedRequestURL.config';
 import connectorConfig from './connector';
 import navMenuConfig from '../__config__/navMenu.config';
-
+import customizeFormItem from '../__config__/customizeFormItem.config';
 
 export const STANDARD_TABLE_LIST_PREFIX = '/SYSTEM/TABLE';
 export const STANDARD_COMMONTABLE_LIST_PREFIX = '/SYSTEM/COMMONTABLE';
@@ -86,7 +87,7 @@ export const custommizedRequestUrl = () => (window.ProjectConfig && window.Proje
 
 export const connector = () => (window.ProjectConfig && window.ProjectConfig.connector ? window.ProjectConfig.connector : connectorConfig);
 export const functionPowerRequestURL = () => (window.ProjectConfig && window.ProjectConfig.functionPowerRequestURL ? window.ProjectConfig.functionPowerRequestURL : project.functionPowerRequestURL);
-export const Version = () => (window.ProjectConfig && window.ProjectConfig.Version ? window.ProjectConfig.Version : project.Version);
+export const Version = () => (process.env.BUILD_ENV === 'publish' ? 1.3 : (window.ProjectConfig && window.ProjectConfig.Version ? window.ProjectConfig.Version : project.Version));
 export const interlocks = () => (window.ProjectConfig && typeof window.ProjectConfig.interlocks === 'boolean' ? window.ProjectConfig.interlocks : project.interlocks);
 export const enableGateWay = () => (window.ProjectConfig && typeof window.ProjectConfig.enableGateWay === 'boolean' ? window.ProjectConfig.enableGateWay : project.enableGateWay);
 export const enableCustomInterface = () => (window.ProjectConfig && typeof window.ProjectConfig.enableCustomInterface === 'boolean' ? window.ProjectConfig.enableCustomInterface : project.enableCustomInterface);
@@ -122,3 +123,4 @@ export const filterUrlForNetworkScript = data => (window.ProjectConfig && window
 export const getFilterUrlForNetworkData = () => (window.ProjectConfig && window.ProjectConfig.filterUrlForNetwork ? window.ProjectConfig.filterUrlForNetwork : project.filterUrlForNetwork);
 export const navConfig = () => (window.ProjectConfig && window.ProjectConfig.navMenuConfig ? window.ProjectConfig.navMenuConfig : navMenuConfig);
 export const notificationOfMain = () => (window.ProjectConfig && typeof window.ProjectConfig.notificationOfMain === 'boolean' ? window.ProjectConfig.notificationOfMain : project.notificationOfMain);
+export const formItemConfig = () => (window.ProjectConfig && window.ProjectConfig.formItemConfig ? window.ProjectConfig.formItemConfig : customizeFormItem);

@@ -436,6 +436,9 @@ export default {
     });
   },
   tabCloseAppoint(state, tab) {
+    if (tab.event && typeof (tab.event) === 'function') {
+      tab.event();
+    }
     // forbidden:禁止关闭当前tab时自动激活最后一个tab
     // tableName:'主表表明',
     // 关闭当前tab时,如果当前列表界面时树形结构列表界面，需清楚对应的treeID

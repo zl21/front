@@ -445,6 +445,9 @@ export default {
     });
   },
   tabCloseAppoint(state, tab) {
+    if (tab.event && typeof (tab.event) === 'function') {
+      tab.event();
+    }
     // forbidden:禁止关闭当前tab时自动激活最后一个tab
     // 关闭tab时需清楚jflow配置的对应表
     // tableName:'主表表明',
