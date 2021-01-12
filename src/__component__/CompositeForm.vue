@@ -1570,7 +1570,7 @@
         const check = this.getLinkData(current);
         let result = {};
         // console.log(check, current);
-        if (current.webconf && current.webconf.refcolval_custom) {
+        if (check[0] && current.webconf && current.webconf.refcolval_custom) {
           await network.post(current.webconf.refcolval_custom.url, {
             fixedcolumns: check[1]
           }).then((res) => {
