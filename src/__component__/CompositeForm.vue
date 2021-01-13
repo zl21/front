@@ -1552,7 +1552,7 @@
         
         return true;
       },
-      focusChange(value, current, index) {
+      async focusChange(value, current, index) {
         // 外键的模糊搜索
         if (!value) {
           return false;
@@ -1568,23 +1568,35 @@
         }
         let sendData = {};
         const check = this.getLinkData(current);
+        let result = {};
         // console.log(check, current);
+        if (check[0] && current.webconf && current.webconf.refcolval_custom) {
+          await network.post(current.webconf.refcolval_custom.url, {
+            fixedcolumns: check[1]
+          }).then((res) => {
+            if (res.data.code === 0) {
+              result = res.data.fixedcolumns;
+            }
+          });
+        }
+        
         if (!check[0] && !check[1]) {
           document.activeElement.value = '';
         }
         if (check[1]) {
-          let query = current.refcolval.expre === 'equal' ? `=${check[1]}` : '';
           // 二级联动多个来源字段的模糊搜索处理
+          let obj = {};
           if (current.webconf && current.webconf.refcolval_custom) {
-            query = current.refcolval.expre === 'equal' ? `=${check[1][current.webconf.refcolval_custom.srccols]}` : '';
+            obj = result;
+          } else {
+            const query = current.refcolval.expre === 'equal' ? `=${check[1]}` : '';
+            obj[current.refcolval.fixcolumn] = query;
           }
           sendData = {
             ak: value,
             colid: current.colid,
             fixedcolumns: {
-              whereKeys: {
-                [current.refcolval.fixcolumn]: query
-              }
+              whereKeys: obj
             }
           };
         } else if (check[0]) {

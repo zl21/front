@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import project from '../../project.config';
 import configForColumn from './extentionPropertyForColumn';
 import configForTable from './extentionPropertyForTable';
@@ -86,7 +87,7 @@ export const custommizedRequestUrl = () => (window.ProjectConfig && window.Proje
 
 export const connector = () => (window.ProjectConfig && window.ProjectConfig.connector ? window.ProjectConfig.connector : connectorConfig);
 export const functionPowerRequestURL = () => (window.ProjectConfig && window.ProjectConfig.functionPowerRequestURL ? window.ProjectConfig.functionPowerRequestURL : project.functionPowerRequestURL);
-export const Version = () => (window.ProjectConfig && window.ProjectConfig.Version ? window.ProjectConfig.Version : project.Version);
+export const Version = () => (process.env.BUILD_ENV === 'publish' ? 1.3 : (window.ProjectConfig && window.ProjectConfig.Version ? window.ProjectConfig.Version : project.Version));
 export const interlocks = () => (window.ProjectConfig && typeof window.ProjectConfig.interlocks === 'boolean' ? window.ProjectConfig.interlocks : project.interlocks);
 export const enableGateWay = () => (window.ProjectConfig && typeof window.ProjectConfig.enableGateWay === 'boolean' ? window.ProjectConfig.enableGateWay : project.enableGateWay);
 export const enableCustomInterface = () => (window.ProjectConfig && typeof window.ProjectConfig.enableCustomInterface === 'boolean' ? window.ProjectConfig.enableCustomInterface : project.enableCustomInterface);

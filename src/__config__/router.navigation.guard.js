@@ -380,7 +380,8 @@ export default (router) => {
         keepAliveModuleName,
         type: dynamicModuleTag,
         fullPath: to.fullPath,
-        itemId: itemId || customizedModuleId || pluginModuleId || linkModuleId
+        itemId: itemId || customizedModuleId || pluginModuleId || linkModuleId,
+        tableName: tableName || customizedModuleName || pluginModuleName || linkModuleName,
       });
       if (enableOpenNewTab()) {
         // 处理同表新开tab要跳转的表已打开时，需更新activeTab
