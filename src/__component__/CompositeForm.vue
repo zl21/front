@@ -1057,7 +1057,6 @@
               let result = {}; // 扩展通过接口获取请求参数，暂存数据
 
               let check = [];
-
               if (current.webconf && current.webconf.refcolval_custom) {
                 const item = Object.assign({}, current);
                 item.refcolval = {
@@ -1067,6 +1066,7 @@
                 };
 
                 check = this.getLinkData(item);
+
                 // eslint-disable-next-line func-names
                 (function (instance) {
                   setTimeout(() => {
@@ -1410,7 +1410,7 @@
             current.refcolval.srccol.split(',').map((item) => {
               if (item.includes('.')) { // 来源字段为主表
                 this.getStateData(); // 获取主表信息
-                refcolval[item.split('.')[1]] = this.refcolvalAll[item]; 
+                refcolval[item.split('.')[1]] = this.refcolvalAll[item.split('.')[1]]; 
               } else { // 来源字段为字表
                 const data = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), this.formData);
                 refcolval[item] = data[item];
@@ -1465,9 +1465,9 @@
             let flag = false;
             let srccol = null;
             current.webconf.refcolval_custom.srccols.split(',').map((item) => {
-              if (!refcolval[item] && !flag) {
+              if (!refcolval[item.split('.')[1]] && !flag) {
                 flag = true;
-                srccol = item;
+                srccol = item.split('.')[1];
               }
             });
 
