@@ -871,14 +871,14 @@
         ) {
           this._items.event['on-show']($this);
         }
-        this.$nextTick(() => {
-          // 处理字段联动时多个来源字段联动禁用模糊搜索
-          if (this.items.props.webconf && this.items.props.webconf.refcolval_custom) {
-            if (document.getElementsByClassName(`R3_${this.items.field}`).length > 0) {
-              document.getElementsByClassName(`R3_${this.items.field}`)[0].getElementsByTagName('input')[0].readOnly = true;
-            }
-          }
-        });
+        // this.$nextTick(() => {
+        //   // 处理字段联动时多个来源字段联动禁用模糊搜索
+        //   if (this.items.props.webconf && this.items.props.webconf.refcolval_custom) {
+        //     if (document.getElementsByClassName(`R3_${this.items.field}`).length > 0) {
+        //       document.getElementsByClassName(`R3_${this.items.field}`)[0].getElementsByTagName('input')[0].readOnly = true;
+        //     }
+        //   }
+        // });
       },
       ComAttachFilterkeydown() {
 
@@ -1763,12 +1763,12 @@
       // console.log(this.type,this.formIndex);
     },
     mounted() {
-      this.$nextTick(() => {
-        // 处理字段联动时多个来源字段联动禁用模糊搜索
-        if (this.items.props.webconf && this.items.props.webconf.refcolval_custom) {
-          this.$el.getElementsByTagName('input')[0].readOnly = true;
-        }
-      });
+      // this.$nextTick(() => {
+      //   // 处理字段联动时多个来源字段联动禁用模糊搜索
+      //   if (this.items.props.webconf && this.items.props.webconf.refcolval_custom) {
+      //     this.$el.getElementsByTagName('input')[0].readOnly = true;
+      //   }
+      // });
       window.addEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetProps);
       window.addEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
       window.addEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
