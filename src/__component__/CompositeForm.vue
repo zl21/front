@@ -1375,7 +1375,8 @@
         }
         return [false];
       },
-      getLinkData(current) {
+      getLinkData(temp) {
+        const current = JSON.parse(JSON.stringify(temp));
         // 获取表信息
         if (current.refcolprem) {
           // 数据权限功能
@@ -1408,7 +1409,7 @@
           }
 
           if (current.webconf && current.webconf.refcolval_custom) {
-            current.refcolval.srccol.split(',').map((item) => {
+            current.webconf.refcolval_custom.srccols.split(',').map((item) => {
               if (item.includes('.')) { // 来源字段为主表
                 this.getStateData(); // 获取主表信息
                 refcolval[item.split('.')[1]] = this.refcolvalAll[item.split('.')[1]]; 
