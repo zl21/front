@@ -1057,7 +1057,6 @@
               let result = {}; // 扩展通过接口获取请求参数，暂存数据
 
               let check = [];
-
               if (current.webconf && current.webconf.refcolval_custom) {
                 const item = Object.assign({}, current);
                 item.refcolval = {
@@ -1067,6 +1066,7 @@
                 };
 
                 check = this.getLinkData(item);
+
                 // eslint-disable-next-line func-names
                 (function (instance) {
                   setTimeout(() => {
@@ -1406,16 +1406,28 @@
             return [true, checkGetObjId];  
           }
 
-          if (current.refcolval.maintable) {
+          if (current.webconf && current.webconf.refcolval_custom) {
+            current.refcolval.srccol.split(',').map((item) => {
+              if (item.includes('.')) { // 来源字段为主表
+                this.getStateData(); // 获取主表信息
+                refcolval[item.split('.')[1]] = this.refcolvalAll[item.split('.')[1]]; 
+              } else { // 来源字段为字表
+                const data = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), this.formData);
+                refcolval[item] = data[item];
+              }
+              return item;
+            });
+          } else if (current.refcolval.maintable) {
             this.getStateData(); // 获取主表信息
 
             // 判断来源字段是否是多字段的联动,srccol以前是单个字段,现在有可能是多个字段
             current.refcolval.srccol.split(',').map((item) => {
-              if (current.webconf && current.webconf.refcolval_custom) {
-                refcolval[item] = this.refcolvalAll[item]; 
-              } else {
-                refcolval = this.refcolvalAll[item]; 
-              }
+              // if (current.webconf && current.webconf.refcolval_custom) {
+              //   refcolval[item] = this.refcolvalAll[item]; 
+              // } else {
+              //   refcolval = this.refcolvalAll[item]; 
+              // }
+              refcolval = this.refcolvalAll[item]; 
               return item;
             });
             
@@ -1432,12 +1444,12 @@
             const data = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), this.formData);
 
             current.refcolval.srccol.split(',').map((item) => {
-              if (current.webconf && current.webconf.refcolval_custom) {
-                refcolval[item] = data[item];
-              } else {
-                refcolval = data[item];
-              }
-              
+              // if (current.webconf && current.webconf.refcolval_custom) {
+              //   refcolval[item] = data[item];
+              // } else {
+              //   refcolval = data[item];
+              // }
+              refcolval = data[item];
               return item;
             });
 
@@ -1448,13 +1460,14 @@
             // }
           }
 
+
           if (current.webconf && current.webconf.refcolval_custom) { // 处理多来源字段的返回值以及必填处理
             let flag = false;
             let srccol = null;
             current.webconf.refcolval_custom.srccols.split(',').map((item) => {
-              if (!refcolval[item] && !flag) {
+              if (!refcolval[item.split('.')[1]] && !flag) {
                 flag = true;
-                srccol = item;
+                srccol = item.split('.')[1];
               }
             });
 
