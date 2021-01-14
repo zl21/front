@@ -90,12 +90,14 @@
             title: '错误',
             content: '请输入用户名'
           };
+          this.spinShow = false;
           this.$Modal.fcError(message);
         } else if (this.$refs.password.value === '') {
           message = {
             title: '错误',
             content: '请输入密码'
           };
+          this.spinShow = false;
           this.$Modal.fcError(message);
         } else if (this.$refs.username.value !== '' && this.$refs.password.value !== '') {
           const globalServiceId = window.sessionStorage.getItem('serviceId');

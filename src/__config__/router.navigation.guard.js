@@ -332,6 +332,7 @@ export default (router) => {
         keepAliveModuleName,
         type: dynamicModuleTag,
         fullPath: to.fullPath,
+        tableName: tableName || customizedModuleName || pluginModuleName || linkModuleName,
       });
     }
     

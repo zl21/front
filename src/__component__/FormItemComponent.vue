@@ -216,7 +216,9 @@
                 }
               } else { // 否则为输入项
                 delete obj[current.item.field];
-                obj[current.item.inputname] = current.item.value;
+                if (current.item.props.fk_type != 'mrp') {
+                  obj[current.item.inputname] = current.item.value;
+                }
               }
             } else if (current.item.type === 'AttachFilter') { // 若为外键则要处理输入还是选中
               if (current.item.props.Selected[0] && current.item.props.Selected[0].ID !== undefined) {
