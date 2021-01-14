@@ -710,6 +710,10 @@
         }
       },
       buttonClick(type, obj) { // 根据按钮类型不同执行的事件逻辑
+        // 处理存储过程逻辑，配置的path中带有sp|时则走框架的标准逻辑，不走定制path
+        if (obj && obj.requestUrlPath && obj.requestUrlPath.includes('sp|')) {
+          obj.requestUrlPath = null;
+        }
         DispatchEvent('R3SingleButtonClick', {
           detail: {
             type, obj
@@ -1859,6 +1863,12 @@
             }
           }
           params = obj;
+        }
+
+        // 处理存储过程逻辑，配置的actiontype中为sp时则走定制的/p/cs/exeAction
+        if (tab.actiontype === 'sp') {
+          params.actionName = tab.action;
+          tab.action = '/p/cs/exeAction';
         }
         
 

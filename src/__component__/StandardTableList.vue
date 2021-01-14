@@ -1727,7 +1727,7 @@
             ids: this.buttons.selectIdArr.map(d => parseInt(d))
           };
         }
-
+        
         let promise = new Promise((resolve, reject) => {
           this.$R3loading.show();
           this.getExeActionDataForButtons({
@@ -1988,6 +1988,11 @@
       },
       AddDetailClick(obj) {
         const { tableName, tableId, } = this[INSTANCE_ROUTE_QUERY];
+        // 处理存储过程逻辑，配置的path中带有sp|时则走框架的标准逻辑，不走定制path
+        if (obj && obj.requestUrlPath && obj.requestUrlPath.includes('sp|')) {
+          obj.requestUrlPath = null;
+        }
+
         if (obj.name === this.buttonMap.CMD_ADD.name) {
           // 新增
           if (this.ag.tableurl) {
@@ -2390,43 +2395,7 @@
       },
       confirmDialog(obj) {
         // this.$nextTick(() => {
-        if (this.buttons.selectIdArr.length > 0) {
-          if (
-            this.buttons.dialogConfig.contentText.indexOf(// 按钮批量反提交动作
-              this.buttonMap.CMD_UNSUBMIT.name
-            ) >= 0
-          ) {
-            this.batchUnSubmit(obj);// 按钮取消提交动作
-            // this.searchClickData();
-            return;
-          }
-          if (
-            this.buttons.dialogConfig.contentText.indexOf(
-              this.buttonMap.CMD_SUBMIT.name
-            ) >= 0
-          ) {
-            this.batchSubmit(obj);// 按钮提交动作
-            // this.searchClickData();
-            return;
-          }
-          if (
-            this.buttons.dialogConfig.contentText.indexOf(
-              this.buttonMap.CMD_DELETE.name
-            ) >= 0
-          ) {
-            this.deleteTableList(obj); // 按钮删除动作
-            // this.searchClickData();
-            return;
-          }
-          if (
-            this.buttons.dialogConfig.contentText.indexOf(
-              this.buttonMap.CMD_VOID.name
-            ) >= 0
-          ) {
-            this.batchVoid(obj); // 按钮作废动作
-            return;
-          }
-        }
+        
         if (this.buttons.activeTabAction) {
           if (this.buttons.activeTabAction.vuedisplay === 'slient') {
             // slient静默跳转页面类型按钮
@@ -2506,6 +2475,43 @@
             this.batchExport(obj);
           } else if (this.buttons.selectSysment.length > 0) {
             this.searchData('backfresh');
+          }
+        }
+
+        if (this.buttons.selectIdArr.length > 0) {
+          if (
+            this.buttons.dialogConfig.contentText.indexOf(// 按钮批量反提交动作
+              this.buttonMap.CMD_UNSUBMIT.name
+            ) >= 0
+          ) {
+            this.batchUnSubmit(obj);// 按钮取消提交动作
+            // this.searchClickData();
+            return;
+          }
+          if (
+            this.buttons.dialogConfig.contentText.indexOf(
+              this.buttonMap.CMD_SUBMIT.name
+            ) >= 0
+          ) {
+            this.batchSubmit(obj);// 按钮提交动作
+            // this.searchClickData();
+            return;
+          }
+          if (
+            this.buttons.dialogConfig.contentText.indexOf(
+              this.buttonMap.CMD_DELETE.name
+            ) >= 0
+          ) {
+            this.deleteTableList(obj); // 按钮删除动作
+            // this.searchClickData();
+            return;
+          }
+          if (
+            this.buttons.dialogConfig.contentText.indexOf(
+              this.buttonMap.CMD_VOID.name
+            ) >= 0
+          ) {
+            this.batchVoid(obj); // 按钮作废动作
           }
         }
       },
