@@ -1075,19 +1075,19 @@
                     }
                   }, 0);
                 }($this));
-
                 if (!check[0]) {
                   return;
                 }
-
-                await network.post(current.webconf.refcolval_custom.url, {
-                  fixedcolumns: check[1]
-                }).then((res) => {
-                  if (res.data.code === 0) {
-                    result = res.data.fixedcolumns;
-                    current.fixedcolumns = result;
-                  }
-                });
+                if (check[1]) {
+                  await network.post(current.webconf.refcolval_custom.url, {
+                    fixedcolumns: check[1]
+                  }).then((res) => {
+                    if (res.data.code === 0) {
+                      result = res.data.fixedcolumns;
+                      current.fixedcolumns = result;
+                    }
+                  });
+                }
               } else {
                 check = this.getLinkData(current);
               }
