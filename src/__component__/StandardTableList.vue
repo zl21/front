@@ -2767,8 +2767,27 @@
       }
     },
     mounted() {
+      const text = [1, 2, 3, 4];
+      const object = {
+        textContent: [1, 2, 3, 4], // 没行显示的文本内容
+        watermark_color: 'red', // 水印字体颜色
+        watermark_alpha: 0.4, // 水印透明度
+        watermark_fontsize: '14px', // 水印字体大小
+        watermark_font: '微软雅黑', // 水印字体
+        watermark_width: 200, // 水印宽度
+        watermark_height: 80, // 水印长度
+        watermark_angle: 15, // 水印倾斜度数
+        watermark_intervalWidth: 100, //  间隔宽度
+        watermark_intervalheight: 100, // 间隔高度
+      };
+      this.$createWatermark(object);
+
+
+     
+
+
       this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
-      
+       
       if (!this._inactive) {
         window.addEventListener('network', this.networkEventListener);
         window.addEventListener('network', this.networkGetTableQuery);
