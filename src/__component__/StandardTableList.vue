@@ -2,7 +2,7 @@
 <!--suppress ALL -->
 <template>
   <div
-    :id="buttons.tableName"
+    :id=" this.$router.currentRoute.params.tableName"
     class="standarTableListContent"
   >
     <!-- oldTree
@@ -2767,23 +2767,35 @@
       }
     },
     mounted() {
-      const text = [1, 2, 3, 4];
       const object = {
-        textContent: [1, 2, 3, 4], // 没行显示的文本内容
-        watermark_color: 'red', // 水印字体颜色
-        watermark_alpha: 0.4, // 水印透明度
-        watermark_fontsize: '14px', // 水印字体大小
-        watermark_font: '微软雅黑', // 水印字体
-        watermark_width: 200, // 水印宽度
-        watermark_height: 80, // 水印长度
-        watermark_angle: 15, // 水印倾斜度数
+        id: this[INSTANCE_ROUTE_QUERY].tableName,
+        textContent: ['系统管理员'], // 每行显示的文本内容
         watermark_intervalWidth: 100, //  间隔宽度
         watermark_intervalheight: 100, // 间隔高度
+        style: {
+          webkitTransform: 'rotate(-15deg)',
+          MozTransform: 'rotate(-15deg)',
+          msTransform: 'rotate(-15deg)',
+          OTransform: 'rotate(-15deg)',
+          transform: 'rotate(-15deg)',
+          visibility: '',
+          position: 'absolute',
+          overflow: 'hidden',
+          zIndex: '9999',
+          pointerEvents: 'none', // pointer-events:none  让水印不阻止交互事件
+          opacity: 0.2,
+          fontSize: '14px',
+          fontFamily: '微软雅黑',
+          color: 'red',
+          textAlign: 'left',
+          width: '200px',
+          height: '80px',
+          display: 'block',
+          // left: '10px',//不支持设置定位，
+          // top: '10px',
+        }
       };
       this.$createWatermark(object);
-
-
-     
 
 
       this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
