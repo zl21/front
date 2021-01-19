@@ -1075,19 +1075,19 @@
                     }
                   }, 0);
                 }($this));
-
                 if (!check[0]) {
                   return;
                 }
-
-                await network.post(current.webconf.refcolval_custom.url, {
-                  fixedcolumns: check[1]
-                }).then((res) => {
-                  if (res.data.code === 0) {
-                    result = res.data.fixedcolumns;
-                    current.fixedcolumns = result;
-                  }
-                });
+                if (check[1]) {
+                  await network.post(current.webconf.refcolval_custom.url, {
+                    fixedcolumns: check[1]
+                  }).then((res) => {
+                    if (res.data.code === 0) {
+                      result = res.data.fixedcolumns;
+                      current.fixedcolumns = result;
+                    }
+                  });
+                }
               } else {
                 check = this.getLinkData(current);
               }
@@ -1103,7 +1103,7 @@
                 };
               } else if (check[1]) {
                 // 处理外健关联字段的多选联动
-                const query = current.refcolval.expre === 'equal' ? `=${check[1]}` : '';
+                const query = current.refcolval.expre === 'equal' ? (String(check[1]).indexOf(',') ? `${check[1]}` : `=${check[1]}`) : '';
                 searchObject = {
                   isdroplistsearch: true,
                   refcolid: current.colid,
@@ -1592,7 +1592,7 @@
         const check = this.getLinkData(current);
         let result = {};
 
-        if (check[0] && current.webconf && current.webconf.refcolval_custom) {
+        if (check[1] && current.webconf && current.webconf.refcolval_custom) {
           await network.post(current.webconf.refcolval_custom.url, {
             fixedcolumns: check[1]
           }).then((res) => {
