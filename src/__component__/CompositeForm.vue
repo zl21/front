@@ -506,6 +506,13 @@
                         const data = {
                           formList: [
                             { 
+                              key: !this.isMainTable ? `${this.childTableName}${option.item.field}` : option.item.field,
+                              name: option.item.title,
+                              show,
+                              srccol: option.item.validate.refcolval && option.item.validate.refcolval.srccol,
+                              tableName: this.isMainTable ? '' : this.childTableName
+                            },
+                            { 
                               key: option.item.field,
                               name: option.item.title,
                               show,
@@ -550,6 +557,13 @@
                     if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
                       const data = {
                         formList: [
+                          { 
+                            key: !this.isMainTable ? `${this.childTableName}${item.item.field}` : item.item.field,
+                            name: item.item.title,
+                            show,
+                            srccol: item.item.validate.refcolval && item.item.validate.refcolval.srccol,
+                            tableName: this.isMainTable ? '' : this.childTableName
+                          },
                           { 
                             key: item.item.field,
                             name: item.item.title,
