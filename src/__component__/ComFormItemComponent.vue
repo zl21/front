@@ -1239,7 +1239,7 @@
               formList: [
                 { 
                   key: !this.isMainTable ? `${this.childTableName}${items.field}` : items.field,
-                  name: !this.isMainTable ? `${this.childTableName}${items.field}` : items.field,
+                  name: items.title,
                   show: this.newFormItemLists[index].show,
                   srccol: items.validate.refcolval && items.validate.refcolval.srccol,
                   tableName: this.isMainTable ? '' : this.childTableName
