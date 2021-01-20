@@ -306,7 +306,7 @@
                     key: cur.colname,
                     fixed: 'right',
                     render: this.buttonRender(),
-                    width: cur.webconf.width
+                    width: cur.webconf && cur.webconf.width
                   }, cur));
                   break;
                 default:
