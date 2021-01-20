@@ -7,7 +7,7 @@ module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
   projectIconPath: path.join(__dirname, './favicon.ico'), // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
-  target: 'http://r3-8098.dev.syman.cn/', // 框架研发网关开启环境
+  // target: 'http://r3-8098.dev.syman.cn/', // 框架研发网关开启环境
   // target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 新版本jflow测试环境
   // target: 'http://r3dev.qiaodan.com:28888', // 乔丹开发环境
   // target: 'http://r3dev.qiaodan.com:26666', // 乔丹开发环境
@@ -38,7 +38,7 @@ module.exports = {
   // target: 'http://oneretail-test.dev.syman.cn/', // 微淘氪
   // target: 'http://101.133.142.45:27777/', // 乔丹
   // target: 'http://r3.ecsemir.com/', // 森马
-  
+  target: 'http://crm-web.dev.syman.cn/',
   
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
@@ -65,7 +65,7 @@ module.exports = {
   // specifiedGlobalGateWay: 'user-center',
   encryptedPassword: false, // 是否允许login接口password加密
   isItemTableNewValidation: true, // 是否允许子表新增有必填项时，输入值才触发子表必填项校验，不输入值则只校验主表
-  isCommonTable: false, // 是否开启普通表格，默认关闭
+  isCommonTable: true, // 是否开启普通表格，默认关闭
   functionPowerRequestURL: '', // 功能权限获取检索项数据接口名称
   cbs: undefined, // 框架回调，形如 { loginCb: function() {} }
   layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
