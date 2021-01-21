@@ -62,6 +62,16 @@
         :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
         @formDataChange="formDataChange"
       />
+      <div>
+        <Button
+          v-for="(item,index) in filterTableData.TabList"
+          :key="index"
+          @click="tabClick(item)"
+        >
+          {{ item.label }}
+        </Button>
+      </div>
+
       <AgTable
         ref="agTableElement"
         :style="agTableElementStyles"
@@ -229,7 +239,30 @@
           confirm: () => {
           }
         }, // 弹框配置信息
-
+        
+        filterTableData: {
+          TabList: [
+            {
+              label: 'A',
+              value: { 
+                AD_VERSION_ID: ['4'],
+              },
+            },
+            {
+              label: 'B',
+              value: {
+                NAME: '1',
+              },
+            },
+            {
+              label: 'C',
+              value: {
+                ISACTIVE: ['=Y'] 
+              },
+            }
+          ]
+        }
+       
       };
     },
     computed: {
@@ -342,6 +375,17 @@
       },
     },
     methods: {
+      tabClick(tabValue) {
+        this.searchData.fixedcolumns = this.dataProcessing();
+        this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, tabValue.value);
+        console.log(99, this.searchData.fixedcolumns);
+
+        if (this.buttons.isBig) {
+          this.updataIsBig(false);
+        }
+        this.getQueryListPromise(this.searchData);
+        this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+      },
       // a() {
       //   // 插入列表界面默认值
       //   const data = {
