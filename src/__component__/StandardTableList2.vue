@@ -49,11 +49,10 @@
         ref="R3ButtonGroup"
         :data-array="buttons.dataArray"
         :id-array="idArray"
-        :search-datas="dataProcessing()"
         @buttonClick="buttonClick"
         @clearSelectIdArray="clearSelectIdArray"
       />
-      <FormItemComponent
+      <!-- <FormItemComponent
         ref="FormItemComponent"
         :form-items-data="formItems.data"
         :form-item-lists="formItemsLists"
@@ -61,12 +60,12 @@
         :default-column="Number(4)"
         :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
         @formDataChange="formDataChange"
-      />
+      /> -->
 
       <listsForm
-        v-if="formItemsLists && formItemsLists.length > 0"
+        v-if="formLists && formLists.length > 0"
         :id="$route.params.tableName"
-        :form-item-lists="formItemsLists"
+        :form-item-lists="formLists"
         :default-spread="changeSearchFoldnum.switchValue"
         :default-column="Number(4)"
         :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
@@ -161,7 +160,7 @@
   import { mapActions, mapState, mapMutations } from 'vuex';
   import ButtonGroup from './ButtonComponent.vue';
   import AgTable from './AgTable.vue';
-  import FormItemComponent from './FormItemComponent.vue';
+  // import FormItemComponent from './FormItemComponent.vue';
   import ItemComponent from './ItemComponent.vue';
   import buttonmap from '../assets/js/buttonmap';
   import dialogComponent from './Dialog.vue';
@@ -204,7 +203,7 @@
       tree,
       ButtonGroup,
       AgTable,
-      FormItemComponent,
+      // FormItemComponent,
       ImportDialog,
       ErrorModal,
       modifyDialog,
@@ -310,20 +309,20 @@
       }
     },
     watch: {
-      formLists() {
-        const arr = JSON.parse(JSON.stringify(this.formLists));
-        arr.map((temp, index) => {
-          temp.component = this.formLists[index].component;
-          temp.item.event = this.formLists[index].item.event;
-          temp.item.props = this.formLists[index].item.props;
-          temp.labelWidth = 90;
-          return temp;
-        });
+      // formLists() {
+      //   const arr = JSON.parse(JSON.stringify(this.formLists));
+      //   arr.map((temp, index) => {
+      //     temp.component = this.formLists[index].component;
+      //     temp.item.event = this.formLists[index].item.event;
+      //     temp.item.props = this.formLists[index].item.props;
+      //     temp.labelWidth = 90;
+      //     return temp;
+      //   });
 
-        if (JSON.stringify(arr) !== JSON.stringify(this.formItemsLists)) {
-          this.formItemsLists = arr;
-        }
-      },
+      //   if (JSON.stringify(arr) !== JSON.stringify(this.formItemsLists)) {
+      //     this.formItemsLists = arr;
+      //   }
+      // },
       $route() {
         setTimeout(() => {
           // 当路由变化，且观测到是返回动作的时候，延迟执行查询动作。
@@ -875,8 +874,6 @@
               return str;
             }
 
-            obj.row = current.row ? current.row : 1;
-            obj.col = current.col ? current.col : 1;
             obj.component = ItemComponent;
             
 
@@ -894,13 +891,6 @@
                   if (event.keyCode === 13) {
                     // enter回车查询
                     this.searchClickData();
-                  }
-                },
-                change: () => {
-                  if (current.isuppercase) {
-                    setTimeout(() => {
-                      this.lowercaseToUppercase(itemIndex);
-                    }, 50);
                   }
                 },
                 fkrpSelected: (value) => {
@@ -1065,6 +1055,10 @@
                 obj.item.props.regx = regExp.Digital;
               }
             }
+            // 大写控制
+            if (current.isuppercase && !current.display) {
+              obj.item.props.regx = /^[A-Z0-9\u4e00-\u9fa5]+$/;
+            }
 
             // 带有combobox的添加到options属性中
             if (current.combobox) {
@@ -1110,13 +1104,6 @@
               obj.item.props.format = 'yyyy/MM/dd HH:mm:ss';
             }
 
-            // 属性isuppercase控制
-            if (current.isuppercase) {
-              // obj.item.props.regx = regExp.Capital;
-              // obj.item.event.regxCheck = (value, $this, errorValue) => {
-              //   this.lowercaseToUppercase(errorValue, itemIndex);
-              // };
-            }
 
             // 外键的单选多选判断
 
@@ -1834,6 +1821,8 @@
       },
 
       dataProcessing() { // 查询数据处理
+        const listsForm = this.$_live_getChildComponent(window.vm, 'listsForm');
+        return listsForm ? this.$_live_getChildComponent(window.vm, 'listsForm').getFormData() : {};
         const jsonData = Object.keys(this.formItems.data).reduce((obj, item) => {
           if (this.formItems.data[item] && JSON.stringify(this.formItems.data[item]).indexOf('bSelect-all') < 0) {
             obj[item] = this.formItems.data[item];
@@ -1904,12 +1893,11 @@
       },
       searchClickData(value) {
         const json = this.$_live_getChildComponent(window.vm, 'listsForm').getFormData();
-        console.log(json);
         // 按钮查找 查询第一页数据
         if (!value) { // 返回时查询之前页码
           this.searchData.startIndex = 0;
         }
-        this.searchData.fixedcolumns = this.dataProcessing();
+        this.searchData.fixedcolumns = json;
         // this.getQueryListForAg(this.searchData);
         if (this.buttons.isBig) {
           this.updataIsBig(false);
@@ -2708,7 +2696,6 @@
         if (this._inactive) { return; }
         const { detail } = event;
         if (detail.url === '/p/cs/getTableQuery' && (Version() === '1.4' ? detail.response.data.data.tabcmd : detail.response.data.tabcmd)) {
-          this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
           const enableKAQueryDataForUserFlag = Version() === '1.4' ? !!(detail.response.data.data.datas.webconf && detail.response.data.data.datas.webconf.enableKAQueryDataForUser) : !!(detail.response.data.datas.webconf && detail.response.data.datas.webconf.enableKAQueryDataForUser);
           if (enableKAQueryDataForUser() || enableKAQueryDataForUserFlag) {
             await querySearch(`${this.$store.state.global.userInfo.id}_${this.searchData.table}`).then((response) => {

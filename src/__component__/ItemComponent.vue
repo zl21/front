@@ -376,7 +376,6 @@
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
   export default {
-    name: 'ItemComponent',
     components: {
       EnumerableInput, ExtentionInput, ComAttachFilter, Docfile
     },
@@ -424,7 +423,9 @@
     data() {
       return {
         filterDate: {},
-        resultData: {} // 结果传值
+        resultData: {}, // 结果传值
+
+        value: null
       };
     },
     computed: {
@@ -574,7 +575,8 @@
       valueChange() {
         // 值发生改变时触发  只要是item中的value改变就触发该方法，是为了让父组件数据同步
         // console.log(this._items);
-        this.$emit('inputChange', this._items.value, this._items, this.index);
+        this.value = this._items.value;
+        // this.$emit('inputChange', this._items.value, this._items, this.index);
       },
       // input event
       inputChange(event, $this) {

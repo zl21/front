@@ -26,7 +26,7 @@
     LINK_MODULE_PREFIX,
     customizeMixins,
   } from '../constants/global';
-  import StandardTableList from './StandardTableList.vue';
+  import StandardTableList from './StandardTableList2.vue';
   import VerticalTableDetail from './V.TableDetail.vue';
   import HorizontalTableDetail from './H.TableDetail.vue';
   import moduleName from '../__utils__/getModuleName';
