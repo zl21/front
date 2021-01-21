@@ -62,6 +62,12 @@
         :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
         @formDataChange="formDataChange"
       />
+
+      <tab-bar
+        :data="tabData"
+        @tabClick="handleTabClick"
+      />
+
       <AgTable
         ref="agTableElement"
         :style="agTableElementStyles"
@@ -185,6 +191,7 @@
   import treeData from '../__config__/treeData.config';
   import getUserenv from '../__utils__/getUserenv';
   import { addSearch, querySearch } from '../__utils__/indexedDB';
+  import tabBar from './tabBar.vue';
 
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
@@ -199,9 +206,26 @@
       ErrorModal,
       modifyDialog,
       dialogComponent,
+      tabBar
     },
     data() {
       return {
+        tabData: {
+          tabList: [
+            {
+              label: '标签1', // tab标签名字
+              value: 'test1', // tab标签里的组件的ref
+            },
+            {
+              label: '标签2',
+              value: 'test2'
+            },
+            {
+              label: '标签3333',
+              value: 'test3'
+            },
+          ]
+        },
         popwinMessage: {},
         objTabActionDialogConfig: {}, // 自定义按钮配置
         urlArr: ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid', '/p/cs/exeAction'],
@@ -342,6 +366,10 @@
       },
     },
     methods: {
+      // tab切换
+      handleTabClick(e) {
+        console.log(e);
+      },
       // a() {
       //   // 插入列表界面默认值
       //   const data = {

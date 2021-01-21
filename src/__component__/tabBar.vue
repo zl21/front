@@ -1,0 +1,67 @@
+<template>
+  <div class="r3-tab-nav">
+    <div
+      v-for="(item, index) in data.tabList"
+      :key="index"
+      class="r3-tab-item"
+      :class="[index === currentIndex? 'r3-active-item' : '']"
+      @click="tabClick(index, item.label,item.value)"
+    >
+      {{ item.label }}
+    </div>
+  </div>
+</template>
+
+<script type="text/ecmascript-6">
+  export default {
+    name: '',
+
+    props: {
+      data: {
+        type: Object,
+        default: () => {}
+      }
+    },
+
+    data() {
+      return {
+        currentIndex: 0
+      };
+    },
+
+    methods: {
+      tabClick(index, label, value) {
+        this.currentIndex = index;
+        this.$emit('tabClick', {
+          index,
+          value,
+          label
+        });
+      }
+    }
+  };
+</script>
+
+<style lang="less" scoped>
+@import url('../assets/theme/custom.less');
+.r3-tab-nav {
+  display: flex;
+  background: @primary-color;
+  padding: 8px 8px 0;
+}
+  .r3-tab-item {
+    border-radius: 4px 4px 0 0;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+    background: @primary-color;
+    padding: 0 14px;
+    height: 32px;
+    line-height: 32px;
+    cursor: pointer;
+    &.r3-active-item {
+      background: #fff;
+      color: @primary-color;
+    }
+  }
+</style>
