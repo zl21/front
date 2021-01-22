@@ -2806,6 +2806,7 @@
       firstSearchTable() {
         if (this.isFilterTable) {
           const el = this.$_live_getChildComponent(window.vm, 'tabBar');
+          console.log(999, el);
           el.tabClick(0);
         } else {
           this.searchClickData();
