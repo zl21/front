@@ -84,7 +84,8 @@ export default () => ({
         'updataSelectIdArr',
         'updatestopOnRowDoubleClickData',
         'updataIsBig',
-        'updateSearchDBdata'
+        'updateSearchDBdata',
+        'updateTabParam'
         
       ]),
   },

@@ -218,5 +218,8 @@ export default {
   },
   updateSearchDBdata(state, data) {
     state.searchDBdata = data;
+  },
+  updateTabParam(state, data) { // 更新当前tab参数
+    state.currentTabValue = data;
   }
 };

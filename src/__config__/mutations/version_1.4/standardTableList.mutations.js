@@ -225,5 +225,11 @@ export default {
   },
   updateSearchDBdata(state, data) {
     state.searchDBdata = data;
+  },
+  updateTabParam(state, data) { // 更新当前tab参数
+    debugger;
+
+    state.filterTableData.tabList[data.index].startIndex = data.startIndex;
+    state.filterTableData.tabList[data.index].range = data.range;
   }
 };

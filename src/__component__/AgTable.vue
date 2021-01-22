@@ -1,8 +1,12 @@
 <template>
-  <div class="standardTable">
+  <div
+    class="standardTable"
+    style="padding: 0"
+  >
     <Page
       v-if="isPageShow"
       ref="page"
+      style="order:2"
       size="small"
       v-bind="pageAttribute"
       @on-change="pageChange"
@@ -14,7 +18,9 @@
       :style=" { backgroundImage : 'url( ' + bigBackground + ') '} "
     /> -->
     <div
-      v-if="isBig" 
+      v-if="isBig"
+
+      style="order:1" 
       class="isBig"
     >
       <img
@@ -24,12 +30,16 @@
    
     <div
       v-show="!isCommonTable&&!isBig"
+
       ref="agGridTableContainer"
+      style="order:1;margin:0"
       class="detailTable"
     />
 
     <div
       v-if="isCommonTable&&!isBig"
+
+      style="order:1"
       class="common-table"
     >
       <CommonTable
@@ -48,7 +58,10 @@
         @btnclick="btnclick"
       />
     </div>
-    <div class="queryDesc">
+    <div
+      class="queryDesc" 
+      style="order:3"
+    >
       <div
         v-if="legend.length > 0 & isLegendShow"
         class="legend"
@@ -387,6 +400,7 @@
    flex: 1;
    flex-direction: column;
    height: 100%;
+   
    .common-table {
      margin-top: 10px;
      overflow-y: hidden;
