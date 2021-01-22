@@ -23,7 +23,7 @@ import horizontalTableDetailModule from './store/horizontalTableDetail';
 import PluginModule from './plugin.config';
 import { updateSessionObject, getSessionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
 import {
-  updateLocalObject, getLocalObject, deleteFromLocalObject, removeLocalObject  
+  getLocalObject,
 } from '../__utils__/localStorage';
 import setCustomeLabel from '../__utils__/setCustomeLabel';
 
