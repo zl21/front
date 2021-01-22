@@ -67,7 +67,7 @@
 <script>
   import { enableGateWay, Version, encryptedPassword } from '../constants/global';
   import network, { urlSearchParams } from '../__utils__/network';
-  import { getSeesionObject, removeSessionObject } from '../__utils__/sessionStorage';
+  import { getSessionObject, removeSessionObject } from '../__utils__/sessionStorage';
   
   export default {
     name: 'Login',

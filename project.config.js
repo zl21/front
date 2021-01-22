@@ -7,7 +7,7 @@ module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
   projectIconPath: path.join(__dirname, './favicon.ico'), // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
-  // target: 'http://r3-8098.dev.syman.cn/', // 框架研发网关开启环境
+  target: 'http://r3-8098.dev.syman.cn/', // 框架研发网关开启环境
   // target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 新版本jflow测试环境
   // target: 'http://r3dev.qiaodan.com:28888', // 乔丹开发环境
   // target: 'http://r3dev.qiaodan.com:26666', // 乔丹开发环境
@@ -38,7 +38,7 @@ module.exports = {
   // target: 'http://oneretail-test.dev.syman.cn/', // 微淘氪
   // target: 'http://101.133.142.45:27777/', // 乔丹
   // target: 'http://r3.ecsemir.com/', // 森马
-  target: 'http://crm-web.dev.syman.cn/',
+  // target: 'http://crm-web.dev.syman.cn/',
   
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置

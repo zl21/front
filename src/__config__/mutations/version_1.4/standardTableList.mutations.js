@@ -1,5 +1,5 @@
 
-import { getSeesionObject } from '../../../__utils__/sessionStorage';
+import { getSessionObject } from '../../../__utils__/sessionStorage';
 import router from '../../router.config';
 import store from '../../store.config';
 
@@ -34,7 +34,7 @@ export default {
   async updateDefaultFormItemsLists({ formItems, userInfo }, data) {
     const { tableId } = router.currentRoute.params;
 
-    const getSTDefaultQuery = getSeesionObject(tableId);
+    const getSTDefaultQuery = getSessionObject(tableId);
     if (data && data.length > 0 && getSTDefaultQuery && getSTDefaultQuery.length > 0) {
       getSTDefaultQuery.map((c) => {
         data.map((d) => {
