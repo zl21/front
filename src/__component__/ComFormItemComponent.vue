@@ -1232,11 +1232,18 @@
           this.newFormItemLists[index].item.props.showCol = false;
         }
 
-
         if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
           if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
+            // 修改LinkageForm中子表的隐藏标示，原来只修改字段的对应的数据，不修改表名+字段对应的数据，现在两个同时修改
             const data = {
               formList: [
+                { 
+                  key: !this.isMainTable ? `${this.childTableName}${items.field}` : items.field,
+                  name: items.title,
+                  show: this.newFormItemLists[index].show,
+                  srccol: items.validate.refcolval && items.validate.refcolval.srccol,
+                  tableName: this.isMainTable ? '' : this.childTableName
+                },
                 { 
                   key: items.field,
                   name: items.title,
