@@ -15,8 +15,7 @@
 
 <script type="text/ecmascript-6">
   export default {
-    name: '',
-
+    name: 'TabBar',
     props: {
       data: {
         type: Object,
@@ -32,7 +31,6 @@
 
     methods: {
       tabClick(index) {
-        debugger;
         this.currentIndex = index;
         this.$emit('tabClick', {
           data: this.data.tabList[index],

@@ -10,13 +10,13 @@
       >
         {{ item.webdesc }}
       </Button>
-      <!-- <Button
+      <Button
         type="fcdefault"
         class="Button"
         @click="customize"
       >
         测试跳转到单对象界面
-      </Button> -->
+      </Button>
     </div>
     <div class="content">
       <div class="contentLeft">
@@ -25,7 +25,7 @@
           clearable
           icon="ios-search"
           @on-change="searchInputChange"
-            >
+        />
         <span slot="prepend">检索</span>
         </Input>
         <div class="menuContainer">
@@ -988,13 +988,12 @@
         // store.commit('global/tabCloseAppoint', params);
     
         // return;
-        // const param = {
-        //   url: '/SYSTEM/TABLE_DETAIL/V/USERS/10085/1020',
-        //   type: 'V',
-        //   label: '基础档案',
-        //   dynamicRoutingForCustomizePage: true
-        // };
-        // store.commit('global/tabOpen', param);
+        const param = {
+          url: '/CUSTOMIZED/CUSTOM/2430',
+          type: 'C',
+          label: '基础档案',
+        };
+        store.commit('global/tabOpen', param);
         // const param = {
         //   url: 'CUSTOMIZED/PERMISSIONS/2997?type=sensitive&name=2',
         //   isMenu: true,

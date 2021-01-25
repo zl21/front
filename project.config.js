@@ -115,4 +115,5 @@ module.exports = {
   //   }
   //   return true;
   // }
+  isFilterTable: true, // 是否开启表格过滤功能
 };

@@ -21,26 +21,28 @@ export default () => ({
             value: { 
               AD_TABLECATEGORY_ID: ['125']
             },
-            // startIndex,
-            // range
+            startIndex: 0,
           },
           {
             label: '1',
             value: { 
-              AD_VERSION_ID: ['4']
+              AD_VERSION_ID: ['4'],
             },
+            startIndex: 0,
           },
           {
             label: '2',
             value: {
               AD_VERSION_ID: ['2']
             },
+            startIndex: 0,
           },
           {
             label: '3',
             value: {
               ISACTIVE: ['=Y'] 
             },
+            startIndex: 0,
           }
         ]
       },

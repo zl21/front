@@ -61,7 +61,7 @@
         :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
         @formDataChange="formDataChange"
       />
-      <tab-bar
+      <tabBar
         :data="ag.filterTableData"
         @tabClick="tabClick"
       />
@@ -74,8 +74,8 @@
         :css-status="ag.status4css"
         :legend="ag.status4css"
         :user-config-for-ag-table="userConfigForAgTable"
-        :on-page-change="isFilterTable?onPageChangeForFilterTable:onPageChange"
-        :on-page-size-change="isFilterTable?onPageSizeChangeForFilterTable:onPageSizeChange"
+        :on-page-change="isFilterTable()?onPageChangeForFilterTable:onPageChange"
+        :on-page-size-change="isFilterTable()?onPageSizeChangeForFilterTable:onPageSizeChange"
         :on-selection-changed="onSelectionChanged"
         :on-row-double-click="onRowDoubleClick"
         :on-sort-changed="onSortChange"
@@ -167,8 +167,6 @@
   import tree from './tree.vue';
   import regExp from '../constants/regExp';
   import getObjdisType from '../__utils__/getObjdisType';
-
-
   import {
     Version,
     CUSTOMIZED_MODULE_PREFIX,
@@ -178,7 +176,8 @@
     isCommonTable,
     enableActivateSameCustomizePage,
     enableKAQueryDataForUser,
-    blockFullOperation
+    blockFullOperation,
+    isFilterTable
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import customize from '../__config__/customize.config';
@@ -235,11 +234,7 @@
           confirm: () => {
           }
         }, // 弹框配置信息
-        isFilterTable: true,
-        currentTabValue: {
-
-        }
-       
+        currentTabValue: {},
       };
     },
     computed: {
@@ -355,33 +350,59 @@
       onPageSizeChangeForFilterTable(pageSize) {
         this.searchData.startIndex = 0;
         this.searchData.range = pageSize;
-        this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, this.currentTabValue);
+        this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, this.currentTabValue.tabValue.data.value);
+        const param = {
+          startIndex: this.searchData.startIndex,
+          range: this.searchData.range,
+          index: this.currentTabValue.index
+        };
+        this.updateTabParam(param);
         this.getQueryList();
       },
+      
       onPageChangeForFilterTable(page) {
         const { range } = this.searchData;
         this.searchData.startIndex = range * (page - 1);
-        this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, this.currentTabValue);
+        this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, this.currentTabValue.tabValue.value);
+        const param = {
+          startIndex: this.searchData.startIndex,
+          range: this.searchData.range,
+          index: this.currentTabValue.index
+        };
+        this.updateTabParam(param);
         this.getQueryList();
       },
-      tabClick(tabValue) {
-        if (this.ag.currentTabValue && this.ag.currentTabValue.startIndex) {
-          this.searchData.startIndex = tabValue.startIndex;
-        } else if (this.ag.currentTabValue && this.ag.currentTabValue.range) {
-          this.searchData.range = tabValue.range;
+      firstSearchTable() {
+        if (isFilterTable()) {
+          const el = this.$_live_getChildComponent(window.vm, 'tabBar');
+          el.tabClick(0);
+          const obj = {
+            index: 0,
+            tabValue: this.ag.filterTableData.tabList[0]
+          };
+          this.currentTabValue = obj;
+        } else {
+          this.searchClickData();
+        }
+      },
+      tabClick({ data, index }) {
+        if (this.ag.filterTableData.tabList && this.ag.filterTableData.tabList[index].startIndex) {
+          this.searchData.startIndex = data.startIndex;
+        } else {
+          this.searchData.startIndex = 0;
+        }
+        if (this.ag.filterTableData.tabList && this.ag.filterTableData.tabList[index].range) {
+          this.searchData.range = data.range;
+        } else {
+          delete this.searchData.range;
         }
         this.searchData.fixedcolumns = this.dataProcessing();
-        this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, tabValue.data.value);
-        this.currentTabValue = tabValue.data.value;
-
-        // const param = {
-        //   startIndex: this.searchData.startIndex,
-        //   range: this.searchData.range,
-        //   index: tabValue.index
-        // };
-        // this.updateTabParam(param);
-      
-        console.log(3333, this.searchData);
+        this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, data.value);
+        const obj = {
+          index,
+          tabValue: data
+        };
+        this.currentTabValue = obj;
         this.getQueryListPromise(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
@@ -1295,6 +1316,7 @@
         return obj;
       },
       resetForm() {
+        this.resetTabParam();
         // 列表查询重置
         this.resetType = true;
         const promise = new Promise((resolve, reject) => {
@@ -1990,13 +2012,8 @@
               this.updateSearchDBdata({});
               this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
             }
-            // if (this.isFilterTable) {
-            //   this.searchData = Object.assign({}, this.searchData, data);  
-            //   const dom = document.getElementById('tab_0');
-            //   dom.click();
-            // } else {
+           
             this.getQueryListForAg(data);
-            // }
           });
         });
         promise.then((res) => {
@@ -2803,15 +2820,7 @@
           }
         }
       },
-      firstSearchTable() {
-        if (this.isFilterTable) {
-          const el = this.$_live_getChildComponent(window.vm, 'tabBar');
-          console.log(999, el);
-          el.tabClick(0);
-        } else {
-          this.searchClickData();
-        }
-      },
+    
       isIE() {
         if (!!window.ActiveXObject || 'ActiveXObject' in window) return true;
         return false;
@@ -2834,13 +2843,8 @@
       this.updateUserConfig({ type: 'table', id: this[INSTANCE_ROUTE_QUERY].tableId });
       
       const promise = new Promise((resolve, reject) => {
-        // if (this.isFilterTable) {
-        //   const dom = document.getElementById('tab_0');
-        //   dom.click();
-        // } else {
         const searchData = this.searchData;
         this.getTableQueryForForm({ searchData, resolve, reject });
-        // }
       });
       promise.then(() => {
         this.getbuttonGroupdata();

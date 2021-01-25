@@ -85,7 +85,8 @@ export default () => ({
         'updatestopOnRowDoubleClickData',
         'updataIsBig',
         'updateSearchDBdata',
-        'updateTabParam'
+        'updateTabParam',
+        'resetTabParam'
         
       ]),
   },
