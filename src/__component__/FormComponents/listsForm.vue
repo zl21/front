@@ -18,7 +18,7 @@
       <component
         :is="initComponent(ItemLists[item].item,index)"
         :items="ItemLists[item].item"
-        :label-width="ItemLists[item].labelWidth"
+        :label-width="90"
       />
     </div>
   </div>
@@ -117,6 +117,10 @@
       
       // 处理折叠的默认值
       this.dowClass = !this.defaultSpread;
+      
+      this.$nextTick(() => {
+        console.log(this.$_live_getChildComponent(window.vm, 'Input'));
+      });
     }
   };
 

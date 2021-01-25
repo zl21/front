@@ -40,6 +40,7 @@ import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
 //   roleSwitch: false
 // });
 
+
 Vue.mixin({
   created() {
     const Type = (function () {
