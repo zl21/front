@@ -117,10 +117,6 @@
       
       // 处理折叠的默认值
       this.dowClass = !this.defaultSpread;
-      
-      this.$nextTick(() => {
-        console.log(this.$_live_getChildComponent(window.vm, 'Input'));
-      });
     }
   };
 
