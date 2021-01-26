@@ -110,6 +110,8 @@ export default {
             commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
             commit('updateDefaultButtonsdatas', queryData.datas);
             commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
+            commit('updateFilterTableData', queryData.datas.tablequery);
+
             if (queryData.datas.webconf) {
               if (queryData.datas.webconf.commonTable) {
                 commit('updateWebconfCommonTable', queryData.datas.webconf);
@@ -132,6 +134,8 @@ export default {
           commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
           commit('updateDefaultButtonsdatas', queryData.datas);
           commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
+          commit('updateFilterTableData', queryData.datas.tablequery);
+
           if (queryData.datas.webconf) {
             if (queryData.datas.webconf.commonTable) {
               commit('updateWebconfCommonTable', queryData.datas.webconf);
@@ -408,5 +412,6 @@ export default {
         commit('updateUserConfig', { userConfig: res.data.data });
       }, 100);
     });
-  }
+  },
+  
 };

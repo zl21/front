@@ -1,14 +1,14 @@
 <template>
   <div class="r3-tab-nav">
     <div
-      v-for="(item, index) in data.tabList"
+      v-for="(item, index) in data.multi_tab"
       :id="`tab_${index}`"
       :key="index"
       class="r3-tab-item"
       :class="[index === currentIndex? 'r3-active-item' : '']"
-      @click="tabClick(index, item.label,item.value)"
+      @click="tabClick(index, item.tab_name,item.tab_value)"
     >
-      {{ item.label }}
+      {{ item.tab_name }}
     </div>
   </div>
 </template>
@@ -33,11 +33,11 @@
       tabClick(index) {
         this.currentIndex = index;
         this.$emit('tabClick', {
-          data: this.data.tabList[index],
+          data: this.data.multi_tab[index],
           index
         });
       },
-    }
+    },
   };
 </script>
 

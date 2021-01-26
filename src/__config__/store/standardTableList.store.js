@@ -14,38 +14,57 @@ export default () => ({
     ag: {
       datas: {},
       status4css: [], // 图例数据
-      filterTableData: {
-        tabList: [
+      tablequery:
+      {
+        multi_tab: [
           {
-            label: 'all',
-            value: { 
-              AD_TABLECATEGORY_ID: ['125']
-            },
-            startIndex: 0,
+            tab_name: 'all',
           },
-          {
-            label: '1',
-            value: { 
-              AD_VERSION_ID: ['4'],
-            },
-            startIndex: 0,
-          },
-          {
-            label: '2',
-            value: {
-              AD_VERSION_ID: ['2']
-            },
-            startIndex: 0,
-          },
-          {
-            label: '3',
-            value: {
-              ISACTIVE: ['=Y'] 
-            },
-            startIndex: 0,
-          }
+          // {
+          //   tab_name: 'tab名2',
+          //   tab_value: [
+          //     {
+          //       字段名1: 'summer3',
+          //       字段名2: 'summer4'
+          //     }
+          //   ]
+          // }
         ]
-      },
+      }
+
+
+      // filterTableData: {
+      //   tabList: [
+      //     {
+      //       label: 'all',
+      //       value: { 
+      //         AD_TABLECATEGORY_ID: ['125']
+      //       },
+      //       startIndex: 0,
+      //     },
+      //     {
+      //       label: '1',
+      //       value: { 
+      //         AD_VERSION_ID: ['4'],
+      //       },
+      //       startIndex: 0,
+      //     },
+      //     {
+      //       label: '2',
+      //       value: {
+      //         AD_VERSION_ID: ['2']
+      //       },
+      //       startIndex: 0,
+      //     },
+      //     {
+      //       label: '3',
+      //       value: {
+      //         ISACTIVE: ['=Y'] 
+      //       },
+      //       startIndex: 0,
+      //     }
+      //   ]
+      // },
      
     },
     formItems: {

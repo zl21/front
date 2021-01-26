@@ -62,7 +62,8 @@
         @formDataChange="formDataChange"
       />
       <tabBar
-        :data="ag.filterTableData"
+        v-if="getFilterTable"
+        :data="ag.tablequery"
         @tabClick="tabClick"
       />
 
@@ -73,9 +74,10 @@
         :datas="ag.datas"
         :css-status="ag.status4css"
         :legend="ag.status4css"
+        :is-filter-table="getFilterTable"
         :user-config-for-ag-table="userConfigForAgTable"
-        :on-page-change="isFilterTable()?onPageChangeForFilterTable:onPageChange"
-        :on-page-size-change="isFilterTable()?onPageSizeChangeForFilterTable:onPageSizeChange"
+        :on-page-change="getFilterTable?onPageChangeForFilterTable:onPageChange"
+        :on-page-size-change="getFilterTable?onPageSizeChangeForFilterTable:onPageSizeChange"
         :on-selection-changed="onSelectionChanged"
         :on-row-double-click="onRowDoubleClick"
         :on-sort-changed="onSortChange"
@@ -248,6 +250,9 @@
         changeSearchFoldnum: ({ changeSearchFoldnum }) => changeSearchFoldnum,
         userInfo: ({ userInfo }) => userInfo,
       }),
+      getFilterTable() {
+        return isFilterTable();
+      },
       getCurrentLabel() {
         return this.keepAliveLabelMaps[this[MODULE_COMPONENT_NAME]];
       },
@@ -373,12 +378,12 @@
         this.getQueryList();
       },
       firstSearchTable() {
-        if (isFilterTable()) {
-          const el = this.$_live_getChildComponent(window.vm, 'tabBar');
+        if (this.getFilterTable) {
+          const el = this.$_live_getChildComponent(this, 'tabBar');
           el.tabClick(0);
           const obj = {
             index: 0,
-            tabValue: this.ag.filterTableData.tabList[0]
+            tabValue: this.ag.tablequery.multi_tab[0]
           };
           this.currentTabValue = obj;
         } else {
@@ -386,18 +391,19 @@
         }
       },
       tabClick({ data, index }) {
-        if (this.ag.filterTableData.tabList && this.ag.filterTableData.tabList[index].startIndex) {
+        if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].startIndex) {
           this.searchData.startIndex = data.startIndex;
         } else {
           this.searchData.startIndex = 0;
         }
-        if (this.ag.filterTableData.tabList && this.ag.filterTableData.tabList[index].range) {
+        if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].range) {
           this.searchData.range = data.range;
         } else {
           delete this.searchData.range;
         }
+        this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName; 
         this.searchData.fixedcolumns = this.dataProcessing();
-        this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, data.value);
+        this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, data.tab_value);
         const obj = {
           index,
           tabValue: data
@@ -2012,7 +2018,6 @@
               this.updateSearchDBdata({});
               this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
             }
-           
             this.getQueryListForAg(data);
           });
         });
@@ -2833,8 +2838,7 @@
       }
     },
     mounted() {
-      this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
-      
+      this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName; 
       if (!this._inactive) {
         window.addEventListener('network', this.networkEventListener);
         window.addEventListener('network', this.networkGetTableQuery);
