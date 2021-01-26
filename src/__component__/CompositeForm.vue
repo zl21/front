@@ -499,6 +499,36 @@
                   if (option.item.props.display === 'none') {
                     show = false;
                   }  
+
+                  if (!show) {
+                    if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
+                      if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
+                        const data = {
+                          formList: [
+                            { 
+                              key: !this.isMainTable ? `${this.childTableName}${option.item.field}` : option.item.field,
+                              name: option.item.title,
+                              show,
+                              srccol: option.item.validate.refcolval && option.item.validate.refcolval.srccol,
+                              tableName: this.isMainTable ? '' : this.childTableName
+                            },
+                            { 
+                              key: option.item.field,
+                              name: option.item.title,
+                              show,
+                              srccol: option.item.validate.refcolval && option.item.validate.refcolval.srccol,
+                              tableName: this.isMainTable ? '' : this.childTableName
+                            }
+                          ],
+                          formIndex: ''
+                        };
+                        setTimeout(() => {
+                          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
+                        }, 500);
+                      }  
+                    }
+                  }
+
                   option.show = show;
                   if (show === false) {
                     if (option.item.props.webconf && option.item.props.webconf.clearWhenHidden) {
@@ -522,6 +552,34 @@
                   }
                 }
                 item.show = show;
+                if (!show) {
+                  if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
+                    if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
+                      const data = {
+                        formList: [
+                          { 
+                            key: !this.isMainTable ? `${this.childTableName}${item.item.field}` : item.item.field,
+                            name: item.item.title,
+                            show,
+                            srccol: item.item.validate.refcolval && item.item.validate.refcolval.srccol,
+                            tableName: this.isMainTable ? '' : this.childTableName
+                          },
+                          { 
+                            key: item.item.field,
+                            name: item.item.title,
+                            show,
+                            srccol: item.item.validate.refcolval && item.item.validate.refcolval.srccol,
+                            tableName: this.isMainTable ? '' : this.childTableName
+                          }
+                        ],
+                        formIndex: ''
+                      };
+                      setTimeout(() => {
+                        this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
+                      }, 500);
+                    }  
+                  }
+                }
                 if (show === false) {
                   if (item.item.props.webconf && item.item.props.webconf.clearWhenHidden) {
                     if (item.item.type === 'checkbox') {
@@ -722,7 +780,7 @@
           }
         } 
 
-        this.$emit('formChange', this.formDataSave, this.formDataDef, this.labelFormSave);
+        this.$emit('formChange', this.formDataSave, this.formDataDef, this.labelFormSave, this.formData, this.defaultDataInt);
         this.getStateData();
 
         
@@ -1285,7 +1343,6 @@
           }
         }
         this.formItem[`${this.tableGetName}${obj.item.field}`] = _valuedata;
-   
         this.LinkageForm.push({
           key: `${this.tableGetName}${obj.item.field}`,
           name: obj.item.title,
@@ -1486,7 +1543,7 @@
               return [true, refcolval];
             }
           }
-
+          
           const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
 
           let LinkageFormInput = {};
@@ -2680,6 +2737,11 @@
         if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {
           // 父子查询关系映射
           if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
+            // if (this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm) {
+            //   Object.keys(this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm).map((item) => {
+            //     this.LinkageForm[3] = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm[item];
+            //   });
+            // }
             const data = {
               formList: this.LinkageForm,
               formIndex: this.formIndex
