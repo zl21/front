@@ -270,7 +270,6 @@
             detail: val
           });
         }
-
         const { tableName, itemId } = this.$route.params;
         const obj = {};
         const objLabel = {};

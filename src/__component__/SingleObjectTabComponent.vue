@@ -789,13 +789,13 @@
           return obj;
         }, {});
       },
-      formChange(val, changeVal) {
+      formChange(val, changeVal, labl, formData, defaultDataInt) {
         const { tableName } = this;
         const obj = {};
         const { itemId } = this[INSTANCE_ROUTE_QUERY];
-        obj[tableName] = val;
+        obj[tableName] = formData;
         if (itemId) {
-          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { tableName, value: changeVal });
+          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { tableName, value: defaultDataInt });
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateAddData`, { tableName, value: obj });
         }
       },
