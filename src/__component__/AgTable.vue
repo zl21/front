@@ -1,8 +1,12 @@
 <template>
-  <div class="standardTable">
+  <div
+    class="standardTable"
+    :class="isFilterTable ? 'isFilterTable' : ''"
+  >
     <Page
       v-if="isPageShow"
       ref="page"
+      class="agPage"
       size="small"
       v-bind="pageAttribute"
       @on-change="pageChange"
@@ -14,22 +18,20 @@
       :style=" { backgroundImage : 'url( ' + bigBackground + ') '} "
     /> -->
     <div
-      v-if="isBig" 
+      v-if="isBig"
       class="isBig"
     >
-      <img
-        :src="bigBackground"  
-      >
+      <img :src="bigBackground">
     </div>
-   
+
     <div
-      v-show="!isCommonTable&&!isBig"
+      v-show="!isCommonTable && !isBig"
       ref="agGridTableContainer"
       class="detailTable"
     />
 
     <div
-      v-if="isCommonTable&&!isBig"
+      v-if="isCommonTable && !isBig"
       class="common-table"
     >
       <CommonTable
@@ -50,12 +52,10 @@
     </div>
     <div class="queryDesc">
       <div
-        v-if="legend.length > 0 & isLegendShow"
+        v-if="(legend.length > 0) & isLegendShow"
         class="legend"
       >
-        <span style="font-weight: bold;">
-          图例:
-        </span>
+        <span style="font-weight: bold"> 图例: </span>
         <p
           v-for="(item, index) in legend"
           :key="index"
@@ -76,7 +76,7 @@
 </template>
 
 <script>
-  /* eslint-disable no-lonely-if */
+/* eslint-disable no-lonely-if */
 
   import { mapState } from 'vuex';
   import agTable from '../assets/js/ag-grid-table-pure';
@@ -86,13 +86,13 @@
     name: 'AgTable',
     data() {
       return {
-        // bigBackground: require('../assets/image/isBig.png')
-        // isCommonTable: true, // 是否显示普通表格
-        // isCommonTable: false, // 是否显示普通表格
+      // bigBackground: require('../assets/image/isBig.png')
+      // isCommonTable: true, // 是否显示普通表格
+      // isCommonTable: false, // 是否显示普通表格
       };
     },
     components: {
-      CommonTable
+      CommonTable,
     },
     computed: {
       isAg() {
@@ -115,134 +115,142 @@
         default: () => ({
           hideColumn: '',
           colPosition: '',
-          fixedColumn: ''
-        })
+          fixedColumn: '',
+        }),
       }, // 控制ag列表的固定列、隐藏列、列顺序等显示环节。
       isPageShow: {
         type: Boolean,
-        default: true
+        default: true,
       }, // 是否显示分页
       pageAttribute: {
         // required: true,
         type: Object,
-        default: () => ({})
+        default: () => ({}),
       }, // Page 属性
       onPageChange: {
         type: Function,
         default: () => {
-          // 参数 pageNum 页码
-        }
+        // 参数 pageNum 页码
+        },
       }, // 页码改变的回调
       onPageSizeChange: {
         type: Function,
         default: () => {
-          // 参数 pageSize 每页条数
-        }
+        // 参数 pageSize 每页条数
+        },
       }, // 切换每页条数时的回调
       isRecreateAgInstance: {
         type: Boolean,
-        default: false
+        default: false,
       }, // 是否重新创建ag实例
-      buttonsData: {// 获取自定义按钮组
+      buttonsData: {
+        // 获取自定义按钮组
         type: Array,
-        default: () => []
+        default: () => [],
       },
       cssStatus: {
         type: Array,
-        default: () => []
+        default: () => [],
       }, // 颜色配置信息  /p/cs/getTableQuery 接口返回
       datas: {
         type: Object,
-        default: () => ({})
+        default: () => ({}),
       }, // 所有返回数据  /p/cs/getTableQuery 接口返回
       errorArr: {
         type: Array,
-        default: () => []
+        default: () => [],
       }, // 错误信息数组
 
       onCellSingleClick: {
         type: Function,
         default: () => {
-          // 参数说明
-          // colDef：包含表头信息的对象
-          // row：包含当前行所有数据的对象
-          // target：事件触发对象，即event.target所返回的dom结点
-        }
+        // 参数说明
+        // colDef：包含表头信息的对象
+        // row：包含当前行所有数据的对象
+        // target：事件触发对象，即event.target所返回的dom结点
+        },
       }, // 单元格单击回调
       onCellDoubleClick: {
         type: Function,
         default: () => {
-          // 参数说明同cellSingleClick
-        }
+        // 参数说明同cellSingleClick
+        },
       }, // 单元格双击回调
       onRowSingleClick: {
         type: Function,
         default: () => {
-          // 参数说明同cellSingleClick
-        }
+        // 参数说明同cellSingleClick
+        },
       }, // 行单击回调
       onRowDoubleClick: {
         type: Function,
         default: () => {
-          // 参数说明同cellSingleClick
-        }
+        // 参数说明同cellSingleClick
+        },
       }, // 行双击回调
       onSortChanged: {
         type: Function,
         default: () => {
-          // 参数说明
-          // arrayOfSortInfo: 返回当前用户触发的排序信息
-          // 形如： [{"colId":"PS_C_BRAND_ID.val","sort":"asc"},{"colId":"ECODE.val","sort":"desc"}]
-        }
+        // 参数说明
+        // arrayOfSortInfo: 返回当前用户触发的排序信息
+        // 形如： [{"colId":"PS_C_BRAND_ID.val","sort":"asc"},{"colId":"ECODE.val","sort":"desc"}]
+        },
       }, // 排序事件触发回调
       onColumnVisibleChanged: {
         type: Function,
         default: () => {
-          // 参数 列名
-        }
+        // 参数 列名
+        },
       }, // 显示或者隐藏列的监听
       onSelectionChanged: {
         type: Function,
         default: () => {
-          // 参数 rowIdArray选中的数据id数组 rowArray选中的数据数组
-        }
+        // 参数 rowIdArray选中的数据id数组 rowArray选中的数据数组
+        },
       }, // 行选中事件
       onColumnMoved: {
         type: Function,
         default: () => {
-          // 参数 columnState 移动状态
-        }
+        // 参数 columnState 移动状态
+        },
       }, // 列移动的监听
       onColumnPinned: {
         type: Function,
         default: () => {
-          // 参数 ColumnPinned 固定列状态
-        }
+        // 参数 ColumnPinned 固定列状态
+        },
       },
       isLegendShow: {
         type: Boolean,
-        default: true
+        default: true,
       }, // 是否显示图例,
       legend: {
         type: Array,
-        default: () => []
+        default: () => [],
       }, // 图例,
       isCommonTable: {
         type: Boolean,
-        default: false
+        default: false,
       }, // 是否显示普通表格
-      isBig: {// 是否海量
+      isBig: {
+        // 是否海量
         type: Boolean,
-        // default: false
-      }  
-
+      // default: false
+      },
+      isFilterTable: {
+        type: Boolean,
+        default: false,
+      },
     },
     watch: {
       userConfigForAgTable(val) {
         if (!this.isCommonTable && !this.isBig) {
           const { agGridTableContainer } = this.$refs;
           if (agGridTableContainer.agTable) {
-            agGridTableContainer.agTable.dealWithPinnedColumns(true, val.fixedColumn || '');
+            agGridTableContainer.agTable.dealWithPinnedColumns(
+              true,
+              val.fixedColumn || ''
+            );
           }
         }
       },
@@ -254,23 +262,27 @@
             if (agGridTableContainer && agGridTableContainer.agTable) {
               agGridTableContainer.agTable.fixContainerHeight();
               agGridTableContainer.agTable.emptyAllFilters();
-              agGridTableContainer.agTable.dealWithPinnedColumns(true, val.fixedColumn || '');
+              agGridTableContainer.agTable.dealWithPinnedColumns(
+                true,
+                val.fixedColumn || ''
+              );
             }
           }, 30);
         }
       },
     },
     methods: {
-      a() {
-        this.click = !this.click;
-      },
       btnclick(obj) {
         this.$emit('btnclick', obj);
       },
-      agGridTable(th, row, data) { // agGrid
+      agGridTable(th, row, data) {
+        // agGrid
         const self = this;
         const arr = [];
-        if (data.ordids && Object.prototype.toString.call(data.ordids) === '[object Array]') {
+        if (
+          data.ordids
+          && Object.prototype.toString.call(data.ordids) === '[object Array]'
+        ) {
           data.ordids.forEach((item) => {
             const obj = {};
             obj.sort = item.ordasc ? 'asc' : 'desc';
@@ -278,7 +290,9 @@
           }); // 排序
         }
         const datas = Object.assign({}, self.datas);
-        datas.deleteFailInfo = self.datas.deleteFailInfo ? self.datas.deleteFailInfo : [];
+        datas.deleteFailInfo = self.datas.deleteFailInfo
+          ? self.datas.deleteFailInfo
+          : [];
         datas.hideColumn = self.userConfigForAgTable.hideColumn; // 隐藏列
         datas.colPosition = self.userConfigForAgTable.colPosition; // 移动列
         datas.pinnedPosition = self.userConfigForAgTable.fixedColumn; // 固定列
@@ -332,7 +346,8 @@
               self.onSelectionChanged(rowIdArray, rowArray);
             }
           },
-          onColumnMoved: (columnState) => { // 记住移动列
+          onColumnMoved: (columnState) => {
+            // 记住移动列
             if (typeof self.onColumnMoved === 'function') {
               self.onColumnMoved(columnState);
             }
@@ -344,7 +359,8 @@
           },
         });
         if (agTableRes && agTableRes.setCols) {
-          return agTableRes.setCols(th) // 设置数据列
+          return agTableRes
+            .setCols(th) // 设置数据列
             .setRows(row); // 设置数据行
         }
         return null;
@@ -373,7 +389,7 @@
       },
       customizedDialog(params) {
         this.$emit('CommonTableCustomizedDialog', params);
-      }
+      },
     },
     activated() {
       if (!this.isCommonTable && !this.isBig) {
@@ -388,62 +404,81 @@
 </script>
 
 <style lang="less">
- .standardTable {
-   overflow: hidden;
-   padding: 20px 0 0 0;
-   display: flex;
-   flex: 1;
-   flex-direction: column;
-   height: 100%;
-   .common-table {
+.standardTable {
+  overflow: hidden;
+  padding: 20px 0 0 0;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  height: 100%;
+  .common-table {
      margin-top: 10px;
-     overflow-y: hidden;
-     flex: 1;
-   }
- }
-  .detailTable ,.isBig{
-    border: 1px solid #d8d8d8;
-    margin-top: 10px;
-    height: 100%;
-    width: 100%;
+    overflow-y: hidden;
+    flex: 1;
   }
-  .isBig{
-    //  background-repeat: no-repeat;
-    //  background-position: center center;
-    //  background-size: 24%;
-    display: flex;
-    height: 100%;
-    width: 100%;
-    align-items: center;
-    justify-content: center;
+}
+.detailTable,
+.isBig {
+  border: 1px solid #d8d8d8;
+  margin-top: 10px;
+  height: 100%;
+  width: 100%;
+}
+.isBig {
+  //  background-repeat: no-repeat;
+  //  background-position: center center;
+  //  background-size: 24%;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
 
-    >img{
-      width: 25%;
-      height: 65%;
+  > img {
+    width: 25%;
+    height: 65%;
+  }
+}
+
+.queryDesc {
+  height: 20px;
+  margin: 5px 0;
+  line-height: 18px;
+  display: flex;
+
+  > div {
+    flex: 1;
+  }
+  .legend {
+    > p {
+      display: inline-block;
+      button {
+        border: 1px solid #575757;
+        margin-right: 2px;
+        background: white;
+        padding: 0 3px;
+      }
+
+      margin-right: 3px;
     }
   }
+}
+.isFilterTable {
+  padding: 0;
+  .agPage {
+    order: 2;
+    margin-top: 10px;
+  }
+  .isBig {
+    order: 1;
+    margin-top: 0px;
+  }
+  .queryDesc {
+    order: 3;
+  }
+  .detailTable{
+    margin-top: 0px;
 
- .queryDesc {
-   height: 20px;
-   margin: 5px 0;
-   line-height: 18px;
-   display: flex;
-
-   > div {
-     flex: 1;
-   }
-   .legend {
-     > p {
-       display: inline-block;
-       button {
-         border: 1px solid #575757;
-         margin-right: 2px;
-         background: white;
-         padding: 0 3px;
-       }
-
-       margin-right: 3px;
-     }
-   }
- }
+  }
+}
 </style>

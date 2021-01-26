@@ -21,7 +21,7 @@ import getObjdisType from './src/__utils__/getObjdisType';
 import projectConfig from './project.config';
 import { addSearch } from './src/__utils__/indexedDB';
 import './node_modules/viewerjs/dist/viewer.css';
-
+import './src/__utils__/getChildComponent';
 
 // css import
 import './node_modules/ag-grid/dist/styles/ag-grid.css';

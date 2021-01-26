@@ -1,4 +1,6 @@
 
+// 此分支用于开发表格过滤功能
+// 需求为：根据配置条件进行表格过滤，以tab的展现形式
 
 const path = require('path');
 
@@ -107,10 +109,11 @@ module.exports = {
   //     if (data.router.params.tableName && data.config().configPage[data.router.params.tableName].filter(u => u === data.url).length > 0) { // 筛选出配置界面不需要根据框架code报错提示框的接口
   //       return false;
   //     } if (data.router.params.customizedModuleName && data.router.meta.routePrefix === '/CUSTOMIZED' && data.config().customizePage.filter(r => data.router.params.customizedModuleName.toLocaleLowerCase() === r.toLocaleLowerCase()).length > 0) {
-  //       // 筛选出定制界面不需要根据框架code报错提示框的接口
+  //       // 筛选出定制界面不需要根据框架code,报错提示框的接口
   //       return false;
   //     }
   //   }
   //   return true;
   // }
+  isFilterTable: true, // 是否开启表格过滤功能
 };

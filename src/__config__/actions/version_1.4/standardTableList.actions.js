@@ -83,6 +83,33 @@ export default {
             commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
             commit('updateDefaultButtonsdatas', queryData.datas);
             commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
+
+
+            queryData.datas.tablequery = {
+              multi_tab: [
+                {
+                  tab_name: 'tab名1',
+                  tab_value: [
+                    {
+                      字段名1: 'value',
+                      字段名2: 'value'
+                    }
+                  ]
+                },
+                {
+                  tab_name: 'tab名2',
+                  tab_value: [
+                    {
+                      字段名1: 'value',
+                      字段名2: 'value'
+                    }
+                  ]
+                }
+              ]
+            };
+            commit('updateFilterTableData', queryData.datas.tablequery);
+
+            
             if (queryData.datas.webconf) {
               if (queryData.datas.webconf.commonTable) {
                 commit('updateWebconfCommonTable', queryData.datas.webconf);
@@ -105,6 +132,29 @@ export default {
           commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
           commit('updateDefaultButtonsdatas', queryData.datas);
           commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
+          queryData.datas.tablequery = {
+            multi_tab: [
+              {
+                tab_name: 'tab名1',
+                tab_value: [
+                  {
+                    字段名1: 'value',
+                    字段名2: 'value'
+                  }
+                ]
+              },
+              {
+                tab_name: 'tab名2',
+                tab_value: [
+                  {
+                    字段名1: 'value',
+                    字段名2: 'value'
+                  }
+                ]
+              }
+            ]
+          };
+          commit('updateFilterTableData', queryData.datas.tablequery);
           if (queryData.datas.webconf) {
             if (queryData.datas.webconf.commonTable) {
               commit('updateWebconfCommonTable', queryData.datas.webconf);

@@ -218,5 +218,19 @@ export default {
   },
   updateSearchDBdata(state, data) {
     state.searchDBdata = data;
+  },
+  updateTabParam(state, data) { // 更新当前tab参数
+    if (data.index) {
+      state.ag.filterTableData.tabList[data.index].startIndex = data.startIndex;
+      state.ag.filterTableData.tabList[data.index].range = data.range;
+    }
+  },
+  resetTabParam(state) { // 重置所有tab分页数据
+    state.ag.filterTableData.tabList.map((tab, i) => {
+      tab.startIndex = 0;
+    });
+  },
+  updateFilterTableData(state, data) { // 更新filterTableData
+    state.ag.tablequery = Object.assign(state.ag.tablequery, data);
   }
 };
