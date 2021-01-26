@@ -85,28 +85,28 @@ export default {
             commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
 
 
-            queryData.datas.tablequery = {
-              multi_tab: [
-                {
-                  tab_name: 'tab名1',
-                  tab_value: [
-                    {
-                      字段名1: 'value',
-                      字段名2: 'value'
-                    }
-                  ]
-                },
-                {
-                  tab_name: 'tab名2',
-                  tab_value: [
-                    {
-                      字段名1: 'value',
-                      字段名2: 'value'
-                    }
-                  ]
-                }
-              ]
-            };
+            // queryData.datas.tablequery = {
+            //   multi_tab: [
+            //     {
+            //       tab_name: 'tab名1',
+            //       tab_value: [
+            //         {
+            //           字段名1: 'value',
+            //           字段名2: 'value'
+            //         }
+            //       ]
+            //     },
+            //     {
+            //       tab_name: 'tab名2',
+            //       tab_value: [
+            //         {
+            //           字段名1: 'value',
+            //           字段名2: 'value'
+            //         }
+            //       ]
+            //     }
+            //   ]
+            // };
             commit('updateFilterTableData', queryData.datas.tablequery);
 
             
