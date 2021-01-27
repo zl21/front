@@ -549,7 +549,8 @@ export default {
     // state.isRequest = [];// 清空修改数据验证
     const { openedMenuLists } = state;
     // 如果关闭某个Tab，则清空所有该模块可能的对应的keepAlive信息。
-    state.keepAliveLists = state.keepAliveLists.filter(d => d.indexOf(tab.tableName) === -1);
+
+    state.keepAliveLists = state.keepAliveLists.filter(d => d !== tab.keepAliveModuleName);
     openedMenuLists.forEach((item, index) => {
       if (tab.stopRouterPush) {
         const { tableName } = router.currentRoute.params;
