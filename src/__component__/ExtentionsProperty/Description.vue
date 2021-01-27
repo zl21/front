@@ -54,6 +54,9 @@
         case 'object-group':
           this.$emit('removeOption', [this.option.key]);
           break;
+        case 'custom':
+          this.$emit('removeOption', [this.option.key]);
+          break;
         case 'input-group':
           if (this.option.key === '__root__') {
             this.$emit('removeOption', this.option.inputLists.map(d => d.key));
