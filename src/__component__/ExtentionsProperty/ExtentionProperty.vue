@@ -65,6 +65,16 @@
             @dataChange="rootDataChange"
             @removeOption="removeOption"
           />
+
+          <components
+            :is="item.component"
+            v-if="item.type === 'custom'"
+            :id="`${item.key}-${index}-${guid}`"
+            :default-data="JSON.parse(JSON.stringify(rootData))[item.key]"
+            :option="item"
+            @dataChange="rootDataChange"
+            @removeOption="removeOption"
+          />
         </div>
       </template>
     </div>
