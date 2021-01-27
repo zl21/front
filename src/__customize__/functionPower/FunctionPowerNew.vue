@@ -10,13 +10,20 @@
       >
         {{ item.webdesc }}
       </Button>
-      <!-- <Button
+      <Button
         type="fcdefault"
         class="Button"
         @click="customize"
       >
         测试跳转到单对象界面
-      </Button> -->
+      </Button>
+      <Button
+        type="fcdefault"
+        class="Button"
+        @click="customize1"
+      >
+        测试跳转到单对象界面1
+      </Button>
     </div>
     <div class="content">
       <div class="contentLeft">
@@ -25,7 +32,7 @@
           clearable
           icon="ios-search"
           @on-change="searchInputChange"
-        />
+           >
         <span slot="prepend">检索</span>
         </Input>
         <div class="menuContainer">
@@ -991,7 +998,7 @@
     
         // return;
         const param = {
-          url: '/CUSTOMIZED/CUSTOM/2430',
+          url: '/CUSTOMIZED/FUNCTIONPERMISSION/2096',
           type: 'C',
           label: '基础档案',
         };
@@ -1003,7 +1010,15 @@
         // };
         // store.commit('global/directionalRouter', param);
       },
-    
+      customize1() {
+        const param = {
+          url: '/CUSTOMIZED/FUNCTIONPERMISSION/2099',
+          type: 'C',
+          label: '基础档案',
+          dynamicRoutingForCustomizePage: true
+        };
+        store.commit('global/tabOpen', param);
+      },
       copyPerm() {
         this.copyPermission = true;
       }, // 复制权限

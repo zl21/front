@@ -696,7 +696,7 @@ export default {
         filtrate();
       } else if (enableOpenNewTab()) {
         filtrate();
-      } else if (k.indexOf(tab.tableName) !== -1) { // 列表打开本表单对象界面，关闭时，根据表明清除列表以及列表对应的单对象keepAlive
+      } else if (k !== tab.keepAliveModuleName) { // 列表打开本表单对象界面，关闭时，根据表明清除列表以及列表对应的单对象keepAlive
         state.keepAliveLists.splice(i, 1);
       }
     });
