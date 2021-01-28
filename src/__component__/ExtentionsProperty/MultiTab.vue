@@ -41,6 +41,7 @@
               :auto-data="searchKeyList"
               :page-size="pageSize"
               :total-row-count="totalCount"
+              :default-selected="temp.defaultSelected"
               is-back-row-item
               @on-popper-show="getKeys"
               @on-page-change="getKeys"
@@ -142,7 +143,7 @@
       },
       defaultData: {
         type: [Object, Array],
-        default: () => ({})
+        default: () => ([])
       }
     },
     data() {
@@ -174,13 +175,19 @@
 
     async created() {
       // await this.getKeys(0, true);
-      // const newData = JSON.parse(JSON.stringify(this.defaultData));
+      const newData = JSON.parse(JSON.stringify(this.defaultData));
       // this.keyList.row.forEach((tabObj) => {
       //   const currentColName = tabObj.DBNAME.val;
       //   const 
       // });
-      // this.sumTabs = newData;
-      // console.log('初始化', this.sumTabs);
+
+      if (this.defaultData && this.defaultData.length > 0) {
+        this.sumTabs = newData;
+      } else {
+        this.sumTabs = [JSON.parse(JSON.stringify(TAB_CONSTRUCTOR))];
+      }
+      
+      console.log('初始化', this.sumTabs);
     },
 
     methods: {
@@ -239,6 +246,9 @@ index:  //需要删除的配置下标 type:number
           column_include_uicontroller: true,
           isolr: false
         };
+        if (itemId === 'New') {
+          delete searchdata.fixedcolumns.AD_TABLE_ID; 
+        }
         this.keyList = await this.requestKeysData(searchdata);
         this.totalCount = this.keyList.totalRowCount;
       },
@@ -264,6 +274,9 @@ index:  //需要删除的配置下标 type:number
           column_include_uicontroller: true,
           isolr: false
         };
+        if (itemId === 'New') {
+          delete searchdata.fixedcolumns.AD_TABLE_ID; 
+        }
 
         if (this.timer) {
           clearTimeout(this.timer);
@@ -349,6 +362,7 @@ index:  //需要删除的配置下标 type:number
             // 过滤不必要的字段
             delete keyRow.type;
             delete keyRow.selectOptions;
+            delete keyRow.defaultSelected;
             // 删除无效字段配置
             if (!keyRow.col_name || !keyRow.operator || !keyRow.contrast_value) {
               tabObj.tab_value.splice(j, 1);
@@ -365,7 +379,8 @@ index:  //需要删除的配置下标 type:number
 
       // 把数据同步给父组件
       syncData() {
-        const cacheData = this.filterInvalidKey(this.sumTabs);
+        // const cacheData = this.filterInvalidKey(this.sumTabs);
+        const cacheData = JSON.parse(JSON.stringify(this.sumTabs));
 
         if (cacheData.length === 0) {
           this.$emit('dataChange', { key: this.option.key, value: '' });
@@ -376,12 +391,14 @@ index:  //需要删除的配置下标 type:number
 
       // 获取选中字段
       handlerSelected(tabIndex, keyIndex, value) {
+        console.log('===', value);
         this.currentTabIndex = tabIndex;
         this.currentKeyIndex = keyIndex;
         this.sumTabs[tabIndex].tab_value[keyIndex].col_name = value[0].rowItem.DBNAME.val;
         this.sumTabs[tabIndex].tab_value[keyIndex].operator = '';
         this.sumTabs[tabIndex].tab_value[keyIndex].contrast_value = '';
         this.sumTabs[tabIndex].tab_value[keyIndex].type = value[0].rowItem.COLTYPE.val;
+        this.sumTabs[tabIndex].tab_value[keyIndex].defaultSelected = [value[0]];
       },
 
       // 清空下拉所选
@@ -420,7 +437,7 @@ index:  //需要删除的配置下标 type:number
                   {
                     value: '=',
                     label: '='
-                  }, ];
+                  },];
         case 'NUMBER':
           return [{
                     value: '>',
@@ -478,7 +495,7 @@ index:  //需要删除的配置下标 type:number
                   {
                     value: 'between',
                     label: 'between'
-                  },];
+                  }, ];
         }
       },
 
