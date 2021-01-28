@@ -284,13 +284,29 @@ index:  //需要删除的配置下标 type:number
           column_include_uicontroller: true,
           isolr: false
         };
-        const result = (await this.requestKeysData(searchdata)).row || [];
-        this.searchKeyList = result.map((keyObj) => {
-          Object.keys(keyObj).forEach((key) => {
-            keyObj[key] = keyObj[key].val;
-          });
-          return keyObj;
-        });
+
+        if (this.timer) {
+          clearTimeout(this.timer);
+          this.timer = setTimeout(async () => {
+            const result = (await this.requestKeysData(searchdata)).row || [];
+            this.searchKeyList = result.map((keyObj) => {
+              Object.keys(keyObj).forEach((key) => {
+                keyObj[key] = keyObj[key].val;
+              });
+              return keyObj;
+            });
+          }, 200);
+        } else {
+          this.timer = setTimeout(async () => {
+            const result = (await this.requestKeysData(searchdata)).row || [];
+            this.searchKeyList = result.map((keyObj) => {
+              Object.keys(keyObj).forEach((key) => {
+                keyObj[key] = keyObj[key].val;
+              });
+              return keyObj;
+            });
+          }, 200);
+        }
       },
 
       // 获取字段列表
@@ -311,7 +327,7 @@ index:  //需要删除的配置下标 type:number
                   } else {
                     item.isak = false;
                   }
-                  
+
                   // 隐藏table列
                   if (hideColumns.includes(item.colname)) {
                     tabth.splice(i, 1);
@@ -385,7 +401,7 @@ index:  //需要删除的配置下标 type:number
         this.sumTabs[tabIndex].tab_value[keyIndex].contrast_value = '';
         this.sumTabs[tabIndex].tab_value[keyIndex].type = value[0].rowItem.COLTYPE.val;
 
-      // this.$set(this.sumTabs[tabIndex].tab_value[keyIndex], 'selectOptions', this.handleSelectExpand(tabIndex, keyIndex));
+        // this.$set(this.sumTabs[tabIndex].tab_value[keyIndex], 'selectOptions', this.handleSelectExpand(tabIndex, keyIndex));
       },
 
       // 清空下拉所选
@@ -422,7 +438,7 @@ index:  //需要删除的配置下标 type:number
                   {
                     value: '=',
                     label: '='
-                  },];
+                  }, ];
         case 'NUMBER':
           return [{
                     value: '>',
