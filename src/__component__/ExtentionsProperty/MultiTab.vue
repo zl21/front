@@ -73,8 +73,17 @@
           <p>对比值:</p>
           <validate :data="temp.contrast_value">
             <Input
+              v-if="!(temp.type && temp.type.toUpperCase().startsWith('DATE'))"
               v-model="temp.contrast_value"
               v-input-number:[temp.type]
+            />
+            <DatePicker
+              v-if="temp.type && temp.type.toUpperCase().startsWith('DATE')"
+              :value="temp.contrast_value"
+              type="daterange"
+              placeholder="请选择"
+              format="yyyy/MM/dd HH:mm:ss"
+              @on-change="handleChangeDate(index, j , $event)"
             />
           </validate>
         </div>
@@ -121,6 +130,7 @@
   import Description from './Description.vue';
   import Validate from '../form/Validate.vue';
   import network, { urlSearchParams } from '../../__utils__/network';
+  import { dateFormat } from '../../__utils__/date';
 
   const TAB_CONSTRUCTOR = {
     tab_name: '',
@@ -174,19 +184,21 @@
     },
 
     async created() {
-      // await this.getKeys(0, true);
       const newData = JSON.parse(JSON.stringify(this.defaultData));
-      // this.keyList.row.forEach((tabObj) => {
-      //   const currentColName = tabObj.DBNAME.val;
-      //   const 
-      // });
 
       if (this.defaultData && this.defaultData.length > 0) {
+        newData.forEach((tabObj) => {
+          tabObj.tab_value.forEach((keyObj) => {
+            if (keyObj.type.toUpperCase().startsWith('DATE')) {
+              keyObj.contrast_value = keyObj.contrast_value.split('~');
+            }
+          });
+        });
         this.sumTabs = newData;
       } else {
         this.sumTabs = [JSON.parse(JSON.stringify(TAB_CONSTRUCTOR))];
       }
-      
+
       console.log('初始化', this.sumTabs);
     },
 
@@ -247,7 +259,7 @@ index:  //需要删除的配置下标 type:number
           isolr: false
         };
         if (itemId === 'New') {
-          delete searchdata.fixedcolumns.AD_TABLE_ID; 
+          delete searchdata.fixedcolumns.AD_TABLE_ID;
         }
         this.keyList = await this.requestKeysData(searchdata);
         this.totalCount = this.keyList.totalRowCount;
@@ -275,7 +287,7 @@ index:  //需要删除的配置下标 type:number
           isolr: false
         };
         if (itemId === 'New') {
-          delete searchdata.fixedcolumns.AD_TABLE_ID; 
+          delete searchdata.fixedcolumns.AD_TABLE_ID;
         }
 
         if (this.timer) {
@@ -359,19 +371,22 @@ index:  //需要删除的配置下标 type:number
           const tabObj = cacheData[tabIndex];
           for (let j = Math.max(tabObj.tab_value.length - 1, 0); j >= 0; j--) {
             const keyRow = tabObj.tab_value[j];
-            // 过滤不必要的字段
-            delete keyRow.type;
-            delete keyRow.selectOptions;
-            delete keyRow.defaultSelected;
-            // 删除无效字段配置
-            if (!keyRow.col_name || !keyRow.operator || !keyRow.contrast_value) {
-              tabObj.tab_value.splice(j, 1);
+            if (keyRow.type && keyRow.type.toUpperCase().startsWith('DATE') && keyRow.contrast_value[0] && keyRow.contrast_value[1]) {
+              keyRow.contrast_value = keyRow.contrast_value.join('~');
             }
+            // // 过滤不必要的字段
+            // delete keyRow.type;
+            // delete keyRow.selectOptions;
+            // delete keyRow.defaultSelected;
+            // // 删除无效字段配置
+            // if (!keyRow.col_name || !keyRow.operator || !keyRow.contrast_value) {
+            //   tabObj.tab_value.splice(j, 1);
+            // }
           }
-          // 删除无效tab配置
-          if (!tabObj.tab_name || tabObj.tab_value.length === 0) {
-            cacheData.splice(tabIndex, 1);
-          }
+          // // 删除无效tab配置
+          // if (!tabObj.tab_name || tabObj.tab_value.length === 0) {
+          //   cacheData.splice(tabIndex, 1);
+          // }
         }
 
         return cacheData;
@@ -380,7 +395,7 @@ index:  //需要删除的配置下标 type:number
       // 把数据同步给父组件
       syncData() {
         // const cacheData = this.filterInvalidKey(this.sumTabs);
-        const cacheData = JSON.parse(JSON.stringify(this.sumTabs));
+        const cacheData = JSON.parse(JSON.stringify(this.filterInvalidKey(this.sumTabs)));
 
         if (cacheData.length === 0) {
           this.$emit('dataChange', { key: this.option.key, value: '' });
@@ -430,14 +445,11 @@ index:  //需要删除的配置下标 type:number
       setSelectItems(type) {
         switch (type) {
         case 'STRING':
-          return [{
-                    value: 'in',
-                    label: 'in'
-                  },
-                  {
-                    value: '=',
-                    label: '='
-                  }, ];
+          return [
+            {
+              value: '=',
+              label: '='
+            },];
         case 'NUMBER':
           return [{
                     value: '>',
@@ -489,13 +501,9 @@ index:  //需要删除的配置下标 type:number
                     label: '<='
                   },
                   {
-                    value: 'in',
-                    label: 'in'
-                  },
-                  {
                     value: 'between',
                     label: 'between'
-                  },];
+                  }];
         }
       },
 
@@ -516,6 +524,11 @@ index:  //需要删除的配置下标 type:number
           isPass: true,
           msg: ''
         };
+      },
+
+      // 改变日期
+      handleChangeDate(tabIndex, keyIndex, date) {
+        this.sumTabs[tabIndex].tab_value[keyIndex].contrast_value = date;
       }
     }
   };
@@ -598,6 +611,13 @@ index:  //需要删除的配置下标 type:number
     color: #000;
     cursor: pointer;
     opacity: 0.8;
+  }
+}
+
+::v-deep .ark-date-picker {
+  .ark-select-dropdown {
+    right: 72px !important;
+    left: auto !important;
   }
 }
 </style>
