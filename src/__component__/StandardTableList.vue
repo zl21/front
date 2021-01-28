@@ -184,7 +184,7 @@
   import { getGateway } from '../__utils__/network';
   import customize from '../__config__/customize.config';
   import router from '../__config__/router.config';
-  import { getSeesionObject, deleteFromSessionObject, updateSessionObject } from '../__utils__/sessionStorage';
+  import { getSessionObject, deleteFromSessionObject, updateSessionObject } from '../__utils__/sessionStorage';
   import { getUrl, getLabel } from '../__utils__/url';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
   import treeData from '../__config__/treeData.config';
@@ -330,11 +330,11 @@
         setTimeout(() => {
           // 当路由变化，且观测到是返回动作的时候，延迟执行查询动作。
           if (!this._inactive) {
-            const routeMapRecord = getSeesionObject('routeMapRecord');
+            const routeMapRecord = getSessionObject('routeMapRecord');
             const isDynamicRouting = Boolean(window.sessionStorage.getItem('dynamicRoutingIsBack'));// 动态路由跳转的单对象界面返回列表界面标记
             const routeFullPath = this.$router.currentRoute.path;
             if (routeMapRecord && isDynamicRouting) { // 动态路由返回
-              const dynamicRoutingIsBackForDeleteValue = getSeesionObject('dynamicRoutingIsBackForDelete');
+              const dynamicRoutingIsBackForDeleteValue = getSessionObject('dynamicRoutingIsBackForDelete');
 
               Object.entries(routeMapRecord).forEach(([key, value]) => {
                 if (value === routeFullPath && dynamicRoutingIsBackForDeleteValue.keepAliveModuleName === key) {
@@ -618,7 +618,7 @@
         const { tableName, tableId } = this[INSTANCE_ROUTE_QUERY];
         // const treeQuery = this.$router.currentRoute.query;
         // if (treeQuery.isTreeTable) {
-        const treeIds = getSeesionObject('TreeId');
+        const treeIds = getSessionObject('TreeId');
         const treeTableListSelectId = treeIds[tableName];
         // }
         if (this.webconf.dynamicRouting) { // 配置了动态路由，双击表格走动态路由

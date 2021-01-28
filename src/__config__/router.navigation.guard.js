@@ -14,16 +14,16 @@ import {
   KEEP_MODULE_STATE_WHEN_CLICK_MENU,
   PLUGIN_MODULE_PREFIX,
   PLUGIN_MODULE_COMPONENT_PREFIX,
-  LINK_MODULE_PREFIX,
+  LINK_MODULE_PREFIX, 
   LINK_MODULE_COMPONENT_PREFIX
 } from '../constants/global';
 import standardTableListModule from './store/standardTableList.store';
 import verticalTableDetailModule from './store/verticalTableDetail';
 import horizontalTableDetailModule from './store/horizontalTableDetail';
 import PluginModule from './plugin.config';
-import { updateSessionObject, getSeesionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
+import { updateSessionObject, getSessionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
 import {
-  updateLocalObject, getLocalObject, deleteFromLocalObject, removeLocalObject  
+  getLocalObject,
 } from '../__utils__/localStorage';
 import setCustomeLabel from '../__utils__/setCustomeLabel';
 
@@ -157,18 +157,18 @@ if (window.ProjectConfig && window.ProjectConfig.externalPluginModules) { // 整
 
 export default (router) => {
   router.beforeEach((to, from, next) => {
-    // if (Object.keys(getSeesionObject('loginStatus')) && Object.keys(getSeesionObject('loginStatus')).length === 0) {
+    // if (Object.keys(getSessionObject('loginStatus')) && Object.keys(getSessionObject('loginStatus')).length === 0) {
     //   debugger;
     // }
-    const lgoinText = '/login'.toUpperCase();
-    if (to.path && getLocalObject('loginStatus') !== true && (to.path.indexOf(lgoinText) !== -1) && to.path !== '/') {
+    const loginText = '/login'.toUpperCase();
+    if (to.path && getLocalObject('loginStatus') !== true && (to.path.indexOf(loginText) !== -1) && to.path !== '/') {
       const data = {
         k: 'path',
         v: to.path
       };
       updateSessionObject('savePath', data);
     }
-    if (to.path.indexOf(lgoinText) !== -1 && getLocalObject('loginStatus') === true) { // 当页面处于登录状态时，则无法回到登录界面，可退出登录进行操作
+    if (to.path.indexOf(loginText) !== -1 && getLocalObject('loginStatus') === true) { // 当页面处于登录状态时，则无法回到登录界面，可退出登录进行操作
       window.location.href = window.location.origin;
     }
     if (router.getMatchedComponents(to.path).length === 0) {
@@ -298,7 +298,7 @@ export default (router) => {
       let tempInterval = -1;
       tempInterval = setInterval(() => {
         let ready = null;
-        const saveNetwork = getSeesionObject('saveNetwork').name;
+        const saveNetwork = getSessionObject('saveNetwork').name;
         if (saveNetwork) {
           ready = true;
         } else {
@@ -362,12 +362,12 @@ export default (router) => {
 
     if (isDynamicRouting && (isFromStandardTable || isFromPlugin) && isTableDetail && isNotFromSameTable) {
       window.sessionStorage.removeItem('dynamicRouting');
-      const routeMapRecordForSingleObject = getSeesionObject('routeMapRecordForSingleObject');
+      const routeMapRecordForSingleObject = getSessionObject('routeMapRecordForSingleObject');
       if (Object.keys(routeMapRecordForSingleObject).indexOf(to.fullPath) > -1) { // 如果在单对象配置的动态路由维护关系里存在，当前要跳转的单对象界面，则不记录当前的
         deleteFromSessionObject('routeMapRecordForSingleObject', to.fullPath);
       }
 
-      const routeMapRecord = getSeesionObject('routeMapRecord');
+      const routeMapRecord = getSessionObject('routeMapRecord');
       // JSON.stringify(routeMapRecord) !== '{}' 
       if (routeMapRecord[getKeepAliveModuleName(to)] !== from.fullPath) {
         updateSessionObject('routeMapRecord', { k: getKeepAliveModuleName(to), v: from.fullPath });
@@ -394,13 +394,13 @@ export default (router) => {
     const dynamicRoutingForSinglePage = Boolean(window.sessionStorage.getItem('dynamicRoutingForSinglePage'));
     if (dynamicRoutingForSinglePage && isSingleObjectTableDetail && isTableDetail) {
       window.sessionStorage.removeItem('dynamicRoutingForSinglePage');
-      const routeMapRecord = getSeesionObject('routeMapRecord');
+      const routeMapRecord = getSessionObject('routeMapRecord');
       const toPath = getKeepAliveModuleName(to);
 
       if (Object.keys(routeMapRecord).indexOf(toPath) > -1) { // 如果在列表配置的动态路由维护关系里存在，当前要跳转的单对象界面，则不记录当前的
         deleteFromSessionObject('routeMapRecord', toPath);
       }
-      const routeMapRecordForSingleObject = getSeesionObject('routeMapRecordForSingleObject');
+      const routeMapRecordForSingleObject = getSessionObject('routeMapRecordForSingleObject');
       updateSessionObject('routeMapRecordForSingleObject', { k: to.fullPath, v: from.fullPath });
       if (JSON.stringify(routeMapRecordForSingleObject) !== '{}' && to.fullPath !== from.fullPath) {
         updateSessionObject('routeMapRecordForSingleObject', { k: to.fullPath, v: from.fullPath });
@@ -412,7 +412,7 @@ export default (router) => {
     const dynamicRoutingForCustomizePage = Boolean(window.sessionStorage.getItem('dynamicRoutingForCustomizePage'));
     if (isCustomizedTableDetail && dynamicRoutingForCustomizePage && isTableDetail) {
       window.sessionStorage.removeItem('dynamicRoutingForCustomizePage');
-      const routeMapRecordForCustomizePage = getSeesionObject('routeMapRecordForCustomizePage');
+      const routeMapRecordForCustomizePage = getSessionObject('routeMapRecordForCustomizePage');
       updateSessionObject('routeMapRecordForCustomizePage', { k: to.fullPath, v: from.fullPath });
       if (JSON.stringify(routeMapRecordForCustomizePage) !== '{}' && to.fullPath !== from.fullPath) {
         updateSessionObject('routeMapRecordForSingleObject', { k: to.fullPath, v: from.fullPath });
