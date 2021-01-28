@@ -8,9 +8,11 @@ function inputControl(el, binding) {
     inputElement.onkeypress = function press(e) {
       e = e || window.event;
       const charCode = typeof e.charCode === 'number' ? e.charCode : e.keyCode;
+      console.log('🚀 ~ file: inputNumber.js ~ line 11 ~ press ~ charCode', charCode);
 
       const re = /\d/;
-      if (!re.test(String.fromCharCode(charCode)) && charCode > 9 && !e.ctrlKey) {
+      // 44指逗号
+      if (!re.test(String.fromCharCode(charCode)) && charCode > 9 && !e.ctrlKey && charCode !== 44) {
         if (e.preventDefault) {
           e.preventDefault();
         } else {
