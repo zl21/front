@@ -396,6 +396,8 @@
         }
       },
       tabClick({ data, index }) {
+        this.filterTableParam = {};
+
         if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].startIndex) {
           this.searchData.startIndex = data.startIndex;
         } else {
