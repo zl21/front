@@ -12,7 +12,7 @@
     >
       <p class="label-input">
         <validate :data="item.tab_name">
-          <span>标签名：</span>
+          <span class="required-item ml-5">标签名：</span>
           <Input
             v-model="item.tab_name"
             class="tab-label-name"
@@ -30,7 +30,9 @@
         class="colnameContent"
       >
         <div class="colname">
-          <p>关联字段:</p>
+          <p class="required-item ml-5">
+            关联字段:
+          </p>
           <validate
             :data="temp.col_name"
             :validate-function="validateKey"
@@ -52,7 +54,9 @@
           </validate>
         </div>
         <div class="operator">
-          <p>运算符:</p>
+          <p class="required-item ml-5">
+            运算符:
+          </p>
           <validate :data="temp.operator">
             <Select
               v-model="temp.operator"
@@ -70,7 +74,9 @@
           </validate>
         </div>
         <div class="contrastValue">
-          <p>对比值:</p>
+          <p class="required-item ml-5">
+            对比值:
+          </p>
           <validate :data="temp.contrast_value">
             <Input
               v-if="!(temp.type && temp.type.toUpperCase().startsWith('DATE'))"
@@ -80,7 +86,7 @@
             <DatePicker
               v-if="temp.type && temp.type.toUpperCase().startsWith('DATE')"
               :value="temp.contrast_value"
-              type="daterange"
+              type="datetimerange"
               placeholder="请选择"
               format="yyyy/MM/dd HH:mm:ss"
               @on-change="handleChangeDate(index, j , $event)"
@@ -130,7 +136,6 @@
   import Description from './Description.vue';
   import Validate from '../form/Validate.vue';
   import network, { urlSearchParams } from '../../__utils__/network';
-  import { dateFormat } from '../../__utils__/date';
 
   const TAB_CONSTRUCTOR = {
     tab_name: '',
@@ -449,7 +454,7 @@ index:  //需要删除的配置下标 type:number
             {
               value: '=',
               label: '='
-            },];
+            }, ];
         case 'NUMBER':
           return [{
                     value: '>',
@@ -535,6 +540,21 @@ index:  //需要删除的配置下标 type:number
 </script>
 <style lang="less" scoped>
 .MultiTab {
+  .ml-5 {
+    margin-left: 5px;
+  }
+
+  .required-item {
+    position: relative;
+    &::before {
+      content: '*';
+      color: red;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: -6px;
+    }
+  }
   .tab-label-name {
     width: 240px;
   }
