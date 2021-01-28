@@ -31,6 +31,11 @@ import './src/assets/theme/custom.less';
 import './src/assets/css/loading.css';
 import './src/assets/css/custom-ext.less';
 import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
+
+// 全局指令
+import inputNumber from './src/directive/inputNumber';
+
+Vue.use(inputNumber);
 // import jflowPlugin from './jflowPlugin/js/index';
 // import './src/__utils__/encryptingParameter';
 
