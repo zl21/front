@@ -1955,66 +1955,69 @@
           return obj;
         }, {});
 
-        return Object.keys(jsonData).reduce((obj, item) => {
-          let value = '';
+        if (Object.keys(jsonData) && Object.keys(jsonData).length > 0) {
+          return Object.keys(jsonData).reduce((obj, item) => {
+            let value = '';
 
-          this.formItemsLists.concat([]).every((temp) => {
-            if (temp.item.field === item) { // 等于当前节点，判断节点类型
-              if (temp.item.type === 'DatePicker' && (temp.item.props.type === 'datetimerange' || temp.item.props.type === 'daterange')) { // 当为日期控件时，数据处理
-                if ((jsonData[item][0] && jsonData[item][1])) {
-                  value = jsonData[item].join('~');
-                } else {
-                  value = '';
+            this.formItemsLists.concat([]).every((temp) => {
+              if (temp.item.field === item) { // 等于当前节点，判断节点类型
+                if (temp.item.type === 'DatePicker' && (temp.item.props.type === 'datetimerange' || temp.item.props.type === 'daterange')) { // 当为日期控件时，数据处理
+                  if ((jsonData[item][0] && jsonData[item][1])) {
+                    value = jsonData[item].join('~');
+                  } else {
+                    value = '';
+                  }
+                  return false;
                 }
+
+                if (
+                  temp.item.type === 'TimePicker'
+                  && temp.item.props.type === 'timerange'
+                  && (jsonData[item][0] && jsonData[item][1])
+                ) {
+                  // 时分秒的时间段处理
+                  value = jsonData[item].join('~');
+                  return false;
+                }
+
+                if (temp.item.type === 'select') {
+                  if (jsonData[item].length > 0) {
+                    value = jsonData[item].map(option => `=${option}`);
+                  } else {
+                    value = '';
+                  }
+
+                  // 处理select，分为单个字段select和合并型select
+                  return false;
+                }
+                value = jsonData[item];
                 return false;
               }
 
               if (
-                temp.item.type === 'TimePicker'
-                && temp.item.props.type === 'timerange'
-                && (jsonData[item][0] && jsonData[item][1])
+                !temp.item.field
+                && temp.item.type === 'select'
+                && item.indexOf(':') < 0
               ) {
-                // 时分秒的时间段处理
-                value = jsonData[item].join('~');
+                // 处理合并型select
+                value = jsonData[item].map(option => `=${option}`);
                 return false;
               }
-
-              if (temp.item.type === 'select') {
-                if (jsonData[item].length > 0) {
-                  value = jsonData[item].map(option => `=${option}`);
-                } else {
-                  value = '';
-                }
-
-                // 处理select，分为单个字段select和合并型select
-                return false;
+              if (temp.item.inputname === item) {
+                value = jsonData[item];
               }
-              value = jsonData[item];
-              return false;
-            }
-
-            if (
-              !temp.item.field
-              && temp.item.type === 'select'
-              && item.indexOf(':') < 0
-            ) {
-              // 处理合并型select
-              value = jsonData[item].map(option => `=${option}`);
-              return false;
-            }
-            if (temp.item.inputname === item) {
-              value = jsonData[item];
-            }
 
 
-            return true;
-          });
-          if (value) {
-            obj[item] = value;
-          }
-          obj = Object.assign(obj, this.filterTableParam);
-          return obj; 
-        }, {});
+              return true;
+            });
+            if (value) {
+              obj[item] = value;
+            }
+            obj = Object.assign({}, obj, this.filterTableParam);
+            return obj; 
+          }, {});
+        }
+        return this.filterTableParam;
       },
       searchClickData(value) {
         // 按钮查找 查询第一页数据
