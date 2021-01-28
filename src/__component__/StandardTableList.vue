@@ -406,7 +406,13 @@
         }
         this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName; 
         this.searchData.fixedcolumns = this.dataProcessing();
-        this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, data.tab_value);
+        if (data.tab_value) {
+          Object.values(data.tab_value).map((item) => {
+            this.searchData.fixedcolumns = Object.assign({}, item, this.searchData.fixedcolumns);
+          });
+        }
+       
+        
         const obj = {
           index,
           tabValue: data
