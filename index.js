@@ -10,7 +10,7 @@ import network from './src/__utils__/network';
 import {
   backDashboardRoute, enableGateWay, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE, specifiedGlobalGateWay
 } from './src/constants/global';
-import { removeSessionObject, getSeesionObject } from './src/__utils__/sessionStorage';
+import { removeSessionObject, getSessionObject } from './src/__utils__/sessionStorage';
 import { getLocalObject } from './src/__utils__/localStorage';
 
 import CompositeForm from './src/__component__/CompositeForm';
@@ -208,12 +208,12 @@ const getCategory = () => {
         const serviceIdMapRes = Object.assign({}, getServiceIdMap, serviceIdMaps);
         window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMapRes));
       } else if (getLocalObject('loginStatus') === true) {
-        // getSeesionObject('loginStatus') === true
+        // getSessionObject('loginStatus') === true
         setMessage({ content: '当前用户无菜单权限,将为您跳转到登陆界面' });
       }
     });
     // .catch(() => { // 处理返回数据为空值情况，当返回数据为空时，避免直接跳转框架表单路由
-    //   if (getSeesionObject('loginStatus') === true) {
+    //   if (getSessionObject('loginStatus') === true) {
     //     setMessage({ content: '当前用户无菜单权限,将为您跳转到登陆界面' });
     //   }
     // });

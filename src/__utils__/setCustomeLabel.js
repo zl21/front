@@ -1,6 +1,6 @@
 import store from '../__config__/store.config';
 import customize from '../__config__/customize.config';
-import { getSeesionObject, updateSessionObject } from './sessionStorage';
+import { getSessionObject, updateSessionObject } from './sessionStorage';
 
 const setCustomeLabel = (param) => {
   // 参数说明
@@ -42,7 +42,7 @@ const setCustomeLabel = (param) => {
         updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
       } else {
         const name = `C.${customizedModuleName}.${param.customizedModuleId}`;
-        const locaLabelObj = getSeesionObject('keepAliveLabelMaps');
+        const locaLabelObj = getSessionObject('keepAliveLabelMaps');
         if (locaLabelObj.name) {
           store.commit('global/addKeepAliveLabelMaps', { name, label: `${labelName}` });
         }

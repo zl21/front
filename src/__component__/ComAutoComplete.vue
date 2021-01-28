@@ -128,7 +128,7 @@
           tableId = actid;
         }
         // window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
-        window.sessionStorage.setItem('dynamicRouting', true);
+        // window.sessionStorage.setItem('dynamicRouting', true); // 需要注释下掉这行-> fix:在单对象界面，点击搜索结果去另一张表后，再回单对象界面点返回，此时单对象标签消失了
         if (url) {
           const menuType = url.substring(url.lastIndexOf('/') + 1, url.length);
           if (menuType === 'New') {

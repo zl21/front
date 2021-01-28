@@ -3,7 +3,7 @@ import network, { urlSearchParams } from './src/__utils__/network';
 import getModuleName from './src/__utils__/getModuleName';
 import getObjdisType from './src/__utils__/getObjdisType';
 import {
-  getSeesionObject, updateSessionObject, deleteFromSessionObject, removeSessionObject 
+  getSessionObject, updateSessionObject, deleteFromSessionObject, removeSessionObject 
 } from './src/__utils__/sessionStorage';
 import store from './src/__config__/store.config';
 import router from './src/__config__/router.config';
@@ -120,7 +120,7 @@ export default {
   network,
   router,
   getObjdisType, // 获取当前单对象所配置的类型（H/V），参数：table:'主表表名'
-  getSeesionObject, // 获取sessionStorage存储数据getSeesionObject('name')
+  getSessionObject, // 获取sessionStorage存储数据getSessionObject('name')
   updateSessionObject, // 更新sessionStorage存储数据，参数{k:'key',v:'value'}
   deleteFromSessionObject, // 删除sessionStorage存储数据deleteFromSessionObject('name','需要删除的key')
   removeSessionObject, // 删除sessionStorage存储数据removeSessionObject('name')

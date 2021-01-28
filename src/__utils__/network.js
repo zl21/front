@@ -9,7 +9,7 @@ import {
 import { addNetwork } from './indexedDB';
 // import FilterUrlForNetwork from '../launchApplicationConfig/filterUrlForNetwork';
 import {
-  updateSessionObject, removeSessionObject, getSeesionObject
+  updateSessionObject, removeSessionObject, getSessionObject
 } from './sessionStorage';
 
 const CancelToken = axios.CancelToken;
