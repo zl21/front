@@ -57,7 +57,7 @@
 
       validateValue() {
         this.ruleList = [];
-        this.ruleList.push(this.checkVoid);
+        // this.ruleList.push(this.checkVoid);
         if (this.validateFunction && typeof this.validateFunction === 'function') {
           this.ruleList.push(this.validateFunction);
         }
