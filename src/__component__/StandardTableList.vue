@@ -360,7 +360,13 @@
       onPageSizeChangeForFilterTable(pageSize) {
         this.searchData.startIndex = 0;
         this.searchData.range = pageSize;
-        this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, this.currentTabValue.tabValue.data.value);
+        if (this.currentTabValue.tabValue.tab_value) {
+          Object.values(this.currentTabValue.tabValue.tab_value).map((item) => {
+            this.searchData.fixedcolumns = Object.assign({}, item, this.searchData.fixedcolumns);
+            this.filterTableParam = item;
+          });
+        }
+         
         const param = {
           startIndex: this.searchData.startIndex,
           range: this.searchData.range,
@@ -373,7 +379,12 @@
       onPageChangeForFilterTable(page) {
         const { range } = this.searchData;
         this.searchData.startIndex = range * (page - 1);
-        this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, this.currentTabValue.tabValue.value);
+        if (this.currentTabValue.tabValue.tab_value) {
+          Object.values(this.currentTabValue.tabValue.tab_value).map((item) => {
+            this.searchData.fixedcolumns = Object.assign({}, item, this.searchData.fixedcolumns);
+            this.filterTableParam = item;
+          });
+        }
         const param = {
           startIndex: this.searchData.startIndex,
           range: this.searchData.range,
