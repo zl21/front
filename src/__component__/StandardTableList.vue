@@ -237,6 +237,8 @@
           }
         }, // 弹框配置信息
         currentTabValue: {},
+        filterTableParam: {}
+
       };
     },
     computed: {
@@ -409,9 +411,9 @@
         if (data.tab_value) {
           Object.values(data.tab_value).map((item) => {
             this.searchData.fixedcolumns = Object.assign({}, item, this.searchData.fixedcolumns);
+            this.filterTableParam = item;
           });
         }
-       
         
         const obj = {
           index,
@@ -761,7 +763,7 @@
         this.updateAgConfig({ key: 'hideColumn', value: hideCols });
       },
       onCellSingleClick(colDef, rowData, target) {
-        const { tableId } = this[INSTANCE_ROUTE_QUERY];
+        // const { tableId } = this[INSTANCE_ROUTE_QUERY];
         if (target.getAttribute('data-target-tag') === 'fkIcon') {
           window.sessionStorage.setItem('dynamicRouting', true);
           const {
@@ -1331,6 +1333,7 @@
         return obj;
       },
       resetForm() {
+        this.filterTableParam = {};
         this.resetTabParam();
         // 列表查询重置
         this.resetType = true;
@@ -1565,7 +1568,7 @@
         this.setActiveTabActionValue({});// 点击按钮前清除上一次按钮存的信息
 
         if (type === 'fix') {
-          this.AddDetailClick(obj);
+          this.AddDetailClick(type, obj);
         } else if (type === 'custom') {
           this.webactionClick(type, obj);
         } else if (type === 'Collection') {
@@ -1967,7 +1970,7 @@
           if (value) {
             obj[item] = value;
           }
-
+          obj = Object.assign(this.filterTableParam, obj);
           return obj;
         }, {});
       },
@@ -2064,7 +2067,12 @@
       getSingleObjectPageType() {
         
       },
-      AddDetailClick(obj) {
+      AddDetailClick(type, obj) {
+        DispatchEvent('R3StandardButtonClick', {
+          detail: {
+            type, obj
+          }
+        });
         const { tableName, tableId, } = this[INSTANCE_ROUTE_QUERY];
         if (obj.name === this.buttonMap.CMD_ADD.name) {
           // 新增
@@ -2125,7 +2133,7 @@
                   tableName,
                   tableId,
                   label,
-                  id
+                  id,
                 });
               });
             } else if (this.ag.datas.objdistype === 'tabpanle') { // 单对象左右结构
@@ -2140,7 +2148,7 @@
               tableName,
               tableId,
               label,
-              id
+              id,
             });
             return;
           }

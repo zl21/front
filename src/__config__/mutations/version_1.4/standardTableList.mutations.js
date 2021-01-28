@@ -228,12 +228,12 @@ export default {
   },
   updateTabParam(state, data) { // 更新当前tab参数
     if (data.index) {
-      state.ag.tablequery.tabList[data.index].startIndex = data.startIndex;
-      state.ag.tablequery.tabList[data.index].range = data.range;
+      state.ag.tablequery.multi_tab[data.index].startIndex = data.startIndex;
+      state.ag.tablequery.multi_tab[data.index].range = data.range;
     }
   },
   resetTabParam(state) { // 重置所有tab分页数据
-    state.ag.tablequery.tabList.map((tab, i) => {
+    state.ag.tablequery.multi_tab.map((tab, i) => {
       tab.startIndex = 0;
     });
   },
