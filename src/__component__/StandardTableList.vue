@@ -422,12 +422,41 @@
         this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName; 
         this.searchData.fixedcolumns = this.dataProcessing();
         if (data.tab_value) {
-          Object.values(data.tab_value).map((item) => {
-            this.searchData.fixedcolumns = Object.assign({}, item, this.searchData.fixedcolumns);
-            this.filterTableParam = item;
-          });
+          // Object.values(data.tab_value).map((item) => {
+          //   this.searchData.fixedcolumns = Object.assign({}, item, this.searchData.fixedcolumns);
+          //   this.filterTableParam = item;
+          // });
+         
+          this.searchData.fixedcolumns = Object.values(data.tab_value).reduce((arr, obj) => {
+            Object.keys(this.searchData.fixedcolumns).map((key) => {
+              if (obj[key]) {
+                if (obj[key] !== this.searchData.fixedcolumns[key]) {
+                  switch (Object.prototype.toString.call(obj[key])) {
+                  case '[object String]':
+                   
+                    arr[key] = `${obj[key]},${this.searchData.fixedcolumns[key]}`;
+                    const arrRes = arr[key].split(',');
+                    arr[key] = Array.from(new Set(arrRes));
+                    break;
+                  case '[object Array]':
+                    arr[key] = obj[key].concat(this.searchData.fixedcolumns[key]);
+                    break;
+                  default:
+                    break;
+                  }
+                  return obj[key];
+                } 
+              }
+              arr[key] = this.searchData.fixedcolumns[key];
+            });
+
+            arr = Object.assign(obj, arr);
+            return arr;
+          }, {});
+          this.filterTableParam = this.searchData.fixedcolumns;
+          console.log(999, this.searchData.fixedcolumns);
+          // this.searchData.fixedcolumns = Object.assign(this.searchData.fixedcolumns, popwinMessage);
         }
-        
         const obj = {
           index,
           tabValue: data
@@ -1983,8 +2012,8 @@
           if (value) {
             obj[item] = value;
           }
-          obj = Object.assign(this.filterTableParam, obj);
-          return obj;
+          obj = Object.assign(obj, this.filterTableParam);
+          return obj; 
         }, {});
       },
       searchClickData(value) {
