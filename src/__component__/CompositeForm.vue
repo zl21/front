@@ -780,7 +780,7 @@
           }
         } 
 
-        this.$emit('formChange', this.formDataSave, this.formDataDef, this.labelFormSave);
+        this.$emit('formChange', this.formDataSave, this.formDataDef, this.labelFormSave, this.formData, this.defaultDataInt);
         this.getStateData();
 
         
