@@ -6,14 +6,15 @@
     />
 
     <div
-      v-for="(item,index) in Object.keys(sumTabs)"
+      v-for="(item,index) in sumTabs"
       :key="index"
       class="tabContent"
     >
       <p class="label-input">
         <span>标签名：</span>
         <Input
-          v-model="sumTabs[item].tab_name"
+          v-model="item.tab_name"
+          class="tab-label-name"
           @input="handlerInput(index)"
         />
       </p>
@@ -22,14 +23,14 @@
       <p class="blank" />
 
       <div
-        v-for="(temp,j) in sumTabs[item].tab_value"
+        v-for="(temp,j) in item.tab_value"
         :key="j"
         class="colnameContent"
       >
         <div class="colname">
           <p>关联字段:</p>
           <div>
-            <DropMultiSelectFilter
+            <DropDownSelectFilter
               single
               :data="keyList"
               :auto-data="searchKeyList"
@@ -52,31 +53,36 @@
             @on-open-change="handleSelectExpand(index, j , $event)"
           >
             <Option
-              v-for="item in temp.selectOptions"
-              :key="item.value"
-              :value="item.value"
+              v-for="option in temp.selectOptions"
+              :key="option.value"
+              :value="option.value"
             >
-              {{ item.label }}
+              {{ option.label }}
             </Option>
           </Select>
         </div>
         <div class="contrastValue">
           <p>对比值:</p>
-          <Input v-model="temp.contrast_value" />
+          <Input
+            v-model="temp.contrast_value"
+            v-input-number:[temp.type]
+          />
         </div>
 
         <!-- 增加字段按钮 -->
         <div class="oprate">
           <p />
           <button
+            v-if="item.tab_value.length - 1 === Number(j)"
             class="operate-button"
-            @click="(event) => {sumTabs[item].tab_value = addColname(sumTabs[item].tab_value)}"
+            @click="(event) => {item.tab_value = addColname(item.tab_value)}"
           >
             +
           </button>
           <button
+            v-if="item.tab_value.length > 1"
             class="operate-button"
-            @click="(event) => {sumTabs[item].tab_value = deleteColname(sumTabs[item].tab_value,j)}"
+            @click="(event) => {item.tab_value = deleteColname(item.tab_value,j)}"
           >
             -
           </button>
@@ -85,11 +91,18 @@
 
       <!-- 增加tab按钮 -->
       <button
-        v-if="!currentDataIsEmpty"
+        v-if="sumTabs.length - 1 === index"
         class="operate-button"
         @click="addButtonClick"
       >
         +
+      </button>
+      <button
+        v-if="sumTabs.length > 1"
+        class="operate-button"
+        @click="removeButtonClick(index)"
+      >
+        -
       </button>
     </div>
   </div>
@@ -105,7 +118,36 @@
         col_name: '',
         operator: '',
         contrast_value: '',
-        selectOptions: []
+        selectOptions: [
+          {
+            value: '>',
+            label: '>'
+          },
+          {
+            value: '>=',
+            label: '>='
+          },
+          {
+            value: '=',
+            label: '='
+          },
+          {
+            value: '<',
+            label: '<'
+          },
+          {
+            value: '<=',
+            label: '<='
+          },
+          {
+            value: 'in',
+            label: 'in'
+          },
+          {
+            value: 'between',
+            label: 'between'
+          },
+        ]
       }
     ]
   };
@@ -118,23 +160,18 @@
         default: () => ({})
       },
       defaultData: {
-        type: Object,
+        type: [Object, Array],
         default: () => ({})
       }
     },
     data() {
       return {
         currentTabIndex: 0,
-        // currentData: {}, // 当前配置修改数据
-        sumTabs: {
-          0: JSON.parse(JSON.stringify(TAB_CONSTRUCTOR))
-        }, // 所有的tab配置
+        sumTabs: [JSON.parse(JSON.stringify(TAB_CONSTRUCTOR))], // 所有的tab配置
         keyList: {},
         searchKeyList: [],
         totalCount: 0,
         pageSize: 10,
-        // columns: ['DBNAME', 'DESCRIPTION'],
-        showColnameKey: 'DBNAME',
       };
     },
 
@@ -148,9 +185,9 @@
     },
 
     computed: {
-      currentDataIsEmpty() {
-        return JSON.stringify(this.currentData) === JSON.stringify(TAB_CONSTRUCTOR);
-      },
+      // currentDataIsEmpty() {
+      //   return JSON.stringify(this.currentData) === JSON.stringify(TAB_CONSTRUCTOR);
+      // },
 
       currentData() {
         return this.sumTabs[this.currentTabIndex];
@@ -160,41 +197,13 @@
     async created() {
       await this.getKeys();
       const newData = JSON.parse(JSON.stringify(this.defaultData));
-      // Object.keys(newData).forEach((tabIndex) => {
-      //   const tabObj = newData[tabIndex];
-      //   tabObj.tab_value.forEach((keyRow) => {
-      //     keyRow.selectOptions = [{
-      //                               value: '>',
-      //                               label: '>'
-      //                             },
-      //                             {
-      //                               value: '>=',
-      //                               label: '>='
-      //                             },
-      //                             {
-      //                               value: '=',
-      //                               label: '='
-      //                             },
-      //                             {
-      //                               value: '<',
-      //                               label: '<'
-      //                             },
-      //                             {
-      //                               value: '<=',
-      //                               label: '<='
-      //                             },
-      //                             {
-      //                               value: 'between',
-      //                               label: 'between'
-      //                             },
-      //                             {
-      //                               value: 'in',
-      //                               label: 'in'
-      //                             }];
-      //   });
-      // });
-      // this.sumTabs = newData;
-      // console.log('初始化', this.sumTabs);
+    // Object.keys(newData).forEach((tabIndex) => {
+    //   const tabObj = newData[tabIndex];
+    //   tabObj.tab_value.forEach((keyRow) => {
+    //   });
+    // });
+    // this.sumTabs = newData;
+    // console.log('初始化', this.sumTabs);
     },
 
     methods: {
@@ -203,15 +212,18 @@
       },
       addButtonClick() { // 新增tab配置
         const tab = JSON.parse(JSON.stringify(TAB_CONSTRUCTOR));
-        const keysLength = Object.keys(this.sumTabs).length;
-        this.$set(this.sumTabs, `${keysLength}`, tab);
+        this.sumTabs.push(tab);
+        console.log('新增', this.sumTabs);
+      },
+      removeButtonClick(index) {
+        this.sumTabs.splice(index, 1);
       },
       addColname(item) { // 新增字段配置
         /*
-  入参: 
-    item:  //当前tab的字段配置数组  type array
-  出参:
-    修改后的tab配置
+入参: 
+item:  //当前tab的字段配置数组  type array
+出参:
+修改后的tab配置
 */
         item.push({
           col_name: '',
@@ -222,13 +234,13 @@
       },
       deleteColname(item, index) { // 删除字段配置
         /*
-  入参: 
-    item:  //当前tab的字段配置数组  type:Array
-    index:  //需要删除的配置下标 type:number
-  出参:
-    修改后的tab配置
+入参: 
+item:  //当前tab的字段配置数组  type:Array
+index:  //需要删除的配置下标 type:number
+出参:
+修改后的tab配置
 */
-        item = item.filter((temp, j) => index !== j);
+        item.splice(index, 1);
         return item;
       },
 
@@ -266,7 +278,7 @@
           startindex: 0,
           fixedcolumns: {
             AD_TABLE_ID: [itemId],
-            DESCRIPTION: value,
+            DBNAME: value,
             ISACTIVE: ['=Y'],
           },
           column_include_uicontroller: true,
@@ -288,12 +300,30 @@
             .post('/p/cs/QueryList', urlSearchParams({ searchdata }))
             .then((res) => {
               if (res.data.code === 0) {
-                // 让输入框显示 表内名称 字段
-                res.data.data.tabth.forEach((item) => {
+                const hideColumns = ['ORDERNO', 'MASK', 'AD_TABLE_ID', 'AD_VERSION_ID', 'ISORDER', 'ISACTIVE', 'ISAGFILTER', 'AGFILTER', 'ISINDEXED', 'NAME', 'OBTAINMANNER', 'REF_COLUMN_ID', 'FKDISPLAY', 'SEARCHMODEL', 'ISREMOTE', 'AD_LIMITVALUE_GROUP_ID', 'DISPLAYTYPE', 'COMMENTSTP', 'MODIFIERID', 'MODIFIEDDATE'];
+                const tabth = res.data.data.tabth;
+                const row = res.data.data.row;
+                for (let i = Math.max(tabth.length - 1, 0); i >= 0; i--) {
+                  const item = tabth[i];
+                  // 让输入框显示 表内名称 字段
                   if (item.name === '表内名称') {
                     item.isak = true;
                   } else {
                     item.isak = false;
+                  }
+                  
+                  // 隐藏table列
+                  if (hideColumns.includes(item.colname)) {
+                    tabth.splice(i, 1);
+                  }
+                }
+
+                row.forEach((item) => {
+                  for (const key in item) {
+                    // 隐藏模糊结果列
+                    if (hideColumns.includes(key)) {
+                      delete item[key];
+                    }
                   }
                 });
                 resolve(res.data.data);
@@ -312,26 +342,50 @@
         this.currentTabIndex = index;
       },
 
-      // 把数据同步给父组件
-      syncData() {
-        const cacheData = JSON.parse(JSON.stringify(this.sumTabs));
-        Object.keys(cacheData).forEach((tabIndex) => {
+      // 过滤无效字段
+      filterInvalidKey(originData) {
+        const cacheData = JSON.parse(JSON.stringify(originData));
+        for (let i = Math.max(cacheData.length - 1, 0); i >= 0; i--) {
+          const tabIndex = i;
           const tabObj = cacheData[tabIndex];
-          tabObj.tab_value.forEach((keyRow) => {
+          for (let j = Math.max(tabObj.tab_value.length - 1, 0); j >= 0; j--) {
+            const keyRow = tabObj.tab_value[j];
+            // 过滤不必要的字段
             delete keyRow.type;
             delete keyRow.selectOptions;
-          });
-        });
-        this.$emit('dataChange', { key: this.option.key, value: Object.keys(this.sumTabs).length === 0 ? '' : cacheData });
+            // 删除无效字段配置
+            if (!keyRow.col_name || !keyRow.operator || !keyRow.contrast_value) {
+              tabObj.tab_value.splice(j, 1);
+            }
+          }
+          // 删除无效tab配置
+          if (!tabObj.tab_name || tabObj.tab_value.length === 0) {
+            cacheData.splice(tabIndex, 1);
+          }
+        }
+
+        return cacheData;
+      },
+
+      // 把数据同步给父组件
+      syncData() {
+        const cacheData = this.filterInvalidKey(this.sumTabs);
+
+        if (cacheData.length === 0) {
+          this.$emit('dataChange', { key: this.option.key, value: '' });
+        } else {
+          this.$emit('dataChange', { key: this.option.key, value: cacheData });
+        }
       },
 
       // 获取选中字段
       handlerSelected(tabIndex, keyIndex, value) {
         this.sumTabs[tabIndex].tab_value[keyIndex].col_name = value[0].rowItem.DBNAME.val;
         this.sumTabs[tabIndex].tab_value[keyIndex].operator = '';
+        this.sumTabs[tabIndex].tab_value[keyIndex].contrast_value = '';
         this.sumTabs[tabIndex].tab_value[keyIndex].type = value[0].rowItem.COLTYPE.val;
 
-        this.sumTabs[tabIndex].tab_value[keyIndex].selectOptions = this.handleSelectExpand(tabIndex, keyIndex);
+      // this.$set(this.sumTabs[tabIndex].tab_value[keyIndex], 'selectOptions', this.handleSelectExpand(tabIndex, keyIndex));
       },
 
       // 清空下拉所选
@@ -343,15 +397,18 @@
       // 获取下拉选项
       handleSelectExpand(tabIndex, keyIndex) {
         const typeValue = this.sumTabs[tabIndex].tab_value[keyIndex].type || '';
+        console.log('类型----', typeValue);
         let type;
-        if (typeValue.startsWith('NUMBER')) {
+        if (typeValue.toUpperCase().startsWith('NUMBER')) {
           type = 'NUMBER';
-        } else if (typeValue.startsWith('date')) {
+        } else if (typeValue.toUpperCase().startsWith('date')) {
           type = 'DATE';
         } else {
           type = 'STRING';
         }
-        this.sumTabs[tabIndex].tab_value[keyIndex].selectOptions = this.setSelectItems(type);
+        console.log('类型=====', type);
+
+        this.$set(this.sumTabs[tabIndex].tab_value[keyIndex], 'selectOptions', this.setSelectItems(type));
       },
 
       // 设置下拉选项
@@ -359,9 +416,13 @@
         switch (type) {
         case 'STRING':
           return [{
-            value: 'in',
-            label: 'in'
-          }];
+                    value: 'in',
+                    label: 'in'
+                  },
+                  {
+                    value: '=',
+                    label: '='
+                  },];
         case 'NUMBER':
           return [{
                     value: '>',
@@ -387,6 +448,9 @@
           return [{
             value: 'between',
             label: 'between'
+          }, {
+            value: '=',
+            label: '='
           }];
         default:
           return [];
@@ -397,6 +461,9 @@
 </script>
 <style lang="less" scoped>
 .MultiTab {
+  .tab-label-name {
+    width: 240px;
+  }
   .tabContent {
     border: 1px solid #d3d3d3;
     padding: 10px;
@@ -462,7 +529,7 @@
     width: 20px;
     display: inline-block;
     height: 20px;
-    line-height: 20px;
+    line-height: -1px;
     border-radius: 50%;
     color: grey;
   }
