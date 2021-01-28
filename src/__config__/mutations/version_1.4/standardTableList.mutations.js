@@ -233,9 +233,11 @@ export default {
     }
   },
   resetTabParam(state) { // 重置所有tab分页数据
-    state.ag.tablequery.multi_tab.map((tab, i) => {
-      tab.startIndex = 0;
-    });
+    if (state.ag.tablequery.multi_tab && state.ag.tablequery.multi_tab.length > 0) {
+      state.ag.tablequery.multi_tab.map((tab, i) => {
+        tab.startIndex = 0;
+      });
+    }
   },
   updateFilterTableData(state, data) { // 更新filterTableData
     state.ag.tablequery = Object.assign(state.ag.tablequery, data);
