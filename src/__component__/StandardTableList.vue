@@ -251,7 +251,10 @@
         userInfo: ({ userInfo }) => userInfo,
       }),
       getFilterTable() {
-        return isFilterTable();
+        if (isFilterTable() && this.ag.tablequery.open) {
+          return true;
+        }
+        return false;
       },
       getCurrentLabel() {
         return this.keepAliveLabelMaps[this[MODULE_COMPONENT_NAME]];

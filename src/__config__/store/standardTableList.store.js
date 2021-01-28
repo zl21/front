@@ -16,20 +16,20 @@ export default () => ({
       status4css: [], // 图例数据
       tablequery:
       {
-        multi_tab: [
-          {
-            tab_name: 'all',
-          },
-          // {
-          //   tab_name: 'tab名2',
-          //   tab_value: [
-          //     {
-          //       字段名1: 'summer3',
-          //       字段名2: 'summer4'
-          //     }
-          //   ]
-          // }
-        ]
+        // multi_tab: [
+        //   {
+        //     tab_name: 'all',
+        //   },
+        //   // {
+        //   //   tab_name: 'tab名2',
+        //   //   tab_value: [
+        //   //     {
+        //   //       字段名1: 'summer3',
+        //   //       字段名2: 'summer4'
+        //   //     }
+        //   //   ]
+        //   // }
+        // ]
       }
 
 
