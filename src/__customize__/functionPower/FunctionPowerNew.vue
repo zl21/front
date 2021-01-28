@@ -311,14 +311,13 @@
 <script>
   /* eslint-disable arrow-parens,no-lonely-if,no-empty */
   // import network, { urlSearchParams } from '../../__utils__/network';
-  import { Version, MODULE_COMPONENT_NAME } from '../../constants/global';
+  import { Version } from '../../constants/global';
   import store from '../../__config__/store.config';
 
   const functionPowerActions = () => require(`../../__config__/actions/version_${Version()}/functionPower.actions.js`);
 
 
   export default {
-    inject: [MODULE_COMPONENT_NAME],
 
     data() {
       return {
