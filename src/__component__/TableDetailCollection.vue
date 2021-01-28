@@ -3564,7 +3564,7 @@
           }
         }
         if (cellData.type === 'STRING' && cellData.isuppercase) { // 大写
-          return regExp.Capital;
+          return regExp.toUpperCase;
         }
         return null;
       },
