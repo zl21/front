@@ -229,7 +229,7 @@ index:  //需要删除的配置下标 type:number
       },
 
       // 查询key
-      async getKeys(page, queryAll = false) {
+      async getKeys(page) {
         let startindex = 0;
         if (typeof page === 'number') {
           startindex = (page - 1) * this.pageSize;
@@ -239,7 +239,7 @@ index:  //需要删除的配置下标 type:number
         const searchdata = {
           table: 'AD_COLUMN',
           startindex,
-          range: queryAll ? 100 : this.pageSize,
+          range: this.pageSize,
           fixedcolumns: {
             AD_TABLE_ID: [itemId],
           },
@@ -437,7 +437,7 @@ index:  //需要删除的配置下标 type:number
                   {
                     value: '=',
                     label: '='
-                  },];
+                  }, ];
         case 'NUMBER':
           return [{
                     value: '>',
@@ -495,7 +495,7 @@ index:  //需要删除的配置下标 type:number
                   {
                     value: 'between',
                     label: 'between'
-                  }, ];
+                  },];
         }
       },
 
