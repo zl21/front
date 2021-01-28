@@ -65,6 +65,16 @@
             @dataChange="rootDataChange"
             @removeOption="removeOption"
           />
+
+          <components
+            :is="item.component"
+            v-if="item.type === 'custom'"
+            :id="`${item.key}-${index}-${guid}`"
+            :default-data="JSON.parse(JSON.stringify(rootData))[item.key]"
+            :option="item"
+            @dataChange="rootDataChange"
+            @removeOption="removeOption"
+          />
         </div>
       </template>
     </div>
@@ -121,10 +131,44 @@
           value = JSON.stringify(this.rootData, null, 2);
         }
         this.$emit('valueChange', value);
+        // console.log('计算', value);
+        // 针对tab配置特殊处理,显示假的配置
+        if (this.rootData && 'multi_tab_conf' in this.rootData) {
+          const fakeValue = JSON.parse(JSON.stringify(this.rootData));
+          // console.log('🚀 ~ file: ExtentionProperty.vue ~ line 138 ~ formatedRootData ~ fakeValue', fakeValue);
+          fakeValue.multi_tab_conf = this.filterInvalidKey(fakeValue.multi_tab_conf);
+          return JSON.stringify(fakeValue, null, 2);
+        } 
         return value;
       },
     },
     methods: {
+      // 过滤无效字段
+      filterInvalidKey(originData) {
+        const cacheData = JSON.parse(JSON.stringify(originData));
+        for (let i = Math.max(cacheData.length - 1, 0); i >= 0; i--) {
+          const tabIndex = i;
+          const tabObj = cacheData[tabIndex];
+          for (let j = Math.max(tabObj.tab_value.length - 1, 0); j >= 0; j--) {
+            const keyRow = tabObj.tab_value[j];
+            // 过滤不必要的字段
+            delete keyRow.type;
+            delete keyRow.selectOptions;
+            delete keyRow.defaultSelected;
+            // 删除无效字段配置
+            if (!keyRow.col_name || !keyRow.operator || !keyRow.contrast_value) {
+              tabObj.tab_value.splice(j, 1);
+            }
+          }
+          // 删除无效tab配置
+          if (!tabObj.tab_name || tabObj.tab_value.length === 0) {
+            cacheData.splice(tabIndex, 1);
+          }
+        }
+
+        return cacheData;
+      },
+      
       scrollIntoView(item, index) {
         this.currentIndex = index;
         // document.querySelector(`#${item.key}-${index}-${this.guid}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
