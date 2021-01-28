@@ -437,6 +437,7 @@
                     arr[key] = `${obj[key]},${this.searchData.fixedcolumns[key]}`;
                     const arrRes = arr[key].split(',');
                     arr[key] = Array.from(new Set(arrRes));
+                    debugger
                     break;
                   case '[object Array]':
                     arr[key] = obj[key].concat(this.searchData.fixedcolumns[key]);
