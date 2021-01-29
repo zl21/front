@@ -238,7 +238,7 @@
           }
         }, // 弹框配置信息
         currentTabValue: {},
-        filterTableParam: {}
+        filterTableParam: {},
 
       };
     },
@@ -430,21 +430,21 @@
           //   this.searchData.fixedcolumns = Object.assign({}, item, this.searchData.fixedcolumns);
           //   this.filterTableParam = item;
           // });
-         
+          let arrRes = [];
           this.searchData.fixedcolumns = Object.values(data.tab_value).reduce((arr, obj) => {
             Object.keys(this.searchData.fixedcolumns).map((key) => {
               if (obj[key]) {
                 if (obj[key] !== this.searchData.fixedcolumns[key]) {
                   switch (Object.prototype.toString.call(obj[key])) {
                   case '[object String]':
-                   
                     arr[key] = `${obj[key]},${this.searchData.fixedcolumns[key]}`;
-                    const arrRes = arr[key].split(',');
+                    arrRes = arr[key].split(',');
                     arr[key] = Array.from(new Set(arrRes));
                     arr[key] = arr[key].toString();
                     break;
                   case '[object Array]':
                     arr[key] = obj[key].concat(this.searchData.fixedcolumns[key]);
+                    arr[key] = Array.from(new Set(arr[key]));
                     break;
                   default:
                     break;
@@ -459,7 +459,6 @@
             return arr;
           }, {});
           this.filterTableParam = this.searchData.fixedcolumns;
-          console.log(999, this.searchData.fixedcolumns);
           // this.searchData.fixedcolumns = Object.assign(this.searchData.fixedcolumns, popwinMessage);
         }
         const obj = {
@@ -1959,77 +1958,80 @@
           }
           return obj;
         }, {});
+        return Object.keys(jsonData).reduce((obj, item) => {
+          let value = '';
 
-        if (Object.keys(jsonData) && Object.keys(jsonData).length > 0) {
-          return Object.keys(jsonData).reduce((obj, item) => {
-            let value = '';
-
-            this.formItemsLists.concat([]).every((temp) => {
-              if (temp.item.field === item) { // 等于当前节点，判断节点类型
-                if (temp.item.type === 'DatePicker' && (temp.item.props.type === 'datetimerange' || temp.item.props.type === 'daterange')) { // 当为日期控件时，数据处理
-                  if ((jsonData[item][0] && jsonData[item][1])) {
-                    value = jsonData[item].join('~');
-                  } else {
-                    value = '';
-                  }
-                  return false;
-                }
-
-                if (
-                  temp.item.type === 'TimePicker'
-                  && temp.item.props.type === 'timerange'
-                  && (jsonData[item][0] && jsonData[item][1])
-                ) {
-                  // 时分秒的时间段处理
+          this.formItemsLists.concat([]).every((temp) => {
+            if (temp.item.field === item) { // 等于当前节点，判断节点类型
+              if (temp.item.type === 'DatePicker' && (temp.item.props.type === 'datetimerange' || temp.item.props.type === 'daterange')) { // 当为日期控件时，数据处理
+                if ((jsonData[item][0] && jsonData[item][1])) {
                   value = jsonData[item].join('~');
-                  return false;
+                } else {
+                  value = '';
                 }
-
-                if (temp.item.type === 'select') {
-                  if (jsonData[item].length > 0) {
-                    value = jsonData[item].map(option => `=${option}`);
-                  } else {
-                    value = '';
-                  }
-
-                  // 处理select，分为单个字段select和合并型select
-                  return false;
-                }
-                value = jsonData[item];
                 return false;
               }
 
               if (
-                !temp.item.field
-                && temp.item.type === 'select'
-                && item.indexOf(':') < 0
+                temp.item.type === 'TimePicker'
+                && temp.item.props.type === 'timerange'
+                && (jsonData[item][0] && jsonData[item][1])
               ) {
-                // 处理合并型select
-                value = jsonData[item].map(option => `=${option}`);
+                // 时分秒的时间段处理
+                value = jsonData[item].join('~');
                 return false;
               }
-              if (temp.item.inputname === item) {
-                value = jsonData[item];
+
+              if (temp.item.type === 'select') {
+                if (jsonData[item].length > 0) {
+                  value = jsonData[item].map(option => `=${option}`);
+                } else {
+                  value = '';
+                }
+
+                // 处理select，分为单个字段select和合并型select
+                return false;
               }
-
-
-              return true;
-            });
-            if (value) {
-              obj[item] = value;
+              value = jsonData[item];
+              return false;
             }
-            obj = Object.assign({}, obj, this.filterTableParam);
-            return obj; 
-          }, {});
-        }
-        return this.filterTableParam;
+
+            if (
+              !temp.item.field
+              && temp.item.type === 'select'
+              && item.indexOf(':') < 0
+            ) {
+              // 处理合并型select
+              value = jsonData[item].map(option => `=${option}`);
+              return false;
+            }
+            if (temp.item.inputname === item) {
+              value = jsonData[item];
+            }
+
+
+            return true;
+          });
+          if (value) {
+            obj[item] = value;
+          }
+          // obj = Object.assign({}, obj, this.filterTableParam);
+          return obj; 
+        }, {});
+        
+        // return this.filterTableParam;
       },
       searchClickData(value) {
         // 按钮查找 查询第一页数据
         if (!value) { // 返回时查询之前页码
           this.searchData.startIndex = 0;
         }
-        this.searchData.fixedcolumns = this.dataProcessing();
+        if (this.getFilterTable) {
+          const dom = document.querySelector('.r3-active-item');
+          dom.click();
+        } else {
+          this.searchData.fixedcolumns = this.dataProcessing();
+        }
         // this.getQueryListForAg(this.searchData);
         if (this.buttons.isBig) {
           this.updataIsBig(false);

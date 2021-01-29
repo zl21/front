@@ -36,14 +36,14 @@
         // if (`tab_${index}` === dom.id) {
         //   return;
         // }
-        if (this.lastIndex !== index) {
-          this.currentIndex = index;
-          this.$emit('tabClick', {
-            data: this.data.multi_tab[index],
-            index
-          });
-          this.lastIndex = index;
-        }
+        // if (this.lastIndex !== index) {
+        this.currentIndex = index;
+        this.$emit('tabClick', {
+          data: this.data.multi_tab[index],
+          index
+        });
+        // this.lastIndex = index;
+        // }
       },
     },
   };
