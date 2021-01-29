@@ -64,6 +64,7 @@
       return {
         dowClass: true, // 默认全部展开  false为折叠状态
         ItemLists: {}, // 储存列表数据
+        formArray: [], // 存储列表数据
       };
     },
     methods: {
@@ -93,9 +94,13 @@
       // public API
       getFormData() {
         let formData = {};
-        this.formItemLists.map((item) => {
+        this.formArray.map((item) => {
           const components = this.$_live_getChildComponent(window.vm, `${this.id}${item.item.field.TextFilter()}`);
-          const json = this.dealData(item.item, components.value);
+          let value = components.value;
+          if (item.item.type === 'AttachFilter') {
+            value = components.value ? components.value.map(temp => temp.ID).join(',') : '';
+          }
+          const json = this.dealData(item.item, value);
           formData = Object.assign({}, formData, json);
           return item;
         });
@@ -112,6 +117,7 @@
           item.item.field = `R3_index_${index}`;
           this.ItemLists[item.item.field] = item;
         }
+        this.formArray.push(item);
         return item;
       });
       
@@ -131,6 +137,7 @@
   position: relative;
   transition: height 0 ease;
   overflow: hidden;
+  margin-bottom: 6px;
   >.item{
     width: percentage(1/@defaultCol);
     box-sizing: border-box;

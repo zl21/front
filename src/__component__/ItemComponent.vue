@@ -1763,6 +1763,11 @@
     },
     created() {
       // console.log(this.type,this.formIndex);
+      if (this.items.type === 'AttachFilter') {
+        this.value = this.items.props.Selected;
+      } else {
+        this.value = this.items.value;
+      }
     },
     mounted() {
       // this.$nextTick(() => {

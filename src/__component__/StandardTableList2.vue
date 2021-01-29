@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 
 <!--suppress ALL -->
 <template>
@@ -1821,8 +1822,8 @@
       },
 
       dataProcessing() { // 查询数据处理
-        const listsForm = this.$_live_getChildComponent(window.vm, 'listsForm');
-        return listsForm ? this.$_live_getChildComponent(window.vm, 'listsForm').getFormData() : {};
+        const Form = this.$_live_getChildComponent(window.vm, 'listsForm');
+        return Form ? this.$_live_getChildComponent(window.vm, 'listsForm').getFormData() : {};
         const jsonData = Object.keys(this.formItems.data).reduce((obj, item) => {
           if (this.formItems.data[item] && JSON.stringify(this.formItems.data[item]).indexOf('bSelect-all') < 0) {
             obj[item] = this.formItems.data[item];
@@ -1892,7 +1893,7 @@
         }, {});
       },
       searchClickData(value) {
-        const json = this.$_live_getChildComponent(window.vm, 'listsForm').getFormData();
+        const json = this.dataProcessing();
         // 按钮查找 查询第一页数据
         if (!value) { // 返回时查询之前页码
           this.searchData.startIndex = 0;
@@ -1906,9 +1907,10 @@
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
       requiredCheck(data) { // 查询条件必填校验
+        const json = this.dataProcessing();
         return new Promise((resolve, reject) => {
           this.formItems.defaultFormItemsLists.map((item) => {
-            const value = Array.isArray(this.formItems.data[item.colname]) ? this.formItems.data[item.colname][0] : (Object.prototype.toString.call(this.formItems.data[item.colname]) === '[Object Object]' ? Object.keys(this.formItems.data[item.colname]).length > 0 : this.formItems.data[item.colname]);
+            const value = json[item.colname];
             if (item.webconf && item.webconf.required && !value) {
               this.$Modal.fcError({
                 title: '错误',
@@ -1918,6 +1920,7 @@
 
               reject();
             }
+            return item;
           });
           resolve();
         });
@@ -1931,7 +1934,7 @@
             data.isolr = this.buttons.isSolr;
 
             if (enableKAQueryDataForUser() || this.webConf.enableKAQueryDataForUser) {
-              const search = JSON.parse(JSON.stringify(this.$refs.FormItemComponent.formDataObject));
+              const search = this.dataProcessing();
 
               this.formItemsLists.map((temp) => {
                 if (temp.item.type === 'AttachFilter') {
@@ -1946,7 +1949,7 @@
               addSearch(search);
 
               this.updateSearchDBdata({});
-              this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
+              this.updateFormData(this.dataProcessing());
             }
             
 
@@ -2737,7 +2740,7 @@
                 // 过滤部分处理不了的类型字段
                 delete response.undefined; // 过滤配置的下拉多字段类型
                 this.updateSearchDBdata(response);
-                this.updateFormData(Object.assign({}, this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists), response));
+                this.updateFormData(Object.assign({}, this.dataProcessing(), response));
               }
               if (!this.buttons.isBig) {
                 this.searchClickData();
