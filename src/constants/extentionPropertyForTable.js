@@ -318,5 +318,5 @@ export default [
     showLabel: false,
     enableIncrease: true,
     description: '增加列表的查询tab页配置'
-  },
+  }
 ];

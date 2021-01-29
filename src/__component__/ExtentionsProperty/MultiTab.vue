@@ -46,6 +46,7 @@
               :default-selected="temp.defaultSelected"
               is-back-row-item
               :columns-key="columnsKey"
+              placeholder="请输入表内名称"
               @on-popper-show="getKeys"
               @on-page-change="getKeys"
               @on-input-value-change="getSearchKeys(index, j, $event)"
@@ -177,7 +178,7 @@
 
     watch: {
       sumTabs: {
-        handler(newVal) {
+        handler() {
           this.syncData();
         },
         deep: true
@@ -456,7 +457,7 @@ index:  //需要删除的配置下标 type:number
             {
               value: '=',
               label: '='
-            },];
+            }];
         case 'NUMBER':
           return [{
                     value: '>',
