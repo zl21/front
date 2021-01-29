@@ -149,9 +149,17 @@
           align: 'right',
           fixed: 'left'
         }];
+
         if (Object.keys(this.datas).length > 0 && this.datas.tabth.length > 1) {
           return defaultColumns.concat(this.datas.tabth.reduce((acc, cur) => {
-            if (cur.comment) {
+            // 列表字段支持字段合并样式展示
+            if (cur.key_group) {
+              acc.push(Object.assign({
+                title: cur.name,
+                key: cur.colname,
+                render: this.fieldMergeRender(cur)
+              }, cur));
+            } else if (cur.comment) {
               if (cur.name === 'ID') {
                 acc.push(Object.assign({
                   title: '序号',
@@ -368,6 +376,8 @@
                 }, cur));
               }
             }
+
+            
             return acc;
           }, []));
         }
@@ -776,6 +786,37 @@
           });
         };
       }, // 序号render
+      fieldMergeRender(cur) {
+        return (h, params) => {
+          const array = [];
+          if (params.row[params.column.colname]) { // 存在数据时
+            cur.key_group.map((item) => {
+              const value = params.row[item.col_name]; // 来源字段的值
+              item.label.map((temp) => {
+                if (temp.description == value) {
+                  array.push({
+                    description: temp.description,
+                    class: temp.cssclass
+                  });
+                }
+                return temp;
+              });
+              return item;
+            });
+
+            return h('div', {}, array.map(item => h('span', {
+              class: item.class,
+              style: {
+                display: 'inline-block',
+                padding: '4px 6px',
+                border: '1px solid',
+                borderRadius: '4px'
+              }
+            }, item.description)));
+          }
+          return h('span', {}, '');
+        };
+      },
       tableRowClick() {
 
       }, // 普通表格单击
