@@ -45,6 +45,7 @@
               :total-row-count="totalCount"
               :default-selected="temp.defaultSelected"
               is-back-row-item
+              :columns-key="columnsKey"
               @on-popper-show="getKeys"
               @on-page-change="getKeys"
               @on-input-value-change="getSearchKeys(index, j, $event)"
@@ -86,7 +87,7 @@
             <DatePicker
               v-if="temp.type && temp.type.toUpperCase().startsWith('DATE')"
               :value="temp.contrast_value"
-              type="datetimerange"
+              :type="temp.type && temp.type.toUpperCase() === 'DATETIME' ? 'datetimerange' : 'daterange'"
               placeholder="请选择"
               format="yyyy/MM/dd HH:mm:ss"
               @on-change="handleChangeDate(index, j , $event)"
@@ -170,6 +171,7 @@
         searchKeyList: [],
         totalCount: 0,
         pageSize: 10,
+        columnsKey: ['DBNAME']
       };
     },
 
@@ -194,7 +196,7 @@
       if (this.defaultData && this.defaultData.length > 0) {
         newData.forEach((tabObj) => {
           tabObj.tab_value.forEach((keyObj) => {
-            if (keyObj.type.toUpperCase().startsWith('DATE')) {
+            if (keyObj.type && keyObj.type.toUpperCase().startsWith('DATE')) {
               keyObj.contrast_value = keyObj.contrast_value.split('~');
             }
           });
@@ -454,7 +456,7 @@ index:  //需要删除的配置下标 type:number
             {
               value: '=',
               label: '='
-            }, ];
+            },];
         case 'NUMBER':
           return [{
                     value: '>',
