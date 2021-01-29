@@ -24,6 +24,7 @@ export default {
       ag.tableurl = data.tableurl;
     }
     ag.status4css = data.status4css;
+    ag.key_group = data.key_group;
   },
   // setAgTableErrorMessage({ ag }, errorData) { // ag iconfont
   //   ag.datas.deleteFailInfo = Object.assign({}, ag.datas.deleteFailInfo, errorData);

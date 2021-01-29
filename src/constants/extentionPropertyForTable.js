@@ -316,9 +316,18 @@ export default [
     name: '列表查询tab配置',
     key: 'multi_tab_conf',
     type: 'custom',
-    component: 'MultiTab',
+    component: () => import('../__component__/ExtentionsProperty/MultiTab.vue'),
     showLabel: false,
     enableIncrease: true,
     description: '增加列表的查询tab页配置'
+  },
+  {
+    name: '关联字段组配置',
+    key: 'key_group_conf',
+    type: 'custom',
+    component: () => import('../__component__/ExtentionsProperty/bindKey.vue'),
+    showLabel: false,
+    enableIncrease: true,
+    description: '增加关联字段的配置'
   },
 ];
