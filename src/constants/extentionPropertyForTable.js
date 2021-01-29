@@ -314,7 +314,7 @@ export default [
   },
   {
     name: '列表查询tab配置',
-    key: 'multi_tab',
+    key: 'multi_tab_conf',
     type: 'custom',
     component: () => import('../__component__/ExtentionsProperty/MultiTab.vue'),
     showLabel: false,

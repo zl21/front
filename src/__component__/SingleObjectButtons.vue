@@ -2236,7 +2236,7 @@
         this.copyDataForSingleObject({});// 清除global中复制所保存的数据
         this.$R3loading.show(this.tableName);
       },
-      clickButtonsBack({ stop, type, obj }) { // 按钮返回事件  
+      clickButtonsBack(stop) { // 按钮返回事件  
         if (stop) {
           this.back({ stop, type, obj });
           this.isValue = null;
@@ -2252,11 +2252,7 @@
           }
         }
       },
-      back({ stop, type, obj }) {
-        this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
-        const { tableId, tableName } = this.$route.params;
-        const { routePrefix } = this.$route.meta;
-       
+      back() {
         // 列表界面配置动态路由
         const routeMapRecord = getSessionObject('routeMapRecord');
         

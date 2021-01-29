@@ -237,6 +237,8 @@
           }
         }, // 弹框配置信息
         currentTabValue: {},
+        filterTableParam: {}
+
       };
     },
     computed: {
@@ -251,7 +253,10 @@
         userInfo: ({ userInfo }) => userInfo,
       }),
       getFilterTable() {
-        return isFilterTable();
+        if (isFilterTable() && this.ag.tablequery.open) {
+          return true;
+        }
+        return false;
       },
       getCurrentLabel() {
         return this.keepAliveLabelMaps[this[MODULE_COMPONENT_NAME]];
@@ -355,7 +360,13 @@
       onPageSizeChangeForFilterTable(pageSize) {
         this.searchData.startIndex = 0;
         this.searchData.range = pageSize;
-        this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, this.currentTabValue.tabValue.data.value);
+        if (this.currentTabValue.tabValue.tab_value) {
+          Object.values(this.currentTabValue.tabValue.tab_value).map((item) => {
+            this.searchData.fixedcolumns = Object.assign({}, item, this.searchData.fixedcolumns);
+            this.filterTableParam = item;
+          });
+        }
+         
         const param = {
           startIndex: this.searchData.startIndex,
           range: this.searchData.range,
@@ -368,7 +379,12 @@
       onPageChangeForFilterTable(page) {
         const { range } = this.searchData;
         this.searchData.startIndex = range * (page - 1);
-        this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, this.currentTabValue.tabValue.value);
+        if (this.currentTabValue.tabValue.tab_value) {
+          Object.values(this.currentTabValue.tabValue.tab_value).map((item) => {
+            this.searchData.fixedcolumns = Object.assign({}, item, this.searchData.fixedcolumns);
+            this.filterTableParam = item;
+          });
+        }
         const param = {
           startIndex: this.searchData.startIndex,
           range: this.searchData.range,
@@ -391,6 +407,8 @@
         }
       },
       tabClick({ data, index }) {
+        this.filterTableParam = {};
+
         if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].startIndex) {
           this.searchData.startIndex = data.startIndex;
         } else {
@@ -403,7 +421,43 @@
         }
         this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName; 
         this.searchData.fixedcolumns = this.dataProcessing();
-        this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, data.tab_value);
+        if (data.tab_value) {
+          // Object.values(data.tab_value).map((item) => {
+          //   this.searchData.fixedcolumns = Object.assign({}, item, this.searchData.fixedcolumns);
+          //   this.filterTableParam = item;
+          // });
+         
+          this.searchData.fixedcolumns = Object.values(data.tab_value).reduce((arr, obj) => {
+            Object.keys(this.searchData.fixedcolumns).map((key) => {
+              if (obj[key]) {
+                if (obj[key] !== this.searchData.fixedcolumns[key]) {
+                  switch (Object.prototype.toString.call(obj[key])) {
+                  case '[object String]':
+                   
+                    arr[key] = `${obj[key]},${this.searchData.fixedcolumns[key]}`;
+                    const arrRes = arr[key].split(',');
+                    arr[key] = Array.from(new Set(arrRes));
+                    debugger
+                    break;
+                  case '[object Array]':
+                    arr[key] = obj[key].concat(this.searchData.fixedcolumns[key]);
+                    break;
+                  default:
+                    break;
+                  }
+                  return obj[key];
+                } 
+              }
+              arr[key] = this.searchData.fixedcolumns[key];
+            });
+
+            arr = Object.assign(obj, arr);
+            return arr;
+          }, {});
+          this.filterTableParam = this.searchData.fixedcolumns;
+          console.log(999, this.searchData.fixedcolumns);
+          // this.searchData.fixedcolumns = Object.assign(this.searchData.fixedcolumns, popwinMessage);
+        }
         const obj = {
           index,
           tabValue: data
@@ -1322,6 +1376,7 @@
         return obj;
       },
       resetForm() {
+        this.filterTableParam = {};
         this.resetTabParam();
         // 列表查询重置
         this.resetType = true;
@@ -1901,66 +1956,69 @@
           return obj;
         }, {});
 
-        return Object.keys(jsonData).reduce((obj, item) => {
-          let value = '';
+        if (Object.keys(jsonData) && Object.keys(jsonData).length > 0) {
+          return Object.keys(jsonData).reduce((obj, item) => {
+            let value = '';
 
-          this.formItemsLists.concat([]).every((temp) => {
-            if (temp.item.field === item) { // 等于当前节点，判断节点类型
-              if (temp.item.type === 'DatePicker' && (temp.item.props.type === 'datetimerange' || temp.item.props.type === 'daterange')) { // 当为日期控件时，数据处理
-                if ((jsonData[item][0] && jsonData[item][1])) {
-                  value = jsonData[item].join('~');
-                } else {
-                  value = '';
+            this.formItemsLists.concat([]).every((temp) => {
+              if (temp.item.field === item) { // 等于当前节点，判断节点类型
+                if (temp.item.type === 'DatePicker' && (temp.item.props.type === 'datetimerange' || temp.item.props.type === 'daterange')) { // 当为日期控件时，数据处理
+                  if ((jsonData[item][0] && jsonData[item][1])) {
+                    value = jsonData[item].join('~');
+                  } else {
+                    value = '';
+                  }
+                  return false;
                 }
+
+                if (
+                  temp.item.type === 'TimePicker'
+                  && temp.item.props.type === 'timerange'
+                  && (jsonData[item][0] && jsonData[item][1])
+                ) {
+                  // 时分秒的时间段处理
+                  value = jsonData[item].join('~');
+                  return false;
+                }
+
+                if (temp.item.type === 'select') {
+                  if (jsonData[item].length > 0) {
+                    value = jsonData[item].map(option => `=${option}`);
+                  } else {
+                    value = '';
+                  }
+
+                  // 处理select，分为单个字段select和合并型select
+                  return false;
+                }
+                value = jsonData[item];
                 return false;
               }
 
               if (
-                temp.item.type === 'TimePicker'
-                && temp.item.props.type === 'timerange'
-                && (jsonData[item][0] && jsonData[item][1])
+                !temp.item.field
+                && temp.item.type === 'select'
+                && item.indexOf(':') < 0
               ) {
-                // 时分秒的时间段处理
-                value = jsonData[item].join('~');
+                // 处理合并型select
+                value = jsonData[item].map(option => `=${option}`);
                 return false;
               }
-
-              if (temp.item.type === 'select') {
-                if (jsonData[item].length > 0) {
-                  value = jsonData[item].map(option => `=${option}`);
-                } else {
-                  value = '';
-                }
-
-                // 处理select，分为单个字段select和合并型select
-                return false;
+              if (temp.item.inputname === item) {
+                value = jsonData[item];
               }
-              value = jsonData[item];
-              return false;
+
+
+              return true;
+            });
+            if (value) {
+              obj[item] = value;
             }
-
-            if (
-              !temp.item.field
-              && temp.item.type === 'select'
-              && item.indexOf(':') < 0
-            ) {
-              // 处理合并型select
-              value = jsonData[item].map(option => `=${option}`);
-              return false;
-            }
-            if (temp.item.inputname === item) {
-              value = jsonData[item];
-            }
-
-
-            return true;
-          });
-          if (value) {
-            obj[item] = value;
-          }
-
-          return obj;
-        }, {});
+            obj = Object.assign({}, obj, this.filterTableParam);
+            return obj; 
+          }, {});
+        }
+        return this.filterTableParam;
       },
       searchClickData(value) {
         // 按钮查找 查询第一页数据

@@ -480,5 +480,9 @@
     margin-top: 0px;
 
   }
+.common-table{
+    margin-top: 0px;
+
+}
 }
 </style>

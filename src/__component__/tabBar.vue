@@ -25,17 +25,25 @@
     },
     data() {
       return {
-        currentIndex: 0
+        currentIndex: 0,
+        lastIndex: null
       };
     },
 
     methods: {
       tabClick(index) {
-        this.currentIndex = index;
-        this.$emit('tabClick', {
-          data: this.data.multi_tab[index],
-          index
-        });
+        // const dom = document.querySelector('.r3-active-item');
+        // if (`tab_${index}` === dom.id) {
+        //   return;
+        // }
+        if (this.lastIndex !== index) {
+          this.currentIndex = index;
+          this.$emit('tabClick', {
+            data: this.data.multi_tab[index],
+            index
+          });
+          this.lastIndex = index;
+        }
       },
     },
   };

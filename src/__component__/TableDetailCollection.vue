@@ -3506,7 +3506,6 @@
         }
       },
       tableSelectedChange(data) {
-        debugger;
         const param = {};
         const datas = data.reduce((acc, cur) => {
           acc.push({ ID: cur[EXCEPT_COLUMN_NAME] });

@@ -110,6 +110,13 @@ export default {
             commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
             commit('updateDefaultButtonsdatas', queryData.datas);
             commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
+            queryData.datas.tablequery = {
+              multi_tab: queryData.datas.multi_tab
+            };
+            if (queryData.datas.tablequery && queryData.datas.tablequery.multi_tab && queryData.datas.tablequery.multi_tab.length > 0) {
+              queryData.datas.tablequery.multi_tab.unshift({ tab_name: 'all' });
+              queryData.datas.tablequery.open = true;
+            }
             commit('updateFilterTableData', queryData.datas.tablequery);
 
             if (queryData.datas.webconf) {
@@ -134,6 +141,13 @@ export default {
           commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
           commit('updateDefaultButtonsdatas', queryData.datas);
           commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
+          queryData.datas.tablequery = {
+            multi_tab: queryData.datas.multi_tab
+          };
+          if (queryData.datas.tablequery && queryData.datas.tablequery.multi_tab && queryData.datas.tablequery.multi_tab.length > 0) {
+            queryData.datas.tablequery.multi_tab.unshift({ tab_name: 'all' });
+            queryData.datas.tablequery.open = true;
+          }
           commit('updateFilterTableData', queryData.datas.tablequery);
 
           if (queryData.datas.webconf) {
