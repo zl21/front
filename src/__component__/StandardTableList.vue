@@ -58,7 +58,7 @@
         :form-items-data="formItems.data"
         :form-item-lists="formItemsLists"
         :default-spread="changeSearchFoldnum.switchValue"
-        :default-column="Number(4)"
+        :default-column="Number(defaultColumn)"
         :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
         @formDataChange="formDataChange"
       />
@@ -174,7 +174,8 @@
     isCommonTable,
     enableActivateSameCustomizePage,
     enableKAQueryDataForUser,
-    blockFullOperation
+    blockFullOperation,
+    listDefaultColumn
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import customize from '../__config__/customize.config';
@@ -296,6 +297,9 @@
         } 
       
         return [];
+      },
+      defaultColumn() { // 获取配置列表一行几列数据
+        return listDefaultColumn();
       }
     },
     watch: {
