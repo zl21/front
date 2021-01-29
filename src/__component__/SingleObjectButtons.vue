@@ -123,7 +123,7 @@
   import { getKeepAliveModuleName } from '../__config__/router.navigation.guard';
   import getUserenv from '../__utils__/getUserenv';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
-  import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
+  import { getSessionObject, updateSessionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
 
   export default {
     data() {
@@ -2258,15 +2258,15 @@
         const { routePrefix } = this.$route.meta;
        
         // 列表界面配置动态路由
-        const routeMapRecord = getSeesionObject('routeMapRecord');
+        const routeMapRecord = getSessionObject('routeMapRecord');
         
         const currentRoute = this.activeTab.routeFullPath;
         const keepAliveModuleName = getKeepAliveModuleName(this.$router.currentRoute);
         const tabUrl = keepAliveModuleName.substring(0, 1);
 
         // 单对象界面配置动态路由
-        const routeMapRecordForSingleObject = getSeesionObject('routeMapRecordForSingleObject');
-        const routeMapRecordForNew = getSeesionObject('routeMapRecord');
+        const routeMapRecordForSingleObject = getSessionObject('routeMapRecordForSingleObject');
+        const routeMapRecordForNew = getSessionObject('routeMapRecord');
 
         const currentPath = this.$router.currentRoute.path;
 
@@ -3113,7 +3113,7 @@
         }
       },
       noClickSave() { // 校验是否是保存按钮调用的保存方法
-        const saveEventAfter = getSeesionObject('saveEventAfter');
+        const saveEventAfter = getSessionObject('saveEventAfter');
         if (this.saveEventAfter === 'submit' 
           || saveEventAfter.type === 'submit'
           || this.saveEventAfter === 'objTabActionSlient'
@@ -3704,8 +3704,8 @@
       },
       
       saveEventAfterClick(stop, removeMessage) { // 保存成功后执行的事件
-        const saveEventAfter = getSeesionObject('saveEventAfter');
-        const objTabActionSlientData = getSeesionObject('objTabActionSlientData');
+        const saveEventAfter = getSessionObject('saveEventAfter');
+        const objTabActionSlientData = getSessionObject('objTabActionSlientData');
         if (!stop) {
           // this.clearEditData();// 清空store update数据
           if (this.saveEventAfter === 'submit' || saveEventAfter.type === 'submit') { // 提交操作
@@ -3902,7 +3902,7 @@
         this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
       },
       hideBackButton() {
-        const clickMenuAddSingleObjectData = getSeesionObject('clickMenuAddSingleObject');
+        const clickMenuAddSingleObjectData = getSessionObject('clickMenuAddSingleObject');
         const currentRoute = this.$router.currentRoute.path;
         if (this.itemId === 'New') {
           if (clickMenuAddSingleObjectData[currentRoute]) { // 不显示返回按钮
@@ -3913,7 +3913,7 @@
           }
           return false;
         } 
-        const addRouteToEditorData = getSeesionObject('addRouteToEditor');
+        const addRouteToEditorData = getSessionObject('addRouteToEditor');
         let flag = false;
         Object.keys(addRouteToEditorData).some((a) => { // 菜单跳转单对象新增，保存后跳转到编辑界面，满足记录规则三维护的关系中存在当前菜单跳转新增界面匹配的对应关系，不显示返回按钮
           if (addRouteToEditorData[a] === clickMenuAddSingleObjectData[a] && currentRoute.indexOf(clickMenuAddSingleObjectData[a]) !== -1) {
@@ -3927,7 +3927,7 @@
         }
         let flagForRouteMapRecord = false;
         const routeFullPath = currentRoute;
-        const routeMapRecordForHideBackButtonData = getSeesionObject('routeMapRecordForHideBackButton');
+        const routeMapRecordForHideBackButtonData = getSessionObject('routeMapRecordForHideBackButton');
         Object.keys(routeMapRecordForHideBackButtonData).map((item) => {
           if (routeFullPath === item) {
             flagForRouteMapRecord = true;

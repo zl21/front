@@ -1,3 +1,5 @@
+import MultiTab from '../__component__/ExtentionsProperty/MultiTab.vue';
+
 export default [
   {
     name: '列表默认排序',
@@ -314,7 +316,7 @@ export default [
     name: '列表查询tab配置',
     key: 'multi_tab',
     type: 'custom',
-    component: () => import('../__component__/ExtentionsProperty/MultiTab.vue'),
+    component: MultiTab,
     showLabel: false,
     enableIncrease: true,
     description: '增加列表的查询tab页配置'
