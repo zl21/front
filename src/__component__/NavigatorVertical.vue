@@ -114,7 +114,10 @@
         return true;
       },
       taskMessageCounts() {
-        return this.userInfo.id;
+        if (this.userInfo) {
+          return this.userInfo.id;
+        }
+        return null;
       }
       
     },

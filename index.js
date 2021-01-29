@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueDND from 'awe-dnd';
 import Viewer from 'v-viewer';
+import md5 from 'md5';
 import { getGuid } from './src/__utils__/random';
 import router from './src/__config__/router.config';
 import store from './src/__config__/store.config';
@@ -20,7 +21,7 @@ import getObjdisType from './src/__utils__/getObjdisType';
 import projectConfig from './project.config';
 import { addSearch } from './src/__utils__/indexedDB';
 import './node_modules/viewerjs/dist/viewer.css';
-
+import './src/__utils__/getChildComponent';
 
 // css import
 import './node_modules/ag-grid/dist/styles/ag-grid.css';
@@ -30,9 +31,17 @@ import './src/assets/theme/custom.less';
 import './src/assets/css/loading.css';
 import './src/assets/css/custom-ext.less';
 import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
+
+// 全局指令
+import inputNumber from './src/directive/inputNumber';
+
+Vue.use(inputNumber);
 // import jflowPlugin from './jflowPlugin/js/index';
 // import './src/__utils__/encryptingParameter';
 
+window.MD5 = md5; 
+
+Vue.config.devtools = true;
 
 // Vue.use(jflowPlugin, {
 //   changePattern: true, // 控制待办列表转派的选择模式 true为单选,false为多选

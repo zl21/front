@@ -24,9 +24,15 @@ export default () => ({
     this.noMounted = false;
   },
   created() {
-    this[MODULE_COMPONENT_NAME] = getComponentName();
-    this[INSTANCE_ROUTE] = router.currentRoute.fullPath;
-    this[INSTANCE_ROUTE_QUERY] = router.currentRoute.params;
+    if (!this[MODULE_COMPONENT_NAME]) {
+      this[MODULE_COMPONENT_NAME] = getComponentName();
+    }
+    if (!this[INSTANCE_ROUTE]) {
+      this[INSTANCE_ROUTE] = router.currentRoute.fullPath;
+    }
+    if (!this[INSTANCE_ROUTE_QUERY]) {
+      this[INSTANCE_ROUTE_QUERY] = router.currentRoute.params;
+    }
   },
   activated() {
     if (this.noMounted) { // 因进入单对象界面会触发activated生命周期，以下操作为切换tab时的处理逻辑，第一次加载组件不需要执行以下操作，故在mounted里加标示区分

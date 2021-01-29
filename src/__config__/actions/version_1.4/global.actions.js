@@ -40,9 +40,8 @@ export default {
       .then(() => {
         window.sessionStorage.setItem('loginStatus', false);
         window.localStorage.setItem('loginStatus', false);
-
+  
         commit('emptyTabs');
-        router.push({ path: getTouristRoute() });
         removeSessionObject('saveNetwork');
         GetTableName('');
         commit('updataUserInfoMessage', {});
@@ -51,6 +50,7 @@ export default {
         removeSessionObject('TreeId');
         removeSessionObject('routeMapRecordForCustomizePages');
         commit('updateTreeTableListData', []);
+        router.push({ path: getTouristRoute() });
       })
       .catch(() => {
         window.sessionStorage.setItem('loginStatus', false);
@@ -58,7 +58,6 @@ export default {
 
         commit('emptyTabs');
         commit('updataUserInfoMessage', {});
-        router.push({ path: getTouristRoute() });
         removeSessionObject('saveNetwork');
         GetTableName('');
         commit('updataUserInfoMessage', {});
@@ -67,6 +66,7 @@ export default {
         removeSessionObject('TreeId');
         commit('updateTreeTableListData', []);
         removeSessionObject('routeMapRecordForCustomizePages');
+        router.push({ path: getTouristRoute() });
       });
   }
   

@@ -112,7 +112,9 @@
         this.$emit('keydown', e);
       },
       setFormatedValue() {
-        this.$refs.extentionInput.querySelector('textarea').value = this.currentValue === '""' ? '' : this.currentValue;
+        if (this.$refs.extentionInput) {
+          this.$refs.extentionInput.querySelector('textarea').value = this.currentValue === '""' ? '' : this.currentValue;
+        }
       },
       valueChange(val) {
         this.currentValue = val;

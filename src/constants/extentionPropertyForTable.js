@@ -248,7 +248,7 @@ export default [
     name: '树界面配置',
     key: 'menudisplay',
     type: 'radio',
-    enumerateValue: [{ text: '树界面', value: "tree" }],
+    enumerateValue: [{ text: '树界面', value: 'tree' }],
     description: '列表界面使用树界面'
   },
   {
@@ -309,5 +309,14 @@ export default [
       }
     ],
     description: '控制单对象界面是否可编辑（只检查写权限）'
+  },
+  {
+    name: '列表查询tab配置',
+    key: 'multi_tab',
+    type: 'custom',
+    component: () => import('../__component__/ExtentionsProperty/MultiTab.vue'),
+    showLabel: false,
+    enableIncrease: true,
+    description: '增加列表的查询tab页配置'
   },
 ];

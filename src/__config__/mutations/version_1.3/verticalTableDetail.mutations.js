@@ -1,6 +1,8 @@
 import { stringify } from 'querystring';
 import { cpus } from 'os';
 import router from '../../router.config';
+import { enableOpenNewTab } from '../../../constants/global';
+
 
 export default {
   updataClickSave(state, func) {
@@ -21,8 +23,13 @@ export default {
     state.mainFormInfo.tableid = tableId;
     state.mainFormInfo.formData.isShow = data && data.addcolums && data.addcolums.length > 0;
     state.mainFormInfo.formData.data = Object.assign({}, data);
+
+    let addValue = {};
+    if (enableOpenNewTab() && state.updateData[tableName] && state.updateData[tableName].default) {
+      addValue = state.updateData[tableName].default[tableName];
+    }
     state.updateData[tableName] = {
-      add: Object.assign({}, { [tableName]: {} }),
+      add: Object.assign({}, { [tableName]: addValue }),
       modify: Object.assign({}, { [tableName]: {} }),
       modifyLabel: Object.assign({}, { [tableName]: {} }),
       delete: Object.assign({}, { [tableName]: {} }),
@@ -157,7 +164,7 @@ export default {
   updateAddData(state, data) {
     if (state.updateData[data.tableName]) {
       if (Object.values(data.value).length === 0) {
-        state.updateData[data.tableName].add[data.tableName] = {};
+        state.updateData[data.tableName].add[data.tableName] = state.updateData[data.tableName].default[data.tableName];
       } else {
         state.updateData[data.tableName].add[data.tableName] = Object.assign({}, state.updateData[data.tableName].add[data.tableName], data.value[data.tableName]);
       }
@@ -216,7 +223,7 @@ export default {
 
   updateChangeData(state, data) {
     if (state.updateData[data.tableName]) {
-      state.updateData[data.tableName].changeData = data.value;
+      state.updateData[data.tableName].changeData = Object.assign(state.updateData[data.tableName].changeData, data.value);
     }
   },
   updateCheckedInfoData(state, data) {

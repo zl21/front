@@ -1,4 +1,6 @@
 
+// 此分支用于开发表格过滤功能
+// 需求为：根据配置条件进行表格过滤，以tab的展现形式
 
 const path = require('path');
 
@@ -38,7 +40,8 @@ module.exports = {
   // target: 'http://oneretail-test.dev.syman.cn/', // 微淘氪
   // target: 'http://101.133.142.45:27777/', // 乔丹
   // target: 'http://r3.ecsemir.com/', // 森马
-  
+  // target: ' http://47.103.6.45:27777/', // 森马
+ 
   
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
@@ -71,7 +74,6 @@ module.exports = {
   layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
   backDashboardRoute: [], // 配置刷新浏览器回到Dashboard界面
   custommizedRequestURL: {
-    
   }, // 配置内置自定义界面requestURL
   requestPenddingExpire: 1000 * 0.5, // 单位S
   enableRestrictSave: true, // 是否限制保存，默认为true,true:界面未修改值则点击保存按钮不调用保存服务，false:无论是否修改值都会调用保存服务
@@ -83,8 +85,9 @@ module.exports = {
   // },
   enableActivateSameCustomizePage: false, // 跳转自定义界面，当自定义界面标识相同，是否只激活同一个tab,默认为false,自定义界面ID不同会打开多个tab
   logoutTips: false, // 失去会话是否需要登出提示 默认false直接登出
-  enableKAQueryDataForUser: false, // 是否开启存储全表查询条件
+  enableKAQueryDataForUser: true, // 是否开启存储全表查询条件
   dateStorageTime: 1, // 查询条件存储时间，默认1天,建议不要设置太大影响性能
+  enableOpenNewTab: true, // 列表界面打开 同表 单对象是否新开tab,默认为false
   blockFullOperation: false, // 禁止不选数据时的批量修改操作,
   customizeMixins: { // 获取所有外部接入的mixins对象
     setPanel: null,
@@ -107,10 +110,11 @@ module.exports = {
   //     if (data.router.params.tableName && data.config().configPage[data.router.params.tableName].filter(u => u === data.url).length > 0) { // 筛选出配置界面不需要根据框架code报错提示框的接口
   //       return false;
   //     } if (data.router.params.customizedModuleName && data.router.meta.routePrefix === '/CUSTOMIZED' && data.config().customizePage.filter(r => data.router.params.customizedModuleName.toLocaleLowerCase() === r.toLocaleLowerCase()).length > 0) {
-  //       // 筛选出定制界面不需要根据框架code报错提示框的接口
+  //       // 筛选出定制界面不需要根据框架code,报错提示框的接口
   //       return false;
   //     }
   //   }
   //   return true;
   // }
+  isFilterTable: true, // 是否开启表格过滤功能
 };

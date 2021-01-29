@@ -49,7 +49,6 @@
         ref="R3ButtonGroup"
         :data-array="buttons.dataArray"
         :id-array="idArray"
-        :search-datas="dataProcessing()"
         @buttonClick="buttonClick"
         @clearSelectIdArray="clearSelectIdArray"
       />
@@ -62,6 +61,12 @@
         :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
         @formDataChange="formDataChange"
       />
+      <tabBar
+        v-if="getFilterTable"
+        :data="ag.tablequery"
+        @tabClick="tabClick"
+      />
+
       <AgTable
         ref="agTableElement"
         :style="agTableElementStyles"
@@ -69,9 +74,10 @@
         :datas="ag.datas"
         :css-status="ag.status4css"
         :legend="ag.status4css"
+        :is-filter-table="getFilterTable"
         :user-config-for-ag-table="userConfigForAgTable"
-        :on-page-change="onPageChange"
-        :on-page-size-change="onPageSizeChange"
+        :on-page-change="getFilterTable?onPageChangeForFilterTable:onPageChange"
+        :on-page-size-change="getFilterTable?onPageSizeChangeForFilterTable:onPageSizeChange"
         :on-selection-changed="onSelectionChanged"
         :on-row-double-click="onRowDoubleClick"
         :on-sort-changed="onSortChange"
@@ -163,8 +169,6 @@
   import tree from './tree.vue';
   import regExp from '../constants/regExp';
   import getObjdisType from '../__utils__/getObjdisType';
-
-
   import {
     Version,
     CUSTOMIZED_MODULE_PREFIX,
@@ -174,7 +178,8 @@
     isCommonTable,
     enableActivateSameCustomizePage,
     enableKAQueryDataForUser,
-    blockFullOperation
+    blockFullOperation,
+    isFilterTable
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import customize from '../__config__/customize.config';
@@ -185,6 +190,7 @@
   import treeData from '../__config__/treeData.config';
   import getUserenv from '../__utils__/getUserenv';
   import { addSearch, querySearch } from '../__utils__/indexedDB';
+  import tabBar from './tabBar.vue';
 
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
@@ -199,6 +205,7 @@
       ErrorModal,
       modifyDialog,
       dialogComponent,
+      tabBar
     },
     data() {
       return {
@@ -229,7 +236,7 @@
           confirm: () => {
           }
         }, // 弹框配置信息
-
+        currentTabValue: {},
       };
     },
     computed: {
@@ -243,6 +250,9 @@
         changeSearchFoldnum: ({ changeSearchFoldnum }) => changeSearchFoldnum,
         userInfo: ({ userInfo }) => userInfo,
       }),
+      getFilterTable() {
+        return isFilterTable();
+      },
       getCurrentLabel() {
         return this.keepAliveLabelMaps[this[MODULE_COMPONENT_NAME]];
       },
@@ -342,6 +352,66 @@
       },
     },
     methods: {
+      onPageSizeChangeForFilterTable(pageSize) {
+        this.searchData.startIndex = 0;
+        this.searchData.range = pageSize;
+        this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, this.currentTabValue.tabValue.data.value);
+        const param = {
+          startIndex: this.searchData.startIndex,
+          range: this.searchData.range,
+          index: this.currentTabValue.index
+        };
+        this.updateTabParam(param);
+        this.getQueryList();
+      },
+      
+      onPageChangeForFilterTable(page) {
+        const { range } = this.searchData;
+        this.searchData.startIndex = range * (page - 1);
+        this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, this.currentTabValue.tabValue.value);
+        const param = {
+          startIndex: this.searchData.startIndex,
+          range: this.searchData.range,
+          index: this.currentTabValue.index
+        };
+        this.updateTabParam(param);
+        this.getQueryList();
+      },
+      firstSearchTable() {
+        if (this.getFilterTable) {
+          const el = this.$_live_getChildComponent(this, 'tabBar');
+          el.tabClick(0);
+          const obj = {
+            index: 0,
+            tabValue: this.ag.tablequery.multi_tab[0]
+          };
+          this.currentTabValue = obj;
+        } else {
+          this.searchClickData();
+        }
+      },
+      tabClick({ data, index }) {
+        if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].startIndex) {
+          this.searchData.startIndex = data.startIndex;
+        } else {
+          this.searchData.startIndex = 0;
+        }
+        if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].range) {
+          this.searchData.range = data.range;
+        } else {
+          delete this.searchData.range;
+        }
+        this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName; 
+        this.searchData.fixedcolumns = this.dataProcessing();
+        this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, data.tab_value);
+        const obj = {
+          index,
+          tabValue: data
+        };
+        this.currentTabValue = obj;
+        this.getQueryListPromise(this.searchData);
+        this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+      },
       // a() {
       //   // 插入列表界面默认值
       //   const data = {
@@ -682,7 +752,7 @@
         this.updateAgConfig({ key: 'hideColumn', value: hideCols });
       },
       onCellSingleClick(colDef, rowData, target) {
-        const { tableId } = this[INSTANCE_ROUTE_QUERY];
+        // const { tableId } = this[INSTANCE_ROUTE_QUERY];
         if (target.getAttribute('data-target-tag') === 'fkIcon') {
           window.sessionStorage.setItem('dynamicRouting', true);
           const {
@@ -1252,6 +1322,7 @@
         return obj;
       },
       resetForm() {
+        this.resetTabParam();
         // 列表查询重置
         this.resetType = true;
         const promise = new Promise((resolve, reject) => {
@@ -1485,7 +1556,7 @@
         this.setActiveTabActionValue({});// 点击按钮前清除上一次按钮存的信息
 
         if (type === 'fix') {
-          this.AddDetailClick(obj);
+          this.AddDetailClick(type, obj);
         } else if (type === 'custom') {
           this.webactionClick(type, obj);
         } else if (type === 'Collection') {
@@ -1947,8 +2018,6 @@
               this.updateSearchDBdata({});
               this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
             }
-            
-
             this.getQueryListForAg(data);
           });
         });
@@ -1986,7 +2055,12 @@
       getSingleObjectPageType() {
         
       },
-      AddDetailClick(obj) {
+      AddDetailClick(type, obj) {
+        DispatchEvent('R3StandardButtonClick', {
+          detail: {
+            type, obj
+          }
+        });
         const { tableName, tableId, } = this[INSTANCE_ROUTE_QUERY];
         // 处理存储过程逻辑，配置的path中带有sp|时则走框架的标准逻辑，不走定制path
         if (obj && obj.requestUrlPath && obj.requestUrlPath.includes('sp|')) {
@@ -2052,7 +2126,7 @@
                   tableName,
                   tableId,
                   label,
-                  id
+                  id,
                 });
               });
             } else if (this.ag.datas.objdistype === 'tabpanle') { // 单对象左右结构
@@ -2067,7 +2141,7 @@
               tableName,
               tableId,
               label,
-              id
+              id,
             });
             return;
           }
@@ -2692,6 +2766,7 @@
             this.searchData.startIndex = this.searchData.startIndex >= 0 ? this.searchData.startIndex : 0;
           }
           // this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
+         
           this.getQueryListPromise(Object.assign({}, this.searchData, { merge }));                 
         }
       },
@@ -2746,21 +2821,22 @@
                 this.updateFormData(Object.assign({}, this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists), response));
               }
               if (!this.buttons.isBig) {
-                this.searchClickData();
+                this.firstSearchTable();
               }
             });
           } else if (!this.buttons.isBig) {
             // 初始化调用时，ie环境下增加500ms延时调用
             if (this.isIE()) {
               setTimeout(() => {
-                this.searchClickData();
+                this.firstSearchTable();
               }, 500);
             } else {
-              this.searchClickData();
+              this.firstSearchTable();
             }
           }
         }
       },
+    
       isIE() {
         if (!!window.ActiveXObject || 'ActiveXObject' in window) return true;
         return false;
@@ -2773,8 +2849,7 @@
       }
     },
     mounted() {
-      this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
-      
+      this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName; 
       if (!this._inactive) {
         window.addEventListener('network', this.networkEventListener);
         window.addEventListener('network', this.networkGetTableQuery);

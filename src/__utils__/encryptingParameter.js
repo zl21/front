@@ -39,6 +39,7 @@ const newSend = function (data) {
     this.realSend(sendData);
   }
 };
+
 XMLHttpRequest.prototype.send = newSend;
 
 function btoa(str) {
