@@ -11,34 +11,32 @@
       class="tabContent"
     >
       <p class="label-input">
-        <validate :data="item.target">
-          <span class="required-item ml-5">目标字段：</span>
-          <div class="target-key">
-            <DropDownSelectFilter
-              single
-              :data="keyList"
-              :auto-data="searchKeyList"
-              :page-size="pageSize"
-              :total-row-count="totalCount"
-              :default-selected="item.target.defaultselected"
-              placeholder="请输入表内名称"
-              is-back-row-item
-              :columns-key="targetColumnsKey"
-              @on-popper-show="getKeys($event, 'target',{
-                tableName:'AD_COLUMN'
-              })"
-              @on-page-change="getKeys($event, 'target',{
-                tableName:'AD_COLUMN'
-              })"
-              @on-input-value-change="getSearchKeys($event, 'target',{
-                tableName:'AD_COLUMN'
-              })"
-              @on-fkrp-selected="handlerSelected(index, 'target', '', $event)"
-              @on-clear="handleClear(index, 'target', '', $event)"
-            />
-          </div>
-        </validate>
+        <span class="required-item ml-5">展示区域字段：</span>
       </p>
+      <div class="target-key">
+        <DropDownSelectFilter
+          single
+          :data="keyList"
+          :auto-data="searchKeyList"
+          :page-size="pageSize"
+          :total-row-count="totalCount"
+          :default-selected="item.target.defaultselected"
+          placeholder="请输入表内名称"
+          is-back-row-item
+          :columns-key="targetColumnsKey"
+          @on-popper-show="getKeys($event, 'target',{
+            tableName:'AD_COLUMN'
+          })"
+          @on-page-change="getKeys($event, 'target',{
+            tableName:'AD_COLUMN'
+          })"
+          @on-input-value-change="getSearchKeys($event, 'target',{
+            tableName:'AD_COLUMN'
+          })"
+          @on-fkrp-selected="handlerSelected(index, 'target', '', $event)"
+          @on-clear="handleClear(index, 'target', '', $event)"
+        />
+      </div>
 
       <!-- blank -->
       <p class="blank" />
@@ -52,68 +50,58 @@
           <p class="required-item ml-5">
             来源字段:
           </p>
-          <validate
-            :data="temp.defaultselected"
-            :validate-function="validateKey"
-          >
-            <DropDownSelectFilter
-              single
-              :data="keyList"
-              :auto-data="searchKeyList"
-              :page-size="pageSize"
-              :total-row-count="totalCount"
-              :default-selected="temp.defaultselected.length && temp.defaultselected[0]"
-              is-back-row-item
-              :columns-key="targetColumnsKey"
-              placeholder="请输入表内名称"
-              @on-popper-show="getKeys($event, 'source',{
-                tableName:'AD_COLUMN'
-              })"
-              @on-page-change="getKeys($event, 'source',{
-                tableName:'AD_COLUMN'
-              })"
-              @on-input-value-change="getSearchKeys($event, 'source',{
-                tableName:'AD_COLUMN'
-              })"
-              @on-fkrp-selected="handlerSelected(index, 'source', j , $event, 0)"
-              @on-clear="handleClear(index, 'source', j)"
-            />
-          </validate>
+          <DropDownSelectFilter
+            single
+            :data="keyList"
+            :auto-data="searchKeyList"
+            :page-size="pageSize"
+            :total-row-count="totalCount"
+            :default-selected="temp.defaultselected.length && temp.defaultselected[0]"
+            is-back-row-item
+            :columns-key="targetColumnsKey"
+            placeholder="请输入表内名称"
+            @on-popper-show="getKeys($event, 'source',{
+              tableName:'AD_COLUMN'
+            })"
+            @on-page-change="getKeys($event, 'source',{
+              tableName:'AD_COLUMN'
+            })"
+            @on-input-value-change="getSearchKeys($event, 'source',{
+              tableName:'AD_COLUMN'
+            })"
+            @on-fkrp-selected="handlerSelected(index, 'source', j , $event, 0)"
+            @on-clear="handleClear(index, 'source', j)"
+          />
         </div>
         <div class="colname">
           <p class="required-item ml-5">
             来源字段选项组:
           </p>
-          <validate
-            :data="temp.defaultselected"
-            :validate-function="validateKey"
-          >
-            <DropDownSelectFilter
-              single
-              :data="keyList"
-              :auto-data="searchKeyList"
-              :page-size="pageSize"
-              :total-row-count="totalCount"
-              :default-selected="temp.defaultselected.length && temp.defaultselected[1]"
-              is-back-row-item
-              :columns-key="sourceColumnsKey"
-              placeholder="请输入名称"
-              @on-popper-show="getKeys($event, 'source',{
-                tableName:'AD_LIMITVALUE_GROUP',
-                deleteTableId: true
-              })"
-              @on-page-change="getKeys($event, 'source',{
-                tableName:'AD_LIMITVALUE_GROUP',
-                deleteTableId: true
-              })"
-              @on-input-value-change="getSearchKeys($event, 'source', {
-                tableName:'AD_LIMITVALUE_GROUP',
-                deleteTableId: true
-              })"
-              @on-fkrp-selected="handlerSelected(index, 'source', j , $event, 1)"
-              @on-clear="handleClear(index, 'source', j)"
-            />
-          </validate>
+          <DropDownSelectFilter
+            single
+            :data="keyList"
+            :auto-data="searchKeyList"
+            :page-size="pageSize"
+            :total-row-count="totalCount"
+            :default-selected="temp.defaultselected.length && temp.defaultselected[1]"
+            is-back-row-item
+            :columns-key="sourceColumnsKey"
+            placeholder="请输入名称"
+            @on-popper-show="getKeys($event, 'source',{
+              tableName:'AD_LIMITVALUE_GROUP',
+              deleteTableId: true
+            })"
+            @on-page-change="getKeys($event, 'source',{
+              tableName:'AD_LIMITVALUE_GROUP',
+              deleteTableId: true
+            })"
+            @on-input-value-change="getSearchKeys($event, 'source', {
+              tableName:'AD_LIMITVALUE_GROUP',
+              deleteTableId: true
+            })"
+            @on-fkrp-selected="handlerSelected(index, 'source', j , $event, 1)"
+            @on-clear="handleClear(index, 'source', j)"
+          />
         </div>
 
 
@@ -158,7 +146,6 @@
 
 <script type="text/ecmascript-6">
   import Description from './Description.vue';
-  import Validate from '../form/Validate.vue';
   import network, { urlSearchParams } from '../../__utils__/network';
 
   const GROUP_CONSTRUCTOR = {
@@ -194,7 +181,6 @@
 
     components: {
       Description,
-      Validate
     },
 
     data() {
@@ -385,8 +371,6 @@
 
       // 获取选中字段
       handlerSelected(groupIndex, key, rowIndex, value, colIndex) {
-        console.log('🚀 ~ file: bindKey.vue ~ line 345 ~ handlerSelected ~ value', value);
-
         // 选中目标字段值的情况
         if (key === 'target') {
           const selectedObj = {
@@ -433,25 +417,6 @@
         } else {
           this.$emit('dataChange', { key: this.option.key, value: cacheData });
         }
-      },
-
-      // 校验字段，相同tab下key不能重复
-      validateKey() {
-        // const tabIndex = this.currentTabIndex;
-        // const keyIndex = this.currentKeyIndex;
-        // const value = this.sumTabs[tabIndex].source[keyIndex].col_name;
-
-        const result = [];
-        if (result.length > 1) {
-          return {
-            isPass: false,
-            msg: '已存在相同字段，请修改'
-          };
-        }
-        return {
-          isPass: true,
-          msg: ''
-        };
       },
 
       // 清空下拉所选
