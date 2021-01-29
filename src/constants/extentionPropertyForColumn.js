@@ -338,13 +338,4 @@ export default [
     ],
     description: '列表查询规则'
   },
-  {
-    name: '关联字段组配置',
-    key: 'key_group_conf',
-    type: 'custom',
-    component: () => import('../__component__/ExtentionsProperty/bindKey.vue'),
-    showLabel: false,
-    enableIncrease: true,
-    description: '增加关联字段的配置'
-  },
 ];

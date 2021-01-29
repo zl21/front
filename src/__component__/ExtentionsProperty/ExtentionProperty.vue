@@ -88,11 +88,11 @@
 </template>
 
 <script>
-  import ExtentionInput from './ExtentionInput';
-  import ExtentionRadio from './ExtentionRadio';
-  import ExtentionObjectGroup from './ExtentionObjectGroup';
-  import ExtentionInputGroup from './ExtentionInputGroup';
-  import ExtentionOptions from './ExtentionOptions';
+  import ExtentionInput from './ExtentionInput.vue';
+  import ExtentionRadio from './ExtentionRadio.vue';
+  import ExtentionObjectGroup from './ExtentionObjectGroup.vue';
+  import ExtentionInputGroup from './ExtentionInputGroup.vue';
+  import ExtentionOptions from './ExtentionOptions.vue';
 
   const getGuid = () => Math.round(Math.random() * 10000000000);
   
@@ -131,7 +131,7 @@
           value = JSON.stringify(this.rootData, null, 2);
         }
         this.$emit('valueChange', value);
-        // console.log('计算', value);
+        // console.log('计算', value); 
         // 针对tab配置特殊处理,显示假的配置
         if (this.rootData && 'multi_tab_conf' in this.rootData) {
           const fakeValue = JSON.parse(JSON.stringify(this.rootData));
@@ -139,10 +139,41 @@
           fakeValue.multi_tab_conf = this.filterInvalidKey(fakeValue.multi_tab_conf);
           return JSON.stringify(fakeValue, null, 2);
         } 
+        console.log('计算', 'key_group_conf' in this.rootData, this.rootData);
+        if (this.rootData && 'key_group_conf' in this.rootData) {
+          const fakeValue = JSON.parse(JSON.stringify(this.rootData));
+          console.log('🚀 ~ file: ExtentionProperty.vue ~ line 138 ~ formatedRootData ~ fakeValue', fakeValue);
+          fakeValue.key_group_conf = this.filterKeyGroup(fakeValue.key_group_conf);
+          return JSON.stringify(fakeValue, null, 2);
+        } 
         return value;
       },
     },
     methods: {
+      filterKeyGroup(originData) {
+        const cacheData = JSON.parse(JSON.stringify(originData));
+        for (let i = Math.max(cacheData.length - 1, 0); i >= 0; i--) {
+          const group = cacheData[i];
+          delete group.target.defaultselected;
+          for (let j = Math.max(group.source.length - 1, 0); j >= 0; j--) {
+            const row = group.source[j];
+            delete row.defaultselected;
+            console.log('key--', row);
+            // 删除无效来源字段
+            if (!row.col_id || !row.label) {
+              console.log('删除key');
+              group.source.splice(j, 1);
+            }
+          }
+          // 删除无效字段组配置
+          if ((!group.target.col_id || !group.target.label) || group.source.length === 0) {
+            cacheData.splice(i, 1);
+          }
+        }
+
+        return cacheData;
+      },
+
       // 过滤无效字段
       filterInvalidKey(originData) {
         const cacheData = JSON.parse(JSON.stringify(originData));
