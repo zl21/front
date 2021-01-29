@@ -206,7 +206,7 @@ export default {
   },
   updateChangeData(state, data) {
     if (state.updateData[data.tableName]) {
-      state.updateData[data.tableName].changeData = data.value;
+      state.updateData[data.tableName].changeData = Object.assign(state.updateData[data.tableName].changeData, data.value);
     }
   },
   updateCheckedInfoData(state, data) {
