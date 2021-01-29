@@ -131,21 +131,20 @@
           value = JSON.stringify(this.rootData, null, 2);
         }
         this.$emit('valueChange', value);
-        // console.log('计算', value); 
+
+        let fakeValue = null;
         // 针对tab配置特殊处理,显示假的配置
         if (this.rootData && 'multi_tab_conf' in this.rootData) {
-          const fakeValue = JSON.parse(JSON.stringify(this.rootData));
-          // console.log('🚀 ~ file: ExtentionProperty.vue ~ line 138 ~ formatedRootData ~ fakeValue', fakeValue);
+          fakeValue = JSON.parse(JSON.stringify(this.rootData));
           fakeValue.multi_tab_conf = this.filterInvalidKey(fakeValue.multi_tab_conf);
-          return JSON.stringify(fakeValue, null, 2);
         } 
-        console.log('计算', 'key_group_conf' in this.rootData, this.rootData);
         if (this.rootData && 'key_group_conf' in this.rootData) {
-          const fakeValue = JSON.parse(JSON.stringify(this.rootData));
-          console.log('🚀 ~ file: ExtentionProperty.vue ~ line 138 ~ formatedRootData ~ fakeValue', fakeValue);
+          fakeValue = JSON.parse(JSON.stringify(this.rootData));
           fakeValue.key_group_conf = this.filterKeyGroup(fakeValue.key_group_conf);
-          return JSON.stringify(fakeValue, null, 2);
         } 
+        if ((this.rootData && 'multi_tab_conf' in this.rootData) || (this.rootData && 'key_group_conf' in this.rootData)) {
+          return JSON.stringify(fakeValue, null, 2);
+        }
         return value;
       },
     },
@@ -158,10 +157,8 @@
           for (let j = Math.max(group.source.length - 1, 0); j >= 0; j--) {
             const row = group.source[j];
             delete row.defaultselected;
-            console.log('key--', row);
             // 删除无效来源字段
             if (!row.col_id || !row.label) {
-              console.log('删除key');
               group.source.splice(j, 1);
             }
           }

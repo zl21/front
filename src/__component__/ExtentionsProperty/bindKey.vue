@@ -5,26 +5,6 @@
       @removeOption="removeOption"
     />
 
-    <!-- <p class="label-input">
-      <span class="required-item ml-5">字段：</span>
-      <DropDownSelectFilter
-        :single="true"
-        :data="keyList"
-        :auto-data="searchKeyList"
-        :page-size="pageSize"
-        :total-row-count="totalCount"
-        :default-selected="resultList"
-        placeholder="请输入表内名称"
-        is-back-row-item
-        :columns-key="columnsKey"
-        @on-popper-show="getKeys"
-        @on-page-change="getKeys"
-        @on-input-value-change="getSearchKeys"
-        @on-fkrp-selected="handlerSelected"
-        @on-clear="handleClear"
-      />
-    </p> -->
-
     <div
       v-for="(item,index) in resultList"
       :key="index"
@@ -43,10 +23,16 @@
               :default-selected="item.target.defaultselected"
               placeholder="请输入表内名称"
               is-back-row-item
-              :columns-key="columnsKey"
-              @on-popper-show="getKeys"
-              @on-page-change="getKeys"
-              @on-input-value-change="getSearchKeys"
+              :columns-key="targetColumnsKey"
+              @on-popper-show="getKeys($event, 'target',{
+                tableName:'AD_COLUMN'
+              })"
+              @on-page-change="getKeys($event, 'target',{
+                tableName:'AD_COLUMN'
+              })"
+              @on-input-value-change="getSearchKeys($event, 'target',{
+                tableName:'AD_COLUMN'
+              })"
               @on-fkrp-selected="handlerSelected(index, 'target', '', $event)"
               @on-clear="handleClear(index, 'target', '', $event)"
             />
@@ -76,18 +62,60 @@
               :auto-data="searchKeyList"
               :page-size="pageSize"
               :total-row-count="totalCount"
-              :default-selected="temp.defaultselected"
+              :default-selected="temp.defaultselected.length && temp.defaultselected[0]"
               is-back-row-item
-              :columns-key="columnsKey"
+              :columns-key="targetColumnsKey"
               placeholder="请输入表内名称"
-              @on-popper-show="getKeys($event, 'source')"
-              @on-page-change="getKeys($event, 'source')"
-              @on-input-value-change="getSearchKeys($event, 'source')"
-              @on-fkrp-selected="handlerSelected(index, 'source', j , $event)"
+              @on-popper-show="getKeys($event, 'source',{
+                tableName:'AD_COLUMN'
+              })"
+              @on-page-change="getKeys($event, 'source',{
+                tableName:'AD_COLUMN'
+              })"
+              @on-input-value-change="getSearchKeys($event, 'source',{
+                tableName:'AD_COLUMN'
+              })"
+              @on-fkrp-selected="handlerSelected(index, 'source', j , $event, 0)"
               @on-clear="handleClear(index, 'source', j)"
             />
           </validate>
         </div>
+        <div class="colname">
+          <p class="required-item ml-5">
+            来源字段选项组:
+          </p>
+          <validate
+            :data="temp.defaultselected"
+            :validate-function="validateKey"
+          >
+            <DropDownSelectFilter
+              single
+              :data="keyList"
+              :auto-data="searchKeyList"
+              :page-size="pageSize"
+              :total-row-count="totalCount"
+              :default-selected="temp.defaultselected.length && temp.defaultselected[1]"
+              is-back-row-item
+              :columns-key="sourceColumnsKey"
+              placeholder="请输入名称"
+              @on-popper-show="getKeys($event, 'source',{
+                tableName:'AD_LIMITVALUE_GROUP',
+                deleteTableId: true
+              })"
+              @on-page-change="getKeys($event, 'source',{
+                tableName:'AD_LIMITVALUE_GROUP',
+                deleteTableId: true
+              })"
+              @on-input-value-change="getSearchKeys($event, 'source', {
+                tableName:'AD_LIMITVALUE_GROUP',
+                deleteTableId: true
+              })"
+              @on-fkrp-selected="handlerSelected(index, 'source', j , $event, 1)"
+              @on-clear="handleClear(index, 'source', j)"
+            />
+          </validate>
+        </div>
+
 
         <!-- 增加字段按钮 -->
         <div class="oprate">
@@ -142,7 +170,10 @@
       {
         col_id: '',
         label: '',
-        defaultselected: []
+        defaultselected: [
+          [],
+          []
+        ]
       }
     ]
   };
@@ -173,7 +204,8 @@
         searchKeyList: [],
         totalCount: 0,
         pageSize: 10,
-        columnsKey: ['DBNAME']
+        targetColumnsKey: ['DBNAME'],
+        sourceColumnsKey: ['NAME']
       };
     },
 
@@ -212,7 +244,10 @@
         item.push({
           id: '',
           label: '',
-          defaultselected: []
+          defaultselected: [
+            [],
+            []
+          ]
         });
         return item;
       },
@@ -223,7 +258,8 @@
 
 
       // 查询key
-      async getKeys(page, key) {
+      async getKeys(page, key, options) {
+        const { tableName, deleteTableId } = options;
         let startindex = 0;
         if (typeof page === 'number') {
           startindex = (page - 1) * this.pageSize;
@@ -231,7 +267,7 @@
 
         const { itemId } = this.$route.params;
         const searchdata = {
-          table: 'AD_COLUMN',
+          table: tableName,
           startindex,
           range: this.pageSize,
           fixedcolumns: {
@@ -241,7 +277,7 @@
           isolr: false
         };
 
-        if (itemId === 'New' || key === 'source') {
+        if (itemId === 'New' || deleteTableId) {
           delete searchdata.fixedcolumns.AD_TABLE_ID;
         }
 
@@ -250,7 +286,8 @@
       },
 
       // 模糊查询
-      async getSearchKeys(value, key) {
+      async getSearchKeys(value, key, options) {
+        const { tableName, deleteTableId } = options;
         if (value === '') {
           this.searchKeyList = [];
           return;
@@ -258,18 +295,23 @@
 
         const { itemId } = this.$route.params;
         const searchdata = {
-          table: 'AD_COLUMN',
+          table: tableName,
           startindex: 0,
           fixedcolumns: {
             AD_TABLE_ID: [itemId],
-            DBNAME: value,
             ISACTIVE: ['=Y'],
           },
           column_include_uicontroller: true,
           isolr: false
         };
 
-        if (itemId === 'New' || key === 'source') {
+        if (tableName === 'AD_COLUMN') {
+          searchdata.fixedcolumns.DBNAME = value;
+        } else {
+          searchdata.fixedcolumns.NAME = value;
+        }
+
+        if (itemId === 'New' || deleteTableId) {
           delete searchdata.fixedcolumns.AD_TABLE_ID;
         }
 
@@ -304,7 +346,7 @@
             .post('/p/cs/QueryList', urlSearchParams({ searchdata }))
             .then((res) => {
               if (res.data.code === 0) {
-                const hideColumns = ['ORDERNO', 'MASK', 'AD_TABLE_ID', 'AD_VERSION_ID', 'ISORDER', 'ISACTIVE', 'ISAGFILTER', 'AGFILTER', 'ISINDEXED', 'NAME', 'OBTAINMANNER', 'REF_COLUMN_ID', 'FKDISPLAY', 'SEARCHMODEL', 'ISREMOTE', 'DISPLAYTYPE', 'COMMENTSTP', 'MODIFIERID', 'MODIFIEDDATE'];
+                const hideColumns = ['ORDERNO', 'MASK', 'AD_TABLE_ID', 'AD_VERSION_ID', 'ISORDER', 'ISACTIVE', 'ISAGFILTER', 'AGFILTER', 'ISINDEXED', 'OBTAINMANNER', 'REF_COLUMN_ID', 'FKDISPLAY', 'SEARCHMODEL', 'ISREMOTE', 'DISPLAYTYPE', 'COMMENTSTP', 'MODIFIERID', 'MODIFIEDDATE'];
                 const tabth = res.data.data.tabth;
                 const row = res.data.data.row;
                 for (let i = Math.max(tabth.length - 1, 0); i >= 0; i--) {
@@ -323,6 +365,7 @@
                 }
 
                 row.forEach((item) => {
+                  // item.AD_LIMITVALUE_GROUP_ID.val = item.AD_LIMITVALUE_GROUP_ID.colid;
                   for (const key in item) {
                     // 隐藏模糊结果列
                     if (hideColumns.includes(key)) {
@@ -341,24 +384,50 @@
       },
 
       // 获取选中字段
-      handlerSelected(groupIndex, key, rowIndex, value) {
-        const selectedObj = {
-          col_id: value[0].ID,
-          label: value[0].Label,
-          defaultselected: value
-        };
+      handlerSelected(groupIndex, key, rowIndex, value, colIndex) {
+        console.log('🚀 ~ file: bindKey.vue ~ line 345 ~ handlerSelected ~ value', value);
 
         // 选中目标字段值的情况
         if (key === 'target') {
+          const selectedObj = {
+            col_id: value[0].ID,
+            label: value[0].Label,
+            defaultselected: value
+          };
           this.resultList[groupIndex][key] = selectedObj;
-        } else {
-          this.$set(this.resultList[groupIndex][key], rowIndex, selectedObj);
+        } 
+        if (key === 'source') {
+          value[0].Label = value[0].Label ? value[0].Label : value[0].rowItem.NAME.val;
+          if (colIndex === 0) {
+            // 设置来源字段
+            const selectedObj = {
+              col_id: value[0].ID,
+              defaultselected: []
+            };
+            const row = this.resultList[groupIndex][key][rowIndex] || GROUP_CONSTRUCTOR.source; // 第n组第n行
+            selectedObj.defaultselected[0] = value;
+            selectedObj.defaultselected[1] = row.defaultselected[1];
+            
+            this.$set(this.resultList[groupIndex][key], rowIndex, Object.assign(row, selectedObj));
+          } else {
+            // 设置来源字段选项组
+            const selectedObj = {
+              label: value[0].ID,
+              defaultselected: []
+            };
+
+            const row = this.resultList[groupIndex][key][rowIndex] || GROUP_CONSTRUCTOR.source; // 第n组第n行
+            selectedObj.defaultselected[0] = row.defaultselected[0];
+            selectedObj.defaultselected[1] = value;
+            this.$set(this.resultList[groupIndex][key], rowIndex, Object.assign(row, selectedObj));
+          }
         }
       },
 
       // 同步数据到父组件
       syncData() {
         const cacheData = JSON.parse(JSON.stringify(this.resultList));
+        console.log('提交', cacheData);
         if (cacheData.length === 0) {
           this.$emit('dataChange', { key: this.option.key, value: '' });
         } else {

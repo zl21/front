@@ -165,15 +165,16 @@
           const fakeValue = JSON.parse(this.currentValue);
           fakeValue.multi_tab_conf = this.filterInvalidKey(fakeValue.multi_tab_conf);
           this.$refs.extentionInput.querySelector('textarea').value = JSON.stringify(fakeValue, null, 2);
-          return;
         } 
         // 针对字段组配置特殊处理,显示假的配置
         if (this.currentValue && 'key_group_conf' in JSON.parse(this.currentValue)) {
           const fakeValue = JSON.parse(this.currentValue);
           fakeValue.key_group_conf = this.filterKeyGroup(fakeValue.key_group_conf);
           this.$refs.extentionInput.querySelector('textarea').value = JSON.stringify(fakeValue, null, 2);
-          return;
         } 
+        if ((this.currentValue && 'multi_tab_conf' in JSON.parse(this.currentValue)) || (this.currentValue && 'key_group_conf' in JSON.parse(this.currentValue))) {
+          return;
+        }
         this.$refs.extentionInput.querySelector('textarea').value = this.currentValue === '""' ? '' : this.currentValue;
       },
       valueChange(val) {
