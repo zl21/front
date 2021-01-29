@@ -312,13 +312,13 @@ export default [
     ],
     description: '控制单对象界面是否可编辑（只检查写权限）'
   },
-  // {
-  //   name: '列表查询tab配置',
-  //   key: 'multi_tab_conf',
-  //   type: 'custom',
-  //   component: () => import('../__component__/ExtentionsProperty/MultiTab.vue'),
-  //   showLabel: false,
-  //   enableIncrease: true,
-  //   description: '增加列表的查询tab页配置'
-  // },
+  {
+    name: '列表查询tab配置',
+    key: 'multi_tab_conf',
+    type: 'custom',
+    component: 'MultiTab',
+    showLabel: false,
+    enableIncrease: true,
+    description: '增加列表的查询tab页配置'
+  },
 ];

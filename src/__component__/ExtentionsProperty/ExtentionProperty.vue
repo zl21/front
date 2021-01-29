@@ -93,6 +93,7 @@
   import ExtentionObjectGroup from './ExtentionObjectGroup';
   import ExtentionInputGroup from './ExtentionInputGroup';
   import ExtentionOptions from './ExtentionOptions';
+  import MultiTab from './MultiTab';
 
   const getGuid = () => Math.round(Math.random() * 10000000000);
   
@@ -110,7 +111,8 @@
       ExtentionRadio,
       ExtentionObjectGroup,
       ExtentionInputGroup,
-      ExtentionOptions
+      ExtentionOptions,
+      MultiTab
     },
     props: {
       options: {
