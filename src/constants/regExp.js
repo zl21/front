@@ -36,5 +36,8 @@ regExp.negativemoney = /^(\-|\+)?\d{0,8}(\.[0-9]{0,2})?$/;
 // 正整数 8位
 regExp.amount = /^\d{0,8}?$/;
 
+// 不能输入小写字母
+regExp.toUpperCase = /^[A-Z0-9\u4e00-\u9fa5]+$/;
+
 
 export default regExp;

@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            />
+                >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -3563,7 +3563,7 @@
           }
         }
         if (cellData.type === 'STRING' && cellData.isuppercase) { // 大写
-          return regExp.Capital;
+          return regExp.toUpperCase;
         }
         return null;
       },
