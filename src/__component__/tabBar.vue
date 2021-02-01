@@ -2,6 +2,7 @@
   <div class="r3-tab-nav">
     <Tabs
       type="card"
+      :value="currentIndex"
       @on-click="tabClick"
     >
       <TabPane

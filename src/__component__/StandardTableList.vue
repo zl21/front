@@ -2027,8 +2027,8 @@
           this.searchData.startIndex = 0;
         }
         if (this.getFilterTable) {
-          const dom = document.querySelector('.r3-active-item');
-          dom.click();
+          const el = this.$_live_getChildComponent(this, 'tabBar');
+          el.tabClick(0);
         } else {
           this.searchData.fixedcolumns = this.dataProcessing();
         }
