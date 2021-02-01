@@ -1683,6 +1683,7 @@
         return renderColumns;
       },
       collectionCellRender(cellData) {
+        debugger;
         if (cellData.customerurl && Object.keys(cellData.customerurl).length > 0) {
           return this.customerurlRender(cellData);
         }
