@@ -278,24 +278,24 @@
       // 模糊查询
       async getSearchKeys(value, key, options) {
         const {
-          tableName, deleteTableId, groupIndex, rowIndex
+          tableName, deleteTableId
         } = options;
         if (value === '') {
           this.searchKeyList = [];
           return;
         }
 
-        // 对输入值进行赋值
-        if (key === 'target') {
-          // 展示字段
-          this.resultList[groupIndex][key].col_id = value;
-        } else if (deleteTableId) {
-          // 如果有deleteTableId说明是选项组
-          this.resultList[groupIndex][key][rowIndex].label = value;
-        } else {
-          // 来源字段
-          this.resultList[groupIndex][key][rowIndex].col_id = value;
-        }
+        // // 对输入值进行赋值
+        // if (key === 'target') {
+        //   // 展示字段
+        //   this.resultList[groupIndex][key].col_id = value;
+        // } else if (deleteTableId) {
+        //   // 如果有deleteTableId说明是选项组
+        //   this.resultList[groupIndex][key][rowIndex].label = value;
+        // } else {
+        //   // 来源字段
+        //   this.resultList[groupIndex][key][rowIndex].col_id = value;
+        // }
 
         const { itemId } = this.$route.params;
         const searchdata = {
