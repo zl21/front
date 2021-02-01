@@ -1,6 +1,7 @@
 <template>
   <div class="r3-tab-nav">
     <Tabs
+      ref="R3_Tabs"
       type="card"
       :value="currentIndex"
       @on-click="tabClick"

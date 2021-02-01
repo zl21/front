@@ -2028,7 +2028,8 @@
         }
         if (this.getFilterTable) {
           const el = this.$_live_getChildComponent(this, 'tabBar');
-          el.tabClick(0);
+          const tabCurrentIndex = el.$refs.R3_Tabs.focusedKey;
+          el.tabClick(tabCurrentIndex);
         } else {
           this.searchData.fixedcolumns = this.dataProcessing();
         }
