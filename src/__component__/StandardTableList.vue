@@ -1829,15 +1829,17 @@
           }
           return obj;
         }, {});
-
         return Object.keys(jsonData).reduce((obj, item) => {
           let value = '';
 
           this.formItemsLists.concat([]).every((temp) => {
             if (temp.item.field === item) { // 等于当前节点，判断节点类型
               if (temp.item.type === 'DatePicker' && (temp.item.props.type === 'datetimerange' || temp.item.props.type === 'daterange')) { // 当为日期控件时，数据处理
-                if ((jsonData[item][0] && jsonData[item][1])) {
-                  value = jsonData[item].join('~');
+                if ((jsonData[item][0] && jsonData[item][1])) { 
+                  // 日期格式传参处理，主要是处理第一次默认值查询
+                  jsonData[item][0] = new Date().format(new Date(jsonData[item][0]));
+                  jsonData[item][1] = new Date().format(new Date(jsonData[item][1]));
+                  value = jsonData[item].join('~').replace(/-/g, '');
                 } else {
                   value = '';
                 }
