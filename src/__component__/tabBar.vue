@@ -1,15 +1,15 @@
 <template>
   <div class="r3-tab-nav">
-    <div
-      v-for="(item, index) in data.multi_tab"
-      :id="`tab_${index}`"
-      :key="index"
-      class="r3-tab-item"
-      :class="[index === currentIndex? 'r3-active-item' : '']"
-      @click="tabClick(index, item.tab_name,item.tab_value)"
+    <Tabs
+      type="card"
+      @on-click="tabClick"
     >
-      {{ item.tab_name }}
-    </div>
+      <TabPane
+        v-for="(item, index) in data.multi_tab"
+        :key="index"
+        :label="item.tab_name"
+      />
+    </Tabs>
   </div>
 </template>
 
@@ -19,7 +19,7 @@
     props: {
       data: {
         type: Object,
-        default: () => {}
+        default: () => { }
       },
 
     },
@@ -32,18 +32,11 @@
 
     methods: {
       tabClick(index) {
-        // const dom = document.querySelector('.r3-active-item');
-        // if (`tab_${index}` === dom.id) {
-        //   return;
-        // }
-        if (this.lastIndex !== index) {
-          this.currentIndex = index;
-          this.$emit('tabClick', {
-            data: this.data.multi_tab[index],
-            index
-          });
-          this.lastIndex = index;
-        }
+        this.currentIndex = index;
+        this.$emit('tabClick', {
+          data: this.data.multi_tab[index],
+          index
+        });
       },
     },
   };
@@ -54,22 +47,46 @@
 .r3-tab-nav {
   display: flex;
   background: #f5f7f7;
-  padding: 8px 8px 0;
   margin-top: 20px;
 }
-  .r3-tab-item {
-    border-radius: 4px 4px 0 0;
-    font-size: 12px;
-    font-weight: bold;
-    color: @primary-color;
-    background:#f5f7f7;
-    padding: 0 14px;
-    height: 25px;
-    line-height: 25px;
-    cursor: pointer;
-    &.r3-active-item {
-      background: @primary-color;
-      color: #f5f7f7;
-    }
+</style>
+
+<style lang="less">
+@import url('../assets/theme/custom.less');
+.r3-tab-nav {
+  .ark-tabs-bar {
+    margin-bottom: 0;
+    border-bottom: none;
+    width: 100%;
   }
+
+  .ark-tabs-card {
+    width: 100%;
+  }
+
+  .ark-tabs.ark-tabs-card > .ark-tabs-bar .ark-tabs-tab {
+      background: #f5f7f7;
+      color: @primary-color;
+      border: none;
+      line-height: 22px;
+      width: auto;
+      padding: 4px 20px;
+      font-weight: bold;
+      &:hover {
+        color: @primary-color;
+      }
+      &:last-child {
+        border-right: none;
+      }
+    }
+
+  .ark-tabs.ark-tabs-card > .ark-tabs-bar .ark-tabs-tab-active {
+      background: @primary-color;
+      border-color: @primary-color;
+      color: #f5f7f7;
+      &:hover {
+        color: #f5f7f7;
+      }
+    }
+}
 </style>

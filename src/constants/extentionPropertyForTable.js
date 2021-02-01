@@ -322,12 +322,12 @@ export default [
     description: '增加列表的查询tab页配置'
   },
   {
-    name: '关联字段组配置',
+    name: '单据标记配置',
     key: 'key_group_conf',
     type: 'custom',
     component: 'bindKey',
     showLabel: false,
     enableIncrease: true,
-    description: '增加关联字段的配置'
+    description: '增加单据标记的配置'
   },
 ];

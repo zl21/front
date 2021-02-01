@@ -31,7 +31,8 @@
             tableName:'AD_COLUMN'
           })"
           @on-input-value-change="getSearchKeys($event, 'target',{
-            tableName:'AD_COLUMN'
+            tableName:'AD_COLUMN',
+            groupIndex: index
           })"
           @on-fkrp-selected="handlerSelected(index, 'target', '', $event)"
           @on-clear="handleClear(index, 'target', '', $event)"
@@ -67,7 +68,9 @@
               tableName:'AD_COLUMN'
             })"
             @on-input-value-change="getSearchKeys($event, 'source',{
-              tableName:'AD_COLUMN'
+              tableName:'AD_COLUMN',
+              groupIndex: index,
+              rowIndex: j
             })"
             @on-fkrp-selected="handlerSelected(index, 'source', j , $event, 0)"
             @on-clear="handleClear(index, 'source', j)"
@@ -97,7 +100,9 @@
             })"
             @on-input-value-change="getSearchKeys($event, 'source', {
               tableName:'AD_LIMITVALUE_GROUP',
-              deleteTableId: true
+              deleteTableId: true,
+              groupIndex: index,
+              rowIndex: j
             })"
             @on-fkrp-selected="handlerSelected(index, 'source', j , $event, 1)"
             @on-clear="handleClear(index, 'source', j)"
@@ -113,14 +118,14 @@
             class="operate-button"
             @click="(event) => {item.source = addColname(item.source)}"
           >
-            +
+            <i class="iconfont">&#xec3f;</i>
           </button>
           <button
             v-if="item.source.length > 1"
             class="operate-button"
             @click="(event) => {item.source = deleteColname(item.source,j)}"
           >
-            -
+            <i class="iconfont">&#xed15;</i>
           </button>
         </div>
       </div>
@@ -131,14 +136,14 @@
         class="operate-button"
         @click="addButtonClick"
       >
-        +
+        <i class="iconfont">&#xec3f;</i>
       </button>
       <button
         v-if="resultList.length > 1"
         class="operate-button"
         @click="removeButtonClick(index)"
       >
-        -
+        <i class="iconfont">&#xed15;</i>
       </button>
     </div>
   </div>
@@ -211,11 +216,11 @@
       } else {
         this.resultList = [JSON.parse(JSON.stringify(GROUP_CONSTRUCTOR))];
       }
-      console.log('初始化', this.resultList);
     },
 
     methods: {
       removeOption(keyArray) { // 清楚整个配置数据
+        this.resultList = [JSON.parse(JSON.stringify(GROUP_CONSTRUCTOR))];
         this.$emit('removeOption', keyArray || []);
       },
 
@@ -228,7 +233,7 @@
       },
       addColname(item) { // 新增字段配置
         item.push({
-          id: '',
+          col_id: '',
           label: '',
           defaultselected: [
             [],
@@ -273,11 +278,25 @@
 
       // 模糊查询
       async getSearchKeys(value, key, options) {
-        const { tableName, deleteTableId } = options;
+        const {
+          tableName, deleteTableId
+        } = options;
         if (value === '') {
           this.searchKeyList = [];
           return;
         }
+
+        // // 对输入值进行赋值
+        // if (key === 'target') {
+        //   // 展示字段
+        //   this.resultList[groupIndex][key].col_id = value;
+        // } else if (deleteTableId) {
+        //   // 如果有deleteTableId说明是选项组
+        //   this.resultList[groupIndex][key][rowIndex].label = value;
+        // } else {
+        //   // 来源字段
+        //   this.resultList[groupIndex][key][rowIndex].col_id = value;
+        // }
 
         const { itemId } = this.$route.params;
         const searchdata = {
@@ -411,7 +430,6 @@
       // 同步数据到父组件
       syncData() {
         const cacheData = JSON.parse(JSON.stringify(this.resultList));
-        console.log('提交', cacheData);
         if (cacheData.length === 0) {
           this.$emit('dataChange', { key: this.option.key, value: '' });
         } else {

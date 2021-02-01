@@ -104,14 +104,14 @@
             class="operate-button"
             @click="(event) => {item.tab_value = addColname(item.tab_value)}"
           >
-            +
+            <i class="iconfont">&#xec3f;</i>
           </button>
           <button
             v-if="item.tab_value.length > 1"
             class="operate-button"
             @click="(event) => {item.tab_value = deleteColname(item.tab_value,j)}"
           >
-            -
+            <i class="iconfont">&#xed15;</i>
           </button>
         </div>
       </div>
@@ -122,14 +122,14 @@
         class="operate-button"
         @click="addButtonClick"
       >
-        +
+        <i class="iconfont">&#xec3f;</i>
       </button>
       <button
         v-if="sumTabs.length > 1"
         class="operate-button"
         @click="removeButtonClick(index)"
       >
-        -
+        <i class="iconfont">&#xed15;</i>
       </button>
     </div>
   </div>
@@ -192,32 +192,35 @@
     },
 
     async created() {
-      const newData = JSON.parse(JSON.stringify(this.defaultData));
-
-      if (this.defaultData && this.defaultData.length > 0) {
-        newData.forEach((tabObj) => {
-          tabObj.tab_value.forEach((keyObj) => {
-            if (keyObj.type && keyObj.type.toUpperCase().startsWith('DATE')) {
-              keyObj.contrast_value = keyObj.contrast_value.split('~');
-            }
-          });
-        });
-        this.sumTabs = newData;
-      } else {
-        this.sumTabs = [JSON.parse(JSON.stringify(TAB_CONSTRUCTOR))];
-      }
-
-      console.log('初始化', this.sumTabs);
+      this.initData();
     },
 
     methods: {
+      // 初始化
+      initData() {
+        const newData = JSON.parse(JSON.stringify(this.defaultData));
+
+        if (this.defaultData && this.defaultData.length > 0) {
+          newData.forEach((tabObj) => {
+            tabObj.tab_value.forEach((keyObj) => {
+              if (keyObj.type && keyObj.type.toUpperCase().startsWith('DATE')) {
+                keyObj.contrast_value = keyObj.contrast_value.split('~');
+              }
+            });
+          });
+          this.sumTabs = newData;
+        } else {
+          this.sumTabs = [JSON.parse(JSON.stringify(TAB_CONSTRUCTOR))];
+        }
+      },
+    
       removeOption(keyArray) { // 清楚整个配置数据
+        this.sumTabs = [JSON.parse(JSON.stringify(TAB_CONSTRUCTOR))];
         this.$emit('removeOption', keyArray || []);
       },
       addButtonClick() { // 新增tab配置
         const tab = JSON.parse(JSON.stringify(TAB_CONSTRUCTOR));
         this.sumTabs.push(tab);
-        console.log('新增', this.sumTabs);
       },
       removeButtonClick(index) {
         this.sumTabs.splice(index, 1);
@@ -382,19 +385,19 @@ index:  //需要删除的配置下标 type:number
             if (keyRow.type && keyRow.type.toUpperCase().startsWith('DATE') && keyRow.contrast_value[0] && keyRow.contrast_value[1]) {
               keyRow.contrast_value = keyRow.contrast_value.join('~');
             }
-            // // 过滤不必要的字段
-            // delete keyRow.type;
-            // delete keyRow.selectOptions;
-            // delete keyRow.defaultSelected;
-            // // 删除无效字段配置
-            // if (!keyRow.col_name || !keyRow.operator || !keyRow.contrast_value) {
-            //   tabObj.tab_value.splice(j, 1);
-            // }
-          }
-          // // 删除无效tab配置
-          // if (!tabObj.tab_name || tabObj.tab_value.length === 0) {
-          //   cacheData.splice(tabIndex, 1);
+          // // 过滤不必要的字段
+          // delete keyRow.type;
+          // delete keyRow.selectOptions;
+          // delete keyRow.defaultSelected;
+          // // 删除无效字段配置
+          // if (!keyRow.col_name || !keyRow.operator || !keyRow.contrast_value) {
+          //   tabObj.tab_value.splice(j, 1);
           // }
+          }
+        // // 删除无效tab配置
+        // if (!tabObj.tab_name || tabObj.tab_value.length === 0) {
+        //   cacheData.splice(tabIndex, 1);
+        // }
         }
 
         return cacheData;
@@ -414,13 +417,12 @@ index:  //需要删除的配置下标 type:number
 
       // 获取选中字段
       handlerSelected(tabIndex, keyIndex, value) {
-        console.log('===', value);
         this.currentTabIndex = tabIndex;
         this.currentKeyIndex = keyIndex;
-        this.sumTabs[tabIndex].tab_value[keyIndex].col_name = value[0].rowItem.DBNAME.val;
+        this.sumTabs[tabIndex].tab_value[keyIndex].col_name = value[0].rowItem.DBNAME.val || value[0].rowItem.DBNAME;
         this.sumTabs[tabIndex].tab_value[keyIndex].operator = '';
         this.sumTabs[tabIndex].tab_value[keyIndex].contrast_value = '';
-        this.sumTabs[tabIndex].tab_value[keyIndex].type = value[0].rowItem.COLTYPE.val;
+        this.sumTabs[tabIndex].tab_value[keyIndex].type = value[0].rowItem.COLTYPE.val || value[0].rowItem.COLTYPE;
         this.sumTabs[tabIndex].tab_value[keyIndex].defaultSelected = [value[0]];
       },
 
@@ -435,7 +437,6 @@ index:  //需要删除的配置下标 type:number
       // 获取下拉选项
       handleSelectExpand(tabIndex, keyIndex) {
         const typeValue = this.sumTabs[tabIndex].tab_value[keyIndex].type || '';
-        console.log('类型----', typeValue);
         let type;
         if (typeValue.toUpperCase().startsWith('NUMBER')) {
           type = 'NUMBER';
@@ -444,7 +445,6 @@ index:  //需要删除的配置下标 type:number
         } else if (typeValue.toUpperCase().startsWith('CHAR') || typeValue.toUpperCase().startsWith('VARCHAR')) {
           type = 'STRING';
         }
-        console.log('类型=====', type);
 
         this.$set(this.sumTabs[tabIndex].tab_value[keyIndex], 'selectOptions', this.setSelectItems(type));
       },
@@ -521,7 +521,7 @@ index:  //需要删除的配置下标 type:number
         const keyIndex = this.currentKeyIndex;
         const value = this.sumTabs[tabIndex].tab_value[keyIndex].col_name;
 
-        const result = this.sumTabs[tabIndex].tab_value.filter(keyObj => keyObj.col_name === value);
+        const result = this.sumTabs[tabIndex].tab_value.filter(keyObj => (value !== '' && value !== null && value !== undefined && keyObj.col_name === value));
         if (result.length > 1) {
           return {
             isPass: false,
