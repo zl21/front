@@ -411,6 +411,7 @@
         }
       },
       tabClick({ data, index }) {
+        debugger;
         this.filterTableParam = {};
 
         if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].startIndex) {
@@ -431,7 +432,9 @@
           //   this.filterTableParam = item;
           // });
           let arrRes = [];
-          this.searchData.fixedcolumns = Object.values(data.tab_value).reduce((arr, obj) => {
+          const tabValue = JSON.parse(JSON.stringify(data.tab_value));
+          
+          this.searchData.fixedcolumns = Object.values(tabValue).reduce((arr, obj) => {
             Object.keys(this.searchData.fixedcolumns).map((key) => {
               if (obj[key]) {
                 if (obj[key] !== this.searchData.fixedcolumns[key]) {
