@@ -326,6 +326,6 @@ export default [
     component: () => import('../__component__/ExtentionsProperty/bindKey.vue'),
     showLabel: false,
     enableIncrease: true,
-    description: '单据标记配置的配置'
+    description: '增加单据标记的配置'
   },
 ];
