@@ -118,14 +118,14 @@
             class="operate-button"
             @click="(event) => {item.source = addColname(item.source)}"
           >
-            +
+            <i class="iconfont">&#xec3f;</i>
           </button>
           <button
             v-if="item.source.length > 1"
             class="operate-button"
             @click="(event) => {item.source = deleteColname(item.source,j)}"
           >
-            -
+            <i class="iconfont">&#xed15;</i>
           </button>
         </div>
       </div>
@@ -136,14 +136,14 @@
         class="operate-button"
         @click="addButtonClick"
       >
-        +
+        <i class="iconfont">&#xec3f;</i>
       </button>
       <button
         v-if="resultList.length > 1"
         class="operate-button"
         @click="removeButtonClick(index)"
       >
-        -
+        <i class="iconfont">&#xed15;</i>
       </button>
     </div>
   </div>

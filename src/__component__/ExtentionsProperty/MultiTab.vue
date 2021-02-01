@@ -104,14 +104,14 @@
             class="operate-button"
             @click="(event) => {item.tab_value = addColname(item.tab_value)}"
           >
-            +
+            <i class="iconfont">&#xec3f;</i>
           </button>
           <button
             v-if="item.tab_value.length > 1"
             class="operate-button"
             @click="(event) => {item.tab_value = deleteColname(item.tab_value,j)}"
           >
-            -
+            <i class="iconfont">&#xed15;</i>
           </button>
         </div>
       </div>
@@ -122,14 +122,14 @@
         class="operate-button"
         @click="addButtonClick"
       >
-        +
+        <i class="iconfont">&#xec3f;</i>
       </button>
       <button
         v-if="sumTabs.length > 1"
         class="operate-button"
         @click="removeButtonClick(index)"
       >
-        -
+        <i class="iconfont">&#xed15;</i>
       </button>
     </div>
   </div>
@@ -515,7 +515,7 @@ index:  //需要删除的配置下标 type:number
         const keyIndex = this.currentKeyIndex;
         const value = this.sumTabs[tabIndex].tab_value[keyIndex].col_name;
 
-        const result = this.sumTabs[tabIndex].tab_value.filter(keyObj => keyObj.col_name === value);
+        const result = this.sumTabs[tabIndex].tab_value.filter(keyObj => (value !== '' && value !== null && value !== undefined && keyObj.col_name === value));
         if (result.length > 1) {
           return {
             isPass: false,
