@@ -431,7 +431,9 @@
           //   this.filterTableParam = item;
           // });
           let arrRes = [];
-          this.searchData.fixedcolumns = Object.values(data.tab_value).reduce((arr, obj) => {
+          const tabValue = JSON.parse(JSON.stringify(data.tab_value));
+          
+          this.searchData.fixedcolumns = Object.values(tabValue).reduce((arr, obj) => {
             Object.keys(this.searchData.fixedcolumns).map((key) => {
               if (obj[key]) {
                 if (obj[key] !== this.searchData.fixedcolumns[key]) {
@@ -2027,8 +2029,9 @@
           this.searchData.startIndex = 0;
         }
         if (this.getFilterTable) {
-          const dom = document.querySelector('.r3-active-item');
-          dom.click();
+          const el = this.$_live_getChildComponent(this, 'tabBar');
+          const tabCurrentIndex = el.$refs.R3_Tabs.focusedKey;
+          el.tabClick(tabCurrentIndex);
         } else {
           this.searchData.fixedcolumns = this.dataProcessing();
         }

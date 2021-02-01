@@ -722,6 +722,10 @@ export default {
   }) { // 获取提交数据
     objId = objId === 'New' ? '-1' : objId;
     let param = {};
+    // 处理存储过程逻辑，配置的path中带有sp|时则走框架的标准逻辑，不走定制path
+    if (path && path.includes('sp|')) {
+      path = null;
+    }
     if (path) {
       if (isreftabs) {
         param[table] = {
