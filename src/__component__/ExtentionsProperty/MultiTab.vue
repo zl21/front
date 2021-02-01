@@ -192,24 +192,30 @@
     },
 
     async created() {
-      const newData = JSON.parse(JSON.stringify(this.defaultData));
-
-      if (this.defaultData && this.defaultData.length > 0) {
-        newData.forEach((tabObj) => {
-          tabObj.tab_value.forEach((keyObj) => {
-            if (keyObj.type && keyObj.type.toUpperCase().startsWith('DATE')) {
-              keyObj.contrast_value = keyObj.contrast_value.split('~');
-            }
-          });
-        });
-        this.sumTabs = newData;
-      } else {
-        this.sumTabs = [JSON.parse(JSON.stringify(TAB_CONSTRUCTOR))];
-      }
+      this.initData();
     },
 
     methods: {
+      // 初始化
+      initData() {
+        const newData = JSON.parse(JSON.stringify(this.defaultData));
+
+        if (this.defaultData && this.defaultData.length > 0) {
+          newData.forEach((tabObj) => {
+            tabObj.tab_value.forEach((keyObj) => {
+              if (keyObj.type && keyObj.type.toUpperCase().startsWith('DATE')) {
+                keyObj.contrast_value = keyObj.contrast_value.split('~');
+              }
+            });
+          });
+          this.sumTabs = newData;
+        } else {
+          this.sumTabs = [JSON.parse(JSON.stringify(TAB_CONSTRUCTOR))];
+        }
+      },
+    
       removeOption(keyArray) { // 清楚整个配置数据
+        this.sumTabs = [JSON.parse(JSON.stringify(TAB_CONSTRUCTOR))];
         this.$emit('removeOption', keyArray || []);
       },
       addButtonClick() { // 新增tab配置
@@ -379,19 +385,19 @@ index:  //需要删除的配置下标 type:number
             if (keyRow.type && keyRow.type.toUpperCase().startsWith('DATE') && keyRow.contrast_value[0] && keyRow.contrast_value[1]) {
               keyRow.contrast_value = keyRow.contrast_value.join('~');
             }
-            // // 过滤不必要的字段
-            // delete keyRow.type;
-            // delete keyRow.selectOptions;
-            // delete keyRow.defaultSelected;
-            // // 删除无效字段配置
-            // if (!keyRow.col_name || !keyRow.operator || !keyRow.contrast_value) {
-            //   tabObj.tab_value.splice(j, 1);
-            // }
-          }
-          // // 删除无效tab配置
-          // if (!tabObj.tab_name || tabObj.tab_value.length === 0) {
-          //   cacheData.splice(tabIndex, 1);
+          // // 过滤不必要的字段
+          // delete keyRow.type;
+          // delete keyRow.selectOptions;
+          // delete keyRow.defaultSelected;
+          // // 删除无效字段配置
+          // if (!keyRow.col_name || !keyRow.operator || !keyRow.contrast_value) {
+          //   tabObj.tab_value.splice(j, 1);
           // }
+          }
+        // // 删除无效tab配置
+        // if (!tabObj.tab_name || tabObj.tab_value.length === 0) {
+        //   cacheData.splice(tabIndex, 1);
+        // }
         }
 
         return cacheData;
