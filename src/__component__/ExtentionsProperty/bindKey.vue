@@ -220,7 +220,6 @@
 
     methods: {
       removeOption(keyArray) { // 清楚整个配置数据
-        this.resultList = [JSON.parse(JSON.stringify(GROUP_CONSTRUCTOR))];
         this.$emit('removeOption', keyArray || []);
       },
 
