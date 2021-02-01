@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -1302,6 +1302,9 @@
         // }
       },
       objectTryDelete(obj) { // 按钮删除方法
+        if (obj && obj.path && obj.path.includes('sp|')) {
+          obj.path = null;
+        }
         if (this.tableRowSelectedIds.length === 0) {
           const data = {
             mask: true,
