@@ -234,8 +234,8 @@ export default {
     // 处理存储过程逻辑，配置的actiontype中为sp时则走定制的/p/cs/exeAction
     if (item.actiontype === 'sp') {
       actionName = '/p/cs/exeAction';
-      obj.actionName = item.webname;
     }
+    obj.actionName = item.webname;
 
     network.post(actionName || '/p/cs/exeAction', obj).then((res) => {
       if (res.data.code === 0) {
