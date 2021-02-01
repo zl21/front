@@ -427,9 +427,36 @@
         }
       },
 
+      // 设置展示字段
+      setDisplayData(originData) {
+        const cacheData = JSON.parse(JSON.stringify(originData));
+        for (let i = Math.max(cacheData.length - 1, 0); i >= 0; i--) {
+          const group = cacheData[i];
+          delete group.target.defaultselected;
+          delete group.target.label;
+          for (let j = Math.max(group.source.length - 1, 0); j >= 0; j--) {
+            const row = group.source[j];
+            delete row.defaultselected;
+            // 删除无效来源字段
+            if (!row.col_id || !row.label) {
+              group.source.splice(j, 1);
+            }
+          }
+          // 删除无效字段组配置
+          if ((!group.target.col_id) || group.source.length === 0) {
+            cacheData.splice(i, 1);
+          }
+        }
+
+        sessionStorage.setItem('key_group_conf', JSON.stringify(cacheData));
+      },
+
       // 同步数据到父组件
       syncData() {
         const cacheData = JSON.parse(JSON.stringify(this.resultList));
+
+        this.setDisplayData(this.resultList);
+
         if (cacheData.length === 0) {
           this.$emit('dataChange', { key: this.option.key, value: '' });
         } else {

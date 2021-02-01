@@ -416,9 +416,8 @@ index:  //需要删除的配置下标 type:number
             cacheData.splice(tabIndex, 1);
           }
         }
-        // return cacheData;
-        console.log('设置缓存', cacheData);
-        sessionStorage.setItem('multiTabFakeData', JSON.stringify(cacheData));
+
+        sessionStorage.setItem('multi_tab_conf', JSON.stringify(cacheData));
       },
 
       // 把数据同步给父组件

@@ -95,7 +95,7 @@
   import ExtentionOptions from './ExtentionOptions.vue';
 
   const getGuid = () => Math.round(Math.random() * 10000000000);
-  
+
   export default {
     name: 'ExtentionProperty',
     data() {
@@ -132,26 +132,16 @@
         }
         this.$emit('valueChange', value);
 
-        let fakeValue = null;
+        let fakeValue = JSON.parse(JSON.stringify(this.rootData));
         // 针对tab配置特殊处理,显示假的配置
-        if (this.rootData && 'multi_tab_conf' in this.rootData) {
-          if (sessionStorage.getItem('multiTabFakeData')) {
-            fakeValue = JSON.parse(JSON.stringify(this.rootData));
-            fakeValue.multi_tab_conf = JSON.parse(sessionStorage.getItem('multiTabFakeData'));
-            if (fakeValue.multi_tab_conf.length === 0) {
-              delete fakeValue.multi_tab_conf;
-            }
-          } else {
-            fakeValue = JSON.parse(value);
-          }
-        } 
-        if (this.rootData && 'key_group_conf' in this.rootData) {
-          fakeValue = JSON.parse(JSON.stringify(this.rootData));
-          fakeValue.key_group_conf = this.filterKeyGroup(fakeValue.key_group_conf);
-          if (fakeValue.key_group_conf.length === 0) {
-            delete fakeValue.key_group_conf;
-          }
-        } 
+        if (fakeValue && 'multi_tab_conf' in fakeValue) {
+          fakeValue = this.getDisplayData(fakeValue, value, 'multi_tab_conf');
+        }
+
+        // 针对单据标记特殊处理,显示假的配置
+        if (fakeValue && 'key_group_conf' in fakeValue) {
+          fakeValue = this.getDisplayData(fakeValue, value, 'key_group_conf');
+        }
         if ((this.rootData && 'multi_tab_conf' in this.rootData) || (this.rootData && 'key_group_conf' in this.rootData)) {
           return JSON.stringify(fakeValue, null, 2);
         }
@@ -159,32 +149,22 @@
       },
     },
     methods: {
-      filterKeyGroup(originData) {
-        const cacheData = JSON.parse(JSON.stringify(originData));
-        for (let i = Math.max(cacheData.length - 1, 0); i >= 0; i--) {
-          const group = cacheData[i];
-          delete group.target.defaultselected;
-          delete group.target.label;
-          for (let j = Math.max(group.source.length - 1, 0); j >= 0; j--) {
-            const row = group.source[j];
-            delete row.defaultselected;
-            // 删除无效来源字段
-            if (!row.col_id || !row.label) {
-              group.source.splice(j, 1);
-            }
+      getDisplayData(rootData, value, key) {
+        const cache = JSON.parse(sessionStorage.getItem(key));
+        if (cache) {
+          const obj = JSON.parse(JSON.stringify(rootData));
+          obj[key] = cache;
+          if (cache.length === 0) {
+            delete obj[key];
           }
-          // 删除无效字段组配置
-          if ((!group.target.col_id) || group.source.length === 0) {
-            cacheData.splice(i, 1);
-          }
-        }
-
-        return cacheData;
+          return obj;
+        } 
+        return JSON.parse(value);
       },
-      
+
       scrollIntoView(item, index) {
         this.currentIndex = index;
-        // document.querySelector(`#${item.key}-${index}-${this.guid}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // document.querySelector(`#${item.key}-${index}-${this.guid}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
       },
       updateRootData(key, value) {
         if (value === '') {
@@ -198,15 +178,12 @@
         this.updateRootData(key, value);
       },
       removeOption(keyArray) {
-        console.log('🚀 ~ file: ExtentionProperty.vue ~ line 217 ~ removeOption ~ keyArray', keyArray);
         const rootDataAfterRemoved = {};
         Object.keys(this.rootData).forEach((key) => {
-          console.log('删除', key, keyArray.indexOf(key) === -1);
           if (keyArray.indexOf(key) === -1) {
             rootDataAfterRemoved[key] = this.rootData[key];
           }
         });
-        console.log('删除后', rootDataAfterRemoved);
         this.rootData = rootDataAfterRemoved;
       },
     },
@@ -217,188 +194,191 @@
 </script>
 
 <style lang="less">
-  .extentionProperty {
-    ul, li, div {
-      box-sizing: border-box;
-    }
-    margin: 1px;
-    background-color: #fff;
-    width: 100%;
-    height: 450px;
-    border: 1px solid lightgrey;
-    font-family: Consolas, "Hiragino Sans GB", "Microsoft YaHei", serif;
+.extentionProperty {
+  ul,
+  li,
+  div {
+    box-sizing: border-box;
+  }
+  margin: 1px;
+  background-color: #fff;
+  width: 100%;
+  height: 450px;
+  border: 1px solid lightgrey;
+  font-family: Consolas, 'Hiragino Sans GB', 'Microsoft YaHei', serif;
+  display: flex;
+  ul li {
+    list-style: none;
+  }
+  li:not(:last-child) {
+    border-bottom: 1px solid lightgrey;
+  }
+  .left {
     display: flex;
-    ul li {
-      list-style: none;
-    }
-    li:not(:last-child) {
-      border-bottom: 1px solid lightgrey;
-    }
-    .left {
+    border-right: 1px solid lightgrey;
+    ul {
+      flex: 1;
       display: flex;
-      border-right: 1px solid lightgrey;
-      ul {
+      flex-direction: column;
+      overflow: scroll;
+      li.active {
+        border-left: 2px solid orangered;
+      }
+      li {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        padding: 2px 10px;
+        min-height: 35px;
+      }
+      li:hover {
+        opacity: 0.8;
+        cursor: pointer;
+        color: orangered;
+        // text-shadow: 1px 1px 1px #b29f1c;
+      }
+    }
+  }
+  .middle {
+    flex: 6;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    .item-render-area {
+      flex-direction: column;
+      justify-content: center;
+      width: 100%;
+      padding: 7px 0 7px 7px;
+      .description {
+        display: flex;
+        margin: 5px;
+        padding: 5px;
+        background: rgba(244, 246, 249, 1);
+        .fieldName {
+          color: #000;
+        }
+        .content {
+          font-style: italic;
+          padding: 5px 5px 0 15px;
+        }
+      }
+      .content-row {
+        display: flex;
+        .left {
+          border: none;
+          label {
+            padding-top: 15px;
+          }
+          label:first-child {
+            writing-mode: vertical-lr;
+          }
+          label:last-child {
+            writing-mode: vertical-rl;
+          }
+        }
+        .right {
+          border: none;
+        }
+      }
+      .content {
         flex: 1;
         display: flex;
         flex-direction: column;
-        overflow: scroll;
-        li.active {
-          border-left: 2px solid orangered;
-        }
-        li {
-          flex: 1;
-          display: flex;
-          align-items: center;
-          padding: 2px 10px;
-          min-height: 35px;
-        }
-        li:hover {
-          opacity: 0.8;
-          cursor: pointer;
-          color: orangered;
-         // text-shadow: 1px 1px 1px #b29f1c;
-        }
-      }
-    }
-    .middle {
-      flex: 6;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      overflow-y: scroll;
-      overflow-x: hidden;
-      .item-render-area {
-        flex-direction: column;
-        justify-content: center;
-        width: 100%;
-        padding: 7px 0 7px 7px;
-        .description {
-          display: flex;
-          margin: 5px;
-          padding: 5px;
-          background:rgba(244,246,249,1);
-          .fieldName {
-            color: #000;
-          }
-          .content {
-            font-style: italic;
-            padding: 5px 5px 0 15px;
-          }
-        }
-        .content-row {
-          display: flex;
-          .left {
-            border: none;
-            label {
-              padding-top: 15px;
-            }
-            label:first-child {
-              writing-mode: vertical-lr;
-            }
-            label:last-child {
-              writing-mode: vertical-rl;
-            }
-          }
-          .right {
-            border: none;
-          }
-        }
-        .content {
-          flex: 1;
+        .input-group-item {
+          margin: 5px 7px;
           display: flex;
           flex-direction: column;
-          .input-group-item {
-            margin: 5px 7px;
-            display: flex;
-            flex-direction: column;
-            .logInfo {
-              color: orangered;
-              font-style: italic;
-              text-align: right;
-              padding: 5px 5px 5px;
-            }
-            .cell {
-              text-align: right;
-              line-height: 24px;
-              vertical-align: middle;
-              display: flex;
-              flex: 1;
-              .label {
-                flex: 1.5;
-                display: flex;
-                justify-content: flex-end;
-                align-items: center;
-              }
-              .input, .select {
-                flex: 3;
-                padding: 0 5px;
-                border: 1px solid lightgrey;
-              }
-              input[type="text"]::placeholder {
-                color: grey;
-                font-size: 12px;
-                font-style: italic;
-                letter-spacing: 1px;
-              }
-            }
+          .logInfo {
+            color: orangered;
+            font-style: italic;
+            text-align: right;
+            padding: 5px 5px 5px;
           }
-          .radioItemWrapper {
+          .cell {
+            text-align: right;
+            line-height: 24px;
+            vertical-align: middle;
             display: flex;
-            align-items: center;
-            flex: 3;
-            flex-wrap: wrap;
-            .radioItem {
-              cursor: pointer;
-              padding: 5px;
-              text-align: left;
-              min-width: 150px;
-              input[type='radio'] {
-                line-height: 100%;
-                vertical-align: middle;
-              }
+            flex: 1;
+            .label {
+              flex: 1.5;
+              display: flex;
+              justify-content: flex-end;
+              align-items: center;
             }
-            .radioItem:hover {
-              opacity: 0.8;
+            .input,
+            .select {
+              flex: 3;
+              padding: 0 5px;
+              border: 1px solid lightgrey;
+            }
+            input[type='text']::placeholder {
+              color: grey;
+              font-size: 12px;
+              font-style: italic;
+              letter-spacing: 1px;
             }
           }
         }
-        .labelWithObjectGroup {
-          padding: 5px;
-          margin: 5px;
-          border: 1px solid lightgrey;
-          .operate-button {
-            background-color: transparent;
-            outline: none;
-            font-size: 16px;
-            padding: 5px;
-            border: 1px solid lightgrey;
-            width: 20px;
-            display: inline-block;
-            height: 20px;
-            line-height: 8px;
-            border-radius: 13px;
-            color: grey;
-          }
-          .operate-button:hover {
-            color: #000;
+        .radioItemWrapper {
+          display: flex;
+          align-items: center;
+          flex: 3;
+          flex-wrap: wrap;
+          .radioItem {
             cursor: pointer;
+            padding: 5px;
+            text-align: left;
+            min-width: 150px;
+            input[type='radio'] {
+              line-height: 100%;
+              vertical-align: middle;
+            }
+          }
+          .radioItem:hover {
             opacity: 0.8;
           }
         }
       }
-    }
-    .right {
-      border-left: 1px solid lightgrey;
-      flex: 3;
-      textarea {
-        border: none;
-        width: 100%;
-        height: 100%;
-        resize: none;
+      .labelWithObjectGroup {
         padding: 5px;
-        font-size: 12px;
-        font-family: Consolas, "Microsoft YaHei", serif;
+        margin: 5px;
+        border: 1px solid lightgrey;
+        .operate-button {
+          background-color: transparent;
+          outline: none;
+          font-size: 16px;
+          padding: 5px;
+          border: 1px solid lightgrey;
+          width: 20px;
+          display: inline-block;
+          height: 20px;
+          line-height: 8px;
+          border-radius: 13px;
+          color: grey;
+        }
+        .operate-button:hover {
+          color: #000;
+          cursor: pointer;
+          opacity: 0.8;
+        }
       }
     }
   }
+  .right {
+    border-left: 1px solid lightgrey;
+    flex: 3;
+    textarea {
+      border: none;
+      width: 100%;
+      height: 100%;
+      resize: none;
+      padding: 5px;
+      font-size: 12px;
+      font-family: Consolas, 'Microsoft YaHei', serif;
+    }
+  }
+}
 </style>
