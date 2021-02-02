@@ -437,7 +437,7 @@
                 if (obj[key] !== this.searchData.fixedcolumns[key]) {
                   switch (Object.prototype.toString.call(obj[key])) {
                   case '[object String]':
-                    if (obj[key].includes('~')) { // 判断否是时间段类型字段,取liang ge shi jian
+                    if (obj[key].includes('~')) { // 判断否是时间段类型字段,取两个时间的并集
                       let dateArray = [];
                       dateArray = dateArray.concat(this.searchData.fixedcolumns[key].split('~'));
                       dateArray = dateArray.concat(obj[key].split('~'));
