@@ -411,6 +411,7 @@
         }
       },
       tabClick({ data, index }) {
+        debugger;
         this.filterTableParam = {};
 
         if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].startIndex) {
