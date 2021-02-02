@@ -163,25 +163,27 @@
       },
 
       setFormatedValue() {
-        const fakeValue = JSON.parse(this.currentValue);
-        // 针对tab配置特殊处理,显示假的配置
-        if (fakeValue && 'multi_tab_conf' in fakeValue) {
-          fakeValue.multi_tab_conf = this.filterTabData(fakeValue.multi_tab_conf);
-          if (fakeValue.multi_tab_conf.length === 0) {
-            delete fakeValue.multi_tab_conf;
+        if (this.currentValue) {
+          const fakeValue = JSON.parse(this.currentValue);
+          // 针对tab配置特殊处理,显示假的配置
+          if (fakeValue && 'multi_tab_conf' in fakeValue) {
+            fakeValue.multi_tab_conf = this.filterTabData(fakeValue.multi_tab_conf);
+            if (fakeValue.multi_tab_conf.length === 0) {
+              delete fakeValue.multi_tab_conf;
+            }
+            this.$refs.extentionInput.querySelector('textarea').value = JSON.stringify(fakeValue, null, 2);
+          } 
+          // 针对字段组配置特殊处理,显示假的配置
+          if (fakeValue && 'key_group_conf' in fakeValue) {
+            fakeValue.key_group_conf = this.filterKeyData(fakeValue.key_group_conf);
+            if (fakeValue.key_group_conf.length === 0) {
+              delete fakeValue.key_group_conf;
+            }
+            this.$refs.extentionInput.querySelector('textarea').value = JSON.stringify(fakeValue, null, 2);
+          } 
+          if ((this.currentValue && 'multi_tab_conf' in JSON.parse(this.currentValue)) || (this.currentValue && 'key_group_conf' in JSON.parse(this.currentValue))) {
+            return;
           }
-          this.$refs.extentionInput.querySelector('textarea').value = JSON.stringify(fakeValue, null, 2);
-        } 
-        // 针对字段组配置特殊处理,显示假的配置
-        if (fakeValue && 'key_group_conf' in fakeValue) {
-          fakeValue.key_group_conf = this.filterKeyData(fakeValue.key_group_conf);
-          if (fakeValue.key_group_conf.length === 0) {
-            delete fakeValue.key_group_conf;
-          }
-          this.$refs.extentionInput.querySelector('textarea').value = JSON.stringify(fakeValue, null, 2);
-        } 
-        if ((this.currentValue && 'multi_tab_conf' in JSON.parse(this.currentValue)) || (this.currentValue && 'key_group_conf' in JSON.parse(this.currentValue))) {
-          return;
         }
         this.$refs.extentionInput.querySelector('textarea').value = this.currentValue === '""' ? '' : this.currentValue;
       },
