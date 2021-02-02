@@ -437,9 +437,12 @@
                 if (obj[key] !== this.searchData.fixedcolumns[key]) {
                   switch (Object.prototype.toString.call(obj[key])) {
                   case '[object String]':
-                    if (obj[key].includes('~')) { // 判断否是时间段类型字段
-                      console.log(this.searchData.fixedcolumns[key], obj[key]);
-                      arr[key] = obj[key];
+                    if (obj[key].includes('~')) { // 判断否是时间段类型字段,取liang ge shi jian
+                      let dateArray = [];
+                      dateArray = dateArray.concat(this.searchData.fixedcolumns[key].split('~'));
+                      dateArray = dateArray.concat(obj[key].split('~'));
+                      dateArray.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+                      arr[key] = [dateArray[0], dateArray[3]].join('~');
                     } else {
                       arr[key] = `${obj[key]},${this.searchData.fixedcolumns[key]}`;
                       arrRes = arr[key].split(',');
