@@ -131,31 +131,30 @@
         return cacheData;
       },
 
-      // 过滤无效字段
-      filterInvalidKey(originData) {
-        const cacheData = JSON.parse(JSON.stringify(originData));
-        for (let i = Math.max(cacheData.length - 1, 0); i >= 0; i--) {
-          const tabIndex = i;
-          const tabObj = cacheData[tabIndex];
-          for (let j = Math.max(tabObj.tab_value.length - 1, 0); j >= 0; j--) {
-            const keyRow = tabObj.tab_value[j];
-            // 过滤不必要的字段
-            delete keyRow.type;
-            delete keyRow.selectOptions;
-            delete keyRow.defaultSelected;
-            // 删除无效字段配置
-            if (!keyRow.col_name || !keyRow.operator || !keyRow.contrast_value) {
-              tabObj.tab_value.splice(j, 1);
-            }
-          }
-          // 删除无效tab配置
-          if (!tabObj.tab_name || tabObj.tab_value.length === 0) {
-            cacheData.splice(tabIndex, 1);
-          }
-        }
-
-        return cacheData;
-      },
+      // // 过滤无效字段
+      // filterInvalidKey(originData) {
+      //   const cacheData = JSON.parse(JSON.stringify(originData));
+      //   for (let i = Math.max(cacheData.length - 1, 0); i >= 0; i--) {
+      //     const tabIndex = i;
+      //     const tabObj = cacheData[tabIndex];
+      //     for (let j = Math.max(tabObj.tab_value.length - 1, 0); j >= 0; j--) {
+      //       const keyRow = tabObj.tab_value[j];
+      //       // 过滤不必要的字段
+      //       delete keyRow.type;
+      //       delete keyRow.selectOptions;
+      //       delete keyRow.defaultSelected;
+      //       // 删除无效字段配置
+      //       if (!keyRow.col_name || !keyRow.operator || !keyRow.contrast_value) {
+      //         tabObj.tab_value.splice(j, 1);
+      //       }
+      //     }
+      //     // 删除无效tab配置
+      //     if (!tabObj.tab_name || tabObj.tab_value.length === 0) {
+      //       cacheData.splice(tabIndex, 1);
+      //     }
+      //   }
+      //   return cacheData;
+      // },
 
       onKeydown(e) {
         this.$emit('keydown', e);
@@ -163,14 +162,25 @@
       setFormatedValue() {
         // 针对tab配置特殊处理,显示假的配置
         if (this.currentValue && 'multi_tab_conf' in JSON.parse(this.currentValue)) {
-          const fakeValue = JSON.parse(this.currentValue);
-          fakeValue.multi_tab_conf = this.filterInvalidKey(fakeValue.multi_tab_conf);
+          let fakeValue = null;
+          if (sessionStorage.getItem('multiTabFakeData')) {
+            fakeValue = JSON.parse(this.currentValue);
+            fakeValue.multi_tab_conf = JSON.parse(sessionStorage.getItem('multiTabFakeData'));
+            if (fakeValue.multi_tab_conf.length === 0) {
+              delete fakeValue.multi_tab_conf;
+            }
+          } else {
+            fakeValue = this.currentValue;
+          }
           this.$refs.extentionInput.querySelector('textarea').value = JSON.stringify(fakeValue, null, 2);
         } 
         // 针对字段组配置特殊处理,显示假的配置
         if (this.currentValue && 'key_group_conf' in JSON.parse(this.currentValue)) {
           const fakeValue = JSON.parse(this.currentValue);
           fakeValue.key_group_conf = this.filterKeyGroup(fakeValue.key_group_conf);
+          if (fakeValue.key_group_conf.length === 0) {
+            delete fakeValue.key_group_conf;
+          }
           this.$refs.extentionInput.querySelector('textarea').value = JSON.stringify(fakeValue, null, 2);
         } 
         if ((this.currentValue && 'multi_tab_conf' in JSON.parse(this.currentValue)) || (this.currentValue && 'key_group_conf' in JSON.parse(this.currentValue))) {

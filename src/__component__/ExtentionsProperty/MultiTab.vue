@@ -87,10 +87,11 @@
             />
             <DatePicker
               v-if="temp.type && temp.type.toUpperCase().startsWith('DATE')"
+              style="width: 100%;"
               :value="temp.contrast_value"
               :type="temp.type && temp.type.toUpperCase() === 'DATETIME' ? 'datetimerange' : 'daterange'"
               placeholder="请选择"
-              format="yyyy/MM/dd HH:mm:ss"
+              :format="temp.type && temp.type.toUpperCase() === 'DATETIME' ? 'yyyy/MM/dd HH:mm:ss' : 'yyyy/MM/dd'"
               @on-change="handleChangeDate(index, j , $event)"
             />
           </validate>
@@ -215,6 +216,8 @@
       },
     
       removeOption(keyArray) { // 清楚整个配置数据
+        this.currentTabIndex = 0;
+        this.currentKeyIndex = 0;
         this.sumTabs = [JSON.parse(JSON.stringify(TAB_CONSTRUCTOR))];
         this.$emit('removeOption', keyArray || []);
       },
@@ -374,8 +377,8 @@ index:  //需要删除的配置下标 type:number
         this.currentTabIndex = index;
       },
 
-      // 过滤无效字段
-      filterInvalidKey(originData) {
+      // 格式化字段
+      formatResult(originData) {
         const cacheData = JSON.parse(JSON.stringify(originData));
         for (let i = Math.max(cacheData.length - 1, 0); i >= 0; i--) {
           const tabIndex = i;
@@ -385,28 +388,44 @@ index:  //需要删除的配置下标 type:number
             if (keyRow.type && keyRow.type.toUpperCase().startsWith('DATE') && keyRow.contrast_value[0] && keyRow.contrast_value[1]) {
               keyRow.contrast_value = keyRow.contrast_value.join('~');
             }
-          // // 过滤不必要的字段
-          // delete keyRow.type;
-          // delete keyRow.selectOptions;
-          // delete keyRow.defaultSelected;
-          // // 删除无效字段配置
-          // if (!keyRow.col_name || !keyRow.operator || !keyRow.contrast_value) {
-          //   tabObj.tab_value.splice(j, 1);
-          // }
           }
-        // // 删除无效tab配置
-        // if (!tabObj.tab_name || tabObj.tab_value.length === 0) {
-        //   cacheData.splice(tabIndex, 1);
-        // }
         }
 
         return cacheData;
       },
 
+      // 设置展示用的字段
+      setDisplayData(originData) {
+        const cacheData = JSON.parse(JSON.stringify(originData));
+        for (let i = Math.max(cacheData.length - 1, 0); i >= 0; i--) {
+          const tabIndex = i;
+          const tabObj = cacheData[tabIndex];
+          for (let j = Math.max(tabObj.tab_value.length - 1, 0); j >= 0; j--) {
+            const keyRow = tabObj.tab_value[j];
+            // 过滤不必要的字段
+            delete keyRow.type;
+            delete keyRow.selectOptions;
+            delete keyRow.defaultSelected;
+            // 删除无效字段配置
+            if (!keyRow.col_name || !keyRow.operator || !keyRow.contrast_value) {
+              tabObj.tab_value.splice(j, 1);
+            }
+          }
+          // 删除无效tab配置
+          if (!tabObj.tab_name || tabObj.tab_value.length === 0) {
+            cacheData.splice(tabIndex, 1);
+          }
+        }
+        // return cacheData;
+        console.log('设置缓存', cacheData);
+        sessionStorage.setItem('multiTabFakeData', JSON.stringify(cacheData));
+      },
+
       // 把数据同步给父组件
       syncData() {
-        // const cacheData = this.filterInvalidKey(this.sumTabs);
-        const cacheData = JSON.parse(JSON.stringify(this.filterInvalidKey(this.sumTabs)));
+        const cacheData = JSON.parse(JSON.stringify(this.formatResult(this.sumTabs)));
+
+        this.setDisplayData(this.sumTabs);
 
         if (cacheData.length === 0) {
           this.$emit('dataChange', { key: this.option.key, value: '' });
@@ -602,7 +621,7 @@ index:  //需要删除的配置下标 type:number
         }
 
         &.colname {
-          flex: 2;
+          flex: 1;
         }
 
         &.oprate {
@@ -613,6 +632,10 @@ index:  //需要删除的配置下标 type:number
         &:last-child {
           margin: 0;
         }
+      }
+
+      .operator {
+        flex: 100px 0 0;
       }
     }
   }

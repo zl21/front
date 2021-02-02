@@ -135,12 +135,22 @@
         let fakeValue = null;
         // 针对tab配置特殊处理,显示假的配置
         if (this.rootData && 'multi_tab_conf' in this.rootData) {
-          fakeValue = JSON.parse(JSON.stringify(this.rootData));
-          fakeValue.multi_tab_conf = this.filterInvalidKey(fakeValue.multi_tab_conf);
+          if (sessionStorage.getItem('multiTabFakeData')) {
+            fakeValue = JSON.parse(JSON.stringify(this.rootData));
+            fakeValue.multi_tab_conf = JSON.parse(sessionStorage.getItem('multiTabFakeData'));
+            if (fakeValue.multi_tab_conf.length === 0) {
+              delete fakeValue.multi_tab_conf;
+            }
+          } else {
+            fakeValue = JSON.parse(value);
+          }
         } 
         if (this.rootData && 'key_group_conf' in this.rootData) {
           fakeValue = JSON.parse(JSON.stringify(this.rootData));
           fakeValue.key_group_conf = this.filterKeyGroup(fakeValue.key_group_conf);
+          if (fakeValue.key_group_conf.length === 0) {
+            delete fakeValue.key_group_conf;
+          }
         } 
         if ((this.rootData && 'multi_tab_conf' in this.rootData) || (this.rootData && 'key_group_conf' in this.rootData)) {
           return JSON.stringify(fakeValue, null, 2);
@@ -171,32 +181,6 @@
 
         return cacheData;
       },
-
-      // 过滤无效字段
-      filterInvalidKey(originData) {
-        const cacheData = JSON.parse(JSON.stringify(originData));
-        for (let i = Math.max(cacheData.length - 1, 0); i >= 0; i--) {
-          const tabIndex = i;
-          const tabObj = cacheData[tabIndex];
-          for (let j = Math.max(tabObj.tab_value.length - 1, 0); j >= 0; j--) {
-            const keyRow = tabObj.tab_value[j];
-            // 过滤不必要的字段
-            delete keyRow.type;
-            delete keyRow.selectOptions;
-            delete keyRow.defaultSelected;
-            // 删除无效字段配置
-            if (!keyRow.col_name || !keyRow.operator || !keyRow.contrast_value) {
-              tabObj.tab_value.splice(j, 1);
-            }
-          }
-          // 删除无效tab配置
-          if (!tabObj.tab_name || tabObj.tab_value.length === 0) {
-            cacheData.splice(tabIndex, 1);
-          }
-        }
-
-        return cacheData;
-      },
       
       scrollIntoView(item, index) {
         this.currentIndex = index;
@@ -214,12 +198,15 @@
         this.updateRootData(key, value);
       },
       removeOption(keyArray) {
+        console.log('🚀 ~ file: ExtentionProperty.vue ~ line 217 ~ removeOption ~ keyArray', keyArray);
         const rootDataAfterRemoved = {};
         Object.keys(this.rootData).forEach((key) => {
+          console.log('删除', key, keyArray.indexOf(key) === -1);
           if (keyArray.indexOf(key) === -1) {
             rootDataAfterRemoved[key] = this.rootData[key];
           }
         });
+        console.log('删除后', rootDataAfterRemoved);
         this.rootData = rootDataAfterRemoved;
       },
     },
