@@ -431,21 +431,27 @@
           // });
           let arrRes = [];
           const tabValue = JSON.parse(JSON.stringify(data.tab_value));
-          
           this.searchData.fixedcolumns = Object.values(tabValue).reduce((arr, obj) => {
             Object.keys(this.searchData.fixedcolumns).map((key) => {
               if (obj[key]) {
                 if (obj[key] !== this.searchData.fixedcolumns[key]) {
                   switch (Object.prototype.toString.call(obj[key])) {
                   case '[object String]':
-                    arr[key] = `${obj[key]},${this.searchData.fixedcolumns[key]}`;
-                    arrRes = arr[key].split(',');
-                    arr[key] = Array.from(new Set(arrRes));
-                    arr[key] = arr[key].toString();
+                    if (obj[key].includes('~')) { // 判断否是时间段类型字段
+                      console.log(this.searchData.fixedcolumns[key], obj[key]);
+                      arr[key] = obj[key];
+                    } else {
+                      arr[key] = `${obj[key]},${this.searchData.fixedcolumns[key]}`;
+                      arrRes = arr[key].split(',');
+                      arr[key] = Array.from(new Set(arrRes));
+                      arr[key] = arr[key].toString();
+                    }
+                    
                     break;
                   case '[object Array]':
                     arr[key] = obj[key].concat(this.searchData.fixedcolumns[key]);
                     arr[key] = Array.from(new Set(arr[key]));
+                    
                     break;
                   default:
                     break;
