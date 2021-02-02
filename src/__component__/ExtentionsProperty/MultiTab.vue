@@ -426,7 +426,8 @@ index:  //需要删除的配置下标 type:number
 
         this.setDisplayData(this.sumTabs);
 
-        if (cacheData.length === 0) {
+        const cache = sessionStorage.getItem('multi_tab_conf') && JSON.parse(sessionStorage.getItem('multi_tab_conf'));
+        if (cache.length === 0) {
           this.$emit('dataChange', { key: this.option.key, value: '' });
         } else {
           this.$emit('dataChange', { key: this.option.key, value: cacheData });

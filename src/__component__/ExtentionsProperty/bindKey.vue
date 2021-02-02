@@ -456,8 +456,8 @@
         const cacheData = JSON.parse(JSON.stringify(this.resultList));
 
         this.setDisplayData(this.resultList);
-
-        if (cacheData.length === 0) {
+        const cache = sessionStorage.getItem('key_group_conf') && JSON.parse(sessionStorage.getItem('key_group_conf'));
+        if (cache.length === 0) {
           this.$emit('dataChange', { key: this.option.key, value: '' });
         } else {
           this.$emit('dataChange', { key: this.option.key, value: cacheData });
