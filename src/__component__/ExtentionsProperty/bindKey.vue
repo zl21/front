@@ -10,10 +10,12 @@
       :key="index"
       class="tabContent"
     >
-      <p class="label-input">
-        <span class="required-item ml-5">展示区域字段：</span>
-      </p>
-      <div class="target-key">
+      <div class="label-input">
+        <div class="required-item ml-5">
+          展示区域字段：
+        </div>
+      </div>
+      <div class="target-key mb-10">
         <DropDownSelectFilter
           single
           :data="keyList"
@@ -480,6 +482,10 @@
 .bindKey {
   .ml-5 {
     margin-left: 5px;
+  }
+
+  .mb-10 {
+    margin-bottom: 10px;
   }
 
   .required-item {
