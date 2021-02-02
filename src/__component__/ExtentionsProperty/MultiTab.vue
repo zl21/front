@@ -417,17 +417,15 @@ index:  //需要删除的配置下标 type:number
           }
         }
 
-        sessionStorage.setItem('multi_tab_conf', JSON.stringify(cacheData));
+        return cacheData;
       },
 
       // 把数据同步给父组件
       syncData() {
         const cacheData = JSON.parse(JSON.stringify(this.formatResult(this.sumTabs)));
 
-        this.setDisplayData(this.sumTabs);
-
-        const cache = sessionStorage.getItem('multi_tab_conf') && JSON.parse(sessionStorage.getItem('multi_tab_conf'));
-        if (cache.length === 0) {
+        const displayData = this.setDisplayData(this.sumTabs);
+        if (displayData.length === 0) {
           this.$emit('dataChange', { key: this.option.key, value: '' });
         } else {
           this.$emit('dataChange', { key: this.option.key, value: cacheData });

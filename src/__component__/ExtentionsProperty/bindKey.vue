@@ -216,6 +216,7 @@
       } else {
         this.resultList = [JSON.parse(JSON.stringify(GROUP_CONSTRUCTOR))];
       }
+      console.log('初始值', newData);
     },
 
     methods: {
@@ -448,16 +449,15 @@
           }
         }
 
-        sessionStorage.setItem('key_group_conf', JSON.stringify(cacheData));
+        return cacheData;
       },
 
       // 同步数据到父组件
       syncData() {
         const cacheData = JSON.parse(JSON.stringify(this.resultList));
 
-        this.setDisplayData(this.resultList);
-        const cache = sessionStorage.getItem('key_group_conf') && JSON.parse(sessionStorage.getItem('key_group_conf'));
-        if (cache.length === 0) {
+        const displayData = this.setDisplayData(this.resultList);
+        if (displayData.length === 0) {
           this.$emit('dataChange', { key: this.option.key, value: '' });
         } else {
           this.$emit('dataChange', { key: this.option.key, value: cacheData });
