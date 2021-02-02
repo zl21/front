@@ -761,7 +761,7 @@ const initializeAgTable = (container, opt) => {
         });
         sumField.forEach((field) => {
           // subtotalRowData[field].val = data.reduce((sum, row) => sum + (parseFloat(`${row[field].val}`.replace(/\,/g, '')) || 0), 0);
-          subtotalRowData[field].val = options.datas.subtotalRow[field]
+          subtotalRowData[field].val = options.datas.subtotalRow[field]  //获取后端返回数据
           let scale = 0;
           columnApi.getAllColumns().some((d) => {
             if (d.colId === field) {
