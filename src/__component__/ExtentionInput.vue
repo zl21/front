@@ -259,6 +259,10 @@
       }
     },
     mounted() {
+      // 删除本地缓存影响
+      sessionStorage.removeItem('multi_tab_conf');
+      sessionStorage.removeItem('key_group_conf');
+          
       this.rows = this.ctrlOptions.rows || this.rows;
       if (Object.prototype.toString.call(this.defaultData) === '[object String]' && this.defaultData !== '') {
         try {
