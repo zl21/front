@@ -317,7 +317,7 @@ export default [
     component: () => import('../__component__/ExtentionsProperty/MultiTab.vue'),
     showLabel: false,
     enableIncrease: true,
-    description: '增加列表的查询tab页配置。字段生效规则: 标签名存在 + 该标签下至少有一条有效条件(同一行的 关联字段+运算符+对比值 都有值)，则视为有效数据。(PS:标签组和字段条件组支持长按拖拽排序)'
+    description: '增加列表的查询tab页配置。字段生效规则: 标签名存在 + 该标签下至少有一条有效条件(同一行的 关联字段+运算符+对比值 都有值)，则视为有效数据。PS:标签组支持长按拖拽排序'
   },
   {
     name: '单据标记配置',

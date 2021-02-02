@@ -35,107 +35,98 @@
           <!-- blank -->
           <p class="blank" />
 
-          <SlickList
-            v-model="item.tab_value"
-            axis="y"
-            :lock-to-container-edges="true"
-            :press-delay="300"
-            helper-class="r3-slick"
+          <div
+            v-for="(temp,j) in item.tab_value"
+            :key="j"
+            class="colnameContent"
+            :index="j"
           >
-            <SlickItem
-              v-for="(temp,j) in item.tab_value"
-              :key="j"
-              :index="j"
-            >
-              <div class="colnameContent">
-                <div class="colname">
-                  <p class="required-item ml-5">
-                    关联字段:
-                  </p>
-                  <validate
-                    :data="temp.col_name"
-                    :validate-function="validateKey"
+            <div class="colname">
+              <p class="required-item ml-5">
+                关联字段:
+              </p>
+              <validate
+                :data="temp.col_name"
+                :validate-function="validateKey"
+              >
+                <DropDownSelectFilter
+                  single
+                  :data="keyList"
+                  :auto-data="searchKeyList"
+                  :page-size="pageSize"
+                  :total-row-count="totalCount"
+                  :default-selected="temp.defaultSelected"
+                  is-back-row-item
+                  :columns-key="columnsKey"
+                  placeholder="请输入表内名称"
+                  @on-popper-show="getKeys"
+                  @on-page-change="getKeys"
+                  @on-input-value-change="getSearchKeys(index, j, $event)"
+                  @on-fkrp-selected="handlerSelected(index, j, $event)"
+                  @on-clear="handleClear(index, j, $event)"
+                />
+              </validate>
+            </div>
+            <div class="operator">
+              <p class="required-item ml-5">
+                运算符:
+              </p>
+              <validate :data="temp.operator">
+                <Select
+                  v-model="temp.operator"
+                  clearable
+                  @on-open-change="handleSelectExpand(index, j , $event)"
+                >
+                  <Option
+                    v-for="option in temp.selectOptions"
+                    :key="option.value"
+                    :value="option.value"
                   >
-                    <DropDownSelectFilter
-                      single
-                      :data="keyList"
-                      :auto-data="searchKeyList"
-                      :page-size="pageSize"
-                      :total-row-count="totalCount"
-                      :default-selected="temp.defaultSelected"
-                      is-back-row-item
-                      :columns-key="columnsKey"
-                      placeholder="请输入表内名称"
-                      @on-popper-show="getKeys"
-                      @on-page-change="getKeys"
-                      @on-input-value-change="getSearchKeys(index, j, $event)"
-                      @on-fkrp-selected="handlerSelected(index, j, $event)"
-                      @on-clear="handleClear(index, j, $event)"
-                    />
-                  </validate>
-                </div>
-                <div class="operator">
-                  <p class="required-item ml-5">
-                    运算符:
-                  </p>
-                  <validate :data="temp.operator">
-                    <Select
-                      v-model="temp.operator"
-                      clearable
-                      @on-open-change="handleSelectExpand(index, j , $event)"
-                    >
-                      <Option
-                        v-for="option in temp.selectOptions"
-                        :key="option.value"
-                        :value="option.value"
-                      >
-                        {{ option.label }}
-                      </Option>
-                    </Select>
-                  </validate>
-                </div>
-                <div class="contrastValue">
-                  <p class="required-item ml-5">
-                    对比值:
-                  </p>
-                  <validate :data="temp.contrast_value">
-                    <Input
-                      v-if="!(temp.type && temp.type.toUpperCase().startsWith('DATE'))"
-                      v-model="temp.contrast_value"
-                      v-input-number:[temp.type]
-                    />
-                    <DatePicker
-                      v-if="temp.type && temp.type.toUpperCase().startsWith('DATE')"
-                      style="width: 100%;"
-                      :value="temp.contrast_value"
-                      :type="temp.type && temp.type.toUpperCase() === 'DATETIME' ? 'datetimerange' : 'daterange'"
-                      placeholder="请选择"
-                      :format="temp.type && temp.type.toUpperCase() === 'DATETIME' ? 'yyyy/MM/dd HH:mm:ss' : 'yyyy/MM/dd'"
-                      @on-change="handleChangeDate(index, j , $event)"
-                    />
-                  </validate>
-                </div>
+                    {{ option.label }}
+                  </Option>
+                </Select>
+              </validate>
+            </div>
+            <div class="contrastValue">
+              <p class="required-item ml-5">
+                对比值:
+              </p>
+              <validate :data="temp.contrast_value">
+                <Input
+                  v-if="!(temp.type && temp.type.toUpperCase().startsWith('DATE'))"
+                  v-model="temp.contrast_value"
+                  v-input-number:[temp.type]
+                />
+                <DatePicker
+                  v-if="temp.type && temp.type.toUpperCase().startsWith('DATE')"
+                  style="width: 100%;"
+                  :value="temp.contrast_value"
+                  :type="temp.type && temp.type.toUpperCase() === 'DATETIME' ? 'datetimerange' : 'daterange'"
+                  placeholder="请选择"
+                  :format="temp.type && temp.type.toUpperCase() === 'DATETIME' ? 'yyyy/MM/dd HH:mm:ss' : 'yyyy/MM/dd'"
+                  @on-change="handleChangeDate(index, j , $event)"
+                />
+              </validate>
+            </div>
 
-                <div class="oprate">
-                  <p />
-                  <button
-                    v-if="item.tab_value.length - 1 === Number(j)"
-                    class="operate-button"
-                    @click="(event) => {item.tab_value = addColname(item.tab_value)}"
-                  >
-                    <i class="iconfont">&#xec3f;</i>
-                  </button>
-                  <button
-                    v-if="item.tab_value.length > 1"
-                    class="operate-button"
-                    @click="(event) => {item.tab_value = deleteColname(item.tab_value,j)}"
-                  >
-                    <i class="iconfont">&#xed15;</i>
-                  </button>
-                </div>
-              </div>
-            </SlickItem>
-          </SlickList>
+            <div class="oprate">
+              <p />
+              <button
+                v-if="item.tab_value.length - 1 === Number(j)"
+                class="operate-button"
+                @click="(event) => {item.tab_value = addColname(item.tab_value)}"
+              >
+                <i class="iconfont">&#xec3f;</i>
+              </button>
+              <button
+                v-if="item.tab_value.length > 1"
+                class="operate-button"
+                @click="(event) => {item.tab_value = deleteColname(item.tab_value,j)}"
+              >
+                <i class="iconfont">&#xed15;</i>
+              </button>
+            </div>
+          </div>
 
           <!-- 增加tab按钮 -->
           <button
