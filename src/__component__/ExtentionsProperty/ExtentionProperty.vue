@@ -154,6 +154,7 @@
         for (let i = Math.max(cacheData.length - 1, 0); i >= 0; i--) {
           const group = cacheData[i];
           delete group.target.defaultselected;
+          delete group.target.label;
           for (let j = Math.max(group.source.length - 1, 0); j >= 0; j--) {
             const row = group.source[j];
             delete row.defaultselected;
@@ -163,7 +164,7 @@
             }
           }
           // 删除无效字段组配置
-          if ((!group.target.col_id || !group.target.label) || group.source.length === 0) {
+          if ((!group.target.col_id) || group.source.length === 0) {
             cacheData.splice(i, 1);
           }
         }
