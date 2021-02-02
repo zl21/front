@@ -807,7 +807,7 @@
       fieldMergeRender(cur) {
         return (h, params) => {
           const array = [];
-          if (params.row[params.column.colname]) { // 存在数据时
+          if (true) { // 存在数据时
             cur.key_group.map((item) => {
               const value = params.row[item.col_name]; // 来源字段的值
               item.label.map((temp) => {
