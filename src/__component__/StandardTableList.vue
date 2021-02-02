@@ -406,7 +406,7 @@
             tabValue: this.ag.tablequery.multi_tab[0]
           };
           this.currentTabValue = obj;
-        } else {
+        } else if (!this.buttons.isBig) {
           this.searchClickData();
         }
       },
@@ -2880,9 +2880,10 @@
                 this.updateSearchDBdata(response);
                 this.updateFormData(Object.assign({}, this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists), response));
               }
-              if (!this.buttons.isBig) {
-                this.firstSearchTable();
-              }
+              // if (!this.buttons.isBig) {
+              //   this.firstSearchTable();
+              // }
+              this.firstSearchTable();
             });
           } else if (!this.buttons.isBig) {
             // 初始化调用时，ie环境下增加500ms延时调用
