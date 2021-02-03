@@ -18,7 +18,10 @@
         :key="index"
         :index="index"
       >
-        <div class="tabContent">
+        <div
+          class="tabContent"
+          title="长按可拖拽排序"
+        >
           <p class="label-input">
             <validate :data="item.tab_name">
               <span class="required-item ml-5">标签名：</span>
@@ -691,7 +694,7 @@ index:  //需要删除的配置下标 type:number
 
 // 拖拽容器滚动
 .drag-scroll {
-  height: 373px;
+  height: 361px;
   overflow-y: auto;
 }
 </style>
@@ -701,6 +704,7 @@ index:  //需要删除的配置下标 type:number
 .r3-slick {
   z-index: 2000;
   box-shadow: 0px 2px 8px rgba(136, 136, 136, 0.4);
+
   .ml-5 {
     margin-left: 5px;
   }

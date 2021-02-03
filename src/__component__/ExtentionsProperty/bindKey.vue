@@ -5,58 +5,60 @@
       @removeOption="removeOption"
     />
 
-    <SlickList
-      v-model="resultList"
-      axis="y"
-      :lock-to-container-edges="true"
-      :press-delay="200"
-      helper-class="r3-slick"
-      class="drag-scroll"
+    <div
+      v-for="(item,index) in resultList"
+      :key="index"
+      class="tabContent"
     >
-      <SlickItem
-        v-for="(item,index) in resultList"
-        :key="index"
-        :index="index"
+      <div class="label-input">
+        <div class="required-item ml-5">
+          展示区域字段：
+        </div>
+      </div>
+      <div class="target-key mb-10 ml-10">
+        <DropDownSelectFilter
+          single
+          :data="keyList"
+          :auto-data="searchKeyList"
+          :page-size="pageSize"
+          :total-row-count="totalCount"
+          :default-selected="item.target.defaultselected"
+          placeholder="请输入表内名称"
+          is-back-row-item
+          :columns-key="targetColumnsKey"
+          @on-popper-show="getKeys($event, 'target',{
+            tableName:'AD_COLUMN'
+          })"
+          @on-page-change="getKeys($event, 'target',{
+            tableName:'AD_COLUMN'
+          })"
+          @on-input-value-change="getSearchKeys($event, 'target',{
+            tableName:'AD_COLUMN',
+            groupIndex: index
+          })"
+          @on-fkrp-selected="handlerSelected(index, 'target', '', $event)"
+          @on-clear="handleClear(index, 'target', '', $event)"
+        />
+      </div>
+
+      <!-- blank -->
+      <p class="blank" />
+
+      <SlickList
+        v-model="item.source"
+        axis="y"
+        :lock-to-container-edges="true"
+        :press-delay="200"
+        helper-class="r3-slick"
       >
-        <div class="tabContent">
-          <div class="label-input">
-            <div class="required-item ml-5">
-              展示区域字段：
-            </div>
-          </div>
-          <div class="target-key mb-10 ml-10">
-            <DropDownSelectFilter
-              single
-              :data="keyList"
-              :auto-data="searchKeyList"
-              :page-size="pageSize"
-              :total-row-count="totalCount"
-              :default-selected="item.target.defaultselected"
-              placeholder="请输入表内名称"
-              is-back-row-item
-              :columns-key="targetColumnsKey"
-              @on-popper-show="getKeys($event, 'target',{
-                tableName:'AD_COLUMN'
-              })"
-              @on-page-change="getKeys($event, 'target',{
-                tableName:'AD_COLUMN'
-              })"
-              @on-input-value-change="getSearchKeys($event, 'target',{
-                tableName:'AD_COLUMN',
-                groupIndex: index
-              })"
-              @on-fkrp-selected="handlerSelected(index, 'target', '', $event)"
-              @on-clear="handleClear(index, 'target', '', $event)"
-            />
-          </div>
-
-          <!-- blank -->
-          <p class="blank" />
-
+        <SlickItem
+          v-for="(temp,j) in item.source"
+          :key="j"
+          :index="j"
+        >
           <div
-            v-for="(temp,j) in item.source"
-            :key="j"
             class="colnameContent"
+            title="长按可拖拽排序"
           >
             <div class="colname">
               <p class="required-item ml-5">
@@ -139,25 +141,25 @@
               </button>
             </div>
           </div>
+        </SlickItem>
+      </SlickList>
 
-          <!-- 增加tab按钮 -->
-          <button
-            v-if="resultList.length - 1 === index"
-            class="operate-button ml-10 mb-10"
-            @click="addButtonClick"
-          >
-            <i class="iconfont">&#xec3f;</i>
-          </button>
-          <button
-            v-if="resultList.length > 1"
-            class="operate-button ml-10 mb-10"
-            @click="removeButtonClick(index)"
-          >
-            <i class="iconfont">&#xed15;</i>
-          </button>
-        </div>
-      </SlickItem>
-    </SlickList>
+      <!-- 增加tab按钮 -->
+      <button
+        v-if="resultList.length - 1 === index"
+        class="operate-button ml-10 mb-10"
+        @click="addButtonClick"
+      >
+        <i class="iconfont">&#xec3f;</i>
+      </button>
+      <button
+        v-if="resultList.length > 1"
+        class="operate-button ml-10 mb-10"
+        @click="removeButtonClick(index)"
+      >
+        <i class="iconfont">&#xed15;</i>
+      </button>
+    </div>
   </div>
 </template>
 
@@ -528,7 +530,6 @@
     border: 1px solid #d3d3d3;
     position: relative;
     margin-bottom: 10px;
-    cursor: move;
 
     .label-input {
       display: flex;
@@ -553,6 +554,7 @@
     .colnameContent {
       display: flex;
       padding: 10px;
+      cursor: move;
 
       > div {
         flex: 1;
@@ -599,11 +601,6 @@
   }
 }
 
-// 拖拽容器滚动
-.drag-scroll {
-  height: 361px;
-  overflow-y: auto;
-}
 </style>
 
 <style lang="less">
@@ -646,7 +643,6 @@
     border: 1px solid #d3d3d3;
     position: relative;
     margin-bottom: 10px;
-    cursor: move;
 
     .label-input {
       display: flex;
@@ -672,6 +668,7 @@
   .colnameContent {
     display: flex;
     padding: 10px;
+    cursor: move;
 
     > div {
       flex: 1;
