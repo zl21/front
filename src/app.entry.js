@@ -29,6 +29,11 @@ import './assets/css/ag-theme-balham.less';
 import './assets/css/loading.css';
 import './assets/css/custom-ext.less';
 
+// 全局指令
+import inputNumber from './directive/inputNumber';
+
+Vue.use(inputNumber);
+
 
 Vue.component('CompositeFormpop', CompositeForm);
 Vue.use(Loading);
