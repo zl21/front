@@ -115,7 +115,9 @@ export default {
     //     webicon: null,
     //     action: '/p/cs/test/accept',
     //     cuscomponent: null,
-    //     ishide: false
+    //     ishide: false,
+    //     actionid: 1,
+
     //   },
     //   {
     //     vuedisplay: 'slient',
@@ -128,7 +130,8 @@ export default {
     //     webicon: null,
     //     action: '/p/cs/test/accept',
     //     cuscomponent: null,
-    //     actionid: 1,
+    //     actionid: 0,
+
     //     ishide: false
     //   },
     //   {
@@ -142,7 +145,9 @@ export default {
     //     webicon: null,
     //     action: 'custompage/clonePopUp',
     //     cuscomponent: null,
-    //     ishide: false
+    //     ishide: false,
+    //     actionid: 2,
+
     //   },
     //   {
     //     vuedisplay: 'dialog',
@@ -155,7 +160,7 @@ export default {
     //     webicon: null,
     //     action: 'custompage/clonePopUp',
     //     cuscomponent: null,
-    //     actionid: 2,
+    //     actionid: 0,
     //     ishide: false
     //   },
     //   {
@@ -169,7 +174,9 @@ export default {
     //     webicon: null,
     //     action: 'https://www.baidu.com',
     //     cuscomponent: null,
-    //     ishide: false
+    //     ishide: false,
+    //     actionid: 3,
+
     //   },
     //   {
     //     vuedisplay: 'navbar',
@@ -182,7 +189,7 @@ export default {
     //     webicon: null,
     //     action: 'CUSTOMIZED/FUNCTIONPERMISSION/:itemId',
     //     cuscomponent: null,
-    //     actionid: 3,
+    //     actionid: 0,
     //     ishide: false
     //   },
     //   {
@@ -196,7 +203,9 @@ export default {
     //     webicon: null,
     //     action: 'SYSTEM/TABLE_DETAIL/V/PS_C_COLOR/23787/New',
     //     cuscomponent: null,
-    //     ishide: false
+    //     ishide: false,
+    //     actionid: 4,
+
     //   },
     //   {
     //     vuedisplay: 'navbar',
@@ -209,7 +218,7 @@ export default {
     //     webicon: null,
     //     action: 'SYSTEM/TABLE_DETAIL/V/PS_C_COLOR/23787/:itemId',
     //     cuscomponent: null,
-    //     actionid: 4,
+    //     actionid: 0,
     //     ishide: false
     //   },
     //   {
@@ -223,7 +232,9 @@ export default {
     //     webicon: null,
     //     action: '/p/cs/download?filename=import/893/订单.xlsx',
     //     cuscomponent: null,
-    //     ishide: false
+    //     ishide: false,
+    //     actionid: 5,
+
     //   },
     //   {
     //     vuedisplay: 'download',
@@ -236,7 +247,9 @@ export default {
     //     webicon: null,
     //     action: '/p/cs/download?filename=import/893/订单.xlsx',
     //     cuscomponent: null,
-    //     ishide: false
+    //     ishide: false,
+    //     actionid: 5,
+
     //   },
     //   {
     //     vuedisplay: 'download',
@@ -270,7 +283,7 @@ export default {
 
     if (data && data.length > 0) {
       data.forEach((item) => {
-        if (item.actionid || item.actionid == 0) {
+        if (item.actionid == 0) {
           item.childrens = [];
           parentDatas.push(item);
         } else {
@@ -281,14 +294,14 @@ export default {
    
     childrenDatas.forEach((d) => {
       parentDatas.forEach((parent) => {
-        if (d.webid === parent.webid) {
+        if (d.actionid === parent.webid) {
           d.isFold = true;
           parent.childrens.push(d);
         } 
       });
     });
     const waListButtons = childrenDatas.filter(child => !child.isFold);
-
+    console.log(999, parentDatas);
     buttons.dataArray.waListButtonsConfig.waListButtons = waListButtons;
     buttons.dataArray.waListButtonsConfig.waListButtonsGroup = parentDatas;// 折叠按钮
   },

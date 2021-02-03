@@ -1623,54 +1623,54 @@
         // 获取表格选中明细
         this.onSelectionChangedAssignment({ rowIdArray, rowArray });
       },
-      // filterButtonsStatus(rowIdArray, rowArray) {
-      //   const disableButtons = [];// 需要置为不可编辑的按钮
-      //   let filterButtonsRest = {};
-      //   let filterData = {};
-      //   let objRes = {};
-      //   const filterKeys = [];// 过滤字段
-      //   filterButtonsRest = this.ag.filterButtons.reduce((arr, obj,) => {
-      //     disableButtons.push(obj.action_id);
-      //     filterData = obj.filter.reduce((acc, cur) => {
-      //       acc[cur.col_id] = cur.match_value;
-      //       acc.actionId = obj.action_id;
-      //       if (filterKeys.indexOf(cur.col_id) === -1) { filterKeys.push(cur.col_id); }
-      //       return acc;
-      //     }, {});
+      filterButtonsStatus(rowIdArray, rowArray) {
+        const disableButtons = [];// 需要置为不可编辑的按钮
+        let filterButtonsRest = {};
+        let filterData = {};
+        let objRes = {};
+        const filterKeys = [];// 过滤字段
+        filterButtonsRest = this.ag.filterButtons.reduce((arr, obj,) => {
+          disableButtons.push(obj.action_id);
+          filterData = obj.filter.reduce((acc, cur) => {
+            acc[cur.col_id] = cur.match_value;
+            acc.actionId = obj.action_id;
+            if (filterKeys.indexOf(cur.col_id) === -1) { filterKeys.push(cur.col_id); }
+            return acc;
+          }, {});
          
-      //     objRes = {
-      //       [obj.action_id]: filterData
-      //     };
-      //     arr.push(objRes);
-      //     // obj.filter.map((filterData) => {
-      //     //   rowArray.map((rowData) => {
-      //     //     console.log(222, filterData.match_value, rowData[filterData.col_id]);
-      //     //     console.log(9, filterData.match_value.includes(rowData[filterData.col_id]));
-      //     //     if (rowData[filterData.col_id] && filterData.match_value.includes(rowData[filterData.col_id])) {
-      //     //       debugger;
-      //     //       // filterData.match_value = filterData.match_value.split(',');
-      //     //     }
-      //     //   });
-      //     // });
-      //     return arr;
-      //   }, []);
-      //   rowArray.filter((rowItem) => {
+          objRes = {
+            [obj.action_id]: filterData
+          };
+          arr.push(objRes);
+          // obj.filter.map((filterData) => {
+          //   rowArray.map((rowData) => {
+          //     console.log(222, filterData.match_value, rowData[filterData.col_id]);
+          //     console.log(9, filterData.match_value.includes(rowData[filterData.col_id]));
+          //     if (rowData[filterData.col_id] && filterData.match_value.includes(rowData[filterData.col_id])) {
+          //       debugger;
+          //       // filterData.match_value = filterData.match_value.split(',');
+          //     }
+          //   });
+          // });
+          return arr;
+        }, []);
+        // rowArray.filter((rowItem) => {
           
-      //   });
-      //   // Object.values(filterButtonsRest).reduce((arr, obj) => {
-      //   //   Object.values(obj).map((objItem) => {
-      //   //     Object.keys(objItem).map((keyItem) => {
-      //   //       rowArray.filter((rowItem) => {
-      //   //         debugger;
+        // });
+        // Object.values(filterButtonsRest).reduce((arr, obj) => {
+        //   Object.values(obj).map((objItem) => {
+        //     Object.keys(objItem).map((keyItem) => {
+        //       rowArray.filter((rowItem) => {
+        //         debugger;
 
-      //   //         if (rowItem[objItem] && obj[objItem].includes(rowItem[objItem])) {
-      //   //         }
-      //   //       });
-      //   //     });
-      //   //   });
-      //   // }, []);
-      //   console.log(333, filterKeys, filterButtonsRest);
-      // },
+        //         if (rowItem[objItem] && obj[objItem].includes(rowItem[objItem])) {
+        //         }
+        //       });
+        //     });
+        //   });
+        // }, []);
+        console.log(333, filterKeys, filterButtonsRest);
+      },
       buttonClick(type, obj) {
         this.setActiveTabActionValue({});// 点击按钮前清除上一次按钮存的信息
 
