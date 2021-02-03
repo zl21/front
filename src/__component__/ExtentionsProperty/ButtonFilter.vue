@@ -46,11 +46,11 @@
         </div>
       </div>
       <div class="header">
-        <p class="title required-item">
-          字段
+        <p class="title">
+          <span>字段</span>
         </p>
-        <p class="title required-item">
-          匹配值
+        <p class="title">
+          <span>匹配值</span>
         </p>
       </div>
       <div
@@ -227,7 +227,7 @@
       },
 
       // 清楚整个配置数据
-      removeOption(keyArray) { 
+      removeOption(keyArray) {
         this.dataList = [JSON.parse(JSON.stringify(ITEM_CONSTRUCTOR))];
         this.$emit('removeOption', keyArray || []);
       },
@@ -347,7 +347,7 @@
                 const keyColumns = ['ORDERNO', 'MASK', 'AD_TABLE_ID', 'AD_VERSION_ID', 'ISORDER', 'ISACTIVE', 'ISAGFILTER', 'AGFILTER', 'ISINDEXED', 'NAME', 'OBTAINMANNER', 'REF_COLUMN_ID', 'FKDISPLAY', 'SEARCHMODEL', 'ISREMOTE', 'AD_LIMITVALUE_GROUP_ID', 'DISPLAYTYPE', 'COMMENTSTP', 'MODIFIERID', 'MODIFIEDDATE'];
                 // 按钮表过滤字段
                 const btnColumns = ['NAME', 'PRIORITY', 'AD_VERSION_ID', 'CUSTOMIZENO', 'ISACTIVE', 'ISHIDE', 'ISREFRSH', 'AD_SUBSYSTEM_ID', 'AD_TABLECATEGORY_ID', 'FILTER', 'CUSCOMPONENT', 'PROPS', 'MODIFIERNAME', 'MODIFIEDDATE', 'AD_ACTION_ID'];
-                
+
                 const hideColumns = dataKey === 'action_id' ? btnColumns : keyColumns;
                 const tabth = res.data.data.tabth;
                 const row = res.data.data.row;
@@ -451,7 +451,7 @@
 
 <style lang="scss" scoped>
 .R3ButtonConfig {
-    .required-item {
+  .required-item {
     position: relative;
     &::before {
       content: '*';
@@ -459,7 +459,7 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      left: -6px;
+      left: 13px;
     }
   }
 
@@ -489,6 +489,18 @@
       text-align: center;
       &:last-child {
         margin-left: 10px;
+      }
+
+      >span {
+        position: relative;
+      }
+      >span::before {
+        content: '*';
+        color: red;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        left: -7px;
       }
     }
   }
