@@ -32,7 +32,7 @@
           clearable
           icon="ios-search"
           @on-change="searchInputChange"
-           >
+             >
         <span slot="prepend">检索</span>
         </Input>
         <div class="menuContainer">
