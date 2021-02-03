@@ -9,7 +9,7 @@
       v-model="sumTabs"
       axis="y"
       :lock-to-container-edges="true"
-      :press-delay="300"
+      :press-delay="200"
       helper-class="r3-slick"
       class="drag-scroll"
     >
@@ -20,6 +20,7 @@
       >
         <div
           class="tabContent"
+          title="长按可拖拽排序"
         >
           <p class="label-input">
             <validate :data="item.tab_name">
@@ -609,6 +610,7 @@ index:  //需要删除的配置下标 type:number
     border: 1px solid #d3d3d3;
     position: relative;
     margin-bottom: 10px;
+    cursor: move;
 
     .label-input {
       display: flex;
@@ -692,8 +694,8 @@ index:  //需要删除的配置下标 type:number
 
 // 拖拽容器滚动
 .drag-scroll {
-  height: 373px;
-  overflow-y:auto;
+  height: 361px;
+  overflow-y: auto;
 }
 </style>
 
@@ -702,6 +704,7 @@ index:  //需要删除的配置下标 type:number
 .r3-slick {
   z-index: 2000;
   box-shadow: 0px 2px 8px rgba(136, 136, 136, 0.4);
+
   .ml-5 {
     margin-left: 5px;
   }
@@ -732,6 +735,7 @@ index:  //需要删除的配置下标 type:number
     border: 1px solid #d3d3d3;
     position: relative;
     margin-bottom: 10px;
+    cursor: move;
 
     .label-input {
       display: flex;
@@ -752,41 +756,39 @@ index:  //需要删除的配置下标 type:number
       background: #d3d3d3;
       left: 0;
     }
-
-    
   }
 
   .colnameContent {
-      display: flex;
-      padding: 10px;
+    display: flex;
+    padding: 10px;
 
-      > div {
-        flex: 1;
-        margin-right: 10px;
+    > div {
+      flex: 1;
+      margin-right: 10px;
 
-        > p {
-          height: 12px;
-          margin-bottom: 4px;
-        }
-
-        &.colname {
-          flex: 1;
-        }
-
-        &.oprate {
-          width: 50px;
-          flex: none;
-        }
-
-        &:last-child {
-          margin: 0;
-        }
+      > p {
+        height: 12px;
+        margin-bottom: 4px;
       }
 
-      .operator {
-        flex: 100px 0 0;
+      &.colname {
+        flex: 1;
+      }
+
+      &.oprate {
+        width: 50px;
+        flex: none;
+      }
+
+      &:last-child {
+        margin: 0;
       }
     }
+
+    .operator {
+      flex: 100px 0 0;
+    }
+  }
 
   .operate-button {
     background-color: transparent;
