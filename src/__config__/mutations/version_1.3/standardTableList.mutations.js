@@ -259,5 +259,8 @@ export default {
   },
   updateFilterTableData(state, data) { // 更新filterTableData
     state.ag.tablequery = Object.assign(state.ag.tablequery, data);
-  }
+  },
+  updateFilterButtons(state, data) { // 更新按钮筛选数据
+    state.ag.filterButtons = data;
+  },
 };
