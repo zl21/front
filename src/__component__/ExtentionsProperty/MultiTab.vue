@@ -20,7 +20,8 @@
       >
         <div
           class="tabContent"
-          title="长按可拖拽排序"
+          @mouseenter="handleEnter"
+          @mouseleave="handleLeave"
         >
           <p class="label-input">
             <validate :data="item.tab_name">
@@ -193,7 +194,8 @@
         searchKeyList: [],
         totalCount: 0,
         pageSize: 10,
-        columnsKey: ['DBNAME']
+        columnsKey: ['DBNAME'],
+        tipStyle: ''
       };
     },
 
@@ -214,9 +216,44 @@
 
     async created() {
       this.initData();
+      this.setHover();
     },
 
     methods: {
+      // 设置悬浮
+      setHover() {
+        // 通过hook监听组件销毁钩子函数，并取消监听事件
+        this.dom = document.createElement('div');
+        this.dom.setAttribute('id', 'drag-tip');
+        this.dom.innerText = '长按可拖拽排序';
+        document.body.appendChild(this.dom);
+
+        window.addEventListener('mousemove', this.setPos);
+        
+        this.$once('hook:beforeDestroy', () => {
+          window.removeEventListener('mousemove', this.setPos);
+          if (this.dom) {
+            document.body.removeChild(this.dom);
+          }
+        });
+      },
+
+      // 设置提示位置
+      setPos(e) {
+        this.tipStyle = `left: ${e.clientX + 20}px;top:${e.clientY + 20}px;`;
+        this.dom.style = this.tipStyle;
+      },
+
+      // 鼠标移入时显示提示
+      handleEnter() {
+        this.dom.classList.add('showTip');
+      },
+
+      // 鼠标移入时隐藏提示
+      handleLeave() {
+        this.dom.classList.remove('showTip');
+      },
+
       // 初始化
       initData() {
         const newData = JSON.parse(JSON.stringify(this.defaultData));
@@ -700,12 +737,27 @@ index:  //需要删除的配置下标 type:number
 </style>
 
 <style lang="less">
+#drag-tip {
+  display: inline-block;
+  padding: 4px 8px;
+  box-shadow: 0px 2px 8px rgba(136, 136, 136, 0.4);
+  background: #f4f4f4;
+  font-size: 12px;
+  position: fixed;
+  z-index: 3000;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.showTip {
+  opacity: 1!important;
+}
+
 // 拖拽时候的样式
 .r3-slick {
   z-index: 2000;
   box-shadow: 0px 2px 8px rgba(136, 136, 136, 0.4);
   cursor: move;
-  pointer-events: auto!important;
+  pointer-events: auto !important;
 
   .ml-5 {
     margin-left: 5px;
@@ -761,36 +813,36 @@ index:  //需要删除的配置下标 type:number
   }
 
   .colnameContent {
-      display: flex;
-      padding: 10px;
+    display: flex;
+    padding: 10px;
 
-      > div {
-        flex: 1;
-        margin-right: 10px;
+    > div {
+      flex: 1;
+      margin-right: 10px;
 
-        > p {
-          height: 12px;
-          margin-bottom: 4px;
-        }
-
-        &.colname {
-          flex: 1;
-        }
-
-        &.oprate {
-          width: 50px;
-          flex: none;
-        }
-
-        &:last-child {
-          margin: 0;
-        }
+      > p {
+        height: 12px;
+        margin-bottom: 4px;
       }
 
-      .operator {
-        flex: 100px 0 0;
+      &.colname {
+        flex: 1;
+      }
+
+      &.oprate {
+        width: 50px;
+        flex: none;
+      }
+
+      &:last-child {
+        margin: 0;
       }
     }
+
+    .operator {
+      flex: 100px 0 0;
+    }
+  }
 
   .operate-button {
     background-color: transparent;
