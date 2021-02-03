@@ -10,10 +10,12 @@
       :key="index"
       class="tabContent"
     >
-      <p class="label-input">
-        <span class="required-item ml-5">展示区域字段：</span>
-      </p>
-      <div class="target-key">
+      <div class="label-input">
+        <div class="required-item ml-5">
+          展示区域字段：
+        </div>
+      </div>
+      <div class="target-key mb-10">
         <DropDownSelectFilter
           single
           :data="keyList"
@@ -216,6 +218,7 @@
       } else {
         this.resultList = [JSON.parse(JSON.stringify(GROUP_CONSTRUCTOR))];
       }
+      console.log('初始值', newData);
     },
 
     methods: {
@@ -448,16 +451,15 @@
           }
         }
 
-        sessionStorage.setItem('key_group_conf', JSON.stringify(cacheData));
+        return cacheData;
       },
 
       // 同步数据到父组件
       syncData() {
         const cacheData = JSON.parse(JSON.stringify(this.resultList));
 
-        this.setDisplayData(this.resultList);
-        const cache = sessionStorage.getItem('key_group_conf') && JSON.parse(sessionStorage.getItem('key_group_conf'));
-        if (cache.length === 0) {
+        const displayData = this.setDisplayData(this.resultList);
+        if (displayData.length === 0) {
           this.$emit('dataChange', { key: this.option.key, value: '' });
         } else {
           this.$emit('dataChange', { key: this.option.key, value: cacheData });
@@ -480,6 +482,10 @@
 .bindKey {
   .ml-5 {
     margin-left: 5px;
+  }
+
+  .mb-10 {
+    margin-bottom: 10px;
   }
 
   .required-item {
