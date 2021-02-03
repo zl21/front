@@ -5,153 +5,164 @@
       @removeOption="removeOption"
     />
 
-    <div
-      v-for="(item,index) in resultList"
-      :key="index"
-      class="tabContent"
+    <SlickList
+      v-model="resultList"
+      axis="y"
+      :lock-to-container-edges="true"
+      :press-delay="200"
+      helper-class="r3-slick"
+      class="drag-scroll"
     >
-      <div class="label-input">
-        <div class="required-item ml-5">
-          展示区域字段：
-        </div>
-      </div>
-      <div class="target-key mb-10">
-        <DropDownSelectFilter
-          single
-          :data="keyList"
-          :auto-data="searchKeyList"
-          :page-size="pageSize"
-          :total-row-count="totalCount"
-          :default-selected="item.target.defaultselected"
-          placeholder="请输入表内名称"
-          is-back-row-item
-          :columns-key="targetColumnsKey"
-          @on-popper-show="getKeys($event, 'target',{
-            tableName:'AD_COLUMN'
-          })"
-          @on-page-change="getKeys($event, 'target',{
-            tableName:'AD_COLUMN'
-          })"
-          @on-input-value-change="getSearchKeys($event, 'target',{
-            tableName:'AD_COLUMN',
-            groupIndex: index
-          })"
-          @on-fkrp-selected="handlerSelected(index, 'target', '', $event)"
-          @on-clear="handleClear(index, 'target', '', $event)"
-        />
-      </div>
-
-      <!-- blank -->
-      <p class="blank" />
-
-      <div
-        v-for="(temp,j) in item.source"
-        :key="j"
-        class="colnameContent"
+      <SlickItem
+        v-for="(item,index) in resultList"
+        :key="index"
+        :index="index"
       >
-        <div class="colname">
-          <p class="required-item ml-5">
-            来源字段:
-          </p>
-          <DropDownSelectFilter
-            single
-            :data="keyList"
-            :auto-data="searchKeyList"
-            :page-size="pageSize"
-            :total-row-count="totalCount"
-            :default-selected="temp.defaultselected.length && temp.defaultselected[0]"
-            is-back-row-item
-            :columns-key="targetColumnsKey"
-            placeholder="请输入表内名称"
-            @on-popper-show="getKeys($event, 'source',{
-              tableName:'AD_COLUMN'
-            })"
-            @on-page-change="getKeys($event, 'source',{
-              tableName:'AD_COLUMN'
-            })"
-            @on-input-value-change="getSearchKeys($event, 'source',{
-              tableName:'AD_COLUMN',
-              groupIndex: index,
-              rowIndex: j
-            })"
-            @on-fkrp-selected="handlerSelected(index, 'source', j , $event, 0)"
-            @on-clear="handleClear(index, 'source', j)"
-          />
-        </div>
-        <div class="colname">
-          <p class="required-item ml-5">
-            来源字段选项组:
-          </p>
-          <DropDownSelectFilter
-            single
-            :data="keyList"
-            :auto-data="searchKeyList"
-            :page-size="pageSize"
-            :total-row-count="totalCount"
-            :default-selected="temp.defaultselected.length && temp.defaultselected[1]"
-            is-back-row-item
-            :columns-key="sourceColumnsKey"
-            placeholder="请输入名称"
-            @on-popper-show="getKeys($event, 'source',{
-              tableName:'AD_LIMITVALUE_GROUP',
-              deleteTableId: true
-            })"
-            @on-page-change="getKeys($event, 'source',{
-              tableName:'AD_LIMITVALUE_GROUP',
-              deleteTableId: true
-            })"
-            @on-input-value-change="getSearchKeys($event, 'source', {
-              tableName:'AD_LIMITVALUE_GROUP',
-              deleteTableId: true,
-              groupIndex: index,
-              rowIndex: j
-            })"
-            @on-fkrp-selected="handlerSelected(index, 'source', j , $event, 1)"
-            @on-clear="handleClear(index, 'source', j)"
-          />
-        </div>
+        <div class="tabContent">
+          <div class="label-input">
+            <div class="required-item ml-5">
+              展示区域字段：
+            </div>
+          </div>
+          <div class="target-key mb-10 ml-10">
+            <DropDownSelectFilter
+              single
+              :data="keyList"
+              :auto-data="searchKeyList"
+              :page-size="pageSize"
+              :total-row-count="totalCount"
+              :default-selected="item.target.defaultselected"
+              placeholder="请输入表内名称"
+              is-back-row-item
+              :columns-key="targetColumnsKey"
+              @on-popper-show="getKeys($event, 'target',{
+                tableName:'AD_COLUMN'
+              })"
+              @on-page-change="getKeys($event, 'target',{
+                tableName:'AD_COLUMN'
+              })"
+              @on-input-value-change="getSearchKeys($event, 'target',{
+                tableName:'AD_COLUMN',
+                groupIndex: index
+              })"
+              @on-fkrp-selected="handlerSelected(index, 'target', '', $event)"
+              @on-clear="handleClear(index, 'target', '', $event)"
+            />
+          </div>
 
+          <!-- blank -->
+          <p class="blank" />
 
-        <!-- 增加字段按钮 -->
-        <div class="oprate">
-          <p />
+          <div
+            v-for="(temp,j) in item.source"
+            :key="j"
+            class="colnameContent"
+          >
+            <div class="colname">
+              <p class="required-item ml-5">
+                来源字段:
+              </p>
+              <DropDownSelectFilter
+                single
+                :data="keyList"
+                :auto-data="searchKeyList"
+                :page-size="pageSize"
+                :total-row-count="totalCount"
+                :default-selected="temp.defaultselected.length && temp.defaultselected[0]"
+                is-back-row-item
+                :columns-key="targetColumnsKey"
+                placeholder="请输入表内名称"
+                @on-popper-show="getKeys($event, 'source',{
+                  tableName:'AD_COLUMN'
+                })"
+                @on-page-change="getKeys($event, 'source',{
+                  tableName:'AD_COLUMN'
+                })"
+                @on-input-value-change="getSearchKeys($event, 'source',{
+                  tableName:'AD_COLUMN',
+                  groupIndex: index,
+                  rowIndex: j
+                })"
+                @on-fkrp-selected="handlerSelected(index, 'source', j , $event, 0)"
+                @on-clear="handleClear(index, 'source', j)"
+              />
+            </div>
+            <div class="colname">
+              <p class="required-item ml-5">
+                来源字段选项组:
+              </p>
+              <DropDownSelectFilter
+                single
+                :data="keyList"
+                :auto-data="searchKeyList"
+                :page-size="pageSize"
+                :total-row-count="totalCount"
+                :default-selected="temp.defaultselected.length && temp.defaultselected[1]"
+                is-back-row-item
+                :columns-key="sourceColumnsKey"
+                placeholder="请输入名称"
+                @on-popper-show="getKeys($event, 'source',{
+                  tableName:'AD_LIMITVALUE_GROUP',
+                  deleteTableId: true
+                })"
+                @on-page-change="getKeys($event, 'source',{
+                  tableName:'AD_LIMITVALUE_GROUP',
+                  deleteTableId: true
+                })"
+                @on-input-value-change="getSearchKeys($event, 'source', {
+                  tableName:'AD_LIMITVALUE_GROUP',
+                  deleteTableId: true,
+                  groupIndex: index,
+                  rowIndex: j
+                })"
+                @on-fkrp-selected="handlerSelected(index, 'source', j , $event, 1)"
+                @on-clear="handleClear(index, 'source', j)"
+              />
+            </div>
+
+            <!-- 增加字段按钮 -->
+            <div class="oprate">
+              <p />
+              <button
+                v-if="item.source.length - 1 === Number(j)"
+                class="operate-button"
+                @click="(event) => {item.source = addColname(item.source)}"
+              >
+                <i class="iconfont">&#xec3f;</i>
+              </button>
+              <button
+                v-if="item.source.length > 1"
+                class="operate-button"
+                @click="(event) => {item.source = deleteColname(item.source,j)}"
+              >
+                <i class="iconfont">&#xed15;</i>
+              </button>
+            </div>
+          </div>
+
+          <!-- 增加tab按钮 -->
           <button
-            v-if="item.source.length - 1 === Number(j)"
-            class="operate-button"
-            @click="(event) => {item.source = addColname(item.source)}"
+            v-if="resultList.length - 1 === index"
+            class="operate-button ml-10 mb-10"
+            @click="addButtonClick"
           >
             <i class="iconfont">&#xec3f;</i>
           </button>
           <button
-            v-if="item.source.length > 1"
-            class="operate-button"
-            @click="(event) => {item.source = deleteColname(item.source,j)}"
+            v-if="resultList.length > 1"
+            class="operate-button ml-10 mb-10"
+            @click="removeButtonClick(index)"
           >
             <i class="iconfont">&#xed15;</i>
           </button>
         </div>
-      </div>
-
-      <!-- 增加tab按钮 -->
-      <button
-        v-if="resultList.length - 1 === index"
-        class="operate-button"
-        @click="addButtonClick"
-      >
-        <i class="iconfont">&#xec3f;</i>
-      </button>
-      <button
-        v-if="resultList.length > 1"
-        class="operate-button"
-        @click="removeButtonClick(index)"
-      >
-        <i class="iconfont">&#xed15;</i>
-      </button>
-    </div>
+      </SlickItem>
+    </SlickList>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import { SlickList, SlickItem } from 'vue-slicksort';
   import Description from './Description.vue';
   import network, { urlSearchParams } from '../../__utils__/network';
 
@@ -188,6 +199,8 @@
 
     components: {
       Description,
+      SlickList,
+      SlickItem,
     },
 
     data() {
@@ -401,7 +414,7 @@
             defaultselected: value
           };
           this.resultList[groupIndex][key] = selectedObj;
-        } 
+        }
         if (key === 'source') {
           value[0].Label = value[0].Label ? value[0].Label : value[0].rowItem.NAME.val;
           if (colIndex === 0) {
@@ -413,7 +426,7 @@
             const row = this.resultList[groupIndex][key][rowIndex] || GROUP_CONSTRUCTOR.source; // 第n组第n行
             selectedObj.defaultselected[0] = value;
             selectedObj.defaultselected[1] = row.defaultselected[1];
-            
+
             this.$set(this.resultList[groupIndex][key], rowIndex, Object.assign(row, selectedObj));
           } else {
             // 设置来源字段选项组
@@ -488,6 +501,10 @@
     margin-bottom: 10px;
   }
 
+  .ml-10 {
+    margin-left: 10px;
+  }
+
   .required-item {
     position: relative;
     &::before {
@@ -509,14 +526,14 @@
   }
   .tabContent {
     border: 1px solid #d3d3d3;
-    padding: 10px;
     position: relative;
     margin-bottom: 10px;
+    cursor: move;
 
     .label-input {
       display: flex;
       align-items: center;
-      margin-bottom: 10px;
+      margin: 10px;
 
       > span {
         display: inline-block;
@@ -535,8 +552,7 @@
 
     .colnameContent {
       display: flex;
-      padding-top: 10px;
-      margin-bottom: 10px;
+      padding: 10px;
 
       > div {
         flex: 1;
@@ -559,6 +575,124 @@
         &:last-child {
           margin: 0;
         }
+      }
+    }
+  }
+
+  .operate-button {
+    background-color: transparent;
+    outline: none;
+    font-size: 16px;
+    // padding: 5px;
+    border: 1px solid lightgrey;
+    width: 20px;
+    display: inline-block;
+    height: 20px;
+    line-height: -1px;
+    border-radius: 50%;
+    color: grey;
+  }
+  .operate-button:hover {
+    color: #000;
+    cursor: pointer;
+    opacity: 0.8;
+  }
+}
+
+// 拖拽容器滚动
+.drag-scroll {
+  height: 361px;
+  overflow-y: auto;
+}
+</style>
+
+<style lang="less">
+.r3-slick {
+  z-index: 2000;
+  box-shadow: 0px 2px 8px rgba(136, 136, 136, 0.4);
+
+  .ml-5 {
+    margin-left: 5px;
+  }
+
+  .mb-10 {
+    margin-bottom: 10px;
+  }
+
+  .ml-10 {
+    margin-left: 10px;
+  }
+
+  .required-item {
+    position: relative;
+    &::before {
+      content: '*';
+      color: red;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: -6px;
+    }
+  }
+
+  .target-key {
+    display: inline-block;
+    width: 240px;
+  }
+  .tab-label-name {
+    width: 240px;
+  }
+  .tabContent {
+    border: 1px solid #d3d3d3;
+    position: relative;
+    margin-bottom: 10px;
+    cursor: move;
+
+    .label-input {
+      display: flex;
+      align-items: center;
+      margin: 10px;
+
+      > span {
+        display: inline-block;
+        width: 100px;
+        text-align: right;
+      }
+    }
+
+    .blank {
+      position: absolute;
+      width: 100%;
+      height: 1px;
+      background: #d3d3d3;
+      left: 0;
+    }
+  }
+
+  .colnameContent {
+    display: flex;
+    padding: 10px;
+
+    > div {
+      flex: 1;
+      margin-right: 10px;
+
+      > p {
+        height: 12px;
+        margin-bottom: 4px;
+      }
+
+      &.colname {
+        flex: 2;
+      }
+
+      &.oprate {
+        width: 50px;
+        flex: none;
+      }
+
+      &:last-child {
+        margin: 0;
       }
     }
   }
