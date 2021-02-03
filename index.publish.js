@@ -34,9 +34,9 @@ const validateConfig = config => ({
   message: 'xxx'
 });
 const packageMessage = {
-  version: '1.8.3',
+  version: '1.0.1',
   packageTime: new Date().setNewFormt('yyyy-MM-dd hh:mm:ss'), 
-  user: 'local',   
+  user: 'local(云雀)',   
 };
 
 export default {
