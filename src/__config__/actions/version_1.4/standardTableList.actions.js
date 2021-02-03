@@ -153,11 +153,13 @@ export default {
               filter: [
                 {
                   col_id: 'ISACTIVE',
-                  match_value: '2019-08-06,2019-08-08'
+                  match_value: '是,否'
+
                 },
                 {
                   col_id: 'BILLDATE',
-                  match_value: '是,否'
+                  match_value: '2019-08-06,2019-08-08'
+
                 }
               ]
             },
@@ -166,11 +168,12 @@ export default {
               filter: [
                 {
                   col_id: 'ISACTIVE',
-                  match_value: '2019-08-06,2019-08-08'
+                  match_value: '是,否'
                 },
                 {
                   col_id: 'BILLDATE',
-                  match_value: '是,否'
+                  match_value: '2019-08-06,2019-08-08'
+
                 }
               ]
             }

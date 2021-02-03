@@ -1628,7 +1628,7 @@
         let objRes = {};
         const filterKeys = [];// 过滤字段
         filterButtonsRest = this.ag.filterButtons.reduce((arr, obj,) => {
-          disableButtons.push(obj.action_id);
+          // disableButtons.push(obj.action_id);
           filterData = obj.filter.reduce((acc, cur) => {
             acc[cur.col_id] = cur.match_value;
             acc.actionId = obj.action_id;
@@ -1640,39 +1640,20 @@
             [obj.action_id]: filterData
           };
           arr.push(objRes);
-          // obj.filter.map((filterData) => {
-          //   rowArray.map((rowData) => {
-          //     console.log(222, filterData.match_value, rowData[filterData.col_id]);
-          //     console.log(9, filterData.match_value.includes(rowData[filterData.col_id]));
-          //     if (rowData[filterData.col_id] && filterData.match_value.includes(rowData[filterData.col_id])) {
-          //       debugger;
-          //       // filterData.match_value = filterData.match_value.split(',');
-          //     }
-          //   });
-          // });
           return arr;
         }, []);
-        // filterKeys.map((key) => {
-        //   rowArray.filter((rowItem) => {
-        //     if (rowItem[key]) {
-
-        //     }
-        //   });
-        // });
         Object.values(filterButtonsRest).reduce((arr, obj) => {
           Object.values(obj).reduce((itemArr, itemObj) => {
-            Object.keys(itemObj)((a, o) => {
-              rowArray.filter((rowItem) => {
-                debugger;
-                if (rowItem.hasOwnProperty(o)) { console.log(666, a); }
-
-                // if (rowItem[objItem] && obj[objItem].includes(rowItem[objItem])) {
-                // }
+            Object.keys(itemObj).map((o) => {
+              rowArray.map((rowItem) => {
+                if (rowItem.hasOwnProperty(o) && itemObj[o].includes(rowItem[o])) {
+                  disableButtons.push(itemObj.actionId);
+                }
               });
             });
           }, {});
         }, []);
-        console.log(333, filterKeys, filterButtonsRest);
+        console.log(333, disableButtons);
       },
       buttonClick(type, obj) {
         this.setActiveTabActionValue({});// 点击按钮前清除上一次按钮存的信息

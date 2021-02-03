@@ -496,6 +496,19 @@
     .collection,.ark-btn-fcdefault{
       min-width: auto !important;
     }
+//     .ark-dropdown-item {
+//     border: 1px solid #fd6442;
+//     border-radius: 4px;
+//     margin: 4px;
+//    color: #fd6442;
+
+// }
+//    .ark-dropdown-item:hover {
+//    color: #feb2a1;
+//     background-color: #fff;
+//     border-color: #feb2a1;
+// }
+
   
   }
  
