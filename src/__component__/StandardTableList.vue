@@ -1618,8 +1618,6 @@
       },
       onSelectionChanged(rowIdArray, rowArray) {
         // this.filterButtonsStatus(rowIdArray, rowArray);
-
-
         // 获取表格选中明细
         this.onSelectionChangedAssignment({ rowIdArray, rowArray });
       },
@@ -1654,21 +1652,26 @@
           // });
           return arr;
         }, []);
-        // rowArray.filter((rowItem) => {
-          
-        // });
-        // Object.values(filterButtonsRest).reduce((arr, obj) => {
-        //   Object.values(obj).map((objItem) => {
-        //     Object.keys(objItem).map((keyItem) => {
-        //       rowArray.filter((rowItem) => {
-        //         debugger;
+        // filterKeys.map((key) => {
+        //   rowArray.filter((rowItem) => {
+        //     if (rowItem[key]) {
 
-        //         if (rowItem[objItem] && obj[objItem].includes(rowItem[objItem])) {
-        //         }
-        //       });
-        //     });
+        //     }
         //   });
-        // }, []);
+        // });
+        Object.values(filterButtonsRest).reduce((arr, obj) => {
+          Object.values(obj).reduce((itemArr, itemObj) => {
+            Object.keys(itemObj)((a, o) => {
+              rowArray.filter((rowItem) => {
+                debugger;
+                if (rowItem.hasOwnProperty(o)) { console.log(666, a); }
+
+                // if (rowItem[objItem] && obj[objItem].includes(rowItem[objItem])) {
+                // }
+              });
+            });
+          }, {});
+        }, []);
         console.log(333, filterKeys, filterButtonsRest);
       },
       buttonClick(type, obj) {

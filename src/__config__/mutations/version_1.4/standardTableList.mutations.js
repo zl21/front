@@ -204,7 +204,7 @@ export default {
     //     action: 'SYSTEM/TABLE_DETAIL/V/PS_C_COLOR/23787/New',
     //     cuscomponent: null,
     //     ishide: false,
-    //     actionid: 4,
+    //     actionid: 5,
 
     //   },
     //   {
@@ -283,7 +283,7 @@ export default {
 
     if (data && data.length > 0) {
       data.forEach((item) => {
-        if (item.actionid == 0) {
+        if (item.vuedisplay === 'dropdown') {
           item.childrens = [];
           parentDatas.push(item);
         } else {
@@ -300,8 +300,17 @@ export default {
         } 
       });
     });
+
     const waListButtons = childrenDatas.filter(child => !child.isFold);
-    console.log(999, parentDatas);
+
+    // parentDatas = parentDatas.reduce((arr, obj, index) => {
+    //   if (obj.childrens && obj.childrens.length > 0) {
+    //     arr.push(obj);
+    //   } else {
+    //     waListButtons.push(obj);
+    //   }
+    //   return arr;
+    // }, []);
     buttons.dataArray.waListButtonsConfig.waListButtons = waListButtons;
     buttons.dataArray.waListButtonsConfig.waListButtonsGroup = parentDatas;// 折叠按钮
   },
