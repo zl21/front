@@ -114,9 +114,10 @@ export default {
               multi_tab: queryData.datas.multi_tab
             };
             if (queryData.datas.tablequery && queryData.datas.tablequery.multi_tab && queryData.datas.tablequery.multi_tab.length > 0) {
-              queryData.datas.tablequery.multi_tab.unshift({ tab_name: 'all' });
+              queryData.datas.tablequery.multi_tab.unshift({ tab_name: '全部' });
               queryData.datas.tablequery.open = true;
             }
+            commit('updateFilterButtons', queryData.datas.listbutton_filter_conf);
             commit('updateFilterTableData', queryData.datas.tablequery);
 
             if (queryData.datas.webconf) {
@@ -145,9 +146,10 @@ export default {
             multi_tab: queryData.datas.multi_tab
           };
           if (queryData.datas.tablequery && queryData.datas.tablequery.multi_tab && queryData.datas.tablequery.multi_tab.length > 0) {
-            queryData.datas.tablequery.multi_tab.unshift({ tab_name: 'all' });
+            queryData.datas.tablequery.multi_tab.unshift({ tab_name: '全部' });
             queryData.datas.tablequery.open = true;
           }
+          commit('updateFilterButtons', queryData.datas.listbutton_filter_conf);
           commit('updateFilterTableData', queryData.datas.tablequery);
 
           if (queryData.datas.webconf) {

@@ -119,7 +119,7 @@ fieldMergeRender.prototype.init = function (params) {
   this.eGui = eGui;
   let template = '';
 
-  if(params.value){
+  if(true){
     params.colDef.key_group.map(item => {
       const value = params.data[item.col_name]; // 来源字段的值
       item.label.map((temp) => {

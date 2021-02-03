@@ -10,6 +10,7 @@ module.exports = {
   projectIconPath: path.join(__dirname, './favicon.ico'), // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
   target: 'http://lark.shoptao.cn:8000/', // 框架研发网关开启环境
+  // target: 'http://r3-8098.dev.syman.cn/', // 框架研发网关开启环境
   // target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 新版本jflow测试环境
   // target: 'http://r3dev.qiaodan.com:28888', // 乔丹开发环境
   // target: 'http://r3dev.qiaodan.com:26666', // 乔丹开发环境
@@ -105,6 +106,7 @@ module.exports = {
     // customizePage: ['FUNCTIONPERMISSION'], // 自定义界面
   }, 
   filterUrlForNetworkScript: () => true, // 框架默认true,
+  listDefaultColumn: 4
   // (data) => {
   //   if (data.router.params) {
   //     if (data.router.params.tableName && data.config().configPage[data.router.params.tableName].filter(u => u === data.url).length > 0) { // 筛选出配置界面不需要根据框架code报错提示框的接口

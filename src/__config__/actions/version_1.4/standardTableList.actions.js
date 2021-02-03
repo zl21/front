@@ -86,18 +86,39 @@ export default {
             // queryData.datas.multi_tab = [
             //   {
             //     tab_name: 'tab名1',
-            //     tab_value: [å
+            //     tab_value: [
             //       {
             //         SX: ['=N', '=Y', '=S']
             //       }
             //     ]
             //   },
             // ];
+
+
+            queryData.datas.listbutton_filter_conf = [
+              {
+                action_id: '动作定义id',
+                filter: [
+                  {
+                    col_id: 'ISACTIVE',
+                    match_value: '2019-08-06,2019-08-08'
+                  },
+                  {
+                    col_id: 'BILLDATE',
+                    match_value: '是,否'
+                  }
+                ]
+              }
+            ];
+
+            commit('updateFilterButtons', queryData.datas.listbutton_filter_conf);
+
+
             queryData.datas.tablequery = {
               multi_tab: queryData.datas.multi_tab
             };
             if (queryData.datas.tablequery && queryData.datas.tablequery.multi_tab && queryData.datas.tablequery.multi_tab.length > 0) {
-              queryData.datas.tablequery.multi_tab.unshift({ tab_name: 'all' });
+              queryData.datas.tablequery.multi_tab.unshift({ tab_name: '全部' });
               queryData.datas.tablequery.open = true;
             }
            
@@ -126,6 +147,39 @@ export default {
           commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
           commit('updateDefaultButtonsdatas', queryData.datas);
           commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
+          // queryData.datas.listbutton_filter_conf = [
+          //   {
+          //     action_id: '动作定义id1',
+          //     filter: [
+          //       {
+          //         col_id: 'ISACTIVE',
+          //         match_value: '是,否'
+
+          //       },
+          //       {
+          //         col_id: 'BILLDATE',
+          //         match_value: '2019-08-06,2019-08-08'
+
+          //       }
+          //     ]
+          //   },
+          //   {
+          //     action_id: '动作定义id2',
+          //     filter: [
+          //       {
+          //         col_id: 'ISACTIVE',
+          //         match_value: '是,否'
+          //       },
+          //       {
+          //         col_id: 'BILLDATE',
+          //         match_value: '2019-08-06,2019-08-08'
+
+          //       }
+          //     ]
+          //   }
+          // ];
+
+          commit('updateFilterButtons', queryData.datas.listbutton_filter_conf);
           // queryData.datas.multi_tab = [
           //   {
           //     tab_name: 'tab名1',
@@ -140,7 +194,7 @@ export default {
             multi_tab: queryData.datas.multi_tab
           };
           if (queryData.datas.tablequery && queryData.datas.tablequery.multi_tab && queryData.datas.tablequery.multi_tab.length > 0) {
-            queryData.datas.tablequery.multi_tab.unshift({ tab_name: 'all' });
+            queryData.datas.tablequery.multi_tab.unshift({ tab_name: '全部' });
             queryData.datas.tablequery.open = true;
           }
           commit('updateFilterTableData', queryData.datas.tablequery);

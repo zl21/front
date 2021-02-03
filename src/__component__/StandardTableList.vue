@@ -406,14 +406,12 @@
             tabValue: this.ag.tablequery.multi_tab[0]
           };
           this.currentTabValue = obj;
-        } else {
+        } else if (!this.buttons.isBig) {
           this.searchClickData();
         }
       },
       tabClick({ data, index }) {
-        debugger;
         this.filterTableParam = {};
-
         if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].startIndex) {
           this.searchData.startIndex = data.startIndex;
         } else {
@@ -433,21 +431,30 @@
           // });
           let arrRes = [];
           const tabValue = JSON.parse(JSON.stringify(data.tab_value));
-          
           this.searchData.fixedcolumns = Object.values(tabValue).reduce((arr, obj) => {
             Object.keys(this.searchData.fixedcolumns).map((key) => {
               if (obj[key]) {
                 if (obj[key] !== this.searchData.fixedcolumns[key]) {
                   switch (Object.prototype.toString.call(obj[key])) {
                   case '[object String]':
-                    arr[key] = `${obj[key]},${this.searchData.fixedcolumns[key]}`;
-                    arrRes = arr[key].split(',');
-                    arr[key] = Array.from(new Set(arrRes));
-                    arr[key] = arr[key].toString();
+                    if (obj[key].includes('~')) { // 判断否是时间段类型字段,取两个时间的并集
+                      let dateArray = [];
+                      dateArray = dateArray.concat(this.searchData.fixedcolumns[key].split('~'));
+                      dateArray = dateArray.concat(obj[key].split('~'));
+                      dateArray.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+                      arr[key] = [dateArray[0], dateArray[3]].join('~');
+                    } else {
+                      arr[key] = `${obj[key]},${this.searchData.fixedcolumns[key]}`;
+                      arrRes = arr[key].split(',');
+                      arr[key] = Array.from(new Set(arrRes));
+                      arr[key] = arr[key].toString();
+                    }
+                    
                     break;
                   case '[object Array]':
                     arr[key] = obj[key].concat(this.searchData.fixedcolumns[key]);
                     arr[key] = Array.from(new Set(arr[key]));
+                    
                     break;
                   default:
                     break;
@@ -1610,8 +1617,43 @@
         }
       },
       onSelectionChanged(rowIdArray, rowArray) {
+        // this.filterButtonsStatus(rowIdArray, rowArray);
         // 获取表格选中明细
         this.onSelectionChangedAssignment({ rowIdArray, rowArray });
+      },
+      filterButtonsStatus(rowIdArray, rowArray) {
+        const disableButtons = [];// 需要置为不可编辑的按钮
+        let filterButtonsRest = {};
+        let filterData = {};
+        let objRes = {};
+        const filterKeys = [];// 过滤字段
+        filterButtonsRest = this.ag.filterButtons.reduce((arr, obj,) => {
+          // disableButtons.push(obj.action_id);
+          filterData = obj.filter.reduce((acc, cur) => {
+            acc[cur.col_id] = cur.match_value;
+            acc.actionId = obj.action_id;
+            if (filterKeys.indexOf(cur.col_id) === -1) { filterKeys.push(cur.col_id); }
+            return acc;
+          }, {});
+         
+          objRes = {
+            [obj.action_id]: filterData
+          };
+          arr.push(objRes);
+          return arr;
+        }, []);
+        Object.values(filterButtonsRest).reduce((arr, obj) => {
+          Object.values(obj).reduce((itemArr, itemObj) => {
+            Object.keys(itemObj).map((o) => {
+              rowArray.map((rowItem) => {
+                if (rowItem.hasOwnProperty(o) && itemObj[o].includes(rowItem[o])) {
+                  disableButtons.push(itemObj.actionId);
+                }
+              });
+            });
+          }, {});
+        }, []);
+        console.log(333, disableButtons);
       },
       buttonClick(type, obj) {
         this.setActiveTabActionValue({});// 点击按钮前清除上一次按钮存的信息
@@ -2888,9 +2930,10 @@
                 this.updateSearchDBdata(response);
                 this.updateFormData(Object.assign({}, this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists), response));
               }
-              if (!this.buttons.isBig) {
-                this.firstSearchTable();
-              }
+              // if (!this.buttons.isBig) {
+              //   this.firstSearchTable();
+              // }
+              this.firstSearchTable();
             });
           } else if (!this.buttons.isBig) {
             // 初始化调用时，ie环境下增加500ms延时调用

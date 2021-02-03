@@ -5,136 +5,153 @@
       @removeOption="removeOption"
     />
 
-    <div
-      v-for="(item,index) in sumTabs"
-      :key="index"
-      class="tabContent"
+    <SlickList
+      v-model="sumTabs"
+      axis="y"
+      :lock-to-container-edges="true"
+      :press-delay="200"
+      helper-class="r3-slick"
+      class="drag-scroll"
     >
-      <p class="label-input">
-        <validate :data="item.tab_name">
-          <span class="required-item ml-5">标签名：</span>
-          <Input
-            v-model="item.tab_name"
-            class="tab-label-name"
-            @input="handlerInput(index)"
-          />
-        </validate>
-      </p>
-
-      <!-- blank -->
-      <p class="blank" />
-
-      <div
-        v-for="(temp,j) in item.tab_value"
-        :key="j"
-        class="colnameContent"
+      <SlickItem
+        v-for="(item,index) in sumTabs"
+        :key="index"
+        :index="index"
       >
-        <div class="colname">
-          <p class="required-item ml-5">
-            关联字段:
+        <div
+          class="tabContent"
+          @mouseenter="handleEnter"
+          @mouseleave="handleLeave"
+        >
+          <p class="label-input">
+            <validate :data="item.tab_name">
+              <span class="required-item ml-5">标签名：</span>
+              <Input
+                v-model="item.tab_name"
+                class="tab-label-name"
+                @input="handlerInput(index)"
+              />
+            </validate>
           </p>
-          <validate
-            :data="temp.col_name"
-            :validate-function="validateKey"
-          >
-            <DropDownSelectFilter
-              single
-              :data="keyList"
-              :auto-data="searchKeyList"
-              :page-size="pageSize"
-              :total-row-count="totalCount"
-              :default-selected="temp.defaultSelected"
-              is-back-row-item
-              :columns-key="columnsKey"
-              placeholder="请输入表内名称"
-              @on-popper-show="getKeys"
-              @on-page-change="getKeys"
-              @on-input-value-change="getSearchKeys(index, j, $event)"
-              @on-fkrp-selected="handlerSelected(index, j, $event)"
-              @on-clear="handleClear(index, j, $event)"
-            />
-          </validate>
-        </div>
-        <div class="operator">
-          <p class="required-item ml-5">
-            运算符:
-          </p>
-          <validate :data="temp.operator">
-            <Select
-              v-model="temp.operator"
-              clearable
-              @on-open-change="handleSelectExpand(index, j , $event)"
-            >
-              <Option
-                v-for="option in temp.selectOptions"
-                :key="option.value"
-                :value="option.value"
-              >
-                {{ option.label }}
-              </Option>
-            </Select>
-          </validate>
-        </div>
-        <div class="contrastValue">
-          <p class="required-item ml-5">
-            对比值:
-          </p>
-          <validate :data="temp.contrast_value">
-            <Input
-              v-if="!(temp.type && temp.type.toUpperCase().startsWith('DATE'))"
-              v-model="temp.contrast_value"
-              v-input-number:[temp.type]
-            />
-            <DatePicker
-              v-if="temp.type && temp.type.toUpperCase().startsWith('DATE')"
-              :value="temp.contrast_value"
-              :type="temp.type && temp.type.toUpperCase() === 'DATETIME' ? 'datetimerange' : 'daterange'"
-              placeholder="请选择"
-              format="yyyy/MM/dd HH:mm:ss"
-              @on-change="handleChangeDate(index, j , $event)"
-            />
-          </validate>
-        </div>
 
-        <!-- 增加字段按钮 -->
-        <div class="oprate">
-          <p />
+          <!-- blank -->
+          <p class="blank" />
+
+          <div
+            v-for="(temp,j) in item.tab_value"
+            :key="j"
+            class="colnameContent"
+            :index="j"
+          >
+            <div class="colname">
+              <p class="required-item ml-5">
+                关联字段:
+              </p>
+              <validate
+                :data="temp.col_name"
+                :validate-function="validateKey"
+              >
+                <DropDownSelectFilter
+                  single
+                  :data="keyList"
+                  :auto-data="searchKeyList"
+                  :page-size="pageSize"
+                  :total-row-count="totalCount"
+                  :default-selected="temp.defaultSelected"
+                  is-back-row-item
+                  :columns-key="columnsKey"
+                  placeholder="请输入表内名称"
+                  @on-popper-show="getKeys"
+                  @on-page-change="getKeys"
+                  @on-input-value-change="getSearchKeys(index, j, $event)"
+                  @on-fkrp-selected="handlerSelected(index, j, $event)"
+                  @on-clear="handleClear(index, j, $event)"
+                />
+              </validate>
+            </div>
+            <div class="operator">
+              <p class="required-item ml-5">
+                运算符:
+              </p>
+              <validate :data="temp.operator">
+                <Select
+                  v-model="temp.operator"
+                  clearable
+                  @on-open-change="handleSelectExpand(index, j , $event)"
+                >
+                  <Option
+                    v-for="option in temp.selectOptions"
+                    :key="option.value"
+                    :value="option.value"
+                  >
+                    {{ option.label }}
+                  </Option>
+                </Select>
+              </validate>
+            </div>
+            <div class="contrastValue">
+              <p class="required-item ml-5">
+                对比值:
+              </p>
+              <validate :data="temp.contrast_value">
+                <Input
+                  v-if="!(temp.type && temp.type.toUpperCase().startsWith('DATE'))"
+                  v-model="temp.contrast_value"
+                  v-input-number:[temp.type]
+                />
+                <DatePicker
+                  v-if="temp.type && temp.type.toUpperCase().startsWith('DATE')"
+                  style="width: 100%;"
+                  :value="temp.contrast_value"
+                  :type="temp.type && temp.type.toUpperCase() === 'DATETIME' ? 'datetimerange' : 'daterange'"
+                  placeholder="请选择"
+                  :format="temp.type && temp.type.toUpperCase() === 'DATETIME' ? 'yyyy/MM/dd HH:mm:ss' : 'yyyy/MM/dd'"
+                  @on-change="handleChangeDate(index, j , $event)"
+                />
+              </validate>
+            </div>
+
+            <div class="oprate">
+              <p />
+              <button
+                v-if="item.tab_value.length - 1 === Number(j)"
+                class="operate-button"
+                @click="(event) => {item.tab_value = addColname(item.tab_value)}"
+              >
+                <i class="iconfont">&#xec3f;</i>
+              </button>
+              <button
+                v-if="item.tab_value.length > 1"
+                class="operate-button"
+                @click="(event) => {item.tab_value = deleteColname(item.tab_value,j)}"
+              >
+                <i class="iconfont">&#xed15;</i>
+              </button>
+            </div>
+          </div>
+
+          <!-- 增加tab按钮 -->
           <button
-            v-if="item.tab_value.length - 1 === Number(j)"
-            class="operate-button"
-            @click="(event) => {item.tab_value = addColname(item.tab_value)}"
+            v-if="sumTabs.length - 1 === index"
+            class="operate-button ml-10 mb-10"
+            @click="addButtonClick"
           >
             <i class="iconfont">&#xec3f;</i>
           </button>
           <button
-            v-if="item.tab_value.length > 1"
-            class="operate-button"
-            @click="(event) => {item.tab_value = deleteColname(item.tab_value,j)}"
+            v-if="sumTabs.length > 1"
+            class="operate-button ml-10 mb-10"
+            @click="removeButtonClick(index)"
           >
             <i class="iconfont">&#xed15;</i>
           </button>
         </div>
-      </div>
-
-      <!-- 增加tab按钮 -->
-      <button
-        v-if="sumTabs.length - 1 === index"
-        class="operate-button"
-        @click="addButtonClick"
-      >
-        <i class="iconfont">&#xec3f;</i>
-      </button>
-      <button
-        v-if="sumTabs.length > 1"
-        class="operate-button"
-        @click="removeButtonClick(index)"
-      >
-        <i class="iconfont">&#xed15;</i>
-      </button>
-    </div>
+      </SlickItem>
+    </SlickList>
   </div>
 </template>
 <script>
+  import { SlickList, SlickItem } from 'vue-slicksort';
   import Description from './Description.vue';
   import Validate from '../form/Validate.vue';
   import network, { urlSearchParams } from '../../__utils__/network';
@@ -152,7 +169,12 @@
   };
 
   export default {
-    components: { Description, Validate },
+    components: {
+      Description,
+      Validate,
+      SlickList,
+      SlickItem,
+    },
     props: {
       option: {
         type: Object,
@@ -172,7 +194,8 @@
         searchKeyList: [],
         totalCount: 0,
         pageSize: 10,
-        columnsKey: ['DBNAME']
+        columnsKey: ['DBNAME'],
+        tipStyle: ''
       };
     },
 
@@ -192,24 +215,67 @@
     },
 
     async created() {
-      const newData = JSON.parse(JSON.stringify(this.defaultData));
-
-      if (this.defaultData && this.defaultData.length > 0) {
-        newData.forEach((tabObj) => {
-          tabObj.tab_value.forEach((keyObj) => {
-            if (keyObj.type && keyObj.type.toUpperCase().startsWith('DATE')) {
-              keyObj.contrast_value = keyObj.contrast_value.split('~');
-            }
-          });
-        });
-        this.sumTabs = newData;
-      } else {
-        this.sumTabs = [JSON.parse(JSON.stringify(TAB_CONSTRUCTOR))];
-      }
+      this.initData();
+      this.setHover();
     },
 
     methods: {
+      // 设置悬浮
+      setHover() {
+        // 通过hook监听组件销毁钩子函数，并取消监听事件
+        this.dom = document.createElement('div');
+        this.dom.setAttribute('id', 'drag-tip');
+        this.dom.innerText = '长按可拖拽排序';
+        document.body.appendChild(this.dom);
+
+        window.addEventListener('mousemove', this.setPos);
+        
+        this.$once('hook:beforeDestroy', () => {
+          window.removeEventListener('mousemove', this.setPos);
+          if (this.dom) {
+            document.body.removeChild(this.dom);
+          }
+        });
+      },
+
+      // 设置提示位置
+      setPos(e) {
+        this.tipStyle = `left: ${e.clientX + 20}px;top:${e.clientY + 20}px;`;
+        this.dom.style = this.tipStyle;
+      },
+
+      // 鼠标移入时显示提示
+      handleEnter() {
+        this.dom.classList.add('showTip');
+      },
+
+      // 鼠标移入时隐藏提示
+      handleLeave() {
+        this.dom.classList.remove('showTip');
+      },
+
+      // 初始化
+      initData() {
+        const newData = JSON.parse(JSON.stringify(this.defaultData));
+
+        if (this.defaultData && this.defaultData.length > 0) {
+          newData.forEach((tabObj) => {
+            tabObj.tab_value.forEach((keyObj) => {
+              if (keyObj.type && keyObj.type.toUpperCase().startsWith('DATE')) {
+                keyObj.contrast_value = keyObj.contrast_value.split('~');
+              }
+            });
+          });
+          this.sumTabs = newData;
+        } else {
+          this.sumTabs = [JSON.parse(JSON.stringify(TAB_CONSTRUCTOR))];
+        }
+      },
+
       removeOption(keyArray) { // 清楚整个配置数据
+        this.currentTabIndex = 0;
+        this.currentKeyIndex = 0;
+        this.sumTabs = [JSON.parse(JSON.stringify(TAB_CONSTRUCTOR))];
         this.$emit('removeOption', keyArray || []);
       },
       addButtonClick() { // 新增tab配置
@@ -368,8 +434,8 @@ index:  //需要删除的配置下标 type:number
         this.currentTabIndex = index;
       },
 
-      // 过滤无效字段
-      filterInvalidKey(originData) {
+      // 格式化字段
+      formatResult(originData) {
         const cacheData = JSON.parse(JSON.stringify(originData));
         for (let i = Math.max(cacheData.length - 1, 0); i >= 0; i--) {
           const tabIndex = i;
@@ -379,19 +445,33 @@ index:  //需要删除的配置下标 type:number
             if (keyRow.type && keyRow.type.toUpperCase().startsWith('DATE') && keyRow.contrast_value[0] && keyRow.contrast_value[1]) {
               keyRow.contrast_value = keyRow.contrast_value.join('~');
             }
-            // // 过滤不必要的字段
-            // delete keyRow.type;
-            // delete keyRow.selectOptions;
-            // delete keyRow.defaultSelected;
-            // // 删除无效字段配置
-            // if (!keyRow.col_name || !keyRow.operator || !keyRow.contrast_value) {
-            //   tabObj.tab_value.splice(j, 1);
-            // }
           }
-          // // 删除无效tab配置
-          // if (!tabObj.tab_name || tabObj.tab_value.length === 0) {
-          //   cacheData.splice(tabIndex, 1);
-          // }
+        }
+
+        return cacheData;
+      },
+
+      // 设置展示用的字段
+      setDisplayData(originData) {
+        const cacheData = JSON.parse(JSON.stringify(originData));
+        for (let i = Math.max(cacheData.length - 1, 0); i >= 0; i--) {
+          const tabIndex = i;
+          const tabObj = cacheData[tabIndex];
+          for (let j = Math.max(tabObj.tab_value.length - 1, 0); j >= 0; j--) {
+            const keyRow = tabObj.tab_value[j];
+            // 过滤不必要的字段
+            delete keyRow.type;
+            delete keyRow.selectOptions;
+            delete keyRow.defaultSelected;
+            // 删除无效字段配置
+            if (!keyRow.col_name || !keyRow.operator || !keyRow.contrast_value) {
+              tabObj.tab_value.splice(j, 1);
+            }
+          }
+          // 删除无效tab配置
+          if (!tabObj.tab_name || tabObj.tab_value.length === 0) {
+            cacheData.splice(tabIndex, 1);
+          }
         }
 
         return cacheData;
@@ -399,10 +479,10 @@ index:  //需要删除的配置下标 type:number
 
       // 把数据同步给父组件
       syncData() {
-        // const cacheData = this.filterInvalidKey(this.sumTabs);
-        const cacheData = JSON.parse(JSON.stringify(this.filterInvalidKey(this.sumTabs)));
+        const cacheData = JSON.parse(JSON.stringify(this.formatResult(this.sumTabs)));
 
-        if (cacheData.length === 0) {
+        const displayData = this.setDisplayData(this.sumTabs);
+        if (displayData.length === 0) {
           this.$emit('dataChange', { key: this.option.key, value: '' });
         } else {
           this.$emit('dataChange', { key: this.option.key, value: cacheData });
@@ -541,6 +621,14 @@ index:  //需要删除的配置下标 type:number
     margin-left: 5px;
   }
 
+  .ml-10 {
+    margin-left: 10px;
+  }
+
+  .mb-10 {
+    margin-bottom: 10px;
+  }
+
   .required-item {
     position: relative;
     &::before {
@@ -557,14 +645,14 @@ index:  //需要删除的配置下标 type:number
   }
   .tabContent {
     border: 1px solid #d3d3d3;
-    padding: 10px;
     position: relative;
     margin-bottom: 10px;
+    cursor: move;
 
     .label-input {
       display: flex;
       align-items: center;
-      margin-bottom: 10px;
+      margin: 10px;
 
       > span {
         display: inline-block;
@@ -583,8 +671,7 @@ index:  //需要删除的配置下标 type:number
 
     .colnameContent {
       display: flex;
-      padding-top: 10px;
-      margin-bottom: 10px;
+      padding: 10px;
 
       > div {
         flex: 1;
@@ -596,7 +683,7 @@ index:  //需要删除的配置下标 type:number
         }
 
         &.colname {
-          flex: 2;
+          flex: 1;
         }
 
         &.oprate {
@@ -607,6 +694,10 @@ index:  //需要删除的配置下标 type:number
         &:last-child {
           margin: 0;
         }
+      }
+
+      .operator {
+        flex: 100px 0 0;
       }
     }
   }
@@ -635,6 +726,148 @@ index:  //需要删除的配置下标 type:number
   .ark-select-dropdown {
     right: 72px !important;
     left: auto !important;
+  }
+}
+
+// 拖拽容器滚动
+.drag-scroll {
+  height: 361px;
+  overflow-y: auto;
+}
+</style>
+
+<style lang="less">
+#drag-tip {
+  display: inline-block;
+  padding: 4px 8px;
+  box-shadow: 0px 2px 8px rgba(136, 136, 136, 0.4);
+  background: #f4f4f4;
+  font-size: 12px;
+  position: fixed;
+  z-index: 3000;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.showTip {
+  opacity: 1!important;
+}
+
+// 拖拽时候的样式
+.r3-slick {
+  z-index: 2000;
+  box-shadow: 0px 2px 8px rgba(136, 136, 136, 0.4);
+  cursor: move;
+  pointer-events: auto !important;
+
+  .ml-5 {
+    margin-left: 5px;
+  }
+
+  .ml-10 {
+    margin-left: 10px;
+  }
+
+  .mb-10 {
+    margin-bottom: 10px;
+  }
+
+  .required-item {
+    position: relative;
+    &::before {
+      content: '*';
+      color: red;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: -6px;
+    }
+  }
+  .tab-label-name {
+    width: 240px;
+  }
+  .tabContent {
+    border: 1px solid #d3d3d3;
+    position: relative;
+    margin-bottom: 10px;
+    cursor: move;
+
+    .label-input {
+      display: flex;
+      align-items: center;
+      margin: 10px;
+
+      > span {
+        display: inline-block;
+        width: 100px;
+        text-align: right;
+      }
+    }
+
+    .blank {
+      position: absolute;
+      width: 100%;
+      height: 1px;
+      background: #d3d3d3;
+      left: 0;
+    }
+  }
+
+  .colnameContent {
+    display: flex;
+    padding: 10px;
+
+    > div {
+      flex: 1;
+      margin-right: 10px;
+
+      > p {
+        height: 12px;
+        margin-bottom: 4px;
+      }
+
+      &.colname {
+        flex: 1;
+      }
+
+      &.oprate {
+        width: 50px;
+        flex: none;
+      }
+
+      &:last-child {
+        margin: 0;
+      }
+    }
+
+    .operator {
+      flex: 100px 0 0;
+    }
+  }
+
+  .operate-button {
+    background-color: transparent;
+    outline: none;
+    font-size: 16px;
+    // padding: 5px;
+    border: 1px solid lightgrey;
+    width: 20px;
+    display: inline-block;
+    height: 20px;
+    line-height: -1px;
+    border-radius: 50%;
+    color: grey;
+  }
+  .operate-button:hover {
+    color: #000;
+    cursor: pointer;
+    opacity: 0.8;
+  }
+
+  .ark-date-picker {
+    .ark-select-dropdown {
+      right: 72px !important;
+      left: auto !important;
+    }
   }
 }
 </style>

@@ -136,6 +136,7 @@ export default () => ({
         // ];
 
         // 列表字段支持字段合并样式展示
+
         if (data.key_group && data.key_group.length > 0 && data.datas.tabth) {
           data.key_group.map((item) => {
             data.datas.tabth.map((temp) => {
