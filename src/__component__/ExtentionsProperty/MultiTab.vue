@@ -704,6 +704,8 @@ index:  //需要删除的配置下标 type:number
 .r3-slick {
   z-index: 2000;
   box-shadow: 0px 2px 8px rgba(136, 136, 136, 0.4);
+  cursor: move;
+  pointer-events: auto!important;
 
   .ml-5 {
     margin-left: 5px;
@@ -759,36 +761,36 @@ index:  //需要删除的配置下标 type:number
   }
 
   .colnameContent {
-    display: flex;
-    padding: 10px;
+      display: flex;
+      padding: 10px;
 
-    > div {
-      flex: 1;
-      margin-right: 10px;
-
-      > p {
-        height: 12px;
-        margin-bottom: 4px;
-      }
-
-      &.colname {
+      > div {
         flex: 1;
+        margin-right: 10px;
+
+        > p {
+          height: 12px;
+          margin-bottom: 4px;
+        }
+
+        &.colname {
+          flex: 1;
+        }
+
+        &.oprate {
+          width: 50px;
+          flex: none;
+        }
+
+        &:last-child {
+          margin: 0;
+        }
       }
 
-      &.oprate {
-        width: 50px;
-        flex: none;
-      }
-
-      &:last-child {
-        margin: 0;
+      .operator {
+        flex: 100px 0 0;
       }
     }
-
-    .operator {
-      flex: 100px 0 0;
-    }
-  }
 
   .operate-button {
     background-color: transparent;

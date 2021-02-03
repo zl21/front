@@ -669,6 +669,7 @@
     display: flex;
     padding: 10px;
     cursor: move;
+    pointer-events: auto!important;
 
     > div {
       flex: 1;
