@@ -249,7 +249,8 @@
             startindex,
             range: this.pageSize,
             fixedcolumns: {
-              ISACTIVE: ['=Y']
+              ISACTIVE: ['=Y'],
+              AD_TABLE_ID: [itemId],
             },
             column_include_uicontroller: true,
             isolr: false
@@ -294,6 +295,7 @@
             startindex: 0,
             fixedcolumns: {
               ISACTIVE: ['=Y'],
+              AD_TABLE_ID: [itemId],
               DESCRIPTION: value
             },
             column_include_uicontroller: true,
