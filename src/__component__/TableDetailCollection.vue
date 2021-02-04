@@ -1302,6 +1302,9 @@
         // }
       },
       objectTryDelete(obj) { // 按钮删除方法
+        if (obj && obj.path && obj.path.includes('sp|')) {
+          obj.path = null;
+        }
         if (this.tableRowSelectedIds.length === 0) {
           const data = {
             mask: true,

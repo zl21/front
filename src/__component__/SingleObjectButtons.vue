@@ -716,6 +716,10 @@
           }
         });
         if (type === 'fix') {
+          // 处理存储过程逻辑，配置的path中带有sp|时则走框架的标准逻辑，不走定制path
+          if (obj && obj.requestUrlPath && obj.requestUrlPath.includes('sp|')) {
+            obj.requestUrlPath = null;
+          }
           this.objectTabAction(obj);// 标准按钮执行方法
         } else if (type === 'custom') {
           this.webactionClick(obj);// 自定义按钮执行方法
@@ -1859,6 +1863,11 @@
             }
           }
           params = obj;
+        }
+
+        // 处理存储过程逻辑，配置的path中带有sp|时则走框架的标准逻辑，不走定制path
+        if (tab.action && tab.action.includes('sp|')) {
+          tab.action = null;
         }
         
 
