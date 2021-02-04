@@ -157,6 +157,41 @@
 
         return cacheData;
       },
+
+      // 过滤按钮配置
+      filterBtnData(originData) {
+        const cacheData = JSON.parse(JSON.stringify(originData));
+        for (let i = Math.max(cacheData.length - 1, 0); i >= 0; i--) {
+          const group = cacheData[i];
+          delete group.defaultselected;
+          for (let j = Math.max(group.filter.length - 1, 0); j >= 0; j--) {
+            const row = group.filter[j];
+            delete row.defaultselected;
+            // 删除无效来源字段
+            if (!row.col_id || !row.match_value) {
+              group.filter.splice(j, 1);
+            }
+          }
+          // 删除无效字段组配置
+          if ((!group.action_id) || group.filter.length === 0) {
+            cacheData.splice(i, 1);
+          }
+        }
+
+        return cacheData;
+      },
+
+      // 判断是否展示假数据
+      showFakeValue() {
+        if (!this.currentValue) {
+          return false;
+        }
+
+        const keyList = ['multi_tab_conf', 'key_group_conf', 'listbutton_filter_conf'];
+        const data = JSON.parse(this.currentValue);
+        const hasKey = keyList.some(key => key in data);
+        return hasKey;
+      },
       
       onKeydown(e) {
         this.$emit('keydown', e);
@@ -181,7 +216,17 @@
             }
             this.$refs.extentionInput.querySelector('textarea').value = JSON.stringify(fakeValue, null, 2);
           } 
-          if ((this.currentValue && 'multi_tab_conf' in JSON.parse(this.currentValue)) || (this.currentValue && 'key_group_conf' in JSON.parse(this.currentValue))) {
+
+          // 针对按钮过滤特殊处理,显示假的配置
+          if (fakeValue && 'listbutton_filter_conf' in fakeValue) {
+            fakeValue.listbutton_filter_conf = this.filterBtnData(fakeValue.listbutton_filter_conf);
+            if (fakeValue.listbutton_filter_conf.length === 0) {
+              delete fakeValue.listbutton_filter_conf;
+            }
+            this.$refs.extentionInput.querySelector('textarea').value = JSON.stringify(fakeValue, null, 2);
+          }
+          console.log('最后', this.showFakeValue(), fakeValue);
+          if (this.showFakeValue()) {
             return;
           }
         }
