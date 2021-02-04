@@ -1617,44 +1617,11 @@
         }
       },
       onSelectionChanged(rowIdArray, rowArray) {
-        // this.filterButtonsStatus(rowIdArray, rowArray);
+        this.filterButtonsForDisable(rowArray);
         // 获取表格选中明细
         this.onSelectionChangedAssignment({ rowIdArray, rowArray });
       },
-      filterButtonsStatus(rowIdArray, rowArray) {
-        const disableButtons = [];// 需要置为不可编辑的按钮
-        let filterButtonsRest = {};
-        let filterData = {};
-        let objRes = {};
-        const filterKeys = [];// 过滤字段
-        filterButtonsRest = this.ag.filterButtons.reduce((arr, obj,) => {
-          // disableButtons.push(obj.action_id);
-          filterData = obj.filter.reduce((acc, cur) => {
-            acc[cur.col_id] = cur.match_value;
-            acc.actionId = obj.action_id;
-            if (filterKeys.indexOf(cur.col_id) === -1) { filterKeys.push(cur.col_id); }
-            return acc;
-          }, {});
-         
-          objRes = {
-            [obj.action_id]: filterData
-          };
-          arr.push(objRes);
-          return arr;
-        }, []);
-        Object.values(filterButtonsRest).reduce((arr, obj) => {
-          Object.values(obj).reduce((itemArr, itemObj) => {
-            Object.keys(itemObj).map((o) => {
-              rowArray.map((rowItem) => {
-                if (rowItem.hasOwnProperty(o) && itemObj[o].includes(rowItem[o])) {
-                  disableButtons.push(itemObj.actionId);
-                }
-              });
-            });
-          }, {});
-        }, []);
-        console.log(333, disableButtons);
-      },
+    
       buttonClick(type, obj) {
         this.setActiveTabActionValue({});// 点击按钮前清除上一次按钮存的信息
 
