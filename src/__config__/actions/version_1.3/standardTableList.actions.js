@@ -117,6 +117,7 @@ export default {
               queryData.datas.tablequery.multi_tab.unshift({ tab_name: '全部' });
               queryData.datas.tablequery.open = true;
             }
+            commit('updateFilterButtons', queryData.datas.listbutton_filter_conf);
             commit('updateFilterTableData', queryData.datas.tablequery);
 
             if (queryData.datas.webconf) {
@@ -148,6 +149,7 @@ export default {
             queryData.datas.tablequery.multi_tab.unshift({ tab_name: '全部' });
             queryData.datas.tablequery.open = true;
           }
+          commit('updateFilterButtons', queryData.datas.listbutton_filter_conf);
           commit('updateFilterTableData', queryData.datas.tablequery);
 
           if (queryData.datas.webconf) {
