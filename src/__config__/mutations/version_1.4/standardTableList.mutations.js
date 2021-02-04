@@ -498,10 +498,14 @@ export default {
         obj.childrens.map((c) => {
           if (disableButtons.filter(b => Number(b) === Number(c.webid)).length > 0) {
             c.disabled = true;
+          } else {
+            c.disabled = false;
           }
         });
       } else if (disableButtons.filter(b => Number(b) === Number(obj.webid)).length > 0) {
         obj.disabled = true;
+      } else {
+        obj.disabled = false;
       }
       return arr;
     }, []);
