@@ -102,7 +102,7 @@
         <DropdownMenu slot="list">
           <DropdownItem
             v-for="(item,index) of printList"
-            :key="item.webid+index"
+            :key="item.webid"
             :name="item.webid"
           >
             {{ item.webdesc }}
