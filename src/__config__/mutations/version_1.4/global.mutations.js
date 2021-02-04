@@ -14,7 +14,7 @@ import {
 import router from '../../router.config';
 import setCustomeLabel from '../../../__utils__/setCustomeLabel';
 import {
-  getSeesionObject, updateSessionObject, deleteFromSessionObject, removeSessionObject 
+  getSessionObject, updateSessionObject, deleteFromSessionObject, removeSessionObject 
 } from '../../../__utils__/sessionStorage';
 import { getLabel } from '../../../__utils__/url';
 import { DispatchEvent } from '../../../__utils__/dispatchEvent';
@@ -281,7 +281,7 @@ export default {
     }
    
     // 以下逻辑是为了解决菜单外路由跳转提供信息
-    const tableDetailUrlMessage = getSeesionObject('tableDetailUrlMessage');
+    const tableDetailUrlMessage = getSessionObject('tableDetailUrlMessage');
     if (JSON.stringify(tableDetailUrlMessage) !== '{}') { // 取按钮跳转外链label
       const labelName = tableDetailUrlMessage.linkName;
       const name = `L.${tableDetailUrlMessage.linkName.toUpperCase()}.${tableDetailUrlMessage.linkId}`;
@@ -291,9 +291,9 @@ export default {
       state.LinkUrl.push(linkUrl); // 方便记录外部链接的跳转URL
       state.keepAliveLabelMaps[name] = `${tableDetailUrlMessage.linkLabel}`;
     }
-    state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('keepAliveLabelMaps'));
-    state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
-    const path = getSeesionObject('savePath').path;
+    state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSessionObject('keepAliveLabelMaps'));
+    state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSessionObject('serviceIdMap'));
+    const path = getSessionObject('savePath').path;
     if (path && path !== router.currentRoute.path) {
       router.push(path);
       // window.location.replace(window.location.href);
@@ -486,7 +486,7 @@ export default {
     const tabRouteFullPath = tab.routeFullPath;
 
     // 删除规则一：关闭页签时，菜单跳转到单对象后新增保存跳转到编辑界面，清除session中存储的对应关系。
-    const clickMenuAddSingleObjectData = getSeesionObject('clickMenuAddSingleObject');
+    const clickMenuAddSingleObjectData = getSessionObject('clickMenuAddSingleObject');
     Object.values(clickMenuAddSingleObjectData).map((item) => {
       const routeFullPath = state.activeTab.routeFullPath;
       const resRouteFullPath = ` ${routeFullPath.substring(routeFullPath.indexOf('/') + 1, routeFullPath.lastIndexOf('/'))}/New`;
@@ -496,7 +496,7 @@ export default {
       }
     });
     // 删除规则二：关闭页签时，清除外键类型跳转的session中存储的对应关系。
-    const routeMapRecordForHideBackButtonData = getSeesionObject('routeMapRecordForHideBackButton');
+    const routeMapRecordForHideBackButtonData = getSessionObject('routeMapRecordForHideBackButton');
     Object.keys(routeMapRecordForHideBackButtonData).map((item) => {
       const routeFullPath = state.activeTab.routeFullPath;
       const index = routeFullPath.lastIndexOf('/');
@@ -509,10 +509,10 @@ export default {
     });
     // 删除规则三：关闭页签时，清除动态路由跳转类型跳转的session中存储的对应关系。
     const isDynamicRouting = Boolean(window.sessionStorage.getItem('dynamicRoutingIsBack'));// 动态路由跳转的单对象界面返回列表界面标记
-    const routeMapRecord = getSeesionObject('routeMapRecord');
+    const routeMapRecord = getSessionObject('routeMapRecord');
     if (!isDynamicRouting) { // 非动态路由返回之前的关闭tab需清除routeMapRecord对应关系，动态路由返回的routeMapRecord对应关系在返回监听时刷新接口之后清除
       Object.keys(routeMapRecord).map((item) => {
-        const dynamicRoutingIsBackForDeleteValue = getSeesionObject('dynamicRoutingIsBackForDelete');
+        const dynamicRoutingIsBackForDeleteValue = getSessionObject('dynamicRoutingIsBackForDelete');
         if (dynamicRoutingIsBackForDeleteValue.keepAliveModuleName === item) {
           deleteFromSessionObject('routeMapRecord', dynamicRoutingIsBackForDeleteValue.keepAliveModuleName);
         }
@@ -530,7 +530,7 @@ export default {
     // });
 
     // 删除规则四：关闭页签时，清除单对象动态路由跳转类型跳转的session中存储的对应关系。
-    const routeMapRecordForSingleObject = getSeesionObject('routeMapRecordForSingleObject');
+    const routeMapRecordForSingleObject = getSessionObject('routeMapRecordForSingleObject');
     Object.keys(routeMapRecordForSingleObject).map((item) => {
       if (tabRouteFullPath === item) {
         deleteFromSessionObject('routeMapRecordForSingleObject', tabRouteFullPath);
@@ -538,7 +538,7 @@ export default {
     });
 
     // 删除规则六： 关闭页签时，清除定制界面跳转单对象界面session中存储的对应关系
-    const routeMapRecordForCustomizePage = getSeesionObject('routeMapRecordForCustomizePage');
+    const routeMapRecordForCustomizePage = getSessionObject('routeMapRecordForCustomizePage');
     Object.keys(routeMapRecordForCustomizePage).map((item) => {
       const index = tab.routeFullPath.lastIndexOf('\/');  
       const tabPath = tab.routeFullPath.substring(0, index + 1);
@@ -549,7 +549,8 @@ export default {
     // state.isRequest = [];// 清空修改数据验证
     const { openedMenuLists } = state;
     // 如果关闭某个Tab，则清空所有该模块可能的对应的keepAlive信息。
-    state.keepAliveLists = state.keepAliveLists.filter(d => d.indexOf(tab.tableName) === -1);
+
+    state.keepAliveLists = state.keepAliveLists.filter(d => d !== tab.keepAliveModuleName);
     openedMenuLists.forEach((item, index) => {
       if (tab.stopRouterPush) {
         const { tableName } = router.currentRoute.params;
@@ -768,7 +769,7 @@ export default {
       }
     }
     if (back) {
-      const routeMapRecordForCustomizePage = getSeesionObject('routeMapRecordForCustomizePage');
+      const routeMapRecordForCustomizePage = getSessionObject('routeMapRecordForCustomizePage');
      
       if (routeMapRecordForCustomizePage[router.currentRoute.fullPath]) {
         const CustomizePagePath = routeMapRecordForCustomizePage[router.currentRoute.fullPath];
