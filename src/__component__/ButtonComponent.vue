@@ -38,6 +38,7 @@
         :id="item.eName"
         :key="index+2"
         :ref="item.ref"
+        :disabled="item.disabled"
         type="fcdefault"
         @click="btnclick('custom', item)"
         v-text="item.webdesc" 
@@ -68,6 +69,7 @@
             v-for="(item,index) in group.childrens "
             :key="index+4"
             :name="item"
+            :disabled="item.disabled"
           >
             {{ item.webdesc }}
           </DropdownItem>
