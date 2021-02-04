@@ -38,7 +38,6 @@
         default: () => ({})
       },
       defaultData: {
-        type: String,
         default: ''
       }
     },

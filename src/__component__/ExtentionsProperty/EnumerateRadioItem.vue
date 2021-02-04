@@ -48,7 +48,6 @@
     },
     methods: {
       radioValueChange(value) {
-        console.log(value);
         this.$emit('radioValueChange', { key: this.option.key, value });
       }
     },

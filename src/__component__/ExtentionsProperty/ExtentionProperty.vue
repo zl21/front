@@ -95,6 +95,7 @@
   import ExtentionOptions from './ExtentionOptions.vue';
   import MultiTab from './MultiTab.vue';
   import bindKey from './bindKey.vue';
+  import PassWord from './PassWord.vue';
 
   const getGuid = () => Math.round(Math.random() * 10000000000);
 
@@ -114,7 +115,8 @@
       ExtentionInputGroup,
       ExtentionOptions,
       MultiTab,
-      bindKey
+      bindKey,
+      PassWord
     },
     props: {
       options: {
