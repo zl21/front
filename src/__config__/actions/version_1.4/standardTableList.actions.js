@@ -95,21 +95,21 @@ export default {
             // ];
 
 
-            queryData.datas.listbutton_filter_conf = [
-              {
-                action_id: '动作定义id',
-                filter: [
-                  {
-                    col_id: 'ISACTIVE',
-                    match_value: '2019-08-06,2019-08-08'
-                  },
-                  {
-                    col_id: 'BILLDATE',
-                    match_value: '是,否'
-                  }
-                ]
-              }
-            ];
+            // queryData.datas.listbutton_filter_conf = [
+            //   {
+            //     action_id: '动作定义id',
+            //     filter: [
+            //       {
+            //         col_id: 'ISACTIVE',
+            //         match_value: '2019-08-06,2019-08-08'
+            //       },
+            //       {
+            //         col_id: 'BILLDATE',
+            //         match_value: '是,否'
+            //       }
+            //     ]
+            //   }
+            // ];
 
             commit('updateFilterButtons', queryData.datas.listbutton_filter_conf);
 
@@ -147,37 +147,35 @@ export default {
           commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
           commit('updateDefaultButtonsdatas', queryData.datas);
           commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
-          queryData.datas.listbutton_filter_conf = [
-            {
-              action_id: '动作定义id1',
-              filter: [
-                {
-                  col_id: 'ISACTIVE',
-                  match_value: '是,否'
+          // queryData.datas.listbutton_filter_conf = [
+          //   {
+          //     action_id: '2296',
+          //     filter: [
+          //       {
+          //         col_id: '1',
+          //         match_value: '是,否'
 
-                },
-                {
-                  col_id: 'BILLDATE',
-                  match_value: '2019-08-06,2019-08-08'
-
-                }
-              ]
-            },
-            {
-              action_id: '动作定义id2',
-              filter: [
-                {
-                  col_id: 'ISACTIVE',
-                  match_value: '是,否'
-                },
-                {
-                  col_id: 'BILLDATE',
-                  match_value: '2019-08-06,2019-08-08'
-
-                }
-              ]
-            }
-          ];
+          //       },
+          //       {
+          //         col_id: '3',
+          //         match_value: '2019-08-06,2019-08-08'
+          //       }
+          //     ]
+          //   },
+          //   {
+          //     action_id: '2324',
+          //     filter: [
+          //       {
+          //         col_id: '2',
+          //         match_value: '是,否'
+          //       },
+          //       {
+          //         col_id: '4',
+          //         match_value: '2019-08-06,2019-08-08'
+          //       }
+          //     ]
+          //   }
+          // ];
 
           commit('updateFilterButtons', queryData.datas.listbutton_filter_conf);
           // queryData.datas.multi_tab = [

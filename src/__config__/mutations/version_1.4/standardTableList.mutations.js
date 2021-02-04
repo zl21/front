@@ -291,7 +291,6 @@ export default {
         }
       }); 
     }
-   
     childrenDatas.forEach((d) => {
       parentDatas.forEach((parent) => {
         if (d.actionid === parent.webid) {
@@ -300,17 +299,7 @@ export default {
         } 
       });
     });
-
     const waListButtons = childrenDatas.filter(child => !child.isFold);
-
-    // parentDatas = parentDatas.reduce((arr, obj, index) => {
-    //   if (obj.childrens && obj.childrens.length > 0) {
-    //     arr.push(obj);
-    //   } else {
-    //     waListButtons.push(obj);
-    //   }
-    //   return arr;
-    // }, []);
     buttons.dataArray.waListButtonsConfig.waListButtons = waListButtons;
     buttons.dataArray.waListButtonsConfig.waListButtonsGroup = parentDatas;// 折叠按钮
   },
@@ -469,4 +458,56 @@ export default {
   updateFilterButtons(state, data) { // 更新按钮筛选数据
     state.ag.filterButtons = data;
   },
+  filterButtonsForDisable({ buttons, ag }, rowArray) { // 根据条件过滤按钮disable状态
+    // 整合过滤数据
+    const disableButtons = [];// 需要置为不可编辑的按钮
+    let filterButtonsRest = {};
+    let filterData = {};
+    let filterTabth = '';
+    filterButtonsRest = ag.filterButtons.reduce((arr, obj,) => {
+      filterData = obj.filter.reduce((acc, cur) => {
+        filterTabth = ag.datas.tabth.filter((t) => {
+          if (Number(t.colname) === Number(cur.col_id)) {
+            return t.colname; 
+          }
+        });
+        if (filterTabth.length > 0) {
+          cur.col_id = filterTabth[0];
+        }
+        acc[cur.col_id] = cur.match_value;
+        acc.actionId = obj.action_id;
+        return acc;
+      }, {});
+      arr.push(filterData);
+      return arr;
+    }, []);
+    Object.values(filterButtonsRest).reduce((arr, obj) => {
+      Object.keys(obj).map((o) => {
+        rowArray.map((rowItem) => {
+          if (rowItem.hasOwnProperty(o) && obj[o].includes(rowItem[o].val)) {
+            if (disableButtons.indexOf(obj.actionId) === -1) { 
+              disableButtons.push(obj.actionId);
+            }
+          }
+        });
+      });
+    }, []);
+    // 处理按钮不可编辑逻辑
+    const waListButtonsConfig = buttons.dataArray.waListButtonsConfig;// 折叠按钮
+    const waListButtonsGroup = waListButtonsConfig.waListButtonsGroup;
+    const waListButtons = waListButtonsConfig.waListButtons;
+    const buttonsArr = waListButtonsGroup.concat(waListButtons);
+    buttonsArr.reduce((arr, obj) => {
+      if (obj.childrens) {
+        obj.childrens.map((c) => {
+          if (disableButtons.filter(b => Number(b) === Number(c.webid)).length > 0) {
+            c.disabled = true;
+          }
+        });
+      } else if (disableButtons.filter(b => Number(b) === Number(obj.webid)).length > 0) {
+        obj.disabled = true;
+      }
+      return arr;
+    }, []);
+  }
 };
