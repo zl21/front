@@ -36,7 +36,7 @@
       <Button
         v-for="(item,index) in dataArray.waListButtonsConfig.waListButtons"
         :id="item.eName"
-        :key="index+2"
+        :key="item.webid"
         :ref="item.ref"
         :disabled="item.disabled"
         type="fcdefault"
@@ -51,7 +51,7 @@
       </Button>
       <Dropdown
         v-for="(group,i) in dataArray.waListButtonsConfig.waListButtonsGroup"
-        :key="i+3"
+        :key="group.webid"
         trigger="click"
         placement="bottom-start"
         split-button
@@ -67,7 +67,7 @@
         <DropdownMenu slot="list">
           <DropdownItem
             v-for="(item,index) in group.childrens "
-            :key="index+4"
+            :key="item.webid"
             :name="item"
             :disabled="item.disabled"
           >
@@ -101,8 +101,8 @@
         </Button>
         <DropdownMenu slot="list">
           <DropdownItem
-            v-for="(item) of printList"
-            :key="item.webid"
+            v-for="(item,index) of printList"
+            :key="item.webid+index"
             :name="item.webid"
           >
             {{ item.webdesc }}

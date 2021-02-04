@@ -269,17 +269,13 @@ export default {
     const disableButtons = [];// 需要置为不可编辑的按钮
     let filterButtonsRest = {};
     let filterData = {};
-    let filterTabth = '';
     filterButtonsRest = ag.filterButtons.reduce((arr, obj,) => {
       filterData = obj.filter.reduce((acc, cur) => {
-        filterTabth = ag.datas.tabth.filter((t) => {
-          if (Number(t.colname) === Number(cur.col_id)) {
-            return t.colname; 
+        ag.datas.tabth.filter((t) => {
+          if (Number(t.col_id) === Number(cur.col_id)) {
+            cur.col_id = t.colname; 
           }
         });
-        if (filterTabth.length > 0) {
-          cur.col_id = filterTabth[0];
-        }
         acc[cur.col_id] = cur.match_value;
         acc.actionId = obj.action_id;
         return acc;
@@ -308,10 +304,14 @@ export default {
         obj.childrens.map((c) => {
           if (disableButtons.filter(b => Number(b) === Number(c.webid)).length > 0) {
             c.disabled = true;
+          } else {
+            c.disabled = false;
           }
         });
       } else if (disableButtons.filter(b => Number(b) === Number(obj.webid)).length > 0) {
         obj.disabled = true;
+      } else {
+        obj.disabled = false;
       }
       return arr;
     }, []);
