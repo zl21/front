@@ -5,11 +5,11 @@ export const createWatermark = (object) => {
     watermark_intervalWidth: 100, //  间隔宽度
     watermark_intervalheight: 100, // 间隔高度
     style: {
-      webkitTransform: 'rotate(-15deg)',
-      MozTransform: 'rotate(-15deg)',
-      msTransform: 'rotate(-15deg)',
-      OTransform: 'rotate(-15deg)',
-      transform: 'rotate(-15deg)',
+      webkitTransform: 'rotate(-25deg)',
+      MozTransform: 'rotate(-25deg)',
+      msTransform: 'rotate(-25deg)',
+      OTransform: 'rotate(-25deg)',
+      transform: 'rotate(-25deg)',
       visibility: '',
       position: 'absolute',
       overflow: 'hidden',
@@ -18,31 +18,31 @@ export const createWatermark = (object) => {
       opacity: 0.2,
       fontSize: '14px',
       fontFamily: '微软雅黑',
-      color: 'red',
+      color: '#575757',
       textAlign: 'left',
       width: '200px',
-      height: '80px',
+      height: '30px',
       display: 'block',
-      // left: '10px',//不支持设置定位，
-      // top: '10px',
     }
   };
 
-
   const mark_divs = document.getElementsByClassName('mark_div');
+
   if (mark_divs.length > 0) {
     for (let i = mark_divs.length - 1; i >= 0; i--) {
       document.body.removeChild(mark_divs[i]);
     }
   }
-  const setting = Object.assign({}, object, defaultSettings);
-
-  const maxWidth = document.documentElement.offsetWidth;
-  const maxHeight = document.documentElement.offsetHeight;
-  const rowNumber = (maxWidth - 40 - 80) / setting.watermark_intervalWidth; // 横向个数
-  const coumnNumber = (maxHeight - 40 - 80) / setting.watermark_intervalheight; // 纵向个数
-  
+  const setting = Object.assign({}, defaultSettings, object);
   const _temp = document.createDocumentFragment();
+  const dom = setting.id ? document.querySelector(`#${setting.id}`) : document.body.appendChild(_temp);
+  console.log(333, dom.offsetHeight);
+  const maxWidth = dom.offsetWidth;
+  const maxHeight = dom.offsetHeight;
+  const rowNumber = (maxWidth - 40 - 40) / setting.watermark_intervalWidth; // 横向个数
+  const coumnNumber = (maxHeight - 40 - 60) / setting.watermark_intervalheight; // 纵向个数
+ 
+
   for (let i = 0; i < rowNumber; i++) {
     for (let j = 0; j < coumnNumber; j++) {
       const x = setting.watermark_intervalWidth * i + 20;
@@ -62,7 +62,7 @@ export const createWatermark = (object) => {
       _temp.appendChild(mark_div);
     }
   }
-  const tpl = setting.id ? document.querySelector(`#${setting.id}`) : document.body.appendChild(_temp);
+  const tpl = dom;
   tpl.appendChild(_temp);
 };
   
