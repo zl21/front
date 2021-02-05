@@ -58,7 +58,8 @@
         >
           <div
             class="colnameContent"
-            title="长按可拖拽排序"
+            @mouseenter="handleEnter"
+            @mouseleave="handleLeave"
           >
             <div class="colname">
               <p class="required-item ml-5">
@@ -233,10 +234,44 @@
       } else {
         this.resultList = [JSON.parse(JSON.stringify(GROUP_CONSTRUCTOR))];
       }
-      console.log('初始值', newData);
+      this.setHover();
     },
 
     methods: {
+      // 设置悬浮
+      setHover() {
+        // 通过hook监听组件销毁钩子函数，并取消监听事件
+        this.dom = document.createElement('div');
+        this.dom.setAttribute('id', 'drag-tip');
+        this.dom.innerText = '长按可拖拽排序';
+        document.body.appendChild(this.dom);
+
+        window.addEventListener('mousemove', this.setPos);
+
+        this.$once('hook:beforeDestroy', () => {
+          window.removeEventListener('mousemove', this.setPos);
+          if (this.dom) {
+            document.body.removeChild(this.dom);
+          }
+        });
+      },
+
+      // 设置提示位置
+      setPos(e) {
+        this.tipStyle = `left: ${e.clientX + 20}px;top:${e.clientY + 20}px;`;
+        this.dom.style = this.tipStyle;
+      },
+
+      // 鼠标移入时显示提示
+      handleEnter() {
+        this.dom.classList.add('showTip');
+      },
+
+      // 鼠标移入时隐藏提示
+      handleLeave() {
+        this.dom.classList.remove('showTip');
+      },
+
       removeOption(keyArray) { // 清楚整个配置数据
         this.resultList = [JSON.parse(JSON.stringify(GROUP_CONSTRUCTOR))];
         this.$emit('removeOption', keyArray || []);
@@ -600,10 +635,24 @@
     opacity: 0.8;
   }
 }
-
 </style>
 
 <style lang="less">
+#drag-tip {
+  display: inline-block;
+  padding: 4px 8px;
+  box-shadow: 0px 2px 8px rgba(136, 136, 136, 0.4);
+  background: #f4f4f4;
+  font-size: 12px;
+  position: fixed;
+  z-index: 3000;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.showTip {
+  opacity: 1 !important;
+}
+
 .r3-slick {
   z-index: 2000;
   box-shadow: 0px 2px 8px rgba(136, 136, 136, 0.4);
@@ -669,6 +718,7 @@
     display: flex;
     padding: 10px;
     cursor: move;
+    pointer-events: auto !important;
 
     > div {
       flex: 1;
