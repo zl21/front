@@ -109,17 +109,19 @@
     },
     methods: {
       // 过滤多tab配置
-      filterTabData(originData) {
+      filterTabData(originData, deleteDefault) {
         const cacheData = JSON.parse(JSON.stringify(originData));
         for (let i = Math.max(cacheData.length - 1, 0); i >= 0; i--) {
           const tabIndex = i;
           const tabObj = cacheData[tabIndex];
           for (let j = Math.max(tabObj.tab_value.length - 1, 0); j >= 0; j--) {
             const keyRow = tabObj.tab_value[j];
-            // 过滤不必要的字段
-            delete keyRow.type;
-            delete keyRow.selectOptions;
-            delete keyRow.defaultSelected;
+            if (deleteDefault) {
+              // 过滤不必要的字段
+              delete keyRow.type;
+              delete keyRow.selectOptions;
+              delete keyRow.defaultSelected;
+            }
             // 删除无效字段配置
             if (!keyRow.col_name || !keyRow.operator || !keyRow.contrast_value) {
               tabObj.tab_value.splice(j, 1);
@@ -135,15 +137,21 @@
       },
 
       // 过滤标记配置
-      filterKeyData(originData) {
+      filterKeyData(originData, deleteDefault) {
         const cacheData = JSON.parse(JSON.stringify(originData));
         for (let i = Math.max(cacheData.length - 1, 0); i >= 0; i--) {
           const group = cacheData[i];
-          delete group.target.defaultselected;
-          delete group.target.label;
+          if (deleteDefault) {
+            delete group.target.defaultselected;
+            delete group.target.label;
+          }
+          
           for (let j = Math.max(group.source.length - 1, 0); j >= 0; j--) {
             const row = group.source[j];
-            delete row.defaultselected;
+            if (deleteDefault) {
+              delete row.defaultselected;
+            }
+            
             // 删除无效来源字段
             if (!row.col_id || !row.label) {
               group.source.splice(j, 1);
@@ -159,14 +167,21 @@
       },
 
       // 过滤按钮配置
-      filterBtnData(originData) {
+      filterBtnData(originData, deleteDefault) {
         const cacheData = JSON.parse(JSON.stringify(originData));
         for (let i = Math.max(cacheData.length - 1, 0); i >= 0; i--) {
           const group = cacheData[i];
-          delete group.defaultselected;
+          if (deleteDefault) {
+            delete group.defaultselected;
+          }
+          
           for (let j = Math.max(group.filter.length - 1, 0); j >= 0; j--) {
             const row = group.filter[j];
-            delete row.defaultselected;
+
+            if (deleteDefault) {
+              delete row.defaultselected;
+            }
+            
             // 删除无效来源字段
             if (!row.col_id || !row.match_value) {
               group.filter.splice(j, 1);
@@ -197,35 +212,39 @@
         this.$emit('keydown', e);
       },
 
+      // 过滤空字段
+      filterEmptyKey(data, deleteDefault = true) {
+        const fakeValue = data;
+        // 针对tab配置特殊处理,显示假的配置
+        if (fakeValue && 'multi_tab_conf' in fakeValue) {
+          fakeValue.multi_tab_conf = this.filterTabData(fakeValue.multi_tab_conf, deleteDefault);
+          if (fakeValue.multi_tab_conf.length === 0) {
+            delete fakeValue.multi_tab_conf;
+          }
+        } 
+        // 针对字段组配置特殊处理,显示假的配置
+        if (fakeValue && 'key_group_conf' in fakeValue) {
+          fakeValue.key_group_conf = this.filterKeyData(fakeValue.key_group_conf, deleteDefault);
+          if (fakeValue.key_group_conf.length === 0) {
+            delete fakeValue.key_group_conf;
+          }
+        } 
+
+        // 针对按钮过滤特殊处理,显示假的配置
+        if (fakeValue && 'listbutton_filter_conf' in fakeValue) {
+          fakeValue.listbutton_filter_conf = this.filterBtnData(fakeValue.listbutton_filter_conf, deleteDefault);
+          if (fakeValue.listbutton_filter_conf.length === 0) {
+            delete fakeValue.listbutton_filter_conf;
+          }
+        }
+
+        return fakeValue;
+      },
+
       setFormatedValue() {
         if (this.currentValue) {
-          const fakeValue = JSON.parse(this.currentValue);
-          // 针对tab配置特殊处理,显示假的配置
-          if (fakeValue && 'multi_tab_conf' in fakeValue) {
-            fakeValue.multi_tab_conf = this.filterTabData(fakeValue.multi_tab_conf);
-            if (fakeValue.multi_tab_conf.length === 0) {
-              delete fakeValue.multi_tab_conf;
-            }
-            this.$refs.extentionInput.querySelector('textarea').value = JSON.stringify(fakeValue, null, 2);
-          } 
-          // 针对字段组配置特殊处理,显示假的配置
-          if (fakeValue && 'key_group_conf' in fakeValue) {
-            fakeValue.key_group_conf = this.filterKeyData(fakeValue.key_group_conf);
-            if (fakeValue.key_group_conf.length === 0) {
-              delete fakeValue.key_group_conf;
-            }
-            this.$refs.extentionInput.querySelector('textarea').value = JSON.stringify(fakeValue, null, 2);
-          } 
-
-          // 针对按钮过滤特殊处理,显示假的配置
-          if (fakeValue && 'listbutton_filter_conf' in fakeValue) {
-            fakeValue.listbutton_filter_conf = this.filterBtnData(fakeValue.listbutton_filter_conf);
-            if (fakeValue.listbutton_filter_conf.length === 0) {
-              delete fakeValue.listbutton_filter_conf;
-            }
-            this.$refs.extentionInput.querySelector('textarea').value = JSON.stringify(fakeValue, null, 2);
-          }
-          console.log('最后', this.showFakeValue(), fakeValue);
+          const fakeValue = this.filterEmptyKey(JSON.parse(this.currentValue));
+          this.$refs.extentionInput.querySelector('textarea').value = JSON.stringify(fakeValue, null, 2);
           if (this.showFakeValue()) {
             return;
           }
@@ -253,7 +272,8 @@
           this.$emit('valueChange', this.currentValue);
           this.transformedData = {};
         } else {
-          this.$emit('valueChange', JSON.stringify(JSON.parse(this.currentValue)));
+          const newValue = this.filterEmptyKey(JSON.parse(this.currentValue), false);
+          this.$emit('valueChange', JSON.stringify(newValue));
           this.transformedData = JSON.parse(this.currentValue);
         }
         this.showModal = false;
