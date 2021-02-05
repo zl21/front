@@ -95,6 +95,7 @@
   import ExtentionOptions from './ExtentionOptions.vue';
   import MultiTab from './MultiTab.vue';
   import bindKey from './bindKey.vue';
+  import ButtonFilter from './ButtonFilter.vue';
   import PassWord from './PassWord.vue';
 
   const getGuid = () => Math.round(Math.random() * 10000000000);
@@ -116,6 +117,7 @@
       ExtentionOptions,
       MultiTab,
       bindKey,
+      ButtonFilter,
       PassWord
     },
     props: {
@@ -161,7 +163,6 @@
           if (fakeValue.listbutton_filter_conf.length === 0) {
             delete fakeValue.listbutton_filter_conf;
           }
-          console.log('过滤后', this.filterBtnData(fakeValue.listbutton_filter_conf));
         }
 
         if (this.showFakeValue()) {
