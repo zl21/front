@@ -1833,15 +1833,22 @@
           }
           return obj;
         }, {});
-
         return Object.keys(jsonData).reduce((obj, item) => {
           let value = '';
 
           this.formItemsLists.concat([]).every((temp) => {
             if (temp.item.field === item) { // 等于当前节点，判断节点类型
               if (temp.item.type === 'DatePicker' && (temp.item.props.type === 'datetimerange' || temp.item.props.type === 'daterange')) { // 当为日期控件时，数据处理
-                if ((jsonData[item][0] && jsonData[item][1])) {
-                  value = jsonData[item].join('~');
+                if ((jsonData[item][0] && jsonData[item][1])) {  
+                  if (jsonData[item][0].includes('/')) {
+                    const array = JSON.parse(JSON.stringify(jsonData[item]));
+                    // 日期格式传参处理，主要是处理第一次默认值查询
+                    array[0] = new Date().r3Format(new Date(array[0]));
+                    array[1] = new Date().r3Format(new Date(array[1]));
+                    value = array.join('~').replace(/-/g, '');
+                  } else {
+                    value = jsonData[item].join('~');
+                  }
                 } else {
                   value = '';
                 }
