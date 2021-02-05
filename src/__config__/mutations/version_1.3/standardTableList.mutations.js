@@ -334,5 +334,26 @@ export default {
         return arr;
       }, []);
     }
+  },
+  resetButtonsStatus({ buttons }) {
+    const waListButtonsConfig = buttons.dataArray.waListButtonsConfig;// 折叠按钮
+    const waListButtonsGroup = waListButtonsConfig.waListButtonsGroup;
+    const waListButtons = waListButtonsConfig.waListButtons;
+    const fun = (data) => {
+      data.reduce((arr, obj) => {
+        if (obj.childrens) {
+          obj.childrens.map((c) => {
+            if (c.disabled) {
+              c.disabled = false;
+            }
+          });
+        } else {
+          obj.disabled = false;
+        }
+        return arr;
+      }, []);
+    };  
+    fun(waListButtonsGroup);
+    fun(waListButtons);
   }
 };

@@ -2038,6 +2038,7 @@
         // return this.filterTableParam;
       },
       searchClickData(value) {
+        this.resetButtonsStatus();
         // 按钮查找 查询第一页数据
         if (!value) { // 返回时查询之前页码
           this.searchData.startIndex = 0;
