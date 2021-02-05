@@ -356,7 +356,8 @@
                 for (let i = Math.max(tabth.length - 1, 0); i >= 0; i--) {
                   const item = tabth[i];
                   // 让输入框显示 表内名称 字段
-                  if (item.name === '表内名称' || item.name === '显示名称') {
+                  const displayName = dataKey === 'action_id' ? '显示名称' : '表内名称';
+                  if (item.name === displayName) {
                     item.isak = true;
                   } else {
                     item.isak = false;

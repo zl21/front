@@ -155,7 +155,6 @@
           if (fakeValue.listbutton_filter_conf.length === 0) {
             delete fakeValue.listbutton_filter_conf;
           }
-          console.log('过滤后', this.filterBtnData(fakeValue.listbutton_filter_conf));
         }
 
         if (this.showFakeValue()) {
