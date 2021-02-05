@@ -71,7 +71,7 @@ Date.prototype.setNewFormt = function (fmt, from, to) {
 };  
 
 
-Date.prototype.format = (date, fmt = 'yyyy-MM-dd') => {
+Date.prototype.r3Format = (date, fmt = 'yyyy-MM-dd') => {
   const _date = date;
   const o = {
     'M+': _date.getMonth() + 1, // 月份
