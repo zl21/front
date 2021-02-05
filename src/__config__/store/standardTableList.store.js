@@ -14,6 +14,7 @@ export default () => ({
     ag: {
       datas: {},
       status4css: [], // 图例数据
+      filterButtons: [],
       tablequery:
       {
         // multi_tab: [

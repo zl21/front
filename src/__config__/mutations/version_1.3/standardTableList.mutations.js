@@ -266,34 +266,48 @@ export default {
   },
   filterButtonsForDisable({ buttons, ag }, rowArray) { // 根据条件过滤按钮disable状态
     // 整合过滤数据
-    const disableButtons = [];// 需要置为不可编辑的按钮
+    let disableButtons = [];// 需要置为不可编辑的按钮
     let filterButtonsRest = {};
     let filterData = {};
-    filterButtonsRest = ag.filterButtons.reduce((arr, obj,) => {
-      filterData = obj.filter.reduce((acc, cur) => {
-        ag.datas.tabth.filter((t) => {
-          if (Number(t.col_id) === Number(cur.col_id)) {
-            cur.col_id = t.colname; 
-          }
-        });
-        acc[cur.col_id] = cur.match_value;
-        acc.actionId = obj.action_id;
-        return acc;
-      }, {});
-      arr.push(filterData);
-      return arr;
-    }, []);
-    Object.values(filterButtonsRest).reduce((arr, obj) => {
-      Object.keys(obj).map((o) => {
-        rowArray.map((rowItem) => {
-          if (rowItem.hasOwnProperty(o) && obj[o].includes(rowItem[o].val)) {
-            if (disableButtons.indexOf(obj.actionId) === -1) { 
-              disableButtons.push(obj.actionId);
+    if (ag.filterButtons && ag.filterButtons.length > 0) {
+      filterButtonsRest = ag.filterButtons.reduce((arr, obj,) => {
+        filterData = obj.filter.reduce((acc, cur) => {
+          ag.datas.tabth.filter((t) => {
+            if (Number(t.col_id) === Number(cur.col_id)) {
+              cur.col_id = t.colname; 
             }
-          }
+          });
+          acc[cur.col_id] = cur.match_value;
+          acc.actionId = obj.action_id;
+          return acc;
+        }, {});
+        arr.push(filterData);
+        return arr;
+      }, []);
+      const filterCol = (b, r) => {
+        const arr = b.split(',');
+        if (arr.filter(a => a === r).length > 0) {
+          return true;
+        }
+      };
+      const conditionNum = [];
+      Object.values(filterButtonsRest).reduce((arr, obj) => {
+        Object.keys(obj).map((o) => {
+          rowArray.map((rowItem) => {
+            if (rowItem.hasOwnProperty(o)) {
+              if (filterCol(obj[o], rowItem[o].val)) {
+                // if (conditionNum.indexOf(obj.actionId) === -1) { 
+                conditionNum.push(obj.actionId);
+                // }
+              }
+            }
+          });
         });
-      });
-    }, []);
+        if (Number(Object.keys(obj).length) - 1 === Number(conditionNum.length)) {
+          disableButtons = conditionNum;
+        }
+      }, []);
+    }
     // 处理按钮不可编辑逻辑
     const waListButtonsConfig = buttons.dataArray.waListButtonsConfig;// 折叠按钮
     const waListButtonsGroup = waListButtonsConfig.waListButtonsGroup;
