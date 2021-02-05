@@ -503,7 +503,7 @@ export default {
         });
         console.log('num', Number(Object.keys(obj).length) - 1, Number(conditionNum.length));
         if (Number(Object.keys(obj).length) - 1 === Number(conditionNum.length)) {
-          disableButtons = conditionNum;
+          disableButtons = disableButtons.concat(conditionNum);
         }
       }, []);
       // 处理按钮不可编辑逻辑
@@ -528,5 +528,26 @@ export default {
         return arr;
       }, []);
     }
+  },
+  resetButtonsStatus({ buttons }) {
+    const waListButtonsConfig = buttons.dataArray.waListButtonsConfig;// 折叠按钮
+    const waListButtonsGroup = waListButtonsConfig.waListButtonsGroup;
+    const waListButtons = waListButtonsConfig.waListButtons;
+    const fun = (data) => {
+      data.reduce((arr, obj) => {
+        if (obj.childrens) {
+          obj.childrens.map((c) => {
+            if (c.disabled) {
+              c.disabled = false;
+            }
+          });
+        } else {
+          obj.disabled = false;
+        }
+        return arr;
+      }, []);
+    };  
+    fun(waListButtonsGroup);
+    fun(waListButtons);
   }
 };
