@@ -332,7 +332,7 @@ export default [
     name: '按钮触发条件',
     key: 'listbutton_filter_conf',
     type: 'custom',
-    component: () => import('../__component__/ExtentionsProperty/ButtonFilter.vue'),
+    component: 'ButtonFilter',
     showLabel: false,
     enableIncrease: true,
     description: '增加按钮触发条件的配置'
