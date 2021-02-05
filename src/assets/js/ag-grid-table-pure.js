@@ -123,7 +123,7 @@ fieldMergeRender.prototype.init = function (params) {
     params.colDef.key_group.map(item => {
       const value = params.data[item.col_name]; // 来源字段的值
       item.label.map((temp) => {
-        if (temp.description == value.val) {
+        if (temp.value == value.val) {
           template = template+`<span style="display:inline-block;padding:4px 6px;border:1px solid;border-radius:4px;line-height:1"  class="${temp.cssclass}">${temp.description}</span>`
         }
         return temp;
