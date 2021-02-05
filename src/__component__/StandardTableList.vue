@@ -2778,41 +2778,6 @@
       }
     },
     mounted() {
-      this.$nextTick(() => {
-        const userInfo = JSON.parse(window.localStorage.getItem('userInfo')) || this.userInfo;
-        const text = `${userInfo.name} ${userInfo.truename}`; 
-        const object = {
-          id: this[INSTANCE_ROUTE_QUERY].tableName,
-          textContent: [text], // 每行显示的文本内容
-          watermark_intervalWidth: 100, //  间隔宽度
-          watermark_intervalheight: 100, // 间隔高度
-          style: {
-            webkitTransform: 'rotate(-25deg)',
-            MozTransform: 'rotate(-25deg)',
-            msTransform: 'rotate(-25deg)',
-            OTransform: 'rotate(-25deg)',
-            transform: 'rotate(-25deg)',
-            visibility: '',
-            position: 'absolute',
-            overflow: 'hidden',
-            zIndex: '9999',
-            pointerEvents: 'none', // pointer-events:none  让水印不阻止交互事件
-            opacity: 0.2,
-            fontSize: '14px',
-            fontFamily: '微软雅黑',
-            color: '#575757',
-            textAlign: 'left',
-            width: '140px',
-            height: '15px',
-            display: 'block',
-          // left: '10px',//不支持设置定位，
-          // top: '10px',
-          }
-        };
-        this.$createWatermark(object);
-      });
-
-
       this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
        
       if (!this._inactive) {
