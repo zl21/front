@@ -83,6 +83,7 @@
           confirm: () => {
           }
         }, // 弹框配置信息
+        selectedIndex: []
       };
     },
     name: 'CommonTable',
@@ -150,7 +151,7 @@
           fixed: 'left'
         }];
         if (Object.keys(this.datas).length > 0 && this.datas.tabth.length > 1) {
-          return defaultColumns.concat(this.datas.tabth.reduce((acc, cur) => {
+          const columns = defaultColumns.concat(this.datas.tabth.reduce((acc, cur) => {
             if (cur.comment) {
               if (cur.name === 'ID') {
                 acc.push(Object.assign({
@@ -370,6 +371,7 @@
             }
             return acc;
           }, []));
+          return columns;
         }
         return [];
       }, // 表头
@@ -383,6 +385,12 @@
             acc.push(obj);
             return acc;
           }, []);
+
+          // 回填勾选
+          this.selectedIndex.forEach((curIndex) => {
+            data[curIndex]._checked = true;
+          });
+          
           this.spinShow = false;
           return data;
         }
@@ -805,6 +813,15 @@
         }, []);
         if (typeof self.onSelectionChanged === 'function') {
           self.onSelectionChanged(rowIdArray, val);
+          // 缓存勾选索引用于回填
+          const selectedArr = [];
+          this.datas.row.forEach((row, index) => {
+            if (rowIdArray.includes(row.ID.val)) {
+              selectedArr.push(index);
+            }
+          });
+
+          this.selectedIndex = selectedArr;
         }
       }, // 普通表格选中事件
       tableRowDbclick(row, index, event, colDef) {

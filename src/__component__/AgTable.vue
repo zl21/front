@@ -327,6 +327,7 @@
             if (typeof self.onSelectionChanged === 'function') {
               self.onSelectionChanged(rowIdArray, rowArray);
 
+              // ag回填
               const nodes = agGridTableContainer.agTable.api.getRenderedNodes();
               const selectedNodes = agGridTableContainer.agTable.api.getSelectedNodes();
               const selectArr = [];
@@ -356,7 +357,10 @@
         return null;
       },
       pageChange(pageNum) {
-        this.selectNodeIndex = []; // 清空表格勾选缓存
+        if (this.$refs.commonTable) {
+          this.$refs.commonTable.selectedIndex = []; // 清空普通表格勾选缓存
+        }
+        this.selectNodeIndex = []; // 清空ag表格勾选缓存
         const self = this;
         if (typeof self.onPageChange === 'function') {
           self.onPageChange(pageNum);
