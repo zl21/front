@@ -89,6 +89,7 @@
         // bigBackground: require('../assets/image/isBig.png')
         // isCommonTable: true, // 是否显示普通表格
         // isCommonTable: false, // 是否显示普通表格
+        selectNodeIndex: []
       };
     },
     components: {
@@ -249,6 +250,7 @@
               agGridTableContainer.agTable.fixContainerHeight();
               agGridTableContainer.agTable.emptyAllFilters();
               agGridTableContainer.agTable.dealWithPinnedColumns(true, val.fixedColumn || '');
+              // console.log('===1', agGridTableContainer.agTable.api);
             }
           }, 30);
         }
@@ -320,8 +322,20 @@
             }
           },
           onSelectionChanged: (rowIdArray, rowArray) => {
+            const { agGridTableContainer } = this.$refs;
+
             if (typeof self.onSelectionChanged === 'function') {
               self.onSelectionChanged(rowIdArray, rowArray);
+
+              const nodes = agGridTableContainer.agTable.api.getRenderedNodes();
+              const selectedNodes = agGridTableContainer.agTable.api.getSelectedNodes();
+              const selectArr = [];
+              nodes.forEach((node, index) => {
+                if (selectedNodes.includes(node)) {
+                  selectArr.push(index);
+                }
+              });
+              this.selectNodeIndex = selectArr;
             }
           },
           onColumnMoved: (columnState) => { // 记住移动列
@@ -342,6 +356,7 @@
         return null;
       },
       pageChange(pageNum) {
+        this.selectNodeIndex = []; // 清空表格勾选缓存
         const self = this;
         if (typeof self.onPageChange === 'function') {
           self.onPageChange(pageNum);
@@ -365,6 +380,21 @@
       },
       customizedDialog(params) {
         this.$emit('CommonTableCustomizedDialog', params);
+      },
+
+      // 回填表格勾选
+      setTableSelected() {
+        setTimeout(() => {
+          if (this.selectNodeIndex.length > 0) {
+            const { agGridTableContainer } = this.$refs;
+            const nodes = agGridTableContainer.agTable.api.getRenderedNodes();
+            nodes.forEach((node, index) => {
+              if (this.selectNodeIndex.includes(index)) {
+                agGridTableContainer.agTable.api.selectNode(node, true);
+              }
+            });
+          }
+        }, 20);
       }
     },
     activated() {
@@ -373,6 +403,8 @@
         if (agGridTableContainer.agTable) {
           agGridTableContainer.agTable.fixAgRenderChoke();
           agGridTableContainer.agTable.fixContainerHeight();
+
+          this.setTableSelected();
         }
       }
     }
