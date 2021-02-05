@@ -88,8 +88,231 @@ export default {
         buttons.isrefrsh = item.isrefrsh;
       });
     }
+
+    // const datas = [
+    //   {
+    //     vuedisplay: 'slient',
+    //     confirm: '{"desc":"是否确定验收？"}',
+    //     actiontype: 'url',
+    //     isrefrsh: true,
+    //     webid: 1,
+    //     webdesc: '父节点1',
+    //     webname: 'listsilent',
+    //     webicon: null,
+    //     action: '/p/cs/test/accept',
+    //     cuscomponent: null,
+    //     actionid: 0,
+    //     ishide: false
+    //   },
+    //   {
+    //     vuedisplay: 'slient',
+    //     confirm: '{"isselect":true,"nodesc":"请先选择需要验收的记录！","desc":"是否确定验收？"}',
+    //     actiontype: 'url',
+    //     isrefrsh: true,
+    //     webid: 1,
+    //     webdesc: '子节点1',
+    //     webname: 'listsilentselect',
+    //     webicon: null,
+    //     action: '/p/cs/test/accept',
+    //     cuscomponent: null,
+    //     ishide: false,
+    //     actionid: 1,
+
+    //   },
+    //   {
+    //     vuedisplay: 'slient',
+    //     confirm: '{"isselect":true,"nodesc":"请先选择需要验收的记录！","isradio":true,"radiodesc":"只能选择一条","desc":"是否确定验收"}',
+    //     actiontype: 'url',
+    //     isrefrsh: true,
+    //     webid: 2,
+    //     webdesc: '父节点2',
+    //     webname: 'listsilentradio',
+    //     webicon: null,
+    //     action: '/p/cs/test/accept',
+    //     cuscomponent: null,
+    //     actionid: 0,
+
+    //     ishide: false
+    //   },
+    //   {
+    //     vuedisplay: 'dialog',
+    //     confirm: '{"isselect":true,"nodesc":"请先选择需要克隆的记录！","isradio":true,"radiodesc":"仅支持单条"}',
+    //     actiontype: 'url',
+    //     isrefrsh: false,
+    //     webid: 2,
+    //     webdesc: '子节点2',
+    //     webname: 'clone_table_list_radio',
+    //     webicon: null,
+    //     action: 'custompage/clonePopUp',
+    //     cuscomponent: null,
+    //     ishide: false,
+    //     actionid: 2,
+
+    //   },
+    //   {
+    //     vuedisplay: 'dialog',
+    //     confirm: '{"isselect":true,"desc":"当前选中{isselect}行,确定进行克隆吗?","nodesc":"请先选择需要克隆的记录！"}',
+    //     actiontype: 'url',
+    //     isrefrsh: false,
+    //     webid: 3,
+    //     webdesc: '父节点3',
+    //     webname: 'clone_table_list_select',
+    //     webicon: null,
+    //     action: 'custompage/clonePopUp',
+    //     cuscomponent: null,
+    //     actionid: 0,
+    //     ishide: false
+    //   },
+    //   {
+    //     vuedisplay: 'navbar',
+    //     confirm: null,
+    //     actiontype: 'url',
+    //     isrefrsh: false,
+    //     webid: 3,
+    //     webdesc: '子节点3',
+    //     webname: 'listbuttonout',
+    //     webicon: null,
+    //     action: 'https://www.baidu.com',
+    //     cuscomponent: null,
+    //     ishide: false,
+    //     actionid: 3,
+
+    //   },
+    //   {
+    //     vuedisplay: 'navbar',
+    //     confirm: null,
+    //     actiontype: 'url',
+    //     isrefrsh: false,
+    //     webid: 4,
+    //     webdesc: '父节点4',
+    //     webname: 'listbuttonin_cus',
+    //     webicon: null,
+    //     action: 'CUSTOMIZED/FUNCTIONPERMISSION/:itemId',
+    //     cuscomponent: null,
+    //     actionid: 0,
+    //     ishide: false
+    //   },
+    //   {
+    //     vuedisplay: 'navbar',
+    //     confirm: null,
+    //     actiontype: 'url',
+    //     isrefrsh: false,
+    //     webid: 4,
+    //     webdesc: '子节点4',
+    //     webname: 'listbuttonin',
+    //     webicon: null,
+    //     action: 'SYSTEM/TABLE_DETAIL/V/PS_C_COLOR/23787/New',
+    //     cuscomponent: null,
+    //     ishide: false,
+    //     actionid: 5,
+
+    //   },
+    //   {
+    //     vuedisplay: 'navbar',
+    //     confirm: null,
+    //     actiontype: 'url',
+    //     isrefrsh: false,
+    //     webid: 5,
+    //     webdesc: '父节点5',
+    //     webname: 'listbuttoninparam',
+    //     webicon: null,
+    //     action: 'SYSTEM/TABLE_DETAIL/V/PS_C_COLOR/23787/:itemId',
+    //     cuscomponent: null,
+    //     actionid: 0,
+    //     ishide: false
+    //   },
+    //   {
+    //     vuedisplay: 'download',
+    //     confirm: '{"isselect":true,"nodesc":"请先选择需要下载的记录！","isradio":true,"radiodesc":"仅支持单条"}',
+    //     actiontype: 'url',
+    //     isrefrsh: false,
+    //     webid: 5,
+    //     webdesc: '子节点51',
+    //     webname: 'gettest_list',
+    //     webicon: null,
+    //     action: '/p/cs/download?filename=import/893/订单.xlsx',
+    //     cuscomponent: null,
+    //     ishide: false,
+    //     actionid: 5,
+
+    //   },
+    //   {
+    //     vuedisplay: 'download',
+    //     confirm: '{"isselect":true,"nodesc":"请先选择需要下载的记录！","isradio":true,"radiodesc":"仅支持单条"}',
+    //     actiontype: 'url',
+    //     isrefrsh: false,
+    //     webid: 5,
+    //     webdesc: '子节点52',
+    //     webname: 'gettest_list',
+    //     webicon: null,
+    //     action: '/p/cs/download?filename=import/893/订单.xlsx',
+    //     cuscomponent: null,
+    //     ishide: false,
+    //     actionid: 5,
+
+    //   },
+    //   {
+    //     vuedisplay: 'download',
+    //     confirm: '{"isselect":true,"nodesc":"请先选择需要下载的记录！","isradio":true,"radiodesc":"仅支持单条"}',
+    //     actiontype: 'url',
+    //     isrefrsh: false,
+    //     webid: 88888,
+    //     webdesc: '888888888',
+    //     webname: 'gettest_list',
+    //     webicon: null,
+    //     action: '/p/cs/download?filename=import/893/订单.xlsx',
+    //     cuscomponent: null,
+    //     ishide: false
+    //   }
+    // ];
+
+    // function refrain(arr) {
+    //   const tmp = [];
+    //   if (Array.isArray(arr)) {
+    //     arr.sort((a, b, i) => {
+    //       if (a.webid !== b.webid && tmp.indexOf(a) === -1) {
+    //         tmp.push(a); 
+    //       }
+    //     });
+    //   }
+    //   return tmp;
+    // }
+
+    const parentDatas = [];
+    const childrenDatas = [];
+
+    if (data && data.length > 0) {
+      data.forEach((item) => {
+        if (item.vuedisplay === 'dropdown') {
+          item.childrens = [];
+          parentDatas.push(item);
+        } else {
+          childrenDatas.push(item);
+        }
+      }); 
+    }
    
-    buttons.dataArray.waListButtonsConfig.waListButtons = data;
+    childrenDatas.forEach((d) => {
+      parentDatas.forEach((parent) => {
+        if (d.actionid === parent.webid) {
+          d.isFold = true;
+          parent.childrens.push(d);
+        } 
+      });
+    });
+
+    const waListButtons = childrenDatas.filter(child => !child.isFold);
+
+    // parentDatas = parentDatas.reduce((arr, obj, index) => {
+    //   if (obj.childrens && obj.childrens.length > 0) {
+    //     arr.push(obj);
+    //   } else {
+    //     waListButtons.push(obj);
+    //   }
+    //   return arr;
+    // }, []);
+    buttons.dataArray.waListButtonsConfig.waListButtons = waListButtons;
+    buttons.dataArray.waListButtonsConfig.waListButtonsGroup = parentDatas;// 折叠按钮
   },
   collectTablelist({ buttons }) { // 判断页面加载时收藏按钮状态
     const tableName = this.state.global.activeTab.tableName;
@@ -242,5 +465,8 @@ export default {
   },
   updateFilterTableData(state, data) { // 更新filterTableData
     state.ag.tablequery = Object.assign(state.ag.tablequery, data);
-  }
+  },
+  updateFilterButtons(state, data) { // 更新按钮筛选数据
+    state.ag.filterButtons = data;
+  },
 };

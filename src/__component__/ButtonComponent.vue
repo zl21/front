@@ -34,9 +34,9 @@
         v-text="item.name" 
       />
       <Button
-        v-for="(item) in dataArray.waListButtonsConfig.waListButtons"
+        v-for="(item,index) in dataArray.waListButtonsConfig.waListButtons"
         :id="item.eName"
-        :key="item.webid"
+        :key="index+2"
         :ref="item.ref"
         type="fcdefault"
         @click="btnclick('custom', item)"
@@ -48,6 +48,31 @@
           placement="bottom-start"
         /> -->
       </Button>
+      <Dropdown
+        v-for="(group,i) in dataArray.waListButtonsConfig.waListButtonsGroup"
+        :key="i+3"
+        trigger="click"
+        placement="bottom-start"
+        split-button
+        type="primary"
+        @on-click="choseWaListButton"
+      >
+        <Button
+          type="fcdefault"
+        >
+          {{ group.webdesc }}
+          <Icon type="ios-arrow-down" />
+        </Button>
+        <DropdownMenu slot="list">
+          <DropdownItem
+            v-for="(item,index) in group.childrens "
+            :key="index+4"
+            :name="item"
+          >
+            {{ item.webdesc }}
+          </DropdownItem>
+        </DropdownMenu>
+      </Dropdown>
       <!-- jflow配置按钮-->
       <Button
         v-for="(item) in dataArray.jflowButton"
@@ -158,6 +183,10 @@
     name: 'ButtonList',
     inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY],
     props: {
+      // waListButtonsGroup: {
+      //   type: Array,
+      //   default: () => ([])
+      // },
       dataArray: {
         type: Object,
         default: () => ({})
@@ -188,7 +217,7 @@
     },
     data() {
       return {
-      
+        model4: '',
         dialogComponentName: null,
         dialogConfig: {
           title: '提示',
@@ -271,6 +300,9 @@
       }),
     },
     methods: {
+      choseWaListButton(data) {
+        this.btnclick('custom', data);
+      },
       childTableClickSaveFile() { // 手动触发保存
         const dom = document.getElementById('actionMODIFY');
         dom.click();
@@ -406,7 +438,6 @@
       btnclick(type, item) {
         this.$emit('buttonClick', type, item);
       },
-        
     },
     created() {
       // this[MODULE_COMPONENT_NAME] = getComponentName();
@@ -465,6 +496,19 @@
     .collection,.ark-btn-fcdefault{
       min-width: auto !important;
     }
+//     .ark-dropdown-item {
+//     border: 1px solid #fd6442;
+//     border-radius: 4px;
+//     margin: 4px;
+//    color: #fd6442;
+
+// }
+//    .ark-dropdown-item:hover {
+//    color: #feb2a1;
+//     background-color: #fff;
+//     border-color: #feb2a1;
+// }
+
   
   }
  

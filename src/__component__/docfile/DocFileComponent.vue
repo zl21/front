@@ -68,7 +68,7 @@
     // inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, INSTANCE_ROUTE],
     
     props: {
-      dataitem: {
+      dataitem: {// 上传文件类型字段元数据配置，如在定制界面使用，需和元数据配置参数保持一致
         type: Object,
         default() {
           return {};

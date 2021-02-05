@@ -810,7 +810,7 @@
             cur.key_group.map((item) => {
               const value = params.row[item.col_name]; // 来源字段的值
               item.label.map((temp) => {
-                if (temp.description == value) {
+                if (temp.value == value) {
                   array.push({
                     description: temp.description,
                     class: temp.cssclass

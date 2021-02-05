@@ -85,8 +85,33 @@ export default {
         buttons.isrefrsh = item.isrefrsh;
       });
     }
+
+    const parentDatas = [];
+    const childrenDatas = [];
+
+    if (data && data.length > 0) {
+      data.forEach((item) => {
+        if (item.actionid || item.actionid == 0) {
+          item.childrens = [];
+          parentDatas.push(item);
+        } else {
+          childrenDatas.push(item);
+        }
+      }); 
+    }
    
-    buttons.dataArray.waListButtonsConfig.waListButtons = data;
+    childrenDatas.forEach((d) => {
+      parentDatas.forEach((parent) => {
+        if (d.webid === parent.webid) {
+          d.isFold = true;
+          parent.childrens.push(d);
+        } 
+      });
+    });
+    const waListButtons = childrenDatas.filter(child => !child.isFold);
+
+    buttons.dataArray.waListButtonsConfig.waListButtons = waListButtons;
+    buttons.dataArray.waListButtonsConfig.waListButtonsGroup = parentDatas;// 折叠按钮
   },
   collectTablelist({ buttons }) { // 判断页面加载时收藏按钮状态
     const tableName = this.state.global.activeTab.tableName;
@@ -235,5 +260,8 @@ export default {
   },
   updateFilterTableData(state, data) { // 更新filterTableData
     state.ag.tablequery = Object.assign(state.ag.tablequery, data);
-  }
+  },
+  updateFilterButtons(state, data) { // 更新按钮筛选数据
+    state.ag.filterButtons = data;
+  },
 };

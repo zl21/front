@@ -93,6 +93,9 @@
   import ExtentionObjectGroup from './ExtentionObjectGroup.vue';
   import ExtentionInputGroup from './ExtentionInputGroup.vue';
   import ExtentionOptions from './ExtentionOptions.vue';
+  import MultiTab from './MultiTab.vue';
+  import bindKey from './bindKey.vue';
+  import PassWord from './PassWord.vue';
 
   const getGuid = () => Math.round(Math.random() * 10000000000);
 
@@ -110,7 +113,10 @@
       ExtentionRadio,
       ExtentionObjectGroup,
       ExtentionInputGroup,
-      ExtentionOptions
+      ExtentionOptions,
+      MultiTab,
+      bindKey,
+      PassWord
     },
     props: {
       options: {
