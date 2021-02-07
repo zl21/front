@@ -654,7 +654,8 @@
 }
 
 .r3-slick {
-  z-index: 2000;
+  z-index: 99999;
+  background: #fff;
   box-shadow: 0px 2px 8px rgba(136, 136, 136, 0.4);
 
   .ml-5 {
