@@ -19,6 +19,8 @@ import Loading from './src/__utils__/loading';
 import getObjdisType from './src/__utils__/getObjdisType';
 import projectConfig from './project.config';
 import { addSearch } from './src/__utils__/indexedDB';
+import { createWatermark } from './src/__utils__/waterMark';
+
 import './node_modules/viewerjs/dist/viewer.css';
 import './src/__utils__/getChildComponent';
 
@@ -48,6 +50,7 @@ Vue.use(inputNumber);
 Vue.use(VueDND);
 
 Vue.use(Viewer);
+Vue.prototype.$createWatermark = createWatermark;
 
 
 // 注册自定义模态框组件
