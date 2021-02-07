@@ -2,7 +2,7 @@
 <!--suppress ALL -->
 <template>
   <div
-    :id="buttons.tableName"
+    :id=" this.$router.currentRoute.params.tableName"
     class="standarTableListContent"
   >
     <!-- oldTree
@@ -362,6 +362,7 @@
     },
     methods: {
       onPageSizeChangeForFilterTable(pageSize) {
+        this.resetButtonsStatus();
         this.searchData.startIndex = 0;
         this.searchData.range = pageSize;
         if (this.currentTabValue.tabValue.tab_value) {
@@ -381,6 +382,8 @@
       },
       
       onPageChangeForFilterTable(page) {
+        this.resetButtonsStatus();
+
         const { range } = this.searchData;
         this.searchData.startIndex = range * (page - 1);
         if (this.currentTabValue.tabValue.tab_value) {
@@ -398,6 +401,8 @@
         this.getQueryList();
       },
       firstSearchTable() {
+        this.resetButtonsStatus();
+
         if (this.getFilterTable) {
           const el = this.$_live_getChildComponent(this, 'tabBar');
           el.tabClick(0);
@@ -660,11 +665,15 @@
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
       onPageChange(page) {
+        this.resetButtonsStatus();
+
         const { range } = this.searchData;
         this.searchData.startIndex = range * (page - 1);
         this.getQueryList();
       },
       onPageSizeChange(pageSize) {
+        this.resetButtonsStatus();
+
         this.searchData.startIndex = 0;
         this.searchData.range = pageSize;
         this.getQueryList();
@@ -1617,7 +1626,7 @@
         }
       },
       onSelectionChanged(rowIdArray, rowArray) {
-        this.filterButtonsForDisable(rowArray);
+        this.filterButtonsForDisable1(rowArray);
         // 获取表格选中明细
         this.onSelectionChangedAssignment({ rowIdArray, rowArray });
       },
@@ -2930,7 +2939,8 @@
       }
     },
     mounted() {
-      this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName; 
+      this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
+       
       if (!this._inactive) {
         window.addEventListener('network', this.networkEventListener);
         window.addEventListener('network', this.networkGetTableQuery);
