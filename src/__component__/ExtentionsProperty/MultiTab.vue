@@ -758,6 +758,8 @@ index:  //需要删除的配置下标 type:number
   box-shadow: 0px 2px 8px rgba(136, 136, 136, 0.4);
   cursor: move;
   pointer-events: auto !important;
+  z-index: 99999;
+  background: #fff;
 
   .ml-5 {
     margin-left: 5px;
