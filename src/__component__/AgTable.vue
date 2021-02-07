@@ -322,17 +322,13 @@
             }
           },
           onSelectionChanged: (rowIdArray, rowArray) => {
-            const { agGridTableContainer } = this.$refs;
-
             if (typeof self.onSelectionChanged === 'function') {
               self.onSelectionChanged(rowIdArray, rowArray);
 
               // ag回填
-              const nodes = agGridTableContainer.agTable.api.getRenderedNodes();
-              const selectedNodes = agGridTableContainer.agTable.api.getSelectedNodes();
               const selectArr = [];
-              nodes.forEach((node, index) => {
-                if (selectedNodes.includes(node)) {
+              this.datas.row.forEach((r, index) => {
+                if (rowIdArray.includes(r.ID.val)) {
                   selectArr.push(index);
                 }
               });
