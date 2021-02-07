@@ -87,7 +87,7 @@
                   rowIndex: j
                 })"
                 @on-fkrp-selected="handlerSelected(index, 'source', j , $event, 0)"
-                @on-clear="handleClear(index, 'source', j)"
+                @on-clear="handleClear(index, 'source', j, 0)"
               />
             </div>
             <div class="colname">
@@ -119,7 +119,7 @@
                   rowIndex: j
                 })"
                 @on-fkrp-selected="handlerSelected(index, 'source', j , $event, 1)"
-                @on-clear="handleClear(index, 'source', j)"
+                @on-clear="handleClear(index, 'source', j, 1)"
               />
             </div>
 
@@ -517,11 +517,15 @@
       },
 
       // 清空下拉所选
-      handleClear(groupIndex, key, rowIndex,) {
+      handleClear(groupIndex, key, rowIndex, coulmnIndex) {
         if (key === 'target') {
           this.resultList[groupIndex][key] = {};
+        } else if (coulmnIndex === 0) {
+          // 清空来源字段
+          this.resultList[groupIndex][key][rowIndex].col_id = '';
         } else {
-          this.$set(this.resultList[groupIndex][key], rowIndex, JSON.parse(JSON.stringify(GROUP_CONSTRUCTOR.source[0])));
+          // 清空字段选项组
+          this.resultList[groupIndex][key][rowIndex].label = '';
         }
       },
     }
