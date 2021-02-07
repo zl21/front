@@ -268,10 +268,10 @@
             column_include_uicontroller: true,
             isolr: false
           };
+        }
 
-          if (itemId === 'New') {
-            delete searchdata.fixedcolumns.AD_TABLE_ID;
-          }
+        if (itemId === 'New') {
+          delete searchdata.fixedcolumns.AD_TABLE_ID;
         }
 
         this.keyList = await this.requestKeysData(searchdata, key);
