@@ -438,6 +438,7 @@
         // }
       },
       btnclick(type, item) {
+        if (item && item.disabled) { return; }
         this.$emit('buttonClick', type, item);
       },
     },

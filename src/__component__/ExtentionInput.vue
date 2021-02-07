@@ -274,7 +274,7 @@
         } else {
           const newValue = this.filterEmptyKey(JSON.parse(this.currentValue), false);
           this.$emit('valueChange', JSON.stringify(newValue));
-          this.transformedData = JSON.parse(this.currentValue);
+          this.transformedData = newValue;
         }
         this.showModal = false;
       },

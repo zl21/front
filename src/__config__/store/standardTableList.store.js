@@ -14,6 +14,7 @@ export default () => ({
     ag: {
       datas: {},
       status4css: [], // 图例数据
+      filterButtons: [],
       tablequery:
       {
         // multi_tab: [
@@ -76,6 +77,7 @@ export default () => ({
     colPosition: '',
     fixedColumn: '',
     buttons: {
+      disableButtons: [], // disabled按钮
       onRowDoubleClick: true,
       exportdata: '', // 导出返回值
       dataArray: {
