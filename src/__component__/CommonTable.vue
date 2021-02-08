@@ -569,7 +569,6 @@
                 };
                 this.tabOpen(tab);
               } else if (objdistype === 'link') { // 支持跳转外链界面配置动态参数
-                debugger;
                 const param = {
                   url: params.column.customerurl.tableurl,
                   query: params.column.customerurl.refobjid,
