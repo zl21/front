@@ -250,7 +250,6 @@
               agGridTableContainer.agTable.fixContainerHeight();
               agGridTableContainer.agTable.emptyAllFilters();
               agGridTableContainer.agTable.dealWithPinnedColumns(true, val.fixedColumn || '');
-              // console.log('===1', agGridTableContainer.agTable.api);
             }
           }, 30);
         }
@@ -332,6 +331,7 @@
                   selectArr.push(index);
                 }
               });
+
               this.selectNodeIndex = selectArr;
             }
           },
@@ -363,6 +363,10 @@
         }
       }, // 页码改变
       pageSizeChange(pageSize) {
+        if (this.$refs.commonTable) {
+          this.$refs.commonTable.selectedIndex = []; // 清空普通表格勾选缓存
+        }
+        this.selectNodeIndex = []; // 清空ag表格勾选缓存
         const self = this;
         if (typeof self.onPageSizeChange === 'function') {
           self.onPageSizeChange(pageSize);
@@ -387,8 +391,8 @@
         setTimeout(() => {
           if (this.selectNodeIndex.length > 0) {
             const { agGridTableContainer } = this.$refs;
-            const nodes = agGridTableContainer.agTable.api.getRenderedNodes();
-            nodes.forEach((node, index) => {
+
+            agGridTableContainer.agTable.api.forEachNode((node, index) => {
               if (this.selectNodeIndex.includes(index)) {
                 agGridTableContainer.agTable.api.selectNode(node, true);
               }
