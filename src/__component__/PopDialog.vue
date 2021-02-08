@@ -34,7 +34,6 @@
         class="table-page"
         size="small"
         show-elevator
-        show-sizer
         show-total
         @on-change="pageChange"
         @on-page-size-change="pageSizeChange"
