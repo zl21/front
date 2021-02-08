@@ -89,7 +89,7 @@
         // bigBackground: require('../assets/image/isBig.png')
         // isCommonTable: true, // 是否显示普通表格
         // isCommonTable: false, // 是否显示普通表格
-        selectNodeIndex: []
+        selectRow: []
       };
     },
     components: {
@@ -327,14 +327,7 @@
               self.onSelectionChanged(rowIdArray, rowArray);
 
               // ag回填
-              const selectArr = [];
-              this.datas.row.forEach((r, index) => {
-                if (rowIdArray.includes(r.ID.val)) {
-                  selectArr.push(index);
-                }
-              });
-
-              this.selectNodeIndex = selectArr;
+              this.selectRow = rowIdArray;
             }
           },
           onColumnMoved: (columnState) => { // 记住移动列
@@ -354,21 +347,24 @@
         }
         return null;
       },
-      pageChange(pageNum) {
+
+      // 清除勾选
+      clearChecked() {
         if (this.$refs.commonTable) {
           this.$refs.commonTable.selectedIndex = []; // 清空普通表格勾选缓存
         }
-        this.selectNodeIndex = []; // 清空ag表格勾选缓存
+        this.selectRow = []; // 清空ag表格勾选缓存
+      },
+
+      pageChange(pageNum) {
+        this.clearChecked();
         const self = this;
         if (typeof self.onPageChange === 'function') {
           self.onPageChange(pageNum);
         }
       }, // 页码改变
       pageSizeChange(pageSize) {
-        if (this.$refs.commonTable) {
-          this.$refs.commonTable.selectedIndex = []; // 清空普通表格勾选缓存
-        }
-        this.selectNodeIndex = []; // 清空ag表格勾选缓存
+        this.clearChecked();
         const self = this;
         if (typeof self.onPageSizeChange === 'function') {
           self.onPageSizeChange(pageSize);
@@ -391,11 +387,18 @@
       // 回填表格勾选
       setTableSelected() {
         setTimeout(() => {
-          if (this.selectNodeIndex.length > 0) {
+          if (this.selectRow.length > 0) {
             const { agGridTableContainer } = this.$refs;
 
+            const selectedIndex = [];
+            this.datas.row.forEach((row, index) => {
+              if (this.selectRow.includes(row.ID.val)) {
+                selectedIndex.push(index);
+              }
+            });
+
             agGridTableContainer.agTable.api.forEachNode((node, index) => {
-              if (this.selectNodeIndex.includes(index)) {
+              if (selectedIndex.includes(index)) {
                 agGridTableContainer.agTable.api.selectNode(node, true);
               }
             });
