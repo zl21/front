@@ -1,3 +1,4 @@
+/* eslint-disable prefer-rest-params */
 /* eslint-disable class-methods-use-this */
 
 import Vue from 'vue';
@@ -19,8 +20,16 @@ export default class RenderComponent {
     this.item = item;
   }
 
+  ObjectToMerge() {
+    const parameter = [...arguments].reverse();
+    // 判断两个对象中是否存在相同methods
+    
+  }
 
   Initialize() {
+    const mixins = require('./mixins').default;
+    this.ObjectToMerge(ItemComponent.methods, mixins.methods);
+    Object.assign(ItemComponent.methods, mixins.methods);
     Vue.component(`${this.id}${this.item.field.TextFilter()}`, Vue.extend(ItemComponent));
     return `${this.id}${this.item.field.TextFilter()}`;
   }
