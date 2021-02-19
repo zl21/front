@@ -886,143 +886,143 @@
               inputname: current.inputname,
               props: {
               },
-              event: {
-                keydown: (event) => {
-                  // 输入框的keydown event, $this
-                  if (event.keyCode === 13) {
-                    // enter回车查询
-                    this.searchClickData();
-                  }
-                },
-                fkrpSelected: (value) => {
-                  this.formItemsLists[itemIndex].item.props.AutoData = [];
-                  this.formItemsLists[itemIndex].item.value = value;
-                  // this.formItemsLists = this.formItemsLists.concat([]);
-                },
-                'on-delete': ($this, item, key, index) => {
-                  fkHttpRequest().fkDelMultiQuery({
-                    searchObject: {
-                      tableid: item.props.fkobj.reftableid,
-                      modelname: key
-                    },
-                    serviceId: current.fkobj.serviceId,
-                    success: () => {
-                      fkHttpRequest().fkGetMultiQuery({
-                        searchObject: {
-                          tableid: item.props.fkobj.reftableid
-                        },
-                        serviceId: current.fkobj.serviceId,
-                        success: (res) => {
-                          this.freshDropDownPopFilterData(res, index);
-                        }
-                      });
-                    }
-                  });
-                },
-                'popper-value': ($this, value, Selected) => {
-                  // 当外键下拉展开时去请求数据
-                  this.formItemsLists[itemIndex].item.value = value;
-                  this.formItemsLists[itemIndex].item.props.Selected = Selected;
-                  this.formItemsLists = this.formItemsLists.concat([]);
-                },
-                'popper-show': ($this, item, index) => {
-                  // 当气泡拉展开时去请求数据
-                  fkHttpRequest().fkGetMultiQuery({
-                    searchObject: {
-                      tableid: item.props.fkobj.reftableid
-                    },
-                    serviceId: current.fkobj.serviceId,
-                    success: (res) => {
-                      this.freshDropDownPopFilterData(res, index);
-                    }
-                  });
-                },
-                clear: () => {
-                  this.formItemsLists[itemIndex].item.props.Selected = [];
-                  this.formItemsLists[itemIndex].item.value = '';
-                },
-                valuechange: ($this) => {
-                  // 弹窗多选
-                  this.formItemsLists[itemIndex].item.props.Selected = ($this.selected && $this.selected.length > 0) ? $this.selected : [];
-                  this.formItemsLists[itemIndex].item.value = $this.value; // `已经选中${$this.selected.length}条数据`
-                  this.formItemsLists = this.formItemsLists.concat([]);
-                  if (!$this.value) {
-                    // this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
-                    return false;
-                  }
+              // event: {
+              //   keydown: (event) => {
+              //     // 输入框的keydown event, $this
+              //     if (event.keyCode === 13) {
+              //       // enter回车查询
+              //       this.searchClickData();
+              //     }
+              //   },
+              //   fkrpSelected: (value) => {
+              //     this.formItemsLists[itemIndex].item.props.AutoData = [];
+              //     this.formItemsLists[itemIndex].item.value = value;
+              //     // this.formItemsLists = this.formItemsLists.concat([]);
+              //   },
+              //   'on-delete': ($this, item, key, index) => {
+              //     fkHttpRequest().fkDelMultiQuery({
+              //       searchObject: {
+              //         tableid: item.props.fkobj.reftableid,
+              //         modelname: key
+              //       },
+              //       serviceId: current.fkobj.serviceId,
+              //       success: () => {
+              //         fkHttpRequest().fkGetMultiQuery({
+              //           searchObject: {
+              //             tableid: item.props.fkobj.reftableid
+              //           },
+              //           serviceId: current.fkobj.serviceId,
+              //           success: (res) => {
+              //             this.freshDropDownPopFilterData(res, index);
+              //           }
+              //         });
+              //       }
+              //     });
+              //   },
+              //   'popper-value': ($this, value, Selected) => {
+              //     // 当外键下拉展开时去请求数据
+              //     this.formItemsLists[itemIndex].item.value = value;
+              //     this.formItemsLists[itemIndex].item.props.Selected = Selected;
+              //     this.formItemsLists = this.formItemsLists.concat([]);
+              //   },
+              //   'popper-show': ($this, item, index) => {
+              //     // 当气泡拉展开时去请求数据
+              //     fkHttpRequest().fkGetMultiQuery({
+              //       searchObject: {
+              //         tableid: item.props.fkobj.reftableid
+              //       },
+              //       serviceId: current.fkobj.serviceId,
+              //       success: (res) => {
+              //         this.freshDropDownPopFilterData(res, index);
+              //       }
+              //     });
+              //   },
+              //   clear: () => {
+              //     this.formItemsLists[itemIndex].item.props.Selected = [];
+              //     this.formItemsLists[itemIndex].item.value = '';
+              //   },
+              //   valuechange: ($this) => {
+              //     // 弹窗多选
+              //     this.formItemsLists[itemIndex].item.props.Selected = ($this.selected && $this.selected.length > 0) ? $this.selected : [];
+              //     this.formItemsLists[itemIndex].item.value = $this.value; // `已经选中${$this.selected.length}条数据`
+              //     this.formItemsLists = this.formItemsLists.concat([]);
+              //     if (!$this.value) {
+              //       // this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
+              //       return false;
+              //     }
 
-                  // const searchObject = {
-                  //   ak: $this.value,
-                  //   colid: current.colid,
-                  //   fixedcolumns: {}
-                  // };
-                  // fkHttpRequest().fkFuzzyquerybyak({
-                  //   searchObject: this.setSeachObject(searchObject, current),
-                  //   serviceId: current.fkobj.serviceId,
-                  //   success: (res) => {
-                  //     // this.freshDropDownSelectFilterAutoData(res, itemIndex);
-                  //   }
-                  // });
-                },
-                'on-popper-hide': ($this) => {
-                  // 初始化清空数据
-                  this.formItemsLists[itemIndex].item.props.data = {};
-                  this.formItemsLists = this.formItemsLists.concat([]);
-                },
-                'on-show': ($this) => {
-                  // 当外键下拉站开始去请求数据
-                  const searchObject = {
-                    isdroplistsearch: true,
-                    refcolid: current.colid,
-                    startindex: 0,
-                    range: $this.pageSize
-                  };
+              //     // const searchObject = {
+              //     //   ak: $this.value,
+              //     //   colid: current.colid,
+              //     //   fixedcolumns: {}
+              //     // };
+              //     // fkHttpRequest().fkFuzzyquerybyak({
+              //     //   searchObject: this.setSeachObject(searchObject, current),
+              //     //   serviceId: current.fkobj.serviceId,
+              //     //   success: (res) => {
+              //     //     // this.freshDropDownSelectFilterAutoData(res, itemIndex);
+              //     //   }
+              //     // });
+              //   },
+              //   'on-popper-hide': ($this) => {
+              //     // 初始化清空数据
+              //     this.formItemsLists[itemIndex].item.props.data = {};
+              //     this.formItemsLists = this.formItemsLists.concat([]);
+              //   },
+              //   'on-show': ($this) => {
+              //     // 当外键下拉站开始去请求数据
+              //     const searchObject = {
+              //       isdroplistsearch: true,
+              //       refcolid: current.colid,
+              //       startindex: 0,
+              //       range: $this.pageSize
+              //     };
 
-                  fkHttpRequest().fkQueryList({
-                    searchObject: this.setSeachObject(searchObject, current),
-                    serviceId: current.fkobj.serviceId,
-                    success: (res) => {
-                      this.freshDropDownSelectFilterData(res, itemIndex);
-                    }
-                  });
-                },
-                inputValueChange: (value) => {
-                  // 外键的模糊搜索
-                  if (!value) {
-                    // this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
-                    return false;
-                  }
-                  const searchObject = {
-                    ak: value,
-                    colid: current.colid,
-                    fixedcolumns: {}
-                  };
+              //     fkHttpRequest().fkQueryList({
+              //       searchObject: this.setSeachObject(searchObject, current),
+              //       serviceId: current.fkobj.serviceId,
+              //       success: (res) => {
+              //         this.freshDropDownSelectFilterData(res, itemIndex);
+              //       }
+              //     });
+              //   },
+              //   inputValueChange: (value) => {
+              //     // 外键的模糊搜索
+              //     if (!value) {
+              //       // this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
+              //       return false;
+              //     }
+              //     const searchObject = {
+              //       ak: value,
+              //       colid: current.colid,
+              //       fixedcolumns: {}
+              //     };
 
-                  fkHttpRequest().fkFuzzyquerybyak({
-                    searchObject: this.setSeachObject(searchObject, current),
-                    serviceId: current.fkobj.serviceId,
-                    success: (res) => {
-                      this.freshDropDownSelectFilterAutoData(res, itemIndex);
-                    }
-                  });
-                },
-                pageChange: (currentPage, $this) => {
-                  // 外键的分页查询
-                  const searchObject = {
-                    isdroplistsearch: true,
-                    refcolid: current.colid,
-                    startindex: $this.data.defaultrange * ($this.currentPage - 1),
-                    range: $this.pageSize
-                  };
-                  fkHttpRequest().fkQueryList({
-                    searchObject: this.setSeachObject(searchObject, current),
-                    serviceId: current.fkobj.serviceId,
-                    success: (res) => {
-                      this.freshDropDownSelectFilterData(res, itemIndex);
-                    }
-                  });
-                }
-              },
+              //     fkHttpRequest().fkFuzzyquerybyak({
+              //       searchObject: this.setSeachObject(searchObject, current),
+              //       serviceId: current.fkobj.serviceId,
+              //       success: (res) => {
+              //         this.freshDropDownSelectFilterAutoData(res, itemIndex);
+              //       }
+              //     });
+              //   },
+              //   pageChange: (currentPage, $this) => {
+              //     // 外键的分页查询
+              //     const searchObject = {
+              //       isdroplistsearch: true,
+              //       refcolid: current.colid,
+              //       startindex: $this.data.defaultrange * ($this.currentPage - 1),
+              //       range: $this.pageSize
+              //     };
+              //     fkHttpRequest().fkQueryList({
+              //       searchObject: this.setSeachObject(searchObject, current),
+              //       serviceId: current.fkobj.serviceId,
+              //       success: (res) => {
+              //         this.freshDropDownSelectFilterData(res, itemIndex);
+              //       }
+              //     });
+              //   }
+              // },
               validate: {}
             };
 

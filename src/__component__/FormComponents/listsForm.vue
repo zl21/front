@@ -1,3 +1,4 @@
+
 <template>
   <div 
     class="listsForm"
@@ -25,6 +26,7 @@
 </template>
 <script>
   import RenderComponent from './RenderComponent';
+  import ParameterDataProcessing from './parameterDataProcessing';
 
   export default {
     computed: {
@@ -82,12 +84,9 @@
         }, 300);
       },
       dealData(item, value) {
-        if (!value) { // 过滤空数据字段
-          return {};
-        }
-        const json = {}; // 当前字段的数据存储
-        json[item.field] = value;
-        return json;
+        // 通过ParameterDataProcessing类对数据进行处理
+        const ParameterData = new ParameterDataProcessing(item.field, value);
+        return ParameterData.dataProcessing();
       },
 
 
@@ -97,8 +96,8 @@
         this.formArray.map((item) => {
           const components = this.$_live_getChildComponent(window.vm, `${this.id}${item.item.field.TextFilter()}`);
           let value = components.value;
-          if (item.item.type === 'AttachFilter') {
-            value = components.value ? components.value.map(temp => temp.ID).join(',') : '';
+          if (item.item.type === 'AttachFilter') { // 处理外健弹窗类型组件数据层级获取,通过子组件获取数据
+            value = components.$children[0].selected ? components.$children[0].selected.map(temp => temp.ID).join(',') : '';
           }
           const json = this.dealData(item.item, value);
           formData = Object.assign({}, formData, json);
