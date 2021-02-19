@@ -241,7 +241,7 @@
 </template>
 <script>
     import network, {urlSearchParams} from '../../__utils__/network';
-    import {getSeesionObject} from '../../__utils__/sessionStorage';
+    import {getSessionObject} from '../../__utils__/sessionStorage';
     import draggable from 'vuedraggable'
 
     export default {
@@ -435,7 +435,7 @@
             draggable
         },
         mounted() {
-            this.reportId = Object.values(getSeesionObject('undataFromPageCustomizeButtonInfo'))[0]
+            this.reportId = Object.values(getSessionObject('undataFromPageCustomizeButtonInfo'))[0]
                 .itemId || 1;
             this.getList();
         },

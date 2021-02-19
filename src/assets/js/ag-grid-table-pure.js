@@ -760,7 +760,8 @@ const initializeAgTable = (container, opt) => {
           }
         });
         sumField.forEach((field) => {
-          subtotalRowData[field].val = data.reduce((sum, row) => sum + (parseFloat(`${row[field].val}`.replace(/\,/g, '')) || 0), 0);
+          // subtotalRowData[field].val = data.reduce((sum, row) => sum + (parseFloat(`${row[field].val}`.replace(/\,/g, '')) || 0), 0);
+          subtotalRowData[field].val = options.datas.subtotalRow[field]  //获取后端返回数据
           let scale = 0;
           columnApi.getAllColumns().some((d) => {
             if (d.colId === field) {
@@ -769,10 +770,12 @@ const initializeAgTable = (container, opt) => {
             }
             return false;
           });
-          subtotalRowData[field].val = currencyFormat(subtotalRowData[field].val.toFixed(scale), scale !== 0);
+          // subtotalRowData[field].val = currencyFormat(subtotalRowData[field].val.toFixed(scale), scale !== 0);
+          subtotalRowData[field].val = subtotalRowData[field].val
         });
         subtotalRowData.ID.val = '合计';
         subtotalRowData.__ag_is_statistic_row__ = true;
+        console.log(subtotalRowData)
         pinnedBottomRowData.push(subtotalRowData);
       }
 

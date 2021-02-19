@@ -366,7 +366,7 @@
 
 
   import {
-    Version, MODULE_COMPONENT_NAME, ossRealtimeSave 
+    Version, MODULE_COMPONENT_NAME, ossRealtimeSave, defaultrange 
   } from '../constants/global';
   import createModal from './PreviewPicture/index';
   import EnumerableInput from './EnumerableInput.vue';
@@ -438,6 +438,11 @@
         return style;
       },
       _items() {
+        if (defaultrange()) {
+          dataProp.DropDownSelectFilter.props.pageSize = defaultrange();
+          dataProp.DropMultiSelectFilter.props.pageSize = defaultrange();
+        }
+        
         // 将设置的props和默认props进行assign
         const item = this.items;
         // const item = this.items;

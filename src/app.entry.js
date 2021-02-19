@@ -13,7 +13,7 @@ import { DispatchEvent } from './__utils__/dispatchEvent';
 import {
   mock, backDashboardRoute, enableGateWay, enableInitializationRequest, specifiedGlobalGateWay, HAS_BEEN_DESTROYED_MODULE
 } from './constants/global';
-import { removeSessionObject, getSeesionObject } from './__utils__/sessionStorage';
+import { removeSessionObject, getSessionObject } from './__utils__/sessionStorage';
 import customizedModalConfig from './__config__/customizeDialog.config';
 import CompositeForm from './__component__/CompositeForm.vue';
 import Loading from './__utils__/loading';
@@ -28,7 +28,9 @@ import '../node_modules/viewerjs/dist/viewer.css';
 import './assets/css/ag-theme-balham.less';
 import './assets/css/loading.css';
 import './assets/css/custom-ext.less';
+import { createWatermark } from './__utils__/waterMark';
 
+Vue.prototype.$createWatermark = createWatermark;// 挂在水印
 
 Vue.component('CompositeFormpop', CompositeForm);
 Vue.use(Loading);
@@ -172,12 +174,12 @@ const getCategory = () => {
         window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMaps));
         DispatchEvent('gatewayReady');
       } else if (getLocalObject('loginStatus') === true) {
-        // getSeesionObject('loginStatus') === true
+        // getSessionObject('loginStatus') === true
         setMessage({ content: '当前用户无菜单权限,将为您跳转到登陆界面' });
       }
     }).catch(() => {
       // router.push({ path: getTouristRoute() });
-      if (getSeesionObject('loginStatus') === true) {
+      if (getSessionObject('loginStatus') === true) {
         setMessage({ content: '当前用户无菜单权限,将为您跳转到登陆界面' });
       }
     });
