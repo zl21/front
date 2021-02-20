@@ -353,6 +353,9 @@ export default {
     buttons.dataArray.buttonGroupShowConfig.buttonGroupShow = data;
   },
   onSelectionChangedAssignment({ buttons }, { rowIdArray, rowArray }) {
+    if (this._mutations[`${getComponentName()}/filterButtonsForDisable`] && this._mutations[`${getComponentName()}/filterButtonsForDisable`].length && this._mutations[`${getComponentName()}/filterButtonsForDisable`].length > 0) {
+      this._mutations[`${getComponentName()}/filterButtonsForDisable`][0](rowArray);
+    }
     buttons.selectIdArr = rowIdArray;
     buttons.selectArr = rowArray;
   },
@@ -459,97 +462,7 @@ export default {
   updateFilterButtons(state, data) { // 更新按钮筛选数据
     state.ag.filterButtons = data;
   },
-  filterButtonsForDisable({ buttons, ag }, rowArray) { // 根据条件过滤按钮disable状态
-    const getArrDifference = (arr1, arr2) => arr1.concat(arr2).filter((v, i, arr) => arr.indexOf(v) === arr.lastIndexOf(v));
-    let currentRow = {};// 当前操作的row
-    let rowFlag = '';
-    if (buttons.selectArr.length > rowArray.length) { // 取消勾选
-      currentRow = getArrDifference(buttons.selectArr, rowArray)[0];
-      rowFlag = 'deleteRow';
-    } else { // 新增勾选
-      if (rowArray.length === 0) {
-        currentRow = rowArray;
-      } else {
-        currentRow = getArrDifference(buttons.selectArr, rowArray)[0];
-        // currentRow = rowArray[rowArray.length - 1];
-      }
-      rowFlag = 'selectRow';
-    }
-   
-    // 整合过滤数据
-    let filterButtonsRest = {};
-    let filterData = {};
-    let colname = '';
-    const tabth = ag.datas.tabth;
-    if (ag.filterButtons && ag.filterButtons.length > 0) {
-      filterButtonsRest = ag.filterButtons.reduce((arr, obj,) => {
-        filterData = obj.filter.reduce((acc, cur) => {
-          tabth.forEach((t) => {
-            if (Number(t.col_id) === Number(cur.col_id)) {
-              colname = t.colname; 
-            }
-          });
-          acc[colname] = cur.match_value;
-          acc.actionId = obj.action_id;
-          return acc;
-        }, {});
-        arr.push(filterData);
-        return arr;
-      }, []);
-      
-      Object.values(filterButtonsRest).reduce((arr, obj) => {
-        const conditionNum = [];
-        Object.keys(obj).map((o, i) => {
-          if (o !== 'actionId') {
-            Object.keys(currentRow).map((rowKey) => {
-              if (rowKey === o) {
-                if (obj[o].split(',').includes(currentRow[o].val)) {
-                  conditionNum.push(obj.actionId);
-                }
-              }
-            });
-          }
-        });
-        if (Number(Object.keys(obj).length) - 1 === Number(conditionNum.length)) {
-          if (rowFlag === 'selectRow') { // 勾选过滤出的需要置为disabled状态的按钮
-            buttons.disableButtons = buttons.disableButtons.concat(conditionNum);
-          } else if (rowFlag === 'deleteRow') { // 取消勾选过滤出的需要置为disabled状态的按钮
-            conditionNum.map((d, i) => {
-              const index = buttons.disableButtons.findIndex(b => b === d);
-              buttons.disableButtons.splice(index, 1);
-            });
-          }
-          console.log(222, buttons.disableButtons, conditionNum);
-        }
-      }, []);
-
-      // 处理按钮不可编辑逻辑
-      const waListButtonsConfig = buttons.dataArray.waListButtonsConfig;// 折叠按钮
-      const waListButtonsGroup = waListButtonsConfig.waListButtonsGroup;
-      const waListButtons = waListButtonsConfig.waListButtons;
-      const buttonsArr = waListButtonsGroup.concat(waListButtons);
-      const disableButtonsRes = JSON.parse(JSON.stringify(buttons.disableButtons));
-      buttonsArr.reduce((arr, obj) => {
-        if (obj.childrens) {
-          obj.childrens.map((c) => {
-            if (disableButtonsRes.filter(b => Number(b) === Number(c.webid)).length > 0) {
-              c.disabled = true;
-              console.log(22, c.webdesc);
-            } else {
-              c.disabled = false;
-            }
-          });
-        } else if (disableButtonsRes.filter(b => Number(b) === Number(obj.webid)).length > 0) {
-          console.log(22, obj.webdesc);
-
-          obj.disabled = true;
-        } else {
-          obj.disabled = false;
-        }
-        return arr;
-      }, []);
-    }
-  },
+  
   resetButtonsStatus({ buttons }) { 
     buttons.disableButtons = [];
     const waListButtonsConfig = buttons.dataArray.waListButtonsConfig;// 折叠按钮
@@ -572,14 +485,14 @@ export default {
     fun(waListButtonsGroup);
     fun(waListButtons);
   },
-  filterButtonsForDisable1({ buttons, ag }, rowArray) { // 根据条件过滤按钮disable状态
+  filterButtonsForDisable({ buttons, ag }, rowArray) { // 根据条件过滤按钮disable状态
     this._mutations[`${getComponentName()}/resetButtonsStatus`][0]();
   
     // 整合过滤数据
     let filterButtonsRest = {};
     let filterData = {};
     let colname = '';
-    const tabth = ag.datas.tabth;
+    const tabth = ag.datas.tabth && ag.datas.tabth.length ? ag.datas.tabth : [];
     if (ag.filterButtons && ag.filterButtons.length > 0) {
       filterButtonsRest = ag.filterButtons.reduce((arr, obj,) => {
         filterData = obj.filter.reduce((acc, cur) => {

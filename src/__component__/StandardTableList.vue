@@ -1629,7 +1629,7 @@
         }
       },
       onSelectionChanged(rowIdArray, rowArray) {
-        this.filterButtonsForDisable1(rowArray);
+        // this.filterButtonsForDisable(rowArray);
         // 获取表格选中明细
         this.onSelectionChangedAssignment({ rowIdArray, rowArray });
       },

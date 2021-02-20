@@ -87,7 +87,7 @@ export default () => ({
         'updateSearchDBdata',
         'updateTabParam',
         'resetTabParam',
-        'filterButtonsForDisable1',
+        'filterButtonsForDisable',
         'resetButtonsStatus'
         
       ]),
