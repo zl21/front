@@ -85,7 +85,7 @@
       },
       dealData(item, value) {
         // 通过ParameterDataProcessing类对数据进行处理
-        const ParameterData = new ParameterDataProcessing(item.field, value);
+        const ParameterData = new ParameterDataProcessing(item, value);
         return ParameterData.dataProcessing();
       },
 

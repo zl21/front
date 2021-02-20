@@ -1,11 +1,8 @@
 
 
-const path = require('path');
-
-
 module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
-  projectIconPath: path.join(__dirname, './favicon.ico'), // 项目icon,
+  projectIconPath: '', // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
   target: 'http://r3-8098.dev.syman.cn/', // 框架研发网关开启环境
   // target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 新版本jflow测试环境

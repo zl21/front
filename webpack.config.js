@@ -1,5 +1,6 @@
 const path = require('path');
-const { VueLoaderPlugin } = require('vue-loader');
+// const { VueLoaderPlugin } = require('vue-loader');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
@@ -7,6 +8,7 @@ const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const { ModuleFederationPlugin } = require('webpack').container;
 const projectConfig = require('./project.config');
 
 const target = projectConfig.target; // 框架研发网关开启环境
@@ -26,7 +28,7 @@ const indexHtml = path.posix.join('/', 'index.html');
 
 module.exports = env => ({
   entry: {
-    index: './index.js',
+    index: './main.js',
   },
   externals: {
     vue: 'Vue',
@@ -116,7 +118,7 @@ module.exports = env => ({
     ]
   },
   target: 'web',
-  devtool: env && env.production ? 'source-map' : 'cheap-module-eval-source-map',
+  devtool: env && env.production ? 'source-map' : false,
   output: {
     filename: '[name].js',
     chunkFilename: '[name].js',
@@ -199,17 +201,25 @@ module.exports = env => ({
     ]),
     new webpack.DefinePlugin({
       'process.env.BUILD_ENV': JSON.stringify(process.env.BUILD_ENV)
-    })
+    }),
     // new webpack.ProvidePlugin({
     //   $: 'jquery',
     //   jQuery: 'jquery',
     //   jquery: 'jquery',
     //   'window.jQuery': 'jquery'
     // })
+
+    new ModuleFederationPlugin({ 
+      name: '', 
+      remotes: {
+        arkui_BCL: 'arkui_BCL@http://192.168.4.163:3800/remoteEntry.js',
+        shared: ['vue', '@syman/ark-ui', 'axios']
+      }
+    })
   ],
   mode: env && env.production ? 'production' : 'development',
   resolve: {
-    extensions: ['.js', '.json', '.vue', '.css'],
+    extensions: ['.js', '.json', '.vue', '.css']
   },
   optimization: {
     minimizer: [new TerserJSPlugin({

@@ -172,7 +172,7 @@
         @on-clear="timePickerClear"
       />
       <template v-if="_items.type === 'DropDownSelectFilter'">
-        <DropDownSelectFilter
+        <!-- <DropDownSelectFilter
           v-if="_items.props.fk_type === 'drp'"
           :ref="_items.field"
           :class-name="`R3_${_items.field}`"
@@ -199,6 +199,29 @@
           @on-popper-show="fkrpSelectedPopperShow"
           @on-popper-hide="fkrPopperHide"
           @on-clear="fkrpSelectedClear"
+        /> -->
+        <BusDropDownSelectFilter
+          v-if="_items.props.fk_type === 'drp'"
+          v-model="value"
+          :props-data="{
+            data:{},
+            AutoData:[],
+            value:'',
+            defaultSelected:[]
+          }"
+          :url="{
+            tableUrl:'/ad-app/p/cs/QueryList',
+            autoUrl:'/ad-app/p/cs/fuzzyquerybyak'
+          }"
+          :post-table-message="{
+            isdroplistsearch:true,
+            refcolid:171960,
+            fixedcolumns:{}
+          }"
+          :post-auto-message="{
+            colid:171960,
+            fixedcolumns:{}
+          }"
         />
         <DropMultiSelectFilter
           v-if="_items.props.fk_type === 'mrp'"
@@ -375,9 +398,19 @@
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
+  const BusDropDownSelectFilter = () => import('arkui_BCL/DropDownSelectFilter');
+
+  BusDropDownSelectFilter().then((data) => {
+    Object.assign(data.default.methods, {
+      // postTableData: (url, jsonData) => {
+      //   console.log(url, jsonData);
+      // }
+    });
+    return data;
+  });
   export default {
     components: {
-      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile
+      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile, BusDropDownSelectFilter
     },
     inject: [MODULE_COMPONENT_NAME],
     props: {

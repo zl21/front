@@ -9,8 +9,8 @@
    */
 
 export default class ParameterDataProcessing {
-  constructor(field, value) {
-    this.field = field;
+  constructor(item, value) {
+    this.item = item;
     this.value = value;
   }
 
@@ -39,7 +39,9 @@ export default class ParameterDataProcessing {
     }());
 
     if (!this.value) { // 过滤空数据字段
-      return {};
+      return {
+        [this.item.field]: this.value
+      };
     }
 
     // 处理空数组和存在值为''的数据
@@ -48,7 +50,7 @@ export default class ParameterDataProcessing {
     }
 
     // 处理select合并字段
-    if (Type.isArray(this.value) && this.field.includes('R3_index_')) {
+    if (Type.isArray(this.value) && this.item.field.includes('R3_index_')) {
       const obj = this.value.reduce((json, item) => {
         if (json[item.split('|')[0]]) {
           json[item.split('|')[0]].push(item.split('|')[1]);
@@ -60,8 +62,15 @@ export default class ParameterDataProcessing {
       }, {});
       return obj;
     }
+
+    // 处理外健关联字段
+    if (Type.isArray(this.value) && this.item.type === 'DropDownSelectFilter') {
+      return {
+        [this.item.field]: this.value.map(item => item.ID)
+      };
+    }
     return {
-      [this.field]: this.value
+      [this.item.field]: this.value
     };
   }
 }

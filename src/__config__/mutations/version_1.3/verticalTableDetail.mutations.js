@@ -1,5 +1,5 @@
 import { stringify } from 'querystring';
-import { cpus } from 'os';
+// import { cpus } from 'os';
 import router from '../../router.config';
 
 export default {
