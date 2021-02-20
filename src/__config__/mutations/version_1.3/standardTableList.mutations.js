@@ -274,18 +274,20 @@ export default {
     const waListButtonsGroup = waListButtonsConfig.waListButtonsGroup;
     const waListButtons = waListButtonsConfig.waListButtons;
     const fun = (data) => {
-      data.reduce((arr, obj) => {
-        if (obj.childrens) {
-          obj.childrens.map((c) => {
-            if (c.disabled) {
-              c.disabled = false;
-            }
-          });
-        } else {
-          obj.disabled = false;
-        }
-        return arr;
-      }, []);
+      if (data && data.length > 0) {
+        data.reduce((arr, obj) => {
+          if (obj.childrens) {
+            obj.childrens.map((c) => {
+              if (c.disabled) {
+                c.disabled = false;
+              }
+            });
+          } else {
+            obj.disabled = false;
+          }
+          return arr;
+        }, []);
+      }
     };  
     fun(waListButtonsGroup);
     fun(waListButtons);
