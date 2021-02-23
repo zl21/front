@@ -57,13 +57,13 @@
 
       </template>
 
-      <span :title="_items.title">{{ _items.title }}:</span>
+      <span :title="_items.coldesc">{{ _items.coldesc }}:</span>
     </span>
     <div
       :class=" _items.props.row >1 ? 'itemComponent height100':'itemComponent'"
       :style="_items.props.type==='ImageUpload' ? 'overflow:visible' :''"
     >
-      <Input
+      <!-- <Input
         v-if="_items.type === 'input'"
         :ref="_items.field"
         v-model="_items.value"
@@ -88,14 +88,14 @@
         @on-keydown="inputKeyDown"
         @on-keypress="inputKeyPress"
         @on-regx-check="inputRegxCheck"
-      />
-
-      <!-- <component
-        :is="inheritanceComponents(_items)"
-        :ref="_items.field"
       /> -->
 
-      <Checkbox
+      <component
+        :is="inheritanceComponents(_items)"
+        :ref="_items.field"
+      />
+
+      <!-- <Checkbox
         v-if="_items.type === 'checkbox'"
         :ref="_items.field"
         v-model="_items.value"
@@ -105,9 +105,9 @@
         :size="_items.props.size"
         :circle="_items.props.circle"
         @on-change="checkBoxChange"
-      />
+      /> -->
 
-      <Select
+      <!-- <Select
         v-if="_items.type === 'select'"
         :ref="_items.field"
         v-model="_items.value"
@@ -134,9 +134,9 @@
         >
           {{ item.label }}
         </Option>
-      </Select>
+      </Select> -->
 
-      <DatePicker
+      <!-- <DatePicker
         v-if="_items.type === 'DatePicker'"
         :ref="_items.field"
         :value="_items.value"
@@ -155,8 +155,8 @@
         :editable="_items.props.editable"
         @on-change="($event,event,instance) => datePickerChange(_items.value=$event,event,instance,_items.props.type)"
         @on-clear="datePickerClear"
-      />
-      <TimePicker
+      /> -->
+      <!-- <TimePicker
         v-if="_items.type === 'TimePicker'"
         :ref="_items.field"
         v-model="_items.value"
@@ -175,9 +175,9 @@
         :editable="_items.props.editable"
         @on-change="timePickerChange"
         @on-clear="timePickerClear"
-      />
-      <template v-if="_items.type === 'DropDownSelectFilter'">
-        <DropDownSelectFilter
+      /> -->
+      <!-- <template v-if="_items.type === 'DropDownSelectFilter'"> -->
+      <!-- <DropDownSelectFilter
           v-if="_items.props.fk_type === 'drp'"
           :ref="_items.field"
           :class-name="`R3_${_items.field}`"
@@ -204,15 +204,15 @@
           @on-popper-show="fkrpSelectedPopperShow"
           @on-popper-hide="fkrPopperHide"
           @on-clear="fkrpSelectedClear"
-        />
-        <BusDropDownSelectFilter
+        /> -->
+      <!-- <BusDropDownSelectFilter
           v-if="_items.props.fk_type === 'BusDropDownSelectFilter'"
           v-model="_items.value"
           :url="_items.props.url"
           :table-request="_items.props.tableRequest"
           :auto-request="_items.props.autoRequest"
-        />
-        <DropMultiSelectFilter
+        /> -->
+      <!-- <DropMultiSelectFilter
           v-if="_items.props.fk_type === 'mrp'"
           :ref="_items.field"
           :class-name="`R3_${_items.field}`"
@@ -239,8 +239,8 @@
           @on-popper-hide="fkrPopperHide"
           @on-clear="fkrpSelectedClear"
         />
-      </template>
-      <ComAttachFilter
+      </template> -->
+      <!-- <ComAttachFilter
         v-if="_items.type === 'AttachFilter'"
         :ref="_items.field"
         :default-value="_items.value"
@@ -248,7 +248,7 @@
         :propstype="_items.props"
         @keydown="attachFilterInputKeydown"
         @valuechange="attachFilterInput"
-      />
+      /> -->
       <!-- <AttachFilter
         v-if="_items.type === 'AttachFilter'"
         v-model="_items.value"
@@ -290,7 +290,7 @@
         </div>
       </AttachFilter>
  -->
-      <ImageUpload
+      <!-- <ImageUpload
         v-if="_items.type === 'ImageUpload'"
         :ref="_items.field"
         :dataitem="Object.assign(_items.props.itemdata,{readonly: _items.props.readonly})"
@@ -298,26 +298,26 @@
         @uploadFileChangeSuccess="uploadFileChangeSuccess"
         @uploadFileChangeOnerror="uploadFileChangeOnerror"
         @dblclick="uploadFileDblclick"
-      />
+      /> -->
       <!--读写规则  -->
-      <EnumerableInput
+      <!-- <EnumerableInput
         v-if="_items.type === 'EnumerableInput'"
         :ref="_items.field"
         :default-value="_items.value"
         :disabled="_items.props.disabled || _items.props.readonly"
         @keydown="enumerKeydown"
         @valueChange="enumerableValueChange"
-      />
+      /> -->
       <!--扩展属性  -->
-      <ExtentionInput
+      <!-- <ExtentionInput
         v-if="_items.type === 'ExtentionInput'"
         :ref="_items.field"
         :default-data="_items.value"
         :web-config="_items.props"
         @keydown="enumerKeydown"
         @valueChange="extentionValueChange"
-      />
-      <template v-if="_items.type === 'Wangeditor'">
+      /> -->
+      <!-- <template v-if="_items.type === 'Wangeditor'">
         <component
           :is="_items.componentType"
           v-if="_items.type === 'Wangeditor'"
@@ -328,7 +328,7 @@
           :item="_items.props"
           @getChangeItem="getWangeditorChangeItem"
         />
-      </template>
+      </template> -->
       <!-- <template v-if="_items.type === 'Wangeditor' && _items.props.disabled">
         <div
           class="Wangeditor-disabled"
@@ -336,14 +336,14 @@
         />
       </template> -->
       <!-- 上传文件 -->
-      <Docfile
+      <!-- <Docfile
         v-if="_items.type === 'docfile'"
         :ref="_items.field"
         :item-webconf="_items.props.webconf"
         :web-conf-single="webConfSingle"
         :dataitem="_items.props.itemdata"
         @filechange="filechange"
-      />
+      /> -->
 
       <!-- 自定义组件 -->
       <component
@@ -364,28 +364,30 @@
 <script>
   import { mapMutations } from 'vuex';
   
-  import dataProp from '../__config__/props.config';
+  import dataProp from '../../__config__/props.config';
   // 弹窗多选面板
   // import Dialog from './ComplexsDialog';
   // 弹窗单选
   // import myPopDialog from './PopDialog';
   // 富文本编辑
-  import WangeditorVue from './Wangeditor.vue';
+  import WangeditorVue from '../Wangeditor.vue';
   //   弹窗单选 弹窗多选
-  import ComAttachFilter from './ComAttachFilter.vue';
+  import ComAttachFilter from '../ComAttachFilter.vue';
   //   上传文件
-  import Docfile from './docfile/DocFileComponent.vue';
+  import Docfile from '../docfile/DocFileComponent.vue';
 
+  import DropDownSelectFilter from '../inheritanceComponents/BusDropDownSelectFilter';
+  import CustomInput from '../inheritanceComponents/Input';
 
   import {
     Version, MODULE_COMPONENT_NAME, ossRealtimeSave, defaultrange 
-  } from '../constants/global';
-  import createModal from './PreviewPicture/index';
-  import EnumerableInput from './EnumerableInput.vue';
-  import ExtentionInput from './ExtentionInput.vue';
+  } from '../../constants/global';
+  import createModal from '../PreviewPicture/index';
+  import EnumerableInput from '../EnumerableInput.vue';
+  import ExtentionInput from '../ExtentionInput.vue';
 
 
-  const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+  const fkHttpRequest = () => require(`../../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
   
   export default {
@@ -529,6 +531,23 @@
     },
     methods: {
       ...mapMutations('global', ['tabOpen', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
+      inheritanceComponents() {
+        let Components = null;
+        switch (this._items.display) {
+        case undefined:
+          Components = new CustomInput(this._items).init();
+          break;
+        case 'OBJ_FK':
+          if (this._items.fkobj.fkdisplay === 'drp') {
+            Components = new DropDownSelectFilter(this._items).init();
+          }
+          break;
+        default:
+          break;
+        }
+
+        return Components;
+      },
       routerNext(value) {
         // 路由跳转
         const props = this._items.props;

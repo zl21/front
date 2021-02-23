@@ -14,11 +14,11 @@
     <div
       v-for="(item,index) in Object.keys(ItemLists)"
       :key="index"
-      :class="['item',ItemLists[item].item.field,(index > (defaultColumn*searchFoldnum - 1) && !dowClass)?'long':'']"
+      :class="['item',ItemLists[item].colname,(index > (defaultColumn*searchFoldnum - 1) && !dowClass)?'long':'']"
     >
       <component
-        :is="initComponent(ItemLists[item].item,index)"
-        :items="ItemLists[item].item"
+        :is="initComponent(ItemLists[item],index)"
+        :items="ItemLists[item]"
         :label-width="90"
       />
     </div>
@@ -94,12 +94,12 @@
       getFormData() {
         let formData = {};
         this.formArray.map((item) => {
-          const components = this.$_live_getChildComponent(window.vm, `${this.id}${item.item.field.TextFilter()}`);
-          let value = components.value;
-          if (item.item.type === 'AttachFilter') { // 处理外健弹窗类型组件数据层级获取,通过子组件获取数据
-            value = components.$children[0].selected ? components.$children[0].selected.map(temp => temp.ID).join(',') : '';
+          const components = this.$_live_getChildComponent(window.vm, `${this.id}${item.colname.TextFilter()}`);
+          const value = components.value;
+          if (item.display === 'OBJ_FK' && (item.fkobj.fkdisplay === 'mop' || item.fkobj.fkdisplay === 'dop')) { // 处理外健弹窗类型组件数据层级获取,通过子组件获取数据
+            // value = components.$children[0].selected ? components.$children[0].selected.map(temp => temp.ID).join(',') : '';
           }
-          const json = this.dealData(item.item, value);
+          const json = this.dealData(item, value);
           formData = Object.assign({}, formData, json);
           return item;
         });
@@ -110,11 +110,11 @@
     created() {
       // 处理合并字段
       this.formItemLists.map((item, index) => {
-        if (item.item.field) {
-          this.ItemLists[item.item.field] = item;
+        if (item.colname) {
+          this.ItemLists[item.colname] = item;
         } else {
-          item.item.field = `R3_index_${index}`;
-          this.ItemLists[item.item.field] = item;
+          item.colname = `R3_index_${index}`;
+          this.ItemLists[item.colname] = item;
         }
         this.formArray.push(item);
         return item;

@@ -212,7 +212,7 @@ module.exports = env => ({
     new ModuleFederationPlugin({ 
       name: '', 
       remotes: {
-        arkui_BCL: 'arkui_BCL@http://192.168.4.163:3800/remoteEntry.js',
+        arkui_BCL: 'arkui_BCL@https://cdn.jsdelivr.net/npm/@syman/ark-ui-bcl@0.0.5/dist/remoteEntry.js',
         shared: ['vue', '@syman/ark-ui', 'axios']
       }
     })
@@ -226,7 +226,8 @@ module.exports = env => ({
       sourceMap: true,
       terserOptions: {
         compress: {
-          pure_funcs: ['console.log']
+          pure_funcs: ['console.log'],
+          warnings: false
         }
       }
     }), new OptimizeCSSAssetsPlugin({})],

@@ -2,7 +2,7 @@
 /* eslint-disable class-methods-use-this */
 
 import Vue from 'vue';
-import ItemComponent from '../ItemComponent.vue';
+import FormItem from './FormItem.vue';
 
 String.prototype.TextFilter = function TextFilter() {
   const pattern = new RegExp("[`~%!@#^=''?~！@#￥……&——‘”“'？*()（），,+。.、]"); // []内输入你要过滤的字符
@@ -23,14 +23,13 @@ export default class RenderComponent {
   ObjectToMerge() {
     const parameter = [...arguments].reverse();
     // 判断两个对象中是否存在相同methods
-    
   }
 
   Initialize() {
     const mixins = require('./mixins').default;
-    this.ObjectToMerge(ItemComponent.methods, mixins.methods);
-    Object.assign(ItemComponent.methods, mixins.methods);
-    Vue.component(`${this.id}${this.item.field.TextFilter()}`, Vue.extend(ItemComponent));
-    return `${this.id}${this.item.field.TextFilter()}`;
+    this.ObjectToMerge(FormItem.methods, mixins.methods);
+    Object.assign(FormItem.methods, mixins.methods);
+    Vue.component(`${this.id}${this.item.colname.TextFilter()}`, Vue.extend(FormItem));
+    return `${this.id}${this.item.colname.TextFilter()}`;
   }
 }

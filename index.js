@@ -42,7 +42,7 @@ import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
 //   roleSwitch: false
 // });
 
-
+// 注册
 Vue.mixin({
   created() {
     const Type = (function () {

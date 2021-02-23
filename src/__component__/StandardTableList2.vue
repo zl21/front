@@ -64,9 +64,9 @@
       /> -->
 
       <listsForm
-        v-if="formLists && formLists.length > 0"
+        v-if="formItems.defaultFormItemsLists && formItems.defaultFormItemsLists.length > 0"
         :id="$route.params.tableName"
-        :form-item-lists="formLists"
+        :form-item-lists="formItems.defaultFormItemsLists"
         :default-spread="changeSearchFoldnum.switchValue"
         :default-column="Number(4)"
         :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
@@ -258,6 +258,7 @@
         return this.keepAliveLabelMaps[this[MODULE_COMPONENT_NAME]];
       },
       formLists() {
+        return [];
         return this.refactoringData(
           this.formItems.defaultFormItemsLists.concat([])
         );
@@ -1032,34 +1033,34 @@
 
 
             // 输入控制
-            if (current.type === 'NUMBER' && !current.display) {
-              // 只能输入 正整数 
-              let string = '';
-              current.length = 100;
+            // if (current.type === 'NUMBER' && !current.display) {
+            //   // 只能输入 正整数 
+            //   let string = '';
+            //   current.length = 100;
 
-              if (current.webconf && current.webconf.ispositive) {
-                string = `^\\d{0,${current.length}}(\\\.[0-9]{0,${
-                  current.scale
-                }})?$`;
-              } else {
-                string = `^(-|\\+)?\\d{0,${current.length - current.scale}}(\\\.[0-9]{0,${
-                  current.scale
-                }})?$`;
-              }
+            //   if (current.webconf && current.webconf.ispositive) {
+            //     string = `^\\d{0,${current.length}}(\\\.[0-9]{0,${
+            //       current.scale
+            //     }})?$`;
+            //   } else {
+            //     string = `^(-|\\+)?\\d{0,${current.length - current.scale}}(\\\.[0-9]{0,${
+            //       current.scale
+            //     }})?$`;
+            //   }
               
-              const typeRegExp = new RegExp(string);
-              if (current.scale > 0) {
-                obj.item.props.regx = typeRegExp;
-              } else if (current.webconf && current.webconf.ispositive) {
-                obj.item.props.regx = regExp.Number;
-              } else {
-                obj.item.props.regx = regExp.Digital;
-              }
-            }
+            //   const typeRegExp = new RegExp(string);
+            //   if (current.scale > 0) {
+            //     obj.item.props.regx = typeRegExp;
+            //   } else if (current.webconf && current.webconf.ispositive) {
+            //     obj.item.props.regx = regExp.Number;
+            //   } else {
+            //     obj.item.props.regx = regExp.Digital;
+            //   }
+            // }
             // 大写控制
-            if (current.isuppercase && !current.display) {
-              obj.item.props.regx = /^[A-Z0-9\u4e00-\u9fa5]+$/;
-            }
+            // if (current.isuppercase && !current.display) {
+            //   obj.item.props.regx = /^[A-Z0-9\u4e00-\u9fa5]+$/;
+            // }
 
             // 带有combobox的添加到options属性中
             if (current.combobox) {
@@ -1112,9 +1113,15 @@
               switch (current.fkobj.searchmodel) {
               case 'drp':
                 obj.item.props.single = true;
-                obj.item.props.fk_type = 'drp';
+                obj.item.props.fk_type = 'BusDropDownSelectFilter';
                 obj.item.props.fkobj = current.fkobj;
                 obj.item.props.defaultSelected = this.defaultValue(current) || [];
+                obj.item.props.tableRequest = { isdroplistsearch: true, refcolid: current.colid };
+                obj.item.props.autoRequest = { fixedcolumns: {}, colid: current.colid };
+                obj.item.props.url = {
+                  tableUrl: `/${current.fkobj.serviceId ? current.fkobj.serviceId : 'ad-app'}/p/cs/QueryList`,
+                  autoUrl: `/${current.fkobj.serviceId ? current.fkobj.serviceId : 'ad-app'}/p/cs/fuzzyquerybyak`
+                };
                 break;
               case 'mrp':
                 obj.item.props.single = false;
