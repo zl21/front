@@ -28,7 +28,9 @@ import '../node_modules/viewerjs/dist/viewer.css';
 import './assets/css/ag-theme-balham.less';
 import './assets/css/loading.css';
 import './assets/css/custom-ext.less';
+import { createWatermark } from './__utils__/waterMark';
 
+Vue.prototype.$createWatermark = createWatermark;// 挂在水印
 
 Vue.component('CompositeFormpop', CompositeForm);
 Vue.use(Loading);
