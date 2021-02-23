@@ -115,7 +115,6 @@ const init = () => {
     render: createElement => createElement(App)
   }).$mount(rootDom);
   if (backDashboardRoute().filter(path => path === router.currentRoute.fullPath).length > 0) {
-    debugger;
     router.push('/');
     setTimeout(() => {
       store.commit('global/updataOpenedMenuLists', []);
