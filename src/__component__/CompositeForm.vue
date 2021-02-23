@@ -96,7 +96,7 @@
   import Vue from 'vue';
   // import { setTimeout } from 'timers';
   import FormItemComponent from './ComFormItemComponent.vue';
-  import CustomizeFormItemPlaceholder from './CustomizeFormItemPlaceholder.vue';
+  import ComponentPlaceholder from './ComponentPlaceholder.vue';
   import {
     Version, MODULE_COMPONENT_NAME, custommizedRequestUrl, formItemConfig 
   } from '../constants/global';
@@ -2514,7 +2514,7 @@
           item.type = 'customization';
           item.componentName = componentName;
           const formConfig = formItemConfig();
-          const targetComponent = (formConfig[componentName] && formConfig[componentName].component) || CustomizeFormItemPlaceholder;
+          const targetComponent = (formConfig[componentName] && formConfig[componentName].component) || ComponentPlaceholder;
           Vue.component(componentName, targetComponent);
         }
         return item;
