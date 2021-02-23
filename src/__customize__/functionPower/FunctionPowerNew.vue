@@ -569,6 +569,9 @@
         if (this.tableData.length > 0) {
           this.$nextTick(() => {
             const { upperTable, functionColumnTd, functionColumnTh } = this.$refs;
+            if (!upperTable && !functionColumnTd && !functionColumnTh) {
+              return;
+            }
             if (functionColumnTd) {
               this.functionColumnWidth = functionColumnTd[0].offsetWidth;
             }
