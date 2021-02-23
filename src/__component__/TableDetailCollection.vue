@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                >
+            >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -889,7 +889,31 @@
           this.objectIMPORT();
           break;
         case 'actionEXPORT': // 导出
-          this.objectEXPORT();
+          // 临时
+          this.exportDialogConfig = {
+            action: 'exportValidate',
+            webdesc: '导出校验'
+          };
+          // 临时end
+          if (this.exportDialogConfig) {
+            // this.dialogComponentName = this.exportDialogConfig.action;
+            // this.dialogConfig.title = this.exportDialogConfig.webdesc;
+            // this.dialogConfig.footerHide = true;
+            // this.dialogConfig.confirm = () => {
+            //   this.objectEXPORT();
+            // };
+            // this.$refs.dialogRef.open();
+            this.$R3Dialog({
+              dialogComponentName: this.exportDialogConfig.action,
+              title: this.exportDialogConfig.webdesc,
+              footerHide: true
+            }, () => {
+              this.objectEXPORT();
+            });
+          } else {
+            this.objectEXPORT();
+          }
+          // this.objectEXPORT();
           break;
         case 'actionDELETE': // 删除
           this.objectTryDelete(obj);

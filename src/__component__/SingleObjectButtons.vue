@@ -1146,7 +1146,24 @@
           break;
 
         case 'actionEXPORT': // 导出
-          this.objectEXPORT();
+          console.log('单对象导出');
+          // 临时
+          this.exportDialogConfig = {
+            action: 'exportValidate',
+            webdesc: '导出校验'
+          };
+          // 临时end
+          if (this.exportDialogConfig) {
+            this.$R3Dialog({
+              dialogComponentName: this.exportDialogConfig.action,
+              title: this.exportDialogConfig.webdesc,
+              footerHide: true
+            }, () => {
+              this.objectEXPORT();
+            });
+          } else {
+            this.objectEXPORT();
+          }
           break;
         case 'actionDELETE': // 删除
           this.objectTryDelete(obj);
