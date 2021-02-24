@@ -134,6 +134,7 @@
       :footer-hide="dialogComponentNameConfig.footerHide"
       :confirm="dialogComponentNameConfig.confirm"
       :dialog-component-name="dialogComponentName"
+      :isrefrsh="buttons.isrefrsh"
       @dialogComponentSaveSuccess="dialogComponentSaveSuccess"
     />
     <!-- 批量 -->
