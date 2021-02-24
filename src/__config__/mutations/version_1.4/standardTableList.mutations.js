@@ -90,195 +90,6 @@ export default {
       });
     }
 
-    // const datas = [
-    //   {
-    //     vuedisplay: 'slient',
-    //     confirm: '{"desc":"是否确定验收？"}',
-    //     actiontype: 'url',
-    //     isrefrsh: true,
-    //     webid: 1,
-    //     webdesc: '父节点1',
-    //     webname: 'listsilent',
-    //     webicon: null,
-    //     action: '/p/cs/test/accept',
-    //     cuscomponent: null,
-    //     actionid: 0,
-    //     ishide: false
-    //   },
-    //   {
-    //     vuedisplay: 'slient',
-    //     confirm: '{"isselect":true,"nodesc":"请先选择需要验收的记录！","desc":"是否确定验收？"}',
-    //     actiontype: 'url',
-    //     isrefrsh: true,
-    //     webid: 1,
-    //     webdesc: '子节点1',
-    //     webname: 'listsilentselect',
-    //     webicon: null,
-    //     action: '/p/cs/test/accept',
-    //     cuscomponent: null,
-    //     ishide: false,
-    //     actionid: 1,
-
-    //   },
-    //   {
-    //     vuedisplay: 'slient',
-    //     confirm: '{"isselect":true,"nodesc":"请先选择需要验收的记录！","isradio":true,"radiodesc":"只能选择一条","desc":"是否确定验收"}',
-    //     actiontype: 'url',
-    //     isrefrsh: true,
-    //     webid: 2,
-    //     webdesc: '父节点2',
-    //     webname: 'listsilentradio',
-    //     webicon: null,
-    //     action: '/p/cs/test/accept',
-    //     cuscomponent: null,
-    //     actionid: 0,
-
-    //     ishide: false
-    //   },
-    //   {
-    //     vuedisplay: 'dialog',
-    //     confirm: '{"isselect":true,"nodesc":"请先选择需要克隆的记录！","isradio":true,"radiodesc":"仅支持单条"}',
-    //     actiontype: 'url',
-    //     isrefrsh: false,
-    //     webid: 2,
-    //     webdesc: '子节点2',
-    //     webname: 'clone_table_list_radio',
-    //     webicon: null,
-    //     action: 'custompage/clonePopUp',
-    //     cuscomponent: null,
-    //     ishide: false,
-    //     actionid: 2,
-
-    //   },
-    //   {
-    //     vuedisplay: 'dialog',
-    //     confirm: '{"isselect":true,"desc":"当前选中{isselect}行,确定进行克隆吗?","nodesc":"请先选择需要克隆的记录！"}',
-    //     actiontype: 'url',
-    //     isrefrsh: false,
-    //     webid: 3,
-    //     webdesc: '父节点3',
-    //     webname: 'clone_table_list_select',
-    //     webicon: null,
-    //     action: 'custompage/clonePopUp',
-    //     cuscomponent: null,
-    //     actionid: 0,
-    //     ishide: false
-    //   },
-    //   {
-    //     vuedisplay: 'navbar',
-    //     confirm: null,
-    //     actiontype: 'url',
-    //     isrefrsh: false,
-    //     webid: 3,
-    //     webdesc: '子节点3',
-    //     webname: 'listbuttonout',
-    //     webicon: null,
-    //     action: 'https://www.baidu.com',
-    //     cuscomponent: null,
-    //     ishide: false,
-    //     actionid: 3,
-
-    //   },
-    //   {
-    //     vuedisplay: 'navbar',
-    //     confirm: null,
-    //     actiontype: 'url',
-    //     isrefrsh: false,
-    //     webid: 4,
-    //     webdesc: '父节点4',
-    //     webname: 'listbuttonin_cus',
-    //     webicon: null,
-    //     action: 'CUSTOMIZED/FUNCTIONPERMISSION/:itemId',
-    //     cuscomponent: null,
-    //     actionid: 0,
-    //     ishide: false
-    //   },
-    //   {
-    //     vuedisplay: 'navbar',
-    //     confirm: null,
-    //     actiontype: 'url',
-    //     isrefrsh: false,
-    //     webid: 4,
-    //     webdesc: '子节点4',
-    //     webname: 'listbuttonin',
-    //     webicon: null,
-    //     action: 'SYSTEM/TABLE_DETAIL/V/PS_C_COLOR/23787/New',
-    //     cuscomponent: null,
-    //     ishide: false,
-    //     actionid: 5,
-
-    //   },
-    //   {
-    //     vuedisplay: 'navbar',
-    //     confirm: null,
-    //     actiontype: 'url',
-    //     isrefrsh: false,
-    //     webid: 5,
-    //     webdesc: '父节点5',
-    //     webname: 'listbuttoninparam',
-    //     webicon: null,
-    //     action: 'SYSTEM/TABLE_DETAIL/V/PS_C_COLOR/23787/:itemId',
-    //     cuscomponent: null,
-    //     actionid: 0,
-    //     ishide: false
-    //   },
-    //   {
-    //     vuedisplay: 'download',
-    //     confirm: '{"isselect":true,"nodesc":"请先选择需要下载的记录！","isradio":true,"radiodesc":"仅支持单条"}',
-    //     actiontype: 'url',
-    //     isrefrsh: false,
-    //     webid: 5,
-    //     webdesc: '子节点51',
-    //     webname: 'gettest_list',
-    //     webicon: null,
-    //     action: '/p/cs/download?filename=import/893/订单.xlsx',
-    //     cuscomponent: null,
-    //     ishide: false,
-    //     actionid: 5,
-
-    //   },
-    //   {
-    //     vuedisplay: 'download',
-    //     confirm: '{"isselect":true,"nodesc":"请先选择需要下载的记录！","isradio":true,"radiodesc":"仅支持单条"}',
-    //     actiontype: 'url',
-    //     isrefrsh: false,
-    //     webid: 5,
-    //     webdesc: '子节点52',
-    //     webname: 'gettest_list',
-    //     webicon: null,
-    //     action: '/p/cs/download?filename=import/893/订单.xlsx',
-    //     cuscomponent: null,
-    //     ishide: false,
-    //     actionid: 5,
-
-    //   },
-    //   {
-    //     vuedisplay: 'download',
-    //     confirm: '{"isselect":true,"nodesc":"请先选择需要下载的记录！","isradio":true,"radiodesc":"仅支持单条"}',
-    //     actiontype: 'url',
-    //     isrefrsh: false,
-    //     webid: 88888,
-    //     webdesc: '888888888',
-    //     webname: 'gettest_list',
-    //     webicon: null,
-    //     action: '/p/cs/download?filename=import/893/订单.xlsx',
-    //     cuscomponent: null,
-    //     ishide: false
-    //   }
-    // ];
-
-    // function refrain(arr) {
-    //   const tmp = [];
-    //   if (Array.isArray(arr)) {
-    //     arr.sort((a, b, i) => {
-    //       if (a.webid !== b.webid && tmp.indexOf(a) === -1) {
-    //         tmp.push(a); 
-    //       }
-    //     });
-    //   }
-    //   return tmp;
-    // }
-
     const parentDatas = [];
     const childrenDatas = [];
 
@@ -353,6 +164,9 @@ export default {
     buttons.dataArray.buttonGroupShowConfig.buttonGroupShow = data;
   },
   onSelectionChangedAssignment({ buttons }, { rowIdArray, rowArray }) {
+    if (this._mutations[`${getComponentName()}/filterButtonsForDisable`] && this._mutations[`${getComponentName()}/filterButtonsForDisable`].length && this._mutations[`${getComponentName()}/filterButtonsForDisable`].length > 0) {
+      this._mutations[`${getComponentName()}/filterButtonsForDisable`][0](rowArray);
+    }
     buttons.selectIdArr = rowIdArray;
     buttons.selectArr = rowArray;
   },
@@ -459,127 +273,39 @@ export default {
   updateFilterButtons(state, data) { // 更新按钮筛选数据
     state.ag.filterButtons = data;
   },
-  filterButtonsForDisable({ buttons, ag }, rowArray) { // 根据条件过滤按钮disable状态
-    const getArrDifference = (arr1, arr2) => arr1.concat(arr2).filter((v, i, arr) => arr.indexOf(v) === arr.lastIndexOf(v));
-    let currentRow = {};// 当前操作的row
-    let rowFlag = '';
-    if (buttons.selectArr.length > rowArray.length) { // 取消勾选
-      currentRow = getArrDifference(buttons.selectArr, rowArray)[0];
-      rowFlag = 'deleteRow';
-    } else { // 新增勾选
-      if (rowArray.length === 0) {
-        currentRow = rowArray;
-      } else {
-        currentRow = getArrDifference(buttons.selectArr, rowArray)[0];
-        // currentRow = rowArray[rowArray.length - 1];
-      }
-      rowFlag = 'selectRow';
-    }
-   
-    // 整合过滤数据
-    let filterButtonsRest = {};
-    let filterData = {};
-    let colname = '';
-    const tabth = ag.datas.tabth;
-    if (ag.filterButtons && ag.filterButtons.length > 0) {
-      filterButtonsRest = ag.filterButtons.reduce((arr, obj,) => {
-        filterData = obj.filter.reduce((acc, cur) => {
-          tabth.forEach((t) => {
-            if (Number(t.col_id) === Number(cur.col_id)) {
-              colname = t.colname; 
-            }
-          });
-          acc[colname] = cur.match_value;
-          acc.actionId = obj.action_id;
-          return acc;
-        }, {});
-        arr.push(filterData);
-        return arr;
-      }, []);
-      
-      Object.values(filterButtonsRest).reduce((arr, obj) => {
-        const conditionNum = [];
-        Object.keys(obj).map((o, i) => {
-          if (o !== 'actionId') {
-            Object.keys(currentRow).map((rowKey) => {
-              if (rowKey === o) {
-                if (obj[o].split(',').includes(currentRow[o].val)) {
-                  conditionNum.push(obj.actionId);
-                }
-              }
-            });
-          }
-        });
-        if (Number(Object.keys(obj).length) - 1 === Number(conditionNum.length)) {
-          if (rowFlag === 'selectRow') { // 勾选过滤出的需要置为disabled状态的按钮
-            buttons.disableButtons = buttons.disableButtons.concat(conditionNum);
-          } else if (rowFlag === 'deleteRow') { // 取消勾选过滤出的需要置为disabled状态的按钮
-            conditionNum.map((d, i) => {
-              const index = buttons.disableButtons.findIndex(b => b === d);
-              buttons.disableButtons.splice(index, 1);
-            });
-          }
-          console.log(222, buttons.disableButtons, conditionNum);
-        }
-      }, []);
-
-      // 处理按钮不可编辑逻辑
-      const waListButtonsConfig = buttons.dataArray.waListButtonsConfig;// 折叠按钮
-      const waListButtonsGroup = waListButtonsConfig.waListButtonsGroup;
-      const waListButtons = waListButtonsConfig.waListButtons;
-      const buttonsArr = waListButtonsGroup.concat(waListButtons);
-      const disableButtonsRes = JSON.parse(JSON.stringify(buttons.disableButtons));
-      buttonsArr.reduce((arr, obj) => {
-        if (obj.childrens) {
-          obj.childrens.map((c) => {
-            if (disableButtonsRes.filter(b => Number(b) === Number(c.webid)).length > 0) {
-              c.disabled = true;
-              console.log(22, c.webdesc);
-            } else {
-              c.disabled = false;
-            }
-          });
-        } else if (disableButtonsRes.filter(b => Number(b) === Number(obj.webid)).length > 0) {
-          console.log(22, obj.webdesc);
-
-          obj.disabled = true;
-        } else {
-          obj.disabled = false;
-        }
-        return arr;
-      }, []);
-    }
-  },
+  
   resetButtonsStatus({ buttons }) { 
     buttons.disableButtons = [];
     const waListButtonsConfig = buttons.dataArray.waListButtonsConfig;// 折叠按钮
     const waListButtonsGroup = waListButtonsConfig.waListButtonsGroup;
     const waListButtons = waListButtonsConfig.waListButtons;
     const fun = (data) => {
-      data.reduce((arr, obj) => {
-        if (obj.childrens) {
-          obj.childrens.map((c) => {
-            if (c.disabled) {
-              c.disabled = false;
-            }
-          });
-        } else {
-          obj.disabled = false;
-        }
-        return arr;
-      }, []);
+      if (data && data.length > 0) {
+        data.reduce((arr, obj) => {
+          if (obj.childrens) {
+            obj.childrens.map((c) => {
+              if (c.disabled) {
+                c.disabled = false;
+              }
+            });
+          } else {
+            obj.disabled = false;
+          }
+          return arr;
+        }, []);
+      }
     };  
     fun(waListButtonsGroup);
     fun(waListButtons);
   },
-  filterButtonsForDisable1({ buttons, ag }, rowArray) { // 根据条件过滤按钮disable状态
+  filterButtonsForDisable({ buttons, ag }, rowArray) { // 根据条件过滤按钮disable状态
     this._mutations[`${getComponentName()}/resetButtonsStatus`][0]();
   
     // 整合过滤数据
     let filterButtonsRest = {};
     let filterData = {};
     let colname = '';
-    const tabth = ag.datas.tabth;
+    const tabth = ag.datas.tabth && ag.datas.tabth.length ? ag.datas.tabth : [];
     if (ag.filterButtons && ag.filterButtons.length > 0) {
       filterButtonsRest = ag.filterButtons.reduce((arr, obj,) => {
         filterData = obj.filter.reduce((acc, cur) => {

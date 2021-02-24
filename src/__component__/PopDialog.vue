@@ -33,8 +33,6 @@
         :page-size="selectOperation.defaultrange"
         class="table-page"
         size="small"
-        show-elevator
-        show-sizer
         show-total
         @on-change="pageChange"
         @on-page-size-change="pageSizeChange"
@@ -71,7 +69,7 @@
   </div>
 </template>
 <script>
-  import { Version } from '../constants/global';
+  import { Version, defaultrange } from '../constants/global';
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
   
@@ -182,7 +180,7 @@
           refcolid: Number(this.fkobj.colid),
           isdroplistsearch: true,
           startindex: this.selectOperation.startindex,
-          range: this.selectOperation.pageSize
+          range: defaultrange() ? defaultrange() : this.selectOperation.pageSize
         };
         const fixedcolumns = Object.keys(this.formChangeData).reduce(
           (arr, item) => {
