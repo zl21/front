@@ -1,5 +1,5 @@
 /**
- * 外健关联业务组件的自定义逻辑处理
+ * 下拉单选外健关联业务组件的自定义逻辑处理
  */
 import { defaultrange } from '../../constants/global';
 
