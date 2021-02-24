@@ -11,29 +11,55 @@ import dataProp from '../../__config__/props.config';
 import regExp from '../../constants/regExp';
 
 
-function deepClone(source) {
-  if (!source && typeof source !== 'object') {
-    throw new Error('error arguments', 'deepClone');
-  }
-  const targetObj = source.constructor === Array ? [] : {};
-  Object.keys(source).forEach((keys) => {
-    if (source[keys] && typeof source[keys] === 'object') {
-      targetObj[keys] = deepClone(source[keys]);
-    } else {
-      targetObj[keys] = source[keys];
+function deepProxy(obj, cb) {
+  if (typeof obj === 'object') {
+    for (const key in obj) {
+      if (typeof obj[key] === 'object') {
+        obj[key] = deepProxy(obj[key], cb);
+      }
     }
-  });
-  return targetObj;
-}
+  }
 
-const defaultProps = Input.props;
+  return new Proxy(obj, {
+
+    /**
+       * @param {Object, Array} target 设置值的对象
+       * @param {String} key 属性
+       * @param {any} value 值
+       * @param {Object} receiver this
+       */
+    set(target, key, value, receiver) {
+      if (typeof value === 'object') {
+        value = deepProxy(value, cb);
+      }
+
+      const cbType = target[key] == undefined ? 'create' : 'modify';
+
+      // 排除数组修改length回调
+      if (!(Array.isArray(target) && key === 'length')) {
+        cb(cbType, { target, key, value });
+      }
+      return Reflect.set(target, key, value, receiver);
+    },
+    deleteProperty(target, key) {
+      cb('delete', { target, key });
+      return Reflect.deleteProperty(target, key);
+    }
+
+  });
+}
 
 
 class CustomInput {
   constructor(item) {
     this.item = JSON.parse(JSON.stringify(item));
     // Input.props = deepClone(defaultProps);
-    this.Input = Input;
+    console.log(Input);
+    this.Input = deepProxy(Input, (type, data) => {
+      // console.log(type, data);
+    });
+
+    console.log(this.Input);
   }
 
   init() {
@@ -52,25 +78,13 @@ class CustomInput {
     }
 
     // this.item.props = Object.assign(defaultProps, this.item.props);
-    
     Object.keys(this.item.props).map((item) => {
       // console.log(item, this.item.props.regx, this.item.props[item], this.Input.props[item]);
       if (this.Input.props[item]) {
-        if (this.Input.props[item].hasOwnProperty('default')) {
-          // console.log(item, this.Input.props.regx, this.item.props[item]);
-          this.Input.props.regx.default = () => new RegExp();
-          this.Input.props[item].default = () => this.item.props[item];
-        } else {
-          this.Input.props.regx.default = () => new RegExp();
-          this.Input.props[item].default = () => this.item.props[item];
-          this.Input.props[item].type = [Object, String, Array, RegExp];
-        }
+        this.Input.props[item].default = () => this.item.props[item];
       }
-      // this.Input.props = JSON.parse(JSON.stringify(this.Input.props));
-      
       return item;
     });
-    return this.Input.props;
   }
 
   settingPlaceholder() { // 设置Placeholder属性
