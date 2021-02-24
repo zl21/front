@@ -29,11 +29,13 @@ import './assets/css/ag-theme-balham.less';
 import './assets/css/loading.css';
 import './assets/css/custom-ext.less';
 import { createWatermark } from './__utils__/waterMark';
+import R3Dialog from './__globalComponentModule__/dialog';
 
 Vue.prototype.$createWatermark = createWatermark;// 挂在水印
 
 Vue.component('CompositeFormpop', CompositeForm);
 Vue.use(Loading);
+Vue.use(R3Dialog); // 注册全局api调用组件
 Vue.use(Viewer);
 // const createRouter = routes => new VueRouter({
 //   routes,

@@ -453,16 +453,18 @@
         const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
         const tableComponent = `${this[MODULE_COMPONENT_NAME]}.TableDetailCollection`;
         const buttonComponent = `${this[MODULE_COMPONENT_NAME]}.SingleObjectButtons`;
+        const tableDetailCollectionMixin = (window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.tableDetailCollection) || {};
+
         if (this.type === 'vertical') {
           if (Vue.component(tableComponent) === undefined) {
-            Vue.component(tableComponent, Vue.extend(Object.assign({ mixins: [verticalMixins()] }, tableDetailCollection)));
+            Vue.component(tableComponent, Vue.extend(Object.assign({ mixins: [verticalMixins(), tableDetailCollectionMixin] }, tableDetailCollection)));
           }
           if (Vue.component(buttonComponent) === undefined) {
             Vue.component(buttonComponent, Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
           }
         } else {
           if(Vue.component(tableComponent) === undefined) {
-            Vue.component(tableComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, tableDetailCollection)));
+            Vue.component(tableComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins(), tableDetailCollectionMixin] }, tableDetailCollection)));
           }
           if (Vue.component(buttonComponent) === undefined) {
             Vue.component(buttonComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, singleObjectButtons)));

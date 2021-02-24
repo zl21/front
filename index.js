@@ -44,9 +44,9 @@ import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
 // });
 
 Vue.use(VueDND);
+Vue.use(R3Dialog); // 注册全局api调用组件
 Vue.use(Viewer);
 Vue.prototype.$createWatermark = createWatermark;
-Vue.use(R3Dialog); // 注册全局api调用组件
 
 
 // 注册自定义模态框组件

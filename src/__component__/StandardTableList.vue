@@ -2150,14 +2150,8 @@
 
         if (obj.name === this.buttonMap.CMD_EXPORT.name) {
           // console.log('导出--', obj, this.buttons.selectIdArr, this.buttons.dataArray.waListButtonsConfig.waListButtons);
-          // 临时
-          this.exportDialogConfig = {
-            action: 'exportValidate',
-            webdesc: '导出校验'
-          };
-          console.log('配置项', this.exportDialogConfig);
-          // 临时end;
-
+          console.log('配置项', this.exportDialogConfig, this.buttons, obj);
+          
           // 导出
           if (this.buttons.selectIdArr.length === 0) {
             const title = '警告';
@@ -2166,8 +2160,8 @@
             return;
           }
           // this.batchExport(obj);
-          if (this.exportDialogConfig) {
-            this.validateExport(obj); 
+          if (this.R3_openedApi_export && typeof this.R3_openedApi_export === 'function') {
+            this.R3_openedApi_export(obj);
           } else {
             this.batchExport(obj);
           }
@@ -2221,6 +2215,7 @@
           }
         }
       },
+
       batchExport(buttonsData) {
         this.$R3loading.show();
         let searchData = {};
@@ -2532,8 +2527,8 @@
           ) {
             // this.batchExport(obj);
             // 是否需要进行二次校验
-            if (this.exportDialogConfig) {
-              this.validateExport(obj); 
+            if (this.R3_openedApi_export && typeof this.R3_openedApi_export === 'function') {
+              this.R3_openedApi_export(obj);
             } else {
               this.batchExport(obj);
             }
@@ -2541,17 +2536,6 @@
             this.searchData('backfresh');
           }
         }
-      },
-
-      // 校验后导出
-      validateExport(obj) {
-        this.$R3Dialog({
-          dialogComponentName: this.exportDialogConfig.action,
-          title: this.exportDialogConfig.webdesc,
-          footerHide: true
-        }, () => {
-          this.batchExport(obj);
-        });
       },
 
       errorDialogClose() {

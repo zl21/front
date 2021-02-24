@@ -889,27 +889,8 @@
           this.objectIMPORT();
           break;
         case 'actionEXPORT': // 导出
-          // 临时
-          this.exportDialogConfig = {
-            action: 'exportValidate',
-            webdesc: '导出校验'
-          };
-          // 临时end
-          if (this.exportDialogConfig) {
-            // this.dialogComponentName = this.exportDialogConfig.action;
-            // this.dialogConfig.title = this.exportDialogConfig.webdesc;
-            // this.dialogConfig.footerHide = true;
-            // this.dialogConfig.confirm = () => {
-            //   this.objectEXPORT();
-            // };
-            // this.$refs.dialogRef.open();
-            this.$R3Dialog({
-              dialogComponentName: this.exportDialogConfig.action,
-              title: this.exportDialogConfig.webdesc,
-              footerHide: true
-            }, () => {
-              this.objectEXPORT();
-            });
+          if (this.R3_openedApi_export && typeof this.R3_openedApi_export === 'function') {
+            this.R3_openedApi_export();
           } else {
             this.objectEXPORT();
           }
