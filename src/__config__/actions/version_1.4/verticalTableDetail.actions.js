@@ -268,9 +268,15 @@ export default {
     reject
   }) { // 主表保存
     const {
-      tabrelation, itemObjId, tableName, temporaryStoragePath, objId, path, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup, jflowPath
+      tabrelation, itemObjId, tableName, temporaryStoragePath, objId, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup, jflowPath
     } = parame;
+
+    let { path } = parame;
     let parames = {};
+    // 处理存储过程逻辑，配置的path中带有sp|时则走框架的标准逻辑，不走定制path
+    if (path && path.includes('sp|')) {
+      path = null;
+    }
     if (type === 'add') { // 新增保存参数
       const {
         add
