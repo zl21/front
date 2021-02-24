@@ -88,20 +88,7 @@ module.exports = {
   blockFullOperation: false, // 禁止不选数据时的批量修改操作,
   // customizeMixins: { // 获取所有外部接入的mixins对象
   //   setPanel: null,
-  //   verticalTableDetailCustomize: {
-  //     methods: {
-  //       R3_openedApi_export() {
-  //         console.log('混入啦3----------');
-  //         this.$R3Dialog({
-  //           dialogComponentName: 'exportValidate',
-  //           title: '导出校验',
-  //           footerHide: true
-  //         }, () => {
-  //           this.objectEXPORT();
-  //         });
-  //       }
-  //     }
-  //   },
+  //   verticalTableDetailCustomize: null,
   //   standardTableListsCustomize: {
   //     methods: {
   //       R3_openedApi_export(event) {
@@ -118,7 +105,21 @@ module.exports = {
   //   },
   //   horizontalTableDetailCustomize: null,
   //   taskList: null,
-  //   tableDetailCollection: {
+  //   singleObjectButtonsMixin: {
+  //     methods: {
+  //       R3_openedApi_export() {
+  //         console.log('混入啦3----------');
+  //         this.$R3Dialog({
+  //           dialogComponentName: 'exportValidate',
+  //           title: '导出校验',
+  //           footerHide: true
+  //         }, () => {
+  //           this.objectEXPORT();
+  //         });
+  //       }
+  //     }
+  //   },
+  //   tableDetailCollectionMixin: {
   //     methods: {
   //       R3_openedApi_export() {
   //         console.log('混入啦1----------');
@@ -153,9 +154,5 @@ module.exports = {
   //     }
   //   }
   //   return true;
-  // }
-  // exportDialogConfig: {
-  //   componentName: 'exportValidate',
-  //   title: '导出校验'
   // }
 };

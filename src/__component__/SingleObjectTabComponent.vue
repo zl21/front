@@ -453,21 +453,22 @@
         const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
         const tableComponent = `${this[MODULE_COMPONENT_NAME]}.TableDetailCollection`;
         const buttonComponent = `${this[MODULE_COMPONENT_NAME]}.SingleObjectButtons`;
-        const tableDetailCollectionMixin = (window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.tableDetailCollection) || {};
+        const tableDetailCollectionMixin = (window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.tableDetailCollectionMixin) || {};
+        const singleObjectButtonsMixin = (window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.singleObjectButtonsMixin) || {};
 
         if (this.type === 'vertical') {
           if (Vue.component(tableComponent) === undefined) {
             Vue.component(tableComponent, Vue.extend(Object.assign({ mixins: [verticalMixins(), tableDetailCollectionMixin] }, tableDetailCollection)));
           }
           if (Vue.component(buttonComponent) === undefined) {
-            Vue.component(buttonComponent, Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
+            Vue.component(buttonComponent, Vue.extend(Object.assign({ mixins: [verticalMixins(), singleObjectButtonsMixin] }, singleObjectButtons)));
           }
         } else {
           if(Vue.component(tableComponent) === undefined) {
             Vue.component(tableComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins(), tableDetailCollectionMixin] }, tableDetailCollection)));
           }
           if (Vue.component(buttonComponent) === undefined) {
-            Vue.component(buttonComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, singleObjectButtons)));
+            Vue.component(buttonComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins(), singleObjectButtonsMixin] }, singleObjectButtons)));
           }
         }
         if(this.componentName) { // 定制tab自定义组件
