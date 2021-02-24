@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                >
+            >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -889,7 +889,12 @@
           this.objectIMPORT();
           break;
         case 'actionEXPORT': // 导出
-          this.objectEXPORT();
+          if (this.R3_openedApi_export && typeof this.R3_openedApi_export === 'function') {
+            this.R3_openedApi_export();
+          } else {
+            this.objectEXPORT();
+          }
+          // this.objectEXPORT();
           break;
         case 'actionDELETE': // 删除
           this.objectTryDelete(obj);

@@ -1150,7 +1150,12 @@
           break;
 
         case 'actionEXPORT': // 导出
-          this.objectEXPORT();
+          console.log('单对象导出');
+          if (this.R3_openedApi_export && typeof this.R3_openedApi_export === 'function') {
+            this.R3_openedApi_export();
+          } else {
+            this.objectEXPORT();
+          }
           break;
         case 'actionDELETE': // 删除
           this.objectTryDelete(obj);
