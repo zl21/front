@@ -716,6 +716,10 @@
           }
         });
         if (type === 'fix') {
+          // 处理存储过程逻辑，配置的path中带有sp|时则走框架的标准逻辑，不走定制path
+          if (obj && obj.requestUrlPath && obj.requestUrlPath.includes('sp|')) {
+            obj.requestUrlPath = null;
+          }
           this.objectTabAction(obj);// 标准按钮执行方法
         } else if (type === 'custom') {
           this.webactionClick(obj);// 自定义按钮执行方法
@@ -1865,6 +1869,11 @@
           }
           params = obj;
         }
+
+        // 处理存储过程逻辑，配置的path中带有sp|时则走框架的标准逻辑，不走定制path
+        if (tab.action && tab.action.includes('sp|')) {
+          tab.action = null;
+        }
         
 
         const promise = new Promise((resolve, reject) => {
@@ -2187,7 +2196,6 @@
         this.$R3loading.show(this.tableName);
       },
       clickButtonsBack(stop) { // 按钮返回事件  
-        debugger;
         if (stop) {
           this.back();
           this.isValue = null;
@@ -2204,7 +2212,6 @@
         }
       },
       back() {
-        debugger;
         this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
         const { tableId, tableName } = this.$route.params;
         // 列表界面配置动态路由

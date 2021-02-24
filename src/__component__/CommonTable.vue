@@ -83,6 +83,7 @@
           confirm: () => {
           }
         }, // 弹框配置信息
+        selectedIndex: []
       };
     },
     name: 'CommonTable',
@@ -149,8 +150,9 @@
           align: 'right',
           fixed: 'left'
         }];
+
         if (Object.keys(this.datas).length > 0 && this.datas.tabth.length > 1) {
-          return defaultColumns.concat(this.datas.tabth.reduce((acc, cur) => {
+          const columns = defaultColumns.concat(this.datas.tabth.reduce((acc, cur) => {
             if (cur.comment) {
               if (cur.name === 'ID') {
                 acc.push(Object.assign({
@@ -368,8 +370,11 @@
                 }, cur));
               }
             }
+
+            
             return acc;
           }, []));
+          return columns;
         }
         return [];
       }, // 表头
@@ -383,6 +388,12 @@
             acc.push(obj);
             return acc;
           }, []);
+
+          // 回填勾选
+          this.selectedIndex.forEach((curIndex) => {
+            data[curIndex]._checked = true;
+          });
+          
           this.spinShow = false;
           return data;
         }
@@ -561,7 +572,6 @@
                 };
                 this.tabOpen(tab);
               } else if (objdistype === 'link') { // 支持跳转外链界面配置动态参数
-                debugger;
                 const param = {
                   url: params.column.customerurl.tableurl,
                   query: params.column.customerurl.refobjid,
@@ -794,6 +804,37 @@
           });
         };
       }, // 序号render
+      fieldMergeRender(cur) {
+        return (h, params) => {
+          const array = [];
+          if (true) { // 存在数据时
+            cur.key_group.map((item) => {
+              const value = params.row[item.col_name]; // 来源字段的值
+              item.label.map((temp) => {
+                if (temp.value == value) {
+                  array.push({
+                    description: temp.description,
+                    class: temp.cssclass
+                  });
+                }
+                return temp;
+              });
+              return item;
+            });
+
+            return h('div', {}, array.map(item => h('span', {
+              class: item.class,
+              style: {
+                display: 'inline-block',
+                padding: '4px 6px',
+                border: '1px solid',
+                borderRadius: '4px'
+              }
+            }, item.description)));
+          }
+          return h('span', {}, '');
+        };
+      },
       tableRowClick() {
 
       }, // 普通表格单击
@@ -805,6 +846,15 @@
         }, []);
         if (typeof self.onSelectionChanged === 'function') {
           self.onSelectionChanged(rowIdArray, val);
+          // 缓存勾选索引用于回填
+          const selectedArr = [];
+          this.datas.row.forEach((row, index) => {
+            if (rowIdArray.includes(row.ID.val)) {
+              selectedArr.push(index);
+            }
+          });
+
+          this.selectedIndex = selectedArr;
         }
       }, // 普通表格选中事件
       tableRowDbclick(row, index, event, colDef) {

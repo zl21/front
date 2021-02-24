@@ -110,6 +110,38 @@ const localeText = {
   ctrlV: 'ctrl+V',
 };
 
+// for 字段合并展示字段选项组
+const fieldMergeRender = function () {
+};
+
+fieldMergeRender.prototype.init = function (params) {
+  const eGui = document.createElement('div');
+  this.eGui = eGui;
+  let template = '';
+
+  if(true){
+    params.colDef.key_group.map(item => {
+      const value = params.data[item.col_name]; // 来源字段的值
+      item.label.map((temp) => {
+        if (temp.value == value.val) {
+          template = template+`<span style="display:inline-block;padding:4px 6px;border:1px solid;border-radius:4px;line-height:1"  class="${temp.cssclass}">${temp.description}</span>`
+        }
+        return temp;
+      });
+    })
+
+    template = `<div>${template}</div>`
+  }else{
+    template = `<span class="${cssFeatures.hover}" style="text-decoration: underline; color: #0F8EE9; " data-target-tag="customerUrlText">${params.value || ''}</span>`
+  }
+  
+  eGui.innerHTML = template;
+};
+
+fieldMergeRender.prototype.getGui = function () {
+  return this.eGui;
+};
+
 // for image
 const imageComponent = function () {
 };
@@ -471,6 +503,9 @@ customHeader.prototype.destroy = function () {
   this.eGui.removeEventListener('click', this.onHeaderClickListener);
 };
 
+
+
+
 // 公共方法
 const cleanChildNode = (node) => {
   // 清空agGridTableContainer
@@ -594,6 +629,10 @@ const initializeAgTable = (container, opt) => {
       }
       if (columnItem.display === 'image') {
         return 'imageComponent';
+      }
+
+      if(columnItem.key_group && columnItem.key_group.length > 0){
+        return 'fieldMergeRender';
       }
       // 默认返回字符串的时候，要判断其字符长度
       return function (params) {
@@ -835,6 +874,7 @@ const initializeAgTable = (container, opt) => {
         domLayout: null,
         groupMultiAutoColumn: true, // 分组时，显示分组原字段
         components: {
+          fieldMergeRender,
           imageComponent,
           fkComponent,
           mopFkComponent,
@@ -842,6 +882,7 @@ const initializeAgTable = (container, opt) => {
           sequenceComponent,
           customHeader,
           attachmentComponent,
+          
         },
         columnTypes: {
           // 防止后台api返回的colDef中有type，会引起columnType警告

@@ -31,6 +31,11 @@ import './assets/css/custom-ext.less';
 import { createWatermark } from './__utils__/waterMark';
 import R3Dialog from './__globalComponentModule__/dialog';
 
+// 全局指令
+import inputNumber from './directive/inputNumber';
+
+Vue.use(inputNumber);
+
 Vue.prototype.$createWatermark = createWatermark;// 挂在水印
 
 Vue.component('CompositeFormpop', CompositeForm);

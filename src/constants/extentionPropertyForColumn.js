@@ -2,10 +2,11 @@ export default [
   {
     name: '是否加密',
     key: 'ispassword',
-    type: 'radio',
+    type: 'custom',
+    component: 'PassWord',
     enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
     description: '加密后字段值即显示***',
-    supportType: ['byPage']
+    // supportType: ['byPage']
   },
   {
     name: '字段值过滤',
