@@ -9,66 +9,37 @@ import Vue from 'vue';
 import { Input } from 'ark-ui';
 import dataProp from '../../__config__/props.config';
 import regExp from '../../constants/regExp';
-
-
-function deepProxy(obj, cb) {
-  if (typeof obj === 'object') {
-    for (const key in obj) {
-      if (typeof obj[key] === 'object') {
-        obj[key] = deepProxy(obj[key], cb);
-      }
+// 深拷贝
+const deepClone = (arr) => {  
+  const obj = arr.constructor == Array ? [] : {};
+  // 第二种方法 var obj=arr instanceof Array?[]:{}
+  // 第三种方法 var obj=Array.isArray(arr)?[]:{}
+  for (const item in arr) {
+    if (typeof arr[item] === 'object') {
+      obj[item] = deepClone(arr[item]);
+    } else {
+      obj[item] = arr[item];
     }
   }
-
-  return new Proxy(obj, {
-
-    /**
-       * @param {Object, Array} target 设置值的对象
-       * @param {String} key 属性
-       * @param {any} value 值
-       * @param {Object} receiver this
-       */
-    set(target, key, value, receiver) {
-      if (typeof value === 'object') {
-        value = deepProxy(value, cb);
-      }
-
-      const cbType = target[key] == undefined ? 'create' : 'modify';
-
-      // 排除数组修改length回调
-      if (!(Array.isArray(target) && key === 'length')) {
-        cb(cbType, { target, key, value });
-      }
-      return Reflect.set(target, key, value, receiver);
-    },
-    deleteProperty(target, key) {
-      cb('delete', { target, key });
-      return Reflect.deleteProperty(target, key);
-    }
-
-  });
-}
-
-
+  return obj;
+};
+// const nativeInput = deepClone(Input);
 class CustomInput {
   constructor(item) {
-    this.item = JSON.parse(JSON.stringify(item));
-    // Input.props = deepClone(defaultProps);
-    console.log(Input);
-    this.Input = deepProxy(Input, (type, data) => {
-      // console.log(type, data);
-    });
-
-    console.log(this.Input);
+    this.item = { ...item };
+    this.Input = deepClone(Input);
+    delete this.Input._Ctor;
   }
 
   init() {
-    this.mergeProps(this.Input);
-    return this.Input;
+    this.mergeProps();
+    this.mergeMethods();
+    return { ...this.Input };
   }
 
   // 合并props
   mergeProps() {
+    const defaultProps = { ...this.Input.props };
     this.settingPlaceholder();
     if (this.item.type === 'NUMBER') {
       this.numericTypes();
@@ -77,14 +48,26 @@ class CustomInput {
       this.uppercase();
     }
 
-    // this.item.props = Object.assign(defaultProps, this.item.props);
     Object.keys(this.item.props).map((item) => {
       // console.log(item, this.item.props.regx, this.item.props[item], this.Input.props[item]);
-      if (this.Input.props[item]) {
-        this.Input.props[item].default = () => this.item.props[item];
+      if (defaultProps[item]) {
+        defaultProps[item].default = () => (function (value) {
+          return value;
+        }(this.item.props[item]));
       }
       return item;
     });
+    this.Input.props = defaultProps;
+    // this.Input._Ctor[0].options = defaultProps;
+  }
+
+  // 合并methods
+  mergeMethods() {
+    if (this.item.coldesc === '编码') {
+      this.Input.methods.handleInput = function () {
+        console.log(123);
+      };
+    }
   }
 
   settingPlaceholder() { // 设置Placeholder属性

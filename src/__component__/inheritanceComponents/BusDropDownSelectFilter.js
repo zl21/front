@@ -1,11 +1,11 @@
 /**
  * 下拉单选外健关联业务组件的自定义逻辑处理
  */
+import BusDropDown from 'arkui_BCL/DropDownSelectFilter';
 import { defaultrange } from '../../constants/global';
 
 // const BusDropDownSelectFilter = () => import('arkui_BCL/DropDownSelectFilter');
-import BusDropDown from 'arkui_BCL/DropDownSelectFilter';
-
+// console.log(BusDropDown);
 // 处理传参form格式转换
 const urlSearchParams = (data) => {
   const params = new URLSearchParams();
@@ -35,26 +35,7 @@ const deepClone = (arr) => {
   }
   return obj;
 };
-// 重构方法
-const methods = {
-  postTableData(url) {
-    return new Promise((resolve) => {
-      this.post(url, urlSearchParams({
-        searchdata: this.searchdata
-      }), (response) => {
-        resolve(response);
-      });
-    });
-  },
-  
-};
 
-// 重构初始化数据
-const defaultData = (data,item) => {
-  const json = deepClone(data,item);
-  json.pageSize = item;
-  return () => deepClone(json);
-};
 
 // BusDropDownSelectFilter().then((data) => {
 //   data.default.data = defaultData(data.default.data());
@@ -75,34 +56,79 @@ const defaultData = (data,item) => {
 //       return obj[key]
 //    }
 // }
- let BusDropDownSelectFilter = deepClone(BusDropDown);
+// const BusDropDownSelectFilter = deepClone(BusDropDown);
 // let BusDropDownSelectFilter = new Proxy(BusDropDown,handler);
 
 class DropDownSelectFilter {
   constructor(item) {
     this.item = item;
-    this.BusDropDown = BusDropDownSelectFilter;
+    // const BusDropDownSelectFilter = require('arkui_BCL/DropDownSelectFilter').default;
+    this.BusDropDown = deepClone(BusDropDown);
+    delete this.BusDropDown._Ctor;
   }
 
-  init(item) {
-    this.BusDropDown.methods = {
-      'on-input-value-change':function(){
-        console.log(this.pageSize,'rrrr33')
-      }
+  init() {
+    this.mergeProps();
+    this.mergeDatas();
+    this.mergeDatas();
+    
+    // ((item) => {
+    //   this.BusDropDown.mounted = function () {
+    //     console.log(item.coldesc, this);
+    //   };
+    // })(this.item);
+    return { ...this.BusDropDown };
+  }
+
+  // 合并props
+  mergeProps() {
+    const propsData = { ...this.BusDropDown.props };
+    console.log(this.item);
+    // 处理Url
+    this.propsUrl(propsData);
+    // 处理传参
+    this.propsParams(propsData);
+    this.BusDropDown.props = { ...propsData };
+  } 
+
+  propsUrl(props) { // 处理props中的url属性
+    props.Url.default = () => ({
+      autoUr: `/${this.item.fkobj.serviceId}/p/cs/fuzzyquerybyak`,
+      tableUrl: `/${this.item.fkobj.serviceId}/p/cs/QueryList`
+    });
+  }
+
+  propsParams(props) { // 处理props中的AutoRequest,TableRequest
+    props.AutoRequest.default = () => ({
+      colid: this.item.colid,
+      fixedcolumns: {}
+    });
+
+    props.TableRequest.default = () => ({
+      isdroplistsearch: true,
+      refcolid: this.item.colid,
+    });
+  }
+
+  // 合并data
+  mergeDatas() {
+    const data = { ...this.BusDropDown.data() };
+    // 处理前端配置的默认分页数
+    data.pageSize = defaultrange() ? defaultrange() : data.pageSize;
+    this.BusDropDown.data = () => data;
+  }
+
+  // 合并methods
+  mergeMethods() {
+    this.BusDropDown.methods.postTableData = function postTableData(url) {
+      return new Promise((resolve) => {
+        this.post(url, urlSearchParams({
+          searchdata: this.searchdata
+        }), (response) => {
+          resolve(response);
+        });
+      });
     };
-    let self = this;
-    let test = { ... this.BusDropDown.data()};
-    test.pageSize = this.item.coldesc;
-    this.BusDropDown.data=()=>{
-        return test
-    }
-    ((item)=>{
-      this.BusDropDown.mounted=function(){
-        console.log(item.coldesc,this);
-      }
-    })(this.item)
-   
-    return {...this.BusDropDown}
   }
 }
 
