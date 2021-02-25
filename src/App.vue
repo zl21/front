@@ -1,5 +1,6 @@
 <template>
   <div style="height: 100%; width: 100%">
+    <BusDropDown :props-data="{coldesc:'121212'}" />
     <RouterView />
   </div>
 </template>
@@ -10,7 +11,9 @@
   import network from './__utils__/network';
   import { enableInitializationRequest, cbs, dateStorageTime } from './constants/global';
   import DispatchEvent from './__utils__/dispatchEvent';
-  
+import BusDropDown from 'arkui_BCL/DropDownSelectFilter';
+
+
   export default {
     name: 'App',
     mounted() {
@@ -26,6 +29,9 @@
     },
     created() {
       this.getUserInfo();
+    },
+    components:{
+      BusDropDown
     },
     methods: {
       getUserInfo() {

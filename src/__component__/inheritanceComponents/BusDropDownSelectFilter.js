@@ -1,9 +1,10 @@
 /**
- * 外健关联业务组件的自定义逻辑处理
+ * 下拉单选外健关联业务组件的自定义逻辑处理
  */
 import { defaultrange } from '../../constants/global';
 
-const BusDropDownSelectFilter = () => import('arkui_BCL/DropDownSelectFilter');
+// const BusDropDownSelectFilter = () => import('arkui_BCL/DropDownSelectFilter');
+import BusDropDown from 'arkui_BCL/DropDownSelectFilter';
 
 // 处理传参form格式转换
 const urlSearchParams = (data) => {
@@ -34,7 +35,6 @@ const deepClone = (arr) => {
   }
   return obj;
 };
-
 // 重构方法
 const methods = {
   postTableData(url) {
@@ -45,32 +45,65 @@ const methods = {
         resolve(response);
       });
     });
-  }
+  },
+  
 };
 
 // 重构初始化数据
-const defaultData = (data) => {
-  const json = deepClone(data);
-  json.pageSize = defaultrange() ? defaultrange() : json.pageSize;
+const defaultData = (data,item) => {
+  const json = deepClone(data,item);
+  json.pageSize = item;
   return () => deepClone(json);
 };
 
-BusDropDownSelectFilter().then((data) => {
-  data.default.data = defaultData(data.default.data());
-  Object.assign(data.default.methods, methods);
-  return data;
-});
+// BusDropDownSelectFilter().then((data) => {
+//   data.default.data = defaultData(data.default.data());
+//   Object.assign(data.default.methods, methods);
+//   return data;
+// });
 
+// const handler = {
+//    get:(obj,key)=>{
+//      if(key === 'methods'){
+//         console.log(key,'1111');
+//         return {
+//           'on-input-value-change':function(){
+//             console.log(this.pageSize,'rrrr33')
+//           }
+//         }
+//      }
+//       return obj[key]
+//    }
+// }
+ let BusDropDownSelectFilter = deepClone(BusDropDown);
+// let BusDropDownSelectFilter = new Proxy(BusDropDown,handler);
 
 class DropDownSelectFilter {
   constructor(item) {
     this.item = item;
+    this.BusDropDown = BusDropDownSelectFilter;
   }
 
-  init() {
-    return BusDropDownSelectFilter;
+  init(item) {
+    this.BusDropDown.methods = {
+      'on-input-value-change':function(){
+        console.log(this.pageSize,'rrrr33')
+      }
+    };
+    let self = this;
+    let test = { ... this.BusDropDown.data()};
+    test.pageSize = this.item.coldesc;
+    this.BusDropDown.data=()=>{
+        return test
+    }
+    ((item)=>{
+      this.BusDropDown.mounted=function(){
+        console.log(item.coldesc,this);
+      }
+    })(this.item)
+   
+    return {...this.BusDropDown}
   }
 }
-
 
 export default DropDownSelectFilter;
