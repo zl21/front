@@ -127,4 +127,10 @@ export const formItemConfig = () => (window.ProjectConfig && window.ProjectConfi
 
 export const isFilterTable = () => (window.ProjectConfig && window.ProjectConfig.isFilterTable ? window.ProjectConfig.isFilterTable : project.isFilterTable);
 export const listDefaultColumn = () => (window.ProjectConfig && window.ProjectConfig.listDefaultColumn ? window.ProjectConfig.listDefaultColumn : 4); // 配置列表查询条件一行几列展示
+
+export const getProjectQuietRoutes = () => {
+  const { quietRoutes } = window.ProjectConfig || {};
+  return (defaultQuietRoutes.concat(quietRoutes || [])) || [];
+};
+
 export const defaultrange = () => (window.ProjectConfig && window.ProjectConfig.defaultrange ? window.ProjectConfig.defaultrange : null); // 配置外健查询下拉每页展示多少条数据
