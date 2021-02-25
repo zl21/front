@@ -4,37 +4,40 @@
  * Input 组件自定义
  * 
 */
+
 import Vue from 'vue';
 import { Input } from 'ark-ui';
 import dataProp from '../../__config__/props.config';
 import regExp from '../../constants/regExp';
 
-console.log(Input);
 
-// 深拷贝
-const deepClone = (arr) => {  
-  const obj = arr.constructor == Array ? [] : {};
-  // 第二种方法 var obj=arr instanceof Array?[]:{}
-  // 第三种方法 var obj=Array.isArray(arr)?[]:{}
-  for (const item in arr) {
-    if (typeof arr[item] === 'object') {
-      obj[item] = deepClone(arr[item]);
-    } else {
-      obj[item] = arr[item];
-    }
+function deepClone(source) {
+  if (!source && typeof source !== 'object') {
+    throw new Error('error arguments', 'deepClone');
   }
-  return obj;
-};
+  const targetObj = source.constructor === Array ? [] : {};
+  Object.keys(source).forEach((keys) => {
+    if (source[keys] && typeof source[keys] === 'object') {
+      targetObj[keys] = deepClone(source[keys]);
+    } else {
+      targetObj[keys] = source[keys];
+    }
+  });
+  return targetObj;
+}
+
+const defaultProps = Input.props;
 
 
 class CustomInput {
   constructor(item) {
     this.item = JSON.parse(JSON.stringify(item));
+    // Input.props = deepClone(defaultProps);
     this.Input = Input;
   }
 
   init() {
-    this.Input.props = this.mergeProps(this.Input);
+    this.mergeProps(this.Input);
     return this.Input;
   }
 
@@ -42,22 +45,29 @@ class CustomInput {
   mergeProps() {
     this.settingPlaceholder();
     if (this.item.type === 'NUMBER') {
-      // this.numericTypes();
+      this.numericTypes();
     }
     if (this.item.isuppercase) {
       this.uppercase();
     }
-    
+
+    // this.item.props = Object.assign(defaultProps, this.item.props);
     
     Object.keys(this.item.props).map((item) => {
+      // console.log(item, this.item.props.regx, this.item.props[item], this.Input.props[item]);
       if (this.Input.props[item]) {
         if (this.Input.props[item].hasOwnProperty('default')) {
-          this.Input.props[item].default = this.item.props[item];
+          // console.log(item, this.Input.props.regx, this.item.props[item]);
+          this.Input.props.regx.default = () => new RegExp();
+          this.Input.props[item].default = () => this.item.props[item];
         } else {
-          this.Input.props[item].default = this.item.props[item];
+          this.Input.props.regx.default = () => new RegExp();
+          this.Input.props[item].default = () => this.item.props[item];
+          this.Input.props[item].type = [Object, String, Array, RegExp];
         }
       }
       // this.Input.props = JSON.parse(JSON.stringify(this.Input.props));
+      
       return item;
     });
     return this.Input.props;
@@ -95,7 +105,7 @@ class CustomInput {
 
   uppercase() { // 大写转换
     if (this.item.isuppercase) {
-      this.item.props.regx = /^[A-Z0-9\u4e00-\u9fa5]+$/;
+      this.item.props.regx = /^[A-Z0-9\u4e00-\u9fa5]*$/;
     }
   }
 }
