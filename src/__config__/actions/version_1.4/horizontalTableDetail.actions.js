@@ -169,9 +169,15 @@ export default {
   // 按钮
   performMainTableSaveAction({ commit }, { parame, resolve, reject }) { // 主表保存
     const {
-      tabrelation, itemObjId, tableName, objId, path, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup, sataType, temporaryStoragePath, jflowPath
+      tabrelation, itemObjId, tableName, objId, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup, sataType, temporaryStoragePath, jflowPath
     } = parame;
     const sataTypeName = sataType ? sataType.sataType : '';
+    let { path } = parame;
+
+    // 处理存储过程逻辑，配置的path中带有sp|时则走框架的标准逻辑，不走定制path
+    if (path && path.includes('sp|')) {
+      path = null;
+    }
     let parames = {};
     if (type === 'add') { // 新增保存参数
       const { add } = parame;

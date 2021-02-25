@@ -36,6 +36,8 @@
         @closeActionDialog="closeActionDialog"
         @clearSelectIdArray="clearSelectIdArray"
         @setValue="setValue"
+        @ok="componentClickOk"
+        @cancel="close"
       />
       <!-- @setValue:用来接收弹窗emit值 -->
       <!-- @clearSelectIdArray:清除勾选ID -->
@@ -202,6 +204,15 @@
       },
       open() {
         this.showModal = true;
+      },
+      close() {
+        this.showModal = false;
+      },
+      componentClickOk() {
+        if (typeof this.confirm === 'function') {
+          this.confirm();
+          this.close();
+        }
       },
       // 确定
       onOk() {

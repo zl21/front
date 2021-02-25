@@ -9,7 +9,7 @@ module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
   projectIconPath: path.join(__dirname, './favicon.ico'), // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
-  target: 'http://r3-8098.dev.syman.cn/', // 框架研发网关开启环境
+  // target: 'http://r3-8098.dev.syman.cn/', // 框架研发网关开启环境
   // target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 新版本jflow测试环境
   // target: 'http://r3dev.qiaodan.com:28888', // 乔丹开发环境
   // target: 'http://r3dev.qiaodan.com:26666', // 乔丹开发环境
@@ -41,6 +41,7 @@ module.exports = {
   // target: 'http://101.133.142.45:27777/', // 乔丹
   // target: 'http://r3.ecsemir.com/', // 森马
   // target: ' http://47.103.6.45:27777/', // 森马
+  target: 'http://lark.shoptao.cn:8000/', // 云雀
  
   
   Version: '1.4', // 版本号
@@ -89,13 +90,54 @@ module.exports = {
   enableKAQueryDataForUser: false, // 是否开启存储全表查询条件
   dateStorageTime: 1, // 查询条件存储时间，默认1天,建议不要设置太大影响性能
   blockFullOperation: false, // 禁止不选数据时的批量修改操作,
-  customizeMixins: { // 获取所有外部接入的mixins对象
-    setPanel: null,
-    verticalTableDetailCustomize: null,
-    standardTableListsCustomize: null,
-    horizontalTableDetailCustomize: null,
-    taskList: null
-  },
+  // customizeMixins: { // 获取所有外部接入的mixins对象
+  //   setPanel: null,
+  //   verticalTableDetailCustomize: null,
+  //   standardTableListsCustomize: {
+  //     methods: {
+  //       R3_openedApi_export(event) {
+  //         console.log('混入啦2----------');
+  //         this.$R3Dialog({
+  //           dialogComponentName: 'exportValidate',
+  //           title: '导出校验',
+  //           footerHide: true
+  //         }, () => {
+  //           this.batchExport(event);
+  //         });
+  //       },
+  //     }
+  //   },
+  //   horizontalTableDetailCustomize: null,
+  //   taskList: null,
+  //   singleObjectButtonsMixin: {
+  //     methods: {
+  //       R3_openedApi_export() {
+  //         console.log('混入啦3----------');
+  //         this.$R3Dialog({
+  //           dialogComponentName: 'exportValidate',
+  //           title: '导出校验',
+  //           footerHide: true
+  //         }, () => {
+  //           this.objectEXPORT();
+  //         });
+  //       }
+  //     }
+  //   },
+  //   tableDetailCollectionMixin: {
+  //     methods: {
+  //       R3_openedApi_export() {
+  //         console.log('混入啦1----------');
+  //         this.$R3Dialog({
+  //           dialogComponentName: 'exportValidate',
+  //           title: '导出校验',
+  //           footerHide: true
+  //         }, () => {
+  //           this.objectEXPORT();
+  //         });
+  //       }
+  //     }
+  //   }
+  // },
   ossRealtimeSave: false,
   notificationOfMain: false, // 是否开启主表数据修改通知
   filterUrlForNetwork: {// 过滤不需要用框架报错提示信息的接口请求

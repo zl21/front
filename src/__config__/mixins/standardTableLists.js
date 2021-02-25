@@ -86,7 +86,9 @@ export default () => ({
         'updataIsBig',
         'updateSearchDBdata',
         'updateTabParam',
-        'resetTabParam'
+        'resetTabParam',
+        'filterButtonsForDisable',
+        'resetButtonsStatus'
         
       ]),
   },
