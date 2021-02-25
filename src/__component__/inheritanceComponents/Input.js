@@ -26,15 +26,26 @@ const deepClone = (arr) => {
 // const nativeInput = deepClone(Input);
 class CustomInput {
   constructor(item) {
-    this.item = { ...item };
-    this.Input = deepClone(Input);
+    this.item = item; 
+    if (this.item.Components) {
+      this.Input = this.item.Components;
+    } else {
+      this.Input = deepClone(Input);
+    }
+    // this.Input = deepClone(Input);
     delete this.Input._Ctor;
   }
 
   init() {
     this.mergeProps();
     this.mergeMethods();
-    return { ...this.Input };
+    if (this.item.Components) {
+      return this.item.Components;
+    }
+    
+    const obj = { ...this.Input };
+    this.item.Components = obj;
+    return obj;
   }
 
   // 合并props
@@ -58,16 +69,24 @@ class CustomInput {
       return item;
     });
     this.Input.props = defaultProps;
-    // this.Input._Ctor[0].options = defaultProps;
   }
 
   // 合并methods
   mergeMethods() {
-    if (this.item.coldesc === '编码') {
-      this.Input.methods.handleInput = function () {
-        console.log(123);
-      };
-    }
+    console.log(this.Input.methods);
+    this.Input.methods.handleEnter = function () {
+      this.$_live_getChildComponent(window.vm, 'S.TEST.23729').searchClickData();
+      // this.$parent.$parent.$parent.searchClickData();
+    };
+    // if (this.item.coldesc === '编码') {
+    //   // const handleInput = this.Input.methods.handleInput;
+    //   this.Input.methods.handleInput = function (event) {
+    //     // const a = handleInput.bind(this);
+    //     // a(event);
+    //     this.$_live_getChildComponent(window.vm, 'TESTNAME').items.props.disabled = !!event.target.value;
+    //     this.$_live_getChildComponent(window.vm, 'TESTNAME').$forceUpdate();
+    //   };
+    // }
   }
 
   settingPlaceholder() { // 设置Placeholder属性

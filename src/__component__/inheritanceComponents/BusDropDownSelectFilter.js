@@ -37,29 +37,7 @@ const deepClone = (arr) => {
 };
 
 
-// BusDropDownSelectFilter().then((data) => {
-//   data.default.data = defaultData(data.default.data());
-//   Object.assign(data.default.methods, methods);
-//   return data;
-// });
-
-// const handler = {
-//    get:(obj,key)=>{
-//      if(key === 'methods'){
-//         console.log(key,'1111');
-//         return {
-//           'on-input-value-change':function(){
-//             console.log(this.pageSize,'rrrr33')
-//           }
-//         }
-//      }
-//       return obj[key]
-//    }
-// }
-// const BusDropDownSelectFilter = deepClone(BusDropDown);
-// let BusDropDownSelectFilter = new Proxy(BusDropDown,handler);
-
-class DropDownSelectFilter {
+class BusDropDownSelectFilter {
   constructor(item) {
     this.item = item;
     // const BusDropDownSelectFilter = require('arkui_BCL/DropDownSelectFilter').default;
@@ -83,7 +61,6 @@ class DropDownSelectFilter {
   // 合并props
   mergeProps() {
     const propsData = { ...this.BusDropDown.props };
-    console.log(this.item);
     // 处理Url
     this.propsUrl(propsData);
     // 处理传参
@@ -132,4 +109,4 @@ class DropDownSelectFilter {
   }
 }
 
-export default DropDownSelectFilter;
+export default BusDropDownSelectFilter;
