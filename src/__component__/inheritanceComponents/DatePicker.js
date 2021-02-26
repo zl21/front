@@ -47,12 +47,13 @@ class CustomDatePicker {
     } else {
       this.DatePicker = deepClone(DatePicker);
     }
+    
     delete this.DatePicker._Ctor;
   }
 
   init() {
     this.mergeProps();
-    // this.mergeMethods();
+    this.mergeMethods();
     if (this.item.Components) {
       return this.item.Components;
     }
@@ -65,12 +66,46 @@ class CustomDatePicker {
   // 合并props
   mergeProps() {
     const defaultProps = { ...this.DatePicker.props };
-    const transfer = {
+
+    defaultProps.type={
+      default: () => {
+        switch(this.item.display){
+          case 'OBJ_DATE':
+            return 'datetimerange';
+            break;
+          case 'OBJ_DATENUMBER':
+            return 'daterange';
+            break;
+          default:
+            return 'date';
+            break;
+        }
+      }
+    }
+    defaultProps.transfer = {
       default: () => true
     };
-    defaultProps.transfer = transfer;
 
-    this.DatePicker.props = defaultProps;
+    defaultProps.placeholder = {
+      default: () => `请选择${this.item.coldesc}`
+    }
+
+    this.DatePicker.props  = defaultProps;
+    // this.DatePicker._Ctor[0].options.props  = Object.assign(this.DatePicker._Ctor[0].options.props,defaultProps);
+    // this.DatePicker._Ctor[0].options.mixins.props  = Object.assign(this.DatePicker._Ctor[0].options.props,defaultProps);
+  }
+
+  mergeMethods(){
+
+    this.DatePicker.methods = {
+      handleClose:function(event) {
+        console.log(event)
+        // const pickerPanel = this.$refs.pickerPanel && this.$refs.pickerPanel.$el;
+        // console.log(event,pickerPanel.contains(event.target))
+        // this.handleClose(event)
+        
+      }
+    }
   }
 }
 

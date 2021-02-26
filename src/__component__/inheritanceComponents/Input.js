@@ -73,7 +73,6 @@ class CustomInput {
 
   // 合并methods
   mergeMethods() {
-    console.log(this.Input.methods);
     this.Input.methods.handleEnter = function () {
       this.$_live_getChildComponent(window.vm, 'S.TEST.23729').searchClickData();
       // this.$parent.$parent.$parent.searchClickData();

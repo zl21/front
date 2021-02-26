@@ -48,8 +48,7 @@ class BusDropDownSelectFilter {
   init() {
     this.mergeProps();
     this.mergeDatas();
-    this.mergeDatas();
-    
+    this.mergeMethods();
     // ((item) => {
     //   this.BusDropDown.mounted = function () {
     //     console.log(item.coldesc, this);
@@ -89,15 +88,15 @@ class BusDropDownSelectFilter {
 
   // 合并data
   mergeDatas() {
-    const data = { ...this.BusDropDown.data() };
+    const data = { ...this.BusDropDown.mixins[0].data() };
     // 处理前端配置的默认分页数
     data.pageSize = defaultrange() ? defaultrange() : data.pageSize;
-    this.BusDropDown.data = () => data;
+    this.BusDropDown.mixins[0].data = () => data;
   }
 
   // 合并methods
   mergeMethods() {
-    this.BusDropDown.methods.postTableData = function postTableData(url) {
+    this.BusDropDown.mixins[0].methods.postTableData = function postTableData(url) {
       return new Promise((resolve) => {
         this.post(url, urlSearchParams({
           searchdata: this.searchdata
