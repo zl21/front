@@ -648,19 +648,46 @@
       }, // ag表格行双击回调
       onSortChange(sortArr) {
         const { tableName } = this[INSTANCE_ROUTE_QUERY];
-        this.searchData.orderby = sortArr.map((d) => {
+        const transferFormat_param = {
+          sortArr,
+          tableName
+        };
+        const obj = {
+          orderbyData: this.transferFormat(transferFormat_param),
+          searchData: this.searchData
+        };
+        this.orderby(obj); 
+        this.getQueryList();
+      },
+      transferFormat(obj) {
+        return obj.sortArr.map((d) => {
           if (d.sort === 'normal') {
             return {
-              column: `${tableName}.${d.colId || 'COMUMN_NOT_EXIST'}`,
+              column: `${obj.tableName}.${d.colId || 'COMUMN_NOT_EXIST'}`,
               // asc: d.sort === 'asc'
             };
           }
           return {
-            column: `${tableName}.${d.colId || 'COMUMN_NOT_EXIST'}`,
+            column: `${obj.tableName}.${d.colId || 'COMUMN_NOT_EXIST'}`,
             asc: d.sort === 'asc'
           };
         });
-        this.getQueryList();
+      },
+      orderby(obj) {
+        if (obj.searchData.orderby) {
+          const filterSort = this.searchData.orderby.filter(d => d.column === obj.orderbyData[0].column && d.asc !== obj.orderbyData[0].asc);
+          if (filterSort.length > 0) {
+            this.searchData.orderby.map((d) => {
+              if (d.column === obj.orderbyData[0].column && d.asc !== obj.orderbyData[0].asc) {
+                d.asc = obj.orderbyData[0].asc;
+              } 
+            });
+          } else {
+            this.searchData.orderby = this.searchData.orderby.concat(obj.orderbyData);
+          }
+        } else {
+          this.searchData.orderby = obj.orderbyData;
+        }
       },
       onColumnMoved(cols) {
         const { tableId } = this[INSTANCE_ROUTE_QUERY];
