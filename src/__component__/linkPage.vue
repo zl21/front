@@ -26,8 +26,8 @@
     },
    
     activated() {
-      const { linkModuleId } = this.$route.params;
-      this.$store.dispatch('global/updateAccessHistory', { type: 'action', id: linkModuleId });
+      // const { linkModuleId } = this.$route.params;
+      // this.$store.dispatch('global/updateAccessHistory', { type: 'action', id: linkModuleId });
     }
   };
 </script>

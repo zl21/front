@@ -4101,6 +4101,7 @@
         }
         return this.verifyTipObj;
       }, // 表格里的表单验证 true为校验通过，false为校验不通过
+
       tableSortChange(value) {
         const tableName = this.tableName;
         let flag = this.currentOrderList.some((ele) => {
@@ -4118,10 +4119,10 @@
           //   column: `${tableName}.${value.key}`,
           //   asc: value.order === 'asc'
           // });
-          this.currentOrderList = [{
+          this.currentOrderList = this.currentOrderList.concat([{
             column: `${tableName}.${value.key}`,
             asc: value.order === 'asc'
-          }];
+          }]);
         }
         const fixedcolumns = {};
         if (this.searchCondition) {
