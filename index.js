@@ -177,12 +177,12 @@ const init = () => {
 
   window.getObjdisType = getObjdisType;
 
-  const param = {
-    url: '/CUSTOMIZED/FUNCTIONPERMISSION/2096',
-    type: 'C',
-    label: '基础档案',
-  };
-  store.commit('global/tabOpen', param);
+  // const param = {
+  //   url: '/CUSTOMIZED/FUNCTIONPERMISSION/2096',
+  //   type: 'C',
+  //   label: '基础档案',
+  // };
+  // store.commit('global/tabOpen', param);
 };
 const getCategory = () => {
   if (enableInitializationRequest()) {
