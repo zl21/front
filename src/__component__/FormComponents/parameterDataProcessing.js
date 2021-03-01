@@ -89,12 +89,21 @@ export default class ParameterDataProcessing {
     }
 
     if (this.item.display === 'OBJ_FK') {
+      if (['mrp', 'drp'].includes(this.item.fkobj.fkdisplay)) {
+        return [{
+          ID: this.item.refobjid,
+          Label: this.item.default
+        }];
+      }
       return '';
     }
 
-    if (this.item.default && this.item.display === 'OBJ_DATE') {
-      console.log(this.item);
-      return;
+    // 处理日期控件的默认值问题
+    if (this.item.default && this.item.display === 'OBJ_DATE' && this.item.default && this.item.default !== '-1') {
+      const dateArray = [];
+      dateArray[0] = new Date().r3Format(new Date().minusDays(Number(this.item.default)), 'yyyy-MM-dd 00:00:00');
+      dateArray[1] = new Date().r3Format(new Date(), 'yyyy-MM-dd 23:59:59');
+      return dateArray;
     }
 
     return this.item.default;

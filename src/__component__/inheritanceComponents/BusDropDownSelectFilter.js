@@ -44,7 +44,6 @@ class BusDropDownSelectFilter {
     // const BusDropDownSelectFilter = require('arkui_BCL/DropDownSelectFilter').default;
     const BusDropDown = Vue.extend(DropDownSelectFilter);
     this.BusDropDown = new BusDropDown().$options;
-    console.log(this.BusDropDown,);
     delete this.BusDropDown._Ctor;
   }
 

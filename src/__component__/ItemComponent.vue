@@ -205,13 +205,6 @@
           @on-popper-hide="fkrPopperHide"
           @on-clear="fkrpSelectedClear"
         />
-        <BusDropDownSelectFilter
-          v-if="_items.props.fk_type === 'BusDropDownSelectFilter'"
-          v-model="_items.value"
-          :url="_items.props.url"
-          :table-request="_items.props.tableRequest"
-          :auto-request="_items.props.autoRequest"
-        />
         <DropMultiSelectFilter
           v-if="_items.props.fk_type === 'mrp'"
           :ref="_items.field"

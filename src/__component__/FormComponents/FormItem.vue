@@ -400,6 +400,7 @@
   import CustomInput from '../inheritanceComponents/Input';
   import CustomDatePicker from '../inheritanceComponents/DatePicker';
   import CustomSelect from '../inheritanceComponents/Select';
+  import CustomAttachFilter from '../inheritanceComponents/AttachFilter';
   import ParameterDataProcessing from './parameterDataProcessing';
 
   import {
@@ -565,6 +566,9 @@
           }
           if (this._items.fkobj.fkdisplay === 'mrp') {
             Components = new CustomDropMultiSelectFilter(this._items).init();
+          }
+          if (this._items.fkobj.fkdisplay === 'pop') {
+            Components = new CustomAttachFilter(this._items).init();
           }
           break;
         case 'OBJ_DATE':
