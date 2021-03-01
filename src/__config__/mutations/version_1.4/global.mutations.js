@@ -430,10 +430,14 @@ export default {
           d.isActive = true;
           state.activeTab = d;
         } else if ((keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
-          d.keepAliveModuleName = keepAliveModuleName;
-          d.routeFullPath = routeFullPath;
-          d.routePrefix = routePrefix;
-          d.isActive = true;
+          const obj = {
+            keepAliveModuleName,
+            routeFullPath,
+            routePrefix,
+            isActive: true
+          };
+          d = Object.assign(d, obj);
+          state.activeTab = Object.assign(state.activeTab, obj);
         }
       } else if (d.keepAliveModuleName === keepAliveModuleName) {
         d.isActive = true;

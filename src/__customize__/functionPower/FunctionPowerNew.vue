@@ -10,7 +10,7 @@
       >
         {{ item.webdesc }}
       </Button>
-      <!-- <Button
+      <Button
         type="fcdefault"
         class="Button"
         @click="customize"
@@ -23,7 +23,7 @@
         @click="customize1"
       >
         测试跳转到单对象界面1
-      </Button> -->
+      </Button>
     </div>
     <div class="content">
       <div class="contentLeft">
