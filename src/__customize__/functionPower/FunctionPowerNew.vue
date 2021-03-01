@@ -10,7 +10,7 @@
       >
         {{ item.webdesc }}
       </Button>
-      <!-- <Button
+      <Button
         type="fcdefault"
         class="Button"
         @click="customize"
@@ -23,7 +23,7 @@
         @click="customize1"
       >
         测试跳转到单对象界面1
-      </Button> -->
+      </Button>
     </div>
     <div class="content">
       <div class="contentLeft">
@@ -32,7 +32,7 @@
           clearable
           icon="ios-search"
           @on-change="searchInputChange"
-        />
+           >
         <span slot="prepend">检索</span>
         </Input>
         <div class="menuContainer">
@@ -1006,17 +1006,17 @@
         }
       }, // 点击按钮触发
       customize() {
-        // const { fullPath } = this.$route;// 获取当前路由fullPath
-        // const { keepAliveModuleName, tableName } = this.$store.state.global.activeTab;// 获取当前缓存模块名称，自定义标识
-        // const params = {
-        //   routeFullPath: fullPath, // 当前路由fullPath
-        //   keepAliveModuleName, // 当前模块名称
-        //   tableName, // 当前自定义表标识
-        //   event: () => {
-        //     alert(177);
-        //   }
-        // };
-        // store.commit('global/tabCloseAppoint', params);
+        const { fullPath } = this.$route;// 获取当前路由fullPath
+        const { keepAliveModuleName, tableName } = this.$store.state.global.activeTab;// 获取当前缓存模块名称，自定义标识
+        const params = {
+          routeFullPath: fullPath, // 当前路由fullPath
+          keepAliveModuleName, // 当前模块名称
+          tableName, // 当前自定义表标识
+          event: () => {
+            // alert(177);
+          }
+        };
+        store.commit('global/tabCloseAppoint', params);
     
         // return;
         const param = {

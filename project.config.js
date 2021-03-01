@@ -2,8 +2,8 @@
 // 此分支用于开发表格过滤功能
 // 需求为：根据配置条件进行表格过滤，以tab的展现形式
 
-const path = require('path');
 
+const path = require('path');
 
 module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
@@ -42,11 +42,9 @@ module.exports = {
   // target: 'http://r3.ecsemir.com/', // 森马
   // target: ' http://47.103.6.45:27777/', // 森马
   target: 'http://lark.shoptao.cn:8000/', // 云雀
- 
-  
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
-  enableGateWay: true, // 网关是否打开,
+  enableGateWay: false, // 网关是否打开,
   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用接口请求
   enableHistoryAndFavoriteUI: true, // 是否显示收藏与最近使用UI
   ignoreGateWayPattern: [/\/jflow\/*/g, /\/api\/*/g], // 框架默认禁用的网关逻辑的正则模式匹配
@@ -159,4 +157,8 @@ module.exports = {
   //   return true;
   // }
   isFilterTable: true, // 是否开启表格过滤功能
+  // DashboardRoute: {
+  //   component: FunctionPowerNew,
+  //   labelName: '功能权限',
+  // }
 };
