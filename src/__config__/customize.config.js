@@ -19,7 +19,7 @@ import customizeReport from '../__component__/CustomizeReport.vue';
 
 export default {
   // 列表配置双击跳转定制界面，需在文档里维护对应的labelName属性
-  functionPermission: {
+  ORDERMANAGEMENTEDITOR: {
     component: functionPermission,
     labelName: '功能权限',
     label: 'functionPermission'

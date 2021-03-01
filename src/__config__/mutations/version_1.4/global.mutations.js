@@ -412,7 +412,10 @@ export default {
     label,
     keepAliveModuleName,
     type,
-    fullPath
+    fullPath,
+    tableName,
+    routePrefix,
+    routeFullPath
   }) {
     state.openedMenuLists.forEach((d) => {
       d.isActive = false;
@@ -421,14 +424,18 @@ export default {
         // const index = keepAliveModuleName.lastIndexOf('.');  
         keepAliveModuleNameRes = keepAliveModuleName.split('.')[1];
       } 
-      // d.label === label &&
       // 去除对label的限制，自定义配置，自定义标识相同，label不同，也可认为是同一个自定义界面
       if (enableActivateSameCustomizePage()) {
-        if (d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
+        if (d.keepAliveModuleName === keepAliveModuleName) {
+          d.isActive = true;
+          state.activeTab = d;
+        } else if ((keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
+          d.keepAliveModuleName = keepAliveModuleName;
+          d.routeFullPath = routeFullPath;
+          d.routePrefix = routePrefix;
           d.isActive = true;
         }
       } else if (d.keepAliveModuleName === keepAliveModuleName) {
-        // d.label === label &&
         d.isActive = true;
         d.routeFullPath = fullPath;
         state.activeTab = d;
@@ -947,5 +954,12 @@ export default {
   },
   updatePreviewPicture(state, data) {
     state.previewPictureInstance = data;
-  }
+  },
+  // replaceMenuLocation(state, data) {
+  //   // index:需替换的索引
+  //   // currentMenuData
+  //   console.log(2, state.openedMenuLists);
+  //   state.openedMenuLists.splice(data.index, 1, data.currentMenuData); 
+  //   console.log(3, state.openedMenuLists);
+  // }
 };
