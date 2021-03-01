@@ -94,7 +94,24 @@
         :is="inheritanceComponents(_items)"
         :ref="_items.field"
         v-model="value"
-      />
+      >
+        <slot></slot>
+      </component>
+
+      <template
+        name="options"
+      >
+        <Option
+          key="1"
+          value="1"
+        >
+          123
+        </Option>
+      </template>
+      <!-- <component
+        :is="_items.template"
+        name="options"
+      /> -->
 
       <!-- <Checkbox
         v-if="_items.type === 'checkbox'"
@@ -351,6 +368,7 @@
         :is="_items.componentName"
         v-if="_items.type === 'customization'"
         :ref="_items.field"
+        v-model="value"
         :options="{
           ..._items,
           webConfSingle,
@@ -443,7 +461,6 @@
       return {
         filterDate: {},
         resultData: {}, // 结果传值
-
         value: null
       };
     },

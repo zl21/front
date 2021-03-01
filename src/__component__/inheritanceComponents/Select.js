@@ -1,6 +1,7 @@
 /**
  * select组件的自定义逻辑处理
  */
+import Vue from 'vue';
 import { Select } from 'ark-ui';
 import dataProp from '../../__config__/props.config';
 import regExp from '../../constants/regExp';
@@ -22,18 +23,18 @@ const deepClone = (arr) => {
 class CustomSelect {
   constructor(item) {
     this.item = item; 
-    // if (this.item.Components) {
-    //   this.Input = this.item.Components;
-    // } else {
-    //   this.Input = deepClone(Input);
-    // }
-    this.Input = deepClone(Select);
+    console.log(item);
+    const DefaultSelect = Vue.extend(Select);
+    this.Input = new DefaultSelect().$options;
     delete this.Input._Ctor;
   }
 
   init() {
     this.mergeProps();
     this.mergeMethods();
+    this.item.template = {
+      template: '<Option  value="1" key="1">123</Option>'
+    };
     if (this.item.Components) {
       return this.item.Components;
     }
@@ -47,6 +48,7 @@ class CustomSelect {
   mergeProps() {
     const defaultProps = { ...this.Input.props };
     this.settingPlaceholder();
+    this.settingOptions();
     
     defaultProps.transfer = {
       default: () => true
@@ -75,6 +77,12 @@ class CustomSelect {
   settingPlaceholder() { // 设置Placeholder属性
     const placeholder = this.item.webconf && this.item.webconf.placeholder ? this.item.webconf.placeholder : null;
     this.item.props.placeholder = placeholder || `${(dataProp.input && dataProp.input.props) ? dataProp.input.props.placeholder : '请输入'}${this.item.coldesc}`;
+  }
+   
+  settingOptions() {
+    if (this.item.combobox) {
+      // this.item.props.
+    }
   }
 }
 

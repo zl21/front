@@ -32,7 +32,8 @@ class CustomInput {
     // } else {
     //   this.Input = deepClone(Input);
     // }
-    this.Input = deepClone(Input);
+    const DefaultInput = Vue.extend(Input);
+    this.Input = new DefaultInput().$options;
     delete this.Input._Ctor;
   }
 
@@ -43,7 +44,8 @@ class CustomInput {
       return this.item.Components;
     }
     
-    const obj = { ...this.Input };
+    const Con = Vue.extend(this.Input);
+    const obj = { ...new Con().$options };
     this.item.Components = obj;
     return obj;
   }
