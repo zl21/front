@@ -92,7 +92,8 @@
 
       <component
         :is="inheritanceComponents(_items)"
-        :ref="_items.field"
+         v-model="value"
+         :ref="_items.field"
       />
 
       <!-- <Checkbox
@@ -349,6 +350,7 @@
       <component
         :is="_items.componentName"
         v-if="_items.type === 'customization'"
+        v-model="value"
         :ref="_items.field"
         :options="{
           ..._items,
@@ -441,7 +443,6 @@
       return {
         filterDate: {},
         resultData: {}, // 结果传值
-
         value: null
       };
     },

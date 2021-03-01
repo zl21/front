@@ -42,23 +42,27 @@ const deepClone = (target) => {
 class CustomDatePicker {
   constructor(item) {
     this.item = item;
-    if (this.item.Components) {
-      this.DatePicker = this.item.Components;
-    } else {
-      this.DatePicker = deepClone(DatePicker);
-    }
+    let DateInput = Vue.extend(DatePicker);
+    this.DatePicker = new DateInput().$options;
     delete this.DatePicker._Ctor;
   }
 
   init() {
     this.mergeProps();
     // this.mergeMethods();
+    // if (this.item.Components) {
+    //   return this.item.Components;
+    // }
+   
+    // console.log(new Con().$options,'1212');
     if (this.item.Components) {
       return this.item.Components;
     }
+    let Con = Vue.extend(this.DatePicker);
     
-    const obj = { ...this.DatePicker };
-    this.item.Components = obj;
+     const obj = { ...new Con().$options };
+     this.item.Components = obj;
+    //this.item.Components = obj;
     return obj;
   }
 
@@ -68,8 +72,11 @@ class CustomDatePicker {
     const transfer = {
       default: () => true
     };
+    const placeholder = {
+        default: () => '测试'
+      };
     defaultProps.transfer = transfer;
-
+    defaultProps.placeholder = placeholder;
     this.DatePicker.props = defaultProps;
   }
 }
