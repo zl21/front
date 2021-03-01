@@ -1,7 +1,8 @@
 /**
  * 下拉单选外健关联业务组件的自定义逻辑处理
  */
-import BusDropDown from 'arkui_BCL/DropDownSelectFilter';
+import DropDownSelectFilter from 'arkui_BCL/DropDownSelectFilter';
+import Vue from 'vue';
 import { defaultrange } from '../../constants/global';
 
 // const BusDropDownSelectFilter = () => import('arkui_BCL/DropDownSelectFilter');
@@ -41,7 +42,9 @@ class BusDropDownSelectFilter {
   constructor(item) {
     this.item = item;
     // const BusDropDownSelectFilter = require('arkui_BCL/DropDownSelectFilter').default;
-    this.BusDropDown = deepClone(BusDropDown);
+    const BusDropDown = Vue.extend(DropDownSelectFilter);
+    this.BusDropDown = new BusDropDown().$options;
+    console.log(this.BusDropDown,);
     delete this.BusDropDown._Ctor;
   }
 
@@ -49,12 +52,15 @@ class BusDropDownSelectFilter {
     this.mergeProps();
     this.mergeDatas();
     this.mergeMethods();
-    // ((item) => {
-    //   this.BusDropDown.mounted = function () {
-    //     console.log(item.coldesc, this);
-    //   };
-    // })(this.item);
-    return { ...this.BusDropDown };
+    if (this.item.Components) {
+      return this.item.Components;
+    }
+    const BusDropDownTer = Vue.extend(this.BusDropDown);
+    
+    const obj = { ...new BusDropDownTer().$options };
+    this.item.Components = obj;
+    // this.item.Components = obj;
+    return obj;
   }
 
   // 合并props
@@ -69,7 +75,7 @@ class BusDropDownSelectFilter {
 
   propsUrl(props) { // 处理props中的url属性
     props.Url.default = () => ({
-      autoUr: `/${this.item.fkobj.serviceId}/p/cs/fuzzyquerybyak`,
+      autoUrl: `/${this.item.fkobj.serviceId}/p/cs/fuzzyquerybyak`,
       tableUrl: `/${this.item.fkobj.serviceId}/p/cs/QueryList`
     });
   }
