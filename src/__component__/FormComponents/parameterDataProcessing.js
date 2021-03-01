@@ -23,6 +23,7 @@ export default class ParameterDataProcessing {
    */
   dataProcessing() { 
     // eslint-disable-next-line func-names
+    // 类型判断
     const Type = (function () {
       const Type = {};
       // eslint-disable-next-line no-cond-assign
@@ -83,12 +84,17 @@ export default class ParameterDataProcessing {
    * @memberof defaultDataProcessing
    */
   defaultDataProcessing() {
-    if (this.item.colname === 'OBJ_SELECT') {
-      return [this.item.default];
+    if (this.item.default && this.item.display === 'OBJ_SELECT') {
+      return this.item.default.split(',');
     }
 
     if (this.item.display === 'OBJ_FK') {
       return '';
+    }
+
+    if (this.item.default && this.item.display === 'OBJ_DATE') {
+      console.log(this.item);
+      return;
     }
 
     return this.item.default;
