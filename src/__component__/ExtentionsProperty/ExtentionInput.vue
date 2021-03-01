@@ -15,8 +15,8 @@
 </template>
 
 <script>
-  import Description from './Description';
-  import LabelWithInput from './LabelWithInput';
+  import Description from './Description.vue';
+  import LabelWithInput from './LabelWithInput.vue';
   
   export default {
     name: 'ExtentionInput',
