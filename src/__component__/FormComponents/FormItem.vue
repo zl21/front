@@ -93,6 +93,7 @@
       <component
         :is="inheritanceComponents(_items)"
         :ref="_items.field"
+        v-model="value"
       />
 
       <!-- <Checkbox
@@ -380,6 +381,7 @@
   import CustomDropMultiSelectFilter from '../inheritanceComponents/DropMultiSelectFilter';
   import CustomInput from '../inheritanceComponents/Input';
   import CustomDatePicker from '../inheritanceComponents/DatePicker';
+  import CustomSelect from '../inheritanceComponents/Select';
 
   import {
     Version, MODULE_COMPONENT_NAME, ossRealtimeSave, defaultrange 
@@ -536,23 +538,26 @@
       inheritanceComponents() {
         let Components = null;
         switch (this._items.display) {
-          case undefined:
-            Components = new CustomInput(this._items).init();
-            break;
-          case 'OBJ_FK':
-            if (this._items.fkobj.fkdisplay === 'drp') {
-              Components = new BusDropDownSelectFilter(this._items).init();
-            }
-            if (this._items.fkobj.fkdisplay === 'mrp') {
-              Components = new CustomDropMultiSelectFilter(this._items).init();
-            }
-            break;
-          case 'OBJ_DATE':
-          case 'OBJ_DATENUMBER':
-            Components = new CustomDatePicker(this._items).init();
-            break;
-          default:
-            break;
+        case undefined:
+          Components = new CustomInput(this._items).init();
+          break;
+        case 'OBJ_FK':
+          if (this._items.fkobj.fkdisplay === 'drp') {
+            Components = new BusDropDownSelectFilter(this._items).init();
+          }
+          if (this._items.fkobj.fkdisplay === 'mrp') {
+            Components = new CustomDropMultiSelectFilter(this._items).init();
+          }
+          break;
+        case 'OBJ_DATE':
+        case 'OBJ_DATENUMBER':
+          Components = new CustomDatePicker(this._items).init();
+          break;
+        case 'OBJ_SELECT':
+          Components = new CustomSelect(this._items).init();
+          break;
+        default:
+          break;
         }
 
         return Components;

@@ -67,9 +67,9 @@ class CustomDatePicker {
   mergeProps() {
     const defaultProps = { ...this.DatePicker.props };
 
-    defaultProps.type={
+    defaultProps.type = {
       default: () => {
-        switch(this.item.display){
+        switch (this.item.display) {
           case 'OBJ_DATE':
             return 'datetimerange';
             break;
@@ -81,31 +81,28 @@ class CustomDatePicker {
             break;
         }
       }
-    }
+    };
     defaultProps.transfer = {
       default: () => true
     };
 
     defaultProps.placeholder = {
       default: () => `请选择${this.item.coldesc}`
-    }
+    };
 
-    this.DatePicker.props  = defaultProps;
+    this.DatePicker.props = defaultProps;
     // this.DatePicker._Ctor[0].options.props  = Object.assign(this.DatePicker._Ctor[0].options.props,defaultProps);
     // this.DatePicker._Ctor[0].options.mixins.props  = Object.assign(this.DatePicker._Ctor[0].options.props,defaultProps);
   }
 
-  mergeMethods(){
+  mergeMethods() {
+    console.log(this.DatePicker.mixins[0]);
+    const test = this.DatePicker.mixins[0].methods.handleClose;
+    this.DatePicker.mixins[0].methods.handleClose = function () {
+      console.log(this);
 
-    this.DatePicker.methods = {
-      handleClose:function(event) {
-        console.log(event)
-        // const pickerPanel = this.$refs.pickerPanel && this.$refs.pickerPanel.$el;
-        // console.log(event,pickerPanel.contains(event.target))
-        // this.handleClose(event)
-        
-      }
-    }
+      test().bind(this);
+    };
   }
 }
 

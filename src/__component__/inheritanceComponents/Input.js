@@ -27,12 +27,12 @@ const deepClone = (arr) => {
 class CustomInput {
   constructor(item) {
     this.item = item; 
-    if (this.item.Components) {
-      this.Input = this.item.Components;
-    } else {
-      this.Input = deepClone(Input);
-    }
-    // this.Input = deepClone(Input);
+    // if (this.item.Components) {
+    //   this.Input = this.item.Components;
+    // } else {
+    //   this.Input = deepClone(Input);
+    // }
+    this.Input = deepClone(Input);
     delete this.Input._Ctor;
   }
 
@@ -58,6 +58,7 @@ class CustomInput {
     if (this.item.isuppercase) {
       this.uppercase();
     }
+    
 
     Object.keys(this.item.props).map((item) => {
       // console.log(item, this.item.props.regx, this.item.props[item], this.Input.props[item]);
