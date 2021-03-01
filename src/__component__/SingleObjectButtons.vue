@@ -3414,7 +3414,14 @@
           this.saveAfter(type, tableName, stop, removeMessage);
 
           const webact = this.getCurrentItemInfo().webact;
-          
+          DispatchEvent('saveResolve', {// 用于子表监听保存成功后执行相对应逻辑
+            detail: {
+              type: 'resolve',
+              mainTableParame: this.currentParameter, // 保存接口主表参数
+              itemTableParame: this.itemCurrentParameter, // 保存接口子表参数
+              res, // 接口返回res
+            }
+          });
           if (this.objectType === 'vertical' && webact) { // 兼容半定制界面，保存成功时通知外部
             DispatchEvent('customizeClick', {
               detail: {
