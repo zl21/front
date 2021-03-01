@@ -95,19 +95,19 @@
         :ref="_items.field"
         v-model="value"
       >
-        <slot></slot>
+        <slot v-if="_items.display === 'OBJ_SELECT'">
+          <Option
+            v-for="item in _items.props.options"
+            :key="item.value"
+            :value="item.value"
+            :disabled="item.disabled"
+          >
+            {{ item.label }}
+          </Option>
+        </slot>
       </component>
 
-      <template
-        name="options"
-      >
-        <Option
-          key="1"
-          value="1"
-        >
-          123
-        </Option>
-      </template>
+      
       <!-- <component
         :is="_items.template"
         name="options"
@@ -400,6 +400,7 @@
   import CustomInput from '../inheritanceComponents/Input';
   import CustomDatePicker from '../inheritanceComponents/DatePicker';
   import CustomSelect from '../inheritanceComponents/Select';
+  import ParameterDataProcessing from './parameterDataProcessing';
 
   import {
     Version, MODULE_COMPONENT_NAME, ossRealtimeSave, defaultrange 
@@ -1848,6 +1849,8 @@
       window.addEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
       window.addEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
       window.addEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
+
+      this.value = new ParameterDataProcessing(this._items).defaultDataProcessing();
     }
   };
 </script>

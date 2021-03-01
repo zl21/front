@@ -23,7 +23,6 @@ const deepClone = (arr) => {
 class CustomSelect {
   constructor(item) {
     this.item = item; 
-    console.log(item);
     const DefaultSelect = Vue.extend(Select);
     this.Input = new DefaultSelect().$options;
     delete this.Input._Ctor;
@@ -32,6 +31,7 @@ class CustomSelect {
   init() {
     this.mergeProps();
     this.mergeMethods();
+
     this.item.template = {
       template: '<Option  value="1" key="1">123</Option>'
     };
@@ -78,10 +78,30 @@ class CustomSelect {
     const placeholder = this.item.webconf && this.item.webconf.placeholder ? this.item.webconf.placeholder : null;
     this.item.props.placeholder = placeholder || `${(dataProp.input && dataProp.input.props) ? dataProp.input.props.placeholder : '请输入'}${this.item.coldesc}`;
   }
-   
+  
   settingOptions() {
     if (this.item.combobox) {
-      // this.item.props.
+      this.item.props.options = this.item.combobox.map((item) => {
+        item.value = item.limitval;
+        item.label = item.limitdesc;
+        return item;
+      });
+    }
+
+    // 合并类型字段
+    if (this.item.conds) {
+      const arr = [];
+      this.item.conds.map((item) => {
+        item.combobox.map((temp) => {
+          temp.value = `${item.colname}|${temp.limitval}`;
+          temp.label = temp.limitdesc;
+          arr.push(temp);
+          return temp;
+        });
+        return item;
+      });
+
+      this.item.props.options = arr;
     }
   }
 }

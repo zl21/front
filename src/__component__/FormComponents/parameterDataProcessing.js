@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /**
    *处理表单数据格式
    *
@@ -14,7 +15,6 @@ export default class ParameterDataProcessing {
     this.value = value;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   /**
    *处理表单抛出去的传参数据格式
    *
@@ -50,7 +50,9 @@ export default class ParameterDataProcessing {
     }
 
     // 处理select合并字段
-    if (Type.isArray(this.value) && this.item.colname.includes('R3_index_')) {
+    if (this.item.conds && this.item.colname.includes('R3_index_')) {
+      // eslint-disable-next-line no-unused-expressions
+      Type.isArray(this.value) ? null : this.value = new Array(this.value);
       const obj = this.value.reduce((json, item) => {
         if (json[item.split('|')[0]]) {
           json[item.split('|')[0]].push(item.split('|')[1]);
@@ -64,7 +66,7 @@ export default class ParameterDataProcessing {
     }
 
     // 处理外健关联字段
-    if (Type.isArray(this.value) && this.item.type === 'DropDownSelectFilter') {
+    if (Type.isArray(this.value) && this.item.display === 'OBJ_FK' && ['mrp', 'drp'].includes(this.item.fkobj.fkdisplay)) {
       return {
         [this.item.colname]: this.value.map(item => item.ID)
       };
@@ -72,5 +74,23 @@ export default class ParameterDataProcessing {
     return {
       [this.item.colname]: this.value
     };
+  }
+
+  /**
+   *处理表单默认数据
+   *
+   * @returns
+   * @memberof defaultDataProcessing
+   */
+  defaultDataProcessing() {
+    if (this.item.colname === 'OBJ_SELECT') {
+      return [this.item.default];
+    }
+
+    if (this.item.display === 'OBJ_FK') {
+      return '';
+    }
+
+    return this.item.default;
   }
 }

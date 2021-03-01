@@ -88,6 +88,31 @@
         const ParameterData = new ParameterDataProcessing(item, value);
         return ParameterData.dataProcessing();
       },
+      isEmpty(object) {
+        for (const name in object) {
+          return false;
+        }
+        return true;
+      },
+      deleteEmptyProperty(object) {
+        for (const i in object) {
+          const value = object[i];
+          if (typeof value === 'object') {
+            if (Array.isArray(value)) {
+              if (value.length === 0) {
+                delete object[i];
+                continue;
+              }
+            }
+            this.deleteEmptyProperty(value);
+            if (this.isEmpty(value)) {
+              delete object[i];
+            }
+          } else if (value === '' || value === null || value === undefined) {
+            delete object[i];
+          } 
+        }
+      },
 
 
       // public API
@@ -103,7 +128,7 @@
           formData = Object.assign({}, formData, json);
           return item;
         });
-
+        this.deleteEmptyProperty(formData);
         return formData;
       }
     },
