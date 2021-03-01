@@ -89,7 +89,15 @@
         @on-keypress="inputKeyPress"
         @on-regx-check="inputRegxCheck"
       /> -->
-
+      <!-- <ComAttachFilter
+        v-if="_items.type === 'AttachFilter'"
+        :ref="_items.field"
+        :default-value="_items.value"
+        :default-selected="_items.props.Selected"
+        :propstype="_items.props"
+        @keydown="attachFilterInputKeydown"
+        @valuechange="attachFilterInput"
+      /> -->
       <component
         :is="inheritanceComponents(_items)"
         :ref="_items.field"
@@ -1853,7 +1861,6 @@
       window.addEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
       window.addEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
       window.addEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
-
       this.value = new ParameterDataProcessing(this._items).defaultDataProcessing();
     }
   };

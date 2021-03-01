@@ -10,48 +10,86 @@ import Vue from 'vue';
 import ComAttachFilter from '../ComAttachFilter.vue';
 import dataProp from '../../__config__/props.config';
 import regExp from '../../constants/regExp';
-
+// 深拷贝
+const deepClone = (arr) => {  
+  const obj = arr.constructor == Array ? [] : {};
+  // 第二种方法 var obj=arr instanceof Array?[]:{}
+  // 第三种方法 var obj=Array.isArray(arr)?[]:{}
+  for (const item in arr) {
+    if (typeof arr[item] === 'object') {
+      obj[item] = deepClone(arr[item]);
+    } else {
+      obj[item] = arr[item];
+    }
+  }
+  return obj;
+};
 class CustomAttachFilter {
   constructor(item) {
     this.item = item; 
     // if (this.item.Components) {
     //   this.Input = this.item.Components;
     // } else {
-    //   this.Input = deepClone(Input);
+    this.Input = deepClone(ComAttachFilter);
     // }
-    const DefaultInput = Vue.extend(ComAttachFilter);
+    // const DefaultInput = Vue.extend(ComAttachFilter);
     
-    this.Input = new DefaultInput().$options;
+    // this.Input = new DefaultInput().$options;
+    // console.log(this.Input);
     delete this.Input._Ctor;
   }
 
   init() {
-    // this.mergeProps();
+    this.mergeProps();
     this.mergeMethods();
     if (this.item.Components) {
       return this.item.Components;
     }
     
     const Con = Vue.extend(this.Input);
-    const obj = { ...new Con().$options };
-    this.item.Components = obj;
-    console.log(obj);
-    return obj;
+    
+    // const obj = { ...new Con().$options };
+    // this.item.Components = obj;
+    console.log(this.Input);
+    return this.Input;
   }
 
   // 合并props
   mergeProps() {
     const defaultProps = { ...this.Input.props };
-    this.settingPlaceholder();
-    if (this.item.type === 'NUMBER') {
-      this.numericTypes();
-    }
-    if (this.item.isuppercase) {
-      this.uppercase();
-    }
+    // this.settingPlaceholder();
+    // if (this.item.type === 'NUMBER') {
+    //   this.numericTypes();
+    // }
+    // if (this.item.isuppercase) {
+    //   this.uppercase();
+    // }
 
     defaultProps.propstype = {
-      default: () => ({})
+      default: () => ({
+        AutoData: [],
+        Selected: [{
+          ID: '893',
+          Label: '系统管理员'
+        }],
+        blurType: false,
+        coldesc: '用户',
+        colid: 164979,
+        colname: 'USERS_ID',
+        datalist: [],
+        // default: '系统管理员',
+        dialog: {},
+        display: 'OBJ_FK',
+        enterType: true,
+        filterDate: {},
+        filterTip: true,
+        fkdisplay: 'pop',
+        fkobj: this.item.fkobj,
+        hideColumnsKey: ['id'],
+        inputname: 'USERS_ID:ENAME',
+        optionTip: false,
+        show: false
+      })
     };
     
 
@@ -64,7 +102,7 @@ class CustomAttachFilter {
       }
       return item;
     });
-    console.log(defaultProps);
+    
     this.Input.props = defaultProps;
   }
 

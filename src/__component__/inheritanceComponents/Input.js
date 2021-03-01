@@ -30,10 +30,10 @@ class CustomInput {
     // if (this.item.Components) {
     //   this.Input = this.item.Components;
     // } else {
-    //   this.Input = deepClone(Input);
+    this.Input = deepClone(Input);
     // }
     const DefaultInput = Vue.extend(Input);
-    this.Input = new DefaultInput().$options;
+    // thixs.Input = new DefaultInput().$options;
     delete this.Input._Ctor;
   }
 

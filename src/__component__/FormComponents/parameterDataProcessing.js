@@ -89,7 +89,7 @@ export default class ParameterDataProcessing {
     }
 
     if (this.item.display === 'OBJ_FK') {
-      if (['mrp', 'drp'].includes(this.item.fkobj.fkdisplay)) {
+      if (['mrp', 'drp'].includes(this.item.fkobj.fkdisplay) && this.item.refobjid) {
         return [{
           ID: this.item.refobjid,
           Label: this.item.default
