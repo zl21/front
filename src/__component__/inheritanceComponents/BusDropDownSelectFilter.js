@@ -4,6 +4,7 @@
 import DropDownSelectFilter from 'arkui_BCL/DropDownSelectFilter';
 import Vue from 'vue';
 import { defaultrange } from '../../constants/global';
+import network from '../../__utils__/network';
 
 // const BusDropDownSelectFilter = () => import('arkui_BCL/DropDownSelectFilter');
 // console.log(BusDropDown);
@@ -74,8 +75,8 @@ class BusDropDownSelectFilter {
 
   propsUrl(props) { // 处理props中的url属性
     props.Url.default = () => ({
-      autoUrl: `/${this.item.fkobj.serviceId}/p/cs/fuzzyquerybyak`,
-      tableUrl: `/${this.item.fkobj.serviceId}/p/cs/QueryList`
+      autoUrl: '/p/cs/fuzzyquerybyak',
+      tableUrl: '/p/cs/QueryList'
     });
   }
 
@@ -89,6 +90,7 @@ class BusDropDownSelectFilter {
       isdroplistsearch: true,
       refcolid: this.item.colid,
     });
+    props.http.default = () => network;
   }
 
   // 合并data

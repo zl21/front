@@ -409,6 +409,7 @@
   import CustomDatePicker from '../inheritanceComponents/DatePicker';
   import CustomSelect from '../inheritanceComponents/Select';
   import CustomAttachFilter from '../inheritanceComponents/AttachFilter';
+  import CustomPopAttachFilter from '../inheritanceComponents/PopAttachFilter';
   import ParameterDataProcessing from './parameterDataProcessing';
 
   import {
@@ -575,9 +576,13 @@
           if (this._items.fkobj.fkdisplay === 'mrp') {
             Components = new CustomDropMultiSelectFilter(this._items).init();
           }
-          if (this._items.fkobj.fkdisplay === 'pop' || this._items.fkobj.fkdisplay === 'mop') {
+          if (this._items.fkobj.fkdisplay === 'mop') {
             Components = new CustomAttachFilter(this._items).init();
           }
+          if (this._items.fkobj.fkdisplay === 'pop') {
+            Components = new CustomPopAttachFilter(this._items).init();
+          }
+         
           break;
         case 'OBJ_DATE':
         case 'OBJ_DATENUMBER':
