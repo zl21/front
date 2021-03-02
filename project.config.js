@@ -163,4 +163,10 @@ module.exports = {
   //   component: FunctionPowerNew,
   //   labelName: '功能权限',
   // }
+  dashboard: {
+    compontent: () => import(
+      './src/__component__/WelcomePage.vue'
+    ),
+    // iconClass: 'iconfont iconmd-grid'
+  }
 };
