@@ -954,5 +954,8 @@ export default {
   },
   updatePreviewPicture(state, data) {
     state.previewPictureInstance = data;
+  },
+  updateDashboardPageValue(state) {
+    state.isShowDashboardPage = !state.isShowDashboardPage;
   }
 };

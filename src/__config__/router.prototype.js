@@ -3,7 +3,6 @@ import Content from '../__component__/Content';
 import WelcomePage from '../__component__/WelcomePage';
 import ComponentProtoType from '../__component__/ComponentPrototype';
 import AutomaticPathGeneration from '../__component__/AutomaticPathGeneration';
-
 import KeepAliveContainer from '../__component__/KeepAliveContainer';
 import {
   CUSTOMIZED_MODULE_PREFIX,
@@ -13,7 +12,10 @@ import {
   VERTICAL_TABLE_DETAIL_PREFIX,
   PLUGIN_MODULE_PREFIX,
   LINK_MODULE_PREFIX,
+  dashboardConfig
 } from '../constants/global';
+
+const dashboardCompontent = dashboardConfig() && dashboardConfig().compontent ? dashboardConfig().compontent : null;
 
 const routes = [
   {
@@ -22,7 +24,7 @@ const routes = [
     children: [
       {
         path: '/',
-        component: WelcomePage
+        component: dashboardCompontent
       }, {
         path: `${STANDARD_TABLE_LIST_PREFIX}/:tableName/:tableId`, //
         component: KeepAliveContainer,

@@ -157,9 +157,6 @@ if (window.ProjectConfig && window.ProjectConfig.externalPluginModules) { // 整
 
 export default (router) => {
   router.beforeEach((to, from, next) => {
-    // if (Object.keys(getSessionObject('loginStatus')) && Object.keys(getSessionObject('loginStatus')).length === 0) {
-    //   debugger;
-    // }
     const loginText = '/login'.toUpperCase();
     if (to.path && getLocalObject('loginStatus') !== true && (to.path.indexOf(loginText) !== -1) && to.path !== '/') {
       const data = {
@@ -171,6 +168,7 @@ export default (router) => {
     if (to.path.indexOf(loginText) !== -1 && getLocalObject('loginStatus') === true) { // 当页面处于登录状态时，则无法回到登录界面，可退出登录进行操作
       window.location.href = window.location.origin;
     }
+  
     if (router.getMatchedComponents(to.path).length === 0) {
       next('/');
     }
