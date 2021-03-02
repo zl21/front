@@ -435,7 +435,7 @@
           //   this.searchData.fixedcolumns = Object.assign({}, item, this.searchData.fixedcolumns);
           //   this.filterTableParam = item;
           // });
-          let arrRes = [];
+          const arrRes = [];
           const tabValue = JSON.parse(JSON.stringify(data.tab_value));
           this.searchData.fixedcolumns = Object.values(tabValue).reduce((arr, obj) => {
             Object.keys(this.searchData.fixedcolumns).map((key) => {
@@ -451,9 +451,9 @@
                       arr[key] = [dateArray[0], dateArray[3]].join('~');
                     } else {
                       arr[key] = `${obj[key]},${this.searchData.fixedcolumns[key]}`;
-                      arrRes = arr[key].split(',');
-                      arr[key] = Array.from(new Set(arrRes));
-                      arr[key] = arr[key].toString();
+                      arr[key] = arr[key].split(',');
+                      // arr[key] = Array.from(new Set(arrRes));
+                      // arr[key] = arr[key].toString();
                     }
                     
                     break;
