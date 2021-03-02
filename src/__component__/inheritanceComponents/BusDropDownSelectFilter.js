@@ -110,10 +110,12 @@ class BusDropDownSelectFilter {
         });
       });
     };
-
-    this.BusDropDown.mixins[0].methods.valueChange = function (type) {
-      console.log(type);
-      // console.log(type, 123);
+    const valueChange = this.BusDropDown.methods.valueChange;
+    this.BusDropDown.methods.valueChange = function (value, type) {
+      valueChange.call(this, value, type);
+      if (type.code === 13) {
+        console.log(type);
+      }
     };
   }
 }
