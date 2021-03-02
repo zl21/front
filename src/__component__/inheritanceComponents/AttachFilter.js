@@ -48,15 +48,88 @@ class CustomAttachFilter {
     
     const Con = Vue.extend(this.Input);
     
-    // const obj = { ...new Con().$options };
-    // this.item.Components = obj;
-    console.log(this.Input);
+    const obj = { ...new Con().$options };
+    this.item.Components = obj;
     return this.Input;
   }
 
   // 合并props
   mergeProps() {
     const defaultProps = { ...this.Input.props };
+
+    let defaultValue = [];
+    if (this.item.default) {
+      defaultValue = [{
+        Label: this.item.default,
+        ID: this.item.refobjid
+      }];
+    }
+    
+    defaultProps.defaultSelected = {
+      default: () => defaultValue
+    };
+
+    defaultProps.defaultValue = {
+      default: () => this.item.default
+    };
+
+    const placeholder = this.item.webconf && this.item.webconf.placeholder ? this.item.webconf.placeholder : null;
+    defaultProps.propstype = {
+      default: () => ({
+        AutoData: [],
+        Selected: defaultValue,
+        blurType: false,
+        coldesc: this.item.coldesc,
+        colid: this.item.colid,
+        colname: this.item.colname,
+        datalist: this.item.fkobj.fkdisplay === 'mop' ? [{
+          lable: 0,
+          value: '更多筛选'
+        }, {
+          lable: 2,
+          sendData: {
+            table: this.item.fkobj.reftable
+          },
+          url: '/p/cs/menuimport',
+          value: '导入'
+        }] : [],
+        dialog: {
+          model: {
+            closable: true,
+            draggable: true,
+            'footer-hide': this.item.fkobj.fkdisplay === 'pop',
+            mask: true,
+            maskClosable: false,
+            scrollable: true,
+            width: 920,
+            title: this.item.fkobj.fkdisplay === 'mop' ? '弹窗多选' : null
+          }
+        },
+        display: this.item.display,
+        enterType: true,
+        filterDate: {},
+        filterTip: true,
+        fkdisplay: this.item.fkobj.fkdisplay,
+        fkobj: {
+          colid: this.item.colid,
+          fkdisplay: this.item.fkobj.fkdisplay,
+          reftable: this.item.fkobj.reftable,
+          serviceId: this.item.fkobj.serviceId,
+          reftableid: this.item.fkobj.reftableid,
+          searchmodel: this.item.fkobj.fkdisplay,
+          show: this.item.fkobj.fkdisplay === 'mop',
+          url:
+            `${this.item.fkobj.serviceId ? (`/${this.item.fkobj.serviceId}`) : ''
+            }/p/cs/menuimport`
+        },
+        hideColumnsKey: ['id'],
+        inputname: this.item.inputname,
+        optionTip: this.item.fkobj.fkdisplay === 'mop',
+        show: this.item.fkobj.fkdisplay === 'mop',
+        placeholder: placeholder || `${(dataProp.input && dataProp.input.props) ? dataProp.input.props.placeholder : '请输入'}${this.item.coldesc}`
+      })
+    };
+
     // this.settingPlaceholder();
     // if (this.item.type === 'NUMBER') {
     //   this.numericTypes();
@@ -64,33 +137,6 @@ class CustomAttachFilter {
     // if (this.item.isuppercase) {
     //   this.uppercase();
     // }
-
-    defaultProps.propstype = {
-      default: () => ({
-        AutoData: [],
-        Selected: [{
-          ID: '893',
-          Label: '系统管理员'
-        }],
-        blurType: false,
-        coldesc: '用户',
-        colid: 164979,
-        colname: 'USERS_ID',
-        datalist: [],
-        // default: '系统管理员',
-        dialog: {},
-        display: 'OBJ_FK',
-        enterType: true,
-        filterDate: {},
-        filterTip: true,
-        fkdisplay: 'pop',
-        fkobj: this.item.fkobj,
-        hideColumnsKey: ['id'],
-        inputname: 'USERS_ID:ENAME',
-        optionTip: false,
-        show: false
-      })
-    };
     
 
     Object.keys(this.item.props).map((item) => {
@@ -108,7 +154,21 @@ class CustomAttachFilter {
 
   // 合并methods
   mergeMethods() {
-
+    const _self = this;
+    this.Input.methods.valueChange = function (type) { // 重写valueChange事件,给父节点的value复制，实现双向数据绑定效果
+      window.clearTimeout(this.clickTimer);
+      this.clickTimer = window.setTimeout(() => {
+        if (type === 'clear') {
+          this.$emit('valuechange', { value: null, selected: [], type }, this);
+          this.$_live_getChildComponent(window.vm, `${this.$route.params.tableName}${_self.item.colname}`).value = [];
+        } else {
+          // 处理弹窗单选数据
+          // eslint-disable-next-line no-nested-ternary
+          this.$emit('valuechange', { value: this.propstype.fkdisplay === 'pop' ? ((this.selected && this.selected.length > 0) ? this.selected[0].ID : '') : this.value, selected: this.selected, type }, this);
+          this.$_live_getChildComponent(window.vm, `${this.$route.params.tableName}${_self.item.colname}`).value = this.selected;
+        }
+      }, 200);
+    };
   }
 
   settingPlaceholder() { // 设置Placeholder属性

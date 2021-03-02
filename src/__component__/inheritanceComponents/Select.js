@@ -58,6 +58,10 @@ class CustomSelect {
       default: () => true
     };
 
+    defaultProps.clearable = {
+      default: () => true
+    };
+
     Object.keys(this.item.props).map((item) => {
       // console.log(item, this.item.props.regx, this.item.props[item], this.Input.props[item]);
       if (defaultProps[item]) {

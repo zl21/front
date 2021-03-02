@@ -67,7 +67,12 @@ export default class ParameterDataProcessing {
     }
 
     // 处理外健关联字段
-    if (Type.isArray(this.value) && this.item.display === 'OBJ_FK' && ['mrp', 'drp'].includes(this.item.fkobj.fkdisplay)) {
+    if (Type.isArray(this.value) && this.item.display === 'OBJ_FK' && ['mrp', 'drp', 'pop', 'mop'].includes(this.item.fkobj.fkdisplay)) {
+      if (this.item.fkobj.fkdisplay === 'mop') {
+        return {
+          [this.item.colname]: this.value[0].ID
+        };
+      }
       return {
         [this.item.colname]: this.value.map(item => item.ID)
       };
@@ -89,12 +94,13 @@ export default class ParameterDataProcessing {
     }
 
     if (this.item.display === 'OBJ_FK') {
-      if (['mrp', 'drp'].includes(this.item.fkobj.fkdisplay) && this.item.refobjid) {
+      if (['mrp', 'drp', 'pop'].includes(this.item.fkobj.fkdisplay) && this.item.refobjid) {
         return [{
           ID: this.item.refobjid,
           Label: this.item.default
         }];
       }
+
       return '';
     }
 

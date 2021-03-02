@@ -575,7 +575,7 @@
           if (this._items.fkobj.fkdisplay === 'mrp') {
             Components = new CustomDropMultiSelectFilter(this._items).init();
           }
-          if (this._items.fkobj.fkdisplay === 'pop') {
+          if (this._items.fkobj.fkdisplay === 'pop' || this._items.fkobj.fkdisplay === 'mop') {
             Components = new CustomAttachFilter(this._items).init();
           }
           break;
