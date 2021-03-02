@@ -85,8 +85,16 @@ export default class ParameterDataProcessing {
 
     // 处理日期字段
     if (['OBJ_DATE', 'OBJ_DATENUMBER'].includes(this.item.display)) {
-      console.log(this.value, new Date().r3Format(new Date(this.value[0]), 'yyyyMMdd'));
-      return this.value;
+      let arr = [];
+      if (this.item.display === 'OBJ_DATE') {
+        arr = [new Date().r3Format(new Date(this.value[0]), 'yyyy/MM/dd hh:mm:ss'), new Date().r3Format(new Date(this.value[1]), 'yyyy/MM/dd hh:mm:ss')];
+      } else {
+        arr = [new Date().r3Format(new Date(this.value[0]), 'yyyyMMdd'), new Date().r3Format(new Date(this.value[1]), 'yyyyMMdd')];
+      }
+
+      return {
+        [this.item.colname]: arr.join('~')
+      };
     }
     return {
       [this.item.colname]: this.value

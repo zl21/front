@@ -110,11 +110,10 @@ class BusDropDownSelectFilter {
         });
       });
     };
-    const valueChange = this.BusDropDown.methods.valueChange;
-    this.BusDropDown.methods.valueChange = function (value, type) {
-      valueChange.call(this, value, type);
-      if (type.code === 13) {
-        console.log(type);
+
+    this.BusDropDown.methods['on-keydown'] = function (event) {
+      if (event.code === 'Enter') {
+        this.$_live_getChildComponent(window.vm, this.$store.state.global.activeTab.keepAliveModuleName).searchClickData();
       }
     };
   }
