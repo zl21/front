@@ -177,6 +177,13 @@ const init = () => {
   
 
   window.getObjdisType = getObjdisType;
+
+  // const param = {
+  //   url: '/CUSTOMIZED/FUNCTIONPERMISSION/2096',
+  //   type: 'C',
+  //   label: '基础档案',
+  // };
+  // store.commit('global/tabOpen', param);
 };
 const getCategory = () => {
   if (enableInitializationRequest()) {
@@ -264,6 +271,8 @@ if (enableGateWay()) {
   getSubSystems();
   init();
 }
+
+
 const packageMessage = {
   version: '1.8.7',
   packageTime: '2020.09.21.09.39', 
