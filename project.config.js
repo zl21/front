@@ -3,8 +3,6 @@
 // 需求为：根据配置条件进行表格过滤，以tab的展现形式
 
 
-const path = require('path');
-
 module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
   projectIconPath: '', // 项目icon,

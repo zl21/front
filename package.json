@@ -71,7 +71,6 @@
         "compressing": "^1.5.1",
         "cross-env": "^7.0.3",
         "md5": "^2.3.0",
-        "path-browserify": "^1.0.1",
         "v-viewer": "^1.5.1",
         "vue": "^2.6.12",
         "vue-router": "^3.4.3",
