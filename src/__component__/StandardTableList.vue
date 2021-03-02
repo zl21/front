@@ -2,7 +2,7 @@
 <!--suppress ALL -->
 <template>
   <div
-    :id="buttons.tableName"
+    :id=" this.$router.currentRoute.params.tableName"
     class="standarTableListContent"
   >
     <!-- oldTree
@@ -49,7 +49,6 @@
         ref="R3ButtonGroup"
         :data-array="buttons.dataArray"
         :id-array="idArray"
-        :search-datas="dataProcessing()"
         @buttonClick="buttonClick"
         @clearSelectIdArray="clearSelectIdArray"
       />
@@ -62,6 +61,12 @@
         :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
         @formDataChange="formDataChange"
       />
+      <tabBar
+        v-if="getFilterTable"
+        :data="ag.tablequery"
+        @tabClick="tabClick"
+      />
+
       <AgTable
         ref="agTableElement"
         :style="agTableElementStyles"
@@ -69,9 +74,10 @@
         :datas="ag.datas"
         :css-status="ag.status4css"
         :legend="ag.status4css"
+        :is-filter-table="getFilterTable"
         :user-config-for-ag-table="userConfigForAgTable"
-        :on-page-change="onPageChange"
-        :on-page-size-change="onPageSizeChange"
+        :on-page-change="getFilterTable?onPageChangeForFilterTable:onPageChange"
+        :on-page-size-change="getFilterTable?onPageSizeChangeForFilterTable:onPageSizeChange"
         :on-selection-changed="onSelectionChanged"
         :on-row-double-click="onRowDoubleClick"
         :on-sort-changed="onSortChange"
@@ -134,6 +140,7 @@
       :footer-hide="dialogComponentNameConfig.footerHide"
       :confirm="dialogComponentNameConfig.confirm"
       :dialog-component-name="dialogComponentName"
+      :isrefrsh="buttons.isrefrsh"
       @dialogComponentSaveSuccess="dialogComponentSaveSuccess"
     />
     <!-- 批量 -->
@@ -163,8 +170,6 @@
   import tree from './tree.vue';
   import regExp from '../constants/regExp';
   import getObjdisType from '../__utils__/getObjdisType';
-
-
   import {
     Version,
     CUSTOMIZED_MODULE_PREFIX,
@@ -175,6 +180,7 @@
     enableActivateSameCustomizePage,
     enableKAQueryDataForUser,
     blockFullOperation,
+    isFilterTable,
     listDefaultColumn
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
@@ -186,6 +192,7 @@
   import treeData from '../__config__/treeData.config';
   import getUserenv from '../__utils__/getUserenv';
   import { addSearch, querySearch } from '../__utils__/indexedDB';
+  import tabBar from './tabBar.vue';
 
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
@@ -200,6 +207,7 @@
       ErrorModal,
       modifyDialog,
       dialogComponent,
+      tabBar
     },
     data() {
       return {
@@ -230,6 +238,8 @@
           confirm: () => {
           }
         }, // 弹框配置信息
+        currentTabValue: {},
+        filterTableParam: {},
 
       };
     },
@@ -244,6 +254,12 @@
         changeSearchFoldnum: ({ changeSearchFoldnum }) => changeSearchFoldnum,
         userInfo: ({ userInfo }) => userInfo,
       }),
+      getFilterTable() {
+        if (isFilterTable() && this.ag.tablequery.open) {
+          return true;
+        }
+        return false;
+      },
       getCurrentLabel() {
         return this.keepAliveLabelMaps[this[MODULE_COMPONENT_NAME]];
       },
@@ -346,6 +362,129 @@
       },
     },
     methods: {
+      onPageSizeChangeForFilterTable(pageSize) {
+        this.resetButtonsStatus();
+        this.searchData.startIndex = 0;
+        this.searchData.range = pageSize;
+        if (this.currentTabValue.tabValue.tab_value) {
+          Object.values(this.currentTabValue.tabValue.tab_value).map((item) => {
+            this.searchData.fixedcolumns = Object.assign({}, item, this.searchData.fixedcolumns);
+            this.filterTableParam = item;
+          });
+        }
+         
+        const param = {
+          startIndex: this.searchData.startIndex,
+          range: this.searchData.range,
+          index: this.currentTabValue.index
+        };
+        this.updateTabParam(param);
+        this.getQueryList();
+      },
+      
+      onPageChangeForFilterTable(page) {
+        this.resetButtonsStatus();
+
+        const { range } = this.searchData;
+        this.searchData.startIndex = range * (page - 1);
+        if (this.currentTabValue.tabValue.tab_value) {
+          Object.values(this.currentTabValue.tabValue.tab_value).map((item) => {
+            this.searchData.fixedcolumns = Object.assign({}, item, this.searchData.fixedcolumns);
+            this.filterTableParam = item;
+          });
+        }
+        const param = {
+          startIndex: this.searchData.startIndex,
+          range: this.searchData.range,
+          index: this.currentTabValue.index
+        };
+        this.updateTabParam(param);
+        this.getQueryList();
+      },
+      firstSearchTable() {
+        this.resetButtonsStatus();
+
+        if (this.getFilterTable) {
+          const el = this.$_live_getChildComponent(this, 'tabBar');
+          el.tabClick(0);
+          const obj = {
+            index: 0,
+            tabValue: this.ag.tablequery.multi_tab[0]
+          };
+          this.currentTabValue = obj;
+        } else if (!this.buttons.isBig) {
+          this.searchClickData();
+        }
+      },
+      tabClick({ data, index }) {
+        this.filterTableParam = {};
+        if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].startIndex) {
+          this.searchData.startIndex = data.startIndex;
+        } else {
+          this.searchData.startIndex = 0;
+        }
+        if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].range) {
+          this.searchData.range = data.range;
+        } else {
+          delete this.searchData.range;
+        }
+        this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName; 
+        this.searchData.fixedcolumns = this.dataProcessing();
+        if (data.tab_value) {
+          // Object.values(data.tab_value).map((item) => {
+          //   this.searchData.fixedcolumns = Object.assign({}, item, this.searchData.fixedcolumns);
+          //   this.filterTableParam = item;
+          // });
+          let arrRes = [];
+          const tabValue = JSON.parse(JSON.stringify(data.tab_value));
+          this.searchData.fixedcolumns = Object.values(tabValue).reduce((arr, obj) => {
+            Object.keys(this.searchData.fixedcolumns).map((key) => {
+              if (obj[key]) {
+                if (obj[key] !== this.searchData.fixedcolumns[key]) {
+                  switch (Object.prototype.toString.call(obj[key])) {
+                  case '[object String]':
+                    if (obj[key].includes('~')) { // 判断否是时间段类型字段,取两个时间的并集
+                      let dateArray = [];
+                      dateArray = dateArray.concat(this.searchData.fixedcolumns[key].split('~'));
+                      dateArray = dateArray.concat(obj[key].split('~'));
+                      dateArray.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+                      arr[key] = [dateArray[0], dateArray[3]].join('~');
+                    } else {
+                      arr[key] = `${obj[key]},${this.searchData.fixedcolumns[key]}`;
+                      arrRes = arr[key].split(',');
+                      arr[key] = Array.from(new Set(arrRes));
+                      arr[key] = arr[key].toString();
+                    }
+                    
+                    break;
+                  case '[object Array]':
+                    arr[key] = obj[key].concat(this.searchData.fixedcolumns[key]);
+                    arr[key] = Array.from(new Set(arr[key]));
+                    
+                    break;
+                  default:
+                    break;
+                  }
+                  return obj[key];
+                } 
+              }
+              arr[key] = this.searchData.fixedcolumns[key];
+            });
+
+            arr = Object.assign(obj, arr);
+            return arr;
+          }, {});
+          this.filterTableParam = this.searchData.fixedcolumns;
+          // this.searchData.fixedcolumns = Object.assign(this.searchData.fixedcolumns, popwinMessage);
+        }
+        const obj = {
+          index,
+          tabValue: data
+        };
+        this.currentTabValue = obj;
+        this.getQueryListPromise(this.searchData);
+        this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+      },
       // a() {
       //   // 插入列表界面默认值
       //   const data = {
@@ -527,11 +666,15 @@
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
       onPageChange(page) {
+        this.resetButtonsStatus();
+
         const { range } = this.searchData;
         this.searchData.startIndex = range * (page - 1);
         this.getQueryList();
       },
       onPageSizeChange(pageSize) {
+        this.resetButtonsStatus();
+
         this.searchData.startIndex = 0;
         this.searchData.range = pageSize;
         this.getQueryList();
@@ -647,19 +790,46 @@
       }, // ag表格行双击回调
       onSortChange(sortArr) {
         const { tableName } = this[INSTANCE_ROUTE_QUERY];
-        this.searchData.orderby = sortArr.map((d) => {
+        const transferFormat_param = {
+          sortArr,
+          tableName
+        };
+        const obj = {
+          orderbyData: this.transferFormat(transferFormat_param),
+          searchData: this.searchData
+        };
+        this.orderby(obj); 
+        this.getQueryList();
+      },
+      transferFormat(obj) {
+        return obj.sortArr.map((d) => {
           if (d.sort === 'normal') {
             return {
-              column: `${tableName}.${d.colId || 'COMUMN_NOT_EXIST'}`,
+              column: `${obj.tableName}.${d.colId || 'COMUMN_NOT_EXIST'}`,
               // asc: d.sort === 'asc'
             };
           }
           return {
-            column: `${tableName}.${d.colId || 'COMUMN_NOT_EXIST'}`,
+            column: `${obj.tableName}.${d.colId || 'COMUMN_NOT_EXIST'}`,
             asc: d.sort === 'asc'
           };
         });
-        this.getQueryList();
+      },
+      orderby(obj) {
+        if (obj.searchData.orderby) {
+          const filterSort = this.searchData.orderby.filter(d => d.column === obj.orderbyData[0].column && d.asc !== obj.orderbyData[0].asc);
+          if (filterSort.length > 0) {
+            this.searchData.orderby.map((d) => {
+              if (d.column === obj.orderbyData[0].column && d.asc !== obj.orderbyData[0].asc) {
+                d.asc = obj.orderbyData[0].asc;
+              } 
+            });
+          } else {
+            this.searchData.orderby = this.searchData.orderby.concat(obj.orderbyData);
+          }
+        } else {
+          this.searchData.orderby = obj.orderbyData;
+        }
       },
       onColumnMoved(cols) {
         const { tableId } = this[INSTANCE_ROUTE_QUERY];
@@ -686,7 +856,7 @@
         this.updateAgConfig({ key: 'hideColumn', value: hideCols });
       },
       onCellSingleClick(colDef, rowData, target) {
-        const { tableId } = this[INSTANCE_ROUTE_QUERY];
+        // const { tableId } = this[INSTANCE_ROUTE_QUERY];
         if (target.getAttribute('data-target-tag') === 'fkIcon') {
           window.sessionStorage.setItem('dynamicRouting', true);
           const {
@@ -1256,6 +1426,8 @@
         return obj;
       },
       resetForm() {
+        this.filterTableParam = {};
+        this.resetTabParam();
         // 列表查询重置
         this.resetType = true;
         const promise = new Promise((resolve, reject) => {
@@ -1482,14 +1654,16 @@
         }
       },
       onSelectionChanged(rowIdArray, rowArray) {
+        // this.filterButtonsForDisable(rowArray);
         // 获取表格选中明细
         this.onSelectionChangedAssignment({ rowIdArray, rowArray });
       },
+    
       buttonClick(type, obj) {
         this.setActiveTabActionValue({});// 点击按钮前清除上一次按钮存的信息
 
         if (type === 'fix') {
-          this.AddDetailClick(obj);
+          this.AddDetailClick(type, obj);
         } else if (type === 'custom') {
           this.webactionClick(type, obj);
         } else if (type === 'Collection') {
@@ -1833,15 +2007,22 @@
           }
           return obj;
         }, {});
-
         return Object.keys(jsonData).reduce((obj, item) => {
           let value = '';
 
           this.formItemsLists.concat([]).every((temp) => {
             if (temp.item.field === item) { // 等于当前节点，判断节点类型
               if (temp.item.type === 'DatePicker' && (temp.item.props.type === 'datetimerange' || temp.item.props.type === 'daterange')) { // 当为日期控件时，数据处理
-                if ((jsonData[item][0] && jsonData[item][1])) {
-                  value = jsonData[item].join('~');
+                if ((jsonData[item][0] && jsonData[item][1])) {  
+                  if (jsonData[item][0].includes('/')) {
+                    const array = JSON.parse(JSON.stringify(jsonData[item]));
+                    // 日期格式传参处理，主要是处理第一次默认值查询
+                    array[0] = new Date().r3Format(new Date(array[0]));
+                    array[1] = new Date().r3Format(new Date(array[1]));
+                    value = array.join('~').replace(/-/g, '');
+                  } else {
+                    value = jsonData[item].join('~');
+                  }
                 } else {
                   value = '';
                 }
@@ -1891,16 +2072,25 @@
           if (value) {
             obj[item] = value;
           }
-
-          return obj;
+          // obj = Object.assign({}, obj, this.filterTableParam);
+          return obj; 
         }, {});
+        
+        // return this.filterTableParam;
       },
       searchClickData(value) {
+        this.resetButtonsStatus();
         // 按钮查找 查询第一页数据
         if (!value) { // 返回时查询之前页码
           this.searchData.startIndex = 0;
         }
-        this.searchData.fixedcolumns = this.dataProcessing();
+        if (this.getFilterTable) {
+          const el = this.$_live_getChildComponent(this, 'tabBar');
+          const tabCurrentIndex = el.$refs.R3_Tabs.focusedKey;
+          el.tabClick(tabCurrentIndex);
+        } else {
+          this.searchData.fixedcolumns = this.dataProcessing();
+        }
         // this.getQueryListForAg(this.searchData);
         if (this.buttons.isBig) {
           this.updataIsBig(false);
@@ -1951,8 +2141,6 @@
               this.updateSearchDBdata({});
               this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
             }
-            
-
             this.getQueryListForAg(data);
           });
         });
@@ -1990,7 +2178,12 @@
       getSingleObjectPageType() {
         
       },
-      AddDetailClick(obj) {
+      AddDetailClick(type, obj) {
+        DispatchEvent('R3StandardButtonClick', {
+          detail: {
+            type, obj
+          }
+        });
         const { tableName, tableId, } = this[INSTANCE_ROUTE_QUERY];
         if (obj.name === this.buttonMap.CMD_ADD.name) {
           // 新增
@@ -2051,7 +2244,7 @@
                   tableName,
                   tableId,
                   label,
-                  id
+                  id,
                 });
               });
             } else if (this.ag.datas.objdistype === 'tabpanle') { // 单对象左右结构
@@ -2066,7 +2259,7 @@
               tableName,
               tableId,
               label,
-              id
+              id,
             });
             return;
           }
@@ -2690,6 +2883,7 @@
             this.searchData.startIndex = this.searchData.startIndex >= 0 ? this.searchData.startIndex : 0;
           }
           // this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
+         
           this.getQueryListPromise(Object.assign({}, this.searchData, { merge }));                 
         }
       },
@@ -2743,22 +2937,24 @@
                 this.updateSearchDBdata(response);
                 this.updateFormData(Object.assign({}, this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists), response));
               }
-              if (!this.buttons.isBig) {
-                this.searchClickData();
-              }
+              // if (!this.buttons.isBig) {
+              //   this.firstSearchTable();
+              // }
+              this.firstSearchTable();
             });
           } else if (!this.buttons.isBig) {
             // 初始化调用时，ie环境下增加500ms延时调用
             if (this.isIE()) {
               setTimeout(() => {
-                this.searchClickData();
+                this.firstSearchTable();
               }, 500);
             } else {
-              this.searchClickData();
+              this.firstSearchTable();
             }
           }
         }
       },
+    
       isIE() {
         if (!!window.ActiveXObject || 'ActiveXObject' in window) return true;
         return false;
@@ -2772,7 +2968,7 @@
     },
     mounted() {
       this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
-      
+       
       if (!this._inactive) {
         window.addEventListener('network', this.networkEventListener);
         window.addEventListener('network', this.networkGetTableQuery);

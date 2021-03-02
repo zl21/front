@@ -19,8 +19,10 @@ import Loading from './src/__utils__/loading';
 import getObjdisType from './src/__utils__/getObjdisType';
 import projectConfig from './project.config';
 import { addSearch } from './src/__utils__/indexedDB';
-import './node_modules/viewerjs/dist/viewer.css';
+import { createWatermark } from './src/__utils__/waterMark';
 
+import './node_modules/viewerjs/dist/viewer.css';
+import './src/__utils__/getChildComponent';
 
 // css import
 import './node_modules/ag-grid/dist/styles/ag-grid.css';
@@ -30,6 +32,11 @@ import './src/assets/theme/custom.less';
 import './src/assets/css/loading.css';
 import './src/assets/css/custom-ext.less';
 import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
+
+// 全局指令
+import inputNumber from './src/directive/inputNumber';
+
+Vue.use(inputNumber);
 // import jflowPlugin from './jflowPlugin/js/index';
 // import './src/__utils__/encryptingParameter';
 
@@ -43,6 +50,7 @@ import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
 Vue.use(VueDND);
 
 Vue.use(Viewer);
+Vue.prototype.$createWatermark = createWatermark;
 
 
 // 注册自定义模态框组件
@@ -168,6 +176,13 @@ const init = () => {
   
 
   window.getObjdisType = getObjdisType;
+
+  // const param = {
+  //   url: '/CUSTOMIZED/FUNCTIONPERMISSION/2096',
+  //   type: 'C',
+  //   label: '基础档案',
+  // };
+  // store.commit('global/tabOpen', param);
 };
 const getCategory = () => {
   if (enableInitializationRequest()) {
@@ -255,6 +270,8 @@ if (enableGateWay()) {
   getSubSystems();
   init();
 }
+
+
 const packageMessage = {
   version: '1.8.7',
   packageTime: '2020.09.21.09.39', 

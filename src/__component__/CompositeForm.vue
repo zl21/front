@@ -699,7 +699,7 @@
 
         // let v1.4外键 及number
         if (!this.formData[current.item.field] && Version() === '1.4') {
-          if (current.item.props.number === true && (current.item.props.fkdisplay === 'pop' || current.item.props.fkdisplay === 'drp')) {
+          if (current.item.props.number === true || (current.item.props.fkdisplay === 'pop' || current.item.props.fkdisplay === 'drp')) {
             this.formData[current.item.field] = 0;
           } else if (current.item.props.fkdisplay) {
             this.formData[current.item.field] = '';
@@ -1113,7 +1113,6 @@
               Fitem[index].item.props.totalRowCount = 0;
               let searchObject = {};
               let result = {}; // 扩展通过接口获取请求参数，暂存数据
-
               let check = [];
               if (current.webconf && current.webconf.refcolval_custom) {
                 const item = Object.assign({}, current);
@@ -1122,7 +1121,6 @@
                   fixcolumn: current.webconf.refcolval_custom.srccols,
                   srccol: current.webconf.refcolval_custom.srccols
                 };
-
                 check = this.getLinkData(item);
 
                 // eslint-disable-next-line func-names
@@ -1148,6 +1146,16 @@
                 }
               } else {
                 check = this.getLinkData(current);
+              }
+
+              if (!check[0]) {
+                (function (instance) {
+                  setTimeout(() => {
+                    if (!check[0]) {
+                      instance.handleIconClick();
+                    }
+                  }, 0);
+                }($this));
               }
               
 

@@ -1,7 +1,9 @@
 
+// 此分支用于开发表格过滤功能
+// 需求为：根据配置条件进行表格过滤，以tab的展现形式
+
 
 const path = require('path');
-
 
 module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
@@ -66,7 +68,7 @@ module.exports = {
   // specifiedGlobalGateWay: 'user-center',
   encryptedPassword: false, // 是否允许login接口password加密
   isItemTableNewValidation: true, // 是否允许子表新增有必填项时，输入值才触发子表必填项校验，不输入值则只校验主表
-  isCommonTable: true, // 是否开启普通表格，默认关闭
+  isCommonTable: false, // 是否开启普通表格，默认关闭
   functionPowerRequestURL: '', // 功能权限获取检索项数据接口名称
   cbs: undefined, // 框架回调，形如 { loginCb: function() {} }
   layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
@@ -82,7 +84,7 @@ module.exports = {
   //     name: '工作流'
   //   },
   // },
-  enableActivateSameCustomizePage: false, // 跳转自定义界面，当自定义界面标识相同，是否只激活同一个tab,默认为false,自定义界面ID不同会打开多个tab
+  enableActivateSameCustomizePage: true, // 跳转自定义界面，当自定义界面标识相同，是否只激活同一个tab,默认为false,自定义界面ID不同会打开多个tab
   logoutTips: false, // 失去会话是否需要登出提示 默认false直接登出
   enableKAQueryDataForUser: false, // 是否开启存储全表查询条件
   dateStorageTime: 1, // 查询条件存储时间，默认1天,建议不要设置太大影响性能
@@ -103,15 +105,24 @@ module.exports = {
     // customizePage: ['FUNCTIONPERMISSION'], // 自定义界面
   }, 
   filterUrlForNetworkScript: () => true, // 框架默认true,
+<<<<<<< HEAD
+=======
+  listDefaultColumn: 4,
+>>>>>>> theme_jflow_dev
   // (data) => {
   //   if (data.router.params) {
   //     if (data.router.params.tableName && data.config().configPage[data.router.params.tableName].filter(u => u === data.url).length > 0) { // 筛选出配置界面不需要根据框架code报错提示框的接口
   //       return false;
   //     } if (data.router.params.customizedModuleName && data.router.meta.routePrefix === '/CUSTOMIZED' && data.config().customizePage.filter(r => data.router.params.customizedModuleName.toLocaleLowerCase() === r.toLocaleLowerCase()).length > 0) {
-  //       // 筛选出定制界面不需要根据框架code报错提示框的接口
+  //       // 筛选出定制界面不需要根据框架code,报错提示框的接口
   //       return false;
   //     }
   //   }
   //   return true;
+  // }
+  isFilterTable: true, // 是否开启表格过滤功能
+  // DashboardRoute: {
+  //   component: FunctionPowerNew,
+  //   labelName: '功能权限',
   // }
 };

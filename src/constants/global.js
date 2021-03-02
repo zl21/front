@@ -124,4 +124,16 @@ export const getFilterUrlForNetworkData = () => (window.ProjectConfig && window.
 export const navConfig = () => (window.ProjectConfig && window.ProjectConfig.navMenuConfig ? window.ProjectConfig.navMenuConfig : navMenuConfig);
 export const notificationOfMain = () => (window.ProjectConfig && typeof window.ProjectConfig.notificationOfMain === 'boolean' ? window.ProjectConfig.notificationOfMain : project.notificationOfMain);
 export const formItemConfig = () => (window.ProjectConfig && window.ProjectConfig.formItemConfig ? window.ProjectConfig.formItemConfig : customizeFormItem);
+
+export const isFilterTable = () => (window.ProjectConfig && window.ProjectConfig.isFilterTable ? window.ProjectConfig.isFilterTable : project.isFilterTable);
 export const listDefaultColumn = () => (window.ProjectConfig && window.ProjectConfig.listDefaultColumn ? window.ProjectConfig.listDefaultColumn : 4); // 配置列表查询条件一行几列展示
+
+export const getProjectQuietRoutes = () => {
+  const { quietRoutes } = window.ProjectConfig || {};
+  return (defaultQuietRoutes.concat(quietRoutes || [])) || [];
+};
+
+export const defaultrange = () => (window.ProjectConfig && window.ProjectConfig.defaultrange ? window.ProjectConfig.defaultrange : null); // 配置外健查询下拉每页展示多少条数据
+
+
+export const DashboardPage = () => (window.ProjectConfig && window.ProjectConfig.DashboardPage ? window.ProjectConfig.DashboardPage : null); // 根路由界面

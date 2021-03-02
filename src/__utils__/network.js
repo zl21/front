@@ -4,7 +4,7 @@ import router from '../__config__/router.config';
 import store from '../__config__/store.config';
 
 import {
-  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, REQUEST_PENDDING_EXPIRE, getTouristRoute, logoutTips, Version, filterUrlForNetworkScript, getFilterUrlForNetworkData
+  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, getProjectQuietRoutes, REQUEST_PENDDING_EXPIRE, getTouristRoute, logoutTips, Version, filterUrlForNetworkScript, getFilterUrlForNetworkData
 } from '../constants/global';
 import { addNetwork } from './indexedDB';
 // import FilterUrlForNetwork from '../launchApplicationConfig/filterUrlForNetwork';
@@ -22,10 +22,10 @@ let closeMessage = false;
 const pendingRequestMap = {};
 window.pendingRequestMap = pendingRequestMap;
 
-const getProjectQuietRoutes = () => {
-  const { quietRoutes } = window.ProjectConfig || {};
-  return (defaultQuietRoutes.concat(quietRoutes || [])) || [];
-};
+// const getProjectQuietRoutes = () => {
+//   const { quietRoutes } = window.ProjectConfig || {};
+//   return (defaultQuietRoutes.concat(quietRoutes || [])) || [];
+// };
 
 const matchGateWay = (url) => {
   const { tableName, customizedModuleName } = router.currentRoute.params;
@@ -254,6 +254,7 @@ axios.interceptors.response.use(
                 userInfo: {}
               });
               removeSessionObject('userInfo');
+              // console.log(1, router.currentRoute.path);
               if (getProjectQuietRoutes().indexOf(router.currentRoute.path) === -1) {
                 if (config.url !== '/p/cs/logout') {
                   // store.dispatch('global/signout');
