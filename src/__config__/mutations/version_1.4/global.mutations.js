@@ -412,7 +412,10 @@ export default {
     label,
     keepAliveModuleName,
     type,
-    fullPath
+    fullPath,
+    tableName,
+    routePrefix,
+    routeFullPath
   }) {
     state.openedMenuLists.forEach((d) => {
       d.isActive = false;
@@ -421,14 +424,22 @@ export default {
         // const index = keepAliveModuleName.lastIndexOf('.');  
         keepAliveModuleNameRes = keepAliveModuleName.split('.')[1];
       } 
-      // d.label === label &&
       // 去除对label的限制，自定义配置，自定义标识相同，label不同，也可认为是同一个自定义界面
       if (enableActivateSameCustomizePage()) {
-        if (d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
+        if (d.keepAliveModuleName === keepAliveModuleName) {
           d.isActive = true;
+          state.activeTab = d;
+        } else if ((keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
+          const obj = {
+            keepAliveModuleName,
+            routeFullPath,
+            routePrefix,
+            isActive: true
+          };
+          d = Object.assign(d, obj);
+          state.activeTab = Object.assign(state.activeTab, obj);
         }
       } else if (d.keepAliveModuleName === keepAliveModuleName) {
-        // d.label === label &&
         d.isActive = true;
         d.routeFullPath = fullPath;
         state.activeTab = d;
@@ -549,8 +560,17 @@ export default {
     // state.isRequest = [];// 清空修改数据验证
     const { openedMenuLists } = state;
     // 如果关闭某个Tab，则清空所有该模块可能的对应的keepAlive信息。
-
-    state.keepAliveLists = state.keepAliveLists.filter(d => d !== tab.keepAliveModuleName);
+    if (!enableActivateSameCustomizePage()) {
+      state.keepAliveLists = state.keepAliveLists.filter(d => d !== tab.keepAliveModuleName);
+    } else {
+      state.keepAliveLists = state.keepAliveLists.filter((d) => {
+        const kp = d.split('.')[1];
+        if (kp !== tab.tableName) {
+          return d;
+        }
+      });
+    }
+   
     openedMenuLists.forEach((item, index) => {
       if (tab.stopRouterPush) {
         const { tableName } = router.currentRoute.params;
@@ -938,5 +958,12 @@ export default {
   },
   updatePreviewPicture(state, data) {
     state.previewPictureInstance = data;
-  }
+  },
+  // replaceMenuLocation(state, data) {
+  //   // index:需替换的索引
+  //   // currentMenuData
+  //   console.log(2, state.openedMenuLists);
+  //   state.openedMenuLists.splice(data.index, 1, data.currentMenuData); 
+  //   console.log(3, state.openedMenuLists);
+  // }
 };

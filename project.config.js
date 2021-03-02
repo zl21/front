@@ -1,10 +1,15 @@
 
+// 此分支用于开发表格过滤功能
+// 需求为：根据配置条件进行表格过滤，以tab的展现形式
+
+
+const path = require('path');
 
 module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
   projectIconPath: '', // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
-  target: 'http://r3-8098.dev.syman.cn/', // 框架研发网关开启环境
+  // target: 'http://r3-8098.dev.syman.cn/', // 框架研发网关开启环境
   // target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 新版本jflow测试环境
   // target: 'http://r3dev.qiaodan.com:28888', // 乔丹开发环境
   // target: 'http://r3dev.qiaodan.com:26666', // 乔丹开发环境
@@ -36,11 +41,11 @@ module.exports = {
   // target: 'http://101.133.142.45:27777/', // 乔丹
   // target: 'http://r3.ecsemir.com/', // 森马
   // target: ' http://47.103.6.45:27777/', // 森马
- 
-  
+  target: 'http://lark.shoptao.cn:8000/', // 云雀
+
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
-  enableGateWay: true, // 网关是否打开,
+  enableGateWay: false, // 网关是否打开,
   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用接口请求
   enableHistoryAndFavoriteUI: true, // 是否显示收藏与最近使用UI
   ignoreGateWayPattern: [/\/jflow\/*/g, /\/api\/*/g], // 框架默认禁用的网关逻辑的正则模式匹配
@@ -79,7 +84,7 @@ module.exports = {
   //     name: '工作流'
   //   },
   // },
-  enableActivateSameCustomizePage: false, // 跳转自定义界面，当自定义界面标识相同，是否只激活同一个tab,默认为false,自定义界面ID不同会打开多个tab
+  enableActivateSameCustomizePage: true, // 跳转自定义界面，当自定义界面标识相同，是否只激活同一个tab,默认为false,自定义界面ID不同会打开多个tab
   logoutTips: false, // 失去会话是否需要登出提示 默认false直接登出
   enableKAQueryDataForUser: false, // 是否开启存储全表查询条件
   dateStorageTime: 1, // 查询条件存储时间，默认1天,建议不要设置太大影响性能
@@ -101,16 +106,20 @@ module.exports = {
   }, 
   filterUrlForNetworkScript: () => true, // 框架默认true,
   listDefaultColumn: 4,
-  defaultrange: 20
   // (data) => {
   //   if (data.router.params) {
   //     if (data.router.params.tableName && data.config().configPage[data.router.params.tableName].filter(u => u === data.url).length > 0) { // 筛选出配置界面不需要根据框架code报错提示框的接口
   //       return false;
   //     } if (data.router.params.customizedModuleName && data.router.meta.routePrefix === '/CUSTOMIZED' && data.config().customizePage.filter(r => data.router.params.customizedModuleName.toLocaleLowerCase() === r.toLocaleLowerCase()).length > 0) {
-  //       // 筛选出定制界面不需要根据框架code报错提示框的接口
+  //       // 筛选出定制界面不需要根据框架code,报错提示框的接口
   //       return false;
   //     }
   //   }
   //   return true;
+  // }
+  isFilterTable: true, // 是否开启表格过滤功能
+  // DashboardRoute: {
+  //   component: FunctionPowerNew,
+  //   labelName: '功能权限',
   // }
 };
