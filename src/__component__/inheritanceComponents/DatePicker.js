@@ -55,7 +55,7 @@ class CustomDatePicker {
       default: () => true
     };
     const placeholder = {
-      default: () => '测试'
+      default: () => `请选择${this.item.coldesc}`
     };
 
     defaultProps.placeholder = placeholder;

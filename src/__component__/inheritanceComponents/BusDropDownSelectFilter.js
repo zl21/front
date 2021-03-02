@@ -58,7 +58,6 @@ class BusDropDownSelectFilter {
     
     const obj = { ...new BusDropDownTer().$options };
     this.item.Components = obj;
-    console.log(obj);
     // this.item.Components = obj;
     return obj;
   }

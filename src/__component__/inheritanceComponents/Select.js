@@ -32,9 +32,6 @@ class CustomSelect {
     this.mergeProps();
     this.mergeMethods();
 
-    this.item.template = {
-      template: '<Option  value="1" key="1">123</Option>'
-    };
     if (this.item.Components) {
       return this.item.Components;
     }
@@ -84,7 +81,7 @@ class CustomSelect {
 
   settingPlaceholder() { // 设置Placeholder属性
     const placeholder = this.item.webconf && this.item.webconf.placeholder ? this.item.webconf.placeholder : null;
-    this.item.props.placeholder = placeholder || `${(dataProp.input && dataProp.input.props) ? dataProp.input.props.placeholder : '请输入'}${this.item.coldesc}`;
+    this.item.props.placeholder = placeholder || `${(dataProp.select && dataProp.select.props) ? dataProp.select.props.placeholder : '请选择'}${this.item.coldesc}`;
   }
   
   settingOptions() {
