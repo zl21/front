@@ -67,16 +67,26 @@ export default class ParameterDataProcessing {
     }
 
     // 处理外健关联字段
-    if (Type.isArray(this.value) && this.item.display === 'OBJ_FK' && ['mrp', 'drp', 'pop', 'mop'].includes(this.item.fkobj.fkdisplay)) {
-      if (this.item.fkobj.fkdisplay === 'mop') {
+    if (this.item.display === 'OBJ_FK' && ['mrp', 'drp', 'pop', 'mop'].includes(this.item.fkobj.fkdisplay)) {
+      if (Type.isArray(this.value)) { // 处理外健选中时的传参
+        if (this.item.fkobj.fkdisplay === 'mop') {
+          return {
+            [this.item.colname]: this.value[0].ID
+          };
+        }
         return {
-          [this.item.colname]: this.value[0].ID
+          [this.item.colname]: this.value.map(item => item.ID)
         };
-      }
+      } // 外健模糊搜索时的传参
       return {
-        [this.item.colname]: this.value.map(item => item.ID)
+        [this.item.inputname]: this.value
       };
     }
+
+    // 处理日期字段
+    // if(){
+
+    // }
     return {
       [this.item.colname]: this.value
     };

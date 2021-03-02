@@ -58,6 +58,7 @@ class BusDropDownSelectFilter {
     
     const obj = { ...new BusDropDownTer().$options };
     this.item.Components = obj;
+    console.log(obj);
     // this.item.Components = obj;
     return obj;
   }
@@ -101,7 +102,7 @@ class BusDropDownSelectFilter {
 
   // 合并methods
   mergeMethods() {
-    this.BusDropDown.mixins[0].methods.postTableData = function postTableData(url) {
+    this.BusDropDown.mixins[0].methods.postTableData = function (url) {
       return new Promise((resolve) => {
         this.post(url, urlSearchParams({
           searchdata: this.searchdata
@@ -109,6 +110,11 @@ class BusDropDownSelectFilter {
           resolve(response);
         });
       });
+    };
+
+    this.BusDropDown.mixins[0].methods.valueChange = function (type) {
+      console.log(type);
+      // console.log(type, 123);
     };
   }
 }

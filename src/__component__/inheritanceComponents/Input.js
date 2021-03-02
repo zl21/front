@@ -76,19 +76,12 @@ class CustomInput {
 
   // 合并methods
   mergeMethods() {
+    const handleEnter = this.Input.methods.handleEnter;
+    
     this.Input.methods.handleEnter = function () {
-      this.$_live_getChildComponent(window.vm, 'S.TEST.23729').searchClickData();
-      // this.$parent.$parent.$parent.searchClickData();
+      handleEnter.call(this, ...arguments);
+      this.$_live_getChildComponent(window.vm, this.$store.state.global.activeTab.keepAliveModuleName).searchClickData();
     };
-    // if (this.item.coldesc === '编码') {
-    //   // const handleInput = this.Input.methods.handleInput;
-    //   this.Input.methods.handleInput = function (event) {
-    //     // const a = handleInput.bind(this);
-    //     // a(event);
-    //     this.$_live_getChildComponent(window.vm, 'TESTNAME').items.props.disabled = !!event.target.value;
-    //     this.$_live_getChildComponent(window.vm, 'TESTNAME').$forceUpdate();
-    //   };
-    // }
   }
 
   settingPlaceholder() { // 设置Placeholder属性

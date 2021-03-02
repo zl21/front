@@ -32,7 +32,9 @@ module.exports = {
     'no-eval':'off',
     'import/no-dynamic-require':'off',
     'no-console':'off',
-    'vue/no-async-in-computed-properties': 'off'
+    'vue/no-async-in-computed-properties': 'off',
+    'prefer-rest-params': 'off',
+    'func-names': 'off'
   },
   overrides: [
     {

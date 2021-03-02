@@ -169,6 +169,18 @@ class CustomAttachFilter {
         }
       }, 200);
     };
+
+
+    // 回车查询
+    const attachFilterInputKeydown = this.Input.methods.attachFilterInputKeydown;
+    this.Input.methods.attachFilterInputKeydown = function () {
+      attachFilterInputKeydown.call(this, ...arguments);
+      if (arguments[1].code === 'Enter') {
+        setTimeout(() => {
+          this.$_live_getChildComponent(window.vm, this.$store.state.global.activeTab.keepAliveModuleName).searchClickData();
+        }, 300);
+      }
+    };
   }
 
   settingPlaceholder() { // 设置Placeholder属性
