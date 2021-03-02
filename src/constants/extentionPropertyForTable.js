@@ -328,4 +328,13 @@ export default [
     enableIncrease: true,
     description: '增加单据标记的配置。字段生效规则: 展示区域字段存在 + 展示区域字段下至少有一条有效条件(同一行的 来源字段+来源字段选项组 都有值)，则视为有效数据。PS:每个展示区域字段组都支持长按拖拽排序'
   },
+  {
+    name: '按钮禁用条件',
+    key: 'listbutton_filter_conf',
+    type: 'custom',
+    component: 'ButtonFilter',
+    showLabel: false,
+    enableIncrease: true,
+    description: '增加按钮禁用条件的配置'
+  },
 ];

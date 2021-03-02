@@ -95,6 +95,8 @@
   import ExtentionOptions from './ExtentionOptions.vue';
   import MultiTab from './MultiTab.vue';
   import bindKey from './bindKey.vue';
+  import ButtonFilter from './ButtonFilter.vue';
+  import PassWord from './PassWord.vue';
 
   const getGuid = () => Math.round(Math.random() * 10000000000);
 
@@ -114,7 +116,9 @@
       ExtentionInputGroup,
       ExtentionOptions,
       MultiTab,
-      bindKey
+      bindKey,
+      ButtonFilter,
+      PassWord
     },
     props: {
       options: {
@@ -153,13 +157,32 @@
           }
         }
 
-        if ((this.rootData && 'multi_tab_conf' in this.rootData) || (this.rootData && 'key_group_conf' in this.rootData)) {
+        // 针对按钮过滤特殊处理,显示假的配置
+        if (fakeValue && 'listbutton_filter_conf' in fakeValue) {
+          fakeValue.listbutton_filter_conf = this.filterBtnData(fakeValue.listbutton_filter_conf);
+          if (fakeValue.listbutton_filter_conf.length === 0) {
+            delete fakeValue.listbutton_filter_conf;
+          }
+        }
+
+        if (this.showFakeValue()) {
           return JSON.stringify(fakeValue, null, 2);
         }
         return value;
       },
     },
     methods: {
+      // 判断是否展示假数据
+      showFakeValue() {
+        if (!this.rootData) {
+          return false;
+        }
+
+        const keyList = ['multi_tab_conf', 'key_group_conf', 'listbutton_filter_conf'];
+        const hasKey = keyList.some(key => key in this.rootData);
+        return hasKey;
+      },
+
       // 过滤多tab配置
       filterTabData(originData) {
         const cacheData = JSON.parse(JSON.stringify(originData));
@@ -203,6 +226,29 @@
           }
           // 删除无效字段组配置
           if ((!group.target.col_id) || group.source.length === 0) {
+            cacheData.splice(i, 1);
+          }
+        }
+
+        return cacheData;
+      },
+
+      // 过滤按钮配置
+      filterBtnData(originData) {
+        const cacheData = JSON.parse(JSON.stringify(originData));
+        for (let i = Math.max(cacheData.length - 1, 0); i >= 0; i--) {
+          const group = cacheData[i];
+          delete group.defaultselected;
+          for (let j = Math.max(group.filter.length - 1, 0); j >= 0; j--) {
+            const row = group.filter[j];
+            delete row.defaultselected;
+            // 删除无效来源字段
+            if (!row.col_id || !row.match_value) {
+              group.filter.splice(j, 1);
+            }
+          }
+          // 删除无效字段组配置
+          if ((!group.action_id) || group.filter.length === 0) {
             cacheData.splice(i, 1);
           }
         }
