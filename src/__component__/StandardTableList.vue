@@ -530,6 +530,7 @@
         // this.getQueryListForAg(this.searchData);
         this.getQueryListPromise(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+        this.$refs.agTableElement.clearChecked();
         // 按钮查找 查询第一页数据
         const { tableName } = this[INSTANCE_ROUTE_QUERY];
         const data = {
@@ -664,6 +665,7 @@
         // this.getQueryListForAg(this.searchData);
         this.getQueryListPromise(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+        this.$refs.agTableElement.clearChecked();
       },
       onPageChange(page) {
         this.resetButtonsStatus();
@@ -1577,6 +1579,7 @@
       // 按钮组操作
       clearSelectIdArray() { // 关闭打印预览与直接打印后清空选中项
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+        this.$refs.agTableElement.clearChecked();
         const detailTable = document.querySelector('.detailTable');
         const commonTable = document.querySelector('.commonTable');
 
@@ -1671,6 +1674,10 @@
         } else if (type === 'reset') {
           // 重置列表渲染
           this.resetForm();
+          console.log('重置');
+          // 查询成功后清除表格选中项
+          this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });
+          this.$refs.agTableElement.clearChecked();
         } else {
           this.searchClickData();
         }
@@ -1914,6 +1921,7 @@
         });
         if (item.ID) {
           this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+          this.$refs.agTableElement.clearChecked();
         }
 
         if (this.buttons.activeTabAction.cuscomponent) { // 如果接口cuscomponent有值，逻辑为自定义调自定义
@@ -2096,7 +2104,6 @@
           this.updataIsBig(false);
         }
         this.getQueryListPromise(this.searchData);
-        this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
       requiredCheck(data) { // 查询条件必填校验
         return new Promise((resolve, reject) => {
@@ -2146,6 +2153,7 @@
         });
         promise.then((res) => {
           this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+          this.$refs.agTableElement.clearChecked();
           if (!this.searchData.range) {
             if (Version() === '1.3') {
               this.searchData.range = res.data.datas.defaultrange;
@@ -2158,6 +2166,8 @@
           this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
         });
       },
+
+      // 弹出消息提示框
       dialogMessage(title, contentText, obj) {
         this.setErrorModalValue({
           title,
@@ -2334,6 +2344,9 @@
         }
 
         if (obj.name === this.buttonMap.CMD_EXPORT.name) {
+          // console.log('导出--', obj, this.buttons.selectIdArr, this.buttons.dataArray.waListButtonsConfig.waListButtons);
+          console.log('配置项', this.exportDialogConfig, this.buttons, obj);
+          
           // 导出
           if (this.buttons.selectIdArr.length === 0) {
             const title = '警告';
@@ -2341,7 +2354,12 @@
             this.dialogMessage(title, contentText, obj);
             return;
           }
-          this.batchExport(obj);
+          // this.batchExport(obj);
+          if (this.R3_openedApi_export && typeof this.R3_openedApi_export === 'function') {
+            this.R3_openedApi_export(obj);
+          } else {
+            this.batchExport(obj);
+          }
           return;
         }
 
@@ -2392,6 +2410,7 @@
           }
         }
       },
+
       batchExport(buttonsData) {
         this.$R3loading.show();
         let searchData = {};
@@ -2585,6 +2604,7 @@
           this.getToFavoriteDataForButtons(params);
         }
       },
+      // 点击确认后的弹框
       confirmDialog(obj) {
         // this.$nextTick(() => {
         if (this.buttons.selectIdArr.length > 0) {
@@ -2700,12 +2720,19 @@
           } else if (
             this.buttons.dialogConfig.contentText.indexOf('操作会执行全量导出') >= 0
           ) {
-            this.batchExport(obj);
+            // this.batchExport(obj);
+            // 是否需要进行二次校验
+            if (this.R3_openedApi_export && typeof this.R3_openedApi_export === 'function') {
+              this.R3_openedApi_export(obj);
+            } else {
+              this.batchExport(obj);
+            }
           } else if (this.buttons.selectSysment.length > 0) {
             this.searchData('backfresh');
           }
         }
       },
+
       errorDialogClose() {
         const errorDialogvalue = false;
         this.setErrorModalValue({ errorDialogvalue });
