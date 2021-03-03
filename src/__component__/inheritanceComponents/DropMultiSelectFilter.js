@@ -45,7 +45,9 @@ class CustomDropMultiSelectFilter {
   constructor(item) {
     this.item = item;
     // const BusDropDownSelectFilter = require('arkui_BCL/DropDownSelectFilter').default;
-    this.BusDropDown = deepClone(DropMultiSelectFilter);
+    // this.BusDropDown = deepClone(DropMultiSelectFilter);
+    const BusDropDown = Vue.extend(DropMultiSelectFilter);
+    this.BusDropDown = new BusDropDown().$options;
     delete this.BusDropDown._Ctor;
   }
 
@@ -54,12 +56,14 @@ class CustomDropMultiSelectFilter {
     this.mergeDatas();
     this.mergeMethods();
     
-    // ((item) => {
-    //   this.BusDropDown.mounted = function () {
-    //     console.log(item.coldesc, this);
-    //   };
-    // })(this.item);
-    return { ...this.BusDropDown };
+    if (this.item.Components) {
+      return this.item.Components;
+    }
+    const Con = Vue.extend(this.BusDropDown);
+    
+    const obj = { ...new Con().$options };
+    this.item.Components = obj;
+    return { obj };
   }
 
   // 合并props
@@ -74,8 +78,8 @@ class CustomDropMultiSelectFilter {
 
   propsUrl(props) { // 处理props中的url属性
     props.Url.default = () => ({
-      autoUr: `/${this.item.fkobj.serviceId}/p/cs/fuzzyquerybyak`,
-      tableUrl: `/${this.item.fkobj.serviceId}/p/cs/QueryList`
+      autoUr: `/p/cs/fuzzyquerybyak`,
+      tableUrl: `/p/cs/QueryList`
     });
   }
 
