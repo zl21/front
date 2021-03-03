@@ -2,9 +2,10 @@
  * DatePicker组件的自定义逻辑处理
  */
 import Vue from 'vue';
-import { DatePicker } from 'ark-ui';
+// import { DatePicker } from 'ark-ui';
 import dataProp from '../../__config__/props.config';
 
+let DatePicker = Ark.DatePicker;
 class CustomDatePicker {
   constructor(item) {
     this.item = item;

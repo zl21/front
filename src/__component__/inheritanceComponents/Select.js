@@ -2,9 +2,11 @@
  * select组件的自定义逻辑处理
  */
 import Vue from 'vue';
-import { Select } from 'ark-ui';
+
 import dataProp from '../../__config__/props.config';
 import regExp from '../../constants/regExp';
+
+let Select = Ark.Select
 // 深拷贝
 const deepClone = (arr) => {  
   const obj = arr.constructor == Array ? [] : {};

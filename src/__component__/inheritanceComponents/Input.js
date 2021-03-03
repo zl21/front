@@ -6,9 +6,10 @@
 */
 
 import Vue from 'vue';
-import { Input } from 'ark-ui';
 import dataProp from '../../__config__/props.config';
 import regExp from '../../constants/regExp';
+
+let Input = Ark.Input
 // 深拷贝
 const deepClone = (arr) => {  
   const obj = arr.constructor == Array ? [] : {};
