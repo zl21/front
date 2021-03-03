@@ -159,14 +159,10 @@ module.exports = {
   //   return true;
   // }
   isFilterTable: true, // 是否开启表格过滤功能
-  // DashboardRoute: {
-  //   component: FunctionPowerNew,
-  //   labelName: '功能权限',
+  // dashboard: {
+  //   compontent: () => import(
+  //     './src/__component__/Login.vue'
+  //   ),
+  //   // iconClass: 'iconfont iconmd-grid'
   // }
-  dashboard: {
-    compontent: () => import(
-      './src/__component__/WelcomePage.vue'
-    ),
-    // iconClass: 'iconfont iconmd-grid'
-  }
 };
