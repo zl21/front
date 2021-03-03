@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-              >
+               >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -1335,7 +1335,7 @@
             } else {
               params = {
                 delMTable: false,
-                objId: tableId,
+                objId: itemId,
                 tabItem: { ...itemTable },
                 table: tableName
               };
