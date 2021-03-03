@@ -77,11 +77,10 @@ class CustomAttachFilter {
     const placeholder = this.item.webconf && this.item.webconf.placeholder ? this.item.webconf.placeholder : null;
     defaultProps.PropsData = {
       default: () => ({
-        blurType: false,
-        coldesc: this.item.coldesc,
-        colid: this.item.colid,
-        colname: this.item.colname,
-        display: this.item.display,
+        blurType: false, // 失去光标是否默认选中第一行
+        colid: this.item.colid, // 表id
+        colname: this.item.colname, // 表名称
+        enterType: true, // 回车是否显示第一行
         fkobj: {
           colid: this.item.colid,
           fkdisplay: this.item.fkobj.fkdisplay,
@@ -94,7 +93,7 @@ class CustomAttachFilter {
             `${this.item.fkobj.serviceId ? (`/${this.item.fkobj.serviceId}`) : ''
             }/p/cs/menuimport`
         },
-        inputname: this.item.inputname,
+        inputname: this.item.inputname, 
         placeholder: placeholder || `${(dataProp.input && dataProp.input.props) ? dataProp.input.props.placeholder : '请输入'}${this.item.coldesc}`
       })
     };
@@ -134,7 +133,7 @@ class CustomAttachFilter {
         } else {
           // 处理弹窗单选数据
           // eslint-disable-next-line no-nested-ternary
-          this.$emit('valuechange', { value: this.propstype.fkdisplay === 'pop' ? ((this.selected && this.selected.length > 0) ? this.selected[0].ID : '') : this.value, selected: this.selected, type }, this);
+          this.$emit('valuechange', { value: this.PropsData.fkdisplay === 'pop' ? ((this.selected && this.selected.length > 0) ? this.selected[0].ID : '') : this.value, selected: this.selected, type }, this);
           this.$_live_getChildComponent(window.vm, `${this.$route.params.tableName}${_self.item.colname}`).value = this.selected;
         }
       }, 200);
