@@ -409,6 +409,7 @@
   import CustomDatePicker from '../inheritanceComponents/DatePicker';
   import CustomSelect from '../inheritanceComponents/Select';
   import CustomAttachFilter from '../inheritanceComponents/AttachFilter';
+  import CustomPopAttachFilter from '../inheritanceComponents/PopAttachFilter';
   import ParameterDataProcessing from './parameterDataProcessing';
 
   import {
@@ -576,16 +577,20 @@
           if (item.fkobj.fkdisplay === 'mrp') {
             Components = new CustomDropMultiSelectFilter(item).init();
           }
-          if (item.fkobj.fkdisplay === 'pop' || item.fkobj.fkdisplay === 'mop') {
+          if (item.fkobj.fkdisplay === 'mop') {
             Components = new CustomAttachFilter(item).init();
           }
+          if (item.fkobj.fkdisplay === 'pop') {
+            Components = new CustomPopAttachFilter(item).init();
+          }
+         
           break;
         case 'OBJ_DATE':
         case 'OBJ_DATENUMBER':
-          Components = new CustomDatePicker(this.items).init();
+          Components = new CustomDatePicker(item).init();
           break;
         case 'OBJ_SELECT':
-          Components = new CustomSelect(this.items).init();
+          Components = new CustomSelect(item).init();
           break;
         default:
           break;

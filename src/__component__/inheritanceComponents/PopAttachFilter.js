@@ -7,10 +7,9 @@
 
 
 import Vue from 'vue';
-import ComAttachFilter from 'arkui_BCL/MopMultiSelect';
+import ComAttachFilter from '../ComAttachFilter.vue';
 import dataProp from '../../__config__/props.config';
 import regExp from '../../constants/regExp';
-import network from '../../__utils__/network';
 // 深拷贝
 const deepClone = (arr) => {  
   const obj = arr.constructor == Array ? [] : {};
@@ -75,12 +74,42 @@ class CustomAttachFilter {
     };
 
     const placeholder = this.item.webconf && this.item.webconf.placeholder ? this.item.webconf.placeholder : null;
-    defaultProps.PropsData = {
+    defaultProps.propstype = {
       default: () => ({
-        blurType: false, // 失去光标是否默认选中第一行
-        colid: this.item.colid, // 表id
-        colname: this.item.colname, // 表名称
-        enterType: true, // 回车是否显示第一行
+        AutoData: [],
+        Selected: defaultValue,
+        blurType: false,
+        coldesc: this.item.coldesc,
+        colid: this.item.colid,
+        colname: this.item.colname,
+        datalist: this.item.fkobj.fkdisplay === 'mop' ? [{
+          lable: 0,
+          value: '更多筛选'
+        }, {
+          lable: 2,
+          sendData: {
+            table: this.item.fkobj.reftable
+          },
+          url: '/p/cs/menuimport',
+          value: '导入'
+        }] : [],
+        dialog: {
+          model: {
+            closable: true,
+            draggable: true,
+            'footer-hide': this.item.fkobj.fkdisplay === 'pop',
+            mask: true,
+            maskClosable: false,
+            scrollable: true,
+            width: 920,
+            title: this.item.fkobj.fkdisplay === 'mop' ? '弹窗多选' : null
+          }
+        },
+        display: this.item.display,
+        enterType: true,
+        filterDate: {},
+        filterTip: true,
+        fkdisplay: this.item.fkobj.fkdisplay,
         fkobj: {
           colid: this.item.colid,
           fkdisplay: this.item.fkobj.fkdisplay,
@@ -93,11 +122,14 @@ class CustomAttachFilter {
             `${this.item.fkobj.serviceId ? (`/${this.item.fkobj.serviceId}`) : ''
             }/p/cs/menuimport`
         },
-        inputname: this.item.inputname, 
+        hideColumnsKey: ['id'],
+        inputname: this.item.inputname,
+        optionTip: this.item.fkobj.fkdisplay === 'mop',
+        show: this.item.fkobj.fkdisplay === 'mop',
         placeholder: placeholder || `${(dataProp.input && dataProp.input.props) ? dataProp.input.props.placeholder : '请输入'}${this.item.coldesc}`
       })
     };
-   
+
     // this.settingPlaceholder();
     // if (this.item.type === 'NUMBER') {
     //   this.numericTypes();
@@ -116,8 +148,7 @@ class CustomAttachFilter {
       }
       return item;
     });
-    defaultProps.http.default = () => network;
-
+    
     this.Input.props = defaultProps;
   }
 
@@ -133,7 +164,7 @@ class CustomAttachFilter {
         } else {
           // 处理弹窗单选数据
           // eslint-disable-next-line no-nested-ternary
-          this.$emit('valuechange', { value: this.PropsData.fkdisplay === 'pop' ? ((this.selected && this.selected.length > 0) ? this.selected[0].ID : '') : this.value, selected: this.selected, type }, this);
+          this.$emit('valuechange', { value: this.propstype.fkdisplay === 'pop' ? ((this.selected && this.selected.length > 0) ? this.selected[0].ID : '') : this.value, selected: this.selected, type }, this);
           this.$_live_getChildComponent(window.vm, `${this.$route.params.tableName}${_self.item.colname}`).value = this.selected;
         }
       }, 200);
