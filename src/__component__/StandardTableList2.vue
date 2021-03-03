@@ -1438,6 +1438,8 @@
         return obj;
       },
       resetForm() {
+        const Form = this.$_live_getChildComponent(window.vm, 'listsForm');
+        this.$_live_getChildComponent(window.vm, 'listsForm').resetForm();
         this.filterTableParam = {};
         this.resetTabParam();
         // 列表查询重置

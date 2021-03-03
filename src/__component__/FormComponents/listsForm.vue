@@ -13,7 +13,7 @@
     </div>
     <div
       v-for="(item,index) in Object.keys(ItemLists)"
-      :key="index"
+      :key="Math.random()"
       :class="['item',ItemLists[item].colname,(index > (defaultColumn*searchFoldnum - 1) && !dowClass)?'long':'']"
     >
       <component
@@ -27,6 +27,7 @@
 <script>
   import RenderComponent from './RenderComponent';
   import ParameterDataProcessing from './parameterDataProcessing';
+  import { listDefaultColumn } from '../../constants/global'; 
 
   export default {
     computed: {
@@ -70,6 +71,21 @@
       };
     },
     methods: {
+      resetForm() {
+        // 处理合并字段
+        this.ItemLists = {}
+        this.formArray = []
+        this.formItemLists.map((item, index) => {
+          if (item.colname) {
+            this.ItemLists[item.colname] = JSON.parse(JSON.stringify(item));
+          } else {
+            item.colname = `R3_index_${index}`;
+            this.ItemLists[item.colname] = JSON.parse(JSON.stringify(item));
+          }
+          this.formArray.push(JSON.parse(JSON.stringify(item)));
+          return item;
+        });
+      },
       initComponent(item) { // init组件
         const Render = new RenderComponent(item, this.id);
         return Render.Initialize();
@@ -133,18 +149,7 @@
       }
     },
     created() {
-      // 处理合并字段
-      this.formItemLists.map((item, index) => {
-        if (item.colname) {
-          this.ItemLists[item.colname] = item;
-        } else {
-          item.colname = `R3_index_${index}`;
-          this.ItemLists[item.colname] = item;
-        }
-        this.formArray.push(item);
-        return item;
-      });
-      
+      this.resetForm()
       // 处理折叠的默认值
       this.dowClass = !this.defaultSpread;
     }
