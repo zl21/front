@@ -63,7 +63,7 @@ class CustomDropMultiSelectFilter {
     
     const obj = { ...new Con().$options };
     this.item.Components = obj;
-    return { obj };
+    return { ...obj };
   }
 
   // 合并props
