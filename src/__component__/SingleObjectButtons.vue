@@ -2759,7 +2759,7 @@
                         buttonInfo,
                         path: obj.requestUrlPath,
                         table: this.tableName,
-                        objId: this.itemId,
+                        objId: this.tableId,
                         currentParameter: this.currentParameter,
                         itemName: this.itemName,
                         isreftabs: this.subtables(),
@@ -2865,7 +2865,7 @@
                 onOk: () => {
                   const promise = new Promise((resolve, reject) => {
                     this.performMainTableDeleteAction({
-                      buttonInfo, table: this.tableName, objId: this.tableID, resolve, reject
+                      buttonInfo, table: this.tableName, objId: this.tableId, resolve, reject
                     });
                   });
                   promise.then(() => {
