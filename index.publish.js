@@ -26,6 +26,7 @@ import SelectTree from './src/__component__/Tree/SelectTree.vue';
 import DocFile from './src/__component__/docfile/DocFileComponent.vue';
 import { menuClick } from './src/__config__/event.config';
 import { connector } from './src/constants/global';
+import './src/constants/dateApi';
 
 import { getKeepAliveModuleName } from './src/__config__/router.navigation.guard';
 

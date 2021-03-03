@@ -12,10 +12,8 @@ import {
   VERTICAL_TABLE_DETAIL_PREFIX,
   PLUGIN_MODULE_PREFIX,
   LINK_MODULE_PREFIX,
-  dashboardConfig
 } from '../constants/global';
 
-const dashboardCompontent = dashboardConfig() && dashboardConfig().compontent ? dashboardConfig().compontent : null;
 
 const routes = [
   {
@@ -24,7 +22,7 @@ const routes = [
     children: [
       {
         path: '/',
-        component: dashboardCompontent
+        component: WelcomePage
       }, {
         path: `${STANDARD_TABLE_LIST_PREFIX}/:tableName/:tableId`, //
         component: KeepAliveContainer,

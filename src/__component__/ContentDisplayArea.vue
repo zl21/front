@@ -6,7 +6,7 @@
     <!-- 模块页签组件 -->
     <TabLists v-show="enableTabLists&&openedMenuLists.length>0&&!flag" />
     <div
-      v-show="openedMenuLists.length>0&&!flag"
+      v-show="(openedMenuLists.length>0&&!flag)||!getDashboardConfig"
       id="content"
       style="height: 100%; padding: 0 15px 0;overflow: auto;position: relative"
     >
@@ -21,6 +21,7 @@
     >
       <component
         :is="getDashboardConfig.compontent"
+        v-if="getDashboardConfig&&getDashboardConfig.compontent"
       />
     </div>
   </div>
@@ -67,7 +68,10 @@
         return Object.keys(this.keepAliveLists.map(d => d.split('.')[0]).reduce((a, c) => { a[c] = true; return a; }, {})).map(d => `${d}.Table.KeepAlive`);
       },
       getDashboardConfig() {
-        return dashboardConfig();
+        if (dashboardConfig()) {
+          return dashboardConfig();
+        }
+        return null;
       },
     },
     components: {
