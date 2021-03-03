@@ -1,12 +1,16 @@
 /**
  * 下拉单选外健关联业务组件的自定义逻辑处理
  */
-import DropDownSelectFilter from 'arkui_BCL/DropDownSelectFilter';
+// import DropDownSelectFilter from 'arkui_BCL/DropDownSelectFilter';
 import Vue from 'vue';
 import { defaultrange } from '../../constants/global';
 import network from '../../__utils__/network';
 
-// const BusDropDownSelectFilter = () => import('arkui_BCL/DropDownSelectFilter');
+const DropDownSelectFilter = () => import('arkui_BCL/DropDownSelectFilter');
+let test = null
+DropDownSelectFilter().then(data => {
+  test = data.default
+})
 // console.log(BusDropDown);
 // 处理传参form格式转换
 const urlSearchParams = (data) => {
@@ -43,7 +47,7 @@ class BusDropDownSelectFilter {
   constructor(item) {
     this.item = item;
     // const BusDropDownSelectFilter = require('arkui_BCL/DropDownSelectFilter').default;
-    const BusDropDown = Vue.extend(DropDownSelectFilter);
+    const BusDropDown = Vue.extend(test);
     this.BusDropDown = new BusDropDown().$options;
     delete this.BusDropDown._Ctor;
   }

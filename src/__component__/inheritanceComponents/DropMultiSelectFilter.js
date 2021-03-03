@@ -5,8 +5,14 @@
 /**
  * 下拉单选外健关联业务组件的自定义逻辑处理
  */
-import DropMultiSelectFilter from 'arkui_BCL/DropMultiSelectFilter';
+// import DropMultiSelectFilter from 'arkui_BCL/DropMultiSelectFilter';
 import { defaultrange } from '../../constants/global';
+
+const DropMultiSelectFilter = () => import('arkui_BCL/DropMultiSelectFilter');
+let test = null
+DropMultiSelectFilter().then(data => {
+  test = data.default
+})
 
 // const BusDropDownSelectFilter = () => import('arkui_BCL/DropDownSelectFilter');
 // console.log(BusDropDown);
@@ -46,7 +52,7 @@ class CustomDropMultiSelectFilter {
     this.item = item;
     // const BusDropDownSelectFilter = require('arkui_BCL/DropDownSelectFilter').default;
     // this.BusDropDown = deepClone(DropMultiSelectFilter);
-    const BusDropDown = Vue.extend(DropMultiSelectFilter);
+    const BusDropDown = Vue.extend(test);
     this.BusDropDown = new BusDropDown().$options;
     delete this.BusDropDown._Ctor;
   }
@@ -78,7 +84,7 @@ class CustomDropMultiSelectFilter {
 
   propsUrl(props) { // 处理props中的url属性
     props.Url.default = () => ({
-      autoUr: `/p/cs/fuzzyquerybyak`,
+      autoUrl: `/p/cs/fuzzyquerybyak`,
       tableUrl: `/p/cs/QueryList`
     });
   }

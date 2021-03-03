@@ -10,6 +10,7 @@ import Vue from 'vue';
 import ComAttachFilter from '../ComAttachFilter.vue';
 import dataProp from '../../__config__/props.config';
 import regExp from '../../constants/regExp';
+
 // 深拷贝
 const deepClone = (arr) => {  
   const obj = arr.constructor == Array ? [] : {};
