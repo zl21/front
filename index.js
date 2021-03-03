@@ -4,7 +4,7 @@ import Viewer from 'v-viewer';
 import { getGuid } from './src/__utils__/random';
 import router from './src/__config__/router.config';
 import store from './src/__config__/store.config';
-import App from './src/App';
+import App from './src/App.vue';
 import './src/constants/dateApi';
 import network from './src/__utils__/network';
 import {
@@ -13,7 +13,8 @@ import {
 import { removeSessionObject, getSessionObject } from './src/__utils__/sessionStorage';
 import { getLocalObject } from './src/__utils__/localStorage';
 
-import CompositeForm from './src/__component__/CompositeForm';
+import CompositeForm from './src/__component__/CompositeForm.vue';
+import R3Dialog from './src/__globalComponentModule__/dialog';
 import customizedModalConfig from './src/__config__/customizeDialog.config';
 import Loading from './src/__utils__/loading';
 import getObjdisType from './src/__utils__/getObjdisType';
@@ -97,7 +98,7 @@ Vue.mixin({
 });
 
 Vue.use(VueDND);
-
+Vue.use(R3Dialog); // 注册全局api调用组件
 Vue.use(Viewer);
 Vue.prototype.$createWatermark = createWatermark;
 

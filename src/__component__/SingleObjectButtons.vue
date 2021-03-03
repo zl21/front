@@ -716,6 +716,10 @@
           }
         });
         if (type === 'fix') {
+          // 处理存储过程逻辑，配置的path中带有sp|时则走框架的标准逻辑，不走定制path
+          if (obj && obj.requestUrlPath && obj.requestUrlPath.includes('sp|')) {
+            obj.requestUrlPath = null;
+          }
           this.objectTabAction(obj);// 标准按钮执行方法
         } else if (type === 'custom') {
           this.webactionClick(obj);// 自定义按钮执行方法
@@ -1146,7 +1150,12 @@
           break;
 
         case 'actionEXPORT': // 导出
-          this.objectEXPORT();
+          console.log('单对象导出');
+          if (this.R3_openedApi_export && typeof this.R3_openedApi_export === 'function') {
+            this.R3_openedApi_export();
+          } else {
+            this.objectEXPORT();
+          }
           break;
         case 'actionDELETE': // 删除
           this.objectTryDelete(obj);
@@ -1859,6 +1868,11 @@
             }
           }
           params = obj;
+        }
+
+        // 处理存储过程逻辑，配置的path中带有sp|时则走框架的标准逻辑，不走定制path
+        if (tab.action && tab.action.includes('sp|')) {
+          tab.action = null;
         }
         
 

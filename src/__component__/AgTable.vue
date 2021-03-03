@@ -86,9 +86,10 @@
     name: 'AgTable',
     data() {
       return {
-      // bigBackground: require('../assets/image/isBig.png')
-      // isCommonTable: true, // 是否显示普通表格
-      // isCommonTable: false, // 是否显示普通表格
+        // bigBackground: require('../assets/image/isBig.png')
+        // isCommonTable: true, // 是否显示普通表格
+        // isCommonTable: false, // 是否显示普通表格
+        selectRow: []
       };
     },
     components: {
@@ -256,10 +257,9 @@
             if (agGridTableContainer && agGridTableContainer.agTable) {
               agGridTableContainer.agTable.fixContainerHeight();
               agGridTableContainer.agTable.emptyAllFilters();
-              agGridTableContainer.agTable.dealWithPinnedColumns(
-                true,
-                val.fixedColumn || ''
-              );
+              agGridTableContainer.agTable.dealWithPinnedColumns(true, val.fixedColumn || '');
+
+              this.setTableSelected();
             }
           }, 30);
         }
@@ -338,6 +338,9 @@
           onSelectionChanged: (rowIdArray, rowArray) => {
             if (typeof self.onSelectionChanged === 'function') {
               self.onSelectionChanged(rowIdArray, rowArray);
+
+              // ag回填
+              this.selectRow = rowIdArray;
             }
           },
           onColumnMoved: (columnState) => {
@@ -359,13 +362,24 @@
         }
         return null;
       },
+
+      // 清除勾选
+      clearChecked() {
+        if (this.$refs.commonTable) {
+          this.$refs.commonTable.selectedIndex = []; // 清空普通表格勾选缓存
+        }
+        this.selectRow = []; // 清空ag表格勾选缓存
+      },
+
       pageChange(pageNum) {
+        this.clearChecked();
         const self = this;
         if (typeof self.onPageChange === 'function') {
           self.onPageChange(pageNum);
         }
       }, // 页码改变
       pageSizeChange(pageSize) {
+        this.clearChecked();
         const self = this;
         if (typeof self.onPageSizeChange === 'function') {
           self.onPageSizeChange(pageSize);
@@ -384,6 +398,28 @@
       customizedDialog(params) {
         this.$emit('CommonTableCustomizedDialog', params);
       },
+
+      // 回填表格勾选
+      setTableSelected() {
+        setTimeout(() => {
+          if (this.selectRow.length > 0) {
+            const { agGridTableContainer } = this.$refs;
+
+            const selectedIndex = [];
+            this.datas.row.forEach((row, index) => {
+              if (this.selectRow.includes(row.ID.val)) {
+                selectedIndex.push(index);
+              }
+            });
+
+            agGridTableContainer.agTable.api.forEachNode((node, index) => {
+              if (selectedIndex.includes(index)) {
+                agGridTableContainer.agTable.api.selectNode(node, true);
+              }
+            });
+          }
+        }, 20);
+      }
     },
     activated() {
       if (!this.isCommonTable && !this.isBig) {
@@ -391,6 +427,8 @@
         if (agGridTableContainer.agTable) {
           agGridTableContainer.agTable.fixAgRenderChoke();
           agGridTableContainer.agTable.fixContainerHeight();
+
+          this.setTableSelected();
         }
       }
     },

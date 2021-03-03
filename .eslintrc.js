@@ -35,6 +35,8 @@ module.exports = {
     'vue/no-async-in-computed-properties': 'off',
     'prefer-rest-params': 'off',
     'func-names': 'off'
+    'vue/html-self-closing': 'off'
+
   },
   overrides: [
     {
