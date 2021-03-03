@@ -28,6 +28,8 @@ import { menuClick } from './src/__config__/event.config';
 import { connector } from './src/constants/global';
 
 import { getKeepAliveModuleName } from './src/__config__/router.navigation.guard';
+import './src/constants/dateApi';
+
 
 const validateConfig = config => ({
   isQualified: true,
