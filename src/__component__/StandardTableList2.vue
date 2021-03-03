@@ -1,9 +1,8 @@
-/* eslint-disable no-shadow */
 
 <!--suppress ALL -->
 <template>
   <div
-    :id="buttons.tableName"
+    :id=" this.$router.currentRoute.params.tableName"
     class="standarTableListContent"
   >
     <!-- oldTree
@@ -58,11 +57,10 @@
         :form-items-data="formItems.data"
         :form-item-lists="formItemsLists"
         :default-spread="changeSearchFoldnum.switchValue"
-        :default-column="Number(4)"
+        :default-column="Number(defaultColumn)"
         :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
         @formDataChange="formDataChange"
       /> -->
-
       <listsForm
         v-if="formItems.defaultFormItemsLists && formItems.defaultFormItemsLists.length > 0"
         :id="$route.params.tableName"
@@ -71,6 +69,12 @@
         :default-column="Number(4)"
         :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
       />
+      <tabBar
+        v-if="getFilterTable"
+        :data="ag.tablequery"
+        @tabClick="tabClick"
+      />
+
       <AgTable
         ref="agTableElement"
         :style="agTableElementStyles"
@@ -78,9 +82,10 @@
         :datas="ag.datas"
         :css-status="ag.status4css"
         :legend="ag.status4css"
+        :is-filter-table="getFilterTable"
         :user-config-for-ag-table="userConfigForAgTable"
-        :on-page-change="onPageChange"
-        :on-page-size-change="onPageSizeChange"
+        :on-page-change="getFilterTable?onPageChangeForFilterTable:onPageChange"
+        :on-page-size-change="getFilterTable?onPageSizeChangeForFilterTable:onPageSizeChange"
         :on-selection-changed="onSelectionChanged"
         :on-row-double-click="onRowDoubleClick"
         :on-sort-changed="onSortChange"
@@ -143,6 +148,7 @@
       :footer-hide="dialogComponentNameConfig.footerHide"
       :confirm="dialogComponentNameConfig.confirm"
       :dialog-component-name="dialogComponentName"
+      :isrefrsh="buttons.isrefrsh"
       @dialogComponentSaveSuccess="dialogComponentSaveSuccess"
     />
     <!-- 批量 -->
@@ -161,7 +167,7 @@
   import { mapActions, mapState, mapMutations } from 'vuex';
   import ButtonGroup from './ButtonComponent.vue';
   import AgTable from './AgTable.vue';
-  // import FormItemComponent from './FormItemComponent.vue';
+  import FormItemComponent from './FormItemComponent.vue';
   import ItemComponent from './ItemComponent.vue';
   import buttonmap from '../assets/js/buttonmap';
   import dialogComponent from './Dialog.vue';
@@ -172,9 +178,6 @@
   import tree from './tree.vue';
   import regExp from '../constants/regExp';
   import getObjdisType from '../__utils__/getObjdisType';
-  import listsForm from './FormComponents/listsForm.vue';
-
-
   import {
     Version,
     CUSTOMIZED_MODULE_PREFIX,
@@ -184,7 +187,9 @@
     isCommonTable,
     enableActivateSameCustomizePage,
     enableKAQueryDataForUser,
-    blockFullOperation
+    blockFullOperation,
+    isFilterTable,
+    listDefaultColumn
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import customize from '../__config__/customize.config';
@@ -195,6 +200,8 @@
   import treeData from '../__config__/treeData.config';
   import getUserenv from '../__utils__/getUserenv';
   import { addSearch, querySearch } from '../__utils__/indexedDB';
+  import tabBar from './tabBar.vue';
+  import listsForm from './FormComponents/listsForm';
 
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
@@ -204,11 +211,12 @@
       tree,
       ButtonGroup,
       AgTable,
-      // FormItemComponent,
+      FormItemComponent,
       ImportDialog,
       ErrorModal,
       modifyDialog,
       dialogComponent,
+      tabBar,
       listsForm
     },
     data() {
@@ -240,6 +248,8 @@
           confirm: () => {
           }
         }, // 弹框配置信息
+        currentTabValue: {},
+        filterTableParam: {},
 
       };
     },
@@ -254,11 +264,16 @@
         changeSearchFoldnum: ({ changeSearchFoldnum }) => changeSearchFoldnum,
         userInfo: ({ userInfo }) => userInfo,
       }),
+      getFilterTable() {
+        if (isFilterTable() && this.ag.tablequery.open) {
+          return true;
+        }
+        return false;
+      },
       getCurrentLabel() {
         return this.keepAliveLabelMaps[this[MODULE_COMPONENT_NAME]];
       },
       formLists() {
-        return [];
         return this.refactoringData(
           this.formItems.defaultFormItemsLists.concat([])
         );
@@ -308,23 +323,26 @@
         } 
       
         return [];
+      },
+      defaultColumn() { // 获取配置列表一行几列数据
+        return listDefaultColumn();
       }
     },
     watch: {
-      // formLists() {
-      //   const arr = JSON.parse(JSON.stringify(this.formLists));
-      //   arr.map((temp, index) => {
-      //     temp.component = this.formLists[index].component;
-      //     temp.item.event = this.formLists[index].item.event;
-      //     temp.item.props = this.formLists[index].item.props;
-      //     temp.labelWidth = 90;
-      //     return temp;
-      //   });
+      formLists() {
+        const arr = JSON.parse(JSON.stringify(this.formLists));
+        arr.map((temp, index) => {
+          temp.component = this.formLists[index].component;
+          temp.item.event = this.formLists[index].item.event;
+          temp.item.props = this.formLists[index].item.props;
+          temp.labelWidth = 90;
+          return temp;
+        });
 
-      //   if (JSON.stringify(arr) !== JSON.stringify(this.formItemsLists)) {
-      //     this.formItemsLists = arr;
-      //   }
-      // },
+        if (JSON.stringify(arr) !== JSON.stringify(this.formItemsLists)) {
+          this.formItemsLists = arr;
+        }
+      },
       $route() {
         setTimeout(() => {
           // 当路由变化，且观测到是返回动作的时候，延迟执行查询动作。
@@ -354,6 +372,129 @@
       },
     },
     methods: {
+      onPageSizeChangeForFilterTable(pageSize) {
+        this.resetButtonsStatus();
+        this.searchData.startIndex = 0;
+        this.searchData.range = pageSize;
+        if (this.currentTabValue.tabValue.tab_value) {
+          Object.values(this.currentTabValue.tabValue.tab_value).map((item) => {
+            this.searchData.fixedcolumns = Object.assign({}, item, this.searchData.fixedcolumns);
+            this.filterTableParam = item;
+          });
+        }
+         
+        const param = {
+          startIndex: this.searchData.startIndex,
+          range: this.searchData.range,
+          index: this.currentTabValue.index
+        };
+        this.updateTabParam(param);
+        this.getQueryList();
+      },
+      
+      onPageChangeForFilterTable(page) {
+        this.resetButtonsStatus();
+
+        const { range } = this.searchData;
+        this.searchData.startIndex = range * (page - 1);
+        if (this.currentTabValue.tabValue.tab_value) {
+          Object.values(this.currentTabValue.tabValue.tab_value).map((item) => {
+            this.searchData.fixedcolumns = Object.assign({}, item, this.searchData.fixedcolumns);
+            this.filterTableParam = item;
+          });
+        }
+        const param = {
+          startIndex: this.searchData.startIndex,
+          range: this.searchData.range,
+          index: this.currentTabValue.index
+        };
+        this.updateTabParam(param);
+        this.getQueryList();
+      },
+      firstSearchTable() {
+        this.resetButtonsStatus();
+
+        if (this.getFilterTable) {
+          const el = this.$_live_getChildComponent(this, 'tabBar');
+          el.tabClick(0);
+          const obj = {
+            index: 0,
+            tabValue: this.ag.tablequery.multi_tab[0]
+          };
+          this.currentTabValue = obj;
+        } else if (!this.buttons.isBig) {
+          this.searchClickData();
+        }
+      },
+      tabClick({ data, index }) {
+        this.filterTableParam = {};
+        if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].startIndex) {
+          this.searchData.startIndex = data.startIndex;
+        } else {
+          this.searchData.startIndex = 0;
+        }
+        if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].range) {
+          this.searchData.range = data.range;
+        } else {
+          delete this.searchData.range;
+        }
+        this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName; 
+        this.searchData.fixedcolumns = this.dataProcessing();
+        if (data.tab_value) {
+          // Object.values(data.tab_value).map((item) => {
+          //   this.searchData.fixedcolumns = Object.assign({}, item, this.searchData.fixedcolumns);
+          //   this.filterTableParam = item;
+          // });
+          let arrRes = [];
+          const tabValue = JSON.parse(JSON.stringify(data.tab_value));
+          this.searchData.fixedcolumns = Object.values(tabValue).reduce((arr, obj) => {
+            Object.keys(this.searchData.fixedcolumns).map((key) => {
+              if (obj[key]) {
+                if (obj[key] !== this.searchData.fixedcolumns[key]) {
+                  switch (Object.prototype.toString.call(obj[key])) {
+                  case '[object String]':
+                    if (obj[key].includes('~')) { // 判断否是时间段类型字段,取两个时间的并集
+                      let dateArray = [];
+                      dateArray = dateArray.concat(this.searchData.fixedcolumns[key].split('~'));
+                      dateArray = dateArray.concat(obj[key].split('~'));
+                      dateArray.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+                      arr[key] = [dateArray[0], dateArray[3]].join('~');
+                    } else {
+                      arr[key] = `${obj[key]},${this.searchData.fixedcolumns[key]}`;
+                      arrRes = arr[key].split(',');
+                      arr[key] = Array.from(new Set(arrRes));
+                      arr[key] = arr[key].toString();
+                    }
+                    
+                    break;
+                  case '[object Array]':
+                    arr[key] = obj[key].concat(this.searchData.fixedcolumns[key]);
+                    arr[key] = Array.from(new Set(arr[key]));
+                    
+                    break;
+                  default:
+                    break;
+                  }
+                  return obj[key];
+                } 
+              }
+              arr[key] = this.searchData.fixedcolumns[key];
+            });
+
+            arr = Object.assign(obj, arr);
+            return arr;
+          }, {});
+          this.filterTableParam = this.searchData.fixedcolumns;
+          // this.searchData.fixedcolumns = Object.assign(this.searchData.fixedcolumns, popwinMessage);
+        }
+        const obj = {
+          index,
+          tabValue: data
+        };
+        this.currentTabValue = obj;
+        this.getQueryListPromise(this.searchData);
+        this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+      },
       // a() {
       //   // 插入列表界面默认值
       //   const data = {
@@ -399,6 +540,7 @@
         // this.getQueryListForAg(this.searchData);
         this.getQueryListPromise(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+        this.$refs.agTableElement.clearChecked();
         // 按钮查找 查询第一页数据
         const { tableName } = this[INSTANCE_ROUTE_QUERY];
         const data = {
@@ -533,13 +675,18 @@
         // this.getQueryListForAg(this.searchData);
         this.getQueryListPromise(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+        this.$refs.agTableElement.clearChecked();
       },
       onPageChange(page) {
+        this.resetButtonsStatus();
+
         const { range } = this.searchData;
         this.searchData.startIndex = range * (page - 1);
         this.getQueryList();
       },
       onPageSizeChange(pageSize) {
+        this.resetButtonsStatus();
+
         this.searchData.startIndex = 0;
         this.searchData.range = pageSize;
         this.getQueryList();
@@ -655,19 +802,46 @@
       }, // ag表格行双击回调
       onSortChange(sortArr) {
         const { tableName } = this[INSTANCE_ROUTE_QUERY];
-        this.searchData.orderby = sortArr.map((d) => {
+        const transferFormat_param = {
+          sortArr,
+          tableName
+        };
+        const obj = {
+          orderbyData: this.transferFormat(transferFormat_param),
+          searchData: this.searchData
+        };
+        this.orderby(obj); 
+        this.getQueryList();
+      },
+      transferFormat(obj) {
+        return obj.sortArr.map((d) => {
           if (d.sort === 'normal') {
             return {
-              column: `${tableName}.${d.colId || 'COMUMN_NOT_EXIST'}`,
+              column: `${obj.tableName}.${d.colId || 'COMUMN_NOT_EXIST'}`,
               // asc: d.sort === 'asc'
             };
           }
           return {
-            column: `${tableName}.${d.colId || 'COMUMN_NOT_EXIST'}`,
+            column: `${obj.tableName}.${d.colId || 'COMUMN_NOT_EXIST'}`,
             asc: d.sort === 'asc'
           };
         });
-        this.getQueryList();
+      },
+      orderby(obj) {
+        if (obj.searchData.orderby) {
+          const filterSort = this.searchData.orderby.filter(d => d.column === obj.orderbyData[0].column && d.asc !== obj.orderbyData[0].asc);
+          if (filterSort.length > 0) {
+            this.searchData.orderby.map((d) => {
+              if (d.column === obj.orderbyData[0].column && d.asc !== obj.orderbyData[0].asc) {
+                d.asc = obj.orderbyData[0].asc;
+              } 
+            });
+          } else {
+            this.searchData.orderby = this.searchData.orderby.concat(obj.orderbyData);
+          }
+        } else {
+          this.searchData.orderby = obj.orderbyData;
+        }
       },
       onColumnMoved(cols) {
         const { tableId } = this[INSTANCE_ROUTE_QUERY];
@@ -694,7 +868,7 @@
         this.updateAgConfig({ key: 'hideColumn', value: hideCols });
       },
       onCellSingleClick(colDef, rowData, target) {
-        const { tableId } = this[INSTANCE_ROUTE_QUERY];
+        // const { tableId } = this[INSTANCE_ROUTE_QUERY];
         if (target.getAttribute('data-target-tag') === 'fkIcon') {
           window.sessionStorage.setItem('dynamicRouting', true);
           const {
@@ -876,6 +1050,8 @@
               return str;
             }
 
+            obj.row = current.row ? current.row : 1;
+            obj.col = current.col ? current.col : 1;
             obj.component = ItemComponent;
             
 
@@ -887,143 +1063,150 @@
               inputname: current.inputname,
               props: {
               },
-              // event: {
-              //   keydown: (event) => {
-              //     // 输入框的keydown event, $this
-              //     if (event.keyCode === 13) {
-              //       // enter回车查询
-              //       this.searchClickData();
-              //     }
-              //   },
-              //   fkrpSelected: (value) => {
-              //     this.formItemsLists[itemIndex].item.props.AutoData = [];
-              //     this.formItemsLists[itemIndex].item.value = value;
-              //     // this.formItemsLists = this.formItemsLists.concat([]);
-              //   },
-              //   'on-delete': ($this, item, key, index) => {
-              //     fkHttpRequest().fkDelMultiQuery({
-              //       searchObject: {
-              //         tableid: item.props.fkobj.reftableid,
-              //         modelname: key
-              //       },
-              //       serviceId: current.fkobj.serviceId,
-              //       success: () => {
-              //         fkHttpRequest().fkGetMultiQuery({
-              //           searchObject: {
-              //             tableid: item.props.fkobj.reftableid
-              //           },
-              //           serviceId: current.fkobj.serviceId,
-              //           success: (res) => {
-              //             this.freshDropDownPopFilterData(res, index);
-              //           }
-              //         });
-              //       }
-              //     });
-              //   },
-              //   'popper-value': ($this, value, Selected) => {
-              //     // 当外键下拉展开时去请求数据
-              //     this.formItemsLists[itemIndex].item.value = value;
-              //     this.formItemsLists[itemIndex].item.props.Selected = Selected;
-              //     this.formItemsLists = this.formItemsLists.concat([]);
-              //   },
-              //   'popper-show': ($this, item, index) => {
-              //     // 当气泡拉展开时去请求数据
-              //     fkHttpRequest().fkGetMultiQuery({
-              //       searchObject: {
-              //         tableid: item.props.fkobj.reftableid
-              //       },
-              //       serviceId: current.fkobj.serviceId,
-              //       success: (res) => {
-              //         this.freshDropDownPopFilterData(res, index);
-              //       }
-              //     });
-              //   },
-              //   clear: () => {
-              //     this.formItemsLists[itemIndex].item.props.Selected = [];
-              //     this.formItemsLists[itemIndex].item.value = '';
-              //   },
-              //   valuechange: ($this) => {
-              //     // 弹窗多选
-              //     this.formItemsLists[itemIndex].item.props.Selected = ($this.selected && $this.selected.length > 0) ? $this.selected : [];
-              //     this.formItemsLists[itemIndex].item.value = $this.value; // `已经选中${$this.selected.length}条数据`
-              //     this.formItemsLists = this.formItemsLists.concat([]);
-              //     if (!$this.value) {
-              //       // this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
-              //       return false;
-              //     }
+              event: {
+                keydown: (event) => {
+                  // 输入框的keydown event, $this
+                  if (event.keyCode === 13) {
+                    // enter回车查询
+                    this.searchClickData();
+                  }
+                },
+                change: () => {
+                  if (current.isuppercase) {
+                    setTimeout(() => {
+                      this.lowercaseToUppercase(itemIndex);
+                    }, 50);
+                  }
+                },
+                fkrpSelected: (value) => {
+                  this.formItemsLists[itemIndex].item.props.AutoData = [];
+                  this.formItemsLists[itemIndex].item.value = value;
+                  // this.formItemsLists = this.formItemsLists.concat([]);
+                },
+                'on-delete': ($this, item, key, index) => {
+                  fkHttpRequest().fkDelMultiQuery({
+                    searchObject: {
+                      tableid: item.props.fkobj.reftableid,
+                      modelname: key
+                    },
+                    serviceId: current.fkobj.serviceId,
+                    success: () => {
+                      fkHttpRequest().fkGetMultiQuery({
+                        searchObject: {
+                          tableid: item.props.fkobj.reftableid
+                        },
+                        serviceId: current.fkobj.serviceId,
+                        success: (res) => {
+                          this.freshDropDownPopFilterData(res, index);
+                        }
+                      });
+                    }
+                  });
+                },
+                'popper-value': ($this, value, Selected) => {
+                  // 当外键下拉展开时去请求数据
+                  this.formItemsLists[itemIndex].item.value = value;
+                  this.formItemsLists[itemIndex].item.props.Selected = Selected;
+                  this.formItemsLists = this.formItemsLists.concat([]);
+                },
+                'popper-show': ($this, item, index) => {
+                  // 当气泡拉展开时去请求数据
+                  fkHttpRequest().fkGetMultiQuery({
+                    searchObject: {
+                      tableid: item.props.fkobj.reftableid
+                    },
+                    serviceId: current.fkobj.serviceId,
+                    success: (res) => {
+                      this.freshDropDownPopFilterData(res, index);
+                    }
+                  });
+                },
+                clear: () => {
+                  this.formItemsLists[itemIndex].item.props.Selected = [];
+                  this.formItemsLists[itemIndex].item.value = '';
+                },
+                valuechange: ($this) => {
+                  // 弹窗多选
+                  this.formItemsLists[itemIndex].item.props.Selected = ($this.selected && $this.selected.length > 0) ? $this.selected : [];
+                  this.formItemsLists[itemIndex].item.value = $this.value; // `已经选中${$this.selected.length}条数据`
+                  this.formItemsLists = this.formItemsLists.concat([]);
+                  if (!$this.value) {
+                    // this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
+                    return false;
+                  }
 
-              //     // const searchObject = {
-              //     //   ak: $this.value,
-              //     //   colid: current.colid,
-              //     //   fixedcolumns: {}
-              //     // };
-              //     // fkHttpRequest().fkFuzzyquerybyak({
-              //     //   searchObject: this.setSeachObject(searchObject, current),
-              //     //   serviceId: current.fkobj.serviceId,
-              //     //   success: (res) => {
-              //     //     // this.freshDropDownSelectFilterAutoData(res, itemIndex);
-              //     //   }
-              //     // });
-              //   },
-              //   'on-popper-hide': ($this) => {
-              //     // 初始化清空数据
-              //     this.formItemsLists[itemIndex].item.props.data = {};
-              //     this.formItemsLists = this.formItemsLists.concat([]);
-              //   },
-              //   'on-show': ($this) => {
-              //     // 当外键下拉站开始去请求数据
-              //     const searchObject = {
-              //       isdroplistsearch: true,
-              //       refcolid: current.colid,
-              //       startindex: 0,
-              //       range: $this.pageSize
-              //     };
+                  // const searchObject = {
+                  //   ak: $this.value,
+                  //   colid: current.colid,
+                  //   fixedcolumns: {}
+                  // };
+                  // fkHttpRequest().fkFuzzyquerybyak({
+                  //   searchObject: this.setSeachObject(searchObject, current),
+                  //   serviceId: current.fkobj.serviceId,
+                  //   success: (res) => {
+                  //     // this.freshDropDownSelectFilterAutoData(res, itemIndex);
+                  //   }
+                  // });
+                },
+                'on-popper-hide': ($this) => {
+                  // 初始化清空数据
+                  this.formItemsLists[itemIndex].item.props.data = {};
+                  this.formItemsLists = this.formItemsLists.concat([]);
+                },
+                'on-show': ($this) => {
+                  // 当外键下拉站开始去请求数据
+                  const searchObject = {
+                    isdroplistsearch: true,
+                    refcolid: current.colid,
+                    startindex: 0,
+                    range: $this.pageSize
+                  };
 
-              //     fkHttpRequest().fkQueryList({
-              //       searchObject: this.setSeachObject(searchObject, current),
-              //       serviceId: current.fkobj.serviceId,
-              //       success: (res) => {
-              //         this.freshDropDownSelectFilterData(res, itemIndex);
-              //       }
-              //     });
-              //   },
-              //   inputValueChange: (value) => {
-              //     // 外键的模糊搜索
-              //     if (!value) {
-              //       // this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
-              //       return false;
-              //     }
-              //     const searchObject = {
-              //       ak: value,
-              //       colid: current.colid,
-              //       fixedcolumns: {}
-              //     };
+                  fkHttpRequest().fkQueryList({
+                    searchObject: this.setSeachObject(searchObject, current),
+                    serviceId: current.fkobj.serviceId,
+                    success: (res) => {
+                      this.freshDropDownSelectFilterData(res, itemIndex);
+                    }
+                  });
+                },
+                inputValueChange: (value) => {
+                  // 外键的模糊搜索
+                  if (!value) {
+                    // this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
+                    return false;
+                  }
+                  const searchObject = {
+                    ak: value,
+                    colid: current.colid,
+                    fixedcolumns: {}
+                  };
 
-              //     fkHttpRequest().fkFuzzyquerybyak({
-              //       searchObject: this.setSeachObject(searchObject, current),
-              //       serviceId: current.fkobj.serviceId,
-              //       success: (res) => {
-              //         this.freshDropDownSelectFilterAutoData(res, itemIndex);
-              //       }
-              //     });
-              //   },
-              //   pageChange: (currentPage, $this) => {
-              //     // 外键的分页查询
-              //     const searchObject = {
-              //       isdroplistsearch: true,
-              //       refcolid: current.colid,
-              //       startindex: $this.data.defaultrange * ($this.currentPage - 1),
-              //       range: $this.pageSize
-              //     };
-              //     fkHttpRequest().fkQueryList({
-              //       searchObject: this.setSeachObject(searchObject, current),
-              //       serviceId: current.fkobj.serviceId,
-              //       success: (res) => {
-              //         this.freshDropDownSelectFilterData(res, itemIndex);
-              //       }
-              //     });
-              //   }
-              // },
+                  fkHttpRequest().fkFuzzyquerybyak({
+                    searchObject: this.setSeachObject(searchObject, current),
+                    serviceId: current.fkobj.serviceId,
+                    success: (res) => {
+                      this.freshDropDownSelectFilterAutoData(res, itemIndex);
+                    }
+                  });
+                },
+                pageChange: (currentPage, $this) => {
+                  // 外键的分页查询
+                  const searchObject = {
+                    isdroplistsearch: true,
+                    refcolid: current.colid,
+                    startindex: $this.data.defaultrange * ($this.currentPage - 1),
+                    range: $this.pageSize
+                  };
+                  fkHttpRequest().fkQueryList({
+                    searchObject: this.setSeachObject(searchObject, current),
+                    serviceId: current.fkobj.serviceId,
+                    success: (res) => {
+                      this.freshDropDownSelectFilterData(res, itemIndex);
+                    }
+                  });
+                }
+              },
               validate: {}
             };
 
@@ -1033,34 +1216,30 @@
 
 
             // 输入控制
-            // if (current.type === 'NUMBER' && !current.display) {
-            //   // 只能输入 正整数 
-            //   let string = '';
-            //   current.length = 100;
+            if (current.type === 'NUMBER' && !current.display) {
+              // 只能输入 正整数 
+              let string = '';
+              current.length = 100;
 
-            //   if (current.webconf && current.webconf.ispositive) {
-            //     string = `^\\d{0,${current.length}}(\\\.[0-9]{0,${
-            //       current.scale
-            //     }})?$`;
-            //   } else {
-            //     string = `^(-|\\+)?\\d{0,${current.length - current.scale}}(\\\.[0-9]{0,${
-            //       current.scale
-            //     }})?$`;
-            //   }
+              if (current.webconf && current.webconf.ispositive) {
+                string = `^\\d{0,${current.length}}(\\\.[0-9]{0,${
+                  current.scale
+                }})?$`;
+              } else {
+                string = `^(-|\\+)?\\d{0,${current.length - current.scale}}(\\\.[0-9]{0,${
+                  current.scale
+                }})?$`;
+              }
               
-            //   const typeRegExp = new RegExp(string);
-            //   if (current.scale > 0) {
-            //     obj.item.props.regx = typeRegExp;
-            //   } else if (current.webconf && current.webconf.ispositive) {
-            //     obj.item.props.regx = regExp.Number;
-            //   } else {
-            //     obj.item.props.regx = regExp.Digital;
-            //   }
-            // }
-            // 大写控制
-            // if (current.isuppercase && !current.display) {
-            //   obj.item.props.regx = /^[A-Z0-9\u4e00-\u9fa5]+$/;
-            // }
+              const typeRegExp = new RegExp(string);
+              if (current.scale > 0) {
+                obj.item.props.regx = typeRegExp;
+              } else if (current.webconf && current.webconf.ispositive) {
+                obj.item.props.regx = regExp.Number;
+              } else {
+                obj.item.props.regx = regExp.Digital;
+              }
+            }
 
             // 带有combobox的添加到options属性中
             if (current.combobox) {
@@ -1106,6 +1285,13 @@
               obj.item.props.format = 'yyyy/MM/dd HH:mm:ss';
             }
 
+            // 属性isuppercase控制
+            if (current.isuppercase) {
+              // obj.item.props.regx = regExp.Capital;
+              // obj.item.event.regxCheck = (value, $this, errorValue) => {
+              //   this.lowercaseToUppercase(errorValue, itemIndex);
+              // };
+            }
 
             // 外键的单选多选判断
 
@@ -1113,15 +1299,9 @@
               switch (current.fkobj.searchmodel) {
               case 'drp':
                 obj.item.props.single = true;
-                obj.item.props.fk_type = 'BusDropDownSelectFilter';
+                obj.item.props.fk_type = 'drp';
                 obj.item.props.fkobj = current.fkobj;
                 obj.item.props.defaultSelected = this.defaultValue(current) || [];
-                obj.item.props.tableRequest = { isdroplistsearch: true, refcolid: current.colid };
-                obj.item.props.autoRequest = { fixedcolumns: {}, colid: current.colid };
-                obj.item.props.url = {
-                  tableUrl: `/${current.fkobj.serviceId ? current.fkobj.serviceId : 'ad-app'}/p/cs/QueryList`,
-                  autoUrl: `/${current.fkobj.serviceId ? current.fkobj.serviceId : 'ad-app'}/p/cs/fuzzyquerybyak`
-                };
                 break;
               case 'mrp':
                 obj.item.props.single = false;
@@ -1258,6 +1438,8 @@
         return obj;
       },
       resetForm() {
+        this.filterTableParam = {};
+        this.resetTabParam();
         // 列表查询重置
         this.resetType = true;
         const promise = new Promise((resolve, reject) => {
@@ -1279,7 +1461,7 @@
             addSearch(search);
 
             this.updateSearchDBdata({});
-            this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
+            this.updateFormData(this.dataProcessing());
           }
           this.getTableQueryForForm({ searchData, resolve, reject });
         });
@@ -1407,6 +1589,7 @@
       // 按钮组操作
       clearSelectIdArray() { // 关闭打印预览与直接打印后清空选中项
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+        this.$refs.agTableElement.clearChecked();
         const detailTable = document.querySelector('.detailTable');
         const commonTable = document.querySelector('.commonTable');
 
@@ -1484,14 +1667,16 @@
         }
       },
       onSelectionChanged(rowIdArray, rowArray) {
+        // this.filterButtonsForDisable(rowArray);
         // 获取表格选中明细
         this.onSelectionChangedAssignment({ rowIdArray, rowArray });
       },
+    
       buttonClick(type, obj) {
         this.setActiveTabActionValue({});// 点击按钮前清除上一次按钮存的信息
 
         if (type === 'fix') {
-          this.AddDetailClick(obj);
+          this.AddDetailClick(type, obj);
         } else if (type === 'custom') {
           this.webactionClick(type, obj);
         } else if (type === 'Collection') {
@@ -1499,6 +1684,10 @@
         } else if (type === 'reset') {
           // 重置列表渲染
           this.resetForm();
+          console.log('重置');
+          // 查询成功后清除表格选中项
+          this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });
+          this.$refs.agTableElement.clearChecked();
         } else {
           this.searchClickData();
         }
@@ -1742,6 +1931,7 @@
         });
         if (item.ID) {
           this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+          this.$refs.agTableElement.clearChecked();
         }
 
         if (this.buttons.activeTabAction.cuscomponent) { // 如果接口cuscomponent有值，逻辑为自定义调自定义
@@ -1831,93 +2021,30 @@
       dataProcessing() { // 查询数据处理
         const Form = this.$_live_getChildComponent(window.vm, 'listsForm');
         return Form ? this.$_live_getChildComponent(window.vm, 'listsForm').getFormData() : {};
-        const jsonData = Object.keys(this.formItems.data).reduce((obj, item) => {
-          if (this.formItems.data[item] && JSON.stringify(this.formItems.data[item]).indexOf('bSelect-all') < 0) {
-            obj[item] = this.formItems.data[item];
-          }
-          return obj;
-        }, {});
-
-        return Object.keys(jsonData).reduce((obj, item) => {
-          let value = '';
-
-          this.formItemsLists.concat([]).every((temp) => {
-            if (temp.item.field === item) { // 等于当前节点，判断节点类型
-              if (temp.item.type === 'DatePicker' && (temp.item.props.type === 'datetimerange' || temp.item.props.type === 'daterange')) { // 当为日期控件时，数据处理
-                if ((jsonData[item][0] && jsonData[item][1])) {
-                  value = jsonData[item].join('~');
-                } else {
-                  value = '';
-                }
-                return false;
-              }
-
-              if (
-                temp.item.type === 'TimePicker'
-                && temp.item.props.type === 'timerange'
-                && (jsonData[item][0] && jsonData[item][1])
-              ) {
-                // 时分秒的时间段处理
-                value = jsonData[item].join('~');
-                return false;
-              }
-
-              if (temp.item.type === 'select') {
-                if (jsonData[item].length > 0) {
-                  value = jsonData[item].map(option => `=${option}`);
-                } else {
-                  value = '';
-                }
-
-                // 处理select，分为单个字段select和合并型select
-                return false;
-              }
-              value = jsonData[item];
-              return false;
-            }
-
-            if (
-              !temp.item.field
-              && temp.item.type === 'select'
-              && item.indexOf(':') < 0
-            ) {
-              // 处理合并型select
-              value = jsonData[item].map(option => `=${option}`);
-              return false;
-            }
-            if (temp.item.inputname === item) {
-              value = jsonData[item];
-            }
-
-
-            return true;
-          });
-          if (value) {
-            obj[item] = value;
-          }
-
-          return obj;
-        }, {});
       },
       searchClickData(value) {
-        const json = this.dataProcessing();
+        this.resetButtonsStatus();
         // 按钮查找 查询第一页数据
         if (!value) { // 返回时查询之前页码
           this.searchData.startIndex = 0;
         }
-        this.searchData.fixedcolumns = json;
+        if (this.getFilterTable) {
+          const el = this.$_live_getChildComponent(this, 'tabBar');
+          const tabCurrentIndex = el.$refs.R3_Tabs.focusedKey;
+          el.tabClick(tabCurrentIndex);
+        } else {
+          this.searchData.fixedcolumns = this.dataProcessing();
+        }
         // this.getQueryListForAg(this.searchData);
         if (this.buttons.isBig) {
           this.updataIsBig(false);
         }
         this.getQueryListPromise(this.searchData);
-        this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
       requiredCheck(data) { // 查询条件必填校验
-        const json = this.dataProcessing();
         return new Promise((resolve, reject) => {
           this.formItems.defaultFormItemsLists.map((item) => {
-            const value = json[item.colname];
+            const value = Array.isArray(this.formItems.data[item.colname]) ? this.formItems.data[item.colname][0] : (Object.prototype.toString.call(this.formItems.data[item.colname]) === '[Object Object]' ? Object.keys(this.formItems.data[item.colname]).length > 0 : this.formItems.data[item.colname]);
             if (item.webconf && item.webconf.required && !value) {
               this.$Modal.fcError({
                 title: '错误',
@@ -1927,7 +2054,6 @@
 
               reject();
             }
-            return item;
           });
           resolve();
         });
@@ -1941,7 +2067,7 @@
             data.isolr = this.buttons.isSolr;
 
             if (enableKAQueryDataForUser() || this.webConf.enableKAQueryDataForUser) {
-              const search = this.dataProcessing();
+              const search = JSON.parse(JSON.stringify(this.dataProcessing()));
 
               this.formItemsLists.map((temp) => {
                 if (temp.item.type === 'AttachFilter') {
@@ -1958,13 +2084,12 @@
               this.updateSearchDBdata({});
               this.updateFormData(this.dataProcessing());
             }
-            
-
             this.getQueryListForAg(data);
           });
         });
         promise.then((res) => {
           this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+          this.$refs.agTableElement.clearChecked();
           if (!this.searchData.range) {
             if (Version() === '1.3') {
               this.searchData.range = res.data.datas.defaultrange;
@@ -1977,6 +2102,8 @@
           this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
         });
       },
+
+      // 弹出消息提示框
       dialogMessage(title, contentText, obj) {
         this.setErrorModalValue({
           title,
@@ -1997,7 +2124,12 @@
       getSingleObjectPageType() {
         
       },
-      AddDetailClick(obj) {
+      AddDetailClick(type, obj) {
+        DispatchEvent('R3StandardButtonClick', {
+          detail: {
+            type, obj
+          }
+        });
         const { tableName, tableId, } = this[INSTANCE_ROUTE_QUERY];
         if (obj.name === this.buttonMap.CMD_ADD.name) {
           // 新增
@@ -2058,7 +2190,7 @@
                   tableName,
                   tableId,
                   label,
-                  id
+                  id,
                 });
               });
             } else if (this.ag.datas.objdistype === 'tabpanle') { // 单对象左右结构
@@ -2073,7 +2205,7 @@
               tableName,
               tableId,
               label,
-              id
+              id,
             });
             return;
           }
@@ -2148,6 +2280,9 @@
         }
 
         if (obj.name === this.buttonMap.CMD_EXPORT.name) {
+          // console.log('导出--', obj, this.buttons.selectIdArr, this.buttons.dataArray.waListButtonsConfig.waListButtons);
+          console.log('配置项', this.exportDialogConfig, this.buttons, obj);
+          
           // 导出
           if (this.buttons.selectIdArr.length === 0) {
             const title = '警告';
@@ -2155,7 +2290,12 @@
             this.dialogMessage(title, contentText, obj);
             return;
           }
-          this.batchExport(obj);
+          // this.batchExport(obj);
+          if (this.R3_openedApi_export && typeof this.R3_openedApi_export === 'function') {
+            this.R3_openedApi_export(obj);
+          } else {
+            this.batchExport(obj);
+          }
           return;
         }
 
@@ -2206,6 +2346,7 @@
           }
         }
       },
+
       batchExport(buttonsData) {
         this.$R3loading.show();
         let searchData = {};
@@ -2399,6 +2540,7 @@
           this.getToFavoriteDataForButtons(params);
         }
       },
+      // 点击确认后的弹框
       confirmDialog(obj) {
         // this.$nextTick(() => {
         if (this.buttons.selectIdArr.length > 0) {
@@ -2514,12 +2656,19 @@
           } else if (
             this.buttons.dialogConfig.contentText.indexOf('操作会执行全量导出') >= 0
           ) {
-            this.batchExport(obj);
+            // this.batchExport(obj);
+            // 是否需要进行二次校验
+            if (this.R3_openedApi_export && typeof this.R3_openedApi_export === 'function') {
+              this.R3_openedApi_export(obj);
+            } else {
+              this.batchExport(obj);
+            }
           } else if (this.buttons.selectSysment.length > 0) {
             this.searchData('backfresh');
           }
         }
       },
+
       errorDialogClose() {
         const errorDialogvalue = false;
         this.setErrorModalValue({ errorDialogvalue });
@@ -2697,6 +2846,7 @@
             this.searchData.startIndex = this.searchData.startIndex >= 0 ? this.searchData.startIndex : 0;
           }
           // this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
+         
           this.getQueryListPromise(Object.assign({}, this.searchData, { merge }));                 
         }
       },
@@ -2706,6 +2856,7 @@
         if (this._inactive) { return; }
         const { detail } = event;
         if (detail.url === '/p/cs/getTableQuery' && (Version() === '1.4' ? detail.response.data.data.tabcmd : detail.response.data.tabcmd)) {
+          this.updateFormData(this.dataProcessing());
           const enableKAQueryDataForUserFlag = Version() === '1.4' ? !!(detail.response.data.data.datas.webconf && detail.response.data.data.datas.webconf.enableKAQueryDataForUser) : !!(detail.response.data.datas.webconf && detail.response.data.datas.webconf.enableKAQueryDataForUser);
           if (enableKAQueryDataForUser() || enableKAQueryDataForUserFlag) {
             await querySearch(`${this.$store.state.global.userInfo.id}_${this.searchData.table}`).then((response) => {
@@ -2749,22 +2900,24 @@
                 this.updateSearchDBdata(response);
                 this.updateFormData(Object.assign({}, this.dataProcessing(), response));
               }
-              if (!this.buttons.isBig) {
-                this.searchClickData();
-              }
+              // if (!this.buttons.isBig) {
+              //   this.firstSearchTable();
+              // }
+              this.firstSearchTable();
             });
           } else if (!this.buttons.isBig) {
             // 初始化调用时，ie环境下增加500ms延时调用
             if (this.isIE()) {
               setTimeout(() => {
-                this.searchClickData();
+                this.firstSearchTable();
               }, 500);
             } else {
-              this.searchClickData();
+              this.firstSearchTable();
             }
           }
         }
       },
+    
       isIE() {
         if (!!window.ActiveXObject || 'ActiveXObject' in window) return true;
         return false;
@@ -2778,7 +2931,7 @@
     },
     mounted() {
       this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
-      
+       
       if (!this._inactive) {
         window.addEventListener('network', this.networkEventListener);
         window.addEventListener('network', this.networkGetTableQuery);
