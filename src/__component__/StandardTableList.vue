@@ -2009,16 +2009,26 @@
       },
 
       dataProcessing() { // 查询数据处理
-        const jsonData = Object.keys(this.formItems.data).reduce((obj, item) => {
-          if (this.formItems.data[item] && JSON.stringify(this.formItems.data[item]).indexOf('bSelect-all') < 0) {
-            obj[item] = this.formItems.data[item];
+        const obj = {
+          formItems: this.formItems,
+          formItemsLists: this.formItemsLists
+        };
+        const parame = this.getParame(obj);
+        return parame;
+      },
+      getParame(datas) {
+        //   formItems: this.formItems.data,
+        //   formItemsLists: this.formItemsLists
+        const jsonData = Object.keys(datas.formItems.data).reduce((obj, item) => {
+          if (datas.formItems.data[item] && JSON.stringify(datas.formItems.data[item]).indexOf('bSelect-all') < 0) {
+            obj[item] = datas.formItems.data[item];
           }
           return obj;
         }, {});
         return Object.keys(jsonData).reduce((obj, item) => {
           let value = '';
 
-          this.formItemsLists.concat([]).every((temp) => {
+          datas.formItemsLists.concat([]).every((temp) => {
             if (temp.item.field === item) { // 等于当前节点，判断节点类型
               if (temp.item.type === 'DatePicker' && (temp.item.props.type === 'datetimerange' || temp.item.props.type === 'daterange')) { // 当为日期控件时，数据处理
                 if ((jsonData[item][0] && jsonData[item][1])) {  
@@ -2080,11 +2090,8 @@
           if (value) {
             obj[item] = value;
           }
-          // obj = Object.assign({}, obj, this.filterTableParam);
           return obj; 
         }, {});
-        
-        // return this.filterTableParam;
       },
       searchClickData(value) {
         this.resetButtonsStatus();
