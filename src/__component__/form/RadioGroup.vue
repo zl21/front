@@ -11,7 +11,7 @@
         :label="option.limitdesc"
         :disabled="option.disabled"
         :size="option.size"
-      ></Checkbox>
+      />
     </CheckboxGroup>
   </div>
 </template>
@@ -50,8 +50,9 @@
           return;
         }
 
-        if (!this.options.singleCheck) {
+        if (this.options.mutiple) {
           // 多选
+          // * 元数据暂时不支持通过配置，控制是多选还是单选，这里只是提前写好逻辑
           this.options.combobox.forEach((item) => {
             if (values.includes(item.limitdesc)) {
               checkedList.push(item.limitval);
