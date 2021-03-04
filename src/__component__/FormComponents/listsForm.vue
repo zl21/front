@@ -13,7 +13,7 @@
     </div>
     <div
       v-for="(item,index) in Object.keys(ItemLists)"
-      :key="index"
+      :key="ItemLists[item]._index"
       :class="['item',ItemLists[item].colname,(index > (defaultColumn*searchFoldnum - 1) && !dowClass)?'long':'']"
     >
       <component
@@ -77,9 +77,11 @@
         this.formArray = []
         this.formItemLists.map((item, index) => {
           if (item.colname) {
+            item._index = Math.random()
             this.ItemLists[item.colname] = JSON.parse(JSON.stringify(item));
           } else {
             item.colname = `R3_index_${index}`;
+            item._index = Math.random()
             this.ItemLists[item.colname] = JSON.parse(JSON.stringify(item));
           }
           this.formArray.push(JSON.parse(JSON.stringify(item)));

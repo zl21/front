@@ -807,7 +807,10 @@
         };
         createModal(array, obj, index);
       },
-
+      
+      resetItem(){
+        this.value = new ParameterDataProcessing(JSON.parse(JSON.stringify(this.items))).defaultDataProcessing();
+      }
       
     },
     beforeDestroy() {
@@ -834,7 +837,7 @@
       window.addEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
       window.addEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
       window.addEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
-      this.value = new ParameterDataProcessing(JSON.parse(JSON.stringify(this.items))).defaultDataProcessing();
+      this.resetItem()
     }
   };
 </script>
