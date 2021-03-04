@@ -7,7 +7,8 @@
 
 
 import Vue from 'vue';
-import ComAttachFilter from 'arkui_BCL/MopMultiSelect';
+import { MopMultiSelect } from '@syman/ark-ui-bcl';
+
 import dataProp from '../../__config__/props.config';
 import regExp from '../../constants/regExp';
 import network from '../../__utils__/network';
@@ -34,7 +35,7 @@ class CustomAttachFilter {
     // } else {
     // this.Input = deepClone(test);
     // }
-    const DefaultInput = Vue.extend(ComAttachFilter);
+    const DefaultInput = Vue.extend(MopMultiSelect);
     
     this.Input = new DefaultInput().$options;
     // console.log(this.Input);

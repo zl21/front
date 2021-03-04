@@ -5,8 +5,8 @@
 /**
  * 下拉单选外健关联业务组件的自定义逻辑处理
  */
-import DropMultiSelectFilter from 'arkui_BCL/DropMultiSelectFilter';
 import { defaultrange } from '../../constants/global';
+import { DropMultiSelectFilter } from '@syman/ark-ui-bcl';
 
 
 // const BusDropDownSelectFilter = () => import('arkui_BCL/DropDownSelectFilter');

@@ -131,13 +131,13 @@ module.exports = () => ({
         from: path.resolve(__dirname, "./src/assets/theme/custom.less"),
         to: path.resolve(__dirname, "./r3.publish/src/assets/theme")
     }]),
-    new ModuleFederationPlugin({ 
-      name: '', 
-      remotes: {
-        arkui_BCL: 'arkui_BCL@https://cdn.jsdelivr.net/npm/@syman/ark-ui-bcl@0.0.10/dist/remoteEntry.js',
-        shared: ['vue', '@syman/ark-ui', 'axios']
-      }
-    })
+    // new ModuleFederationPlugin({ 
+    //   name: '', 
+    //   remotes: {
+    //     arkui_BCL: 'arkui_BCL@https://cdn.jsdelivr.net/npm/@syman/ark-ui-bcl@0.0.10/dist/remoteEntry.js',
+    //     shared: ['vue', '@syman/ark-ui', 'axios']
+    //   }
+    // })
   ],
   mode: 'production',
   resolve: {
