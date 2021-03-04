@@ -131,12 +131,16 @@ export default class ParameterDataProcessing {
     }
 
     // 处理日期控件的默认值问题
-    if (this.item.default && ['OBJ_DATENUMBER','OBJ_DATE'].includes(this.item.display) && this.item.default && this.item.default !== '-1') {
+    if (this.item.default && ['OBJ_DATENUMBER','OBJ_DATE','YearMonth'].includes(this.item.display) && this.item.default && this.item.default !== '-1') {
+      if(this.item.display === 'YearMonth'){
+        return this.item.default;
+      }
       const dateArray = [];
       dateArray[0] = new Date().r3Format(new Date().minusDays(Number(this.item.default)), 'yyyy-MM-dd 00:00:00');
       dateArray[1] = new Date().r3Format(new Date(), 'yyyy-MM-dd 23:59:59');
       return dateArray;
     }
+
 
     return this.item.default;
   }

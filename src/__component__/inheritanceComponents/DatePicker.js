@@ -46,6 +46,9 @@ class CustomDatePicker {
           case 'OBJ_DATENUMBER':
             return 'daterange';
             break;
+          case 'YearMonth':
+            return 'month'
+            break;
           default:
             return 'date';
             break;
