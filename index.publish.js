@@ -29,7 +29,6 @@ import { connector } from './src/constants/global';
 import './src/constants/dateApi';
 
 import { getKeepAliveModuleName } from './src/__config__/router.navigation.guard';
-import './src/constants/dateApi';
 
 
 const validateConfig = config => ({
@@ -37,7 +36,7 @@ const validateConfig = config => ({
   message: 'xxx'
 });
 const packageMessage = {
-  version: '1.4.38',
+  version: '1.4.39',
   packageTime: new Date().setNewFormt('yyyy-MM-dd hh:mm:ss'), 
   user: 'local',   
 };
