@@ -1343,7 +1343,7 @@
             } else {
               params = {
                 delMTable: false,
-                objId: tableId,
+                objId: itemId,
                 tabItem: { ...itemTable },
                 table: tableName
               };

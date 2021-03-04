@@ -2591,7 +2591,7 @@
         //   range: 10
         // };
         const buttonInfo = this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '删除')[0];
-
+        debugger;
         let page = {};
         if (this.objectType === 'horizontal') { // 横向布局
           this.tabPanel.every((item) => {

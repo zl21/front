@@ -29,6 +29,8 @@ import { connector } from './src/constants/global';
 import './src/constants/dateApi';
 
 import { getKeepAliveModuleName } from './src/__config__/router.navigation.guard';
+import './src/constants/dateApi';
+
 
 const validateConfig = config => ({
   isQualified: true,
