@@ -571,19 +571,19 @@
           Components = new CustomInput(item).init();
           break;
         case 'OBJ_FK':
-          if (item.fkobj.fkdisplay === 'drp') {
+          if (item.fkobj.searchmodel === 'drp') {
             Components = new BusDropDownSelectFilter(item).init();
           }
-          if (item.fkobj.fkdisplay === 'mrp') {
+          if (item.fkobj.searchmodel === 'mrp') {
             Components = new CustomDropMultiSelectFilter(item).init();
           }
-          if (item.fkobj.fkdisplay === 'mop') {
+          if (item.fkobj.searchmodel === 'mop') {
             Components = new CustomAttachFilter(item).init();
           }
-          if (item.fkobj.fkdisplay === 'pop') {
+          if (item.fkobj.searchmodel === 'pop') {
             Components = new CustomPopAttachFilter(item).init();
           }
-         
+        
           break;
         case 'OBJ_DATE':
         case 'OBJ_DATENUMBER':

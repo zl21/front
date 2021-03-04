@@ -33,7 +33,7 @@ class CustomInput {
     // } else {
     this.Input = deepClone(Input);
     // }
-    const DefaultInput = Vue.extend(Input);
+    // const DefaultInput = Vue.extend(Input);
     // thixs.Input = new DefaultInput().$options;
     delete this.Input._Ctor;
   }

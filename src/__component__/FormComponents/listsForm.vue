@@ -13,7 +13,7 @@
     </div>
     <div
       v-for="(item,index) in Object.keys(ItemLists)"
-      :key="Math.random()"
+      :key="index"
       :class="['item',ItemLists[item].colname,(index > (defaultColumn*searchFoldnum - 1) && !dowClass)?'long':'']"
     >
       <component

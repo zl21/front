@@ -7,16 +7,11 @@
 
 
 import Vue from 'vue';
-// import ComAttachFilter from 'arkui_BCL/MopMultiSelect';
+import ComAttachFilter from 'arkui_BCL/MopMultiSelect';
 import dataProp from '../../__config__/props.config';
 import regExp from '../../constants/regExp';
 import network from '../../__utils__/network';
 
-const MopMultiSelect = () => import('arkui_BCL/MopMultiSelect');
-let test = null
-MopMultiSelect().then(data => {
-  test = data.default
-})
 // 深拷贝
 const deepClone = (arr) => {  
   const obj = arr.constructor == Array ? [] : {};
@@ -37,11 +32,11 @@ class CustomAttachFilter {
     // if (this.item.Components) {
     //   this.Input = this.item.Components;
     // } else {
-    this.Input = deepClone(test);
+    // this.Input = deepClone(test);
     // }
-    // const DefaultInput = Vue.extend(ComAttachFilter);
+    const DefaultInput = Vue.extend(ComAttachFilter);
     
-    // this.Input = new DefaultInput().$options;
+    this.Input = new DefaultInput().$options;
     // console.log(this.Input);
     delete this.Input._Ctor;
   }
