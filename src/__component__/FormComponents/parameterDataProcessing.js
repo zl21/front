@@ -96,6 +96,13 @@ export default class ParameterDataProcessing {
         [this.item.colname]: arr.join('~')
       };
     }
+
+    // 处理select组件
+    if(this.item.display === 'OBJ_SELECT'){
+      if(this.value.includes('bSelect-all')){
+        return {}
+      }
+    }
     return {
       [this.item.colname]: this.value
     };
