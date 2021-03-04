@@ -85,12 +85,12 @@ class CustomAttachFilter {
         enterType: true, // 回车是否显示第一行
         fkobj: {
           colid: this.item.colid,
-          fkdisplay: this.item.fkobj.fkdisplay,
+          fkdisplay: this.item.fkobj.searchmodel,
           reftable: this.item.fkobj.reftable,
           serviceId: this.item.fkobj.serviceId,
           reftableid: this.item.fkobj.reftableid,
-          searchmodel: this.item.fkobj.fkdisplay,
-          show: this.item.fkobj.fkdisplay === 'mop',
+          searchmodel: this.item.fkobj.searchmodel,
+          show: this.item.fkobj.searchmodel === 'mop',
           url:
             `${this.item.fkobj.serviceId ? (`/${this.item.fkobj.serviceId}`) : ''
             }/p/cs/menuimport`

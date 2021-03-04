@@ -83,7 +83,7 @@ class CustomAttachFilter {
         coldesc: this.item.coldesc,
         colid: this.item.colid,
         colname: this.item.colname,
-        datalist: this.item.fkobj.fkdisplay === 'mop' ? [{
+        datalist: this.item.fkobj.searchmodel === 'mop' ? [{
           lable: 0,
           value: '更多筛选'
         }, {
@@ -98,35 +98,35 @@ class CustomAttachFilter {
           model: {
             closable: true,
             draggable: true,
-            'footer-hide': this.item.fkobj.fkdisplay === 'pop',
+            'footer-hide': this.item.fkobj.searchmodel === 'pop',
             mask: true,
             maskClosable: false,
             scrollable: true,
             width: 920,
-            title: this.item.fkobj.fkdisplay === 'mop' ? '弹窗多选' : null
+            title: this.item.fkobj.searchmodel === 'mop' ? '弹窗多选' : null
           }
         },
         display: this.item.display,
         enterType: true,
         filterDate: {},
         filterTip: true,
-        fkdisplay: this.item.fkobj.fkdisplay,
+        fkdisplay: this.item.fkobj.searchmodel,
         fkobj: {
           colid: this.item.colid,
-          fkdisplay: this.item.fkobj.fkdisplay,
+          fkdisplay: this.item.fkobj.searchmodel,
           reftable: this.item.fkobj.reftable,
           serviceId: this.item.fkobj.serviceId,
           reftableid: this.item.fkobj.reftableid,
-          searchmodel: this.item.fkobj.fkdisplay,
-          show: this.item.fkobj.fkdisplay === 'mop',
+          searchmodel: this.item.fkobj.searchmodel,
+          show: this.item.fkobj.searchmodel === 'mop',
           url:
             `${this.item.fkobj.serviceId ? (`/${this.item.fkobj.serviceId}`) : ''
             }/p/cs/menuimport`
         },
         hideColumnsKey: ['id'],
         inputname: this.item.inputname,
-        optionTip: this.item.fkobj.fkdisplay === 'mop',
-        show: this.item.fkobj.fkdisplay === 'mop',
+        optionTip: this.item.fkobj.searchmodel === 'mop',
+        show: this.item.fkobj.searchmodel === 'mop',
         placeholder: placeholder || `${(dataProp.input && dataProp.input.props) ? dataProp.input.props.placeholder : '请输入'}${this.item.coldesc}`
       })
     };
