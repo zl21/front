@@ -423,11 +423,13 @@
         } else {
           this.searchData.startIndex = 0;
         }
-        if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].range) {
-          this.searchData.range = data.range;
-        } else {
-          delete this.searchData.range;
-        }
+        // if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].range) {
+        //   this.searchData.range = data.range;
+        // } else {
+        //   delete this.searchData.range;
+        // }
+        this.searchData.range = this.ag.datas.defaultrange; // 处理每次查询后分页不变,以前是只有配置了multi_tab的时候才保留分页
+        
         this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName; 
         this.searchData.fixedcolumns = this.dataProcessing();
         if (data.tab_value) {
