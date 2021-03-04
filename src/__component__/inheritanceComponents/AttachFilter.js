@@ -118,7 +118,9 @@ class CustomAttachFilter {
       }
       return item;
     });
-    defaultProps.http.default = () => network;
+    defaultProps.http.default = () => {
+      return network;
+    };
 
     this.Input.props = defaultProps;
   }

@@ -7,6 +7,7 @@
  */
 import { defaultrange } from '../../constants/global';
 import { DropMultiSelectFilter } from '@syman/ark-ui-bcl';
+import network from '../../__utils__/network';
 
 
 // const BusDropDownSelectFilter = () => import('arkui_BCL/DropDownSelectFilter');
@@ -74,6 +75,7 @@ class CustomDropMultiSelectFilter {
     this.propsUrl(propsData);
     // 处理传参
     this.propsParams(propsData);
+    
     this.BusDropDown.props = { ...propsData };
   } 
 
@@ -94,6 +96,9 @@ class CustomDropMultiSelectFilter {
       isdroplistsearch: true,
       refcolid: this.item.colid,
     });
+    props.http.default = () => {
+      return network;
+    };
   }
 
   // 合并data
