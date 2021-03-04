@@ -66,7 +66,7 @@
       <Input
         v-if="_items.type === 'input'"
         :ref="_items.field"
-        v-model="_items.value"
+        v-model="inputText"
         :type="_items.props.type"
         :clearable="_items.props.clearable"
         :disabled="_items.props.disabled || _items.props.readonly"
@@ -424,8 +424,28 @@
     data() {
       return {
         filterDate: {},
-        resultData: {} // 结果传值
+        resultData: {}, // 结果传值
+        inputText: '' // textarea加密后的文本
       };
+    },
+    watch: {
+      '_items.value': {
+        handler(value) {
+          if (this._items.type === 'input' && this._items.props.type === 'textarea' && this._items.props.ispassword) {
+            // 针对textarea的文本加密
+            const newText = value.replace(/./g, '*');
+            this.inputText = newText;
+            // 重新定位光标位置
+            this.$nextTick(() => {
+              const dom = this.$refs[this._items.field].$el.children[0];
+              dom.setSelectionRange(this.selectionStart, this.selectionStart);
+            });
+          } else {
+            this.inputText = value;
+          }
+        },
+        immediate: true
+      }
     },
     computed: {
       getVersion() {
@@ -576,13 +596,28 @@
           serviceId
         });
       },
+
       valueChange() {
         // 值发生改变时触发  只要是item中的value改变就触发该方法，是为了让父组件数据同步
         // console.log(this._items);
         this.$emit('inputChange', this._items.value, this._items, this.index);
       },
+      
       // input event
       inputChange(event, $this) {
+        // 输入值
+        const value = event.target.value;
+        this.selectionStart = event.target.selectionStart;
+        const charArr = this._items.value.split('');
+        if (value.length > this._items.value.length) {
+          charArr.splice(this.selectionStart - 1, 0, this.keyData);
+          this._items.value = charArr.join('');
+        } else if (value.length < this._items.value.length) {
+          // 删除值
+          charArr.splice(this.selectionStart, 1);
+          this._items.value = charArr.join('');
+        }
+        
         this.valueChange();
         let valLength = this._items.props.length;
         if (valLength) {
@@ -664,6 +699,12 @@
         }
       },
       inputKeyDown(event, $this) {
+        // 记录新输入的内容，方便加密文本时用
+        const value = event.target.value;
+        if (value.length !== this._items.value) {
+          this.keyData = event.key;
+        }
+
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'keydown')
           && typeof this._items.event.keydown === 'function'
@@ -1766,6 +1807,8 @@
     },
     created() {
       // console.log(this.type,this.formIndex);
+      this.selectionStart = null; // 光标位置
+      this.keyData = null; // 记录按键按下的位置
     },
     mounted() {
       // this.$nextTick(() => {
