@@ -136,8 +136,9 @@
       // public API
       getFormData() {
         let formData = {};
+        console.log(this.formArray)
         this.formArray.map((item) => {
-          const components = this.$_live_getChildComponent(window.vm, `${this.id}${item.colname.TextFilter()}`);
+          const components = this.$_live_getChildComponent(this, `${this.id}${item.colname.TextFilter()}`);
           const value = components.value;
           if (item.display === 'OBJ_FK' && (item.fkobj.fkdisplay === 'mop' || item.fkobj.fkdisplay === 'dop')) { // 处理外健弹窗类型组件数据层级获取,通过子组件获取数据
             // value = components.$children[0].selected ? components.$children[0].selected.map(temp => temp.ID).join(',') : '';

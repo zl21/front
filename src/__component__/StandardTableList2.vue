@@ -1466,8 +1466,8 @@
           }
           this.getTableQueryForForm({ searchData, resolve, reject });
 
-          const Form = this.$_live_getChildComponent(window.vm, 'listsForm');
-          this.$_live_getChildComponent(window.vm, 'listsForm').resetForm(true);
+          const Form = this.$_live_getChildComponent(this, 'listsForm');
+          this.$_live_getChildComponent(this, 'listsForm').resetForm(true);
         });
       },
       defaultValue(item) {
@@ -2023,8 +2023,8 @@
       },
 
       dataProcessing() { // 查询数据处理
-        const Form = this.$_live_getChildComponent(window.vm, 'listsForm');
-        return Form ? this.$_live_getChildComponent(window.vm, 'listsForm').getFormData() : {};
+        const Form = this.$_live_getChildComponent(this, 'listsForm');
+        return Form ? this.$_live_getChildComponent(this, 'listsForm').getFormData() : {};
       },
       searchClickData(value) {
         this.resetButtonsStatus();
