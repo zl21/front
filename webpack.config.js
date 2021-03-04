@@ -209,13 +209,13 @@ module.exports = env => ({
     //   'window.jQuery': 'jquery'
     // })
 
-    new ModuleFederationPlugin({ 
-      name: '', 
-      remotes: {
-        arkui_BCL: 'arkui_BCL@https://cdn.jsdelivr.net/npm/@syman/ark-ui-bcl@0.0.10/dist/remoteEntry.js',
-        shared: ['vue', '@syman/ark-ui', 'axios']
-      }
-    })
+    // new ModuleFederationPlugin({ 
+    //   name: '', 
+    //   remotes: {
+    //     arkui_BCL: 'arkui_BCL@https://cdn.jsdelivr.net/npm/@syman/ark-ui-bcl@0.0.10/dist/remoteEntry.js',
+    //     shared: ['vue', '@syman/ark-ui', 'axios']
+    //   }
+    // })
   ],
   mode: env && env.production ? 'production' : 'development',
   resolve: {

@@ -5,8 +5,8 @@
 /**
  * 下拉单选外健关联业务组件的自定义逻辑处理
  */
-import DropMultiSelectFilter from 'arkui_BCL/DropMultiSelectFilter';
 import { defaultrange } from '../../constants/global';
+import { DropMultiSelectFilter } from '@syman/ark-ui-bcl';
 
 
 // const BusDropDownSelectFilter = () => import('arkui_BCL/DropDownSelectFilter');
@@ -47,7 +47,7 @@ class CustomDropMultiSelectFilter {
     this.item = item;
     // const BusDropDownSelectFilter = require('arkui_BCL/DropDownSelectFilter').default;
     // this.BusDropDown = deepClone(DropMultiSelectFilter);
-    const BusDropDown = Vue.extend(BusDropDown);
+    const BusDropDown = Vue.extend(DropMultiSelectFilter);
     this.BusDropDown = new BusDropDown().$options;
     delete this.BusDropDown._Ctor;
   }

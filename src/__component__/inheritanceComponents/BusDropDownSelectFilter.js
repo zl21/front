@@ -1,7 +1,8 @@
 /**
  * 下拉单选外健关联业务组件的自定义逻辑处理
  */
-import DropDownSelectFilter from 'arkui_BCL/DropDownSelectFilter';
+import { DropDownSelectFilter } from '@syman/ark-ui-bcl';
+
 import Vue from 'vue';
 import { defaultrange } from '../../constants/global';
 import network from '../../__utils__/network';
