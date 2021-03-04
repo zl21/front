@@ -136,7 +136,6 @@
       // public API
       getFormData() {
         let formData = {};
-        console.log(this.formArray)
         this.formArray.map((item) => {
           const components = this.$_live_getChildComponent(this, `${this.id}${item.colname.TextFilter()}`);
           const value = components.value;

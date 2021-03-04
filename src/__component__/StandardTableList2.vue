@@ -1466,6 +1466,7 @@
           }
           this.getTableQueryForForm({ searchData, resolve, reject });
 
+          // 重置表单
           const Form = this.$_live_getChildComponent(this, 'listsForm');
           this.$_live_getChildComponent(this, 'listsForm').resetForm(true);
         });
