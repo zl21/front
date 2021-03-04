@@ -67,6 +67,7 @@
         v-if="_items.type === 'input'"
         :ref="_items.field"
         v-model="inputText"
+        :class="{'encode-text': _items.props.ispassword}"
         :type="_items.props.type"
         :clearable="_items.props.clearable"
         :disabled="_items.props.disabled || _items.props.readonly"
@@ -433,7 +434,7 @@
         handler(value) {
           if (this._items.type === 'input' && this._items.props.type === 'textarea' && this._items.props.ispassword) {
             // 针对textarea的文本加密
-            const newText = value.replace(/./g, '*');
+            const newText = value.replace(/./g, '·');
             this.inputText = newText;
             // 重新定位光标位置
             this.$nextTick(() => {
@@ -608,7 +609,12 @@
         // 输入值
         const value = event.target.value;
         this.selectionStart = event.target.selectionStart;
+        // fix: input输入框拿不到值给父组件
+        if (this._items.props.type === 'text') {
+          this._items.value = value;
+        }
         const charArr = this._items.value.split('');
+        
         if (value.length > this._items.value.length) {
           charArr.splice(this.selectionStart - 1, 0, this.keyData);
           this._items.value = charArr.join('');
@@ -1918,6 +1924,11 @@ textarea.ark-input{
 
 
     }
+}
+
+.encode-text textarea.ark-input {
+  font-size: 16px;
+  font-weight: bold;
 }
 
 
