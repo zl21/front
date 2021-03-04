@@ -43,7 +43,6 @@
     },
 
     methods: {
-      // multiple
       handleChange(values) {
         const checkedList = [];
         if (values.length === 0) {
@@ -51,7 +50,7 @@
           return;
         }
 
-        if (this.options.multiple) {
+        if (!this.options.singleCheck) {
           // 多选
           this.options.combobox.forEach((item) => {
             if (values.includes(item.limitdesc)) {
@@ -71,7 +70,7 @@
         }
         
         
-        this.$emit('change', JSON.stringify(checkedList.join(',')));
+        this.$emit('change', JSON.stringify(checkedList));
       }
     },
 
