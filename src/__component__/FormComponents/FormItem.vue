@@ -566,9 +566,7 @@
       inheritanceComponents() {
         let Components = null;
         let item = this.items;
-        if(item.webconf && item.webconf.display === 'YearMonth'){
-            item.display = 'YearMonth';
-          }
+        
         switch (item.display) {
         case undefined:
           Components = new CustomInput(item).init();
@@ -814,7 +812,6 @@
       
       resetItem(){
         this.value = new ParameterDataProcessing(JSON.parse(JSON.stringify(this.items))).defaultDataProcessing();
-        debugger
       }
       
     },

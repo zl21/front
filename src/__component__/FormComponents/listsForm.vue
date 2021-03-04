@@ -76,6 +76,9 @@
         this.ItemLists = {}
         this.formArray = []
         this.formItemLists.map((item, index) => {
+          if(item.webconf && item.webconf.display === 'YearMonth'){
+            item.display = 'YearMonth';
+          }
           if (item.colname) {
             item._index = Math.random()
             this.ItemLists[item.colname] = JSON.parse(JSON.stringify(item));
@@ -176,7 +179,6 @@
     watch:{
       formItemLists:{
         handler(){
-            console.log(123)
             this.resetForm()
         },
         deep: true

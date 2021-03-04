@@ -84,12 +84,17 @@ export default class ParameterDataProcessing {
     }
 
     // 处理日期字段
-    if (['OBJ_DATE', 'OBJ_DATENUMBER'].includes(this.item.display)) {
+    if (['OBJ_DATE', 'OBJ_DATENUMBER','YearMonth'].includes(this.item.display)) {
+      
       let arr = [];
       if (this.item.display === 'OBJ_DATE') {
         arr = [new Date().r3Format(new Date(this.value[0]), 'yyyy/MM/dd hh:mm:ss'), new Date().r3Format(new Date(this.value[1]), 'yyyy/MM/dd hh:mm:ss')];
-      } else {
+      }  
+      if(this.item.display === 'OBJ_DATENUMBER'){
         arr = [new Date().r3Format(new Date(this.value[0]), 'yyyyMMdd'), new Date().r3Format(new Date(this.value[1]), 'yyyyMMdd')];
+      }
+      if(this.item.display === 'YearMonth'){
+        arr = [new Date().r3Format(new Date(this.value), 'yyyy-MM')];
       }
 
       return {
