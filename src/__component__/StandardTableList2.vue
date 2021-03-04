@@ -1438,8 +1438,7 @@
         return obj;
       },
       resetForm() {
-        const Form = this.$_live_getChildComponent(window.vm, 'listsForm');
-        this.$_live_getChildComponent(window.vm, 'listsForm').resetForm();
+        
         this.filterTableParam = {};
         this.resetTabParam();
         // 列表查询重置
@@ -1466,6 +1465,9 @@
             this.updateFormData(this.dataProcessing());
           }
           this.getTableQueryForForm({ searchData, resolve, reject });
+
+          const Form = this.$_live_getChildComponent(window.vm, 'listsForm');
+          this.$_live_getChildComponent(window.vm, 'listsForm').resetForm(true);
         });
       },
       defaultValue(item) {

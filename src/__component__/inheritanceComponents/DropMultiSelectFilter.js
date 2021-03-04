@@ -47,7 +47,7 @@ class CustomDropMultiSelectFilter {
     this.item = item;
     // const BusDropDownSelectFilter = require('arkui_BCL/DropDownSelectFilter').default;
     // this.BusDropDown = deepClone(DropMultiSelectFilter);
-    const BusDropDown = Vue.extend(BusDropDown);
+    const BusDropDown = Vue.extend(DropMultiSelectFilter);
     this.BusDropDown = new BusDropDown().$options;
     delete this.BusDropDown._Ctor;
   }
