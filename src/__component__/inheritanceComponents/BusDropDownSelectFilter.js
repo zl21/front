@@ -91,7 +91,9 @@ class BusDropDownSelectFilter {
       isdroplistsearch: true,
       refcolid: this.item.colid,
     });
-    props.http.default = () => network;
+    props.http.default = () => {
+      return network;
+    };
   }
 
   // 合并data
