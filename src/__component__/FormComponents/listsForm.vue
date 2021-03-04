@@ -172,6 +172,15 @@
       this.resetForm()
       // 处理折叠的默认值
       this.dowClass = !this.defaultSpread;
+    },
+    watch:{
+      formItemLists:{
+        handler(){
+            console.log(123)
+            this.resetForm()
+        },
+        deep: true
+      }
     }
   };
 
