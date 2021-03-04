@@ -46,7 +46,7 @@ export default class ParameterDataProcessing {
     }
 
     // 处理空数组和存在值为''的数据
-    if (Type.isArray(this.value) && (this.value.length === 0 || this.value.includes(''))) {
+    if (Type.isArray(this.value) && (this.value.length === 0 || !this.value[0])) {
       return {};
     }
 

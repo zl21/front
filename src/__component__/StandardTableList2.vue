@@ -274,9 +274,10 @@
         return this.keepAliveLabelMaps[this[MODULE_COMPONENT_NAME]];
       },
       formLists() {
-        return this.refactoringData(
-          this.formItems.defaultFormItemsLists.concat([])
-        );
+        return []
+        // return this.refactoringData(
+        //   this.formItems.defaultFormItemsLists.concat([])
+        // );
       },
       isCommonTable() {
         return isCommonTable();
@@ -1063,150 +1064,150 @@
               inputname: current.inputname,
               props: {
               },
-              event: {
-                keydown: (event) => {
-                  // 输入框的keydown event, $this
-                  if (event.keyCode === 13) {
-                    // enter回车查询
-                    this.searchClickData();
-                  }
-                },
-                change: () => {
-                  if (current.isuppercase) {
-                    setTimeout(() => {
-                      this.lowercaseToUppercase(itemIndex);
-                    }, 50);
-                  }
-                },
-                fkrpSelected: (value) => {
-                  this.formItemsLists[itemIndex].item.props.AutoData = [];
-                  this.formItemsLists[itemIndex].item.value = value;
-                  // this.formItemsLists = this.formItemsLists.concat([]);
-                },
-                'on-delete': ($this, item, key, index) => {
-                  fkHttpRequest().fkDelMultiQuery({
-                    searchObject: {
-                      tableid: item.props.fkobj.reftableid,
-                      modelname: key
-                    },
-                    serviceId: current.fkobj.serviceId,
-                    success: () => {
-                      fkHttpRequest().fkGetMultiQuery({
-                        searchObject: {
-                          tableid: item.props.fkobj.reftableid
-                        },
-                        serviceId: current.fkobj.serviceId,
-                        success: (res) => {
-                          this.freshDropDownPopFilterData(res, index);
-                        }
-                      });
-                    }
-                  });
-                },
-                'popper-value': ($this, value, Selected) => {
-                  // 当外键下拉展开时去请求数据
-                  this.formItemsLists[itemIndex].item.value = value;
-                  this.formItemsLists[itemIndex].item.props.Selected = Selected;
-                  this.formItemsLists = this.formItemsLists.concat([]);
-                },
-                'popper-show': ($this, item, index) => {
-                  // 当气泡拉展开时去请求数据
-                  fkHttpRequest().fkGetMultiQuery({
-                    searchObject: {
-                      tableid: item.props.fkobj.reftableid
-                    },
-                    serviceId: current.fkobj.serviceId,
-                    success: (res) => {
-                      this.freshDropDownPopFilterData(res, index);
-                    }
-                  });
-                },
-                clear: () => {
-                  this.formItemsLists[itemIndex].item.props.Selected = [];
-                  this.formItemsLists[itemIndex].item.value = '';
-                },
-                valuechange: ($this) => {
-                  // 弹窗多选
-                  this.formItemsLists[itemIndex].item.props.Selected = ($this.selected && $this.selected.length > 0) ? $this.selected : [];
-                  this.formItemsLists[itemIndex].item.value = $this.value; // `已经选中${$this.selected.length}条数据`
-                  this.formItemsLists = this.formItemsLists.concat([]);
-                  if (!$this.value) {
-                    // this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
-                    return false;
-                  }
+              // event: {
+              //   keydown: (event) => {
+              //     // 输入框的keydown event, $this
+              //     if (event.keyCode === 13) {
+              //       // enter回车查询
+              //       this.searchClickData();
+              //     }
+              //   },
+              //   change: () => {
+              //     if (current.isuppercase) {
+              //       setTimeout(() => {
+              //         this.lowercaseToUppercase(itemIndex);
+              //       }, 50);
+              //     }
+              //   },
+              //   fkrpSelected: (value) => {
+              //     this.formItemsLists[itemIndex].item.props.AutoData = [];
+              //     this.formItemsLists[itemIndex].item.value = value;
+              //     // this.formItemsLists = this.formItemsLists.concat([]);
+              //   },
+              //   'on-delete': ($this, item, key, index) => {
+              //     fkHttpRequest().fkDelMultiQuery({
+              //       searchObject: {
+              //         tableid: item.props.fkobj.reftableid,
+              //         modelname: key
+              //       },
+              //       serviceId: current.fkobj.serviceId,
+              //       success: () => {
+              //         fkHttpRequest().fkGetMultiQuery({
+              //           searchObject: {
+              //             tableid: item.props.fkobj.reftableid
+              //           },
+              //           serviceId: current.fkobj.serviceId,
+              //           success: (res) => {
+              //             this.freshDropDownPopFilterData(res, index);
+              //           }
+              //         });
+              //       }
+              //     });
+              //   },
+              //   'popper-value': ($this, value, Selected) => {
+              //     // 当外键下拉展开时去请求数据
+              //     this.formItemsLists[itemIndex].item.value = value;
+              //     this.formItemsLists[itemIndex].item.props.Selected = Selected;
+              //     this.formItemsLists = this.formItemsLists.concat([]);
+              //   },
+              //   'popper-show': ($this, item, index) => {
+              //     // 当气泡拉展开时去请求数据
+              //     fkHttpRequest().fkGetMultiQuery({
+              //       searchObject: {
+              //         tableid: item.props.fkobj.reftableid
+              //       },
+              //       serviceId: current.fkobj.serviceId,
+              //       success: (res) => {
+              //         this.freshDropDownPopFilterData(res, index);
+              //       }
+              //     });
+              //   },
+              //   clear: () => {
+              //     this.formItemsLists[itemIndex].item.props.Selected = [];
+              //     this.formItemsLists[itemIndex].item.value = '';
+              //   },
+              //   valuechange: ($this) => {
+              //     // 弹窗多选
+              //     this.formItemsLists[itemIndex].item.props.Selected = ($this.selected && $this.selected.length > 0) ? $this.selected : [];
+              //     this.formItemsLists[itemIndex].item.value = $this.value; // `已经选中${$this.selected.length}条数据`
+              //     this.formItemsLists = this.formItemsLists.concat([]);
+              //     if (!$this.value) {
+              //       // this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
+              //       return false;
+              //     }
 
-                  // const searchObject = {
-                  //   ak: $this.value,
-                  //   colid: current.colid,
-                  //   fixedcolumns: {}
-                  // };
-                  // fkHttpRequest().fkFuzzyquerybyak({
-                  //   searchObject: this.setSeachObject(searchObject, current),
-                  //   serviceId: current.fkobj.serviceId,
-                  //   success: (res) => {
-                  //     // this.freshDropDownSelectFilterAutoData(res, itemIndex);
-                  //   }
-                  // });
-                },
-                'on-popper-hide': ($this) => {
-                  // 初始化清空数据
-                  this.formItemsLists[itemIndex].item.props.data = {};
-                  this.formItemsLists = this.formItemsLists.concat([]);
-                },
-                'on-show': ($this) => {
-                  // 当外键下拉站开始去请求数据
-                  const searchObject = {
-                    isdroplistsearch: true,
-                    refcolid: current.colid,
-                    startindex: 0,
-                    range: $this.pageSize
-                  };
+              //     // const searchObject = {
+              //     //   ak: $this.value,
+              //     //   colid: current.colid,
+              //     //   fixedcolumns: {}
+              //     // };
+              //     // fkHttpRequest().fkFuzzyquerybyak({
+              //     //   searchObject: this.setSeachObject(searchObject, current),
+              //     //   serviceId: current.fkobj.serviceId,
+              //     //   success: (res) => {
+              //     //     // this.freshDropDownSelectFilterAutoData(res, itemIndex);
+              //     //   }
+              //     // });
+              //   },
+              //   'on-popper-hide': ($this) => {
+              //     // 初始化清空数据
+              //     this.formItemsLists[itemIndex].item.props.data = {};
+              //     this.formItemsLists = this.formItemsLists.concat([]);
+              //   },
+              //   'on-show': ($this) => {
+              //     // 当外键下拉站开始去请求数据
+              //     const searchObject = {
+              //       isdroplistsearch: true,
+              //       refcolid: current.colid,
+              //       startindex: 0,
+              //       range: $this.pageSize
+              //     };
 
-                  fkHttpRequest().fkQueryList({
-                    searchObject: this.setSeachObject(searchObject, current),
-                    serviceId: current.fkobj.serviceId,
-                    success: (res) => {
-                      this.freshDropDownSelectFilterData(res, itemIndex);
-                    }
-                  });
-                },
-                inputValueChange: (value) => {
-                  // 外键的模糊搜索
-                  if (!value) {
-                    // this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
-                    return false;
-                  }
-                  const searchObject = {
-                    ak: value,
-                    colid: current.colid,
-                    fixedcolumns: {}
-                  };
+              //     fkHttpRequest().fkQueryList({
+              //       searchObject: this.setSeachObject(searchObject, current),
+              //       serviceId: current.fkobj.serviceId,
+              //       success: (res) => {
+              //         this.freshDropDownSelectFilterData(res, itemIndex);
+              //       }
+              //     });
+              //   },
+              //   inputValueChange: (value) => {
+              //     // 外键的模糊搜索
+              //     if (!value) {
+              //       // this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
+              //       return false;
+              //     }
+              //     const searchObject = {
+              //       ak: value,
+              //       colid: current.colid,
+              //       fixedcolumns: {}
+              //     };
 
-                  fkHttpRequest().fkFuzzyquerybyak({
-                    searchObject: this.setSeachObject(searchObject, current),
-                    serviceId: current.fkobj.serviceId,
-                    success: (res) => {
-                      this.freshDropDownSelectFilterAutoData(res, itemIndex);
-                    }
-                  });
-                },
-                pageChange: (currentPage, $this) => {
-                  // 外键的分页查询
-                  const searchObject = {
-                    isdroplistsearch: true,
-                    refcolid: current.colid,
-                    startindex: $this.data.defaultrange * ($this.currentPage - 1),
-                    range: $this.pageSize
-                  };
-                  fkHttpRequest().fkQueryList({
-                    searchObject: this.setSeachObject(searchObject, current),
-                    serviceId: current.fkobj.serviceId,
-                    success: (res) => {
-                      this.freshDropDownSelectFilterData(res, itemIndex);
-                    }
-                  });
-                }
-              },
+              //     fkHttpRequest().fkFuzzyquerybyak({
+              //       searchObject: this.setSeachObject(searchObject, current),
+              //       serviceId: current.fkobj.serviceId,
+              //       success: (res) => {
+              //         this.freshDropDownSelectFilterAutoData(res, itemIndex);
+              //       }
+              //     });
+              //   },
+              //   pageChange: (currentPage, $this) => {
+              //     // 外键的分页查询
+              //     const searchObject = {
+              //       isdroplistsearch: true,
+              //       refcolid: current.colid,
+              //       startindex: $this.data.defaultrange * ($this.currentPage - 1),
+              //       range: $this.pageSize
+              //     };
+              //     fkHttpRequest().fkQueryList({
+              //       searchObject: this.setSeachObject(searchObject, current),
+              //       serviceId: current.fkobj.serviceId,
+              //       success: (res) => {
+              //         this.freshDropDownSelectFilterData(res, itemIndex);
+              //       }
+              //     });
+              //   }
+              // },
               validate: {}
             };
 
@@ -1216,74 +1217,74 @@
 
 
             // 输入控制
-            if (current.type === 'NUMBER' && !current.display) {
-              // 只能输入 正整数 
-              let string = '';
-              current.length = 100;
+            // if (current.type === 'NUMBER' && !current.display) {
+            //   // 只能输入 正整数 
+            //   let string = '';
+            //   current.length = 100;
 
-              if (current.webconf && current.webconf.ispositive) {
-                string = `^\\d{0,${current.length}}(\\\.[0-9]{0,${
-                  current.scale
-                }})?$`;
-              } else {
-                string = `^(-|\\+)?\\d{0,${current.length - current.scale}}(\\\.[0-9]{0,${
-                  current.scale
-                }})?$`;
-              }
+            //   if (current.webconf && current.webconf.ispositive) {
+            //     string = `^\\d{0,${current.length}}(\\\.[0-9]{0,${
+            //       current.scale
+            //     }})?$`;
+            //   } else {
+            //     string = `^(-|\\+)?\\d{0,${current.length - current.scale}}(\\\.[0-9]{0,${
+            //       current.scale
+            //     }})?$`;
+            //   }
               
-              const typeRegExp = new RegExp(string);
-              if (current.scale > 0) {
-                obj.item.props.regx = typeRegExp;
-              } else if (current.webconf && current.webconf.ispositive) {
-                obj.item.props.regx = regExp.Number;
-              } else {
-                obj.item.props.regx = regExp.Digital;
-              }
-            }
+            //   const typeRegExp = new RegExp(string);
+            //   if (current.scale > 0) {
+            //     obj.item.props.regx = typeRegExp;
+            //   } else if (current.webconf && current.webconf.ispositive) {
+            //     obj.item.props.regx = regExp.Number;
+            //   } else {
+            //     obj.item.props.regx = regExp.Digital;
+            //   }
+            // }
 
             // 带有combobox的添加到options属性中
-            if (current.combobox) {
-              const arr = current.combobox.reduce((sum, item) => {
-                sum.push({
-                  label: item.limitdesc,
-                  value: item.limitval
-                });
-                return sum;
-              }, []);
-              obj.item.options = arr;
-            }
-            // 多状态合并的select
-            if (current.conds && current.conds.length > 0) {
-              let sumArray = [];
-              current.conds.map((item) => {
-                sumArray = sumArray.concat(
-                  item.combobox.reduce((sum, temp) => {
-                    sum.push({
-                      label: temp.limitdesc,
-                      value: `${item.colname}|${temp.limitval}`
-                    });
-                    return sum;
-                  }, [])
-                );
-                return item;
-              });
-              obj.item.options = sumArray;
-            }
+            // if (current.combobox) {
+            //   const arr = current.combobox.reduce((sum, item) => {
+            //     sum.push({
+            //       label: item.limitdesc,
+            //       value: item.limitval
+            //     });
+            //     return sum;
+            //   }, []);
+            //   obj.item.options = arr;
+            // }
+            // // 多状态合并的select
+            // if (current.conds && current.conds.length > 0) {
+            //   let sumArray = [];
+            //   current.conds.map((item) => {
+            //     sumArray = sumArray.concat(
+            //       item.combobox.reduce((sum, temp) => {
+            //         sum.push({
+            //           label: temp.limitdesc,
+            //           value: `${item.colname}|${temp.limitval}`
+            //         });
+            //         return sum;
+            //       }, [])
+            //     );
+            //     return item;
+            //   });
+            //   obj.item.options = sumArray;
+            // }
 
             // 日期控件属性控制
-            if (current.display === 'OBJ_DATENUMBER') {
-              obj.item.props.type = 'daterange';
-              obj.item.props.display = current.display;
-              obj.item.props.format = 'yyyy/MM/dd';
-            }
-            if (current.display === 'OBJ_DATE') {
-              obj.item.props.type = 'datetimerange';
-              obj.item.props.format = 'yyyy/MM/dd HH:mm:ss';
-            }
-            if (current.display === 'OBJ_TIME') {
-              obj.item.props.type = 'timerange';
-              obj.item.props.format = 'yyyy/MM/dd HH:mm:ss';
-            }
+            // if (current.display === 'OBJ_DATENUMBER') {
+            //   obj.item.props.type = 'daterange';
+            //   obj.item.props.display = current.display;
+            //   obj.item.props.format = 'yyyy/MM/dd';
+            // }
+            // if (current.display === 'OBJ_DATE') {
+            //   obj.item.props.type = 'datetimerange';
+            //   obj.item.props.format = 'yyyy/MM/dd HH:mm:ss';
+            // }
+            // if (current.display === 'OBJ_TIME') {
+            //   obj.item.props.type = 'timerange';
+            //   obj.item.props.format = 'yyyy/MM/dd HH:mm:ss';
+            // }
 
             // 属性isuppercase控制
             if (current.isuppercase) {
@@ -1295,109 +1296,109 @@
 
             // 外键的单选多选判断
 
-            if (current.display === 'OBJ_FK') {
-              switch (current.fkobj.searchmodel) {
-              case 'drp':
-                obj.item.props.single = true;
-                obj.item.props.fk_type = 'drp';
-                obj.item.props.fkobj = current.fkobj;
-                obj.item.props.defaultSelected = this.defaultValue(current) || [];
-                break;
-              case 'mrp':
-                obj.item.props.single = false;
-                obj.item.props.fk_type = 'mrp';
-                obj.item.props.fkobj = current.fkobj;
-                obj.item.props.defaultSelected = this.defaultValue(current) || [];
-                break;
-              case 'pop':
-                obj.item.props = current;
-                obj.item.props.blurType = false;
-                obj.item.props.optionTip = false;
-                obj.item.props.enterType = true;
-                obj.item.props.fkdisplay = 'pop';
-                obj.item.props.show = false;
-                // 失去光标是否保存
-                obj.item.props.dialog = {
-                  model: {
-                    title: current.fkdesc,
-                    width: 920,
-                    mask: true,
-                    draggable: true,
-                    closable: true,
-                    scrollable: true,
-                    maskClosable: false,
-                    'footer-hide': true
-                  }
-                };
-                //  单对象界面
-                obj.item.props.AutoData = [];
-                obj.item.props.fkobj = {
-                  colid: current.colid,
-                  reftable: current.fkobj.reftable,
-                  serviceId: current.fkobj.serviceId,
-                  reftableid: current.fkobj.reftableid,
-                  show: false,
-                  url:
-                    `${current.fkobj.serviceId ? (`/${current.fkobj.serviceId}`) : ''
-                    }/p/cs/menuimport`
-                };
-                obj.item.props.datalist = [];
-                obj.item.props.Selected = [];
-                if (current.refobjid && current.refobjid !== -1) {
-                  obj.item.props.Selected.push({
-                    ID: current.refobjid,
-                    Label: current.default
-                  });
-                  obj.item.value = current.default;
-                }
+            // if (current.display === 'OBJ_FK') {
+            //   switch (current.fkobj.searchmodel) {
+            //   case 'drp':
+            //     obj.item.props.single = true;
+            //     obj.item.props.fk_type = 'drp';
+            //     obj.item.props.fkobj = current.fkobj;
+            //     obj.item.props.defaultSelected = this.defaultValue(current) || [];
+            //     break;
+            //   case 'mrp':
+            //     obj.item.props.single = false;
+            //     obj.item.props.fk_type = 'mrp';
+            //     obj.item.props.fkobj = current.fkobj;
+            //     obj.item.props.defaultSelected = this.defaultValue(current) || [];
+            //     break;
+            //   case 'pop':
+            //     obj.item.props = current;
+            //     obj.item.props.blurType = false;
+            //     obj.item.props.optionTip = false;
+            //     obj.item.props.enterType = true;
+            //     obj.item.props.fkdisplay = 'pop';
+            //     obj.item.props.show = false;
+            //     // 失去光标是否保存
+            //     obj.item.props.dialog = {
+            //       model: {
+            //         title: current.fkdesc,
+            //         width: 920,
+            //         mask: true,
+            //         draggable: true,
+            //         closable: true,
+            //         scrollable: true,
+            //         maskClosable: false,
+            //         'footer-hide': true
+            //       }
+            //     };
+            //     //  单对象界面
+            //     obj.item.props.AutoData = [];
+            //     obj.item.props.fkobj = {
+            //       colid: current.colid,
+            //       reftable: current.fkobj.reftable,
+            //       serviceId: current.fkobj.serviceId,
+            //       reftableid: current.fkobj.reftableid,
+            //       show: false,
+            //       url:
+            //         `${current.fkobj.serviceId ? (`/${current.fkobj.serviceId}`) : ''
+            //         }/p/cs/menuimport`
+            //     };
+            //     obj.item.props.datalist = [];
+            //     obj.item.props.Selected = [];
+            //     if (current.refobjid && current.refobjid !== -1) {
+            //       obj.item.props.Selected.push({
+            //         ID: current.refobjid,
+            //         Label: current.default
+            //       });
+            //       obj.item.value = current.default;
+            //     }
                 
-                // if (!item.props.readonly && !this.objreadonly) {
-                //   item.props.Selected.push(this.defaultValue(current)[0]);
-                //   item.value = this.defaultValue(current)[0].Label;
-                // } else {
-                //   item.value = this.defaultValue(current)[0].Label;
-                // }
-                break;
-              case 'mop':
-                obj.item.props.fkobj = current.fkobj;
-                obj.item.props.fkobj.colid = current.colid;
-                obj.item.props.blurType = false;
-                // obj.item.props.fkobj.saveType = 'object';
-                obj.item.props.fkobj.url = '/p/cs/menuimport'; // 处理导入接口  去除网关`/${obj.item.props.fkobj.serviceId}/p/cs/menuimport`
-                obj.item.props.datalist = [];
-                obj.item.props.Selected = [];
-                obj.item.props.filterDate = {};
-                break;
-              default:
-                break;
-              }
-            }
+            //     // if (!item.props.readonly && !this.objreadonly) {
+            //     //   item.props.Selected.push(this.defaultValue(current)[0]);
+            //     //   item.value = this.defaultValue(current)[0].Label;
+            //     // } else {
+            //     //   item.value = this.defaultValue(current)[0].Label;
+            //     // }
+            //     break;
+            //   case 'mop':
+            //     obj.item.props.fkobj = current.fkobj;
+            //     obj.item.props.fkobj.colid = current.colid;
+            //     obj.item.props.blurType = false;
+            //     // obj.item.props.fkobj.saveType = 'object';
+            //     obj.item.props.fkobj.url = '/p/cs/menuimport'; // 处理导入接口  去除网关`/${obj.item.props.fkobj.serviceId}/p/cs/menuimport`
+            //     obj.item.props.datalist = [];
+            //     obj.item.props.Selected = [];
+            //     obj.item.props.filterDate = {};
+            //     break;
+            //   default:
+            //     break;
+            //   }
+            // }
 
             // 设置indexDB默认查询条件 
-            if (enableKAQueryDataForUser() || this.webConf.enableKAQueryDataForUser) {
-              Object.keys(this.searchDBdata).map((temp) => {
-                // console.log(obj.item);
-                // if (temp === obj.item.field && obj.item.value) {
-                //   return temp;
-                // }
-                if (temp === obj.item.field && this.searchDBdata[temp]) {
-                  obj.item.value = this.searchDBdata[temp];
-                }
+            // if (enableKAQueryDataForUser() || this.webConf.enableKAQueryDataForUser) {
+            //   Object.keys(this.searchDBdata).map((temp) => {
+            //     // console.log(obj.item);
+            //     // if (temp === obj.item.field && obj.item.value) {
+            //     //   return temp;
+            //     // }
+            //     if (temp === obj.item.field && this.searchDBdata[temp]) {
+            //       obj.item.value = this.searchDBdata[temp];
+            //     }
 
-                if (current.display === 'OBJ_FK' && temp === obj.item.field && this.searchDBdata[temp]) {
-                  switch (current.fkobj.searchmodel) {
-                  case 'drp':
-                    obj.item.props.defaultSelected = this.searchDBdata[temp];
-                    break;
-                  case 'mrp':
-                    obj.item.props.defaultSelected = this.searchDBdata[temp];
-                    break;
-                  default:
-                    break;
-                  }
-                }
-              });
-            }
+            //     if (current.display === 'OBJ_FK' && temp === obj.item.field && this.searchDBdata[temp]) {
+            //       switch (current.fkobj.searchmodel) {
+            //       case 'drp':
+            //         obj.item.props.defaultSelected = this.searchDBdata[temp];
+            //         break;
+            //       case 'mrp':
+            //         obj.item.props.defaultSelected = this.searchDBdata[temp];
+            //         break;
+            //       default:
+            //         break;
+            //       }
+            //     }
+            //   });
+            // }
             
             array.push(obj);
             return array;
@@ -1461,7 +1462,7 @@
             search.R3UserId = `${this.userInfo.id}_${this.searchData.table}`;
             addSearch(search);
 
-            this.updateSearchDBdata({});
+            // this.updateSearchDBdata({});
             this.updateFormData(this.dataProcessing());
           }
           this.getTableQueryForForm({ searchData, resolve, reject });
@@ -1471,125 +1472,125 @@
           this.$_live_getChildComponent(this, 'listsForm').resetForm(true);
         });
       },
-      defaultValue(item) {
-        // 设置表单的默认值
+      // defaultValue(item) {
+      //   // 设置表单的默认值
 
-        // OBJ_DATENUMBER OBJ_DATE OBJ_SELECT OBJ_FK
-        if (item.display === 'OBJ_DATENUMBER') {
-          // 日期控件
-          if (item.default === '-1') {
-            return '';
-          } if (item.default !== '-1' && item.default) {
-            const timeRange = [
-              new Date().setNewFormt(new Date().minusDays(Number(item.default)).toIsoDateString(), '-', ''),
-              new Date().setNewFormt(new Date().toIsoDateString(), '-', '')
-            ];
-            return timeRange;
-          }
+      //   // OBJ_DATENUMBER OBJ_DATE OBJ_SELECT OBJ_FK
+      //   if (item.display === 'OBJ_DATENUMBER') {
+      //     // 日期控件
+      //     if (item.default === '-1') {
+      //       return '';
+      //     } if (item.default !== '-1' && item.default) {
+      //       const timeRange = [
+      //         new Date().setNewFormt(new Date().minusDays(Number(item.default)).toIsoDateString(), '-', ''),
+      //         new Date().setNewFormt(new Date().toIsoDateString(), '-', '')
+      //       ];
+      //       return timeRange;
+      //     }
 
-          // 设置默认值
-          if (item.daterange) {
-            const timeRange = [
-              new Date().setNewFormt(new Date().minusDays(Number(item.daterange)).toIsoDateString(), '-', ''),
-              new Date().setNewFormt(new Date().toIsoDateString(), '-', '')
-            ];
-            return timeRange;
-          }
-        }
-        if (item.display === 'OBJ_DATE') {
-          if (item.default === '-1') {
-            return '';
-          }
-          const timeRange = [
-            `${new Date().setNewFormt(new Date()
-              .minusDays(Number(item.daterange))
-              .toIsoDateString(), '-', '/')} 00:00:00`,
-            `${new Date().setNewFormt(new Date().toIsoDateString(), '-', '/')} 23:59:59`
-          ];
-          return timeRange;
-        }
+      //     // 设置默认值
+      //     if (item.daterange) {
+      //       const timeRange = [
+      //         new Date().setNewFormt(new Date().minusDays(Number(item.daterange)).toIsoDateString(), '-', ''),
+      //         new Date().setNewFormt(new Date().toIsoDateString(), '-', '')
+      //       ];
+      //       return timeRange;
+      //     }
+      //   }
+      //   if (item.display === 'OBJ_DATE') {
+      //     if (item.default === '-1') {
+      //       return '';
+      //     }
+      //     const timeRange = [
+      //       `${new Date().setNewFormt(new Date()
+      //         .minusDays(Number(item.daterange))
+      //         .toIsoDateString(), '-', '/')} 00:00:00`,
+      //       `${new Date().setNewFormt(new Date().toIsoDateString(), '-', '/')} 23:59:59`
+      //     ];
+      //     return timeRange;
+      //   }
 
-        if (item.display === 'OBJ_SELECT' && item.default) {
-          // 处理select的默认值
-          let arr = [];
-          arr = item.default.split(',');
-          return arr;
-        }
+      //   if (item.display === 'OBJ_SELECT' && item.default) {
+      //     // 处理select的默认值
+      //     let arr = [];
+      //     arr = item.default.split(',');
+      //     return arr;
+      //   }
 
-        if (item.display === 'OBJ_FK' && item.default) {
-          // 外键默认值
-          const arr = [];
-          arr.push({
-            ID: item.refobjid,
-            Label: item.default
-          });
-          if (item.fkobj && (item.fkobj.searchmodel === 'pop' || item.fkobj.searchmodel === 'mop')) {
-            return item.default;
-          }
-          return arr;
-        }
-        // if(item.display === 'OBJ_FK' && item.fkobj){
-        //     return '';
-        // }
+      //   if (item.display === 'OBJ_FK' && item.default) {
+      //     // 外键默认值
+      //     const arr = [];
+      //     arr.push({
+      //       ID: item.refobjid,
+      //       Label: item.default
+      //     });
+      //     if (item.fkobj && (item.fkobj.searchmodel === 'pop' || item.fkobj.searchmodel === 'mop')) {
+      //       return item.default;
+      //     }
+      //     return arr;
+      //   }
+      //   // if(item.display === 'OBJ_FK' && item.fkobj){
+      //   //     return '';
+      //   // }
         
-        return item.default;
-      },
+      //   return item.default;
+      // },
       getTableQuery() {
         // 获取列表的查询字段
         const searchData = this.searchData;
         this.getTableQueryForForm({ searchData });
       },
-      formDataChange(data, item, index) { // 表单数据修改
-        if (JSON.stringify(this.formItems.data) !== JSON.stringify(data)) {
-          if (this.formItemsLists.length > 0) {
-            this.formItemsLists[index].item.value = item.item.value;
-          }
+      // formDataChange(data, item, index) { // 表单数据修改
+      //   if (JSON.stringify(this.formItems.data) !== JSON.stringify(data)) {
+      //     if (this.formItemsLists.length > 0) {
+      //       this.formItemsLists[index].item.value = item.item.value;
+      //     }
 
-          this.updateFormData(data);
-        }
-      },
-      freshDropDownPopFilterData(res, index) {
-        // 外键下拉时，更新下拉数据
-        // this.formItemsLists[index].item.props.datalist = res.data.data;
-        if (res.length > 0) {
-          res.forEach((item) => {
-            item.label = item.value;
-            item.value = item.key;
-            item.delete = true;
-          });
-          this.formItemsLists[index].item.props.datalist = res;
-        } else {
-          this.formItemsLists[index].item.props.datalist = res;
-        }
-      },
-      freshDropDownSelectFilterData(res, index) {
-        // 外键下拉时，更新下拉数据
-        this.formItemsLists[index].item.props.data = Object.assign({}, res.data.data);
-        this.formItemsLists[index].item.props.totalRowCount = res.data.data.totalRowCount;
-        this.formItemsLists[index].item.props.pageSize = res.data.data.defaultrange;
-        this.formItemsLists = this.formItemsLists.concat([]);
-      },
-      freshDropDownSelectFilterAutoData(res, index, type) {
-        // 外键的模糊搜索数据更新
-        this.formItemsLists[index].item.props.hidecolumns = ['id', 'value'];        
-        if (type === 'empty') {
-          this.formItemsLists[index].item.props.defaultSelected = [];
+      //     this.updateFormData(data);
+      //   }
+      // },
+      // freshDropDownPopFilterData(res, index) {
+      //   // 外键下拉时，更新下拉数据
+      //   // this.formItemsLists[index].item.props.datalist = res.data.data;
+      //   if (res.length > 0) {
+      //     res.forEach((item) => {
+      //       item.label = item.value;
+      //       item.value = item.key;
+      //       item.delete = true;
+      //     });
+      //     this.formItemsLists[index].item.props.datalist = res;
+      //   } else {
+      //     this.formItemsLists[index].item.props.datalist = res;
+      //   }
+      // },
+      // freshDropDownSelectFilterData(res, index) {
+      //   // 外键下拉时，更新下拉数据
+      //   this.formItemsLists[index].item.props.data = Object.assign({}, res.data.data);
+      //   this.formItemsLists[index].item.props.totalRowCount = res.data.data.totalRowCount;
+      //   this.formItemsLists[index].item.props.pageSize = res.data.data.defaultrange;
+      //   this.formItemsLists = this.formItemsLists.concat([]);
+      // },
+      // freshDropDownSelectFilterAutoData(res, index, type) {
+      //   // 外键的模糊搜索数据更新
+      //   this.formItemsLists[index].item.props.hidecolumns = ['id', 'value'];        
+      //   if (type === 'empty') {
+      //     this.formItemsLists[index].item.props.defaultSelected = [];
 
-          // this.formItemsLists[index].item.props.AutoData = [];
-        } else {
-          this.formItemsLists[index].item.props.AutoData = res.data.data;
-        }
-        // this.formItemsLists = this.formItemsLists.concat([]);
-        if (this.$refs.FormItemComponent) {
-          this.$refs.FormItemComponent.FormItemLists[index].item.props.AutoData = res.data.data;
-        }
-      },
-      lowercaseToUppercase(index) {
-        // 将字符串转化为大写
-        const UppercaseValue = this.formItemsLists[index].item.value ? this.formItemsLists[index].item.value.toUpperCase() : '';
-        this.formItemsLists[index].item.value = UppercaseValue;
-        this.formItemsLists = this.formItemsLists.concat([]);
-      },
+      //     // this.formItemsLists[index].item.props.AutoData = [];
+      //   } else {
+      //     this.formItemsLists[index].item.props.AutoData = res.data.data;
+      //   }
+      //   // this.formItemsLists = this.formItemsLists.concat([]);
+      //   if (this.$refs.FormItemComponent) {
+      //     this.$refs.FormItemComponent.FormItemLists[index].item.props.AutoData = res.data.data;
+      //   }
+      // },
+      // lowercaseToUppercase(index) {
+      //   // 将字符串转化为大写
+      //   const UppercaseValue = this.formItemsLists[index].item.value ? this.formItemsLists[index].item.value.toUpperCase() : '';
+      //   this.formItemsLists[index].item.value = UppercaseValue;
+      //   this.formItemsLists = this.formItemsLists.concat([]);
+      // },
 
       // 按钮组操作
       clearSelectIdArray() { // 关闭打印预览与直接打印后清空选中项
@@ -2072,7 +2073,7 @@
             data.isolr = this.buttons.isSolr;
 
             if (enableKAQueryDataForUser() || this.webConf.enableKAQueryDataForUser) {
-              const search = JSON.parse(JSON.stringify(this.dataProcessing()));
+              const search = JSON.parse(JSON.stringify(this.$_live_getChildComponent(this,'listsForm').getFormDataLabel()));
 
               this.formItemsLists.map((temp) => {
                 if (temp.item.type === 'AttachFilter') {
@@ -2086,7 +2087,7 @@
               search.R3UserId = `${this.userInfo.id}_${this.searchData.table}`;
               addSearch(search);
 
-              this.updateSearchDBdata({});
+              // this.updateSearchDBdata({});
               this.updateFormData(this.dataProcessing());
             }
             this.getQueryListForAg(data);
@@ -2863,54 +2864,7 @@
         if (detail.url === '/p/cs/getTableQuery' && (Version() === '1.4' ? detail.response.data.data.tabcmd : detail.response.data.tabcmd)) {
           this.updateFormData(this.dataProcessing());
           const enableKAQueryDataForUserFlag = Version() === '1.4' ? !!(detail.response.data.data.datas.webconf && detail.response.data.data.datas.webconf.enableKAQueryDataForUser) : !!(detail.response.data.datas.webconf && detail.response.data.datas.webconf.enableKAQueryDataForUser);
-          if (enableKAQueryDataForUser() || enableKAQueryDataForUserFlag) {
-            await querySearch(`${this.$store.state.global.userInfo.id}_${this.searchData.table}`).then((response) => {
-              if (response) {
-                const lists = Version() === '1.4' ? detail.response.data.data.datas.dataarry : detail.response.data.datas.dataarry;
-                lists.map((item) => {
-                  if (item.default) {
-                    delete response[item.colname];
-                  }
-
-                  if (item.display === 'OBJ_FK' && response[item.colname] && !Array.isArray(response[item.colname])) {
-                    delete response[item.colname];
-                  }
-                  
-                  if (item.display === 'OBJ_FK' && response[item.colname] && item.fkobj.fkdisplay !== 'mrp') {
-                    response[item.colname] = response[item.colname].reduce((array, current) => {
-                      array.push(current.ID);
-                      return array;
-                    }, []);
-                  }
-
-
-                  // 处理select类型
-                  if (item.display === 'OBJ_SELECT' && response[item.colname]) {
-                    response[item.colname] = response[item.colname].map(temp => temp = temp.replace(/\=/g, ''));
-                  }
-
-                  // 处理外健
-                  if (item.display === 'OBJ_FK' && response[item.colname] && item.fkobj.fkdisplay !== 'mrp') {
-                    item.default = response[item.colname][0].Label;
-                    item.refobjid = response[item.colname][0].ID;
-                  }
-
-                  if (!item.default && response[item.colname]) {
-                    item.default = response[item.colname];
-                  }
-                  return item;
-                });
-                // 过滤部分处理不了的类型字段
-                delete response.undefined; // 过滤配置的下拉多字段类型
-                this.updateSearchDBdata(response);
-                this.updateFormData(Object.assign({}, this.dataProcessing(), response));
-              }
-              // if (!this.buttons.isBig) {
-              //   this.firstSearchTable();
-              // }
-              this.firstSearchTable();
-            });
-          } else if (!this.buttons.isBig) {
+          if (!this.buttons.isBig) {
             // 初始化调用时，ie环境下增加500ms延时调用
             if (this.isIE()) {
               setTimeout(() => {

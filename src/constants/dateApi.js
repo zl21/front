@@ -93,3 +93,12 @@ Date.prototype.r3Format = (date, fmt = 'yyyy-MM-dd') => {
   }
   return fmt;
 };
+
+
+Date.prototype.dateMinus = (dateStart, dateEnd) => {
+  var sdate = new Date(dateStart); 
+　var now = new Date(dateEnd); 
+　var days = now.getTime() - sdate.getTime(); 
+　var day = Math.floor(days / (1000 * 60 * 60 * 24)); 
+	return day;
+}

@@ -33,7 +33,7 @@ export default {
   // },
 
   // 表单
-  updateDefaultFormItemsLists({ formItems }, data) {
+  updateDefaultFormItemsLists({ formItems }, {data, indexDB}) {
     const { tableId } = router.currentRoute.params;
 
     const getSTDefaultQuery = getSessionObject(tableId);
@@ -46,6 +46,30 @@ export default {
               d.refobjid = c.refobjid;
             } else if (c.display && c.display === 'OBJ_DATE') {
               d.daterange = c.defaultValue;
+            }
+          }
+        });
+      });
+    }
+
+    // 处理indexDB的默认值
+    if(indexDB && data && data.length > 0){
+      Object.keys(indexDB).map((c) => {
+        data.map((d) => {
+          if (c === d.colname && indexDB[c]) {
+            d.default = indexDB[c];
+            if (d.display && d.display === 'OBJ_FK') { // 如果是外键类型，需要配置refobjid
+              d.refobjid = indexDB[c][0].ID;
+              d.default = indexDB[c][0].Label;
+            }
+            
+            if (d.display && ['OBJ_DATENUMBER','OBJ_DATE'].includes(d.display)) {
+              d.daterange = new Date().dateMinus(indexDB[c][1],indexDB[c][0]);
+              d.default = new Date().dateMinus(indexDB[c][1],indexDB[c][0]);
+            }
+
+            if (d.display && d.display === 'OBJ_SELECT') {
+              d.default = indexDB[c].join(',');
             }
           }
         });
@@ -245,9 +269,6 @@ export default {
   }, // 修改state中dynamicRouting的值
   updataWebConf(state, data) {
     state.webConf = data;
-  },
-  updateSearchDBdata(state, data) {
-    state.searchDBdata = data;
   },
   updateTabParam(state, data) { // 更新当前tab参数
     if (data.index) {
