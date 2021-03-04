@@ -1832,6 +1832,10 @@
           str = 'TimePicker';
         }
 
+        if (item.display === 'radioGroup') {
+          str = 'radioGroup';
+        }
+
         return str;
       },
       checkPanelShow(item) {
@@ -2209,7 +2213,7 @@
             }
           }
         }
-
+        
         if (!item.display || item.display === 'text') {
           item.props.type = 'text';
           if (item.display === 'textarea') {
