@@ -2050,7 +2050,8 @@
       requiredCheck(data) { // 查询条件必填校验
         return new Promise((resolve, reject) => {
           this.formItems.defaultFormItemsLists.map((item) => {
-            const value = Array.isArray(this.formItems.data[item.colname]) ? this.formItems.data[item.colname][0] : (Object.prototype.toString.call(this.formItems.data[item.colname]) === '[Object Object]' ? Object.keys(this.formItems.data[item.colname]).length > 0 : this.formItems.data[item.colname]);
+            // const value = Array.isArray(this.formItems.data[item.colname]) ? this.formItems.data[item.colname][0] : (Object.prototype.toString.call(this.formItems.data[item.colname]) === '[Object Object]' ? Object.keys(this.formItems.data[item.colname]).length > 0 : this.formItems.data[item.colname]);
+            const value = data.fixedcolumns[item.colname]
             if (item.webconf && item.webconf.required && !value) {
               this.$Modal.fcError({
                 title: '错误',
@@ -2066,7 +2067,7 @@
       },
       getQueryListPromise(data) {
         const promise = new Promise((resolve, reject) => {
-          this.requiredCheck().then(() => {
+          this.requiredCheck(data).then(() => {
             this.$R3loading.show(this.searchData.table);
             data.resolve = resolve;
             data.reject = reject;

@@ -64,8 +64,8 @@ export default {
             }
             
             if (d.display && ['OBJ_DATENUMBER','OBJ_DATE'].includes(d.display)) {
-              d.daterange = new Date().dateMinus(indexDB[c][1],indexDB[c][0]);
-              d.default = new Date().dateMinus(indexDB[c][1],indexDB[c][0]);
+              d.daterange = new Date().dateMinus(indexDB[c][0],indexDB[c][1]);
+              d.default = new Date().dateMinus(indexDB[c][0],indexDB[c][1]);
             }
 
             if (d.display && d.display === 'OBJ_SELECT') {
