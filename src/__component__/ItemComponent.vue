@@ -67,7 +67,7 @@
         v-if="_items.type === 'input'"
         :ref="_items.field"
         v-model="inputText"
-        :class="{'encode-text': _items.props.ispassword}"
+        :class="{'encode-text': _items.props.ispassword && inputText}"
         :type="_items.props.type"
         :clearable="_items.props.clearable"
         :disabled="_items.props.disabled || _items.props.readonly"
@@ -1957,7 +1957,7 @@ textarea.ark-input{
 }
 
 .encode-text textarea.ark-input {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
 }
 
