@@ -134,7 +134,6 @@
       :footer-hide="dialogComponentNameConfig.footerHide"
       :confirm="dialogComponentNameConfig.confirm"
       :dialog-component-name="dialogComponentName"
-      :isrefrsh="buttons.isrefrsh"
       @dialogComponentSaveSuccess="dialogComponentSaveSuccess"
     />
     <!-- 批量 -->
@@ -504,7 +503,7 @@
         this.dialogComponentName = params.column.customerurl.tableurl;
       }, // 普通表格跳动作定义按钮弹窗
       dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作
-        if (this.buttons.isrefrsh) {
+        if (this.objTabActionDialogConfig.isrefrsh) {
           this.searchClickData();
         }
       },
