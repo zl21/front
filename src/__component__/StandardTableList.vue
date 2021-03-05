@@ -893,6 +893,9 @@
                 str = 'TimePicker';
               }
 
+              if (item.display === 'RADIO_GROUP') {
+                str = 'select';
+              }
               return str;
             }
 
