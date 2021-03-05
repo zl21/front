@@ -81,6 +81,7 @@
   import { mapState } from 'vuex';
   import agTable from '../assets/js/ag-grid-table-pure';
   import CommonTable from './CommonTable.vue';
+  import { floatingFilter } from '../constants/global.js';
 
   export default {
     name: 'AgTable',
@@ -295,6 +296,7 @@
           cssStatus: self.legend, // 颜色配置信息
           defaultSort: arr, // 默认排序
           datas, //  所有返回数据
+          floatingFilter: floatingFilter(),
           cellSingleClick: (colDef, rowData, target) => {
             // 参数说明
             // colDef：包含表头信息的对象
