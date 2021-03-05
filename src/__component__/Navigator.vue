@@ -306,7 +306,10 @@
         }
       },
       dashboardClick() {
-        this.updateDashboardPageValue();                                                                                                                                                                                                                                                                            },
+        if (this.$router.currentRoute.path !== '/') {
+          this.updateDashboardPageValue();
+        }     
+      },
       messageSlide() {
         this.messagePanel.show = !this.messagePanel.show;
         if (this.messagePanel.show) {
