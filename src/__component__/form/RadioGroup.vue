@@ -80,8 +80,9 @@
         this.options.disabled = this.options.webconf.setAttributes.props.disabled;
       }
       const checkedList = [];
-      if (this.options.valuedata) {
-        const selectedArr = this.options.valuedata.split(',');
+      const defaultData = this.options.defval || this.options.valuedata;
+      if (defaultData) {
+        const selectedArr = defaultData.split(',');
         this.options.combobox.forEach((item) => {
           if (selectedArr.includes(item.limitval)) {
             checkedList.push(item.limitdesc);
