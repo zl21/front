@@ -436,18 +436,14 @@
             // 针对textarea的文本加密
             const newText = value.replace(/./g, '·');
             this.inputText = newText;
-            // 重新定位光标位置
-            this.$nextTick(() => {
-              const dom = this.$refs[this._items.field].$el.children[0];
-              dom.setSelectionRange(this.selectionStart, this.selectionStart);
-            });
           } else {
             this.inputText = value;
           }
+
           // 确保子组件渲染完毕再绑定事件
-          if (this._items.type) {
+          if (this._items.type === 'input') {
             this.$nextTick(() => {
-              this.$emit('bindCompositionend');
+              this.execInputEvent();
             });
           }
         },
@@ -542,6 +538,24 @@
     },
     methods: {
       ...mapMutations('global', ['tabOpen', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
+
+      execInputEvent() {
+        const dom = this.$refs[this._items.field].$el;
+        const inputDom = dom.children[dom.children.length - 1];
+
+        if (!inputDom) {
+          this.inputTimer = setTimeout(() => {
+            this.execInputEvent();
+          }, 0);
+        } else {
+          // 重新定位光标位置
+          inputDom.setSelectionRange(this.selectionStart, this.selectionStart);
+
+          // 绑定监听中文输入法事件，只触发一次
+          this.$emit('bindCompositionend');
+        }
+      },
+
       routerNext(value) {
         // 路由跳转
         const props = this._items.props;
@@ -1833,6 +1847,9 @@
       }
     },
     beforeDestroy() {
+      if (this.inputTimer) {
+        clearTimeout(this.inputTimer);
+      }
       window.removeEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetProps);
       window.removeEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
       window.removeEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
