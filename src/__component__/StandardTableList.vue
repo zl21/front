@@ -1463,7 +1463,14 @@
 
         // OBJ_DATENUMBER OBJ_DATE OBJ_SELECT OBJ_FK
         if (item.display === 'OBJ_DATENUMBER') {
-          // 日期控件
+          if (item.customDefault) {
+            const timeRange = [
+              `${new Date().r3Format(new Date(item.customDefault[0]), 'yyyy/MM/dd')}`,
+              `${new Date().r3Format(new Date(item.customDefault[1]), 'yyyy/MM/dd')}`
+            ];
+            return timeRange;
+          }
+          // 日期控件;
           if (item.default === '-1') {
             return '';
           } if (item.default !== '-1' && item.default) {
@@ -1484,6 +1491,13 @@
           }
         }
         if (item.display === 'OBJ_DATE') {
+          if (item.customDefault) {
+            const timeRange = [
+              `${new Date().r3Format(new Date(item.customDefault[0]), 'yyyy/MM/dd hh:mm:ss')}`,
+              `${new Date().r3Format(new Date(item.customDefault[1]), 'yyyy/MM/dd hh:mm:ss')}`
+            ];
+            return timeRange;
+          }
           if (item.default === '-1') {
             return '';
           }
