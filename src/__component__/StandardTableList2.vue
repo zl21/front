@@ -414,7 +414,6 @@
       },
       firstSearchTable() {
         this.resetButtonsStatus();
-
         if (this.getFilterTable) {
           const el = this.$_live_getChildComponent(this, 'tabBar');
           el.tabClick(0);
@@ -2034,6 +2033,7 @@
         if (!value) { // 返回时查询之前页码
           this.searchData.startIndex = 0;
         }
+
         if (this.getFilterTable) {
           const el = this.$_live_getChildComponent(this, 'tabBar');
           const tabCurrentIndex = el.$refs.R3_Tabs.focusedKey;
@@ -2872,7 +2872,9 @@
                 this.firstSearchTable();
               }, 500);
             } else {
-              this.firstSearchTable();
+              setTimeout(() => {
+                this.firstSearchTable();
+              }, 200);
             }
           }
         }
