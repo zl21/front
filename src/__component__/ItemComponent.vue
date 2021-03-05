@@ -339,8 +339,9 @@
         :ref="_items.field"
         v-model="_items.props.value"
         :options="_items.props"
+        :form-item-value="_items.value"
         @change="radioValueChange"
-      ></radio-group>
+      />
       
       <!-- 自定义组件 -->
       <component
