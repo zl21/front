@@ -350,7 +350,7 @@ export default {
     state.updateData = Object.assign({}, state.updateData);
     const data = state.copyDataForReadOnly;
     state.mainFormInfo.formData.data.copy = true;
-    state.mainFormInfo.formData.data.addcolums = data.data.addcolums;
+    state.mainFormInfo.formData.data.addcolums = data.addcolums;
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);
   },
   changeFormDataForCopy(state, { defaultForCopyDatas, tableName }) {
