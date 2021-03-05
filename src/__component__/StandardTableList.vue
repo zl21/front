@@ -140,7 +140,6 @@
       :footer-hide="dialogComponentNameConfig.footerHide"
       :confirm="dialogComponentNameConfig.confirm"
       :dialog-component-name="dialogComponentName"
-      :isrefrsh="buttons.isrefrsh"
       @dialogComponentSaveSuccess="dialogComponentSaveSuccess"
     />
     <!-- 批量 -->
@@ -645,7 +644,7 @@
         this.dialogComponentName = params.column.customerurl.tableurl;
       }, // 普通表格跳动作定义按钮弹窗
       dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作
-        if (this.buttons.isrefrsh) {
+        if (this.objTabActionDialogConfig.isrefrsh) {
           this.searchClickData();
         }
       },
@@ -1463,7 +1462,14 @@
 
         // OBJ_DATENUMBER OBJ_DATE OBJ_SELECT OBJ_FK
         if (item.display === 'OBJ_DATENUMBER') {
-          // 日期控件
+          if (item.customDefault) {
+            const timeRange = [
+              `${new Date().r3Format(new Date(item.customDefault[0]), 'yyyy/MM/dd')}`,
+              `${new Date().r3Format(new Date(item.customDefault[1]), 'yyyy/MM/dd')}`
+            ];
+            return timeRange;
+          }
+          // 日期控件;
           if (item.default === '-1') {
             return '';
           } if (item.default !== '-1' && item.default) {
@@ -1484,6 +1490,13 @@
           }
         }
         if (item.display === 'OBJ_DATE') {
+          if (item.customDefault) {
+            const timeRange = [
+              `${new Date().r3Format(new Date(item.customDefault[0]), 'yyyy/MM/dd hh:mm:ss')}`,
+              `${new Date().r3Format(new Date(item.customDefault[1]), 'yyyy/MM/dd hh:mm:ss')}`
+            ];
+            return timeRange;
+          }
           if (item.default === '-1') {
             return '';
           }

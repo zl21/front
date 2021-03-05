@@ -155,10 +155,6 @@
         type: String,
         default: () => ''
       },
-      isrefrsh: {
-        type: Boolean,
-        default: () => false
-      },
     },
     data() {
       return {
@@ -241,7 +237,7 @@
         }
         this.$emit('clearDialogComponentName');
         this.showModal = false;
-        if (value === true && this.isrefrsh) {
+        if (value === true && this.objTabActionDialogConfig.isrefrsh) {
           this.$emit('dialogComponentSaveSuccess');
         } 
       },

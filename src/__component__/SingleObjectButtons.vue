@@ -31,7 +31,6 @@
       :content-text="dialogConfig.contentText"
       :footer-hide="dialogConfig.footerHide"
       :confirm="dialogConfig.confirm"
-      :isrefrsh="isrefrsh"
       :action-id="actionId"
       :obj-tab-action-dialog-config="objTabActionDialogConfig"
       :dialog-component-name="dialogComponentName"
