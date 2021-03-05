@@ -89,9 +89,6 @@
     },
 
     mounted() {
-      if (this.options.webconf && this.options.webconf.setAttributes && this.options.webconf.setAttributes.props) {
-        this.options.disabled = this.options.webconf.setAttributes.props.disabled;
-      }
       const checkedList = [];
       const defaultData = this.options.defval || this.options.valuedata;
       if (defaultData) {
