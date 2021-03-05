@@ -68,13 +68,13 @@ class CustomAttachFilter {
       }];
     }
     
-    defaultProps.defaultSelected = {
+    defaultProps.value = {
       default: () => defaultValue
     };
 
-    defaultProps.defaultValue = {
-      default: () => this.item.default
-    };
+    // defaultProps.value = {
+    //   default: () => this.item.default
+    // };
 
     const placeholder = this.item.webconf && this.item.webconf.placeholder ? this.item.webconf.placeholder : null;
     defaultProps.PropsData = {
