@@ -63,7 +63,6 @@
       :class=" _items.props.row >1 ? 'itemComponent height100':'itemComponent'"
       :style="_items.props.type==='ImageUpload' ? 'overflow:visible' :''"
     >
-      {{ _items.value }}
       <Input
         v-if="_items.type === 'input'"
         :ref="_items.field"
