@@ -63,6 +63,7 @@
       :class=" _items.props.row >1 ? 'itemComponent height100':'itemComponent'"
       :style="_items.props.type==='ImageUpload' ? 'overflow:visible' :''"
     >
+      {{ _items.value }}
       <Input
         v-if="_items.type === 'input'"
         :ref="_items.field"
@@ -82,7 +83,7 @@
         :regx="_items.props.regx"
         on-click="inputClick"
         @on-blur="inputBlur"
-        @on-change="inputChange"
+        @on-change="inputChange($event, null)"
         @on-enert="inputEnter"
         @on-focus="inputFocus"
         @on-keyup="inputKeyUp"
@@ -444,6 +445,12 @@
           } else {
             this.inputText = value;
           }
+          // 确保子组件渲染完毕再绑定事件
+          if (this._items.type) {
+            this.$nextTick(() => {
+              this.$emit('bindCompositionend');
+            });
+          }
         },
         immediate: true
       }
@@ -605,22 +612,30 @@
       },
       
       // input event
-      inputChange(event, $this) {
-        // 输入值
+      inputChange(event, cursorOffset, $this) {
+        // 输入中文时跳过赋值
+        if (this.isInputChinese) {
+          return;
+        }
+        
         const value = event.target.value;
         this.selectionStart = event.target.selectionStart;
+        // 输入中文时，新增文字的插入位置需要根据Math.max(this.selectionStart - cursorOffset, 0)矫正
+        const insertTextPosion = cursorOffset ? Math.max(this.selectionStart - cursorOffset, 0) : this.selectionStart;
+        
         // fix: input输入框拿不到值给父组件
         if (this._items.props.type === 'text') {
           this._items.value = value;
         }
+
         const charArr = this._items.value.split('');
-        
         if (value.length > this._items.value.length) {
-          charArr.splice(this.selectionStart - 1, 0, this.keyData);
+          // 输入值
+          charArr.splice(insertTextPosion - 1, 0, this.keyData);
           this._items.value = charArr.join('');
         } else if (value.length < this._items.value.length) {
           // 删除值
-          charArr.splice(this.selectionStart, 1);
+          charArr.splice(insertTextPosion, 1);
           this._items.value = charArr.join('');
         }
         
@@ -1803,7 +1818,20 @@
         createModal(array, obj, index);
       },
 
-      
+      // 监听中文键盘输入
+      listenChinese() {
+        this.$once('bindCompositionend', () => {
+          const dom = this.$refs[this._items.field].$el.children[0];
+          dom.addEventListener('compositionstart', (e) => {
+            this.isInputChinese = true;
+          });
+          dom.addEventListener('compositionend', (e) => {
+            this.keyData = e.data;
+            this.isInputChinese = false;
+            this.inputChange(e, Math.max(this.keyData.length - 1, 0));
+          });
+        });
+      }
     },
     beforeDestroy() {
       window.removeEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetProps);
@@ -1815,8 +1843,11 @@
       // console.log(this.type,this.formIndex);
       this.selectionStart = null; // 光标位置
       this.keyData = null; // 记录按键按下的位置
+      this.isInputChinese = false; // 是否在输入中文
     },
     mounted() {
+      this.listenChinese();
+
       // this.$nextTick(() => {
       //   // 处理字段联动时多个来源字段联动禁用模糊搜索
       //   if (this.items.props.webconf && this.items.props.webconf.refcolval_custom) {
