@@ -149,8 +149,6 @@
           });
       },
       save() {
-        this.$emit('closeActionDialog', true); // 关闭弹框
-        return;
         if (!this.t_table_name.trim()) {
           const data = {
             mask: true,
