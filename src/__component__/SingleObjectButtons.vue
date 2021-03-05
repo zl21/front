@@ -2591,7 +2591,6 @@
         //   range: 10
         // };
         const buttonInfo = this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '删除')[0];
-
         let page = {};
         if (this.objectType === 'horizontal') { // 横向布局
           this.tabPanel.every((item) => {
@@ -2759,7 +2758,7 @@
                         buttonInfo,
                         path: obj.requestUrlPath,
                         table: this.tableName,
-                        objId: this.tableId,
+                        objId: this.itemId,
                         currentParameter: this.currentParameter,
                         itemName: this.itemName,
                         isreftabs: this.subtables(),
@@ -2865,7 +2864,7 @@
                 onOk: () => {
                   const promise = new Promise((resolve, reject) => {
                     this.performMainTableDeleteAction({
-                      buttonInfo, table: this.tableName, objId: this.tableId, resolve, reject
+                      buttonInfo, table: this.tableName, objId: this.itemId, resolve, reject
                     });
                   });
                   promise.then(() => {
