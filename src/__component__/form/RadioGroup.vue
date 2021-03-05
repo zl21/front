@@ -5,12 +5,12 @@
       @on-change="handleChange"
     >
       <Checkbox
-        v-for="option in options.combobox"
-        :key="option.limitdesc"
+        v-for="item in options.combobox"
+        :key="item.limitdesc"
         :circle="options.circle"
-        :label="option.limitdesc"
-        :disabled="option.disabled"
-        :size="option.size"
+        :label="item.limitdesc"
+        :disabled="options.disabled"
+        :size="options.size"
       />
     </CheckboxGroup>
   </div>
@@ -70,16 +70,20 @@
           this.value = [currentLabel];
         }
         
-        
-        this.$emit('change', JSON.stringify(checkedList));
+        console.log('提交值', checkedList.join(','));
+        this.$emit('change', checkedList.join(','));
       }
     },
 
     mounted() {
-      if (this.options.value) {
-        const checkedList = [];
+      if (this.options.webconf && this.options.webconf.setAttributes && this.options.webconf.setAttributes.props) {
+        this.options.disabled = this.options.webconf.setAttributes.props.disabled;
+      }
+      const checkedList = [];
+      if (this.options.valuedata) {
+        const selectedArr = this.options.valuedata.split(',');
         this.options.combobox.forEach((item) => {
-          if (this.options.value.includes(item.limitval)) {
+          if (selectedArr.includes(item.limitval)) {
             checkedList.push(item.limitdesc);
           }
         });
