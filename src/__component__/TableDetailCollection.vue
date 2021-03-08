@@ -4461,7 +4461,7 @@
                             top: 0px;
                         }
                         .ark-input-group-with-prepend {
-                            width: 200px;
+                            width: 270px;
                         }
                         .ark-input-group-prepend {
                             .ark-btn {
