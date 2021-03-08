@@ -1506,7 +1506,8 @@
           .map((ele) => {
             const param = {
               title: ele.name,
-              key: ele.colname
+              key: ele.colname,
+              align: 'center'
             };
             if (ele.isorder) {
               param.sortable = 'custom';
@@ -1538,6 +1539,7 @@
           {
             title: '序号',
             width: 60,
+            align: 'center',
             key: COLLECTION_INDEX,
             render: this.collectionIndexRender(columns)
           }
