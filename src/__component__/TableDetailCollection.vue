@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-               >
+            >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -4437,7 +4437,7 @@
                             top: 0px;
                         }
                         .ark-input-group-with-prepend {
-                            width: 190px;
+                            width: 200px;
                         }
                         .ark-input-group-prepend {
                             .ark-btn {
