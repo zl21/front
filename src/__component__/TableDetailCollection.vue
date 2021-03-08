@@ -569,6 +569,16 @@
           this.columns = this.filterColumns(this.dataSource.tabth, isTableRender); // 每列的属性
           this.getEditAbleId(JSON.parse(JSON.stringify(this.dataSource)));
         }
+      },
+
+      // 设置查询条件默认值。默认取选项数组的第一个值
+      filterList: {
+        handler(selectOptions) {
+          if (selectOptions && selectOptions[0]) {
+            this.searchCondition = selectOptions[0].key;
+          }
+        },
+        immediate: true
       }
 
     },
@@ -3855,6 +3865,18 @@
           },
           tabIndex: this.currentTabIndex
         };
+
+        // 过滤空字段
+        const columns = params.searchdata.fixedcolumns;
+        const paramsKeys = Object.keys(columns);
+        if (paramsKeys.length > 0) {
+          paramsKeys.forEach((key) => {
+            if (columns[key] === '') {
+              delete columns[key];
+            }
+          });
+        }
+
         this.getObjectTableItemForTableData(params);
       },
       getFKList(params, cellData) {
