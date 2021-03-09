@@ -29,7 +29,7 @@
         <i class="iconfont iconios-information-circle-outline" />
       </Poptip>
       <span
-        v-if="_items.required"
+        v-if="_items.isnotnull"
         class="label-tip"
       >*</span>
       <template v-if="getVersion() === '1.4' && _items.props.fkdisplay === 'pop' && type==='PanelForm'">
@@ -57,7 +57,7 @@
 
       </template>
 
-      <span :title="_items.coldesc">{{ _items.coldesc }}:</span>
+      <span :title="items.coldesc">{{ items.coldesc }}:</span>
     </span>
     <div
       :class=" _items.props.row >1 ? 'itemComponent height100':'itemComponent'"
@@ -99,13 +99,13 @@
         @valuechange="attachFilterInput"
       /> -->
       <component
-        :is="inheritanceComponents(_items)"
-        :ref="_items.field"
+        :is="inheritanceComponents(items)"
+        :ref="items.field"
         v-model="value"
       >
-        <slot v-if="_items.display === 'OBJ_SELECT'">
+        <slot v-if="items.display === 'OBJ_SELECT'">
           <Option
-            v-for="item in _items.props.options"
+            v-for="item in items.props.options"
             :key="item.value"
             :value="item.value"
             :disabled="item.disabled"

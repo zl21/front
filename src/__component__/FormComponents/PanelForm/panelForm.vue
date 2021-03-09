@@ -57,6 +57,7 @@ export default {
   },
   computed:{
     formItemLists(){
+      this.$R3loading.show(this.$route.params.tableName)
       let data = JSON.parse(JSON.stringify(this.defaultData))
 
       if(!data.addcolums){
@@ -87,8 +88,6 @@ export default {
         item._index = Math.random()
         item.childs = {...layoutAlgorithm(Number(data.objviewcol), item.childs?item.childs:[item.child])};
         Object.keys(item.childs).map(temp => {
-          
-
           item.childs[temp].tableName = this.$route.params.tableName;
           item.childs[temp].itemId = this.$route.params.itemId;
           item.childs[temp]  = new RenderComponent(JSON.parse(JSON.stringify(item.childs[temp]))).itemConversion();
@@ -96,6 +95,18 @@ export default {
         })
         return item;
       })
+
+
+      // 处理表单关闭
+      this.loading = setInterval(() => {
+        let index = Object.keys(data.addcolums.reverse()[0].childs).length - 1
+        let lastItem = data.addcolums.reverse()[0].childs[index]
+        let com = this.$_live_getChildComponent(this, `${this.$route.params.tableName}${lastItem.colname}`);
+        if(com){
+          this.$R3loading.hide(this.$route.params.tableName)
+          clearInterval(this.loading)
+        }
+      },50)
       return {...data.addcolums}
     },
     // 计算属性的 div的排列格式
@@ -151,7 +162,6 @@ export default {
     // public API
     getFormData() {
       let formData = {};
-      console.log(this.formItemLists)
       Object.keys(this.formItemLists).map(temp => {
         Object.keys(this.formItemLists[temp].childs).map(j => {
           let item = this.formItemLists[temp].childs[j];
