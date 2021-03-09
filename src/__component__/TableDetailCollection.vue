@@ -1785,6 +1785,10 @@
             style: {
               width: '100px'
             },
+            class: {
+              'input-align-right': cellData.type === 'NUMBER',
+              'input-align-center': cellData.type !== 'NUMBER'
+            },
             domProps: {
               id: `${params.index}-${params.column._index - 1}`,
               title: this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname].val : ''
@@ -4519,5 +4523,13 @@
         .ark-input-icon {
             top: -2px;
         }
+    }
+
+    .input-align-center input {
+        text-align: center;
+    }
+
+    .input-align-right input {
+        text-align: right;
     }
 </style>
