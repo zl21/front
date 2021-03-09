@@ -1136,6 +1136,7 @@
           this.objectAdd(obj);
           break;
         case 'actionMODIFY': // 保存
+          this.$parent.$children[0].getFormData()
           if (!this.testUpdata() && this.objectType === 'vertical') { // 主表无改动，通知自定义tab
             const webact = this.getCurrentItemInfo().webact;
             if (webact) { // 兼容半定制界面，保存成功时通知外部

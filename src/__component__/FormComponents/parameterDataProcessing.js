@@ -1,4 +1,5 @@
 /* eslint-disable consistent-return */
+
 /**
    *处理表单数据格式
    *
@@ -14,7 +15,6 @@ export default class ParameterDataProcessing {
     this.item = item;
     this.value = value;
   }
-
   /**
    *处理表单抛出去的传参数据格式
    *
@@ -85,7 +85,7 @@ export default class ParameterDataProcessing {
     }
 
     // 处理日期字段
-    if (['OBJ_DATE', 'OBJ_DATENUMBER','YearMonth'].includes(this.item.display)) {
+    if (['OBJ_DATE', 'OBJ_DATENUMBER','YearMonth', 'OBJ_DATETIME'].includes(this.item.display)) {
       
       let arr = [];
       if (this.item.display === 'OBJ_DATE') {
@@ -96,6 +96,9 @@ export default class ParameterDataProcessing {
       }
       if(this.item.display === 'YearMonth'){
         arr = [new Date().r3Format(new Date(this.value), 'yyyy-MM')];
+      }
+      if(this.item.display === 'OBJ_DATETIME'){
+        arr = [new Date().r3Format(new Date(this.value), 'yyyy-MM-dd')];
       }
 
       return {
@@ -121,22 +124,24 @@ export default class ParameterDataProcessing {
    * @memberof defaultDataProcessing
    */
   defaultDataProcessing() {
-    if (this.item.default && this.item.display === 'OBJ_SELECT') {
-      return this.item.default.split(',');
+    // select
+    if ((this.item.default || this.item.defval) && this.item.display === 'OBJ_SELECT') {
+      return this.item.default?this.item.default.split(','):this.item.defval;
     }
 
+    // fk外健
     if (this.item.display === 'OBJ_FK') {
       if (['mrp', 'drp', 'pop', 'mop'].includes(this.item.fkobj.searchmodel) && this.item.refobjid) {
         return [{
           ID: this.item.refobjid,
-          Label: this.item.default
+          Label: this.item.default || this.item.valuedata
         }];
       }
 
       return '';
     }
 
-    // 处理日期控件的默认值问题
+    // 处理日期控件的默认值问题,区分列表还是单对象默认值
     if (this.item.default && ['OBJ_DATENUMBER','OBJ_DATE','YearMonth'].includes(this.item.display) && this.item.default && this.item.default !== '-1') {
       if(this.item.display === 'YearMonth'){
         return this.item.default;
@@ -145,9 +150,17 @@ export default class ParameterDataProcessing {
       dateArray[0] = new Date().r3Format(new Date().minusDays(Number(this.item.default)), 'yyyy-MM-dd 00:00:00');
       dateArray[1] = new Date().r3Format(new Date(), 'yyyy-MM-dd 23:59:59');
       return dateArray;
+    }else if(['OBJ_DATENUMBER','OBJ_DATE','YearMonth','OBJ_DATETIME'].includes(this.item.display) && this.item.valuedata){
+      return this.item.valuedata
     }
 
 
-    return this.item.default;
+
+
+
+    return this.item.default || this.item.valuedata;
   }
 }
+
+
+

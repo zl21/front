@@ -61,6 +61,22 @@ class CustomInput {
     if (this.item.isuppercase) {
       this.uppercase();
     }
+
+    if(this.item.display === 'OBJ_TEXTAREA'){
+      defaultProps.type = {
+        default:() => 'textarea'
+      }
+
+      defaultProps.autosize = {
+        default:() => ({
+          minRows: this.item.row + 1 
+        })
+      }
+    }
+
+    defaultProps.disabled = {
+      default:() => this.item.readonly
+    }
     
 
     Object.keys(this.item.props).map((item) => {

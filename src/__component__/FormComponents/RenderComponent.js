@@ -13,11 +13,69 @@ String.prototype.TextFilter = function TextFilter() {
   return rs;
 };
 
+/**
+   *处理单对象display字段，转换成和列表界面的统一
+   * @param 单对象的字段类型
+   * @returns  列表字段类型
+   * @memberof typeConversion
+   */
+  function typeConversion(item){
+    switch(item.display){
+      case 'select':
+        item.display = 'OBJ_SELECT';
+        break;
+      case 'textarea':
+        item.display = 'OBJ_TEXTAREA';
+        break;
+      case 'text':
+      case 'xml':
+        if(!item.isfk){
+          item.display = undefined;
+        }else{
+          item.display = 'OBJ_FK';
+          item.fkobj = {
+            fkdisplay: item.fkdisplay,
+            reftable: item.reftable,
+            reftableid: item.reftableid,
+            searchmodel: item.fkdisplay,
+            serviceId: item.serviceId,
+          }
+        }
+        
+        break;
+      case 'check':
+        item.display = 'OBJ_CHECK';
+        break;
+      case 'OBJ_DATE':
+        item.display = 'OBJ_DATETIME';
+      default:
+        break;
+    }
+
+    return item;
+  }
+
+
+
 export default class RenderComponent {
   constructor(item, id) {
     // 初始化对象的语句
     this.id = id;
     this.item = item;
+  }
+
+  /**
+   *处理单对象表单display字段，转换成和列表界面的统一
+   *
+   * @returns
+   * @memberof itemConversion
+   */
+  itemConversion(){
+    // console.log(this.item)
+    this.item = typeConversion(JSON.parse(JSON.stringify(this.item)));
+    this.item.coldesc = this.item.name
+    this.item.detailType = true  //增加是否是明细字段标记，明细字段传参不同
+    return this.item
   }
 
   ObjectToMerge() {

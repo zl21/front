@@ -65,6 +65,10 @@ class CustomSelect {
       default: () => true
     }
 
+    defaultProps.disabled = {
+      default:() => this.item.readonly
+    }
+
     Object.keys(this.item.props).map((item) => {
       // console.log(item, this.item.props.regx, this.item.props[item], this.Input.props[item]);
       if (defaultProps[item]) {
@@ -79,10 +83,7 @@ class CustomSelect {
 
   // 合并methods
   mergeMethods() {
-    this.Input.methods.handleEnter = function () {
-      this.$_live_getChildComponent(window.vm, 'S.TEST.23729').searchClickData();
-      // this.$parent.$parent.$parent.searchClickData();
-    };
+
   }
 
   settingPlaceholder() { // 设置Placeholder属性

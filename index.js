@@ -38,15 +38,23 @@ import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
 import inputNumber from './src/directive/inputNumber';
 
 Vue.use(inputNumber);
+
+import panelForm from './src/__component__/FormComponents/PanelForm/panelForm'
 // import jflowPlugin from './jflowPlugin/js/index';
 // import './src/__utils__/encryptingParameter';
 
 
+
+Vue.component('panelForm',panelForm)
+
+console.log(Vue.options.components)
 // Vue.use(jflowPlugin, {
 //   changePattern: true, // 控制待办列表转派的选择模式 true为单选,false为多选
 //   gateway: '',
 //   roleSwitch: false
 // });
+
+
 
 // 注册
 Vue.mixin({

@@ -75,6 +75,12 @@ class CustomDropMultiSelectFilter {
     this.propsUrl(propsData);
     // 处理传参
     this.propsParams(propsData);
+
+    propsData.PropsData = {
+      default:() => ({
+        disabled: this.item.readonly
+      })
+    }
     
     this.BusDropDown.props = { ...propsData };
   } 

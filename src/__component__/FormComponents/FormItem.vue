@@ -410,6 +410,7 @@
   import CustomSelect from '../inheritanceComponents/Select';
   import CustomAttachFilter from '../inheritanceComponents/AttachFilter';
   import CustomPopAttachFilter from '../inheritanceComponents/PopAttachFilter';
+  import CustomCheckbox from '../inheritanceComponents/CheckBox';
   import ParameterDataProcessing from './parameterDataProcessing';
 
   import {
@@ -566,9 +567,9 @@
       inheritanceComponents() {
         let Components = null;
         let item = this.items;
-        
         switch (item.display) {
         case undefined:
+        case 'OBJ_TEXTAREA':
           Components = new CustomInput(item).init();
           break;
         case 'OBJ_FK':
@@ -584,16 +585,19 @@
           if (item.fkobj.searchmodel === 'pop') {
             Components = new CustomPopAttachFilter(item).init();
           }
-        
           break;
         case 'OBJ_DATE':
         case 'OBJ_DATENUMBER':
         case 'YearMonth':
+        case 'OBJ_DATETIME':
+        case 'OBJ_TIME':
           Components = new CustomDatePicker(item).init();
           break;
         case 'OBJ_SELECT':
           Components = new CustomSelect(item).init();
           break;
+        case 'OBJ_CHECK':
+          Components = new CustomCheckbox(item).init();
         default:
           break;
         }
@@ -822,11 +826,6 @@
       window.removeEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
     },
     created() {
-      if (this.items.type === 'AttachFilter') {
-        this.value = this.items.props.Selected;
-      } else {
-        this.value = this.items.value;
-      }
     },
     mounted() {
       // this.$nextTick(() => {

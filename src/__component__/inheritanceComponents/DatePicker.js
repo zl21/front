@@ -6,10 +6,11 @@ import Vue from 'vue';
 import dataProp from '../../__config__/props.config';
 
 let DatePicker = Ark.DatePicker;
+let TimePicker = Ark.TimePicker;
 class CustomDatePicker {
   constructor(item) {
     this.item = item;
-    const DateInput = Vue.extend(DatePicker);
+    const DateInput = Vue.extend(this.item.display === 'OBJ_TIME'?TimePicker:DatePicker);
     this.DatePicker = new DateInput().$options;
     delete this.DatePicker._Ctor;
   }
@@ -49,6 +50,12 @@ class CustomDatePicker {
           case 'YearMonth':
             return 'month'
             break;
+          case 'OBJ_DATETIME':
+            return 'datetime';
+            break;
+          case 'OBJ_TIME':
+            return 'time';
+            break;
           default:
             return 'date';
             break;
@@ -58,6 +65,9 @@ class CustomDatePicker {
     defaultProps.transfer = {
       default: () => true
     };
+    defaultProps.disabled = {
+      default:() => this.item.readonly
+    }
     const placeholder = {
       default: () => `请选择${this.item.coldesc}`
     };

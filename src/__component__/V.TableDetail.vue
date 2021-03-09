@@ -43,8 +43,11 @@
         </label>
         <AutomaticPathGenerationInput />
       </div> -->
-     
-      <composite-form
+      <panelForm
+        :id="$route.params.tableName"
+        :defaultData="Object.keys(defaultDataForCopy).length>0?defaultDataForCopy.data:mainFormInfo.formData.data"
+      ></panelForm>
+      <!-- <composite-form
         v-if="mainFormInfo.formData.isShow"
         class="compositeAllform"
         object-type="vertical"
@@ -65,7 +68,7 @@
         @formChange="formChange"
         @InitializationForm="InitializationForm"
         @VerifyMessage="verifyFormPanelMain"
-      />
+      /> -->
       <div class="verticalTabs">
         <TabPanels
           v-show="tabPanels.length > 0"
@@ -104,7 +107,7 @@
   import compositeForm from './CompositeForm.vue';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
 
- 
+
   export default {
     // name: 'VTableDetail',
     watch: {
