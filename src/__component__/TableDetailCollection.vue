@@ -571,19 +571,14 @@
         }
       },
 
-      // 设置查询条件默认值。默认取选项数组的第一个值
-      filterList: {
-        handler(selectOptions) {
-          if (selectOptions && selectOptions[0]) {
-            this.searchCondition = selectOptions[0].key;
-          }
-        },
-        immediate: true
-      }
-
     },
     created() {
       this.ChineseDictionary = ChineseDictionary;
+
+      // 设置查询条件默认值。默认取选项数组的第一个值
+      if (this.filterList && this.filterList[0]) {
+        this.searchCondition = this.filterList[0].key;
+      }
     },
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
