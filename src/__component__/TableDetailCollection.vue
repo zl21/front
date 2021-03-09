@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-               >
+             >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -4183,6 +4183,10 @@
           startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
           range: this.pageInfo.pageSize,
         };
+        if (this.currentOrderList.length > 0) {
+          // 如果没有排序则不传该参数
+          searchData.orderby = this.currentOrderList;
+        }
         const OBJ = {
           searchdata: searchData,
           filename: this.itemInfo.tabledesc,
