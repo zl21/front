@@ -1517,7 +1517,7 @@
             const param = {
               title: ele.name,
               key: ele.colname,
-              align: 'center'
+              align: 'right'
             };
             if (ele.isorder) {
               param.sortable = 'custom';
@@ -1544,12 +1544,12 @@
           {
             type: 'selection',
             width: 40,
-            align: 'center'
+            align: 'right'
           },
           {
             title: '序号',
             width: 60,
-            align: 'center',
+            align: 'right',
             key: COLLECTION_INDEX,
             render: this.collectionIndexRender(columns)
           }
