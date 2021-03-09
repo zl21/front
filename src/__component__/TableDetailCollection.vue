@@ -750,7 +750,7 @@
         const total = [];
         if (this.dataSource.isSubTotalEnabled) {
           const cell = {
-            COLLECTION_INDEX: '合计'
+            COLLECTION_INDEX: '<div class="text-center">合计</div>'
           };
           // const needSubtotalList = this.columns.filter(ele => ele.issubtotal);
           // needSubtotalList.map((ele) => {
@@ -762,7 +762,7 @@
           // });
           if (this.dataSource.subtotalRow && Object.keys(this.dataSource.subtotalRow).length > 0) {
             Object.keys(this.dataSource.subtotalRow).forEach((key) => {
-              cell[key] = this.dataSource.subtotalRow[key];
+              cell[key] = `<div class="text-right">${this.dataSource.subtotalRow[key]}</div>`;
             });
           }
           total.push(cell);
@@ -771,12 +771,12 @@
         if (this.dataSource.isFullRangeSubTotalEnabled) {
           // 总计
           const cell = {
-            COLLECTION_INDEX: '总计',
+            COLLECTION_INDEX: '<div class="text-center">总计</div>',
           };
           if (this.dataSource.fullRangeSubTotalRow) {
             for (const key in this.dataSource.fullRangeSubTotalRow) {
               if (Object.prototype.hasOwnProperty.call(this.dataSource.fullRangeSubTotalRow, key)) {
-                const element = this.dataSource.fullRangeSubTotalRow[key];
+                const element = `<div class="text-right">${this.dataSource.fullRangeSubTotalRow[key]}</div>`;
                 cell[key] = element.val;
               }
             }
@@ -1512,7 +1512,8 @@
             const param = {
               title: ele.name,
               key: ele.colname,
-              align: 'right'
+              align: 'center',
+              tdAlign: ele.type === 'NUMBER' ? 'right' : 'center'
             };
             if (ele.isorder) {
               param.sortable = 'custom';
@@ -1539,12 +1540,12 @@
           {
             type: 'selection',
             width: 40,
-            align: 'right'
+            align: 'center'
           },
           {
             title: '序号',
             width: 60,
-            align: 'right',
+            align: 'center',
             key: COLLECTION_INDEX,
             render: this.collectionIndexRender(columns)
           }
