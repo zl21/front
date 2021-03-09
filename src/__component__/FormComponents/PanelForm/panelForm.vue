@@ -100,7 +100,7 @@ export default {
       // 处理表单关闭
       this.loading = setInterval(() => {
         let index = Object.keys(data.addcolums.reverse()[0].childs).length - 1
-        let lastItem = data.addcolums.reverse()[0].childs[index]
+        let lastItem = data.addcolums[0].childs[index]
         let com = this.$_live_getChildComponent(this, `${this.$route.params.tableName}${lastItem.colname}`);
         if(com){
           this.$R3loading.hide(this.$route.params.tableName)
