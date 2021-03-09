@@ -1531,7 +1531,7 @@
                 return order;
               });
             }
-            const item = Object.assign(ele, param);
+            const item = Object.assign({}, ele, param);
             return item;
           });
         const renderColumns = this.renderData(columns);
@@ -1550,7 +1550,7 @@
             render: this.collectionIndexRender(columns)
           }
         ];
-        return JSON.parse(JSON.stringify(headColumn.concat(renderColumns)));
+        return headColumn.concat(renderColumns);
       },
       tooltipRenderHeader() {
         return (h, params) => h('span', [
@@ -1765,7 +1765,7 @@
               overflow,
               'text-overflow': 'ellipsis',
               'white-space': 'nowrap',
-              'text-align': cellData.type === 'NUMBER' ? 'right' : 'left'
+              'text-align': cellData.type === 'NUMBER' ? 'right' : 'center'
             },
             class: {
               numberTd: cellData.type === 'NUMBER'
