@@ -755,7 +755,7 @@
         const total = [];
         if (this.dataSource.isSubTotalEnabled) {
           const cell = {
-            COLLECTION_INDEX: '<div class="text-center">合计</div>'
+            COLLECTION_INDEX: '合计'
           };
           // const needSubtotalList = this.columns.filter(ele => ele.issubtotal);
           // needSubtotalList.map((ele) => {
@@ -767,7 +767,7 @@
           // });
           if (this.dataSource.subtotalRow && Object.keys(this.dataSource.subtotalRow).length > 0) {
             Object.keys(this.dataSource.subtotalRow).forEach((key) => {
-              cell[key] = `<div class="text-center">${this.dataSource.subtotalRow[key]}</div>`;
+              cell[key] = this.dataSource.subtotalRow[key];
             });
           }
           total.push(cell);
@@ -776,12 +776,12 @@
         if (this.dataSource.isFullRangeSubTotalEnabled) {
           // 总计
           const cell = {
-            COLLECTION_INDEX: '<div class="text-center">总计</div>',
+            COLLECTION_INDEX: '总计',
           };
           if (this.dataSource.fullRangeSubTotalRow) {
             for (const key in this.dataSource.fullRangeSubTotalRow) {
               if (Object.prototype.hasOwnProperty.call(this.dataSource.fullRangeSubTotalRow, key)) {
-                const element = `<div class="text-center">${this.dataSource.fullRangeSubTotalRow[key]}</div>`;
+                const element = this.dataSource.fullRangeSubTotalRow[key];
                 cell[key] = element.val;
               }
             }
