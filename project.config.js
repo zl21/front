@@ -40,7 +40,8 @@ module.exports = {
   // target: 'http://r3.ecsemir.com/', // 森马
   // target: ' http://47.103.6.45:27777/', // 森马
   // target: 'http://lark.shoptao.cn:8000/', // 云雀
-
+ 
+  
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
   enableGateWay: true, // 网关是否打开,

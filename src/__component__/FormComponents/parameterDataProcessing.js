@@ -155,6 +155,14 @@ export default class ParameterDataProcessing {
     }
 
 
+    // 处理checkbox
+    if(this.item.display === 'OBJ_CHECK'){
+      if(!this.item.valuedata){
+        return this.item.combobox.filter(item => !item.limitdis)[0].limitval
+      }
+    }
+
+
 
 
 

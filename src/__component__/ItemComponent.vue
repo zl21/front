@@ -66,7 +66,8 @@
       <Input
         v-if="_items.type === 'input'"
         :ref="_items.field"
-        v-model="_items.value"
+        v-model="inputText"
+        :class="{'encode-text': _items.props.ispassword && inputText}"
         :type="_items.props.type"
         :clearable="_items.props.clearable"
         :disabled="_items.props.disabled || _items.props.readonly"
@@ -81,7 +82,7 @@
         :regx="_items.props.regx"
         on-click="inputClick"
         @on-blur="inputBlur"
-        @on-change="inputChange"
+        @on-change="inputChange($event, null)"
         @on-enert="inputEnter"
         @on-focus="inputFocus"
         @on-keyup="inputKeyUp"
@@ -430,9 +431,29 @@
       return {
         filterDate: {},
         resultData: {}, // 结果传值
-
-        value: null
+        inputText: '' // textarea加密后的文本
       };
+    },
+    watch: {
+      '_items.value': {
+        handler(value) {
+          if (this._items.type === 'input' && this._items.props.type === 'textarea' && this._items.props.ispassword) {
+            // 针对textarea的文本加密
+            const newText = value.replace(/./g, '·');
+            this.inputText = newText;
+          } else {
+            this.inputText = value;
+          }
+
+          // 确保子组件渲染完毕再绑定事件
+          if (this._items.type === 'input') {
+            this.$nextTick(() => {
+              this.execInputEvent();
+            });
+          }
+        },
+        immediate: true
+      }
     },
     computed: {
       getVersion() {
@@ -522,6 +543,24 @@
     },
     methods: {
       ...mapMutations('global', ['tabOpen', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
+
+      execInputEvent() {
+        const dom = this.$refs[this._items.field].$el;
+        const inputDom = dom.children[dom.children.length - 1];
+
+        if (!inputDom) {
+          this.inputTimer = setTimeout(() => {
+            this.execInputEvent();
+          }, 0);
+        } else {
+          // 重新定位光标位置
+          inputDom.setSelectionRange(this.selectionStart, this.selectionStart);
+
+          // 绑定监听中文输入法事件，只触发一次
+          this.$emit('bindCompositionend');
+        }
+      },
+
       routerNext(value) {
         // 路由跳转
         const props = this._items.props;
@@ -583,14 +622,42 @@
           serviceId
         });
       },
+
       valueChange() {
         // 值发生改变时触发  只要是item中的value改变就触发该方法，是为了让父组件数据同步
         // console.log(this._items);
         this.value = this._items.value;
         this.$emit('inputChange', this._items.value, this._items, this.index);
       },
+      
       // input event
-      inputChange(event, $this) {
+      inputChange(event, cursorOffset, $this) {
+        // 输入中文时跳过赋值
+        if (this.isInputChinese) {
+          return;
+        }
+        
+        const value = event.target.value;
+        this.selectionStart = event.target.selectionStart;
+        // 输入中文时，新增文字的插入位置需要根据Math.max(this.selectionStart - cursorOffset, 0)矫正
+        const insertTextPosion = cursorOffset ? Math.max(this.selectionStart - cursorOffset, 0) : this.selectionStart;
+        
+        // fix: input输入框拿不到值给父组件
+        if (this._items.props.type === 'text') {
+          this._items.value = value;
+        }
+
+        const charArr = this._items.value.split('');
+        if (value.length > this._items.value.length) {
+          // 输入值
+          charArr.splice(insertTextPosion - 1, 0, this.keyData);
+          this._items.value = charArr.join('');
+        } else if (value.length < this._items.value.length) {
+          // 删除值
+          charArr.splice(insertTextPosion, 1);
+          this._items.value = charArr.join('');
+        }
+        
         this.valueChange();
         let valLength = this._items.props.length;
         if (valLength) {
@@ -672,6 +739,12 @@
         }
       },
       inputKeyDown(event, $this) {
+        // 记录新输入的内容，方便加密文本时用
+        const value = event.target.value;
+        if (value.length !== this._items.value) {
+          this.keyData = event.key;
+        }
+
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'keydown')
           && typeof this._items.event.keydown === 'function'
@@ -1764,9 +1837,25 @@
         createModal(array, obj, index);
       },
 
-      
+      // 监听中文键盘输入
+      listenChinese() {
+        this.$once('bindCompositionend', () => {
+          const dom = this.$refs[this._items.field].$el.children[0];
+          dom.addEventListener('compositionstart', (e) => {
+            this.isInputChinese = true;
+          });
+          dom.addEventListener('compositionend', (e) => {
+            this.keyData = e.data;
+            this.isInputChinese = false;
+            this.inputChange(e, Math.max(this.keyData.length - 1, 0));
+          });
+        });
+      }
     },
     beforeDestroy() {
+      if (this.inputTimer) {
+        clearTimeout(this.inputTimer);
+      }
       window.removeEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetProps);
       window.removeEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
       window.removeEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
@@ -1774,13 +1863,13 @@
     },
     created() {
       // console.log(this.type,this.formIndex);
-      if (this.items.type === 'AttachFilter') {
-        this.value = this.items.props.Selected;
-      } else {
-        this.value = this.items.value;
-      }
+      this.selectionStart = null; // 光标位置
+      this.keyData = null; // 记录按键按下的位置
+      this.isInputChinese = false; // 是否在输入中文
     },
     mounted() {
+      this.listenChinese();
+
       // this.$nextTick(() => {
       //   // 处理字段联动时多个来源字段联动禁用模糊搜索
       //   if (this.items.props.webconf && this.items.props.webconf.refcolval_custom) {
@@ -1888,6 +1977,11 @@ textarea.ark-input{
 
 
     }
+}
+
+.encode-text textarea.ark-input {
+  font-size: 14px;
+  font-weight: bold;
 }
 
 

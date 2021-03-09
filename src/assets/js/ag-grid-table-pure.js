@@ -725,9 +725,9 @@ const initializeAgTable = (container, opt) => {
         item.unSortIcon = item.isorder; // 设置未排序图表Icon
         item.hide = hideColumn.indexOf(item.colname) > -1;
         item.suppressMenu = d.colname === 'ID'; // 是否禁用每一列的菜单选择
-        if (d.agfilter === 'FUZZY') {
-          item.filter = 'agTextColumnFilter';
-        }
+        // if (d.agfilter === 'FUZZY') {
+        //   item.filter = 'agTextColumnFilter';
+        // }
         item.checkboxSelection = d.colname === 'ID' ? function (params) {
           return params.columnApi.getRowGroupColumns().length === 0 && params.data.ID.val !== '合计' && params.data.ID.val !== '总计';
         } : null;
@@ -834,6 +834,7 @@ const initializeAgTable = (container, opt) => {
 
     const initGridOptions = () => {
       const options = agTable.customizeOptions;
+      console.log(options)
       return {
         columnDefs: options && options.columnDefs ? options.columnDefs : [], // 列定义
         rowData: options && options.rowData ? options.rowData : [], // 行数据
@@ -863,7 +864,7 @@ const initializeAgTable = (container, opt) => {
           enableValue: true,
         }, // 默认列配置
         enableCellChangeFlash: true,
-        floatingFilter: options && options.floatingFilter ? options.floatingFilter : true, // 是否显表头下方的浮动筛选框
+        floatingFilter: options.floatingFilter , // 是否显表头下方的浮动筛选框
         rowDragManaged: true,
         rowGroupPanelShow: options && options.rowGroupPanelShow ? options.rowGroupPanelShow : 'onlyWhenGrouping', // 是否显最顶部的group panel
         rowBuffer: 10,

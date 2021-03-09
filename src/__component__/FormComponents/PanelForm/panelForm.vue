@@ -78,8 +78,11 @@ export default {
         return item.childs
       })
 
-      data.addcolums.push(sumObject)
-
+      if(sumObject.childs.length > 0){
+        data.addcolums.push(sumObject)
+      }
+      
+      // 数组转对象处理，避免vue渲染时的指针问题
       data.addcolums.map(item => {
         item._index = Math.random()
         item.childs = {...layoutAlgorithm(Number(data.objviewcol), item.childs?item.childs:[item.child])};

@@ -45,10 +45,14 @@ export default {
             if (c.display && c.display === 'OBJ_FK') { // 如果是外键类型，需要配置refobjid
               d.refobjid = c.refobjid;
             } else if (c.display && c.display === 'OBJ_DATE') {
-              d.daterange = c.defaultValue;
+              d.customDefault = c.defaultValue;
+              d.default = '-1';
+              d.daterange = '-1';
             }
           }
+          return d;
         });
+        return c;
       });
     }
 

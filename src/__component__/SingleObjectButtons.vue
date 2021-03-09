@@ -31,7 +31,6 @@
       :content-text="dialogConfig.contentText"
       :footer-hide="dialogConfig.footerHide"
       :confirm="dialogConfig.confirm"
-      :isrefrsh="isrefrsh"
       :action-id="actionId"
       :obj-tab-action-dialog-config="objTabActionDialogConfig"
       :dialog-component-name="dialogComponentName"
@@ -2592,7 +2591,6 @@
         //   range: 10
         // };
         const buttonInfo = this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '删除')[0];
-
         let page = {};
         if (this.objectType === 'horizontal') { // 横向布局
           this.tabPanel.every((item) => {
