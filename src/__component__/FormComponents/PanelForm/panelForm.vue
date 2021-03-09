@@ -84,6 +84,10 @@ export default {
         item._index = Math.random()
         item.childs = {...layoutAlgorithm(Number(data.objviewcol), item.childs?item.childs:[item.child])};
         Object.keys(item.childs).map(temp => {
+          
+
+          item.childs[temp].tableName = this.$route.params.tableName;
+          item.childs[temp].itemId = this.$route.params.itemId;
           item.childs[temp]  = new RenderComponent(JSON.parse(JSON.stringify(item.childs[temp]))).itemConversion();
           return temp
         })

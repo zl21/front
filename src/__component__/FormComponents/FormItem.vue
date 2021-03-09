@@ -411,6 +411,7 @@
   import CustomAttachFilter from '../inheritanceComponents/AttachFilter';
   import CustomPopAttachFilter from '../inheritanceComponents/PopAttachFilter';
   import CustomCheckbox from '../inheritanceComponents/CheckBox';
+  import CustomImageUpload from '../inheritanceComponents/ImageUpload';
   import ParameterDataProcessing from './parameterDataProcessing';
 
   import {
@@ -598,6 +599,8 @@
           break;
         case 'OBJ_CHECK':
           Components = new CustomCheckbox(item).init();
+        case 'image':
+          Components = new CustomImageUpload(item).init();
         default:
           break;
         }
