@@ -372,6 +372,7 @@
   import createModal from './PreviewPicture/index';
   import EnumerableInput from './EnumerableInput.vue';
   import ExtentionInput from './ExtentionInput.vue';
+  import network, { urlSearchParams } from '../__utils__/network';
 
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
@@ -723,7 +724,33 @@
         ) {
           this._items.event.blur(event, $this, this._items);
         }
+
+        this.validateInput(event.target.value);
       },
+
+      // 校验输入值
+      validateInput(value) {
+        const webconf = this._items.props.webconf;
+        if (webconf && webconf.preverifyenabled) {
+          network.post('/p/cs/verifyObject', {
+            OBJ_ID: this.$route.params.itemId,
+            TABLE_NAME: this.$route.params.tableName,
+            VERIFY_COLUMN: {
+              [this._items.field]: value
+            }
+          }).then((res) => {
+            console.log(res);
+            if (res.data.code === 1) {
+              this.$Modal.fcError({
+                title: '错误',
+                content: res.data.message,
+                mask: true
+              });
+            }
+          });
+        }
+      },
+
       inputKeyUp(event, $this) {
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'keyup')
