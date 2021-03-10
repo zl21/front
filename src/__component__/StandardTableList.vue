@@ -41,7 +41,7 @@
       <!-- <Button
         id="hideRefresh"
         type="fcdefault"
-        @click="a"
+        @click="b"
       >
         测试按钮
       </Button> -->
@@ -134,7 +134,6 @@
       :footer-hide="dialogComponentNameConfig.footerHide"
       :confirm="dialogComponentNameConfig.confirm"
       :dialog-component-name="dialogComponentName"
-      :isrefrsh="buttons.isrefrsh"
       @dialogComponentSaveSuccess="dialogComponentSaveSuccess"
     />
     <!-- 批量 -->
@@ -504,7 +503,7 @@
         this.dialogComponentName = params.column.customerurl.tableurl;
       }, // 普通表格跳动作定义按钮弹窗
       dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作
-        if (this.buttons.isrefrsh) {
+        if (this.objTabActionDialogConfig.isrefrsh) {
           this.searchClickData();
         }
       },
@@ -2251,21 +2250,23 @@
       },
       batchExport(buttonsData) {
         this.$R3loading.show();
-        let searchData = {};
-        const { tableName } = this[INSTANCE_ROUTE_QUERY];
+        // let searchData = {};
+        // const { tableName } = this[INSTANCE_ROUTE_QUERY];
         // 导出
-        searchData = {
-          table: tableName,
-          column_include_uicontroller: true,
-          fixedcolumns: { ID: this.buttons.selectIdArr },
-          range: 10,
-          startindex: 0
-        };
-        if (this.buttons.selectIdArr.length === 0) {
-          searchData.fixedcolumns = this.dataProcessing();
-        }
+        // searchData = {
+        //   table: tableName,
+        //   column_include_uicontroller: true,
+        //   fixedcolumns: { ID: this.buttons.selectIdArr },
+        //   range: 10,
+        //   startindex: 0
+        // };
+
+       
+        if (this.buttons.selectIdArr.length !== 0) {
+          this.searchData.fixedcolumns = { ID: this.buttons.selectIdArr };
+        } 
         const OBJ = {
-          searchdata: searchData,
+          searchdata: this.searchData,
           filename: this.activeTab.label,
           filetype: '.xlsx',
           showColumnName: true,
