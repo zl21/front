@@ -34,7 +34,10 @@ module.exports = {
     'no-console':'off',
     'vue/no-async-in-computed-properties': 'off',
     'vue/html-self-closing': 'off'
+<<<<<<< HEAD
 
+=======
+>>>>>>> 27983d96c19adecc45672453c625f863d02c28b5
   },
   overrides: [
     {

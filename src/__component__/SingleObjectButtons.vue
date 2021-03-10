@@ -350,6 +350,9 @@
 
         
       }),
+      getCurrentItemTableRef() { // 当前子表明细表格实例
+        return this.$_live_getChildComponent(window.vm, 'H.SHANGPIN.24445.5.TableDetailCollection') ? this.$_live_getChildComponent(window.vm, 'H.SHANGPIN.24445.5.TableDetailCollection') : null;
+      },
       currentTabIndex() {
         // if (this.WebConf && this.WebConf.isCustomizeTab && this.objectType === 'horizontal') {
         //   return this.tabCurrentIndex + 1;
@@ -2024,7 +2027,10 @@
           startindex: (Number(page.currentPageIndex) - 1) * Number(page.pageSize),
           range: page.pageSize,
         };
-
+        if (this.getCurrentItemTableRef && this.getCurrentItemTableRef.currentOrderList.length > 0) {
+          // 如果没有排序则不传该参数
+          searchdatas.orderby = this.getCurrentItemTableRef.currentOrderList;
+        }
         const OBJ = {
           searchdata: JSON.stringify(searchdatas),
           filename: tabledesc,

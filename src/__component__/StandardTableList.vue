@@ -41,7 +41,7 @@
       <!-- <Button
         id="hideRefresh"
         type="fcdefault"
-        @click="a"
+        @click="b"
       >
         测试按钮
       </Button> -->
@@ -2436,21 +2436,23 @@
 
       batchExport(buttonsData) {
         this.$R3loading.show();
-        let searchData = {};
-        const { tableName } = this[INSTANCE_ROUTE_QUERY];
+        // let searchData = {};
+        // const { tableName } = this[INSTANCE_ROUTE_QUERY];
         // 导出
-        searchData = {
-          table: tableName,
-          column_include_uicontroller: true,
-          fixedcolumns: { ID: this.buttons.selectIdArr },
-          range: 10,
-          startindex: 0
-        };
-        if (this.buttons.selectIdArr.length === 0) {
-          searchData.fixedcolumns = this.dataProcessing();
-        }
+        // searchData = {
+        //   table: tableName,
+        //   column_include_uicontroller: true,
+        //   fixedcolumns: { ID: this.buttons.selectIdArr },
+        //   range: 10,
+        //   startindex: 0
+        // };
+
+       
+        if (this.buttons.selectIdArr.length !== 0) {
+          this.searchData.fixedcolumns = { ID: this.buttons.selectIdArr };
+        } 
         const OBJ = {
-          searchdata: searchData,
+          searchdata: this.searchData,
           filename: this.activeTab.label,
           filetype: '.xlsx',
           showColumnName: true,
