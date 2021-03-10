@@ -36,7 +36,6 @@ module.exports = {
     'prefer-rest-params': 'off',
     'func-names': 'off'
     'vue/html-self-closing': 'off'
-
   },
   overrides: [
     {

@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-               >
+             >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -569,11 +569,16 @@
           this.columns = this.filterColumns(this.dataSource.tabth, isTableRender); // 每列的属性
           this.getEditAbleId(JSON.parse(JSON.stringify(this.dataSource)));
         }
-      }
+      },
 
     },
     created() {
       this.ChineseDictionary = ChineseDictionary;
+
+      // 设置查询条件默认值。默认取选项数组的第一个值
+      if (this.filterList && this.filterList[0]) {
+        this.searchCondition = this.filterList[0].key;
+      }
     },
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
@@ -745,7 +750,7 @@
         const total = [];
         if (this.dataSource.isSubTotalEnabled) {
           const cell = {
-            COLLECTION_INDEX: '合计'
+            COLLECTION_INDEX: '<div class="text-center">合计</div>'
           };
           // const needSubtotalList = this.columns.filter(ele => ele.issubtotal);
           // needSubtotalList.map((ele) => {
@@ -757,7 +762,7 @@
           // });
           if (this.dataSource.subtotalRow && Object.keys(this.dataSource.subtotalRow).length > 0) {
             Object.keys(this.dataSource.subtotalRow).forEach((key) => {
-              cell[key] = this.dataSource.subtotalRow[key];
+              cell[key] = `<div class="text-right">${this.dataSource.subtotalRow[key]}</div>`;
             });
           }
           total.push(cell);
@@ -766,12 +771,12 @@
         if (this.dataSource.isFullRangeSubTotalEnabled) {
           // 总计
           const cell = {
-            COLLECTION_INDEX: '总计',
+            COLLECTION_INDEX: '<div class="text-center">总计</div>',
           };
           if (this.dataSource.fullRangeSubTotalRow) {
             for (const key in this.dataSource.fullRangeSubTotalRow) {
               if (Object.prototype.hasOwnProperty.call(this.dataSource.fullRangeSubTotalRow, key)) {
-                const element = this.dataSource.fullRangeSubTotalRow[key];
+                const element = `<div class="text-right">${this.dataSource.fullRangeSubTotalRow[key]}</div>`;
                 cell[key] = element.val;
               }
             }
@@ -1514,7 +1519,9 @@
           .map((ele) => {
             const param = {
               title: ele.name,
-              key: ele.colname
+              key: ele.colname,
+              align: 'center',
+              tdAlign: ele.type === 'NUMBER' ? 'right' : 'center'
             };
             if (ele.isorder) {
               param.sortable = 'custom';
@@ -1532,7 +1539,7 @@
                 return order;
               });
             }
-            const item = Object.assign(ele, param);
+            const item = Object.assign({}, ele, param);
             return item;
           });
         const renderColumns = this.renderData(columns);
@@ -1546,6 +1553,7 @@
           {
             title: '序号',
             width: 60,
+            align: 'center',
             key: COLLECTION_INDEX,
             render: this.collectionIndexRender(columns)
           }
@@ -1765,7 +1773,7 @@
               overflow,
               'text-overflow': 'ellipsis',
               'white-space': 'nowrap',
-              'text-align': cellData.type === 'NUMBER' ? 'right' : 'left'
+              'text-align': cellData.type === 'NUMBER' ? 'right' : 'center'
             },
             class: {
               numberTd: cellData.type === 'NUMBER'
@@ -1784,6 +1792,10 @@
           h(tag, {
             style: {
               width: '100px'
+            },
+            class: {
+              'input-align-right': cellData.type === 'NUMBER',
+              'input-align-center': cellData.type !== 'NUMBER'
             },
             domProps: {
               id: `${params.index}-${params.column._index - 1}`,
@@ -3861,6 +3873,18 @@
           },
           tabIndex: this.currentTabIndex
         };
+
+        // 过滤空字段
+        const columns = params.searchdata.fixedcolumns;
+        const paramsKeys = Object.keys(columns);
+        if (paramsKeys.length > 0) {
+          paramsKeys.forEach((key) => {
+            if (columns[key] === '') {
+              delete columns[key];
+            }
+          });
+        }
+
         this.getObjectTableItemForTableData(params);
       },
       getFKList(params, cellData) {
@@ -4191,6 +4215,10 @@
           startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
           range: this.pageInfo.pageSize,
         };
+        if (this.currentOrderList.length > 0) {
+          // 如果没有排序则不传该参数
+          searchData.orderby = this.currentOrderList;
+        }
         const OBJ = {
           searchdata: searchData,
           filename: this.itemInfo.tabledesc,
@@ -4445,7 +4473,7 @@
                             top: 0px;
                         }
                         .ark-input-group-with-prepend {
-                            width: 190px;
+                            width: 270px;
                         }
                         .ark-input-group-prepend {
                             .ark-btn {
@@ -4507,5 +4535,13 @@
         .ark-input-icon {
             top: -2px;
         }
+    }
+
+    .input-align-center input {
+        text-align: center;
+    }
+
+    .input-align-right input {
+        text-align: right;
     }
 </style>
