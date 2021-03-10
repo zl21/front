@@ -447,6 +447,7 @@
             });
           }
         },
+        deep: true,
         immediate: true
       }
     },
