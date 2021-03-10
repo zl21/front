@@ -156,7 +156,6 @@
             content: '请输入目标表名'
           };
           this.$Modal.fcWarning(data);
-          return;
         }
         if (!this.s_table_name.trim()) {
           const data = {
@@ -165,7 +164,6 @@
             content: '请输入目标描述'
           };
           this.$Modal.fcWarning(data);
-          return;
         }
         if (!this.version.ID) {
           const data = {
@@ -174,7 +172,6 @@
             content: '请输入版本号'
           };
           this.$Modal.fcWarning(data);
-          return;
         }
         this.$R3loading.show();
         const searchdata = {
