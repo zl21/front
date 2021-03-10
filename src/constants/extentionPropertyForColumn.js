@@ -338,4 +338,10 @@ export default [
     ],
     description: '列表查询规则'
   },
+  {
+    name: '列表查询前置操作',
+    key: 'querypretrigger',
+    type: 'input',
+    description: '支持表扩展属性查询条件前配置。目前可填入的字段有：text',
+  },
 ];
