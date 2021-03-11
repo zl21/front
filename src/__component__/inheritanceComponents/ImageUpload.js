@@ -57,7 +57,7 @@ class CustomImageUpload {
     const defaultProps = { ...this.Input.props };
     defaultProps.PropsData = {
       default: () => ({
-        disabled: this.item.readonly, //控制字段是否可编辑
+        readonly: this.item.readonly, //控制字段是否可编辑
         url: '/ad-app/p/cs/upload2',
         sendData:{
           path: `${this.item.tableName}/${this.item.itemId}/`,

@@ -44,7 +44,8 @@
         <AutomaticPathGenerationInput />
       </div> -->
       <panelForm
-        :id="$route.params.tableName"
+        :tableName="$route.params.tableName"
+        :readonly="mainFormInfo.buttonsData.data.objreadonly"
         :defaultData="Object.keys(defaultDataForCopy).length>0?defaultDataForCopy.data:mainFormInfo.formData.data"
       ></panelForm>
       <!-- <composite-form

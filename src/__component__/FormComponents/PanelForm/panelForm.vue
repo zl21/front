@@ -47,12 +47,16 @@ import ParameterDataProcessing from '../parameterDataProcessing';
 export default {
   components:{ DownComponent, FormItem },
   props:{
-    id: {
+    tableName: {  // 表名
       type: [Number, String],
       default: null
     },
-    defaultData:{
+    defaultData:{  //表单数据
       type: [Array, Object]
+    },
+    readonly:{  //表单是否整体禁用
+      type: Boolean,
+      default: false
     }
   },
   computed:{
@@ -88,6 +92,9 @@ export default {
         item._index = Math.random()
         item.childs = {...layoutAlgorithm(Number(data.objviewcol), item.childs?item.childs:[item.child])};
         Object.keys(item.childs).map(temp => {
+          if(this.readonly){
+            item.childs[temp].readonly = this.readonly
+          }
           item.childs[temp].tableName = this.$route.params.tableName;
           item.childs[temp].itemId = this.$route.params.itemId;
           item.childs[temp]  = new RenderComponent(JSON.parse(JSON.stringify(item.childs[temp]))).itemConversion();
@@ -123,7 +130,7 @@ export default {
   methods:{
     initComponent(item) { // init组件
       let defaultItem = JSON.parse(JSON.stringify(item));
-      const Render = new RenderComponent(defaultItem, this.id);
+      const Render = new RenderComponent(defaultItem, this.tableName);
       return Render.Initialize();
     },
 
@@ -165,7 +172,7 @@ export default {
       Object.keys(this.formItemLists).map(temp => {
         Object.keys(this.formItemLists[temp].childs).map(j => {
           let item = this.formItemLists[temp].childs[j];
-          const components = this.$_live_getChildComponent(this, `${this.id}${item.colname.TextFilter()}`);
+          const components = this.$_live_getChildComponent(this, `${this.tableName}${item.colname.TextFilter()}`);
           const value = components.value;
           const json = this.dealData(item, value);
           formData = Object.assign({}, formData, json);
@@ -180,7 +187,7 @@ export default {
     getFormDataLabel() {
       let formData = {};
       this.formArray.map((item) => {
-        const components = this.$_live_getChildComponent(this, `${this.id}${item.colname.TextFilter()}`);
+        const components = this.$_live_getChildComponent(this, `${this.tableName}${item.colname.TextFilter()}`);
         const value = components.value;
         const json = {
           [item.colname]:value
