@@ -31,7 +31,6 @@
       :content-text="dialogConfig.contentText"
       :footer-hide="dialogConfig.footerHide"
       :confirm="dialogConfig.confirm"
-      :isrefrsh="isrefrsh"
       :action-id="actionId"
       :obj-tab-action-dialog-config="objTabActionDialogConfig"
       :dialog-component-name="dialogComponentName"
@@ -351,6 +350,9 @@
 
         
       }),
+      getCurrentItemTableRef() { // 当前子表明细表格实例
+        return this.$_live_getChildComponent(window.vm, 'H.SHANGPIN.24445.5.TableDetailCollection') ? this.$_live_getChildComponent(window.vm, 'H.SHANGPIN.24445.5.TableDetailCollection') : null;
+      },
       currentTabIndex() {
         // if (this.WebConf && this.WebConf.isCustomizeTab && this.objectType === 'horizontal') {
         //   return this.tabCurrentIndex + 1;
@@ -2025,7 +2027,10 @@
           startindex: (Number(page.currentPageIndex) - 1) * Number(page.pageSize),
           range: page.pageSize,
         };
-
+        if (this.getCurrentItemTableRef && this.getCurrentItemTableRef.currentOrderList.length > 0) {
+          // 如果没有排序则不传该参数
+          searchdatas.orderby = this.getCurrentItemTableRef.currentOrderList;
+        }
         const OBJ = {
           searchdata: JSON.stringify(searchdatas),
           filename: tabledesc,
@@ -2591,7 +2596,6 @@
         //   range: 10
         // };
         const buttonInfo = this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '删除')[0];
-        debugger;
         let page = {};
         if (this.objectType === 'horizontal') { // 横向布局
           this.tabPanel.every((item) => {
@@ -3434,6 +3438,7 @@
               mainTableParame: this.currentParameter, // 保存接口主表参数
               itemTableParame: this.itemCurrentParameter, // 保存接口子表参数
               res, // 接口返回res
+              currentRoute: this.$router.currentRoute
             }
           });
           if (this.objectType === 'vertical' && webact) { // 兼容半定制界面，保存成功时通知外部

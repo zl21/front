@@ -137,3 +137,4 @@ export const defaultrange = () => (window.ProjectConfig && window.ProjectConfig.
 
 
 export const DashboardPage = () => (window.ProjectConfig && window.ProjectConfig.DashboardPage ? window.ProjectConfig.DashboardPage : null); // 根路由界面
+export const floatingFilter = () => (window.ProjectConfig && typeof window.ProjectConfig.floatingFilter === 'boolean' ? window.ProjectConfig.floatingFilter : true);
