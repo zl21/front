@@ -38,6 +38,7 @@ export default {
 
     const getSTDefaultQuery = getSessionObject(tableId);
     if (data && data.length > 0 && getSTDefaultQuery && getSTDefaultQuery.length > 0) {
+      
       getSTDefaultQuery.map((c) => {
         data.map((d) => {
           if (Number(c.colid) === Number(d.colid)) {
@@ -62,14 +63,15 @@ export default {
         data.map((d) => {
           if (c === d.colname && indexDB[c]) {
             d.default = indexDB[c];
-            if (d.display && d.display === 'OBJ_FK') { // 如果是外键类型，需要配置refobjid
-              d.refobjid = indexDB[c][0].ID;
-              d.default = indexDB[c][0].Label;
+            if(d.display && d.display === 'OBJ_FK') { // 如果是外键类型，需要配置refobjid
+              d.refobjid = indexDB[c].map(item => item.ID).join(',');
+              d.default = indexDB[c].map(item => item.Label).join(',');
             }
             
             if (d.display && ['OBJ_DATENUMBER','OBJ_DATE'].includes(d.display)) {
-              d.daterange = new Date().dateMinus(indexDB[c][0],indexDB[c][1]);
-              d.default = new Date().dateMinus(indexDB[c][0],indexDB[c][1]);
+              d.customDefault = indexDB[c];
+              d.default = -1;
+              d.defaultrange = -1;
             }
 
             if (d.display && d.display === 'OBJ_SELECT') {

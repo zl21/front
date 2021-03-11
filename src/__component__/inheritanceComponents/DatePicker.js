@@ -17,7 +17,7 @@ class CustomDatePicker {
 
   init() {
     this.mergeProps();
-    // this.mergeMethods();
+    this.mergeMethods();
     // if (this.item.Components) {
     //   return this.item.Components;
     // }
@@ -68,6 +68,7 @@ class CustomDatePicker {
     defaultProps.disabled = {
       default:() => this.item.readonly
     }
+
     const placeholder = {
       default: () => `请选择${this.item.coldesc}`
     };
@@ -79,13 +80,19 @@ class CustomDatePicker {
   }
 
   mergeMethods() {
-    console.log(this.DatePicker.mixins[0]);
-    const test = this.DatePicker.mixins[0].methods.handleClose;
-    this.DatePicker.mixins[0].methods.handleClose = function () {
-      console.log(this);
+    // const test = this.DatePicker.mixins[0].methods.handleClose;
+    // this.DatePicker.mixins[0].methods.handleClose = function () {
+    //   test().bind(this);
+    // };
 
-      test().bind(this);
-    };
+    let a = this.DatePicker.mounted[0];
+    console.log(this.DatePicker)
+    this.DatePicker.mounted= function(){
+      // this.onSelectionModeChange(this.type)
+      // console.log(this)
+      // a().call(this, ...arguments);
+      // console.log(123213)
+    }
   }
 }
 

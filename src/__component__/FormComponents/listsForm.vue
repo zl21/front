@@ -153,14 +153,22 @@
         let formData = {};
         this.formArray.map((item) => {
           const components = this.$_live_getChildComponent(this, `${this.id}${item.colname.TextFilter()}`);
-          const value = components.value;
+          let value = components.value;
+          // if(value && item.display === 'OBJ_DATENUMBER'){
+          //   value = [new Date().r3Format(new Date(value[0]), 'yyyy-MM-dd'),new Date().r3Format(new Date(value[1]), 'yyyy-MM-dd')]
+          // }
+          // if(value && item.display === 'OBJ_DATE'){
+          //   value = [new Date().r3Format(new Date(value[0]), 'yyyy-MM-dd 00:00:00'),new Date().r3Format(new Date(value[1]), 'yyyy-MM-dd 23:59:59')]
+          // }
           const json = {
             [item.colname]:value
           };
           formData = Object.assign({}, formData, json);
           return item;
         });
+        
         this.deleteEmptyProperty(formData);
+        
         return formData;
       }
 

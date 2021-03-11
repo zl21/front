@@ -132,17 +132,24 @@ export default class ParameterDataProcessing {
     // fk外健
     if (this.item.display === 'OBJ_FK') {
       if (['mrp', 'drp', 'pop', 'mop'].includes(this.item.fkobj.searchmodel) && this.item.refobjid) {
-        return [{
-          ID: this.item.refobjid,
-          Label: this.item.default || this.item.valuedata
-        }];
+        let arr = []
+        this.item.refobjid.split(',').map((item,index) => {
+          arr.push({
+            ID: item,
+            Label: this.item.default ? this.item.default.split(',')[index] : this.item.valuedata
+          })
+        })
+        return arr
       }
 
       return '';
     }
 
     // 处理日期控件的默认值问题,区分列表还是单对象默认值
-    if (this.item.default && ['OBJ_DATENUMBER','OBJ_DATE','YearMonth'].includes(this.item.display) && this.item.default && this.item.default !== '-1') {
+    if (this.item.default && ['OBJ_DATENUMBER','OBJ_DATE','YearMonth'].includes(this.item.display) && ((this.item.default && this.item.default !== '-1') || this.item.customDefault)) {
+      if(this.item.customDefault){
+        return this.item.customDefault
+      }
       if(this.item.display === 'YearMonth'){
         return this.item.default;
       }

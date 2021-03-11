@@ -2074,7 +2074,7 @@
             data.isolr = this.buttons.isSolr;
 
             if (enableKAQueryDataForUser() || this.webConf.enableKAQueryDataForUser) {
-              const search = JSON.parse(JSON.stringify(this.$_live_getChildComponent(this,'listsForm').getFormDataLabel()));
+              const search = this.$_live_getChildComponent(this,'listsForm').getFormDataLabel();
 
               this.formItemsLists.map((temp) => {
                 if (temp.item.type === 'AttachFilter') {
