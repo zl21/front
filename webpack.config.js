@@ -43,7 +43,7 @@ module.exports = env => ({
   devServer: {
     compress: true,
     port: 8209,
-    host: '0.0.0.0',
+    host: 'localhost',
     open: true,
     historyApiFallback: {
       rewrites: [
@@ -209,13 +209,13 @@ module.exports = env => ({
     //   'window.jQuery': 'jquery'
     // })
 
-    // new ModuleFederationPlugin({ 
-    //   name: '', 
-    //   remotes: {
-    //     arkui_BCL: 'arkui_BCL@https://cdn.jsdelivr.net/npm/@syman/ark-ui-bcl@0.0.10/dist/remoteEntry.js',
-    //     shared: ['vue', '@syman/ark-ui', 'axios']
-    //   }
-    // })
+    new ModuleFederationPlugin({ 
+      name: '', 
+      remotes: {
+        arkui_BCL: 'arkui_BCL@http://192.168.4.163:3800/remoteEntry.js',
+        shared: ['vue', '@syman/ark-ui', 'axios']
+      }
+    })
   ],
   mode: env && env.production ? 'production' : 'development',
   resolve: {
