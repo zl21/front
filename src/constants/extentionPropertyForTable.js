@@ -248,7 +248,7 @@ export default [
     name: '树界面配置',
     key: 'menudisplay',
     type: 'radio',
-    enumerateValue: [{ text: '树界面', value: "tree" }],
+    enumerateValue: [{ text: '树界面', value: 'tree' }],
     description: '列表界面使用树界面'
   },
   {
@@ -309,5 +309,11 @@ export default [
       }
     ],
     description: '控制单对象界面是否可编辑（只检查写权限）'
+  },
+  {
+    name: '列表查询前置操作',
+    key: 'querypretrigger',
+    type: 'input',
+    description: '支持表扩展属性查询条件前配置。目前可填入的字段有：text',
   },
 ];
