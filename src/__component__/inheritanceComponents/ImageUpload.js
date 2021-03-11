@@ -7,6 +7,8 @@
 
 import Vue from 'vue';
 import { ImageUpload } from '@syman/ark-ui-bcl';
+// import ImageUpload from 'arkui_BCL/ImageUpload';
+import network from '../../__utils__/network';
 
 // 深拷贝
 const deepClone = (arr) => {  
@@ -66,6 +68,9 @@ class CustomImageUpload {
         },
         name: '上传'
       })
+    };
+    defaultProps.http.default = () => {
+      return network;
     };
   
     // this.settingPlaceholder();
