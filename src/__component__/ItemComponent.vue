@@ -634,26 +634,13 @@
         const value = event.target.value;
         this.selectionStart = event.target.selectionStart;
         // 输入中文时，新增文字的插入位置需要根据Math.max(this.selectionStart - cursorOffset, 0)矫正
-        let insertTextPosion = cursorOffset ? Math.max(this.selectionStart - cursorOffset, 0) : this.selectionStart;
+        const insertTextPosion = cursorOffset ? Math.max(this.selectionStart - cursorOffset, 0) : this.selectionStart;
 
-        // 删除内容
-        if (this.keyCode === 8) {
+        // 按退格键,ctrl,command键时
+        if (this.keyCode === 8 || this.isPressControl) {
           this._items.value = value;
           this.valueChange();
           return;
-        }
-
-        // 粘贴时从剪切板获取值
-        if (this.isPaste) {
-          // 撤销的话直接返回原值
-          if (this.keyCode === 90) {
-            this._items.value = value;
-            this.valueChange();
-            return;
-          }
-          // 考虑按ctrl + z撤销的情况
-          this.keyData = this.clipContent;
-          insertTextPosion = this.cursorPosition + 1;
         }
         
         // fix: input输入框拿不到值给父组件
@@ -661,9 +648,9 @@
           this._items.value = value;
         }
         
+        // 手动把新加的输入值和原来的值进行拼接
         const charArr = this._items.value.split('');
         if (value.length > this._items.value.length) {
-          // 输入值
           charArr.splice(insertTextPosion - 1, 0, this.keyData);
           this._items.value = charArr.join('');
         } 
@@ -745,7 +732,7 @@
         const ctrlKey = 17;
         const cmdKey = 91;
         if (event.keyCode === ctrlKey || event.keyCode === cmdKey) {
-          this.isPaste = false;
+          this.isPressControl = false;
         }
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'keyup')
@@ -759,8 +746,7 @@
         const ctrlKey = 17;
         const cmdKey = 91;
         if (event.keyCode === ctrlKey || event.keyCode === cmdKey) {
-          this.isPaste = true;
-          this.cursorPosition = event.target.selectionStart;
+          this.isPressControl = true;
         }
         // 记录新输入的内容，方便加密文本时用
         const value = event.target.value;
@@ -1011,46 +997,6 @@
           this._items.event.valuechange(item);
         }
         this.valueChange();
-        // if (
-        //   Object.prototype.hasOwnProperty.call(
-        //     this._items.event,
-        //     'popper-value'
-        //   )
-        //   && typeof this._items.event['popper-value'] === 'function'
-        // ) {
-        // console.log(item);
-        //   this._items.event['popper-value'](
-        //     $this,
-        //     item.value,
-        //     item.selected
-        //   );
-        // }
-        // if (
-        //   Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
-        //   && typeof this._items.event.clear === 'function'
-        // ) {
-        //   if (!item.value && !item.selected[0] && !item.selected[0].ID) {
-        //     this._items.event.clear($this);
-        //   }
-        // }
-        // if (
-        //   Object.prototype.hasOwnProperty.call(
-        //     this._items.event,
-        //     'popper-value'
-        //   )
-        //   && typeof this._items.event['popper-value'] === 'function'
-        // ) {
-        //   this._items.event['popper-value']($this, value, 'change', this.index);
-        // }
-        // if (
-        //   Object.prototype.hasOwnProperty.call(
-        //     this._items.event,
-        //     'inputValueChange'
-        //   )
-        //   && typeof this._items.event.inputValueChange === 'function'
-        // ) {
-        //   this._items.event.inputValueChange(item.value, $this);
-        // }
       },
 
       // AttachFilter event
@@ -1637,7 +1583,7 @@
 
         return Object.assign({}, fixedData);
       },
-      upSaveImg(obj, fixedData, path, index) {
+      upSaveImg() {
         // 图片保存接口
         setTimeout(() => {
           const dom = document.getElementById('actionMODIFY');
@@ -1646,35 +1592,6 @@
         
        
         return false;
-        fkHttpRequest().fkObjectSave({
-          searchObject: {
-            ...obj
-          },
-          url: path ? this.$parent.pathcheck : undefined,
-          // eslint-disable-next-line consistent-return
-          success: (res) => {
-            if (res.data.code !== 0) {
-              return false;
-            }
-            if (index) {
-              // 删除
-              this._items.props.itemdata.valuedata.splice(index - 1, 1);
-              this._items.value = this._items.props.itemdata.valuedata;
-            } else {
-              const data = fixedData[fixedData.length - 1];
-              if (typeof this._items.props.itemdata.valuedata !== 'object') {
-                this._items.props.itemdata.valuedata = [];
-              }
-
-              this._items.props.itemdata.valuedata.push({
-                NAME: data.NAME,
-                URL: data.URL
-              });
-              this._items.value = this._items.props.itemdata.valuedata;
-            }
-            this.valueChange();
-          }
-        });
       },
       uploadFileChangeOnerror(e) {
         this.$Message.info(e);
@@ -1853,8 +1770,6 @@
       listenChinese() {
         this.$once('bindCompositionend', () => {
           const dom = this.$refs[this._items.field].$el.children[0];
-          dom.addEventListener('paste', this.setListenerPaste);
-
           dom.addEventListener('compositionstart', (e) => {
             this.isInputChinese = true;
           });
@@ -1865,14 +1780,6 @@
           });
         });
       },
-
-      // 监听剪切板内容
-      setListenerPaste(e) {
-        if (e.clipboardData || e.originalEvent) {
-          const clipboardData = e.clipboardData || e.originalEvent;
-          this.clipContent = clipboardData.getData('text');
-        }
-      }
     },
     beforeDestroy() {
       if (this.inputTimer) {
@@ -1888,9 +1795,7 @@
       this.selectionStart = null; // 光标位置
       this.keyData = null; // 记录按键按下的值
       this.isInputChinese = false; // 是否在输入中文
-      this.isPaste = false; // 是否触发键盘粘贴
-      this.clipContent = ''; // 剪切板内容
-      this.cursorPosition = null; // 粘贴时鼠标的位置
+      this.isPressControl = false; // 是否触发ctrl或command按键
     },
     mounted() {
       this.listenChinese();
