@@ -630,12 +630,18 @@
         if (this.isInputChinese) {
           return;
         }
-        
+
         const value = event.target.value;
         this.selectionStart = event.target.selectionStart;
-
         // 输入中文时，新增文字的插入位置需要根据Math.max(this.selectionStart - cursorOffset, 0)矫正
         let insertTextPosion = cursorOffset ? Math.max(this.selectionStart - cursorOffset, 0) : this.selectionStart;
+
+        // 删除内容
+        if (this.keyCode === 8) {
+          this._items.value = value;
+          this.valueChange();
+          return;
+        }
 
         // 粘贴时从剪切板获取值
         if (this.isPaste) {
@@ -660,11 +666,7 @@
           // 输入值
           charArr.splice(insertTextPosion - 1, 0, this.keyData);
           this._items.value = charArr.join('');
-        } else if (value.length < this._items.value.length) {
-          // 删除值
-          charArr.splice(insertTextPosion, 1);
-          this._items.value = charArr.join('');
-        }
+        } 
         
         this.valueChange();
 
@@ -765,7 +767,6 @@
         if (value.length !== this._items.value) {
           this.keyData = event.key;
           this.keyCode = event.keyCode;
-          console.log('按下---', event.target.selectionStart, event.keyCode);
         }
 
         if (
