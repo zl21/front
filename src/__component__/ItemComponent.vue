@@ -621,7 +621,6 @@
 
       valueChange() {
         // 值发生改变时触发  只要是item中的value改变就触发该方法，是为了让父组件数据同步
-        // console.log(this._items);
         this.$emit('inputChange', this._items.value, this._items, this.index);
       },
       
@@ -634,14 +633,28 @@
         
         const value = event.target.value;
         this.selectionStart = event.target.selectionStart;
+
         // 输入中文时，新增文字的插入位置需要根据Math.max(this.selectionStart - cursorOffset, 0)矫正
-        const insertTextPosion = cursorOffset ? Math.max(this.selectionStart - cursorOffset, 0) : this.selectionStart;
+        let insertTextPosion = cursorOffset ? Math.max(this.selectionStart - cursorOffset, 0) : this.selectionStart;
+
+        // 粘贴时从剪切板获取值
+        if (this.isPaste) {
+          // 撤销的话直接返回原值
+          if (this.keyCode === 90) {
+            this._items.value = value;
+            this.valueChange();
+            return;
+          }
+          // 考虑按ctrl + z撤销的情况
+          this.keyData = this.clipContent;
+          insertTextPosion = this.cursorPosition + 1;
+        }
         
         // fix: input输入框拿不到值给父组件
         if (this._items.props.type === 'text') {
           this._items.value = value;
         }
-
+        
         const charArr = this._items.value.split('');
         if (value.length > this._items.value.length) {
           // 输入值
@@ -654,6 +667,7 @@
         }
         
         this.valueChange();
+
         let valLength = this._items.props.length;
         if (valLength) {
           if (this._items.value.split('.').length > 1) {
@@ -726,6 +740,11 @@
         }
       },
       inputKeyUp(event, $this) {
+        const ctrlKey = 17;
+        const cmdKey = 91;
+        if (event.keyCode === ctrlKey || event.keyCode === cmdKey) {
+          this.isPaste = false;
+        }
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'keyup')
           && typeof this._items.event.keyup === 'function'
@@ -734,10 +753,19 @@
         }
       },
       inputKeyDown(event, $this) {
+        // 判断是否进行粘贴操作
+        const ctrlKey = 17;
+        const cmdKey = 91;
+        if (event.keyCode === ctrlKey || event.keyCode === cmdKey) {
+          this.isPaste = true;
+          this.cursorPosition = event.target.selectionStart;
+        }
         // 记录新输入的内容，方便加密文本时用
         const value = event.target.value;
         if (value.length !== this._items.value) {
           this.keyData = event.key;
+          this.keyCode = event.keyCode;
+          console.log('按下---', event.target.selectionStart, event.keyCode);
         }
 
         if (
@@ -1431,18 +1459,6 @@
         this._items.value = this._items.props.itemdata.valuedata;
         this.valueImgChange();
         return false;
-        fkHttpRequest().deleteImg({
-          params: {
-            ...obj
-          },
-          // eslint-disable-next-line consistent-return
-          success: (res) => {
-            // eslint-disable-next-line no-empty
-            if (res.data.code === 0) {
-             
-            }
-          }
-        });
       },
       readonlyImage() {
         // 判断是否能上传图片
@@ -1453,7 +1469,6 @@
       },
       uploadFileChangeSuccess(result) {
         // 图片进度接口
-        const self = this;
         const resultData = result;
         if (this.readonlyImage()) {
           this.$Message.info(`只能上传${this._items.props.itemdata.ImageSize}张图片`);
@@ -1833,9 +1848,12 @@
       },
 
       // 监听中文键盘输入
+      // 监听粘贴
       listenChinese() {
         this.$once('bindCompositionend', () => {
           const dom = this.$refs[this._items.field].$el.children[0];
+          dom.addEventListener('paste', this.setListenerPaste);
+
           dom.addEventListener('compositionstart', (e) => {
             this.isInputChinese = true;
           });
@@ -1845,6 +1863,14 @@
             this.inputChange(e, Math.max(this.keyData.length - 1, 0));
           });
         });
+      },
+
+      // 监听剪切板内容
+      setListenerPaste(e) {
+        if (e.clipboardData || e.originalEvent) {
+          const clipboardData = e.clipboardData || e.originalEvent;
+          this.clipContent = clipboardData.getData('text');
+        }
       }
     },
     beforeDestroy() {
@@ -1859,8 +1885,11 @@
     created() {
       // console.log(this.type,this.formIndex);
       this.selectionStart = null; // 光标位置
-      this.keyData = null; // 记录按键按下的位置
+      this.keyData = null; // 记录按键按下的值
       this.isInputChinese = false; // 是否在输入中文
+      this.isPaste = false; // 是否触发键盘粘贴
+      this.clipContent = ''; // 剪切板内容
+      this.cursorPosition = null; // 粘贴时鼠标的位置
     },
     mounted() {
       this.listenChinese();
