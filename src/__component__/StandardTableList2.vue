@@ -492,6 +492,7 @@
           tabValue: data
         };
         this.currentTabValue = obj;
+        
         this.getQueryListPromise(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
@@ -2041,6 +2042,7 @@
           const el = this.$_live_getChildComponent(this, 'tabBar');
           const tabCurrentIndex = el.$refs.R3_Tabs.focusedKey;
           el.tabClick(tabCurrentIndex);
+          return
         } else {
           this.searchData.fixedcolumns = await this.dataProcessing();
         }

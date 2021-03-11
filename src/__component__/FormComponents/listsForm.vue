@@ -141,13 +141,13 @@
           let formData = {};
           this.formArray.every((item) => {
             const components = this.$_live_getChildComponent(this, `${this.id}${item.colname.TextFilter()}`);
+            
             const value = components.value;
             const json = this.dealData(item, value);
             formData = Object.assign({}, formData, json);
             return item;
           });
           this.deleteEmptyProperty(formData);
-
           resolve(formData)
         })
       },
