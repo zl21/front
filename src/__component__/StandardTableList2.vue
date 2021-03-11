@@ -426,7 +426,7 @@
           this.searchClickData();
         }
       },
-      tabClick({ data, index }) {
+      async tabClick({ data, index }) {
         this.filterTableParam = {};
         if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].startIndex) {
           this.searchData.startIndex = data.startIndex;
@@ -439,7 +439,7 @@
           delete this.searchData.range;
         }
         this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName; 
-        this.searchData.fixedcolumns = this.dataProcessing();
+        this.searchData.fixedcolumns = await this.dataProcessing();
         if (data.tab_value) {
           // Object.values(data.tab_value).map((item) => {
           //   this.searchData.fixedcolumns = Object.assign({}, item, this.searchData.fixedcolumns);
@@ -527,8 +527,8 @@
       //   this.searchTreeDatas.menuTreeQuery = value;
       //   this.treeDatas = this.getTreeDatas(this.searchTreeDatas);
       // },
-      menuTreeChange(arrayIDs, treeName, currentId, flag) {
-        this.searchData.fixedcolumns = this.dataProcessing();
+      async menuTreeChange(arrayIDs, treeName, currentId, flag) {
+        this.searchData.fixedcolumns = await this.dataProcessing();
         if (arrayIDs && arrayIDs.length > 0 && flag) {
           this.searchData.reffixedcolumns = {
             [treeName]: `in (${arrayIDs})`
@@ -1437,13 +1437,14 @@
         }
         return obj;
       },
-      resetForm() {
+    resetForm() {
         
+
         this.filterTableParam = {};
         this.resetTabParam();
         // 列表查询重置
         this.resetType = true;
-        const promise = new Promise((resolve, reject) => {
+        const promise = new Promise(async (resolve, reject) => {
           const searchData = this.searchData;
           if (searchData.reffixedcolumns) {
             delete searchData.reffixedcolumns;
@@ -1462,13 +1463,11 @@
             addSearch(search);
 
             // this.updateSearchDBdata({});
-            this.updateFormData(this.dataProcessing());
+            this.updateFormData(await this.dataProcessing());
           }
-          this.getTableQueryForForm({ searchData, resolve, reject });
+          this.getTableQueryForForm({ searchData, resolve, reject })
 
-          // 重置表单
-          const Form = this.$_live_getChildComponent(this, 'listsForm');
-          this.$_live_getChildComponent(this, 'listsForm').resetForm(true);
+          
         });
       },
       // defaultValue(item) {
@@ -2023,11 +2022,15 @@
         }
       },
 
-      dataProcessing() { // 查询数据处理
+      async dataProcessing() { // 查询数据处理
         const Form = this.$_live_getChildComponent(this, 'listsForm');
-        return Form ? this.$_live_getChildComponent(this, 'listsForm').getFormData() : {};
+        let obj = {};
+        if(Form){
+          obj = await Form.getFormData()
+        }
+        return obj
       },
-      searchClickData(value) {
+      async searchClickData(value) {
         this.resetButtonsStatus();
         // 按钮查找 查询第一页数据
         if (!value) { // 返回时查询之前页码
@@ -2039,7 +2042,7 @@
           const tabCurrentIndex = el.$refs.R3_Tabs.focusedKey;
           el.tabClick(tabCurrentIndex);
         } else {
-          this.searchData.fixedcolumns = this.dataProcessing();
+          this.searchData.fixedcolumns = await this.dataProcessing();
         }
         // this.getQueryListForAg(this.searchData);
         if (this.buttons.isBig) {
@@ -2074,22 +2077,24 @@
             data.isolr = this.buttons.isSolr;
 
             if (enableKAQueryDataForUser() || this.webConf.enableKAQueryDataForUser) {
-              const search = this.$_live_getChildComponent(this,'listsForm').getFormDataLabel();
+              this.$_live_getChildComponent(this,'listsForm').getFormDataLabel().then(async search => {
+                this.formItemsLists.map((temp) => {
+                  if (temp.item.type === 'AttachFilter') {
+                    delete search[temp.item.field];
+                  }
 
-              this.formItemsLists.map((temp) => {
-                if (temp.item.type === 'AttachFilter') {
-                  delete search[temp.item.field];
-                }
+                  if (temp.item.type === 'DropDownSelectFilter' && !Array.isArray(search[temp.item.field])) {
+                    delete search[temp.item.field];
+                  }
+                });
+                search.R3UserId = `${this.userInfo.id}_${this.searchData.table}`;
+                addSearch(search);
 
-                if (temp.item.type === 'DropDownSelectFilter' && !Array.isArray(search[temp.item.field])) {
-                  delete search[temp.item.field];
-                }
-              });
-              search.R3UserId = `${this.userInfo.id}_${this.searchData.table}`;
-              addSearch(search);
+                // this.updateSearchDBdata({});
+                this.updateFormData(await this.dataProcessing());
+              })
 
-              // this.updateSearchDBdata({});
-              this.updateFormData(this.dataProcessing());
+              
             }
             this.getQueryListForAg(data);
           });
@@ -2354,7 +2359,7 @@
         }
       },
 
-      batchExport(buttonsData) {
+      async batchExport(buttonsData) {
         this.$R3loading.show();
         let searchData = {};
         const { tableName } = this[INSTANCE_ROUTE_QUERY];
@@ -2367,7 +2372,7 @@
           startindex: 0
         };
         if (this.buttons.selectIdArr.length === 0) {
-          searchData.fixedcolumns = this.dataProcessing();
+          searchData.fixedcolumns = await this.dataProcessing();
         }
         const OBJ = {
           searchdata: searchData,
@@ -2862,8 +2867,9 @@
       async networkGetTableQuery(event) {
         if (this._inactive) { return; }
         const { detail } = event;
+        
         if (detail.url === '/p/cs/getTableQuery' && (Version() === '1.4' ? detail.response.data.data.tabcmd : detail.response.data.tabcmd)) {
-          this.updateFormData(this.dataProcessing());
+          this.updateFormData(await this.dataProcessing());
           const enableKAQueryDataForUserFlag = Version() === '1.4' ? !!(detail.response.data.data.datas.webconf && detail.response.data.data.datas.webconf.enableKAQueryDataForUser) : !!(detail.response.data.datas.webconf && detail.response.data.datas.webconf.enableKAQueryDataForUser);
           if (!this.buttons.isBig) {
             // 初始化调用时，ie环境下增加500ms延时调用
@@ -2874,7 +2880,7 @@
             } else {
               setTimeout(() => {
                 this.firstSearchTable();
-              }, 200);
+              }, 100);
             }
           }
         }
