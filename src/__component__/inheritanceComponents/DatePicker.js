@@ -75,23 +75,12 @@ class CustomDatePicker {
 
     defaultProps.placeholder = placeholder;
     this.DatePicker.props = defaultProps;
-    // this.DatePicker._Ctor[0].options.props  = Object.assign(this.DatePicker._Ctor[0].options.props,defaultProps);
-    // this.DatePicker._Ctor[0].options.mixins.props  = Object.assign(this.DatePicker._Ctor[0].options.props,defaultProps);
   }
 
   mergeMethods() {
-    // const test = this.DatePicker.mixins[0].methods.handleClose;
-    // this.DatePicker.mixins[0].methods.handleClose = function () {
-    //   test().bind(this);
-    // };
 
-    let a = this.DatePicker.mounted[0];
-    console.log(this.DatePicker)
-    this.DatePicker.mounted= function(){
-      // this.onSelectionModeChange(this.type)
-      // console.log(this)
-      // a().call(this, ...arguments);
-      // console.log(123213)
+    this.DatePicker.mounted[1]= function(){
+      this.onSelectionModeChange(this.type)
     }
   }
 }
