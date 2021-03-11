@@ -1927,12 +1927,12 @@ textarea.ark-input{
     // height: 100%!important;
     resize:auto;
 }
-.height100{
-    height: 100%!important;
-    .ark-input-wrapper{
-    height: 100%!important;
-    }
-}
+// .height100{
+//     height: 100%!important;
+//     .ark-input-wrapper{
+//     height: 100%!important;
+//     }
+// }
 .AttachFilter-pop {
   .icon-bj_tcduo:before {
     content: "\e6b1";

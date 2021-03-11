@@ -101,6 +101,7 @@
       <component
         :is="inheritanceComponents(items)"
         :ref="items.field"
+        @valueChange="test"
         v-model="value"
       >
         <slot v-if="items.display === 'OBJ_SELECT'">
@@ -412,6 +413,7 @@
   import CustomPopAttachFilter from '../inheritanceComponents/PopAttachFilter';
   import CustomCheckbox from '../inheritanceComponents/CheckBox';
   import CustomImageUpload from '../inheritanceComponents/ImageUpload';
+  import CustomDocUpload from '../inheritanceComponents/DocUpload';
   import ParameterDataProcessing from './parameterDataProcessing';
 
   import {
@@ -599,13 +601,21 @@
           break;
         case 'OBJ_CHECK':
           Components = new CustomCheckbox(item).init();
+          break;
         case 'image':
           Components = new CustomImageUpload(item).init();
+          break;
+        case 'OBJ_DOC':
+          Components = new CustomDocUpload(item).init();
+          break;
         default:
           break;
         }
 
         return Components;
+      },
+      test(value) {
+        this.value = value
       },
       routerNext(value) {
         // 路由跳转
@@ -846,7 +856,7 @@
   };
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .ItemComponentRoot {
   width: 100%;
   height: 100%;
@@ -875,6 +885,8 @@
   .itemComponent {
     flex: 1;
     overflow: hidden;
+    display: flex;
+    align-items: center;
   }
   .label-tip {
     color: red;
@@ -889,12 +901,7 @@ textarea.ark-input{
     // height: 100%!important;
     resize:auto;
 }
-.height100{
-    height: 100%!important;
-    .ark-input-wrapper{
-    height: 100%!important;
-    }
-}
+
 .AttachFilter-pop {
   .icon-bj_tcduo:before {
     content: "\e6b1";

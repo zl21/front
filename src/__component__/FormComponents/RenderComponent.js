@@ -27,6 +27,9 @@ String.prototype.TextFilter = function TextFilter() {
       case 'textarea':
         item.display = 'OBJ_TEXTAREA';
         break;
+      case 'doc':
+        item.display = 'OBJ_DOC';
+        break;
       case 'text':
       case 'xml':
         if(!item.isfk){
