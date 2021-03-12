@@ -9,6 +9,9 @@ export default () => ({
   mounted() {
   },
   methods: {
+    searchBefore() {
+      this.searchData.isfresh = true;
+    },
   },
   computed: {
   },

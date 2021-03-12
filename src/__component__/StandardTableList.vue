@@ -1562,10 +1562,16 @@
           this.dialogComponentName = filePath;
         }
       },
+     
       webactionClick(type, obj) {
+        obj.action = 'test';
         // 点击自定义按钮 创建table
         this.setActiveTabActionValue(obj);
-        if (obj.vuedisplay === 'slient') {
+        if (obj.vuedisplay === 'js') {
+          if (obj.action && this[obj.action] && typeof this[obj.action] === 'function') {
+            this[obj.action](obj);
+          }
+        } else if (obj.vuedisplay === 'slient') {
           // 静默程序            if(obj.confirm){  //有提示
           if (obj.confirm) {
             // 有提示
@@ -1636,18 +1642,8 @@
               this.objTabActionNavbar(obj); // 新标签跳转
             }
           }
-        }
-        //  else if (obj.vuedisplay === 'external') {
-        //   this.objTabActionUrl(obj);
-        // }
-        else if (!obj.confirm || !JSON.parse(obj.confirm).isselect) {
+        } else if (!obj.confirm || !JSON.parse(obj.confirm).isselect) {
           this.objTabActionDialog(obj);
-          // this.setActionDialog(obj);
-          // const componentName = obj.action.split('?')[0].replace(/\//g, '/');
-          // Vue.component(
-          //   componentName,
-          //   Vue.extend(importCustom(obj.action.split('?')[0]))
-          // );
         } else if (JSON.parse(obj.confirm).isselect) {
           // 是否是必选列表项, 动作定义根据列表是否选值
           const confirm = JSON.parse(obj.confirm);

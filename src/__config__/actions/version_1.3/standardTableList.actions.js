@@ -14,35 +14,43 @@ export default {
   setColPin(store, data) {
     network.post('/p/cs/setFixedColumn', urlSearchParams(data));
   },
-  getQueryListForAg({ commit, state }, {
-    table, startIndex, range, fixedcolumns, column_include_uicontroller = true, orderby, merge = false, reffixedcolumns, isolr, resolve, reject
-  }) {
+  getQueryListForAg({ commit, state }, 
+    searchdata
+  //   {
+  //   table, startIndex, range, fixedcolumns, column_include_uicontroller = true, orderby, merge = false, reffixedcolumns, isolr, resolve, reject
+  // }
+  ) {
     network.post('/p/cs/QueryList', urlSearchParams({
-      searchdata: {
-        table,
-        startindex: startIndex || 0,
-        range,
-        fixedcolumns,
-        reffixedcolumns,
-        column_include_uicontroller,
-        orderby,
-        isolr
-      }
+      searchdata
+      // {
+      //   table,
+      //   startindex: startIndex || 0,
+      //   range,
+      //   fixedcolumns,
+      //   reffixedcolumns,
+      //   column_include_uicontroller,
+      //   orderby,
+      //   isolr
+      // }
     })).then(async (res) => {
       // 存在es检索，展示合计总计
-      if (isolr) {
+      if (searchdata.isolr) {
         await network.post('/p/cs/QueryList', urlSearchParams({
           searchdata: {
-            table,
-            startindex: startIndex || 0,
-            range,
-            fixedcolumns,
-            reffixedcolumns,
-            column_include_uicontroller,
-            orderby,
-            isolr,
+            searchdata,
             getsumfileds: true
           }
+          //  {
+          //   table,
+          //   startindex: startIndex || 0,
+          //   range,
+          //   fixedcolumns,
+          //   reffixedcolumns,
+          //   column_include_uicontroller,
+          //   orderby,
+          //   isolr,
+          //   getsumfileds: true
+          // }
         })).then((response) => {
           res.data.datas.fullRangeSubTotalRow = response.data.datas.fullRangeSubTotalRow;
         });
@@ -51,14 +59,14 @@ export default {
       if (updateTableData.row === '') {
         updateTableData.row = [];
       }
-      if (merge) {
+      if (searchdata.merge) {
         commit('updateTableDataWithMerge', updateTableData);
       } else {
         commit('updateTableData', updateTableData);
       }
-      resolve(res);
+      searchdata.resolve(res);
     }).catch(() => {
-      reject();
+      searchdata.reject();
     });
   },
   getQueryListForAgSubTotal({ commit, state }, {
