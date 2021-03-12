@@ -65,8 +65,14 @@ export default {
         commit('updateTableData', updateTableData);
       }
       searchdata.resolve(res);
+      if (searchdata.searchBeforeResolve) {
+        searchdata.searchBeforeResolve(res);
+      }
     }).catch(() => {
       searchdata.reject();
+      if (searchdata.searchBeforeReject) {
+        searchdata.searchBeforeReject();
+      }
     });
   },
   getQueryListForAgSubTotal({ commit, state }, {

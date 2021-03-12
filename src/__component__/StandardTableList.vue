@@ -1539,6 +1539,22 @@
           // 重置列表渲染
           this.resetForm();
         } else {
+          this.searchEvent();
+        }
+      },
+      searchEvent() {
+        // 支持查询按钮前置事件，通过promise处理
+        const obj = {
+          callBack: () => new Promise((searchBeforeResolve, searchBeforeReject) => {
+            this.searchData.searchBeforeResolve = searchBeforeResolve;
+            this.searchData.searchBeforeReject = searchBeforeReject;
+            this.searchClickData();
+          })
+        };
+        
+        if (this.R3_searchBefore && typeof this.R3_searchBefore === 'function') {
+          this.R3_searchBefore(obj);
+        } else {
           this.searchClickData();
         }
       },
