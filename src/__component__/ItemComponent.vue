@@ -725,18 +725,19 @@
           this._items.event.blur(event, $this, this._items);
         }
 
-        this.validateInput(event.target.value);
+        this.validateInput();
       },
 
       // 校验输入值
-      validateInput(value) {
+      validateInput() {
+        console.log('触发校验');
         const webconf = this._items.props.webconf;
         if (webconf && webconf.preverifyenabled) {
           network.post('/p/cs/verifyObject', {
             OBJ_ID: this.$route.params.itemId === 'New' ? -1 : this.$route.params.itemId,
             TABLE_NAME: this.$route.params.tableName,
             VERIFY_COLUMN: {
-              [this._items.field]: value
+              [this._items.field]: this._items.value
             }
           }).then((res) => {
             console.log(res);
