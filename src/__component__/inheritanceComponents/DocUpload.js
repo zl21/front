@@ -6,9 +6,10 @@
  */
 
  import Vue from 'vue';
- import { ImageUpload } from '@syman/ark-ui-bcl';
- import network from '../../__utils__/network';
- 
+//  import { Docfile } from '@syman/ark-ui-bcl';
+ import network, { getGateway } from '../../__utils__/network';
+ import Docfile from 'arkui_BCL/Docfile';
+
  // 深拷贝
  const deepClone = (arr) => {  
    const obj = arr.constructor == Array ? [] : {};
@@ -32,7 +33,7 @@
      // } else {
      // this.Input = deepClone(test);
      // }
-     const DefaultInput = Vue.extend(accept);
+     const DefaultInput = Vue.extend(Docfile);
      
      this.Input = new DefaultInput().$options;
      // console.log(this.Input);
@@ -56,21 +57,38 @@
    // 合并props
    mergeProps() {
      const defaultProps = { ...this.Input.props };
-     defaultProps.PropsData = {
-       default: () => ({
-         readonly: this.item.readonly, //控制字段是否可编辑
-         url: '/ad-app/p/cs/upload2',
-         sendData:{
-           path: `${this.item.tableName}/${this.item.itemId}/`,
-           column: this.item.colname,
-           tableName: this.item.tableName
-         },
-         name: '上传'
-       })
+     console.log(defaultProps,this.item);
+     defaultProps.accept = {
+       default: () => {
+          return this.item.webconf && this.item.webconf.UploadAccept || '*'
+       }
      };
+     defaultProps.itemWebconf = {
+      default: () => {
+        return this.item.webconf || {}
+      }
+    };
+    defaultProps.webConfSingle = {
+      default: () => {
+        return this.item.webConfSingle || {}
+      }
+    };
      defaultProps.http.default = () => {
        return network;
      };
+     defaultProps.dataitem.default = () => {
+
+      return {
+        readonly: this.item.readonly, //控制字段是否可编辑
+        url: getGateway('/p/cs/batchUpload'),
+        filesLength:this.item.webconf && this.item.webconf.filesLength,
+        filesize:this.item.filesize,
+        sendData:{
+          path: `${this.item.tableName}/${this.item.itemId}/`,
+        },
+        valuedata:[]   
+      };
+    };
    
      // this.settingPlaceholder();
      // if (this.item.type === 'NUMBER') {
