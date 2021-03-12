@@ -414,6 +414,8 @@
   import CustomCheckbox from '../inheritanceComponents/CheckBox';
   import CustomImageUpload from '../inheritanceComponents/ImageUpload';
   import CustomDocUpload from '../inheritanceComponents/DocUpload';
+  import CustomWangeditor from '../inheritanceComponents/Wangeditor';
+
   import ParameterDataProcessing from './parameterDataProcessing';
 
   import {
@@ -608,6 +610,8 @@
         case 'OBJ_DOC':
           Components = new CustomDocUpload(item).init();
           break;
+        case 'clob' :
+          Components = new CustomWangeditor(item).init(); 
         default:
           break;
         }
