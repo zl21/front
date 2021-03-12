@@ -1038,6 +1038,9 @@
                 str = 'TimePicker';
               }
 
+              if (item.display === 'RADIO_GROUP') {
+                str = 'select';
+              }
               return str;
             }
 
@@ -1509,7 +1512,7 @@
           return timeRange;
         }
 
-        if (item.display === 'OBJ_SELECT' && item.default) {
+        if ((item.display === 'OBJ_SELECT' || item.display === 'RADIO_GROUP') && item.default) {
           // 处理select的默认值
           let arr = [];
           arr = item.default.split(',');
