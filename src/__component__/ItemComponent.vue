@@ -733,7 +733,7 @@
         const webconf = this._items.props.webconf;
         if (webconf && webconf.preverifyenabled) {
           network.post('/p/cs/verifyObject', {
-            OBJ_ID: this.$route.params.itemId,
+            OBJ_ID: this.$route.params.itemId === 'New' ? -1 : this.$route.params.itemId,
             TABLE_NAME: this.$route.params.tableName,
             VERIFY_COLUMN: {
               [this._items.field]: value
