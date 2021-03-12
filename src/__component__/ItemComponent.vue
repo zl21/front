@@ -637,9 +637,10 @@
         const insertTextPosion = cursorOffset ? Math.max(this.selectionStart - cursorOffset, 0) : this.selectionStart;
 
         // 按退格键,ctrl,command键时
-        if (this.keyCode === 8 || this.isPressControl) {
+        if (this.keyCode === 8 || this.isPressControl || this.isMousePaste) {
           this._items.value = value;
           this.valueChange();
+          this.isMousePaste = false; // 手动把右键粘贴标志改为false
           return;
         }
         
@@ -1770,13 +1771,16 @@
       listenChinese() {
         this.$once('bindCompositionend', () => {
           const dom = this.$refs[this._items.field].$el.children[0];
-          dom.addEventListener('compositionstart', (e) => {
+          dom.addEventListener('compositionstart', () => {
             this.isInputChinese = true;
           });
           dom.addEventListener('compositionend', (e) => {
             this.keyData = e.data;
             this.isInputChinese = false;
             this.inputChange(e, Math.max(this.keyData.length - 1, 0));
+          });
+          dom.addEventListener('paste', () => {
+            this.isMousePaste = true;
           });
         });
       },
@@ -1796,6 +1800,7 @@
       this.keyData = null; // 记录按键按下的值
       this.isInputChinese = false; // 是否在输入中文
       this.isPressControl = false; // 是否触发ctrl或command按键
+      this.isMousePaste = false; // 监听鼠标粘贴
     },
     mounted() {
       this.listenChinese();
