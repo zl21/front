@@ -421,6 +421,10 @@
         default() {
           return '';
         }
+      },
+      isChildTable: {
+        // 是否是子表
+        type: Boolean
       }
     },
     data() {
@@ -730,9 +734,8 @@
 
       // 校验输入值
       validateInput() {
-        console.log('触发校验');
-        const webconf = this._items.props.webconf;
-        if (webconf && webconf.preverifyenabled) {
+        const preverifyenabled = this._items.props.preverifyenabled;
+        if (preverifyenabled && !this.isChildTable) {
           network.post('/p/cs/verifyObject', {
             OBJ_ID: this.$route.params.itemId === 'New' ? -1 : this.$route.params.itemId,
             TABLE_NAME: this.$route.params.tableName,
