@@ -1719,7 +1719,6 @@
       },
      
       webactionClick(type, obj) {
-        obj.action = 'test';
         // 点击自定义按钮 创建table
         this.setActiveTabActionValue(obj);
         if (obj.vuedisplay === 'js') {
