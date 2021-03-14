@@ -11,10 +11,6 @@ const Dialog = {
 
       const DialogConstructor = Vue.extend(DialogComponent);
       const instance = new DialogConstructor().$mount();
-      const containerDom = document.createElement('div');
-      containerDom.setAttribute('id', domId);
-      containerDom.appendChild(instance.$el);
-      document.body.appendChild(containerDom);
 
       if (options && typeof options === 'object') {
         Object.keys(options).forEach((key) => {
@@ -28,6 +24,11 @@ const Dialog = {
         instance.cancelFun = cancelFn;
       }
       instance.showModal = true;
+
+      const containerDom = document.createElement('div');
+      containerDom.setAttribute('id', domId);
+      containerDom.appendChild(instance.$el);
+      document.body.appendChild(containerDom);
     };
   }
 };
