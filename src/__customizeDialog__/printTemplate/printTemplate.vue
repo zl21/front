@@ -87,6 +87,8 @@
       save() {
         const userId = this.userInfo.id; 
         const printId = this.checkItem.ID;
+        const { itemId } = this.$route.params;
+
         if (!printId) {
           const data = {
             mask: true,
@@ -97,7 +99,7 @@
           return;
         }
              
-        network.post('/api/rpt/userprint/save', urlSearchParams({ printId, userId }))
+        network.post('/api/rpt/userprint/save', urlSearchParams({ printId, userId, tableId: itemId }))
           .then((res) => {
             if (res.data.code !== 0) {
               return;
