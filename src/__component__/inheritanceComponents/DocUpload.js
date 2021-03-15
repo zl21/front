@@ -6,9 +6,9 @@
  */
 
  import Vue from 'vue';
-//  import { Docfile } from '@syman/ark-ui-bcl';
+ import { Docfile } from '@syman/ark-ui-bcl';
  import network, { getGateway } from '../../__utils__/network';
- import Docfile from 'arkui_BCL/Docfile';
+//  import Docfile from 'arkui_BCL/Docfile';
 
  // 深拷贝
  const deepClone = (arr) => {  

@@ -5,7 +5,7 @@
       :key="formItemLists[item]._index"
     >
       <Collapse
-        :value="['other','(TEST.ID+10)']"
+        :value="collapseValue"
       >
         <Panel
           title-type="center"
@@ -59,6 +59,11 @@ export default {
       default: false
     }
   },
+  data(){
+    return {
+      collapseValue: [],  //控制面板的展开数据
+    }
+  },
   computed:{
     formItemLists(){
       this.$R3loading.show(this.$route.params.tableName)
@@ -67,6 +72,7 @@ export default {
       if(!data.addcolums){
         return []
       }
+
 
       // 处理单字段分组
       let sumObject = {
@@ -91,6 +97,7 @@ export default {
       data.addcolums.map(item => {
         item._index = Math.random()
         item.childs = {...layoutAlgorithm(Number(data.objviewcol), item.childs?item.childs:[item.child])};
+
         Object.keys(item.childs).map(temp => {
           if(this.readonly){
             item.childs[temp].readonly = this.readonly
@@ -127,13 +134,28 @@ export default {
       return item => ` grid-column:${item.x}/${item.col + item.x};grid-row:${item.y}/${item.y + item.row};`;
     },
   },
+  watch:{
+    formItemLists:{
+      handler(val){
+        if(Object.keys(val).length > 0){
+          this.collapseValue = []
+          Object.keys(val).map(item => {
+            let data = val[item]
+            if(data.hrdisplay === 'expand'){
+              this.collapseValue.push(data.parentname)
+            }
+          })
+        }
+
+      }
+    }
+  },
   methods:{
     initComponent(item) { // init组件
       let defaultItem = JSON.parse(JSON.stringify(item));
       const Render = new RenderComponent(defaultItem, this.tableName);
       return Render.Initialize();
     },
-
     dealData(item, value) {
       // 通过ParameterDataProcessing类对数据进行处理
       const ParameterData = new ParameterDataProcessing(item, value);
@@ -167,7 +189,7 @@ export default {
 
 
     // public API
-    getFormData() {
+    getFormData() { //获取整个表单的传参数据
       let formData = {};
       Object.keys(this.formItemLists).map(temp => {
         Object.keys(this.formItemLists[temp].childs).map(j => {
@@ -184,7 +206,7 @@ export default {
       console.log(formData)
       return formData;
     },
-    getFormDataLabel() {
+    getFormDataLabel() {  //获取整个表单的展示数据+传参数据
       let formData = {};
       this.formArray.map((item) => {
         const components = this.$_live_getChildComponent(this, `${this.tableName}${item.colname.TextFilter()}`);
@@ -199,9 +221,6 @@ export default {
       return formData;
     }
   },
-  created(){
-
-  }
 }
 </script>
 <style lang="less" >
