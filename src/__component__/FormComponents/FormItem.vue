@@ -891,6 +891,10 @@
     overflow: hidden;
     display: flex;
     align-items: center;
+
+    >div{
+      flex: 1;
+    }
   }
   .label-tip {
     color: red;

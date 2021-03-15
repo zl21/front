@@ -126,7 +126,7 @@ export default {
     // 计算属性的 div的排列格式
     setWidth() {
       // `this` 指向 vm 实例
-      const columns = Number(this.defaultColumn) || 4;
+      const columns = Number(this.defaultData.objviewcol) || 4;
       return `grid-template-columns: repeat(${columns},${100 / columns}%`;
     },
     // 计算属性的 div 的坐标起始点
@@ -220,7 +220,7 @@ export default {
       this.deleteEmptyProperty(formData);
       return formData;
     }
-  },
+  }
 }
 </script>
 <style lang="less" >

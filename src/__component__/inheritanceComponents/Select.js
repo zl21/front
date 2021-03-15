@@ -6,6 +6,8 @@ import Vue from 'vue';
 import dataProp from '../../__config__/props.config';
 import regExp from '../../constants/regExp';
 
+import hideColumn from '../ExtendedAttributes/hideColumn';
+
 let Select = Ark.Select
 // 深拷贝
 const deepClone = (arr) => {  
@@ -54,7 +56,7 @@ class CustomSelect {
     };
 
     defaultProps.multiple = {
-      default: () => true
+      default: () => !this.item.detailType
     };
 
     defaultProps.clearable = {
@@ -83,6 +85,13 @@ class CustomSelect {
 
   // 合并methods
   mergeMethods() {
+    let onOptionClick = this.Input.methods.onOptionClick;
+    this.Input.methods.onOptionClick = function(options){
+      onOptionClick.call(this,options);
+      console.log(this.$parent.$parent)
+      // hideColumn()
+      this.$parent.$parent.$forceUpdate()
+    }
 
   }
 
