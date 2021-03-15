@@ -2080,13 +2080,10 @@
 
             if (enableKAQueryDataForUser() || this.webConf.enableKAQueryDataForUser) {
               this.$_live_getChildComponent(this,'listsForm').getFormDataLabel().then(async search => {
-                this.formItemsLists.map((temp) => {
-                  if (temp.item.type === 'AttachFilter') {
-                    delete search[temp.item.field];
-                  }
-
-                  if (temp.item.type === 'DropDownSelectFilter' && !Array.isArray(search[temp.item.field])) {
-                    delete search[temp.item.field];
+                this.formItems.defaultFormItemsLists.map((temp) => {
+                  // 存储查询条件时过滤掉弹窗多选类型
+                  if (temp.display === 'OBJ_FK' && temp.fkobj.fkdisplay === 'mop') { 
+                    delete search[temp.colname];
                   }
                 });
                 search.R3UserId = `${this.userInfo.id}_${this.searchData.table}`;
