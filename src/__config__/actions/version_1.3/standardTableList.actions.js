@@ -15,11 +15,22 @@ export default {
     network.post('/p/cs/setFixedColumn', urlSearchParams(data));
   },
   getQueryListForAg({ commit, state }, 
-    searchdata
-  //   {
-  //   table, startIndex, range, fixedcolumns, column_include_uicontroller = true, orderby, merge = false, reffixedcolumns, isolr, resolve, reject
-  // }
-  ) {
+    searchdatas) {
+    const {
+      table, startIndex, range, fixedcolumns, column_include_uicontroller = true, orderby, merge = false, reffixedcolumns, isolr, resolve, reject, searchBeforeResolve, searchBeforeReject
+    } = searchdatas;
+    let searchdata = {
+      table,
+      startindex: startIndex || 0,
+      range,
+      fixedcolumns,
+      reffixedcolumns,
+      column_include_uicontroller,
+      orderby,
+      isolr
+    };
+    searchdata = Object.assign(searchdata, searchdatas);
+    delete searchdata.startIndex;
     network.post('/p/cs/QueryList', urlSearchParams({
       searchdata
       // {
@@ -37,9 +48,9 @@ export default {
       if (searchdata.isolr) {
         await network.post('/p/cs/QueryList', urlSearchParams({
           searchdata: {
-            searchdata,
+            ...searchdata,
             getsumfileds: true
-          }
+          }  
           //  {
           //   table,
           //   startindex: startIndex || 0,
@@ -59,17 +70,17 @@ export default {
       if (updateTableData.row === '') {
         updateTableData.row = [];
       }
-      if (searchdata.merge) {
+      if (merge) {
         commit('updateTableDataWithMerge', updateTableData);
       } else {
         commit('updateTableData', updateTableData);
       }
-      searchdata.resolve(res);
+      resolve(res);
       if (searchdata.searchBeforeResolve) {
         searchdata.searchBeforeResolve(res);
       }
     }).catch(() => {
-      searchdata.reject();
+      reject();
       if (searchdata.searchBeforeReject) {
         searchdata.searchBeforeReject();
       }
