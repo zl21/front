@@ -38,6 +38,8 @@ class CustomDatePicker {
   mergeProps() {
     const defaultProps = { ...this.DatePicker.props };
 
+    let _that = this
+    // 处理type
     defaultProps.type = {
       default: () => {
         switch (this.item.display) {
@@ -62,6 +64,36 @@ class CustomDatePicker {
         }
       }
     };
+
+    // 处理单对象界面options
+    if(this.item.detailType){
+      defaultProps.options = {
+        default: () => ({
+          disabledDate(date){
+            switch(_that.item.webconf && _that.item.webconf.datelimit){
+              case 'before':
+                return date && date.valueOf() > new Date().valueOf();
+              case 'after':
+                return date && date.valueOf() < new Date().valueOf() - 1 * 24 * 60 * 60 * 1000;
+              case 'beforetoday':
+                return (
+                  date
+                  && date.valueOf() > new Date().valueOf() - 1 * 24 * 60 * 60 * 1000
+                );
+              case 'aftertoday':
+                return (
+                  date
+                  && date.valueOf() < new Date().valueOf()
+                );
+              default:
+                break;
+            }
+          }
+        })
+      };
+    }
+    
+
     defaultProps.transfer = {
       default: () => true
     };

@@ -16,11 +16,13 @@
       :key="ItemLists[item]._index"
       :class="['item',ItemLists[item].colname,(index > (defaultColumn*searchFoldnum - 1) && !dowClass)?'long':'']"
     >
-      <component
-        :is="initComponent(ItemLists[item],index)"
-        :items="ItemLists[item]"
-        :label-width="90"
-      />
+      <keep-alive>
+        <component
+          :is="initComponent(ItemLists[item],index)"
+          :items="ItemLists[item]"
+          :label-width="90"
+        />
+      </keep-alive>
     </div>
   </div>
 </template>

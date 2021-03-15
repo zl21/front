@@ -20,15 +20,17 @@
           >
             <div
             v-for="(temp,index) in Object.keys(formItemLists[item].childs)"
-            :key="index"
+            :key="formItemLists[item].childs[temp]._index"
             :style="setDiv(formItemLists[item].childs[temp])"
           >
-            <component
-              :is="initComponent(formItemLists[item].childs[temp],index)"
-              :items="formItemLists[item].childs[temp]"
-              :label-width="90"
-              
-            />
+            <keep-alive>
+              <component
+                :is="initComponent(formItemLists[item].childs[temp],index)"
+                :items="formItemLists[item].childs[temp]"
+                :label-width="90"
+                
+              />
+            </keep-alive>
           </div>
           </div>
         </Panel>
@@ -99,6 +101,7 @@ export default {
         item.childs = {...layoutAlgorithm(Number(data.objviewcol), item.childs?item.childs:[item.child])};
 
         Object.keys(item.childs).map(temp => {
+          item.childs[temp]._index = Math.random()
           if(this.readonly){
             item.childs[temp].readonly = this.readonly
           }
@@ -220,6 +223,26 @@ export default {
       this.deleteEmptyProperty(formData);
       return formData;
     }
+  },
+  mounted(){
+    setTimeout(() => {
+      console.log(this.formItemLists)
+      delete this.formItemLists[1].childs[1]
+
+      let item = this.formItemLists[1]
+
+      this.formItemLists[1]._index = Math.random()
+      Object.keys(item.childs).map(temp => {
+          item.childs[temp]._index = Math.random()
+          if(this.readonly){
+            item.childs[temp].readonly = this.readonly
+          }
+          item.childs[temp].tableName = this.$route.params.tableName;
+          item.childs[temp].itemId = this.$route.params.itemId;
+          return temp
+        })
+      this.$forceUpdate()
+    },10000)
   }
 }
 </script>
