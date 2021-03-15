@@ -339,6 +339,16 @@
         @filechange="filechange"
       />
 
+      <!-- radio组件 -->
+      <radio-group
+        v-if="_items.type === 'radioGroup'"
+        :ref="_items.field"
+        v-model="_items.props.value"
+        :options="_items.props"
+        :form-item-value="_items.value"
+        @change="radioValueChange"
+      />
+      
       <!-- 自定义组件 -->
       <component
         :is="_items.componentName"
@@ -369,6 +379,7 @@
   import ComAttachFilter from './ComAttachFilter.vue';
   //   上传文件
   import Docfile from './docfile/DocFileComponent.vue';
+  import RadioGroup from './form/RadioGroup.vue';
 
 
   import {
@@ -384,7 +395,7 @@
   
   export default {
     components: {
-      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile
+      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile, RadioGroup
     },
     inject: [MODULE_COMPONENT_NAME],
     props: {
@@ -452,6 +463,7 @@
             });
           }
         },
+        deep: true,
         immediate: true
       }
     },
@@ -625,11 +637,12 @@
 
       valueChange() {
         // 值发生改变时触发  只要是item中的value改变就触发该方法，是为了让父组件数据同步
-        // console.log(this._items);
-        this.value = this._items.value;
         this.$emit('inputChange', this._items.value, this._items, this.index);
       },
-      
+      radioValueChange(value) {
+        this._items.value = value;
+        this.valueChange();
+      },
       // input event
       inputChange(event, cursorOffset, $this) {
         // 输入中文时跳过赋值

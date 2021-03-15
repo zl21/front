@@ -8,6 +8,9 @@ import connectorConfig from './connector';
 import navMenuConfig from '../__config__/navMenu.config';
 import customizeFormItem from '../__config__/customizeFormItem.config';
 
+// import standardTableListsCustomize from '../__config__/mixins/standardTableListsCustomize';
+
+
 export const STANDARD_TABLE_LIST_PREFIX = '/SYSTEM/TABLE';
 export const STANDARD_COMMONTABLE_LIST_PREFIX = '/SYSTEM/COMMONTABLE';
 export const HORIZONTAL_TABLE_DETAIL_PREFIX = '/SYSTEM/TABLE_DETAIL/H';
@@ -73,6 +76,10 @@ export const defaultQuietRoutes = [
   '/PLUGIN/PRINTPREVIEW'
 ];
 
+
+// project.customizeMixins = {
+//   standardTableListsCustomize: standardTableListsCustomize()
+// };
 // 导出表的拓展属性、字段扩展属性配置。
 
 export const extentionForColumn = () => (window.ProjectConfig && window.ProjectConfig.extentionForColumn ? window.ProjectConfig.extentionForColumn : configForColumn);

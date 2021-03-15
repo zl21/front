@@ -113,6 +113,8 @@
       save() {
         const userId = this.userId; 
         const printId = this.checkItem.ID;
+        const { itemId } = this.$route.params;
+
         // const path = this.$route.path;// 获取当前路由
         // const templatePath = path.replace('PRINTTEMPLATE', 'PRINTPREVIEW');
         // this.$router.push(templatePath);
@@ -125,7 +127,7 @@
           return;
         }
        
-        network.post('/api/rpt/userprint/save', urlSearchParams({ printId, userId }))
+        network.post('/api/rpt/userprint/save', urlSearchParams({ printId, userId, tableId: itemId }))
           .then((res) => {
             if (res.data.code !== 0) {
               const data = {
