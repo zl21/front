@@ -1709,7 +1709,6 @@
             this.searchClickData();
           })
         };
-        
         if (this.R3_searchBefore && typeof this.R3_searchBefore === 'function') {
           this.R3_searchBefore(obj);
         } else {
