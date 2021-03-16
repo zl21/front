@@ -636,9 +636,17 @@
         // 输入中文时，新增文字的插入位置需要根据Math.max(this.selectionStart - cursorOffset, 0)矫正
         const insertTextPosion = cursorOffset ? Math.max(this.selectionStart - cursorOffset, 0) : this.selectionStart;
 
-        // 按退格键,ctrl,command键时
-        if (this.keyCode === 8 || this.isPressControl || this.isMousePaste) {
+        // 按ctrl,command键时
+        if (this.isPressControl || this.isMousePaste) {
           this._items.value = value;
+          this.valueChange();
+          this.isMousePaste = false; // 手动把右键粘贴标志改为false
+          return;
+        }
+
+        // 按退格键键时
+        if (this.keyCode === 8) {
+          this._items.value = this._items.value.substr(0, value.length);
           this.valueChange();
           this.isMousePaste = false; // 手动把右键粘贴标志改为false
           return;
