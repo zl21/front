@@ -383,6 +383,7 @@
   import createModal from './PreviewPicture/index';
   import EnumerableInput from './EnumerableInput.vue';
   import ExtentionInput from './ExtentionInput.vue';
+  import network, { urlSearchParams } from '../__utils__/network';
 
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
@@ -431,6 +432,10 @@
         default() {
           return '';
         }
+      },
+      isChildTable: {
+        // 是否是子表
+        type: Boolean
       }
     },
     data() {
@@ -762,7 +767,33 @@
         ) {
           this._items.event.blur(event, $this, this._items);
         }
+
+        this.validateInput();
       },
+
+      // 校验输入值
+      validateInput() {
+        const preverifyenabled = this._items.props.preverifyenabled;
+        if (preverifyenabled && !this.isChildTable) {
+          network.post('/p/cs/verifyObject', {
+            OBJ_ID: this.$route.params.itemId === 'New' ? -1 : this.$route.params.itemId,
+            TABLE_NAME: this.$route.params.tableName,
+            VERIFY_COLUMN: {
+              [this._items.field]: this._items.value
+            }
+          }).then((res) => {
+            console.log(res);
+            if (res.data.code === 1) {
+              this.$Modal.fcError({
+                title: '错误',
+                content: res.data.message,
+                mask: true
+              });
+            }
+          });
+        }
+      },
+
       inputKeyUp(event, $this) {
         const ctrlKey = 17;
         const cmdKey = 91;

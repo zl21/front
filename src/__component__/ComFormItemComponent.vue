@@ -17,6 +17,7 @@
         <component
           :is="item.component"
           :ref="'component_'+index"
+          :is-child-table="isChildTable"
           :class="item.item.field"
           :index="index"
           :type="type"
@@ -159,7 +160,7 @@
         // `this` 指向 vm 实例
         const columns = Number(this.defaultColumn) || 4;
         return `grid-template-columns: repeat(${columns},${100 / columns}%`;
-      }
+      },
     },
     props: {
       webConfSingle: {// 当前子表webConf
@@ -290,6 +291,10 @@
         default() {
           return function () {};
         }
+      },
+      isChildTable: {
+        // 是否是子表
+        type: Boolean
       }
     },
     inject: [MODULE_COMPONENT_NAME],
