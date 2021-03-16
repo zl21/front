@@ -1876,6 +1876,13 @@
         if (tab.action && tab.action.includes('sp|')) {
           tab.action = null;
         }
+
+
+        if(tab.actiontype === 'sp' || (tab.action && tab.action.includes('sp|'))){
+          params.actionName = tab.webname;
+          params.tableName = this.tableName;
+        }
+
         
 
         const promise = new Promise((resolve, reject) => {
