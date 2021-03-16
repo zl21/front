@@ -57,15 +57,11 @@ class CustomEnumerableInput{
   mergeProps() {
     const defaultProps = { ...this.Input.props };
     defaultProps.disabled = {
-      default: () => {
-        return false;
-      }
+      default: () => this.item.readonly && (this.item.webconf && !this.item.webconf.ignoreDisableWhenEdit)
     };
 
     defaultProps.tableName = {
-      default: () => {
-        return this.item.tableName;
-      }
+      default: () => this.item.tableName
     };
     
 

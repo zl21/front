@@ -482,6 +482,7 @@
         value: null
       };
     },
+    
     computed: {
       getVersion() {
         return Version;
