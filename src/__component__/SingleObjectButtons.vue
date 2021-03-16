@@ -1873,11 +1873,6 @@
         }
 
         // 处理存储过程逻辑，配置的path中带有sp|时则走框架的标准逻辑，不走定制path
-        if (tab.action && tab.action.includes('sp|')) {
-          tab.action = null;
-        }
-
-
         if(tab.actiontype === 'sp' || (tab.action && tab.action.includes('sp|'))){
           params.actionName = tab.webname;
           params.tableName = this.tableName;
