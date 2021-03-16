@@ -35,7 +35,6 @@ class CustomSelect {
   init() {
     this.mergeProps();
     this.mergeMethods();
-
     if (this.item.Components) {
       return this.item.Components;
     }
@@ -68,7 +67,7 @@ class CustomSelect {
     }
 
     defaultProps.disabled = {
-      default:() => this.item.readonly
+      default:() => this.item.readonly && (this.item.webconf && !this.item.webconf.ignoreDisableWhenEdit)
     }
 
     Object.keys(this.item.props).map((item) => {
@@ -88,9 +87,8 @@ class CustomSelect {
     let onOptionClick = this.Input.methods.onOptionClick;
     this.Input.methods.onOptionClick = function(options){
       onOptionClick.call(this,options);
-      console.log(this.$parent.$parent)
       // hideColumn()
-      this.$parent.$parent.$forceUpdate()
+      // this.$parent.$parent.$forceUpdate()
     }
 
   }

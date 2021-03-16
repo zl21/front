@@ -74,7 +74,7 @@ class BusDropDownSelectFilter {
 
     propsData.PropsData = {
       default:() => ({
-        disabled: this.item.readonly
+        disabled: this.item.readonly && (this.item.webconf && !this.item.webconf.ignoreDisableWhenEdit)
       })
     }
     this.BusDropDown.props = { ...propsData };

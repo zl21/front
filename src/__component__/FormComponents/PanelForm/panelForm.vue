@@ -134,7 +134,9 @@ export default {
     },
     // 计算属性的 div 的坐标起始点
     setDiv() {
-      return item => ` grid-column:${item.x}/${item.col + item.x};grid-row:${item.y}/${item.y + item.row};`;
+      return item => {
+        return ` grid-column:${item.x}/${item.col + item.x};grid-row:${item.y}/${item.y + item.row};`
+      };
     },
   },
   watch:{
@@ -225,13 +227,15 @@ export default {
     }
   },
   mounted(){
+
+    // 测试字段显示隐藏功能
     setTimeout(() => {
-      console.log(this.formItemLists)
       delete this.formItemLists[1].childs[1]
 
       let item = this.formItemLists[1]
 
       this.formItemLists[1]._index = Math.random()
+      item.childs = layoutAlgorithm(Number(4), Object.values(item.childs));
       Object.keys(item.childs).map(temp => {
           item.childs[temp]._index = Math.random()
           if(this.readonly){

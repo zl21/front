@@ -73,9 +73,16 @@ class CustomInput {
         })
       }
     }
+    
+    // 处理ispassword属性
+    if((this.item.webconf && this.item.webconf.ispassword) || this.item.ispassword){
+      defaultProps.type = {
+        default:() => 'password'
+      }
+    }
 
     defaultProps.disabled = {
-      default:() => this.item.readonly
+      default:() => this.item.readonly && (this.item.webconf && !this.item.webconf.ignoreDisableWhenEdit)
     }
     
 

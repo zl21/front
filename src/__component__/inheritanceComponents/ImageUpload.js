@@ -59,14 +59,15 @@ class CustomImageUpload {
     const defaultProps = { ...this.Input.props };
     defaultProps.PropsData = {
       default: () => ({
-        readonly: this.item.readonly, //控制字段是否可编辑
+        readonly: this.item.readonly && (this.item.webconf && !this.item.webconf.ignoreDisableWhenEdit), //控制字段是否可编辑
         url: '/ad-app/p/cs/upload2',
         sendData:{
           path: `${this.item.tableName}/${this.item.itemId}/`,
           column: this.item.colname,
           tableName: this.item.tableName
         },
-        name: '上传'
+        name: '上传',
+        length: (this.item.webconf && this.item.webconf.ImageSize)?this.item.webconf.ImageSize:null
       })
     };
     defaultProps.http.default = () => {

@@ -65,7 +65,7 @@ class CustomWangeditor {
 
     defaultProps.isActives = {
       default: () => {
-        return this.item.readonly;
+        return this.item.readonly &&  (this.item.webconf && !this.item.webconf.ignoreDisableWhenEdit);
       }
     };
 

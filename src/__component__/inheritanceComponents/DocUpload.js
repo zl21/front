@@ -58,12 +58,12 @@
    mergeProps() {
      const defaultProps = { ...this.Input.props };
      console.log(defaultProps,this.item);
-     defaultProps.accept = {
-       default: () => {
+    defaultProps.accept = {
+      default: () => {
           return this.item.webconf && this.item.webconf.UploadAccept || '*'
-       }
-     };
-     defaultProps.itemWebconf = {
+      }
+    };
+    defaultProps.itemWebconf = {
       default: () => {
         return this.item.webconf || {}
       }
@@ -73,23 +73,24 @@
         return this.item.webConfSingle || {}
       }
     };
-     defaultProps.http.default = () => {
-       return network;
-     };
-     defaultProps.dataitem.default = () => {
+    defaultProps.http.default = () => {
+      return network;
+    };
+    defaultProps.dataitem.default = () => {
 
       return {
-        readonly: this.item.readonly, //控制字段是否可编辑
+        readonly: this.item.readonly && (this.item.webconf && !this.item.webconf.ignoreDisableWhenEdit), //控制字段是否可编辑
         url: getGateway('/p/cs/batchUpload'),
-        filesLength:this.item.webconf && this.item.webconf.filesLength,
-        filesize:this.item.filesize,
+        filesLength:this.item.webconf && this.item.webconf.filesLength ? this.item.webconf.filesLength : null,
+        filesize:this.item.webconf && this.item.webconf.filesize ? this.item.webconf.filesize : null,
+        accept: this.item.webconf && this.item.webconf.UploadAccept ? this.item.webconf.UploadAccept : null,
         sendData:{
           path: `${this.item.tableName}/${this.item.itemId}/`,
         },
         valuedata:[]   
       };
     };
-   
+  
      // this.settingPlaceholder();
      // if (this.item.type === 'NUMBER') {
      //   this.numericTypes();

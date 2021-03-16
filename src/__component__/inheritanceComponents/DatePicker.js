@@ -98,7 +98,7 @@ class CustomDatePicker {
       default: () => true
     };
     defaultProps.disabled = {
-      default:() => this.item.readonly
+      default:() => this.item.readonly && (this.item.webconf && !this.item.webconf.ignoreDisableWhenEdit)
     }
 
     const placeholder = {

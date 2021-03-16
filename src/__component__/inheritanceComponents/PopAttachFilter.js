@@ -77,6 +77,7 @@ class CustomAttachFilter {
     const placeholder = this.item.webconf && this.item.webconf.placeholder ? this.item.webconf.placeholder : null;
     defaultProps.propstype = {
       default: () => ({
+        disabled: this.item.readonly && (this.item.webconf && !this.item.webconf.ignoreDisableWhenEdit),
         AutoData: [],
         Selected: defaultValue,
         blurType: false,

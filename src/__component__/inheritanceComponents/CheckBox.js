@@ -47,7 +47,7 @@ class CustomCheckbox {
     const defaultProps = { ...this.Input.props };
 
     defaultProps.disabled = {
-      default:() => this.item.readonly
+      default:() => this.item.readonly && (this.item.webconf && !this.item.webconf.ignoreDisableWhenEdit)
     }
     this.settingOptions();
 
