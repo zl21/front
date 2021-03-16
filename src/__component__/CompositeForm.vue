@@ -37,6 +37,7 @@
                 :isreftabs="isreftabsForm"
                 :set-objreadonly="setObjreadonly"
                 :child-table-name="childTableName"
+                :is-child-table="isChildTable"
                 :refcolval-data="refcolvaData"
                 :mapp-status="setMapping"
                 :web-conf-single="webConfSingle"
@@ -71,6 +72,7 @@
           :class="tableGetName"
           :refcolval-data="refcolvaData"
           :child-table-name="childTableNameForm"
+          :is-child-table="isChildTable"
           :verifymessageform="VerifyMessageForm"
           :set-objreadonly="setObjreadonly"
           :web-conf-single="webConfSingle"
@@ -220,6 +222,10 @@
         default() {
           return '';
         }
+      },
+      isChildTable: {
+        // 是否是子表
+        type: Boolean
       }
     },
     inject: [MODULE_COMPONENT_NAME],
