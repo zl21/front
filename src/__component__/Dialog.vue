@@ -170,10 +170,11 @@
       }
     },
     watch: {
-      dialogComponentName(val) {
-        if (val) {
-          this.getModalWidth();
-        }
+      dialogComponentName() {
+        // 重置组件内设置的属性，避免其它组件唤起弹框时，重复使用上一次设置的属性值
+        this.modalWidth = 520;
+        this.setTitleName = '';
+        this.getModalWidth();
       },
     },
     methods: {

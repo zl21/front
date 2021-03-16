@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-             >
+            >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -229,6 +229,7 @@
           text: { tag: 'Input', event: this.inputRender },
           check: { tag: 'Checkbox', event: this.checkboxRender },
           select: { tag: 'Select', event: this.selectRender },
+          radioGroup: { tag: 'Select', event: this.selectRender },
           drp: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender },
           mrp: { tag: 'DropMultiSelectFilter', event: this.dropMultiSelectFilterRender },
           mop: { tag: 'ComAttachFilter', event: this.comAttachFilterRender },
@@ -1504,7 +1505,6 @@
         if (!data) {
           return [];
         }
-
         // 整合表头数据
         const columns = data
           .filter(ele => ele.name !== EXCEPT_COLUMN_NAME)
@@ -1521,7 +1521,6 @@
             if (ele.comment) {
               param.renderHeader = this.tooltipRenderHeader();
             }
-
             // warning 2019/06/17注释 数据后端已经排序好了 但是 ！！！ 点击后排序  刷新列表 默认展示的排序的图标颜色显示也会丢失
             if (this.dataSource.ordids && this.dataSource.ordids.length > 0) {
               this.dataSource.ordids.map((order) => {
@@ -3845,6 +3844,8 @@
         if (this.searchCondition) {
           fixedcolumns[this.searchCondition] = this.searchInfo;
         }
+
+         
         const { itemId } = this.$route.params;
         // table, objid, refcolid, startindex, range, fixedcolumns
         // let tabIndex = null;
@@ -3865,7 +3866,10 @@
           },
           tabIndex: this.currentTabIndex
         };
-
+        if (this.currentOrderList.length > 0) {
+          // 如果没有排序则不传该参数
+          params.searchdata.orderby = this.currentOrderList;
+        }
         // 过滤空字段
         const columns = params.searchdata.fixedcolumns;
         const paramsKeys = Object.keys(columns);
@@ -4140,6 +4144,7 @@
             asc: value.order === 'asc'
           }]);
         }
+
         const fixedcolumns = {};
         if (this.searchCondition) {
           fixedcolumns[this.searchCondition] = this.searchInfo;
@@ -4393,6 +4398,7 @@
       window.addEventListener('tabRefreshClick', () => {
         if (!this._inactive) {
           this.isRefreshClick = true;
+          this.currentOrderList = [];
         }
       });
       if (!this._inactive) {
