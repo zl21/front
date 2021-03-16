@@ -32,6 +32,7 @@
         :item-id="itemId"
         :popwin-message="popwinMessage"
         :obj-tab-action-dialog-config="objTabActionDialogConfig"
+        :externalOptions="externalOptions"
         @setTitle="setTitle"
         @closeActionDialog="closeActionDialog"
         @clearSelectIdArray="clearSelectIdArray"
@@ -155,6 +156,11 @@
         type: String,
         default: () => ''
       },
+      // 给内容组件的所有参数
+      externalOptions: {
+        type: Object,
+        default: () => {}
+      }
     },
     data() {
       return {
@@ -244,6 +250,9 @@
       },
       
    
+    },
+    mounted() {
+      console.log('对话框', this.deo);
     }
   };
 </script>
