@@ -657,7 +657,9 @@
         
         // 按退格键键时
         if (this.keyCode === 8) {
-          this._items.value = this._items.value.substr(0, value.length);
+          const charArr = this._items.value.split('');
+          charArr.splice(this.selectionStart, 1);
+          this._items.value = charArr.join('');
           this.valueChange();
           return;
         }
