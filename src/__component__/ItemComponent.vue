@@ -644,29 +644,54 @@
         if (this.isInputChinese) {
           return;
         }
-        
+        // 按回车
+        if (this.keyCode === 13 && this._items.props.type === 'text') {
+          return;
+        }
+
         const value = event.target.value;
         this.selectionStart = event.target.selectionStart;
         // 输入中文时，新增文字的插入位置需要根据Math.max(this.selectionStart - cursorOffset, 0)矫正
         const insertTextPosion = cursorOffset ? Math.max(this.selectionStart - cursorOffset, 0) : this.selectionStart;
+
+        // 按ctrl,command键时
+        if (this.isPressControl || this.isMousePaste) {
+          this._items.value = value;
+          this.valueChange();
+          this.isMousePaste = false; // 手动把右键粘贴标志改为false
+          return;
+        }
+
+        // 按回车换行
+        if (this.keyCode === 13 && this._items.props.type === 'textarea') {
+          this._items.value = `${this._items.value}\n`;
+          this.valueChange();
+          return;
+        }
+        
+        // 按退格键键时
+        if (this.keyCode === 8) {
+          const charArr = this._items.value.split('');
+          charArr.splice(this.selectionStart, 1);
+          this._items.value = charArr.join('');
+          this.valueChange();
+          return;
+        }
         
         // fix: input输入框拿不到值给父组件
         if (this._items.props.type === 'text') {
           this._items.value = value;
         }
-
+        
+        // 手动把新加的输入值和原来的值进行拼接
         const charArr = this._items.value.split('');
         if (value.length > this._items.value.length) {
-          // 输入值
           charArr.splice(insertTextPosion - 1, 0, this.keyData);
           this._items.value = charArr.join('');
-        } else if (value.length < this._items.value.length) {
-          // 删除值
-          charArr.splice(insertTextPosion, 1);
-          this._items.value = charArr.join('');
-        }
+        } 
         
         this.valueChange();
+
         let valLength = this._items.props.length;
         if (valLength) {
           if (this._items.value.split('.').length > 1) {
@@ -739,6 +764,11 @@
         }
       },
       inputKeyUp(event, $this) {
+        const ctrlKey = 17;
+        const cmdKey = 91;
+        if (event.keyCode === ctrlKey || event.keyCode === cmdKey) {
+          this.isPressControl = false;
+        }
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'keyup')
           && typeof this._items.event.keyup === 'function'
@@ -747,10 +777,17 @@
         }
       },
       inputKeyDown(event, $this) {
+        // 判断是否进行粘贴操作
+        const ctrlKey = 17;
+        const cmdKey = 91;
+        if (event.keyCode === ctrlKey || event.keyCode === cmdKey) {
+          this.isPressControl = true;
+        }
         // 记录新输入的内容，方便加密文本时用
         const value = event.target.value;
         if (value.length !== this._items.value) {
           this.keyData = event.key;
+          this.keyCode = event.keyCode;
         }
 
         if (
@@ -995,46 +1032,6 @@
           this._items.event.valuechange(item);
         }
         this.valueChange();
-        // if (
-        //   Object.prototype.hasOwnProperty.call(
-        //     this._items.event,
-        //     'popper-value'
-        //   )
-        //   && typeof this._items.event['popper-value'] === 'function'
-        // ) {
-        // console.log(item);
-        //   this._items.event['popper-value'](
-        //     $this,
-        //     item.value,
-        //     item.selected
-        //   );
-        // }
-        // if (
-        //   Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
-        //   && typeof this._items.event.clear === 'function'
-        // ) {
-        //   if (!item.value && !item.selected[0] && !item.selected[0].ID) {
-        //     this._items.event.clear($this);
-        //   }
-        // }
-        // if (
-        //   Object.prototype.hasOwnProperty.call(
-        //     this._items.event,
-        //     'popper-value'
-        //   )
-        //   && typeof this._items.event['popper-value'] === 'function'
-        // ) {
-        //   this._items.event['popper-value']($this, value, 'change', this.index);
-        // }
-        // if (
-        //   Object.prototype.hasOwnProperty.call(
-        //     this._items.event,
-        //     'inputValueChange'
-        //   )
-        //   && typeof this._items.event.inputValueChange === 'function'
-        // ) {
-        //   this._items.event.inputValueChange(item.value, $this);
-        // }
       },
 
       // AttachFilter event
@@ -1444,18 +1441,6 @@
         this._items.value = this._items.props.itemdata.valuedata;
         this.valueImgChange();
         return false;
-        fkHttpRequest().deleteImg({
-          params: {
-            ...obj
-          },
-          // eslint-disable-next-line consistent-return
-          success: (res) => {
-            // eslint-disable-next-line no-empty
-            if (res.data.code === 0) {
-             
-            }
-          }
-        });
       },
       readonlyImage() {
         // 判断是否能上传图片
@@ -1466,7 +1451,6 @@
       },
       uploadFileChangeSuccess(result) {
         // 图片进度接口
-        const self = this;
         const resultData = result;
         if (this.readonlyImage()) {
           this.$Message.info(`只能上传${this._items.props.itemdata.ImageSize}张图片`);
@@ -1634,7 +1618,7 @@
 
         return Object.assign({}, fixedData);
       },
-      upSaveImg(obj, fixedData, path, index) {
+      upSaveImg() {
         // 图片保存接口
         setTimeout(() => {
           const dom = document.getElementById('actionMODIFY');
@@ -1643,35 +1627,6 @@
         
        
         return false;
-        fkHttpRequest().fkObjectSave({
-          searchObject: {
-            ...obj
-          },
-          url: path ? this.$parent.pathcheck : undefined,
-          // eslint-disable-next-line consistent-return
-          success: (res) => {
-            if (res.data.code !== 0) {
-              return false;
-            }
-            if (index) {
-              // 删除
-              this._items.props.itemdata.valuedata.splice(index - 1, 1);
-              this._items.value = this._items.props.itemdata.valuedata;
-            } else {
-              const data = fixedData[fixedData.length - 1];
-              if (typeof this._items.props.itemdata.valuedata !== 'object') {
-                this._items.props.itemdata.valuedata = [];
-              }
-
-              this._items.props.itemdata.valuedata.push({
-                NAME: data.NAME,
-                URL: data.URL
-              });
-              this._items.value = this._items.props.itemdata.valuedata;
-            }
-            this.valueChange();
-          }
-        });
       },
       uploadFileChangeOnerror(e) {
         this.$Message.info(e);
@@ -1846,10 +1801,11 @@
       },
 
       // 监听中文键盘输入
+      // 监听粘贴
       listenChinese() {
         this.$once('bindCompositionend', () => {
           const dom = this.$refs[this._items.field].$el.children[0];
-          dom.addEventListener('compositionstart', (e) => {
+          dom.addEventListener('compositionstart', () => {
             this.isInputChinese = true;
           });
           dom.addEventListener('compositionend', (e) => {
@@ -1857,8 +1813,11 @@
             this.isInputChinese = false;
             this.inputChange(e, Math.max(this.keyData.length - 1, 0));
           });
+          dom.addEventListener('paste', () => {
+            this.isMousePaste = true;
+          });
         });
-      }
+      },
     },
     beforeDestroy() {
       if (this.inputTimer) {
@@ -1872,8 +1831,10 @@
     created() {
       // console.log(this.type,this.formIndex);
       this.selectionStart = null; // 光标位置
-      this.keyData = null; // 记录按键按下的位置
+      this.keyData = null; // 记录按键按下的值
       this.isInputChinese = false; // 是否在输入中文
+      this.isPressControl = false; // 是否触发ctrl或command按键
+      this.isMousePaste = false; // 监听鼠标粘贴
     },
     mounted() {
       this.listenChinese();
