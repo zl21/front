@@ -630,6 +630,10 @@
         if (this.isInputChinese) {
           return;
         }
+        // 按回车
+        if (this.keyCode === 13 && this._items.props.type === 'text') {
+          return;
+        }
 
         const value = event.target.value;
         this.selectionStart = event.target.selectionStart;
@@ -644,11 +648,17 @@
           return;
         }
 
+        // 按回车换行
+        if (this.keyCode === 13 && this._items.props.type === 'textarea') {
+          this._items.value = `${this._items.value}\n`;
+          this.valueChange();
+          return;
+        }
+        
         // 按退格键键时
         if (this.keyCode === 8) {
           this._items.value = this._items.value.substr(0, value.length);
           this.valueChange();
-          this.isMousePaste = false; // 手动把右键粘贴标志改为false
           return;
         }
         
