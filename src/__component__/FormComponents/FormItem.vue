@@ -415,6 +415,7 @@
   import CustomImageUpload from '../inheritanceComponents/ImageUpload';
   import CustomDocUpload from '../inheritanceComponents/DocUpload';
   import CustomWangeditor from '../inheritanceComponents/Wangeditor';
+  import CustomEnumerableInput from '../inheritanceComponents/EnumerableInput';
 
   import ParameterDataProcessing from './parameterDataProcessing';
 
@@ -612,6 +613,8 @@
           break;
         case 'clob' :
           Components = new CustomWangeditor(item).init(); 
+        case 'Enumerate':
+          Components = new CustomEnumerableInput(item).init(); 
         default:
           break;
         }

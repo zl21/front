@@ -141,7 +141,7 @@ export default {
   },
   watch:{
     formItemLists:{
-      handler(val){
+      handler(val){  //处理展开面板的默认值
         if(Object.keys(val).length > 0){
           this.collapseValue = []
           Object.keys(val).map(item => {

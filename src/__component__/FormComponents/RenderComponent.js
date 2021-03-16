@@ -32,7 +32,11 @@ String.prototype.TextFilter = function TextFilter() {
         break;
       case 'text':
       case 'xml':
-        if(!item.isfk){
+        if(item.webconf && item.webconf.display === 'YearMonth'){
+          item.display = 'YearMonth';
+        }else if(item.webconf && item.webconf.display === 'enumerate'){
+          item.display = 'Enumerate';
+        }else if(!item.isfk){
           item.display = undefined;
         }else{
           item.display = 'OBJ_FK';
