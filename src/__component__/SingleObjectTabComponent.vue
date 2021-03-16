@@ -53,6 +53,7 @@
       :child-table-name="tableName"
       :from="from"
       :web-conf-single="webConfSingle"
+      :is-child-table="isChildTable"
       @on-formEnter="enterClick"
       @formChange="formChange"
       @InitializationForm="initForm"
@@ -105,6 +106,7 @@
       :default-data="panelData.data"
       :paths="formPaths"
       :isreftabs="isreftabs"
+      :is-child-table="isChildTable"
       :child-table-name="tableName"
       :from="from"
       @formChange="formPanelChange"
@@ -288,6 +290,17 @@
     computed: { 
       ...mapState('global', {
       }),
+
+      // 是否是子表
+      isChildTable() {
+        if(this.type === 'horizontal' && this.currentTabIndex !== 0) {
+          return true;
+        }
+        if(this.type === 'vertical') {
+          return true;
+        }
+        return false;
+      },
       waterMarkTop() {
         const customizeWaterMark = getCustomizeWaterMark();
         if(this.watermarkimg) {
