@@ -419,6 +419,8 @@
 
   import ParameterDataProcessing from './parameterDataProcessing';
 
+
+
   import {
     Version, MODULE_COMPONENT_NAME, ossRealtimeSave, defaultrange 
   } from '../../constants/global';
@@ -482,7 +484,6 @@
         value: null
       };
     },
-    
     computed: {
       ...mapState('global',{
         activeTab:({activeTab}) => activeTab
@@ -852,12 +853,6 @@
     created() {
     },
     mounted() {
-      // this.$nextTick(() => {
-      //   // 处理字段联动时多个来源字段联动禁用模糊搜索
-      //   if (this.items.props.webconf && this.items.props.webconf.refcolval_custom) {
-      //     this.$el.getElementsByTagName('input')[0].readOnly = true;
-      //   }
-      // });
       window.addEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetProps);
       window.addEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
       window.addEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);

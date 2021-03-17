@@ -21,7 +21,7 @@
             <div
             v-for="(temp,index) in Object.keys(formItemLists[item].childs)"
             :key="formItemLists[item].childs[temp]._index"
-            :style="setDiv(formItemLists[item].childs[temp])"
+            :style="formItemLists[item].childs[temp].styles"
           >
             <keep-alive>
               <component
@@ -96,15 +96,16 @@ export default {
       }
       
       // 数组转对象处理，避免vue渲染时的指针问题
-      data.addcolums.map(item => {
+      data.addcolums.map((item,index) => {
         item._index = Math.random()
         item.childs = {...layoutAlgorithm(Number(data.objviewcol), item.childs?item.childs:[item.child])};
 
         Object.keys(item.childs).map(temp => {
-          item.childs[temp]._index = Math.random()
+          item.childs[temp]._index = `${index}_${temp}_${Math.random()}`
           if(this.readonly){
             item.childs[temp].readonly = this.readonly
           }
+          item.childs[temp].styles = this.setDiv(item.childs[temp])
           item.childs[temp].tableName = this.$route.params.tableName;
           item.childs[temp].itemId = this.$route.params.itemId;
           item.childs[temp]  = new RenderComponent(JSON.parse(JSON.stringify(item.childs[temp]))).itemConversion();
@@ -160,6 +161,22 @@ export default {
       let defaultItem = JSON.parse(JSON.stringify(item));
       const Render = new RenderComponent(defaultItem, this.tableName);
       return Render.Initialize();
+    },
+    panelRedraw(panelIndex,array){
+      const columns = Number(this.defaultData.objviewcol) || 4;
+      let childs = layoutAlgorithm(columns, Object.values(array));
+      Object.keys(childs).map(temp => {
+        childs[temp]._index =`${panelIndex}_${temp}_${Math.random()}`
+        if(this.readonly){
+          childs[temp].readonly = this.readonly
+        }
+        childs[temp].styles = this.setDiv(childs[temp])
+        debugger
+        childs[temp].tableName = this.$route.params.tableName;
+        childs[temp].itemId = this.$route.params.itemId;
+        return temp
+      })
+      return childs
     },
     dealData(item, value) {
       // 通过ParameterDataProcessing类对数据进行处理
@@ -233,17 +250,17 @@ export default {
 
     //   let item = this.formItemLists[1]
     //   this.formItemLists[1]._index = Math.random()
-    //   item.childs = layoutAlgorithm(Number(4), Object.values(item.childs));
-    //   Object.keys(item.childs).map(temp => {
-    //       item.childs[temp]._index = Math.random()
-    //       if(this.readonly){
-    //         item.childs[temp].readonly = this.readonly
-    //       }
-    //       item.childs[temp].tableName = this.$route.params.tableName;
-    //       item.childs[temp].itemId = this.$route.params.itemId;
-    //       return temp
-    //     })
-    //   this.$forceUpdate()
+      // item.childs = layoutAlgorithm(Number(4), Object.values(item.childs));
+      // Object.keys(item.childs).map(temp => {
+      //     item.childs[temp]._index = Math.random()
+      //     if(this.readonly){
+      //       item.childs[temp].readonly = this.readonly
+      //     }
+      //     item.childs[temp].tableName = this.$route.params.tableName;
+      //     item.childs[temp].itemId = this.$route.params.itemId;
+      //     return temp
+      //   })
+      // this.$forceUpdate()
     // },10000)
   }
 }
