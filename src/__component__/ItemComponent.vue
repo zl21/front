@@ -634,20 +634,27 @@
         if (this.keyCode === 13 && this._items.props.type === 'text') {
           return;
         }
-
+        const ispassword = this._items.props.ispassword;
         const value = event.target.value;
+        // 只要不是加密文本的撤销操作。都保存下旧值
+        if (!((this.isPressControl || this.isMousePaste) && (ispassword && this.keyCode === 90))) {
+          // 缓存历史值
+          this.oldInputValue.push(this._items.value);
+        }
+
         this.selectionStart = event.target.selectionStart;
         // 输入中文时，新增文字的插入位置需要根据Math.max(this.selectionStart - cursorOffset, 0)矫正
         const insertTextPosion = cursorOffset ? Math.max(this.selectionStart - cursorOffset, 0) : this.selectionStart;
 
         // 按ctrl,command键时
         if (this.isPressControl || this.isMousePaste) {
-          const ispassword = this._items.props.ispassword;
           // 修复指定位置粘贴问题
-          if (ispassword) {
+          if (ispassword && this.keyCode === 86) {
             const charArr = this._items.value.split('');
             charArr.splice(this.pastePosition, 0, this.clipboardData);
             this._items.value = charArr.join('');
+          } else if (ispassword && this.keyCode === 90) {
+            this._items.value = this.oldInputValue.pop();
           } else {
             this._items.value = value;
           }
@@ -1836,6 +1843,7 @@
       this.isMousePaste = false; // 监听鼠标粘贴
       this.clipboardData = ''; // 剪切板内容
       this.pastePosition = -1; // 粘贴位置
+      this.oldInputValue = []; // 用于加密input撤销时回滚数据
     },
     mounted() {
       this.listenChinese();
