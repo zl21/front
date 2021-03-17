@@ -4,6 +4,7 @@
 import Vue from 'vue';
 // import { DatePicker } from 'ark-ui';
 import dataProp from '../../__config__/props.config';
+import { SetPlaceholder } from './setProps';
 
 let DatePicker = Ark.DatePicker;
 let TimePicker = Ark.TimePicker;
@@ -102,7 +103,7 @@ class CustomDatePicker {
     }
 
     const placeholder = {
-      default: () => `请选择${this.item.coldesc}`
+      default: () => new SetPlaceholder(this.item).init()
     };
 
     defaultProps.placeholder = placeholder;
