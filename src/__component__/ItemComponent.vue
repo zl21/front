@@ -654,11 +654,12 @@
           this.valueChange();
           return;
         }
-        
+
         // 按退格键键时
-        if (this.keyCode === 8) {
+        if (this.keyCode === 8 && (value.length < this._items.value.length)) {
           const charArr = this._items.value.split('');
-          charArr.splice(this.selectionStart, 1);
+          const num = this._items.value.length - value.length;
+          charArr.splice(this.selectionStart, num);
           this._items.value = charArr.join('');
           this.valueChange();
           return;
