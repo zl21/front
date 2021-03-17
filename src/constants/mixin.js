@@ -49,10 +49,19 @@ Vue.mixin({
     };
 
     // use this.$_live_completeRender('xx-xx')
-    this.$_live_completeRender = function(componentTag){
+    this.$_live_completeRender = function ( target ) {
       return new Promise((resolve,reject) => {
-        console.log(this)
-        resolve()
+        // 获取当前tab组件实例
+        let activeTab = this.activeTab
+        let currentTab = this.$_live_getChildComponent(window.vm,activeTab.keepAliveModuleName)
+        let source = this.$_live_getChildComponent(currentTab,`${activeTab.tableName}${target}`)
+        let timer = setInterval(() => {
+          if(source){
+            clearInterval(timer)
+            resolve(source)
+          }
+        })
+        
       })
     }
 

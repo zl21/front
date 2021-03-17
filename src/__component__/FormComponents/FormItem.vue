@@ -418,7 +418,6 @@
   import CustomEnumerableInput from '../inheritanceComponents/EnumerableInput';
 
   import ParameterDataProcessing from './parameterDataProcessing';
-  import MappingRelationship from './MappingRelationship';
 
   import {
     Version, MODULE_COMPONENT_NAME, ossRealtimeSave, defaultrange 
@@ -864,8 +863,6 @@
       window.addEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
       window.addEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
       this.resetItem()
-
-      new MappingRelationship(this,this.items).componentLoaded()
     }
   };
 </script>
