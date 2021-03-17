@@ -108,7 +108,7 @@ class CustomAttachFilter {
           }
         },
         display: this.item.display,
-        enterType: true,
+        enterType: false,
         filterDate: {},
         filterTip: true,
         fkdisplay: this.item.fkobj.searchmodel,

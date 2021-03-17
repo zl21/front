@@ -80,6 +80,7 @@ class CustomDropMultiSelectFilter {
     propsData.PropsData = {
       default:() => ({
         disabled: this.item.readonly && (this.item.webconf && !this.item.webconf.ignoreDisableWhenEdit),
+        hidecolumns:['id', 'value'],
         placeholder:new SetPlaceholder(this.item).init()
       })
     }
