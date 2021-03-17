@@ -67,7 +67,10 @@ class CustomDropMultiSelectFilter {
     this.item.Components = obj;
     return { ...obj };
   }
-
+  settingPlaceholder() { // 设置Placeholder属性
+    const placeholder = this.item.webconf && this.item.webconf.placeholder ? this.item.webconf.placeholder : null;
+    return  placeholder || `请输入${this.item.coldesc}`;
+  }
   // 合并props
   mergeProps() {
     const propsData = { ...this.BusDropDown.props };
@@ -78,7 +81,8 @@ class CustomDropMultiSelectFilter {
 
     propsData.PropsData = {
       default:() => ({
-        disabled: this.item.readonly && (this.item.webconf && !this.item.webconf.ignoreDisableWhenEdit)
+        disabled: this.item.readonly && (this.item.webconf && !this.item.webconf.ignoreDisableWhenEdit),
+        placeholder:this.settingPlaceholder()
       })
     }
     

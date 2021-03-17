@@ -2085,6 +2085,13 @@
                   if (temp.display === 'OBJ_FK' && temp.fkobj.searchmodel === 'mop') { 
                     delete search[temp.colname];
                   }
+                  // 过滤外键字符串
+                  if (temp.display === 'OBJ_FK') { 
+                      console.log(search[temp.colname]);
+                      if(!Array.isArray(search[temp.colname])){
+                          delete search[temp.colname];
+                      }
+                  }
                 });
                 search.R3UserId = `${this.userInfo.id}_${this.searchData.table}`;
                 addSearch(search);

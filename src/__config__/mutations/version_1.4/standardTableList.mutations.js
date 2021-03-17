@@ -64,8 +64,11 @@ export default {
           if (c === d.colname && indexDB[c]) {
             d.default = indexDB[c];
             if(d.display && d.display === 'OBJ_FK') { // 如果是外键类型，需要配置refobjid
-              d.refobjid = indexDB[c].map(item => item.ID).join(',');
-              d.default = indexDB[c].map(item => item.Label).join(',');
+              if(Array.isArray(indexDB[c])){
+                d.refobjid = indexDB[c].map(item => item.ID).join(',');
+                d.default = indexDB[c].map(item => item.Label).join(',');
+              }
+              
             }
             
             if (d.display && ['OBJ_DATENUMBER','OBJ_DATE'].includes(d.display)) {
