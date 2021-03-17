@@ -390,7 +390,7 @@
 </template>
 
 <script>
-  import { mapMutations } from 'vuex';
+  import { mapMutations, mapState } from 'vuex';
   
   import dataProp from '../../__config__/props.config';
   // 弹窗多选面板
@@ -418,6 +418,7 @@
   import CustomEnumerableInput from '../inheritanceComponents/EnumerableInput';
 
   import ParameterDataProcessing from './parameterDataProcessing';
+  import MappingRelationship from './MappingRelationship';
 
   import {
     Version, MODULE_COMPONENT_NAME, ossRealtimeSave, defaultrange 
@@ -484,6 +485,9 @@
     },
     
     computed: {
+      ...mapState('global',{
+        activeTab:({activeTab}) => activeTab
+      }),
       getVersion() {
         return Version;
       },
@@ -860,6 +864,8 @@
       window.addEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
       window.addEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
       this.resetItem()
+
+      new MappingRelationship(this,this.items).componentLoaded()
     }
   };
 </script>

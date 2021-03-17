@@ -208,7 +208,6 @@ export default {
         return temp
       })
       this.deleteEmptyProperty(formData);
-      console.log(formData)
       return formData;
     },
     getFormDataLabel() {  //获取整个表单的展示数据+传参数据
@@ -229,24 +228,23 @@ export default {
   mounted(){
 
     // 测试字段显示隐藏功能
-    setTimeout(() => {
-      delete this.formItemLists[1].childs[1]
+    // setTimeout(() => {
+    //   delete this.formItemLists[1].childs[1]
 
-      let item = this.formItemLists[1]
-
-      this.formItemLists[1]._index = Math.random()
-      item.childs = layoutAlgorithm(Number(4), Object.values(item.childs));
-      Object.keys(item.childs).map(temp => {
-          item.childs[temp]._index = Math.random()
-          if(this.readonly){
-            item.childs[temp].readonly = this.readonly
-          }
-          item.childs[temp].tableName = this.$route.params.tableName;
-          item.childs[temp].itemId = this.$route.params.itemId;
-          return temp
-        })
-      this.$forceUpdate()
-    },10000)
+    //   let item = this.formItemLists[1]
+    //   this.formItemLists[1]._index = Math.random()
+    //   item.childs = layoutAlgorithm(Number(4), Object.values(item.childs));
+    //   Object.keys(item.childs).map(temp => {
+    //       item.childs[temp]._index = Math.random()
+    //       if(this.readonly){
+    //         item.childs[temp].readonly = this.readonly
+    //       }
+    //       item.childs[temp].tableName = this.$route.params.tableName;
+    //       item.childs[temp].itemId = this.$route.params.itemId;
+    //       return temp
+    //     })
+    //   this.$forceUpdate()
+    // },10000)
   }
 }
 </script>

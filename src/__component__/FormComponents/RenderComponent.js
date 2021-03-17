@@ -19,48 +19,48 @@ String.prototype.TextFilter = function TextFilter() {
    * @returns  列表字段类型
    * @memberof typeConversion
    */
-  function typeConversion(item){
-    switch(item.display){
-      case 'select':
-        item.display = 'OBJ_SELECT';
-        break;
-      case 'textarea':
-        item.display = 'OBJ_TEXTAREA';
-        break;
-      case 'doc':
-        item.display = 'OBJ_DOC';
-        break;
-      case 'text':
-      case 'xml':
-        if(item.webconf && item.webconf.display === 'YearMonth'){
-          item.display = 'YearMonth';
-        }else if(item.webconf && item.webconf.display === 'enumerate'){
-          item.display = 'Enumerate';
-        }else if(!item.isfk){
-          item.display = undefined;
-        }else{
-          item.display = 'OBJ_FK';
-          item.fkobj = {
-            fkdisplay: item.fkdisplay,
-            reftable: item.reftable,
-            reftableid: item.reftableid,
-            searchmodel: item.fkdisplay,
-            serviceId: item.serviceId,
-          }
+function typeConversion(item){
+  switch(item.display){
+    case 'select':
+      item.display = 'OBJ_SELECT';
+      break;
+    case 'textarea':
+      item.display = 'OBJ_TEXTAREA';
+      break;
+    case 'doc':
+      item.display = 'OBJ_DOC';
+      break;
+    case 'text':
+    case 'xml':
+      if(item.webconf && item.webconf.display === 'YearMonth'){
+        item.display = 'YearMonth';
+      }else if(item.webconf && item.webconf.display === 'enumerate'){
+        item.display = 'Enumerate';
+      }else if(!item.isfk){
+        item.display = undefined;
+      }else{
+        item.display = 'OBJ_FK';
+        item.fkobj = {
+          fkdisplay: item.fkdisplay,
+          reftable: item.reftable,
+          reftableid: item.reftableid,
+          searchmodel: item.fkdisplay,
+          serviceId: item.serviceId,
         }
-        
-        break;
-      case 'check':
-        item.display = 'OBJ_CHECK';
-        break;
-      case 'OBJ_DATE':
-        item.display = 'OBJ_DATETIME';
-      default:
-        break;
-    }
-
-    return item;
+      }
+      
+      break;
+    case 'check':
+      item.display = 'OBJ_CHECK';
+      break;
+    case 'OBJ_DATE':
+      item.display = 'OBJ_DATETIME';
+    default:
+      break;
   }
+
+  return item;
+}
 
 
 
@@ -91,9 +91,6 @@ export default class RenderComponent {
   }
 
   Initialize() {
-    const mixins = require('./mixins').default;
-    this.ObjectToMerge(FormItem.methods, mixins.methods);
-    Object.assign(FormItem.methods, mixins.methods);
     Vue.component(`${this.id}${this.item.colname.TextFilter()}`, Vue.extend(FormItem));
     return `${this.id}${this.item.colname.TextFilter()}`;
   }

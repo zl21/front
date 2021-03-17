@@ -2082,7 +2082,7 @@
               this.$_live_getChildComponent(this,'listsForm').getFormDataLabel().then(async search => {
                 this.formItems.defaultFormItemsLists.map((temp) => {
                   // 存储查询条件时过滤掉弹窗多选类型
-                  if (temp.display === 'OBJ_FK' && temp.fkobj.fkdisplay === 'mop') { 
+                  if (temp.display === 'OBJ_FK' && temp.fkobj.searchmodel === 'mop') { 
                     delete search[temp.colname];
                   }
                 });
