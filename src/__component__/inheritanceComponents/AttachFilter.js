@@ -68,9 +68,9 @@ class CustomAttachFilter {
       }];
     }
 
-    defaultProps.disabled = {
-      default:() => this.item.readonly && (this.item.webconf && !this.item.webconf.ignoreDisableWhenEdit)
-    }
+    // defaultProps.disabled = {
+    //   default:() => this.item.readonly && (this.item.webconf && !this.item.webconf.ignoreDisableWhenEdit)
+    // }
     
     defaultProps.value = {
       default: () => defaultValue
@@ -83,7 +83,7 @@ class CustomAttachFilter {
     const placeholder = this.item.webconf && this.item.webconf.placeholder ? this.item.webconf.placeholder : null;
     defaultProps.PropsData = {
       default: () => ({
-        disabled: this.item.readonly, //控制字段是否可编辑
+        disabled: this.item.readonly && (this.item.webconf && !this.item.webconf.ignoreDisableWhenEdit), //控制字段是否可编辑
         blurType: false, // 失去光标是否默认选中第一行
         colid: this.item.colid, // 表id
         colname: this.item.colname, // 表名称

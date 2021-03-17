@@ -37,6 +37,7 @@
                 :isreftabs="isreftabsForm"
                 :set-objreadonly="setObjreadonly"
                 :child-table-name="childTableName"
+                :is-child-table="isChildTable"
                 :refcolval-data="refcolvaData"
                 :mapp-status="setMapping"
                 :web-conf-single="webConfSingle"
@@ -71,6 +72,7 @@
           :class="tableGetName"
           :refcolval-data="refcolvaData"
           :child-table-name="childTableNameForm"
+          :is-child-table="isChildTable"
           :verifymessageform="VerifyMessageForm"
           :set-objreadonly="setObjreadonly"
           :web-conf-single="webConfSingle"
@@ -220,6 +222,10 @@
         default() {
           return '';
         }
+      },
+      isChildTable: {
+        // 是否是子表
+        type: Boolean
       }
     },
     inject: [MODULE_COMPONENT_NAME],
@@ -599,7 +605,7 @@
         // 修改联动值
         // this.getStateData();
         if (this.conditiontype === 'list') {
-            return true;
+          return true;
         }
 
       
@@ -706,6 +712,8 @@
           if (current.item.props.number === true || (current.item.props.fkdisplay === 'pop' || current.item.props.fkdisplay === 'drp')) {
             if (this.conditiontype !== 'list') {
               this.formData[current.item.field] = 0;
+            } else {
+              this.formData[current.item.field] = '';
             }
           } else if (current.item.props.fkdisplay) {
             this.formData[current.item.field] = '';
