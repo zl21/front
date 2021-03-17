@@ -642,7 +642,16 @@
 
         // 按ctrl,command键时
         if (this.isPressControl || this.isMousePaste) {
-          this._items.value = value;
+          const ispassword = this._items.props.ispassword;
+          // 修复指定位置粘贴问题
+          if (ispassword) {
+            const charArr = this._items.value.split('');
+            charArr.splice(this.pastePosition, 0, this.clipboardData);
+            this._items.value = charArr.join('');
+          } else {
+            this._items.value = value;
+          }
+          
           this.valueChange();
           this.isMousePaste = false; // 手动把右键粘贴标志改为false
           return;
@@ -1800,8 +1809,11 @@
             this.isInputChinese = false;
             this.inputChange(e, Math.max(this.keyData.length - 1, 0));
           });
-          dom.addEventListener('paste', () => {
+          dom.addEventListener('paste', (e) => {
             this.isMousePaste = true;
+            const clipboardData = e.clipboardData || window.clipboardData;
+            this.clipboardData = clipboardData.getData('text');
+            this.pastePosition = e.target.selectionStart;
           });
         });
       },
@@ -1822,6 +1834,8 @@
       this.isInputChinese = false; // 是否在输入中文
       this.isPressControl = false; // 是否触发ctrl或command按键
       this.isMousePaste = false; // 监听鼠标粘贴
+      this.clipboardData = ''; // 剪切板内容
+      this.pastePosition = -1; // 粘贴位置
     },
     mounted() {
       this.listenChinese();
