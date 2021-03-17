@@ -1,14 +1,17 @@
 /**
+ * 下拉多选外健关联业务组件的自定义逻辑处理
+ */
+
+/**
  * 下拉单选外健关联业务组件的自定义逻辑处理
  */
-import { DropDownSelectFilter } from '@syman/ark-ui-bcl';
-
-import Vue from 'vue';
 import { defaultrange } from '../../constants/global';
+import { DropMultiSelectFilter } from '@syman/ark-ui-bcl';
 import network from '../../__utils__/network';
 import { SetPlaceholder } from './setProps';
+import Vue from 'vue';
 
-
+// const BusDropDownSelectFilter = () => import('arkui_BCL/DropDownSelectFilter');
 // console.log(BusDropDown);
 // 处理传参form格式转换
 const urlSearchParams = (data) => {
@@ -41,68 +44,86 @@ const deepClone = (arr) => {
 };
 
 
-class BusDropDownSelectFilter {
+class CustomDropMultiSelectFilter {
   constructor(item) {
     this.item = item;
     // const BusDropDownSelectFilter = require('arkui_BCL/DropDownSelectFilter').default;
-    const BusDropDown = Vue.extend(DropDownSelectFilter);
-    this.BusDropDown = new BusDropDown().$options;
-    delete this.BusDropDown._Ctor;
+    // this.BusDropDown = deepClone(DropMultiSelectFilter);
+    // const BusDropDown = Vue.extend(DropMultiSelectFilter);
+    // this.BusDropDown = new BusDropDown().$options;
+    // delete this.BusDropDown._Ctor;
+  }
+  setCompents(){
+    this.components = { DropMultiSelectFilter };
+  }
+  setData(){
+      return {
+        item:this.item
+      }
   }
 
+  setTemple(){
+    this.template =  `
+        <DropMultiSelectFilter v-bind="item"></DropMultiSelectFilter>
+      `;  
+  }
   init() {
     this.mergeProps();
-    this.mergeDatas();
-    this.mergeMethods();
-    if (this.item.Components) {
-      return this.item.Components;
-    }
-    const BusDropDownTer = Vue.extend(this.BusDropDown);
+    // this.mergeDatas();
+    this.setTemple();
+    // this.mergeMethods();
     
-    const obj = { ...new BusDropDownTer().$options };
-    this.item.Components = obj;
+    // if (this.item.Components) {
+    //   return this.item.Components;
+    // }
+    // const Con = Vue.extend(this.BusDropDown);
+    
+    // const obj = { ...new Con().$options };
     // this.item.Components = obj;
-    return obj;
+    // return { ...obj };
+    let ImagCom = Vue.extend({
+      data:this.setData,
+      template:this.template
+    });
+
+    return new ImagCom().$options;
   }
-  
+
   // 合并props
   mergeProps() {
-    const propsData = { ...this.BusDropDown.props };
+    const propsData = { ...this.item };
     // 处理Url
     this.propsUrl(propsData);
     // 处理传参
     this.propsParams(propsData);
 
     propsData.PropsData = {
-      default:() => ({
-        disabled: this.item.readonly && (this.item.webconf && !this.item.webconf.ignoreDisableWhenEdit),
-        hidecolumns:['id', 'value'],
-        placeholder:new SetPlaceholder(this.item).init()
-      })
+      disabled: this.item.readonly && (this.item.webconf && !this.item.webconf.ignoreDisableWhenEdit),
+      hidecolumns:['id', 'value'],
+      placeholder:new SetPlaceholder(this.item).init()
     }
-    this.BusDropDown.props = { ...propsData };
+    
+    this.item.props = { ...propsData };
   } 
 
   propsUrl(props) { // 处理props中的url属性
-    props.Url.default = () => ({
-      autoUrl: '/p/cs/fuzzyquerybyak',
-      tableUrl: '/p/cs/QueryList'
-    });
+    props.Url = {
+      autoUrl: `/p/cs/fuzzyquerybyak`,
+      tableUrl: `/p/cs/QueryList`
+    };
   }
 
   propsParams(props) { // 处理props中的AutoRequest,TableRequest
-    props.AutoRequest.default = () => ({
+    props.AutoRequest = {
       colid: this.item.colid,
       fixedcolumns: {}
-    });
+    };
 
-    props.TableRequest.default = () => ({
+    props.TableRequest = {
       isdroplistsearch: true,
       refcolid: this.item.colid,
-    });
-    props.http.default = () => {
-      return network;
     };
+    props.http = network
   }
 
   // 合并data
@@ -115,7 +136,7 @@ class BusDropDownSelectFilter {
 
   // 合并methods
   mergeMethods() {
-    this.BusDropDown.mixins[0].methods.postTableData = function (url) {
+    this.BusDropDown.mixins[0].methods.postTableData = function postTableData(url) {
       return new Promise((resolve) => {
         this.post(url, urlSearchParams({
           searchdata: this.searchdata
@@ -124,13 +145,7 @@ class BusDropDownSelectFilter {
         });
       });
     };
-
-    this.BusDropDown.methods['on-keydown'] = function (event) {
-      if (event.code === 'Enter') {
-        this.$_live_getChildComponent(window.vm, this.$store.state.global.activeTab.keepAliveModuleName).searchClickData();
-      }
-    };
   }
 }
 
-export default BusDropDownSelectFilter;
+export default CustomDropMultiSelectFilter;
