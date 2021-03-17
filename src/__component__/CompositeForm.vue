@@ -599,7 +599,7 @@
         // 修改联动值
         // this.getStateData();
         if (this.conditiontype === 'list') {
-            return true;
+          return true;
         }
 
       
@@ -706,6 +706,8 @@
           if (current.item.props.number === true || (current.item.props.fkdisplay === 'pop' || current.item.props.fkdisplay === 'drp')) {
             if (this.conditiontype !== 'list') {
               this.formData[current.item.field] = 0;
+            } else {
+              this.formData[current.item.field] = '';
             }
           } else if (current.item.props.fkdisplay) {
             this.formData[current.item.field] = '';
