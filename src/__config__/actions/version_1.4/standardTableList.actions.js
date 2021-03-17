@@ -14,35 +14,32 @@ export default {
   setColPin(store, data) {
     network.post('/p/cs/setFixedColumn', urlSearchParams(data));
   },
-  getQueryListForAg({ commit }, {
-    table, startIndex, range, fixedcolumns, column_include_uicontroller = true, orderby, merge = false, reffixedcolumns, isolr, resolve, reject
-  }) {
+  getQueryListForAg({ commit }, searchdatas) {
+    const {
+      table, startIndex, range, fixedcolumns, column_include_uicontroller = true, orderby, merge = false, reffixedcolumns, isolr, resolve, reject, searchBeforeResolve, searchBeforeReject
+    } = searchdatas;
+    let searchdata = {
+      table,
+      startindex: startIndex || 0,
+      range,
+      fixedcolumns,
+      reffixedcolumns,
+      column_include_uicontroller,
+      orderby,
+      isolr
+    };
+    searchdata = Object.assign(searchdata, searchdatas);
+    delete searchdata.startIndex;
     network.post('/p/cs/QueryList', urlSearchParams({
-      searchdata: {
-        table,
-        startindex: startIndex || 0,
-        range,
-        fixedcolumns,
-        reffixedcolumns,
-        column_include_uicontroller,
-        orderby,
-        isolr
-      }
+      searchdata
     })).then(async (res) => {
       // 存在es检索，展示合计总计
       if (isolr) {
         await network.post('/p/cs/QueryList', urlSearchParams({
           searchdata: {
-            table,
-            startindex: startIndex || 0,
-            range,
-            fixedcolumns,
-            reffixedcolumns,
-            column_include_uicontroller,
-            orderby,
-            isolr,
+            ...searchdata,
             getsumfileds: true
-          }
+          }  
         })).then((response) => {
           res.data.datas.fullRangeSubTotalRow = response.data.datas.fullRangeSubTotalRow;
         });
@@ -57,8 +54,10 @@ export default {
         commit('updateTableData', updateTableData);
       }
       resolve(res);
+      if (searchBeforeReject) searchBeforeResolve(res);
     }).catch(() => {
       reject();
+      if (searchBeforeReject) searchBeforeReject();
     });
   },
   getTableQueryForForm({ commit }, { searchData, resolve }) {
