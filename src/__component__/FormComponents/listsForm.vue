@@ -75,7 +75,6 @@
     methods: {
       resetForm() {
         // 处理合并字段
-        console.log(1212);
         this.ItemLists = {}
         this.formArray = []
         this.formItemLists.map((item, index) => {
@@ -97,7 +96,6 @@
       },
       initComponent(item) { // init组件
         const Render = new RenderComponent(item, this.id);
-        console.log(Render.Initialize(),'Render.Initialize()');
         return Render.Initialize();
       },
       toggle() { // 折叠切换
@@ -189,7 +187,6 @@
       this.resetForm()
       // 处理折叠的默认值
       this.dowClass = !this.defaultSpread;
-      console.log('createdcreatedcreated');
     },
     watch:{
       formItemLists:{
