@@ -653,15 +653,32 @@
         if (this.keyCode === 13 && this._items.props.type === 'text') {
           return;
         }
-
+        const ispassword = this._items.props.ispassword;
         const value = event.target.value;
+        // 只要不是加密文本的撤销操作。都保存下旧值
+        if (!((this.isPressControl || this.isMousePaste) && (ispassword && this.keyCode === 90))) {
+          // 缓存历史值
+          this.oldInputValue.push(this._items.value);
+        }
+
         this.selectionStart = event.target.selectionStart;
         // 输入中文时，新增文字的插入位置需要根据Math.max(this.selectionStart - cursorOffset, 0)矫正
         const insertTextPosion = cursorOffset ? Math.max(this.selectionStart - cursorOffset, 0) : this.selectionStart;
 
         // 按ctrl,command键时
         if (this.isPressControl || this.isMousePaste) {
-          this._items.value = value;
+          // 修复指定位置粘贴问题
+          if (ispassword && this.keyCode === 86) {
+            const charArr = this._items.value.split('');
+            charArr.splice(this.pastePosition, 0, this.clipboardData);
+            this._items.value = charArr.join('');
+          } else if (ispassword && this.keyCode === 90) {
+            // 撤销操作
+            this._items.value = this.oldInputValue.pop();
+          } else {
+            this._items.value = value;
+          }
+          
           this.valueChange();
           this.isMousePaste = false; // 手动把右键粘贴标志改为false
           return;
@@ -669,15 +686,18 @@
 
         // 按回车换行
         if (this.keyCode === 13 && this._items.props.type === 'textarea') {
-          this._items.value = `${this._items.value}\n`;
+          const charArr = this._items.value.split('');
+          charArr.splice(insertTextPosion - 1, 0, '\n');
+          this._items.value = charArr.join('');
           this.valueChange();
           return;
         }
-        
+
         // 按退格键键时
-        if (this.keyCode === 8) {
+        if (this.keyCode === 8 && (value.length < this._items.value.length)) {
           const charArr = this._items.value.split('');
-          charArr.splice(this.selectionStart, 1);
+          const num = this._items.value.length - value.length;
+          charArr.splice(this.selectionStart, num);
           this._items.value = charArr.join('');
           this.valueChange();
           return;
@@ -689,11 +709,15 @@
         }
         
         // 手动把新加的输入值和原来的值进行拼接
-        const charArr = this._items.value.split('');
         if (value.length > this._items.value.length) {
+          const charArr = this._items.value.split('');
           charArr.splice(insertTextPosion - 1, 0, this.keyData);
           this._items.value = charArr.join('');
         } 
+        // 选中部分文本进行替换的情况
+        if (value.length < this._items.value.length) {
+          this._items.value = value;
+        }
         
         this.valueChange();
 
@@ -1835,7 +1859,12 @@
       // 监听粘贴
       listenChinese() {
         this.$once('bindCompositionend', () => {
-          const dom = this.$refs[this._items.field].$el.children[0];
+          let dom;
+          if (this._items.props.type === 'textarea') {
+            dom = this.$refs[this._items.field].$el.querySelector('textarea');
+          } else {
+            dom = this.$refs[this._items.field].$el.querySelector('input');
+          }
           dom.addEventListener('compositionstart', () => {
             this.isInputChinese = true;
           });
@@ -1844,8 +1873,11 @@
             this.isInputChinese = false;
             this.inputChange(e, Math.max(this.keyData.length - 1, 0));
           });
-          dom.addEventListener('paste', () => {
+          dom.addEventListener('paste', (e) => {
             this.isMousePaste = true;
+            const clipboardData = e.clipboardData || window.clipboardData;
+            this.clipboardData = clipboardData.getData('text');
+            this.pastePosition = e.target.selectionStart;
           });
         });
       },
@@ -1866,6 +1898,9 @@
       this.isInputChinese = false; // 是否在输入中文
       this.isPressControl = false; // 是否触发ctrl或command按键
       this.isMousePaste = false; // 监听鼠标粘贴
+      this.clipboardData = ''; // 剪切板内容
+      this.pastePosition = -1; // 粘贴位置
+      this.oldInputValue = []; // 用于加密input撤销时回滚数据
     },
     mounted() {
       this.listenChinese();
