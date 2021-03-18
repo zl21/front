@@ -18,7 +18,7 @@
     >
       <keep-alive>
         <component
-          :is="initComponent(ItemLists[item],index)"
+          :is="ItemLists[item].component"
           :items="ItemLists[item]"
           :label-width="90"
         />
@@ -68,6 +68,7 @@
       return {
         dowClass: true, // 默认全部展开  false为折叠状态
         ItemLists: {}, // 储存列表数据
+        component:'', // 设置组件名称
         formArray: [], // 存储列表数据
       };
     },
@@ -88,6 +89,7 @@
             item._index = Math.random()
             this.ItemLists[item.colname] = JSON.parse(JSON.stringify(item));
           }
+          this.ItemLists[item.colname].component = this.initComponent(this.ItemLists[item.colname],index)
           this.formArray.push(JSON.parse(JSON.stringify(item)));
           return item;
         });
