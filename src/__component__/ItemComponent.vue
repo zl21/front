@@ -654,6 +654,7 @@
             charArr.splice(this.pastePosition, 0, this.clipboardData);
             this._items.value = charArr.join('');
           } else if (ispassword && this.keyCode === 90) {
+            // 撤销操作
             this._items.value = this.oldInputValue.pop();
           } else {
             this._items.value = value;
@@ -689,11 +690,15 @@
         }
         
         // 手动把新加的输入值和原来的值进行拼接
-        const charArr = this._items.value.split('');
         if (value.length > this._items.value.length) {
+          const charArr = this._items.value.split('');
           charArr.splice(insertTextPosion - 1, 0, this.keyData);
           this._items.value = charArr.join('');
         } 
+        // 选中部分文本进行替换的情况
+        if (value.length < this._items.value.length) {
+          this._items.value = value;
+        }
         
         this.valueChange();
 
