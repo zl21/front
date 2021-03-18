@@ -9,7 +9,6 @@ export default {
         if(this.items.linkage && this.items.linkage.hidecolumn){
           hideColumn(this,this.items.linkage.hidecolumn)
         }
-        
       }
     }
   },

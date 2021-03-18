@@ -2,7 +2,7 @@
   <div class="panelForm">
     <div
       v-for="(item,index) in Object.keys(formItemLists)"
-      :key="formItemLists[item]._index"
+      :key="index"
     >
       <Collapse
         :value="collapseValue"
@@ -20,7 +20,7 @@
           >
             <div
             v-for="(temp,index) in Object.keys(formItemLists[item].childs)"
-            :key="formItemLists[item].childs[temp]._index"
+            :key="index"
             :style="formItemLists[item].childs[temp].styles"
           >
             <keep-alive>
@@ -70,11 +70,9 @@ export default {
     formItemLists(){
       this.$R3loading.show(this.$route.params.tableName)
       let data = JSON.parse(JSON.stringify(this.defaultData))
-
       if(!data.addcolums){
         return []
       }
-
 
       // 处理单字段分组
       let sumObject = {
@@ -97,15 +95,16 @@ export default {
       
       // 数组转对象处理，避免vue渲染时的指针问题
       data.addcolums.map((item,index) => {
-        item._index = Math.random()
+        this.$set(item,'_index',Math.random())
         item.childs = {...layoutAlgorithm(Number(data.objviewcol), item.childs?item.childs:[item.child])};
 
         Object.keys(item.childs).map(temp => {
-          item.childs[temp]._index = `${index}_${temp}_${Math.random()}`
+          this.$set(item.childs[temp],'_index',`${index}_${temp}_${Math.random()}`)
           if(this.readonly){
             item.childs[temp].readonly = this.readonly
           }
-          item.childs[temp].styles = this.setDiv(item.childs[temp])
+          // item.childs[temp].styles = this.setDiv(item.childs[temp])
+          this.$set(item.childs[temp],'styles',this.setDiv(item.childs[temp]))
           item.childs[temp].tableName = this.$route.params.tableName;
           item.childs[temp].itemId = this.$route.params.itemId;
           item.childs[temp]  = new RenderComponent(JSON.parse(JSON.stringify(item.childs[temp]))).itemConversion();
@@ -136,7 +135,10 @@ export default {
     // 计算属性的 div 的坐标起始点
     setDiv() {
       return item => {
-        return ` grid-column:${item.x}/${item.col + item.x};grid-row:${item.y}/${item.y + item.row};`
+        if(item.x === -1 || item.y === -1){
+          return 'display: none';
+        }
+        return `grid-column:${item.x}/${item.col + item.x};grid-row:${item.y}/${item.y + item.row};`
       };
     },
   },
@@ -166,14 +168,8 @@ export default {
       const columns = Number(this.defaultData.objviewcol) || 4;
       let childs = layoutAlgorithm(columns, Object.values(array));
       Object.keys(childs).map(temp => {
-        childs[temp]._index =`${panelIndex}_${temp}_${Math.random()}`
-        if(this.readonly){
-          childs[temp].readonly = this.readonly
-        }
-        childs[temp].styles = this.setDiv(childs[temp])
-        debugger
-        childs[temp].tableName = this.$route.params.tableName;
-        childs[temp].itemId = this.$route.params.itemId;
+        let a = this.$_live_getChildComponent(this,`${this.tableName}${childs[temp].colname}`)
+        a.$el.style = this.setDiv(childs[temp])
         return temp
       })
       return childs

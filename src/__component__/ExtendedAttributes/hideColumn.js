@@ -2,6 +2,7 @@
 let eventLoops = []
 let t = null
 let instance = null
+let flag = false
 var proxy = new Proxy(eventLoops, {
   set:function (target, key, value) {
     if(value.source){
@@ -40,6 +41,7 @@ function hideColumn(source,configuration) {
 }
 
 function HiddenFields(){
+  flag = false
   eventLoops.every(item => {
     item.configuration.every(temp => {
       // 当temp中ishide为true时，则refval控制字段的隐藏。当ishide为false时，则控制字段的显示
@@ -52,11 +54,12 @@ function HiddenFields(){
         let target = item.source.$_live_getChildComponent(panelForm,`${item.source.activeTab.tableName}${temp.target}`)
         let panelIndex = target.items._index.split('_')[0];
         let itemIndex = target.items._index.split('_')[1]
+        if(panelForm.defaultData.addcolums[panelIndex].childs[itemIndex].show === undefined){
+          flag = true
+        }
         panelForm.formItemLists[panelIndex].childs[itemIndex].show = false
-        panelForm.formItemLists[panelIndex]._index = Math.random()
         panelForm.panelRedraw(panelIndex,Object.values(panelForm.formItemLists[panelIndex].childs))
-        // panelForm.formItemLists[panelIndex].childs = panelForm.panelRedraw(Object.values(panelForm.formItemLists[panelIndex].childs))
-        // panelForm.formItemLists[panelIndex]._index = Math.random()
+        
       }
       return true
     })
@@ -65,9 +68,9 @@ function HiddenFields(){
   
   // 
 
-  // setTimeout(() => {
+  // if(flag){
   //   instance.$_live_getChildComponent(window.vm,'panelForm').$forceUpdate()
-  // },1000)
+  // }
   
 }
 

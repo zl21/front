@@ -24,7 +24,7 @@ class CustomCheckbox {
   constructor(item) {
     this.item = item; 
     // const DefaultCheckbox = Vue.extend(Checkbox);
-
+    
     this.Input =  deepClone(Checkbox);;
     delete this.Input._Ctor;
   }
