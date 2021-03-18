@@ -673,6 +673,7 @@
             charArr.splice(this.pastePosition, 0, this.clipboardData);
             this._items.value = charArr.join('');
           } else if (ispassword && this.keyCode === 90) {
+            // 撤销操作
             this._items.value = this.oldInputValue.pop();
           } else {
             this._items.value = value;
@@ -686,7 +687,7 @@
         // 按回车换行
         if (this.keyCode === 13 && this._items.props.type === 'textarea') {
           const charArr = this._items.value.split('');
-          charArr.splice(this.selectionStart, 0, '\n');
+          charArr.splice(insertTextPosion - 1, 0, '\n');
           this._items.value = charArr.join('');
           this.valueChange();
           return;
@@ -708,11 +709,15 @@
         }
         
         // 手动把新加的输入值和原来的值进行拼接
-        const charArr = this._items.value.split('');
         if (value.length > this._items.value.length) {
+          const charArr = this._items.value.split('');
           charArr.splice(insertTextPosion - 1, 0, this.keyData);
           this._items.value = charArr.join('');
         } 
+        // 选中部分文本进行替换的情况
+        if (value.length < this._items.value.length) {
+          this._items.value = value;
+        }
         
         this.valueChange();
 
@@ -1854,7 +1859,12 @@
       // 监听粘贴
       listenChinese() {
         this.$once('bindCompositionend', () => {
-          const dom = this.$refs[this._items.field].$el.children[0];
+          let dom;
+          if (this._items.props.type === 'textarea') {
+            dom = this.$refs[this._items.field].$el.querySelector('textarea');
+          } else {
+            dom = this.$refs[this._items.field].$el.querySelector('input');
+          }
           dom.addEventListener('compositionstart', () => {
             this.isInputChinese = true;
           });
