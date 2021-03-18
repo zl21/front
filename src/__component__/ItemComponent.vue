@@ -667,7 +667,7 @@
         // 按回车换行
         if (this.keyCode === 13 && this._items.props.type === 'textarea') {
           const charArr = this._items.value.split('');
-          charArr.splice(this.selectionStart, 0, '\n');
+          charArr.splice(insertTextPosion - 1, 0, '\n');
           this._items.value = charArr.join('');
           this.valueChange();
           return;
