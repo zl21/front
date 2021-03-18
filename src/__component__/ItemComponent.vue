@@ -1814,7 +1814,12 @@
       // 监听粘贴
       listenChinese() {
         this.$once('bindCompositionend', () => {
-          const dom = this.$refs[this._items.field].$el.children[0];
+          let dom;
+          if (this._items.props.type === 'textarea') {
+            dom = this.$refs[this._items.field].$el.querySelector('textarea');
+          } else {
+            dom = this.$refs[this._items.field].$el.querySelector('input');
+          }
           dom.addEventListener('compositionstart', () => {
             this.isInputChinese = true;
           });
