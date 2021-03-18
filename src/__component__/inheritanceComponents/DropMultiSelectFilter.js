@@ -54,6 +54,8 @@
      this.setTemple();
     //  修改的Methods
      this.mergeMethods();
+    //  自己的methods 
+    this.setMethods();
      this.pageSize = defaultrange();
      //  设置组件data
      this.setData()
@@ -64,18 +66,29 @@
    }
    mounted(){
     //  渲染后的挂载
+    setTimeout(()=>{
+      this.valueData = this.value;
+    },10)
      if(this.pageSize){
         this.$refs.MultiSelectFilter.pageSize = this.pageSize;
      }
      this.$refs.MultiSelectFilter.postTableData = this.postTableData;
    }
+   setMethods(){
+     this.methods =  {
+      onChange:function(value){
+        this.valueData = value;
+        this.$emit('on-Change',value);
+      }
+     }
+   }
  
    setTemple(){
      this.template =  `
      <div>
-         <MultiSelectFilter ref="MultiSelectFilter" v-bind="items.props"></MultiSelectFilter>
+         <MultiSelectFilter ref="MultiSelectFilter" v-bind="items.props" v-model="valueData" @on-valueChange="onChange"></MultiSelectFilter>
         </div>
-       `;  
+      `;  
    }
    setData(){
     //  修改传参的props
@@ -85,6 +98,7 @@
     this.data = ()=>{
       return {
         items:items,
+        valueData:this.value,
         pageSize:this.pageSize,
         postTableData:this.postTableData
       }
@@ -92,15 +106,28 @@
    }
    init() {
     // 重新渲染组件
+    if (this.item.Components) {
+      return this.item.Components;
+    }
      let ExtMultiSelectFilter = Vue.extend({
+      model: {
+        prop: 'value',
+        event: 'on-Change',
+      },
+       props:{
+        value: {
+          type: [Array, String]
+        }
+       },
        name:'extMultiSelectFilter',
        data:this.data,
        components:this.components,
        template:this.template,
+       methods:this.methods,
        mounted:this.mounted
      });
-
-     return new ExtMultiSelectFilter().$options;
+     this.item.Components = new ExtMultiSelectFilter().$options;
+     return this.item.Components;
    }
  
    // 合并props
