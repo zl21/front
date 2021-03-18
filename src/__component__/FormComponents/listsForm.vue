@@ -18,7 +18,7 @@
     >
       <keep-alive>
         <component
-          :is="initComponent(ItemLists[item],index)"
+          :is="ItemLists[item].component"
           :items="ItemLists[item]"
           :label-width="90"
         />
@@ -68,12 +68,14 @@
       return {
         dowClass: true, // 默认全部展开  false为折叠状态
         ItemLists: {}, // 储存列表数据
+        component:'', // 设置组件名称
         formArray: [], // 存储列表数据
       };
     },
     methods: {
       resetForm() {
         // 处理合并字段
+        console.log(1212);
         this.ItemLists = {}
         this.formArray = []
         this.formItemLists.map((item, index) => {
@@ -88,12 +90,14 @@
             item._index = Math.random()
             this.ItemLists[item.colname] = JSON.parse(JSON.stringify(item));
           }
+          this.ItemLists[item.colname].component = this.initComponent(this.ItemLists[item.colname],index)
           this.formArray.push(JSON.parse(JSON.stringify(item)));
           return item;
         });
       },
       initComponent(item) { // init组件
         const Render = new RenderComponent(item, this.id);
+        console.log(Render.Initialize(),'Render.Initialize()');
         return Render.Initialize();
       },
       toggle() { // 折叠切换
@@ -185,6 +189,7 @@
       this.resetForm()
       // 处理折叠的默认值
       this.dowClass = !this.defaultSpread;
+      console.log('createdcreatedcreated');
     },
     watch:{
       formItemLists:{
