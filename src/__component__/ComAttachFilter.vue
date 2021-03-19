@@ -186,6 +186,7 @@
       attachFilterInput(value) {
         this.value = value;
         this.selected = [];
+
         this.inputValueChange(value);
       },
       inputValueChange(value) {
@@ -211,9 +212,11 @@
       attachFilterChange(value) {
         this.value = value;
         // 谢世华  为了处理标准列表界面字段数据消失问题
-        if (value.indexOf('已经选中') >= 0) {
-          this.valueChange('change');
-        }
+        // if (value.indexOf('已经选中') >= 0) {
+        //   this.valueChange('change');
+        // }
+        this.valueChange('change');
+
       },
       attachFilterSelected(row) {
         this.value = row.label;

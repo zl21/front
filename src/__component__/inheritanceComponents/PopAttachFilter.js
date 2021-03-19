@@ -157,18 +157,22 @@ class CustomAttachFilter {
   // 合并methods
   mergeMethods() {
     const _self = this;
-    this.Input.methods.valueChange = function (type) { // 重写valueChange事件,给父节点的value复制，实现双向数据绑定效果
+    this.Input.methods.valueChange = function (type,value) { // 重写valueChange事件,给父节点的value复制，实现双向数据绑定效果
       window.clearTimeout(this.clickTimer);
       this.clickTimer = window.setTimeout(() => {
         if (type === 'clear') {
-          debugger
           this.$emit('valuechange', { value: null, selected: [], type }, this);
           this.$_live_getChildComponent(this.$_live_getChildComponent(window.vm, this.$store.state.global.activeTab.keepAliveModuleName), `${this.$route.params.tableName}${_self.item.colname}`).value = [];
         } else {
           // 处理弹窗单选数据
           // eslint-disable-next-line no-nested-ternary
           this.$emit('valuechange', { value: this.propstype.fkdisplay === 'pop' ? ((this.selected && this.selected.length > 0) ? this.selected[0].ID : '') : this.value, selected: this.selected, type }, this);
-          this.$_live_getChildComponent(this.$_live_getChildComponent(window.vm, this.$store.state.global.activeTab.keepAliveModuleName), `${this.$route.params.tableName}${_self.item.colname}`).test(this.selected)
+          console.log(this.selected,'121212');
+          let valueData = this.selected;
+          if(!valueData[0]){
+            valueData = this.value;
+          }
+          this.$_live_getChildComponent(this.$_live_getChildComponent(window.vm, this.$store.state.global.activeTab.keepAliveModuleName), `${this.$route.params.tableName}${_self.item.colname}`).test(valueData)
         }
       }, 200);
     };
