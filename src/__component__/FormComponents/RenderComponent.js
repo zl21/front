@@ -4,6 +4,9 @@
 import Vue from 'vue';
 import FormItem from './FormItem.vue';
 
+// 处理列表逻辑
+import { SetListProps } from './list/props';
+
 String.prototype.TextFilter = function TextFilter() {
   const pattern = new RegExp("[`~%!@#^=''?~！@#￥……&——‘”“'？*()（），,+。.、]"); // []内输入你要过滤的字符
   let rs = '';
@@ -69,8 +72,20 @@ export default class RenderComponent {
     // 初始化对象的语句
     this.id = id;
     this.item = item;
+    this.initProps();
+    
   }
+  /***
+   * 判断是否是列表数据
+   */
+   initProps(){
+     
+     if(this.id ){
+        this.item = new SetListProps(this.item).init();
+     }
 
+   }
+  
   /**
    *处理单对象表单display字段，转换成和列表界面的统一
    *
@@ -92,6 +107,7 @@ export default class RenderComponent {
 
   Initialize() {
     const mixins = require('./formItemMixin').default;
+    
     this.ObjectToMerge(FormItem.methods, mixins.methods);
     Object.assign(FormItem.methods, mixins.methods);
     Vue.component(`${this.id}${this.item.colname.TextFilter()}`, Vue.extend(Object.assign({ mixins: [mixins], isKeepAliveModel: true },FormItem)));

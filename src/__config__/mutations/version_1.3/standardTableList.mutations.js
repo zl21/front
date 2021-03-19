@@ -71,7 +71,11 @@ export default {
             }
 
             if (d.display && d.display === 'OBJ_SELECT') {
-              d.default = indexDB[c].join(',');
+              if(Array.isArray(indexDB[c])){
+                d.default = indexDB[c].join(',');
+              }else{
+                d.default = indexDB[c];
+              }
             }
           }
         });
