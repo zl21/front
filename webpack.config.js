@@ -30,7 +30,7 @@ module.exports = env => ({
   entry: {
     index: './main.js',
   },
-  : {
+  output: {
     vue: 'Vue',
     vuex: 'Vuex',
     'vue-router': 'VueRouter',
