@@ -25,7 +25,7 @@
           >
             <keep-alive>
               <component
-                :is="initComponent(formItemLists[item].childs[temp],index)"
+                :is="formItemLists[item].childs[temp].component"
                 :items="formItemLists[item].childs[temp]"
                 :label-width="90"
                 
@@ -100,13 +100,14 @@ export default {
         item._index = Math.random()
         item.childs = {...layoutAlgorithm(Number(data.objviewcol), item.childs?item.childs:[item.child])};
 
-        Object.keys(item.childs).map(temp => {
+        Object.keys(item.childs).map((temp,index) => {
           item.childs[temp]._index = Math.random()
           if(this.readonly){
             item.childs[temp].readonly = this.readonly
           }
           item.childs[temp].tableName = this.$route.params.tableName;
           item.childs[temp].itemId = this.$route.params.itemId;
+          item.childs[temp].component = this.initComponent(item.childs[temp],index);
           item.childs[temp]  = new RenderComponent(JSON.parse(JSON.stringify(item.childs[temp]))).itemConversion();
           return temp
         })
