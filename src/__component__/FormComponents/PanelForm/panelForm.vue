@@ -20,12 +20,12 @@
           >
             <div
             v-for="(temp,index) in Object.keys(formItemLists[item].childs)"
-            :key="index"
+            :key="formItemLists[item].childs[temp]._index"
             :style="formItemLists[item].childs[temp].styles"
           >
             <keep-alive>
               <component
-                :is="initComponent(formItemLists[item].childs[temp],index)"
+                :is="formItemLists[item].childs[temp].component"
                 :items="formItemLists[item].childs[temp]"
                 :label-width="90"
                 
@@ -45,6 +45,7 @@ import DownComponent from '../../DownComponent';
 import FormItem from '../FormItem';
 import RenderComponent from '../RenderComponent';
 import ParameterDataProcessing from '../parameterDataProcessing';
+import LinkageRelationships from '../../ExtendedAttributes/LinkageRelationships';
 
 export default {
   components:{ DownComponent, FormItem },
@@ -74,6 +75,8 @@ export default {
         return []
       }
 
+      data.addcolums = new LinkageRelationships(JSON.parse(JSON.stringify(this.defaultData)).addcolums).initializeData()
+
       // 处理单字段分组
       let sumObject = {
         hrdisplay: 'expand',
@@ -95,11 +98,10 @@ export default {
       
       // 数组转对象处理，避免vue渲染时的指针问题
       data.addcolums.map((item,index) => {
-        this.$set(item,'_index',Math.random())
         item.childs = {...layoutAlgorithm(Number(data.objviewcol), item.childs?item.childs:[item.child])};
 
-        Object.keys(item.childs).map(temp => {
-          this.$set(item.childs[temp],'_index',`${index}_${temp}_${Math.random()}`)
+        Object.keys(item.childs).map((temp) => {
+          item.childs[temp]._index = `${index}_${temp}_${Math.random()}`
           if(this.readonly){
             item.childs[temp].readonly = this.readonly
           }
@@ -107,6 +109,7 @@ export default {
           this.$set(item.childs[temp],'styles',this.setDiv(item.childs[temp]))
           item.childs[temp].tableName = this.$route.params.tableName;
           item.childs[temp].itemId = this.$route.params.itemId;
+          item.childs[temp].component = this.initComponent(item.childs[temp],index);
           item.childs[temp]  = new RenderComponent(JSON.parse(JSON.stringify(item.childs[temp]))).itemConversion();
           return temp
         })
@@ -164,12 +167,12 @@ export default {
       const Render = new RenderComponent(defaultItem, this.tableName);
       return Render.Initialize();
     },
-    panelRedraw(panelIndex,array){
+    panelRedraw(array){
       const columns = Number(this.defaultData.objviewcol) || 4;
       let childs = layoutAlgorithm(columns, Object.values(array));
       Object.keys(childs).map(temp => {
         let a = this.$_live_getChildComponent(this,`${this.tableName}${childs[temp].colname}`)
-        a.$el.style = this.setDiv(childs[temp])
+        a.$el.parentNode.style = this.setDiv(childs[temp])
         return temp
       })
       return childs

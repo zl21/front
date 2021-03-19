@@ -1,8 +1,6 @@
 
 let eventLoops = []
 let t = null
-let instance = null
-let flag = false
 var proxy = new Proxy(eventLoops, {
   set:function (target, key, value) {
     if(value.source){
@@ -33,7 +31,6 @@ var proxy = new Proxy(eventLoops, {
 });
 
 function hideColumn(source,configuration) {
-  instance = source;
   proxy.push({
     source,
     configuration
@@ -41,39 +38,72 @@ function hideColumn(source,configuration) {
 }
 
 function HiddenFields(){
-  flag = false
   eventLoops.every(item => {
     item.configuration.every(temp => {
+
       // 当temp中ishide为true时，则refval控制字段的隐藏。当ishide为false时，则控制字段的显示
-      if(temp.refval.split(',').includes(item.source.value)){  //判断当前字段与配置的value值进行对比
+      let panelForm = item.source.$_live_getChildComponent(window.vm,'panelForm')
+      let target = item.source.$_live_getChildComponent(panelForm,`${item.source.activeTab.tableName}${temp.target}`)
+      let panelIndex = target.items._index.split('_')[0];
+      let itemIndex = target.items._index.split('_')[1]
+      if(!item.source.value && !item.source.items.fkobj && item.source.items.display != 'OBJ_SELECT'){  //当来源字段不是外健字段和select字段时，并且值为空时不做处理
+        return true
+      }
+      if((JudgeValue(item.source,temp) && !temp.ishide) || (!JudgeValue(item.source,temp) && temp.ishide)){  //判断当前字段与配置的value值进行对比
         // console.log('显示的字段',temp.target)
-        
+        panelForm.formItemLists[panelIndex].childs[itemIndex].show = true
       }else{
         // console.log('隐藏的字段',item.source)
-        let panelForm = item.source.$_live_getChildComponent(window.vm,'panelForm')
-        let target = item.source.$_live_getChildComponent(panelForm,`${item.source.activeTab.tableName}${temp.target}`)
-        let panelIndex = target.items._index.split('_')[0];
-        let itemIndex = target.items._index.split('_')[1]
-        if(panelForm.defaultData.addcolums[panelIndex].childs[itemIndex].show === undefined){
-          flag = true
-        }
-        panelForm.formItemLists[panelIndex].childs[itemIndex].show = false
-        panelForm.panelRedraw(panelIndex,Object.values(panelForm.formItemLists[panelIndex].childs))
-        
+        panelForm.formItemLists[panelIndex].childs[itemIndex].show = false    
       }
+      panelForm.panelRedraw(Object.values(panelForm.formItemLists[panelIndex].childs))
       return true
     })
     return true
   })
   
-  // 
-
-  // if(flag){
-  //   instance.$_live_getChildComponent(window.vm,'panelForm').$forceUpdate()
-  // }
   
 }
 
+
+function JudgeValue(source,conf) {
+  let value = source.value
+  switch(conf.expression){
+    case '>':
+      return Number(value) > Number(conf.refval);
+      break;
+    case '<':
+      return Number(value) < Number(conf.refval);
+      break;
+    case '!=':
+      return !conf.refval.split(',').includes(value);
+      break;
+    case '=':
+    default:
+      if(source.$_live_type.isArray(value)){  //处理值为数组类型字段
+        if(source.items.fkobj){  //处理外健字段
+          value = value.map(item => conf.match === 'label'?item.Label:item.ID)
+        }
+
+        if(source.items.display === 'OBJ_SELECT' && conf.match === 'label'){
+          let arr = source.items.combobox.filter(item => value.includes(item.limitval))
+          value = arr.length > 0 ? arr[0].limitdesc : ''
+        }
+        
+        
+        return conf.refval.split(',').filter((x)=>{
+          return value.includes(String(x))
+        }).length > 0       
+      }else{
+        if(source.items.display === 'OBJ_SELECT' && conf.match === 'label'){
+          let arr = source.items.combobox.filter(item => item.limitval == value)
+          value = arr.length > 0 ? arr[0].limitdesc : ''
+        }
+        return conf.refval.split(',').includes(value);
+      }
+      break;
+  }
+}
 
 
 export default hideColumn 

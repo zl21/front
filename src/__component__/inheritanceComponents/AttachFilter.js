@@ -8,7 +8,7 @@
 
 import Vue from 'vue';
 import { MopMultiSelect } from '@syman/ark-ui-bcl';
-
+// import MopMultiSelect from 'arkui_BCL/MopMultiSelect';
 import dataProp from '../../__config__/props.config';
 import regExp from '../../constants/regExp';
 import network from '../../__utils__/network';

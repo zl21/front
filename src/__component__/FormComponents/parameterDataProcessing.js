@@ -131,7 +131,7 @@ export default class ParameterDataProcessing {
 
     // fk外健
     if (this.item.display === 'OBJ_FK') {
-      if (['mrp', 'drp', 'pop', 'mop'].includes(this.item.fkobj.searchmodel) && this.item.refobjid) {
+      if (['mrp', 'drp', 'pop', 'mop'].includes(this.item.fkobj.searchmodel) && (this.item.refobjid && this.item.refobjid != '-1')) {
         let arr = []
         if(this.item.fkobj.searchmodel === 'mop'){
           arr.push({
