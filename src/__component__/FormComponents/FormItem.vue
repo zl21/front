@@ -60,7 +60,7 @@
       <span :title="items.coldesc">{{ items.coldesc }}:</span>
     </span>
     <div
-      :class=" _items.props.row >1 ? 'itemComponent height100':'itemComponent'"
+      :class=" [_items.props.row >1 ? 'itemComponent height100':'itemComponent',items.isuppercase?'isuppercase':'']"
       :style="_items.props.type==='ImageUpload' ? 'overflow:visible' :''"
     >
       <!-- <Input
@@ -862,7 +862,7 @@
   };
 </script>
 
-<style lang="less" scoped>
+<style lang="less" >
 .ItemComponentRoot {
   width: 100%;
   height: 100%;
@@ -905,6 +905,13 @@
     position: relative;
     top: 3px;
     right: 3px;
+  }
+
+  // 处理大小写转换
+  .isuppercase{
+    input{
+      text-transform:uppercase;
+    }
   }
 }
 textarea.ark-input{

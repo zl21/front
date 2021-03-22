@@ -216,7 +216,7 @@ export default {
         Object.keys(this.formItemLists[temp].childs).map(j => {
           let item = this.formItemLists[temp].childs[j];
           const components = this.$_live_getChildComponent(this, `${this.tableName}${item.colname.TextFilter()}`);
-          const value = components.value;
+          const value = item.isuppercase && components.value ?components.value.toUpperCase():components.value;
           const json = this.dealData(item, value);
           formData = Object.assign({}, formData, json);
           return item;
@@ -230,7 +230,7 @@ export default {
       let formData = {};
       this.formArray.map((item) => {
         const components = this.$_live_getChildComponent(this, `${this.tableName}${item.colname.TextFilter()}`);
-        const value = components.value;
+        const value = item.isuppercase && components.value ?components.value.toUpperCase():components.value;
         const json = {
           [item.colname]:value
         };
