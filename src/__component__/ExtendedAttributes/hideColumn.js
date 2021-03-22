@@ -54,7 +54,11 @@ function HiddenFields(){
         panelForm.formItemLists[panelIndex].childs[itemIndex].show = true
       }else{
         // console.log('隐藏的字段',item.source)
-        panelForm.formItemLists[panelIndex].childs[itemIndex].show = false    
+        panelForm.formItemLists[panelIndex].childs[itemIndex].show = false 
+        if(temp.clear){  //是否配置了隐藏字段时需要清空数据
+          target.value = null 
+        }  
+        
       }
       panelForm.panelRedraw(Object.values(panelForm.formItemLists[panelIndex].childs))
       return true

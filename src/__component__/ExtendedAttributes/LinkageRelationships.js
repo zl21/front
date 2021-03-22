@@ -13,7 +13,8 @@ export default class LinkageRelationships{
 
     /** 定义linkage数据模型 */
     this.linkage = {
-      hidecolumn: []
+      hidecolumn: [],
+      setAttributes:[]
     }
   }
 
@@ -47,6 +48,11 @@ export default class LinkageRelationships{
           this.hideColumn(temp)
         }
 
+        if(temp.webconf && temp.webconf.setAttributes){
+          temp.setAttributes = temp.webconf && temp.webconf.setAttributes
+          this.setAttributes(temp)
+        }
+
         return true
       })
       return true
@@ -62,9 +68,36 @@ export default class LinkageRelationships{
     source.linkage = source.linkage || JSON.parse(JSON.stringify(this.linkage))
     let obj = Object.assign(target.hidecolumn,{
       target: target.colname,
-      clear: target.clearWhenHidden
+      clear: target.webconf && target.webconf.clearWhenHidden
     })
     source.linkage.hidecolumn.push(obj)
     delete target.hidecolumn
+  }
+
+  // 处理字段静态规则配置
+  setAttributes(target){
+    target.setAttributes.field.every(item => {
+      let source = this.findItem(item.refcolumn);
+      source.linkage = source.linkage || JSON.parse(JSON.stringify(this.linkage))
+      let obj = {
+        field: {
+          refcolumn: target.colname,
+          refval: item.refval
+        },
+        props: target.setAttributes.props,
+        source: target.setAttributes.field
+      }
+      source.linkage.setAttributes.push(obj)
+
+      // 对象数组去重
+      const hash = {};
+      const newArray = source.linkage.setAttributes.reduce((item, next)=>{
+          hash[next.field.refcolumn] ? '' : hash[next.field.refcolumn] = true && item.push(next);
+          return item;
+      },[])
+      source.linkage.setAttributes = newArray
+      return item
+    })
+    delete target.setAttributes
   }
 }

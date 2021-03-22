@@ -6,22 +6,22 @@
       :style="labelStyle"
     >
       <Poptip
-        v-if="_items.props.comment"
+        v-if="items.comment"
         word-wrap
         trigger="hover"
         transfer
         width="200"
-        :content="_items.props.comment"
+        :content="items.comment"
       >
         <div
           slot="content"
           class="api"
         >
-          <span><span>{{ _items.props.comment }}</span>
+          <span><span>{{ items.comment }}</span>
             <a
-              v-if="_items.props.webconf && _items.props.webconf.Outside"
+              v-if="items.Outside"
               style=""
-              :href="_items.props.webconf.Outside"
+              :href="items.Outside"
               target="_blank"
             >...</a>
           </span>
@@ -29,29 +29,29 @@
         <i class="iconfont iconios-information-circle-outline" />
       </Poptip>
       <span
-        v-if="_items.isnotnull"
+        v-if="items.isnotnull"
         class="label-tip"
       >*</span>
-      <template v-if="getVersion() === '1.4' && _items.props.fkdisplay === 'pop' && type==='PanelForm'">
+      <template v-if="getVersion() === '1.4' && items.fkobj && items.fkobj.fkdisplay === 'pop' && items.detailType">
         <!-- 路由跳转 -->
-        <template v-if="!!_items.value &&_items.props.Selected &&_items.props.Selected[0] && !!_items.props.Selected[0].ID && _items.props.Selected[0].ID !=='-1'&& _items.props.Selected[0].ID !==0 && _items.props.Selected[0].ID !=='0'">
+        <template v-if="value">
           <i
             class="iconfont iconbj_link"
             data-target-tag="fkIcon"
             style="color: #0f8ee9; cursor: pointer; font-size: 12px"
-            @click="routerNext(_items.props.Selected)"
+            @click="routerNext(value)"
           />
         </template>
 
       </template>
-      <template v-if="getVersion() === '1.4' && _items.props.fkdisplay === 'drp' && type==='PanelForm'">
+      <template v-if="getVersion() === '1.4' && items.fkobj && items.fkobj.fkdisplay === 'drp' && items.detailType">
         <!-- 路由跳转 -->
-        <template v-if="!!_items.value && _items.props.defaultSelected && _items.props.defaultSelected[0] && !!_items.props.defaultSelected[0].ID && _items.props.defaultSelected[0].ID !=='-1'&& _items.props.defaultSelected[0].ID !=='0'&& _items.props.defaultSelected[0].ID !==0">
+        <template v-if="value">
           <i
             class="iconfont iconbj_link"
             data-target-tag="fkIcon"
             style="color: #0f8ee9; cursor: pointer; font-size: 12px"
-            @click="routerNext(_items.props.defaultSelected)"
+            @click="routerNext(value)"
           />
         </template>
 
