@@ -25,10 +25,10 @@ export default {
     const treeData = {
       data: [], // 树结构列表数据
       name: 'uuu', // 定义查询参数
-      query: {
-        name: 'NAME', // 参数中的key:需要筛选的字段
-        id: 'ID'
-      },
+      // query: {//支持配置多参数
+      //   name: 'NAME', // 参数中的key:需要筛选的字段
+      //   id: 'ID'
+      // },
       placeholder: '88'// placeholder自定义
     };
     // await network.post('api',)
