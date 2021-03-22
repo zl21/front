@@ -9,6 +9,10 @@ export default {
         if(this.items.detailType && this.items.linkage && this.items.linkage.hidecolumn){
           hideColumn(this,this.items.linkage.hidecolumn)  
         }
+        if(this.items.isuppercase){
+          // 转大小写
+            //this.value = this.value.toUpperCase();
+        }
       }
     }
   },
