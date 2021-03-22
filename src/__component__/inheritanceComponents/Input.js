@@ -58,9 +58,9 @@ class CustomInput {
     if (this.item.type === 'NUMBER') {
       this.numericTypes();
     }
-    if (this.item.isuppercase) {
-      this.uppercase();
-    }
+    // if (this.item.isuppercase) {
+    //   this.uppercase();
+    // }
 
     if(this.item.display === 'OBJ_TEXTAREA'){
       defaultProps.type = {

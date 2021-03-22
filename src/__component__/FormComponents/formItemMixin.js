@@ -17,9 +17,11 @@ export default {
             setAttributes(this,this.items.linkage.setAttributes)  
           }
         }
-      
-
         
+        if(this.items.isuppercase){
+          // 转大小写
+            //this.value = this.value.toUpperCase();
+        }
       }
     }
   },
