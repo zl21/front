@@ -518,12 +518,10 @@
       //   this.searchTreeDatas.menuTreeQuery = value;
       //   this.treeDatas = this.getTreeDatas(this.searchTreeDatas);
       // },
-      menuTreeChange(arrayIDs, treeName, currentId, flag) {
+      menuTreeChange(treeName, currentId, flag, queryFilterData) {
         this.searchData.fixedcolumns = this.dataProcessing();
-        if (arrayIDs && arrayIDs.length > 0 && flag) {
-          this.searchData.reffixedcolumns = {
-            [treeName]: `in (${arrayIDs})`
-          };
+        if (Object.keys(queryFilterData) && Object.keys(queryFilterData).length > 0 && flag) {
+          this.searchData.reffixedcolumns = queryFilterData;
         } else if (this.searchData && this.searchData.reffixedcolumns) {
           delete this.searchData.reffixedcolumns;
         }
