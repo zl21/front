@@ -144,7 +144,7 @@
         default() {
           return true;
         }
-      }
+      },
     },
     data() {
       return {

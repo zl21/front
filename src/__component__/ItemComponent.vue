@@ -334,6 +334,16 @@
         @filechange="filechange"
       />
 
+      <!-- radio组件 -->
+      <radio-group
+        v-if="_items.type === 'radioGroup'"
+        :ref="_items.field"
+        v-model="_items.props.value"
+        :options="_items.props"
+        :form-item-value="_items.value"
+        @change="radioValueChange"
+      />
+      
       <!-- 自定义组件 -->
       <component
         :is="_items.componentName"
@@ -364,6 +374,7 @@
   import ComAttachFilter from './ComAttachFilter.vue';
   //   上传文件
   import Docfile from './docfile/DocFileComponent.vue';
+  import RadioGroup from './form/RadioGroup.vue';
 
 
   import {
@@ -372,6 +383,7 @@
   import createModal from './PreviewPicture/index';
   import EnumerableInput from './EnumerableInput.vue';
   import ExtentionInput from './ExtentionInput.vue';
+  import network, { urlSearchParams } from '../__utils__/network';
 
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
@@ -379,7 +391,7 @@
   export default {
     name: 'ItemComponent',
     components: {
-      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile
+      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile, RadioGroup
     },
     inject: [MODULE_COMPONENT_NAME],
     props: {
@@ -420,6 +432,10 @@
         default() {
           return '';
         }
+      },
+      isChildTable: {
+        // 是否是子表
+        type: Boolean
       }
     },
     data() {
@@ -447,6 +463,7 @@
             });
           }
         },
+        deep: true,
         immediate: true
       }
     },
@@ -620,39 +637,90 @@
 
       valueChange() {
         // 值发生改变时触发  只要是item中的value改变就触发该方法，是为了让父组件数据同步
-        // console.log(this._items);
         this.$emit('inputChange', this._items.value, this._items, this.index);
       },
-      
+      radioValueChange(value) {
+        this._items.value = value;
+        this.valueChange();
+      },
       // input event
       inputChange(event, cursorOffset, $this) {
         // 输入中文时跳过赋值
         if (this.isInputChinese) {
           return;
         }
-        
+        // 按回车
+        if (this.keyCode === 13 && this._items.props.type === 'text') {
+          return;
+        }
+        const ispassword = this._items.props.ispassword;
         const value = event.target.value;
+        // 只要不是加密文本的撤销操作。都保存下旧值
+        if (!((this.isPressControl || this.isMousePaste) && (ispassword && this.keyCode === 90))) {
+          // 缓存历史值
+          this.oldInputValue.push(this._items.value);
+        }
+
         this.selectionStart = event.target.selectionStart;
         // 输入中文时，新增文字的插入位置需要根据Math.max(this.selectionStart - cursorOffset, 0)矫正
         const insertTextPosion = cursorOffset ? Math.max(this.selectionStart - cursorOffset, 0) : this.selectionStart;
+
+        // 按ctrl,command键时
+        if (this.isPressControl || this.isMousePaste) {
+          // 修复指定位置粘贴问题
+          if (ispassword && this.keyCode === 86) {
+            const charArr = this._items.value.split('');
+            charArr.splice(this.pastePosition, 0, this.clipboardData);
+            this._items.value = charArr.join('');
+          } else if (ispassword && this.keyCode === 90) {
+            // 撤销操作
+            this._items.value = this.oldInputValue.pop();
+          } else {
+            this._items.value = value;
+          }
+          
+          this.valueChange();
+          this.isMousePaste = false; // 手动把右键粘贴标志改为false
+          return;
+        }
+
+        // 按回车换行
+        if (this.keyCode === 13 && this._items.props.type === 'textarea') {
+          const charArr = this._items.value.split('');
+          charArr.splice(insertTextPosion - 1, 0, '\n');
+          this._items.value = charArr.join('');
+          this.valueChange();
+          return;
+        }
+
+        // 按退格键键时
+        if (this.keyCode === 8 && (value.length < this._items.value.length)) {
+          const charArr = this._items.value.split('');
+          const num = this._items.value.length - value.length;
+          charArr.splice(this.selectionStart, num);
+          this._items.value = charArr.join('');
+          this.valueChange();
+          return;
+        }
         
         // fix: input输入框拿不到值给父组件
         if (this._items.props.type === 'text') {
           this._items.value = value;
         }
-
-        const charArr = this._items.value.split('');
+        
+        // 手动把新加的输入值和原来的值进行拼接
         if (value.length > this._items.value.length) {
-          // 输入值
+          const charArr = this._items.value.split('');
           charArr.splice(insertTextPosion - 1, 0, this.keyData);
           this._items.value = charArr.join('');
-        } else if (value.length < this._items.value.length) {
-          // 删除值
-          charArr.splice(insertTextPosion, 1);
-          this._items.value = charArr.join('');
+        } 
+        // 选中部分文本进行替换的情况
+        if (value.length < this._items.value.length) {
+          this._items.value = value;
         }
         
         this.valueChange();
+
         let valLength = this._items.props.length;
         if (valLength) {
           if (this._items.value.split('.').length > 1) {
@@ -723,8 +791,39 @@
         ) {
           this._items.event.blur(event, $this, this._items);
         }
+
+        this.validateInput();
       },
+
+      // 校验输入值
+      validateInput() {
+        const preverifyenabled = this._items.props.preverifyenabled;
+        if (preverifyenabled && !this.isChildTable) {
+          network.post('/p/cs/verifyObject', {
+            OBJ_ID: this.$route.params.itemId === 'New' ? -1 : this.$route.params.itemId,
+            TABLE_NAME: this.$route.params.tableName,
+            VERIFY_COLUMN: {
+              [this._items.field]: this._items.value
+            }
+          }).then((res) => {
+            console.log(res);
+            if (res.data.code === 1) {
+              this.$Modal.fcError({
+                title: '错误',
+                content: res.data.message,
+                mask: true
+              });
+            }
+          });
+        }
+      },
+
       inputKeyUp(event, $this) {
+        const ctrlKey = 17;
+        const cmdKey = 91;
+        if (event.keyCode === ctrlKey || event.keyCode === cmdKey) {
+          this.isPressControl = false;
+        }
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'keyup')
           && typeof this._items.event.keyup === 'function'
@@ -733,10 +832,17 @@
         }
       },
       inputKeyDown(event, $this) {
+        // 判断是否进行粘贴操作
+        const ctrlKey = 17;
+        const cmdKey = 91;
+        if (event.keyCode === ctrlKey || event.keyCode === cmdKey) {
+          this.isPressControl = true;
+        }
         // 记录新输入的内容，方便加密文本时用
         const value = event.target.value;
         if (value.length !== this._items.value) {
           this.keyData = event.key;
+          this.keyCode = event.keyCode;
         }
 
         if (
@@ -981,46 +1087,6 @@
           this._items.event.valuechange(item);
         }
         this.valueChange();
-        // if (
-        //   Object.prototype.hasOwnProperty.call(
-        //     this._items.event,
-        //     'popper-value'
-        //   )
-        //   && typeof this._items.event['popper-value'] === 'function'
-        // ) {
-        // console.log(item);
-        //   this._items.event['popper-value'](
-        //     $this,
-        //     item.value,
-        //     item.selected
-        //   );
-        // }
-        // if (
-        //   Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
-        //   && typeof this._items.event.clear === 'function'
-        // ) {
-        //   if (!item.value && !item.selected[0] && !item.selected[0].ID) {
-        //     this._items.event.clear($this);
-        //   }
-        // }
-        // if (
-        //   Object.prototype.hasOwnProperty.call(
-        //     this._items.event,
-        //     'popper-value'
-        //   )
-        //   && typeof this._items.event['popper-value'] === 'function'
-        // ) {
-        //   this._items.event['popper-value']($this, value, 'change', this.index);
-        // }
-        // if (
-        //   Object.prototype.hasOwnProperty.call(
-        //     this._items.event,
-        //     'inputValueChange'
-        //   )
-        //   && typeof this._items.event.inputValueChange === 'function'
-        // ) {
-        //   this._items.event.inputValueChange(item.value, $this);
-        // }
       },
 
       // AttachFilter event
@@ -1430,18 +1496,6 @@
         this._items.value = this._items.props.itemdata.valuedata;
         this.valueImgChange();
         return false;
-        fkHttpRequest().deleteImg({
-          params: {
-            ...obj
-          },
-          // eslint-disable-next-line consistent-return
-          success: (res) => {
-            // eslint-disable-next-line no-empty
-            if (res.data.code === 0) {
-             
-            }
-          }
-        });
       },
       readonlyImage() {
         // 判断是否能上传图片
@@ -1452,7 +1506,6 @@
       },
       uploadFileChangeSuccess(result) {
         // 图片进度接口
-        const self = this;
         const resultData = result;
         if (this.readonlyImage()) {
           this.$Message.info(`只能上传${this._items.props.itemdata.ImageSize}张图片`);
@@ -1620,7 +1673,7 @@
 
         return Object.assign({}, fixedData);
       },
-      upSaveImg(obj, fixedData, path, index) {
+      upSaveImg() {
         // 图片保存接口
         setTimeout(() => {
           const dom = document.getElementById('actionMODIFY');
@@ -1629,35 +1682,6 @@
         
        
         return false;
-        fkHttpRequest().fkObjectSave({
-          searchObject: {
-            ...obj
-          },
-          url: path ? this.$parent.pathcheck : undefined,
-          // eslint-disable-next-line consistent-return
-          success: (res) => {
-            if (res.data.code !== 0) {
-              return false;
-            }
-            if (index) {
-              // 删除
-              this._items.props.itemdata.valuedata.splice(index - 1, 1);
-              this._items.value = this._items.props.itemdata.valuedata;
-            } else {
-              const data = fixedData[fixedData.length - 1];
-              if (typeof this._items.props.itemdata.valuedata !== 'object') {
-                this._items.props.itemdata.valuedata = [];
-              }
-
-              this._items.props.itemdata.valuedata.push({
-                NAME: data.NAME,
-                URL: data.URL
-              });
-              this._items.value = this._items.props.itemdata.valuedata;
-            }
-            this.valueChange();
-          }
-        });
       },
       uploadFileChangeOnerror(e) {
         this.$Message.info(e);
@@ -1832,10 +1856,16 @@
       },
 
       // 监听中文键盘输入
+      // 监听粘贴
       listenChinese() {
         this.$once('bindCompositionend', () => {
-          const dom = this.$refs[this._items.field].$el.children[0];
-          dom.addEventListener('compositionstart', (e) => {
+          let dom;
+          if (this._items.props.type === 'textarea') {
+            dom = this.$refs[this._items.field].$el.querySelector('textarea');
+          } else {
+            dom = this.$refs[this._items.field].$el.querySelector('input');
+          }
+          dom.addEventListener('compositionstart', () => {
             this.isInputChinese = true;
           });
           dom.addEventListener('compositionend', (e) => {
@@ -1843,8 +1873,14 @@
             this.isInputChinese = false;
             this.inputChange(e, Math.max(this.keyData.length - 1, 0));
           });
+          dom.addEventListener('paste', (e) => {
+            this.isMousePaste = true;
+            const clipboardData = e.clipboardData || window.clipboardData;
+            this.clipboardData = clipboardData.getData('text');
+            this.pastePosition = e.target.selectionStart;
+          });
         });
-      }
+      },
     },
     beforeDestroy() {
       if (this.inputTimer) {
@@ -1858,8 +1894,13 @@
     created() {
       // console.log(this.type,this.formIndex);
       this.selectionStart = null; // 光标位置
-      this.keyData = null; // 记录按键按下的位置
+      this.keyData = null; // 记录按键按下的值
       this.isInputChinese = false; // 是否在输入中文
+      this.isPressControl = false; // 是否触发ctrl或command按键
+      this.isMousePaste = false; // 监听鼠标粘贴
+      this.clipboardData = ''; // 剪切板内容
+      this.pastePosition = -1; // 粘贴位置
+      this.oldInputValue = []; // 用于加密input撤销时回滚数据
     },
     mounted() {
       this.listenChinese();

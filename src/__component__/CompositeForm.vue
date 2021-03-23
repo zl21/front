@@ -37,6 +37,7 @@
                 :isreftabs="isreftabsForm"
                 :set-objreadonly="setObjreadonly"
                 :child-table-name="childTableName"
+                :is-child-table="isChildTable"
                 :refcolval-data="refcolvaData"
                 :mapp-status="setMapping"
                 :web-conf-single="webConfSingle"
@@ -71,6 +72,7 @@
           :class="tableGetName"
           :refcolval-data="refcolvaData"
           :child-table-name="childTableNameForm"
+          :is-child-table="isChildTable"
           :verifymessageform="VerifyMessageForm"
           :set-objreadonly="setObjreadonly"
           :web-conf-single="webConfSingle"
@@ -220,6 +222,10 @@
         default() {
           return '';
         }
+      },
+      isChildTable: {
+        // 是否是子表
+        type: Boolean
       }
     },
     inject: [MODULE_COMPONENT_NAME],
@@ -598,11 +604,15 @@
       setChangeValue(data) {
         // 修改联动值
         // this.getStateData();
+        if (this.conditiontype === 'list') {
+          return true;
+        }
 
+      
         const mappStatus = (this.$store.state[this[MODULE_COMPONENT_NAME]] && this.$store.state[this[MODULE_COMPONENT_NAME]].mappStatus) || [];
         const LinkageForm = (this.$store.state[this[MODULE_COMPONENT_NAME]] && this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm) || {};
 
-        const key = mappStatus[Object.keys(data)[0]];
+        const key = mappStatus && mappStatus[Object.keys(data)[0]];
         const LinkageFormItem = LinkageForm[key];
         if (LinkageFormItem) {
           // 通知清空
@@ -700,7 +710,11 @@
         // let v1.4外键 及number
         if (!this.formData[current.item.field] && Version() === '1.4') {
           if (current.item.props.number === true || (current.item.props.fkdisplay === 'pop' || current.item.props.fkdisplay === 'drp')) {
-            this.formData[current.item.field] = 0;
+            if (this.conditiontype !== 'list') {
+              this.formData[current.item.field] = 0;
+            } else {
+              this.formData[current.item.field] = '';
+            }
           } else if (current.item.props.fkdisplay) {
             this.formData[current.item.field] = '';
           } else {
@@ -776,7 +790,9 @@
               itemName: this.tableGetName
             };
             // 清空值，
-            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/seleteAddData`, data);
+            if (this.conditiontype !== 'list') {
+              this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/seleteAddData`, data);
+            }
           }
         } 
 
@@ -1832,6 +1848,10 @@
           str = 'TimePicker';
         }
 
+        if (item.display === 'radioGroup') {
+          str = 'radioGroup';
+        }
+
         return str;
       },
       checkPanelShow(item) {
@@ -2209,7 +2229,7 @@
             }
           }
         }
-
+        
         if (!item.display || item.display === 'text') {
           item.props.type = 'text';
           if (item.display === 'textarea') {
