@@ -832,6 +832,11 @@
         }
       },
       inputKeyDown(event, $this) {
+        // 禁止输入特殊字符  222->'
+        if ([222].includes(event.keyCode)) {
+          event.stopPropagation();
+          event.preventDefault();
+        }
         // 判断是否进行粘贴操作
         const ctrlKey = 17;
         const cmdKey = 91;
