@@ -694,20 +694,22 @@ export default {
         window.sessionStorage.setItem(tableId, JSON.stringify(queryData.values));// 将设置的默认参数存入sessionStorage
       }
     }
+
     const keepAliveModuleName = `S.${tableName}.${tableId}`;
     if (state.keepAliveLabelMaps[keepAliveModuleName] === undefined) {
       if (label) {
         state.keepAliveLabelMaps[keepAliveModuleName] = `${label}`;
       }
-      if (serviceId) {
-        state.serviceIdMap[tableName] = `${serviceId}`;
-      }
+     
       const keepAliveLabelMapsObj = {
         k: keepAliveModuleName,
         v: label
       };
      
       updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
+    }
+    if (serviceId) {
+      state.serviceIdMap[tableName] = `${serviceId}`;
     }
     // if (state.serviceIdMap[tableName] === undefined) {
     //   const serviceIdMapObj = {
