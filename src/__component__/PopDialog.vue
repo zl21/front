@@ -128,6 +128,7 @@
         table: this.fkobj.reftable
       };
       this.params = params;
+      
       this.getData(params);
     },
     mounted() {
@@ -166,7 +167,9 @@
               this.formList.inpubobj = Data.dataarry;
               this.formList.show = true;
               this.formList.objviewcol = Data.searchFoldnum;
-              this.getList();
+              setTimeout(()=>{
+                this.searchForm();
+              },800)
             }
           }
         });

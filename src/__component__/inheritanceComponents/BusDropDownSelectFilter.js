@@ -14,7 +14,7 @@ import {
 } from './setProps';
 import {
   setFixedcolumns,
-  setisShowPopTip
+  setisShowPopTip,
 } from '../ExtendedAttributes/refcolval.js'
 
 
@@ -49,6 +49,20 @@ const deepClone = (arr) => {
   return obj;
 };
 
+const newpostData = (Fixedcolumns,$this)=>{
+  if (JSON.stringify(Fixedcolumns) !== '{}') {
+    $this.sendMessage.fixedcolumns = {
+      "whereKeys":Fixedcolumns
+    };
+  }
+  return new Promise((resolve) => {
+    $this.post(url,  urlSearchParams(
+      $this.sendMessage
+    ), (res) => {
+      resolve(res.data);
+    });
+  });
+}
 
 class BusDropDownSelectFilter extends Vue {
   constructor(item) {
@@ -91,7 +105,7 @@ class BusDropDownSelectFilter extends Vue {
       default: () => ({
         disabled: this.item.readonly && (this.item.webconf && !this.item.webconf.ignoreDisableWhenEdit),
         hidecolumns: ['id', 'value'],
-        isShowPopTip: setisShowPopTip(this, this.item.webconf),
+        isShowPopTip: setisShowPopTip(this, this.item.webconf,network),
         placeholder: new SetPlaceholder(this.item).init()
       })
     }
@@ -157,23 +171,30 @@ class BusDropDownSelectFilter extends Vue {
     this.BusDropDown.methods.postData = function (url) {
       // 字段联动 模糊查询数据
       let Fixedcolumns = setFixedcolumns(self,'AutoRequest');
-
-      if (JSON.stringify(Fixedcolumns) !== '{}') {
-        this.sendMessage.fixedcolumns = {
-          "whereKeys":Fixedcolumns
-        };
+      if(typeof this.PropsData.isShowPopTip === 'function'){
+          if(!this.PropsData.isShowPopTip()){
+             this.$el.querySelector('input').value ='';
+             return new Promise((resolve) => {
+              resolve([]);
+            });
+          }else if(this.PropsData.isShowPopTip() &&  typeof this.PropsData.isShowPopTip().then === 'function'){
+            this.PropsData.isShowPopTip().then((res)=>{
+                if(res === true){
+                  return newpostData(Fixedcolumns,this)
+                }
+            });
+          }else{
+            return newpostData(Fixedcolumns,this);
+          }
       }
-      return new Promise((resolve) => {
-        this.post(url,  urlSearchParams(
-          this.sendMessage
-        ), (res) => {
-          resolve(res.data);
-        });
-      });
+
+      
     };
 
+    
+
+
     this.BusDropDown.methods['on-keydown'] = function (event) {
-      console.log(this.BusDropDown);
       if (event.code === 'Enter') {
         this.$_live_getChildComponent(window.vm, this.$store.state.global.activeTab.keepAliveModuleName).searchClickData();
       }
@@ -182,3 +203,4 @@ class BusDropDownSelectFilter extends Vue {
 }
 
 export default BusDropDownSelectFilter;
+

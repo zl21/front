@@ -1,31 +1,65 @@
 // 过滤value
 export const filterVal = function ($this) {
+    let _value = [];
     if (Array.isArray($this.value)) {
         if ($this.value[0] && $this.value[0].ID) {
-            return $this.value[0].ID;
+            _value = $this.value.reduce((arr,item)=>{
+              if(item.ID){
+                arr.push(
+                    item.ID,
+                );
+              }  
+              return arr;
+            },[]);
         } else {
-            return $this.value[0]
+            _value = $this.value[0];
         }
+    }else{
+        _value = $this.value;
+
     }
-    return $this.value;
+    return {
+        ID:String(_value || ''),
+        colname:$this.items.colname
+    }
+    //                    colname:$this.items.colname
+
 }
 // 查找实例
-export const FindVm = ($this,name) => {
+export const FindInstance = ($this,name,tableName) => {
+    let target = [];
     let panelForm = $this.$_live_getChildComponent(window.vm, 'panelForm');
+
+    if(!name){
+        return [];
+    }
+
+    target = name.split(',').reduce((arr,x)=>{
+        if(x){
+            let vm = {};
+            if(tableName){
+                vm = $this.$_live_getChildComponent(panelForm, tableName+x); 
+            }else{
+                vm = $this.$_live_getChildComponent(panelForm, x); 
+            }
+            if(vm){
+                arr.push(vm);
+            }
+        }
+        return arr;      
+    },[]);
+   
     // 获取来源值的实例
-    let target = $this.$_live_getChildComponent(panelForm, name);
     return target;
 }
 
 // 清除字段
 export const ClearRefcolValue = ($this,name) => {
-    if (Array.isArray(name)) {
-        name.forEach((x) => {
-            let $vm = FindVm($this,x);
-            $vm.value = [];
+    let $vm = FindInstance($this,String(name));
+    if($vm && Array.isArray($vm)){
+        $vm.forEach((item)=>{
+            item.value = [];
         })
-    } else {
-        let $vm = FindVm($this,name);
-        $vm.value = [];
     }
+   
 }
