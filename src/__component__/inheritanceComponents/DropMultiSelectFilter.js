@@ -10,6 +10,10 @@
  import network from '../../__utils__/network';
  import { SetPlaceholder } from './setProps';
  import Vue from 'vue';
+ import {
+  setFixedcolumns,
+  setisShowPopTip,
+} from '../ExtendedAttributes/refcolval.js'
  
  // const BusDropDownSelectFilter = () => import('arkui_BCL/DropDownSelectFilter');
  // console.log(BusDropDown);
@@ -86,7 +90,7 @@
    setTemple(){
      this.template =  `
      <div>
-         <MultiSelectFilter ref="MultiSelectFilter" v-bind="items.props" v-model="valueData" @on-valueChange="onChange"></MultiSelectFilter>
+         <MultiSelectFilter ref="MultiSelectFilter" v-bind="items.props"  @on-valueChange="onChange"></MultiSelectFilter>
         </div>
       `;  
    }
@@ -141,6 +145,7 @@
      propsData.PropsData = {
        disabled: this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true),
        hidecolumns:['id', 'value'],
+       isShowPopTip: setisShowPopTip(this, this.item.webconf,network),
        placeholder:new SetPlaceholder(this.item).init()
      }
      
@@ -178,13 +183,7 @@
    // 合并methods
    mergeMethods() {
      this.postTableData = function postTableData(url) {
-       return new Promise((resolve) => {
-         this.post(url, urlSearchParams({
-           searchdata: this.searchdata
-         }), (response) => {
-           resolve(response);
-         });
-       });
+      
      };
    }
  }
