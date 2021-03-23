@@ -782,8 +782,8 @@
           if (this.dataSource.fullRangeSubTotalRow) {
             for (const key in this.dataSource.fullRangeSubTotalRow) {
               if (Object.prototype.hasOwnProperty.call(this.dataSource.fullRangeSubTotalRow, key)) {
-                const element = `<div class="text-right">${this.dataSource.fullRangeSubTotalRow[key]}</div>`;
-                cell[key] = element.val;
+                const element = this.dataSource.fullRangeSubTotalRow[key];
+                cell[key] = `<div class="text-right">${element.val}</div>`;
               }
             }
           }
