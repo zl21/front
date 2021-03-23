@@ -38,38 +38,7 @@
       @dialogComponentSaveSuccess="dialogComponentSaveSuccess"
       @clearDialogComponentName="clearDialogComponentName"
     />
-    <!-- 动作定义弹框定制界面 -->
-    <!-- <Dialog
-      ref="dialogRef"
-      :title="dialogConfig.title"
-      :mask="true"
-      :footer-hide="dialogConfig.contentText"
-      :confirm="dialogConfig.confirm"
-      :closable="true"
-      :dialog-component-name="dialogComponentName"
-      :content-text="dialogConfig.contentText"
-    > -->
-    <!-- <component
-        :is="dialogComponentName"
-        :dialog-component-name="dialogComponentName"
-        @closeActionDialog="closeCustomDialog"
-      /> -->
-    <!-- </Dialog> -->
-    <!-- <Modal
-      v-model="actionDialog.show"
-      :mask="true"
-      :title="actionDialog.title"
-      :footer-hide="true"
-      :closable="true"
-    >
-      <component
-        :is="dialogComponentName"
-        :dialog-component-name="dialogComponentName"
-        @closeActionDialog="closeActionDialog"
-      >
-        />
-      </component>
-    </Modal> -->
+   
     <!-- 导入弹框 -->
     <ImportDialog
       v-if="importData.importDialog"
@@ -85,7 +54,6 @@
       @closeDialog="closeActionDialog"
       @imporSuccess="imporSuccess"
     />
-    <!-- @confirmImport="" -->
   </div>
 </template>
 
@@ -131,24 +99,19 @@
         objTabActionDialogConfig: {}, // 自定义按钮配置
         actionId: null, // 自定义按钮ID
         temporaryStorage: false, // 是否开启暂存
-        temporaryStoragePath: '',
+        temporaryStoragePath: '', // 扩展属性暂存配置，path
         loading: true,
         importData: {
-          importDialog: '',
-          importDialogTitle: ''
+          importDialog: false, // 是否开启导入弹框
+          importDialogTitle: ''// 设置弹框title
         },
-        dialogComponentName: null,
-        // actionDialog: {
-        //   show: false,
-        //   title: ''
-        // }, // 按钮动作定义弹框类型定制界面
-        dialogConfig: {
+        dialogComponentName: null, // 弹框内引入的组件名称
+        dialogConfig: {// 自定义弹框配置
           title: '提示',
           mask: true,
           footerHide: false,
           contentText: '',
-          confirm: () => {
-          }
+          confirm: () => {}
         }, // 弹框配置信息
         dataArray: {
           refresh: true, // 显示刷新
@@ -208,12 +171,6 @@
           }
         }
       },
-      // $route() {
-      //   setTimeout(() => {
-      //     this.updataCurrentTableDetailInfo();
-      //   }, 0);
-      // },
-     
       isHideTempStorage: {// jflow控制暂存按钮显示
         handler(val) {
           if (val) {
@@ -227,7 +184,6 @@
           this.dataArray.jflowButton = val;
         }
       },
-    
       tabcmd: {
         handler(val) {
           this.hideBackButton();
@@ -320,20 +276,6 @@
         },
         deep: true
       },
-      // upDataMainForm: {
-      //   handler(val) {
-      //     if (val) {
-      //       const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
-      //       const dom = document.querySelector(`#${currentTableName}-loading`);
-      //       if (!this.itemNameGroup.map(c => c.tableName).includes(this.itemName)) { // 子表不添加loading
-      //         if (!dom && this.tableName === this.$route.params.tableName) {
-      //           console.log(1);
-      //           this.$R3loading.show(this.tableName);
-      //         }
-      //       }    
-      //     }
-      //   }
-      // }
     },
     computed: {
       ...mapState('global', {
@@ -347,16 +289,11 @@
         exportTasks: ({ exportTasks }) => exportTasks,
         currentLoading: ({ currentLoading }) => currentLoading,
         userInfo: ({ userInfo }) => userInfo,
-
-        
       }),
       getCurrentItemTableRef() { // 当前子表明细表格实例
         return this.$_live_getChildComponent(window.vm, 'H.SHANGPIN.24445.5.TableDetailCollection') ? this.$_live_getChildComponent(window.vm, 'H.SHANGPIN.24445.5.TableDetailCollection') : null;
       },
       currentTabIndex() {
-        // if (this.WebConf && this.WebConf.isCustomizeTab && this.objectType === 'horizontal') {
-        //   return this.tabCurrentIndex + 1;
-        // } 
         return this.tabCurrentIndex;
       },
       watermarkImg() { // 匹配水印图片路径
@@ -474,7 +411,6 @@
         }
         return [];
       },
-    
       tablePage() {
         let page = {};
         if (this.objectType === 'horizontal') { // 横向布局
