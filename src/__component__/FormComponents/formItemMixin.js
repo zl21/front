@@ -21,21 +21,18 @@ export default {
           }
           // refcolval  清空字段
 
-          if(this.items.webconf && this.items.webconf.refcolval){
-
-            //refcolval(this,this.items.webconf.refcolval);
+          if(this.items._linkFormMap){
+            // refcolval
+            let _linkFormMap = this.items._linkFormMap;
+            if(_linkFormMap.refcolval){
+              // 清除目标字段的值
+              ClearRefcolValue(this,_linkFormMap.refcolval);
+            }
           }
         }
  
         
-        if(this.items._linkFormMap){
-          // refcolval
-          let _linkFormMap = this.items._linkFormMap;
-          if(_linkFormMap.refcolval){
-            // 清除目标字段的值
-            ClearRefcolValue(this,_linkFormMap.refcolval);
-          }
-        }
+       
       }
     }
   },

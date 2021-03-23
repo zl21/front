@@ -100,12 +100,14 @@ class CustomInput {
 
   // 合并methods
   mergeMethods() {
+
     const handleEnter = this.Input.methods.handleEnter;
     
     this.Input.methods.handleEnter = function () {
       handleEnter.call(this, ...arguments);
       this.$_live_getChildComponent(window.vm, this.$store.state.global.activeTab.keepAliveModuleName).searchClickData();
     };
+    
   }
 
   settingPlaceholder() { // 设置Placeholder属性
@@ -129,7 +131,7 @@ class CustomInput {
     }
     
     const typeRegExp = new RegExp(string);
-    if (this.item.scale > 0) {
+    if (this.item.scale >= 0) {
       this.item.props.regx = typeRegExp;
     } else if (this.item.webconf && this.item.webconf.ispositive) {
       this.item.props.regx = regExp.Number;
