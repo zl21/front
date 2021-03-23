@@ -86,7 +86,7 @@
    setTemple(){
      this.template =  `
      <div>
-         <MultiSelectFilter ref="MultiSelectFilter" v-bind="items.props" v-model="valueData" @on-valueChange="onChange"></MultiSelectFilter>
+         <MultiSelectFilter ref="MultiSelectFilter" v-bind="items.props"  @on-valueChange="onChange"></MultiSelectFilter>
         </div>
       `;  
    }
