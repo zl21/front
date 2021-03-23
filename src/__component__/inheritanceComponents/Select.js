@@ -67,7 +67,7 @@ class CustomSelect {
     }
 
     defaultProps.disabled = {
-      default:() => this.item.readonly && (this.item.webconf && !this.item.webconf.ignoreDisableWhenEdit)
+      default:() => this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true)
     }
 
     Object.keys(this.item.props).map((item) => {

@@ -103,7 +103,7 @@ class BusDropDownSelectFilter extends Vue {
 
     propsData.PropsData = {
       default: () => ({
-        disabled: this.item.readonly && (this.item.webconf && !this.item.webconf.ignoreDisableWhenEdit),
+        disabled: this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true),
         hidecolumns: ['id', 'value'],
         isShowPopTip: setisShowPopTip(this, this.item.webconf,network),
         placeholder: new SetPlaceholder(this.item).init()
