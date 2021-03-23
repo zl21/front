@@ -101,7 +101,6 @@
       <component
         :is="inheritanceComponents(items)"
         :ref="items.field"
-        @valueChange="test"
         v-model="value"
       >
         <slot v-if="items.display === 'OBJ_SELECT'">
@@ -416,6 +415,7 @@
   import CustomDocUpload from '../inheritanceComponents/DocUpload';
   import CustomWangeditor from '../inheritanceComponents/Wangeditor';
   import CustomEnumerableInput from '../inheritanceComponents/EnumerableInput';
+  import CustomExtensionProperty from '../inheritanceComponents/ExtensionProperty';
 
   import ParameterDataProcessing from './parameterDataProcessing';
 
@@ -619,15 +619,14 @@
         case 'clob' :
           Components = new CustomWangeditor(item).init(); 
         case 'Enumerate':
-          Components = new CustomEnumerableInput(item).init(); 
+          Components = new CustomEnumerableInput(item).init();
+        case 'ExtensionProperty':
+          Components = new CustomExtensionProperty(item).init();
         default:
           break;
         }
 
         return Components;
-      },
-      test(value) {
-        this.value = value
       },
       routerNext(value) {
         // 路由跳转

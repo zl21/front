@@ -28,7 +28,13 @@ String.prototype.TextFilter = function TextFilter() {
         item.display = 'OBJ_SELECT';
         break;
       case 'textarea':
-        item.display = 'OBJ_TEXTAREA';
+        if(item.webconf && item.webconf.display === 'jsonmaker'){
+          item.display = 'ExtensionProperty';
+        }else{
+          item.display = 'OBJ_TEXTAREA';
+        }
+        
+
         break;
       case 'doc':
         item.display = 'OBJ_DOC';
