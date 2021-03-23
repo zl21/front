@@ -75,7 +75,7 @@ class BusDropDownSelectFilter {
 
     propsData.PropsData = {
       default:() => ({
-        disabled: this.item.readonly && (this.item.webconf && !this.item.webconf.ignoreDisableWhenEdit),
+        disabled: this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true),
         hidecolumns:['id', 'value'],
         placeholder:new SetPlaceholder(this.item).init()
       })

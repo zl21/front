@@ -82,7 +82,7 @@ class CustomInput {
     }
 
     defaultProps.disabled = {
-      default:() => this.item.readonly && (this.item.webconf && !this.item.webconf.ignoreDisableWhenEdit)
+      default:() => this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true)
     }
     
 
@@ -134,9 +134,7 @@ class CustomInput {
     if (this.item.scale >= 0) {
       this.item.props.regx = typeRegExp;
     } else if (this.item.webconf && this.item.webconf.ispositive) {
-      this.item.props.regx = regExp.Number;
-    } else {
-      this.item.props.regx = regExp.Digital;
+      this.item.props.regx = typeRegExp;
     }
   }
 

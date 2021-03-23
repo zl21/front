@@ -91,7 +91,12 @@
       />
     </div>
     <!-- 左右结构主表和子表1:1模式的form(面板) -->
-    <compositeForm
+    <panelForm
+      :tableName="currentPageRoute.tableName"
+      :readonly="objreadonly"
+      :defaultData="panelData.data"
+    ></panelForm>
+    <!-- <compositeForm
       v-if="panelData.isShow&&!componentName"
       :is-main-table="isMainTable"
       :object-type="type"
@@ -112,7 +117,7 @@
       @formChange="formPanelChange"
       @InitializationForm="initFormPanel"
       @VerifyMessage="verifyFormPanel"
-    />
+    /> -->
     <!-- 明细表格 -->
     <component
       :is="objectTableComponent"
