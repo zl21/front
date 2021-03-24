@@ -1,7 +1,9 @@
 /**
  * 扩展属性组件的自定义逻辑处理
  */
- import { ExtensionProperty } from '@syman/ark-ui-bcl';
+//  import { ExtensionProperty } from '@syman/ark-ui-bcl';
+ import ExtensionProperty from 'arkui_BCL/ExtensionProperty';
+ import network from '../../__utils__/network'
 
 // 深拷贝
 const deepClone = (arr) => {  
@@ -48,16 +50,16 @@ class CustomExtensionProperty {
       default:() => this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true)
     }
 
+    defaultProps.webconf = {
+      default: () => (this.item.webconf || {})
+    }
 
-    Object.keys(this.item.props).map((item) => {
-      // console.log(item, this.item.props.regx, this.item.props[item], this.Input.props[item]);
-      if (defaultProps[item]) {
-        defaultProps[item].default = () => (function (value) {
-          return value;
-        }(this.item.props[item]));
-      }
-      return item;
-    });
+    defaultProps.network = {
+      default: () => network
+    }
+
+    console.log("🚀 ~ ", this.item, this.Input.props, defaultProps)
+    console.log(defaultProps.webconf);
     this.Input.props = defaultProps;
   }
 
