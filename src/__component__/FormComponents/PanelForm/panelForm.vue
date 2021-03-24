@@ -216,7 +216,12 @@ export default {
         Object.keys(this.formItemLists[temp].childs).map(j => {
           let item = this.formItemLists[temp].childs[j];
           const components = this.$_live_getChildComponent(this, `${this.tableName}${item.colname.TextFilter()}`);
-          const value = item.isuppercase && components.value ?components.value.toUpperCase():components.value;
+<<<<<<< HEAD
+          const value = item.isuppercase && components.value && !item.display?components.value.toUpperCase():components.value;
+=======
+          console.log("🚀 ~ 数据", components)
+          const value = components.value;
+>>>>>>> 3e51217a17f0e780b358f06b55c23a605d384c3c
           const json = this.dealData(item, value);
           formData = Object.assign({}, formData, json);
           return item;
@@ -227,18 +232,32 @@ export default {
       return formData;
     },
     getFormDataLabel() {  //获取整个表单的展示数据+传参数据
-      let formData = {};
-      this.formArray.map((item) => {
-        const components = this.$_live_getChildComponent(this, `${this.tableName}${item.colname.TextFilter()}`);
-        const value = item.isuppercase && components.value ?components.value.toUpperCase():components.value;
-        const json = {
-          [item.colname]:value
-        };
-        formData = Object.assign({}, formData, json);
-        return item;
-      });
-      this.deleteEmptyProperty(formData);
-      return formData;
+      return new Promise((resolve,reject) => {
+          let formData = {};
+          Object.keys(this.formItemLists).map(temp => {
+            Object.keys(this.formItemLists[temp].childs).map(j => {
+              let item = this.formItemLists[temp].childs[j];
+              const components = this.$_live_getChildComponent(this, `${this.id}${item.colname.TextFilter()}`);
+              let value = item.isuppercase && components.value && !item.display ?components.value.toUpperCase():components.value;
+              if(value && value[0] && item.display === 'OBJ_DATENUMBER'){
+                value = [new Date().r3Format(new Date(value[0]), 'yyyy-MM-dd'),new Date().r3Format(new Date(value[1]), 'yyyy-MM-dd')]
+              }
+              if(value && value[0] && item.display === 'OBJ_DATE'){
+                value = [new Date().r3Format(new Date(value[0]), 'yyyy-MM-dd 00:00:00'),new Date().r3Format(new Date(value[1]), 'yyyy-MM-dd 23:59:59')]
+              }
+              const json = {
+                [item.colname]:value
+              };
+              formData = Object.assign({}, formData, json);
+              return item;
+            })
+            return temp
+          })
+          
+          this.deleteEmptyProperty(formData);
+
+          resolve(formData)
+        })
     }
   },
   mounted(){
