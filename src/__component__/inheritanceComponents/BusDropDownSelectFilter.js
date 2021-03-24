@@ -13,26 +13,15 @@ import {
   SetPlaceholder
 } from './setProps';
 import {
-  setFixedcolumns,
   setisShowPopTip,
+  postData,
+  postTableData
 } from '../ExtendedAttributes/refcolval.js'
 
 
 // console.log(BusDropDown);
 // 处理传参form格式转换
-const urlSearchParams = (data) => {
-  const params = new URLSearchParams();
-  Object.keys(data).forEach((key) => {
-    const dataType = Object.prototype.toString.call(data[key]);
 
-    if (dataType === '[object Object]' || dataType === '[object Array]') {
-      data[key] = JSON.stringify(data[key]);
-    }
-
-    params.append(key, data[key]);
-  });
-  return params;
-};
 
 // 深拷贝
 const deepClone = (arr) => {
@@ -49,20 +38,6 @@ const deepClone = (arr) => {
   return obj;
 };
 
-const newpostData = (Fixedcolumns,$this)=>{
-  if (JSON.stringify(Fixedcolumns) !== '{}') {
-    $this.sendMessage.fixedcolumns = {
-      "whereKeys":Fixedcolumns
-    };
-  }
-  return new Promise((resolve) => {
-    $this.post(url,  urlSearchParams(
-      $this.sendMessage
-    ), (res) => {
-      resolve(res.data);
-    });
-  });
-}
 
 class BusDropDownSelectFilter extends Vue {
   constructor(item) {
@@ -154,41 +129,20 @@ class BusDropDownSelectFilter extends Vue {
     let self = this;
     this.BusDropDown.methods.postTableData = function (url) {
       // 字段联动 表格数据查询
-      let Fixedcolumns = setFixedcolumns(self,'TableRequest');
-      if (JSON.stringify(Fixedcolumns) !== '{}') {
-        this.searchdata.fixedcolumns = Fixedcolumns;
-      } else {
-        delete this.searchdata.fixedcolumns
-      }
       return new Promise((resolve) => {
-        this.post(url, urlSearchParams({
-          searchdata: this.searchdata
-        }), (response) => {
-          resolve(response);
-        });
-      });
+       postTableData.call(this,self,url).then((res)=>{
+          resolve(res)
+       });
+      })
+      
     };
     this.BusDropDown.methods.postData = function (url) {
       // 字段联动 模糊查询数据
-      let Fixedcolumns = setFixedcolumns(self,'AutoRequest');
-      if(typeof this.PropsData.isShowPopTip === 'function'){
-          if(!this.PropsData.isShowPopTip()){
-             this.$el.querySelector('input').value ='';
-             return new Promise((resolve) => {
-              resolve([]);
-            });
-          }else if(this.PropsData.isShowPopTip() &&  typeof this.PropsData.isShowPopTip().then === 'function'){
-            this.PropsData.isShowPopTip().then((res)=>{
-                if(res === true){
-                  return newpostData(Fixedcolumns,this)
-                }
-            });
-          }else{
-            return newpostData(Fixedcolumns,this);
-          }
-      }
-
-      
+       return new Promise((resolve) => {
+        postData.call(this,self,url).then((res)=>{
+           resolve(res)
+        });
+       })   
     };
 
     

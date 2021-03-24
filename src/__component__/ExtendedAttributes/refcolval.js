@@ -7,11 +7,35 @@ import {
     filterVal,FindInstance
 } from './common.js';
 
+// 处理url
+
+const urlSearchParams = (data) => {
+    const params = new URLSearchParams();
+    Object.keys(data).forEach((key) => {
+      const dataType = Object.prototype.toString.call(data[key]);
+  
+      if (dataType === '[object Object]' || dataType === '[object Array]') {
+        data[key] = JSON.stringify(data[key]);
+      }
+  
+      params.append(key, data[key]);
+    });
+    return params;
+  };
 
 // 映射关系
 export const refcolvalMap = ($this, config,key) => {
     if(config.srccols){
+        // 兼容数据
         config.srccol = config.srccols;
+    }
+    if(key === 'refcolvalArray' && Array.isArray(config)){
+        let srccol = config.reduce((arr,item)=>{
+                arr.push(item.srccol);
+                return arr;
+        },[]).join(',');
+         config = {};
+        config.srccol = srccol;
     }
     let targetVm = FindInstance($this,config.srccol,$this.item.tableName);
     let linkFormMap = {
@@ -19,9 +43,6 @@ export const refcolvalMap = ($this, config,key) => {
     };
     //挂载映射关系到对方 
     let checked = [];
-    if(!targetVm[0]){
-        return false;
-    }
     targetVm.forEach((target)=>{
         if(target){
             if(!target.items._linkFormMap ||  target.items._linkFormMap && !target.items._linkFormMap.refcolval){
@@ -34,14 +55,17 @@ export const refcolvalMap = ($this, config,key) => {
                 })
             }
             
-            checked.push(messageTip($this, target))
+            checked.push(messageTip($this, target,key))
+           
             
 
+        }else{
+            checked.push(true);
         }
         
     });
     // 查看返回结果
-    if(checked.indexOf(false) === -1){
+    if(checked.indexOf(false) === -1 || checked.length<1){
         return true
     }else{
         return false
@@ -50,7 +74,7 @@ export const refcolvalMap = ($this, config,key) => {
 }
 
 // 消息提示
-export const messageTip = ($this, target) => {
+export const messageTip = ($this, target,key) => {
     let value = filterVal(target);
     // let vm = FindInstance($this,$this.item.colname,$this.item.tableName);
     
@@ -59,6 +83,10 @@ export const messageTip = ($this, target) => {
     }
     
     $this._srccolValue[target.items.colname] = value.ID;
+    // 无需校验
+    if(key === 'refcolvalArray'){
+        return true;
+    }
     
     if (!value.ID) {
         $this.$Message.info(`请先选择${target.items.name}`);
@@ -79,9 +107,12 @@ export const messageTip = ($this, target) => {
 
 // 接口拼接 fixcolumn
 export const setFixedcolumns = ($this, type) => {
-    let webconf = $this.item.webconf;    
+    let webconf = $this.item.webconf;   
+    if(!$this.item.detailType){
+        // 列表界面
+        return {};
+    }
     if (webconf && webconf.refcolval) {
-       
         if ($this._srccolValue) {
             let colnameID = $this._srccolValue[webconf.refcolval.srccol];
             const query = webconf.refcolval.expre === 'equal' ? '=' : '';
@@ -101,6 +132,13 @@ export const setFixedcolumns = ($this, type) => {
     if(webconf && webconf.refcolval_custom){
         return {...$this._datafixedcolumns}
     }
+    if(webconf && webconf.refcolvalArray){
+        let fixcolumns = webconf.refcolvalArray.reduce((arr,item)=>{
+            arr[item.fixcolumn] = $this._srccolValue[item.srccol] || ''
+            return arr;
+        },{});
+        return {...fixcolumns}
+    }
     return {
 
     }
@@ -113,6 +151,12 @@ export const setFixedcolumns = ($this, type) => {
 
 // 点击是否出现下拉
 export const setisShowPopTip = ($this, config,network) => {
+    if(!$this.item.detailType){
+        // 列表界面
+        return ()=>{
+            return true;
+        }
+    }
     // refcolval
     if (config && config.refcolval) {
         return () => {
@@ -121,9 +165,14 @@ export const setisShowPopTip = ($this, config,network) => {
     }else if(config && config.refcolval_custom){
     // refcolval_custom
         return () => {
-            return  refcolvalCustomUrl ($this, config,network)
+            return  refcolvalCustomUrl ($this, config,network,'refcolval_custom')
         }
-    }else {
+    }else if(config && config.refcolvalArray) {
+        // refcolvalArray
+        return () => {
+            return  refcolvalMap ($this, config.refcolvalArray,'refcolvalArray')
+        }
+    }else{
         return () => {
             return true;
         }
@@ -134,10 +183,8 @@ export const setisShowPopTip = ($this, config,network) => {
 export  const refcolvalCustomUrl =  ($this, config,network) => {
     let checkd = refcolvalMap($this, config.refcolval_custom,'refcolval_custom');
     // async
-    console.log(checkd,'checkdcheckd');
     if(checkd){
-        return false
-         //return postCustomUrl(network,config,$this)
+         return postCustomUrl(network,config,$this)
     }else{
         return false
     }
@@ -163,4 +210,57 @@ export  const refcolvalCustomUrl =  ($this, config,network) => {
 
 
 
+ // 字段联动 表格数据查询
+export const postTableData = async function(self,url){
+    let Fixedcolumns = setFixedcolumns(self,'TableRequest');
+      if (JSON.stringify(Fixedcolumns) !== '{}') {
+        this.searchdata.fixedcolumns = Fixedcolumns;
+      } else {
+        delete this.searchdata.fixedcolumns
+      }
+      return new Promise((resolve) => {
+        this.post(url, urlSearchParams({
+          searchdata: this.searchdata
+        }), (response) => {
+          resolve(response);
+        });
+      });
+}
 
+ // 字段联动 模糊查询
+ export  function postData(self,url){
+    let Fixedcolumns = setFixedcolumns(self,'AutoRequest');
+    console.log(self,'==');
+    if(typeof this.PropsData.isShowPopTip === 'function'){
+        if(!this.PropsData.isShowPopTip()){
+            this.$el.querySelector('input').value ='';
+           return new Promise((resolve) => {
+            resolve([]);
+          });
+        }else if(this.PropsData.isShowPopTip() &&  typeof this.PropsData.isShowPopTip().then === 'function'){
+            this.PropsData.isShowPopTip().then((res)=>{
+              if(res === true){
+                return newpostData(Fixedcolumns,this,url)
+              }
+          });
+        }else{
+          return newpostData(Fixedcolumns,this,url);
+        }
+    }
+ }
+
+ const newpostData = (Fixedcolumns,$this,url)=>{
+    if (JSON.stringify(Fixedcolumns) !== '{}') {
+      $this.sendMessage.fixedcolumns = {
+        "whereKeys":Fixedcolumns
+      };
+    }
+    return new Promise((resolve) => {
+      $this.post(url,  urlSearchParams(
+        $this.sendMessage
+      ), (res) => {
+        resolve(res.data);
+      });
+    });
+  }
+  
