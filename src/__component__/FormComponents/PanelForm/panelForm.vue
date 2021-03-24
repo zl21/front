@@ -216,12 +216,8 @@ export default {
         Object.keys(this.formItemLists[temp].childs).map(j => {
           let item = this.formItemLists[temp].childs[j];
           const components = this.$_live_getChildComponent(this, `${this.tableName}${item.colname.TextFilter()}`);
-<<<<<<< HEAD
-          const value = item.isuppercase && components.value && !item.display?components.value.toUpperCase():components.value;
-=======
           console.log("🚀 ~ 数据", components)
           const value = components.value;
->>>>>>> 3e51217a17f0e780b358f06b55c23a605d384c3c
           const json = this.dealData(item, value);
           formData = Object.assign({}, formData, json);
           return item;
