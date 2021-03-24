@@ -12,7 +12,7 @@ export const filterVal = function ($this) {
               return arr;
             },[]);
         } else {
-            _value = $this.value[0];
+            _value = String($this.value);
         }
     }else{
         _value = $this.value;
@@ -29,11 +29,9 @@ export const filterVal = function ($this) {
 export const FindInstance = ($this,name,tableName) => {
     let target = [];
     let panelForm = $this.$_live_getChildComponent(window.vm, 'panelForm');
-
     if(!name){
         return [];
     }
-
     target = name.split(',').reduce((arr,x)=>{
         if(x){
             let vm = {};
@@ -63,3 +61,34 @@ export const ClearRefcolValue = ($this,name) => {
     }
    
 }
+// 字段赋值
+export const setNewlValue = ($this,name,tableName,value) => {
+    let $vmArray = FindInstance($this,String(name),tableName);
+    if($vmArray && Array.isArray($vmArray)){
+        $vmArray.forEach(($vm)=>{
+            if( value[$vm.items.colname].COLUMN_TYPE !==1){
+                if($vm.items.type === 'select'){
+                    $vm.value = value[$vm.items.colname].LABLE_VALUES[0].VALUE || ''; 
+                }else{
+                    let values = value[$vm.items.colname].LABLE_VALUES.reduce((arr, options) => {
+                        if (options.VALUE) {
+                            arr.push({
+                                ID: options.VALUE || '',
+                                Label: options.LABLE || ''
+                            });
+                        }
+                        return arr;
+                    }, []);
+                    if(values.length>0){
+                        $vm.value =values;
+                    }
+
+                }
+           }else if(value[$vm.items.colname].COLUMN_TYPE === 1){
+              $vm.value = value[$vm.items.colname].LABLE_VALUES[0].VALUE ||  $vm.items.props.falseValue || ''; 
+           }             
+        })
+    }
+   
+}
+
