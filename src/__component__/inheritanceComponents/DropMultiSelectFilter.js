@@ -11,8 +11,9 @@
  import { SetPlaceholder } from './setProps';
  import Vue from 'vue';
  import {
-  setFixedcolumns,
   setisShowPopTip,
+  postData,
+  postTableData
 } from '../ExtendedAttributes/refcolval.js'
  
  // const BusDropDownSelectFilter = () => import('arkui_BCL/DropDownSelectFilter');
@@ -48,8 +49,9 @@
 //  };
  
  
- class CustomDropMultiSelectFilter {
+ class CustomDropMultiSelectFilter extends Vue {
    constructor(item) {
+     super()
     //  接收传值
      this.item = item;
     //  设置commpents
@@ -77,6 +79,8 @@
         this.$refs.MultiSelectFilter.pageSize = this.pageSize;
      }
      this.$refs.MultiSelectFilter.postTableData = this.postTableData;
+     this.$refs.MultiSelectFilter.postData = this.postData;
+
    }
    setMethods(){
      this.methods =  {
@@ -104,7 +108,8 @@
         items:items,
         valueData:this.value,
         pageSize:this.pageSize,
-        postTableData:this.postTableData
+        postTableData:this.postTableData,
+        postData:this.postData
       }
     }
    }
@@ -141,7 +146,6 @@
      this.propsUrl(propsData);
      // 处理传参
      this.propsParams(propsData);
- 
      propsData.PropsData = {
        disabled: this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true),
        hidecolumns:['id', 'value'],
@@ -182,9 +186,24 @@
  
    // 合并methods
    mergeMethods() {
-     this.postTableData = function postTableData(url) {
+     let self = this;
+     this.postTableData = function (url) {
+      // 字段联动 表格数据查询
+      return new Promise((resolve) => {
+       postTableData.call(this,self,url).then((res)=>{
+          resolve(res)
+       });
+      })
       
-     };
+    };
+    this.postData = function (url) {
+      // 字段联动 模糊查询数据
+       return new Promise((resolve) => {
+        postData.call(this,self,url).then((res)=>{
+           resolve(res)
+        });
+       })   
+    };
    }
  }
  

@@ -28,6 +28,14 @@ export default {
               // 清除目标字段的值
               ClearRefcolValue(this,_linkFormMap.refcolval);
             }
+            if(_linkFormMap.refcolvalArray){
+              // 清除目标字段的值
+              ClearRefcolValue(this,_linkFormMap.refcolvalArray);
+            }
+            if(_linkFormMap.refcolval_custom){
+              // 清除目标字段的值
+              ClearRefcolValue(this,_linkFormMap.refcolval_custom);
+            }
           }
         }
  
