@@ -11,8 +11,8 @@
   import {formRequestInit} from '../ExtendedAttributes/formRequest';
   // 联动计算
   import {dynamicforcompute} from '../ExtendedAttributes/dynamicforcompute.js';
-
-
+  // 下拉框过滤值
+  import {filtercolval ,resetFiltercolval} from '../ExtendedAttributes/filtercolval.js';
 
 
 export default {
@@ -40,10 +40,16 @@ export default {
           if(this.items.webconf && this.items.webconf.dynamicforcompute){
              // 多值计算
             // 默认值时候不走
-            dynamicforcompute(this,this.items.webconf.dynamicforcompute)
+            if(this.actived){
+              dynamicforcompute(this,this.items.webconf.dynamicforcompute)
+            }
           }
+          if(this.items.webconf && this.items.webconf.filtercolval){
+            // 过滤显示字段
+           filtercolval(this,this.items.webconf.filtercolval)
+         }
 
-          // refcolval  清空字段
+          //  清空字段
           if(this.items._linkFormMap){
             // refcolval
             let _linkFormMap = this.items._linkFormMap;
@@ -58,6 +64,11 @@ export default {
             if(_linkFormMap.refcolval_custom){
               // 清除目标字段的值
               ClearRefcolValue(this,_linkFormMap.refcolval_custom);
+            }
+            if(_linkFormMap.filtercolval){
+              // 清除目标字段的值
+              ClearRefcolValue(this,_linkFormMap.filtercolval);
+              resetFiltercolval(this,_linkFormMap.filtercolval)
             }
           }
         }

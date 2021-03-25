@@ -45,18 +45,18 @@ export const refcolvalMap = ($this, config,key) => {
     let checked = [];
     targetVm.forEach((target)=>{
         if(target){
-            if(!target.items._linkFormMap ||  target.items._linkFormMap && !target.items._linkFormMap.refcolval){
+            if(!target.items._linkFormMap ||  target.items._linkFormMap && !target.items._linkFormMap[key]){
                 target.items._linkFormMap = linkFormMap;
             }else{
-                linkFormMap.refcolval.forEach((x)=>{
-                    if(target.items._linkFormMap.refcolval.includes(x)){
-                        target.items._linkFormMap.refcolval.push(x);
+                linkFormMap[key].forEach((x)=>{
+                    if(!target.items._linkFormMap[key].includes(x)){
+                        target.items._linkFormMap[key].push(x);
                     }
                 })
             }
-            
-            checked.push(messageTip($this, target,key))
-           
+            if(checked.indexOf(false) === -1){
+                checked.push(messageTip($this, target,key))
+            }
             
 
         }else{
@@ -73,6 +73,11 @@ export const refcolvalMap = ($this, config,key) => {
     
 }
 
+/*
+$this 目标实例
+target  来源字段实例
+key webconf 的配置  eg：refcolvalArray
+*/
 // 消息提示
 export const messageTip = ($this, target,key) => {
     let value = filterVal(target);
@@ -104,7 +109,10 @@ export const messageTip = ($this, target,key) => {
 }
 
 
-
+/*
+$this 目标实例
+type  是否是模糊查询还是外键查询
+*/
 // 接口拼接 fixcolumn
 export const setFixedcolumns = ($this, type) => {
     let webconf = $this.item.webconf;   
@@ -148,6 +156,11 @@ export const setFixedcolumns = ($this, type) => {
 
 }
 
+/*
+$this 目标实例
+config  webcof 的配置
+network 
+*/
 
 // 点击是否出现下拉
 export const setisShowPopTip = ($this, config,network) => {
@@ -208,7 +221,9 @@ export  const refcolvalCustomUrl =  ($this, config,network) => {
 
 }
 
-
+/*
+self 当前实例
+*/
 
  // 字段联动 表格数据查询
 export const postTableData = async function(self,url){
@@ -230,7 +245,6 @@ export const postTableData = async function(self,url){
  // 字段联动 模糊查询
  export  function postData(self,url){
     let Fixedcolumns = setFixedcolumns(self,'AutoRequest');
-    console.log(self,'==');
     if(typeof this.PropsData.isShowPopTip === 'function'){
         if(!this.PropsData.isShowPopTip()){
             this.$el.querySelector('input').value ='';
