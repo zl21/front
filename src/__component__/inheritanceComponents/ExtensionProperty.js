@@ -2,7 +2,7 @@
  * 扩展属性组件的自定义逻辑处理
  */
  import { ExtensionProperty } from '@syman/ark-ui-bcl';
- //import ExtensionProperty from 'arkui_BCL/ExtensionProperty';
+//  import ExtensionProperty from 'arkui_BCL/ExtensionProperty';
  import network from '../../__utils__/network'
 
 // 深拷贝
@@ -23,8 +23,6 @@ const deepClone = (arr) => {
 class CustomExtensionProperty {
   constructor(item) {
     this.item = item; 
-    // const DefaultCheckbox = Vue.extend(Checkbox);
-    
     this.Input =  deepClone(ExtensionProperty);;
     delete this.Input._Ctor;
   }
@@ -58,8 +56,14 @@ class CustomExtensionProperty {
       default: () => network
     }
 
-    // console.log("🚀 ~ ", this.item, this.Input.props, defaultProps)
-    // console.log(defaultProps.webconf);
+    defaultProps.extentionConfig = {
+      default: () => (this.item.webconf || {})
+    }
+
+    defaultProps.ctrlOptions = {
+      default: () => (this.item.ctrlOptions || {rows: 8})
+    }
+
     this.Input.props = defaultProps;
   }
 
