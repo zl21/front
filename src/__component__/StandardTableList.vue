@@ -378,7 +378,7 @@
       //   this.searchTreeDatas.menuTreeQuery = value;
       //   this.treeDatas = this.getTreeDatas(this.searchTreeDatas);
       // },
-      menuTreeChange(treeName, currentId, flag, queryFilterData) {
+      menuTreeChange(treeName, currentId, flag, queryFilterData, searchData) {
         this.searchData.fixedcolumns = this.dataProcessing();
         if (Object.keys(queryFilterData) && Object.keys(queryFilterData).length > 0 && flag) {
           this.searchData.reffixedcolumns = queryFilterData;
@@ -387,6 +387,7 @@
         }
         this.searchData.startIndex = 0;
         // this.getQueryListForAg(this.searchData);
+        // const searchDataRes = Object.assign({}, this.searchData, searchData);
         this.getQueryListPromise(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
         // 按钮查找 查询第一页数据
@@ -1988,7 +1989,7 @@
       getQueryListPromise(data) {
         const promise = new Promise((resolve, reject) => {
           this.requiredCheck().then(() => {
-            this.$R3loading.show(this.searchData.table);
+            this.$R3loading.show();
             data.resolve = resolve;
             data.reject = reject;
             data.isolr = this.buttons.isSolr;

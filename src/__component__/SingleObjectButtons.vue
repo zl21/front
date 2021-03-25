@@ -135,10 +135,10 @@
         tableName: '', // 主表表名
         tableId: '', // 主表ID
         itemId: '', // 子表ID
-        currentParameter: {},
-        itemCurrentParameter: {},
+        currentParameter: {}, // 当前主表用于保存的参数
+        itemCurrentParameter: {}, // 当前子表用于保存的参数
         buttonShowType: '', // 判断按钮显示条件
-        dynamic: {
+        dynamic: {// 暂存按钮渲染信息
           name: '保存',
           icon: '',
           defbutton: 'N',
@@ -150,9 +150,8 @@
         saveEventAfter: '', // 保存事件执行完成后的操作
         objTabActionSlientData: {}, // 静默程序配置字段
         submitImage: '', // 提交操作完成后接口会返回提交成功图标
-        savaCopy: false,
         isrefrsh: '', // 控制自定义类型按钮执行后是否刷新
-        isValue: null,
+        isValue: null, // 用于判断界面是否修改过值的标记
       };
     },
     components: {
@@ -163,22 +162,25 @@
     },
     
     watch: {
-      isItemTable: {
+      isItemTable: {// 当前操作的表是否是子表
+        // 此逻辑用于控制jflow按钮，当前组件在上下结构子表时，不需展示刷新与返回按钮
         handler(val) {
           if (val) {
-            this.dataArray.refresh = false;
-            this.dataArray.back = false;
+            this.dataArray.refresh = false;// 隐藏刷新按钮
+            this.dataArray.back = false;// 隐藏返回按钮
           }
         }
       },
       isHideTempStorage: {// jflow控制暂存按钮显示
+        // 需要根据jflow配置控制暂存按钮是否显示，
+        // 检查了代码，控制该值的方法未被调用
         handler(val) {
           if (val) {
             this.dataArray.temporaryStorage = false;
           }
         }
       },
-      jflowButton: {// jflowNew
+      jflowButton: {// 接收jflow按钮元数据配置 
         handler(val) {
           // this.dataArray.jflowPluginDataArray = [];
           this.dataArray.jflowButton = val;
@@ -186,14 +188,15 @@
       },
       tabcmd: {
         handler(val) {
-          this.hideBackButton();
+          this.hideBackButton();// 先执行是否隐藏返回按钮逻辑，该逻辑会根据一些判断条件控制返回按钮是否显示
+
           if (Object.keys(val).length > 0) {
-            this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
+            this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];// 每次重新获取元数据配置时，清除上一次配置
             if (this.objectType === 'horizontal') { // 横向布局
-              if (this.itemName !== this.tableName) { // 以下配置仅控制子表
+              if (this.itemName !== this.tableName) { // 以下配置仅控制子表，控制子表按钮是否显示
                 this.tabPanel.forEach((item) => {
                   const objreadonly = item.componentAttribute.buttonsData.data.objreadonly;
-                  if (objreadonly) {
+                  if (objreadonly) { // 当前表配置了只读，以下几个按钮不显示，按钮对应的prem设置为false即可
                     val.cmds.forEach((item, index) => {
                       if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT' || item === 'actionCANCOPY') {
                         val.prem[index] = false;
@@ -220,7 +223,7 @@
                     });
                   }
                 }
-                if (this.disableExport) {
+                if (this.disableExport) { // 扩展属性支持配置是否隐藏导出按钮，当disableExport配置为true时，隐藏导出按钮
                   if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
                     this.tabcmd.cmds.forEach((item, index) => {
                       if (item === 'actionEXPORT') {
@@ -229,7 +232,7 @@
                     });
                   }
                 }
-                const { tabinlinemode } = this.getCurrentItemInfo();
+                const { tabinlinemode } = this.getCurrentItemInfo();// 获取当前表的模型tabinlinemode，配置模型为N，隐藏以下几个按钮
                 if (tabinlinemode === 'N') {
                   if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
                     this.tabcmd.cmds.forEach((item, index) => {
@@ -242,18 +245,8 @@
               }
               // if(this.itemInfo)
             } 
-            this.setDisableButtons();
-
-            // 是否为只读(当配置了只读时，以下类型按钮不显示),只针对子表
-            // this.tableName) { // 是否为只读(当配置了只读时，以下类型按钮不显示)
-            //   //  || item === 'actionCANCOPY'
-            //   val.cmds.forEach((item, index) => {
-            //     if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT') {
-            //       val.prem[index] = false;
-            //     }
-            //   });
-            // }
-            this.buttonsReorganization(val);
+            this.setDisableButtons();// 执行通过扩展属性配置控制是否隐藏导入导出按钮逻辑
+            this.buttonsReorganization(val);// 执行根据元数据配置展示按钮逻辑
           }
         },
         deep: true
@@ -262,17 +255,7 @@
         handler(val) {
           this.hideBackButton();
           this.dataArray.waListButtonsConfig.waListButtons = [];
-          if (this.objectType === 'horizontal') { // 横向布局
-            if (this.itemId === 'New') { // 新增按钮渲染逻辑
-            } else { // 编辑按钮渲染逻辑
-              this.waListButtons(val);
-            }
-          } else if (this.objectType === 'vertical') {
-            if (this.itemId === 'New') { // 编辑按钮渲染逻辑
-            } else { // 新增按钮渲染逻辑
-              this.waListButtons(val);
-            }
-          }
+          this.waListButtons(val);
         },
         deep: true
       },
@@ -293,7 +276,7 @@
       getCurrentItemTableRef() { // 当前子表明细表格实例
         return this.$_live_getChildComponent(window.vm, 'H.SHANGPIN.24445.5.TableDetailCollection') ? this.$_live_getChildComponent(window.vm, 'H.SHANGPIN.24445.5.TableDetailCollection') : null;
       },
-      currentTabIndex() {
+      currentTabIndex() { // 获取当前tab索引
         return this.tabCurrentIndex;
       },
       watermarkImg() { // 匹配水印图片路径
@@ -411,7 +394,7 @@
         }
         return [];
       },
-      tablePage() {
+      tablePage() { // 获取当前子表分页信息
         let page = {};
         if (this.objectType === 'horizontal') { // 横向布局
           this.tabPanel.every((item) => {
@@ -432,19 +415,15 @@
         }
         return page;
       },
-      tempStorage() {
+      tempStorage() { // 获取当前暂存扩展属性配置
         return this.WebConf;
       }
     },
     props: {
-      isItemTable: {
+      isItemTable: {// 是否是子表
         type: Boolean,
         default: false
       },
-      // backButton: {
-      //   type: Boolean,
-      //   default: true
-      // }, // 控制返回按钮显示
       isItemTableVertical: {
         type: Boolean,
         default: false
@@ -457,7 +436,7 @@
         type: String,
         default: ''
       },
-      disableExport: {
+      disableExport: {// 是否将导出按钮隐藏
         type: Boolean,
       },
       isactive: {
@@ -469,7 +448,7 @@
         default: () => ({})
       },
     
-      jflowButton: {// jflow配置按钮  jflowNew
+      jflowButton: {// jflow配置按钮 
         type: Array,
         default: () => ([])
       },
@@ -522,22 +501,8 @@
       ...mapMutations('global', ['directionalRouter', 'updateCustomizeMessage', 'deleteLoading', 'tabCloseAppoint', 'decreasekeepAliveLists', 'copyDataForSingleObject', 'tabOpen', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
       updataCurrentTableDetailInfo() { // 更新当前单对象信息
         if (this[INSTANCE_ROUTE_QUERY].tableName === this.$route.params.tableName && this.$route.meta.routePrefix.includes('/SYSTEM/TABLE_DETAIL/')) { // 当前路由包含单对象标记
+          // 将当前单对象方法挂在到window
           // 更新单对象界面信息
-          // const moduleName = `S.${this[INSTANCE_ROUTE_QUERY].tableName}.${this[INSTANCE_ROUTE_QUERY].tableId}`;
-          // const currentName = this.keepAliveLabelMaps[moduleName];
-          // let currentTabName = '';
-          // if (this[INSTANCE_ROUTE_QUERY].itemId === 'New') {
-          //   currentTabName = `${currentName}新增`;
-          // } else {
-          //   currentTabName = `${currentName}编辑`;
-          // }
-          // DispatchEvent('updataCurrentTableDetailInfo', {
-          //   detail: {
-          //     userInfo: this.userInfo,
-          //     routeInfo: this[INSTANCE_ROUTE_QUERY],
-          //     activeTabInfo: currentTabName
-          //   }
-          // });
           this.updataCurrentTableDetailMethods();
         }
       },
@@ -545,9 +510,8 @@
         window.updataClickSave = event => this.clickSave({ event });
         window.testUpdataValue = () => this.testUpdata();
         window.updataVerifyRequiredInformation = () => this.verifyRequiredInformation();
-        window.updatavVerifyRequiredInformation = () => this.verifyRequiredInformation();
       },
-      imporSuccess(id) {
+      imporSuccess(id) { // 导入成功后执行事件
         if (Version() === '1.3') {
           if (id) {
             const promises = new Promise((resolve, reject) => {
@@ -557,8 +521,8 @@
             });
             promises.then(() => {
               this.$R3loading.hide(this.tableName);
-              this.closeActionDialog();
-              if (this.exportTasks.dialog) {
+              this.closeActionDialog();// 关闭导入弹框
+              if (this.exportTasks.dialog) { // 开启我的任务弹框
                 const message = {
                   mask: true,
                   title: '提醒',
@@ -572,8 +536,8 @@
                       tableId: '24386',
                       id
                     };
-                    this.updataTaskMessageCount({ id, stopUpdataQuantity: true });
-                    this.tabOpen(tab);
+                    this.updataTaskMessageCount({ id, stopUpdataQuantity: true });// 更新小铃铛数量
+                    this.tabOpen(tab);// 跳转到我的任务表
                   }
                 };
                 this.$Modal.fcWarning(message);
@@ -587,14 +551,6 @@
                 this.$Modal.fcSuccess(data);
               }
             }, () => {
-              // if (this.exportTasks.warningMsg) {
-              //   const data = {
-              //     mask: true,
-              //     title: '错误',
-              //     content: `${this.exportTasks.resultMsg}`
-              //   };
-              //   this.$Modal.fcError(data);
-              // }
               this.closeActionDialog();
               this.$R3loading.hide(this.tableName);
             });
@@ -665,7 +621,6 @@
           this.clickButtonsTemporaryStorage();// 暂存按钮执行方法(暂存按钮根据webConf配置显示，同时与保存按钮显示逻辑相同)
         } else if (type === 'refresh') {
           this.clickButtonsRefresh(type);// 刷新按钮执行方法
-
           // DispatchEvent('clickButtonsRefresh');
         } else if (type === 'extraposition') {
           this.clickExtraposition(obj);// jflow按钮执行方法
@@ -673,7 +628,7 @@
       },
       clickButtonsTemporaryStorage() { // 暂存事件
         this.temporaryStorage = true;
-        if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+        if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) { // 扩展属性配置暂存按钮信息，则模拟点击保存按钮的dom节点，暂存和保存的区别为，暂存不做任何校验
           if (this.tempStorage.temp_storage.path) {
             this.temporaryStoragePath = this.tempStorage.temp_storage.path;
             const dom = document.getElementById('actionMODIFY');
@@ -692,7 +647,7 @@
           }
         }
       },
-      clickExtraposition(obj) { // jflow方法
+      clickExtraposition(obj) { // jflow方法，实际事件执行方为jflow代码逻辑，框架只是将jflow所需的一些参数
         let currentItemInfo = {};
         if (this.objectType === 'horizontal') {
           if (this.itemInfo) {
@@ -899,12 +854,12 @@
                 type: 'refresh'
               }
             });
-            this.upData();
-            this.clearEditData();
+            this.upData();// 执行刷新事件
+            this.clearEditData();// 刷新后将该表状态内存储的数据删除
           } else {
             this.clearEditData();
             const message = '刷新成功';
-            this.clearItemEditData();
+            this.clearItemEditData();// 刷新后将该表的子表状态内存储的数据删除
             this.upData(`${message}`);
           }
         } else {
@@ -916,7 +871,7 @@
       },
       upData(message) { // 页面刷新判断逻辑
         // this.emptyTestData();
-        const webact = this.getCurrentItemInfo().webact;
+        const webact = this.getCurrentItemInfo().webact;// 定制子表配置
         if (this.objectType === 'vertical' && webact) { // 兼容半定制界面，保存成功时通知外部
           DispatchEvent('tabRefreshClick');
           DispatchEvent('customizeClick', {
@@ -930,7 +885,7 @@
         //     type: 'fresh'
         //   }
         // });
-        let page = {};
+        let page = {};// 获取当前子表分页参数
         if (this.objectType === 'horizontal') { // 横向布局
           this.tabPanel.every((item) => {
             if (this.itemName !== this.tableName && item.tablename === this.itemName) {
@@ -953,10 +908,10 @@
         } = this.getCurrentItemInfo();
         
         // 通知表格刷新
-        DispatchEvent('tabRefreshClick');
+        DispatchEvent('tabRefreshClick');// 主表刷新后，需要通知表格将分页参数清除，以便下一次获取的正确
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.currentTabIndex === 0) { // 主表
-            this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
+            this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录，该逻辑对应切换当前表tab时只请求一次，不会重新请求
             new Promise((resolve, reject) => {
               this.getObjectTabForMainTable({
                 itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
@@ -1115,7 +1070,7 @@
         this.importData.importDialog = true;
         this.importData.importDialogTitle = this.itemInfo.tabledesc;
       },
-      importsuccess() {
+      importsuccess() { // 导入成功后执行的事件
         let page = {};
         if (this.objectType === 'horizontal') { // 横向布局
           this.tabPanel.every((item) => {
@@ -1176,7 +1131,7 @@
               // const myEvent = new Event('click');
               // dom.dispatchEvent(myEvent);
               // this.saveEventAfter = 'submit';
-              this.clickSave({ requestUrlPath: obj.requestUrlPath, type: 'submit' });
+              this.clickSave({ requestUrlPath: obj.requestUrlPath, type: 'submit' });// 提交前需先执行保存动作，保存成功后调用提交
             }
           };
           this.$Modal.fcWarning(data);
@@ -1189,7 +1144,7 @@
           content: '确认执行取消提交?',
           showCancel: true,
           onOk: () => {
-            this.saveButtonPath = obj.requestUrlPath;
+            this.saveButtonPath = obj.requestUrlPath;// 保存按钮元数据配置的path
             const promise = new Promise((resolve, reject) => {
               this.getObjectTryUnSubmit({
                 buttonInfo: obj, objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject
@@ -1227,7 +1182,7 @@
         this.$Modal.fcWarning(data);
         // }
       },
-      invalid(obj) {
+      invalid(obj) { // 作废逻辑
         const promise = new Promise((resolve, reject) => {
           this.getObjectTryInvalid({
             buttonInfo: obj, objId: this.itemId, table: this.tableName, path: obj.requestUrlPath, isreftabs: this.isreftabs, resolve, reject
@@ -1242,6 +1197,7 @@
         updateSessionObject('saveEventAfter', saveEventAfterData);
 
         promise.then(() => {
+          // 若配置了暂存按钮，作废后需将按钮去除
           this.temporaryStorage = false;
           this.dataArray.temporaryStorage = false;
           const message = this.buttonsData.invalidData.message;
@@ -1257,7 +1213,7 @@
       webactionClick(obj) { // 动作定义执行'
         if (obj.confirm) {
           // 有提示
-          let selete = [];
+          let selete = [];// 筛选出当前子表明细勾选的数据
           let type = '';
           if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName]) {
             selete = this.updateData[this.itemName].delete[this.itemName];
@@ -1266,7 +1222,7 @@
             }
           }
 
-          if (obj.confirm.indexOf('{') >= 0) {
+          if (obj.confirm.indexOf('{') >= 0) { // 配置了confirm提示信息
             if (JSON.parse(obj.confirm).isselect) {
               if (selete.length === 0) {
                 const contentText = `${JSON.parse(obj.confirm).nodesc}`;
@@ -1301,9 +1257,9 @@
                 }
                 this.dialogMessage(title, contentText, obj);
               } else {
-                this.buttonEvent(obj);
+                this.buttonEvent(obj);// 无提示信息，直接执行自定义按钮逻辑
               }
-            } else if (JSON.parse(obj.confirm).desc) {
+            } else if (JSON.parse(obj.confirm).desc) { // 配置了desc提示信息，按配置弹出提示框，确定后执行自定义按钮逻辑
               const objRes = JSON.parse(JSON.stringify(obj));
               // if (JSON.parse(obj.confirm).isSave && this.testUpdata()) { // 配置isSave以及界面有修改
               //   // objRes.isrefrsh = false;
@@ -1314,11 +1270,11 @@
               const title = this.ChineseDictionary.WARNING;
               const contentText = `${JSON.parse(obj.confirm).desc}`;
               this.dialogMessage(title, contentText, objRes);
-            } else if (JSON.parse(obj.confirm).isSave && this.testUpdata()) { // 静默执行保存
-              type = 'objTabActionSlient';
-             
-              this.objTabActionSlientData = obj;
-              this.clickSave({ type });
+            } else if (JSON.parse(obj.confirm).isSave && this.testUpdata()) { 
+              // 静默执行保存，当前自定义按钮配置了isSave,界面修改了值，则先调用保存逻辑，保存成功后执行自定义按钮逻辑，未修改值则执行自定义按钮逻辑
+              type = 'objTabActionSlient';// 静默类型按钮标
+              this.objTabActionSlientData = obj;// 存入当前自定义按钮元数据配置，供保存成功后调用自定义按钮逻辑使用
+              this.clickSave({ type });// 调用保存事件
             } else {
               this.buttonEvent(obj);
             }
@@ -1388,7 +1344,7 @@
         case 'jflow_trigger':
           this.jflowLaunch(obj);
           break;
-        case 'download':
+        case 'download':// 应该是没有这个配置了，需要确认一下
           this.objTabActiondDownload(obj);
           break;
         case 'dialog':
@@ -1405,7 +1361,7 @@
         // case 'external':
         //   this.objTabActionUrl(tab);
         //   break;
-        case 'edit':
+        case 'edit':// 应该是没有这个配置了，需要确认一下
           this.objTabActionEdit(obj);
           break;
         default:
@@ -1460,7 +1416,7 @@
         eleLink.click();
         document.body.removeChild(eleLink);
       },
-      objTabActionNavbar(tab) {
+      objTabActionNavbar(tab) { // 跳转界面类型自定义按钮
         const actionType = tab.action.substring(0, tab.action.indexOf('/'));
         // const a = 'SYSTEM/TABLE/AD_TABLE/992?AD_CLIENT_NAME=${AD_CLIENT_NAME}&AD_ORG_ID=${AD_ORG_ID}&name=8888';
         // tab.action = a;
@@ -1515,15 +1471,15 @@
         // /:itemId?id=1&&name=2
         // tab.action = 'CUSTOMIZED/FUNCTIONPERMISSION/:itemId?id=1&&name=2';
         let tabAction = '';
-        if (tab.action && tab.action.includes('?')) {
-          tabAction = getUserenv({ url: tab.action });
+        if (tab.action && tab.action.includes('?')) { // path携带了参数
+          tabAction = getUserenv({ url: tab.action });// 将参数匹配对应的环境变量值
         } else {
           tabAction = tab.action;
         }
         const actionType = tabAction.substring(0, tabAction.indexOf('/'));
         let singleEditType = tabAction.substring(tabAction.lastIndexOf('/') + 1, tabAction.length);
-        if (actionType === 'SYSTEM') {
-          if (singleEditType === ':itemId') {
+        if (actionType === 'SYSTEM') { // 框架配置界面
+          if (singleEditType === ':itemId') { // 配置的路径未动态id,根据勾选的明细id进行路由拼接
             const path = `/${tabAction.replace(/:itemId/, id)}`;
             router.push(
               path
@@ -1534,14 +1490,14 @@
               path
             );
           }
-        } else if (actionType === 'https:' || actionType === 'http:') {
+        } else if (actionType === 'https:' || actionType === 'http:') { // 外链界面
           const name = `${LINK_MODULE_COMPONENT_PREFIX}.${tab.webname.toUpperCase()}.${tab.webid}`;     
           // this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
           const linkUrl = tabAction;
           // const linkId = tab.webid;
           const linkModuleName = tab.webname.toUpperCase();
 
-          if (!this.LinkUrl[linkModuleName]) {
+          if (!this.LinkUrl[linkModuleName]) { // 未防止外链界面在刷新后来源信息丢失，需将信息存入全局模块内
             this.increaseLinkUrl({ linkModuleName, linkUrl });
           }
           const obj = {
@@ -1550,13 +1506,14 @@
             linkUrl,
             linkLabel: tab.webdesc
           };
-          window.sessionStorage.setItem('tableDetailUrlMessage', JSON.stringify(obj));
+          window.sessionStorage.setItem('tableDetailUrlMessage', JSON.stringify(obj));// 当前跳转逻辑，配置在按钮上的信息对框架来说属于第三方信息，在刷新后会丢失，需存入全局，供刷新浏览器后做回显使用
           const type = 'tableDetailUrl';
           this.tabOpen({
             type,
             linkName: tab.webname,
             linkId: tab.webid
           });
+          // 将当前外链界面信息存入session中，供外链界面处理逻辑时，可获取到来源界面的信息
           const data = {
             type: 'singleCustomizeButtonLink',
             value: tab,
@@ -1564,22 +1521,22 @@
             // 因外链界面tablinkName相同时，只激活一个tab,所以外链界面用linkName作为key存入session,避免因勾选的id不同存入多个，导致关闭当前tab时无法清除存入的多个
           };
           this.updateCustomizeMessage(data);
-        } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
+        } else if (actionType.toUpperCase() === 'CUSTOMIZED') { // 自定义界面
           let path = tabAction;
           let name = '';
           if (tab.action && tab.action.includes('?')) {
             singleEditType = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.lastIndexOf('?'));// 动态id标记，：itemId
           }
-          if (this.getCurrentItemInfo().tabrelation === '1:m') {
+          if (this.getCurrentItemInfo().tabrelation === '1:m') { // 1:m时存在表格，用户可勾选，可匹配动态ID，支持配置:itemId,1:1则不支持
             if (singleEditType === ':itemId') {
-              if (this.isCheck()) {
-                path = `/${tabAction.replace(/:itemId/, id)}`;
-                name = getLabel({ url: tab.action, id, type: 'customized' });
+              if (this.isCheck()) { // 检测到已勾选
+                path = `/${tabAction.replace(/:itemId/, id)}`;// 拼接path
+                name = getLabel({ url: tab.action, id, type: 'customized' });// 设置label,需要为要跳转的目标表准备信息，如label,网关等
               } else {
                 return;
               }
             } else {
-              path = getUrl({ url: path, id: tab.webid, type: 'customized' });
+              path = getUrl({ url: path, id: tab.webid, type: 'customized' });// 当检测到没有配置动态ID（itemId）时，getUrl方法会直接去除url上携带的参数，url上不支持配置参数
               name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
             }
           } else {
