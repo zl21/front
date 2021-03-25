@@ -1,3 +1,6 @@
+/*
+$this 目标实例
+*/
 // 过滤value
 export const filterVal = function ($this) {
     let _value = [];
@@ -25,7 +28,11 @@ export const filterVal = function ($this) {
     //                    colname:$this.items.colname
 
 }
-// 查找实例
+/*
+$this 目标实例
+tableName  string  表明 
+name  string  字段名称 
+*/
 export const FindInstance = ($this,name,tableName) => {
     let target = [];
     let panelForm = $this.$_live_getChildComponent(window.vm, 'panelForm');
@@ -50,6 +57,10 @@ export const FindInstance = ($this,name,tableName) => {
     // 获取来源值的实例
     return target;
 }
+/*
+$this 目标实例
+name  string  表明+字段名称 
+*/
 
 // 清除字段
 export const ClearRefcolValue = ($this,name) => {
@@ -61,6 +72,42 @@ export const ClearRefcolValue = ($this,name) => {
     }
    
 }
+/*
+$this 目标实例
+targetVm 来源实例的数组
+key  string  哪种配置 
+*/
+
+// 映射关系
+export const mappingRelation = ($this,targetVm,key)=>{
+    let linkFormMap = {
+        [key]: [`${$this.items.tableName}${$this.items.colname}`]
+    };
+    //挂载映射关系到对方 
+    targetVm.forEach((target)=>{
+        if(target){
+            if(!target.items._linkFormMap ||  target.items._linkFormMap && !target.items._linkFormMap[key]){
+                target.items._linkFormMap = linkFormMap;
+            }else{
+                linkFormMap[key].forEach((x)=>{
+                    if(!target.items._linkFormMap[key].includes(x)){
+                        target.items._linkFormMap[key].push(x);
+                    }
+                })
+            } 
+        }
+        
+    });
+
+
+
+}
+/*
+$this 目标实例
+name 字段名称
+tableName  表明
+value   value map 
+*/
 // 字段赋值
 export const setNewlValue = ($this,name,tableName,value) => {
     let $vmArray = FindInstance($this,String(name),tableName);
