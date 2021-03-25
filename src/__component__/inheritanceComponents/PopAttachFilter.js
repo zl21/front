@@ -104,7 +104,7 @@ class CustomAttachFilter {
             maskClosable: false,
             scrollable: true,
             width: 920,
-            title: this.item.fkobj.searchmodel === 'mop' ? '弹窗多选' : null
+            title:'弹窗单选'
           }
         },
         display: this.item.display,

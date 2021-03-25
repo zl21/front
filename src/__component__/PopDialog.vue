@@ -132,7 +132,6 @@
       this.getData(params);
     },
     mounted() {
-    // this.$refs.CompositeForm.mountChecked = true;
     },
     watch: {
       formList: {
@@ -159,6 +158,11 @@
               const Data = res.data.data.datas;
               Data.dataarry.forEach((item) => {
                 item.name = item.coldesc;
+                // 兼容数据
+                if(item.fkobj){
+                  item = Object.assign(item,item.fkobj);
+                  item.fkobj.fkdisplay = item.fkobj.searchmodel;
+                }
                 item.defval = item.default;
                 if (item.fkobj) {
                   item.data = {};
@@ -168,6 +172,7 @@
               this.formList.show = true;
               this.formList.objviewcol = Data.searchFoldnum;
               setTimeout(()=>{
+                this.formChangeData = this.$refs.CompositeForm.formData;
                 this.searchForm();
               },800)
             }
@@ -324,7 +329,7 @@
             if (changeData[item] !== undefined) {
               // eslint-disable-next-line no-unused-vars
               const dataSelect = this.checkForm(changeData, item);
-              this.formChangeData = changeData;
+              this.formChangeData = Object.assign(this.formChangeData,changeData);
             }
           });
         }
