@@ -420,7 +420,6 @@
   import ParameterDataProcessing from './parameterDataProcessing';
 
 
-
   import {
     Version, MODULE_COMPONENT_NAME, ossRealtimeSave, defaultrange 
   } from '../../constants/global';
@@ -436,6 +435,7 @@
     components: {
       EnumerableInput, ExtentionInput, ComAttachFilter, Docfile
     },
+    // mixins: [mixins],
     inject: [MODULE_COMPONENT_NAME],
     props: {
       webConfSingle: {// 当前子表webConf

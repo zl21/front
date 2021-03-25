@@ -1,8 +1,8 @@
 /**
  * 扩展属性组件的自定义逻辑处理
  */
-//  import { ExtensionProperty } from '@syman/ark-ui-bcl';
- import ExtensionProperty from 'arkui_BCL/ExtensionProperty';
+ import { ExtensionProperty } from '@syman/ark-ui-bcl';
+ //import ExtensionProperty from 'arkui_BCL/ExtensionProperty';
  import network from '../../__utils__/network'
 
 // 深拷贝
