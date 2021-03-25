@@ -212,7 +212,7 @@ module.exports = env => ({
     new ModuleFederationPlugin({ 
       name: '', 
       remotes: {
-        arkui_BCL: 'arkui_BCL@http://192.168.4.9:3800/remoteEntry.js',
+        arkui_BCL: 'arkui_BCL@http://0.0.0.0:3800/remoteEntry.js',
         shared: ['vue', '@syman/ark-ui', 'axios']
       }
     })

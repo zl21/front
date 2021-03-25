@@ -56,7 +56,12 @@ function HiddenFields(){
         // console.log('隐藏的字段',item.source)
         panelForm.formItemLists[panelIndex].childs[itemIndex].show = false 
         if(temp.clear){  //是否配置了隐藏字段时需要清空数据
-          target.value = null 
+          if(target.items.display === 'OBJ_CHECK'){
+            target.value = target.items.combobox.filter(item => !item.limitdis)[0].limitval
+          }else{
+            target.value = null 
+          }
+          
         }  
         
       }
