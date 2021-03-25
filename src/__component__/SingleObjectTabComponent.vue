@@ -91,11 +91,13 @@
       />
     </div>
     <!-- 左右结构主表和子表1:1模式的form(面板) -->
-    <panelForm
-      :tableName="currentPageRoute.tableName"
+    <component
+      v-if="panelData.isShow&&!componentName"
+      :is="currentSinglePanelForm"
+      :tableName="tableName"
       :readonly="objreadonly"
       :defaultData="panelData.data"
-    ></panelForm>
+    ></component>
     <!-- <compositeForm
       v-if="panelData.isShow&&!componentName"
       :is-main-table="isMainTable"
@@ -186,6 +188,7 @@
         isclick: true,
         objectButtonComponent: '', // 单对象按钮组件
         objectTableComponent: '', // 单对象表格组件
+        currentSinglePanelForm: '', //单对象表单组件
         customizeComponent: '', // 自定义组件
         isRequest: false,
        
@@ -506,6 +509,13 @@
         }
         this.objectTableComponent = tableComponent;
         this.objectButtonComponent = buttonComponent;
+
+        const singlePanelForm= `tabComponent.${this.tableName}.PanelForm`;
+        if (Vue.component(singlePanelForm) === undefined) {
+          Vue.options.components.panelForm.options.name = singlePanelForm
+          Vue.component(singlePanelForm, Vue.extend(Vue.options.components.panelForm.options));
+        }
+        this.currentSinglePanelForm = singlePanelForm;
       },
       itemTableCheckFunc() {
         if (this.$refs.objectTableRef && Object.keys(this.$refs.objectTableRef.tableFormVerify()).length > 0) {
@@ -958,7 +968,7 @@
       flex: 1;
       overflow:auto;
     }
-    .verticalFormPanel {
+    .panelForm {
       margin: 10px 16px;
       flex: 1;
       overflow: auto;

@@ -69,7 +69,7 @@ export default {
   },
   computed:{
     formItemLists(){
-      this.$R3loading.show(this.$route.params.tableName)
+      this.$R3loading.show(this.tableName)
       let data = JSON.parse(JSON.stringify(this.defaultData))
       if(!data.addcolums){
         return []
@@ -121,9 +121,9 @@ export default {
       this.loading = setInterval(() => {
         let index = Object.keys(data.addcolums.reverse()[0].childs).length - 1
         let lastItem = data.addcolums[0].childs[index]
-        let com = this.$_live_getChildComponent(this, `${this.$route.params.tableName}${lastItem.colname}`);
+        let com = this.$_live_getChildComponent(this, `${this.tableName}${lastItem.colname}`);
         if(com){
-          this.$R3loading.hide(this.$route.params.tableName)
+          this.$R3loading.hide(this.tableName)
           clearInterval(this.loading)
         }
       },50)
@@ -158,7 +158,8 @@ export default {
           })
         }
 
-      }
+      },
+      deep: true
     }
   },
   methods:{
@@ -211,20 +212,23 @@ export default {
 
     // public API
     getFormData() { //获取整个表单的传参数据
-      let formData = {};
-      Object.keys(this.formItemLists).map(temp => {
-        Object.keys(this.formItemLists[temp].childs).map(j => {
-          let item = this.formItemLists[temp].childs[j];
-          const components = this.$_live_getChildComponent(this, `${this.tableName}${item.colname.TextFilter()}`);
-          const value = item.isuppercase && components.value && !item.display?components.value.toUpperCase():components.value;
-          const json = this.dealData(item, value);
-          formData = Object.assign({}, formData, json);
-          return item;
+
+      return new Promise((resolve,reject) => {
+        let formData = {};
+        Object.keys(this.formItemLists).map(temp => {
+          Object.keys(this.formItemLists[temp].childs).map(j => {
+            let item = this.formItemLists[temp].childs[j];
+            const components = this.$_live_getChildComponent(this, `${this.tableName}${item.colname.TextFilter()}`);
+            const value = item.isuppercase && components.value && !item.display?components.value.toUpperCase():components.value;
+            const json = this.dealData(item, value);
+            formData = Object.assign({}, formData, json);
+            return item;
+          })
+          return temp
         })
-        return temp
+        this.deleteEmptyProperty(formData);
+        resolve(formData)
       })
-      this.deleteEmptyProperty(formData);
-      return formData;
     },
     getFormDataLabel() {  //获取整个表单的展示数据+传参数据
       return new Promise((resolve,reject) => {
@@ -256,25 +260,15 @@ export default {
     }
   },
   mounted(){
-
-    // 测试字段显示隐藏功能
-    // setTimeout(() => {
-    //   delete this.formItemLists[1].childs[1]
-
-    //   let item = this.formItemLists[1]
-    //   this.formItemLists[1]._index = Math.random()
-      // item.childs = layoutAlgorithm(Number(4), Object.values(item.childs));
-      // Object.keys(item.childs).map(temp => {
-      //     item.childs[temp]._index = Math.random()
-      //     if(this.readonly){
-      //       item.childs[temp].readonly = this.readonly
-      //     }
-      //     item.childs[temp].tableName = this.$route.params.tableName;
-      //     item.childs[temp].itemId = this.$route.params.itemId;
-      //     return temp
-      //   })
-      // this.$forceUpdate()
-    // },10000)
+    if(Object.keys(this.formItemLists).length > 0){
+      this.collapseValue = []
+      Object.keys(this.formItemLists).map(item => {
+        let data = this.formItemLists[item]
+        if(data.hrdisplay === 'expand'){
+          this.collapseValue.push(data.parentname)
+        }
+      })
+    }
   }
 }
 </script>
