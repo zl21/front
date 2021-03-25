@@ -68,12 +68,14 @@
 
    }
    setCompents(){
-     this.components = { MultiSelectFilter:DropMultiSelectFilter };
+     this.components = { MultiSelectFilter:{...DropMultiSelectFilter} };
    }
    mounted(){
     //  渲染后的挂载
     setTimeout(()=>{
-      this.valueData = this.value;
+      // if(this.value[0]&& this.value[0].ID){
+      //   this.$refs.MultiSelectFilter.value = [...this.value];
+      // }
     },10)
      if(this.pageSize){
         this.$refs.MultiSelectFilter.pageSize = this.pageSize;
@@ -85,7 +87,7 @@
    setMethods(){
      this.methods =  {
       onChange:function(value){
-        this.valueData = value;
+        // this.valueData = value;
         this.$emit('on-Change',value);
       }
      }
@@ -94,7 +96,7 @@
    setTemple(){
      this.template =  `
      <div>
-         <MultiSelectFilter ref="MultiSelectFilter" v-bind="items.props"  @on-valueChange="onChange"></MultiSelectFilter>
+         <MultiSelectFilter ref="MultiSelectFilter"  v-bind="items.props"  @on-valueChange="onChange"></MultiSelectFilter>
         </div>
       `;  
    }
