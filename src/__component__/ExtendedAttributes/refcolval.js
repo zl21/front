@@ -54,9 +54,9 @@ export const refcolvalMap = ($this, config,key) => {
                     }
                 })
             }
-            
-            checked.push(messageTip($this, target,key))
-           
+            if(checked.indexOf(false) === -1){
+                checked.push(messageTip($this, target,key))
+            }
             
 
         }else{

@@ -67,7 +67,7 @@ export const ClearRefcolValue = ($this,name) => {
     let $vm = FindInstance($this,String(name));
     if($vm && Array.isArray($vm)){
         $vm.forEach((item)=>{
-            item.value = [];
+            item.value = '';
         })
     }
    
