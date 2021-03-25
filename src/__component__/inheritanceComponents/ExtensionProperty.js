@@ -58,8 +58,8 @@ class CustomExtensionProperty {
       default: () => network
     }
 
-    console.log("🚀 ~ ", this.item, this.Input.props, defaultProps)
-    console.log(defaultProps.webconf);
+    // console.log("🚀 ~ ", this.item, this.Input.props, defaultProps)
+    // console.log(defaultProps.webconf);
     this.Input.props = defaultProps;
   }
 
