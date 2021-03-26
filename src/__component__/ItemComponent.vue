@@ -293,7 +293,7 @@
           @dblclick="uploadFileDblclick"
         />
         <div
-          v-if="_items.type === 'ImageUpload' && showImgUploadProcess"
+          v-if="_items.type === 'ImageUpload' && showImgUploadProcess && imgProgressController"
           class="img-process"
         >
           <i-circle
@@ -470,7 +470,8 @@
         resultData: {}, // 结果传值
         inputText: '', // textarea加密后的文本
         showImgUploadProcess: false, // 显示上传进度条
-        uploadProgress: 0 // 图片上传进度
+        uploadProgress: 0, // 图片上传进度
+        imgProgressController: window.ProjectConfig.imgProgressController
       };
     },
     watch: {
