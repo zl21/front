@@ -279,15 +279,41 @@
         </div>
       </AttachFilter>
  -->
-      <ImageUpload
-        v-if="_items.type === 'ImageUpload'"
-        :ref="_items.field"
-        :dataitem="Object.assign(_items.props.itemdata,{readonly: _items.props.readonly})"
-        @deleteImg="deleteImg"
-        @uploadFileChangeSuccess="uploadFileChangeSuccess"
-        @uploadFileChangeOnerror="uploadFileChangeOnerror"
-        @dblclick="uploadFileDblclick"
-      />
+      <div class="img-upload-wrap">
+        <ImageUpload
+          v-if="_items.type === 'ImageUpload'"
+          :ref="_items.field"
+          class="img-upload-component"
+          :dataitem="Object.assign(_items.props.itemdata,{readonly: _items.props.readonly})"
+          @deleteImg="deleteImg"
+          @uploadFileChangeOnloadstart="uploadFileChangeOnloadstart"
+          @uploadFileChangeSuccess="uploadFileChangeSuccess"
+          @uploadFileChangeProgress="uploadFileChangeProgress"
+          @uploadFileChangeOnerror="uploadFileChangeOnerror"
+          @dblclick="uploadFileDblclick"
+        />
+        <div
+          v-if="_items.type === 'ImageUpload' && showImgUploadProcess && imgProgressController"
+          class="img-process"
+        >
+          <i-circle
+            class="img-process"
+            :percent="uploadProgress"
+            :stroke-color="uploadProgress === 100 ? '#5cb85c' : 'rgb(45, 140, 240)'"
+          >
+            <Icon
+              v-if="uploadProgress === 100"
+              type="ios-checkmark"
+              size="60"
+              style="color:#5cb85c"
+            ></Icon>
+            <span
+              v-else
+              style="font-size:24px"
+            >{{ uploadProgress }}%</span>
+          </i-circle>
+        </div>
+      </div>
       <!--读写规则  -->
       <EnumerableInput
         v-if="_items.type === 'EnumerableInput'"
@@ -442,7 +468,10 @@
       return {
         filterDate: {},
         resultData: {}, // 结果传值
-        inputText: '' // textarea加密后的文本
+        inputText: '', // textarea加密后的文本
+        showImgUploadProcess: false, // 显示上传进度条
+        uploadProgress: 0, // 图片上传进度
+        imgProgressController: window.ProjectConfig.imgProgressController
       };
     },
     watch: {
@@ -1509,7 +1538,20 @@
         }
         return false;
       },
+
+      // 开始上传
+      uploadFileChangeOnloadstart() {
+        this.showImgUploadProcess = true;
+      },
+
+      // 上传进度
+      uploadFileChangeProgress(e, p) {
+        this.uploadProgress = Math.floor(e.loaded / e.total * 100);
+      },
+
       uploadFileChangeSuccess(result) {
+        this.uploadProgress = 0;
+        this.showImgUploadProcess = false;
         // 图片进度接口
         const resultData = result;
         if (this.readonlyImage()) {
@@ -1689,6 +1731,9 @@
         return false;
       },
       uploadFileChangeOnerror(e) {
+        this.uploadProgress = 0;
+        this.showImgUploadProcess = false;
+
         this.$Message.info(e);
       },
       getWangeditorChangeItem(value) {
@@ -2024,5 +2069,16 @@ textarea.ark-input{
   font-weight: bold;
 }
 
-
+.img-upload-wrap {
+  position: relative;
+  .img-process {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 120px;
+    height: 100px;
+    background: #fff;
+    z-index: 300;
+  }
+}
 </style>
