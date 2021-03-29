@@ -15,14 +15,13 @@
       />
     </Spin>
     <component
-      :is="'CompositeFormpop'"
-      v-if="formList.show"
-      ref="CompositeForm"
-      :default-data="formList"
-      :default-column-col="formList.objviewcol"
-      class="formPanel"
-      :condition="Condition"
-      @InitializationForm="InitializationForm"
+      :is="'listsForm'"
+      ref="listsForm"
+      v-if="formItems.defaultFormItemsLists && formItems.defaultFormItemsLists.length > 0"
+      :id="$route.params.tableName+'pop'"
+      :form-item-lists="formItems.defaultFormItemsLists"
+      :default-column="Number(4)"
+      :searchFoldnum="10"
       @formChange="formChange"
       @on-formEnter="searchForm"
     />
@@ -72,16 +71,21 @@
   import { Version, defaultrange } from '../constants/global';
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
-  
+  // import listsForm from '../__component__/FormComponents/listsForm.vue';
+
   export default {
     name: 'PopDialog',
-    components: {},
+    components: {
+    },
     data() {
       return {
         formList: {
           inpubobj: [],
           show: false,
           objviewcol: 4
+        },
+        formItems:{
+
         },
         newformList: {},
         Condition: 'list',
@@ -156,25 +160,28 @@
             if (res.data.code === 0) {
               this.loading = false;
               const Data = res.data.data.datas;
-              Data.dataarry.forEach((item) => {
-                item.name = item.coldesc;
-                // 兼容数据
-                if(item.fkobj){
-                  item = Object.assign(item,item.fkobj);
-                  item.fkobj.fkdisplay = item.fkobj.searchmodel;
-                }
-                item.defval = item.default;
-                if (item.fkobj) {
-                  item.data = {};
-                }
-              });
-              this.formList.inpubobj = Data.dataarry;
+              // Data.dataarry.forEach((item) => {
+              //   item.name = item.coldesc;
+              //   // 兼容数据
+              //   if(item.fkobj){
+              //     item = Object.assign(item,item.fkobj);
+              //     item.fkobj.fkdisplay = item.fkobj.searchmodel;
+              //   }
+              //   item.defval = item.default;
+              //   if (item.fkobj) {
+              //     item.data = {};
+              //   }
+              // });
+              this.formItems.defaultFormItemsLists = Data.dataarry;
+              // this.formList.inpubobj = Data.dataarry;
               this.formList.show = true;
               this.formList.objviewcol = Data.searchFoldnum;
               setTimeout(()=>{
-                this.formChangeData = this.$refs.CompositeForm.formData;
-                this.searchForm();
-              },800)
+                this.$refs.listsForm.getFormData().then((res)=>{
+                    this.formChangeData = res;
+                    this.searchForm();
+                });
+              },200)
             }
           }
         });
@@ -190,20 +197,9 @@
           startindex: this.selectOperation.startindex,
           range: defaultrange() ? defaultrange() : this.selectOperation.pageSize
         };
-        const fixedcolumns = Object.keys(this.formChangeData).reduce(
-          (arr, item) => {
-            if (Array.isArray(this.formChangeData[item])) {
-              if (this.formChangeData[item][0] !== undefined) {
-                arr[item] = this.formChangeData[item];
-              }
-            } else if (this.formChangeData[item] !== '') {
-              arr[item] = this.formChangeData[item];
-            }
-            return arr;
-          },
-          {}
-        );
-        searchObject.fixedcolumns = { ...fixedcolumns };
+        
+        searchObject.fixedcolumns = { ...this.formChangeData };
+        console.log(searchObject,'===');
         fkHttpRequest().fkQueryListPop({
           searchObject,
           serviceId: this.fkobj.serviceId,
@@ -251,10 +247,17 @@
         });
       },
       searchForm() {
-        this.selectOperation.startindex = 0;
-        this.getList();
+         this.$refs.listsForm.getFormData().then((res)=>{
+                    this.formChangeData = res;
+                    this.selectOperation.startindex = 0;
+        //this.getList();
+                    this.getList();
+          });
+        
       },
-      saveData() {},
+      saveData() {
+
+      },
       pageChange(index) {
         if (index === this.selectOperation.currentPageIndex) {
           return false;
@@ -322,18 +325,18 @@
         }
         return data;
       },
-      formChange(changeData) {
-        // form 修改的数据
-        if (Object.keys(changeData).length > 0) {
-          Object.keys(changeData).forEach((item) => {
-            if (changeData[item] !== undefined) {
-              // eslint-disable-next-line no-unused-vars
-              const dataSelect = this.checkForm(changeData, item);
-              this.formChangeData = Object.assign(this.formChangeData,changeData);
-            }
-          });
-        }
-      },
+       formChange(changeData) {
+      //   // form 修改的数据
+      //   if (Object.keys(changeData).length > 0) {
+      //     Object.keys(changeData).forEach((item) => {
+      //       if (changeData[item] !== undefined) {
+      //         // eslint-disable-next-line no-unused-vars
+      //         //const dataSelect = this.checkForm(changeData, item);
+      //         this.formChangeData = Object.assign(this.formChangeData,changeData);
+      //       }
+      //     });
+      //   }
+       },
       confirm() {
         // b保存提交
         this.saveData();

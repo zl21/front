@@ -72,7 +72,8 @@
    }
    mounted(){
     //  渲染后的挂载
-    setTimeout(()=>{
+    setTimeout(()=>{ 
+      this.valueData = this.value;
       // if(this.value[0]&& this.value[0].ID){
       //   this.$refs.MultiSelectFilter.value = [...this.value];
       // }
@@ -87,7 +88,8 @@
    setMethods(){
      this.methods =  {
       onChange:function(value){
-        // this.valueData = value;
+        console.log(value);
+        this.valueData = value;
         this.$emit('on-Change',value);
       }
      }
@@ -96,7 +98,7 @@
    setTemple(){
      this.template =  `
      <div>
-         <MultiSelectFilter ref="MultiSelectFilter"  v-bind="items.props"  @on-valueChange="onChange"></MultiSelectFilter>
+         <MultiSelectFilter ref="MultiSelectFilter" v-model="valueData"  v-bind="items.props"  @on-change="onChange"></MultiSelectFilter>
         </div>
       `;  
    }
