@@ -167,12 +167,13 @@ class CustomAttachFilter {
           // 处理弹窗单选数据
           // eslint-disable-next-line no-nested-ternary
           this.$emit('valuechange', { value: this.propstype.fkdisplay === 'pop' ? ((this.selected && this.selected.length > 0) ? this.selected[0].ID : '') : this.value, selected: this.selected, type }, this);
-          console.log(this.selected,'121212');
           let valueData = this.selected;
           if(!valueData[0]){
             valueData = this.value;
           }
-          this.$_live_getChildComponent(this.$_live_getChildComponent(window.vm, this.$store.state.global.activeTab.keepAliveModuleName), `${this.$route.params.tableName}${_self.item.colname}`).test(valueData)
+          let target = this.$_live_getChildComponent(window.vm, this.$store.state.global.activeTab.keepAliveModuleName);
+
+          this.$_live_getChildComponent(target, `${this.$route.params.tableName}${_self.item.colname}`).value =valueData;
         }
       }, 200);
     };
