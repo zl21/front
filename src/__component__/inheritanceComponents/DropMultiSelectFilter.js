@@ -88,6 +88,7 @@
    setMethods(){
      this.methods =  {
       onChange:function(value){
+        console.log(value);
         this.valueData = value;
         this.$emit('on-Change',value);
       }
@@ -97,7 +98,7 @@
    setTemple(){
      this.template =  `
      <div>
-         <MultiSelectFilter ref="MultiSelectFilter" v-model="valueData"  v-bind="items.props"  @on-valueChange="onChange"></MultiSelectFilter>
+         <MultiSelectFilter ref="MultiSelectFilter" v-model="valueData"  v-bind="items.props"  @on-change="onChange"></MultiSelectFilter>
         </div>
       `;  
    }
