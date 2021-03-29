@@ -1138,7 +1138,6 @@
           this.objectAdd(obj);
           break;
         case 'actionMODIFY': // 保存
-          this.$parent.$children[0].getFormData()
           if (!this.testUpdata() && this.objectType === 'vertical') { // 主表无改动，通知自定义tab
             const webact = this.getCurrentItemInfo().webact;
             if (webact) { // 兼容半定制界面，保存成功时通知外部
@@ -3584,6 +3583,9 @@
             return obj;
           }, {});
         }
+        this.$parent.$children[1].getFormData().then(res => {
+          console.log(res)
+        })
         Object.keys(this.updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
           if (current === this.tableName) {
             this.currentParameter = this.updateData[current];

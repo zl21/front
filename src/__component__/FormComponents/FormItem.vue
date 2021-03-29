@@ -481,7 +481,7 @@
       return {
         filterDate: {},
         resultData: {}, // 结果传值
-        value: null
+        value: null, //实时数据
       };
     },
     computed: {

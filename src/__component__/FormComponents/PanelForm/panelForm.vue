@@ -65,6 +65,10 @@ export default {
   data(){
     return {
       collapseValue: [],  //控制面板的展开数据
+
+      formData:{}, //整个表单数据
+      formChangeData:{}, //表单修改过的数据
+      formDataLabel:{},  //表单修改过的数据--显示值
     }
   },
   computed:{
@@ -257,7 +261,7 @@ export default {
 
           resolve(formData)
         })
-    }
+    },
   },
   mounted(){
     if(Object.keys(this.formItemLists).length > 0){

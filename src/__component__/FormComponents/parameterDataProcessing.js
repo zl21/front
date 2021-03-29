@@ -76,7 +76,7 @@ export default class ParameterDataProcessing {
           };
         }
         return {
-          [this.item.colname]: this.value.map(item => item.ID)
+          [this.item.colname]: this.value.map(item => item.ID).join(',')
         };
       } // 外健模糊搜索时的传参
       return {

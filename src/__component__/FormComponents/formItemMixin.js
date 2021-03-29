@@ -13,10 +13,12 @@
   import {dynamicforcompute} from '../ExtendedAttributes/dynamicforcompute.js';
   // 下拉框过滤值
   import {filtercolval ,resetFiltercolval} from '../ExtendedAttributes/filtercolval.js';
+  // 处理单对象表单中数据和store中的交互问题
+  import storeDataInteractionMixin from './PanelForm/storeDataInteractionMixin';
 
 
 export default {
-  mixins:[mixins],
+  mixins:[mixins,storeDataInteractionMixin],
   watch:{
     value:{
       handler(val,old){  //单对象字段 监听数据，处理数据联动
@@ -72,10 +74,12 @@ export default {
             }
           }
         }
- 
-        
-       
       }
+    }
+  },
+  methods:{
+    findParentForm(){
+      return this.$parent.$parent.$parent
     }
   },
   mounted () {

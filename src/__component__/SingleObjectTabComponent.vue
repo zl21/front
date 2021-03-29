@@ -91,13 +91,12 @@
       />
     </div>
     <!-- 左右结构主表和子表1:1模式的form(面板) -->
-    <component
+    <panelForm
       v-if="panelData.isShow&&!componentName"
-      :is="currentSinglePanelForm"
       :tableName="tableName"
       :readonly="objreadonly"
       :defaultData="panelData.data"
-    ></component>
+    ></panelForm>
     <!-- <compositeForm
       v-if="panelData.isShow&&!componentName"
       :is-main-table="isMainTable"
@@ -188,7 +187,6 @@
         isclick: true,
         objectButtonComponent: '', // 单对象按钮组件
         objectTableComponent: '', // 单对象表格组件
-        currentSinglePanelForm: '', //单对象表单组件
         customizeComponent: '', // 自定义组件
         isRequest: false,
        
@@ -477,6 +475,8 @@
         const tableDetailCollectionMixin = (window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.tableDetailCollectionMixin) || {};
         const singleObjectButtonsMixin = (window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.singleObjectButtonsMixin) || {};
 
+        const singlePanelForm= `tabComponent.${this.tableName}.PanelForm`;
+
         if (this.type === 'vertical') {
           if (Vue.component(tableComponent) === undefined) {
             Vue.component(tableComponent, Vue.extend(Object.assign({ mixins: [verticalMixins(), tableDetailCollectionMixin] }, tableDetailCollection)));
@@ -491,6 +491,7 @@
           if (Vue.component(buttonComponent) === undefined) {
             Vue.component(buttonComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins(), singleObjectButtonsMixin] }, singleObjectButtons)));
           }
+
         }
         if(this.componentName) { // 定制tab自定义组件
           const customizedModuleName = this.componentName.toUpperCase();
@@ -509,12 +510,6 @@
         }
         this.objectTableComponent = tableComponent;
         this.objectButtonComponent = buttonComponent;
-
-        const singlePanelForm= `tabComponent.${this.tableName}.PanelForm`;
-        if (Vue.component(singlePanelForm) === undefined) {
-          Vue.options.components.panelForm.options.name = singlePanelForm
-          Vue.component(singlePanelForm, Vue.extend(Vue.options.components.panelForm.options));
-        }
         this.currentSinglePanelForm = singlePanelForm;
       },
       itemTableCheckFunc() {
