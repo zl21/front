@@ -618,10 +618,13 @@
           break;
         case 'clob' :
           Components = new CustomWangeditor(item).init(); 
+          break;
         case 'Enumerate':
           Components = new CustomEnumerableInput(item).init();
+          break;
         case 'ExtensionProperty':
           Components = new CustomExtensionProperty(item).init();
+          break;
         default:
           break;
         }
