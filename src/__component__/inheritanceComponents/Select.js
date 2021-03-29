@@ -84,12 +84,7 @@ class CustomSelect {
 
   // 合并methods
   mergeMethods() {
-    let onOptionClick = this.Input.methods.onOptionClick;
-    this.Input.methods.onOptionClick = function(options){
-      onOptionClick.call(this,options);
-      // hideColumn()
-      // this.$parent.$parent.$forceUpdate()
-    }
+
 
   }
 

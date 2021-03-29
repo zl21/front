@@ -43,12 +43,11 @@
         </label>
         <AutomaticPathGenerationInput />
       </div> -->
-      <component
-        :is="currentSinglePanelForm"
+      <panelForm
         :tableName="$route.params.tableName"
         :readonly="mainFormInfo.buttonsData.data.objreadonly"
         :defaultData="Object.keys(defaultDataForCopy).length>0?defaultDataForCopy.data:mainFormInfo.formData.data"
-      ></component>
+      ></panelForm>
       <!-- <composite-form
         v-if="mainFormInfo.formData.isShow"
         class="compositeAllform"
@@ -118,7 +117,6 @@
       return {
         customizeValue: '',
         currentSingleButtonComponentName: null,  //按钮组件
-        currentSinglePanelForm: null, //面板组件
         from: 'singlePage',
       };
     },
@@ -212,13 +210,6 @@
       }
       this.currentSingleButtonComponentName = singleButtonComponentName;
 
-      // 动态面板 
-      const singlePanelForm= `${this[MODULE_COMPONENT_NAME]}.PanelForm`;
-      if (Vue.component(singlePanelForm) === undefined) {
-        Vue.options.components.panelForm.options.name = singlePanelForm
-        Vue.component(singlePanelForm, Vue.extend(Vue.options.components.panelForm.options));
-      }
-      this.currentSinglePanelForm = singlePanelForm;
 
       const { tableName, itemId } = this.$route.params;
       this.getObjectForMainTableForm({ table: tableName, objid: itemId });

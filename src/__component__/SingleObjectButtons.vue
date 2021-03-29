@@ -3583,9 +3583,7 @@
             return obj;
           }, {});
         }
-        this.$parent.$children[1].getFormData().then(res => {
-          console.log(res)
-        })
+
         Object.keys(this.updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
           if (current === this.tableName) {
             this.currentParameter = this.updateData[current];

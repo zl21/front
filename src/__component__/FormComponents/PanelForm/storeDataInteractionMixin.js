@@ -21,9 +21,14 @@ export default {
             delete ParentForm.formDataLabel[this.items.colname]
           }
 
-          let activeTab = this.$_live_getChildComponent(window.vm,this.activeTab.keepAliveModuleName)
-          console.log(activeTab)
-          activeTab.formChange(ParentForm.formChangeData,ParentForm.formChangeData,ParentForm.formDataLabel)
+          // let activeTab = this.$_live_getChildComponent(window.vm,this.activeTab.keepAliveModuleName)
+          // console.log(activeTab)
+          if(ParentForm.$parent.formPanelChange){
+            ParentForm.$parent.formPanelChange(ParentForm.formChangeData,ParentForm.formChangeData,ParentForm.formDataLabel)
+          }else{
+            ParentForm.$parent.formChange(ParentForm.formChangeData,ParentForm.formChangeData,ParentForm.formDataLabel)
+          }
+          
         }
         
       }

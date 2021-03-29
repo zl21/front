@@ -8,6 +8,7 @@
 import Vue from 'vue';
 import dataProp from '../../__config__/props.config';
 import regExp from '../../constants/regExp';
+import InputMethod from '../ExtendedMethods/Input';
 
 let Input = Ark.Input
 // 深拷贝
@@ -101,12 +102,8 @@ class CustomInput {
   // 合并methods
   mergeMethods() {
 
-    const handleEnter = this.Input.methods.handleEnter;
+    new InputMethod(this.item,this.Input)
     
-    this.Input.methods.handleEnter = function () {
-      handleEnter.call(this, ...arguments);
-      this.$_live_getChildComponent(window.vm, this.$store.state.global.activeTab.keepAliveModuleName).searchClickData();
-    };
     
   }
 

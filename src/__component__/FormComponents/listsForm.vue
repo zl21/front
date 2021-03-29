@@ -4,6 +4,7 @@
     class="listsForm"
   >
     <div
+      v-if="Object.keys(ItemLists).length > (defaultColumn*searchFoldnum) "
       class="tag-close"
       @click="toggle"
     >
@@ -136,6 +137,10 @@
             delete object[i];
           } 
         }
+      },
+      // 组件回车事件
+      handleEnter(){
+        this.$emit('onHandleEnter',...arguments)
       },
 
 

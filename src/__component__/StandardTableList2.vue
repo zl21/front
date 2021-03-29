@@ -68,6 +68,7 @@
         :default-spread="changeSearchFoldnum.switchValue"
         :default-column="Number(4)"
         :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
+        @onHandleEnter="searchClickData"
       />
       <tabBar
         v-if="getFilterTable"

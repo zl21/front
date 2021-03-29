@@ -106,9 +106,10 @@ export default {
 
         Object.keys(item.childs).map((temp) => {
           item.childs[temp]._index = `${index}_${temp}_${Math.random()}`
-          if(this.readonly){
-            item.childs[temp].readonly = this.readonly
-          }
+          // if(this.readonly){
+          //   item.childs[temp].readonly = this.readonly || this.defaultData.isdefault
+          // }
+          item.childs[temp].readonly = this.readonly || this.defaultData.isdefault
           // item.childs[temp].styles = this.setDiv(item.childs[temp])
           this.$set(item.childs[temp],'styles',this.setDiv(item.childs[temp]))
           item.childs[temp].tableName = this.$route.params.tableName;

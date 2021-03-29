@@ -102,6 +102,31 @@ class CustomDatePicker {
       default:() => this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true)
     }
 
+    defaultProps.format = {
+      default:() => {
+        switch (this.item.display) {
+          case 'OBJ_DATE':
+            return 'yyyy-MM-dd HH:mm:ss';
+            break;
+          case 'OBJ_DATENUMBER':
+            return 'yyyy-MM-dd';
+            break;
+          case 'YearMonth':
+            return 'yyyy-MM'
+            break;
+          case 'OBJ_DATETIME':
+            return 'yyyy-MM-dd HH:mm:ss';
+            break;
+          case 'OBJ_TIME':
+            return 'yyyy-MM';
+            break;
+          default:
+            return 'yyyy-MM-dd';
+            break;
+        }
+      }
+    }
+
     const placeholder = {
       default: () => new SetPlaceholder(this.item).init()
     };

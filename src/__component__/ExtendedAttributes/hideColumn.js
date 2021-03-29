@@ -42,7 +42,7 @@ function HiddenFields(){
     item.configuration.every(temp => {
 
       // 当temp中ishide为true时，则refval控制字段的隐藏。当ishide为false时，则控制字段的显示
-      let panelForm = item.source.$_live_getChildComponent(window.vm,`${item.source.activeTab.keepAliveModuleName}.PanelForm`)
+      let panelForm = item.source.$_live_getChildComponent(window.vm,'panelForm')
       let target = item.source.$_live_getChildComponent(panelForm,`${item.source.activeTab.tableName}${temp.target}`)
       let panelIndex = target.items._index.split('_')[0];
       let itemIndex = target.items._index.split('_')[1]

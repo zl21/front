@@ -2,7 +2,7 @@
  * 下拉单选外健关联业务组件的自定义逻辑处理
  */
 import { DropDownSelectFilter } from '@syman/ark-ui-bcl';
-// import DropDownSelectFilter from 'arkui_BCL/DropDownSelectFilter';
+import BusDropDownSelectFilterMethod from '../ExtendedMethods/BusDropDownSelectFilter';
 
 import Vue from 'vue';
 import {
@@ -13,9 +13,7 @@ import {
   SetPlaceholder
 } from './setProps';
 import {
-  setisShowPopTip,
-  postData,
-  postTableData
+  setisShowPopTip
 } from '../ExtendedAttributes/refcolval.js'
 
 
@@ -124,35 +122,7 @@ class BusDropDownSelectFilter extends Vue {
 
   // 合并methods
   mergeMethods() {
-
-    //console.log( this.BusDropDown,'12121212');
-    let self = this;
-    this.BusDropDown.methods.postTableData = function (url) {
-      // 字段联动 表格数据查询
-      return new Promise((resolve) => {
-       postTableData.call(this,self,url).then((res)=>{
-          resolve(res)
-       });
-      })
-      
-    };
-    this.BusDropDown.methods.postData = function (url) {
-      // 字段联动 模糊查询数据
-       return new Promise((resolve) => {
-        postData.call(this,self,url).then((res)=>{
-           resolve(res)
-        });
-       })   
-    };
-
-    
-
-
-    this.BusDropDown.methods['on-keydown'] = function (event) {
-      if (event.code === 'Enter') {
-        this.$_live_getChildComponent(window.vm, this.$store.state.global.activeTab.keepAliveModuleName).searchClickData();
-      }
-    };
+    new BusDropDownSelectFilterMethod(this.item,this.BusDropDown)
   }
 }
 
