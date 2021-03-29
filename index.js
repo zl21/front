@@ -48,6 +48,14 @@ import panelForm from './src/__component__/FormComponents/PanelForm/panelForm'
 
 Vue.component('panelForm',panelForm)
 
+import listsForm from './src/__component__/FormComponents/listsForm.vue'
+// import jflowPlugin from './jflowPlugin/js/index';
+// import './src/__utils__/encryptingParameter';
+
+
+
+Vue.component('listsForm',listsForm)
+
 // Vue.use(jflowPlugin, {
 //   changePattern: true, // 控制待办列表转派的选择模式 true为单选,false为多选
 //   gateway: '',

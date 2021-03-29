@@ -7,7 +7,7 @@
 
 
 import Vue from 'vue';
-import ComAttachFilter from '../ComAttachFilter.vue';
+import ComAttachFilter from '../ComAttachFilternew.vue';
 import dataProp from '../../__config__/props.config';
 import regExp from '../../constants/regExp';
 
