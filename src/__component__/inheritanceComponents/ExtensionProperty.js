@@ -8,8 +8,6 @@
 // 深拷贝
 const deepClone = (arr) => {  
   const obj = arr.constructor == Array ? [] : {};
-  // 第二种方法 var obj=arr instanceof Array?[]:{}
-  // 第三种方法 var obj=Array.isArray(arr)?[]:{}
   for (const item in arr) {
     if (typeof arr[item] === 'object') {
       obj[item] = deepClone(arr[item]);
@@ -23,7 +21,7 @@ const deepClone = (arr) => {
 class CustomExtensionProperty {
   constructor(item) {
     this.item = item; 
-    this.Input =  deepClone(ExtensionProperty);;
+    this.Input = deepClone(ExtensionProperty)
     delete this.Input._Ctor;
   }
 
@@ -48,6 +46,10 @@ class CustomExtensionProperty {
       default:() => this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true)
     }
 
+    defaultProps.defaultData = {
+      default: () => (this.item.valuedata || {})
+    }
+
     defaultProps.webconf = {
       default: () => (this.item.webconf || {})
     }
@@ -57,7 +59,7 @@ class CustomExtensionProperty {
     }
 
     defaultProps.extentionConfig = {
-      default: () => (this.item.webconf || {})
+      default: () => (this.item.extentionConfig || {})
     }
 
     defaultProps.ctrlOptions = {

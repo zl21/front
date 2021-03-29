@@ -22,7 +22,7 @@ export default {
           }
 
           let activeTab = this.$_live_getChildComponent(window.vm,this.activeTab.keepAliveModuleName)
-          console.log(activeTab)
+          // console.log(activeTab)
           activeTab.formChange(ParentForm.formChangeData,ParentForm.formChangeData,ParentForm.formDataLabel)
         }
         
