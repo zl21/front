@@ -87,10 +87,10 @@
         sendData:{
           path: `${this.item.tableName}/${this.item.itemId}/`,
         },
-        valuedata:[]   
+        //valuedata:Array.isArray(this.item.valuedata) ? this.item.valuedata : JSON.parse(this.item.valuedata)
       };
     };
-  
+     
      // this.settingPlaceholder();
      // if (this.item.type === 'NUMBER') {
      //   this.numericTypes();
