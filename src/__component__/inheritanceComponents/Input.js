@@ -56,6 +56,43 @@ class CustomInput {
   mergeProps() {
     const defaultProps = { ...this.Input.props };
     this.settingPlaceholder();
+    // this.item.rules = {
+    //   required: {
+    //     type:true,
+    //     message: '请输入数据', 
+    //     trigger: 'blur'
+    //   }, 
+    //   trigger:{
+    //       blur:{
+    //         max:3,
+    //         message: '失去光标最大长度为3', 
+    //       },
+    //       // change:{
+    //       //   regx:'',
+    //       //   min:3,
+    //       //   max:10,
+    //       //   message: '最大长度为10,最小长度为3', 
+    //       // },
+    //       // change:{
+    //       //   regx:'\\d',
+    //       //   message: '只能输入数字', 
+    //       // },
+    //       // change:{
+    //       //   callback:function(val){
+    //       //       console.log(val);
+    //       //       return `${val} 的值不对`
+    //       //   },
+    //       // },
+    //       change:{
+    //         callback:function(val){
+    //           return new Promise((resolve) => {
+    //                   resolve(` 获取的值${val}`);
+    //           });
+    //         },
+    //       }            
+    //   },
+      
+    // }
     if (this.item.type === 'NUMBER') {
       this.numericTypes();
     }

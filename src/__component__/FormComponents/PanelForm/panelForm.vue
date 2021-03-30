@@ -25,6 +25,7 @@
           >
             <keep-alive>
               <component
+                ref="formItem"
                 :is="formItemLists[item].childs[temp].component"
                 :items="formItemLists[item].childs[temp]"
                 :label-width="90"
@@ -46,6 +47,7 @@ import FormItem from '../FormItem';
 import RenderComponent from '../RenderComponent';
 import ParameterDataProcessing from '../parameterDataProcessing';
 import LinkageRelationships from '../../ExtendedAttributes/LinkageRelationships';
+import {validateForm} from './Validate';
 
 export default {
   components:{ DownComponent, FormItem },
@@ -65,7 +67,6 @@ export default {
   data(){
     return {
       collapseValue: [],  //控制面板的展开数据
-
       formData:{}, //整个表单数据
       formChangeData:{}, //表单修改过的数据
       formDataLabel:{},  //表单修改过的数据--显示值
@@ -168,6 +169,12 @@ export default {
     }
   },
   methods:{
+    validate(){
+      // 获取校验
+       let messageTip = validateForm.call(this,'formItem');
+       console.log(messageTip);
+
+    },
     initComponent(item) { // init组件
       let defaultItem = JSON.parse(JSON.stringify(item));
       const Render = new RenderComponent(defaultItem, this.tableName);
