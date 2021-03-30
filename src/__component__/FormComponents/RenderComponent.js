@@ -88,6 +88,7 @@ export default class RenderComponent {
      
      if(this.id ){
         this.item = new SetListProps(this.item).init();
+        this.item._id = this.id;
      }
 
    }

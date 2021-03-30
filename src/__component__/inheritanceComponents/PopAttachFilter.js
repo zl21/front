@@ -162,7 +162,7 @@ class CustomAttachFilter {
       this.clickTimer = window.setTimeout(() => {
         if (type === 'clear') {
           this.$emit('valuechange', { value: null, selected: [], type }, this);
-          this.$_live_getChildComponent(this.$_live_getChildComponent(window.vm, this.$store.state.global.activeTab.keepAliveModuleName), `${this.$route.params.tableName}${_self.item.colname}`).value = [];
+          this.$_live_getChildComponent(this.$_live_getChildComponent(window.vm, this.$store.state.global.activeTab.keepAliveModuleName), `${_self.item._id}${_self.item.colname}`).value = [];
         } else {
           // 处理弹窗单选数据
           // eslint-disable-next-line no-nested-ternary
@@ -173,7 +173,7 @@ class CustomAttachFilter {
           }
           let target = this.$_live_getChildComponent(window.vm, this.$store.state.global.activeTab.keepAliveModuleName);
 
-          this.$_live_getChildComponent(target, `${this.$route.params.tableName}${_self.item.colname}`).value =valueData;
+          this.$_live_getChildComponent(target, `${_self.item._id}${_self.item.colname}`).value =valueData;
         }
       }, 200);
     };

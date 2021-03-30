@@ -138,12 +138,12 @@ class CustomAttachFilter {
       this.clickTimer = window.setTimeout(() => {
         if (type === 'clear') {
           this.$emit('on-change', { value: null, selected: [], type }, this);
-          this.$_live_getChildComponent(window.vm, `${this.$route.params.tableName}${_self.item.colname}`).value = [];
+          this.$_live_getChildComponent(window.vm, `${_self.item._id}${_self.item.colname}`).value = [];
         } else {
           // 处理弹窗单选数据
           // eslint-disable-next-line no-nested-ternary
           this.$emit('on-change', { value: this.PropsData.fkdisplay === 'pop' ? ((this.selected && this.selected.length > 0) ? this.selected[0].ID : '') : this.value, selected: this.selected, type }, this);
-          this.$_live_getChildComponent(window.vm, `${this.$route.params.tableName}${_self.item.colname}`).value = this.selected;
+          this.$_live_getChildComponent(window.vm, `${_self.item._id}${_self.item.colname}`).value = this.selected;
         }
       }, 200);
     };
