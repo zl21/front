@@ -172,6 +172,12 @@ export default class ParameterDataProcessing {
       return this.item.valuedata
     }
 
+    // 处理图片,文档默认值,转json
+    if(this.item.valuedata && ['image','OBJ_DOC'].includes(this.item.display)){
+      return JSON.parse(this.item.valuedata)
+    }
+
+
 
     // 处理checkbox
     if(this.item.display === 'OBJ_CHECK'){

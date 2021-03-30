@@ -59,7 +59,7 @@ function HiddenFields(){
           if(target.items.display === 'OBJ_CHECK'){
             target.value = target.items.combobox.filter(item => !item.limitdis)[0].limitval
           }else{
-            target.value = null 
+            target.value = '' 
           }
           
         }  
