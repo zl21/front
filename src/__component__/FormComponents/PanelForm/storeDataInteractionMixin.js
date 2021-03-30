@@ -11,7 +11,7 @@ export default {
       handler(val,old){
         if(this.items.detailType){
           let ParentForm = this.findParentForm()
-          if(JSON.stringify(val) !== JSON.stringify(this.defaultVale)){
+          if(JSON.stringify(val) !== JSON.stringify(this.defaultVale) && (val && this.defaultVale)){
             ParentForm.formData = Object.assign({},ParentForm.formData,ParentForm.dealData(this.items,val))
             ParentForm.formChangeData = Object.assign({},ParentForm.formChangeData,ParentForm.dealData(this.items,val))
             ParentForm.formDataLabel[this.items.colname] = val
@@ -24,9 +24,9 @@ export default {
           // let activeTab = this.$_live_getChildComponent(window.vm,this.activeTab.keepAliveModuleName)
           // console.log(activeTab)
           if(ParentForm.$parent.formPanelChange){
-            ParentForm.$parent.formPanelChange(ParentForm.formChangeData,ParentForm.formChangeData,ParentForm.formDataLabel)
+            ParentForm.$parent.formPanelChange(ParentForm.formChangeData,ParentForm.formDataLabel,ParentForm.formDataLabel)
           }else{
-            ParentForm.$parent.formChange(ParentForm.formChangeData,ParentForm.formChangeData,ParentForm.formDataLabel)
+            ParentForm.$parent.formChange(ParentForm.formChangeData,ParentForm.formDataLabel,ParentForm.formDataLabel)
           }
           
         }
@@ -35,6 +35,6 @@ export default {
     }
   },
   mounted() {
-    this.defaultVale = new ParameterDataProcessing(JSON.parse(JSON.stringify(this.items))).defaultDataProcessing();
+    this.defaultVale = new ParameterDataProcessing(JSON.parse(JSON.stringify(this.items))).defaultDataProcessing() || '';
   }  
 };

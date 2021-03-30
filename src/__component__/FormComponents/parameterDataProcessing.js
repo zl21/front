@@ -186,14 +186,6 @@ export default class ParameterDataProcessing {
       }
     }
     
-    // 文档数据
-    if(this.item.display ==='OBJ_DOC'){
-      let value = this.item.default || this.item.valuedata;
-      if(!Array.isArray(value)){
-          value = JSON.parse(value);  
-      }
-      return  value
-    }
 
 
 
