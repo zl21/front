@@ -132,8 +132,14 @@ axios.interceptors.response.use(
         let errorHTML = Array.isArray(response.data.error || response.data.data) && (response.data.error || response.data.data).reduce((arr, x) => {
           arr.push(`<p>${x.objid ? `objid${x.objid}` : '修改失败'}:${x.message}</p>`); return arr; 
         }, []).join('') || '';
-        if (!config.url.includes('/p/cs/batchSave')) {
-          errorHTML = '';
+        // if (!config.url.includes('/p/cs/batchSave')) {
+        //   errorHTML = '';
+        // }
+        // 处理1.4版本的error明细报错
+        if (response.data.data && Array.isArray(response.data.data.error)) {
+          errorHTML = response.data.data.error.reduce((arr, x) => {
+            arr.push(`<p>${x.id ? `明细${x.id}` : '修改失败'}:${x.message}</p>`); return arr; 
+          }, []).join('') || '';
         }
         let Modalflag = true;
         let innerHTML = '';
