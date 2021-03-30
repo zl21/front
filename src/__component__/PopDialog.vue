@@ -22,8 +22,8 @@
       :form-item-lists="formItems.defaultFormItemsLists"
       :default-column="Number(4)"
       :searchFoldnum="10"
-      @formChange="formChange"
-      @on-formEnter="searchForm"
+      @onHandleEnter="searchForm"
+      
     />
     <div class="pageInfo">
       <Page
@@ -33,7 +33,7 @@
         class="table-page"
         size="small"
         show-total
-        @on-change="pageChange"
+        @on-change="searchForm"
         @on-page-size-change="pageSizeChange"
       />
       <div class="button">
@@ -247,6 +247,7 @@
         });
       },
       searchForm() {
+        
          this.$refs.listsForm.getFormData().then((res)=>{
                     this.formChangeData = res;
                     this.selectOperation.startindex = 0;

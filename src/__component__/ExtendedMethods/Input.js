@@ -17,7 +17,9 @@ export default class InputMethod{
       
     this.Input.methods.handleEnter = function () {
       handleEnter.call(this, ...arguments);
-      if( this.$parent && this.$parent.$parent && this.$parent.$parent.$parent && this.$parent.$parent.$parent.searchClickData){
+      
+      if( this.$parent && this.$parent.$parent && this.$parent.$parent.$parent && this.$parent.$parent.$parent){
+
         this.$parent.$parent.handleEnter(...arguments);
       }
       

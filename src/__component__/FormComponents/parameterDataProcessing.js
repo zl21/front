@@ -185,6 +185,15 @@ export default class ParameterDataProcessing {
         return this.item.combobox.filter(item => !item.limitdis)[0].limitval
       }
     }
+    
+    // 文档数据
+    if(this.item.display ==='OBJ_DOC'){
+      let value = this.item.default || this.item.valuedata;
+      if(!Array.isArray(value)){
+          value = JSON.parse(value);  
+      }
+      return  value
+    }
 
 
 
