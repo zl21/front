@@ -38,7 +38,8 @@ const matchGateWay = (url) => {
   if (ignoreGateWay.includes(url) || ignorePattern().some(d => url.match(d))) {
     return undefined;
   }
-  if (globalGateWay.includes(url)) {
+
+  if (globalGateWay().includes(url)) {
     return globalServiceId || undefined;
   }
   if (tableName || tableNameForGet) {
@@ -378,7 +379,7 @@ export const getGateway = (url) => {
   if (ignoreGateWay.includes(url)) {
     return url;
   }
-  if (globalGateWay.includes(url)) {
+  if (globalGateWay().includes(url)) {
     url = globalServiceId ? `/${globalServiceId}${url}` : url;
     return url;
   }

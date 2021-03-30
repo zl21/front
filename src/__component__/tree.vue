@@ -17,6 +17,7 @@
   export default {
     data() {
       return {
+        searchData: {},
         queryFilterData: {}, // 过滤后的查询参数
         placeholder: '',
         treeNodeID: null, // 当前点击的节点ID
@@ -104,6 +105,7 @@
             this.treeName = value.name;
             this.placeholder = value.placeholder;
             this.query = value.query;
+            this.searchData = value.searchData;
           });
         }
       },
@@ -158,7 +160,7 @@
           arr[obj] = `in (${this.queryFilterData[obj]})`;
           return arr;
         }, {});
-        this.$emit('menuTreeChange', this.treeName, treeNodeID, flag, this.queryFilterData);
+        this.$emit('menuTreeChange', this.treeName, treeNodeID, flag, this.queryFilterData, this.searchData);
         // 参数说明
         // this.queryFilterData:配置多个参数字段时，会以该对象的key为key,value为需要筛选的字段，会将当前点击的节点以及全部子节点数据内的value值对应的字段过滤出，以数组的形式作为查询参数
         // this.treeName:前端配置用作/p/cs/QueryList接口查询树节点的指定参数key
