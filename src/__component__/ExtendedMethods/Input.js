@@ -20,7 +20,7 @@ export default class InputMethod{
       
       if( this.$parent && this.$parent.$parent && this.$parent.$parent.$parent && this.$parent.$parent.$parent){
 
-        this.$parent.$parent.handleEnter(...arguments);
+        this.$parent.$parent.$parent.handleEnter(...arguments);
       }
       
     };

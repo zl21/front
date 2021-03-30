@@ -1,8 +1,10 @@
 /* eslint-disable import/no-dynamic-require */
 <template>
- <ValidateCom :rules="items.rules"
+ <ValidateCom 
+    :rules="items.rules"
     :labelWidth="labelWidth"
-                 :value="value">
+    :show-tip="items.detailType"
+    :value="value">
   <div :class="_items.props.fkdisplay === 'pop' ? 'ItemComponentRoot AttachFilter-pop':'ItemComponentRoot'">
    
 
@@ -650,14 +652,18 @@ export default {
     }
   }
 }
+.panelForm{
+  .ItemComponentRoot{
+      padding-top: 0px;
+    }
+}
 .validate_item {
     // display: inline-block;
     // width: 100%;
     // box-sizing: border-box;
     // vertical-align: middle;
     // font-size: 12px;
-  
-   
+    
     .validate_item_tip {
       height: 16px;
       font-size: 12px;

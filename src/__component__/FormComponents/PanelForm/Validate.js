@@ -68,6 +68,12 @@ export class Validate extends Vue {
                 default: () => {
                     return 0;
                 }
+            },
+            showTip:{
+                type:Boolean,
+                default: () => {
+                    return false;
+                }
             }
         }
     }
@@ -75,8 +81,8 @@ export class Validate extends Vue {
         this.template = `
         <div :class="className">
            <slot />
-           <div class="validate_item_tip">
-                <div v-if="message && message.length>0" v-bind:style="{ marginLeft: labelWidth + 'px' }">
+           <div class="validate_item_tip" v-if="showTip">
+                <div v-if="message && message.length>0 " v-bind:style="{ marginLeft: labelWidth + 'px' }">
                     <Icon type="ios-alert" /><span>{{message}}</span>
                 </div>    
            </div>
