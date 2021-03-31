@@ -32,7 +32,7 @@
           clearable
           icon="ios-search"
           @on-change="searchInputChange"
-             >
+        >
         <span slot="prepend">检索</span>
         </Input>
         <div class="menuContainer">
@@ -982,6 +982,27 @@
         }
       }, // 点击按钮触发
       customize() {
+        const { fullPath } = this.$route;
+        const {
+          keepAliveModuleName,
+          tableName,
+        } = this.$store.state.global.activeTab;
+        this.$store.commit('global/tabCloseAppoint', {
+          tableName,
+          routeFullPath: fullPath,
+          keepAliveModuleName,
+        // stopRouterPush: true,
+        });
+        // 跳转
+        this.$store.commit('global/tabOpen', {
+          // type: 'S',
+          // tableName:'T_V_OMSONLINEORDER',
+          // tableId:'10883',
+          url: '/SYSTEM/TABLE/VV_SHANGPIN/24548',
+          back: true
+        });
+
+
         // const { fullPath } = this.$route;// 获取当前路由fullPath
         // const { keepAliveModuleName, tableName } = this.$store.state.global.activeTab;// 获取当前缓存模块名称，自定义标识
         // const params = {
@@ -989,18 +1010,18 @@
         //   keepAliveModuleName, // 当前模块名称
         //   tableName, // 当前自定义表标识
         //   event: () => {
-        //     alert(177);
+        //     // alert(177);
         //   }
         // };
         // store.commit('global/tabCloseAppoint', params);
     
-        // return;
-        const param = {
-          url: '/CUSTOMIZED/FUNCTIONPERMISSION/2096',
-          type: 'C',
-          label: '基础档案',
-        };
-        store.commit('global/tabOpen', param);
+        // // return;
+        // const param = {
+        //   url: '/CUSTOMIZED/FUNCTIONPERMISSION/2096',
+        //   type: 'C',
+        //   label: '基础档案',
+        // };
+        // store.commit('global/tabOpen', param);
         // const param = {
         //   url: 'CUSTOMIZED/PERMISSIONS/2997?type=sensitive&name=2',
         //   isMenu: true,
