@@ -136,8 +136,8 @@ axios.interceptors.response.use(
         //   errorHTML = '';
         // }
         // 处理1.4版本的error明细报错
-        if (response.data.data && Array.isArray(response.data.data.error)) {
-          errorHTML = response.data.data.error.reduce((arr, x) => {
+        if (response.data.data && Array.isArray(response.data.data.errors)) {
+          errorHTML = response.data.data.errors.reduce((arr, x) => {
             arr.push(`<p>${x.id ? `明细${x.id}` : '修改失败'}:${x.message}</p>`); return arr; 
           }, []).join('') || '';
         }
