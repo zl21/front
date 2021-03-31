@@ -2139,12 +2139,55 @@
             value.searchDataRes.startIndex = 0;
           }
         }
+
+        const json = value && value.searchDataRes ? value.searchDataRes : this.searchData;
+
+        if (Object.keys(this.currentTabValue).length > 0) {
+          const tabValue = this.currentTabValue.tabValue.tab_value;
+          json.fixedcolumns = Object.values(tabValue).reduce((arr, obj) => {
+            Object.keys(json.fixedcolumns).map((key) => {
+              if (obj[key]) {
+                if (obj[key] !== json.fixedcolumns[key]) {
+                  switch (Object.prototype.toString.call(obj[key])) {
+                  case '[object String]':
+                    if (obj[key].includes('~')) { // 判断否是时间段类型字段,取两个时间的并集
+                      let dateArray = [];
+                      dateArray = dateArray.concat(json.fixedcolumns[key].split('~'));
+                      dateArray = dateArray.concat(obj[key].split('~'));
+                      dateArray.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+                      arr[key] = [dateArray[0], dateArray[3]].join('~');
+                    } else {
+                      arr[key] = `${obj[key]},${jsonfixedcolumns[key]}`;
+                      arr[key] = arr[key].split(',');
+                      // arr[key] = Array.from(new Set(arrRes));
+                      // arr[key] = arr[key].toString();
+                    }
+                      
+                    break;
+                  case '[object Array]':
+                    arr[key] = obj[key].concat(json.fixedcolumns[key]);
+                    arr[key] = Array.from(new Set(arr[key]));
+                      
+                    break;
+                  default:
+                    break;
+                  }
+                  return obj[key];
+                } 
+              }
+              arr[key] = json.fixedcolumns[key];
+            });
+
+            arr = Object.assign(obj, arr);
+            return arr;
+          }, {});
+        }
         // this.getQueryListForAg(this.searchData);
         if (this.buttons.isBig) {
           this.updataIsBig(false);
         }
 
-        this.getQueryListPromise(value && value.searchDataRes ? value.searchDataRes : this.searchData);
+        this.getQueryListPromise(json);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
       requiredCheck(data) { // 查询条件必填校验
