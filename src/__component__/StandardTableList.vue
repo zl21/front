@@ -1549,11 +1549,7 @@
       },
       searchEvent() {
         // 支持查询按钮前置事件，通过promise处理
-
-       
         const searchDataRes = Object.assign({}, this.searchData, this.treeSearchData);
-
-
         const obj = {
           callBack: () => new Promise((searchBeforeResolve, searchBeforeReject) => {
             this.searchData.searchBeforeResolve = searchBeforeResolve;
@@ -1970,6 +1966,12 @@
           this.searchData.startIndex = 0;
         }
         this.searchData.fixedcolumns = this.dataProcessing();
+        if (value && value.searchDataRes) {
+          value.searchDataRes.fixedcolumns = this.dataProcessing();
+          if (value && !value.flag) { // 返回时查询之前页码
+            value.searchDataRes.startIndex = 0;
+          }
+        }
         // this.getQueryListForAg(this.searchData);
         if (this.buttons.isBig) {
           this.updataIsBig(false);
