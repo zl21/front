@@ -14,7 +14,6 @@
     </div>
     <div
       class="downComponent"
-      :style="downComponent"
     >
       <div
         v-if="title"
@@ -24,7 +23,9 @@
         {{ title }}<Icon :class="icon" />
       </div>
       <div :class="downContent">
-        <slot name="dwonContent" />
+        <slot
+          name="dwonContent"
+        />
       </div>
     </div>
   </div>
