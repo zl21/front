@@ -203,6 +203,7 @@
     },
     data() {
       return {
+        treeSearchData: {}, // 树配置的自定义参数，如有和框架查询接口同参数的字段，则覆盖
         popwinMessage: {},
         objTabActionDialogConfig: {}, // 自定义按钮配置
         urlArr: ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid', '/p/cs/exeAction'],
@@ -339,7 +340,7 @@
             // 符合记录规则一：由列表界面跳转到单对象界面，如果目标单对象界面和列表界面属于不同的表（Table不同），则将此种关系维护到路由记录“栈”。
             // 所返回的列表界面符合以上逻辑关系，则刷新当前列表界面
             if (this.$route.query.isBack || this.$route.query.ISBACK) {
-              this.searchClickData({ value: 'true' });
+              this.searchClickData({ flag: 'true' });
             }
           }
         }, 0);
@@ -385,10 +386,11 @@
         } else if (this.searchData && this.searchData.reffixedcolumns) {
           delete this.searchData.reffixedcolumns;
         }
+        this.treeSearchData = searchData;
         this.searchData.startIndex = 0;
         // this.getQueryListForAg(this.searchData);
-        // const searchDataRes = Object.assign({}, this.searchData, searchData);
-        this.getQueryListPromise(this.searchData);
+        const searchDataRes = Object.assign({}, this.searchData, searchData);
+        this.getQueryListPromise(searchDataRes);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
         // 按钮查找 查询第一页数据
         const { tableName } = this[INSTANCE_ROUTE_QUERY];
@@ -1295,6 +1297,7 @@
           // this.isChangeTreeConfigData = 'Y'; //oldTree
           if (this.isTreeList && this.treeShow) {
             this.$refs.tree.callMethod();
+            this.treeSearchData = {};// 将树配置的参数清除，保证下一个查询时恢复框架默认参数
           }
           if (this.buttons.isBig) {
             searchData.closeIsBig = true;
@@ -1546,6 +1549,11 @@
       },
       searchEvent() {
         // 支持查询按钮前置事件，通过promise处理
+
+       
+        const searchDataRes = Object.assign({}, this.searchData, this.treeSearchData);
+
+
         const obj = {
           callBack: () => new Promise((searchBeforeResolve, searchBeforeReject) => {
             this.searchData.searchBeforeResolve = searchBeforeResolve;
@@ -1556,7 +1564,7 @@
         if (this.R3_searchBefore && typeof this.R3_searchBefore === 'function') {
           this.R3_searchBefore(obj);
         } else {
-          this.searchClickData();
+          this.searchClickData({ searchDataRes });
         }
       },
       objTabActionDialog(tab) { // 动作定义弹出框
@@ -1958,7 +1966,7 @@
       },
       searchClickData(value) {
         // 按钮查找 查询第一页数据
-        if (!value) { // 返回时查询之前页码
+        if (value && !value.flag) { // 返回时查询之前页码
           this.searchData.startIndex = 0;
         }
         this.searchData.fixedcolumns = this.dataProcessing();
@@ -1966,7 +1974,8 @@
         if (this.buttons.isBig) {
           this.updataIsBig(false);
         }
-        this.getQueryListPromise(this.searchData);
+
+        this.getQueryListPromise(value && value.searchDataRes ? value.searchDataRes : this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
       requiredCheck(data) { // 查询条件必填校验
@@ -2816,14 +2825,12 @@
     },
     mounted() {
       this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
-       
       if (!this._inactive) {
         window.addEventListener('network', this.networkEventListener);
         window.addEventListener('network', this.networkGetTableQuery);
         window.addEventListener('updateSTFailInfo', this.updateSTFailInfo);
       }
       this.updateUserConfig({ type: 'table', id: this[INSTANCE_ROUTE_QUERY].tableId });
-      
       const promise = new Promise((resolve, reject) => {
         const searchData = this.searchData;
         this.getTableQueryForForm({ searchData, resolve, reject });
