@@ -2764,7 +2764,7 @@
                 onOk: () => {
                   const promise = new Promise((resolve, reject) => {
                     this.performMainTableDeleteAction({
-                      buttonInfo, table: this.tableName, objId: this.tableId, resolve, reject
+                      buttonInfo, table: this.tableName, objId: this.itemId, resolve, reject
                     });
                   });
                   promise.then(() => {
