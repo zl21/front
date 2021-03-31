@@ -117,7 +117,7 @@
                   :key="index"
                 >
                   <span v-if="msg.rowIndex">第{{ msg.rowIndex }}条记录报错:</span>
-                  {{ msg.message }}
+                  <span v-html="msg.message"></span>
                 </p>
               </div>
             </div>
