@@ -1965,10 +1965,10 @@
         if (value && !value.flag) { // 返回时查询之前页码
           this.searchData.startIndex = 0;
         }
-        // this.searchData.fixedcolumns = this.dataProcessing();
-        this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, this.dataProcessing());
+        this.searchData.fixedcolumns = this.dataProcessing();
+        // this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, this.dataProcessing());
         if (value && value.searchDataRes) {
-          value.searchDataRes.fixedcolumns = Object.assign({}, value.searchDataRes.fixedcolumns, this.dataProcessing());
+          value.searchDataRes.fixedcolumns = this.dataProcessing();
           if (value && !value.flag) { // 返回时查询之前页码
             value.searchDataRes.startIndex = 0;
           }
