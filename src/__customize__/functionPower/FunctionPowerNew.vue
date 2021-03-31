@@ -1018,13 +1018,13 @@
         };
         store.commit('global/tabCloseAppoint', params);
     
-        // return;
-        const param = {
-          url: '/CUSTOMIZED/FUNCTIONPERMISSION/2096',
-          type: 'C',
-          label: '基础档案',
-        };
-        store.commit('global/tabOpen', param);
+        // // return;
+        // const param = {
+        //   url: '/CUSTOMIZED/FUNCTIONPERMISSION/2096',
+        //   type: 'C',
+        //   label: '基础档案',
+        // };
+        // store.commit('global/tabOpen', param);
         // const param = {
         //   url: 'CUSTOMIZED/PERMISSIONS/2997?type=sensitive&name=2',
         //   isMenu: true,
