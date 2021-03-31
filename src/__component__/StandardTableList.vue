@@ -1704,11 +1704,7 @@
       },
       searchEvent() {
         // 支持查询按钮前置事件，通过promise处理
-
-       
         const searchDataRes = Object.assign({}, this.searchData, this.treeSearchData);
-
-
         const obj = {
           callBack: () => new Promise((searchBeforeResolve, searchBeforeReject) => {
             this.searchData.searchBeforeResolve = searchBeforeResolve;
@@ -2135,12 +2131,12 @@
         if (value && !value.flag) { // 返回时查询之前页码
           this.searchData.startIndex = 0;
         }
-        if (this.getFilterTable) {
-          const el = this.$_live_getChildComponent(this, 'tabBar');
-          const tabCurrentIndex = el.$refs.R3_Tabs.focusedKey;
-          el.tabClick(tabCurrentIndex);
-        } else {
-          this.searchData.fixedcolumns = this.dataProcessing();
+        this.searchData.fixedcolumns = this.dataProcessing();
+        if (value && value.searchDataRes) {
+          value.searchDataRes = this.dataProcessing();
+          if (value && !value.flag) { // 返回时查询之前页码
+            value.searchDataRes.startIndex = 0;
+          }
         }
         // this.getQueryListForAg(this.searchData);
         if (this.buttons.isBig) {
