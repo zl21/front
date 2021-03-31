@@ -248,7 +248,7 @@ export default (router) => {
         next({ path: existModule.routeFullPath });
       } else {
         // [返回][新增]动作需要清除当前明细界面模块的keepAlive（且to与form不相同）
-        const includesKeepAliveLists = !keepAliveLists.includes(keepAliveModuleName); 
+        const includesKeepAliveLists = !keepAliveLists.includes(fromKeepAliveModuleName); 
         if ((isBack && to.params.tableName === from.params.tableName && includesKeepAliveLists) || (paramItemId === 'New' && fromParamItemId !== 'undefined' && paramTableId === fromParamTableId && includesKeepAliveLists)) {
           commit('global/decreasekeepAliveLists', fromKeepAliveModuleName);
         }

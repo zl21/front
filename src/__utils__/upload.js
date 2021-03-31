@@ -10,7 +10,7 @@ class Upload {
     this.fileName = obj.fileName || 'file';
     this.img = new Image();
     this.length = obj.length; // 最多上传多少张
-    // this.imgSize = obj.imgSize || 1024 * 1024 * 10; // 10MB;
+    this.imgSize = obj.imgSize || 1024 * 1024 * 10; // 10MB;
     this.type = obj.type || 'Image'; // 上传的文件类型
     this.checkimgSize = true;
     this.result = 0;
@@ -37,12 +37,14 @@ class Upload {
 
   filerImg(file, index) {
     //   校验传参
-    // if (file.size > this.imgSize) {
-    //   if (Object.prototype.hasOwnProperty.call(this.event, 'onerror')) {
-    //     this.checkimgSize = false;
-    //     this.event.onerror('文件内容过大', index);
-    //   }
-    // }
+
+    // 处理文件上传大小限制
+    if (file.size > this.imgSize) {
+      if (Object.prototype.hasOwnProperty.call(this.event, 'onerror')) {
+        this.checkimgSize = false;
+        this.event.onerror('文件内容过大', index);
+      }
+    }
     if (this.type === 'Image') {
       if (!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(file.name)) {
         this.checkimgSize = false;
