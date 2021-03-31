@@ -1704,7 +1704,6 @@
       },
       searchEvent() {
         // 支持查询按钮前置事件，通过promise处理
-        debugger;
         const searchDataRes = Object.assign({}, this.searchData, this.treeSearchData);
         const obj = {
           callBack: () => new Promise((searchBeforeResolve, searchBeforeReject) => {
