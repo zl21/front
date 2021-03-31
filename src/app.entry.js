@@ -30,6 +30,7 @@ import './assets/css/loading.css';
 import './assets/css/custom-ext.less';
 import { createWatermark } from './__utils__/waterMark';
 import R3Dialog from './__globalComponentModule__/dialog';
+import '@syman/ark-ui-bcl/dist/tailwindcss.css'
 
 // 全局指令
 import inputNumber from './directive/inputNumber';
