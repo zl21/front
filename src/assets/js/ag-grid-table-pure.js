@@ -686,9 +686,9 @@ const initializeAgTable = (container, opt) => {
         item.unSortIcon = item.isorder; // 设置未排序图表Icon
         item.hide = hideColumn.indexOf(item.colname) > -1;
         item.suppressMenu = d.colname === 'ID'; // 是否禁用每一列的菜单选择
-        // if (d.agfilter === 'FUZZY') {
-        //   item.filter = 'agTextColumnFilter';
-        // }
+        if (d.agfilter === 'FUZZY') {
+          item.filter = 'agTextColumnFilter';
+        }
         item.checkboxSelection = d.colname === 'ID' ? function (params) {
           return params.columnApi.getRowGroupColumns().length === 0 && params.data.ID.val !== '合计' && params.data.ID.val !== '总计';
         } : null;
