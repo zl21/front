@@ -2142,8 +2142,8 @@
 
         const json = value && value.searchDataRes ? value.searchDataRes : this.searchData;
 
-        if (Object.keys(this.currentTabValue).length > 0) {
-          const tabValue = this.currentTabValue.tabValue.tab_value;
+        if (Object.keys(this.currentTabValue).length > 0 && this.currentTabValue.tabValue.tab_value) {
+          const tabValue = JSON.parse(JSON.stringify(this.currentTabValue.tabValue.tab_value));
           json.fixedcolumns = Object.values(tabValue).reduce((arr, obj) => {
             Object.keys(json.fixedcolumns).map((key) => {
               if (obj[key]) {
@@ -2157,7 +2157,7 @@
                       dateArray.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
                       arr[key] = [dateArray[0], dateArray[3]].join('~');
                     } else {
-                      arr[key] = `${obj[key]},${jsonfixedcolumns[key]}`;
+                      arr[key] = `${obj[key]},${json.fixedcolumns[key]}`;
                       arr[key] = arr[key].split(',');
                       // arr[key] = Array.from(new Set(arrRes));
                       // arr[key] = arr[key].toString();
