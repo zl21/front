@@ -1874,7 +1874,7 @@
               },
             };
             this.$Modal.fcSuccess(data);
-            if (this.buttons.isrefrsh) {
+            if (item.isrefrsh) {
               this.searchClickData();
             }
           }, () => {
