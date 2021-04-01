@@ -9,7 +9,6 @@ export default class BusDropDownSelectFilterMethod{
   constructor(item, instance){
     this.item = item
     this.instance = instance
-
     this.postTableData()
     this.postData()
     this.keydown()
@@ -43,8 +42,10 @@ export default class BusDropDownSelectFilterMethod{
   keydown(){
     this.instance.methods['on-keydown'] = function (event) {
       if (event.code === 'Enter') {
-        if( this.$parent && this.$parent.$parent && this.$parent.$parent.$parent && this.$parent.$parent.$parent.searchClickData){
-          this.$parent.$parent.handleEnter(...arguments);
+        if( this.$parent && this.$parent.$parent && this.$parent.$parent.$parent && this.$parent.$parent.$parent){
+          if(typeof this.$parent.$parent.$parent.$parent.handleEnter ==='function'){
+            this.$parent.$parent.$parent.$parent.handleEnter(...arguments);
+          }
         }
       }
     };

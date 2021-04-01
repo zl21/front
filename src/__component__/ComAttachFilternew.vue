@@ -52,7 +52,6 @@
       @on-keydown="attachFilterInputKeydown"
       @on-ok="attachFilterOk"
       @on-cancel="attachFilterCancel"
-      @on-popclick="attachFilterPopclick"
       @on-clear="attachFilterClear"
       @on-uploadFile="attachFile"
     />
