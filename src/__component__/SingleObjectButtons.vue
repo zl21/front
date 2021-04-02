@@ -251,22 +251,22 @@
         },
         deep: true
       },
-      tabwebact: {
+      tabwebact: {// 自定义按钮数据
         handler(val) {
-          this.hideBackButton();
+          this.hideBackButton();// 先执行是否隐藏返回按钮逻辑，该逻辑会根据一些判断条件控制返回按钮是否显示
           this.dataArray.waListButtonsConfig.waListButtons = [];
-          this.waListButtons(val);
+          this.waListButtons(val);// 整合自定义按钮数据
         },
         deep: true
       },
     },
     computed: {
       ...mapState('global', {
-        activeTab: ({ activeTab }) => activeTab,
-        keepAliveLists: ({ keepAliveLists }) => keepAliveLists,
+        activeTab: ({ activeTab }) => activeTab, // 当前表基本数据，包含路由信息，表名，ID等
+        keepAliveLists: ({ keepAliveLists }) => keepAliveLists, // 当前已被缓存的表名
         keepAliveLabelMaps: ({ keepAliveLabelMaps }) => keepAliveLabelMaps,
-        copyDatas: ({ copyDatas }) => copyDatas,
-        modifyData: ({ modifyData }) => modifyData,
+        copyDatas: ({ copyDatas }) => copyDatas, // 复制逻辑用到的复制来源的数据
+        modifyData: ({ modifyData }) => modifyData, // 当前界面组件向上抛出的，修改的值，所有页面修改过后的值都会存入该对象
         serviceIdMap: ({ serviceIdMap }) => serviceIdMap,
         LinkUrl: ({ LinkUrl }) => LinkUrl,
         exportTasks: ({ exportTasks }) => exportTasks,
