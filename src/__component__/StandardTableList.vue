@@ -416,7 +416,7 @@
           this.searchClickData();
         }
       },
-      tabClick({ data, index }) {
+      tabClick({ data, index,stopRequest }) {
         this.filterTableParam = {};
         if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].startIndex) {
           this.searchData.startIndex = data.startIndex;
@@ -430,7 +430,7 @@
         // }
         this.searchData.range = this.ag.datas.defaultrange; // 处理每次查询后分页不变,以前是只有配置了multi_tab的时候才保留分页
         
-        this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName; 
+        // this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName; 
         this.searchData.fixedcolumns = this.dataProcessing();
         if (data.tab_value) {
           // Object.values(data.tab_value).map((item) => {
@@ -484,7 +484,19 @@
           tabValue: data
         };
         this.currentTabValue = obj;
-        this.getQueryListPromise(this.searchData);
+        let parameData={}
+        if(!stopRequest){//若stopRequest为true,则只通过以上逻辑整合参数，不发送请求
+         if(this.treeSearchData){
+           let copySearchData=this.searchData
+           copySearchData=Object.assign({},copySearchData,this.treeSearchData)
+           copySearchData.fixedcolumns= this.searchData.fixedcolumns
+           parameData=copySearchData
+         }else{
+           parameData=this.searchData
+         }
+         this.getQueryListPromise(parameData);
+
+        }
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
       // a() {
@@ -520,17 +532,21 @@
       //   this.treeDatas = this.getTreeDatas(this.searchTreeDatas);
       // },
       menuTreeChange(treeName, currentId, flag, queryFilterData, searchData) {
+         this.treeSearchData=searchData
         this.searchData.fixedcolumns = this.dataProcessing();
+         const stopRequest=true
+        this.getResSearchDataForFilterTable({stopRequest})
         if (Object.keys(queryFilterData) && Object.keys(queryFilterData).length > 0 && flag) {
           this.searchData.reffixedcolumns = queryFilterData;
         } else if (this.searchData && this.searchData.reffixedcolumns) {
           delete this.searchData.reffixedcolumns;
         }
-        this.treeSearchData = searchData;
+        // this.treeSearchData = searchData; 
         this.searchData.startIndex = 0;
         // this.getQueryListForAg(this.searchData);
         const searchDataRes = Object.assign({}, this.searchData, searchData);
-        this.getQueryListPromise(searchDataRes);
+
+         this.getQueryListPromise(searchDataRes);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
         this.$refs.agTableElement.clearChecked();
         // 按钮查找 查询第一页数据
@@ -2126,70 +2142,70 @@
         }, {});
       },
       searchClickData(value) {
+
         this.resetButtonsStatus();
         // 按钮查找 查询第一页数据
         if (value && !value.flag) { // 返回时查询之前页码
           this.searchData.startIndex = 0;
         }
-        this.searchData.fixedcolumns = this.dataProcessing();
-        // this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, this.dataProcessing());
-        if (value && value.searchDataRes) {
-          value.searchDataRes.fixedcolumns = this.dataProcessing();
-          if (value && !value.flag) { // 返回时查询之前页码
-            value.searchDataRes.startIndex = 0;
-          }
-        }
+        
+        // if (value && value.searchDataRes) {
+        //   //因tab设置的参数已与表单参数整合过，并已被以上逻辑更新，this.searchData.fixedcolumns 已为最新参数，直接赋值给一次性参数value.searchDataRes.fixedcolumns即可，用过即销毁，不会作用当前实例内的this.searchData
+        //   value.searchDataRes.fixedcolumns = this.searchData.fixedcolumns 
+        //   if (value && !value.flag) { // 返回时查询之前页码
+        //     value.searchDataRes.startIndex = 0;
+        //   }
+        // }
+        // const json = value && value.searchDataRes ? value.searchDataRes : this.searchData;
 
-        const json = value && value.searchDataRes ? value.searchDataRes : this.searchData;
-
-        if (Object.keys(this.currentTabValue).length > 0 && this.currentTabValue.tabValue.tab_value) {
-          const tabValue = JSON.parse(JSON.stringify(this.currentTabValue.tabValue.tab_value));
-          json.fixedcolumns = Object.values(tabValue).reduce((arr, obj) => {
-            Object.keys(json.fixedcolumns).map((key) => {
-              if (obj[key]) {
-                if (obj[key] !== json.fixedcolumns[key]) {
-                  switch (Object.prototype.toString.call(obj[key])) {
-                  case '[object String]':
-                    if (obj[key].includes('~')) { // 判断否是时间段类型字段,取两个时间的并集
-                      let dateArray = [];
-                      dateArray = dateArray.concat(json.fixedcolumns[key].split('~'));
-                      dateArray = dateArray.concat(obj[key].split('~'));
-                      dateArray.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-                      arr[key] = [dateArray[0], dateArray[3]].join('~');
-                    } else {
-                      arr[key] = `${obj[key]},${json.fixedcolumns[key]}`;
-                      arr[key] = arr[key].split(',');
-                      // arr[key] = Array.from(new Set(arrRes));
-                      // arr[key] = arr[key].toString();
-                    }
-                      
-                    break;
-                  case '[object Array]':
-                    arr[key] = obj[key].concat(json.fixedcolumns[key]);
-                    arr[key] = Array.from(new Set(arr[key]));
-                      
-                    break;
-                  default:
-                    break;
-                  }
-                  return obj[key];
-                } 
-              }
-              arr[key] = json.fixedcolumns[key];
-            });
-
-            arr = Object.assign(obj, arr);
-            return arr;
-          }, {});
+        if (this.getFilterTable) {
+          const stopRequest=true
+         this.getResSearchDataForFilterTable({stopRequest})
+        } else {
+          this.searchData.fixedcolumns = this.dataProcessing();
+          
         }
         // this.getQueryListForAg(this.searchData);
         if (this.buttons.isBig) {
           this.updataIsBig(false);
         }
-
-        this.getQueryListPromise(json);
+        const  searchDataRes=value&&  value.searchDataRes? value.searchDataRes:null;
+        this.getQueryListPromise(this.searchData,searchDataRes);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
+
+      getResSearchDataForFilterTable(data){
+        //此方法用于整合当前查询的参数以及当前激活的tab所配置的参数，执行过此方法后，会将整合好的参数更新至this.searchData，需要用到表格过滤参数的逻辑，可直接调用该方法即可，调用过后拿到的this.searchData即为最新参数
+         if (this.getFilterTable) {
+          const el = this.$_live_getChildComponent(this, 'tabBar');
+          const tabCurrentIndex = el.$refs.R3_Tabs.focusedKey;
+          const {stopRequest}=data
+          el.tabClick(tabCurrentIndex,stopRequest);
+        } 
+      },
+  // searchClickData(value) {
+  //       this.resetButtonsStatus();
+  //       // 按钮查找 查询第一页数据
+  //       if (!value) { // 返回时查询之前页码
+  //         this.searchData.startIndex = 0;
+  //       }
+  //       if (this.getFilterTable) {
+  //         const el = this.$_live_getChildComponent(this, 'tabBar');
+  //         const tabCurrentIndex = el.$refs.R3_Tabs.focusedKey;
+  //         el.tabClick(tabCurrentIndex);
+  //       } else {
+  //         this.searchData.fixedcolumns = this.dataProcessing();
+  //       }
+  //       // this.getQueryListForAg(this.searchData);
+  //       if (this.buttons.isBig) {
+  //         this.updataIsBig(false);
+  //       }
+  //       this.getQueryListPromise(this.searchData);
+  //       this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+  //     },
+
+
+
       requiredCheck(data) { // 查询条件必填校验
         return new Promise((resolve, reject) => {
           this.formItems.defaultFormItemsLists.map((item) => {
@@ -2207,13 +2223,16 @@
           resolve();
         });
       },
-      getQueryListPromise(data) {
+      getQueryListPromise(data,searchDataRes) {
+        //data:全局参数
+        //searchDataRes：重新整合的参数
         const promise = new Promise((resolve, reject) => {
           this.requiredCheck().then(() => {
             this.$R3loading.show();
-            data.resolve = resolve;
-            data.reject = reject;
-            data.isolr = this.buttons.isSolr;
+           const currentParame=this.paramePreEvent(data,searchDataRes)
+            currentParame.resolve = resolve;
+            currentParame.reject = reject;
+            currentParame.isolr = this.buttons.isSolr;
 
             if (enableKAQueryDataForUser() || this.webConf.enableKAQueryDataForUser) {
               const search = JSON.parse(JSON.stringify(this.$refs.FormItemComponent.formDataObject));
@@ -2233,7 +2252,7 @@
               this.updateSearchDBdata({});
               this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
             }
-            this.getQueryListForAg(data);
+            this.getQueryListForAg(currentParame);
           });
         });
         promise.then((res) => {
@@ -2250,6 +2269,16 @@
         }, () => { // 状态为rejected时执行
           this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
         });
+      },
+      paramePreEvent(data,searchDataRes){
+        //data：全局参数
+        //searchDataRes:局部方法根据全局参数进行整合的参数
+        //
+        if (searchDataRes) {
+          searchDataRes.fixedcolumns = data.fixedcolumns 
+        }
+        const currentParame=searchDataRes|| data
+       return currentParame
       },
 
       // 弹出消息提示框
@@ -2269,10 +2298,7 @@
         };
         this.$Modal.fcWarning(data);
         // this.$refs.dialogRefs.open();
-      },
-      getSingleObjectPageType() {
-        
-      },
+   },
       AddDetailClick(type, obj) {
         DispatchEvent('R3StandardButtonClick', {
           detail: {

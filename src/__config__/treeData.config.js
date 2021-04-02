@@ -20,7 +20,7 @@ import json from './treeData.json';
 // 注意：返回值中的所有ENAME字段请改为title
 export default {
   // value：框架传入的参数，模糊查询的字符
-  C_STORE: value => async () => {
+  shangpin: value => async () => {
     // ....
     const treeData = {
       data: [], // 树结构列表数据
@@ -31,7 +31,9 @@ export default {
       },
       placeholder: '88', // placeholder自定义
       searchData: {// 定义查询接口参数
-        table: '1111'
+        table: '1111',
+        table2: '222'
+
       }
 
     };
