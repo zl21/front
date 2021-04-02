@@ -66,8 +66,8 @@
       <Input
         v-if="_items.type === 'input'"
         :ref="_items.field"
-        v-model="inputText"
-        :class="{'encode-text': _items.props.ispassword && inputText}"
+        v-model="_items.value"
+        :class="{'encode-text': _items.props.ispassword && _items.value}"
         :type="_items.props.type"
         :clearable="_items.props.clearable"
         :disabled="_items.props.disabled || _items.props.readonly"
@@ -469,7 +469,6 @@
       return {
         filterDate: {},
         resultData: {}, // 结果传值
-        inputText: '', // textarea加密后的文本
         showImgUploadProcess: false, // 显示上传进度条
         uploadProgress: 0, // 图片上传进度
         imgProgressController: window.ProjectConfig.imgProgressController
