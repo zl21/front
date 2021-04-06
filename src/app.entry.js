@@ -206,6 +206,11 @@ const getGateWayServiceId = () => {
         window.sessionStorage.setItem('serviceId', res.data.data.serviceId);
         getCategory();
         setTimeout(() => {
+          DispatchEvent('serviceIdReady', {
+            detail: {
+              serviceId: res.data.data.serviceId
+            }
+          });
           init();
         }, 0);
       });

@@ -38,7 +38,8 @@ const matchGateWay = (url) => {
   if (ignoreGateWay.includes(url) || ignorePattern().some(d => url.match(d))) {
     return undefined;
   }
-  if (globalGateWay.includes(url)) {
+
+  if (globalGateWay().includes(url)) {
     return globalServiceId || undefined;
   }
   if (tableName || tableNameForGet) {
@@ -131,8 +132,14 @@ axios.interceptors.response.use(
         let errorHTML = Array.isArray(response.data.error || response.data.data) && (response.data.error || response.data.data).reduce((arr, x) => {
           arr.push(`<p>${x.objid ? `objid${x.objid}` : '修改失败'}:${x.message}</p>`); return arr; 
         }, []).join('') || '';
-        if (!config.url.includes('/p/cs/batchSave')) {
-          errorHTML = '';
+        // if (!config.url.includes('/p/cs/batchSave')) {
+        //   errorHTML = '';
+        // }
+        // 处理1.4版本的error明细报错
+        if (response.data.data && Array.isArray(response.data.data.errors)) {
+          errorHTML = response.data.data.errors.reduce((arr, x) => {
+            arr.push(`<p>${x.id ? `明细${x.id}` : '修改失败'}:${x.message}</p>`); return arr; 
+          }, []).join('') || '';
         }
         let Modalflag = true;
         let innerHTML = '';
@@ -378,7 +385,7 @@ export const getGateway = (url) => {
   if (ignoreGateWay.includes(url)) {
     return url;
   }
-  if (globalGateWay.includes(url)) {
+  if (globalGateWay().includes(url)) {
     url = globalServiceId ? `/${globalServiceId}${url}` : url;
     return url;
   }
