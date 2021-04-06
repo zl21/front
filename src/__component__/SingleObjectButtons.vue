@@ -251,27 +251,27 @@
         },
         deep: true
       },
-      tabwebact: {
+      tabwebact: {// 自定义按钮数据
         handler(val) {
-          this.hideBackButton();
+          this.hideBackButton();// 先执行是否隐藏返回按钮逻辑，该逻辑会根据一些判断条件控制返回按钮是否显示
           this.dataArray.waListButtonsConfig.waListButtons = [];
-          this.waListButtons(val);
+          this.waListButtons(val);// 整合自定义按钮数据
         },
         deep: true
       },
     },
     computed: {
       ...mapState('global', {
-        activeTab: ({ activeTab }) => activeTab,
-        keepAliveLists: ({ keepAliveLists }) => keepAliveLists,
+        activeTab: ({ activeTab }) => activeTab, // 当前表基本数据，包含路由信息，表名，ID等
+        keepAliveLists: ({ keepAliveLists }) => keepAliveLists, // 当前已被缓存的表名
         keepAliveLabelMaps: ({ keepAliveLabelMaps }) => keepAliveLabelMaps,
-        copyDatas: ({ copyDatas }) => copyDatas,
-        modifyData: ({ modifyData }) => modifyData,
+        copyDatas: ({ copyDatas }) => copyDatas, // 复制逻辑用到的复制来源的数据
+        modifyData: ({ modifyData }) => modifyData, // 当前界面组件向上抛出的，修改的值，所有页面修改过后的值都会存入该对象
         serviceIdMap: ({ serviceIdMap }) => serviceIdMap,
-        LinkUrl: ({ LinkUrl }) => LinkUrl,
-        exportTasks: ({ exportTasks }) => exportTasks,
-        currentLoading: ({ currentLoading }) => currentLoading,
-        userInfo: ({ userInfo }) => userInfo,
+        LinkUrl: ({ LinkUrl }) => LinkUrl, // 当前外链表对应的外链地址，为解决刷新后地址丢失问题维护的数据
+        exportTasks: ({ exportTasks }) => exportTasks, // 导出任务数据
+        currentLoading: ({ currentLoading }) => currentLoading, // 当前正在loading状态的表
+        userInfo: ({ userInfo }) => userInfo, // 登陆用户信息
       }),
       getCurrentItemTableRef() { // 当前子表明细表格实例
         return this.$_live_getChildComponent(window.vm, 'H.SHANGPIN.24445.5.TableDetailCollection') ? this.$_live_getChildComponent(window.vm, 'H.SHANGPIN.24445.5.TableDetailCollection') : null;
@@ -424,7 +424,7 @@
         type: Boolean,
         default: false
       },
-      isItemTableVertical: {
+      isItemTableVertical: {// 当前按钮组组件是否在上下结构子表上，该数据为jflow逻辑使用，jflow逻辑会有按钮组在子表的情况，用该标记将一些新增返回刷新按钮隐藏，子表不需要这些按钮
         type: Boolean,
         default: false
       }, // 当前是否在1:1面板上下结构子表
@@ -529,6 +529,7 @@
                   content: ' 本次操作已后台处理，是否至[我的任务]查看',
                   showCancel: true,
                   onOk: () => {
+                    // 导入后会进入异步任务，会弹出提示框，点击确定后进入我的任务表，同时更新任务图标上的数字
                     const type = 'tableDetailVertical';
                     const tab = {
                       type,
@@ -576,7 +577,7 @@
         }
         return false;
       },
-      clearDialogComponentName() {
+      clearDialogComponentName() { // 清除自定义弹框内的组件
         this.dialogComponentName = null;
       },
       closeActionDialog() { // 关闭导入弹框
@@ -597,14 +598,14 @@
           //     this.getbuttonGroupData(buttonData);
           //   }
           // }
-          if (this.copy === true) {
+          if (this.copy === true) { // 通过点击复制按钮打开的界面，需将刷新按钮去除
             this.updateRefreshButton(false);
-            this.addButtonShow(buttonData);
+            this.addButtonShow(buttonData);// 复制即为新增，将按钮置为新增状态，只显示新增状态该显示的按钮
           }
         }
       },
       buttonClick(type, obj) { // 根据按钮类型不同执行的事件逻辑
-        DispatchEvent('R3SingleButtonClick', {
+        DispatchEvent('R3SingleButtonClick', {// 所有点击过的按钮都会向上派发事件，将当前按钮的元数据配置信息作为参数
           detail: {
             type, obj
           }
@@ -629,7 +630,7 @@
       clickButtonsTemporaryStorage() { // 暂存事件
         this.temporaryStorage = true;
         if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) { // 扩展属性配置暂存按钮信息，则模拟点击保存按钮的dom节点，暂存和保存的区别为，暂存不做任何校验
-          if (this.tempStorage.temp_storage.path) {
+          if (this.tempStorage.temp_storage.path) { // 暂存按钮为扩展属性配置，跟随保存按钮权限，可配置path,执行逻辑为模拟点击保存按钮，将配置的path存入全局，保存逻辑
             this.temporaryStoragePath = this.tempStorage.temp_storage.path;
             const dom = document.getElementById('actionMODIFY');
             if (dom) {
@@ -701,7 +702,8 @@
         });
       },
       testUpdata() { // 校验是否修改过值
-        if (!enableRestrictSave()) {
+        // 校验逻辑为判断单对象各个组件向当前状态模块内抛出的修改后的值，如果该表名对应的对象内有值，则认为该表修改了值
+        if (!enableRestrictSave()) { // 该配置为false,则不进行是否修改值的校验
           return true;
         }
         this.isValue = null;
