@@ -344,7 +344,7 @@
             }
           }
         }, 0);
-      },
+      }
     },
     methods: {
       // a() {
@@ -1890,9 +1890,8 @@
           }
           return obj;
         }, {});
-        return Object.keys(jsonData).reduce((obj, item) => {
+        const newData = Object.keys(jsonData).reduce((obj, item) => {
           let value = '';
-
           this.formItemsLists.concat([]).every((temp) => {
             if (temp.item.field === item) { // 等于当前节点，判断节点类型
               if (temp.item.type === 'DatePicker' && (temp.item.props.type === 'datetimerange' || temp.item.props.type === 'daterange')) { // 当为日期控件时，数据处理
@@ -1910,6 +1909,11 @@
                 } else {
                   value = '';
                 }
+                return false;
+              }
+
+              if (temp.item.type === 'DropDownSelectFilter' && temp.item.value) {
+                value = temp.item.value.map(selectedValue => selectedValue.ID);
                 return false;
               }
 
@@ -1956,9 +1960,9 @@
           if (value) {
             obj[item] = value;
           }
-
           return obj;
         }, {});
+        return newData;
       },
       searchClickData(value) {
         // 按钮查找 查询第一页数据
@@ -2020,7 +2024,6 @@
         if (this.buttons.isBig) {
           this.updataIsBig(false);
         }
-
         this.getQueryListPromise(json);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
