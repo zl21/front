@@ -570,16 +570,13 @@
           this.columns = this.filterColumns(this.dataSource.tabth, isTableRender); // 每列的属性
           this.getEditAbleId(JSON.parse(JSON.stringify(this.dataSource)));
         }
-      },
+      }
 
     },
     created() {
       this.ChineseDictionary = ChineseDictionary;
 
-      // 设置查询条件默认值。默认取选项数组的第一个值
-      if (this.filterList && this.filterList[0]) {
-        this.searchCondition = this.filterList[0].key;
-      }
+      this.setSelectDefaultValue();
     },
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
@@ -629,6 +626,15 @@
           });
         }
       },
+
+      // 设置查询条件默认值。默认取选项数组的第一个值
+      setSelectDefaultValue() {
+        if (this.filterList && this.filterList[0]) {
+          const option = this.filterList[0];
+          this.searchCondition = option.isfk ? option.inputname : option.colname;
+        }
+      },
+
       imporSuccess(id) {
         if (Version() === '1.3') {
           if (id) {
@@ -777,8 +783,8 @@
           if (this.dataSource.fullRangeSubTotalRow) {
             for (const key in this.dataSource.fullRangeSubTotalRow) {
               if (Object.prototype.hasOwnProperty.call(this.dataSource.fullRangeSubTotalRow, key)) {
-                const element = `<div class="text-right">${this.dataSource.fullRangeSubTotalRow[key]}</div>`;
-                cell[key] = element.val;
+                const element = this.dataSource.fullRangeSubTotalRow[key];
+                cell[key] = `<div class="text-right">${element.val}</div>`;
               }
             }
           }
