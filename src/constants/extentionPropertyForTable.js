@@ -151,7 +151,7 @@ export default [
           { text: '-- 请选择 --', value: '' },
           { text: '新增', value: 'actionADD' },
           { text: '修改', value: 'actionMODIFY' },
-          { text: '删除', value: 'ctionDELETE' },
+          { text: '删除', value: 'actionDELETE' },
           { text: '提交', value: 'actionSUBMIT' },
           { text: '取消提交', value: 'actionUNSUBMIT' },
           { text: '作废', value: 'actionVOID' },
@@ -248,7 +248,7 @@ export default [
     name: '树界面配置',
     key: 'menudisplay',
     type: 'radio',
-    enumerateValue: [{ text: '树界面', value: "tree" }],
+    enumerateValue: [{ text: '树界面', value: 'tree' }],
     description: '列表界面使用树界面'
   },
   {
