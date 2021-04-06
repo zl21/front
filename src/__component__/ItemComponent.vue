@@ -2,6 +2,7 @@
 <template>
   <div :class="_items.props.fkdisplay === 'pop' ? 'ItemComponentRoot AttachFilter-pop':'ItemComponentRoot'">
     <span
+      v-if="_items.type !== 'defined'"
       class="itemLabel"
       :style="labelStyle"
     >
@@ -32,7 +33,7 @@
         v-if="_items.required"
         class="label-tip"
       >*</span>
-      <template v-if="getVersion() === '1.4' && _items.props.fkdisplay === 'pop' && type==='PanelForm'">
+      <template v-if="getVersion() === '1.4' && _items.props.fkdisplay === 'pop' && type==='PanelForm'&&_items.type !== 'defined'">
         <!-- 路由跳转 -->
         <template v-if="!!_items.value &&_items.props.Selected &&_items.props.Selected[0] && !!_items.props.Selected[0].ID && _items.props.Selected[0].ID !=='-1'&& _items.props.Selected[0].ID !==0 && _items.props.Selected[0].ID !=='0'">
           <i
@@ -44,7 +45,7 @@
         </template>
 
       </template>
-      <template v-if="getVersion() === '1.4' && _items.props.fkdisplay === 'drp' && type==='PanelForm'">
+      <template v-if="getVersion() === '1.4' && _items.props.fkdisplay === 'drp' && type==='PanelForm'&&_items.type !== 'defined'">
         <!-- 路由跳转 -->
         <template v-if="!!_items.value && _items.props.defaultSelected && _items.props.defaultSelected[0] && !!_items.props.defaultSelected[0].ID && _items.props.defaultSelected[0].ID !=='-1'&& _items.props.defaultSelected[0].ID !=='0'&& _items.props.defaultSelected[0].ID !==0">
           <i
@@ -57,7 +58,10 @@
 
       </template>
 
-      <span :title="_items.title">{{ _items.title }}:</span>
+      <span
+        v-if="_items.type !== 'defined'"
+        :title="_items.title"
+      >{{ _items.title }}:</span>
     </span>
     <div
       :class=" _items.props.row >1 ? 'itemComponent height100':'itemComponent'"
@@ -382,11 +386,23 @@
           formIndex,
         }"
       />
+
+      <template v-if="_items.type === 'defined'">
+        <!-- 单对象主表属性定制字段 -->
+        <!-- _items.type：display
+        _items.props:元数据配置字段 -->
+        <Defined
+          :readonly="_items.props.readonly"
+          :itemdata="_items.props"
+          :items="_items"
+        />
+      </template>
     </div>
   </div>
 </template>
 
 <script>
+  import Vue from 'vue';
   import { mapMutations } from 'vuex';
   
   import dataProp from '../__config__/props.config';
@@ -401,6 +417,7 @@
   //   上传文件
   import Docfile from './docfile/DocFileComponent.vue';
   import RadioGroup from './form/RadioGroup.vue';
+  import Defined from './Defined.vue';
 
 
   import {
@@ -417,7 +434,7 @@
   export default {
     name: 'ItemComponent',
     components: {
-      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile, RadioGroup
+      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile, RadioGroup, Defined
     },
     inject: [MODULE_COMPONENT_NAME],
     props: {
