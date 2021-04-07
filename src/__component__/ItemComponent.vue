@@ -83,7 +83,7 @@
         :encrypt="_items.props.ispassword"
         on-click="inputClick"
         @on-blur="inputBlur"
-        @on-change="inputChange($event, null)"
+        @on-change="inputChange"
         @on-enert="inputEnter"
         @on-focus="inputFocus"
         @on-keyup="inputKeyUp"
@@ -635,7 +635,7 @@
         this.valueChange();
       },
       // input event
-      inputChange(event, cursorOffset, $this) {
+      inputChange(event, $this) {
         this._items.value = event.target.value;
         this.valueChange();
 
