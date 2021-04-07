@@ -421,7 +421,7 @@
 
 
   import {
-    Version, MODULE_COMPONENT_NAME, ossRealtimeSave, defaultrange 
+    Version, MODULE_COMPONENT_NAME, ossRealtimeSave, defaultrange, setComponentsProps
   } from '../constants/global';
   import createModal from './PreviewPicture/index';
   import EnumerableInput from './EnumerableInput.vue';
@@ -535,6 +535,10 @@
           {},
           item.type ? dataProp[item.type] && dataProp[item.type].props : {},
           this.items.props
+        );
+        // 是否有外部配置
+        item.props = Object.assign(
+          item.props, (setComponentsProps())(item.type, item.props)
         );
 
 

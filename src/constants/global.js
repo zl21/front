@@ -147,3 +147,5 @@ export const globalGateWay = () => {
   globalDefaultGateWay = globalDefaultGateWay.concat(globalGateWayConfig || []);
   return globalDefaultGateWay;
 };
+
+export const setComponentsProps = () => (window.ProjectConfig && window.ProjectConfig.setComponentsProps ? window.ProjectConfig.setComponentsProps : () => ({}));

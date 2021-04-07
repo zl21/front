@@ -304,6 +304,14 @@
       }
     },
     watch: {
+      ag: {
+        handler() {
+          // 监听ag数据 触发树的数据变化
+          if (this.$refs && this.$refs.tree) {
+            this.$refs.tree.getTreeInfo();
+          } 
+        }
+      },
       formLists() {
         const arr = JSON.parse(JSON.stringify(this.formLists));
         arr.map((temp, index) => {
