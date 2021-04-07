@@ -30,7 +30,7 @@ window.pendingRequestMap = pendingRequestMap;
 const matchGateWay = (url) => {
   const { tableName, customizedModuleName } = router.currentRoute.params;
   const globalServiceId = window.sessionStorage.getItem('serviceId');
-  const serviceIdMap = Object.assign({}, store.state.global.serviceIdMap, JSON.parse(window.sessionStorage.getItem('serviceIdMap')));
+  const serviceIdMap = Object.assign({}, store.state.global.serviceIdMap, JSON.parse(window.localStorage.getItem('serviceIdMap')));
   // eslint-disable-next-line no-empty
   if (!enableGateWay()) {
     return undefined;

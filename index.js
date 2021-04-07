@@ -202,9 +202,9 @@ const getCategory = () => {
             return a;
           }, {});
           //
-        const getServiceIdMap = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
+        const getServiceIdMap = JSON.parse(window.localStorage.getItem('serviceIdMap'));
         const serviceIdMapRes = Object.assign({}, getServiceIdMap, serviceIdMaps);
-        window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMapRes));
+        window.localStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMapRes));
       } else if (getLocalObject('loginStatus') === true) {
         // getSessionObject('loginStatus') === true
         setMessage({ content: '当前用户无菜单权限,将为您跳转到登陆界面' });
