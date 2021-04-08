@@ -9,6 +9,7 @@ import { getKeepAliveModuleName } from '../../__config__/router.navigation.guard
 import store from '../../__config__/store.config';
 import router from '../../__config__/router.config';
 import createModal from '../../__component__/PreviewPicture/index.js';
+import { agGridOptions } from '../../constants/global';
 
 // 设置enterprise key
 // const { Grid, LicenseManager } = agGrid;
@@ -794,8 +795,8 @@ const initializeAgTable = (container, opt) => {
     };
 
     const initGridOptions = () => {
-      const options = agTable.customizeOptions;
-      return {
+      const options = JSON.parse(JSON.stringify(agTable.customizeOptions));
+      let obj = {
         columnDefs: options && options.columnDefs ? options.columnDefs : [], // 列定义
         rowData: options && options.rowData ? options.rowData : [], // 行数据
         multiSortKey: 'ctrl', // 多列排序组合键（按下ctrl + 鼠标点击某一列）
@@ -1107,6 +1108,8 @@ const initializeAgTable = (container, opt) => {
           return className;
         }, // 处理行级样式
       };
+
+      return Object.assign({},obj,agGridOptions())
     };
 
     const gridOptions = initGridOptions();

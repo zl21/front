@@ -113,6 +113,9 @@ module.exports = {
   //   }
   //   return props;
   // }
+  agGridOptions: { // ag表格的配置
+    // rowHeight: 100
+  },
   // (data) => {
   //   if (data.router.params) {
   //     if (data.router.params.tableName && data.config().configPage[data.router.params.tableName].filter(u => u === data.url).length > 0) { // 筛选出配置界面不需要根据框架code报错提示框的接口
