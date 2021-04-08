@@ -795,7 +795,8 @@ const initializeAgTable = (container, opt) => {
     };
 
     const initGridOptions = () => {
-      const options = JSON.parse(JSON.stringify(agTable.customizeOptions));
+      // console.log(agTable.customizeOptions)
+      const options = agTable.customizeOptions;
       let obj = {
         columnDefs: options && options.columnDefs ? options.columnDefs : [], // 列定义
         rowData: options && options.rowData ? options.rowData : [], // 行数据
