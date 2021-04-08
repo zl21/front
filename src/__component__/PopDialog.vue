@@ -33,8 +33,7 @@
         class="table-page"
         size="small"
         show-total
-        @on-change="searchForm"
-        @on-page-size-change="pageSizeChange"
+        @on-change="pageChange"
       />
       <div class="button">
         <Button
@@ -269,6 +268,7 @@
         this.getList();
       },
       pageSizeChange(index) {
+        console.log(index,'indexindexindex=====');
         this.selectOperation.defaultrange = index;
         this.selectOperation.pageSize = index;
         this.selectOperation.startindex = (this.selectOperation.currentPageIndex - 1) * this.selectOperation.pageSize;
