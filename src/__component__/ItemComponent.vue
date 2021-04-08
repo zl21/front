@@ -1022,8 +1022,11 @@
         }
       },
       inputValueChange(value, $this) {
-        this._items.value = value;
-        this.valueChange();
+        if ($this.single) {
+          this._items.value = value;
+          this.valueChange();
+        }
+
         if (
           Object.prototype.hasOwnProperty.call(
             this._items.event,
