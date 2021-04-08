@@ -232,7 +232,7 @@ const getSubSystems = () => {
 const getGateWayServiceId = () => {
   if (enableInitializationRequest()) {
     if (specifiedGlobalGateWay()) {
-      window.sessionStorage.setItem('serviceId', specifiedGlobalGateWay());
+      window.localStorage.setItem('serviceId', specifiedGlobalGateWay());
       getCategory();
       setTimeout(() => {
         init();
@@ -240,7 +240,7 @@ const getGateWayServiceId = () => {
     } else {
       network.get('/p/c/get_service_id').then((res) => {
         if (res.data && res.data.data && res.data.data.serviceId) {
-          window.sessionStorage.setItem('serviceId', res.data.data.serviceId);
+          window.localStorage.setItem('serviceId', res.data.data.serviceId);
         }
         getCategory();
         setTimeout(() => {
