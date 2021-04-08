@@ -1389,9 +1389,9 @@
         this.addKeepAliveLabelMaps({ name, label });
         const gateWay = this.serviceIdMap[this.tableName];
         this.addServiceIdMap({ tableName: editTableName.toUpperCase(), gateWay });
-        const serviceIdMap = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
+        const serviceIdMap = JSON.parse(window.localStorage.getItem('serviceIdMap'));
         serviceIdMap[editTableName.toUpperCase()] = `${gateWay}`;
-        window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMap));
+        window.localStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMap));
         this.tabOpen({
           type: 'tableDetailVertical',
           tableName: editTableName,
