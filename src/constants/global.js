@@ -147,3 +147,5 @@ export const globalGateWay = () => {
   globalDefaultGateWay = globalDefaultGateWay.concat(globalGateWayConfig || []);
   return globalDefaultGateWay;
 };
+
+export const agGridOptions = () => (window.ProjectConfig && window.ProjectConfig.agGridOptions ? window.ProjectConfig.agGridOptions : {}); // ag表格的配置
