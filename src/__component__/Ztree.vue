@@ -151,8 +151,22 @@
 
       //   return true;
       // },
+      checkNode(){ 
+        // 选中
+          var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+          if(this.treeNode){
+            let  node =  treeObj.getNodeByTId(this.treeNode.tId);   
+            if(node){
+                 treeObj.selectNode(node);
+            }      
+
+          }
+        
+      },
       onClick(e, treeId, treeNode) {
         const arr = [];
+        console.log(treeNode);
+        this.treeNode = treeNode;
         if (this.treeId === treeNode.tId) {
           this.isClick = !this.isClick;
           if (this.isClick) { // 取消选中查空
@@ -169,6 +183,8 @@
           this.$emit('clickTreeNode', arr, treeNode.ID, true);
         }
         this.treeId = treeNode.tId;
+        
+        
       },
       isNull(str) {
         if (str === '') return true;

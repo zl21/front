@@ -89,6 +89,7 @@
     },
     mounted() {
       this.getTreeInfo();
+      
     },
     methods: {
       //  this.$emit('menuTreeChange', this.Ids, this.treeName, treeNodeID, flag);
@@ -97,15 +98,26 @@
       // this.treeName:前端配置用作/p/cs/QueryList接口查询树节点的指定参数key
       // treeNodeID：当前点击节点ID
       // flag:true:查询选中的节点，false:查询空
-
+      checkNode(){
+        // 回显
+         setTimeout(()=>{
+           this.$refs.zTree.checkNode();
+         },300)
+          
+      },
       getTreeInfo() { // 获取树信息
         if (this.treeDatas !== null) {
+          this.treeData = [];
           this.treeDatas().then((value) => {
             this.treeData = value.data;
             this.treeName = value.name;
             this.placeholder = value.placeholder;
             this.query = value.query;
             this.searchData = value.searchData;
+
+            // 
+            
+            this.checkNode()
           });
         }
       },
