@@ -2172,7 +2172,8 @@
             });
           }
         } else { // 纵向布局
-          const copyData = { ...this.mainFormInfo.formData };
+          let panelForm = this.$_live_getChildComponent(window.vm,'panelForm')
+          const copyData = { ...panelForm.formData };
           this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
           const modifyData = this.updateData[this.tableName].changeData;// 取changeData值，因外键形式需要lable和ID
           // this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中

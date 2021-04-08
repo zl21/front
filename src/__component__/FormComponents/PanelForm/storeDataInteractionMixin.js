@@ -14,11 +14,12 @@ export default {
 
           ParentForm.formData = Object.assign({},ParentForm.formData,ParentForm.dealData(this.items,val))
           ParentForm.formChangeData = Object.assign({},ParentForm.formChangeData,ParentForm.dealData(this.items,val))
+          ParentForm.formChangeDataLabel[this.items.colname] = val
           ParentForm.formDataLabel[this.items.colname] = val
           
           if(JSON.stringify(val) === JSON.stringify(this.defaultVale) || (!val && !this.defaultVale)){
             delete ParentForm.formChangeData[this.items.colname]
-            delete ParentForm.formDataLabel[this.items.colname]
+            delete ParentForm.formChangeDataLabel[this.items.colname]
           }
 
           
@@ -26,9 +27,9 @@ export default {
           // let activeTab = this.$_live_getChildComponent(window.vm,this.activeTab.keepAliveModuleName)
           // console.log(activeTab)
           if(ParentForm.$parent.formPanelChange){
-            ParentForm.$parent.formPanelChange(ParentForm.formDataLabel,ParentForm.formChangeData,ParentForm.formDataLabel)
+            ParentForm.$parent.formPanelChange(ParentForm.formChangeDataLabel,ParentForm.formChangeData,ParentForm.formChangeDataLabel)
           }else{
-            ParentForm.$parent.formChange(ParentForm.formDataLabel,ParentForm.formChangeData,ParentForm.formDataLabel)
+            ParentForm.$parent.formChange(ParentForm.formChangeDataLabel,ParentForm.formChangeData,ParentForm.formChangeDataLabel)
           }
           
         }
