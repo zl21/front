@@ -570,16 +570,13 @@
           this.columns = this.filterColumns(this.dataSource.tabth, isTableRender); // 每列的属性
           this.getEditAbleId(JSON.parse(JSON.stringify(this.dataSource)));
         }
-      },
+      }
 
     },
     created() {
       this.ChineseDictionary = ChineseDictionary;
 
-      // 设置查询条件默认值。默认取选项数组的第一个值
-      if (this.filterList && this.filterList[0]) {
-        this.searchCondition = this.filterList[0].key;
-      }
+      this.setSelectDefaultValue();
     },
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
@@ -629,6 +626,15 @@
           });
         }
       },
+
+      // 设置查询条件默认值。默认取选项数组的第一个值
+      setSelectDefaultValue() {
+        if (this.filterList && this.filterList[0]) {
+          const option = this.filterList[0];
+          this.searchCondition = option.isfk ? option.inputname : option.colname;
+        }
+      },
+
       imporSuccess(id) {
         if (Version() === '1.3') {
           if (id) {
@@ -777,8 +783,8 @@
           if (this.dataSource.fullRangeSubTotalRow) {
             for (const key in this.dataSource.fullRangeSubTotalRow) {
               if (Object.prototype.hasOwnProperty.call(this.dataSource.fullRangeSubTotalRow, key)) {
-                const element = `<div class="text-right">${this.dataSource.fullRangeSubTotalRow[key]}</div>`;
-                cell[key] = element.val;
+                const element = this.dataSource.fullRangeSubTotalRow[key];
+                cell[key] = `<div class="text-right">${element.val}</div>`;
               }
             }
           }
@@ -1523,14 +1529,12 @@
               align: 'center',
               tdAlign: ele.type === 'NUMBER' ? 'right' : 'center'
             };
-            if (ele.isorder) {
-              param.sortable = 'custom';
-            }
+            
             if (ele.comment) {
               param.renderHeader = this.tooltipRenderHeader();
             }
             // warning 2019/06/17注释 数据后端已经排序好了 但是 ！！！ 点击后排序  刷新列表 默认展示的排序的图标颜色显示也会丢失
-            if (this.dataSource.ordids && this.dataSource.ordids.length > 0) {
+            if (!param.sortable && this.dataSource.ordids && this.dataSource.ordids.length > 0) {
               this.dataSource.ordids.map((order) => {
                 if (ele.colname === order.colname && param.title !== '序号') {
                   param.sortType = order.ordasc ? 'asc' : 'desc';
@@ -1538,6 +1542,15 @@
                 return order;
               });
             }
+            // 2021-04-01 禁用掉表格的默认排序，这样在初始化时不会对后端返回的数据进行二次排序
+            param.sortMethod = () => {
+              console.log(123123);
+            };
+
+            if (ele.isorder) {
+              param.sortable = 'custom';
+            }
+            
             const item = Object.assign({}, ele, param);
             return item;
           });

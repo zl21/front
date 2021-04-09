@@ -33,11 +33,13 @@
     },
 
     methods: {
-      tabClick(index) {
+      tabClick(index,stopRequest) {
+        //stopRequest：只整合参数，不发送请求
         this.currentIndex = index;
         this.$emit('tabClick', {
           data: this.data.multi_tab[index],
-          index
+          index,
+          stopRequest
         });
       },
     },
