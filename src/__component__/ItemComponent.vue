@@ -70,8 +70,8 @@
       <Input
         v-if="_items.type === 'input'"
         :ref="_items.field"
-        v-model="inputText"
-        :class="{'encode-text': _items.props.ispassword && inputText}"
+        v-model="_items.value"
+        :class="{'encode-text': _items.props.ispassword && _items.value}"
         :type="_items.props.type"
         :clearable="_items.props.clearable"
         :disabled="_items.props.disabled || _items.props.readonly"
@@ -84,9 +84,10 @@
         :maxlength="_items.props.maxlength"
         :icon="_items.props.icon"
         :regx="_items.props.regx"
+        :encrypt="_items.props.ispassword"
         on-click="inputClick"
         @on-blur="inputBlur"
-        @on-change="inputChange($event, null)"
+        @on-change="inputChange"
         @on-enert="inputEnter"
         @on-focus="inputFocus"
         @on-keyup="inputKeyUp"
@@ -485,34 +486,12 @@
       return {
         filterDate: {},
         resultData: {}, // 结果传值
-        inputText: '', // textarea加密后的文本
         showImgUploadProcess: false, // 显示上传进度条
         uploadProgress: 0, // 图片上传进度
         imgProgressController: window.ProjectConfig.imgProgressController
       };
     },
-    watch: {
-      '_items.value': {
-        handler(value) {
-          if (this._items.type === 'input' && this._items.props.type === 'textarea' && this._items.props.ispassword) {
-            // 针对textarea的文本加密
-            const newText = value.replace(/./g, '·');
-            this.inputText = newText;
-          } else {
-            this.inputText = value;
-          }
 
-          // 确保子组件渲染完毕再绑定事件
-          if (this._items.type === 'input') {
-            this.$nextTick(() => {
-              this.execInputEvent();
-            });
-          }
-        },
-        deep: true,
-        immediate: true
-      }
-    },
     computed: {
       getVersion() {
         return Version;
@@ -606,23 +585,6 @@
     methods: {
       ...mapMutations('global', ['tabOpen', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
 
-      execInputEvent() {
-        const dom = this.$refs[this._items.field].$el;
-        const inputDom = dom.children[dom.children.length - 1];
-
-        if (!inputDom) {
-          this.inputTimer = setTimeout(() => {
-            this.execInputEvent();
-          }, 0);
-        } else {
-          // 重新定位光标位置
-          inputDom.setSelectionRange(this.selectionStart, this.selectionStart);
-
-          // 绑定监听中文输入法事件，只触发一次
-          this.$emit('bindCompositionend');
-        }
-      },
-
       routerNext(value) {
         // 路由跳转
         const props = this._items.props;
@@ -694,81 +656,8 @@
         this.valueChange();
       },
       // input event
-      inputChange(event, cursorOffset, $this) {
-        // 输入中文时跳过赋值
-        if (this.isInputChinese) {
-          return;
-        }
-        // 按回车
-        if (this.keyCode === 13 && this._items.props.type === 'text') {
-          return;
-        }
-        const ispassword = this._items.props.ispassword;
-        const value = event.target.value;
-        // 只要不是加密文本的撤销操作。都保存下旧值
-        if (!((this.isPressControl || this.isMousePaste) && (ispassword && this.keyCode === 90))) {
-          // 缓存历史值
-          this.oldInputValue.push(this._items.value);
-        }
-
-        this.selectionStart = event.target.selectionStart;
-        // 输入中文时，新增文字的插入位置需要根据Math.max(this.selectionStart - cursorOffset, 0)矫正
-        const insertTextPosion = cursorOffset ? Math.max(this.selectionStart - cursorOffset, 0) : this.selectionStart;
-
-        // 按ctrl,command键时
-        if (this.isPressControl || this.isMousePaste) {
-          // 修复指定位置粘贴问题
-          if (ispassword && this.keyCode === 86) {
-            const charArr = this._items.value.split('');
-            charArr.splice(this.pastePosition, 0, this.clipboardData);
-            this._items.value = charArr.join('');
-          } else if (ispassword && this.keyCode === 90) {
-            // 撤销操作
-            this._items.value = this.oldInputValue.pop();
-          } else {
-            this._items.value = value;
-          }
-          
-          this.valueChange();
-          this.isMousePaste = false; // 手动把右键粘贴标志改为false
-          return;
-        }
-
-        // 按回车换行
-        if (this.keyCode === 13 && this._items.props.type === 'textarea') {
-          const charArr = this._items.value.split('');
-          charArr.splice(insertTextPosion - 1, 0, '\n');
-          this._items.value = charArr.join('');
-          this.valueChange();
-          return;
-        }
-
-        // 按退格键键时
-        if (this.keyCode === 8 && (value.length < this._items.value.length)) {
-          const charArr = this._items.value.split('');
-          const num = this._items.value.length - value.length;
-          charArr.splice(this.selectionStart, num);
-          this._items.value = charArr.join('');
-          this.valueChange();
-          return;
-        }
-        
-        // fix: input输入框拿不到值给父组件
-        if (this._items.props.type === 'text') {
-          this._items.value = value;
-        }
-        
-        // 手动把新加的输入值和原来的值进行拼接
-        if (value.length > this._items.value.length) {
-          const charArr = this._items.value.split('');
-          charArr.splice(insertTextPosion - 1, 0, this.keyData);
-          this._items.value = charArr.join('');
-        } 
-        // 选中部分文本进行替换的情况
-        if (value.length < this._items.value.length) {
-          this._items.value = value;
-        }
-        
+      inputChange(event, $this) {
+        this._items.value = event.target.value;
         this.valueChange();
 
         let valLength = this._items.props.length;
@@ -869,11 +758,6 @@
       },
 
       inputKeyUp(event, $this) {
-        const ctrlKey = 17;
-        const cmdKey = 91;
-        if (event.keyCode === ctrlKey || event.keyCode === cmdKey) {
-          this.isPressControl = false;
-        }
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'keyup')
           && typeof this._items.event.keyup === 'function'
@@ -886,18 +770,6 @@
         if ([222].includes(event.keyCode)) {
           event.stopPropagation();
           event.preventDefault();
-        }
-        // 判断是否进行粘贴操作
-        const ctrlKey = 17;
-        const cmdKey = 91;
-        if (event.keyCode === ctrlKey || event.keyCode === cmdKey) {
-          this.isPressControl = true;
-        }
-        // 记录新输入的内容，方便加密文本时用
-        const value = event.target.value;
-        if (value.length !== this._items.value) {
-          this.keyData = event.key;
-          this.keyCode = event.keyCode;
         }
 
         if (
@@ -1928,33 +1800,6 @@
         };
         createModal(array, obj, index);
       },
-
-      // 监听中文键盘输入
-      // 监听粘贴
-      listenChinese() {
-        this.$once('bindCompositionend', () => {
-          let dom;
-          if (this._items.props.type === 'textarea') {
-            dom = this.$refs[this._items.field].$el.querySelector('textarea');
-          } else {
-            dom = this.$refs[this._items.field].$el.querySelector('input');
-          }
-          dom.addEventListener('compositionstart', () => {
-            this.isInputChinese = true;
-          });
-          dom.addEventListener('compositionend', (e) => {
-            this.keyData = e.data;
-            this.isInputChinese = false;
-            this.inputChange(e, Math.max(this.keyData.length - 1, 0));
-          });
-          dom.addEventListener('paste', (e) => {
-            this.isMousePaste = true;
-            const clipboardData = e.clipboardData || window.clipboardData;
-            this.clipboardData = clipboardData.getData('text');
-            this.pastePosition = e.target.selectionStart;
-          });
-        });
-      },
     },
     beforeDestroy() {
       if (this.inputTimer) {
@@ -1965,20 +1810,8 @@
       window.removeEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
       window.removeEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
     },
-    created() {
-      // console.log(this.type,this.formIndex);
-      this.selectionStart = null; // 光标位置
-      this.keyData = null; // 记录按键按下的值
-      this.isInputChinese = false; // 是否在输入中文
-      this.isPressControl = false; // 是否触发ctrl或command按键
-      this.isMousePaste = false; // 监听鼠标粘贴
-      this.clipboardData = ''; // 剪切板内容
-      this.pastePosition = -1; // 粘贴位置
-      this.oldInputValue = []; // 用于加密input撤销时回滚数据
-    },
-    mounted() {
-      this.listenChinese();
 
+    mounted() {
       // this.$nextTick(() => {
       //   // 处理字段联动时多个来源字段联动禁用模糊搜索
       //   if (this.items.props.webconf && this.items.props.webconf.refcolval_custom) {
