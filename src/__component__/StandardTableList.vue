@@ -2046,7 +2046,7 @@
               },
             };
             this.$Modal.fcSuccess(data);
-            if (this.buttons.isrefrsh) {
+            if (item.isrefrsh) {
               this.searchClickData();
             }
           }, () => {
@@ -2148,6 +2148,7 @@
         if (value && !value.flag) { // 返回时查询之前页码
           this.searchData.startIndex = 0;
         }
+<<<<<<< HEAD
         
         // if (value && value.searchDataRes) {
         //   //因tab设置的参数已与表单参数整合过，并已被以上逻辑更新，this.searchData.fixedcolumns 已为最新参数，直接赋值给一次性参数value.searchDataRes.fixedcolumns即可，用过即销毁，不会作用当前实例内的this.searchData
@@ -2165,6 +2166,59 @@
           this.searchData.fixedcolumns = this.dataProcessing();
           
         }
+=======
+        this.searchData.fixedcolumns = this.dataProcessing();
+        // this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, this.dataProcessing());
+        if (value && value.searchDataRes) {
+          value.searchDataRes.fixedcolumns = this.dataProcessing();
+          if (value && !value.flag) { // 返回时查询之前页码
+            value.searchDataRes.startIndex = 0;
+          }
+        }
+
+        const json = value && value.searchDataRes ? value.searchDataRes : this.searchData;
+
+        // if (Object.keys(this.currentTabValue).length > 0 && this.currentTabValue.tabValue.tab_value) {
+        //   const tabValue = JSON.parse(JSON.stringify(this.currentTabValue.tabValue.tab_value));
+        //   json.fixedcolumns = Object.values(tabValue).reduce((arr, obj) => {
+        //     Object.keys(json.fixedcolumns).map((key) => {
+        //       if (obj[key]) {
+        //         if (obj[key] !== json.fixedcolumns[key]) {
+        //           switch (Object.prototype.toString.call(obj[key])) {
+        //           case '[object String]':
+        //             if (obj[key].includes('~')) { // 判断否是时间段类型字段,取两个时间的并集
+        //               let dateArray = [];
+        //               dateArray = dateArray.concat(json.fixedcolumns[key].split('~'));
+        //               dateArray = dateArray.concat(obj[key].split('~'));
+        //               dateArray.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+        //               arr[key] = [dateArray[0], dateArray[3]].join('~');
+        //             } else {
+        //               arr[key] = `${obj[key]},${json.fixedcolumns[key]}`;
+        //               arr[key] = arr[key].split(',');
+        //               // arr[key] = Array.from(new Set(arrRes));
+        //               // arr[key] = arr[key].toString();
+        //             }
+                      
+        //             break;
+        //           case '[object Array]':
+        //             arr[key] = obj[key].concat(json.fixedcolumns[key]);
+        //             arr[key] = Array.from(new Set(arr[key]));
+                      
+        //             break;
+        //           default:
+        //             break;
+        //           }
+        //           return obj[key];
+        //         } 
+        //       }
+        //       arr[key] = json.fixedcolumns[key];
+        //     });
+
+        //     arr = Object.assign(obj, arr);
+        //     return arr;
+        //   }, {});
+        // }
+>>>>>>> feature_wings
         // this.getQueryListForAg(this.searchData);
         if (this.buttons.isBig) {
           this.updataIsBig(false);

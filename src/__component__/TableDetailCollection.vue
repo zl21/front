@@ -1529,14 +1529,12 @@
               align: 'center',
               tdAlign: ele.type === 'NUMBER' ? 'right' : 'center'
             };
-            if (ele.isorder) {
-              param.sortable = 'custom';
-            }
+            
             if (ele.comment) {
               param.renderHeader = this.tooltipRenderHeader();
             }
             // warning 2019/06/17注释 数据后端已经排序好了 但是 ！！！ 点击后排序  刷新列表 默认展示的排序的图标颜色显示也会丢失
-            if (this.dataSource.ordids && this.dataSource.ordids.length > 0) {
+            if (!param.sortable && this.dataSource.ordids && this.dataSource.ordids.length > 0) {
               this.dataSource.ordids.map((order) => {
                 if (ele.colname === order.colname && param.title !== '序号') {
                   param.sortType = order.ordasc ? 'asc' : 'desc';
@@ -1544,6 +1542,15 @@
                 return order;
               });
             }
+            // 2021-04-01 禁用掉表格的默认排序，这样在初始化时不会对后端返回的数据进行二次排序
+            param.sortMethod = () => {
+              console.log(123123);
+            };
+
+            if (ele.isorder) {
+              param.sortable = 'custom';
+            }
+            
             const item = Object.assign({}, ele, param);
             return item;
           });
