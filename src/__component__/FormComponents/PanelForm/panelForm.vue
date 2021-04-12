@@ -72,36 +72,15 @@ export default {
       formChangeData:{}, //表单修改过的数据
       formChangeDataLabel:{},  //表单修改过的数据--显示值
 
-      formItemLists: {}
     }
   },
   computed:{
-    // 计算属性的 div的排列格式
-    setWidth() {
-      // `this` 指向 vm 实例
-      const columns = Number(this.defaultData.objviewcol) || 4;
-      return `grid-template-columns: repeat(${columns},${100 / columns}%`;
-    },
-    // 计算属性的 div 的坐标起始点
-    setDiv() {
-      return item => {
-        if(item.x === -1 || item.y === -1){
-          return 'display: none';
-        }
-        return `grid-column:${item.x}/${item.col + item.x};grid-row:${item.y}/${item.y + item.row};`
-      };
-    },
-  },
-  watch:{
-    defaultData:{
-      handler(val){
-        this.$R3loading.show(this.tableName)
+    formItemLists(){
+      this.$R3loading.show(this.tableName)
         let data = JSON.parse(JSON.stringify(this.defaultData))
-        debugger
         if(!data.addcolums){
           return []
         }
-
         data.addcolums = new LinkageRelationships(JSON.parse(JSON.stringify(this.defaultData)).addcolums).initializeData()
         // 处理单字段分组
         let sumObject = {
@@ -156,10 +135,25 @@ export default {
             clearInterval(this.loading)
           }
         },50)
-        this.formItemLists =  {...data.addcolums}
-      },
-      deep: true
+        return {...data.addcolums}
     },
+    // 计算属性的 div的排列格式
+    setWidth() {
+      // `this` 指向 vm 实例
+      const columns = Number(this.defaultData.objviewcol) || 4;
+      return `grid-template-columns: repeat(${columns},${100 / columns}%`;
+    },
+    // 计算属性的 div 的坐标起始点
+    setDiv() {
+      return item => {
+        if(item.x === -1 || item.y === -1){
+          return 'display: none';
+        }
+        return `grid-column:${item.x}/${item.col + item.x};grid-row:${item.y}/${item.y + item.row};`
+      };
+    },
+  },
+  watch:{
     formItemLists:{
       handler(val){  //处理展开面板的默认值
         if(Object.keys(val).length > 0){
@@ -179,8 +173,16 @@ export default {
   methods:{
     validate(){
       // 获取校验
-       let messageTip = validateForm.call(this,'formItem');
-       console.log(messageTip);
+      let messageTip = validateForm.call(this,'formItem');
+
+      if(messageTip){
+        this.collapseValue = []
+        Object.keys(this.formItemLists).map(item => {
+          let data = this.formItemLists[item]
+          this.collapseValue.push(data.parentname)
+        })
+      }
+      return messageTip;
 
     },
     initComponent(item) { // init组件

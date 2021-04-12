@@ -50,7 +50,7 @@ export class Validate extends Vue {
     setProps() {
         this.props = {
             value: { // 属性集合
-                type: [Object, Array, String, Number],
+                type: [Object, Array, String, Number, Date],
                 default: () => {
                     return '';
                 }
@@ -223,7 +223,8 @@ export class Validate extends Vue {
 
                     let $el = this.$el.querySelector('input') || this.$el.querySelector('textarea');
                     trigger_key.forEach((type) => {
-                        $el.addEventListener(type, (e) => {
+
+                        $el?$el.addEventListener(type, (e) => {
                             if (trigger[type]) {
                                 // 校验事件
                                 self.verifyTypes(self.value, trigger[type],type);
@@ -234,7 +235,7 @@ export class Validate extends Vue {
                                     self.validateRequire(self.value,type);
                                 }
                             }
-                        });
+                        }):null;
                     })
                 }
                

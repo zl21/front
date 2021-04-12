@@ -2151,13 +2151,15 @@
         const label = `${this.activeTab.label.replace('编辑', '新增')}`;
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.currentTabIndex === 0) { // 主表
-            let formData = {};
-            this.tabPanel.forEach((item) => {
-              if (item.tablename === this.tableName) {
-                formData = item.componentAttribute.panelData;
-              }
-            });
-            const copyData = { ...formData };
+            // let formData = {};
+            // this.tabPanel.forEach((item) => {
+            //   if (item.tablename === this.tableName) {
+            //     formData = item.componentAttribute.panelData;
+            //   }
+            // });
+            let panelForm = this.$_live_getChildComponent(window.vm,'panelForm')
+            const copyData = { ...panelForm.formDataLabel };
+            // const copyData = { ...formData };
             const modifyData = this.updateData[this.tableName].changeData;// 取changeData值，因外键形式需要lable和ID
             this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
             this.copyModifyDataForSingleObject(modifyData);// 将复制修改过所保存的数据存到global中
@@ -2173,7 +2175,7 @@
           }
         } else { // 纵向布局
           let panelForm = this.$_live_getChildComponent(window.vm,'panelForm')
-          const copyData = { ...panelForm.formData };
+          const copyData = { ...panelForm.formDataLabel };
           this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
           const modifyData = this.updateData[this.tableName].changeData;// 取changeData值，因外键形式需要lable和ID
           // this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
@@ -3266,21 +3268,31 @@
           this.temporaryStorage = false;
           return true;
         }
+
+        
         this.saveParameters();// 获取主子表参数
-        const checkedInfo = this.currentParameter.checkedInfo;// 主表校验信息
-        if (checkedInfo) {
-          const messageTip = checkedInfo.messageTip;
-          if (messageTip) {
-            if (messageTip.length > 0) {
-              this.$Message.warning(messageTip[0]);
-              // checkedInfo.validateForm.focus();
-              if (checkedInfo && checkedInfo.validateForm) {
-                checkedInfo.validateForm.focus();
-              }
-              return false;
-            }
+
+        // 处理主表必填控制
+        let panelForm = this.$_live_getChildComponent(this.$parent,'panelForm')
+        if(panelForm){
+          if(panelForm.validate()){
+            return false
           }
         }
+        // const checkedInfo = this.currentParameter.checkedInfo;// 主表校验信息
+        // if (checkedInfo) {
+        //   const messageTip = checkedInfo.messageTip;
+        //   if (messageTip) {
+        //     if (messageTip.length > 0) {
+        //       this.$Message.warning(messageTip[0]);
+        //       // checkedInfo.validateForm.focus();
+        //       if (checkedInfo && checkedInfo.validateForm) {
+        //         checkedInfo.validateForm.focus();
+        //       }
+        //       return false;
+        //     }
+        //   }
+        // }
         if (this.subtables()) { // 存在子表时
           let tabinlinemode = '';
           this.tabPanel.forEach((item) => {
