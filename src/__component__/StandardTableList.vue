@@ -2148,25 +2148,6 @@
         if (value && !value.flag) { // 返回时查询之前页码
           this.searchData.startIndex = 0;
         }
-<<<<<<< HEAD
-        
-        // if (value && value.searchDataRes) {
-        //   //因tab设置的参数已与表单参数整合过，并已被以上逻辑更新，this.searchData.fixedcolumns 已为最新参数，直接赋值给一次性参数value.searchDataRes.fixedcolumns即可，用过即销毁，不会作用当前实例内的this.searchData
-        //   value.searchDataRes.fixedcolumns = this.searchData.fixedcolumns 
-        //   if (value && !value.flag) { // 返回时查询之前页码
-        //     value.searchDataRes.startIndex = 0;
-        //   }
-        // }
-        // const json = value && value.searchDataRes ? value.searchDataRes : this.searchData;
-
-        if (this.getFilterTable) {
-          const stopRequest=true
-         this.getResSearchDataForFilterTable({stopRequest})
-        } else {
-          this.searchData.fixedcolumns = this.dataProcessing();
-          
-        }
-=======
         this.searchData.fixedcolumns = this.dataProcessing();
         // this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, this.dataProcessing());
         if (value && value.searchDataRes) {
@@ -2218,7 +2199,6 @@
         //     return arr;
         //   }, {});
         // }
->>>>>>> feature_wings
         // this.getQueryListForAg(this.searchData);
         if (this.buttons.isBig) {
           this.updataIsBig(false);
