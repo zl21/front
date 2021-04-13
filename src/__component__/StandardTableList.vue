@@ -223,6 +223,8 @@
         modifyDialogshow: false, // 批量修改弹窗
         formDefaultComplete: false,
         dialogComponentName: null,
+        ztreetimer: null, // 树刷新时间判断
+        mountedChecked: false, // 页面是否渲染完成
         dialogComponentNameConfig: {
           title: '提示',
           mask: true,
@@ -306,10 +308,16 @@
     watch: {
       ag: {
         handler() {
-          // 监听ag数据 触发树的数据变化
-          if (this.$refs && this.$refs.tree) {
-            this.$refs.tree.getTreeInfo();
-          } 
+          // 监听ag数据 yan触发树的数据变化
+          // if (!this.mountedChecked) {
+          //   return false;
+          // }
+          clearTimeout(this.ztreetimer);
+          this.ztreetimer = setTimeout(() => {
+            if (this.$refs && this.$refs.tree && this.mountedChecked) {
+              this.$refs.tree.getTreeInfo();
+            }
+          }, 300);
         }
       },
       formLists() {
@@ -2881,6 +2889,10 @@
       }
     },
     mounted() {
+      setTimeout(() => {
+        // 判断页面是否渲染完成,用于判断树是否调用
+        this.mountedChecked = true;
+      }, 2000);
       this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
       if (!this._inactive) {
         window.addEventListener('network', this.networkEventListener);
