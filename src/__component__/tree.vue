@@ -104,10 +104,16 @@
           this.$refs.zTree.checkNode();
         }, 300);
       },
+      clearNode() {
+        // 回显
+        this.$refs.zTree.treeNode = {};
+      },
       getTreeInfo() { // 获取树信息
         if (this.treeDatas !== null) {
           this.treeData = [];
-          this.getTreeData();
+          setTimeout(() => {
+            this.getTreeData();
+          }, 100);
         }
       },
       getTreeData() {

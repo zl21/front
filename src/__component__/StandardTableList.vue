@@ -317,7 +317,7 @@
             if (this.$refs && this.$refs.tree && this.mountedChecked) {
               this.$refs.tree.getTreeInfo();
             }
-          }, 300);
+          }, 50);
         }
       },
       formLists() {
@@ -402,10 +402,16 @@
         } else if (this.searchData && this.searchData.reffixedcolumns) {
           delete this.searchData.reffixedcolumns;
         }
+        if (flag === false) {
+          // 如果取消则不走查树
+          searchData = {};
+        }
         this.treeSearchData = searchData;
         this.searchData.startIndex = 0;
         // this.getQueryListForAg(this.searchData);
+       
         const searchDataRes = Object.assign({}, this.searchData, searchData);
+
         this.getQueryListPromise(searchDataRes);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
         // 按钮查找 查询第一页数据
@@ -1312,7 +1318,7 @@
           }
           // this.isChangeTreeConfigData = 'Y'; //oldTree
           if (this.isTreeList && this.treeShow) {
-            this.$refs.tree.callMethod();
+            this.$refs.tree.clearNode();
             this.treeSearchData = {};// 将树配置的参数清除，保证下一个查询时恢复框架默认参数
           }
           if (this.buttons.isBig) {
@@ -1994,7 +2000,9 @@
           }
         }
 
-        const json = value && value.searchDataRes ? value.searchDataRes : this.searchData;
+        let json = value && value.searchDataRes ? value.searchDataRes : this.searchData;
+        json = Object.assign({}, json, this.treeSearchData);
+
 
         // if (Object.keys(this.currentTabValue).length > 0 && this.currentTabValue.tabValue.tab_value) {
         //   const tabValue = JSON.parse(JSON.stringify(this.currentTabValue.tabValue.tab_value));
