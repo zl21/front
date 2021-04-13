@@ -657,7 +657,7 @@
                     const type = 'tableDetailVertical';
                     const tab = {
                       type,
-                      tableName: 'CP_C_TASK',
+                      tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
                       tableId: '24386',
                       id
                     };
@@ -4273,7 +4273,7 @@
                       const type = 'tableDetailVertical';
                       const tab = {
                         type,
-                        tableName: 'CP_C_TASK',
+                        tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
                         tableId: '24386',
                         id: this.buttonsData.exportdata
                       };

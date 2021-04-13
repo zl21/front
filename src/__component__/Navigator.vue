@@ -173,7 +173,9 @@
   import { routeTo } from '../__config__/event.config';
   import network, { urlSearchParams } from '../__utils__/network';
   import NavigatorSubMenu from './NavigatorSubMenu';
-  import { STANDARD_TABLE_LIST_PREFIX, Version, enableHistoryAndFavoriteUI } from '../constants/global';
+  import {
+    STANDARD_TABLE_LIST_PREFIX, Version, enableHistoryAndFavoriteUI, enableGateWay 
+  } from '../constants/global';
   import { updateSessionObject } from '../__utils__/sessionStorage';
 
 
@@ -234,9 +236,9 @@
         return enableHistoryAndFavoriteUI();
       },
       versionValue() {
-        if (Version() === '1.4') {
-          return false;
-        }
+        // if (Version() === '1.4') {
+        //   return false;
+        // }
         return true;
       },
       taskMessageCounts() {
@@ -246,7 +248,10 @@
     },
     watch: {
       taskMessageCounts(val) {
-        if (val && Version() === '1.3') {
+        // if (val && Version() === '1.3') {
+        //   this.getTaskMessageCount(val);
+        // }
+        if (val) {
           this.getTaskMessageCount(val);
         }
       },
@@ -306,7 +311,7 @@
         const type = STANDARD_TABLE_LIST_PREFIX;
         const tab = {
           type,
-          tableName: 'CP_C_TASK',
+          tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
           tableId: 24386,
           label: '我的任务'
         };
@@ -325,7 +330,7 @@
           self.messagePanel.list = [];
         }
         const searchdata = {
-          table: 'CP_C_TASK',
+          table: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
           column_include_uicontroller: true,
           fixedcolumns: {
             OPERATOR_ID: [this.userInfo.id],
@@ -335,9 +340,9 @@
           multiple: [],
           startindex: self.messagePanel.start,
           range: 20,
-          orderby: [{ column: 'CP_C_TASK.ID', asc: false }]
+          orderby: [{ column: Version() === '1.3' ? 'CP_C_TASK.ID' : 'U_NOTE.ID', asc: false }]
         };
-        network.post('/p/cs/QueryList', urlSearchParams({ searchdata })).then((res) => {
+        network.post(enableGateWay() ? '/asynctask/p/cs/QueryList' : '/p/cs/QueryList', urlSearchParams({ searchdata })).then((res) => {
           const result = res.data;
           if (result.code === 0) {
             self.messagePanel.list = self.messagePanel.list.concat(result.datas.row);
@@ -356,7 +361,7 @@
         const type = 'tableDetailVertical';
         const tab = {
           type,
-          tableName: 'CP_C_TASK',
+          tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
           tableId: 24386,
           id: item.ID.val
         };
@@ -456,11 +461,14 @@
       }
     },
     mounted() {
-      if (Version() === '1.3') {
-        this.messageTimer = setInterval(() => {
-          this.getMessageCount();
-        }, 30000);
-      }
+      // if (Version() === '1.3') {
+      //   this.messageTimer = setInterval(() => {
+      //     this.getMessageCount();
+      //   }, 30000);
+      // }
+      this.messageTimer = setInterval(() => {
+        this.getMessageCount();
+      }, 30000);
       if (this.showModule && !this.showModule.Navigator) {
         if (this.$el) {
           this.$el.parentElement.hidden = true;

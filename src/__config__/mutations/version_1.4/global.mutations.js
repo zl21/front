@@ -57,6 +57,9 @@ export default {
 
     // state.currentLoading.splice(tableName, 1);
   },
+  updateIgnoreMsg(state) {
+    state.taskMessageCount -= 1;
+  },
   directionalRouter(state, param) {
     // id:勾选ID，
     // url:配置url,
@@ -131,6 +134,12 @@ export default {
         setCustomeLabel(data);
       }
     }
+  },
+  updateTaskMessageCount(state, updateTaskMessageCount) { // 更新我的任务数量
+    state.taskMessageCount = updateTaskMessageCount;
+  },
+  updateExportedState(state, exportTask) { // 更新导出状态
+    state.exportTasks = exportTask;
   },
   changeNavigatorSetting(state, data) {
     state.navigatorSetting.unshift(data[0]);

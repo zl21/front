@@ -46,7 +46,7 @@ export default {
         if (index > times) {
           clearInterval(timer);
         } else {
-          network.post('/p/cs/getObject', urlSearchParams({ table: 'CP_C_TASK', objid })).then((res) => {
+          network.post('/p/cs/getObject', urlSearchParams({ table: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE', objid })).then((res) => {
             const data = res.data;
             // resolve();
             if (data.code === 0) { 

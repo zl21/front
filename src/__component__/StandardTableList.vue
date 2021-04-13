@@ -469,7 +469,7 @@
                     const type = 'tableDetailVertical';
                     const tab = {
                       type,
-                      tableName: 'CP_C_TASK',
+                      tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
                       tableId: '24386',
                       id
                     };
@@ -2357,7 +2357,7 @@
         });
         promise.then(() => {
           if (this.buttons.exportdata) {
-            if (Version() === '1.4') {
+            if (false) { // Version() === '1.4'
               this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
               const eleLink = document.createElement('a');
               const path = getGateway(`/p/cs/download?filename=${this.buttons.exportdata}`);
@@ -2366,7 +2366,7 @@
               document.body.appendChild(eleLink);
               eleLink.click();
               document.body.removeChild(eleLink);
-            } else if (Version() === '1.3') {
+            } else if (true) { // Version() === '1.3'
               const promises = new Promise((resolve, reject) => {
                 this.getExportedState({
                   objid: this.buttons.exportdata, id: this.buttons.exportdata, resolve, reject 
@@ -2384,7 +2384,7 @@
                       const type = 'tableDetailVertical';
                       const tab = {
                         type,
-                        tableName: 'CP_C_TASK',
+                        tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
                         tableId: '24386',
                         id: this.buttons.exportdata
                       };
