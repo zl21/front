@@ -29,8 +29,8 @@ window.pendingRequestMap = pendingRequestMap;
 
 const matchGateWay = (url) => {
   const { tableName, customizedModuleName } = router.currentRoute.params;
-  const globalServiceId = window.sessionStorage.getItem('serviceId');
-  const serviceIdMap = Object.assign({}, store.state.global.serviceIdMap, JSON.parse(window.sessionStorage.getItem('serviceIdMap')));
+  const globalServiceId = window.localStorage.getItem('serviceId');
+  const serviceIdMap = Object.assign({}, store.state.global.serviceIdMap, JSON.parse(window.localStorage.getItem('serviceIdMap')));
   // eslint-disable-next-line no-empty
   if (!enableGateWay()) {
     return undefined;
@@ -62,7 +62,7 @@ const matchGateWay = (url) => {
 const getRequestMd5 = data => md5(JSON.stringify(data));
 
 const dispatchR3Event = (data) => {
-  const globalServiceId = window.sessionStorage.getItem('serviceId');
+  const globalServiceId = window.localStorage.getItem('serviceId');
   const gateWay = matchGateWay((data.url || '').replace(`${globalServiceId ? `/${globalServiceId}` : ''}`, ''));
   if (gateWay) {
     data.url = data.url.replace(`/${gateWay}`, '');
@@ -375,7 +375,7 @@ axios.interceptors.response.use(
 );
 
 export const getGateway = (url) => {
-  const globalServiceId = window.sessionStorage.getItem('serviceId');
+  const globalServiceId = window.localStorage.getItem('serviceId');
   const serviceId = store.state.global.serviceIdMap;
   // const serviceName = store.state.global.activeTab.tableName;
   const serviceName = router.currentRoute.params.tableName ? router.currentRoute.params.tableName : tableNameForGet;

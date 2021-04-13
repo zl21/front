@@ -230,6 +230,8 @@
         modifyDialogshow: false, // 批量修改弹窗
         formDefaultComplete: false,
         dialogComponentName: null,
+        ztreetimer: null, // 树刷新时间判断
+        mountedChecked: false, // 页面是否渲染完成
         dialogComponentNameConfig: {
           title: '提示',
           mask: true,
@@ -319,6 +321,20 @@
       }
     },
     watch: {
+      ag: {
+        handler() {
+          // 监听ag数据 yan触发树的数据变化
+          // if (!this.mountedChecked) {
+          //   return false;
+          // }
+          clearTimeout(this.ztreetimer);
+          this.ztreetimer = setTimeout(() => {
+            if (this.$refs && this.$refs.tree && this.mountedChecked) {
+              this.$refs.tree.getTreeInfo();
+            }
+          }, 300);
+        }
+      },
       formLists() {
         const arr = JSON.parse(JSON.stringify(this.formLists));
         arr.map((temp, index) => {
@@ -359,7 +375,7 @@
             }
           }
         }, 0);
-      },
+      }
     },
     methods: {
       onPageSizeChangeForFilterTable(pageSize) {
@@ -2072,7 +2088,7 @@
           }
           return obj;
         }, {});
-        return Object.keys(jsonData).reduce((obj, item) => {
+        const newData = Object.keys(jsonData).reduce((obj, item) => {
           let value = '';
 
           datas.formItemsLists.concat([]).every((temp) => {
@@ -2092,6 +2108,11 @@
                 } else {
                   value = '';
                 }
+                return false;
+              }
+
+              if (temp.item.type === 'DropDownSelectFilter' && temp.item.value) {
+                value = temp.item.value.map(selectedValue => selectedValue.ID);
                 return false;
               }
 
@@ -2138,8 +2159,9 @@
           if (value) {
             obj[item] = value;
           }
-          return obj; 
+          return obj;
         }, {});
+        return newData;
       },
       searchClickData(value) {
 
@@ -2148,57 +2170,23 @@
         if (value && !value.flag) { // 返回时查询之前页码
           this.searchData.startIndex = 0;
         }
-        this.searchData.fixedcolumns = this.dataProcessing();
-        // this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, this.dataProcessing());
-        if (value && value.searchDataRes) {
-          value.searchDataRes.fixedcolumns = this.dataProcessing();
-          if (value && !value.flag) { // 返回时查询之前页码
-            value.searchDataRes.startIndex = 0;
-          }
-        }
-
-        const json = value && value.searchDataRes ? value.searchDataRes : this.searchData;
-
-        // if (Object.keys(this.currentTabValue).length > 0 && this.currentTabValue.tabValue.tab_value) {
-        //   const tabValue = JSON.parse(JSON.stringify(this.currentTabValue.tabValue.tab_value));
-        //   json.fixedcolumns = Object.values(tabValue).reduce((arr, obj) => {
-        //     Object.keys(json.fixedcolumns).map((key) => {
-        //       if (obj[key]) {
-        //         if (obj[key] !== json.fixedcolumns[key]) {
-        //           switch (Object.prototype.toString.call(obj[key])) {
-        //           case '[object String]':
-        //             if (obj[key].includes('~')) { // 判断否是时间段类型字段,取两个时间的并集
-        //               let dateArray = [];
-        //               dateArray = dateArray.concat(json.fixedcolumns[key].split('~'));
-        //               dateArray = dateArray.concat(obj[key].split('~'));
-        //               dateArray.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-        //               arr[key] = [dateArray[0], dateArray[3]].join('~');
-        //             } else {
-        //               arr[key] = `${obj[key]},${json.fixedcolumns[key]}`;
-        //               arr[key] = arr[key].split(',');
-        //               // arr[key] = Array.from(new Set(arrRes));
-        //               // arr[key] = arr[key].toString();
-        //             }
-                      
-        //             break;
-        //           case '[object Array]':
-        //             arr[key] = obj[key].concat(json.fixedcolumns[key]);
-        //             arr[key] = Array.from(new Set(arr[key]));
-                      
-        //             break;
-        //           default:
-        //             break;
-        //           }
-        //           return obj[key];
-        //         } 
-        //       }
-        //       arr[key] = json.fixedcolumns[key];
-        //     });
-
-        //     arr = Object.assign(obj, arr);
-        //     return arr;
-        //   }, {});
+        
+        // if (value && value.searchDataRes) {
+        //   //因tab设置的参数已与表单参数整合过，并已被以上逻辑更新，this.searchData.fixedcolumns 已为最新参数，直接赋值给一次性参数value.searchDataRes.fixedcolumns即可，用过即销毁，不会作用当前实例内的this.searchData
+        //   value.searchDataRes.fixedcolumns = this.searchData.fixedcolumns 
+        //   if (value && !value.flag) { // 返回时查询之前页码
+        //     value.searchDataRes.startIndex = 0;
+        //   }
         // }
+        // const json = value && value.searchDataRes ? value.searchDataRes : this.searchData;
+
+        if (this.getFilterTable) {
+          const stopRequest=true
+         this.getResSearchDataForFilterTable({stopRequest})
+        } else {
+          this.searchData.fixedcolumns = this.dataProcessing();
+          
+        }
         // this.getQueryListForAg(this.searchData);
         if (this.buttons.isBig) {
           this.updataIsBig(false);
@@ -3122,6 +3110,10 @@
       }
     },
     mounted() {
+      setTimeout(() => {
+        // 判断页面是否渲染完成,用于判断树是否调用
+        this.mountedChecked = true;
+      }, 2000);
       this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
       if (!this._inactive) {
         window.addEventListener('network', this.networkEventListener);

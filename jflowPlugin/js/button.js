@@ -103,7 +103,7 @@ async function clickFunction(e) {
     window.ProjectConfig.enableRestrictSave = false;
     setTimeout(async () => {
       window.vm.$Spin.hide();
-      if (window.updatavVerifyRequiredInformation()) {
+      if (window.updataVerifyRequiredInformation()) {
         if (window.testUpdataValue()) {
           window.updataClickSave(async () => {
             window.ProjectConfig.enableRestrictSave = true;

@@ -153,4 +153,5 @@ export const globalGateWay = () => {
   return globalDefaultGateWay;
 };
 
+export const setComponentsProps = () => (window.ProjectConfig && window.ProjectConfig.setComponentsProps ? window.ProjectConfig.setComponentsProps : () => ({}));
 export const agGridOptions = () => (window.ProjectConfig && window.ProjectConfig.agGridOptions ? window.ProjectConfig.agGridOptions : {}); // ag表格的配置
