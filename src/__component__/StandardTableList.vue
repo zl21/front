@@ -332,7 +332,7 @@
             if (this.$refs && this.$refs.tree && this.mountedChecked) {
               this.$refs.tree.getTreeInfo();
             }
-          }, 300);
+          }, 50);
         }
       },
       formLists() {
@@ -557,9 +557,14 @@
         } else if (this.searchData && this.searchData.reffixedcolumns) {
           delete this.searchData.reffixedcolumns;
         }
-        // this.treeSearchData = searchData; 
+        if (flag === false) {
+          // 如果取消则不走查树
+          searchData = {};
+        }
+        this.treeSearchData = searchData;
         this.searchData.startIndex = 0;
         // this.getQueryListForAg(this.searchData);
+       
         const searchDataRes = Object.assign({}, this.searchData, searchData);
 
          this.getQueryListPromise(searchDataRes);
@@ -1476,7 +1481,7 @@
           }
           // this.isChangeTreeConfigData = 'Y'; //oldTree
           if (this.isTreeList && this.treeShow) {
-            this.$refs.tree.callMethod();
+            this.$refs.tree.clearNode();
             this.treeSearchData = {};// 将树配置的参数清除，保证下一个查询时恢复框架默认参数
           }
           if (this.buttons.isBig) {

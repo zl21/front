@@ -155,22 +155,24 @@
       checkNode() { 
         // 选中
         const treeObj = $.fn.zTree.getZTreeObj(`${this.tableName}`);
-        if (this.treeNode) {
+        if (JSON.stringify(this.treeNode) !== '{}' && this.treeNode) {
           const node = treeObj.getNodeByTId(this.treeNode.tId);   
           if (node) {
             treeObj.selectNode(node);
           }
-        }
+        } else if (treeObj) {
+          treeObj.refresh();
+        } 
       },
       onClick(e, treeId, treeNode) {
         const arr = [];
-        console.log(treeNode);
         this.treeNode = treeNode;
         if (this.treeId === treeNode.tId) {
           this.isClick = !this.isClick;
           if (this.isClick) { // 取消选中查空
             const treeObj = $.fn.zTree.getZTreeObj(`${this.tableName}`);
             treeObj.refresh();// 取消选中
+            this.treeNode = {};
             this.$emit('clickTreeNode', arr, treeNode.ID, false);
           } else {
             arr.push(treeNode);
