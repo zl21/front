@@ -17,12 +17,15 @@
     />
      -->
     
-    <tree
-      v-if="isTreeList&&treeShow"
-      ref="tree"
-      :tree-datas="treeConfigData"
-      @menuTreeChange="menuTreeChange"
-    />
+    <div v-if="isTreeList">
+      <tree
+        v-show="treeShow"
+        ref="tree"
+        :tree-datas="treeConfigData"
+        @menuTreeChange="menuTreeChange"
+      />
+    </div>
+    
     <div
       v-if="isTreeList"
       class="treeSwitch"
@@ -1317,7 +1320,7 @@
             delete searchData.reffixedcolumns;
           }
           // this.isChangeTreeConfigData = 'Y'; //oldTree
-          if (this.isTreeList && this.treeShow) {
+          if (this.isTreeList && this.$refs.tree) {
             this.$refs.tree.clearNode();
             this.treeSearchData = {};// 将树配置的参数清除，保证下一个查询时恢复框架默认参数
           }

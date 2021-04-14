@@ -107,6 +107,7 @@
       clearNode() {
         // 回显
         this.$refs.zTree.treeNode = {};
+        this.callMethod();
       },
       getTreeInfo() { // 获取树信息
         if (this.treeDatas !== null) {
