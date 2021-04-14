@@ -222,7 +222,7 @@
         // this.setPanel.show = false;
       },
       ignoreMsg() { // 我的任务忽略功能
-        network.post('/p/cs/ignoreAllMsg', {}, {
+        network.post(Version() === '1.3' ? '/p/cs/ignoreAllMsg' : '/p/cs/u_note/ignoreMsg', {}, {
           serviceId: enableGateWay() ? 'asynctask' : ''
         }).then((res) => {
           if (res.data.code === 0) {
