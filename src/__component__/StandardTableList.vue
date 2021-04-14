@@ -223,6 +223,8 @@
         modifyDialogshow: false, // 批量修改弹窗
         formDefaultComplete: false,
         dialogComponentName: null,
+        ztreetimer: null, // 树刷新时间判断
+        mountedChecked: false, // 页面是否渲染完成
         dialogComponentNameConfig: {
           title: '提示',
           mask: true,
@@ -306,10 +308,16 @@
     watch: {
       ag: {
         handler() {
-          // 监听ag数据 触发树的数据变化
-          if (this.$refs && this.$refs.tree) {
-            this.$refs.tree.getTreeInfo();
-          } 
+          // 监听ag数据 yan触发树的数据变化
+          // if (!this.mountedChecked) {
+          //   return false;
+          // }
+          clearTimeout(this.ztreetimer);
+          this.ztreetimer = setTimeout(() => {
+            if (this.$refs && this.$refs.tree && this.mountedChecked) {
+              this.$refs.tree.getTreeInfo();
+            }
+          }, 50);
         }
       },
       formLists() {
@@ -394,10 +402,16 @@
         } else if (this.searchData && this.searchData.reffixedcolumns) {
           delete this.searchData.reffixedcolumns;
         }
+        if (flag === false) {
+          // 如果取消则不走查树
+          searchData = {};
+        }
         this.treeSearchData = searchData;
         this.searchData.startIndex = 0;
         // this.getQueryListForAg(this.searchData);
+       
         const searchDataRes = Object.assign({}, this.searchData, searchData);
+
         this.getQueryListPromise(searchDataRes);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
         // 按钮查找 查询第一页数据
@@ -1304,7 +1318,7 @@
           }
           // this.isChangeTreeConfigData = 'Y'; //oldTree
           if (this.isTreeList && this.treeShow) {
-            this.$refs.tree.callMethod();
+            this.$refs.tree.clearNode();
             this.treeSearchData = {};// 将树配置的参数清除，保证下一个查询时恢复框架默认参数
           }
           if (this.buttons.isBig) {
@@ -1986,7 +2000,9 @@
           }
         }
 
-        const json = value && value.searchDataRes ? value.searchDataRes : this.searchData;
+        let json = value && value.searchDataRes ? value.searchDataRes : this.searchData;
+        json = Object.assign({}, json, this.treeSearchData);
+
 
         // if (Object.keys(this.currentTabValue).length > 0 && this.currentTabValue.tabValue.tab_value) {
         //   const tabValue = JSON.parse(JSON.stringify(this.currentTabValue.tabValue.tab_value));
@@ -2881,6 +2897,10 @@
       }
     },
     mounted() {
+      setTimeout(() => {
+        // 判断页面是否渲染完成,用于判断树是否调用
+        this.mountedChecked = true;
+      }, 2000);
       this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
       if (!this._inactive) {
         window.addEventListener('network', this.networkEventListener);

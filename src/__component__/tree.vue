@@ -24,6 +24,7 @@
         Ids: [],
         resArr: [],
         currentClickNoded: [],
+        timer: null,
         inputValue: '',
         treeName: '',
         menuTreeQuery: '', // 菜单树检索的值
@@ -89,7 +90,6 @@
     },
     mounted() {
       this.getTreeInfo();
-      
     },
     methods: {
       //  this.$emit('menuTreeChange', this.Ids, this.treeName, treeNodeID, flag);
@@ -98,28 +98,34 @@
       // this.treeName:前端配置用作/p/cs/QueryList接口查询树节点的指定参数key
       // treeNodeID：当前点击节点ID
       // flag:true:查询选中的节点，false:查询空
-      checkNode(){
+      checkNode() {
         // 回显
-         setTimeout(()=>{
-           this.$refs.zTree.checkNode();
-         },300)
-          
+        setTimeout(() => {
+          this.$refs.zTree.checkNode();
+        }, 300);
+      },
+      clearNode() {
+        // 回显
+        this.$refs.zTree.treeNode = {};
       },
       getTreeInfo() { // 获取树信息
         if (this.treeDatas !== null) {
           this.treeData = [];
-          this.treeDatas().then((value) => {
-            this.treeData = value.data;
-            this.treeName = value.name;
-            this.placeholder = value.placeholder;
-            this.query = value.query;
-            this.searchData = value.searchData;
-
-            // 
-            
-            this.checkNode()
-          });
+          setTimeout(() => {
+            this.getTreeData();
+          }, 100);
         }
+      },
+      getTreeData() {
+        // 获取数据
+        this.treeDatas().then((value) => {
+          this.treeData = value.data;
+          this.treeName = value.name;
+          this.placeholder = value.placeholder;
+          this.query = value.query;
+          this.searchData = value.searchData;
+          this.checkNode();
+        });
       },
       callMethod() {
         this.$refs.zTree.callMethod(); 
