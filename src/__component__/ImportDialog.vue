@@ -382,7 +382,7 @@
       handleSuccess(response) {
         const { tableName } = this.$route.params;
         if (response.code === 0) {
-          if (Version() === '1.4') {
+          if (false) { // Version() === '1.4'
             this.$R3loading.hide(tableName);
             this.closeDialog();
             this.fileName = '';

@@ -83,8 +83,7 @@ export default {
                 }
               });
               if (exportTask.exportedState) { // 导出成功执行以下逻辑
-                const obj = Version() === '1.3' ? urlSearchParams({ id }) : { objId: id };
-                network.post(Version() === '1.3' ? '/p/cs/ignoreMsg' : enableGateWay() ? '/asynctask/p/cs/u_note/ignoreMsg' : '/p/cs/u_note/ignoreMsg', obj).then((r) => {
+                network.post('/p/cs/ignoreMsg', urlSearchParams({ id })).then((r) => {
                   const datas = r.data;
                   if (datas.code === 0) { 
                     if (exportTask.resultMsg.indexOf('{') >= 0) {
@@ -256,8 +255,7 @@ export default {
     }
   },
   updataTaskMessageCount({ commit }, { id, stopUpdataQuantity }) { // 更新我的任务数量
-    const obj = Version() === '1.3' ? urlSearchParams({ id }) : { objId: id };
-    network.post(Version() === '1.3' ? '/p/cs/ignoreMsg' : enableGateWay() ? '/asynctask/p/cs/u_note/ignoreMsg' : '/p/cs/u_note/ignoreMsg', obj).then((res) => {
+    network.post('/p/cs/ignoreMsg', urlSearchParams({ id })).then((res) => {
       const datas = res.data;
       if (datas.code === 0) { 
         if (!stopUpdataQuantity) {
@@ -268,7 +266,7 @@ export default {
   },
    
   getTaskMessageCount({ commit }, userId) { // 获取我的任务数量
-    network.post(Version() === '1.3' ? '/p/c/getMsgCnt' : enableGateWay() ? '/asynctask/p/c/u_note/getMsgCnt' : '/p/c/u_note/getMsgCnt', urlSearchParams({ userId })).then((res) => {
+    network.post('/p/c/getMsgCnt', urlSearchParams({ userId })).then((res) => {
       if (res.data.code === 0) {
         commit('updateTaskMessageCount', res.data.data);
       }

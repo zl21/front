@@ -1927,7 +1927,6 @@
           showColumnName: true,
         };
 
-
         const promise = new Promise((resolve, reject) => {
           this.getExportQueryForButtons({ OBJ, resolve, reject });
           this.$R3loading.show(this.tableName);

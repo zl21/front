@@ -174,7 +174,7 @@
   import network, { urlSearchParams } from '../__utils__/network';
   import NavigatorSubMenu from './NavigatorSubMenu';
   import {
-    STANDARD_TABLE_LIST_PREFIX, Version, enableHistoryAndFavoriteUI, enableGateWay 
+    STANDARD_TABLE_LIST_PREFIX, Version, enableHistoryAndFavoriteUI, enableGateWay, getGatewayValue
   } from '../constants/global';
   import { updateSessionObject } from '../__utils__/sessionStorage';
 
@@ -343,7 +343,7 @@
           orderby: [{ column: Version() === '1.3' ? 'CP_C_TASK.ID' : 'U_NOTE.ID', asc: false }]
         };
         network.post('/p/cs/QueryList', urlSearchParams({ searchdata }), {
-          serviceId: enableGateWay() ? 'asynctask' : ''
+          serviceId: enableGateWay() ? getGatewayValue('U_NOTE.ID') : ''
         }).then((res) => {
           const result = res.data;
           if (!result.datas) {

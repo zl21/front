@@ -1,6 +1,6 @@
 import network, { urlSearchParams, GetTableName } from '../../../__utils__/network';
 import {
-  enableHistoryAndFavorite, enableInitializationRequest, getTouristRoute, enableGateWay, Version 
+  enableHistoryAndFavorite, enableInitializationRequest, getTouristRoute, enableGateWay, Version, getGatewayValue 
 } from '../../../constants/global';
 import { removeSessionObject } from '../../../__utils__/sessionStorage';
 import router from '../../router.config';
@@ -48,12 +48,15 @@ export default {
         if (index > times) {
           clearInterval(timer);
         } else {
-          network.post(enableGateWay() ? '/asynctask/p/cs/getObject' : '/p/cs/getObject', urlSearchParams({ table: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE', objid })).then((res) => {
+          network.post('/p/cs/getObject', urlSearchParams({ table: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE', objid }), {
+            serviceId: enableGateWay() ? getGatewayValue('U_NOTE') : ''
+          }).then((res) => {
             const data = res.data;
             // resolve();
             if (data.code === 0) { 
               // 筛选信息验证导出是否成功
-              data.data.addcolums.filter(item => item.parentdesc === '基本信息')[0].childs.forEach((b) => {
+              const addcolum = data.data.addcolums.filter(item => item.parentdesc === '基础信息').length > 0 ? data.data.addcolums.filter(item => item.parentdesc === '基础信息')[0].childs : [];
+              addcolum.forEach((b) => {
                 if (b.colname === 'TASK_STATE') {
                   if (b.valuedata === '2') {
                     exportTask.exportedState = true;
@@ -84,7 +87,9 @@ export default {
               });
               if (exportTask.exportedState) { // 导出成功执行以下逻辑
                 const obj = Version() === '1.3' ? urlSearchParams({ id }) : { objId: id };
-                network.post(Version() === '1.3' ? '/p/cs/ignoreMsg' : enableGateWay() ? '/asynctask/p/cs/u_note/ignoreMsg' : '/p/cs/u_note/ignoreMsg', obj).then((r) => {
+                network.post(Version() === '1.3' ? '/p/cs/ignoreMsg' : '/p/cs/u_note/ignoreMsg', obj, {
+                  serviceId: enableGateWay() ? getGatewayValue('U_NOTE') : ''
+                }).then((r) => {
                   const datas = r.data;
                   if (datas.code === 0) { 
                     if (exportTask.resultMsg.indexOf('{') >= 0) {
@@ -257,7 +262,9 @@ export default {
   },
   updataTaskMessageCount({ commit }, { id, stopUpdataQuantity }) { // 更新我的任务数量
     const obj = Version() === '1.3' ? urlSearchParams({ id }) : { objId: id };
-    network.post(Version() === '1.3' ? '/p/cs/ignoreMsg' : enableGateWay() ? '/asynctask/p/cs/u_note/ignoreMsg' : '/p/cs/u_note/ignoreMsg', obj).then((res) => {
+    network.post(Version() === '1.3' ? '/p/cs/ignoreMsg' : '/p/cs/u_note/ignoreMsg', obj, {
+      serviceId: enableGateWay() ? getGatewayValue('U_NOTE') : ''
+    }).then((res) => {
       const datas = res.data;
       if (datas.code === 0) { 
         if (!stopUpdataQuantity) {
@@ -267,7 +274,9 @@ export default {
     });
   },
   getTaskMessageCount({ commit }, userId) { // 获取我的任务数量
-    network.post(Version() === '1.3' ? '/p/c/getMsgCnt' : enableGateWay() ? '/asynctask/p/c/u_note/getMsgCnt' : '/p/c/u_note/getMsgCnt', urlSearchParams({ userId })).then((res) => {
+    network.post(Version() === '1.3' ? '/p/c/getMsgCnt' : '/p/c/u_note/getMsgCnt', urlSearchParams({ userId }), {
+      serviceId: enableGateWay() ? getGatewayValue('U_NOTE') : ''
+    }).then((res) => {
       if (res.data.code === 0) {
         commit('updateTaskMessageCount', res.data.data);
       }

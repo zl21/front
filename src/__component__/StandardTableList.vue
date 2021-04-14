@@ -449,7 +449,7 @@
       //   }
       // },
       imporSuccess(id) {
-        if (Version() === '1.3') {
+        if (true) { // Version() === '1.3'
           if (id) {
             const promises = new Promise((resolve, reject) => {
               this.getExportedState({
@@ -2357,7 +2357,7 @@
         });
         promise.then(() => {
           if (this.buttons.exportdata) {
-            if (false) { // Version() === '1.4'
+            if (Version() === '1.4') { // Version() === '1.4'
               this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
               const eleLink = document.createElement('a');
               const path = getGateway(`/p/cs/download?filename=${this.buttons.exportdata}`);
@@ -2366,7 +2366,7 @@
               document.body.appendChild(eleLink);
               eleLink.click();
               document.body.removeChild(eleLink);
-            } else if (true) { // Version() === '1.3'
+            } else if (Version() === '1.3') { // Version() === '1.3'
               const promises = new Promise((resolve, reject) => {
                 this.getExportedState({
                   objid: this.buttons.exportdata, id: this.buttons.exportdata, resolve, reject 
