@@ -6,6 +6,7 @@ export default {
   },
   mounted() {
     // 设置校验规则
+    
     this.items.rules = {
       required: {
         type:true,

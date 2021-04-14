@@ -23,6 +23,9 @@ String.prototype.TextFilter = function TextFilter() {
    * @memberof typeConversion
    */
   function typeConversion(item){
+    if(item.webconf && item.webconf.display){
+      item.display = item.webconf.display;
+    }
     switch(item.display){
       case 'select':
         item.display = 'OBJ_SELECT';

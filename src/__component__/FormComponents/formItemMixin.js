@@ -12,19 +12,19 @@
   // 联动计算
   import {dynamicforcompute} from '../ExtendedAttributes/dynamicforcompute.js';
   // 下拉框过滤值
-  import {filtercolval ,resetFiltercolval} from '../ExtendedAttributes/filtercolval.js';
+  import {filtercolval } from '../ExtendedAttributes/filtercolval.js';
   // 处理单对象表单中数据和store中的交互问题
   import storeDataInteractionMixin from './PanelForm/storeDataInteractionMixin';
+  // 处理单对象表单webcof 映射
+  import mapwebconf from '../ExtendedAttributes/mapwebconf.js';
 
 
 export default {
-  mixins:[mixins,storeDataInteractionMixin],
+  mixins:[mixins,storeDataInteractionMixin,mapwebconf],
   watch:{
     value:{
       handler(val,old){  //单对象字段 监听数据，处理数据联动
-
         if(this.items.detailType){
-
           if(this.items.linkage && this.items.linkage.hidecolumn){
             hideColumn(this,this.items.linkage.hidecolumn)  
           }
@@ -47,6 +47,7 @@ export default {
             }
           }
           if(this.items.webconf && this.items.webconf.filtercolval){
+
             // 过滤显示字段
            filtercolval(this,this.items.webconf.filtercolval)
          }
@@ -69,8 +70,8 @@ export default {
             }
             if(_linkFormMap.filtercolval){
               // 清除目标字段的值
-              ClearRefcolValue(this,_linkFormMap.filtercolval);
-              resetFiltercolval(this,_linkFormMap.filtercolval)
+             // ClearRefcolValue(this,_linkFormMap.filtercolval);
+              // resetFiltercolval(this,_linkFormMap.filtercolval)
             }
           }
         }

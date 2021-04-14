@@ -82,7 +82,7 @@ export class Validate extends Vue {
         <div :class="className">
            <slot />
            <div class="validate_item_tip" v-if="showTip">
-                <div v-if="message && message.length>0 " v-bind:style="{ marginLeft: labelWidth + 'px' }">
+                <div v-if="message && message.length>0 " v-bind:style="{display: 'flex',marginLeft: labelWidth + 'px' }">
                     <Icon type="ios-alert" /><span>{{message}}</span>
                 </div>    
            </div>
