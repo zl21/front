@@ -534,7 +534,7 @@
                     const tab = {
                       type,
                       tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
-                      tableId: '24386',
+                      tableId: Version() === '1.3' ? 24386 : 963,
                       id
                     };
                     this.updataTaskMessageCount({ id, stopUpdataQuantity: true });// 更新小铃铛数量
@@ -1978,7 +1978,7 @@
                       const tab = {
                         type,
                         tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
-                        tableId: '24386',
+                        tableId: Version() === '1.3' ? 24386 : 963,
                         id: this.buttonsData.exportdata
                       };
                       this.tabOpen(tab);

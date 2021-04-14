@@ -54,7 +54,7 @@ export default {
             if (data.code === 0) { 
               // 筛选信息验证导出是否成功
               data.data.addcolums.filter(item => item.parentdesc === '基本信息')[0].childs.forEach((b) => {
-                if (b.colname === 'TASKSTATE') {
+                if (b.colname === 'TASK_STATE') {
                   if (b.valuedata === '2') {
                     exportTask.exportedState = true;
                     clearInterval(timer);
@@ -78,12 +78,13 @@ export default {
                   }
                 } else if (b.colname === 'URL') {
                   exportTask.file = b.valuedata; 
-                } else if (b.colname === 'CONTENT') {
+                } else if (b.colname === 'MESSAGE') {
                   exportTask.resultMsg = b.valuedata; 
                 }
               });
               if (exportTask.exportedState) { // 导出成功执行以下逻辑
-                network.post(enableGateWay() ? '/asynctask/p/cs/ignoreMsg' : '/p/cs/ignoreMsg', urlSearchParams({ id })).then((r) => {
+                const obj = Version() === '1.3' ? urlSearchParams({ id }) : { objId: id };
+                network.post(Version() === '1.3' ? '/p/cs/ignoreMsg' : enableGateWay() ? '/asynctask/p/cs/u_note/ignoreMsg' : '/p/cs/u_note/ignoreMsg', obj).then((r) => {
                   const datas = r.data;
                   if (datas.code === 0) { 
                     if (exportTask.resultMsg.indexOf('{') >= 0) {
@@ -255,7 +256,8 @@ export default {
     }
   },
   updataTaskMessageCount({ commit }, { id, stopUpdataQuantity }) { // 更新我的任务数量
-    network.post(enableGateWay() ? '/asynctask/p/cs/ignoreMsg' : '/p/cs/ignoreMsg', urlSearchParams({ id })).then((res) => {
+    const obj = Version() === '1.3' ? urlSearchParams({ id }) : { objId: id };
+    network.post(Version() === '1.3' ? '/p/cs/ignoreMsg' : enableGateWay() ? '/asynctask/p/cs/u_note/ignoreMsg' : '/p/cs/u_note/ignoreMsg', obj).then((res) => {
       const datas = res.data;
       if (datas.code === 0) { 
         if (!stopUpdataQuantity) {
@@ -265,7 +267,7 @@ export default {
     });
   },
   getTaskMessageCount({ commit }, userId) { // 获取我的任务数量
-    network.post(enableGateWay() ? '/asynctask/p/c/getMsgCnt' : '/p/c/getMsgCnt', urlSearchParams({ userId })).then((res) => {
+    network.post(Version() === '1.3' ? '/p/c/getMsgCnt' : enableGateWay() ? '/asynctask/p/c/u_note/getMsgCnt' : '/p/c/u_note/getMsgCnt', urlSearchParams({ userId })).then((res) => {
       if (res.data.code === 0) {
         commit('updateTaskMessageCount', res.data.data);
       }

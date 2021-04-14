@@ -233,7 +233,7 @@
         const tab = {
           type,
           tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
-          tableId: 24386,
+          tableId: Version() === '1.3' ? 24386 : 963,
           label: '我的任务'
         };
         this.tabOpen(tab);
@@ -255,16 +255,21 @@
           column_include_uicontroller: true,
           fixedcolumns: {
             OPERATOR_ID: [this.userInfo.id],
-            READSTATE: ['=0'],
-            TASKSTATE: ['=2', '=3']
+            READ_STATE: ['=0'],
+            // TASKSTATE: ['=2', '=3']
           },
           multiple: [],
           startindex: self.messagePanel.start,
           range: 20,
           orderby: [{ column: Version() === '1.3' ? 'CP_C_TASK.ID' : 'U_NOTE.ID', asc: false }]  
         };
-        network.post(enableGateWay() ? '/asynctask/p/cs/QueryList' : '/p/cs/QueryList', urlSearchParams({ searchdata })).then((res) => {
+        network.post('/p/cs/QueryList', urlSearchParams({ searchdata }), {
+          serviceId: enableGateWay() ? 'asynctask' : ''
+        }).then((res) => {
           const result = res.data;
+          if (!result.datas) {
+            result.datas = result.data;
+          }
           if (result.code === 0) {
             self.messagePanel.list = self.messagePanel.list.concat(result.datas.row);
             console.log(99, self.messagePanel.list);
@@ -283,7 +288,7 @@
         const tab = {
           type,
           tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
-          tableId: 24386,
+          tableId: Version() === '1.3' ? 24386 : 963,
           id: item.ID.val
         };
         this.tabOpen(tab);
