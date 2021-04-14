@@ -222,7 +222,9 @@
         // this.setPanel.show = false;
       },
       ignoreMsg() { // 我的任务忽略功能
-        network.post('/p/cs/ignoreAllMsg').then((res) => {
+        network.post('/p/cs/ignoreAllMsg', {}, {
+          serviceId: enableGateWay() ? 'asynctask' : ''
+        }).then((res) => {
           if (res.data.code === 0) {
             this.updateTaskMessageCount(0);
             this.getMessages(0);
@@ -266,7 +268,7 @@
           orderby: [{ column: Version() === '1.3' ? 'CP_C_TASK.ID' : 'U_NOTE.ID', asc: false }]  
         };
         network.post('/p/cs/QueryList', urlSearchParams({ searchdata }), {
-          serviceId: enableGateWay() ? getGatewayValue('U_NOTE.ID') : ''
+          serviceId: enableGateWay() ? getGatewayValue('U_NOTE') : ''
         }).then((res) => {
           const result = res.data;
           if (!result.datas) {
