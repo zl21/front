@@ -1745,6 +1745,7 @@
       searchEvent() {
         // 支持查询按钮前置事件，通过promise处理
         const searchDataRes = Object.assign({}, this.searchData, this.treeSearchData);
+        console.log(searchDataRes,'searchDataRes');
         const obj = {
           callBack: () => new Promise((searchBeforeResolve, searchBeforeReject) => {
             this.searchData.searchBeforeResolve = searchBeforeResolve;
@@ -2200,6 +2201,8 @@
           this.updataIsBig(false);
         }
         const  searchDataRes=value&&  value.searchDataRes? value.searchDataRes:null;
+        // 组装树的查询
+        let searchData = Object.assign(this.searchData,this.treeSearchData);
         this.getQueryListPromise(this.searchData,searchDataRes);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
