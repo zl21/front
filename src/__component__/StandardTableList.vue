@@ -463,7 +463,7 @@
       //   }
       // },
       imporSuccess(id) {
-        if (Version() === '1.3') {
+        if (true) { // Version() === '1.3'
           if (id) {
             const promises = new Promise((resolve, reject) => {
               this.getExportedState({
@@ -483,8 +483,8 @@
                     const type = 'tableDetailVertical';
                     const tab = {
                       type,
-                      tableName: 'CP_C_TASK',
-                      tableId: '24386',
+                      tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
+                      tableId: Version() === '1.3' ? 24386 : 963,
                       id
                     };
                     this.tabOpen(tab);
@@ -2373,7 +2373,7 @@
         });
         promise.then(() => {
           if (this.buttons.exportdata) {
-            if (Version() === '1.4') {
+            if (Version() === '1.4') { // Version() === '1.4'
               this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
               const eleLink = document.createElement('a');
               const path = getGateway(`/p/cs/download?filename=${this.buttons.exportdata}`);
@@ -2382,7 +2382,7 @@
               document.body.appendChild(eleLink);
               eleLink.click();
               document.body.removeChild(eleLink);
-            } else if (Version() === '1.3') {
+            } else if (Version() === '1.3') { // Version() === '1.3'
               const promises = new Promise((resolve, reject) => {
                 this.getExportedState({
                   objid: this.buttons.exportdata, id: this.buttons.exportdata, resolve, reject 
@@ -2400,8 +2400,8 @@
                       const type = 'tableDetailVertical';
                       const tab = {
                         type,
-                        tableName: 'CP_C_TASK',
-                        tableId: '24386',
+                        tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
+                        tableId: Version() === '1.3' ? 24386 : 963,
                         id: this.buttons.exportdata
                       };
                       this.tabOpen(tab);

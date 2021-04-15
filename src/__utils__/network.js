@@ -32,7 +32,7 @@ const matchGateWay = (url) => {
   const globalServiceId = window.localStorage.getItem('serviceId');
   const serviceIdMap = Object.assign({}, store.state.global.serviceIdMap, JSON.parse(window.localStorage.getItem('serviceIdMap')));
   // eslint-disable-next-line no-empty
-  if (!enableGateWay()) {
+  if (!enableGateWay() || url.indexOf('/getMsgCnt') >= 0) {
     return undefined;
   }
   if (ignoreGateWay.includes(url) || ignorePattern().some(d => url.match(d))) {
@@ -411,7 +411,7 @@ export const urlSearchParams = (data) => {
 };
 //  判断网关
 function setUrlSeverId(gateWay, url, serviceconfig) {
-  if (gateWay && serviceconfig) {
+  if (serviceconfig) {
     if (serviceconfig.noServiceId) {
       return url;
     }
