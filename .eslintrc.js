@@ -33,7 +33,8 @@ module.exports = {
     'import/no-dynamic-require':'off',
     'no-console':'off',
     'vue/no-async-in-computed-properties': 'off',
-    'vue/html-self-closing': 'off'
+    'vue/html-self-closing': 'off',
+    'no-nested-ternary': 'off'
   },
   overrides: [
     {

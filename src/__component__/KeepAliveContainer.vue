@@ -141,6 +141,10 @@
               });
               this.currentModule = componentName;
             } else {
+              if (target.component && target.component.name) {
+                // 修改自定义组件name
+                target.component.name = componentName;
+              }
               Vue.component(componentName, Vue.extend(Object.assign({ mixins: [CMixins(), target.label === 'taskList' ? mixinsCustomize : {}] }, target.component)));
               this.currentModule = componentName;
             }
