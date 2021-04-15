@@ -42,25 +42,24 @@
         :accept="accept"
         @change.stop="uploadFileChange($event)"
       >上传附件</label>
-      <span
+      <div
         v-if="percent"
         class="proInfo"
       >
         文件正在导入中……
-      </span>
+      </div>
+      <Progress
+        v-if="percent"
+        :percent="uploadProgress"
+        :status="uploadProgress===100 ? 'success': 'active'"
+      />
     </form>
   </div>
 </template>
 
 <script>
   import Upload from '../../__utils__/upload';
-  import {
-    Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, INSTANCE_ROUTE, encodeControl
-  } from '../../constants/global';
-  import store from '../../__config__/store.config';
-
-  const apiVersion = Version();
-  const fkHttpRequest = () => require(`../../__config__/actions/version_${apiVersion}/formHttpRequest/fkHttpRequest.js`);
+  import { encodeControl } from '../../constants/global';
 
 
   export default {
@@ -111,6 +110,7 @@
       return {
         percent: false,  
         docList: {},
+        uploadProgress: 0, // 上传进度
       };
     },
     computed: {
@@ -160,7 +160,7 @@
     // },
     methods: {
       downloadUrlFile(url) {
-        const self = this;
+        // const self = this;
         const domFrame = window.parent.document.getElementById('downLoadListFrame');
         if (domFrame != null) {
           window.parent.document.body.removeChild(domFrame);
@@ -169,7 +169,7 @@
         if (typeof downloadFile.iframe === 'undefined') {
           const iframe = document.createElement('iframe');
           iframe.setAttribute('id', 'downLoadListFrame');
-          self.addEvent('load', iframe, () => { self.iframeLoad(iframe); });
+          // self.addEvent('load', iframe, () => { self.iframeLoad(iframe); });
           iframe.src = url;
           downloadFile.iframe = iframe;
           document.body.appendChild(downloadFile.iframe);
@@ -178,11 +178,11 @@
           }, 1000);
         }
       },
-      // 判断iframe的src
-      iframeLoad(iframe) {
-        const src = (iframe.src) ? iframe.src : iframe.contentWindow.locatiion.href;
-        // console.log('src::', src);
-      },
+      // // 判断iframe的src
+      // iframeLoad(iframe) {
+      //   const src = (iframe.src) ? iframe.src : iframe.contentWindow.locatiion.href;
+      //   // console.log('src::', src);
+      // },
       // 调用方法时绑定iframe的load事件
       addEvent(eventName, element, fn) {
         if (element.attachEvent) element.attachEvent(`on${eventName}`, fn);
@@ -256,8 +256,10 @@
         const article = new Upload(aUploadParame);
       },
       success(res) {
+        console.log('结束');
         let uploadIds = [];
         let filelist = [];
+        this.uploadProgress = 0;
         this.percent = false;
         if (res.code === 0) {
           if (Array.isArray(res.data)) {
@@ -290,7 +292,9 @@
         filelist = [];
         this.filechange();
         // console.log(result);
-        this.$refs.file.reset();
+        if (this.$refs.file) {
+          this.$refs.file.reset();
+        }
       },
       deleteLi(index) {
         this.$Modal.fcWarning({
@@ -305,15 +309,25 @@
         });
       },
       onerror(e) {
-        this.$refs.file.reset();
+        this.uploadProgress = 0;
+        if (this.$refs.file) {
+          this.$refs.file.reset();
+        }
         this.percent = false;
         this.$Message.info(e);
       },
-      progress(e, press) {
+      progress(e) {
         // 上传进度
+        console.log('进度', e);
+        this.uploadProgress = Math.floor(e.loaded / e.total * 100);
       },
-      onload(e) {
+      onloadstart() {
+        console.log('开始');
         this.percent = true;
+      },
+      onloadend() {
+      },
+      onload() {
         // console.log(e);
       },
       setvaluedata() {
@@ -346,6 +360,7 @@
      height:20px;
      color:#999;
      transition: all 0.4s;
+     margin-top: 10px;
    }
    .iconios-close-circle-outline{
     vertical-align: inherit;
@@ -371,6 +386,9 @@
            }
          
    }
-}  
 
+   .ark-progress-bg {
+    background-color: #2d8cf0;
+  }
+}  
 </style>
