@@ -18,10 +18,11 @@
             :style="setWidth"
             class="content"
           >
-            <div
+          <div
             v-for="(temp,index) in Object.keys(formItemLists[item].childs)"
             :key="formItemLists[item].childs[temp]._index"
             :style="formItemLists[item].childs[temp].styles"
+            
           >
             <keep-alive>
               <component
@@ -105,10 +106,20 @@ export default {
         
         // 数组转对象处理，避免vue渲染时的指针问题
         data.addcolums.map((item,index) => {
-          item.childs = {...layoutAlgorithm(Number(data.objviewcol), item.childs?item.childs:[item.child])};
-
+          let _childs = item.childs?item.childs:[item.child];
+          _childs.map((option)=>{
+            // 判断是否展示组件
+            if(option.display==='none'){
+              option.show = false;
+            }else{
+              option.show = true;
+            }
+            return option;
+          })
+        
+          item.childs = {...layoutAlgorithm(Number(data.objviewcol), _childs)};
           Object.keys(item.childs).map((temp) => {
-            item.childs[temp]._index = `${index}_${temp}_${Math.random()}`
+            item.childs[temp]._index = `${index}_${temp}_${Math.random()}`;
             if(this.readonly){
               item.childs[temp].readonly = this.readonly || this.defaultData.isdefault
             }

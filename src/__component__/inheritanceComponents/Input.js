@@ -99,25 +99,36 @@ class CustomInput {
     // if (this.item.isuppercase) {
     //   this.uppercase();
     // }
-
     if(this.item.display === 'OBJ_TEXTAREA'){
+
       defaultProps.type = {
         default:() => 'textarea'
       }
+      if((this.item.webconf && this.item.webconf.ispassword) || this.item.ispassword){
+        defaultProps.encrypt = {
+          default:() => true
+        }
+      }
+
+      
 
       defaultProps.autosize = {
         default:() => ({
           minRows: this.item.row + 1 
         })
       }
+    }else{
+      // 处理ispassword属性
+   
+      if((this.item.webconf && this.item.webconf.ispassword) || this.item.ispassword){
+        defaultProps.type = {
+          default:() => 'password'
+        }
+      }
+
     }
     
-    // 处理ispassword属性
-    if((this.item.webconf && this.item.webconf.ispassword) || this.item.ispassword){
-      defaultProps.type = {
-        default:() => 'password'
-      }
-    }
+    
 
     defaultProps.disabled = {
       default:() => this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true)

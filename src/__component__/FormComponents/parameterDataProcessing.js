@@ -124,6 +124,7 @@ export default class ParameterDataProcessing {
    * @memberof defaultDataProcessing
    */
   defaultDataProcessing() {
+    
     // select
     if ((this.item.default || this.item.defval) && this.item.display === 'OBJ_SELECT') {
       return this.item.default?this.item.default.split(','):this.item.defval;
@@ -191,7 +192,7 @@ export default class ParameterDataProcessing {
 
 
 
-    return this.item.default || this.item.valuedata;
+    return this.item.default || this.item.valuedata || this.item.defval;
   }
 
 }
