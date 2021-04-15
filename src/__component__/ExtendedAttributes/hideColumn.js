@@ -44,6 +44,9 @@ function HiddenFields(){
       // 当temp中ishide为true时，则refval控制字段的隐藏。当ishide为false时，则控制字段的显示
       let panelForm = item.source.$_live_getChildComponent(window.vm,'panelForm')
       let target = item.source.$_live_getChildComponent(panelForm,`${item.source.activeTab.tableName}${temp.target}`)
+      if(!target){
+        return
+      }
       let panelIndex = target.items._index.split('_')[0];
       let itemIndex = target.items._index.split('_')[1]
       if(!item.source.value && !item.source.items.fkobj && item.source.items.display != 'OBJ_SELECT'){  //当来源字段不是外健字段和select字段时，并且值为空时不做处理
