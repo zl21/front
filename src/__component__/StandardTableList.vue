@@ -2202,8 +2202,8 @@
         }
         const  searchDataRes=value&&  value.searchDataRes? value.searchDataRes:null;
         // 组装树的查询
-        let searchData = Object.assign(this.searchData,this.treeSearchData);
-        this.getQueryListPromise(this.searchData,searchDataRes);
+        let searchData = Object.assign(JSON.parse(JSON.stringify(this.searchData)),this.treeSearchData);
+        this.getQueryListPromise(JSON.parse(JSON.stringify(this.searchData)),searchDataRes);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
 
