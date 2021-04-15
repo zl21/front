@@ -5,11 +5,13 @@ import {
   } from './common.js';
   
   // 过滤
-  export const filtercolval = function ($this,config) {  
-    let targetVm = FindInstance($this,config.col,$this.items.tableName);
-    mappingRelation($this,targetVm,'filtercolval');
-    if(targetVm[0] && targetVm[0].value){
-        let value = targetVm[0].value;
+  export const filtercolval = function ($current,config) {  
+    console.log(12);
+    let targetVm = FindInstance($current,config.col,$current.items.tableName);
+    // mappingRelation($current,targetVm,'filtercolval');
+    if(targetVm[0]){
+        let value = $current.value;
+        const $this = targetVm[0];
         let filterArry = config.map[value] || [];
         if(!$this.items.olderCombobox){
             $this.items.olderCombobox = [...$this.items.combobox];
@@ -26,6 +28,7 @@ import {
         }else{
             $this.items.combobox = $this.items.olderCombobox;
         }
+        $this.$forceUpdate();
     }
 
   };
@@ -36,7 +39,7 @@ import {
     if($vm && Array.isArray($vm)){
         $vm.forEach(($option)=>{
             if($option.items.olderCombobox){
-                $option.items.combobox = [...$option.items.olderCombobox];
+               $option.items.combobox = [...$option.items.olderCombobox];
             }
         })
     }

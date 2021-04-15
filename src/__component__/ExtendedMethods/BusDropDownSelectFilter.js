@@ -5,8 +5,11 @@ import {
   postData,
   postTableData
 } from '../ExtendedAttributes/refcolval.js'
-export default class BusDropDownSelectFilterMethod{
+import Vue from 'vue';
+
+export default class BusDropDownSelectFilterMethod extends Vue{
   constructor(item, instance){
+    super();
     this.item = item
     this.instance = instance
     this.postTableData()
@@ -29,6 +32,7 @@ export default class BusDropDownSelectFilterMethod{
 
   postData(){
     let self = this;
+    console.log(this,'212');
     this.instance.methods.postData = function (url) {
       // 字段联动 模糊查询数据
       return new Promise((resolve) => {

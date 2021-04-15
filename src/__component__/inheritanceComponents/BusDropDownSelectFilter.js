@@ -14,7 +14,9 @@
  
  import Vue from 'vue';
  import {
-  setisShowPopTip
+  setisShowPopTip,
+  postData,
+  postTableData
 } from '../ExtendedAttributes/refcolval.js'
  
  // const BusDropDownSelectFilter = () => import('arkui_BCL/DropDownSelectFilter');
@@ -82,8 +84,8 @@
      if(this.pageSize){
         this.$refs.MultiSelectFilter.pageSize = this.pageSize;
      }
-    //  this.$refs.MultiSelectFilter.postTableData = this.postTableData;
-    //  this.$refs.MultiSelectFilter.postData = this.postData;
+     this.$refs.MultiSelectFilter.postTableData = this.postTableData;
+     this.$refs.MultiSelectFilter.postData = this.postData;
 
    }
    setMethods(){
@@ -191,7 +193,26 @@
  
    // 合并methods
    mergeMethods() {
-    new BusDropDownSelectFilterMethod(this.item,this.components.akDropDownSelectFilter)
+    // new BusDropDownSelectFilterMethod(this.item,this.components.akDropDownSelectFilter)
+    let self = this;
+
+    this.postTableData = function (url) {
+      // 字段联动 表格数据查询
+      return new Promise((resolve) => {
+       postTableData.call(this,self,url).then((res)=>{
+          resolve(res)
+       });
+      })
+      
+    };
+    this.postData = function (url) {
+      // 字段联动 模糊查询数据
+       return new Promise((resolve) => {
+        postData.call(this,self,url).then((res)=>{
+           resolve(res)
+        });
+       })   
+    };
 
    }
  }

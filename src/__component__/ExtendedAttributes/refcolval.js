@@ -86,15 +86,14 @@ export const messageTip = ($this, target,key) => {
     if(!$this._srccolValue){
         $this._srccolValue = {};
     }
-    
     $this._srccolValue[target.items.colname] = value.ID;
+
     // 无需校验
     if(key === 'refcolvalArray'){
         return true;
     }
-    
     if (!value.ID) {
-        $this.$Message.info(`请先选择${target.items.name}`);
+        $this.$Message.info(`请先选择主表${target.items.name}`);
         setTimeout(() => {
             if(target.$el.querySelector('input')){
                 target.$el.querySelector('input').focus();
@@ -115,7 +114,7 @@ type  是否是模糊查询还是外键查询
 */
 // 接口拼接 fixcolumn
 export const setFixedcolumns = ($this, type) => {
-    let webconf = $this.item.webconf;   
+    let webconf = $this.item.webconf;  
     if(!$this.item.detailType){
         // 列表界面
         return {};

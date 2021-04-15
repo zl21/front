@@ -675,6 +675,7 @@ export default {
         }
         span {
           color: red;
+          word-break: keep-all;
           display: inline-block;
         }
     }
