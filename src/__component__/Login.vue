@@ -100,7 +100,7 @@
           this.spinShow = false;
           this.$Modal.fcError(message);
         } else if (this.$refs.username.value !== '' && this.$refs.password.value !== '') {
-          const globalServiceId = window.sessionStorage.getItem('serviceId');
+          const globalServiceId = window.localStorage.getItem('serviceId');
           this.spinShow = true;
           console.log(enableGateWay() , `/${globalServiceId}`);
           network.post(enableGateWay() ? `/${globalServiceId}/p/c/getCaptcha` : '/p/c/getCaptcha').then((res) => {

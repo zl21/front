@@ -2,6 +2,7 @@
 <template>
   <div :class="_items.props.fkdisplay === 'pop' ? 'ItemComponentRoot AttachFilter-pop':'ItemComponentRoot'">
     <span
+      v-if="_items.type !== 'defined'"
       class="itemLabel"
       :style="labelStyle"
     >
@@ -32,7 +33,7 @@
         v-if="_items.required"
         class="label-tip"
       >*</span>
-      <template v-if="getVersion() === '1.4' && _items.props.fkdisplay === 'pop' && type==='PanelForm'">
+      <template v-if="getVersion() === '1.4' && _items.props.fkdisplay === 'pop' && type==='PanelForm'&&_items.type !== 'defined'">
         <!-- 路由跳转 -->
         <template v-if="!!_items.value &&_items.props.Selected &&_items.props.Selected[0] && !!_items.props.Selected[0].ID && _items.props.Selected[0].ID !=='-1'&& _items.props.Selected[0].ID !==0 && _items.props.Selected[0].ID !=='0'">
           <i
@@ -44,7 +45,7 @@
         </template>
 
       </template>
-      <template v-if="getVersion() === '1.4' && _items.props.fkdisplay === 'drp' && type==='PanelForm'">
+      <template v-if="getVersion() === '1.4' && _items.props.fkdisplay === 'drp' && type==='PanelForm'&&_items.type !== 'defined'">
         <!-- 路由跳转 -->
         <template v-if="!!_items.value && _items.props.defaultSelected && _items.props.defaultSelected[0] && !!_items.props.defaultSelected[0].ID && _items.props.defaultSelected[0].ID !=='-1'&& _items.props.defaultSelected[0].ID !=='0'&& _items.props.defaultSelected[0].ID !==0">
           <i
@@ -57,7 +58,10 @@
 
       </template>
 
-      <span :title="_items.title">{{ _items.title }}:</span>
+      <span
+        v-if="_items.type !== 'defined'"
+        :title="_items.title"
+      >{{ _items.title }}:</span>
     </span>
     <div
       :class=" _items.props.row >1 ? 'itemComponent height100':'itemComponent'"
@@ -66,8 +70,8 @@
       <Input
         v-if="_items.type === 'input'"
         :ref="_items.field"
-        v-model="inputText"
-        :class="{'encode-text': _items.props.ispassword && inputText}"
+        v-model="_items.value"
+        :class="{'encode-text': _items.props.ispassword && _items.value}"
         :type="_items.props.type"
         :clearable="_items.props.clearable"
         :disabled="_items.props.disabled || _items.props.readonly"
@@ -80,9 +84,10 @@
         :maxlength="_items.props.maxlength"
         :icon="_items.props.icon"
         :regx="_items.props.regx"
+        :encrypt="_items.props.ispassword"
         on-click="inputClick"
         @on-blur="inputBlur"
-        @on-change="inputChange($event, null)"
+        @on-change="inputChange"
         @on-enert="inputEnter"
         @on-focus="inputFocus"
         @on-keyup="inputKeyUp"
@@ -284,15 +289,41 @@
         </div>
       </AttachFilter>
  -->
-      <ImageUpload
-        v-if="_items.type === 'ImageUpload'"
-        :ref="_items.field"
-        :dataitem="Object.assign(_items.props.itemdata,{readonly: _items.props.readonly})"
-        @deleteImg="deleteImg"
-        @uploadFileChangeSuccess="uploadFileChangeSuccess"
-        @uploadFileChangeOnerror="uploadFileChangeOnerror"
-        @dblclick="uploadFileDblclick"
-      />
+      <div class="img-upload-wrap">
+        <ImageUpload
+          v-if="_items.type === 'ImageUpload'"
+          :ref="_items.field"
+          class="img-upload-component"
+          :dataitem="Object.assign(_items.props.itemdata,{readonly: _items.props.readonly})"
+          @deleteImg="deleteImg"
+          @uploadFileChangeOnloadstart="uploadFileChangeOnloadstart"
+          @uploadFileChangeSuccess="uploadFileChangeSuccess"
+          @uploadFileChangeProgress="uploadFileChangeProgress"
+          @uploadFileChangeOnerror="uploadFileChangeOnerror"
+          @dblclick="uploadFileDblclick"
+        />
+        <div
+          v-if="_items.type === 'ImageUpload' && showImgUploadProcess && imgProgressController"
+          class="img-process"
+        >
+          <i-circle
+            class="img-process"
+            :percent="uploadProgress"
+            :stroke-color="uploadProgress === 100 ? '#5cb85c' : 'rgb(45, 140, 240)'"
+          >
+            <Icon
+              v-if="uploadProgress === 100"
+              type="ios-checkmark"
+              size="60"
+              style="color:#5cb85c"
+            ></Icon>
+            <span
+              v-else
+              style="font-size:24px"
+            >{{ uploadProgress }}%</span>
+          </i-circle>
+        </div>
+      </div>
       <!--读写规则  -->
       <EnumerableInput
         v-if="_items.type === 'EnumerableInput'"
@@ -361,11 +392,23 @@
           formIndex,
         }"
       />
+
+      <template v-if="_items.type === 'defined'">
+        <!-- 单对象主表属性定制字段 -->
+        <!-- _items.type：display
+        _items.props:元数据配置字段 -->
+        <Defined
+          :readonly="_items.props.readonly"
+          :itemdata="_items.props"
+          :items="_items"
+        />
+      </template>
     </div>
   </div>
 </template>
 
 <script>
+  import Vue from 'vue';
   import { mapMutations } from 'vuex';
   
   import dataProp from '../__config__/props.config';
@@ -380,10 +423,11 @@
   //   上传文件
   import Docfile from './docfile/DocFileComponent.vue';
   import RadioGroup from './form/RadioGroup.vue';
+  import Defined from './Defined.vue';
 
 
   import {
-    Version, MODULE_COMPONENT_NAME, ossRealtimeSave, defaultrange 
+    Version, MODULE_COMPONENT_NAME, ossRealtimeSave, defaultrange, setComponentsProps
   } from '../constants/global';
   import createModal from './PreviewPicture/index';
   import EnumerableInput from './EnumerableInput.vue';
@@ -396,7 +440,7 @@
   
   export default {
     components: {
-      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile, RadioGroup
+      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile, RadioGroup, Defined
     },
     inject: [MODULE_COMPONENT_NAME],
     props: {
@@ -447,31 +491,12 @@
       return {
         filterDate: {},
         resultData: {}, // 结果传值
-        inputText: '' // textarea加密后的文本
+        showImgUploadProcess: false, // 显示上传进度条
+        uploadProgress: 0, // 图片上传进度
+        imgProgressController: window.ProjectConfig.imgProgressController
       };
     },
-    watch: {
-      '_items.value': {
-        handler(value) {
-          if (this._items.type === 'input' && this._items.props.type === 'textarea' && this._items.props.ispassword) {
-            // 针对textarea的文本加密
-            const newText = value.replace(/./g, '·');
-            this.inputText = newText;
-          } else {
-            this.inputText = value;
-          }
 
-          // 确保子组件渲染完毕再绑定事件
-          if (this._items.type === 'input') {
-            this.$nextTick(() => {
-              this.execInputEvent();
-            });
-          }
-        },
-        deep: true,
-        immediate: true
-      }
-    },
     computed: {
       getVersion() {
         return Version;
@@ -494,6 +519,10 @@
           {},
           item.type ? dataProp[item.type] && dataProp[item.type].props : {},
           this.items.props
+        );
+        // 是否有外部配置
+        item.props = Object.assign(
+          item.props, (setComponentsProps())(item.type, item.props)
         );
 
 
@@ -560,23 +589,6 @@
     },
     methods: {
       ...mapMutations('global', ['tabOpen', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
-
-      execInputEvent() {
-        const dom = this.$refs[this._items.field].$el;
-        const inputDom = dom.children[dom.children.length - 1];
-
-        if (!inputDom) {
-          this.inputTimer = setTimeout(() => {
-            this.execInputEvent();
-          }, 0);
-        } else {
-          // 重新定位光标位置
-          inputDom.setSelectionRange(this.selectionStart, this.selectionStart);
-
-          // 绑定监听中文输入法事件，只触发一次
-          this.$emit('bindCompositionend');
-        }
-      },
 
       routerNext(value) {
         // 路由跳转
@@ -649,57 +661,8 @@
         this.valueChange();
       },
       // input event
-      inputChange(event, cursorOffset, $this) {
-        // 输入中文时跳过赋值
-        if (this.isInputChinese) {
-          return;
-        }
-        // 按回车
-        if (this.keyCode === 13 && this._items.props.type === 'text') {
-          return;
-        }
-
-        const value = event.target.value;
-        this.selectionStart = event.target.selectionStart;
-        // 输入中文时，新增文字的插入位置需要根据Math.max(this.selectionStart - cursorOffset, 0)矫正
-        const insertTextPosion = cursorOffset ? Math.max(this.selectionStart - cursorOffset, 0) : this.selectionStart;
-
-        // 按ctrl,command键时
-        if (this.isPressControl || this.isMousePaste) {
-          this._items.value = value;
-          this.valueChange();
-          this.isMousePaste = false; // 手动把右键粘贴标志改为false
-          return;
-        }
-
-        // 按回车换行
-        if (this.keyCode === 13 && this._items.props.type === 'textarea') {
-          this._items.value = `${this._items.value}\n`;
-          this.valueChange();
-          return;
-        }
-        
-        // 按退格键键时
-        if (this.keyCode === 8) {
-          const charArr = this._items.value.split('');
-          charArr.splice(this.selectionStart, 1);
-          this._items.value = charArr.join('');
-          this.valueChange();
-          return;
-        }
-        
-        // fix: input输入框拿不到值给父组件
-        if (this._items.props.type === 'text') {
-          this._items.value = value;
-        }
-        
-        // 手动把新加的输入值和原来的值进行拼接
-        const charArr = this._items.value.split('');
-        if (value.length > this._items.value.length) {
-          charArr.splice(insertTextPosion - 1, 0, this.keyData);
-          this._items.value = charArr.join('');
-        } 
-        
+      inputChange(event, $this) {
+        this._items.value = event.target.value;
         this.valueChange();
 
         let valLength = this._items.props.length;
@@ -800,11 +763,6 @@
       },
 
       inputKeyUp(event, $this) {
-        const ctrlKey = 17;
-        const cmdKey = 91;
-        if (event.keyCode === ctrlKey || event.keyCode === cmdKey) {
-          this.isPressControl = false;
-        }
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'keyup')
           && typeof this._items.event.keyup === 'function'
@@ -813,17 +771,10 @@
         }
       },
       inputKeyDown(event, $this) {
-        // 判断是否进行粘贴操作
-        const ctrlKey = 17;
-        const cmdKey = 91;
-        if (event.keyCode === ctrlKey || event.keyCode === cmdKey) {
-          this.isPressControl = true;
-        }
-        // 记录新输入的内容，方便加密文本时用
-        const value = event.target.value;
-        if (value.length !== this._items.value) {
-          this.keyData = event.key;
-          this.keyCode = event.keyCode;
+        // 禁止输入特殊字符  222->'
+        if ([222].includes(event.keyCode)) {
+          event.stopPropagation();
+          event.preventDefault();
         }
 
         if (
@@ -948,8 +899,11 @@
         }
       },
       inputValueChange(value, $this) {
-        this._items.value = value;
-        this.valueChange();
+        if ($this.single) {
+          this._items.value = value;
+          this.valueChange();
+        }
+
         if (
           Object.prototype.hasOwnProperty.call(
             this._items.event,
@@ -1485,7 +1439,20 @@
         }
         return false;
       },
+
+      // 开始上传
+      uploadFileChangeOnloadstart() {
+        this.showImgUploadProcess = true;
+      },
+
+      // 上传进度
+      uploadFileChangeProgress(e, p) {
+        this.uploadProgress = Math.floor(e.loaded / e.total * 100);
+      },
+
       uploadFileChangeSuccess(result) {
+        this.uploadProgress = 0;
+        this.showImgUploadProcess = false;
         // 图片进度接口
         const resultData = result;
         if (this.readonlyImage()) {
@@ -1665,6 +1632,9 @@
         return false;
       },
       uploadFileChangeOnerror(e) {
+        this.uploadProgress = 0;
+        this.showImgUploadProcess = false;
+
         this.$Message.info(e);
       },
       getWangeditorChangeItem(value) {
@@ -1835,25 +1805,6 @@
         };
         createModal(array, obj, index);
       },
-
-      // 监听中文键盘输入
-      // 监听粘贴
-      listenChinese() {
-        this.$once('bindCompositionend', () => {
-          const dom = this.$refs[this._items.field].$el.children[0];
-          dom.addEventListener('compositionstart', () => {
-            this.isInputChinese = true;
-          });
-          dom.addEventListener('compositionend', (e) => {
-            this.keyData = e.data;
-            this.isInputChinese = false;
-            this.inputChange(e, Math.max(this.keyData.length - 1, 0));
-          });
-          dom.addEventListener('paste', () => {
-            this.isMousePaste = true;
-          });
-        });
-      },
     },
     beforeDestroy() {
       if (this.inputTimer) {
@@ -1864,17 +1815,8 @@
       window.removeEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
       window.removeEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
     },
-    created() {
-      // console.log(this.type,this.formIndex);
-      this.selectionStart = null; // 光标位置
-      this.keyData = null; // 记录按键按下的值
-      this.isInputChinese = false; // 是否在输入中文
-      this.isPressControl = false; // 是否触发ctrl或command按键
-      this.isMousePaste = false; // 监听鼠标粘贴
-    },
-    mounted() {
-      this.listenChinese();
 
+    mounted() {
       // this.$nextTick(() => {
       //   // 处理字段联动时多个来源字段联动禁用模糊搜索
       //   if (this.items.props.webconf && this.items.props.webconf.refcolval_custom) {
@@ -1989,5 +1931,16 @@ textarea.ark-input{
   font-weight: bold;
 }
 
-
+.img-upload-wrap {
+  position: relative;
+  .img-process {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 120px;
+    height: 100px;
+    background: #fff;
+    z-index: 300;
+  }
+}
 </style>

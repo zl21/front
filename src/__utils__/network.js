@@ -29,8 +29,8 @@ window.pendingRequestMap = pendingRequestMap;
 
 const matchGateWay = (url) => {
   const { tableName, customizedModuleName } = router.currentRoute.params;
-  const globalServiceId = window.sessionStorage.getItem('serviceId');
-  const serviceIdMap = Object.assign({}, store.state.global.serviceIdMap, JSON.parse(window.sessionStorage.getItem('serviceIdMap')));
+  const globalServiceId = window.localStorage.getItem('serviceId');
+  const serviceIdMap = Object.assign({}, store.state.global.serviceIdMap, JSON.parse(window.localStorage.getItem('serviceIdMap')));
   // eslint-disable-next-line no-empty
   if (!enableGateWay()) {
     return undefined;
@@ -38,7 +38,8 @@ const matchGateWay = (url) => {
   if (ignoreGateWay.includes(url) || ignorePattern().some(d => url.match(d))) {
     return undefined;
   }
-  if (globalGateWay.includes(url)) {
+
+  if (globalGateWay().includes(url)) {
     return globalServiceId || undefined;
   }
   if (tableName || tableNameForGet) {
@@ -61,7 +62,7 @@ const matchGateWay = (url) => {
 const getRequestMd5 = data => md5(JSON.stringify(data));
 
 const dispatchR3Event = (data) => {
-  const globalServiceId = window.sessionStorage.getItem('serviceId');
+  const globalServiceId = window.localStorage.getItem('serviceId');
   const gateWay = matchGateWay((data.url || '').replace(`${globalServiceId ? `/${globalServiceId}` : ''}`, ''));
   if (gateWay) {
     data.url = data.url.replace(`/${gateWay}`, '');
@@ -131,8 +132,14 @@ axios.interceptors.response.use(
         let errorHTML = Array.isArray(response.data.error || response.data.data) && (response.data.error || response.data.data).reduce((arr, x) => {
           arr.push(`<p>${x.objid ? `objid${x.objid}` : '修改失败'}:${x.message}</p>`); return arr; 
         }, []).join('') || '';
-        if (!config.url.includes('/p/cs/batchSave')) {
-          errorHTML = '';
+        // if (!config.url.includes('/p/cs/batchSave')) {
+        //   errorHTML = '';
+        // }
+        // 处理1.4版本的error明细报错
+        if (response.data.data && Array.isArray(response.data.data.errors)) {
+          errorHTML = response.data.data.errors.reduce((arr, x) => {
+            arr.push(`<p>${x.id ? `明细${x.id}` : '修改失败'}:${x.message}</p>`); return arr; 
+          }, []).join('') || '';
         }
         let Modalflag = true;
         let innerHTML = '';
@@ -368,7 +375,7 @@ axios.interceptors.response.use(
 );
 
 export const getGateway = (url) => {
-  const globalServiceId = window.sessionStorage.getItem('serviceId');
+  const globalServiceId = window.localStorage.getItem('serviceId');
   const serviceId = store.state.global.serviceIdMap;
   // const serviceName = store.state.global.activeTab.tableName;
   const serviceName = router.currentRoute.params.tableName ? router.currentRoute.params.tableName : tableNameForGet;
@@ -378,7 +385,7 @@ export const getGateway = (url) => {
   if (ignoreGateWay.includes(url)) {
     return url;
   }
-  if (globalGateWay.includes(url)) {
+  if (globalGateWay().includes(url)) {
     url = globalServiceId ? `/${globalServiceId}${url}` : url;
     return url;
   }

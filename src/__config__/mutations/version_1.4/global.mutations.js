@@ -696,28 +696,29 @@ export default {
         window.sessionStorage.setItem(tableId, JSON.stringify(queryData.values));// 将设置的默认参数存入sessionStorage
       }
     }
+
     const keepAliveModuleName = `S.${tableName}.${tableId}`;
     if (state.keepAliveLabelMaps[keepAliveModuleName] === undefined) {
       if (label) {
         state.keepAliveLabelMaps[keepAliveModuleName] = `${label}`;
       }
-      if (serviceId) {
-        state.serviceIdMap[tableName] = `${serviceId}`;
-      }
       const keepAliveLabelMapsObj = {
         k: keepAliveModuleName,
         v: label
       };
-     
       updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
     }
-    // if (state.serviceIdMap[tableName] === undefined) {
-    //   const serviceIdMapObj = {
-    //     k: tableName,
-    //     v: serviceId
-    //   };
-    //   updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
-    // }
+    
+    if (state.serviceIdMap[tableName] === undefined) {
+      if (serviceId) {
+        state.serviceIdMap[tableName] = `${serviceId}`;
+      }
+      const serviceIdMapObj = {
+        k: tableName,
+        v: serviceId
+      };
+      updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
+    }
     let path = '';
     if (type === STANDARD_TABLE_LIST_PREFIX || type === 'S') {
       if (url) {

@@ -38,7 +38,7 @@ export const ENABLE_NETWORK_MONITOR = () => (window.ProjectConfig && typeof wind
 export const SLOW_NETWORK_THRESHOLD = 0;
 export const HAS_BEEN_DESTROYED_MODULE = 'destroyedModule';
 // 需要走全局公共网关的接口
-export const globalGateWay = [
+let globalDefaultGateWay = [
   '/p/cs/getSubSystems',
   '/p/cs/hello',
   '/p/cs/getHistoryAndFavorite',
@@ -145,3 +145,18 @@ export const defaultrange = () => (window.ProjectConfig && window.ProjectConfig.
 
 export const DashboardPage = () => (window.ProjectConfig && window.ProjectConfig.DashboardPage ? window.ProjectConfig.DashboardPage : null); // 根路由界面
 export const floatingFilter = () => (window.ProjectConfig && typeof window.ProjectConfig.floatingFilter === 'boolean' ? window.ProjectConfig.floatingFilter : true);
+
+
+export const globalGateWay = () => {
+  const { globalGateWayConfig } = window.ProjectConfig || {};
+  globalDefaultGateWay = globalDefaultGateWay.concat(globalGateWayConfig || []);
+  return globalDefaultGateWay;
+};
+
+export const setComponentsProps = () => (window.ProjectConfig && window.ProjectConfig.setComponentsProps ? window.ProjectConfig.setComponentsProps : () => ({}));
+export const agGridOptions = () => (window.ProjectConfig && window.ProjectConfig.agGridOptions ? window.ProjectConfig.agGridOptions : {}); // ag表格的配置
+// 获取表单网关
+export const getGatewayValue = (key) => {
+  const getServiceIdMap = JSON.parse(window.localStorage.getItem('serviceIdMap'));
+  return getServiceIdMap[key];
+}; 

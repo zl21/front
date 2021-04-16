@@ -9,6 +9,7 @@
       :row-all="rowAll"
       :default-spread="defaultSpread"
       :search-foldnum="Number(searchFoldnum)"
+      @on-toggle="toggle"
     >
       <div
         slot="dwonContent"
@@ -17,7 +18,7 @@
       >
         <div
           v-for="(item,index) in dataColRol"
-          v-show="item.show !== false"
+          v-show="item.show !== false && (dowClass ? true :index < searchFoldnum * defaultColumn)"
           :key="index"
           class="FormItemComponent-item"
           :style="setDiv(item)"
@@ -151,12 +152,14 @@
         newFormItemLists: [],
         indexItem: -1,
         rowAll: 0,
-        setHeight: 34
+        setHeight: 34,
+        dowClass: false
       };
     },
     mounted() {
     },
     created() {
+      this.dowClass = this.defaultSpread;
     },
     watch: {
       FormItemLists: {
@@ -199,6 +202,9 @@
       }
     },
     methods: {
+      toggle(value) {
+        this.dowClass = value;
+      },
       formDataChange() { // 向父组件抛出整个数据对象以及当前修改的字段
         // console.log(this.dataProcessing());
         this.$emit('formDataChange', this.dataProcessing(this.newFormItemLists), this.newFormItemLists[this.indexItem], this.indexItem);

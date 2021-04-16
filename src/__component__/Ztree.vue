@@ -27,7 +27,7 @@
     </Button> -->
     <div class="zTreeDemoBackground left">
       <ul
-        id="treeDemo"
+        :id="tableName"
         class="ztree"
       />
     </div>
@@ -42,6 +42,7 @@
     data() {
       return {
         inputValue: '',
+        tableName: 'treeDemo',
         setting: {
           check: {
             enable: false// checkbox
@@ -84,7 +85,7 @@
     watch: {
       zNodes: {
         handler() {
-          $.fn.zTree.init($('#treeDemo'), this.setting, this.zNodes);
+          $.fn.zTree.init($(`${this.tableName}`), this.setting, this.zNodes);
         },
         deep: true
       },
@@ -151,13 +152,27 @@
 
       //   return true;
       // },
+      checkNode() { 
+        // 选中
+        const treeObj = $.fn.zTree.getZTreeObj(`${this.tableName}`);
+        if (JSON.stringify(this.treeNode) !== '{}' && this.treeNode) {
+          const node = treeObj.getNodeByTId(this.treeNode.tId);   
+          if (node) {
+            treeObj.selectNode(node);
+          }
+        } else if (treeObj) {
+          treeObj.refresh();
+        } 
+      },
       onClick(e, treeId, treeNode) {
         const arr = [];
+        this.treeNode = treeNode;
         if (this.treeId === treeNode.tId) {
           this.isClick = !this.isClick;
           if (this.isClick) { // 取消选中查空
-            const treeObj = $.fn.zTree.getZTreeObj('treeDemo');
+            const treeObj = $.fn.zTree.getZTreeObj(`${this.tableName}`);
             treeObj.refresh();// 取消选中
+            this.treeNode = {};
             this.$emit('clickTreeNode', arr, treeNode.ID, false);
           } else {
             arr.push(treeNode);
@@ -179,14 +194,14 @@
       search() {
         const isNull = this.isNull(this.inputValue);
         if (!isNull) {
-          fuzzySearch('treeDemo', this.inputValue, null, true); // 初始化模糊搜索方法
+          fuzzySearch(`${this.tableName}`, this.inputValue, null, true); // 初始化模糊搜索方法
         } else {
           this.expandAll();
         }
       },
       expandAll() {
         // fuzzySearch('treeDemo','', null, false); // 初始化模糊搜索方法
-        $.fn.zTree.init($('#treeDemo'), this.setting, this.zNodes);
+        $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
         this.treeId = '';
         // const treeObj = $.fn.zTree.getZTreeObj('treeDemo');
         // treeObj.refresh();// 取消选中
@@ -199,8 +214,13 @@
       //   $.fn.zTree.init($('#treeDemo'), this.setting, this.zNodes);
       // }
     },
+    created() {
+      this.tableName = `${this.$route.params.tableName}treeDemo`;
+    },
     mounted() {
-      $.fn.zTree.init($('#treeDemo'), this.setting, this.zNodes);
+      setTimeout(() => {
+        $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
+      }, 500);
       // $(document).ready(() => {
       //   $.fn.zTree.init($('#treeDemo'), this.setting, this.zNodes);
       //   fuzzySearch('treeDemo', '#key', null, true); // 初始化模糊搜索方法

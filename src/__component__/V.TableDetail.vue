@@ -164,7 +164,7 @@
           obj.componentAttribute.childTableNames = this.childTableNames;
           obj.componentAttribute.mainFormPaths = this.formPaths;
           obj.componentAttribute.tooltipForItemTable = this.tooltipForItem;
-
+          obj.componentAttribute.type = 'vertical';
           if (obj.vuedisplay === 'TabItem') { // 配置自定义tab
             const webact = obj.webact ? obj.webact.split('/')[0].toUpperCase() : '';// 自定义子表标识
             if (webact === 'HALF' || webact === 'ALL') {

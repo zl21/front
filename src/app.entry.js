@@ -179,7 +179,7 @@ const getCategory = () => {
           .reduce((a, c) => a.concat(c), [])
           .filter(d => d.type === 'table' || d.type === 'action' || d.type === 'tree')
           .reduce((a, c) => { a[c.value.toUpperCase()] = c.serviceId; return a; }, {});
-        window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMaps));
+        window.localStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMaps));
         DispatchEvent('gatewayReady');
       } else if (getLocalObject('loginStatus') === true) {
         // getSessionObject('loginStatus') === true
@@ -197,16 +197,21 @@ const getCategory = () => {
 const getGateWayServiceId = () => {
   if (enableInitializationRequest()) {
     if (specifiedGlobalGateWay()) {
-      window.sessionStorage.setItem('serviceId', specifiedGlobalGateWay());
+      window.localStorage.setItem('serviceId', specifiedGlobalGateWay());
       getCategory();
       setTimeout(() => {
         init();
       }, 0);
     } else {
       network.get('/p/c/get_service_id').then((res) => {
-        window.sessionStorage.setItem('serviceId', res.data.data.serviceId);
+        window.localStorage.setItem('serviceId', res.data.data.serviceId);
         getCategory();
         setTimeout(() => {
+          DispatchEvent('serviceIdReady', {
+            detail: {
+              serviceId: res.data.data.serviceId
+            }
+          });
           init();
         }, 0);
       });

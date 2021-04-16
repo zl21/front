@@ -168,8 +168,9 @@ export default (router) => {
       };
       updateSessionObject('savePath', data);
     }
-    if (to.path.indexOf(loginText) !== -1 && getLocalObject('loginStatus') === true) { // 当页面处于登录状态时，则无法回到登录界面，可退出登录进行操作
+    if (to.path.toUpperCase().indexOf(loginText) !== -1 && getLocalObject('loginStatus') === true) { // 当页面处于登录状态时，则无法回到登录界面，可退出登录进行操作
       window.location.href = window.location.origin;
+      return;
     }
     if (router.getMatchedComponents(to.path).length === 0) {
       next('/');
@@ -249,7 +250,8 @@ export default (router) => {
         next({ path: existModule.routeFullPath });
       } else {
         // [返回][新增]动作需要清除当前明细界面模块的keepAlive（且to与form不相同）
-        if ((isBack && to.params.tableName === from.params.tableName) || (paramItemId === 'New' && fromParamItemId !== 'undefined' && paramTableId === fromParamTableId)) {
+        const includesKeepAliveLists = keepAliveLists.includes(fromKeepAliveModuleName); 
+        if ((isBack && to.params.tableName === from.params.tableName && includesKeepAliveLists) || (paramItemId === 'New' && fromParamItemId !== 'undefined' && paramTableId === fromParamTableId && includesKeepAliveLists)) {
           commit('global/decreasekeepAliveLists', fromKeepAliveModuleName);
         }
         // Step One: 处理菜单Tab页签的显示逻辑。

@@ -117,7 +117,7 @@
                   :key="index"
                 >
                   <span v-if="msg.rowIndex">第{{ msg.rowIndex }}条记录报错:</span>
-                  {{ msg.message }}
+                  <span v-html="msg.message"></span>
                 </p>
               </div>
             </div>
@@ -308,6 +308,7 @@
         if (typeof downloadFile.iframe === 'undefined') {
           const iframe = document.createElement('iframe');
           iframe.setAttribute('id', 'downLoadListFrame');
+          iframe.style.display = 'none';
           self.addEvent('load', iframe, () => { self.iframeLoad(iframe); });
           iframe.src = url;
           downloadFile.iframe = iframe;

@@ -20,12 +20,47 @@ import json from './treeData.json';
 // 注意：返回值中的所有ENAME字段请改为title
 export default {
   // value：框架传入的参数，模糊查询的字符
-  C_STORE: value => async () => {
+  SHANGPIN: value => async () => {
     // ....
     const treeData = {
       data: [], // 树结构列表数据
-      name: 'uuu', // 定义查询参数
-      placeholder: '88'// placeholder自定义
+      // name: 'eeee', // 定义查询参数
+      query: {// 支持配置多参数
+        name: 'NAME', // 参数中的key:需要筛选的字段
+        id: 'ID'
+      },
+      placeholder: '88', // placeholder自定义
+      searchData: {// 定义查询接口参数
+        table: '1111',
+        value: 'value'
+      }
+
+    };
+    // await network.post('api',)
+    //   .then((res) => {
+    //     if (res.data.resultCode === 0) {
+    //       treeData.data = json.data;
+    //     }
+    //   });
+    treeData.data = json.data;
+  
+    return treeData;
+  },
+  CHAXUN: value => async () => {
+    // ....
+    const treeData = {
+      data: [], // 树结构列表数据
+      // name: 'eeee', // 定义查询参数
+      query: {// 支持配置多参数
+        name: 'NAME', // 参数中的key:需要筛选的字段
+        id: 'ID'
+      },
+      placeholder: '9999', // placeholder自定义
+      searchData: {// 定义查询接口参数
+        table: '1111',
+        value: 'value'
+      }
+
     };
     // await network.post('api',)
     //   .then((res) => {
