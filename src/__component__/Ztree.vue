@@ -85,9 +85,7 @@
     watch: {
       zNodes: {
         handler() {
-          setTimeout(() => {
-            $.fn.zTree.init($(`${this.tableName}`), this.setting, this.zNodes);
-          }, 500);
+          $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
         },
         deep: true
       },
@@ -220,9 +218,6 @@
       this.tableName = `${this.$route.params.tableName}treeDemo`;
     },
     mounted() {
-      setTimeout(() => {
-        $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
-      }, 1100);
       this.$nextTick(() => {
         $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
       });
