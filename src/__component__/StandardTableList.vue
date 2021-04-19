@@ -533,17 +533,17 @@
           values: [
             {
               display: 'OBJ_FK',
-              colid: '176130',
-              defaultValue: '元数据',
-              refobjid: '666666'// OBJ_FK类型
+              colid: '178112',
+              defaultValue: '555元数据,元数据2',
+              refobjid: '666666,2'// OBJ_FK类型
             }
           ]
         };
         // this.updataSTDefaultQuery(data);
         this.tabOpen({
           type: 'S',
-          tableName: 'SHANGPIN',
-          tableId: '24445',
+          tableName: 'ZD2',
+          tableId: '24551',
           isSetQuery: true,
           queryData: data
         });
@@ -1573,11 +1573,16 @@
 
         if (item.display === 'OBJ_FK' && item.default) {
           // 外键默认值
-          const arr = [];
-          arr.push({
-            ID: item.refobjid,
-            Label: item.default
-          });
+           const refobjid = (item.refobjid && item.refobjid.split(',')) || [];
+            const valuedata = (item.default && item.default.split(',')) || [];
+            const arr = refobjid.reduce((currty, itemI, index) => {
+              currty.push({
+                ID: itemI || '',
+                Label: valuedata[index] || ''
+              });
+              return currty;
+            }, []);
+
           if (item.fkobj && (item.fkobj.searchmodel === 'pop' || item.fkobj.searchmodel === 'mop')) {
             return item.default;
           }
