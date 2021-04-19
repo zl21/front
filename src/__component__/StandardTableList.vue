@@ -347,7 +347,10 @@
           temp.labelWidth = 90;
           return temp;
         });
-
+        clearTimeout(this.resetTypeTime);
+        this.resetTypeTime = setTimeout(()=>{
+          this.resetType = false;
+        },500);
         if (JSON.stringify(arr) !== JSON.stringify(this.formItemsLists)) {
           this.formItemsLists = arr;
         }
@@ -523,28 +526,28 @@
         }
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
-      // a() {
-      //   // 插入列表界面默认值
-      //   const data = {
-      //     // tableId: '992',
-      //     values: [
-      //       {
-      //         display: 'OBJ_FK',
-      //         colid: '176130',
-      //         defaultValue: '元数据',
-      //         refobjid: '666666'// OBJ_FK类型
-      //       }
-      //     ]
-      //   };
-      //   // this.updataSTDefaultQuery(data);
-      //   this.tabOpen({
-      //     type: 'S',
-      //     tableName: 'SHANGPIN',
-      //     tableId: '24445',
-      //     isSetQuery: true,
-      //     queryData: data
-      //   });
-      // },
+      a() {
+        // 插入列表界面默认值
+        const data = {
+          // tableId: '992',
+          values: [
+            {
+              display: 'OBJ_FK',
+              colid: '176130',
+              defaultValue: '元数据',
+              refobjid: '666666'// OBJ_FK类型
+            }
+          ]
+        };
+        // this.updataSTDefaultQuery(data);
+        this.tabOpen({
+          type: 'S',
+          tableName: 'SHANGPIN',
+          tableId: '24445',
+          isSetQuery: true,
+          queryData: data
+        });
+      },
      
       ...mapActions('global', ['updateAccessHistory', 'getExportedState', 'updataTaskMessageCount', 'getMenuLists']),
       ...mapMutations('global', ['updateCustomizeMessage', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter', 'updataSTDefaultQuery']),
@@ -1503,6 +1506,7 @@
             addSearch(search);
 
             this.updateSearchDBdata({});
+
             this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
           }
           this.getTableQueryForForm({ searchData, resolve, reject });
@@ -1730,7 +1734,7 @@
     
       buttonClick(type, obj) {
         this.setActiveTabActionValue({});// 点击按钮前清除上一次按钮存的信息
-        this.resetType = false;
+        // this.resetType = false;
         if (type === 'fix') {
           this.AddDetailClick(type, obj);
         } else if (type === 'custom') {
@@ -3127,6 +3131,7 @@
       }
     },
     mounted() {
+      this.a();
       setTimeout(() => {
         // 判断页面是否渲染完成,用于判断树是否调用
         this.mountedChecked = true;
