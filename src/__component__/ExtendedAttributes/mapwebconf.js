@@ -8,6 +8,9 @@ export default {
         // 过滤显示字段
         let filtercolval = this.items.webconf.filtercolval;
         let targetVm = FindInstance(this,filtercolval.col,this.items.tableName);
+        if(!targetVm[0]){
+          return;
+        }
         if(targetVm[0].items.webconf){
             targetVm[0].items.webconf.filtercolval = filtercolval;
         }else{

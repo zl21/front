@@ -55,6 +55,9 @@ class CustomInput {
   // 合并props
   mergeProps() {
     const defaultProps = { ...this.Input.props };
+    defaultProps.maxlength = {
+      default:() => this.item.length 
+    }
     this.settingPlaceholder();
     // this.item.rules = {
     //   required: {
@@ -117,6 +120,8 @@ class CustomInput {
           minRows: this.item.row + 1 
         })
       }
+     
+      
     }else{
       // 处理ispassword属性
    
@@ -170,7 +175,7 @@ class CustomInput {
         this.item.scale
       }})?$`;
     } else {
-      string = `^(-|\\+)?\\d{0,${this.item.length - this.item.scale}}(\\\.[0-9]{0,${
+      string = `^(-|\\+)?\\d{0,${this.item.length - this.item.scale}}(\\\.[0-9]{${this.item.scale-1},${
         this.item.scale
       }})?$`;
     }

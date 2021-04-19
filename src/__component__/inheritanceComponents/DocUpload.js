@@ -82,7 +82,7 @@
         readonly: this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true), //控制字段是否可编辑
         url: getGateway('/p/cs/batchUpload'),
         filesLength:this.item.webconf && this.item.webconf.filesLength ? this.item.webconf.filesLength : null,
-        filesize:this.item.webconf && this.item.webconf.filesize ? this.item.webconf.filesize : null,
+        filesize:this.item.webconf && this.item.webconf.filesize ? parseFloat(this.item.webconf.filesize*1024*1024) : null,
         accept: this.item.webconf && this.item.webconf.UploadAccept ? this.item.webconf.UploadAccept : null,
         sendData:{
           path: `${this.item.tableName}/${this.item.itemId}/`,

@@ -124,7 +124,10 @@ export default class ParameterDataProcessing {
    * @memberof defaultDataProcessing
    */
   defaultDataProcessing() {
-    
+     if(this.item.defval){
+      //  兼容默认值
+      this.item.default = this.item.defval
+     }
     // select
     if ((this.item.default || this.item.defval) && this.item.display === 'OBJ_SELECT') {
       return this.item.default?this.item.default.split(','):this.item.defval;

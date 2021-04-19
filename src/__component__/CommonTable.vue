@@ -391,7 +391,9 @@
 
           // 回填勾选
           this.selectedIndex.forEach((curIndex) => {
-            data[curIndex]._checked = true;
+            if(data[curIndex]){
+              data[curIndex]._checked = true;
+            }
           });
           
           this.spinShow = false;
