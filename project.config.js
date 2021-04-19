@@ -71,7 +71,7 @@ module.exports = {
   isCommonTable: false, // 是否开启普通表格，默认关闭
   functionPowerRequestURL: '', // 功能权限获取检索项数据接口名称
   cbs: undefined, // 框架回调，形如 { loginCb: function() {} }
-  layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
+  layoutDirection: true, // 默认是false ,水平排版 ，true 是垂直排版
   backDashboardRoute: [], // 配置刷新浏览器回到Dashboard界面
   custommizedRequestURL: {
     
@@ -116,6 +116,7 @@ module.exports = {
   agGridOptions: { // ag表格的配置
     // rowHeight: 100
   },
+  
   // (data) => {
   //   if (data.router.params) {
   //     if (data.router.params.tableName && data.config().configPage[data.router.params.tableName].filter(u => u === data.url).length > 0) { // 筛选出配置界面不需要根据框架code报错提示框的接口
