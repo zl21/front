@@ -19,9 +19,9 @@
           <div slot="content"
                class="api">
             <span><span>{{ items.comment }}</span>
-              <a v-if="items.Outside"
+              <a v-if="items.webconf && items.webconf.Outside"
                  style=""
-                 :href="items.Outside"
+                 :href="items.webconf.Outside"
                  target="_blank">...</a>
             </span>
           </div>
@@ -675,6 +675,7 @@ export default {
         }
         span {
           color: red;
+          line-height: 20px;
           word-break: keep-all;
           display: inline-block;
         }

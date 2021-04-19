@@ -3173,7 +3173,6 @@
 
         
         this.saveParameters();// 获取主子表参数
-        debugger
         // 处理主表必填控制
         let panelForm = this.$_live_getChildComponent(this.$parent,'panelForm')
         if(panelForm){

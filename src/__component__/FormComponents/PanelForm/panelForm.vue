@@ -114,6 +114,13 @@ export default {
             }else{
               option.show = true;
             }
+            if(option.display ==='clob'){
+              option.col = 4;
+            }
+            if(option.display ==='image'){
+              // 图片
+              option.col = 2;
+            }
             return option;
           })
         

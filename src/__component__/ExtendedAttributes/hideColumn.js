@@ -47,10 +47,13 @@ function HiddenFields(){
       if(!target){
         return
       }
-      let panelIndex = target.items._index.split('_')[0];
-      let itemIndex = target.items._index.split('_')[1]
+      let panelIndex = target.items._index && target.items._index.split('_')[0];
+      let itemIndex = target.items._index && target.items._index.split('_')[1]
       if(!item.source.value && !item.source.items.fkobj && item.source.items.display != 'OBJ_SELECT'){  //当来源字段不是外健字段和select字段时，并且值为空时不做处理
         return true
+      }
+      if(!panelIndex){
+        return;
       }
       if((JudgeValue(item.source,temp) && !temp.ishide) || (!JudgeValue(item.source,temp) && temp.ishide)){  //判断当前字段与配置的value值进行对比
         // console.log('显示的字段',temp.target)
@@ -79,8 +82,15 @@ function HiddenFields(){
 
 
 function JudgeValue(source,conf) {
-  let value = source.value
+  let value = source.value;
+  
   switch(conf.expression){
+    case '>=':
+      return eval(Number(value) + conf.expression + Number(conf.refval));
+      break;
+    case '=<':
+      return eval(Number(value) + conf.expression + Number(conf.refval));
+      break;  
     case '>':
       return Number(value) > Number(conf.refval);
       break;

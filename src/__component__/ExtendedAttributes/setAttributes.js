@@ -42,9 +42,12 @@ function HiddenFields(){
     item.configuration.every(temp => {
       let panelForm = item.source.$_live_getChildComponent(window.vm,`panelForm`)
       let target = item.source.$_live_getChildComponent(panelForm,`${item.source.activeTab.tableName}${temp.field.refcolumn}`)
-      let panelIndex = target.items._index.split('_')[0];
-      let itemIndex = target.items._index.split('_')[1]
-
+      
+      let panelIndex = target.items._index && target.items._index.split('_')[0];
+      let itemIndex = target.items._index && target.items._index.split('_')[1]
+      if(!panelIndex){
+        return;
+      }
       if(JudgeValue(item.source,temp,panelForm)){
         panelForm.formItemLists[panelIndex].childs[itemIndex].isnotnull = temp.props.required;
         panelForm.formItemLists[panelIndex].childs[itemIndex].readonly = temp.props.disabled;
