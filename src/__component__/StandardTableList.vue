@@ -351,6 +351,11 @@
         if (JSON.stringify(arr) !== JSON.stringify(this.formItemsLists)) {
           this.formItemsLists = arr;
         }
+        // let value_copty = JSON.parse(JSON.stringify(value));
+        // let old_copty = JSON.parse(JSON.stringify(old));
+        // if (JSON.stringify(value_copty) !== JSON.stringify(old_copty)) {
+        //   this.formItemsLists = arr;
+        // }
       },
       $route() {
         setTimeout(() => {
@@ -525,7 +530,7 @@
       //     values: [
       //       {
       //         display: 'OBJ_FK',
-      //         colid: '99525',
+      //         colid: '176130',
       //         defaultValue: '元数据',
       //         refobjid: '666666'// OBJ_FK类型
       //       }
@@ -1457,7 +1462,7 @@
         //     this.searchClickData();
         //   }, 200);
         // }
-        this.resetType = false;
+        /// this.resetType = false;
         return items;
       },
       setSeachObject(obj, current) {
@@ -1474,6 +1479,7 @@
       },
       resetForm() {
         this.filterTableParam = {};
+        sessionStorage.removeItem(this.instanceRouteQuery.tableId);
         this.resetTabParam();
         // 列表查询重置
         this.resetType = true;
@@ -1724,7 +1730,7 @@
     
       buttonClick(type, obj) {
         this.setActiveTabActionValue({});// 点击按钮前清除上一次按钮存的信息
-
+        this.resetType = false;
         if (type === 'fix') {
           this.AddDetailClick(type, obj);
         } else if (type === 'custom') {
