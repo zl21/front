@@ -75,12 +75,13 @@
     </div>
     <div
       v-if="getDashboardConfig"
+      @click="dashboardClick"
       class="tag right"
     >
       <i
         :class="getDashboardConfig"
         title="回到首页"
-        @click="dashboardClick"
+        
       />
     </div>
 

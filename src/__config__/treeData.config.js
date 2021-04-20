@@ -24,7 +24,7 @@ export default {
     // ....
     const treeData = {
       data: [], // 树结构列表数据
-      name: 'uuu', // 定义查询参数
+      // name: 'eeee', // 定义查询参数
       query: {// 支持配置多参数
         name: 'NAME', // 参数中的key:需要筛选的字段
         id: 'ID'

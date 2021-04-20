@@ -17,12 +17,15 @@
     />
      -->
     
-    <tree
-      v-if="isTreeList&&treeShow"
-      ref="tree"
-      :tree-datas="treeConfigData"
-      @menuTreeChange="menuTreeChange"
-    />
+    <div v-if="isTreeList">
+      <tree
+        v-show="treeShow"
+        ref="tree"
+        :tree-datas="treeConfigData"
+        @menuTreeChange="menuTreeChange"
+      />
+    </div>
+    
     <div
       v-if="isTreeList"
       class="treeSwitch"
@@ -230,6 +233,8 @@
         modifyDialogshow: false, // 批量修改弹窗
         formDefaultComplete: false,
         dialogComponentName: null,
+        ztreetimer: null, // 树刷新时间判断
+        mountedChecked: false, // 页面是否渲染完成
         dialogComponentNameConfig: {
           title: '提示',
           mask: true,
@@ -319,6 +324,20 @@
       }
     },
     watch: {
+      ag: {
+        handler() {
+          // 监听ag数据 yan触发树的数据变化
+          // if (!this.mountedChecked) {
+          //   return false;
+          // }
+          clearTimeout(this.ztreetimer);
+          this.ztreetimer = setTimeout(() => {
+            if (this.$refs && this.$refs.tree && this.mountedChecked) {
+              this.$refs.tree.getTreeInfo();
+            }
+          }, 50);
+        }
+      },
       formLists() {
         const arr = JSON.parse(JSON.stringify(this.formLists));
         arr.map((temp, index) => {
@@ -328,10 +347,18 @@
           temp.labelWidth = 90;
           return temp;
         });
-
+        clearTimeout(this.resetTypeTime);
+        this.resetTypeTime = setTimeout(()=>{
+          this.resetType = false;
+        },500);
         if (JSON.stringify(arr) !== JSON.stringify(this.formItemsLists)) {
           this.formItemsLists = arr;
         }
+        // let value_copty = JSON.parse(JSON.stringify(value));
+        // let old_copty = JSON.parse(JSON.stringify(old));
+        // if (JSON.stringify(value_copty) !== JSON.stringify(old_copty)) {
+        //   this.formItemsLists = arr;
+        // }
       },
       $route() {
         setTimeout(() => {
@@ -359,7 +386,7 @@
             }
           }
         }, 0);
-      },
+      }
     },
     methods: {
       onPageSizeChangeForFilterTable(pageSize) {
@@ -506,17 +533,17 @@
       //     values: [
       //       {
       //         display: 'OBJ_FK',
-      //         colid: '99525',
-      //         defaultValue: '元数据',
-      //         refobjid: '666666'// OBJ_FK类型
+      //         colid: '178112',
+      //         defaultValue: '555元数据,元数据2',
+      //         refobjid: '666666,2'// OBJ_FK类型
       //       }
       //     ]
       //   };
       //   // this.updataSTDefaultQuery(data);
       //   this.tabOpen({
       //     type: 'S',
-      //     tableName: 'SHANGPIN',
-      //     tableId: '24445',
+      //     tableName: 'ZD2',
+      //     tableId: '24551',
       //     isSetQuery: true,
       //     queryData: data
       //   });
@@ -541,9 +568,14 @@
         } else if (this.searchData && this.searchData.reffixedcolumns) {
           delete this.searchData.reffixedcolumns;
         }
-        // this.treeSearchData = searchData; 
+        if (flag === false) {
+          // 如果取消则不走查树
+          searchData = {};
+        }
+        this.treeSearchData = searchData;
         this.searchData.startIndex = 0;
         // this.getQueryListForAg(this.searchData);
+       
         const searchDataRes = Object.assign({}, this.searchData, searchData);
 
          this.getQueryListPromise(searchDataRes);
@@ -598,7 +630,7 @@
       //   }
       // },
       imporSuccess(id) {
-        if (Version() === '1.3') {
+        if (true) { // Version() === '1.3'
           if (id) {
             const promises = new Promise((resolve, reject) => {
               this.getExportedState({
@@ -1433,7 +1465,7 @@
         //     this.searchClickData();
         //   }, 200);
         // }
-        this.resetType = false;
+        /// this.resetType = false;
         return items;
       },
       setSeachObject(obj, current) {
@@ -1450,6 +1482,7 @@
       },
       resetForm() {
         this.filterTableParam = {};
+        sessionStorage.removeItem(this.instanceRouteQuery.tableId);
         this.resetTabParam();
         // 列表查询重置
         this.resetType = true;
@@ -1459,8 +1492,8 @@
             delete searchData.reffixedcolumns;
           }
           // this.isChangeTreeConfigData = 'Y'; //oldTree
-          if (this.isTreeList && this.treeShow) {
-            this.$refs.tree.callMethod();
+          if (this.isTreeList && this.$refs.tree) {
+            this.$refs.tree.clearNode();
             this.treeSearchData = {};// 将树配置的参数清除，保证下一个查询时恢复框架默认参数
           }
           if (this.buttons.isBig) {
@@ -1473,6 +1506,7 @@
             addSearch(search);
 
             this.updateSearchDBdata({});
+
             this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
           }
           this.getTableQueryForForm({ searchData, resolve, reject });
@@ -1539,11 +1573,16 @@
 
         if (item.display === 'OBJ_FK' && item.default) {
           // 外键默认值
-          const arr = [];
-          arr.push({
-            ID: item.refobjid,
-            Label: item.default
-          });
+           const refobjid = (item.refobjid && item.refobjid.split(',')) || [];
+            const valuedata = (item.default && item.default.split(',')) || [];
+            const arr = refobjid.reduce((currty, itemI, index) => {
+              currty.push({
+                ID: itemI || '',
+                Label: valuedata[index] || ''
+              });
+              return currty;
+            }, []);
+
           if (item.fkobj && (item.fkobj.searchmodel === 'pop' || item.fkobj.searchmodel === 'mop')) {
             return item.default;
           }
@@ -1700,7 +1739,7 @@
     
       buttonClick(type, obj) {
         this.setActiveTabActionValue({});// 点击按钮前清除上一次按钮存的信息
-
+        // this.resetType = false;
         if (type === 'fix') {
           this.AddDetailClick(type, obj);
         } else if (type === 'custom') {
@@ -1721,6 +1760,7 @@
       searchEvent() {
         // 支持查询按钮前置事件，通过promise处理
         const searchDataRes = Object.assign({}, this.searchData, this.treeSearchData);
+        console.log(searchDataRes,'searchDataRes');
         const obj = {
           callBack: () => new Promise((searchBeforeResolve, searchBeforeReject) => {
             this.searchData.searchBeforeResolve = searchBeforeResolve;
@@ -2072,7 +2112,7 @@
           }
           return obj;
         }, {});
-        return Object.keys(jsonData).reduce((obj, item) => {
+        const newData = Object.keys(jsonData).reduce((obj, item) => {
           let value = '';
 
           datas.formItemsLists.concat([]).every((temp) => {
@@ -2092,6 +2132,11 @@
                 } else {
                   value = '';
                 }
+                return false;
+              }
+
+              if (temp.item.type === 'DropDownSelectFilter' && temp.item.value) {
+                value = temp.item.value.map(selectedValue => selectedValue.ID);
                 return false;
               }
 
@@ -2138,8 +2183,9 @@
           if (value) {
             obj[item] = value;
           }
-          return obj; 
+          return obj;
         }, {});
+        return newData;
       },
       searchClickData(value) {
 
@@ -2148,7 +2194,6 @@
         if (value && !value.flag) { // 返回时查询之前页码
           this.searchData.startIndex = 0;
         }
-<<<<<<< HEAD
         
         // if (value && value.searchDataRes) {
         //   //因tab设置的参数已与表单参数整合过，并已被以上逻辑更新，this.searchData.fixedcolumns 已为最新参数，直接赋值给一次性参数value.searchDataRes.fixedcolumns即可，用过即销毁，不会作用当前实例内的this.searchData
@@ -2166,65 +2211,14 @@
           this.searchData.fixedcolumns = this.dataProcessing();
           
         }
-=======
-        this.searchData.fixedcolumns = this.dataProcessing();
-        // this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, this.dataProcessing());
-        if (value && value.searchDataRes) {
-          value.searchDataRes.fixedcolumns = this.dataProcessing();
-          if (value && !value.flag) { // 返回时查询之前页码
-            value.searchDataRes.startIndex = 0;
-          }
-        }
-
-        const json = value && value.searchDataRes ? value.searchDataRes : this.searchData;
-
-        // if (Object.keys(this.currentTabValue).length > 0 && this.currentTabValue.tabValue.tab_value) {
-        //   const tabValue = JSON.parse(JSON.stringify(this.currentTabValue.tabValue.tab_value));
-        //   json.fixedcolumns = Object.values(tabValue).reduce((arr, obj) => {
-        //     Object.keys(json.fixedcolumns).map((key) => {
-        //       if (obj[key]) {
-        //         if (obj[key] !== json.fixedcolumns[key]) {
-        //           switch (Object.prototype.toString.call(obj[key])) {
-        //           case '[object String]':
-        //             if (obj[key].includes('~')) { // 判断否是时间段类型字段,取两个时间的并集
-        //               let dateArray = [];
-        //               dateArray = dateArray.concat(json.fixedcolumns[key].split('~'));
-        //               dateArray = dateArray.concat(obj[key].split('~'));
-        //               dateArray.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-        //               arr[key] = [dateArray[0], dateArray[3]].join('~');
-        //             } else {
-        //               arr[key] = `${obj[key]},${json.fixedcolumns[key]}`;
-        //               arr[key] = arr[key].split(',');
-        //               // arr[key] = Array.from(new Set(arrRes));
-        //               // arr[key] = arr[key].toString();
-        //             }
-                      
-        //             break;
-        //           case '[object Array]':
-        //             arr[key] = obj[key].concat(json.fixedcolumns[key]);
-        //             arr[key] = Array.from(new Set(arr[key]));
-                      
-        //             break;
-        //           default:
-        //             break;
-        //           }
-        //           return obj[key];
-        //         } 
-        //       }
-        //       arr[key] = json.fixedcolumns[key];
-        //     });
-
-        //     arr = Object.assign(obj, arr);
-        //     return arr;
-        //   }, {});
-        // }
->>>>>>> feature_wings
         // this.getQueryListForAg(this.searchData);
         if (this.buttons.isBig) {
           this.updataIsBig(false);
         }
         const  searchDataRes=value&&  value.searchDataRes? value.searchDataRes:null;
-        this.getQueryListPromise(this.searchData,searchDataRes);
+        // 组装树的查询
+        let searchData = Object.assign(JSON.parse(JSON.stringify(this.searchData)),this.treeSearchData);
+        this.getQueryListPromise(JSON.parse(JSON.stringify(this.searchData)),searchDataRes);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
 
@@ -2278,8 +2272,8 @@
         });
       },
       getQueryListPromise(data,searchDataRes) {
-        //data:全局参数
-        //searchDataRes：重新整合的参数
+        // 重拼树的数据
+        data = Object.assign(data, JSON.parse(JSON.stringify(this.treeSearchData)));
         const promise = new Promise((resolve, reject) => {
           this.requiredCheck().then(() => {
             this.$R3loading.show();
@@ -2607,7 +2601,7 @@
         });
         promise.then(() => {
           if (this.buttons.exportdata) {
-            if (Version() === '1.4') {
+            if (Version() === '1.4') { // Version() === '1.4'
               this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
               const eleLink = document.createElement('a');
               const path = getGateway(`/p/cs/download?filename=${this.buttons.exportdata}`);
@@ -2616,7 +2610,7 @@
               document.body.appendChild(eleLink);
               eleLink.click();
               document.body.removeChild(eleLink);
-            } else if (Version() === '1.3') {
+            } else if (Version() === '1.3') { // Version() === '1.3'
               const promises = new Promise((resolve, reject) => {
                 this.getExportedState({
                   objid: this.buttons.exportdata, id: this.buttons.exportdata, resolve, reject 
@@ -2634,8 +2628,8 @@
                       const type = 'tableDetailVertical';
                       const tab = {
                         type,
-                        tableName: 'CP_C_TASK',
-                        tableId: '24386',
+                        tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
+                        tableId: Version() === '1.3' ? 24386 : 963,
                         id: this.buttons.exportdata
                       };
                       this.tabOpen(tab);
@@ -3142,6 +3136,10 @@
       }
     },
     mounted() {
+      setTimeout(() => {
+        // 判断页面是否渲染完成,用于判断树是否调用
+        this.mountedChecked = true;
+      }, 2000);
       this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
       if (!this._inactive) {
         window.addEventListener('network', this.networkEventListener);
