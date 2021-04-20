@@ -526,28 +526,28 @@
         }
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
-      a() {
-        // 插入列表界面默认值
-        const data = {
-          // tableId: '992',
-          values: [
-            {
-              display: 'OBJ_FK',
-              colid: '178112',
-              defaultValue: '555元数据,元数据2',
-              refobjid: '666666,2'// OBJ_FK类型
-            }
-          ]
-        };
-        // this.updataSTDefaultQuery(data);
-        this.tabOpen({
-          type: 'S',
-          tableName: 'ZD2',
-          tableId: '24551',
-          isSetQuery: true,
-          queryData: data
-        });
-      },
+      // a() {
+      //   // 插入列表界面默认值
+      //   const data = {
+      //     // tableId: '992',
+      //     values: [
+      //       {
+      //         display: 'OBJ_FK',
+      //         colid: '178112',
+      //         defaultValue: '555元数据,元数据2',
+      //         refobjid: '666666,2'// OBJ_FK类型
+      //       }
+      //     ]
+      //   };
+      //   // this.updataSTDefaultQuery(data);
+      //   this.tabOpen({
+      //     type: 'S',
+      //     tableName: 'ZD2',
+      //     tableId: '24551',
+      //     isSetQuery: true,
+      //     queryData: data
+      //   });
+      // },
      
       ...mapActions('global', ['updateAccessHistory', 'getExportedState', 'updataTaskMessageCount', 'getMenuLists']),
       ...mapMutations('global', ['updateCustomizeMessage', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter', 'updataSTDefaultQuery']),
@@ -3136,7 +3136,6 @@
       }
     },
     mounted() {
-      this.a();
       setTimeout(() => {
         // 判断页面是否渲染完成,用于判断树是否调用
         this.mountedChecked = true;
