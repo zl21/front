@@ -32,11 +32,7 @@
           clearable
           icon="ios-search"
           @on-change="searchInputChange"
-<<<<<<< HEAD
-        />
-=======
         >
->>>>>>> theme_jflow_dev_new
         <span slot="prepend">检索</span>
         </Input>
         <div class="menuContainer">
