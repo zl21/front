@@ -6,9 +6,10 @@ export default {
   },
   mounted() {
     // 设置校验规则
+    let required = !this.items.readonly && this.items.isnotnull; 
     this.items.rules = {
       required: {
-        type:this.items.isnotnull ? true :false,
+        type:required,
         message: `${this.items.name}不能为空!`, 
         trigger: 'blur'
       }, 

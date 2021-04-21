@@ -168,24 +168,27 @@ export default class ParameterDataProcessing {
       if(this.item.display === 'YearMonth'){
         return this.item.default;
       }
-      const dateArray = [];
-      dateArray[0] = new Date().r3Format(new Date().minusDays(Number(this.item.default)), 'yyyy-MM-dd 00:00:00');
-      dateArray[1] = new Date().r3Format(new Date(), 'yyyy-MM-dd 23:59:59');
-      return dateArray;
+      if (this.item.rangecolumn) {
+        const dateArray = [];
+        dateArray[0] = new Date().r3Format(new Date().minusDays(Number(this.item.default)), 'yyyy-MM-dd 00:00:00');
+        dateArray[1] = new Date().r3Format(new Date(), 'yyyy-MM-dd 23:59:59');
+        return dateArray;
+      }
+     
     }else if(['OBJ_DATENUMBER','OBJ_DATE','YearMonth','OBJ_DATETIME'].includes(this.item.display) && this.item.valuedata){
-      return this.item.valuedata
+      return this.item.valuedata || this.item.defval
     }
 
     // 处理图片,文档默认值,转json
     if(this.item.valuedata && ['image','OBJ_DOC'].includes(this.item.display)){
-      return JSON.parse(this.item.valuedata)
+      return JSON.parse(this.item.valuedata || this.item.defval)
     }
 
 
 
     // 处理checkbox
     if(this.item.display === 'OBJ_CHECK'){
-      if(!this.item.valuedata){
+      if(!this.item.valuedata && !this.item.defval){
         return this.item.combobox.filter(item => !item.limitdis)[0].limitval
       }
     }

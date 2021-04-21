@@ -48,7 +48,7 @@ class CustomDatePicker {
             return 'datetimerange';
             break;
           case 'OBJ_DATENUMBER':
-            return 'daterange';
+            return 'date';
             break;
           case 'YearMonth':
             return 'month'
@@ -121,7 +121,7 @@ class CustomDatePicker {
             return 'yyyy-MM-dd HH:mm:ss';
             break;
           case 'OBJ_TIME':
-            return 'yyyy-MM';
+            return 'HH:mm:ss';
             break;
           default:
             return 'yyyy-MM-dd';

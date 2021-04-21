@@ -150,7 +150,7 @@
           let formData = {};
           this.formArray.every((item) => {
             const components = this.$_live_getChildComponent(this, `${this.id}${item.colname.TextFilter()}`);
-            const value = item.isuppercase && components.value &&  !item.display ?components.value.toUpperCase():components.value;
+            const value = item && item.isuppercase && components.value &&  !item.display ?components.value.toUpperCase():components.value;
             const json = this.dealData(item, value);
             formData = Object.assign({}, formData, json);
             return item;

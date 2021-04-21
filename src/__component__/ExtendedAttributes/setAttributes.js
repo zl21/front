@@ -43,8 +43,8 @@ function HiddenFields(){
       let panelForm = item.source.$_live_getChildComponent(window.vm,`panelForm`)
       let target = item.source.$_live_getChildComponent(panelForm,`${item.source.activeTab.tableName}${temp.field.refcolumn}`)
       
-      let panelIndex = target.items._index && target.items._index.split('_')[0];
-      let itemIndex = target.items._index && target.items._index.split('_')[1]
+      let panelIndex = target.items && target.items._index && target.items._index.split('_')[0];
+      let itemIndex = target.items && target.items._index && target.items._index.split('_')[1]
       if(!panelIndex){
         return;
       }

@@ -93,7 +93,10 @@ export default {
         }
         data.addcolums = data.addcolums.filter(item =>{
           if(!item.childs){
-            sumObject.childs.push(item.child)
+
+            if(item.child && item.child.display!=='hr' && item.child.display!=='none'){
+             sumObject.childs.push(item.child)
+            }
           }
           return item.childs
         })
@@ -252,7 +255,7 @@ export default {
 
     // public API
     getFormData() { //获取整个表单的传参数据
-
+      
       return new Promise((resolve,reject) => {
         let formData = {};
         Object.keys(this.formItemLists).map(temp => {
@@ -300,6 +303,7 @@ export default {
     },
   },
   mounted(){
+    
     if(Object.keys(this.formItemLists).length > 0){
       this.collapseValue = []
       Object.keys(this.formItemLists).map(item => {

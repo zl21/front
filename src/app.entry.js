@@ -34,6 +34,7 @@ import '@syman/ark-ui-bcl/dist/tailwindcss.css'
 
 // 全局指令
 import inputNumber from './directive/inputNumber';
+import draggable from 'vuedraggable';
 
 Vue.use(inputNumber);
 
@@ -171,6 +172,7 @@ const getCategory = () => {
     network.post('/p/cs/getSubSystems').then((res) => {
       if (res.data.code === '-1') {
         backTouristRoute();
+       
       } else if (res.data.data.length > 0) {
         store.commit('global/updateMenuLists', res.data.data);
         const serviceIdMaps = res.data.data.map(d => d.children)

@@ -139,3 +139,20 @@ export const setNewlValue = ($this,name,tableName,value) => {
    
 }
 
+
+/*
+obj
+*/
+// 判空处理
+export const isEmpty = (obj)=>{
+
+    if(typeof obj ==='object'){
+        obj = JSON.stringify(obj);
+    }
+    if(obj == "undefined" || obj == null || obj == "" || obj == "[]" || obj == "{}"){
+        return true;
+    }else{
+        return false;
+    }
+   
+}

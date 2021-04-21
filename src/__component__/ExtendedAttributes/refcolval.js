@@ -141,7 +141,9 @@ export const setFixedcolumns = ($this, type) => {
     }
     if(webconf && webconf.refcolvalArray){
         let fixcolumns = webconf.refcolvalArray.reduce((arr,item)=>{
-            arr[item.fixcolumn] = $this._srccolValue[item.srccol] || ''
+            console.log($this,item.srccol,$this._srccolValue);
+
+            arr[item.fixcolumn] = $this._srccolValue && $this._srccolValue[item.srccol] || ''
             return arr;
         },{});
         return {...fixcolumns}
