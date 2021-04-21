@@ -163,21 +163,34 @@ export default class ParameterDataProcessing {
       this.item.default = this.item.daterange
     }
     if (this.item.default && ['OBJ_DATENUMBER','OBJ_DATE','YearMonth'].includes(this.item.display) && ((this.item.default && this.item.default !== '-1') || this.item.customDefault)) {
+      
+       // 设置默认值
+       console.log(this.item,'===');
+
+       if (this.item.daterange) {
+        const timeRange = [
+          new Date().r3Format(new Date().minusDays(Number(this.item.daterange)), 'yyyy-MM-dd 00:00:00'),
+          new Date().r3Format(new Date(), 'yyyy-MM-dd 23:59:59')
+        ];
+        
+        return timeRange;
+      }
       if(this.item.customDefault){
         return this.item.customDefault
       }
       if(this.item.display === 'YearMonth'){
         return this.item.default;
       }
-      if (this.item.rangecolumn) {
-        const dateArray = [];
-        dateArray[0] = new Date().r3Format(new Date().minusDays(Number(this.item.default)), 'yyyy-MM-dd 00:00:00');
-        dateArray[1] = new Date().r3Format(new Date(), 'yyyy-MM-dd 23:59:59');
-        return dateArray;
-      }
+     
      
     }else if(['OBJ_DATENUMBER','OBJ_DATE','YearMonth','OBJ_DATETIME'].includes(this.item.display) && this.item.valuedata){
       return this.item.valuedata || this.item.defval
+    }
+    if (this.item.rangecolumn && this.item.display === "OBJ_DATETIME") {
+      const start = this.item.rangecolumn.upperlimit;
+      const end = this.item.rangecolumn.lowerlimit;
+      return [start.valuedata || start.default, end.valuedata || end.default];
+    
     }
 
     // 处理图片,文档默认值,转json

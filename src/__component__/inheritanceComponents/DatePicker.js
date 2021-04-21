@@ -54,6 +54,9 @@ class CustomDatePicker {
             return 'month'
             break;
           case 'OBJ_DATETIME':
+            if(this.item.rangecolumn){
+              return 'datetimerange';
+            }
             return 'datetime';
             break;
           case 'OBJ_TIME':

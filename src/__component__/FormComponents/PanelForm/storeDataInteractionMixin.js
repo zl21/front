@@ -13,8 +13,6 @@ export default {
   watch:{
     value:{
       handler(val,old){
-       
-        console.log(this.items,'===========');
         let label = val;
         if(this.items.detailType){
           if(typeof val === 'string'){
@@ -42,19 +40,22 @@ export default {
           } 
                    
           ParentForm.formChangeDataLabel[this.items.colname] = val
-          ParentForm.formDataLabel[this.items.colname] = label
-         if(this.items.colname === 'XN'){
-          console.log(val,'=======',this);
-         }
+          ParentForm.formDataLabel[this.items.colname] = label;
+
+          if(this.items.rangecolumn){
+            delete ParentForm.formChangeDataLabel[this.items.colname]
+          }
+         
+          
           if(this.actived){
-            console.log(JSON.stringify(val) === JSON.stringify(this.defaultVale));
+           
             if(JSON.stringify(val) === JSON.stringify(this.defaultVale)){  
               delete ParentForm.formChangeData[this.items.colname]
               delete ParentForm.formChangeDataLabel[this.items.colname]
             }
           }else{
-            if(isEmpty(val)){
-
+            console.log(JSON.stringify(val) === JSON.stringify(this.defaultVale),val);
+            if(isEmpty(val) || JSON.stringify(val) === JSON.stringify(this.defaultVale)){
               delete ParentForm.formChangeData[this.items.colname]
             }
 
@@ -65,13 +66,15 @@ export default {
                 ParentForm.formChangeData[this.items.colname] = 0;
               }
           }
-           console.log( val,this.items.colname,'formChangeData');
+           
          
 
           
 
           // let activeTab = this.$_live_getChildComponent(window.vm,this.activeTab.keepAliveModuleName)
           // console.log(activeTab)
+          console.log(JSON.stringify(ParentForm.formChangeData));
+
           if(ParentForm.$parent.formPanelChange){
             ParentForm.$parent.formPanelChange(ParentForm.formChangeDataLabel,ParentForm.formChangeData,ParentForm.formChangeDataLabel)
           }else{
