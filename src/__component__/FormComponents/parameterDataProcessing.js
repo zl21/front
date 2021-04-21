@@ -137,12 +137,13 @@ export default class ParameterDataProcessing {
     if (this.item.display === 'OBJ_FK') {
       if (['mrp', 'drp', 'pop', 'mop'].includes(this.item.fkobj.searchmodel) && (this.item.refobjid && this.item.refobjid != '-1')) {
         let arr = []
-        if(this.item.fkobj.searchmodel === 'mop'){
+        if(this.item.fkobj.searchmodel === 'mop' && this.item.refobjid){
           arr.push({
             ID: this.item.refobjid.split(','),
             Label: this.item.default ? this.item.default : this.item.valuedata
           })
         }else{
+          this.item.refobjid = (this.item.refobjid).toString();
           this.item.refobjid.split(',').map((item,index) => {
             arr.push({
               ID: item,

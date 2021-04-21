@@ -42,7 +42,15 @@ function HiddenFields(){
     item.configuration.every(temp => {
       let panelForm = item.source.$_live_getChildComponent(window.vm,`panelForm`)
       let target = item.source.$_live_getChildComponent(panelForm,`${item.source.activeTab.tableName}${temp.field.refcolumn}`)
-      
+      if(!target || !target.items){
+        return;
+      }
+      if(!target.items.original){
+        target.items.original = {};
+        target.items.original.isnotnull = target.items.isnotnull;
+        target.items.original.readonly = target.items.readonly;
+
+      }
       let panelIndex = target.items && target.items._index && target.items._index.split('_')[0];
       let itemIndex = target.items && target.items._index && target.items._index.split('_')[1]
       if(!panelIndex){
@@ -52,8 +60,9 @@ function HiddenFields(){
         panelForm.formItemLists[panelIndex].childs[itemIndex].isnotnull = temp.props.required;
         panelForm.formItemLists[panelIndex].childs[itemIndex].readonly = temp.props.disabled;
       }else{
-        panelForm.formItemLists[panelIndex].childs[itemIndex].isnotnull = false;
-        panelForm.formItemLists[panelIndex].childs[itemIndex].readonly = false;
+
+        panelForm.formItemLists[panelIndex].childs[itemIndex].isnotnull = target.items.original.isnotnull;
+        panelForm.formItemLists[panelIndex].childs[itemIndex].readonly = target.items.original.readonly;
       }
       delete panelForm.formItemLists[panelIndex].childs[itemIndex].Components
       target.$forceUpdate()
@@ -71,7 +80,9 @@ function JudgeValue(source,conf,panelForm) {
     let flag = true
     conf.source.every(item => {
       let sourceCom = source.$_live_getChildComponent(panelForm,`${source.activeTab.tableName}${item.refcolumn}`)
-      let value = sourceCom.value
+      let value = sourceCom.value;
+      console.log(item.refval,value,'===sourceCom');
+
       if(sourceCom.$_live_type.isArray(value)){
         if(sourceCom.items.fkobj){  //处理外健字段
           value = value.map(item => conf.match === 'label'?item.Label:item.ID)

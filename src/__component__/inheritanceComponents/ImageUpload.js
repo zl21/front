@@ -42,7 +42,6 @@ class CustomImageUpload {
 
   init() {
     this.mergeProps();
-
     if (this.item.Components) {
       return this.item.Components;
     }
@@ -53,6 +52,7 @@ class CustomImageUpload {
     this.item.Components = obj;
     return this.Input;
   }
+ 
 
   // 合并props
   mergeProps() {
@@ -60,6 +60,7 @@ class CustomImageUpload {
     defaultProps.PropsData = {
       default: () => ({
         readonly: this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true), //控制字段是否可编辑
+        disabled: this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true), //控制字段是否可编辑
         url: '/ad-app/p/cs/upload2',
         sendData:{
           path: `${this.item.tableName}/${this.item.itemId}/`,

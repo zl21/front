@@ -149,7 +149,7 @@ export const isEmpty = (obj)=>{
     if(typeof obj ==='object'){
         obj = JSON.stringify(obj);
     }
-    if(obj == "undefined" || obj == null || obj == "" || obj == "[]" || obj == "{}"){
+    if(obj == undefined || obj == "null" || obj == "" || obj == "[]" || obj == "{}"){
         return true;
     }else{
         return false;
