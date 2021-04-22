@@ -88,6 +88,12 @@ export default class ParameterDataProcessing {
     if (['OBJ_DATE', 'OBJ_DATENUMBER','YearMonth', 'OBJ_DATETIME'].includes(this.item.display)) {
       
       let arr = [];
+      if (this.item.rangecolumn) {
+        arr = [new Date().r3Format(new Date(this.value[0]), 'yyyy/MM/dd hh:mm:ss'), new Date().r3Format(new Date(this.value[1]), 'yyyy/MM/dd hh:mm:ss')];
+        return {
+          [this.item.colname]: arr.join('~')
+        };
+      }
       if (this.item.display === 'OBJ_DATE') {
         arr = [new Date().r3Format(new Date(this.value[0]), 'yyyy/MM/dd hh:mm:ss'), new Date().r3Format(new Date(this.value[1]), 'yyyy/MM/dd hh:mm:ss')];
       }  
@@ -165,8 +171,6 @@ export default class ParameterDataProcessing {
     if (this.item.default && ['OBJ_DATENUMBER','OBJ_DATE','YearMonth'].includes(this.item.display) && ((this.item.default && this.item.default !== '-1') || this.item.customDefault)) {
       
        // 设置默认值
-       console.log(this.item,'===');
-
        if (this.item.daterange) {
         const timeRange = [
           new Date().r3Format(new Date().minusDays(Number(this.item.daterange)), 'yyyy-MM-dd 00:00:00'),
@@ -215,6 +219,45 @@ export default class ParameterDataProcessing {
     return this.item.default || this.item.valuedata || this.item.defval;
   }
 
+  
+  /**
+   *处理表单label
+   *
+   * @returns
+   * @memberof getLable
+   */
+  
+   getLable(){
+     if(this.item.display ==='OBJ_SELECT'){
+      const optionIndex = this.item.options.findIndex(x => x.value === this.value);
+      if (optionIndex !== -1) {
+        return this.item.options[optionIndex].label;
+      } else {
+        return ''
+      }
+
+     }
+
+     if(this.item.display ==='checkbox'){
+      if (optionIndex !== -1) {
+        return this.item.combobox[optionIndex].limitval;
+      } else {
+        return this.item.falseLabel;
+      }
+
+     }
+
+     if(Array.isArray(this.value)){
+        if(this.value[0]&&this.value[0].ID){
+            return this.value.reduce((arr,Item)=>{
+                    arr.push(Item.Label);
+                    return arr;
+            },[]).join(',');
+        }
+     }
+     
+     return value;
+   }
 }
 
 

@@ -1,101 +1,138 @@
 import ParameterDataProcessing from '../parameterDataProcessing';
-import { isEmpty } from '../../ExtendedAttributes/common';
+import {
+  isEmpty
+} from '../../ExtendedAttributes/common';
 
 import {
-  Version,ossRealtimeSave
+  Version,
+  ossRealtimeSave
 } from '../../../constants/global';
+import {
+  container
+} from 'webpack';
 export default {
-  data(){
-    return{
-      defaultVale: null,//默认值
+  data() {
+    return {
+      defaultVale: null, //默认值
     }
   },
-  watch:{
-    value:{
-      handler(val,old){
-        let label = val;
-        if(this.items.detailType){
-          if(typeof val === 'string'){
-            val = val.replace(/^\s+|\s+$/g, '')
-          }
+  watch: {
+    value: {
+      handler(val, old) {
+
+        if (this.items.detailType) {
           let ParentForm = this.findParentForm();
-          ParentForm.formData = Object.assign({},ParentForm.formData,ParentForm.dealData(this.items,val))
-          ParentForm.formChangeData = Object.assign({},ParentForm.formChangeData,ParentForm.dealData(this.items,val))
-          if(Array.isArray(val)){
-            label = [];
-            val = val.reduce((arr, optionII) => {
-              if(optionII.ID && optionII.ID !== -1){
-                arr.push(optionII.ID);
-                label.push(optionII.label);
-              }
-              return arr;
-            }, []).join(',');
-            label = label.join(',')
-
+          // 获取当前组件的值
+          let current_value = ParentForm.dealData(this.items, val)[this.items.colname];
+          let current_data = {};
+          // 去除空格
+          if (typeof current_value === 'string' && !isEmpty(current_value)) {
+            current_value = current_value.replace(/^\s+|\s+$/g, '')
           }
-          if(this.items.type === 'NUMBER'){
-            if(val){
-              val = parseInt(val.replace(/-/g, ''));
+          // number类型空值传0
+          if (this.items.type === 'NUMBER') {
+            if (current_value && !isEmpty(current_value)) {
+              current_value = parseInt(current_value.replace(/-/g, ''));
             }
-          } 
-                   
-          ParentForm.formChangeDataLabel[this.items.colname] = val
-          ParentForm.formDataLabel[this.items.colname] = label;
-
-          if(this.items.rangecolumn){
-            delete ParentForm.formChangeDataLabel[this.items.colname]
-          }
-         
-          
-          if(this.actived){
-           
-            if(JSON.stringify(val) === JSON.stringify(this.defaultVale)){  
-              delete ParentForm.formChangeData[this.items.colname]
-              delete ParentForm.formChangeDataLabel[this.items.colname]
-            }
-          }else{
-            console.log(JSON.stringify(val) === JSON.stringify(this.defaultVale),val);
-            if(isEmpty(val) || JSON.stringify(val) === JSON.stringify(this.defaultVale)){
-              delete ParentForm.formChangeData[this.items.colname]
-            }
-
-          }
-          
-          if(Version() === '1.4'){
-              if(ParentForm.formChangeData[this.items.colname]===''){
+            if (Version() === '1.4') {
+              if (ParentForm.formChangeData[this.items.colname] === '') {
                 ParentForm.formChangeData[this.items.colname] = 0;
+                ParentForm.formData[this.items.colname] = 0;
+
               }
+            }
           }
-           
-         
+          // 拼接当前key 和 value
+          current_data = {
+            [this.items.colname]: current_value
+          }
+          // ParentForm.formData 表单组件的所有有值的值
+          ParentForm.formData = Object.assign({}, ParentForm.formData, current_data)
+          ParentForm.formChangeDataLabel[this.items.colname] = val
+          ParentForm.formDataLabel[this.items.colname] = val;
 
           
 
-          // let activeTab = this.$_live_getChildComponent(window.vm,this.activeTab.keepAliveModuleName)
-          // console.log(activeTab)
-          console.log(JSON.stringify(ParentForm.formChangeData));
+          if (ParentForm.$parent.formPanelChange) {
+            // 初始化的状态
+            if (!this.actived) {
+              if (/NEW/.test(this.activeTab.keepAliveModuleName)) {
+                // 删除空值
+                if (isEmpty(val)) {
+                  delete ParentForm.formData[this.items.colname]
+                }
+                ParentForm.$parent.formPanelChange(ParentForm.formDatadefault, ParentForm.formDatadefault)
+              }
+            } else {
+              // 页面修改
+              if(this.items.rangecolumn){
+                if (val[0] && val[1]) {
+                  ParentForm.formChangeData[this.items.rangecolumn.upperlimit.colname] = val[0];
+                  ParentForm.formChangeData[this.items.rangecolumn.lowerlimit.colname] = val[1];
+                }else {
+                  ParentForm.formChangeData[this.items.rangecolumn.upperlimit.colname] = '';
+                  ParentForm.formChangeData[this.items.rangecolumn.lowerlimit.colname] = '';
+                }
+              }
+              if (/NEW/.test(this.activeTab.keepAliveModuleName)) {
+                // 新增  删除空值,且没有默认值     
+                ParentForm.formChangeData = Object.assign({}, ParentForm.formChangeData, current_data)
+                if (isEmpty(val) && isEmpty(this.defaultVale)) {
+                  delete ParentForm.formData[this.items.colname]
+                }
+                
+                ParentForm.$parent.formPanelChange(ParentForm.formDatadefault, ParentForm.formDatadefault)
+              }else{
+                //详情明细  有值 
+                ParentForm.formChangeData = Object.assign({}, ParentForm.formChangeData, current_data)
+                if (JSON.stringify(val) === JSON.stringify(this.defaultVale)) {
+                  delete ParentForm.formChangeData[this.items.colname]
+                  delete ParentForm.formChangeDataLabel[this.items.colname]
+                }else{
+                  if(this.items.rangecolumn){
+                    if (val[0] && val[1]) {
+                      ParentForm.formChangeData[this.items.rangecolumn.upperlimit.colname] = val[0];
+                      ParentForm.formChangeData[this.items.rangecolumn.lowerlimit.colname] = val[1];
+                    }
+                  }
 
-          if(ParentForm.$parent.formPanelChange){
-            ParentForm.$parent.formPanelChange(ParentForm.formChangeDataLabel,ParentForm.formChangeData,ParentForm.formChangeDataLabel)
-          }else{
-            ParentForm.$parent.formChange(ParentForm.formChangeDataLabel,ParentForm.formChangeData,ParentForm.formChangeDataLabel)
-          }
-          // 上传后是否保存控制
-          if (!ossRealtimeSave()) {    
-            if (this.items.display === 'image' || this.items.display ==='OBJ_DOC') {
-              // 主子表的子表修改（1:1）的情况下
-              setTimeout(() => {
-                const dom = document.getElementById('actionMODIFY');
-                dom.click();
-              }, 600);
+                }
+
+              }
+              // 虚拟区间不用传值
+              if (this.items.rangecolumn) {
+                delete ParentForm.formData[this.items.colname];
+                delete ParentForm.formDatadefault[this.items.colname];
+                delete ParentForm.formChangeData[this.items.colname];
+              }
+              // 上传后是否保存控制
+              if (!ossRealtimeSave() && JSON.stringify(val) !== JSON.stringify(this.defaultVale)) {
+                if (this.items.display === 'image' || this.items.display === 'OBJ_DOC') {
+                  // 主子表的子表修改（1:1）的情况下
+                  setTimeout(() => {
+                    const dom = document.getElementById('actionMODIFY');
+                    if (dom) {
+                      dom.click();
+                    }
+
+                  }, 600);
+                }
+              }
+              ParentForm.$parent.formPanelChange(ParentForm.formChangeData, ParentForm.formDatadefault)
             }
+
           }
+
+
+
+
+
         }
-        
+
       }
     }
   },
   mounted() {
     this.defaultVale = new ParameterDataProcessing(JSON.parse(JSON.stringify(this.items))).defaultDataProcessing() || '';
-  }  
+  }
 };

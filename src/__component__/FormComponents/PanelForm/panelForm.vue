@@ -71,6 +71,7 @@ export default {
       formData:{}, //整个表单数据
       formDataLabel:{}, //整个表单数据--显示值
       formChangeData:{}, //表单修改过的数据
+      formDatadefault:{}, // 表单默认值
       formChangeDataLabel:{},  //表单修改过的数据--显示值
 
     }
