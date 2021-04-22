@@ -24,9 +24,19 @@ export default {
           // 获取当前组件的值
           let current_value = ParentForm.dealData(this.items, val)[this.items.colname];
           let current_data = {};
+
           // 去除空格
           if (typeof current_value === 'string' && !isEmpty(current_value)) {
             current_value = current_value.replace(/^\s+|\s+$/g, '')
+          }else{
+            // 上传后是否保存控制
+            if (this.items.display === 'image' || this.items.display === 'OBJ_DOC') {
+              // 主子表的子表修改（1:1）的情况下
+              if(Array.isArray(current_value)){
+                current_value = JSON.stringify(current_value);
+              }
+              
+            }  
           }
           // number类型空值传0
           if (this.items.type === 'NUMBER') {
@@ -103,11 +113,10 @@ export default {
                 delete ParentForm.formDatadefault[this.items.colname];
                 delete ParentForm.formChangeData[this.items.colname];
               }
-              // 上传后是否保存控制
+              
               if (!ossRealtimeSave() && JSON.stringify(val) !== JSON.stringify(this.defaultVale)) {
                 if (this.items.display === 'image' || this.items.display === 'OBJ_DOC') {
                   // 主子表的子表修改（1:1）的情况下
-                  val = JSON.stringify(val);
                   setTimeout(() => {
                     const dom = document.getElementById('actionMODIFY');
                     if (dom) {
