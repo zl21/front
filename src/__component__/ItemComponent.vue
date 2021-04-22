@@ -1293,7 +1293,9 @@
                 this.valueChange();
                 if (childTableName && this.$parent.type === 'PanelForm') {
                   const dom = document.getElementById('actionMODIFY');
-                  dom.click();
+                  if (dom) {
+                    dom.click();
+                  } 
                 }
               } else if (this.$parent.pathcheck === '') {
                 // parms.path = '/p/cs/objectSave';
