@@ -35,7 +35,8 @@ name  string  字段名称
 */
 export const FindInstance = ($this,name,tableName) => {
     let target = [];
-    let panelForm = $this.$_live_getChildComponent(window.vm, 'panelForm');
+    let panelFormParent = $this.$_live_getChildComponent(window.vm, `${$this.activeTab.keepAliveModuleName}`);
+    let panelForm = $this.$_live_getChildComponent(panelFormParent, 'panelForm');
     if(!name){
         return [];
     }

@@ -19,7 +19,6 @@ export default {
   watch: {
     value: {
       handler(val, old) {
-
         if (this.items.detailType) {
           let ParentForm = this.findParentForm();
           // 获取当前组件的值
@@ -53,7 +52,6 @@ export default {
 
           
 
-          if (ParentForm.$parent.formPanelChange) {
             // 初始化的状态
             if (!this.actived) {
               if (/NEW/.test(this.activeTab.keepAliveModuleName)) {
@@ -61,10 +59,10 @@ export default {
                 if (isEmpty(val)) {
                   delete ParentForm.formData[this.items.colname]
                 }
-                ParentForm.$parent.formPanelChange(ParentForm.formDatadefault, ParentForm.formDatadefault)
               }
             } else {
               // 页面修改
+
               if(this.items.rangecolumn){
                 if (val[0] && val[1]) {
                   ParentForm.formChangeData[this.items.rangecolumn.upperlimit.colname] = val[0];
@@ -74,17 +72,17 @@ export default {
                   ParentForm.formChangeData[this.items.rangecolumn.lowerlimit.colname] = '';
                 }
               }
+
               if (/NEW/.test(this.activeTab.keepAliveModuleName)) {
                 // 新增  删除空值,且没有默认值     
                 ParentForm.formChangeData = Object.assign({}, ParentForm.formChangeData, current_data)
                 if (isEmpty(val) && isEmpty(this.defaultVale)) {
                   delete ParentForm.formData[this.items.colname]
                 }
-                
-                ParentForm.$parent.formPanelChange(ParentForm.formDatadefault, ParentForm.formDatadefault)
               }else{
                 //详情明细  有值 
                 ParentForm.formChangeData = Object.assign({}, ParentForm.formChangeData, current_data)
+                console.log(JSON.stringify(ParentForm.formChangeData),'12');
                 if (JSON.stringify(val) === JSON.stringify(this.defaultVale)) {
                   delete ParentForm.formChangeData[this.items.colname]
                   delete ParentForm.formChangeDataLabel[this.items.colname]
@@ -109,6 +107,7 @@ export default {
               if (!ossRealtimeSave() && JSON.stringify(val) !== JSON.stringify(this.defaultVale)) {
                 if (this.items.display === 'image' || this.items.display === 'OBJ_DOC') {
                   // 主子表的子表修改（1:1）的情况下
+                  val = JSON.stringify(val);
                   setTimeout(() => {
                     const dom = document.getElementById('actionMODIFY');
                     if (dom) {
@@ -118,11 +117,13 @@ export default {
                   }, 600);
                 }
               }
-              ParentForm.$parent.formPanelChange(ParentForm.formChangeData, ParentForm.formDatadefault)
             }
 
+          if (ParentForm.$parent.formPanelChange) {
+            ParentForm.$parent.formPanelChange(ParentForm.formChangeData, ParentForm.formDatadefault)
+          }else{
+            ParentForm.$parent.formChange(ParentForm.formChangeData, ParentForm.formDatadefault)
           }
-
 
 
 

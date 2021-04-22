@@ -1,4 +1,8 @@
 
+import {
+  FindInstance
+} from './common.js';
+
 let eventLoops = []
 let t = null
 var proxy = new Proxy(eventLoops, {
@@ -42,19 +46,25 @@ function HiddenFields(){
     item.configuration.every(temp => {
 
       // 当temp中ishide为true时，则refval控制字段的隐藏。当ishide为false时，则控制字段的显示
-      let panelForm = item.source.$_live_getChildComponent(window.vm,'panelForm')
-      let target = item.source.$_live_getChildComponent(panelForm,`${item.source.activeTab.tableName}${temp.target}`)
+      let target = FindInstance(item.source,temp.target,`${item.source.activeTab.tableName}`)[0];
+      let panelFormParent = item.source.$_live_getChildComponent(window.vm, `${item.source.activeTab.keepAliveModuleName}`);
+      let panelForm = item.source.$_live_getChildComponent(panelFormParent, 'panelForm');
+      
       if(!target){
         return
       }
       let panelIndex = target.items && target.items._index && target.items._index.split('_')[0];
       let itemIndex = target.items && target.items._index && target.items._index.split('_')[1]
-      if(!item.source.value && !item.source.items.fkobj && item.source.items.display != 'OBJ_SELECT'){  //当来源字段不是外健字段和select字段时，并且值为空时不做处理
-        return true
-      }
+
+      console.log(temp,target.items,'900========',!item.source.value && !item.source.items.fkobj && item.source.items.display != 'OBJ_SELECT');
+
+      // if(!item.source.value && !item.source.items.fkobj && item.source.items.display != 'OBJ_SELECT'){  //当来源字段不是外健字段和select字段时，并且值为空时不做处理
+      //   return true
+      // }
       if(!panelIndex){
         return;
       }
+
       if((JudgeValue(item.source,temp) && !temp.ishide) || (!JudgeValue(item.source,temp) && temp.ishide)){  //判断当前字段与配置的value值进行对比
         // console.log('显示的字段',temp.target)
         panelForm.formItemLists[panelIndex].childs[itemIndex].show = true

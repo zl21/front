@@ -57,7 +57,6 @@
    // 合并props
    mergeProps() {
      const defaultProps = { ...this.Input.props };
-     console.log(defaultProps,this.item);
     defaultProps.accept = {
       default: () => {
           return this.item.webconf && this.item.webconf.UploadAccept || '*'
