@@ -1,14 +1,14 @@
 /* eslint-disable consistent-return */
 
 /**
-   *处理表单数据格式
-   *
-   * @returns
-   * @memberof ParameterDataProcessing
-   * 
-   * @field 字段名
-   * @value 需要处理的数据值
-   */
+ *处理表单数据格式
+ *
+ * @returns
+ * @memberof ParameterDataProcessing
+ * 
+ * @field 字段名
+ * @value 需要处理的数据值
+ */
 
 export default class ParameterDataProcessing {
   constructor(item, value) {
@@ -21,7 +21,7 @@ export default class ParameterDataProcessing {
    * @returns
    * @memberof dataProcessing
    */
-  dataProcessing() { 
+  dataProcessing() {
     // eslint-disable-next-line func-names
     // 类型判断
     const Type = (function () {
@@ -60,7 +60,7 @@ export default class ParameterDataProcessing {
         } else {
           json[item.split('|')[0]] = [item.split('|')[1]];
         }
-        
+
         return json;
       }, {});
       return obj;
@@ -69,7 +69,7 @@ export default class ParameterDataProcessing {
     // 处理外健关联字段
     if (this.item.display === 'OBJ_FK' && ['mrp', 'drp', 'pop', 'mop'].includes(this.item.fkobj.searchmodel)) {
       if (Type.isArray(this.value)) { // 处理外健选中时的传参
-        
+
         if (this.item.fkobj.searchmodel === 'mop') {
           return {
             [this.item.colname]: this.value[0].ID
@@ -85,8 +85,8 @@ export default class ParameterDataProcessing {
     }
 
     // 处理日期字段
-    if (['OBJ_DATE', 'OBJ_DATENUMBER','YearMonth', 'OBJ_DATETIME'].includes(this.item.display)) {
-      
+    if (['OBJ_DATE', 'OBJ_DATENUMBER', 'YearMonth', 'OBJ_DATETIME'].includes(this.item.display)) {
+
       let arr = [];
       if (this.item.rangecolumn) {
         arr = [new Date().r3Format(new Date(this.value[0]), 'yyyy/MM/dd hh:mm:ss'), new Date().r3Format(new Date(this.value[1]), 'yyyy/MM/dd hh:mm:ss')];
@@ -96,14 +96,14 @@ export default class ParameterDataProcessing {
       }
       if (this.item.display === 'OBJ_DATE') {
         arr = [new Date().r3Format(new Date(this.value[0]), 'yyyy/MM/dd hh:mm:ss'), new Date().r3Format(new Date(this.value[1]), 'yyyy/MM/dd hh:mm:ss')];
-      }  
-      if(this.item.display === 'OBJ_DATENUMBER'){
+      }
+      if (this.item.display === 'OBJ_DATENUMBER') {
         arr = [new Date().r3Format(new Date(this.value[0]), 'yyyyMMdd'), new Date().r3Format(new Date(this.value[1]), 'yyyyMMdd')];
       }
-      if(this.item.display === 'YearMonth'){
+      if (this.item.display === 'YearMonth') {
         arr = [new Date().r3Format(new Date(this.value), 'yyyy-MM')];
       }
-      if(this.item.display === 'OBJ_DATETIME'){
+      if (this.item.display === 'OBJ_DATETIME') {
         arr = [new Date().r3Format(new Date(this.value), 'yyyy-MM-dd')];
       }
 
@@ -113,8 +113,8 @@ export default class ParameterDataProcessing {
     }
 
     // 处理select组件
-    if(this.item.display === 'OBJ_SELECT'){
-      if(this.value.includes('bSelect-all')){
+    if (this.item.display === 'OBJ_SELECT') {
+      if (this.value.includes('bSelect-all')) {
         return {}
       }
     }
@@ -130,35 +130,41 @@ export default class ParameterDataProcessing {
    * @memberof defaultDataProcessing
    */
   defaultDataProcessing() {
-     if(this.item.defval){
+    if (this.item.defval) {
       //  兼容默认值
       this.item.default = this.item.defval
-     }
+    }
     // select
     if ((this.item.default || this.item.defval) && this.item.display === 'OBJ_SELECT') {
-      return this.item.default?this.item.default.split(','):this.item.defval;
+      return this.item.default ? this.item.default.split(',') : this.item.defval;
     }
 
     // fk外健
+
     if (this.item.display === 'OBJ_FK') {
-      if (['mrp', 'drp', 'pop', 'mop'].includes(this.item.fkobj.searchmodel) && (this.item.refobjid && this.item.refobjid != '-1')) {
+      let fkobj = this.item.fkobj.searchmodel || this.item.fkdisplay;
+
+      if (['mrp', 'drp', 'pop', 'mop'].includes(fkobj) && (this.item.refobjid && this.item.refobjid != '-1')) {
         let arr = []
-        console.log(this.item);
-        if(this.item.fkobj.searchmodel === 'mop' && this.item.refobjid){
-          arr.push({
-            ID: this.item.refobjid.split(','),
-            Label: this.item.default ? this.item.default : this.item.valuedata
-          })
+        // 多选change
+        const refobjid = (this.item.refobjid || '').split(',') || [];
+        console.log(this.item.valuedata ,this.item.name, this.item.default,'===');
+        const valuedata = (this.item.valuedata ? this.item.valuedata :this.item.default || '').split(',') || [];
+        if (refobjid.length > 0) {
+          arr = refobjid.reduce((currty, itemI, index) => {
+            currty.push({
+              ID: itemI || '',
+              Label: valuedata[index] || ''
+            });
+            return currty;
+          }, []);
         }else{
-          this.item.refobjid = (this.item.refobjid).toString();
-          this.item.refobjid.split(',').map((item,index) => {
-            arr.push({
-              ID: item,
-              Label: this.item.default ? this.item.default.split(',')[index] : this.item.valuedata
-            })
-          })
+          arr.push({
+            ID: valuedata,
+            Label: valuedata
+          });
         }
-        
+
         return arr
       }
 
@@ -166,52 +172,52 @@ export default class ParameterDataProcessing {
     }
 
     // 处理日期控件的默认值问题,区分列表还是单对象默认值
-    if(this.item.daterange && !this.item.default){
+    if (this.item.daterange && !this.item.default) {
       this.item.default = this.item.daterange
     }
-    if (this.item.default && ['OBJ_DATENUMBER','OBJ_DATE','YearMonth'].includes(this.item.display) && ((this.item.default && this.item.default !== '-1') || this.item.customDefault)) {
-      
-       // 设置默认值
-       if (this.item.daterange) {
+    if (this.item.default && ['OBJ_DATENUMBER', 'OBJ_DATE', 'YearMonth'].includes(this.item.display) && ((this.item.default && this.item.default !== '-1') || this.item.customDefault)) {
+
+      // 设置默认值
+      if (this.item.daterange) {
         const timeRange = [
           new Date().r3Format(new Date().minusDays(Number(this.item.daterange)), 'yyyy-MM-dd 00:00:00'),
           new Date().r3Format(new Date(), 'yyyy-MM-dd 23:59:59')
         ];
-        
+
         return timeRange;
       }
-      if(this.item.customDefault){
+      if (this.item.customDefault) {
         return this.item.customDefault
       }
-      if(this.item.display === 'YearMonth'){
+      if (this.item.display === 'YearMonth') {
         return this.item.default;
       }
-     
-     
-    }else if(['OBJ_DATENUMBER','OBJ_DATE','YearMonth','OBJ_DATETIME'].includes(this.item.display) && this.item.valuedata){
+
+
+    } else if (['OBJ_DATENUMBER', 'OBJ_DATE', 'YearMonth', 'OBJ_DATETIME'].includes(this.item.display) && this.item.valuedata) {
       return this.item.valuedata || this.item.defval
     }
     if (this.item.rangecolumn && this.item.display === "OBJ_DATETIME") {
       const start = this.item.rangecolumn.upperlimit;
       const end = this.item.rangecolumn.lowerlimit;
       return [start.valuedata || start.default, end.valuedata || end.default];
-    
+
     }
 
     // 处理图片,文档默认值,转json
-    if(this.item.valuedata && ['image','OBJ_DOC'].includes(this.item.display)){
+    if (this.item.valuedata && ['image', 'OBJ_DOC'].includes(this.item.display)) {
       return JSON.parse(this.item.valuedata || this.item.defval)
     }
 
 
 
     // 处理checkbox
-    if(this.item.display === 'OBJ_CHECK'){
-      if(!this.item.valuedata && !this.item.defval){
+    if (this.item.display === 'OBJ_CHECK') {
+      if (!this.item.valuedata && !this.item.defval) {
         return this.item.combobox.filter(item => !item.limitdis)[0].limitval
       }
     }
-    
+
 
 
 
@@ -220,16 +226,16 @@ export default class ParameterDataProcessing {
     return this.item.default || this.item.valuedata || this.item.defval;
   }
 
-  
+
   /**
    *处理表单label
    *
    * @returns
    * @memberof getLable
    */
-  
-   getLable(){
-     if(this.item.display ==='OBJ_SELECT'){
+
+  getLable() {
+    if (this.item.display === 'OBJ_SELECT') {
       const optionIndex = this.item.options.findIndex(x => x.value === this.value);
       if (optionIndex !== -1) {
         return this.item.options[optionIndex].label;
@@ -237,33 +243,26 @@ export default class ParameterDataProcessing {
         return ''
       }
 
-     }
+    }
 
-     if(this.item.display ==='checkbox'){
+    if (this.item.display === 'checkbox') {
       if (optionIndex !== -1) {
         return this.item.combobox[optionIndex].limitval;
       } else {
         return this.item.falseLabel;
       }
 
-     }
+    }
 
-     if(Array.isArray(this.value)){
-        if(this.value[0]&&this.value[0].ID){
-            return this.value.reduce((arr,Item)=>{
-                    arr.push(Item.Label);
-                    return arr;
-            },[]).join(',');
-        }
-     }
-     
-     return value;
-   }
+    if (Array.isArray(this.value)) {
+      if (this.value[0] && this.value[0].ID) {
+        return this.value.reduce((arr, Item) => {
+          arr.push(Item.Label);
+          return arr;
+        }, []).join(',');
+      }
+    }
+
+    return value;
+  }
 }
-
-
-
-
-
-
-
