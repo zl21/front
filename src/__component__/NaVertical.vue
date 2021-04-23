@@ -3,19 +3,37 @@
     v-if="showModule.Navigator"
     class="NaVertical"
   >
-    <div
-      class="tag"
-      @click="toggle"
-    >
-      <i
-        v-if="!iconShow"
-        class="iconfont iconbj-fold"
-      />
-      <i
-        v-if="iconShow"
-        class="iconfont iconbj-unfold"
-      />
+    <div class="NaVertical-icons">
+      <div
+        class="tag"
+        @click="toggle"
+      >
+        <i
+          v-if="!iconShow"
+          class="iconfont iconbj-fold"
+        />
+        <i
+          v-if="iconShow"
+          class="iconfont iconbj-unfold"
+        />
+      </div> 
+      <div
+        v-if="enableHistoryAndFavoriteUI"
+        class="HistoryAndFavorite-time"
+      >
+        <Dropdown>
+          <Icon type="iconmd-time"></Icon>
+          <DropdownMenu
+            slot="list"
+          >
+            <HistoryAndFavorite />
+          </DropdownMenu>
+        </Dropdown>
+        <!-- <div class="iconfont iconmd-time">
+        </div> -->
+      </div>
     </div> 
+    
    
     <div>
       <div
@@ -90,6 +108,7 @@
         :dialog-component-name="dialogComponentName"
       />
     </div>
+    </historyandfavorite>
   </div>
 </template>
 
@@ -103,9 +122,9 @@
   import { routeTo } from '../__config__/event.config';
   import network, { urlSearchParams } from '../__utils__/network';
   import NavigatorSubMenu from './NavigatorSubMenu';
-  import { STANDARD_TABLE_LIST_PREFIX, Version } from '../constants/global';
+  import { STANDARD_TABLE_LIST_PREFIX, Version, enableHistoryAndFavoriteUI } from '../constants/global';
   import { updateSessionObject } from '../__utils__/sessionStorage';
-
+  import HistoryAndFavorite from './HistoryAndFavorite';
 
   export default {
     name: 'Navigator',
@@ -113,7 +132,8 @@
       SetPanel,
       Dialog,
       messagePanel,
-      ComAutoComplete
+      ComAutoComplete,
+      HistoryAndFavorite
     },
     
     data() {
@@ -126,6 +146,7 @@
           start: 0,
           total: 0
         },
+        enableHistoryAndFavoriteUI: enableHistoryAndFavoriteUI(),
         show: false,
         searchBtn: true,
         searchList: [],
@@ -208,6 +229,9 @@
         } else {
           this.changeSelectedPrimaryMenu(index);
         }
+      },
+      showDropdown() {
+        console.log(1212);
       },
       messageSlide() {
         this.messagePanel.show = !this.messagePanel.show;
@@ -578,5 +602,31 @@
         text-overflow: ellipsis;
       }
     }
+  }
+  .HistoryAndFavorite-time{
+    min-width: 100px;
+    .iconmd-time{
+      font-size:20px;
+      line-height: 33px;
+      color: #1F272C;
+      cursor: pointer;
+      &::after{
+        content: '...';
+        font-size: 14px;
+        vertical-align: super;
+        margin: 2px;
+      }
+    }
+    .history-and-favorite{
+       margin-left: -10px;
+       max-height: 700px;
+       overflow-y: auto;
+      .ark-select-dropdown{
+       
+      }
+      // position: absolute;
+       z-index: 99999;
+    }
+    
   }
 </style>
