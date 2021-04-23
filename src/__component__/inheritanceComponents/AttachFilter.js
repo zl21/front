@@ -14,7 +14,7 @@ import regExp from '../../constants/regExp';
 import network from '../../__utils__/network';
 
 // 深拷贝
-const deepClone = (arr) => {  
+const deepClone = (arr) => {
   const obj = arr.constructor == Array ? [] : {};
   // 第二种方法 var obj=arr instanceof Array?[]:{}
   // 第三种方法 var obj=Array.isArray(arr)?[]:{}
@@ -29,14 +29,14 @@ const deepClone = (arr) => {
 };
 class CustomAttachFilter {
   constructor(item) {
-    this.item = item; 
+    this.item = item;
     // if (this.item.Components) {
     //   this.Input = this.item.Components;
     // } else {
     // this.Input = deepClone(test);
     // }
     const DefaultInput = Vue.extend(MopMultiSelect);
-    
+
     this.Input = new DefaultInput().$options;
     // console.log(this.Input);
     delete this.Input._Ctor;
@@ -48,9 +48,9 @@ class CustomAttachFilter {
     if (this.item.Components) {
       return this.item.Components;
     }
-    
+
     const Con = Vue.extend(this.Input);
-    
+
     const obj = { ...new Con().$options };
     this.item.Components = obj;
     return this.Input;
@@ -71,7 +71,7 @@ class CustomAttachFilter {
     // defaultProps.disabled = {
     //   default:() => this.item.readonly && (this.item.webconf && !this.item.webconf.ignoreDisableWhenEdit)
     // }
-    
+
     defaultProps.value = {
       default: () => defaultValue
     };
@@ -100,11 +100,11 @@ class CustomAttachFilter {
             `${this.item.fkobj.serviceId ? (`/${this.item.fkobj.serviceId}`) : ''
             }/p/cs/menuimport`
         },
-        inputname: this.item.inputname, 
+        inputname: this.item.inputname,
         placeholder: placeholder || `${(dataProp.input && dataProp.input.props) ? dataProp.input.props.placeholder : '请输入'}${this.item.coldesc}`
       })
     };
-   
+
     // this.settingPlaceholder();
     // if (this.item.type === 'NUMBER') {
     //   this.numericTypes();
@@ -112,7 +112,7 @@ class CustomAttachFilter {
     // if (this.item.isuppercase) {
     //   this.uppercase();
     // }
-    
+
 
     Object.keys(this.item.props).map((item) => {
       // console.log(item, this.item.props.regx, this.item.props[item], this.Input.props[item]);
@@ -138,12 +138,14 @@ class CustomAttachFilter {
       this.clickTimer = window.setTimeout(() => {
         if (type === 'clear') {
           this.$emit('on-change', { value: null, selected: [], type }, this);
-          this.$_live_getChildComponent(window.vm, `${_self.item._id}${_self.item.colname}`).value = [];
+          let child = this.$_live_getChildComponent(window.vm, `${_self.item._id}${_self.item.colname}`);
+          if (child) child.value = []
         } else {
           // 处理弹窗单选数据
           // eslint-disable-next-line no-nested-ternary
           this.$emit('on-change', { value: this.PropsData.fkdisplay === 'pop' ? ((this.selected && this.selected.length > 0) ? this.selected[0].ID : '') : this.value, selected: this.selected, type }, this);
-          this.$_live_getChildComponent(window.vm, `${_self.item._id}${_self.item.colname}`).value = this.selected;
+          let child = this.$_live_getChildComponent(window.vm, `${_self.item._id}${_self.item.colname}`);
+          if (child) child.value = this.selected;
         }
       }, 200);
     };
@@ -167,7 +169,7 @@ class CustomAttachFilter {
   }
 
   numericTypes() { // 数字类型输入控制
-    // 只能输入 正整数 
+    // 只能输入 正整数
     let string = '';
     this.item.length = 100;
 
@@ -180,7 +182,7 @@ class CustomAttachFilter {
         this.item.scale
       }})?$`;
     }
-    
+
     const typeRegExp = new RegExp(string);
     if (this.item.scale > 0) {
       this.item.props.regx = typeRegExp;
