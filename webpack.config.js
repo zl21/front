@@ -219,7 +219,17 @@ module.exports = env => ({
   ],
   mode: env && env.production ? 'production' : 'development',
   resolve: {
-    extensions: ['.js', '.json', '.vue', '.css']
+    extensions: ['.js', '.json', '.vue', '.css'],
+    fallback: {
+      path: require.resolve('path-browserify'),
+      os: require.resolve("os-browserify/browser"),
+      crypto: require.resolve("crypto-browserify"),
+      https: require.resolve("https-browserify"),
+      http: require.resolve("stream-http"),
+      vm: require.resolve("vm-browserify"),
+      stream: require.resolve("stream-browserify"),
+      constants: require.resolve("constants-browserify")
+    },
   },
   optimization: {
     minimizer: [new TerserJSPlugin({
