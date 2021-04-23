@@ -81,7 +81,7 @@
   import { mapState } from 'vuex';
   import agTable from '../assets/js/ag-grid-table-pure';
   import CommonTable from './CommonTable.vue';
-  import { floatingFilter } from '../constants/global.js';
+  import { floatingFilter } from '../constants/global';
 
   export default {
     name: 'AgTable',
@@ -260,6 +260,22 @@
       btnclick(obj) {
         this.$emit('btnclick', obj);
       },
+
+      // 是否有列开起了过滤
+      existFilter(data) {
+        let result = false;
+        if (!data) {
+          return result;
+        }
+        
+        for (let i = 0; i < data.length; i++) {
+          if (data[i].isagfilter) {
+            result = true;
+          }
+        }
+        return result;
+      },
+
       agGridTable(th, row, data) { // agGrid
         const self = this;
         const arr = [];
@@ -275,12 +291,24 @@
         datas.hideColumn = self.userConfigForAgTable.hideColumn; // 隐藏列
         datas.colPosition = self.userConfigForAgTable.colPosition; // 移动列
         datas.pinnedPosition = self.userConfigForAgTable.fixedColumn; // 固定列
+
+        // 如果每一列的都关过滤则在表格配置里关闭过滤，避免展示一个空白的过滤条
+        let isOpenfloatingFilter = true;
+        const isAllCloseFilter = !this.existFilter(th);
+
+        if (isAllCloseFilter) {
+          isOpenfloatingFilter = false;
+        }
+        // 全局关闭过滤优先级更高
+        if (!floatingFilter()) {
+          isOpenfloatingFilter = false;
+        }
         // selectIdArr
         const agTableRes = agTable(this.$refs.agGridTableContainer, {
           cssStatus: self.legend, // 颜色配置信息
           defaultSort: arr, // 默认排序
           datas, //  所有返回数据
-          floatingFilter: floatingFilter(),
+          floatingFilter: isOpenfloatingFilter,
           cellSingleClick: (colDef, rowData, target) => {
             // 参数说明
             // colDef：包含表头信息的对象

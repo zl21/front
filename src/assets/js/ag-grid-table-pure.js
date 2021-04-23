@@ -199,7 +199,7 @@ fkComponent.prototype.init = function (params) {
   const { value } = params;
   // 设置fk icon 的样式
   const template = value !== null && value !== ''
-    ? `<i class="iconfont ${cssFeatures.hover} iconbj_link" data-target-tag="fkIcon" style="color: #0f8ee9; font-size: 12px"></i> ${params.value || ''}`
+    ? `<i class="iconfont ${cssFeatures.hover} iconbj_link" data-target-tag="fkIcon" style="color: #0f8ee9; font-size: 12px"></i> <span title="${params.value || ''}">${params.value || ''}</span>`
     : '';
 
   if (params.data && params.data.ID.val !== '合计' && params.data.ID.val !== '总计') {
@@ -207,7 +207,7 @@ fkComponent.prototype.init = function (params) {
     eGui.innerHTML = template;
   } else if (params.data && params.data.ID.val === '合计' || params.data.ID.val === '总计') {
     // 如果是fk 并且返回了总计行，则直接显示值
-    eGui.innerHTML = params.value;
+    eGui.innerHTML = `<span title="${params.value || ''}">${params.value || ''}</span>`;
   } else if (params.columnApi.getRowGroupColumns().length !== 0) {
     // 当前模式如果为分组模式，则不考虑特殊情况，所有行正常渲染。
     eGui.innerHTML = template;
@@ -230,9 +230,10 @@ mopFkComponent.prototype.init = function(params) {
     try {
       // const info =  JSON.parse(data[columnName].refobjid);
       // eGui.innerHTML = info.lists.result.map(d => d.screen_string).toString();
-      eGui.innerHTML = params.value;
+      // 注意title里必须先用单引号包裹json，不然显示不出来
+      eGui.innerHTML =  `<span title='${params.value || ""}'>${params.value || ''}</span>`;
     } catch (e) {
-      eGui.innerHTML = params.value;
+      eGui.innerHTML =  `<span title='${params.value || ""}'>${params.value || ''}</span>`;
       console.error(e);
     }
   }
@@ -523,11 +524,12 @@ const initializeAgTable = (container, opt) => {
       agTable.fixContainerHeight();
     };
 
-    // 判断agGridTableContainer是否已经被ag实例化
-    if (agGridTableContainer.agTable) {
-      agGridTableContainer.agTable.customizeOptions = Object.assign(agGridTableContainer.agTable.customizeOptions || {}, options || {});
-      return agGridTableContainer.agTable;
-    }
+    // 由于数据是异步获取的，表格参数第一次拿到的不一定对，所有需要注释下面代码，重新实例化
+    // // 判断agGridTableContainer是否已经被ag实例化
+    // if (agGridTableContainer.agTable) {
+    //   agGridTableContainer.agTable.customizeOptions = Object.assign(agGridTableContainer.agTable.customizeOptions || {}, options || {});
+    //   return agGridTableContainer.agTable;
+    // }
 
     cleanChildNode(agGridTableContainer); // 清空agGridTableContainer节点
 
@@ -601,7 +603,7 @@ const initializeAgTable = (container, opt) => {
         if (params.colDef.type.toLocaleLowerCase() === 'string' && params.value && params.value.length > 1000) {
           return `${params.value.substring(0, 50)}...`;
         }
-        return params.value;
+        return `<span title="${params.value || ''}">${params.value || ''}</span>`;
       };
     };
 
@@ -664,6 +666,13 @@ const initializeAgTable = (container, opt) => {
         item.suppressToolPanel = d.colname === 'ID'; // 锁定ID列工具栏操作能力
         item.pinned = d.colname === 'ID' ? 'left' : getPinnedState(d.colname);
         item.maxWidth = d.colname === 'ID' ? 80 : null; // 为ID列预设最大宽度
+        item.width = d.webconf && d.webconf.standard_width ? Number(d.webconf.standard_width) : null; // 为ID列预设宽度
+        // 此处加判断条件，是因为autoSizeAllColumns()方法会让width失效，但是如果设置了最小和最大宽，那么无论使用任何API按钮，都无法限制列的大小
+        if(item.width) {
+          item.maxWidth = item.width
+          item.minWidth = item.width
+        } 
+
         item.suppressResize = d.colname === 'ID'; // 禁止拖动ID列边缘以改变其列宽
         item.suppressMovable = d.colname === 'ID'; // 禁用ID列拖拽
         item.lockPinned = true; // 锁定序号列的pinned功能
@@ -1112,7 +1121,6 @@ const initializeAgTable = (container, opt) => {
 
       return Object.assign({},obj,agGridOptions())
     };
-
     const gridOptions = initGridOptions();
 
     // 初始化ag grid
@@ -1173,7 +1181,6 @@ const initializeAgTable = (container, opt) => {
         // console.table(positionColumns.map(colname => ({ name: columnMap[colname].name, colname })));
         // console.table(visibleColumns.map(d => ({ name: d.name, colname: d.colname })));
         // console.table(unVisibleColumns.map(d => ({ name: d.name, colname: d.colname })));
-
         api.setColumnDefs(transformColumnDefs(visibleColumns.concat(unVisibleColumns)));
       } else {
         api.setColumnDefs(transformColumnDefs(data));
