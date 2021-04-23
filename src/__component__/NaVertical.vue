@@ -619,6 +619,8 @@
     }
     .history-and-favorite{
        margin-left: -10px;
+       max-height: 700px;
+       overflow-y: auto;
       .ark-select-dropdown{
        
       }
