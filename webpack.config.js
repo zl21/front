@@ -42,6 +42,9 @@ module.exports = env => ({
   },
   devServer: {
     compress: true,
+    stats:{
+      errorDetails:true,
+    },
     port: 8209,
     host: 'localhost',
     open: true,
@@ -222,13 +225,24 @@ module.exports = env => ({
     extensions: ['.js', '.json', '.vue', '.css'],
     fallback: {
       path: require.resolve('path-browserify'),
-      os: require.resolve("os-browserify/browser"),
-      crypto: require.resolve("crypto-browserify"),
-      https: require.resolve("https-browserify"),
-      http: require.resolve("stream-http"),
-      vm: require.resolve("vm-browserify"),
-      stream: require.resolve("stream-browserify"),
-      constants: require.resolve("constants-browserify")
+      module: false,
+           dgram: false,
+           dns: false,
+           fs:false,
+           https: false,
+           http:false,
+           net: false,
+           inspector:false,
+           tls:false,
+           crypto:false,
+           request:false,
+           stream_http:false,
+           vm:false,
+           stream:false,
+           constants:false,
+           os:false,
+           worker_threads:false,
+           child_process:false
     },
   },
   optimization: {
