@@ -572,7 +572,7 @@
           // 如果取消则不走查树
           searchData = {};
         }
-        this.treeSearchData = searchData;
+        this.treeSearchData = searchData || {};
         this.searchData.startIndex = 0;
         // this.getQueryListForAg(this.searchData);
        
@@ -2273,7 +2273,7 @@
       },
       getQueryListPromise(data,searchDataRes) {
         // 重拼树的数据
-        data = Object.assign(data, JSON.parse(JSON.stringify(this.treeSearchData)));
+        data = Object.assign(data, JSON.parse(JSON.stringify(this.treeSearchData || {})));
         const promise = new Promise((resolve, reject) => {
           this.requiredCheck().then(() => {
             this.$R3loading.show();
