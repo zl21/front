@@ -48,7 +48,11 @@ class CustomDatePicker {
             return 'datetimerange';
             break;
           case 'OBJ_DATENUMBER':
-            return 'date';
+            if(this.item.detailType){
+              return 'date';
+            }else{
+              return 'datetimerange';
+            }
             break;
           case 'YearMonth':
             return 'month'

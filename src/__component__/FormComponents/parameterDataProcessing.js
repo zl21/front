@@ -143,6 +143,7 @@ export default class ParameterDataProcessing {
     if (this.item.display === 'OBJ_FK') {
       if (['mrp', 'drp', 'pop', 'mop'].includes(this.item.fkobj.searchmodel) && (this.item.refobjid && this.item.refobjid != '-1')) {
         let arr = []
+        console.log(this.item);
         if(this.item.fkobj.searchmodel === 'mop' && this.item.refobjid){
           arr.push({
             ID: this.item.refobjid.split(','),
