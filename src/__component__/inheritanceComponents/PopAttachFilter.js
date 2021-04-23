@@ -12,7 +12,7 @@ import dataProp from '../../__config__/props.config';
 import regExp from '../../constants/regExp';
 
 // 深拷贝
-const deepClone = (arr) => {  
+const deepClone = (arr) => {
   const obj = arr.constructor == Array ? [] : {};
   // 第二种方法 var obj=arr instanceof Array?[]:{}
   // 第三种方法 var obj=Array.isArray(arr)?[]:{}
@@ -27,14 +27,14 @@ const deepClone = (arr) => {
 };
 class CustomAttachFilter {
   constructor(item) {
-    this.item = item; 
+    this.item = item;
     // if (this.item.Components) {
     //   this.Input = this.item.Components;
     // } else {
     this.Input = deepClone(ComAttachFilter);
     // }
     // const DefaultInput = Vue.extend(ComAttachFilter);
-    
+
     // this.Input = new DefaultInput().$options;
     // console.log(this.Input);
     delete this.Input._Ctor;
@@ -46,9 +46,9 @@ class CustomAttachFilter {
     if (this.item.Components) {
       return this.item.Components;
     }
-    
+
     const Con = Vue.extend(this.Input);
-    
+
     const obj = { ...new Con().$options };
     this.item.Components = obj;
     return this.Input;
@@ -65,7 +65,7 @@ class CustomAttachFilter {
         ID: this.item.refobjid
       }];
     }
-    
+
     defaultProps.defaultSelected = {
       default: () => defaultValue
     };
@@ -139,7 +139,7 @@ class CustomAttachFilter {
     // if (this.item.isuppercase) {
     //   this.uppercase();
     // }
-    
+
 
     Object.keys(this.item.props).map((item) => {
       // console.log(item, this.item.props.regx, this.item.props[item], this.Input.props[item]);
@@ -150,7 +150,7 @@ class CustomAttachFilter {
       }
       return item;
     });
-    
+
     this.Input.props = defaultProps;
   }
 
@@ -162,9 +162,10 @@ class CustomAttachFilter {
       this.clickTimer = window.setTimeout(() => {
         if (type === 'clear') {
           this.$emit('valuechange', { value: null, selected: [], type }, this);
-          this.$_live_getChildComponent(this.$_live_getChildComponent(window.vm, this.$store.state.global.activeTab.keepAliveModuleName), `${_self.item._id}${_self.item.colname}`).value = [];
+          let child = this.$_live_getChildComponent(this.$_live_getChildComponent(window.vm, this.$store.state.global.activeTab.keepAliveModuleName), `${_self.item._id}${_self.item.colname}`);
+          if (child) child.value = []
         } else {
-          // 处理弹窗单选数据
+          // 处理弹窗单选数据123
           // eslint-disable-next-line no-nested-ternary
           this.$emit('valuechange', { value: this.propstype.fkdisplay === 'pop' ? ((this.selected && this.selected.length > 0) ? this.selected[0].ID : '') : this.value, selected: this.selected, type }, this);
           let valueData = this.selected;
@@ -172,8 +173,8 @@ class CustomAttachFilter {
             valueData = this.value;
           }
           let target = this.$_live_getChildComponent(window.vm, this.$store.state.global.activeTab.keepAliveModuleName);
-
-          this.$_live_getChildComponent(target, `${_self.item._id}${_self.item.colname}`).value =valueData;
+          let child = this.$_live_getChildComponent(target, `${_self.item._id}${_self.item.colname}`);
+          if (child) child.value =valueData;
         }
       }, 200);
     };
@@ -197,7 +198,7 @@ class CustomAttachFilter {
   }
 
   numericTypes() { // 数字类型输入控制
-    // 只能输入 正整数 
+    // 只能输入 正整数
     let string = '';
     this.item.length = 100;
 
@@ -210,7 +211,7 @@ class CustomAttachFilter {
         this.item.scale
       }})?$`;
     }
-    
+
     const typeRegExp = new RegExp(string);
     if (this.item.scale > 0) {
       this.item.props.regx = typeRegExp;
