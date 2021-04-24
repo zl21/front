@@ -10,54 +10,62 @@
  import ComAttachFilter from '../ComAttachFilternew.vue';
  import dataProp from '../../__config__/props.config';
  import regExp from '../../constants/regExp';
+ import { SetPlaceholder } from './setProps';
  
- // 深拷贝
- const deepClone = (arr) => {
-   const obj = arr.constructor == Array ? [] : {};
-   // 第二种方法 var obj=arr instanceof Array?[]:{}
-   // 第三种方法 var obj=Array.isArray(arr)?[]:{}
-   for (const item in arr) {
-     if (typeof arr[item] === 'object') {
-       obj[item] = deepClone(arr[item]);
-     } else {
-       obj[item] = arr[item];
-     }
-   }
-   return obj;
- };
  class CustomAttachFilter {
    constructor(item) {
      this.item = item;
-     // if (this.item.Components) {
-     //   this.Input = this.item.Components;
-     // } else {
-     this.Input = deepClone(ComAttachFilter);
-     // }
-     // const DefaultInput = Vue.extend(ComAttachFilter);
- 
-     // this.Input = new DefaultInput().$options;
-     // console.log(this.Input);
-     delete this.Input._Ctor;
+     this.mergeProps();
+     this.Components = this.setComponents();
+    
    }
+   setComponents() {
+    let data = this.item; 
+    let self = this;
+    return  {
+      name: 'ComAttachFilterPop',
+      model: {
+        prop: 'value',
+        event: 'on-change',
+     },
+      props:{
+        value:{
+          type: [Array,String],
+          default () {
+            return {};
+          }
+        }
+      },
+      render(h) {
+        return h(ComAttachFilter,
+          {
+            props: {
+              propstype:data.propstype,
+              value:this.value,
+              defaultValue:data.defaultValue
+            },
+            on:{
+              'on-change':(values)=>{
+                this.$emit('on-change',values, this);
+              }
+            }
+        })
+      },
+      mounted() {
+        console.log(this.value,'mounted')
+      }
+     }
+   } 
+    
  
    init() {
-     this.mergeProps();
-     this.mergeMethods();
-     if (this.item.Components) {
-       return this.item.Components;
-     }
- 
-     const Con = Vue.extend(this.Input);
- 
-     const obj = { ...new Con().$options };
-     this.item.Components = obj;
-     return this.Input;
+     return this.Components;
    }
  
    // 合并props
    mergeProps() {
-     const defaultProps = { ...this.Input.props };
- 
+     
+    //  this.item.props = {...item}
      let defaultValue = [];
      if (this.item.refobjid && this.item.refobjid!== -1) {
        defaultValue = [{
@@ -65,17 +73,11 @@
          ID: this.item.refobjid
        }];
      }
- 
-     defaultProps.defaultSelected = {
-       default: () => defaultValue
-     };
- 
-     defaultProps.defaultValue = {
-       default: () => this.item.valuedata || this.item.default
-     };
+
      const placeholder = this.item.webconf && this.item.webconf.placeholder ? this.item.webconf.placeholder : null;
-     defaultProps.propstype = {
-       default: () => ({
+     this.item.defaultValue =this.item.valuedata || this.item.default;
+     this.item.defaultSelected =defaultValue;
+     this.item.propstype = {
          disabled: this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true),
          AutoData: [],
          Selected: defaultValue,
@@ -127,8 +129,7 @@
          inputname: this.item.inputname,
          optionTip: this.item.fkobj.searchmodel === 'mop',
          show: this.item.fkobj.searchmodel === 'mop',
-         placeholder: placeholder || `${(dataProp.input && dataProp.input.props) ? dataProp.input.props.placeholder : '请输入'}${this.item.coldesc}`
-       })
+         placeholder: new SetPlaceholder(this.item).init()
      };
  
      // this.settingPlaceholder();
@@ -140,17 +141,9 @@
      // }
  
  
-     Object.keys(this.item.props).map((item) => {
-       // console.log(item, this.item.props.regx, this.item.props[item], this.Input.props[item]);
-       if (defaultProps[item]) {
-         defaultProps[item].default = () => (function (value) {
-           return value;
-         }(this.item.props[item]));
-       }
-       return item;
-     });
+   
  
-     this.Input.props = defaultProps;
+    //  this.item.props = defaultProps;
    }
  
    // 合并methods

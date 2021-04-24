@@ -5,7 +5,7 @@
     <AttachFilter
       v-if="!showDisabled"
       ref="AttachFilter"
-      v-model="value"
+      v-model="InputValue"
       v-bind="propsData"
       :auot-data="propsData.AutoData"
       :default-selected="selected"
@@ -37,7 +37,7 @@
     <Input
       v-if="showDisabled"
       ref="AttachFilter"
-      v-model="value"
+      v-model="InputValue"
       v-bind="propsData"
       type="text"
       :auot-data="propsData.AutoData"
@@ -71,17 +71,21 @@
 
   export default {
     name: 'ComAttachFilter',
+    model: {
+      prop: 'value',
+      event: 'on-change',
+   },
     props: {
-      defaultValue: {
-        type: String,
-        // 后台传参
-        default() {
-          return '';
-        }
-      },
-      defaultSelected: {
+      // defaultValue: {
+      //   type: String,
+      //   // 后台传参
+      //   default() {
+      //     return '';
+      //   }
+      // },
+      value: {
         // 默认选中值
-        type: Array,
+        type: [Array,String],
         default() {
           return [];
         }
@@ -104,7 +108,7 @@
           }
         ],
         clickTimer: 0,
-        value: '',
+        InputValue: '',
         showDisabled: false,
         fkobj: {}, // 过滤
         propsData: {},
@@ -115,16 +119,18 @@
       propstype() {
         // 将设置的props和默认props进行assign
         // const item = this.items;
-        if (this.propstype.fkdisplay === 'pop') {
-          this.value = this.defaultSelected && this.defaultSelected.length > 0 ? this.defaultSelected[0].Label : '';
-        } else if ((this.defaultSelected && this.defaultSelected.length > 0) && this.resultData && Object.keys(this.resultData).length > 0) {
-          this.value = `已经选中${this.resultData.value.IN.length}条数据`;
-        } else {
-          this.value = this.defaultSelected && this.defaultSelected.length > 0 ? Array.isArray(this.defaultSelected[0].ID) ? `已经选中${this.defaultSelected[0].ID.length}条数据` : `已经选中${this.defaultSelected.length}条数据` : '';
-        }
+       if(Array.isArray(this.selectd)){
+        if(this.value[0] && this.value[0].ID && this.value[0].ID!==-1 ){
+          this.selected = this.value; 
+          this.InputValue = this.value[0] && this.value[0].Label;
+
+        }     
+      }else{
+        this.InputValue = this.value
+      }
         
-        
-        this.selected = this.defaultSelected;
+       
+        //this.selected = this.value;
         // if (this.selected[0].Label && /total/.test(this.selected[0].Label)) {
         //   const valuedata = JSON.parse(this.selected[0].Label);
         //   this.selected[0].Label = `已经选中${valuedata.total}条` || '';
@@ -137,59 +143,44 @@
         } else {
           this.showDisabled = false;
         }
-        if (this.propstype.fkdisplay === 'pop') {
-          this.propstype.show = false;
-          this.propsData.componentType = myPopDialog;
-        } else {
-          this.propsData.componentType = Dialog;
-          if (this.defaultSelected[0] && this.defaultSelected[0].ID && /选中/.test(this.value)) {
-            // const data = this.defaultSelected[0].ID; 
-            const data = Array.isArray(this.defaultSelected[0].ID) ? this.defaultSelected[0].ID : JSON.parse(this.defaultSelected[0].ID); 
-            // 谢世华  修改处理默认值逻辑
-            
-            if (data.value) {
-              data.value.reftable = this.propsData.reftable;
-              data.value.reftableid = this.propsData.reftableid;
-              data.value.serviceId = this.propsData.serviceId;
-
-              this.filterDate = {
-                text: JSON.stringify(data.lists),
-                value: data.value,
-              };
-              this.resultData = {
-                text: JSON.stringify(data.lists),
-                value: data.value,
-              };
-            }
-          }
-          this.propstype.show = true;
-        }
+        
       },
       deep: true
     },
     methods: {
       valueChange(type) {
-        window.clearTimeout(this.clickTimer);
-        this.clickTimer = window.setTimeout(() => {
+        let selectd = this.selected;
+        let InputValue = this.InputValue;
+        clearTimeout(this.clickTimer);
+        this.clickTimer = setTimeout(() => {
+          console.log(InputValue);
           if (type === 'clear') {
-            this.$emit('valuechange', { value: null, selected: [], type }, this);
+            this.$emit('on-change','','clear', this);
           } else {
             // 处理弹窗单选数据
-            this.$emit('valuechange', { value: this.propstype.fkdisplay === 'pop' ? ((this.selected && this.selected.length > 0) ? this.selected[0].ID : '') : this.value, selected: this.selected, type }, this);
+            if(selectd[0] && selectd[0].ID){
+              this.$emit('on-change',selectd,type, this);
+            }else{
+              this.$emit('on-change',InputValue,type, this);
+            }
+            
           }
         }, 200);
       },
       attachFilterInput(value) {
-        this.value = value;
+        this.InputValue = value;
         this.selected = [];
-
         this.inputValueChange(value);
+        
       },
       inputValueChange(value) {
         // 外键的模糊搜索
+     
         if (!value) {
           return false;
         }
+           
+        
         fkHttpRequest().fkFuzzyquerybyak({
           searchObject: {
             ak: value,
@@ -206,22 +197,25 @@
       },
       // AttachFilter event
       attachFilterChange(value) {
-        this.value = value;
+        this.InputValue = value;
         // 谢世华  为了处理标准列表界面字段数据消失问题
         // if (value.indexOf('已经选中') >= 0) {
-        //   this.valueChange('change');
+        //   this.InputValueChange('change');
         // }
+      
         this.valueChange('change');
 
       },
       attachFilterSelected(row) {
-        this.value = row.label;
+        this.InputValue = row.label;
+        
         this.selected = [
           {
             Label: row.label,
             ID: row.value
           }
         ];
+       
         this.propsData.AutoData = [];
         this.valueChange('selected');
         return true;
@@ -231,7 +225,7 @@
       },
       attachFilterInputBlur(event, $this) {
         if (!this.selected[0] && this.propsData.blurType !== false) {
-          this.value = '';
+          this.InputValue = '';
           this.selected = [
             {
               Label: '',
@@ -240,7 +234,7 @@
           ];
           this.filterDate = {};
         }
-        // this.valueChange('blur');
+        // this.InputValueChange('blur');
         this.$emit('on-blur', event, $this);
       },
       attachFilterInputKeyup(value, event, $this) {
@@ -268,11 +262,12 @@
         }
       },
       attachFilterClear() {
-        this.value = '';
+        this.InputValue = '';
         this.resultData = {};
         this.selected = [
         ];
         this.filterDate = {};
+        console.log('clear,==========');
         this.valueChange('clear');
       },
       attachFilterPopperShow(value, instance) {
@@ -356,9 +351,9 @@
               ID: $this._data.parms.ID.val
             }
           ];
-          this.value = value;
+          this.InputValue = value;
         } else {
-          this.value = '';
+          this.InputValue = '';
           this.selected = [
             {
               Label: '',
@@ -373,20 +368,32 @@
     },
     created() {
       this.propsData = JSON.parse(JSON.stringify(this.propstype));
-      this.value = this.defaultValue;
+     
       if (this.propsData.disabled) {
         this.showDisabled = this.propsData.disabled;
       } else {
         this.showDisabled = false;
       }
+       this.InputValue = this.value;
       
-      this.selected = this.defaultSelected;
-      if (!this.selected[0]) {
-        this.selected = [{
-          Label: '',
-          ID: ''
-        }];
+
+      if(Array.isArray(this.value)){
+        if(this.value[0] && this.value[0].ID && this.value[0].ID!==-1 ){
+          this.selected = this.value; 
+          this.InputValue = this.value[0] && this.value[0].Label;
+
+        }     
+      }else{
+        this.InputValue = this.value
       }
+
+      // this.selected = this.InputValue;
+      // if (!this.selected[0]) {
+      //   this.selected = [{
+      //     Label: '',
+      //     ID: ''
+      //   }];
+      // }
        this.propstype.show = false;
         this.propsData.componentType = myPopDialog;
 

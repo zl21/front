@@ -81,7 +81,7 @@ class CustomAttachFilter {
     // };
 
     const placeholder = this.item.webconf && this.item.webconf.placeholder ? this.item.webconf.placeholder : null;
-    defaultProps.PropsData = {
+    defaultProps.propsData = {
       default: () => ({
         disabled: this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true), //控制字段是否可编辑
         blurType: false, // 失去光标是否默认选中第一行
@@ -143,7 +143,7 @@ class CustomAttachFilter {
         } else {
           // 处理弹窗单选数据
           // eslint-disable-next-line no-nested-ternary
-          this.$emit('on-change', { value: this.PropsData.fkdisplay === 'pop' ? ((this.selected && this.selected.length > 0) ? this.selected[0].ID : '') : this.value, selected: this.selected, type }, this);
+          this.$emit('on-change', { value: this.propsData.fkdisplay === 'pop' ? ((this.selected && this.selected.length > 0) ? this.selected[0].ID : '') : this.value, selected: this.selected, type }, this);
           let child = this.$_live_getChildComponent(window.vm, `${_self.item._id}${_self.item.colname}`);
           if (child) child.value = this.selected;
         }

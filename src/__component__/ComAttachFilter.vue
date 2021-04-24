@@ -186,7 +186,7 @@
       attachFilterInput(value) {
         this.value = value;
         this.selected = [];
-
+        console.log('attachFilterInput');
         this.inputValueChange(value);
       },
       inputValueChange(value) {

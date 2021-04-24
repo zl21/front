@@ -1,12 +1,44 @@
+import network from '../../__utils__/network.js';
+
 export default {
   data() {
     return {
       actived:false, // 渲染未完成
     };
   },
+  methods:{
+    validateInput() {
+      console.log(this.value);
+      return new Promise((resolve) => {
+  
+      const preverifyenabled = this.items.preverifyenabled;
+      if (preverifyenabled) {
+        network.post('/p/cs/verifyObject', {
+          OBJ_ID: this.$route.params.itemId === 'New' ? -1 : this.$route.params.itemId,
+          TABLE_NAME: this.$route.params.tableName,
+          VERIFY_COLUMN: {
+            [this.items.field]: this.value
+          }
+        }).then((res) => {
+          if (res.data.code === 1) {
+            resolve(res.data.message);
+            // this.$Modal.fcError({
+            //   title: '错误',
+            //   content: res.data.message,
+            //   mask: true
+            // });
+          }else{
+            resolve('');
+          }
+        });
+      }
+    });
+    },
+  },
   mounted() {
     // 设置校验规则
     let required = !this.items.readonly && this.items.isnotnull; 
+    let self = this;
     this.items.rules = {
       required: {
         type:required,
@@ -14,10 +46,10 @@ export default {
         trigger: 'blur'
       }, 
       trigger:{
-          blur:{
-            // max:3,
-            message: '失去光标最大长度为3', 
-          },
+          // blur:{
+          //    max:3,
+          //   message: '失去光标最大长度为3', 
+          // },
           // change:{
           //   regx:'',
           //   min:3,
@@ -36,9 +68,7 @@ export default {
           // },
           change:{
             callback:function(val){
-              return new Promise((resolve) => {
-                      resolve(` 获取的值${val}`);
-              });
+              return self.validateInput();
             },
           }            
       },

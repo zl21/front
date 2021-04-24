@@ -61,14 +61,19 @@ export default {
           ParentForm.formDataLabel[this.items.colname] = val;
 
           
-
+          let keepAliveModuleName = (this.activeTab.keepAliveModuleName).toLocaleUpperCase();
             // 初始化的状态
             if (!this.actived) {
-              if (/NEW/.test(this.activeTab.keepAliveModuleName)) {
+              
+              if (/NEW/.test(keepAliveModuleName)) {
                 // 删除空值
+                
+
                 if (isEmpty(val)) {
                   delete ParentForm.formData[this.items.colname]
                 }
+                ParentForm.formChangeData = JSON.parse(JSON.stringify(ParentForm.formData));
+                console.log(JSON.stringify(ParentForm.formChangeData),'NEW');
               }
             } else {
               // 页面修改
@@ -83,16 +88,18 @@ export default {
                 }
               }
 
-              if (/NEW/.test(this.activeTab.keepAliveModuleName)) {
+              if (/NEW/.test(keepAliveModuleName)) {
                 // 新增  删除空值,且没有默认值     
                 ParentForm.formChangeData = Object.assign({}, ParentForm.formChangeData, current_data)
                 if (isEmpty(val) && isEmpty(this.defaultVale)) {
                   delete ParentForm.formData[this.items.colname]
                 }
+                
+                
               }else{
                 //详情明细  有值 
                 ParentForm.formChangeData = Object.assign({}, ParentForm.formChangeData, current_data)
-                console.log(JSON.stringify(ParentForm.formChangeData),'12');
+                
                 if (JSON.stringify(val) === JSON.stringify(this.defaultVale)) {
                   delete ParentForm.formChangeData[this.items.colname]
                   delete ParentForm.formChangeDataLabel[this.items.colname]
@@ -127,6 +134,7 @@ export default {
                 }
               }
             }
+
 
           if (ParentForm.$parent.formPanelChange) {
             ParentForm.$parent.formPanelChange(ParentForm.formChangeData, ParentForm.formDatadefault)
