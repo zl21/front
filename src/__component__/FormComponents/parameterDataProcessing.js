@@ -143,32 +143,46 @@ export default class ParameterDataProcessing {
 
     if (this.item.display === 'OBJ_FK') {
       let fkobj = this.item.fkobj.searchmodel || this.item.fkdisplay;
+      console.log(fkobj, this.item.refobjid,'===========');
+      if (['mop'].includes(fkobj) && this.item.valuedata && /total/.test(this.item.valuedata)) {
+        const valuedata = JSON.parse(this.item.valuedata);
 
-      if (['mrp', 'drp', 'pop', 'mop'].includes(fkobj) && (this.item.refobjid && this.item.refobjid != '-1')) {
-        let arr = []
-        // 多选change
-        const refobjid = (this.item.refobjid || '').split(',') || [];
-        console.log(this.item.valuedata ,this.item.name, this.item.default,'===');
-        const valuedata = (this.item.valuedata ? this.item.valuedata :this.item.default || '').split(',') || [];
-        if (refobjid.length > 0) {
-          arr = refobjid.reduce((currty, itemI, index) => {
-            currty.push({
-              ID: itemI || '',
-              Label: valuedata[index] || ''
+        return [
+          {
+            Label: `已经选中${valuedata.total}条` || '',
+            ID: this.item.valuedata
+          }
+        ]
+      }else{
+        if (['mrp', 'drp', 'pop', 'mop'].includes(fkobj) && (this.item.refobjid && this.item.refobjid != '-1')) {
+          let arr = []
+          // 多选change
+          const refobjid = (this.item.refobjid || '').split(',') || [];
+          console.log(this.item.valuedata ,this.item.name, this.item.refobjid,'===========');
+          const valuedata = (this.item.valuedata ? this.item.valuedata :this.item.default || '').split(',') || [];
+          if (refobjid.length > 0) {
+            arr = refobjid.reduce((currty, itemI, index) => {
+              currty.push({
+                ID: itemI || '',
+                Label: valuedata[index] || ''
+              });
+              return currty;
+            }, []);
+          }else{
+            arr.push({
+              ID: valuedata,
+              Label: valuedata
             });
-            return currty;
-          }, []);
-        }else{
-          arr.push({
-            ID: valuedata,
-            Label: valuedata
-          });
+          }
+  
+          return arr
         }
 
-        return arr
       }
+      
+      
 
-      return '';
+      // return '';
     }
 
     // 处理日期控件的默认值问题,区分列表还是单对象默认值

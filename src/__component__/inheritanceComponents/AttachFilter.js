@@ -81,7 +81,7 @@ class CustomAttachFilter {
     // };
 
     const placeholder = this.item.webconf && this.item.webconf.placeholder ? this.item.webconf.placeholder : null;
-    defaultProps.propsData = {
+    defaultProps.PropsData = {
       default: () => ({
         disabled: this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true), //控制字段是否可编辑
         blurType: false, // 失去光标是否默认选中第一行
@@ -93,6 +93,7 @@ class CustomAttachFilter {
           fkdisplay: this.item.fkobj.searchmodel,
           reftable: this.item.fkobj.reftable,
           serviceId: this.item.fkobj.serviceId,
+          saveType:this.item.detailType,
           reftableid: this.item.fkobj.reftableid,
           searchmodel: this.item.fkobj.searchmodel,
           show: this.item.fkobj.searchmodel === 'mop',
@@ -133,22 +134,22 @@ class CustomAttachFilter {
   // 合并methods
   mergeMethods() {
     const _self = this;
-    this.Input.methods.valueChange = function (type) { // 重写valueChange事件,给父节点的value复制，实现双向数据绑定效果
-      window.clearTimeout(this.clickTimer);
-      this.clickTimer = window.setTimeout(() => {
-        if (type === 'clear') {
-          this.$emit('on-change', { value: null, selected: [], type }, this);
-          let child = this.$_live_getChildComponent(window.vm, `${_self.item._id}${_self.item.colname}`);
-          if (child) child.value = []
-        } else {
-          // 处理弹窗单选数据
-          // eslint-disable-next-line no-nested-ternary
-          this.$emit('on-change', { value: this.propsData.fkdisplay === 'pop' ? ((this.selected && this.selected.length > 0) ? this.selected[0].ID : '') : this.value, selected: this.selected, type }, this);
-          let child = this.$_live_getChildComponent(window.vm, `${_self.item._id}${_self.item.colname}`);
-          if (child) child.value = this.selected;
-        }
-      }, 200);
-    };
+    // this.Input.methods.valueChange = function (type) { // 重写valueChange事件,给父节点的value复制，实现双向数据绑定效果
+    //   window.clearTimeout(this.clickTimer);
+    //   this.clickTimer = window.setTimeout(() => {
+    //     if (type === 'clear') {
+    //       this.$emit('on-change', { value: null, selected: [], type }, this);
+    //       let child = this.$_live_getChildComponent(window.vm, `${_self.item._id}${_self.item.colname}`);
+    //       if (child) child.value = []
+    //     } else {
+    //       // 处理弹窗单选数据
+    //       // eslint-disable-next-line no-nested-ternary
+    //       this.$emit('on-change', { value: this.PropsData.fkdisplay === 'pop' ? ((this.selected && this.selected.length > 0) ? this.selected[0].ID : '') : this.value, selected: this.selected, type }, this);
+    //       let child = this.$_live_getChildComponent(window.vm, `${_self.item._id}${_self.item.colname}`);
+    //       if (child) child.value = this.selected;
+    //     }
+    //   }, 200);
+    // };
 
 
     // 回车查询
