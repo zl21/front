@@ -270,10 +270,9 @@
 
 <script>
   /* eslint-disable arrow-parens,no-lonely-if,no-empty,no-return-assign,no-unused-expressions,arrow-body-style */
-  import network, { urlSearchParams } from '../../__utils__/network';
+  const R3 = window.R3.default;
 
-  import DownComponent from '../../__component__/DownComponent.vue';
-  import ComAttachFilter from '../../__component__/ComAttachFilter.vue';
+  const { network, urlSearchParams, components } = R3;
 
   export default {
     data() {
@@ -325,12 +324,12 @@
 
         /* 环境变量弹窗 */
         environmentVariableModal: false,
+        colid: '', // 表明的id
         environmentVariableValue: '', // 环境变量输入框里的值
       };
     },
     components: {
-      // eslint-disable-next-line vue/no-unused-components
-      ComAttachFilter, DownComponent
+      DownComponent: components.DownComponent
     },
     watch: {
       dataPermissionModal(val) {
@@ -412,6 +411,7 @@
               const obj = {
                 isEditPermissionTable: false
               };
+              this.colid = cur.AD_TABLE_ID && cur.AD_TABLE_ID.colid;
               Object.keys(cur).forEach((item) => {
                 obj[item] = cur[item].val;
               });
@@ -538,7 +538,7 @@
                 'align-items': 'center'
               }
             }, [
-              h(ComAttachFilter, {
+              h(components.ComAttachFilter, {
                 style: {
                   width: '150px',
                   'margin-right': '5px'
@@ -576,7 +576,7 @@
                       serviceId: this.comAttachFilterServiceId,
                       reftable: params.column.reftable,
                       reftableid: params.column.reftableid,
-                      colid: 169496,
+                      colid: this.colid,
                       show: false,
                       url: ''
                     }
