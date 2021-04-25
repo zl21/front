@@ -32,7 +32,7 @@
         value:{
           type: [Array,String],
           default () {
-            return {};
+            return '';
           }
         }
       },
@@ -52,7 +52,6 @@
         })
       },
       mounted() {
-        console.log(this.value,'mounted')
       }
      }
    } 

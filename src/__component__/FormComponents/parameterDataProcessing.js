@@ -143,7 +143,6 @@ export default class ParameterDataProcessing {
 
     if (this.item.display === 'OBJ_FK') {
       let fkobj = this.item.fkobj.searchmodel || this.item.fkdisplay;
-      console.log(fkobj, this.item.refobjid,'===========');
       if (['mop'].includes(fkobj) && this.item.valuedata && /total/.test(this.item.valuedata)) {
         const valuedata = JSON.parse(this.item.valuedata);
 
@@ -158,7 +157,6 @@ export default class ParameterDataProcessing {
           let arr = []
           // 多选change
           const refobjid = (this.item.refobjid || '').split(',') || [];
-          console.log(this.item.valuedata ,this.item.name, this.item.refobjid,'===========');
           const valuedata = (this.item.valuedata ? this.item.valuedata :this.item.default || '').split(',') || [];
           if (refobjid.length > 0) {
             arr = refobjid.reduce((currty, itemI, index) => {

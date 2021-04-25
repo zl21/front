@@ -73,7 +73,7 @@ export default {
                   delete ParentForm.formData[this.items.colname]
                 }
                 ParentForm.formChangeData = JSON.parse(JSON.stringify(ParentForm.formData));
-                console.log(JSON.stringify(ParentForm.formChangeData),'NEW');
+                //console.log(JSON.stringify(ParentForm.formChangeData),'NEW');
               }
             } else {
               // 页面修改
