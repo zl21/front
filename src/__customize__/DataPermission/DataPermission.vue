@@ -270,9 +270,11 @@
 
 <script>
   /* eslint-disable arrow-parens,no-lonely-if,no-empty,no-return-assign,no-unused-expressions,arrow-body-style */
-  const R3 = window.R3.default;
+  import network, { urlSearchParams } from '../../__utils__/network';
 
-  const { network, urlSearchParams, components } = R3;
+  import DownComponent from '../../__component__/DownComponent.vue';
+  import ComAttachFilter from '../../__component__/ComAttachFilter.vue';
+
 
   export default {
     data() {
@@ -329,7 +331,8 @@
       };
     },
     components: {
-      DownComponent: components.DownComponent
+      // eslint-disable-next-line vue/no-unused-components
+      ComAttachFilter, DownComponent
     },
     watch: {
       dataPermissionModal(val) {
