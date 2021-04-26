@@ -563,7 +563,7 @@
                     ...params.column,
                     fkdisplay: 'pop',
                     // 是否显示输入完成后是否禁用 true、false
-                    show: true,
+                    show: false,
                     // 是否显示筛选提示弹窗 true、false
                     filterTip: true,
                     // 是否选中后禁止编辑 true、false
@@ -615,7 +615,13 @@
                     }
 
                     if (item.selected.length > 0 && item.selected[0].ID) {
-                      const findTableIndex = this.tableData.findIndex(cur => cur[params.column.colname] === item.selected[0].Label);
+                      const findTableIndex = this.tableData.findIndex((cur, index) => {
+                        if (index !== params.index) {
+                          return cur[params.column.colname] === item.selected[0].Label;
+                        }
+                        return false;
+                      });
+
                       if (findTableIndex === -1) {
                         this.tableData[params.index][params.column.colname] = item.selected[0].Label;
                         this.tableData[params.index][`${params.column.colname}_Value`] = item.selected[0].ID;
