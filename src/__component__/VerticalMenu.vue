@@ -38,6 +38,7 @@
       NavigatorSubMenu,
     },
     computed: {
+      
       ...mapState('global', {
         menuLists: ({ menuLists }) => menuLists,
         primaryMenuIndex: state => state.primaryMenuIndex,
@@ -45,7 +46,7 @@
       }),
     },
     methods: {
-      ...mapMutations('global', ['changeSelectedPrimaryMenu']),
+      ...mapMutations('global', ['changeSelectedPrimaryMenu', 'hideMenu']),
 
       togglePrimaryMenu(data, index) {
         this.togglePrimaryMenuData = data;

@@ -338,5 +338,5 @@ export default [
       }      
     ],
     description: '列表查询规则'
-  },
+  }
 ];
