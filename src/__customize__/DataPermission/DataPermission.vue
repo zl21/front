@@ -15,7 +15,7 @@
     <div class="content">
       <div class="contentLeft">
         <Input
-          placeholder="请输入用户名"
+          placeholder="请输入角色名"
           clearable
           icon="ios-search"
           @on-clear="searchInputClear"
@@ -613,6 +613,7 @@
                       this.selectedDataList = [];
                       this.tableDeleteData = [];
                     }
+
                     if (item.selected.length > 0 && item.selected[0].ID) {
                       const findTableIndex = this.tableData.findIndex(cur => cur[params.column.colname] === item.selected[0].Label);
                       if (findTableIndex === -1) {
