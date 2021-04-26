@@ -215,6 +215,7 @@
       return {
         treeSearchData: {}, // 树配置的自定义参数，如有和框架查询接口同参数的字段，则覆盖
         popwinMessage: {},
+        TreeChange: true, // 是否是树的点击
         objTabActionDialogConfig: {}, // 自定义按钮配置
         urlArr: ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid', '/p/cs/exeAction'],
         tableButtons: [],
@@ -332,7 +333,7 @@
           // }
           clearTimeout(this.ztreetimer);
           this.ztreetimer = setTimeout(() => {
-            if (this.$refs && this.$refs.tree && this.mountedChecked) {
+            if (this.$refs && this.$refs.tree && this.mountedChecked && !this.TreeChange) {
               this.$refs.tree.getTreeInfo();
             }
           }, 50);
@@ -568,6 +569,7 @@
         } else if (this.searchData && this.searchData.reffixedcolumns) {
           delete this.searchData.reffixedcolumns;
         }
+        this.TreeChange = true;
         if (flag === false) {
           // 如果取消则不走查树
           searchData = {};
@@ -722,6 +724,7 @@
 
         const { range } = this.searchData;
         this.searchData.startIndex = range * (page - 1);
+        this.TreeChange = true;
         this.getQueryList();
       },
       onPageSizeChange(pageSize) {
@@ -1738,6 +1741,7 @@
       },
     
       buttonClick(type, obj) {
+        this.TreeChange = false;
         this.setActiveTabActionValue({});// 点击按钮前清除上一次按钮存的信息
         // this.resetType = false;
         if (type === 'fix') {

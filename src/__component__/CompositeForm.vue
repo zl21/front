@@ -557,6 +557,9 @@
                     show = showHide;
                   }
                 }
+                if (item.item.props.qtyisshow === false) {
+                  show = false;
+                }
                 item.show = show;
                 if (!show) {
                   if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
@@ -2244,7 +2247,9 @@
             item.required = true;
           }
           if (current.ispassword) {
-            item.props.type = 'password';
+            if (current.webconf && current.webconf.isNeedEncrypt !== false) {
+              item.props.type = 'password';
+            } 
           }
           item.props.disabled = checkIsReadonly;
         }

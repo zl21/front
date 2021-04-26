@@ -16,6 +16,7 @@ import taskList from '../__customize__/taskList/taskList.vue';
 import metricsDefinition from '../__customize__/metricsDefinition/metricsDefinition.vue';
 import customizeReport from '../__component__/CustomizeReport.vue';
 
+import dataPermission from '../__customize__/DataPermission/DataPermission.vue';
 
 export default {
   // 列表配置双击跳转定制界面，需在文档里维护对应的labelName属性
@@ -32,7 +33,6 @@ export default {
   standard: {
     component: standard,
     label: 'standard'
-
   },
   metricsDefinition: {
     component: metricsDefinition,
@@ -49,4 +49,9 @@ export default {
     component: customizeReport,
     label: 'customizeReport'
   },
+  dataPermission: {
+    component: dataPermission,
+    label: '数据权限'
+  },
+
 };
