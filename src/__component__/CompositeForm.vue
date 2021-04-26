@@ -2247,7 +2247,9 @@
             item.required = true;
           }
           if (current.ispassword) {
-            item.props.type = 'password';
+            if (current.webconf && current.webconf.isNeedEncrypt !== false) {
+              item.props.type = 'password';
+            } 
           }
           item.props.disabled = checkIsReadonly;
         }
