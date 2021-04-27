@@ -1187,6 +1187,7 @@
         this.multipleDropData = Object.assign(this.multipleDropData, {});
       }, // 获取下拉多选表格的数据
       multiplePopperShow(instance, index) {
+        this.multipleDropPage = 1;
         this.getMultipleDropData(index);
       }, // 下拉多选气泡出现时触发
       multipleDropClear(instance, index) {

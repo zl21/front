@@ -421,6 +421,30 @@ function setUrlSeverId(gateWay, url, serviceconfig) {
   }
   return gateWay ? `/${gateWay}${url}` : url;
 }
+// 获取定制界面网关
+export const getCenterByTable = async () => {
+  const tableName = router.currentRoute.params.tableName || router.currentRoute.params.customizedModuleName;
+  const getGlobalServiceId = window.localStorage.getItem('serviceId');
+  const getserviceIdMap = Object.assign({}, store.state.global.serviceIdMap, JSON.parse(window.localStorage.getItem('serviceIdMap')));
+  
+  if (!tableName) {
+    return true;
+  }
+  if (getserviceIdMap[tableName]) {
+    return true;
+  }
+
+  await axios.post(`/${getGlobalServiceId}/p/cs/getCenterByTable`, urlSearchParams({
+    tableName
+  })).then((res) => {
+    if (res.data.code === 0) {
+      const getserviceIdMapdata = Object.assign({}, store.state.global.serviceIdMap, JSON.parse(window.localStorage.getItem('serviceIdMap')));
+      getserviceIdMapdata[tableName] = res.data.data;
+      localStorage.setItem('serviceIdMap', JSON.stringify(getserviceIdMapdata));
+    }
+    return true;
+  });
+};
 
 function NetworkConstructor() {
   // equals to axios.post(url, config)
@@ -433,8 +457,10 @@ function NetworkConstructor() {
   //   }
   // 使用方法：
   // network.post(URL,params,serviceconfig)
-  this.post = (url, config, serviceconfig, close) => {
+  this.post = async (url, config, serviceconfig, close) => {
     closeMessage = close;
+    console.log(url, config, serviceconfig, '1212');
+    await getCenterByTable();
     const gateWay = matchGateWay(url);
     // 判断菜单网关 gateWay ？ serviceId 外键网关 ？
     const matchedUrl = setUrlSeverId(gateWay, url, serviceconfig);
@@ -498,7 +524,8 @@ function NetworkConstructor() {
   };
 
   // equals to axios.get(url, config)
-  this.get = (url, config, serviceconfig) => {
+  this.get = async (url, config, serviceconfig) => {
+    await getCenterByTable();
     const gateWay = matchGateWay(url);
     const matchedUrl = setUrlSeverId(gateWay, url, serviceconfig);
     let data = {};
