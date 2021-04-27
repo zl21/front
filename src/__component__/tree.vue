@@ -199,7 +199,7 @@
     overflow-y: scroll;
   }
 .ztree li span{
-  font-family: "Microsoft YaHei", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  font-family: "Microsoft YaHei", Helvetica;
 
 }
 .input{
