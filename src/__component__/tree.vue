@@ -79,7 +79,7 @@
       treeDatas: {
         type: Function,
         default: () => {}
-      },     
+      },
     },
     watch: {
       treeDatas: {
@@ -129,7 +129,7 @@
         });
       },
       callMethod() {
-        this.$refs.zTree.callMethod(); 
+        this.$refs.zTree.callMethod();
       },
       callBackFunction(tdata, resData, key, value) {
         // key:要筛选的字段
@@ -147,7 +147,7 @@
           });
         }
       },
-      clickTreeNode(datas, treeNodeID, flag) {      
+      clickTreeNode(datas, treeNodeID, flag) {
         if (flag) { // 为true时查询当前节点以及全部子节点
           this.currentClickNoded = datas;
           this.treeNodeID = treeNodeID;
@@ -159,7 +159,7 @@
       searchInputChange(e) {
         this.menuTreeQuery = e.target.value;
       }, // 检索输入框值改变
-  
+
       menuTreeChange(datas, treeNodeID, flag) {
         const resArr = [];
         this.Ids = [];// 需将上一次查询存储的ID置空
@@ -192,12 +192,16 @@
 <style >
 .R3tree{
     width:300px;
+    height:100%;
     padding:10px;
     border-right:1px solid #d2d2d2;
     overflow-x: scroll;
     overflow-y: scroll;
-   
   }
+.ztree li span{
+  font-family: "Microsoft YaHei", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+
+}
 .input{
   margin-bottom:10px
 }
