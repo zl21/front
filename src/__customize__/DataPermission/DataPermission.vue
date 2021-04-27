@@ -1,5 +1,8 @@
 <template>
-  <div class="dataPermission">
+  <div
+    ref="dataPermission"
+    class="dataPermission dataPermission_Version"
+  >
     <div class="buttonGroup">
       <Button
         type="fcdefault"
@@ -12,7 +15,7 @@
     <div class="content">
       <div class="contentLeft">
         <Input
-          placeholder="请输入用户名"
+          placeholder="请输入角色名"
           clearable
           icon="ios-search"
           @on-clear="searchInputClear"
@@ -275,12 +278,15 @@
   import DownComponent from '../../__component__/DownComponent.vue';
   import ComAttachFilter from '../../__component__/ComAttachFilter.vue';
 
+  import {
+    Version 
+  } from '../../constants/global';
 
   export default {
     data() {
       return {
         spinShow: false, // loading是否显示
-
+        Version: Version(), // 版本控制
         tableSaveData: [], // 保存表格修改的的数据
         tableDeleteData: [], // 保存表格删除数据
 
@@ -326,7 +332,6 @@
 
         /* 环境变量弹窗 */
         environmentVariableModal: false,
-        colid: '', // 表明的id
         environmentVariableValue: '', // 环境变量输入框里的值
       };
     },
@@ -344,7 +349,13 @@
     computed: {
     },
     created() {
-      this.leftRefreshClick();
+      if (this.Version === '1.3') {
+        setTimeout(() => {
+          this.$el.innerHTML = '暂未支持此功能';
+        }, 50);
+      } else {
+        this.leftRefreshClick();
+      }
     },
     methods: {
       menuClick(index, item) {
@@ -414,7 +425,6 @@
               const obj = {
                 isEditPermissionTable: false
               };
-              this.colid = cur.AD_TABLE_ID && cur.AD_TABLE_ID.colid;
               Object.keys(cur).forEach((item) => {
                 obj[item] = cur[item].val;
               });
@@ -541,7 +551,7 @@
                 'align-items': 'center'
               }
             }, [
-              h(components.ComAttachFilter, {
+              h(ComAttachFilter, {
                 style: {
                   width: '150px',
                   'margin-right': '5px'
@@ -553,7 +563,7 @@
                     ...params.column,
                     fkdisplay: 'pop',
                     // 是否显示输入完成后是否禁用 true、false
-                    show: true,
+                    show: false,
                     // 是否显示筛选提示弹窗 true、false
                     filterTip: true,
                     // 是否选中后禁止编辑 true、false
@@ -579,7 +589,7 @@
                       serviceId: this.comAttachFilterServiceId,
                       reftable: params.column.reftable,
                       reftableid: params.column.reftableid,
-                      colid: this.colid,
+                      colid: 99136,
                       show: false,
                       url: ''
                     }
@@ -603,8 +613,15 @@
                       this.selectedDataList = [];
                       this.tableDeleteData = [];
                     }
+
                     if (item.selected.length > 0 && item.selected[0].ID) {
-                      const findTableIndex = this.tableData.findIndex(cur => cur[params.column.colname] === item.selected[0].Label);
+                      const findTableIndex = this.tableData.findIndex((cur, index) => {
+                        if (index !== params.index) {
+                          return cur[params.column.colname] === item.selected[0].Label;
+                        }
+                        return false;
+                      });
+
                       if (findTableIndex === -1) {
                         this.tableData[params.index][params.column.colname] = item.selected[0].Label;
                         this.tableData[params.index][`${params.column.colname}_Value`] = item.selected[0].ID;

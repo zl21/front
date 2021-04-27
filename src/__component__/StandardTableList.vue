@@ -316,9 +316,13 @@
           // if (!this.mountedChecked) {
           //   return false;
           // }
+          const { tableName, customizedModuleName } = router.currentRoute.params;
+
+          
           clearTimeout(this.ztreetimer);
+          const checked = this.moduleComponentName.split('.').includes(tableName || customizedModuleName);
           this.ztreetimer = setTimeout(() => {
-            if (this.$refs && this.$refs.tree && this.mountedChecked && !this.TreeChange) {
+            if (this.$refs && this.$refs.tree && this.mountedChecked && !this.TreeChange && checked) {
               this.$refs.tree.getTreeInfo();
             }
           }, 50);
