@@ -382,12 +382,12 @@
       handleSuccess(response) {
         const { tableName } = this.$route.params;
         if (response.code === 0) {
-          if (false) { // Version() === '1.4'
+          if (Version() === '1.4') { // Version() === '1.4'
             this.$R3loading.hide(tableName);
             this.closeDialog();
             this.fileName = '';
             this.$Modal.fcSuccess({
-              title: '成功',
+              title: '提示',
               mask: true,
               content: response.message
             });
