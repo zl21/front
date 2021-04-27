@@ -1519,7 +1519,8 @@
               title: ele.name,
               key: ele.colname,
               align: 'center',
-              tdAlign: ele.type === 'NUMBER' ? 'right' : 'center'
+              tdAlign: ele.type === 'NUMBER' ? 'right' : 'center',
+              width: ele.webconf && ele.webconf.standard_width
             };
             
             if (ele.comment) {
@@ -1552,12 +1553,14 @@
           {
             type: 'selection',
             width: 40,
-            align: 'center'
+            align: 'center',
+            fixed: 'left'
           },
           {
             title: '序号',
             width: 60,
             align: 'center',
+            fixed: 'left',
             key: COLLECTION_INDEX,
             render: this.collectionIndexRender(columns)
           }
@@ -1767,9 +1770,12 @@
           const getWIdth = dom.offsetWidth;
           dom.remove();
 
-          const width = maxlength > 0 ? `${getWIdth + 18}px` : 'auto';
+          let width = maxlength > 0 ? `${getWIdth + 18}px` : 'auto';
+          if (cellData.width) {
+            width = cellData.width;
+          }
           const innerHTML = params.row[cellData.colname];
-          const overflow = maxlength ? 'hidden' : 'none';
+          const overflow = maxlength || cellData.width ? 'hidden' : 'none';
 
           return h('div', {
             style: {
@@ -1777,7 +1783,10 @@
               overflow,
               'text-overflow': 'ellipsis',
               'white-space': 'nowrap',
-              'text-align': cellData.type === 'NUMBER' ? 'right' : 'center'
+              'text-align': cellData.type === 'NUMBER' ? 'right' : 'center',
+            },
+            attrs: {
+              title: params.row[cellData.colname]
             },
             class: {
               numberTd: cellData.type === 'NUMBER'
@@ -3121,43 +3130,55 @@
       },
       fkIconRender(cellData) {
         // 外键关联到icon
-        return (h, params) => h('div', {
-          domProps: {
-            innerHTML: params.row[cellData.colname] ? `<i class="iconfont iconbj_link" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer; font-size: 12px" ></i>${params.row[cellData.colname]}` : ''
-          },
-          on: {
-            click: (event) => {
-              // TODO 外键关联跳转
-              if (event.target.className) {
-                const data = this.dataSource.row[params.index][cellData.colname];
-                let type = '';
-                if (cellData.objdistype === 'object') {
-                  type = 'V';
-                } else if (cellData.objdistype === 'tabpanle') {
-                  type = 'H';
-                } else {
-                  const datas = {
-                    mask: true,
-                    title: '警告',
-                    content: '请设置外键关联表的显示配置'
-                  };
-                  this.$Modal.fcWarning(datas);
-                  return;
+        return (h, params) => {
+          const dom = params.row[cellData.colname] ? `<i class="iconfont iconbj_link" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer; font-size: 12px" ></i>${params.row[cellData.colname]}` : '';
+          return h('div', {
+            domProps: {
+              innerHTML: dom
+            },
+            style: {
+              width: cellData.width,
+              overflow: cellData.width ? 'hidden' : '',
+              'text-overflow': cellData.width ? 'ellipsis' : '',
+              'white-space': cellData.width ? 'nowrap' : '',
+            },
+            attrs: {
+              title: params.row[cellData.colname] || ''
+            },
+            on: {
+              click: (event) => {
+                // TODO 外键关联跳转
+                if (event.target.className) {
+                  const data = this.dataSource.row[params.index][cellData.colname];
+                  let type = '';
+                  if (cellData.objdistype === 'object') {
+                    type = 'V';
+                  } else if (cellData.objdistype === 'tabpanle') {
+                    type = 'H';
+                  } else {
+                    const datas = {
+                      mask: true,
+                      title: '警告',
+                      content: '请设置外键关联表的显示配置'
+                    };
+                    this.$Modal.fcWarning(datas);
+                    return;
+                  }
+                  window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
+                  this.tabOpen({
+                    type,
+                    tableName: data.reftablename,
+                    tableId: data.reftableid,
+                    id: data.refobjid,
+                    serviceId: data.serviceId,
+                    label: data.reftabdesc
+                  });
                 }
-                window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
-                this.tabOpen({
-                  type,
-                  tableName: data.reftablename,
-                  tableId: data.reftableid,
-                  id: data.refobjid,
-                  serviceId: data.serviceId,
-                  label: data.reftabdesc
-                });
-              }
               // event.stopPropagation();
+              }
             }
-          }
-        });
+          });
+        };
       },
       customerurlRender(cellData) {
         // 外键关联到icon
@@ -3165,7 +3186,13 @@
           style: {
             color: '#0f8ee9',
             'text-decoration': 'underline',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            overflow: cellData.width ? 'hidden' : '',
+            'text-overflow': cellData.width ? 'ellipsis' : '',
+            'white-space': cellData.width ? 'nowrap' : '',
+          },
+          attrs: {
+            title: params.row[cellData.colname]
           },
           domProps: {
             innerHTML: params.row[cellData.colname] ? `${params.row[cellData.colname]}` : ''
@@ -3325,147 +3352,166 @@
       },
       docRender(cellData, tag) {
         const that = this;
-        console.log(cellData, tag);
-        return (h, params) => h('div', {
-          style: {
-            display: 'flex'
-          },
-        }, [
-          h('div', {
-            style: {
-              display: 'flex',
-              'align-items': 'center'
-            },
-            domProps: {
-            },
-          }, `${this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).reduce((acc, cur) => {
+        return (h, params) => {
+          const content = `${this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).reduce((acc, cur) => {
             acc.push(`【${cur.name}】`);
             return acc;
-          }, []).join('') : ''}`),
-          h(tag, {
+          }, []).join('') : ''}`;
+          return h('div', {
             style: {
-              'text-align': 'center',
-              cursor: 'pointer',
-              color: '#2D8CF0'
+              display: 'flex'
             },
-            props: {
-              trigger: 'click',
-              transfer: true,
-              content: 'content'
-            },
-            scopedSlots: {
-              default: () => h('div', {
-                style: {
-                  'padding-left': '10px',
-                  'padding-right': '10px',
-                },
-                domProps: {
-                  innerHTML: '<i class="iconfont iconbj_listedit" style="color: #2D8CF0; font-size: 16px"></i>'
-                }
-              }),
-              content: () => h('TableDocFile', {
-                props: {
-                  dataitem: {
-                    filesLength: Number(params.column.webconf && params.column.webconf.filesLength),
-                    sendData: {
-                      path: `${that.$route.params.tableName}/${that.$route.params.itemId}/`
-                    },
-                    url: getGateway('/p/cs/batchUpload'),
-                    valuedata: this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val) : []
+          }, [
+            h('div', {
+              style: {
+                display: cellData.width ? 'block' : 'flex',
+                'align-items': 'center',
+                width: cellData.width,
+                overflow: cellData.width ? 'hidden' : '',
+                'text-overflow': cellData.width ? 'ellipsis' : '',
+                'white-space': cellData.width ? 'nowrap' : '',
+              },
+              attrs: {
+                title: content
+              },
+              domProps: {
+              },
+            }, content),
+            h(tag, {
+              style: {
+                'text-align': 'center',
+                cursor: 'pointer',
+                color: '#2D8CF0'
+              },
+              props: {
+                trigger: 'click',
+                transfer: true,
+                content: 'content'
+              },
+              scopedSlots: {
+                default: () => h('div', {
+                  style: {
+                    'padding-left': '10px',
+                    'padding-right': '10px',
                   },
-                  webConfSingle: this.webConfSingle,
-                  accept: cellData.webconf && cellData.webconf.UploadAccept
-                },
-                on: {
-                  filechange: (val) => {
-                    this.copyDataSource.row[params.index][cellData.colname].val = JSON.stringify(val);
-                    this.putDataFromCell(val.length > 0 ? JSON.stringify(val) : '', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                    this.putLabelDataFromCell(val.length > 0 ? JSON.stringify(val) : '', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                  domProps: {
+                    innerHTML: '<i class="iconfont iconbj_listedit" style="color: #2D8CF0; font-size: 16px"></i>'
+                  }
+                }),
+                content: () => h('TableDocFile', {
+                  props: {
+                    dataitem: {
+                      filesLength: Number(params.column.webconf && params.column.webconf.filesLength),
+                      sendData: {
+                        path: `${that.$route.params.tableName}/${that.$route.params.itemId}/`
+                      },
+                      url: getGateway('/p/cs/batchUpload'),
+                      valuedata: this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val) : []
+                    },
+                    webConfSingle: this.webConfSingle,
+                    accept: cellData.webconf && cellData.webconf.UploadAccept
+                  },
+                  on: {
+                    filechange: (val) => {
+                      this.copyDataSource.row[params.index][cellData.colname].val = JSON.stringify(val);
+                      this.putDataFromCell(val.length > 0 ? JSON.stringify(val) : '', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                      this.putLabelDataFromCell(val.length > 0 ? JSON.stringify(val) : '', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
                     
-                    if (!ossRealtimeSave()) {
-                      DispatchEvent('childTableSaveFile', { detail: { type: 'save' } });
+                      if (!ossRealtimeSave()) {
+                        DispatchEvent('childTableSaveFile', { detail: { type: 'save' } });
+                      }
                     }
                   }
-                }
-              }),
-            },
+                }),
+              },
             // on: {
             //   'on-change': (event, dateType, data) => {
             //     this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
             //   }
             // }
-          })
-        ]);
+            })
+          ]);
+        };
       },
       docReadonlyRender(cellData, tag) {
         const that = this;
-        return (h, params) => h('div', {
-          style: {
-            display: 'flex'
-          },
-        }, [
-          h('div', {
-            style: {
-              display: 'flex',
-              'align-items': 'center'
-            },
-            domProps: {
-            },
-          }, `${this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).reduce((acc, cur) => {
+        return (h, params) => {
+          const content = `${this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).reduce((acc, cur) => {
             acc.push(`【${cur.name}】`);
             return acc;
-          }, []).join('') : '暂无文件'}`),
-          h(tag, {
+          }, []).join('') : '暂无文件'}`;
+          return h('div', {
             style: {
-              width: '100%',
-              'text-align': 'center',
-              cursor: 'pointer',
-              color: '#2D8CF0'
+              display: 'flex'
             },
-            props: {
-              trigger: 'click',
-              transfer: true,
-              content: 'content'
-            },
-            scopedSlots: {
-              default: () => h('div', {
-                style: {
-                  'padding-left': '10px',
-                  'padding-right': '10px',
-                },
-                domProps: {
-                  innerHTML: this.copyDataSource.row[params.index][cellData.colname].val ? '<i class="iconfont iconbj_listedit" style="color: #2D8CF0; font-size: 16px"></i>' : ''
-                }
-              }),
-              content: () => {
-                if (params.row[cellData.colname]) {
-                  return h('TableDocFile', {
-                    props: {
-                      dataitem: {
-                        readonly: true,
-                        sendData: {
-                          path: `${that.$route.params.tableName}/${that.$route.params.itemId}/`
-                        },
-                        url: getGateway('/p/cs/batchUpload'),
-                        valuedata: params.row[cellData.colname]
-                      }
+          }, [
+            h('div', {
+              style: {
+                display: cellData.width ? 'block' : 'flex',
+                'align-items': 'center',
+                width: cellData.width,
+                overflow: cellData.width ? 'hidden' : '',
+                'text-overflow': cellData.width ? 'ellipsis' : '',
+                'white-space': cellData.width ? 'nowrap' : '',
+              },
+              attrs: {
+                title: content
+              },
+              domProps: {
+              },
+            }, content),
+            h(tag, {
+              style: {
+                width: '100%',
+                'text-align': 'center',
+                cursor: 'pointer',
+                color: '#2D8CF0'
+              },
+              props: {
+                trigger: 'click',
+                transfer: true,
+                content: 'content'
+              },
+              scopedSlots: {
+                default: () => h('div', {
+                  style: {
+                    'padding-left': '10px',
+                    'padding-right': '10px',
+                  },
+                  domProps: {
+                    innerHTML: this.copyDataSource.row[params.index][cellData.colname].val ? '<i class="iconfont iconbj_listedit" style="color: #2D8CF0; font-size: 16px"></i>' : ''
+                  }
+                }),
+                content: () => {
+                  if (params.row[cellData.colname]) {
+                    return h('TableDocFile', {
+                      props: {
+                        dataitem: {
+                          readonly: true,
+                          sendData: {
+                            path: `${that.$route.params.tableName}/${that.$route.params.itemId}/`
+                          },
+                          url: getGateway('/p/cs/batchUpload'),
+                          valuedata: params.row[cellData.colname]
+                        }
+                      },
+                    });
+                  }
+                  return h('div', {
+                    domProps: {
+                      innerHTML: '暂无文件'
                     },
                   });
-                }
-                return h('div', {
-                  domProps: {
-                    innerHTML: '暂无文件'
-                  },
-                });
+                },
               },
-            },
             // on: {
             //   'on-change': (event, dateType, data) => {
             //     this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
             //   }
             // }
-          })
-        ]);
+            })
+          ]);
+        };
       },
       dropDefaultSelectedData(params, cellData) {
         // drp mrp 初始数据赋值

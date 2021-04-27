@@ -85,7 +85,7 @@
     watch: {
       zNodes: {
         handler() {
-          $.fn.zTree.init($(`${this.tableName}`), this.setting, this.zNodes);
+          $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
         },
         deep: true
       },
@@ -218,9 +218,10 @@
       this.tableName = `${this.$route.params.tableName}treeDemo`;
     },
     mounted() {
-      setTimeout(() => {
+      this.$nextTick(() => {
         $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
-      }, 500);
+      });
+     
       // $(document).ready(() => {
       //   $.fn.zTree.init($('#treeDemo'), this.setting, this.zNodes);
       //   fuzzySearch('treeDemo', '#key', null, true); // 初始化模糊搜索方法

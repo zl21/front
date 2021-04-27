@@ -392,10 +392,12 @@
         <!-- 单对象主表属性定制字段 -->
         <!-- _items.type：display
         _items.props:元数据配置字段 -->
+       
         <Defined
           :readonly="_items.props.readonly"
           :itemdata="_items.props"
           :items="_items"
+          @on-change="definedChange"
         />
       </template>
     </div>
@@ -428,7 +430,6 @@
   import EnumerableInput from './EnumerableInput.vue';
   import ExtentionInput from './ExtentionInput.vue';
   import network, { urlSearchParams } from '../__utils__/network';
-
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -519,6 +520,9 @@
         item.props = Object.assign(
           item.props, (setComponentsProps())(item.type, item.props)
         );
+        // if (item.props.webconf && item.props.webconf.display === 'customForm') {
+        //   customForm.render = h => renderCustomForm()(item, h, this);
+        // }
 
 
         const placeholder = this.items.props.webconf && this.items.props.webconf.placeholder ? this.items.props.webconf.placeholder : null;
@@ -650,6 +654,11 @@
       valueChange() {
         // 值发生改变时触发  只要是item中的value改变就触发该方法，是为了让父组件数据同步
         this.$emit('inputChange', this._items.value, this._items, this.index);
+      },
+      definedChange(value) {
+        // 自定义界面的value
+        this._items.value = value;
+        this.valueChange();
       },
       radioValueChange(value) {
         this._items.value = value;
@@ -1293,7 +1302,9 @@
                 this.valueChange();
                 if (childTableName && this.$parent.type === 'PanelForm') {
                   const dom = document.getElementById('actionMODIFY');
-                  dom.click();
+                  if (dom) {
+                    dom.click();
+                  } 
                 }
               } else if (this.$parent.pathcheck === '') {
                 // parms.path = '/p/cs/objectSave';

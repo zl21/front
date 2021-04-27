@@ -370,6 +370,7 @@
   .NavigatorVertical {
     height: 100%;
     display: flex;
+    overflow-y: auto;
     flex-direction: column;
     width: 220px;
     background-color: #1f272c;

@@ -173,7 +173,8 @@
                     key: cur.colname,
                     // sortable: cur.isorder ? 'custom' : false,
                     render: this.docRender(),
-                    renderHeader: this.tooltipRenderHeader()
+                    renderHeader: this.tooltipRenderHeader(),
+                    width: cur.webconf && cur.webconf.standard_width
                   }, cur));
                   break;
                 case 'image':
@@ -185,7 +186,8 @@
                     key: cur.colname,
                     // sortable: cur.isorder ? 'custom' : false,
                     render: this.imageRender(cur.colname),
-                    renderHeader: this.tooltipRenderHeader()
+                    renderHeader: this.tooltipRenderHeader(),
+                    width: cur.webconf && cur.webconf.standard_width
                   }, cur));
                   break;
                 default:
@@ -203,7 +205,8 @@
                     // sortable: cur.isorder ? 'custom' : false,
                     // sortType: this.datas.ordids.find(item => item.colname === cur.colname).ordasc ? 'asc' : 'desc',
                     render: this.fkIconRender(cur),
-                    renderHeader: this.tooltipRenderHeader()
+                    renderHeader: this.tooltipRenderHeader(),
+                    width: cur.webconf && cur.webconf.standard_width
                   }, cur));
                 } else {
                   if (cur.isorder) {
@@ -214,7 +217,8 @@
                     key: cur.colname,
                     // sortable: cur.isorder ? 'custom' : false,
                     render: this.fkIconRender(cur),
-                    renderHeader: this.tooltipRenderHeader()
+                    renderHeader: this.tooltipRenderHeader(),
+                    width: cur.webconf && cur.webconf.standard_width
                   }, cur));
                 }
               } else if (this.datas.ordids && this.datas.ordids.length > 0 && this.datas.ordids.findIndex(item => item.colname === cur.colname) > -1) {
@@ -227,7 +231,8 @@
                   key: cur.colname,
                   // sortable: cur.isorder ? 'custom' : false,
                   // sortType: this.datas.ordids.find(item => item.colname === cur.colname).ordasc ? 'asc' : 'desc',
-                  renderHeader: this.tooltipRenderHeader()
+                  renderHeader: this.tooltipRenderHeader(),
+                  width: cur.webconf && cur.webconf.standard_width
                 }, cur));
               } else if (cur.customerurl) {
                 if (cur.isorder) {
@@ -238,7 +243,8 @@
                   key: cur.colname,
                   // sortable: cur.isorder ? 'custom' : false,
                   render: this.customerUrlRender(),
-                  renderHeader: this.tooltipRenderHeader()
+                  renderHeader: this.tooltipRenderHeader(),
+                  width: cur.webconf && cur.webconf.standard_width
                 }, cur));
               } else {
                 if (cur.isorder) {
@@ -248,7 +254,8 @@
                   title: cur.name,
                   key: cur.colname,
                   // sortable: cur.isorder ? 'custom' : false,
-                  renderHeader: this.tooltipRenderHeader()
+                  renderHeader: this.tooltipRenderHeader(),
+                  width: cur.webconf && cur.webconf.standard_width
                 }, cur));
               }
             } else {
@@ -259,7 +266,7 @@
                   fixed: 'left',
                   key: 'ID',
                   width: 40,
-                  render: this.collectionIndexRender()
+                  render: this.collectionIndexRender(),
                   //  this.buttonsRender()
                 }, cur));
               } else if (['switch', 'command', 'image', 'doc', 'operatebuts'].indexOf(cur.display) > -1) {
@@ -268,14 +275,16 @@
                   acc.push(Object.assign({
                     title: cur.name,
                     key: cur.colname,
-                    render: this.switchRender()
+                    render: this.switchRender(),
+                    width: cur.webconf && cur.webconf.standard_width
                   }, cur));
                   break;
                 case 'command':
                   acc.push(Object.assign({
                     title: cur.name,
                     key: cur.colname,
-                    render: this.commandRender(cur)
+                    render: this.commandRender(cur),
+                    width: cur.webconf && cur.webconf.standard_width
                   }, cur));
                   break;
                 case 'image':
@@ -286,7 +295,8 @@
                     title: cur.name,
                     key: cur.colname,
                     // sortable: cur.isorder ? 'custom' : false,
-                    render: this.imageRender(cur.colname)
+                    render: this.imageRender(cur.colname),
+                    width: cur.webconf && cur.webconf.standard_width
                   }, cur));
                   break;
                 case 'doc':
@@ -297,7 +307,8 @@
                     title: cur.name,
                     key: cur.colname,
                     // sortable: cur.isorder ? 'custom' : false,
-                    render: this.docRender()
+                    render: this.docRender(),
+                    width: cur.webconf && cur.webconf.standard_width
                   }, cur));
                   break;
                 case 'operatebuts':
@@ -306,7 +317,7 @@
                     key: cur.colname,
                     fixed: 'right',
                     render: this.buttonRender(),
-                    width: cur.webconf && cur.webconf.width
+                    width: cur.webconf && (cur.webconf.width || cur.webconf.standard_width)
                   }, cur));
                   break;
                 default:
@@ -323,7 +334,8 @@
                     key: cur.colname,
                     // sortable: cur.isorder ? 'custom' : false,
                     // sortType: this.datas.ordids.find(item => item.colname === cur.colname).ordasc ? 'asc' : 'desc',
-                    render: this.fkIconRender(cur)
+                    render: this.fkIconRender(cur),
+                    width: cur.webconf && cur.webconf.standard_width
                   }, cur));
                 } else {
                   if (cur.isorder) {
@@ -333,7 +345,8 @@
                     title: cur.name,
                     key: cur.colname,
                     // sortable: cur.isorder ? 'custom' : false,
-                    render: this.fkIconRender(cur)
+                    render: this.fkIconRender(cur),
+                    width: cur.webconf && cur.webconf.standard_width
                   }, cur));
                 }
               } else if (this.datas.ordids && this.datas.ordids.length > 0 && this.datas.ordids.findIndex(item => item.colname === cur.colname) > -1) {
@@ -344,6 +357,7 @@
                 acc.push(Object.assign({
                   title: cur.name,
                   key: cur.colname,
+                  width: cur.webconf && cur.webconf.standard_width
                   // sortable: cur.isorder ? 'custom' : false,
                   // sortType: this.datas.ordids.find(item => item.colname === cur.colname).ordasc ? 'asc' : 'desc'
                 }, cur));
@@ -355,7 +369,8 @@
                   title: cur.name,
                   key: cur.colname,
                   // sortable: cur.isorder ? 'custom' : false,
-                  render: this.customerUrlRender()
+                  render: this.customerUrlRender(),
+                  width: cur.webconf && cur.webconf.standard_width
                 }, cur));
               } else {
                 if (cur.isorder) {
@@ -364,6 +379,8 @@
                 acc.push(Object.assign({
                   title: cur.name,
                   key: cur.colname,
+                  width: cur.webconf && cur.webconf.standard_width,
+                  render: this.textRender(cur)
                   // sortable: cur.isorder ? 'custom' : false
                 }, cur));
               }
@@ -614,8 +631,9 @@
       fkIconRender(cellData) {
         // 外键关联到icon
         return (h, params) => h('div', {
+          class: ['one-line-flow'],
           domProps: {
-            innerHTML: params.row[cellData.colname] ? `<i class="iconfont iconbj_link" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer; font-size: 12px" ></i> ${params.row[cellData.colname]}` : ''
+            innerHTML: params.row[cellData.colname] ? `<i class="iconfont iconbj_link" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer; font-size: 12px;" ></i> <span title='${params.row[cellData.colname]}'>${params.row[cellData.colname]}</span>` : ''
           },
           on: {
             click: (event) => {
@@ -656,6 +674,17 @@
           }
         },);
       },
+
+      // 纯文本渲染
+      textRender(cellData) {
+        return (h, params) => h('div', {
+          class: ['one-line-flow'],
+          domProps: {
+            innerHTML: `<span title='${params.row[cellData.colname] || ''}'>${params.row[cellData.colname] || ''}</span>`
+          }
+        });
+      },
+
       imageRender(colname) {
         return (h, params) => {
           if (!params.row[colname]) {
