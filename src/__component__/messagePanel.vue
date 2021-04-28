@@ -39,7 +39,7 @@
               :class="item.TASK_STATE.val.indexOf('完成')>=0?'green':'red'"
             />
             
-            <span>{{ calcdateDiff(item.SPEND_TIME.val) || item.SPEND_TIME.val }}</span>
+            <span>{{ calcdateDiff(item.MODIFIEDDATE.val) || item.MODIFIEDDATE.val }}</span>
           </div>
           <div class="item-inner">
             <div class="item-title">
