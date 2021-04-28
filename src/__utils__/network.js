@@ -461,7 +461,6 @@ function NetworkConstructor() {
   // network.post(URL,params,serviceconfig)
   this.post = async (url, config, serviceconfig, close) => {
     closeMessage = close;
-    console.log(url, config, serviceconfig, '1212');
     await getCenterByTable();
     const gateWay = matchGateWay(url);
     // 判断菜单网关 gateWay ？ serviceId 外键网关 ？
