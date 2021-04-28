@@ -426,12 +426,14 @@ export const getCenterByTable = async () => {
   const tableName = router.currentRoute.params.tableName || router.currentRoute.params.customizedModuleName;
   const getGlobalServiceId = window.localStorage.getItem('serviceId');
   const getserviceIdMap = Object.assign({}, store.state.global.serviceIdMap, JSON.parse(window.localStorage.getItem('serviceIdMap')));
-  
+  if (!getGlobalServiceId) {
+    return false;
+  }
   if (!tableName) {
-    return true;
+    return false;
   }
   if (getserviceIdMap[tableName]) {
-    return true;
+    return false;
   }
 
   await axios.post(`/${getGlobalServiceId}/p/cs/getCenterByTable`, urlSearchParams({
