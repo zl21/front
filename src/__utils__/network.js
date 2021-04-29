@@ -32,7 +32,7 @@ const matchGateWay = (url) => {
   const globalServiceId = window.localStorage.getItem('serviceId');
   const serviceIdMap = Object.assign({}, store.state.global.serviceIdMap, JSON.parse(window.localStorage.getItem('serviceIdMap')));
   // eslint-disable-next-line no-empty
-  if (!enableGateWay()) {
+  if (!enableGateWay() || url.indexOf('/getMsgCnt') >= 0) {
     return undefined;
   }
   if (ignoreGateWay.includes(url) || ignorePattern().some(d => url.match(d))) {
@@ -411,7 +411,7 @@ export const urlSearchParams = (data) => {
 };
 //  判断网关
 function setUrlSeverId(gateWay, url, serviceconfig) {
-  if (gateWay && serviceconfig) {
+  if (serviceconfig) {
     if (serviceconfig.noServiceId) {
       return url;
     }
@@ -421,6 +421,32 @@ function setUrlSeverId(gateWay, url, serviceconfig) {
   }
   return gateWay ? `/${gateWay}${url}` : url;
 }
+// 获取定制界面网关
+export const getCenterByTable = async () => {
+  const tableName = router.currentRoute.params.tableName || router.currentRoute.params.customizedModuleName;
+  const getGlobalServiceId = window.localStorage.getItem('serviceId');
+  const getserviceIdMap = Object.assign({}, store.state.global.serviceIdMap, JSON.parse(window.localStorage.getItem('serviceIdMap')));
+  if (!getGlobalServiceId) {
+    return false;
+  }
+  if (!tableName) {
+    return false;
+  }
+  if (getserviceIdMap[tableName]) {
+    return false;
+  }
+
+  await axios.post(`/${getGlobalServiceId}/p/cs/getCenterByTable`, urlSearchParams({
+    tableName
+  })).then((res) => {
+    if (res.data.code === 0) {
+      const getserviceIdMapdata = Object.assign({}, store.state.global.serviceIdMap, JSON.parse(window.localStorage.getItem('serviceIdMap')));
+      getserviceIdMapdata[tableName] = res.data.data;
+      localStorage.setItem('serviceIdMap', JSON.stringify(getserviceIdMapdata));
+    }
+    return true;
+  });
+};
 
 function NetworkConstructor() {
   // equals to axios.post(url, config)
@@ -433,8 +459,9 @@ function NetworkConstructor() {
   //   }
   // 使用方法：
   // network.post(URL,params,serviceconfig)
-  this.post = (url, config, serviceconfig, close) => {
+  this.post = async (url, config, serviceconfig, close) => {
     closeMessage = close;
+    await getCenterByTable();
     const gateWay = matchGateWay(url);
     // 判断菜单网关 gateWay ？ serviceId 外键网关 ？
     const matchedUrl = setUrlSeverId(gateWay, url, serviceconfig);
@@ -498,7 +525,8 @@ function NetworkConstructor() {
   };
 
   // equals to axios.get(url, config)
-  this.get = (url, config, serviceconfig) => {
+  this.get = async (url, config, serviceconfig) => {
+    await getCenterByTable();
     const gateWay = matchGateWay(url);
     const matchedUrl = setUrlSeverId(gateWay, url, serviceconfig);
     let data = {};
