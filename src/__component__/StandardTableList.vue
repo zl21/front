@@ -1114,7 +1114,7 @@
                   // 输入框的keydown event, $this
                   if (event.keyCode === 13) {
                     // enter回车查询
-                    this.searchClickData();
+                    this.searchClickData({value:true});
                   }
                 },
                 change: () => {
@@ -2194,10 +2194,7 @@
       searchClickData(value) {
 
         this.resetButtonsStatus();
-        // 按钮查找 查询第一页数据
-        if (value && !value.flag) { // 返回时查询之前页码
-          this.searchData.startIndex = 0;
-        }
+       
         
         // if (value && value.searchDataRes) {
         //   //因tab设置的参数已与表单参数整合过，并已被以上逻辑更新，this.searchData.fixedcolumns 已为最新参数，直接赋值给一次性参数value.searchDataRes.fixedcolumns即可，用过即销毁，不会作用当前实例内的this.searchData
@@ -2222,6 +2219,11 @@
         const  searchDataRes=value&&  value.searchDataRes? value.searchDataRes:null;
         // 组装树的查询
         let searchData = Object.assign(JSON.parse(JSON.stringify(this.searchData)),this.treeSearchData);
+         // 按钮查找 查询第一页数据
+        if (value && !value.flag) { // 返回时查询之前页码
+          searchDataRes.startIndex = 0;
+          this.searchData.startIndex = 0;
+        }
         this.getQueryListPromise(JSON.parse(JSON.stringify(this.searchData)),searchDataRes);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
