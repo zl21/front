@@ -2225,7 +2225,10 @@
         let searchData = Object.assign(JSON.parse(JSON.stringify(this.searchData)),this.treeSearchData);
          // 按钮查找 查询第一页数据
         if (value && !value.flag) { // 返回时查询之前页码
+        if(searchDataRes){
           searchDataRes.startIndex = 0;
+
+        }
           this.searchData.startIndex = 0;
         }
         this.getQueryListPromise(JSON.parse(JSON.stringify(this.searchData)),searchDataRes);
