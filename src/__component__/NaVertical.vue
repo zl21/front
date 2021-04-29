@@ -122,7 +122,9 @@
   import { routeTo } from '../__config__/event.config';
   import network, { urlSearchParams } from '../__utils__/network';
   import NavigatorSubMenu from './NavigatorSubMenu';
-  import { STANDARD_TABLE_LIST_PREFIX, Version, enableHistoryAndFavoriteUI } from '../constants/global';
+  import {
+    STANDARD_TABLE_LIST_PREFIX, Version, enableGateWay, getGatewayValue, enableHistoryAndFavoriteUI 
+  } from '../constants/global';
   import { updateSessionObject } from '../__utils__/sessionStorage';
   import HistoryAndFavorite from './HistoryAndFavorite';
 
@@ -244,7 +246,9 @@
         // this.setPanel.show = false;
       },
       ignoreMsg() { // 我的任务忽略功能
-        network.post('/p/cs/ignoreAllMsg').then((res) => {
+        network.post(Version() === '1.3' ? '/p/cs/ignoreAllMsg' : '/p/cs/u_note/ignoreMsg', {}, {
+          serviceId: enableGateWay() ? 'asynctask' : ''
+        }).then((res) => {
           if (res.data.code === 0) {
             this.updateTaskMessageCount(0);
             this.getMessages(0);
@@ -256,8 +260,8 @@
         const type = STANDARD_TABLE_LIST_PREFIX;
         const tab = {
           type,
-          tableName: 'CP_C_TASK',
-          tableId: 24386,
+          tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
+          tableId: Version() === '1.3' ? 24386 : 963,
           label: '我的任务'
         };
         this.tabOpen(tab);
@@ -275,20 +279,25 @@
           self.messagePanel.list = [];
         }
         const searchdata = {
-          table: 'CP_C_TASK',
+          table: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
           column_include_uicontroller: true,
           fixedcolumns: {
             OPERATOR_ID: [this.userInfo.id],
-            READSTATE: ['=0'],
-            TASKSTATE: ['=2', '=3']
+            READ_STATE: ['=0'],
+            // TASKSTATE: ['=2', '=3']
           },
           multiple: [],
           startindex: self.messagePanel.start,
           range: 20,
-          orderby: [{ column: 'CP_C_TASK.ID', asc: false }]
+          orderby: [{ column: Version() === '1.3' ? 'CP_C_TASK.ID' : 'U_NOTE.ID', asc: false }]  
         };
-        network.post('/p/cs/QueryList', urlSearchParams({ searchdata })).then((res) => {
+        network.post('/p/cs/QueryList', urlSearchParams({ searchdata }), {
+          serviceId: enableGateWay() ? getGatewayValue('U_NOTE') : ''
+        }).then((res) => {
           const result = res.data;
+          if (!result.datas) {
+            result.datas = result.data;
+          }
           if (result.code === 0) {
             self.messagePanel.list = self.messagePanel.list.concat(result.datas.row);
             console.log(99, self.messagePanel.list);
@@ -306,8 +315,8 @@
         const type = 'tableDetailVertical';
         const tab = {
           type,
-          tableName: 'CP_C_TASK',
-          tableId: 24386,
+          tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
+          tableId: Version() === '1.3' ? 24386 : 963,
           id: item.ID.val
         };
         this.tabOpen(tab);
@@ -618,7 +627,7 @@
       }
     }
     .history-and-favorite{
-       margin-left: -10px;
+      //  margin-left: -10px;
        max-height: 700px;
        overflow-y: auto;
       .ark-select-dropdown{

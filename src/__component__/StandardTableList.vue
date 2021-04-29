@@ -331,9 +331,13 @@
           // if (!this.mountedChecked) {
           //   return false;
           // }
+          const { tableName, customizedModuleName } = router.currentRoute.params;
+
+          
           clearTimeout(this.ztreetimer);
+          const checked = this.moduleComponentName.split('.').includes(tableName || customizedModuleName);
           this.ztreetimer = setTimeout(() => {
-            if (this.$refs && this.$refs.tree && this.mountedChecked && !this.TreeChange) {
+            if (this.$refs && this.$refs.tree && this.mountedChecked && !this.TreeChange && checked) {
               this.$refs.tree.getTreeInfo();
             }
           }, 50);
@@ -652,8 +656,8 @@
                     const type = 'tableDetailVertical';
                     const tab = {
                       type,
-                      tableName: 'CP_C_TASK',
-                      tableId: '24386',
+                      tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
+                      tableId: Version() === '1.3' ? 24386 : 963,
                       id
                     };
                     this.tabOpen(tab);

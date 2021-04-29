@@ -533,8 +533,8 @@
                     const type = 'tableDetailVertical';
                     const tab = {
                       type,
-                      tableName: 'CP_C_TASK',
-                      tableId: '24386',
+                      tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
+                      tableId: Version() === '1.3' ? 24386 : 963,
                       id
                     };
                     this.updataTaskMessageCount({ id, stopUpdataQuantity: true });// 更新小铃铛数量
@@ -1943,7 +1943,6 @@
           showColumnName: true,
         };
 
-
         const promise = new Promise((resolve, reject) => {
           this.getExportQueryForButtons({ OBJ, resolve, reject });
           this.$R3loading.show(this.tableName);
@@ -1993,8 +1992,8 @@
                       const type = 'tableDetailVertical';
                       const tab = {
                         type,
-                        tableName: 'CP_C_TASK',
-                        tableId: '24386',
+                        tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
+                        tableId: Version() === '1.3' ? 24386 : 963,
                         id: this.buttonsData.exportdata
                       };
                       this.tabOpen(tab);
