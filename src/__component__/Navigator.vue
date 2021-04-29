@@ -186,7 +186,7 @@
   import network, { urlSearchParams } from '../__utils__/network';
   import NavigatorSubMenu from './NavigatorSubMenu';
   import {
-    STANDARD_TABLE_LIST_PREFIX, Version, enableHistoryAndFavoriteUI, enableGateWay, getGatewayValue,dashboardConfig
+    STANDARD_TABLE_LIST_PREFIX, Version, enableHistoryAndFavoriteUI, enableGateWay, getGatewayValue,dashboardConfig,messageSwitch
   } from '../constants/global';
   import { updateSessionObject } from '../__utils__/sessionStorage';
 
@@ -257,9 +257,12 @@
         return enableHistoryAndFavoriteUI();
       },
       versionValue() {
-        // if (Version() === '1.4') {
-        //   return false;
-        // }
+        if (Version() === '1.4') {
+          if (messageSwitch()) {
+            return true;
+          }
+          return false;
+        }
         return true;
       },
       taskMessageCounts() {

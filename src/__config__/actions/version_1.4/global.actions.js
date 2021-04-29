@@ -1,6 +1,6 @@
 import network, { urlSearchParams, GetTableName } from '../../../__utils__/network';
 import {
-  enableHistoryAndFavorite, enableInitializationRequest, getTouristRoute, enableGateWay, Version, getGatewayValue 
+  enableHistoryAndFavorite, enableInitializationRequest, getTouristRoute, enableGateWay, Version, getGatewayValue, messageSwitch 
 } from '../../../constants/global';
 import { removeSessionObject } from '../../../__utils__/sessionStorage';
 import router from '../../router.config';
@@ -274,6 +274,9 @@ export default {
     });
   },
   getTaskMessageCount({ commit }, userId) { // 获取我的任务数量
+    if (!messageSwitch()) {
+      return;
+    }
     network.post(Version() === '1.3' ? '/p/c/getMsgCnt' : '/p/c/u_note/getMsgCnt', urlSearchParams({ userId }), {
       serviceId: enableGateWay() ? 'asynctask' : ''
     }).then((res) => {
