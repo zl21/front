@@ -860,7 +860,8 @@ export default {
     path,
     resolve, reject, moduleName,
     routeQuery,
-    routePath
+    routePath,
+    vuedisplay
   }) {
     let actionName = '';
     if (path.search('/') !== -1) { // 兼容1.3版本action配置为包名时，请求默认接口
@@ -868,7 +869,16 @@ export default {
     } else {
       actionName = '';
     }
-    network.post(actionName || '/p/cs/exeAction', params).then((res) => {
+
+    // slient_custom类型的按钮默认不加网关
+    let serviceconfig;
+    if (vuedisplay === 'slient_custom') {
+      serviceconfig = {
+        noServiceId: true
+      };
+    }
+    
+    network.post(actionName || '/p/cs/exeAction', params, serviceconfig).then((res) => {
       if (res.data.code === 0) {
         const invalidData = res.data;
         resolve(res, actionName);
