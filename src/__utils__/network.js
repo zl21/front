@@ -411,7 +411,9 @@ export const urlSearchParams = (data) => {
 };
 //  判断网关
 function setUrlSeverId(gateWay, url, serviceconfig) {
-  if (serviceconfig) {
+  const ServiceId = window.localStorage.getItem('serviceId');
+
+  if (serviceconfig && ServiceId) {
     if (serviceconfig.noServiceId) {
       return url;
     }
