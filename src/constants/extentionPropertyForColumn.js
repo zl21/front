@@ -86,6 +86,10 @@ export default [
       name: '路由ID（系统内不可重复）',
       key: 'linkname',
       type: 'input'
+    }, {
+      name: '自定义组件（objdistype值为defined时生效）',
+      key: 'cellcomponent',
+      type: 'input'
     }],
     description: '列表界面指定字段显示链接，点击可进入对应界面。（支持tabpanle、object、popwin、customized、link）',
     supportType: ['byPage', 'sheetNo', 'select', 'object']
