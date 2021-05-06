@@ -13,6 +13,27 @@
         @on-keydown="enter"
         @on-change="searchData"
       >
+        <div
+          v-if="loading"
+          style="min-height:30px"
+        >
+          <Spin
+            fix
+          >
+            <Icon
+              type="ios-loading"
+              size="18"
+              class="demo-spin-icon-load"
+            ></Icon>
+          </Spin>
+        </div>
+
+        <div
+          v-if="searchList.length<1 && keyWord.length>0 && !loading"
+          class="none-search"
+        >
+          暂无数据
+        </div>
         <Option
           v-for="(item,index) in searchList"
           :key="index"
@@ -73,6 +94,7 @@
           list: [],
         },
         keyWord: '',
+        loading: false,
         dialogConfig: {
           title: '提示',
           mask: true,
@@ -157,6 +179,7 @@
         if (values !== value) {
           return;
         }
+        this.loading = true;
         network
           .post(
             '/p/cs/SearchWords',
@@ -165,8 +188,10 @@
             })
           )
           .then((r) => {
+            this.loading = false;
             if (r.status === 200 && r.data.code === 0) {
-              this.searchList = r.data.data || r.data.datas;
+              const data = r.data.data || r.data.datas;
+              this.searchList = data;
             }
           });
       },
@@ -340,5 +365,10 @@
         text-overflow: ellipsis;
       }
     }
+  }
+  .none-search{
+    text-align: center;
+    // opacity: 0;
+    transition: 0.5s;
   }
 </style>
