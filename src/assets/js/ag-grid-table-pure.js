@@ -505,8 +505,29 @@ customHeader.prototype.destroy = function () {
   this.eGui.removeEventListener('click', this.onHeaderClickListener);
 };
 
+// 定制单元格组件
+class CustomCell {
+  init (params) {
+    const componentName = params.colDef.customerurl.cellcomponent
+    const renderer = window.ProjectConfig.standardTableCellRenderer && window.ProjectConfig.standardTableCellRenderer[componentName]
 
+    if(typeof renderer !== 'function') {
+      this.eGui = document.createElement('div')
+      this.eGui.innerHTML = '<span>没有找到对应的组件</span>'
+      return
+    }
 
+    this.eGui = document.createElement('div')
+    this.eGui.innerHTML = `
+         <div>${renderer(params)}
+         </div>
+      `
+  }
+
+  getGui() {
+    return this.eGui
+  }
+}
 
 // 公共方法
 const cleanChildNode = (node) => {
@@ -613,6 +634,10 @@ const initializeAgTable = (container, opt) => {
 
     // 列组件筛选器
     const componentPicker = (columnItem) => {
+      if(columnItem.webconf && columnItem.webconf.customerurl && columnItem.webconf.customerurl.objdistype === 'defined') {
+        return 'CustomCell'
+      }
+
       if (columnItem.display === 'doc') {
         return 'attachmentComponent';
       }
@@ -893,7 +918,7 @@ const initializeAgTable = (container, opt) => {
           sequenceComponent,
           customHeader,
           attachmentComponent,
-          
+          CustomCell
         },
         columnTypes: {
           // 防止后台api返回的colDef中有type，会引起columnType警告

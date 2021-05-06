@@ -73,6 +73,15 @@
         :closable="false"
       >
         <messagePanel
+          v-if="Version==='1.4'"
+          :panel="messagePanel"
+          @markRead="markReadNote"
+          @ignoreMsg="ignoreMsg"
+          @jumpTask="jumpTask"
+          @nextPage="nextPage"
+        />
+        <message-panel-older
+          v-if="Version==='1.3'"
           :panel="messagePanel"
           @markRead="markReadNote"
           @ignoreMsg="ignoreMsg"
@@ -117,16 +126,19 @@
   import NavigatorPrimaryMenu from './NavigatorPrimaryMenu';
   import SetPanel from './SetPanel';
   import messagePanel from './messagePanel';
+  import messagePanelOlder from './messagePanelOlder'; // 1.3
+
   import ComAutoComplete from './ComAutoComplete';
   import Dialog from './Dialog.vue';
   import { routeTo } from '../__config__/event.config';
   import network, { urlSearchParams } from '../__utils__/network';
   import NavigatorSubMenu from './NavigatorSubMenu';
   import {
-    STANDARD_TABLE_LIST_PREFIX, Version, enableGateWay, getGatewayValue, enableHistoryAndFavoriteUI 
+    STANDARD_TABLE_LIST_PREFIX, Version, enableGateWay, getGatewayValue, enableHistoryAndFavoriteUI, messageSwitch 
   } from '../constants/global';
   import { updateSessionObject } from '../__utils__/sessionStorage';
   import HistoryAndFavorite from './HistoryAndFavorite';
+  import MessagePanelOlder from './messagePanelOlder.vue';
 
   export default {
     name: 'Navigator',
@@ -135,7 +147,8 @@
       Dialog,
       messagePanel,
       ComAutoComplete,
-      HistoryAndFavorite
+      HistoryAndFavorite,
+      messagePanelOlder
     },
     
     data() {
@@ -168,6 +181,7 @@
         }, // 弹框配置信息
         dialogComponentName: null,
         togglePrimaryMenuData: [],
+        Version: Version(),
         messageTimer: null
       };
     },
@@ -184,6 +198,9 @@
       }),
       versionValue() {
         if (Version() === '1.4') {
+          if (messageSwitch()) {
+            return true;
+          }
           return false;
         }
         return true;
@@ -278,14 +295,23 @@
           self.messagePanel.start = start;
           self.messagePanel.list = [];
         }
+        let fixedcolumns = {};
+        if (Version() === '1.3') {
+          fixedcolumns = {
+            OPERATOR_ID: [this.userInfo.id],
+            READSTATE: ['=0'],
+            TASKSTATE: ['=2', '=3']
+          };
+        } else {
+          fixedcolumns = {
+            OPERATOR_ID: [this.userInfo.id],
+            READ_STATE: ['=0'],
+          };
+        }
         const searchdata = {
           table: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
           column_include_uicontroller: true,
-          fixedcolumns: {
-            OPERATOR_ID: [this.userInfo.id],
-            READ_STATE: ['=0'],
-            // TASKSTATE: ['=2', '=3']
-          },
+          fixedcolumns,
           multiple: [],
           startindex: self.messagePanel.start,
           range: 20,

@@ -138,6 +138,15 @@
       :closable="false"
     >
       <messagePanel
+        v-if="Version==='1.4'"
+        :panel="messagePanel"
+        @markRead="markReadNote"
+        @ignoreMsg="ignoreMsg"
+        @jumpTask="jumpTask"
+        @nextPage="nextPage"
+      />
+      <message-panel-older
+        v-if="Version==='1.3'"
         :panel="messagePanel"
         @markRead="markReadNote"
         @ignoreMsg="ignoreMsg"
@@ -180,6 +189,8 @@
   import NavigatorPrimaryMenu from './NavigatorPrimaryMenu';
   import SetPanel from './SetPanel';
   import messagePanel from './messagePanel';
+  import messagePanelOlder from './messagePanelOlder'; // 1.3
+
   import ComAutoComplete from './ComAutoComplete';
   import Dialog from './Dialog.vue';
   import { routeTo } from '../__config__/event.config';
@@ -199,6 +210,7 @@
       Dialog,
       NavigatorSubMenu,
       messagePanel,
+      messagePanelOlder,
       ComAutoComplete
     },
     
@@ -230,6 +242,7 @@
         }, // 弹框配置信息
         dialogComponentName: null,
         togglePrimaryMenuData: [],
+        Version: Version(),
         messageTimer: null
       };
     },
@@ -360,14 +373,23 @@
           self.messagePanel.start = start;
           self.messagePanel.list = [];
         }
+        let fixedcolumns = {};
+        if (Version() === '1.3') {
+          fixedcolumns = {
+            OPERATOR_ID: [this.userInfo.id],
+            READSTATE: ['=0'],
+            TASKSTATE: ['=2', '=3']
+          };
+        } else {
+          fixedcolumns = {
+            OPERATOR_ID: [this.userInfo.id],
+            READ_STATE: ['=0'],
+          };
+        }
         const searchdata = {
           table: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
           column_include_uicontroller: true,
-          fixedcolumns: {
-            OPERATOR_ID: [this.userInfo.id],
-            READ_STATE: ['=0'],
-            // TASKSTATE: ['=2', '=3']
-          },
+          fixedcolumns,
           multiple: [],
           startindex: self.messagePanel.start,
           range: 20,
@@ -383,7 +405,7 @@
           
           if (result.code === 0) {
             self.messagePanel.list = self.messagePanel.list.concat(result.datas.row);
-            console.log(99, self.messagePanel.list);
+            console.log(result, self.messagePanel.list);
 
             self.messagePanel.start = result.datas.start + result.datas.rowCount;
             self.messagePanel.total = result.datas.totalRowCount;

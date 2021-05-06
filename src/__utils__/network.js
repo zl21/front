@@ -428,6 +428,10 @@ export const getCenterByTable = async () => {
   const tableName = router.currentRoute.params.tableName || router.currentRoute.params.customizedModuleName;
   const getGlobalServiceId = window.localStorage.getItem('serviceId');
   const getserviceIdMap = Object.assign({}, store.state.global.serviceIdMap, JSON.parse(window.localStorage.getItem('serviceIdMap')));
+  if (!enableGateWay()) {
+    // 1.3 是无网关的
+    return false;
+  }
   if (!getGlobalServiceId) {
     return false;
   }
