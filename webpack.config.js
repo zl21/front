@@ -129,6 +129,7 @@ module.exports = env => ({
     publicPath: '/',
   },
   module: {
+    exprContextCritical: false,
     rules: [
       {
         test: /\.vue$/,
