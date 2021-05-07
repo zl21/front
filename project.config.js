@@ -169,6 +169,9 @@ module.exports = {
   //     }
   //   }
   //   return true;
+  // },
+  // standardTableCellRenderer: { // 标准列表里，定制ag-grid的单元格
+  //   customlink: params => `<div onclick="console.log('${params.value}')">-定制-${params.value}</div>`
   // }
   isFilterTable: true, // 是否开启表格过滤功能
   // dashboard: {
