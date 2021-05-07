@@ -136,7 +136,9 @@ export default class ParameterDataProcessing {
     }
     // select
     if ((this.item.default || this.item.defval) && this.item.display === 'OBJ_SELECT') {
-      return this.item.default ? this.item.default.split(',') : this.item.defval;
+      // detailType为真，说明是单对象
+      // return this.item.default ? this.item.default.split(',') : this.item.defval;
+      return this.item.detailType ? this.item.default : this.item.default.split(',');
     }
 
     // fk外健
@@ -229,11 +231,6 @@ export default class ParameterDataProcessing {
         return this.item.combobox.filter(item => !item.limitdis)[0].limitval
       }
     }
-
-
-
-
-
 
     return this.item.default || this.item.valuedata || this.item.defval;
   }
