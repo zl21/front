@@ -32,7 +32,7 @@
           v-if="searchList.length<1 && keyWord.length>0 && !loading"
           class="none-search"
         >
-          暂无数据
+          抱歉，没有此功能
         </div>
         <Option
           v-for="(item,index) in searchList"
@@ -369,6 +369,7 @@
   .none-search{
     text-align: center;
     // opacity: 0;
+    font-size: 12px;
     transition: 0.5s;
   }
 </style>
