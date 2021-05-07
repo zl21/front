@@ -56,7 +56,7 @@ function HiddenFields(){
       let panelIndex = target.items && target.items._index && target.items._index.split('_')[0];
       let itemIndex = target.items && target.items._index && target.items._index.split('_')[1]
 
-      console.log(temp,target.items,'900========',!item.source.value && !item.source.items.fkobj && item.source.items.display != 'OBJ_SELECT');
+      // console.log(temp,target.items,'900========',!item.source.value && !item.source.items.fkobj && item.source.items.display != 'OBJ_SELECT');
 
       // if(!item.source.value && !item.source.items.fkobj && item.source.items.display != 'OBJ_SELECT'){  //当来源字段不是外健字段和select字段时，并且值为空时不做处理
       //   return true
