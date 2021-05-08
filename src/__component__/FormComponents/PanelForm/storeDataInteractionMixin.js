@@ -60,8 +60,7 @@ export default {
           ParentForm.formChangeDataLabel[this.items.colname] = val
           ParentForm.formDataLabel[this.items.colname] = val;
 
-          
-          let keepAliveModuleName = (this.activeTab.keepAliveModuleName).toLocaleUpperCase();
+          let keepAliveModuleName = this.activeTab.keepAliveModuleName && (this.activeTab.keepAliveModuleName).toLocaleUpperCase();
             // 初始化的状态
             if (!this.actived) {
               
@@ -74,6 +73,8 @@ export default {
                 }
                 ParentForm.formChangeData = JSON.parse(JSON.stringify(ParentForm.formData));
                 //console.log(JSON.stringify(ParentForm.formChangeData),'NEW');
+                this.InitializationForm(ParentForm);
+                return;
               }
             } else {
               // 页面修改
@@ -94,7 +95,9 @@ export default {
                 if (isEmpty(val) && isEmpty(this.defaultVale)) {
                   delete ParentForm.formData[this.items.colname]
                 }
-                
+                // 默认值
+                this.InitializationForm(ParentForm)
+                return;
                 
               }else{
                 //详情明细  有值 
@@ -141,13 +144,28 @@ export default {
           }else{
             ParentForm.$parent.formChange(ParentForm.formChangeData, ParentForm.formDatadefault)
           }
-
+          
 
 
 
         }
 
       }
+    }
+  },
+  methods:{
+    InitializationForm(ParentForm){
+      // 默认值
+      clearTimeout(this.initTimer);
+      this.initTimer = setTimeout(()=>{
+        if (ParentForm.$parent.formPanelChange) {
+          ParentForm.$parent.initForm(ParentForm.formChangeData, ParentForm.formChangeDataLabel)
+        }else{
+          ParentForm.$parent.InitializationForm(ParentForm.formChangeData, ParentForm.formChangeDataLabel)
+        }
+      },50);
+      
+
     }
   },
   mounted() {

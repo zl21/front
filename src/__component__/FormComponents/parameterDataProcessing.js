@@ -88,6 +88,7 @@ export default class ParameterDataProcessing {
     if (['OBJ_DATE', 'OBJ_DATENUMBER', 'YearMonth', 'OBJ_DATETIME'].includes(this.item.display)) {
 
       let arr = [];
+    
       if (this.item.rangecolumn) {
         arr = [new Date().r3Format(new Date(this.value[0]), 'yyyy/MM/dd hh:mm:ss'), new Date().r3Format(new Date(this.value[1]), 'yyyy/MM/dd hh:mm:ss')];
         return {
@@ -98,7 +99,11 @@ export default class ParameterDataProcessing {
         arr = [new Date().r3Format(new Date(this.value[0]), 'yyyy/MM/dd hh:mm:ss'), new Date().r3Format(new Date(this.value[1]), 'yyyy/MM/dd hh:mm:ss')];
       }
       if (this.item.display === 'OBJ_DATENUMBER') {
-        arr = [new Date().r3Format(new Date(this.value[0]), 'yyyyMMdd'), new Date().r3Format(new Date(this.value[1]), 'yyyyMMdd')];
+        if (this.item.rangecolumn) {
+          arr = [new Date().r3Format(new Date(this.value[0]), 'yyyyMMdd'), new Date().r3Format(new Date(this.value[1]), 'yyyyMMdd')];
+        }else{
+          arr = [new Date().r3Format(new Date(this.value), 'yyyy-MM-dd')];
+        }
       }
       if (this.item.display === 'YearMonth') {
         arr = [new Date().r3Format(new Date(this.value), 'yyyy-MM')];
