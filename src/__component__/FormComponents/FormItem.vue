@@ -391,7 +391,9 @@ export default {
           props = ComponentcollectionEnumerate.props;
           break;
         case 'ExtensionProperty':
-          Components = new CustomExtensionProperty(item).init();
+          const componentObj = new CustomExtensionProperty(item).init();
+          Components = componentObj.Components;
+          props = componentObj.props;
           break;
         default:
           break;

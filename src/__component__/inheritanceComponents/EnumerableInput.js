@@ -35,7 +35,7 @@ class CustomEnumerableInput{
   }
 
 
-
+  mergeMethods() {}
 }
 
 export default CustomEnumerableInput;
