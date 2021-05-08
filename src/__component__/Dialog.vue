@@ -192,7 +192,11 @@
       getModalWidth() {
         const self = this;
         if (this.$refs.modalComponent && this.$refs.modalComponent.$el && this.$refs.modalComponent.$el.clientWidth) {
-          this.modalWidth = this.$refs.modalComponent.$el.clientWidth + 32;
+          if (this.$refs.modalComponent.$el.clientWidth + 32 > (document.body.clientWidth - 200)) {
+            this.modalWidth = document.body.clientWidth - 200;
+          } else {
+            this.modalWidth = this.$refs.modalComponent.$el.clientWidth + 32;
+          }
         } else {
           setTimeout(() => { // 释放资源
             self.getModalWidth();

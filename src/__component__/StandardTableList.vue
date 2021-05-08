@@ -215,6 +215,7 @@
       return {
         treeSearchData: {}, // 树配置的自定义参数，如有和框架查询接口同参数的字段，则覆盖
         popwinMessage: {},
+        TreeChange: true, // 是否是树的点击
         objTabActionDialogConfig: {}, // 自定义按钮配置
         urlArr: ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid', '/p/cs/exeAction'],
         tableButtons: [],
@@ -330,9 +331,13 @@
           // if (!this.mountedChecked) {
           //   return false;
           // }
+          const { tableName, customizedModuleName } = router.currentRoute.params;
+
+          
           clearTimeout(this.ztreetimer);
+          const checked = this.moduleComponentName.split('.').includes(tableName || customizedModuleName);
           this.ztreetimer = setTimeout(() => {
-            if (this.$refs && this.$refs.tree && this.mountedChecked) {
+            if (this.$refs && this.$refs.tree && this.mountedChecked && !this.TreeChange && checked) {
               this.$refs.tree.getTreeInfo();
             }
           }, 50);
@@ -543,11 +548,12 @@
         } else if (this.searchData && this.searchData.reffixedcolumns) {
           delete this.searchData.reffixedcolumns;
         }
+        this.TreeChange = true;
         if (flag === false) {
           // 如果取消则不走查树
           searchData = {};
         }
-        this.treeSearchData = searchData;
+        this.treeSearchData = searchData || {};
         this.searchData.startIndex = 0;
         // this.getQueryListForAg(this.searchData);
        
@@ -625,8 +631,8 @@
                     const type = 'tableDetailVertical';
                     const tab = {
                       type,
-                      tableName: 'CP_C_TASK',
-                      tableId: '24386',
+                      tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
+                      tableId: Version() === '1.3' ? 24386 : 963,
                       id
                     };
                     this.tabOpen(tab);
@@ -697,11 +703,13 @@
 
         const { range } = this.searchData;
         this.searchData.startIndex = range * (page - 1);
+        this.TreeChange = true;
         this.getQueryList();
       },
       onPageSizeChange(pageSize) {
         this.resetButtonsStatus();
 
+        this.TreeChange = true;
         this.searchData.startIndex = 0;
         this.searchData.range = pageSize;
         this.getQueryList();
@@ -1706,8 +1714,8 @@
       },
     
       buttonClick(type, obj) {
+        this.TreeChange = false;
         this.setActiveTabActionValue({});// 点击按钮前清除上一次按钮存的信息
-
         if (type === 'fix') {
           this.AddDetailClick(type, obj);
         } else if (type === 'custom') {
@@ -2228,7 +2236,7 @@
       },
       getQueryListPromise(data) {
         // 重拼树的数据
-        data = Object.assign(data, JSON.parse(JSON.stringify(this.treeSearchData)));
+        data = Object.assign(data, JSON.parse(JSON.stringify(this.treeSearchData || {})));
         const promise = new Promise((resolve, reject) => {
           this.requiredCheck().then(() => {
             this.$R3loading.show();

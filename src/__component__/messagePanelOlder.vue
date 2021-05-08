@@ -36,18 +36,17 @@
           <div class="item-time">
             <i
               class="circle green"
-              :class="item.TASK_STATE.val.indexOf('完成')>=0?'green':'red'"
+              :class="item.TASKSTATE.val.indexOf('完成')>=0?'green':'red'"
             />
-            
-            <span>{{ calcdateDiff(item.MODIFIEDDATE.val) || item.MODIFIEDDATE.val }}</span>
+            <span>{{ calcdateDiff(item.ENDTIME.val) || item.ENDTIME.val }}</span>
           </div>
           <div class="item-inner">
             <div class="item-title">
-              <span><b>[异步任务]</b>任务: {{ item.MENU.val }}</span>
+              <span><b>[异步任务]</b>任务: {{ item.MENU.val }}{{ item.TASKTYPE.val }}{{ item.TASKSTATE.val }}</span>
             </div>
             <div class="item-content">
               <p style="-webkit-box-orient:vertical;">
-                {{ (item.MESSAGE.val.substring(0, 200)) }}
+                {{ (item.CONTENT.val.substring(0, 200)) }}
               </p>
             </div>
           </div>

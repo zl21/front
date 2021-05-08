@@ -557,6 +557,9 @@
                     show = showHide;
                   }
                 }
+                if (item.item.props.qtyisshow === false) {
+                  show = false;
+                }
                 item.show = show;
                 if (!show) {
                   if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
@@ -997,6 +1000,7 @@
         }
         obj.component = ItemComponent;
         obj.show = true;
+        console.log(this.checkDisplay(current));
         obj.item = {
           type: this.checkDisplay(current),
           title: current.name,
@@ -1781,7 +1785,11 @@
         // 组件显示类型
         let str = '';
         const checkIsReadonly = this.isReadonly(item);
-        
+        // if (item.webconf && item.webconf.display && item.webconf.display === 'timerange') {
+        //   //  日期区间
+         
+        // }
+
 
         if (checkIsReadonly === true && item.fkdisplay) {
           //  不可编辑 变成 input
@@ -1856,7 +1864,8 @@
         if (item.display === 'defined') {
           str = 'defined';
         }
-
+       
+       
         return str;
       },
       checkPanelShow(item) {
@@ -2244,7 +2253,9 @@
             item.required = true;
           }
           if (current.ispassword) {
-            item.props.type = 'password';
+            if (current.webconf && current.webconf.isNeedEncrypt !== false) {
+              item.props.type = 'password';
+            } 
           }
           item.props.disabled = checkIsReadonly;
         }
@@ -2332,7 +2343,12 @@
           item.props.type = 'date';
         }
         if (current.display === 'OBJ_TIME') {
-          item.props.type = 'time';
+          if (item.props.webconf && item.props.webconf.type === 'timerange') {
+            //  时间的区间
+            item.props.type = 'timerange';
+          } else {
+            item.props.type = 'time';
+          }
         }
         if (current.display === 'OBJ_DATE') {
           if (current.rangecolumn) {

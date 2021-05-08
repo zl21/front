@@ -4,6 +4,8 @@
     :storage-item="storageItem"
     :readonly="items.props.readonly"
     :itemdata="items.props"
+    v-bind="$attrs"
+    v-on="$listeners"
     @objSave="objSave"
   />
 </template>
@@ -71,9 +73,16 @@
       generateComponent() {
         // window.ProjectConfig.custommizeMainTableField = customizeModules;
         if (window.ProjectConfig && window.ProjectConfig.custommizeMainTableField) {
-          this.componentName = `${this.storageItem.name}_${this.items.props.colname}`;
+          let target = '';
 
-          const target = window.ProjectConfig.custommizeMainTableField[this.items.props.colname];
+          if (this.items.props.webconf && this.items.props.webconf.definedType) {
+            this.componentName = `${this.storageItem.name}_${this.items.props.webconf.definedType}`;
+            target = window.ProjectConfig.custommizeMainTableField[this.items.props.webconf.definedType]; 
+          } else {
+            this.componentName = `${this.storageItem.name}_${this.items.props.colname}`;
+            target = window.ProjectConfig.custommizeMainTableField[this.items.props.colname];
+          }
+          console.log(target);
           if (Vue.component(this.componentName) === undefined) {
             if (target) {
               if (typeof target.component === 'function') {

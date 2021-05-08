@@ -1,5 +1,7 @@
 import network, { urlSearchParams, GetTableName } from '../../../__utils__/network';
-import { enableHistoryAndFavorite, enableInitializationRequest, getTouristRoute } from '../../../constants/global';
+import {
+  enableHistoryAndFavorite, enableInitializationRequest, getTouristRoute, Version, enableGateWay 
+} from '../../../constants/global';
 import { removeSessionObject } from '../../../__utils__/sessionStorage';
 import router from '../../router.config';
 
@@ -46,13 +48,13 @@ export default {
         if (index > times) {
           clearInterval(timer);
         } else {
-          network.post('/p/cs/getObject', urlSearchParams({ table: 'CP_C_TASK', objid })).then((res) => {
+          network.post('/p/cs/getObject', urlSearchParams({ table: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE', objid })).then((res) => {
             const data = res.data;
             // resolve();
             if (data.code === 0) { 
               // 筛选信息验证导出是否成功
               data.data.addcolums.filter(item => item.parentdesc === '基本信息')[0].childs.forEach((b) => {
-                if (b.colname === 'TASKSTATE') {
+                if (b.colname === 'TASK_STATE') {
                   if (b.valuedata === '2') {
                     exportTask.exportedState = true;
                     clearInterval(timer);
@@ -76,7 +78,7 @@ export default {
                   }
                 } else if (b.colname === 'URL') {
                   exportTask.file = b.valuedata; 
-                } else if (b.colname === 'CONTENT') {
+                } else if (b.colname === 'MESSAGE') {
                   exportTask.resultMsg = b.valuedata; 
                 }
               });

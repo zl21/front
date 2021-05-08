@@ -1,6 +1,6 @@
 import network, { urlSearchParams, GetTableName } from '../../../__utils__/network';
 import {
-  enableHistoryAndFavorite, enableInitializationRequest, getTouristRoute 
+  enableHistoryAndFavorite, enableInitializationRequest, getTouristRoute, enableGateWay, Version, getGatewayValue, messageSwitch 
 } from '../../../constants/global';
 import { removeSessionObject } from '../../../__utils__/sessionStorage';
 import router from '../../router.config';
@@ -33,6 +33,257 @@ export default {
         commit('updateHistoryAndFavorite', { history: res.data.data });
       });
     }
+  },
+  getExportedState({ commit }, {
+    objid, id, resolve, reject 
+  }) { // 获取导出状态
+    if (enableInitializationRequest()) {
+      const times = 4;// 循环的次数
+      let index = 0;// 当前次数
+      let timer = 0;// 定时器
+      const exportTask = {};
+
+      timer = setInterval(() => {
+        index++;
+        if (index > times) {
+          clearInterval(timer);
+        } else {
+          network.post('/p/cs/getObject', urlSearchParams({ table: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE', objid }), {
+            serviceId: enableGateWay() ? getGatewayValue('U_NOTE') : ''
+          }).then((res) => {
+            const data = res.data;
+            // resolve();
+            if (data.code === 0) { 
+              // 筛选信息验证导出是否成功
+              const addcolum = data.data.addcolums.filter(item => item.parentdesc === '基础信息').length > 0 ? data.data.addcolums.filter(item => item.parentdesc === '基础信息')[0].childs : [];
+              addcolum.forEach((b) => {
+                if (b.colname === 'TASK_STATE') {
+                  if (b.valuedata === '2') {
+                    exportTask.exportedState = true;
+                    clearInterval(timer);
+                    resolve();
+                    exportTask.successMsg = true;
+                    commit('updateExportedState', exportTask);
+                  } else if (b.valuedata === '3') { // 异常终止
+                    exportTask.exportedState = true;
+                    clearInterval(timer);
+                    // reject();
+                    commit('updateExportedState', exportTask);
+                  } else {
+                    if (index === times) { // 已轮询4次之后，到我的任务查看
+                      // exportTask.exportedState = true;
+                      exportTask.dialog = true;
+                      clearInterval(timer);
+                      commit('updateExportedState', exportTask);
+                      resolve();
+                    }
+                    exportTask.exportedState = false;
+                  }
+                } else if (b.colname === 'URL') {
+                  exportTask.file = b.valuedata; 
+                } else if (b.colname === 'MESSAGE') {
+                  exportTask.resultMsg = b.valuedata; 
+                }
+              });
+              if (exportTask.exportedState) { // 导出成功执行以下逻辑
+                const obj = Version() === '1.3' ? urlSearchParams({ id }) : { objId: id };
+                network.post(Version() === '1.3' ? '/p/cs/ignoreMsg' : '/p/cs/u_note/ignoreMsg', obj, {
+                  serviceId: enableGateWay() ? 'asynctask' : ''
+                }).then((r) => {
+                  const datas = r.data;
+                  if (datas.code === 0) { 
+                    if (exportTask.resultMsg.indexOf('{') >= 0) {
+                      exportTask.resultMsg = JSON.parse(exportTask.resultMsg);
+                      if (exportTask.resultMsg.code === 0) {
+                        if (exportTask.file) {
+                          const file = JSON.parse(exportTask.file);
+                          // exportTask.file = JSON.parse(JSON.stringify(file));
+                          const eleLink = document.createElement('a');
+                          eleLink.download = 'download';
+                          eleLink.style.display = 'none';
+                          eleLink.href = file[0].url;
+                          document.body.appendChild(eleLink);
+                          eleLink.click();
+                          document.body.removeChild(eleLink);
+                        }
+                      } else {
+                        const errorList = [];
+                        if (exportTask.file) {
+                          reject();
+                          // exportTask.file = JSON.parse(exportTask.file);
+
+                          const file = JSON.parse(exportTask.file);
+                          // exportTask.file = JSON.parse(JSON.stringify(file));
+                          errorList.push({ message: `<a href="${file[0].url}" download="download" style="color: #0F8EE9">${exportTask.resultMsg.message}（下载报错信息）</a>` });
+                        } else if (!exportTask.file) {
+                          const message = JSON.stringify(exportTask.resultMsg);
+                          window.vm.$Modal.fcError({
+                            mask: true,
+                            titleAlign: 'center',
+                            title: '错误',
+                            render: h => h('div', {
+                              style: {
+                                padding: '10px 20px 0',
+                                display: 'flex',
+                                lineHeight: '16px'
+                              }
+                            }, [
+                              
+                              h('i', {
+                                props: {
+                                },
+                                style: {
+                                  marginRight: '5px',
+                                  display: 'inline-block',
+                                  'font-size': '28px',
+                                  'margin-right': ' 10px',
+                                  'line-height': ' 1',
+                                  padding: ' 10px 0',
+                                  color: 'red'
+                                },
+                                class: 'iconfont iconbj_error fcError '
+                              }),
+                              h('div', {
+                                style: `width: 80%;
+                                    margin: 1px;
+                                    margin-bottom: -8px;
+                                    box-sizing: border-box;
+                                    padding: 5px;
+                                    resize: none;
+                                    max-height: 100px;
+                                    max-width: 300px;
+                                    overflow: auto;
+                                    `
+                              }, message)
+                            ])
+                          });
+                          commit('updateExportedState', exportTask);
+                          reject();
+                          return;
+                        } else {
+                          errorList.push({ message: exportTask.resultMsg.message });
+                        }
+                        if (exportTask.resultMsg.data !== undefined && exportTask.resultMsg.data.length > 0) {
+                          for (const msg of exportTask.resultMsg.data) {
+                            if (msg.hasOwnProperty('rowIndex')) {
+                              errorList.push({ message: `第${msg.rowIndex}条记录报错：${msg.message}` });
+                            } else {
+                              errorList.push({ message: msg.message });
+                            }
+                          }
+                        }
+                        window.vm.$Modal.fcError({
+                          mask: true,
+                          titleAlign: 'center',
+                          title: '错误',
+                          render: h => h('div', {
+                            style: {
+                              padding: '10px 20px 0',
+                              display: 'flex',
+                              lineHeight: '16px'
+                            }
+                          }, [
+                            
+                            h('i', {
+                              props: {
+                              },
+                              style: {
+                                marginRight: '5px',
+                                display: 'inline-block',
+                                'font-size': '28px',
+                                'margin-right': ' 10px',
+                                'line-height': ' 1',
+                                padding: ' 10px 0',
+                                color: 'red'
+                              },
+                              class: 'iconfont iconbj_error fcError '
+                            }),
+                            h('div', {
+                              style: `width: 80%;
+                                  margin: 1px;
+                                  margin-bottom: -8px;
+                                  box-sizing: border-box;
+                                  padding: 5px;
+                                  resize: none;
+                                  max-height: 100px;
+                                  max-width: 300px;
+                                  overflow: auto;
+                                  `
+                            }, [
+                           
+                              h('a', {
+                                style: {
+                                },
+                                domProps: {
+                                  innerHTML: errorList.length > 0 ? errorList[0].message : ''
+                                }
+                              },),
+                              h('div', {
+                                domProps: {
+                                  innerHTML: errorList.length > 1 ? errorList[1].message : ''
+                                }
+                              }),
+                              h('div', {
+                                domProps: {
+                                  innerHTML: errorList.length > 2 ? errorList[2].message : ''
+                                }
+                              },)
+                            ])
+                          ])
+                        });
+                      }
+                    } else if (exportTask.file) {
+                      // exportTask.file = JSON.parse(exportTask.file);
+                      const file = JSON.parse(exportTask.file);
+                      // exportTask.file = JSON.parse(JSON.stringify(file));
+
+                      const eleLink = document.createElement('a');
+                      eleLink.download = 'download';
+                      eleLink.style.display = 'none';
+                      eleLink.href = file[0].url;
+                      document.body.appendChild(eleLink);
+                      eleLink.click();
+                      document.body.removeChild(eleLink);
+                    } else {
+                      exportTask.successMsg = true;
+                      commit('updateExportedState', exportTask);
+                      resolve();
+                    }
+                  }
+                });
+              }
+            } else {
+              reject();
+            }
+          });
+        }
+      }, 1000);
+    }
+  },
+  updataTaskMessageCount({ commit }, { id, stopUpdataQuantity }) { // 更新我的任务数量
+    const obj = Version() === '1.3' ? urlSearchParams({ id }) : { objId: id };
+    network.post(Version() === '1.3' ? '/p/cs/ignoreMsg' : '/p/cs/u_note/ignoreMsg', obj, {
+      serviceId: enableGateWay() ? 'asynctask' : ''
+    }).then((res) => {
+      const datas = res.data;
+      if (datas.code === 0) { 
+        if (!stopUpdataQuantity) {
+          commit('updateIgnoreMsg');
+        }
+      }
+    });
+  },
+  getTaskMessageCount({ commit }, userId) { // 获取我的任务数量
+    if (!messageSwitch()) {
+      return;
+    }
+    network.post(Version() === '1.3' ? '/p/c/getMsgCnt' : '/p/c/u_note/getMsgCnt', urlSearchParams({ userId }), {
+      serviceId: enableGateWay() ? 'asynctask' : ''
+    }).then((res) => {
+      if (res.data.code === 0) {
+        commit('updateTaskMessageCount', res.data.data);
+      }
+    });
   },
   signout({ commit }) {
     network
