@@ -63,11 +63,8 @@ export default {
           let keepAliveModuleName = this.activeTab.keepAliveModuleName && (this.activeTab.keepAliveModuleName).toLocaleUpperCase();
             // 初始化的状态
             if (!this.actived) {
-              
               if (/NEW/.test(keepAliveModuleName)) {
                 // 删除空值
-                
-
                 if (isEmpty(val)) {
                   delete ParentForm.formData[this.items.colname]
                 }
@@ -159,7 +156,7 @@ export default {
       clearTimeout(this.initTimer);
       this.initTimer = setTimeout(()=>{
         if (ParentForm.$parent.formPanelChange) {
-          ParentForm.$parent.initForm(ParentForm.formChangeData, ParentForm.formChangeDataLabel)
+          ParentForm.$parent.initFormPanel(ParentForm.formChangeData, ParentForm.formChangeDataLabel)
         }else{
           ParentForm.$parent.InitializationForm(ParentForm.formChangeData, ParentForm.formChangeDataLabel)
         }

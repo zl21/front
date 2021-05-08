@@ -99,7 +99,7 @@ export default class ParameterDataProcessing {
         arr = [new Date().r3Format(new Date(this.value[0]), 'yyyy/MM/dd hh:mm:ss'), new Date().r3Format(new Date(this.value[1]), 'yyyy/MM/dd hh:mm:ss')];
       }
       if (this.item.display === 'OBJ_DATENUMBER') {
-        if (this.item.rangecolumn) {
+        if (this.item.rangecolumn || !this.item.detailType) {
           arr = [new Date().r3Format(new Date(this.value[0]), 'yyyyMMdd'), new Date().r3Format(new Date(this.value[1]), 'yyyyMMdd')];
         }else{
           arr = [new Date().r3Format(new Date(this.value), 'yyyy-MM-dd')];

@@ -14,7 +14,6 @@ class CustomEnumerableInput{
     this.item = item;
     this.Vm = EnumerableInput;
     this.mergeProps();   
-    this.mergeMethods(); 
   }
 
   init() {

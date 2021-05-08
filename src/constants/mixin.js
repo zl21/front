@@ -37,6 +37,9 @@ Vue.mixin({
         } else if (Type.isArray(instance)) {
           child = instance;
         }
+        if(!child){
+          return;
+        }
 
         for (let i = 0; i < child.length; i++) {
           allComp.push(child[i]);

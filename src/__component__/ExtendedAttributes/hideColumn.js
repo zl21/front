@@ -64,13 +64,13 @@ function HiddenFields(){
       if(!panelIndex){
         return;
       }
-
+      let formItem = panelForm.formItemLists[panelIndex].childs[itemIndex];
       if((JudgeValue(item.source,temp) && !temp.ishide) || (!JudgeValue(item.source,temp) && temp.ishide)){  //判断当前字段与配置的value值进行对比
         // console.log('显示的字段',temp.target)
-        panelForm.formItemLists[panelIndex].childs[itemIndex].show = true
+        formItem.show = true
       }else{
         // console.log('隐藏的字段',item.source)
-        panelForm.formItemLists[panelIndex].childs[itemIndex].show = false 
+        formItem.show = false 
         if(temp.clear){  //是否配置了隐藏字段时需要清空数据
           if(target.items.display === 'OBJ_CHECK'){
             target.value = target.items.combobox.filter(item => !item.limitdis)[0].limitval
@@ -81,6 +81,12 @@ function HiddenFields(){
         }  
         
       }
+        // 是否校验判断
+        if(formItem.isnotnull && !formItem.readonly && formItem.show){
+          formItem.rules.required = true
+        }else{
+          formItem.rules.required = false
+        }
       panelForm.panelRedraw(Object.values(panelForm.formItemLists[panelIndex].childs))
       return true
     })

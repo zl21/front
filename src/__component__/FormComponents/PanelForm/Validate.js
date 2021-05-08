@@ -109,8 +109,8 @@ export class Validate extends Vue {
         this.methods = {
             validateFormInt(){
                 // 点击按钮校验规则
-                let trigger = this.rules.trigger || {};
-                let required = this.rules.required;
+                let trigger = this.rulesData.trigger || {};
+                let required = this.rulesData.required;
                 let self = this;
                 // 事件的校验
                 if (required && required.type) {
@@ -135,6 +135,9 @@ export class Validate extends Vue {
                 this.message = '';
                 // 先判断是否空值
                 if(!this.validateRequire(val,type)){
+                    return;
+                }
+                if(!rule){
                     return;
                 }
                 Object.keys(this.types).some((item) => {
@@ -200,20 +203,20 @@ export class Validate extends Vue {
             },
             setClassName() {
                 // 设置class
-                let required = this.rules.required;
+                let required = this.rulesData.required;
                 if (required && required.type) {
                     this.className = required && required.type ? 'validate_item validate_required' : 'validate_item';
                 }
             },
             addEventListener() {
                 // 监听校验事件
-                let trigger = this.rules.trigger || {};
-                let required = this.rules.required;
+                let trigger = this.rulesData.trigger || {};
+                let required = this.rulesData.required;
                 let self = this;
                 // 事件的校验
                 if (required && required.type) {
                     // 空值的事件
-                    let trigger_required = this.rules.required.trigger;
+                    let trigger_required = this.rulesData.required.trigger;
 
                     let trigger_key = Object.keys(trigger);
                     // 判断空值事件与事件trigger 是否相同

@@ -56,13 +56,19 @@ function HiddenFields(){
       if(!panelIndex){
         return;
       }
+      let formItem = panelForm.formItemLists[panelIndex].childs[itemIndex];
       if(JudgeValue(item.source,temp,panelForm)){
-        panelForm.formItemLists[panelIndex].childs[itemIndex].isnotnull = temp.props.required;
-        panelForm.formItemLists[panelIndex].childs[itemIndex].readonly = temp.props.disabled;
+        formItem.isnotnull = temp.props.required;
+        formItem.readonly = temp.props.disabled;
       }else{
-
-        panelForm.formItemLists[panelIndex].childs[itemIndex].isnotnull = target.items.original.isnotnull;
-        panelForm.formItemLists[panelIndex].childs[itemIndex].readonly = target.items.original.readonly;
+        formItem.isnotnull = target.items.original.isnotnull;
+        formItem.readonly = target.items.original.readonly;
+      }
+      // 是否校验判断
+      if(formItem.isnotnull && !formItem.readonly && formItem.show){
+        formItem.rules.required = true
+      }else{
+        formItem.rules.required = false
       }
       delete panelForm.formItemLists[panelIndex].childs[itemIndex].Components
       target.$forceUpdate()
