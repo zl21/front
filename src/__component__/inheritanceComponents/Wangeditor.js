@@ -16,7 +16,7 @@ class CustomWangeditor {
     this.item = item;
     this.Vm = Wangeditor;
     this.mergeProps();   
-    this.mergeMethods(); 
+    // this.mergeMethods(); 
   }
 
   init() {
