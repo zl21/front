@@ -89,9 +89,10 @@
         @keydown="attachFilterInputKeydown"
         @valuechange="attachFilterInput"
       /> -->
-        <component :is="inheritanceComponents(items)"
+        <component :is="componentsName"
                    :ref="items.field"
-                   v-model="value">
+                    v-bind="propsMessage"
+                    v-model="value">
           <slot v-if="items.display === 'OBJ_SELECT'">
             <Option v-for="item in items.props.options"
                     :key="item.value"
@@ -103,10 +104,12 @@
         </component>
 
         <!-- 自定义组件 -->
-        <component :is="_items.componentName"
+         <component :is="_items.componentName"
                    v-if="_items.type === 'customization'"
                    :ref="_items.field"
                    v-model="value"
+                    v-on="$listeners"
+                    v-bind="propsMessage"
                    :options="{
           ..._items,
           webConfSingle,
@@ -215,6 +218,10 @@ export default {
     return {
       filterDate: {},
       resultData: {}, // 结果传值
+      componentsName:'',// 组件名称
+      propsMessage:{
+       
+      }, // 各个组件的props
       errorTip: '',
       value: '', //实时数据
     };
@@ -313,23 +320,34 @@ export default {
     inheritanceComponents () {
       let Components = null;
       let item = this.items;
+      let props = {}
       switch (item.display) {
         case undefined:
         case 'OBJ_TEXTAREA':
-          Components = new CustomInput(item).init();
+           let ComponentcollectionInput = new CustomInput(item).init();
+            Components = ComponentcollectionInput.Components;
+            props = ComponentcollectionInput.props;
           break;
         case 'OBJ_FK':
           if (item.fkobj.searchmodel === 'drp') {
-            Components = new BusDropDownSelectFilter(item).init();
+          let Componentcollection = new BusDropDownSelectFilter(item).init();
+            Components = Componentcollection.Components;
+            props = Componentcollection.props;
           }
           if (item.fkobj.searchmodel === 'mrp') {
-            Components = new CustomDropMultiSelectFilter(item).init();
+          let Componentcollectionmrp = new CustomDropMultiSelectFilter(item).init();
+            Components = Componentcollectionmrp.Components;
+            props = Componentcollectionmrp.props;
           }
           if (item.fkobj.searchmodel === 'mop') {
-            Components = new CustomAttachFilter(item).init();
+             let Componentcollectionmop = new CustomAttachFilter(item).init();
+              Components = Componentcollectionmop.Components;
+              props = Componentcollectionmop.props;
           }
           if (item.fkobj.searchmodel === 'pop') {
-            Components = new CustomPopAttachFilter(item).init();
+            let Componentcollectionpop = new CustomPopAttachFilter(item).init();
+              Components = Componentcollectionpop.Components;
+              props = Componentcollectionpop.props;
           }
           break;
         case 'OBJ_DATE':
@@ -337,25 +355,40 @@ export default {
         case 'YearMonth':
         case 'OBJ_DATETIME':
         case 'OBJ_TIME':
-          Components = new CustomDatePicker(item).init();
+          let Componentcollectiontime = new CustomDatePicker(item).init();
+            Components = Componentcollectiontime.Components;
+            props = Componentcollectiontime.props;
           break;
         case 'OBJ_SELECT':
-          Components = new CustomSelect(item).init();
+          let Componentcollectionselect = new CustomSelect(item).init();
+          Components = Componentcollectionselect.Components;
+          props = Componentcollectionselect.props;
           break;
         case 'OBJ_CHECK':
-          Components = new CustomCheckbox(item).init();
+          let Componentcollectioncheck = new CustomCheckbox(item).init();
+          Components = Componentcollectioncheck.Components;
+          props = Componentcollectioncheck.props;
+
           break;
         case 'image':
-          Components = new CustomImageUpload(item).init();
+           let Componentcollectionimage = new CustomImageUpload(item).init();
+          Components = Componentcollectionimage.Components;
+          props = Componentcollectionimage.props;
           break;
         case 'OBJ_DOC':
-          Components = new CustomDocUpload(item).init();
+          let Componentcollectiondoc = new CustomDocUpload(item).init();
+          Components = Componentcollectiondoc.Components;
+          props = Componentcollectiondoc.props;
           break;
         case 'clob':
-          Components = new CustomWangeditor(item).init();
+          let Componentcollectionclob = new CustomWangeditor(item).init();
+          Components = Componentcollectionclob.Components;
+          props = Componentcollectionclob.props;
           break;
         case 'Enumerate':
-          Components = new CustomEnumerableInput(item).init();
+           let ComponentcollectionEnumerate = new CustomEnumerableInput(item).init();
+          Components = ComponentcollectionEnumerate.Components;
+          props = ComponentcollectionEnumerate.props;
           break;
         case 'ExtensionProperty':
           Components = new CustomExtensionProperty(item).init();
@@ -363,7 +396,7 @@ export default {
         default:
           break;
       }
-
+      this.propsMessage = props;
       return Components;
     },
     routerNext (value) {
@@ -588,6 +621,7 @@ export default {
     window.removeEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
   },
   created () {
+    this.componentsName = this.inheritanceComponents(this.items);
   },
   mounted () {
     window.addEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetProps);

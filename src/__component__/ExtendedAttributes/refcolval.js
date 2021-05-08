@@ -25,6 +25,7 @@ const urlSearchParams = (data) => {
 
 // 映射关系
 export const refcolvalMap = ($this, config,key) => {
+    console.log('refcolvalMap');
     if(config.srccols){
         // 兼容数据
         config.srccol = config.srccols;
@@ -93,7 +94,8 @@ export const messageTip = ($this, target,key) => {
         return true;
     }
     if (!value.ID) {
-        $this.$Message.info(`请先选择主表${target.items.name}`);
+        console.log();
+        $this.$Message.info(`请先选择${target.items.name}`);
         setTimeout(() => {
             if(target.$el.querySelector('input')){
                 target.$el.querySelector('input').focus();
@@ -173,23 +175,18 @@ export const setisShowPopTip = ($this, config,network) => {
     }
     // refcolval
     if (config && config.refcolval) {
-        return () => {
-            return refcolvalMap($this, config.refcolval,'refcolval');
-        }
+       return refcolvalMap($this, config.refcolval,'refcolval');
+       
     }else if(config && config.refcolval_custom){
     // refcolval_custom
-        return () => {
-            return  refcolvalCustomUrl ($this, config,network,'refcolval_custom')
-        }
+        return  refcolvalCustomUrl ($this, config,network,'refcolval_custom')
+
     }else if(config && config.refcolvalArray) {
         // refcolvalArray
-        return () => {
-            return  refcolvalMap ($this, config.refcolvalArray,'refcolvalArray')
-        }
+        return  refcolvalMap ($this, config.refcolvalArray,'refcolvalArray')
+
     }else{
-        return () => {
-            return true;
-        }
+        return true;
     }
 }
 

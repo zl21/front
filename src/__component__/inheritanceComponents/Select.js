@@ -3,83 +3,42 @@
  */
 import Vue from 'vue';
 
-import dataProp from '../../__config__/props.config';
-import regExp from '../../constants/regExp';
+import { SetPlaceholder ,SetDisable} from './setProps';
 
-import hideColumn from '../ExtendedAttributes/hideColumn';
 
 let Select = Ark.Select
 // 深拷贝
-const deepClone = (arr) => {  
-  const obj = arr.constructor == Array ? [] : {};
-  // 第二种方法 var obj=arr instanceof Array?[]:{}
-  // 第三种方法 var obj=Array.isArray(arr)?[]:{}
-  for (const item in arr) {
-    if (typeof arr[item] === 'object') {
-      obj[item] = deepClone(arr[item]);
-    } else {
-      obj[item] = arr[item];
-    }
-  }
-  return obj;
-};
-// const nativeInput = deepClone(Input);
+
 class CustomSelect {
   constructor(item) {
-    this.item = item; 
-    const DefaultSelect = Vue.extend(Select);
-    this.Input = new DefaultSelect().$options;
-    delete this.Input._Ctor;
+    this.item = item;
+    this.Vm = Select;
+    this.mergeProps();   
+    this.mergeMethods(); 
   }
 
   init() {
-    this.mergeProps();
-    this.mergeMethods();
-    if (this.item.Components) {
-      return this.item.Components;
-    }
-    
-    const obj = { ...this.Input };
-    this.item.Components = obj;
-    return obj;
+    return {
+      Components:this.Vm,
+      props:this.props
+    };
+
   }
 
   // 合并props
   mergeProps() {
-    const defaultProps = { ...this.Input.props };
-    this.settingPlaceholder();
+   
     this.settingOptions();
-    
-    defaultProps.transfer = {
-      default: () => true
-    };
-
-    defaultProps.multiple = {
-      default: () => !this.item.detailType
-    };
-
-    defaultProps.clearable = {
-      default: () => true
-    };
-
-    defaultProps.chooseAll = {
-      default: () => true
+    this.props = {
+      transfer:true,
+      multiple:!this.item.detailType,
+      clearable:true,
+      chooseAll:true,
+      options:this.item.props.options,
+      placeholder:new SetPlaceholder(this.item).init(),
+      disabled:new SetDisable(this.item).init(),
     }
-
-    defaultProps.disabled = {
-      default:() => this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true)
-    }
-
-    Object.keys(this.item.props).map((item) => {
-      // console.log(item, this.item.props.regx, this.item.props[item], this.Input.props[item]);
-      if (defaultProps[item]) {
-        defaultProps[item].default = () => (function (value) {
-          return value;
-        }(this.item.props[item]));
-      }
-      return item;
-    });
-    this.Input.props = defaultProps;
+   
   }
 
   // 合并methods
@@ -88,12 +47,11 @@ class CustomSelect {
 
   }
 
-  settingPlaceholder() { // 设置Placeholder属性
-    const placeholder = this.item.webconf && this.item.webconf.placeholder ? this.item.webconf.placeholder : null;
-    this.item.props.placeholder = placeholder || `${(dataProp.select && dataProp.select.props) ? dataProp.select.props.placeholder : '请选择'}${this.item.coldesc}`;
-  }
   
   settingOptions() {
+    if(!this.item.props){
+      this.item.props = {}
+    }
     if (this.item.combobox) {
       this.item.props.options = this.item.combobox.map((item) => {
         item.value = item.limitval;

@@ -12,3 +12,12 @@ export class SetPlaceholder {
     }
 
 }
+export class SetDisable {
+    constructor(item){
+        this.item = item;
+    }
+    init(){
+        return  this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true);
+    }
+
+}

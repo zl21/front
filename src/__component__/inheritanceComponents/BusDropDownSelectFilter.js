@@ -1,221 +1,113 @@
-/**
- * 下拉多选外健关联业务组件的自定义逻辑处理
- */
+/* eslint-disable func-names */
+/* eslint-disable no-prototype-builtins */
 
 /**
- * 下拉单选外健关联业务组件的自定义逻辑处理
+ * AttachFilter组件自定义
  */
+
+
  import { defaultrange } from '../../constants/global';
  import { DropDownSelectFilter } from '@syman/ark-ui-bcl';
  import BusDropDownSelectFilterMethod from '../ExtendedMethods/BusDropDownSelectFilter';
-
  import network from '../../__utils__/network';
  import { SetPlaceholder } from './setProps';
  
- import Vue from 'vue';
  import {
   setisShowPopTip,
   postData,
   postTableData
 } from '../ExtendedAttributes/refcolval.js'
  
- // const BusDropDownSelectFilter = () => import('arkui_BCL/DropDownSelectFilter');
- // console.log(BusDropDown);
- // 处理传参form格式转换
- const urlSearchParams = (data) => {
-   const params = new URLSearchParams();
-   Object.keys(data).forEach((key) => {
-     const dataType = Object.prototype.toString.call(data[key]);
- 
-     if (dataType === '[object Object]' || dataType === '[object Array]') {
-       data[key] = JSON.stringify(data[key]);
-     }
- 
-     params.append(key, data[key]);
-   });
-   return params;
- };
- 
- // 深拷贝
-//  const deepClone = (arr) => {  
-//    const obj = arr.constructor == Array ? [] : {};
-//    // 第二种方法 var obj=arr instanceof Array?[]:{}
-//    // 第三种方法 var obj=Array.isArray(arr)?[]:{}
-//    for (const item in arr) {
-//      if (typeof arr[item] === 'object') {
-//        obj[item] = deepClone(arr[item]);
-//      } else {
-//        obj[item] = arr[item];
-//      }
-//    }
-//    return obj;
-//  };
- 
- 
- class CustomDropMultiSelectFilter extends Vue {
+ class BusDropDownSelectFilter {
    constructor(item) {
-     super()
-    //  接收传值
      this.item = item;
-    //  设置commpents
-     this.setCompents();
-    //  设置模板
-     this.setTemple();
-    //  修改的Methods
-     this.mergeMethods();
-    //  自己的methods 
-    this.setMethods();
-     this.pageSize = defaultrange();
-     //  设置组件data
-     this.setData()
-
-   }
-   setCompents(){
-     this.components = { akDropDownSelectFilter:{...DropDownSelectFilter} };
-   }
-   mounted(){
-    //  渲染后的挂载
-    setTimeout(()=>{ 
-      this.valueData = this.value;
-      // if(this.value[0]&& this.value[0].ID){
-      //   this.$refs.MultiSelectFilter.value = [...this.value];
-      // }
-    },10)
-     if(this.pageSize){
-        this.$refs.MultiSelectFilter.pageSize = this.pageSize;
-     }
-     this.$refs.MultiSelectFilter.postTableData = this.postTableData;
-     this.$refs.MultiSelectFilter.postData = this.postData;
-
-   }
-   setMethods(){
-     this.methods =  {
-      onChange:function(value){
-        console.log(value);
-        this.valueData = value;
-        this.$emit('on-Change',value);
-      }
-     }
+     this.Vm = DropDownSelectFilter;
+     this.mergeProps();   
+     this.mergeMethods(); 
    }
  
-   setTemple(){
-     this.template =  `
-     <div>
-         <akDropDownSelectFilter ref="MultiSelectFilter" v-model="valueData"  v-bind="items.props"  @on-change="onChange"></akDropDownSelectFilter>
-        </div>
-      `;  
-   }
-   setData(){
-    //  修改传参的props
-    this.mergeProps();
-    let  items = {...this.item};
-    
-    this.data = ()=>{
-      return {
-        items:items,
-        valueData:this.value,
-        pageSize:this.pageSize,
-        postTableData:this.postTableData,
-        postData:this.postData
-      }
-    }
-   }
    init() {
-    // 重新渲染组件
-    if (this.item.Components) {
-      return this.item.Components;
-    }
-     let ExtMultiSelectFilter = Vue.extend({
-      model: {
-        prop: 'value',
-        event: 'on-Change',
-      },
-       props:{
-        value: {
-          type: [Array, String]
-        }
-       },
-       name:'extMultiSelectFilter',
-       data:this.data,
-       components:this.components,
-       template:this.template,
-       methods:this.methods,
-       mounted:this.mounted
-     });
-     this.item.Components = new ExtMultiSelectFilter().$options;
-     return this.item.Components;
+      return {
+        Components:this.Vm,
+        props:this.props
+      };
    }
  
    // 合并props
    mergeProps() {
-     const propsData = { ...this.item };
-     // 处理Url
-     this.propsUrl(propsData);
-     // 处理传参
-     this.propsParams(propsData);
-     propsData.PropsData = {
-       disabled: this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true),
-       hidecolumns:['id', 'value'],
-       isShowPopTip: setisShowPopTip(this, this.item.webconf,network),
-       placeholder:new SetPlaceholder(this.item).init()
-     }
      
-     this.item.props = { ...propsData };
-   } 
- 
-   propsUrl(props) { // 处理props中的url属性
-     props.Url = {
-       autoUrl: `/p/cs/fuzzyquerybyak`,
-       tableUrl: `/p/cs/QueryList`
+    if (this.item.fkobj && this.item.fkobj.serviceId) {
+      // 字段的网关
+      this.item.serviceId = this.item.fkobj.serviceId;
+    }
+    this.propstype = {
+          ...this.item,
+          item:this.item,
+          disabled: this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true),
+          hidecolumns:['id', 'value'],
+          placeholder:new SetPlaceholder(this.item).init()
      };
-   }
- 
-   propsParams(props) { // 处理props中的AutoRequest,TableRequest
-     props.AutoRequest = {
-       colid: this.item.colid,
-       fixedcolumns: {}
-     };
- 
-     props.TableRequest = {
-       isdroplistsearch: true,
-       refcolid: this.item.colid,
-     };
-     props.http = network
-   }
- 
-   // 合并data
-   mergeDatas() {
-    //  const data = { ...this.BusDropDown.mixins[0].data() };
-    //  // 处理前端配置的默认分页数
-    //  data.pageSize = defaultrange() ? defaultrange() : data.pageSize;
-    //  this.BusDropDown.mixins[0].data = () => data;
+     
+     this.props = {
+        PropsData:{...this.propstype},
+        Url:{
+          autoUrl: `/p/cs/fuzzyquerybyak`,
+          tableUrl: `/p/cs/QueryList`
+        },
+        AutoRequest: {
+          colid: this.item.colid,
+          fixedcolumns: {}
+        },
+        TableRequest : {
+          isdroplistsearch: true,
+          refcolid: this.item.colid,
+        },
+        http: network
+      }
+     return 
    }
  
    // 合并methods
    mergeMethods() {
-    // new BusDropDownSelectFilterMethod(this.item,this.components.akDropDownSelectFilter)
-    let self = this;
+    this.Vm.created = function(){  
+      this.item = this.PropsData.item;
+      this.activeTab = this.$parent.$parent.activeTab;
+      this.PropsData.isShowPopTip=()=>{
+        return setisShowPopTip(this, this.item.webconf,network)
+      }  
+      if(defaultrange()){
+        this.pageSize = defaultrange();
+      }
+      this.postTableData = function (url) {
+        // 字段联动 表格数据查询
+        return new Promise((resolve) => {
+         postTableData.call(this,this,url).then((res)=>{
+            resolve(res)
+         });
+        })
+        
+      };
+      this.postData = function (url) {
+        // 字段联动 模糊查询数据
+         return new Promise((resolve) => {
+          postData.call(this,this,url).then((res)=>{
+             resolve(res)
+          });
+         })   
+      };
 
-    this.postTableData = function (url) {
-      // 字段联动 表格数据查询
-      return new Promise((resolve) => {
-       postTableData.call(this,self,url).then((res)=>{
-          resolve(res)
-       });
-      })
-      
-    };
-    this.postData = function (url) {
-      // 字段联动 模糊查询数据
-       return new Promise((resolve) => {
-        postData.call(this,self,url).then((res)=>{
-           resolve(res)
-        });
-       })   
-    };
 
+    }
+    
+    
+    
+
+
+  
    }
+ 
+   
  }
  
- export default CustomDropMultiSelectFilter;
+ export default BusDropDownSelectFilter;
  

@@ -9,116 +9,58 @@ import Vue from 'vue';
 import dataProp from '../../__config__/props.config';
 import regExp from '../../constants/regExp';
 import InputMethod from '../ExtendedMethods/Input';
+import { SetPlaceholder ,SetDisable} from './setProps';
 
 let Input = Ark.Input
-// 深拷贝
-const deepClone = (arr) => {  
-  const obj = arr.constructor == Array ? [] : {};
-  // 第二种方法 var obj=arr instanceof Array?[]:{}
-  // 第三种方法 var obj=Array.isArray(arr)?[]:{}
-  for (const item in arr) {
-    if (typeof arr[item] === 'object') {
-      obj[item] = deepClone(arr[item]);
-    } else {
-      obj[item] = arr[item];
-    }
-  }
-  return obj;
-};
+
 // const nativeInput = deepClone(Input);
 class CustomInput {
   constructor(item) {
-    this.item = item; 
-    // if (this.item.Components) {
-    //   this.Input = this.item.Components;
-    // } else {
-    this.Input = deepClone(Input);
-    // }
-    // const DefaultInput = Vue.extend(Input);
-    // thixs.Input = new DefaultInput().$options;
-    delete this.Input._Ctor;
+    this.item = item;
+    this.Vm = Input;
+    this.mergeProps();   
+    this.mergeMethods(); 
   }
 
   init() {
-    this.mergeProps();
-    this.mergeMethods();
-    if (this.item.Components) {
-      return this.item.Components;
-    }
-    
-    const Con = Vue.extend(this.Input);
-    const obj = { ...new Con().$options };
-    this.item.Components = obj;
-    return obj;
+    return {
+      Components:this.Vm,
+      props:this.props
+    };
+
   }
 
   // 合并props
   mergeProps() {
-    const defaultProps = { ...this.Input.props };
-    defaultProps.maxlength = {
-      default:() => this.item.length 
+    this.item.props = {};
+    this.props = {
+      maxlength:this.item.length,
+      placeholder:new SetPlaceholder(this.item).init(),
+      disabled:new SetDisable(this.item).init(), 
     }
-    this.settingPlaceholder();
-    // this.item.rules = {
-    //   required: {
-    //     type:true,
-    //     message: '请输入数据', 
-    //     trigger: 'blur'
-    //   }, 
-    //   trigger:{
-    //       blur:{
-    //         max:3,
-    //         message: '失去光标最大长度为3', 
-    //       },
-    //       // change:{
-    //       //   regx:'',
-    //       //   min:3,
-    //       //   max:10,
-    //       //   message: '最大长度为10,最小长度为3', 
-    //       // },
-    //       // change:{
-    //       //   regx:'\\d',
-    //       //   message: '只能输入数字', 
-    //       // },
-    //       // change:{
-    //       //   callback:function(val){
-    //       //       console.log(val);
-    //       //       return `${val} 的值不对`
-    //       //   },
-    //       // },
-    //       change:{
-    //         callback:function(val){
-    //           return new Promise((resolve) => {
-    //                   resolve(` 获取的值${val}`);
-    //           });
-    //         },
-    //       }            
-    //   },
-      
-    // }
+  
+    if (this.item.isuppercase) {
+      this.uppercase();
+    }
     if (this.item.type === 'NUMBER') {
       this.numericTypes();
+      
     }
-    // if (this.item.isuppercase) {
-    //   this.uppercase();
-    // }
+    if(this.item.props.regx){
+        this.props.regx = this.item.props.regx;
+    }
+    
     if(this.item.display === 'OBJ_TEXTAREA'){
 
-      defaultProps.type = {
-        default:() => 'textarea'
-      }
+      this.props.type = 'textarea';
       if((this.item.webconf && this.item.webconf.ispassword) || this.item.ispassword){
-        defaultProps.encrypt = {
-          default:() => true
-        }
+        this.props.encrypt = true;
       }
 
       
 
-      defaultProps.autosize = {
-        default:() => ({
-          minRows: this.item.row + 1 
-        })
+      this.props.autosize ={
+        minRows: this.item.row + 1
       }
      
       
@@ -126,44 +68,22 @@ class CustomInput {
       // 处理ispassword属性
    
       if((this.item.webconf && this.item.webconf.ispassword) || this.item.ispassword){
-        defaultProps.type = {
-          default:() => 'password'
-        }
+        this.props.type = 'password';
       }
 
     }
-    
-    
-
-    defaultProps.disabled = {
-      default:() => this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true)
-    }
-    
-
-    Object.keys(this.item.props).map((item) => {
-      // console.log(item, this.item.props.regx, this.item.props[item], this.Input.props[item]);
-      if (defaultProps[item]) {
-        defaultProps[item].default = () => (function (value) {
-          return value;
-        }(this.item.props[item]));
-      }
-      return item;
-    });
-    this.Input.props = defaultProps;
+  
   }
 
   // 合并methods
   mergeMethods() {
-
-    new InputMethod(this.item,this.Input)
+    
+    new InputMethod(this.item,this.Vm)
     
     
   }
 
-  settingPlaceholder() { // 设置Placeholder属性
-    const placeholder = this.item.webconf && this.item.webconf.placeholder ? this.item.webconf.placeholder : null;
-    this.item.props.placeholder = placeholder || `${(dataProp.input && dataProp.input.props) ? dataProp.input.props.placeholder : '请输入'}${this.item.coldesc}`;
-  }
+
 
   numericTypes() { // 数字类型输入控制
     // 只能输入 正整数 
