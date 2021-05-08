@@ -6,10 +6,7 @@
  */
 
 
- import Vue from 'vue';
  import ComAttachFilter from '../ComAttachFilternew.vue';
- import dataProp from '../../__config__/props.config';
- import regExp from '../../constants/regExp';
  import { SetPlaceholder ,SetDisable} from './setProps';
  
  class CustomAttachFilter {

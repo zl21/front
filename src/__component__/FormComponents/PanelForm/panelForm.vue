@@ -204,6 +204,7 @@ export default {
           this.collapseValue.push(data.parentname)
         })
       }
+      console.log(messageTip,'messageTip');
       return messageTip;
 
     },

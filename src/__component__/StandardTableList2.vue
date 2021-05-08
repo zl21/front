@@ -2088,7 +2088,6 @@
                   }
                   // 过滤外键字符串
                   if (temp.display === 'OBJ_FK') { 
-                      console.log(search[temp.colname]);
                       if(!Array.isArray(search[temp.colname])){
                           delete search[temp.colname];
                       }

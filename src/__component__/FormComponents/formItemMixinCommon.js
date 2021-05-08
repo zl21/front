@@ -6,9 +6,18 @@ export default {
       actived:false, // 渲染未完成
     };
   },
+  watch:{
+    _items:{
+          handler(val) {
+          // 组件重组
+          console.log(val,val.isnotnull,'=====');
+        }
+
+
+      }
+  },
   methods:{
     validateInput() {
-      console.log(this.value);
       return new Promise((resolve) => {
   
       const preverifyenabled = this.items.preverifyenabled;
@@ -34,46 +43,31 @@ export default {
       }
     });
     },
+    setRules(){
+      this.items.rules = {};
+      let required = this.items.show && !this.items.readonly && this.items.isnotnull; 
+      let self = this;
+      this.items.rules = {
+        required: {
+          type:required,
+          message: `${this.items.name}不能为空!`, 
+          trigger: 'blur'
+        }, 
+        trigger:{
+            change:{
+              callback:function(val){
+                return self.validateInput();
+              },
+            }            
+        },
+        
+      }
+
+    }
   },
   mounted() {
     // 设置校验规则
-    let required = !this.items.readonly && this.items.isnotnull; 
-    let self = this;
-    this.items.rules = {
-      required: {
-        type:required,
-        message: `${this.items.name}不能为空!`, 
-        trigger: 'blur'
-      }, 
-      trigger:{
-          // blur:{
-          //    max:3,
-          //   message: '失去光标最大长度为3', 
-          // },
-          // change:{
-          //   regx:'',
-          //   min:3,
-          //   max:10,
-          //   message: '最大长度为10,最小长度为3', 
-          // },
-          // change:{
-          //   regx:'\\d',
-          //   message: '只能输入数字', 
-          // },
-          // change:{
-          //   callback:function(val){
-          //       console.log(val);
-          //       return `${val} 的值不对`
-          //   },
-          // },
-          change:{
-            callback:function(val){
-              return self.validateInput();
-            },
-          }            
-      },
-      
-    }
+    this.setRules();
     setTimeout(()=>{
       // 延时渲染完成,阻止页面初始化调用事件
       this.actived = true;    

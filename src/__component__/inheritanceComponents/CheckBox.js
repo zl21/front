@@ -2,7 +2,6 @@
 /**
  * checkbox组件的自定义逻辑处理
  */
-import Vue from 'vue';
 import { SetDisable } from './setProps';
 
 
@@ -28,16 +27,11 @@ class CustomCheckbox {
   mergeProps() {
     this.settingOptions();
 
-    console.log(this.props,this.item.props);
-
     this.props = {
       trueValue:this.item.trueValue,
       falseValue:this.item.falseValue,
       disabled:new SetDisable(this.item).init(),
     }
-    console.log(this.props,this.item.props);
-
-    
   }
 
   // 合并methods
