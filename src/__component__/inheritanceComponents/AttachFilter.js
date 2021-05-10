@@ -13,12 +13,14 @@
  import regExp from '../../constants/regExp';
  import network from '../../__utils__/network';
  import { SetPlaceholder } from './setProps';
+ import DropMethods from '../ExtendedMethods/DropMethods';
+
  class CustomAttachFilter {
    constructor(item) {
+     this.item = item;
+     this.Vm = Object.create(MopMultiSelect);
      this.mergeProps();
      this.mergeMethods();
-     this.item = item;
-     this.Vm = MopMultiSelect;
    }
  
    init() {
@@ -33,7 +35,6 @@
    mergeProps() {
  
      let PropsData = {
-       default: () => ({
          disabled: this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true), //控制字段是否可编辑
          blurType: false, // 失去光标是否默认选中第一行
          colid: this.item.colid, // 表id
@@ -53,9 +54,8 @@
              }/p/cs/menuimport`
          },
          inputname: this.item.inputname,
-         placeholder: SetPlaceholder(this.item)
-       })
-     };
+         placeholder:new SetPlaceholder(this.item).init()
+        };
  
      this.props = {
        PropsData,
@@ -65,10 +65,11 @@
  
    // 合并methods
    mergeMethods() {
-    
- 
- 
-     // 回车查询
+    // 失去光标事件
+    new DropMethods(this.item,this.Vm).blur('attachFilterInputBlur');
+    // 回车查询
+    new DropMethods(this.item,this.Vm).keydown('attachFilterInputKeydown');
+
      
    }
  

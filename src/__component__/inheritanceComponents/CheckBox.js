@@ -10,7 +10,7 @@ let Checkbox = Ark.Checkbox
 class CustomCheckbox {
   constructor(item) {
     this.item = item;
-    this.Vm = Checkbox;
+    this.Vm = Object.create(Checkbox);
     this.mergeProps();   
     this.mergeMethods(); 
   }

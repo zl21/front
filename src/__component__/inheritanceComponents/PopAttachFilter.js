@@ -8,11 +8,12 @@
 
  import ComAttachFilter from '../ComAttachFilternew.vue';
  import { SetPlaceholder ,SetDisable} from './setProps';
- 
+ import DropMethods from '../ExtendedMethods/DropMethods';
+
  class CustomAttachFilter {
   constructor(item) {
     this.item = item;
-    this.Vm = ComAttachFilter;
+    this.Vm = Object.create(ComAttachFilter);
     this.mergeProps();   
     this.mergeMethods(); 
   }
@@ -116,7 +117,9 @@
    // 合并methods
    mergeMethods() {
      const _self = this;
-    
+      // 失去光标
+      new DropMethods(this.item,this.Vm).blur('attachFilterInputBlur');
+  
  
  
      // 回车查询
@@ -129,6 +132,8 @@
          }, 300);
        }
      };
+
+
    }
  
    

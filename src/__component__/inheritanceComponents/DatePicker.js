@@ -12,7 +12,7 @@ let TimePicker = Ark.TimePicker;
 class CustomDatePicker {
   constructor(item) {
     this.item = item;
-    this.Vm = this.item.display === 'OBJ_TIME'?TimePicker:DatePicker;
+    this.Vm = Object.create(this.item.display === 'OBJ_TIME'?TimePicker:DatePicker);
     this.mergeProps();   
     this.mergeMethods(); 
   }

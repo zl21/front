@@ -8,7 +8,7 @@
 
  import { defaultrange } from '../../constants/global';
  import { DropDownSelectFilter } from '@syman/ark-ui-bcl';
- import BusDropDownSelectFilterMethod from '../ExtendedMethods/BusDropDownSelectFilter';
+ import DropMethods from '../ExtendedMethods/DropMethods';
  import network from '../../__utils__/network';
  import { SetPlaceholder } from './setProps';
  
@@ -21,7 +21,7 @@
  class BusDropDownSelectFilter {
    constructor(item) {
      this.item = item;
-     this.Vm = DropDownSelectFilter;
+     this.Vm = Object.create(DropDownSelectFilter);
      this.mergeProps();   
      this.mergeMethods(); 
    }
@@ -45,6 +45,7 @@
           item:this.item,
           disabled: this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true),
           hidecolumns:['id', 'value'],
+          enterType:this.item.detailType,
           placeholder:new SetPlaceholder(this.item).init()
      };
      
@@ -98,8 +99,10 @@
 
 
     }
-    
-    
+    // 失去光标
+    new DropMethods(this.item,this.Vm).blur();
+    // 回车查询
+    new DropMethods(this.item,this.Vm).keydown();
     
 
 

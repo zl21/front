@@ -12,7 +12,7 @@ import { SetPlaceholder ,SetDisable} from './setProps';
 class CustomImageUpload {
   constructor(item) {
     this.item = item;
-    this.Vm = ImageUpload;
+    this.Vm = Object.create(ImageUpload);
     this.mergeProps();   
     this.mergeMethods(); 
   }
