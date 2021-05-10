@@ -81,12 +81,8 @@ function HiddenFields(){
         }  
         
       }
-        // 是否校验判断
-        if(formItem.isnotnull && !formItem.readonly && formItem.show){
-          formItem.rules.required = true
-        }else{
-          formItem.rules.required = false
-        }
+      // 是否校验判断
+      target.setRules();
       panelForm.panelRedraw(Object.values(panelForm.formItemLists[panelIndex].childs))
       return true
     })

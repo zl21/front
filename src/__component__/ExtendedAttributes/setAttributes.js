@@ -60,17 +60,16 @@ function HiddenFields(){
       if(JudgeValue(item.source,temp,panelForm)){
         formItem.isnotnull = temp.props.required;
         formItem.readonly = temp.props.disabled;
+       
       }else{
         formItem.isnotnull = target.items.original.isnotnull;
         formItem.readonly = target.items.original.readonly;
       }
       // 是否校验判断
-      if(formItem.isnotnull && !formItem.readonly && formItem.show){
-        formItem.rules.required = true
-      }else{
-        formItem.rules.required = false
-      }
-      delete panelForm.formItemLists[panelIndex].childs[itemIndex].Components
+      target.setRules();
+      // 初始化字段的属性
+      target.inheritanceComponents();
+      // delete panelForm.formItemLists[panelIndex].childs[itemIndex].Components
       target.$forceUpdate()
       return true
     })
@@ -87,8 +86,6 @@ function JudgeValue(source,conf,panelForm) {
     conf.source.every(item => {
       let sourceCom = source.$_live_getChildComponent(panelForm,`${source.activeTab.tableName}${item.refcolumn}`)
       let value = sourceCom.value;
-      console.log(item.refval,value,'===sourceCom');
-
       if(sourceCom.$_live_type.isArray(value)){
         if(sourceCom.items.fkobj){  //处理外健字段
           value = value.map(item => conf.match === 'label'?item.Label:item.ID)

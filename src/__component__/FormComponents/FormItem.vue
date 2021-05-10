@@ -623,7 +623,7 @@ export default {
     window.removeEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
   },
   created () {
-    this.componentsName = this.inheritanceComponents(this.items);
+    this.componentsName = this.inheritanceComponents();
   },
   mounted () {
     window.addEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetProps);
