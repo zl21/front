@@ -41,8 +41,9 @@ class CustomImageUpload {
           tableName: this.item.tableName
         },
         name: '上传',
-        length: (this.item.webconf && this.item.webconf.ImageSize)?this.item.webconf.ImageSize:null
-
+        length: (this.item.webconf && this.item.webconf.ImageSize)?this.item.webconf.ImageSize:null,
+        width: 120,
+        height:120
       },
       http:network
     }
