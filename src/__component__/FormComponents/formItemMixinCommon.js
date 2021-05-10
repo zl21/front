@@ -19,14 +19,13 @@ export default {
   methods:{
     validateInput() {
       return new Promise((resolve) => {
-  
       const preverifyenabled = this.items.preverifyenabled;
       if (preverifyenabled) {
         network.post('/p/cs/verifyObject', {
           OBJ_ID: this.$route.params.itemId === 'New' ? -1 : this.$route.params.itemId,
           TABLE_NAME: this.$route.params.tableName,
           VERIFY_COLUMN: {
-            [this.items.field]: this.value
+            [this.items.colname]: this.value
           }
         }).then((res) => {
           if (res.data.code === 1) {
