@@ -60,6 +60,10 @@ export default {
     defaultData:{  //表单数据
       type: [Array, Object]
     },
+    isMainTable:{ // 是否是主子表
+      type: Boolean,
+      default: false
+    },
     readonly:{  //表单是否整体禁用
       type: Boolean,
       default: false
@@ -140,6 +144,7 @@ export default {
             item.childs[temp].tableName = this.tableName;
             item.childs[temp].itemId = this.$route.params.itemId;
             item.childs[temp].component = this.initComponent(item.childs[temp],index);
+            item.childs[temp].isMainTable = this.isMainTable;
             item.childs[temp]  = new RenderComponent(JSON.parse(JSON.stringify(item.childs[temp]))).itemConversion();
             return temp
           })

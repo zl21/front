@@ -106,6 +106,7 @@ export default class RenderComponent {
     // console.log(this.item)
     this.item = typeConversion(JSON.parse(JSON.stringify(this.item)));
     this.item.coldesc = this.item.name
+    console.log(this.item.isMainTable);
     this.item.detailType = true  //增加是否是明细字段标记，明细字段传参不同
     return this.item
   }

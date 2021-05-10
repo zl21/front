@@ -95,6 +95,7 @@
       v-if="panelData.isShow&&!componentName"
       :tableName="tableName"
       :readonly="objreadonly"
+      :is-main-table="isMainTable"
       :defaultData="panelData.data"
     ></panelForm>
     <!-- <compositeForm
