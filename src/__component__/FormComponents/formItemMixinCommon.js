@@ -6,20 +6,9 @@ export default {
       actived:false, // 渲染未完成
     };
   },
-  watch:{
-    _items:{
-          handler(val) {
-          // 组件重组
-          console.log(val,val.isnotnull,'=====');
-        }
-
-
-      }
-  },
   methods:{
     validateInput() {
       return new Promise((resolve) => {
-  
       const preverifyenabled = this.items.preverifyenabled;
       if (preverifyenabled) {
         network.post('/p/cs/verifyObject', {
@@ -44,7 +33,6 @@ export default {
     });
     },
     setRules(){
-      this.items.rules = {};
       let required = this.items.show && !this.items.readonly && this.items.isnotnull; 
       let self = this;
       this.items.rules = {
@@ -62,6 +50,7 @@ export default {
         },
         
       }
+    
 
     }
   },

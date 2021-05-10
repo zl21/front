@@ -19,6 +19,9 @@ export class Validate extends Vue {
             rules: {
                 handler(val) {
                     this.rulesData = val;
+                    if(!val.required.type){
+                        this.message = '';
+                    }
                 }
             },
             value: {
