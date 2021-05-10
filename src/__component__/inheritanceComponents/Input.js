@@ -82,6 +82,7 @@ class CustomInput {
   mergeMethods() {
     new InputMethod(this.item, this.instance)
 
+    this.instance.methods.nextInputFocus = this.nextInputFocus
     this.overrideKeyDown()
   }
 
@@ -111,13 +112,43 @@ class CustomInput {
   // 重写按下键盘事件
   overrideKeyDown() {
     const keyDownFn = this.instance.methods.handleKeydown;
+    const isDetailPage = this.item.detailType
     this.instance.methods.handleKeydown = function(e) {
        // 禁止输入特殊字符 '
       if ([222].includes(e.keyCode)) {
         e.stopPropagation();
         e.preventDefault();
       }
+
+      // 明细界面的input，按下回车后，光标自动移到下一个Input框里
+      if(isDetailPage) {
+        const currentWrapDom = this.$parent.$parent.$el.parentNode // 当前组件的容器节点
+        this.nextInputFocus.call(this, currentWrapDom)
+      }
       keyDownFn.call(this,...arguments)
+    }
+  }
+
+  // 获取焦点
+  nextInputFocus(currentWrapDom) {
+    // 当前节点是textarea就不触发后面的逻辑。而是直接换行
+    if(currentWrapDom) {
+      const textarea = currentWrapDom.querySelector('textarea')
+      if(textarea) {
+        return
+      }
+    }
+
+    const nextItemDom = currentWrapDom.nextElementSibling // 下一个兄弟节点
+    if(!nextItemDom) {
+      return
+    }
+    const inputDom = nextItemDom.querySelector('.ark-input')
+    if(!inputDom || nextItemDom.style.display === 'none' || (inputDom && inputDom.disabled)|| (inputDom && inputDom.type === 'checkbox')) {
+      // 继续查找下个节点
+      this.nextInputFocus(nextItemDom)
+    } else {
+      inputDom.focus()
     }
   }
 
