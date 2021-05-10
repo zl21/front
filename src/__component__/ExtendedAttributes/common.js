@@ -44,9 +44,9 @@ export const FindInstance = ($this,name,tableName) => {
         if(x){
             let vm = {};
             if(tableName){
-                vm = $this.$_live_getChildComponent(panelForm, tableName+x); 
+                vm = $this.$_live_getChildComponent(panelFormParent, tableName+x); 
             }else{
-                vm = $this.$_live_getChildComponent(panelForm, x); 
+                vm = $this.$_live_getChildComponent(panelFormParent, x); 
             }
             if(vm){
                 arr.push(vm);

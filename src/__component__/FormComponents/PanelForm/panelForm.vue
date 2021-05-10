@@ -137,7 +137,7 @@ export default {
             // item.childs[temp].readonly = this.readonly || this.defaultData.isdefault
             // item.childs[temp].styles = this.setDiv(item.childs[temp])
             this.$set(item.childs[temp],'styles',this.setDiv(item.childs[temp]))
-            item.childs[temp].tableName = this.$route.params.tableName;
+            item.childs[temp].tableName = this.tableName;
             item.childs[temp].itemId = this.$route.params.itemId;
             item.childs[temp].component = this.initComponent(item.childs[temp],index);
             item.childs[temp]  = new RenderComponent(JSON.parse(JSON.stringify(item.childs[temp]))).itemConversion();

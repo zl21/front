@@ -163,7 +163,8 @@ export default class ParameterDataProcessing {
         if (['mrp', 'drp', 'pop', 'mop'].includes(fkobj) && (this.item.refobjid && this.item.refobjid != '-1')) {
           let arr = []
           // 多选change
-          const refobjid = (this.item.refobjid || '').split(',') || [];
+          console.log(this.item.refobjid);
+          const refobjid = (this.item.refobjid.toString() || '').split(',') || [];
           const valuedata = (this.item.valuedata ? this.item.valuedata :this.item.default || '').split(',') || [];
           if (refobjid.length > 0) {
             arr = refobjid.reduce((currty, itemI, index) => {
