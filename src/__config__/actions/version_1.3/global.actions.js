@@ -54,7 +54,7 @@ export default {
             if (data.code === 0) { 
               // 筛选信息验证导出是否成功
               data.data.addcolums.filter(item => item.parentdesc === '基本信息')[0].childs.forEach((b) => {
-                if (b.colname === 'TASK_STATE') {
+                if (b.colname === 'TASKSTATE') {
                   if (b.valuedata === '2') {
                     exportTask.exportedState = true;
                     clearInterval(timer);
