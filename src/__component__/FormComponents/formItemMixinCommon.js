@@ -42,7 +42,7 @@ export default {
           trigger: 'blur'
         }, 
         trigger:{
-            change:{
+            blur:{
               callback:function(val){
                 return self.validateInput();
               },
