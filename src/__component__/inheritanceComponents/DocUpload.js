@@ -16,7 +16,7 @@ import { SetPlaceholder ,SetDisable} from './setProps';
  class CustomDocUpload {
   constructor(item) {
     this.item = item;
-    this.Vm = Docfile;
+    this.Vm = Object.create(Docfile);
     this.mergeProps();   
     this.mergeMethods(); 
   }

@@ -65,7 +65,8 @@ function HiddenFields(){
         return;
       }
       let formItem = panelForm.formItemLists[panelIndex].childs[itemIndex];
-      if((JudgeValue(item.source,temp) && !temp.ishide) || (!JudgeValue(item.source,temp) && temp.ishide)){  //判断当前字段与配置的value值进行对比
+      if((JudgeValue(item.source,temp) && !temp.ishide) || (!JudgeValue(item.source,temp) && temp.ishide)){  
+        //判断当前字段与配置的value值进行对比
         // console.log('显示的字段',temp.target)
         formItem.show = true
       }else{

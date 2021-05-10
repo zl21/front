@@ -12,7 +12,7 @@ import { SetPlaceholder ,SetDisable} from './setProps';
 class CustomEnumerableInput{
   constructor(item) {
     this.item = item;
-    this.Vm = EnumerableInput;
+    this.Vm = Object.create(EnumerableInput);
     this.mergeProps();   
   }
 
