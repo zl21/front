@@ -11,14 +11,14 @@ let Input = Ark.Input
 class CustomInput {
   constructor(item) {
     this.item = item
-    this.Vm = Object.create(Input)
+    this.instance = Object.create(Input)
     this.mergeProps()
     this.mergeMethods()
   }
 
   init() { 
     return {
-      Components: this.Vm,
+      Components: this.instance,
       props: this.props,
     }
   }
@@ -75,12 +75,14 @@ class CustomInput {
     this.props.size = this.item.size
     this.props.icon = this.item.icon
 
-    // console.log(this.Vm)
+    // console.log(this.instance)
   }
 
   // 合并methods
   mergeMethods() {
-    new InputMethod(this.item, this.Vm)
+    new InputMethod(this.item, this.instance)
+
+    this.overrideKeyDown()
   }
 
   numericTypes() {
@@ -103,6 +105,19 @@ class CustomInput {
       this.item.props.regx = typeRegExp
     } else if (this.item.webconf && this.item.webconf.ispositive) {
       this.item.props.regx = typeRegExp
+    }
+  }
+
+  // 重写按下键盘事件
+  overrideKeyDown() {
+    const keyDownFn = this.instance.methods.handleKeydown;
+    this.instance.methods.handleKeydown = function(e) {
+       // 禁止输入特殊字符 '
+      if ([222].includes(e.keyCode)) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+      keyDownFn.call(this,...arguments)
     }
   }
 
