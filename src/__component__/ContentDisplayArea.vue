@@ -31,7 +31,8 @@
   import { mapState } from 'vuex';
   import TabLists from './TabLists';
   import { enableTabLists, dashboardConfig } from '../constants/global';
-  
+  import { mapMutations } from 'vuex';
+
   export default {
     data() {
       return {
@@ -40,6 +41,10 @@
       };
     },
     name: 'ContentDisplayArea',
+    methods:{
+      ...mapMutations('global', ['updateDashboardPageValue']),
+
+    },
     watch: {
       $route(to) {
         if (to.path === '/') {
@@ -60,6 +65,13 @@
       if (this.$router.currentRoute.path === '/') {
         this.flag = true;
       }
+      let self = this;
+      document.addEventListener('click',function(e){
+          if((e.target.tagName).toLocaleUpperCase() ==='LI'){
+            self.flag = false;
+            self.updateDashboardPageValue(false);
+          }
+      })
     },
     computed: {
       ...mapState('global', ['keepAliveLists', 'openedMenuLists', 'isShowDashboardPage']),

@@ -29,10 +29,10 @@
         </div>
 
         <div
-          v-if="searchList.length<1 && keyWord.length>0 && !loading"
+          v-if="searchList.length<1 && keyWord && keyWord.length>0 && !loading"
           class="none-search"
         >
-          抱歉，没有此功能
+          抱歉，没有此功能!
         </div>
         <Option
           v-for="(item,index) in searchList"
@@ -369,7 +369,8 @@
   .none-search{
     text-align: center;
     // opacity: 0;
-    font-size: 12px;
+    cursor: default;
+    font-size: 10px;
     transition: 0.5s;
   }
 </style>

@@ -1757,7 +1757,6 @@
         } else if (type === 'reset') {
           // 重置列表渲染
           this.resetForm();
-          console.log('重置');
           // 查询成功后清除表格选中项
           this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });
           this.$refs.agTableElement.clearChecked();
@@ -2226,9 +2225,15 @@
         if (value && !value.flag) { // 返回时查询之前页码
         if(searchDataRes){
           searchDataRes.startIndex = 0;
-
         }
           this.searchData.startIndex = 0;
+           //  修改储存tab
+           const param = {
+              startIndex: this.searchData.startIndex,
+              range: this.searchData.range,
+              index: this.currentTabValue.index
+            };
+            this.updateTabParam(param);
         }
         this.getQueryListPromise(JSON.parse(JSON.stringify(this.searchData)),searchDataRes);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项

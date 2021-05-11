@@ -174,10 +174,10 @@ module.exports = {
   //   customlink: params => `<div onclick="console.log('${params.value}')">-定制-${params.value}</div>`
   // }
   isFilterTable: true, // 是否开启表格过滤功能
-  // dashboard: {
-  //   compontent: () => import(
-  //     './src/__component__/Login.vue'
-  //   ),
-  //   // iconClass: 'iconfont iconmd-grid'
-  // }
+  DashboardComponent: {
+    compontent: () => import(
+      './src/__component__/Login.vue'
+    ),
+    iconClass: 'iconfont iconmd-grid'
+  }
 };

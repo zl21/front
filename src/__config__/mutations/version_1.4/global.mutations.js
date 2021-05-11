@@ -978,7 +978,11 @@ export default {
   //   state.openedMenuLists.splice(data.index, 1, data.currentMenuData); 
   //   console.log(3, state.openedMenuLists);
   // }
-  updateDashboardPageValue(state) {
-    state.isShowDashboardPage = !state.isShowDashboardPage;
+  updateDashboardPageValue(state,type) {
+    if(type !== undefined){
+      state.isShowDashboardPage = type;
+    }else{
+      state.isShowDashboardPage = !state.isShowDashboardPage;
+    }
   }
 };
