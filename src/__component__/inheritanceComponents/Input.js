@@ -28,6 +28,7 @@ class CustomInput {
     this.item.props = this.item.props || {}
     this.props = {
       maxlength: this.item.length,
+      item:this.item,
       placeholder: new SetPlaceholder(this.item).init(),
       disabled: new SetDisable(this.item).init(),
     }
@@ -80,10 +81,10 @@ class CustomInput {
 
   // 合并methods
   mergeMethods() {
-    new InputMethod(this.item, this.instance)
+     new InputMethod(this.item, this.instance)
 
-    this.instance.methods.nextInputFocus = this.nextInputFocus
-    this.overrideKeyDown()
+    // this.instance.methods.nextInputFocus = this.nextInputFocus
+    // this.overrideKeyDown()
   }
 
   numericTypes() {
@@ -91,7 +92,6 @@ class CustomInput {
     // 只能输入 正整数
     let string = ''
     this.item.length = 100
-
     if (this.item.webconf && this.item.webconf.ispositive) {
       string = `^\\d{0,${this.item.length}}(\\\.[0-9]{0,${this.item.scale}})?$`
     } else {
@@ -114,6 +114,7 @@ class CustomInput {
     const keyDownFn = this.instance.methods.handleKeydown;
     const isDetailPage = this.item.detailType
     this.instance.methods.handleKeydown = function(e) {
+      console.log(this,'1111');
        // 禁止输入特殊字符 '
       if ([222].includes(e.keyCode)) {
         e.stopPropagation();
