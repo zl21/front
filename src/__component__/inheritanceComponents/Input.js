@@ -70,7 +70,6 @@ class CustomInput {
     this.props.readonly = this.props.disabled
 
     this.props.rows = this.item.row || 1
-    this.props.maxlength = this.item.length
     this.props.clearable = this.item.clearable
     this.props.autofocus = this.item.autofocus
     this.props.size = this.item.size
@@ -91,7 +90,6 @@ class CustomInput {
     // 数字类型输入控制
     // 只能输入 正整数
     let string = ''
-    this.item.length = 100
     if (this.item.webconf && this.item.webconf.ispositive) {
       string = `^\\d{0,${this.item.length}}(\\\.[0-9]{0,${this.item.scale}})?$`
     } else {
@@ -122,7 +120,7 @@ class CustomInput {
       }
 
       // 明细界面的input，按下回车后，光标自动移到下一个Input框里
-      if(isDetailPage) {
+      if(isDetailPage && e.keyCode === 13) {
         const currentWrapDom = this.$parent.$parent.$el.parentNode // 当前组件的容器节点
         this.nextInputFocus.call(this, currentWrapDom)
       }
