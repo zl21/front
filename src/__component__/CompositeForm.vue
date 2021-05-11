@@ -2472,7 +2472,8 @@
             // 过滤值
             item.props.filterDate = {};
             item.value = '';
-            item.props.Selected.push(this.defaultValue(current)[0]);
+            const defaultObj = this.defaultValue(current)[0]
+            defaultObj.id && item.props.Selected.push(defaultObj);
             // if (!item.props.readonly && !this.objreadonly) {
             //   item.value = this.defaultValue(current)[1];
             //   item.props.Selected.push(this.defaultValue(current)[0]);
