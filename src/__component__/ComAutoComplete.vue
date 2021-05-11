@@ -123,7 +123,7 @@
     },
     methods: {
       ...mapActions('global', ['getTaskMessageCount', 'updataTaskMessageCount']),
-      ...mapMutations('global', ['updateTaskMessageCount', 'doCollapseHistoryAndFavorite', 'changeSelectedPrimaryMenu', 'hideMenu', 'tabOpen', 'directionalRouter']),
+      ...mapMutations('global', ['updateTaskMessageCount', 'doCollapseHistoryAndFavorite', 'changeSelectedPrimaryMenu', 'hideMenu', 'tabOpen', 'directionalRouter','updateDashboardPageValue']),
       enter(event) {
         if (event.keyCode === 13) {
           let index = 0;
@@ -160,6 +160,8 @@
               v: modifyPageUrl
             };
             updateSessionObject('clickMenuAddSingleObject', clickMenuAddSingleObjectData);
+            // 关闭
+            this.updateDashboardPageValue(false);
           }
         }
         routeTo({ type, info: { tableName: name, tableId, url } }, () => {
