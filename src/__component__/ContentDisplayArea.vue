@@ -65,13 +65,7 @@
       if (this.$router.currentRoute.path === '/') {
         this.flag = true;
       }
-      let self = this;
-      document.addEventListener('click',function(e){
-          if((e.target.tagName).toLocaleUpperCase() ==='LI'){
-            self.flag = false;
-            self.updateDashboardPageValue(false);
-          }
-      })
+     
     },
     computed: {
       ...mapState('global', ['keepAliveLists', 'openedMenuLists', 'isShowDashboardPage']),

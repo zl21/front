@@ -93,7 +93,7 @@
 </template>
 
 <script>
-  import { mapState, mapActions } from 'vuex';
+  import { mapState, mapActions,mapMutations } from 'vuex';
   import { routeTo } from '../__config__/event.config';
   import { enableHistoryAndFavoriteUI, enableHistoryAndFavorite } from '../constants/global';
   
@@ -124,7 +124,8 @@
       }
     },
     methods: {
-      ...mapActions('global', ['getHistoryAndFavorite']),
+      ...mapActions('global', ['getHistoryAndFavorite','updateDashboardPageValue']),
+      ...mapMutations('global', ['updateDashboardPageValue']),
       onMouseOverHistorySeen() {
         if (this.collapseHistoryAndFavorite) {
           this.historySeen = true;
@@ -150,6 +151,7 @@
           type
         } = data;
         const { value, id, url } = data;
+        this.updateDashboardPageValue(false);
         routeTo({ type, info: { tableName: value, tableId: id, url } });
       },
     },
