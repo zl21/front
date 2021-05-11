@@ -29,7 +29,7 @@
         </div>
 
         <div
-          v-if="searchList.length<1 && keyWord.length>0 && !loading"
+          v-if="searchList.length<1 && keyWord && keyWord.length>0 && !loading"
           class="none-search"
         >
           抱歉，没有此功能!
