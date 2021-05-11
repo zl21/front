@@ -143,7 +143,7 @@ export const getProjectQuietRoutes = () => {
 export const defaultrange = () => (window.ProjectConfig && window.ProjectConfig.defaultrange ? window.ProjectConfig.defaultrange : null); // 配置外健查询下拉每页展示多少条数据
 
 
-export const dashboardConfig = () => (window.ProjectConfig && window.ProjectConfig.DashboardComponent ? window.ProjectConfig.DashboardComponent : null); // 根路由界面
+export const dashboardConfig = () => (project && project.DashboardComponent ? project.DashboardComponent : null); // 根路由界面
 export const floatingFilter = () => (window.ProjectConfig && typeof window.ProjectConfig.floatingFilter === 'boolean' ? window.ProjectConfig.floatingFilter : true);
 
 

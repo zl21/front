@@ -957,7 +957,11 @@ export default {
   updatePreviewPicture(state, data) {
     state.previewPictureInstance = data;
   },
-  updateDashboardPageValue(state) {
-    state.isShowDashboardPage = !state.isShowDashboardPage;
+  updateDashboardPageValue(state,type) {
+    if(type !== undefined){
+      state.isShowDashboardPage = type;
+    }else{
+      state.isShowDashboardPage = !state.isShowDashboardPage;
+    }
   }
 };
