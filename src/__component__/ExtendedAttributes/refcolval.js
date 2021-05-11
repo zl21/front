@@ -25,7 +25,6 @@ const urlSearchParams = (data) => {
 
 // 映射关系
 export const refcolvalMap = ($this, config,key) => {
-    console.log('refcolvalMap');
     if(config.srccols){
         // 兼容数据
         config.srccol = config.srccols;
@@ -38,10 +37,13 @@ export const refcolvalMap = ($this, config,key) => {
          config = {};
         config.srccol = srccol;
     }
+    console.log(config.srccol,'refcolvalMap');
+
     let targetVm = FindInstance($this,config.srccol,$this.item.tableName);
     let linkFormMap = {
         [key]: [`${$this.item.tableName}${$this.item.colname}`]
     };
+
     //挂载映射关系到对方 
     let checked = [];
     targetVm.forEach((target)=>{
@@ -193,6 +195,7 @@ export const setisShowPopTip = ($this, config,network) => {
 // refcolval_custom 接口请求
 export  const refcolvalCustomUrl =  ($this, config,network) => {
     let checkd = refcolvalMap($this, config.refcolval_custom,'refcolval_custom');
+    console.log(checkd,'checkdcheckdcheckd');
     // async
     if(checkd){
          return postCustomUrl(network,config,$this)

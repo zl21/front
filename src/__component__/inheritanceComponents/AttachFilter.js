@@ -39,7 +39,7 @@
          blurType: false, // 失去光标是否默认选中第一行
          colid: this.item.colid, // 表id
          colname: this.item.colname, // 表名称
-         enterType: false, // 回车是否显示第一行
+         enterType:this.item.detailType,
          fkobj: {
            colid: this.item.colid,
            fkdisplay: this.item.fkobj.searchmodel,

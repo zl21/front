@@ -1,7 +1,7 @@
 
 
 import {
-    filterVal,FindInstance,setNewlValue
+    filterVal,FindInstance,setNewlValue,isEmpty
 } from './common.js';
 import network from '../../__utils__/network';
 
@@ -18,7 +18,7 @@ export const equalformRequest = function equalformRequest(params) {
 
   export const formRequestInit = function formRequestInit($this,config) {
     // 初始化
-    if(Array.isArray($this.value)){
+    if(Array.isArray($this.value) || isEmpty($this.value)){
         let data = {};
         let targetVm = FindInstance($this,config.refcolumn,$this.items.tableName);
         targetVm.forEach((x)=>{
