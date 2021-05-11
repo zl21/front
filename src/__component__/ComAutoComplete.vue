@@ -161,11 +161,13 @@
             };
             updateSessionObject('clickMenuAddSingleObject', clickMenuAddSingleObjectData);
             // 关闭
-            this.updateDashboardPageValue(false);
           }
+         this.updateDashboardPageValue(false);
+
         }
         routeTo({ type, info: { tableName: name, tableId, url } }, () => {
           this.keyWord = '';
+          this.updateDashboardPageValue(false);
           setTimeout(() => {
             this.searchList = [];
           }, 100);
