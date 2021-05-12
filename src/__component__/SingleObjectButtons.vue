@@ -2056,10 +2056,13 @@
             // this.tabPanel.forEach((item) => {
             //   if (item.tablename === this.tableName) {
             //     formData = item.componentAttribute.panelData;
+            //     console.log(item.componentAttribute);
             //   }
             // });
+            
             let panelForm = this.$_live_getChildComponent(window.vm,'panelForm')
             const copyData = { ...panelForm.formDataLabel };
+            // console.log(this.updateData[this.tableName]);
             // const copyData = { ...formData };
             const modifyData = this.updateData[this.tableName].changeData;// 取changeData值，因外键形式需要lable和ID
             this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中

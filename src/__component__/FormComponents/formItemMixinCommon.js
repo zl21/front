@@ -4,6 +4,7 @@ export default {
   data() {
     return {
       actived:false, // 渲染未完成
+      initTimer:null
     };
   },
   methods:{

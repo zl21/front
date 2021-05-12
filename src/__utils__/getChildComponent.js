@@ -36,6 +36,9 @@ Vue.mixin({
           child = instance;
         }
       
+        if(!child){
+          return;
+        }
         for (let i = 0; i < child.length; i++) {
           allComp.push(child[i]);
           if (child[i].$children.length > 0) { // 还有孩子

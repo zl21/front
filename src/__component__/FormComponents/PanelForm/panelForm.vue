@@ -77,6 +77,7 @@ export default {
       formChangeData:{}, //表单修改过的数据
       formDatadefault:{}, // 表单默认值
       formChangeDataLabel:{},  //表单修改过的数据--显示值
+      timer:null, 
 
     }
   },
@@ -198,6 +199,20 @@ export default {
     }
   },
   methods:{
+    initializationForm(){
+        // 初始化
+        clearTimeout(this.timer);
+        this.timer = setTimeout(()=>{
+          if (this.$parent.formPanelChange) {
+          // v
+            this.$parent.initFormPanel(this.defaulData, this.defaulDataLabel)
+          }else{
+            // H
+            this.$parent.InitializationForm(this.defaulData, this.defaulDataLabel)
+          }
+        })
+
+    },
     validate(){
       // 获取校验
       let messageTip = validateForm.call(this,'formItem');

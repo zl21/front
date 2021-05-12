@@ -178,7 +178,6 @@ export default class ParameterDataProcessing {
               Label: valuedata
             });
           }
-          console.log(arr,fkobj);
 
           return arr
         }
