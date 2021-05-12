@@ -68,11 +68,11 @@ export default {
                 if (isEmpty(val)) {
                   delete ParentForm.formData[this.items.colname]
                 }
-                ParentForm.formChangeData = JSON.parse(JSON.stringify(ParentForm.formData));
-                //console.log(JSON.stringify(ParentForm.formChangeData),'NEW');
-                this.InitializationForm(ParentForm);
-                return;
               }
+              ParentForm.defaulData = JSON.parse(JSON.stringify(ParentForm.formData));
+              ParentForm.defaulDataLabel = JSON.parse(JSON.stringify(ParentForm.formDataLabel));
+              this.InitializationForm(ParentForm);
+              return;
             } else {
               // 页面修改
 
@@ -99,6 +99,8 @@ export default {
               }else{
                 //详情明细  有值 
                 ParentForm.formChangeData = Object.assign({}, ParentForm.formChangeData, current_data)
+                ParentForm.formDatadefault = Object.assign({}, ParentForm.formDataLabel, current_data)
+
                 
                 if (JSON.stringify(val) === JSON.stringify(this.defaultVale)) {
                   delete ParentForm.formChangeData[this.items.colname]
@@ -153,16 +155,7 @@ export default {
   methods:{
     InitializationForm(ParentForm){
       // 默认值
-      clearTimeout(this.initTimer);
-      this.initTimer = setTimeout(()=>{
-        if (ParentForm.$parent.formPanelChange) {
-          ParentForm.$parent.initFormPanel(ParentForm.formChangeData, ParentForm.formChangeDataLabel)
-        }else{
-          ParentForm.$parent.InitializationForm(ParentForm.formChangeData, ParentForm.formChangeDataLabel)
-        }
-      },50);
-      
-
+      ParentForm.initializationForm();
     }
   },
   mounted() {

@@ -328,6 +328,7 @@ export default {
            let ComponentcollectionInput = new CustomInput(item).init();
             Components = ComponentcollectionInput.Components;
             props = ComponentcollectionInput.props;
+            
           break;
         case 'OBJ_FK':
           if (item.fkobj.searchmodel === 'drp') {
