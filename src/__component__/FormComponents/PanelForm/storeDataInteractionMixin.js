@@ -41,7 +41,7 @@ export default {
           // number类型空值传0
           if (this.items.type === 'NUMBER') {
             if (current_value && !isEmpty(current_value)) {
-              current_value = parseInt(current_value.replace(/-/g, ''));
+              current_value = parseFloat(current_value.replace(/-/g, ''));
             }
             if (Version() === '1.4') {
               if (ParentForm.formChangeData[this.items.colname] === '') {

@@ -18,7 +18,6 @@ import { SetPlaceholder ,SetDisable} from './setProps';
     this.item = item;
     this.Vm = Object.create(Docfile);
     this.mergeProps();   
-    this.mergeMethods(); 
   }
 
   init() {

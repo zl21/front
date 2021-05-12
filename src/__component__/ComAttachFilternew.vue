@@ -100,6 +100,7 @@ export default {
       clickTimer: 0,
       InputValue: '',
       showDisabled: false,
+      activedMounted:false,
       fkobj: {}, // 过滤
       propsData: {},
       resultData: {} // 结果传值
@@ -108,6 +109,7 @@ export default {
   watch: {
     value:{
         handler(val,old) {
+
           if(JSON.stringify(val)=== JSON.stringify(old)){
               return false;
           }
@@ -119,21 +121,11 @@ export default {
           } else {
             this.InputValue = this.value
           }
+
         }
     },
     propstype () {
       // 将设置的props和默认props进行assign
-      // const item = this.items;
-
-
-
-
-      //this.selected = this.value;
-      // if (this.selected[0].Label && /total/.test(this.selected[0].Label)) {
-      //   const valuedata = JSON.parse(this.selected[0].Label);
-      //   this.selected[0].Label = `已经选中${valuedata.total}条` || '';
-      // }
-
       this.propsData = JSON.parse(JSON.stringify(this.propstype));
 
       if (this.propsData.disabled) {
@@ -167,7 +159,10 @@ export default {
     },
     attachFilterInput (value) {
       this.InputValue = value;
+      
       this.selected = [];
+       this.valueChange('change');
+
       this.inputValueChange(value);
 
     },
@@ -189,19 +184,22 @@ export default {
         success: (res) => {
           this.propsData.hidecolumns = ['id', 'value'];
           this.propsData.AutoData = res.data.data;
+         
         }
       });
       return true;
     },
     // AttachFilter event
     attachFilterChange (value) {
-      this.InputValue = value;
-      // 谢世华  为了处理标准列表界面字段数据消失问题
-      // if (value.indexOf('已经选中') >= 0) {
-      //   this.InputValueChange('change');
-      // }
+     
+      // this.InputValue = value;
+      
+      // // 谢世华  为了处理标准列表界面字段数据消失问题
+      // // if (value.indexOf('已经选中') >= 0) {
+      // //   this.InputValueChange('change');
+      // // }
 
-      this.valueChange('change');
+      // this.valueChange('change');
 
     },
     attachFilterSelected (row) {
@@ -372,8 +370,6 @@ export default {
     } else {
       this.showDisabled = false;
     }
-    this.InputValue = this.value;
-
     if (Array.isArray(this.value)) {
       if (this.value[0] && this.value[0].ID && this.value[0].ID !== -1) {
         this.selected = this.value;
@@ -393,6 +389,9 @@ export default {
     // }
     this.propstype.show = false;
     this.propsData.componentType = myPopDialog;
+    setTimeout(()=>{
+      this.activedMounted = true;
+    },100)
 
 
   }

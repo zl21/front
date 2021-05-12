@@ -87,8 +87,7 @@ export default class ParameterDataProcessing {
     // 处理日期字段
     if (['OBJ_DATE', 'OBJ_DATENUMBER', 'YearMonth', 'OBJ_DATETIME'].includes(this.item.display)) {
 
-      let arr = [];
-    
+      let arr = [];    
       if (this.item.rangecolumn) {
         arr = [new Date().r3Format(new Date(this.value[0]), 'yyyy/MM/dd hh:mm:ss'), new Date().r3Format(new Date(this.value[1]), 'yyyy/MM/dd hh:mm:ss')];
         return {
@@ -96,20 +95,20 @@ export default class ParameterDataProcessing {
         };
       }
       if (this.item.display === 'OBJ_DATE') {
-        arr = [new Date().r3Format(new Date(this.value[0]), 'yyyy/MM/dd hh:mm:ss'), new Date().r3Format(new Date(this.value[1]), 'yyyy/MM/dd hh:mm:ss')];
+        arr = [new Date().r3Format(new Date(this.value[0]), 'yyyy/MM/dd'), new Date().r3Format(new Date(this.value[1]), 'yyyy/MM/dd')];
       }
       if (this.item.display === 'OBJ_DATENUMBER') {
         if (this.item.rangecolumn || !this.item.detailType) {
           arr = [new Date().r3Format(new Date(this.value[0]), 'yyyyMMdd'), new Date().r3Format(new Date(this.value[1]), 'yyyyMMdd')];
         }else{
-          arr = [new Date().r3Format(new Date(this.value), 'yyyy-MM-dd')];
+          arr = [new Date().r3Format(new Date(this.value), 'yyyyMMdd')];
         }
       }
       if (this.item.display === 'YearMonth') {
         arr = [new Date().r3Format(new Date(this.value), 'yyyy-MM')];
       }
       if (this.item.display === 'OBJ_DATETIME') {
-        arr = [new Date().r3Format(new Date(this.value), 'yyyy-MM-dd')];
+        arr = [new Date().r3Format(new Date(this.value), 'yyyy/MM/dd hh:mm:ss')];
       }
 
       return {
@@ -163,7 +162,6 @@ export default class ParameterDataProcessing {
         if (['mrp', 'drp', 'pop', 'mop'].includes(fkobj) && (this.item.refobjid && this.item.refobjid != '-1')) {
           let arr = []
           // 多选change
-          console.log(this.item.refobjid);
           const refobjid = (this.item.refobjid.toString() || '').split(',') || [];
           const valuedata = (this.item.valuedata ? this.item.valuedata :this.item.default || '').split(',') || [];
           if (refobjid.length > 0) {
@@ -180,7 +178,8 @@ export default class ParameterDataProcessing {
               Label: valuedata
             });
           }
-  
+          console.log(arr,fkobj);
+
           return arr
         }
 
