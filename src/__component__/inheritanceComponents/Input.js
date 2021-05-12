@@ -80,10 +80,13 @@ class CustomInput {
 
   // 合并methods
   mergeMethods() {
-     new InputMethod(this.item, this.instance)
-
-    // this.instance.methods.nextInputFocus = this.nextInputFocus
-    // this.overrideKeyDown()
+    const isDetailPage = this.item.detailType
+    if(!isDetailPage) {
+      new InputMethod(this.item, this.instance)
+    }
+    
+    this.instance.methods.nextInputFocus = this.nextInputFocus
+    this.overrideKeyDown()
   }
 
   numericTypes() {
@@ -112,7 +115,6 @@ class CustomInput {
     const keyDownFn = this.instance.methods.handleKeydown;
     const isDetailPage = this.item.detailType
     this.instance.methods.handleKeydown = function(e) {
-      console.log(this,'1111');
        // 禁止输入特殊字符 '
       if ([222].includes(e.keyCode)) {
         e.stopPropagation();
@@ -138,12 +140,17 @@ class CustomInput {
       }
     }
 
+    // const PanelComponent = this.$parent.$parent.$parent
+    // const ItemComponent = this.$parent.$parent
+    // const componentParams = ItemComponent.items // 当前表单组件能拿到的接口参数
+    // console.log(PanelComponent,ItemComponent,ItemComponent.items);
+
     const nextItemDom = currentWrapDom.nextElementSibling // 下一个兄弟节点
     if(!nextItemDom) {
       return
     }
     const inputDom = nextItemDom.querySelector('.ark-input')
-    if(!inputDom || nextItemDom.style.display === 'none' || (inputDom && inputDom.disabled)|| (inputDom && inputDom.type === 'checkbox')) {
+    if(!inputDom || nextItemDom.style.display === 'none' || (inputDom && inputDom.disabled) || (inputDom && inputDom.readOnly) || (inputDom && inputDom.type === 'checkbox')) {
       // 继续查找下个节点
       this.nextInputFocus(nextItemDom)
     } else {

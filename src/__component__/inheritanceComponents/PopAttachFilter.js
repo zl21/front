@@ -128,7 +128,8 @@
        attachFilterInputKeydown.call(this, ...arguments);
        if (arguments[1].code === 'Enter') {
          setTimeout(() => {
-           this.$_live_getChildComponent(window.vm, this.$store.state.global.activeTab.keepAliveModuleName).searchClickData();
+           const component = this.$_live_getChildComponent(window.vm, this.$store.state.global.activeTab.keepAliveModuleName)
+           component && component.searchClickData && component.searchClickData();
          }, 300);
        }
      };
