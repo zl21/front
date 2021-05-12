@@ -66,6 +66,13 @@ export class Validate extends Vue {
                 }
 
             },
+            items: { 
+                type: [Object],
+                default: () => {
+                    return {};
+                }
+
+            },
             labelWidth:{
                 type:[String,Number],
                 default: () => {
