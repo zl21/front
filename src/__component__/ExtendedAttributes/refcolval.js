@@ -23,6 +23,7 @@ const urlSearchParams = (data) => {
     return params;
   };
 
+
 // 映射关系
 export const refcolvalMap = ($this, config,key) => {
     if(config.srccols){
@@ -37,7 +38,6 @@ export const refcolvalMap = ($this, config,key) => {
          config = {};
         config.srccol = srccol;
     }
-    console.log(config.srccol,'refcolvalMap');
 
     let targetVm = FindInstance($this,config.srccol,$this.item.tableName);
     let linkFormMap = {
@@ -124,6 +124,15 @@ export const setFixedcolumns = ($this, type) => {
         return {};
     }
     if (webconf && webconf.refcolval) {
+        if(webconf.refcolval.srccol === '$OBJID$'){
+            if (/NEW/.test($this.activeTab.keepAliveModuleName.toLocaleUpperCase())) {
+                return {};
+              }
+              let id = $this.activeTab.keepAliveModuleName.split('.');
+              return {
+                ID:id[id.length-1]
+              }
+        }
         if ($this._srccolValue) {
             let colnameID = $this._srccolValue[webconf.refcolval.srccol];
             const query = webconf.refcolval.expre === 'equal' ? '=' : '';
@@ -177,6 +186,9 @@ export const setisShowPopTip = ($this, config,network) => {
     }
     // refcolval
     if (config && config.refcolval) {
+        if(config.refcolval.srccol === '$OBJID$'){
+            return true;
+        }
        return refcolvalMap($this, config.refcolval,'refcolval');
        
     }else if(config && config.refcolval_custom){

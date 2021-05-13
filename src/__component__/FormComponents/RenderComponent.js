@@ -120,7 +120,10 @@ export default class RenderComponent {
     
     this.ObjectToMerge(FormItem.methods, mixins.methods);
     Object.assign(FormItem.methods, mixins.methods);
-    Vue.component(`${this.id}${this.item.colname.TextFilter()}`, Vue.extend(Object.assign({ mixins: [mixins], isKeepAliveModel: true },FormItem)));
+    FormItem.name = `${this.id}${this.item.colname.TextFilter()}`;
+    if(!Vue.component(FormItem.name)){
+      Vue.component(`${this.id}${this.item.colname.TextFilter()}`, Vue.extend(Object.assign({ mixins: [mixins], isKeepAliveModel: true },FormItem)));
+    }
     return `${this.id}${this.item.colname.TextFilter()}`;
   }
 }
