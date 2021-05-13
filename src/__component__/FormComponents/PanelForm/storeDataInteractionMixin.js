@@ -91,6 +91,12 @@ export default {
                 ParentForm.formChangeData = Object.assign({}, ParentForm.formChangeData, current_data)
                 if (isEmpty(val) && isEmpty(this.defaultVale)) {
                   delete ParentForm.formData[this.items.colname]
+                  const data = {
+                    key: this.items.colname,
+                    itemName: this.activeTab.tableName
+                  };
+                  // 删除新增有值后变空
+                  ParentForm.deleteFormData(data)
                 }
                 // 默认值
                 ParentForm.defaulData = JSON.parse(JSON.stringify(ParentForm.formData));
@@ -107,6 +113,12 @@ export default {
                 if (JSON.stringify(val) === JSON.stringify(this.defaultVale)) {
                   delete ParentForm.formChangeData[this.items.colname]
                   delete ParentForm.formChangeDataLabel[this.items.colname]
+                   // 删除新增有值后变空
+                   const data = {
+                    key: this.items.colname,
+                    itemName: this.activeTab.tableName
+                  };
+                   ParentForm.deleteFormData(data)
                 }else{
                   if(this.items.rangecolumn){
                     if (val[0] && val[1]) {

@@ -1573,12 +1573,15 @@
           }
           
           const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
+          console.log(LinkageForm,this.isMainTable,'LinkageForm',this.tableGetName, current.refcolval.srccol);
 
           let LinkageFormInput = {};
           if (this.tableGetName && (!current.refcolval.maintable && !current.refcolval.mainsrccol)) {
             LinkageFormInput = LinkageForm[this.tableGetName + current.refcolval.srccol];
           } else {
-            LinkageFormInput = LinkageForm[current.refcolval.srccol];
+            LinkageFormInput = LinkageForm[this.masterName+current.refcolval.srccol];
+                        console.log(LinkageFormInput,'LinkageForm');
+
           }
 
           if (!refcolval) {
@@ -2792,6 +2795,7 @@
             //     this.LinkageForm[3] = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm[item];
             //   });
             // }
+            console.log(this.formIndex);
             const data = {
               formList: this.LinkageForm,
               formIndex: this.formIndex
