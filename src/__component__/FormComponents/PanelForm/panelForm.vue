@@ -328,7 +328,9 @@ export default {
     },
     setResize(){
        // 设置表单 展示 的值
-        const width = this.$el.offsetWidth;
+       clearTimeout(this.timerResize);
+       this.timerResize = setTimeout(()=>{
+          const width = this.$el.offsetWidth;
         if (width < 400 ) {
           this.objviewcol = 1;
         } else if(width<600 && width>400) {
@@ -348,6 +350,9 @@ export default {
             this.panelRedraw(data.childs);
           })
         }
+
+       },200)
+       
         // this.formItemLists.forEach(item => {
         // console.log(item,'1212');
         // });

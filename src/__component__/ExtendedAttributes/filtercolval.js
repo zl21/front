@@ -6,7 +6,6 @@ import {
   
   // 过滤
   export const filtercolval = function ($current,config) {  
-    console.log(12);
     let targetVm = FindInstance($current,config.col,$current.items.tableName);
     // mappingRelation($current,targetVm,'filtercolval');
     if(targetVm[0]){
@@ -28,7 +27,9 @@ import {
         }else{
             $this.items.combobox = $this.items.olderCombobox;
         }
-        $this.$forceUpdate();
+        $this.inheritanceComponents();
+
+        // $this.$forceUpdate();
     }
 
   };

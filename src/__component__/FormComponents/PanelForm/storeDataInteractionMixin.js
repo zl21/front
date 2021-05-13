@@ -93,6 +93,8 @@ export default {
                   delete ParentForm.formData[this.items.colname]
                 }
                 // 默认值
+                ParentForm.defaulData = JSON.parse(JSON.stringify(ParentForm.formData));
+                ParentForm.defaulDataLabel = JSON.parse(JSON.stringify(ParentForm.formDataLabel));
                 this.InitializationForm(ParentForm)
                 return;
                 
