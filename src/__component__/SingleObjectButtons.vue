@@ -90,7 +90,7 @@
   import getUserenv from '../__utils__/getUserenv';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import { getSessionObject, updateSessionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
-
+  import {FindInstance } from './ExtendedAttributes/common.js'
   export default {
     data() {
       return {
@@ -2052,18 +2052,16 @@
         const label = `${this.activeTab.label.replace('编辑', '新增')}`;
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.currentTabIndex === 0) { // 主表
-            // let formData = {};
+            let formData = {};
             // this.tabPanel.forEach((item) => {
             //   if (item.tablename === this.tableName) {
             //     formData = item.componentAttribute.panelData;
-            //     console.log(item.componentAttribute);
             //   }
             // });
             
-            let panelForm = this.$_live_getChildComponent(window.vm,'panelForm')
-            const copyData = { ...panelForm.formDataLabel };
-            // console.log(this.updateData[this.tableName]);
-            // const copyData = { ...formData };
+            let panelForm = FindInstance(this,'panelForm')
+             const copyData = { ...panelForm[0].formDataLabel };
+            //const copyData = { ...formData };
             const modifyData = this.updateData[this.tableName].changeData;// 取changeData值，因外键形式需要lable和ID
             this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
             this.copyModifyDataForSingleObject(modifyData);// 将复制修改过所保存的数据存到global中
@@ -2078,8 +2076,8 @@
             });
           }
         } else { // 纵向布局
-          let panelForm = this.$_live_getChildComponent(window.vm,'panelForm')
-          const copyData = { ...panelForm.formDataLabel };
+          let panelForm = FindInstance(this,'panelForm')
+          const copyData = { ...panelForm[0].formDataLabel };
           this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
           const modifyData = this.updateData[this.tableName].changeData;// 取changeData值，因外键形式需要lable和ID
           // this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
@@ -3176,9 +3174,9 @@
         
         this.saveParameters();// 获取主子表参数
         // 处理主表必填控制
-        let panelForm = this.$_live_getChildComponent(this.$parent,'panelForm')
-        if(panelForm){
-          if(panelForm.validate().length > 0){
+        let panelForm = FindInstance(this,'panelForm')
+        if(panelForm && panelForm[0]){
+          if(panelForm[0].validate().length > 0){
             return false
           }
         }

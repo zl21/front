@@ -76,6 +76,7 @@ export default {
       formDataLabel:{}, //整个表单数据--显示值
       formChangeData:{}, //表单修改过的数据
       formDatadefault:{}, // 表单默认值
+      objviewcol:4, // 表单默认展示几列
       formChangeDataLabel:{},  //表单修改过的数据--显示值
       timer:null, 
 
@@ -89,6 +90,7 @@ export default {
           return []
         }
         data.addcolums = new LinkageRelationships(JSON.parse(JSON.stringify(this.defaultData)).addcolums).initializeData()
+        this.objviewcol = this.defaultData.objviewcol;
         // 处理单字段分组
         let sumObject = {
           hrdisplay: 'expand',
@@ -168,7 +170,7 @@ export default {
     // 计算属性的 div的排列格式
     setWidth() {
       // `this` 指向 vm 实例
-      const columns = Number(this.defaultData.objviewcol) || 4;
+      const columns = Number(this.objviewcol) || 4;
       return `grid-template-columns: repeat(${columns},${100 / columns}%`;
     },
     // 计算属性的 div 的坐标起始点
@@ -233,11 +235,13 @@ export default {
       return Render.Initialize();
     },
     panelRedraw(array){
-      const columns = Number(this.defaultData.objviewcol) || 4;
+      const columns = Number(this.objviewcol) || 4;
       let childs = layoutAlgorithm(columns, Object.values(array));
       Object.keys(childs).map(temp => {
         let a = this.$_live_getChildComponent(this,`${this.tableName}${childs[temp].colname}`)
-        a.$el.parentNode.style = this.setDiv(childs[temp])
+        if(a.$el && a.$el.parentNode){
+          a.$el.parentNode.style = this.setDiv(childs[temp])
+        }
         return temp
       })
       return childs
@@ -322,6 +326,32 @@ export default {
           resolve(formData)
         })
     },
+    setResize(){
+       // 设置表单 展示 的值
+        const width = this.$el.offsetWidth;
+        if (width < 400 ) {
+          this.objviewcol = 1;
+        } else if(width<600 && width>400) {
+          this.objviewcol = 2;
+        }else if(width<800 && width>600){
+           this.objviewcol = 3;
+        }else if(width>800){
+           this.objviewcol = this.defaultData.objviewcol;
+        }
+         if(Object.keys(this.formItemLists).length > 0){
+          this.collapseValue = []
+          Object.keys(this.formItemLists).map(item => {
+             let data = this.formItemLists[item]
+             if(data.hrdisplay === 'expand'){
+                this.collapseValue.push(data.parentname)
+              }
+            this.panelRedraw(data.childs);
+          })
+        }
+        // this.formItemLists.forEach(item => {
+        // console.log(item,'1212');
+        // });
+    }
   },
   mounted(){
     
@@ -334,6 +364,9 @@ export default {
         }
       })
     }
+    // 监听大小
+     window.addEventListener('resize', this.setResize);
+
   }
 }
 </script>
