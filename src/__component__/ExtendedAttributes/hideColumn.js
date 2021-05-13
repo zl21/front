@@ -46,6 +46,9 @@ function HiddenFields(){
     item.configuration.every(temp => {
 
       // 当temp中ishide为true时，则refval控制字段的隐藏。当ishide为false时，则控制字段的显示
+      if(item.source.activeTab.keepAliveModuleName.split('.')[0].toLocaleUpperCase() ==='S'){
+        return false;
+      }
       let target = FindInstance(item.source,temp.target,`${item.source.activeTab.tableName}`)[0];
       let panelFormParent = item.source.$_live_getChildComponent(window.vm, `${item.source.activeTab.keepAliveModuleName}`);
       let panelForm = item.source.$_live_getChildComponent(panelFormParent, 'panelForm');

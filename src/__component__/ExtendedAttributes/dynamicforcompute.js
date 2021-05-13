@@ -9,8 +9,9 @@ config  webcof 的配置
 // 联动计算
 export const dynamicforcompute = function dynamicforcompute($this, config) {
   // 服务端赋值
-  let panelForm = $this.$_live_getChildComponent(window.vm, 'panelForm');
-  let FormData = panelForm.getFormData();
+  let panelForm = FindInstance($this,'panelForm');
+
+  let FormData = panelForm[0].getFormData();
   let str = '';
 
   FormData.then((res) => {

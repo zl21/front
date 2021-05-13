@@ -40,6 +40,9 @@ function setAttributes(source,configuration) {
 function HiddenFields(){
   eventLoops.every(item => {
     item.configuration.every(temp => {
+      if(item.source.activeTab.keepAliveModuleName.split('.')[0].toLocaleUpperCase() ==='S'){
+        return false;
+      }
       let panelForm = item.source.$_live_getChildComponent(window.vm,`panelForm`)
       let target = item.source.$_live_getChildComponent(panelForm,`${item.source.activeTab.tableName}${temp.field.refcolumn}`)
       if(!target || !target.items){
