@@ -190,7 +190,15 @@ export default {
     } else {
       actionName = '';
     }
-    network.post(actionName || '/p/cs/exeAction', obj).then((res) => {
+    // slient_custom类型的按钮默认不加网关
+    let serviceconfig;
+    if (item.vuedisplay === 'slient_custom') {
+      serviceconfig = {
+        noServiceId: true
+      };
+    }
+
+    network.post(actionName || '/p/cs/exeAction', obj, serviceconfig).then((res) => {
       if (res.data.code === 0) {
         resolve(res, actionName);
        

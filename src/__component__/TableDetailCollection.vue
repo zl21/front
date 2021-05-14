@@ -907,6 +907,7 @@
           this.objectTryDelete(obj);
           break;
         case 'slient':
+        case 'slient_custom':
           this.objTabActionSlient(obj);// 静默类型
           break;
         case 'download':
@@ -969,7 +970,7 @@
 
         const promise = new Promise((resolve, reject) => {
           this.getObjTabActionSlientConfirm({
-            tab, params, path: tab.action, resolve, reject
+            tab, params, path: tab.action, resolve, reject, vuedisplay: tab.vuedisplay
           });
           this.$R3loading.show();
         });

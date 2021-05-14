@@ -1348,6 +1348,7 @@
         this.activeTabAction = obj;
         switch (obj.vuedisplay) {
         case 'slient':
+        case 'slient_custom':
           this.objTabActionSlient(obj);
           break;
         case 'jflow_trigger':
@@ -1765,10 +1766,9 @@
           params = obj;
         }
         
-
         const promise = new Promise((resolve, reject) => {
           this.getObjTabActionSlientConfirm({
-            tab, params, path: tab.action, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
+            tab, params, path: tab.action, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE], vuedisplay: tab.vuedisplay
           });
           this.$R3loading.show(this.tableName);
         });
