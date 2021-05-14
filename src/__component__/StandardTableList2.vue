@@ -2064,7 +2064,7 @@
                 content: `查询条件[${item.coldesc}]不能为空!`,
                 mask: true
               });
-
+              this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
               reject();
             }
           });

@@ -408,7 +408,7 @@ export default {
       })
     }
     // 监听大小
-    // window.addEventListener('resize', this.setResize);
+    window.addEventListener('resize', this.setResize);
     setTimeout(()=>{
       // 兼容子表
         this.linkFormSet();
