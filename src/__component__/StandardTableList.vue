@@ -747,6 +747,11 @@
         this.updateAgConfig({ key: 'hideColumn', value: hideCols });
       },
       onCellSingleClick(colDef, rowData, target) {
+        // 单元格无内容时禁止跳转
+        if (rowData[colDef.colname].val === '') {
+          return;
+        }
+
         const { tableId } = this[INSTANCE_ROUTE_QUERY];
         if (target.getAttribute('data-target-tag') === 'fkIcon') {
           window.sessionStorage.setItem('dynamicRouting', true);
