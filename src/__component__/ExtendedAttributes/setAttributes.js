@@ -1,4 +1,6 @@
-
+import {
+  FindInstance
+} from './common.js';
 let eventLoops = []
 let t = null
 var proxy = new Proxy(eventLoops, {
@@ -43,7 +45,8 @@ function HiddenFields(){
       if(item.source.activeTab.keepAliveModuleName.split('.')[0].toLocaleUpperCase() ==='S'){
         return false;
       }
-      let panelForm = item.source.$_live_getChildComponent(window.vm,`panelForm`)
+      let panelFormParent = item.source.$_live_getChildComponent(window.vm, `${item.source.activeTab.keepAliveModuleName}`);
+      let panelForm = item.source.$_live_getChildComponent(panelFormParent, 'panelForm');
       let target = item.source.$_live_getChildComponent(panelForm,`${item.source.activeTab.tableName}${temp.field.refcolumn}`)
       if(!target || !target.items){
         return;
