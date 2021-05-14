@@ -87,6 +87,7 @@ class CustomInput {
       this.uppercase()
     }
     if (this.item.type === 'NUMBER') {
+      this.props.number = true
       this.numericTypes()
     }
 
@@ -152,8 +153,10 @@ class CustomInput {
     const typeRegExp = new RegExp(string)
     if (this.item.scale >= 0) {
       this.item.props.regx = typeRegExp
+      this.props.regx = typeRegExp
     } else if (this.item.webconf && this.item.webconf.ispositive) {
       this.item.props.regx = typeRegExp
+      this.props.regx = typeRegExp
     }
   }
 
