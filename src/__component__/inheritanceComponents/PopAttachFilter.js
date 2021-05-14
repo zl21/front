@@ -47,6 +47,7 @@
          AutoData: [],
         //  Selected: defaultValue,
          blurType: false,
+         enterType: this.item.detailType,
          coldesc: this.item.coldesc,
          colid: this.item.colid,
          colname: this.item.colname,
@@ -74,7 +75,6 @@
            }
          },
          display: this.item.display,
-         enterType: false,
          filterDate: {},
          filterTip: true,
          fkdisplay: this.item.fkobj.searchmodel,
@@ -118,11 +118,12 @@
    mergeMethods() {
      const _self = this;
       // 失去光标
-      new DropMethods(this.item,this.Vm).blur('attachFilterInputBlur');
+      // new DropMethods(this.item,this.Vm).blur('attachFilterInputBlur');
   
  
  
      // 回车查询
+
      const attachFilterInputKeydown = this.Vm.methods.attachFilterInputKeydown;
      this.Vm.methods.attachFilterInputKeydown = function () {
        attachFilterInputKeydown.call(this, ...arguments);

@@ -43,11 +43,18 @@ export const FindInstance = ($this,name,tableName) => {
     target = name.split(',').reduce((arr,x)=>{
         if(x){
             let vm = {};
+           
             if(tableName){
-                vm = $this.$_live_getChildComponent(panelFormParent, tableName+x); 
+                if(x.split('.').length>1){
+                    x= x.split('.').join('');
+                    vm = $this.$_live_getChildComponent(panelFormParent, x); 
+                }else{
+                    vm = $this.$_live_getChildComponent(panelFormParent, tableName+x); 
+                }
             }else{
                 vm = $this.$_live_getChildComponent(panelFormParent, x); 
             }
+
             if(vm){
                 arr.push(vm);
             }

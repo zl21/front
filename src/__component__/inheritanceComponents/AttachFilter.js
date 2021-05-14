@@ -66,7 +66,7 @@
    // 合并methods
    mergeMethods() {
     // 失去光标事件
-    new DropMethods(this.item,this.Vm).blur('attachFilterInputBlur');
+    // new DropMethods(this.item,this.Vm).blur('attachFilterInputBlur');
     // 回车查询
     new DropMethods(this.item,this.Vm).keydown('attachFilterInputKeydown');
 

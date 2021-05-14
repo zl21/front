@@ -22,13 +22,14 @@ export default class DropMethods {
         if(self.item.detailType){
           // 单对象保存界面,必须有值才能展示
           setTimeout(()=>{
+            console.log(this,'blurName',blurName);
             if(!Array.isArray(this.$parent.value)){
-             let dom =  this.$el.querySelector('.iconios-close-circle');
-             if(dom){
-                dom.click();
-             }
+            //  let dom =  this.$el.querySelector('.iconios-close-circle');
+            //  if(dom){
+            //     dom.click();
+            //  }
             }
-          },200)
+          },400)
             
         }
         if(blur){
