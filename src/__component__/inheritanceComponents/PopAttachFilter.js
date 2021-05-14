@@ -46,7 +46,7 @@
           disabled: new SetDisable(this.item).init(),
          AutoData: [],
         //  Selected: defaultValue,
-         blurType: false,
+         blurType: this.item.detailType,
          enterType: this.item.detailType,
          coldesc: this.item.coldesc,
          colid: this.item.colid,

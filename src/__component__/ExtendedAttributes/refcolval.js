@@ -6,6 +6,7 @@ config  webconfig 配置
 import {
     filterVal,FindInstance
 } from './common.js';
+import network from '../../__utils__/network';
 
 // 处理url
 
@@ -27,7 +28,6 @@ const urlSearchParams = (data) => {
 // 映射关系
 export const refcolvalMap = ($this, config,key) => {
     let maintable = {
-        
     };
     if(config.srccols){
         // 兼容数据
@@ -137,6 +137,10 @@ export const setFixedcolumns = ($this, type) => {
               return {
                 ID:id[id.length-1]
               }
+        }
+        if(!$this._srccolValue){
+            // 兼容模糊查询无法
+            setisShowPopTip($this, webconf,network);
         }
         if ($this._srccolValue) {
             let colnameID = $this._srccolValue[webconf.refcolval.srccol];

@@ -46,6 +46,7 @@
           disabled: this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true),
           hidecolumns:['id', 'value'],
           enterType:this.item.detailType,
+          blurType: this.item.detailType,
           placeholder:new SetPlaceholder(this.item).init()
      };
      
@@ -99,10 +100,15 @@
 
 
     }
-    // 失去光标
-    new DropMethods(this.item,this.Vm).blur();
-    // 回车查询
+    if(this.item.detailType){
+        // 失去光标
+      new DropMethods(this.item,this.Vm).blur();
+    }
+    if(!this.item.detailType){
+      // 回车查询
     new DropMethods(this.item,this.Vm).keydown();
+  }
+    
     
 
 
