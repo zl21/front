@@ -10,6 +10,61 @@
  * @value 需要处理的数据值
  */
 
+function get_default_datenumber(formItem, isDetailPage) {
+  // 单对象界面
+  if(isDetailPage) {
+    return formItem.valuedata || formItem.defval || '';
+  } else {
+    // 列表界面
+    let timeRange = ''
+    if (formItem.customDefault) {
+      timeRange = [
+        `${new Date().r3Format(new Date(formItem.customDefault[0]), 'yyyy/MM/dd')}`,
+        `${new Date().r3Format(new Date(formItem.customDefault[1]), 'yyyy/MM/dd')}`
+      ];
+      return timeRange;
+    }
+  
+    if (formItem.default && formItem.default !== '-1') {
+      timeRange = [
+        new Date().setNewFormt(new Date().minusDays(Number(formItem.default)).toIsoDateString(), '-', ''),
+        new Date().setNewFormt(new Date().toIsoDateString(), '-', '')
+      ];
+      return timeRange;
+    }
+    return timeRange;
+  }
+}
+
+function get_default_date(formItem, isDetailPage) {
+  if(isDetailPage) {
+    const value = formItem.valuedata || formItem.defval;
+    return value ? `${new Date().r3Format(new Date(value), 'yyyy/MM/dd hh:mm:ss')}`: '';
+  } else {
+    let timeRange = ''
+    if (formItem.customDefault) {
+      timeRange = [
+        `${new Date().r3Format(new Date(formItem.customDefault[0]), 'yyyy/MM/dd hh:mm:ss')}`,
+        `${new Date().r3Format(new Date(formItem.customDefault[1]), 'yyyy/MM/dd hh:mm:ss')}`
+      ];
+      return timeRange;
+    }
+
+    if (formItem.default !== '-1') {
+      // default值为-1，没有默认值
+      // default值为0，查询当天
+      // default值为2，查询近2天
+      timeRange = [
+        `${new Date().setNewFormt(new Date()
+          .minusDays(Number(formItem.daterange))
+          .toIsoDateString(), '-', '/')} 00:00:00`,
+        `${new Date().setNewFormt(new Date().toIsoDateString(), '-', '/')} 23:59:59`
+      ];
+      return timeRange;
+    }
+    return timeRange;
+  }
+}
 export default class ParameterDataProcessing {
   constructor(item, value) {
     this.item = item;
@@ -97,6 +152,7 @@ export default class ParameterDataProcessing {
       if (this.item.display === 'OBJ_DATE') {
         arr = [new Date().r3Format(new Date(this.value[0]), 'yyyy/MM/dd'), new Date().r3Format(new Date(this.value[1]), 'yyyy/MM/dd')];
       }
+      
       if (this.item.display === 'OBJ_DATENUMBER') {
         if (this.item.rangecolumn || !this.item.detailType) {
           arr = [new Date().r3Format(new Date(this.value[0]), 'yyyyMMdd'), new Date().r3Format(new Date(this.value[1]), 'yyyyMMdd')];
@@ -107,14 +163,19 @@ export default class ParameterDataProcessing {
       if (this.item.display === 'YearMonth') {
         arr = [new Date().r3Format(new Date(this.value), 'yyyy-MM')];
       }
-      if (this.item.display === 'OBJ_DATETIME') {
+      if (this.item.display === 'OBJ_DATETIME' && !this.item.detailType) {
         arr = [new Date().r3Format(new Date(this.value), 'yyyy/MM/dd hh:mm:ss')];
+      }
+      if (this.item.display === 'OBJ_DATETIME' && this.item.detailType) {
+        arr = [new Date().r3Format(new Date(this.value), 'yyyy-MM-dd hh:mm:ss')];
       }
 
       return {
         [this.item.colname]: arr.join('~')
       };
     }
+
+
 
     // 处理select组件
     if (this.item.display === 'OBJ_SELECT') {
@@ -134,6 +195,8 @@ export default class ParameterDataProcessing {
    * @memberof defaultDataProcessing
    */
   defaultDataProcessing() {
+    const isDetailPage = this.item.detailType // 是否是单对象界面
+
     if (this.item.defval) {
       //  兼容默认值
       this.item.default = this.item.defval
@@ -190,37 +253,51 @@ export default class ParameterDataProcessing {
     }
 
     // 处理日期控件的默认值问题,区分列表还是单对象默认值
+    // daterange和default值一定是一样的，但有时接口不会返回daterange
     if (this.item.daterange && !this.item.default) {
       this.item.default = this.item.daterange
     }
-    if (this.item.default && ['OBJ_DATENUMBER', 'OBJ_DATE', 'YearMonth'].includes(this.item.display) && ((this.item.default && this.item.default !== '-1') || this.item.customDefault)) {
 
-      // 设置默认值
-      if (this.item.daterange) {
-        const timeRange = [
-          new Date().r3Format(new Date().minusDays(Number(this.item.daterange)), 'yyyy-MM-dd 00:00:00'),
-          new Date().r3Format(new Date(), 'yyyy-MM-dd 23:59:59')
-        ];
-
-        return timeRange;
-      }
-      if (this.item.customDefault) {
-        return this.item.customDefault
-      }
-      if (this.item.display === 'YearMonth') {
-        return this.item.default;
-      }
-
-
-    } else if (['OBJ_DATENUMBER', 'OBJ_DATE', 'YearMonth', 'OBJ_DATETIME'].includes(this.item.display) && this.item.valuedata) {
-      return this.item.valuedata || this.item.defval
+    switch(this.item.display) {
+      case 'OBJ_DATENUMBER': 
+        return get_default_datenumber(this.item, isDetailPage)
+      case 'OBJ_DATE': 
+      case 'OBJ_DATETIME':
+        return get_default_date(this.item, isDetailPage)
+      case 'OBJ_TIME': 
+        return this.item.valuedata || this.item.defval || '';
+      case 'YearMonth': 
+        return this.item.default || this.item.valuedata || this.item.defval || ''
+      default:
+        break
     }
-    if (this.item.rangecolumn && this.item.display === "OBJ_DATETIME") {
-      const start = this.item.rangecolumn.upperlimit;
-      const end = this.item.rangecolumn.lowerlimit;
-      return [start.valuedata || start.default, end.valuedata || end.default];
 
-    }
+    // if (this.item.default && ['OBJ_DATENUMBER', 'OBJ_DATE', 'YearMonth'].includes(this.item.display) && ((this.item.default && this.item.default !== '-1') || this.item.customDefault)) {
+    //   // 设置默认值
+    //   if (this.item.daterange) {
+    //     const timeRange = [
+    //       new Date().r3Format(new Date().minusDays(Number(this.item.daterange)), 'yyyy-MM-dd 00:00:00'),
+    //       new Date().r3Format(new Date(), 'yyyy-MM-dd 23:59:59')
+    //     ];
+
+    //     return timeRange;
+    //   }
+    //   if (this.item.customDefault) {
+    //     return this.item.customDefault
+    //   }
+    //   if (this.item.display === 'YearMonth') {
+    //     return this.item.default;
+    //   }
+
+
+    // } else if (['OBJ_DATENUMBER', 'OBJ_DATE', 'YearMonth', 'OBJ_DATETIME'].includes(this.item.display) && this.item.valuedata) {
+    //   return this.item.valuedata || this.item.defval
+    // }
+    // if (this.item.rangecolumn && this.item.display === "OBJ_DATETIME") {
+    //   const start = this.item.rangecolumn.upperlimit;
+    //   const end = this.item.rangecolumn.lowerlimit;
+    //   return [start.valuedata || start.default, end.valuedata || end.default];
+    // }
 
     // 处理图片,文档默认值,转json
     if (this.item.valuedata && ['image', 'OBJ_DOC'].includes(this.item.display)) {

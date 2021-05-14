@@ -89,9 +89,6 @@ class CustomInput {
     if (this.item.type === 'NUMBER') {
       this.numericTypes()
     }
-    if (this.item.props.regx) {
-      this.props.regx = this.item.props.regx
-    }
 
     if (this.item.display === 'OBJ_TEXTAREA') {
       this.props.type = 'textarea'
