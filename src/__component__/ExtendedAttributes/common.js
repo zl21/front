@@ -32,24 +32,29 @@ export const filterVal = function ($this) {
 $this 目标实例
 tableName  string  表明 
 name  string  字段名称 
+maintable 主子映射
 */
-export const FindInstance = ($this,name,tableName) => {
+export const FindInstance = ($this,name,tableName,maintable) => {
     let target = [];
     let panelFormParent = $this.$_live_getChildComponent(window.vm, `${$this.activeTab.keepAliveModuleName}`);
     let panelForm = $this.$_live_getChildComponent(panelFormParent, 'panelForm');
     if(!name){
         return [];
     }
+    let namestertTableName = $this.$route.params.tableName || $this.$route.params.customizedModuleName;
     target = name.split(',').reduce((arr,x)=>{
         if(x){
             let vm = {};
-           
             if(tableName){
                 if(x.split('.').length>1){
                     x= x.split('.').join('');
                     vm = $this.$_live_getChildComponent(panelFormParent, x); 
                 }else{
-                    vm = $this.$_live_getChildComponent(panelFormParent, tableName+x); 
+                    if(maintable && maintable[x]){
+                        vm = $this.$_live_getChildComponent(panelFormParent, namestertTableName+x); 
+                    }else{
+                        vm = $this.$_live_getChildComponent(panelFormParent, tableName+x); 
+                    }
                 }
             }else{
                 vm = $this.$_live_getChildComponent(panelFormParent, x); 
