@@ -104,7 +104,7 @@ function JudgeValue(source,conf) {
     case '>=':
       return eval(Number(value) + conf.expression + Number(conf.refval));
       break;
-    case '=<':
+    case '<=':
       return eval(Number(value) + conf.expression + Number(conf.refval));
       break;  
     case '>':

@@ -36,7 +36,7 @@
  
      let PropsData = {
          disabled: this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true), //控制字段是否可编辑
-         blurType: false, // 失去光标是否默认选中第一行
+         blurType: this.item.detailType,
          colid: this.item.colid, // 表id
          colname: this.item.colname, // 表名称
          enterType:this.item.detailType,

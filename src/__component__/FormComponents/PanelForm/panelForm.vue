@@ -389,9 +389,7 @@ export default {
           formList: this.LinkageForm,
           formIndex: 7
         };
-        console.log(data);
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
-
        }
         
     }
@@ -400,7 +398,6 @@ export default {
     if (Object.keys(this.formItemLists).length > 0) {
       this.collapseValue = []
       Object.keys(this.formItemLists).map(item => {
-        console.log(item, 'item====');
         let data = this.formItemLists[item]
         if (data.hrdisplay === 'expand') {
           this.collapseValue.push(data.parentname)

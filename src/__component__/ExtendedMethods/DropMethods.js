@@ -18,18 +18,17 @@ export default class DropMethods {
      let blur = this.instance.methods[blurName];
      let self = this;
     this.instance.methods[blurName] =function(){
-     
+        console.log(1212,self.item.name);
         if(self.item.detailType){
           // 单对象保存界面,必须有值才能展示
           setTimeout(()=>{
-            console.log(this,'blurName',blurName);
             if(!Array.isArray(this.$parent.value)){
-            //  let dom =  this.$el.querySelector('.iconios-close-circle');
-            //  if(dom){
-            //     dom.click();
-            //  }
+             let dom =  this.$el.querySelector('.iconios-close-circle');
+             if(dom){
+                dom.click();
+             }
             }
-          },400)
+          },200)
             
         }
         if(blur){

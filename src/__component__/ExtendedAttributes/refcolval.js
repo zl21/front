@@ -6,6 +6,7 @@ config  webconfig 配置
 import {
     filterVal,FindInstance
 } from './common.js';
+import network from '../../__utils__/network';
 
 // 处理url
 
@@ -26,20 +27,25 @@ const urlSearchParams = (data) => {
 
 // 映射关系
 export const refcolvalMap = ($this, config,key) => {
+    let maintable = {
+    };
     if(config.srccols){
         // 兼容数据
         config.srccol = config.srccols;
+    }else{
+        maintable[config.srccol] = config.maintable || false;
     }
     if(key === 'refcolvalArray' && Array.isArray(config)){
         let srccol = config.reduce((arr,item)=>{
                 arr.push(item.srccol);
+                maintable[item.srccol] = item.maintable || false;
                 return arr;
         },[]).join(',');
          config = {};
         config.srccol = srccol;
     }
 
-    let targetVm = FindInstance($this,config.srccol,$this.item.tableName);
+    let targetVm = FindInstance($this,config.srccol,$this.item.tableName,maintable);
     let linkFormMap = {
         [key]: [`${$this.item.tableName}${$this.item.colname}`]
     };
@@ -96,7 +102,6 @@ export const messageTip = ($this, target,key) => {
         return true;
     }
     if (!value.ID) {
-        console.log();
         $this.$Message.info(`请先选择${target.items.name}`);
         setTimeout(() => {
             if(target.$el.querySelector('input')){
@@ -133,6 +138,10 @@ export const setFixedcolumns = ($this, type) => {
                 ID:id[id.length-1]
               }
         }
+        if(!$this._srccolValue){
+            // 兼容模糊查询无法
+            setisShowPopTip($this, webconf,network);
+        }
         if ($this._srccolValue) {
             let colnameID = $this._srccolValue[webconf.refcolval.srccol];
             const query = webconf.refcolval.expre === 'equal' ? '=' : '';
@@ -154,8 +163,6 @@ export const setFixedcolumns = ($this, type) => {
     }
     if(webconf && webconf.refcolvalArray){
         let fixcolumns = webconf.refcolvalArray.reduce((arr,item)=>{
-            console.log($this,item.srccol,$this._srccolValue);
-
             arr[item.fixcolumn] = $this._srccolValue && $this._srccolValue[item.srccol] || ''
             return arr;
         },{});
@@ -207,7 +214,6 @@ export const setisShowPopTip = ($this, config,network) => {
 // refcolval_custom 接口请求
 export  const refcolvalCustomUrl =  ($this, config,network) => {
     let checkd = refcolvalMap($this, config.refcolval_custom,'refcolval_custom');
-    console.log(checkd,'checkdcheckdcheckd');
     // async
     if(checkd){
          return postCustomUrl(network,config,$this)
