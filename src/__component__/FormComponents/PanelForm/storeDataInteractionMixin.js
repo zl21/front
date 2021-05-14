@@ -43,7 +43,11 @@ export default {
            // number类型空值传0
            if (this.items.type === 'NUMBER') {
             if (current_value && !isEmpty(current_value)) {
-              current_value = parseFloat(current_value.toString().replace(/-/g, ''));
+              if(current_value.toString().split('-').length>2){
+                current_value = parseFloat(current_value.toString().replace(/-/g, ''));
+              }else{
+                current_value = parseFloat(current_value);
+              }
             }
             if (Version() === '1.4') {
               if (current_value === '') {
