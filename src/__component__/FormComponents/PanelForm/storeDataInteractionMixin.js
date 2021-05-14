@@ -107,9 +107,9 @@ export default {
               }else{
                 //详情明细  有值 
                 ParentForm.formChangeData = Object.assign({}, ParentForm.formChangeData, current_data)
-                ParentForm.formDatadefault = Object.assign({}, ParentForm.formDataLabel, current_data)
+                ParentForm.formChangeDataLabel = Object.assign({}, ParentForm.formDataLabel, current_data)
 
-                
+                console.log(ParentForm.formChangeData);
                 if (JSON.stringify(val) === JSON.stringify(this.defaultVale)) {
                   delete ParentForm.formChangeData[this.items.colname]
                   delete ParentForm.formChangeDataLabel[this.items.colname]
@@ -153,9 +153,9 @@ export default {
 
 
           if (ParentForm.$parent.formPanelChange) {
-            ParentForm.$parent.formPanelChange(ParentForm.formChangeData, ParentForm.formDatadefault)
+            ParentForm.$parent.formPanelChange(ParentForm.formChangeData, ParentForm.formChangeDataLabel)
           }else{
-            ParentForm.$parent.formChange(ParentForm.formChangeData, ParentForm.formDatadefault)
+            ParentForm.$parent.formChange(ParentForm.formChangeData, ParentForm.formChangeDataLabel)
           }
           
 

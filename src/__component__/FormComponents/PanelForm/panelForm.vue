@@ -189,6 +189,7 @@ export default {
   watch: {
     formItemLists: {
       handler (val) {  //处理展开面板的默认值
+        
         if (Object.keys(val).length > 0) {
           this.collapseValue = []
           Object.keys(val).map(item => {
@@ -198,6 +199,8 @@ export default {
             }
           })
         }
+        // 清空表单的值
+        this.clearForm();
 
       },
       deep: true
@@ -365,6 +368,15 @@ export default {
       // this.formItemLists.forEach(item => {
       // console.log(item,'1212');
       // });
+    },
+    clearForm(){
+        this.formData = {};
+        this.formChangeData = {};
+        this.defaulData = {}
+        this.defaulDataLabel = {};
+        this.deleteFormData = {};
+        this.formDataLabel = {};
+
     },
     linkFormSet(){
        // 兼容子表传参
