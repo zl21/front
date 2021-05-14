@@ -27,7 +27,7 @@ export default {
 
           // 去除空格
           if (typeof current_value === 'string' && !isEmpty(current_value)) {
-            current_value = current_value.replace(/^\s+|\s+$/g, '')
+            current_value = current_value.toString().replace(/^\s+|\s+$/g, '')
           }else{
             // 上传后是否保存控制
             if (this.items.display === 'image' || this.items.display === 'OBJ_DOC') {
@@ -43,7 +43,7 @@ export default {
            // number类型空值传0
            if (this.items.type === 'NUMBER') {
             if (current_value && !isEmpty(current_value)) {
-              current_value = parseFloat(current_value.replace(/-/g, ''));
+              current_value = parseFloat(current_value.toString().replace(/-/g, ''));
             }
             if (Version() === '1.4') {
               if (current_value === '') {
@@ -60,7 +60,11 @@ export default {
           // ParentForm.formData 表单组件的所有有值的值
           ParentForm.formData = Object.assign({}, ParentForm.formData, current_data)
           ParentForm.formChangeDataLabel[this.items.colname] = val
-          ParentForm.formDataLabel[this.items.colname] = val;
+          if(this.items.display === 'image' || this.items.display === 'OBJ_DOC'){
+            ParentForm.formDataLabel[this.items.colname] = current_value;
+          }else{
+            ParentForm.formDataLabel[this.items.colname] = val;
+          }
          
           let keepAliveModuleName = this.activeTab.keepAliveModuleName && (this.activeTab.keepAliveModuleName).toLocaleUpperCase();
             // 初始化的状态
@@ -111,7 +115,6 @@ export default {
                 ParentForm.formChangeData = Object.assign({}, ParentForm.formChangeData, current_data)
                 ParentForm.formChangeDataLabel = Object.assign({}, ParentForm.formDataLabel, current_data)
 
-                console.log(ParentForm.formChangeData);
                 if (JSON.stringify(val) === JSON.stringify(this.defaultVale)) {
                   delete ParentForm.formChangeData[this.items.colname]
                   delete ParentForm.formChangeDataLabel[this.items.colname]

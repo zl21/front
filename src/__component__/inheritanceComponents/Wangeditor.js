@@ -34,7 +34,6 @@ class CustomWangeditor {
       placeholder:new SetPlaceholder(this.item).init(),
       isActives:new SetDisable(this.item).init(),
       http:network
-      
     }
   }
 

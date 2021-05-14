@@ -229,7 +229,6 @@ export default {
  
   savaCopyData(state, { copyDatas, tableName, modifyData }) { // 执行按钮复制操作存储form默认值数据
     const copySaveDataForParam = {};
-    console.log(copyDatas,modifyData,'复制====v');
     state.copyDataForReadOnly.addcolums.forEach((d) => { // 复制按钮操作时江接口请求回来的配置信息赋值给form
       Object.keys(copyDatas).forEach((item) => {
         if (d.childs) {
@@ -260,14 +259,7 @@ export default {
                   c.refobjid = copyDatas[item].map(item => item.ID).join(',');
                   c.default = copyDatas[item].map(item => item.Label).join(',');
                   copySaveDataForParam[c.colname] = [{ ID: copyDatas[item][0].ID, Label: copyDatas[item][0].Label }];
-                } else if (c.fkdisplay === 'mop') {
-                  try {
-                    const number = JSON.parse(b.valuedata).lists.result.length;
-                    copySaveDataForParam[c.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
-                  } catch (e) {
-                    copySaveDataForParam[c.colname] = c.valuedata;
-                  }
-                } else if (c.display === 'OBJ_DATENUMBER') {
+                }else if (c.display === 'OBJ_DATENUMBER') {
                   c.customDefault = copyDatas[item];
                   c.default = -1;
                   c.defaultrange = -1;

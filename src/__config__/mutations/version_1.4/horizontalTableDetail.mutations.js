@@ -386,16 +386,9 @@ export default {
                   c.valuedata = copyDatas[item]
                   copySaveDataForParam[c.colname] = JSON.parse(copyDatas[item]);
                 } else if (c.fkdisplay === 'drp' || c.fkdisplay === 'mrp' || c.fkdisplay === 'pop') {
-                  c.refobjid = copyDatas[item].map(item => item.ID).join(',');
+                  c.refobjid = (copyDatas[item]).map(item => item.ID).join(',');
                   c.default = copyDatas[item].map(item => item.Label).join(',');
                   copySaveDataForParam[c.colname] = [{ ID: copyDatas[item][0].ID, Label: copyDatas[item][0].Label }];
-                } else if (c.fkdisplay === 'mop') {
-                  try {
-                    const number = JSON.parse(b.valuedata).lists.result.length;
-                    copySaveDataForParam[c.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
-                  } catch (e) {
-                    copySaveDataForParam[c.colname] = c.valuedata;
-                  }
                 } else if (c.display === 'OBJ_DATENUMBER') {
                   c.customDefault = copyDatas[item];
                   c.default = -1;

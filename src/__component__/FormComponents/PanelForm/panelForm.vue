@@ -316,6 +316,7 @@ export default {
         Object.keys(this.formItemLists).map(temp => {
           Object.keys(this.formItemLists[temp].childs).map(j => {
             let item = this.formItemLists[temp].childs[j];
+
             const components = this.$_live_getChildComponent(this, `${this.tableName}${item.colname.TextFilter()}`);
             let value = item.isuppercase && components.value && !item.display ? components.value.toUpperCase() : components.value;
             if (value && value[0] && item.display === 'OBJ_DATENUMBER') {
@@ -323,6 +324,9 @@ export default {
             }
             if (value && value[0] && item.display === 'OBJ_DATE') {
               value = [new Date().r3Format(new Date(value[0]), 'yyyy-MM-dd 00:00:00'), new Date().r3Format(new Date(value[1]), 'yyyy-MM-dd 23:59:59')]
+            }
+            if(value &&  value[0] && (item.display === 'image' || item.display === 'doc')){
+                value = JSON.stringify(value);
             }
             const json = {
               [item.colname]: value
@@ -374,7 +378,6 @@ export default {
         this.formChangeData = {};
         this.defaulData = {}
         this.defaulDataLabel = {};
-        this.deleteFormData = {};
         this.formDataLabel = {};
 
     },
