@@ -38,28 +38,30 @@ export default {
               
             }  
           }
-          // number类型空值传0
-          if (this.items.type === 'NUMBER') {
+          
+        
+           // number类型空值传0
+           if (this.items.type === 'NUMBER') {
             if (current_value && !isEmpty(current_value)) {
               current_value = parseFloat(current_value.replace(/-/g, ''));
             }
             if (Version() === '1.4') {
-              if (ParentForm.formChangeData[this.items.colname] === '') {
-                ParentForm.formChangeData[this.items.colname] = 0;
-                ParentForm.formData[this.items.colname] = 0;
-
+              if (current_value === '') {
+                current_value = 0;
               }
             }
+            
           }
           // 拼接当前key 和 value
           current_data = {
             [this.items.colname]: current_value
           }
+
           // ParentForm.formData 表单组件的所有有值的值
           ParentForm.formData = Object.assign({}, ParentForm.formData, current_data)
           ParentForm.formChangeDataLabel[this.items.colname] = val
           ParentForm.formDataLabel[this.items.colname] = val;
-
+         
           let keepAliveModuleName = this.activeTab.keepAliveModuleName && (this.activeTab.keepAliveModuleName).toLocaleUpperCase();
             // 初始化的状态
             if (!this.actived) {
@@ -150,7 +152,7 @@ export default {
                 }
               }
             }
-
+         
 
           if (ParentForm.$parent.formPanelChange) {
             ParentForm.$parent.formPanelChange(ParentForm.formChangeData, ParentForm.formChangeDataLabel)
