@@ -38,6 +38,11 @@ function get_default_datenumber(formItem, isDetailPage) {
 
 function get_default_date(formItem, isDetailPage) {
   if(isDetailPage) {
+    if(formItem.rangecolumn) {
+      const start = formItem.rangecolumn.upperlimit;
+      const end = formItem.rangecolumn.lowerlimit;
+      return [start.defval || start.valuedata, end.defval || end.valuedata];
+    }
     const value = formItem.valuedata || formItem.defval;
     return value ? `${new Date().r3Format(new Date(value), 'yyyy/MM/dd hh:mm:ss')}`: '';
   } else {
