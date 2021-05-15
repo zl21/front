@@ -6,61 +6,102 @@ import InputMethod from '../ExtendedMethods/Input'
 import { SetPlaceholder, SetDisable } from './setProps'
 
 let Input = Ark.Input
+
+// 目前这个类支持改混入和方法，改其他属性推荐统一用混入改。后期要删除this.methods
+class ComponentGenerator {
+  constructor(protoComponent, options) {
+    Object.keys(protoComponent).forEach((key) => {
+      this[key] = Input[key]
+    })
+    delete this._Ctor // 不删除这个字段的话, this.methods和this.mixins就不会生效
+    this.methods = { ...protoComponent.methods }
+    this.mixins = [...protoComponent.mixins, options]
+  }
+}
+
+const mixin = {
+  props: {
+    item: {
+      type: Object,
+    },
+  },
+
+  methods: {
+    nextInputFocus(currentWrapDom) {
+      // 当前节点是textarea就不触发后面的逻辑。而是直接换行
+      if (currentWrapDom) {
+        const textarea = currentWrapDom.querySelector('textarea')
+        if (textarea) {
+          return
+        }
+      }
+  
+      const nextItemDom = currentWrapDom.nextElementSibling // 下一个兄弟节点
+      if (!nextItemDom) {
+        return
+      }
+
+      const inputDom = nextItemDom.querySelector('.ark-input')
+      if (
+        !inputDom ||
+        nextItemDom.style.display === 'none' ||
+        (inputDom && inputDom.disabled) ||
+        (inputDom && inputDom.readOnly) ||
+        (inputDom && inputDom.type === 'checkbox')
+      ) {
+        // 继续查找下个节点
+        this.nextInputFocus(nextItemDom)
+      } else {
+        inputDom.focus()
+      }
+    },
+  },
+
+  mounted() {
+    this.$on('on-change', function(e) {
+      if (!this.item || this.item.type !== 'NUMBER') {
+        return
+      }
+      const value = event.target.value
+      const { webconf, scale, length } = this.item
+      let valLength = length
+      let string = ''
+      let regxString = ''
+
+      if (valLength) {
+        if (value.split('.').length > 1) {
+          valLength = valLength + 1
+        } else if (value.split('-').length > 1) {
+          valLength = valLength + 1
+        }
+        if (value.split('.').length > 1 && value.split('-').length > 1) {
+          valLength = valLength + 2
+        }
+
+        if (webconf && webconf.ispositive) {
+          regxString = ''
+        } else {
+          regxString = '(-|\\+)?'
+        }
+        if (scale > 0) {
+          string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9]{0,${scale}})?$`
+        } else {
+          string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9])?$`
+        }
+      }
+
+      const itemComponent = this.$parent.$parent
+      const typeRegExp = new RegExp(string)
+      itemComponent.propsMessage.regx = typeRegExp
+      itemComponent.propsMessage.maxlength = valLength
+    })
+  },
+}
 class CustomInput {
   constructor(item) {
-    this.instance = Object.create(Input)
+    const instance = new ComponentGenerator(Input, mixin)
 
-    this.instance.__proto__.mixins = [
-      ...this.instance.__proto__.mixins,
-      {
-        props: {
-          item: {
-            type: Object,
-          },
-        },
-        mounted() {
-          this.$on('on-change', function(e) {
-            if (!this.item || this.item.type !== 'NUMBER') {
-              return
-            }
-
-            const value = event.target.value
-            const { webconf, scale, length } = this.item
-            let valLength = length
-            let string = ''
-            let regxString = ''
-
-            if (valLength) {
-              if (value.split('.').length > 1) {
-                valLength = valLength + 1
-              } else if (value.split('-').length > 1) {
-                valLength = valLength + 1
-              }
-              if (value.split('.').length > 1 && value.split('-').length > 1) {
-                valLength = valLength + 2
-              }
-
-              if (webconf && webconf.ispositive) {
-                regxString = ''
-              } else {
-                regxString = '(-|\\+)?'
-              }
-              if (scale > 0) {
-                string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9]{0,${scale}})?$`
-              } else {
-                string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9])?$`
-              }
-            }
-
-            const itemComponent = this.$parent.$parent
-            const typeRegExp = new RegExp(string)
-            itemComponent.propsMessage.regx = typeRegExp
-            itemComponent.propsMessage.maxlength = valLength
-          })
-        },
-      },
-    ]
-
+    this.instance = instance
     this.item = item
     this.mergeProps()
     this.mergeMethods()
@@ -122,8 +163,6 @@ class CustomInput {
     this.props.autofocus = this.item.autofocus
     this.props.size = this.item.size
     this.props.icon = this.item.icon
-
-    // console.log(this.instance)
   }
 
   // 合并methods
@@ -133,7 +172,6 @@ class CustomInput {
       new InputMethod(this.item, this.instance)
     }
 
-    this.instance.methods.nextInputFocus = this.nextInputFocus
     this.overrideKeyDown()
   }
 
@@ -174,43 +212,9 @@ class CustomInput {
       // 明细界面的input，按下回车后，光标自动移到下一个Input框里
       if (isDetailPage && e.keyCode === 13) {
         const currentWrapDom = this.$parent.$parent.$el.parentNode // 当前组件的容器节点
-        this.nextInputFocus.call(this, currentWrapDom)
+        this.nextInputFocus(currentWrapDom)
       }
       keyDownFn.call(this, ...arguments)
-    }
-  }
-
-  // 获取焦点
-  nextInputFocus(currentWrapDom) {
-    // 当前节点是textarea就不触发后面的逻辑。而是直接换行
-    if (currentWrapDom) {
-      const textarea = currentWrapDom.querySelector('textarea')
-      if (textarea) {
-        return
-      }
-    }
-
-    // const PanelComponent = this.$parent.$parent.$parent
-    // const ItemComponent = this.$parent.$parent
-    // const componentParams = ItemComponent.items // 当前表单组件能拿到的接口参数
-    // console.log(PanelComponent,ItemComponent,ItemComponent.items);
-
-    const nextItemDom = currentWrapDom.nextElementSibling // 下一个兄弟节点
-    if (!nextItemDom) {
-      return
-    }
-    const inputDom = nextItemDom.querySelector('.ark-input')
-    if (
-      !inputDom ||
-      nextItemDom.style.display === 'none' ||
-      (inputDom && inputDom.disabled) ||
-      (inputDom && inputDom.readOnly) ||
-      (inputDom && inputDom.type === 'checkbox')
-    ) {
-      // 继续查找下个节点
-      this.nextInputFocus(nextItemDom)
-    } else {
-      inputDom.focus()
     }
   }
 
