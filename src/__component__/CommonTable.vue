@@ -584,11 +584,11 @@
                 // 自定义界面
                 const type = 'tableDetailAction';
                 const field = params.column.customerurl.refobjid
+                const url = `/${params.column.customerurl.tableurl.toUpperCase()}/${params.row[field]}`;
                 const tab = {
                   type,
                   label: params.column.customerurl.reftabdesc,
-                  customizedModuleName: params.column.customerurl.tableurl,
-                  customizedModuleId: params.row[field]
+                  url
                 };
                 this.tabOpen(tab);
               } else if (objdistype === 'link') { // 支持跳转外链界面配置动态参数
