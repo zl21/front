@@ -141,7 +141,7 @@ export default {
             });
           return option;
         })
-
+        _childs = _childs.filter(child => child.display !== 'none')
         item.childs = { ...layoutAlgorithm(Number(data.objviewcol), _childs) };
         Object.keys(item.childs).map((temp) => {
           item.childs[temp]._index = `${index}_${temp}_${Math.random()}`;
