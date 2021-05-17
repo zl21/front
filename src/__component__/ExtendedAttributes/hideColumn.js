@@ -137,7 +137,7 @@ function JudgeValue(source,conf) {
           let arr = source.items.combobox.filter(item => item.limitval == value)
           value = arr.length > 0 ? arr[0].limitdesc : ''
         }
-        return conf.refval.split(',').includes(value);
+        return conf.refval.split(',').includes(value.toString());
       }
       break;
   }
