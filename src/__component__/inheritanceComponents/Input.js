@@ -64,7 +64,7 @@ const mixin = {
       }
       const value = event.target.value
       const { webconf, scale, length } = this.item
-      let valLength = length
+      let valLength = length || 100
       let string = ''
       let regxString = ''
 
@@ -118,7 +118,7 @@ class CustomInput {
   mergeProps() {
     this.item.props = this.item.props || {}
     this.props = {
-      maxlength: this.item.length,
+      maxlength: this.item.length || 100,
       item: this.item,
       placeholder: new SetPlaceholder(this.item).init(),
       disabled: new SetDisable(this.item).init(),
@@ -128,7 +128,6 @@ class CustomInput {
       this.uppercase()
     }
     if (this.item.type === 'NUMBER') {
-      this.props.number = true
       this.numericTypes()
     }
 
@@ -179,16 +178,18 @@ class CustomInput {
     // 数字类型输入控制
     // 只能输入 正整数
     let string = ''
+    const length = this.item.length || 100
     if (this.item.webconf && this.item.webconf.ispositive) {
-      string = `^\\d{0,${this.item.length}}(\\\.[0-9]{0,${this.item.scale}})?$`
+      string = `^\\d{0,${length}}(\\\.[0-9]{0,${this.item.scale}})?$`
     } else {
-      string = `^(-|\\+)?\\d{0,${this.item.length -
+      string = `^(-|\\+)?\\d{0,${length -
         this.item.scale}}(\\\.[0-9]{${this.item.scale - 1},${
         this.item.scale
       }})?$`
     }
 
     const typeRegExp = new RegExp(string)
+
     if (this.item.scale >= 0) {
       this.item.props.regx = typeRegExp
       this.props.regx = typeRegExp
