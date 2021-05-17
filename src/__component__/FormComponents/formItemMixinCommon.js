@@ -43,12 +43,15 @@ export default {
           trigger: 'blur'
         }, 
         trigger:{
-            blur:{
-              callback:function(val){
-                return self.validateInput();
-              },
-            }            
-        },
+          change:{
+            message: `${this.items.name}不能为空!`, 
+          },
+          blur:{
+            callback:function(val){
+              return self.validateInput();
+            },
+          }                
+      }
         
       }
     

@@ -99,7 +99,12 @@ function HiddenFields(){
 
 function JudgeValue(source,conf) {
   let value = source.value;
-  
+  if (parseFloat(value) === 0) {
+    value = 0;
+  // eslint-disable-next-line use-isnan
+  } else if (value === '') {
+    value = undefined;
+  }
   switch(conf.expression){
     case '>=':
       return eval(Number(value) + conf.expression + Number(conf.refval));
@@ -137,7 +142,7 @@ function JudgeValue(source,conf) {
           let arr = source.items.combobox.filter(item => item.limitval == value)
           value = arr.length > 0 ? arr[0].limitdesc : ''
         }
-        return conf.refval.split(',').includes(value.toString());
+        return conf.refval.split(',').includes(String(value));
       }
       break;
   }
