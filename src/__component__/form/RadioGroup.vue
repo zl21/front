@@ -1,7 +1,7 @@
 <template>
   <div ref="radio-container">
     <CheckboxGroup
-      v-model="value"
+      v-model="selectedValues"
       @on-change="handleChange"
     >
       <Checkbox
@@ -21,45 +21,46 @@
     name: 'RadioGroup',
 
     model: {
-      props: 'selectedValues',
+      props: 'value',
       event: 'change'
     },
 
     props: {
-      selectedValues: {
-        type: Array,
-        default: () => []
+      // 双向绑定值
+      value: {
+        type: [String, Array],
       },
+      // 外部传入的所有参数
       options: {
         type: Object,
         default: () => {}
       },
-      formItemValue: {
-        type: [String, Array],
-        default: ''
-      }
+      // formItemValue: {
+      //   type: [String, Array],
+      //   default: ''
+      // }
     },
 
     data() {
       return {
-        value: []
+        selectedValues: []
       };
     },
 
-    watch: {
-      // 监听组件隐藏时，清除勾选值
-      formItemValue(newVal) {
-        if (newVal === '') {
-          this.value = [];
-        }
-      }
-    },
+    // watch: {
+    //   // 监听组件隐藏时，清除勾选值
+    //   formItemValue(newVal) {
+    //     if (newVal === '') {
+    //       this.selectedValues = [];
+    //     }
+    //   }
+    // },
 
     methods: {
       handleChange(values) {
         const checkedList = [];
         if (values.length === 0) {
-          this.$emit('change', []);
+          this.$emit('change', '');
           return;
         }
 
@@ -80,10 +81,9 @@
             }
           });
           
-          this.value = [currentLabel];
+          this.selectedValues = [currentLabel];
         }
         
-        console.log('提交值', checkedList.join(','));
         this.$emit('change', checkedList.join(','));
       }
     },
@@ -98,7 +98,7 @@
             checkedList.push(item.limitdesc);
           }
         });
-        this.value = checkedList;
+        this.selectedValues = checkedList;
       }
     }
   };

@@ -152,6 +152,7 @@ import CustomDocUpload from '../inheritanceComponents/DocUpload';
 import CustomWangeditor from '../inheritanceComponents/Wangeditor';
 import CustomEnumerableInput from '../inheritanceComponents/EnumerableInput';
 import CustomExtensionProperty from '../inheritanceComponents/ExtensionProperty';
+import CustomRadioGroup from '../inheritanceComponents/RadioGroup'
 
 import ParameterDataProcessing from './parameterDataProcessing';
 import { Validate } from './PanelForm/Validate';
@@ -164,7 +165,6 @@ import {
 import createModal from '../PreviewPicture/index';
 import EnumerableInput from '../EnumerableInput.vue';
 import ExtentionInput from '../ExtentionInput.vue';
-
 
 const fkHttpRequest = () => require(`../../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -319,37 +319,26 @@ export default {
   methods: {
     ...mapMutations('global', ['tabOpen', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
     inheritanceComponents () {
-      let Components = null;
+      let component = null;
       let item = this.items;
-      let props = {}
+      let componentInstance = null
       switch (item.display) {
         case undefined:
         case 'OBJ_TEXTAREA':
-           let ComponentcollectionInput = new CustomInput(item).init();
-            Components = ComponentcollectionInput.Components;
-            props = ComponentcollectionInput.props;
-            
+          componentInstance = new CustomInput(item).init();
           break;
         case 'OBJ_FK':
           if (item.fkobj.searchmodel === 'drp') {
-          let Componentcollection = new BusDropDownSelectFilter(item).init();
-            Components = Componentcollection.Components;
-            props = Componentcollection.props;
+            componentInstance = new BusDropDownSelectFilter(item).init();
           }
           if (item.fkobj.searchmodel === 'mrp') {
-          let Componentcollectionmrp = new CustomDropMultiSelectFilter(item).init();
-            Components = Componentcollectionmrp.Components;
-            props = Componentcollectionmrp.props;
+            componentInstance = new CustomDropMultiSelectFilter(item).init();
           }
           if (item.fkobj.searchmodel === 'mop') {
-             let Componentcollectionmop = new CustomAttachFilter(item).init();
-              Components = Componentcollectionmop.Components;
-              props = Componentcollectionmop.props;
+            componentInstance = new CustomAttachFilter(item).init();
           }
           if (item.fkobj.searchmodel === 'pop') {
-            let Componentcollectionpop = new CustomPopAttachFilter(item).init();
-              Components = Componentcollectionpop.Components;
-              props = Componentcollectionpop.props;
+            componentInstance = new CustomPopAttachFilter(item).init();
           }
           break;
         case 'OBJ_DATE':
@@ -357,51 +346,37 @@ export default {
         case 'YearMonth':
         case 'OBJ_DATETIME':
         case 'OBJ_TIME':
-          let Componentcollectiontime = new CustomDatePicker(item).init();
-            Components = Componentcollectiontime.Components;
-            props = Componentcollectiontime.props;
+          componentInstance = new CustomDatePicker(item).init();
           break;
         case 'OBJ_SELECT':
-          let Componentcollectionselect = new CustomSelect(item).init();
-          Components = Componentcollectionselect.Components;
-          props = Componentcollectionselect.props;
+          componentInstance = new CustomSelect(item).init();
           break;
         case 'OBJ_CHECK':
-          let Componentcollectioncheck = new CustomCheckbox(item).init();
-          Components = Componentcollectioncheck.Components;
-          props = Componentcollectioncheck.props;
-
+          componentInstance = new CustomCheckbox(item).init();
           break;
         case 'image':
-           let Componentcollectionimage = new CustomImageUpload(item).init();
-          Components = Componentcollectionimage.Components;
-          props = Componentcollectionimage.props;
+          componentInstance = new CustomImageUpload(item).init();
           break;
         case 'OBJ_DOC':
-          let Componentcollectiondoc = new CustomDocUpload(item).init();
-          Components = Componentcollectiondoc.Components;
-          props = Componentcollectiondoc.props;
+          componentInstance = new CustomDocUpload(item).init();
           break;
         case 'clob':
-          let Componentcollectionclob = new CustomWangeditor(item).init();
-          Components = Componentcollectionclob.Components;
-          props = Componentcollectionclob.props;
+          componentInstance = new CustomWangeditor(item).init();
           break;
         case 'Enumerate':
-           let ComponentcollectionEnumerate = new CustomEnumerableInput(item).init();
-          Components = ComponentcollectionEnumerate.Components;
-          props = ComponentcollectionEnumerate.props;
+          componentInstance = new CustomEnumerableInput(item).init();
           break;
         case 'ExtensionProperty':
-          const componentObj = new CustomExtensionProperty(item).init();
-          Components = componentObj.Components;
-          props = componentObj.props;
+          componentInstance = new CustomExtensionProperty(item).init();
           break;
+        case 'radioGroup': 
+          componentInstance = new CustomRadioGroup(item).init();
         default:
           break;
       }
-      this.propsMessage = props;
-      return Components;
+      component = componentInstance.Components;
+      this.propsMessage = componentInstance.props;
+      return component;
     },
     routerNext (value) {
       // 路由跳转

@@ -374,9 +374,8 @@
       <radio-group
         v-if="_items.type === 'radioGroup'"
         :ref="_items.field"
-        v-model="_items.props.value"
+        v-model="_items.value"
         :options="_items.props"
-        :form-item-value="_items.value"
         @change="radioValueChange"
       />
       
