@@ -146,7 +146,6 @@ export default class ParameterDataProcessing {
 
     // 处理日期字段
     if (['OBJ_DATE', 'OBJ_DATENUMBER', 'YearMonth', 'OBJ_DATETIME'].includes(this.item.display)) {
-
       let arr = [];    
       if (this.item.rangecolumn) {
         arr = [new Date().r3Format(new Date(this.value[0]), 'yyyy/MM/dd hh:mm:ss'), new Date().r3Format(new Date(this.value[1]), 'yyyy/MM/dd hh:mm:ss')];
@@ -155,7 +154,8 @@ export default class ParameterDataProcessing {
         };
       }
       if (this.item.display === 'OBJ_DATE') {
-        arr = [new Date().r3Format(new Date(this.value[0]), 'yyyy/MM/dd'), new Date().r3Format(new Date(this.value[1]), 'yyyy/MM/dd')];
+        const format = this.item.customDefault? 'yyyy/MM/dd hh:mm:ss' : 'yyyy/MM/dd'
+        arr = [new Date().r3Format(new Date(this.value[0]), format), new Date().r3Format(new Date(this.value[1]), 'yyyy/MM/dd')];
       }
       
       if (this.item.display === 'OBJ_DATENUMBER') {
@@ -168,11 +168,9 @@ export default class ParameterDataProcessing {
       if (this.item.display === 'YearMonth') {
         arr = [new Date().r3Format(new Date(this.value), 'yyyy-MM')];
       }
-      if (this.item.display === 'OBJ_DATETIME' && !this.item.detailType) {
-        arr = [new Date().r3Format(new Date(this.value), 'yyyy/MM/dd hh:mm:ss')];
-      }
-      if (this.item.display === 'OBJ_DATETIME' && this.item.detailType) {
-        arr = [new Date().r3Format(new Date(this.value), 'yyyy-MM-dd hh:mm:ss')];
+      if (this.item.display === 'OBJ_DATETIME') {
+        const format = this.item.detailType? 'yyyy-MM-dd hh:mm:ss': 'yyyy/MM/dd hh:mm:ss'
+        arr = [new Date().r3Format(new Date(this.value), format)];
       }
 
       return {
