@@ -4,6 +4,7 @@ export default {
   data() {
     return {
       actived:false, // 渲染未完成
+      rules:{},
       initTimer:null
     };
   },
@@ -36,21 +37,18 @@ export default {
     setRules(){
       let required = this.items.show && !this.items.readonly && this.items.isnotnull; 
       let self = this;
-      this.items.rules = {
+      this.rules = {
         required: {
           type:required,
           message: `${this.items.name}不能为空!`, 
           trigger: 'blur'
         }, 
         trigger:{
-          change:{
-            message: `${this.items.name}不能为空!`, 
-          },
           blur:{
             callback:function(val){
               return self.validateInput();
             },
-          }                
+        }                
       }
         
       }

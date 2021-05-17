@@ -1,7 +1,7 @@
 /* eslint-disable import/no-dynamic-require */
 <template>
  <ValidateCom 
-    :rules="items.rules"
+    :rules="rules"
     :labelWidth="labelWidth"
     :items="propsMessage"
     :show-tip="items.detailType"
