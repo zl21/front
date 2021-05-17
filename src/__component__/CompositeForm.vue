@@ -2774,11 +2774,11 @@
       openLoading() { // 表单更新时重新加载loading
         if (!this.tableGetName) { // 子表不添加loading
           const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
-          const dom = document.querySelector(`#${currentTableName}-loading`);
+          const dom = document.querySelector(`#${this.loadingName}-loading`);
           if (!dom && this.from === 'singlePage') {
             // this.$route.params.tableName！==currentTableName说明调用刷新时，路由已切换到其它tab,此时不需要加loading
-            if (this.$route.params.tableName === currentTableName) {
-              this.$R3loading.show(this.tableName);
+            if ((this.$route.params.tableName === currentTableName) || !this.defaultData.addcolums) {
+              this.$R3loading.show(this.loadingName);
             }
           }
         }
@@ -2817,6 +2817,8 @@
       return true;
     },
     created() {
+      this.loadingName = this.moduleComponentName.replace(/\./g, '-');
+
       this.reorganizeForm();
       this.mountNumber = (Math.random() * 1000).toFixed(0);
       window.eventType = function eventType(name, docm, obj) {
@@ -2834,6 +2836,12 @@
     },
     beforeDestroy() {
       window.removeEventListener('resize', this.setResize);
+    },
+    activated() {
+      // 表单没渲染成功，加loading遮挡来禁止用户点击按钮
+      if (Object.keys(this.defaultData).length === 0) {
+        this.$R3loading.show(this.loadingName);
+      }
     },
     deactivated() {
       clearTimeout(this.setChangeTime);

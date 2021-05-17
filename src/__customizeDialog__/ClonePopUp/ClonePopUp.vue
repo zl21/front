@@ -174,9 +174,8 @@
             content: '请输入版本号'
           };
           this.$Modal.fcWarning(data);
-          return;
         }
-        this.$R3loading.show();
+        this.$R3loading.show(this.loadingName);
         const searchdata = {
           srctable: this.o_table_name, // 源表表名
           destable: this.t_table_name.trim(), // 目标表名
@@ -185,7 +184,6 @@
         };
         network.post('/p/cs/clone', searchdata)
           .then((res) => {
-            const { tableName } = this.$route.params;
             if (res.data.code !== 0) {
               // const failInfo = [
               //   {
@@ -198,7 +196,7 @@
               this.$emit('closeActionDialog', true); // 关闭弹框
               
             
-              this.$R3loading.hide(tableName);
+              this.$R3loading.hide(this.loadingName);
               return;
             }
             const data = {
@@ -206,7 +204,7 @@
               title: '成功',
               content: '克隆成功'
             };
-            this.$R3loading.hide(tableName);
+            this.$R3loading.hide(this.loadingName);
             this.$Modal.fcSuccess(data);
             this.$emit('closeActionDialog', true); // 关闭弹框
           });
@@ -228,6 +226,7 @@
 
     },
     created() {
+      this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');
       this.chineseName = ChineseDictionary;
     },
     mounted() {

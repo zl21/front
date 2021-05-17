@@ -468,7 +468,7 @@
         const buttonComponent = `${this[MODULE_COMPONENT_NAME]}.SingleObjectButtons`;
         const tableDetailCollectionMixin = (window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.tableDetailCollectionMixin) || {};
         const singleObjectButtonsMixin = (window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.singleObjectButtonsMixin) || {};
-
+        const vuexModuleName = this.moduleComponentName;
         if (this.type === 'vertical') {
           if (Vue.component(tableComponent) === undefined) {
             Vue.component(tableComponent, Vue.extend(Object.assign({ mixins: [verticalMixins(), tableDetailCollectionMixin] }, tableDetailCollection)));
@@ -478,10 +478,10 @@
           }
         } else {
           if(Vue.component(tableComponent) === undefined) {
-            Vue.component(tableComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins(), tableDetailCollectionMixin] }, tableDetailCollection)));
+            Vue.component(tableComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins(vuexModuleName), tableDetailCollectionMixin] }, tableDetailCollection)));
           }
           if (Vue.component(buttonComponent) === undefined) {
-            Vue.component(buttonComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins(), singleObjectButtonsMixin] }, singleObjectButtons)));
+            Vue.component(buttonComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins(vuexModuleName), singleObjectButtonsMixin] }, singleObjectButtons)));
           }
         }
         if(this.componentName) { // 定制tab自定义组件

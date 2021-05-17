@@ -570,13 +570,17 @@
           this.columns = this.filterColumns(this.dataSource.tabth, isTableRender); // 每列的属性
           this.getEditAbleId(JSON.parse(JSON.stringify(this.dataSource)));
         }
-      }
+      },
 
     },
     created() {
+      this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');
       this.ChineseDictionary = ChineseDictionary;
 
-      this.setSelectDefaultValue();
+      // 设置查询条件默认值。默认取选项数组的第一个值
+      if (this.filterList && this.filterList[0]) {
+        this.searchCondition = this.filterList[0].key;
+      }
     },
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
@@ -645,7 +649,7 @@
               });
             });
             promises.then(() => {
-              this.$R3loading.hide(this.routerParams.tableName);
+              this.$R3loading.hide(this.loadingName);
               this.closeImportDialog();
               if (this.exportTasks.dialog) {
                 const message = {
@@ -685,12 +689,12 @@
               //   };
               //   this.$Modal.error(data);
               // }
-              this.$R3loading.hide(this.routerParams.tableName);
+              this.$R3loading.hide(this.loadingName);
               this.closeImportDialog();
             });
           }
         } else {
-          this.$R3loading.hide(this.routerParams.tableName);
+          this.$R3loading.hide(this.loadingName);
         }
       },
       getEditAbleId(data) {
@@ -976,7 +980,7 @@
           this.getObjTabActionSlientConfirm({
             tab, params, path: tab.action, resolve, reject
           });
-          this.$R3loading.show();
+          this.$R3loading.show(this.loadingName);
         });
         if (tab.cuscomponent) {
           const nextOperate = JSON.parse(// 配置信息
@@ -984,7 +988,7 @@
           );
 
           promise.then(() => {
-            this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            this.$R3loading.hide(this.loadingName);
             if (nextOperate.success) {
               let successAction = null;
               let successActionParam = {};
@@ -1010,7 +1014,7 @@
               this.$Modal.fcSuccess(data);
             }
           }, () => {
-            this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            this.$R3loading.hide(this.loadingName);
             if (nextOperate.failure) {
               let errorAction = null;
               let errorActionParam = {};
@@ -1030,7 +1034,7 @@
           });
         } else {
           promise.then(() => {
-            this.$R3loading.hide(tableName);
+            this.$R3loading.hide(this.loadingName);
             const message = this.objTabActionSlientConfirmData.message;
             const data = {
               mask: true,
@@ -1042,7 +1046,7 @@
               this.refresh();
             }
           }, () => {
-            this.$R3loading.hide(this.routerParams.tableName);
+            this.$R3loading.hide(this.loadingName);
           });
         }
       },
@@ -4291,13 +4295,13 @@
           menu: this.itemInfo.tabledesc
         };
         const promise = new Promise((resolve, reject) => {
-          this.$R3loading.show();
+          this.$R3loading.show(this.loadingName);
           this.getExportQueryForButtons({ OBJ, resolve, reject });
         });
         promise.then(() => {
           if (this.buttonsData.exportdata) {
             if (Version() === '1.4') {
-              this.$R3loading.hide(this.routerParams.tableName);
+              this.$R3loading.hide(this.loadingName);
               this.searchCondition = null;
               this.searchInfo = '';
               this.currentPage = 1;
@@ -4316,7 +4320,7 @@
                 });
               });
               promises.then(() => {
-                this.$R3loading.hide(this.routerParams.tableName);
+                this.$R3loading.hide(this.loadingName);
                 if (this.exportTasks.dialog) {
                   const message = {
                     mask: true,
@@ -4354,17 +4358,17 @@
                     content: `${this.exportTasks.resultMsg}`,
                   });
                 }
-                this.$R3loading.hide(this.routerParams.tableName);
+                this.$R3loading.hide(this.loadingName);
               });
               this.getTabelList(1);
             }
           } else {
-            this.$R3loading.hide(this.routerParams.tableName);
+            this.$R3loading.hide(this.loadingName);
           }
         }, () => {
           // 导出失败时，刷新当前表格
           this.getTabelList(1);
-          this.$R3loading.hide(this.routerParams.tableName);
+          this.$R3loading.hide(this.loadingName);
         });
       },
       objectIMPORT() { // 导入

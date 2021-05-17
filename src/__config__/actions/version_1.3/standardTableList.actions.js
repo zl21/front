@@ -453,6 +453,5 @@ export default {
         commit('updateUserConfig', { userConfig: res.data.data });
       }, 100);
     });
-  },
-  
+  }
 };

@@ -38,6 +38,7 @@
           <span
             :id="`${tag.tableName}_TAB`"
             class="close"
+            :class="`${tag.tableName}${tag.itemId}`"
             @click.stop="handleClose(tag,index)"
           >
             <img
@@ -147,13 +148,16 @@
         'addExcludedComponents',
         'emptyTabs',
         'switchTabForActiveTab',
-        'updataOpenedMenuLists'
+        'updataOpenedMenuLists',
+        'updataSwitchTag'
       ]),
       switchTab(item, index) {
         const tag = this.openedMenuLists[index];
         if (router.currentRoute.fullPath !== tag.routeFullPath) {
+          this.updataSwitchTag(true);
           router.push({ path: tag.routeFullPath });
           this.switchTabForActiveTab(item);
+          // this.updataSwitchTag(false);
         }
       },
       handleClose(tag) {

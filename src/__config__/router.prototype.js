@@ -14,7 +14,6 @@ import {
   LINK_MODULE_PREFIX,
 } from '../constants/global';
 
-
 const routes = [
   {
     path: '/',

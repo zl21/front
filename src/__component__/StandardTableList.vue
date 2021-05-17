@@ -1513,7 +1513,6 @@
             addSearch(search);
 
             this.updateSearchDBdata({});
-
             this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
           }
           this.getTableQueryForForm({ searchData, resolve, reject });
@@ -2891,7 +2890,6 @@
           }
         }
       },
-
       errorDialogClose() {
         const errorDialogvalue = false;
         this.setErrorModalValue({ errorDialogvalue });

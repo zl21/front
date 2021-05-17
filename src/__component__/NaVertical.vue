@@ -117,7 +117,6 @@
         :dialog-component-name="dialogComponentName"
       />
     </div>
-    </historyandfavorite>
   </div>
 </template>
 

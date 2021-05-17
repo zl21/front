@@ -178,7 +178,7 @@
   import { mapState } from 'vuex';
   import Dialog from './Dialog.vue';
   import network from '../__utils__/network';
-  import { MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, enableHistoryAndFavoriteUI } from '../constants/global';
+  import { MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY,layoutDirection, enableHistoryAndFavoriteUI } from '../constants/global';
 
 
   export default {
@@ -362,7 +362,7 @@
 
         if (id === 2527 || id === 2530) { // 直接打印
           let src = '';
-          this.$R3loading.show();
+          this.$R3loading.show(this.loadingName);
           let api = '';
           if (printIdArray.length === 0) { // 直接打印 新增需求，如列表界面不勾选则传参加上筛选值
             api = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printIdArray}&userId=${this.userInfo.id}&searchData=${JSON.stringify(this.searchDatas)}`;
@@ -374,7 +374,7 @@
             if (res.status === 200) {
               if (this[MODULE_COMPONENT_NAME][0] === 'S') {
                 if (id === 2530) {
-                  this.$R3loading.hide(tableName);
+                  this.$R3loading.hide(this.loadingName);
                   this.objTabActionDialog(tab);
                 } else { 
                   src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${this.idArray}&userId=${this.userInfo.id}`;
@@ -383,7 +383,7 @@
               } else {
                 const printId = this.itemId;
                 if (id === 2530) {
-                  this.$R3loading.hide(tableName);
+                  this.$R3loading.hide(this.loadingName);
                   this.objTabActionDialog(tab);
                 } else {
                   src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printId}&userId=${this.userInfo.id}`;
@@ -391,10 +391,10 @@
                 }
               }
             } else {
-              this.$R3loading.hide(tableName);
+              this.$R3loading.hide(this.loadingName);
             }
           }).catch(() => {
-            this.$R3loading.hide(tableName);
+            this.$R3loading.hide(this.loadingName);
           });
         } else {
           this.objTabActionDialog(tab);
@@ -417,11 +417,11 @@
         const dom = document.getElementById('iFrame');
         if (dom.attachEvent) {  
           dom.attachEvent('onload', () => { // IE  
-            this.$R3loading.hide(tableName);
+            this.$R3loading.hide(this.loadingName);
           });  
         } else {  
           dom.onload = () => { // 非IE  
-            this.$R3loading.hide(tableName);
+            this.$R3loading.hide(this.loadingName);
           };  
         }
       },
@@ -438,11 +438,12 @@
         // }
       },
       btnclick(type, item) {
-        if (item && item.disabled) { return; }
         this.$emit('buttonClick', type, item);
       },
+        
     },
     created() {
+      this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');
       // this[MODULE_COMPONENT_NAME] = getComponentName();
     },
    
@@ -499,19 +500,6 @@
     .collection,.ark-btn-fcdefault{
       min-width: auto !important;
     }
-//     .ark-dropdown-item {
-//     border: 1px solid #fd6442;
-//     border-radius: 4px;
-//     margin: 4px;
-//    color: #fd6442;
-
-// }
-//    .ark-dropdown-item:hover {
-//    color: #feb2a1;
-//     background-color: #fff;
-//     border-color: #feb2a1;
-// }
-
   
   }
  
