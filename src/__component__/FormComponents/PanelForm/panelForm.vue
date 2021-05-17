@@ -125,7 +125,9 @@ export default {
           }
           if (option.display === 'image') {
             // 图片
-            option.col = 2;
+            if(option.row === 1){
+              option.row = 4;
+            }
           }
             const srccol = option.validate && option.validate.refcolval && option.validate.refcolval.srccol;
             const prmsrccol = option.validate && option.refcolprem && option.refcolprem.srccol;
