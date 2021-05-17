@@ -1869,7 +1869,7 @@
 
   .itemComponent {
     flex: 1;
-    overflow: hidden;
+    // overflow: hidden;
   }
   .label-tip {
     color: red;

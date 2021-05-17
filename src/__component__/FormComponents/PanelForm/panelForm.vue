@@ -81,6 +81,7 @@ export default {
       this.$R3loading.show(this.tableName)
       let data = JSON.parse(JSON.stringify(this.defaultData))
       if (!data.addcolums) {
+        this.$R3loading.hide(this.tableName)
         return []
       }
       data.addcolums = new LinkageRelationships(JSON.parse(JSON.stringify(this.defaultData)).addcolums).initializeData()
@@ -255,7 +256,7 @@ export default {
       let childs = layoutAlgorithm(columns, Object.values(array));
       Object.keys(childs).map(temp => {
         let a = this.$_live_getChildComponent(this, `${this.tableName}${childs[temp].colname}`)
-        if (a.$el && a.$el.parentNode) {
+        if (a && a.$el && a.$el.parentNode) {
           a.$el.parentNode.style = this.setDiv(childs[temp])
         }
         return temp

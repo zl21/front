@@ -640,7 +640,7 @@ export default {
 
   .itemComponent {
     flex: 1;
-    overflow: hidden;
+    // overflow: hidden;
     display: flex;
     align-items: center;
 
