@@ -69,7 +69,7 @@ class CustomDatePicker {
         if(this.item.detailType){
           return 'date';
         }else{
-          return 'datetimerange';
+          return 'daterange';
         }
         break;
       case 'YearMonth':
