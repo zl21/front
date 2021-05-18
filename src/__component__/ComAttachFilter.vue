@@ -148,6 +148,7 @@
           this.propsData.componentType = Dialog;
           if (this.defaultSelected[0] && this.defaultSelected[0].ID && /选中/.test(this.value)) {
             // const data = this.defaultSelected[0].ID; 
+            console.log(this.defaultSelected[0]);
             const data = Array.isArray(this.defaultSelected[0].ID) ? this.defaultSelected[0].ID : JSON.parse(this.defaultSelected[0].ID); 
             // 谢世华  修改处理默认值逻辑
             

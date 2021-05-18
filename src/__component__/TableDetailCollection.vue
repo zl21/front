@@ -2698,8 +2698,8 @@
             props: {
               defaultValue: this.copyDataSource.row[params.index][cellData.colname].val,
               defaultSelected: this.copyDataSource.row[params.index][cellData.colname].val ? [{
-                ID: this.copyDataSource.row[params.index][cellData.colname].val,
-                Label: `已经选中${JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).total}条数据`
+                ID: /选中/.test(this.copyDataSource.row[params.index][cellData.colname].val) ? this.copyDataSource.row[params.index][cellData.colname].refobjid :this.copyDataSource.row[params.index][cellData.colname].val,
+                Label: `${/选中/.test(this.copyDataSource.row[params.index][cellData.colname].val) ? this.copyDataSource.row[params.index][cellData.colname].val : `已经选中${JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).total}条数据`}`
               }] : [],
               propstype: {
                 optionTip: true,
