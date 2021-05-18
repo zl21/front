@@ -204,8 +204,8 @@ class CustomInput {
     const keyDownFn = this.instance.methods.handleKeydown
     const isDetailPage = this.item.detailType
     this.instance.methods.handleKeydown = function(e) {
-      // 禁止输入特殊字符 '
-      if ([222].includes(e.keyCode)) {
+      // 禁止输入单引号 '
+      if (e.key==='\'') {
         e.stopPropagation()
         e.preventDefault()
       }
