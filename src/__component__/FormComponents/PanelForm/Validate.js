@@ -28,7 +28,9 @@ export class Validate extends Vue {
                 handler(val) {
                     //
                     this.setClassName();
-
+                    if(!this.isEmpty(val)){
+                        this.message = '';
+                    }
                 }
             },
             message:{
@@ -223,8 +225,7 @@ export class Validate extends Vue {
                 let trigger = this.rulesData.trigger || {};
                 let required = this.rulesData.required;
                 let self = this;
-                // 事件的校验
-                if (required && required.type) {
+               
                     // 空值的事件
                     let trigger_required = this.rulesData.required.trigger;
 
@@ -238,19 +239,23 @@ export class Validate extends Vue {
                     trigger_key.forEach((type) => {
 
                         $el?$el.addEventListener(type, (e) => {
+                           
                             if (trigger[type]) {
                                 // 校验事件
-                                self.verifyTypes(self.value, trigger[type],type);
+                                self.verifyTypes(e.target.value, trigger[type],type);
 
                             } else {
                                 if (required.trigger === type) {
                                     // 校验空值
-                                    self.validateRequire(self.value,type);
+                                    self.validateRequire(e.target.value,type);
                                 }
                             }
                         }):null;
                     })
-                }
+
+                 // 事件的校验
+                //  if (required && required.type) {    
+                // }
                
 
             }
