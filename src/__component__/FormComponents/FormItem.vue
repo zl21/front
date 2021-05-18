@@ -236,7 +236,7 @@ export default {
     },
     labelStyle () {
       let style = '';
-      style = `width:${this.labelWidth}px`;
+      style = `flex: 0 0 ${this.labelWidth}px;`;
       return style;
     },
     _items () {
@@ -641,6 +641,7 @@ export default {
   .itemComponent {
     flex: 1;
     // overflow: hidden;
+    max-width: calc(100% - 94px);
     display: flex;
     align-items: center;
 
