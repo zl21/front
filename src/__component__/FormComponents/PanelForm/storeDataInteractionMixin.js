@@ -34,6 +34,8 @@ export default {
               // 主子表的子表修改（1:1）的情况下
               if(Array.isArray(current_value)){
                 current_value = JSON.stringify(current_value);
+              }else{
+                current_value = (current_value || []).toString();
               }
               
             }  
@@ -146,6 +148,7 @@ export default {
                 delete ParentForm.formChangeData[this.items.colname];
               }
               
+  
               if (!ossRealtimeSave() && JSON.stringify(val) !== JSON.stringify(this.defaultVale)) {
                 if (this.items.display === 'image' || this.items.display === 'OBJ_DOC') {
                   // 主子表的子表修改（1:1）的情况下

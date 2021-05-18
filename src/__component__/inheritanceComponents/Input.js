@@ -158,7 +158,7 @@ class CustomInput {
     this.props.readonly = this.props.disabled
 
     this.props.rows = this.item.row || 1
-    this.props.clearable = this.item.clearable
+    this.props.clearable = true
     this.props.autofocus = this.item.autofocus
     this.props.size = this.item.size
     this.props.icon = this.item.icon

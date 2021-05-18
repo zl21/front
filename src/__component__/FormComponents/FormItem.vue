@@ -374,8 +374,14 @@ export default {
         default:
           break;
       }
-      component = componentInstance.Components;
-      this.propsMessage = componentInstance.props;
+      if(componentInstance){
+          component = componentInstance.Components;
+          this.propsMessage = componentInstance.props;
+      }else{
+          console.log(item);
+
+      }
+    
       return component;
     },
     routerNext (value) {
