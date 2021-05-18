@@ -10,20 +10,20 @@
 export default class DropMethods {
   constructor(item, instance){
     this.item = item
-    this.instance = Object.create(instance);
+    this.instance = instance;
   }
   blur(name){
-    // 失去光标
+    // 下拉失去光标
      let blurName = name? name :'on-blur';
-     let blur = this.instance.methods[blurName];
+     let blur = this.instance.eventFunction[blurName];
      let self = this;
-    this.instance.methods[blurName] =function(){
-        console.log(1212,self.item.name);
+
+     this.instance.eventFunction[blurName] =function(){
         if(self.item.detailType){
           // 单对象保存界面,必须有值才能展示
           setTimeout(()=>{
-            if(!Array.isArray(this.$parent.value)){
-             let dom =  this.$el.querySelector('.iconios-close-circle');
+            if(!Array.isArray(self.instance.value)){
+             let dom =  self.instance.$el.querySelector('.iconios-close-circle');
              if(dom){
                 dom.click();
              }
