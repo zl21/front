@@ -15,6 +15,9 @@ export default class DropMethods {
   blur(name){
     // 下拉失去光标
      let blurName = name? name :'on-blur';
+     if(!this.instance.eventFunction){
+        return;
+     }
      let blur = this.instance.eventFunction[blurName];
      let self = this;
 
