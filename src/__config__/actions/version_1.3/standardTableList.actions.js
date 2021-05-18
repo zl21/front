@@ -234,11 +234,19 @@ export default {
     } else {
       actionName = '';
     }
+
+    // slient_custom类型的按钮默认不加网关
+    let serviceconfig;
+    if (item.vuedisplay === 'slient_custom') {
+      serviceconfig = {
+        noServiceId: true
+      };
+    }
     network.post(actionName || '/p/cs/exeAction', urlSearchParams({
       actionid: item.webid,
       webaction: null,
       param: JSON.stringify(obj),
-    })).then((res) => {
+    }), serviceconfig).then((res) => {
       if (res.data.code === 0) {
         resolve(res, actionName);
         commit('updateButtonExeActionData', res.data.message);

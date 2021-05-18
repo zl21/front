@@ -30,7 +30,7 @@ class CustomWangeditor {
   // 合并props
   mergeProps() {
     this.props = {
-      tabAction:true,
+      tabAction:false,
       placeholder:new SetPlaceholder(this.item).init(),
       isActives:new SetDisable(this.item).init(),
       http:network
