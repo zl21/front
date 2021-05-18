@@ -1580,7 +1580,7 @@
             LinkageFormInput = LinkageForm[this.tableGetName + current.refcolval.srccol];
           } else {
             LinkageFormInput = LinkageForm[this.masterName+current.refcolval.srccol];
-                        console.log(LinkageFormInput,'LinkageForm');
+             console.log(LinkageFormInput,'LinkageForm');
 
           }
 

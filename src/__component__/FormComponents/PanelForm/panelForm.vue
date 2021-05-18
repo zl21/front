@@ -142,7 +142,7 @@ export default {
             });
           return option;
         })
-        _childs = _childs.filter(child => child.display !== 'none')
+        // _childs = _childs.filter(child => child.display !== 'none')
         item.childs = { ...layoutAlgorithm(Number(data.objviewcol), _childs) };
         Object.keys(item.childs).map((temp) => {
           item.childs[temp]._index = `${index}_${temp}_${Math.random()}`;
@@ -171,6 +171,8 @@ export default {
           clearInterval(this.loading)
         }
       }, 50)
+       // 兼容子表
+        this.linkFormSet();
       return { ...data.addcolums }
     },
     // 计算属性的 div的排列格式
@@ -384,12 +386,12 @@ export default {
         this.formDataLabel = {};
 
     },
-    linkFormSet(){
+    linkFormSet(LinkageForm){
        // 兼容子表传参
        let updateLinkageForm = this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]
        if(updateLinkageForm){
          const data = {
-          formList: this.LinkageForm,
+          formList: LinkageForm ? LinkageForm : this.LinkageForm,
           formIndex: 7
         };
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
@@ -409,10 +411,6 @@ export default {
     }
     // 监听大小
     window.addEventListener('resize', this.setResize);
-    setTimeout(()=>{
-      // 兼容子表
-        this.linkFormSet();
-    },1000)
   }
 }
 </script>

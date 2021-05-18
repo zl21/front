@@ -324,6 +324,7 @@ export default {
       let componentInstance = null
       switch (item.display) {
         case undefined:
+        case 'none':
         case 'OBJ_TEXTAREA':
           componentInstance = new CustomInput(item).init();
           break;

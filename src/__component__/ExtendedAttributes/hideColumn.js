@@ -90,8 +90,21 @@ function HiddenFields(){
         }  
         
       }
+      const srccol = formItem.validate && formItem.validate.refcolval && formItem.validate.refcolval.srccol;
+      const prmsrccol = formItem.validate && formItem.refcolprem && formItem.refcolprem.srccol;
+      // 兼容子表映射判断
+      let LinkageForm = [{
+            key: `${formItem.tableName}${formItem.colname}`,
+            name: formItem.name,
+            show: formItem.show,
+            srccol: `${formItem.tableName}${srccol || prmsrccol}`,
+            maintable: true,
+            tableName: formItem.tableName
+          }];
       // 是否校验判断
       target.setRules();
+      // 兼容子表映射判断
+      panelForm.linkFormSet(LinkageForm);
       panelForm.panelRedraw(Object.values(panelForm.formItemLists[panelIndex].childs))
       return true
     })
