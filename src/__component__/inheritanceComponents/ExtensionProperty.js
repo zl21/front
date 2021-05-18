@@ -5,6 +5,7 @@ import { ExtensionProperty } from '@syman/ark-ui-bcl'
 // import ExtensionProperty from 'arkui_BCL/ExtensionProperty'
 import network from '../../__utils__/network'
 import { SetDisable } from './setProps'
+import getModuleName from '../../__utils__/getModuleName';
 class CustomExtensionProperty {
   constructor(item) {
     this.item = item
@@ -29,6 +30,7 @@ class CustomExtensionProperty {
       ctrlOptions: this.item.ctrlOptions || { rows: 8 },
       webconf: {
         ...this.item,
+        moduleName: getModuleName()
       },
     }
 
