@@ -349,6 +349,11 @@ export default {
           componentInstance = new CustomDatePicker(item).init();
           break;
         case 'OBJ_SELECT':
+        case 'RADIO_GROUP':
+          // 列表界面把radio-group渲染成select
+          if(!item.detailType && item.display === 'RADIO_GROUP') {
+            item.display = 'OBJ_SELECT'
+          }
           componentInstance = new CustomSelect(item).init();
           break;
         case 'OBJ_CHECK':

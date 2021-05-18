@@ -1,4 +1,5 @@
 import RadioGroup from '../form/RadioGroup.vue'
+import { SetDisable } from './setProps'
 
 class CustomRadioGroup {
   constructor(item) {
@@ -19,7 +20,8 @@ class CustomRadioGroup {
     this.props = {
       value: this.item.valuedata,
       options: { 
-        ...this.item
+        ...this.item,
+        disabled: new SetDisable(this.item).init()
       },
     }
   }
