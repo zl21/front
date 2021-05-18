@@ -155,7 +155,7 @@ export default class ParameterDataProcessing {
       }
       if (this.item.display === 'OBJ_DATE') {
         const format = this.item.customDefault? 'yyyy/MM/dd hh:mm:ss' : 'yyyy/MM/dd'
-        arr = [new Date().r3Format(new Date(this.value[0]), format), new Date().r3Format(new Date(this.value[1]), 'yyyy/MM/dd')];
+        arr = [new Date().r3Format(new Date(this.value[0]), format), new Date().r3Format(new Date(this.value[1]), format)];
       }
       
       if (this.item.display === 'OBJ_DATENUMBER') {
