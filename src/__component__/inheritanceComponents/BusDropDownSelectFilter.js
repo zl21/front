@@ -100,13 +100,13 @@
           });
          })   
       };
-
+      if(this.item.detailType){
+          // 失去光标
+        new DropMethods(this.item,this).blur();
+      }
 
     }
-    if(this.item.detailType){
-        // 失去光标
-      new DropMethods(this.item,this.Vm).blur();
-    }
+   
     if(!this.item.detailType){
       // 回车查询
     new DropMethods(this.item,this.Vm).keydown();
