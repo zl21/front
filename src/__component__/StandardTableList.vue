@@ -1308,7 +1308,7 @@
       },
       searchEvent() {
         // 支持查询按钮前置事件，通过promise处理
-        const searchDataRes = Object.assign({}, this.searchData, this.treeSearchData);
+        const searchDataRes = Object.assign({}, JSON.parse(JSON.stringify(this.searchData)), JSON.parse(JSON.stringify(this.treeSearchData)));
         const obj = {
           callBack: () => new Promise((searchBeforeResolve, searchBeforeReject) => {
             this.searchData.searchBeforeResolve = searchBeforeResolve;
@@ -1319,7 +1319,7 @@
         if (this.R3_searchBefore && typeof this.R3_searchBefore === 'function') {
           this.R3_searchBefore(obj);
         } else {
-          this.searchClickData({ searchDataRes });
+          this.searchClickData();
         }
       },
       objTabActionDialog(tab) { // 动作定义弹出框
