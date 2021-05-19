@@ -35,10 +35,6 @@
         type: Object,
         default: () => {}
       },
-      // formItemValue: {
-      //   type: [String, Array],
-      //   default: ''
-      // }
     },
 
     data() {
@@ -47,14 +43,13 @@
       };
     },
 
-    // watch: {
-    //   // 监听组件隐藏时，清除勾选值
-    //   formItemValue(newVal) {
-    //     if (newVal === '') {
-    //       this.selectedValues = [];
-    //     }
-    //   }
-    // },
+    watch: {
+      'options.show'(newVal) {
+        if(newVal === false) {
+          this.selectedValues = [];
+        }
+      }
+    },
 
     methods: {
       handleChange(values) {
