@@ -275,6 +275,11 @@ export default {
                   c.valuedata = copyDatas[item]
                   copySaveDataForParam[c.colname] = copyDatas[item];
                 }
+              }else{
+                c.valuedata ='';
+                c.refobjid = '';
+                c.defval = '';
+                copySaveDataForParam[c.colname] = '';
               }
             }
           });
@@ -345,6 +350,11 @@ export default {
               // } else {
               //   copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
               // }
+            }else{
+              c.valuedata ='';
+              c.refobjid = '';
+              c.defval = '';
+              copySaveDataForParam[c.colname] = '';
             }
           }
         }
