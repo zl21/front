@@ -30,7 +30,6 @@
   </div>
 </template>
 <script>
-  import {mapMutations } from 'vuex';
 import layoutAlgorithm from '../../../__utils__/layoutAlgorithm';
 import DownComponent from '../../DownComponent';
 import FormItem from '../FormItem';
@@ -69,6 +68,7 @@ export default {
       formDataLabel: {}, //整个表单数据--显示值
       formChangeData: {}, //表单修改过的数据
       formDatadefault: {}, // 表单默认值
+      formItemLists:{}, // 表单数据重绘制
       objviewcol: 4, // 表单默认展示几列
       LinkageForm: [],// 联动状态
       formChangeDataLabel: {},  //表单修改过的数据--显示值
@@ -77,8 +77,85 @@ export default {
     }
   },
   computed: {
-    formItemLists () {
-      this.$R3loading.show(this.tableName)
+    // formItemLists () {
+      
+    // },
+    // 计算属性的 div的排列格式
+    setWidth () {
+      // `this` 指向 vm 实例
+      const columns = Number(this.objviewcol) || 4;
+      return `grid-template-columns: repeat(${columns},${100 / columns}%`;
+    },
+    // 计算属性的 div 的坐标起始点
+    setDiv () {
+      return item => {
+        if (item.x === -1 || item.y === -1) {
+          return 'display: none';
+        }
+        return `grid-column:${item.x}/${item.col + item.x};grid-row:${item.y}/${item.y + item.row};`
+      };
+    },
+  },
+  watch: {
+    formItemLists: {
+      handler (val) {  //处理展开面板的默认值
+        const { tableName, customizedModuleName } = this.$route.params;
+        const checked = this.moduleComponentName.split('.').includes(tableName || customizedModuleName);
+        if(!checked){
+          return;
+
+        }
+        if (Object.keys(val).length > 0) {
+          this.collapseValue = []
+          Object.keys(val).map(item => {
+            let data = val[item]
+            if (data.hrdisplay === 'expand') {
+              this.collapseValue.push(data.parentname)
+            }
+          })
+        }
+        // 清空表单的值
+        this.clearForm();
+
+      },
+      deep: true
+    },
+    defaultData:{
+      handler (val) {  //处理展开面板的默认值
+         const { tableName, customizedModuleName } = this.$route.params;
+        const checked = this.moduleComponentName.split('.').includes(tableName || customizedModuleName);
+        if(!checked){
+          return;
+
+        }
+        this.$R3loading.show(this.tableName);
+        clearTimeout(this.formTime);
+        this.formTime = setTimeout(()=>{
+              this.setFormlist();
+
+        },50);
+
+      },
+      deep: true
+    }
+  },
+  methods: {
+    initializationForm () {
+      // 初始化
+      clearTimeout(this.timer);
+      this.timer = setTimeout(() => {
+        if (this.$parent.formPanelChange) {
+          // v
+          this.$parent.initFormPanel(this.defaulData, this.defaulDataLabel)
+        } else {
+          // H
+          this.$parent.InitializationForm(this.defaulData, this.defaulDataLabel)
+        }
+      })
+
+    },
+    setFormlist(){
+
       let data = JSON.parse(JSON.stringify(this.defaultData))
       if (!data.addcolums) {
         this.$R3loading.hide(this.tableName)
@@ -173,58 +250,7 @@ export default {
       }, 50)
        // 兼容子表
         this.linkFormSet();
-      return { ...data.addcolums }
-    },
-    // 计算属性的 div的排列格式
-    setWidth () {
-      // `this` 指向 vm 实例
-      const columns = Number(this.objviewcol) || 4;
-      return `grid-template-columns: repeat(${columns},${100 / columns}%`;
-    },
-    // 计算属性的 div 的坐标起始点
-    setDiv () {
-      return item => {
-        if (item.x === -1 || item.y === -1) {
-          return 'display: none';
-        }
-        return `grid-column:${item.x}/${item.col + item.x};grid-row:${item.y}/${item.y + item.row};`
-      };
-    },
-  },
-  watch: {
-    formItemLists: {
-      handler (val) {  //处理展开面板的默认值
-        
-        if (Object.keys(val).length > 0) {
-          this.collapseValue = []
-          Object.keys(val).map(item => {
-            let data = val[item]
-            if (data.hrdisplay === 'expand') {
-              this.collapseValue.push(data.parentname)
-            }
-          })
-        }
-        // 清空表单的值
-        this.clearForm();
-
-      },
-      deep: true
-    }
-  },
-  methods: {
-    initializationForm () {
-      // 初始化
-      clearTimeout(this.timer);
-      this.timer = setTimeout(() => {
-        if (this.$parent.formPanelChange) {
-          // v
-          this.$parent.initFormPanel(this.defaulData, this.defaulDataLabel)
-        } else {
-          // H
-          this.$parent.InitializationForm(this.defaulData, this.defaulDataLabel)
-        }
-      })
-
+       this.formItemLists = { ...data.addcolums }
     },
     deleteFormData(data){
       //删除状态的key
@@ -400,6 +426,7 @@ export default {
     }
   },
   mounted () {
+    this.setFormlist();
     if (Object.keys(this.formItemLists).length > 0) {
       this.collapseValue = []
       Object.keys(this.formItemLists).map(item => {
