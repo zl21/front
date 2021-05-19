@@ -68,6 +68,7 @@ module.exports = () => ({
     },
   },
   module: {
+    exprContextCritical: false,
     rules: [
       {
         test: /\.vue$/,
@@ -84,7 +85,15 @@ module.exports = () => ({
         },
       },
       {
-        test: /\.(sa|sc|c|le)ss$/,
+        test: /\.css$/,
+        use: [{
+          loader:  MiniCssExtractPlugin.loader,
+        }, {
+          loader: 'css-loader',
+        }],
+      },
+      {
+        test: /\.(sa|sc|le)ss$/,
         use: [{
           // loader: env && env.production ? MiniCssExtractPlugin.loader : 'style-loader',
           loader: MiniCssExtractPlugin.loader,
@@ -142,6 +151,27 @@ module.exports = () => ({
   mode: 'production',
   resolve: {
     extensions: ['.js', '.json', '.vue', '.css'],
+    fallback: {
+      path: require.resolve('path-browserify'),
+      module: false,
+      dgram: false,
+      dns: false,
+      fs:false,
+      https: false,
+      http:false,
+      net: false,
+      inspector:false,
+      tls:false,
+      crypto:false,
+      request:false,
+      stream_http:false,
+      vm:false,
+      stream:false,
+      constants:false,
+      os:false,
+      worker_threads:false,
+      child_process:false
+    },
   },
   optimization: {
     minimizer: [new TerserJSPlugin({
