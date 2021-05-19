@@ -103,7 +103,7 @@ function HiddenFields(){
       // 是否校验判断
       target.setRules();
       // 兼容子表映射判断
-      // panelForm.linkFormSet(LinkageForm);
+      panelForm.linkFormSet(LinkageForm);
       panelForm.panelRedraw(Object.values(panelForm.formItemLists[panelIndex].childs))
       return true
     })
