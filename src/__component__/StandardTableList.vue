@@ -55,14 +55,14 @@
         @buttonClick="buttonClick"
         @clearSelectIdArray="clearSelectIdArray"
       />
-      <FormItemComponent
-        ref="FormItemComponent"
-        :form-items-data="formItems.data"
-        :form-item-lists="formItemsLists"
+      <listsForm
+        v-if="formItems.defaultFormItemsLists && formItems.defaultFormItemsLists.length > 0"
+        :id="$route.params.tableName"
+        :form-item-lists="formItems.defaultFormItemsLists"
         :default-spread="changeSearchFoldnum.switchValue"
-        :default-column="Number(defaultColumn)"
+        :default-column="Number(4)"
         :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
-        @formDataChange="formDataChange"
+        @onHandleEnter="searchClickData"
       />
       <tabBar
         v-if="getFilterTable"
@@ -143,6 +143,7 @@
       :footer-hide="dialogComponentNameConfig.footerHide"
       :confirm="dialogComponentNameConfig.confirm"
       :dialog-component-name="dialogComponentName"
+      :isrefrsh="buttons.isrefrsh"
       @dialogComponentSaveSuccess="dialogComponentSaveSuccess"
     />
     <!-- 批量 -->
@@ -194,8 +195,8 @@
   import treeData from '../__config__/treeData.config';
   import getUserenv from '../__utils__/getUserenv';
   import { addSearch, querySearch } from '../__utils__/indexedDB';
-  import tabBar from './tabBar.vue';
-
+  import tabBar from './tabBar.vue';  
+  import listsForm from './FormComponents/listsForm';
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -209,7 +210,9 @@
       ErrorModal,
       modifyDialog,
       dialogComponent,
-      tabBar
+      tabBar,
+      listsForm
+
     },
     data() {
       return {
@@ -270,9 +273,10 @@
         return this.keepAliveLabelMaps[this[MODULE_COMPONENT_NAME]];
       },
       formLists() {
-        return this.refactoringData(
-          this.formItems.defaultFormItemsLists.concat([])
-        );
+          return []
+        // return this.refactoringData(
+        //   this.formItems.defaultFormItemsLists.concat([])
+        // );         
       },
       isCommonTable() {
         return isCommonTable();
@@ -440,7 +444,7 @@
           this.searchClickData();
         }
       },
-      tabClick({ data, index }) {
+      async tabClick({ data, index }) {
         this.filterTableParam = {};
         if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].startIndex) {
           this.searchData.startIndex = data.startIndex;
@@ -453,7 +457,7 @@
           delete this.searchData.range;
         }
         this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName; 
-        this.searchData.fixedcolumns = this.dataProcessing();
+        this.searchData.fixedcolumns = await this.dataProcessing();
         if (data.tab_value) {
           // Object.values(data.tab_value).map((item) => {
           //   this.searchData.fixedcolumns = Object.assign({}, item, this.searchData.fixedcolumns);
@@ -541,8 +545,8 @@
       //   this.searchTreeDatas.menuTreeQuery = value;
       //   this.treeDatas = this.getTreeDatas(this.searchTreeDatas);
       // },
-      menuTreeChange(treeName, currentId, flag, queryFilterData, searchData) {
-        this.searchData.fixedcolumns = this.dataProcessing();
+      async menuTreeChange(treeName, currentId, flag, queryFilterData, searchData) {
+        this.searchData.fixedcolumns = await this.dataProcessing();
         if (Object.keys(queryFilterData) && Object.keys(queryFilterData).length > 0 && flag) {
           this.searchData.reffixedcolumns = queryFilterData;
         } else if (this.searchData && this.searchData.reffixedcolumns) {
@@ -691,12 +695,12 @@
         this.getQueryList();
       },
       getQueryList() {
-        const { agTableElement } = this.$refs;
+         const { agTableElement } = this.$refs;
         // agTableElement.$refs.agTableElement.showAgLoading();//去除普通表格loading,因查询接口会唤起框架统一loading，两种loading冲突
         // this.getQueryListForAg(this.searchData);
+        console.log(this.searchData,'this.searchDatathis.searchData');
         this.getQueryListPromise(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
-        this.$refs.agTableElement.clearChecked();
       },
       onPageChange(page) {
         this.resetButtonsStatus();
@@ -1075,9 +1079,6 @@
                 str = 'TimePicker';
               }
 
-              if (item.display === 'RADIO_GROUP') {
-                str = 'select';
-              }
               return str;
             }
 
@@ -1094,150 +1095,7 @@
               inputname: current.inputname,
               props: {
               },
-              event: {
-                keydown: (event) => {
-                  // 输入框的keydown event, $this
-                  if (event.keyCode === 13) {
-                    // enter回车查询
-                    this.searchClickData();
-                  }
-                },
-                change: () => {
-                  if (current.isuppercase) {
-                    setTimeout(() => {
-                      this.lowercaseToUppercase(itemIndex);
-                    }, 50);
-                  }
-                },
-                fkrpSelected: (value) => {
-                  this.formItemsLists[itemIndex].item.props.AutoData = [];
-                  this.formItemsLists[itemIndex].item.value = value;
-                  // this.formItemsLists = this.formItemsLists.concat([]);
-                },
-                'on-delete': ($this, item, key, index) => {
-                  fkHttpRequest().fkDelMultiQuery({
-                    searchObject: {
-                      tableid: item.props.fkobj.reftableid,
-                      modelname: key
-                    },
-                    serviceId: current.fkobj.serviceId,
-                    success: () => {
-                      fkHttpRequest().fkGetMultiQuery({
-                        searchObject: {
-                          tableid: item.props.fkobj.reftableid
-                        },
-                        serviceId: current.fkobj.serviceId,
-                        success: (res) => {
-                          this.freshDropDownPopFilterData(res, index);
-                        }
-                      });
-                    }
-                  });
-                },
-                'popper-value': ($this, value, Selected) => {
-                  // 当外键下拉展开时去请求数据
-                  this.formItemsLists[itemIndex].item.value = value;
-                  this.formItemsLists[itemIndex].item.props.Selected = Selected;
-                  this.formItemsLists = this.formItemsLists.concat([]);
-                },
-                'popper-show': ($this, item, index) => {
-                  // 当气泡拉展开时去请求数据
-                  fkHttpRequest().fkGetMultiQuery({
-                    searchObject: {
-                      tableid: item.props.fkobj.reftableid
-                    },
-                    serviceId: current.fkobj.serviceId,
-                    success: (res) => {
-                      this.freshDropDownPopFilterData(res, index);
-                    }
-                  });
-                },
-                clear: () => {
-                  this.formItemsLists[itemIndex].item.props.Selected = [];
-                  this.formItemsLists[itemIndex].item.value = '';
-                },
-                valuechange: ($this) => {
-                  // 弹窗多选
-                  this.formItemsLists[itemIndex].item.props.Selected = ($this.selected && $this.selected.length > 0) ? $this.selected : [];
-                  this.formItemsLists[itemIndex].item.value = $this.value; // `已经选中${$this.selected.length}条数据`
-                  this.formItemsLists = this.formItemsLists.concat([]);
-                  if (!$this.value) {
-                    // this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
-                    return false;
-                  }
-
-                  // const searchObject = {
-                  //   ak: $this.value,
-                  //   colid: current.colid,
-                  //   fixedcolumns: {}
-                  // };
-                  // fkHttpRequest().fkFuzzyquerybyak({
-                  //   searchObject: this.setSeachObject(searchObject, current),
-                  //   serviceId: current.fkobj.serviceId,
-                  //   success: (res) => {
-                  //     // this.freshDropDownSelectFilterAutoData(res, itemIndex);
-                  //   }
-                  // });
-                },
-                'on-popper-hide': ($this) => {
-                  // 初始化清空数据
-                  this.formItemsLists[itemIndex].item.props.data = {};
-                  this.formItemsLists = this.formItemsLists.concat([]);
-                },
-                'on-show': ($this) => {
-                  // 当外键下拉站开始去请求数据
-                  const searchObject = {
-                    isdroplistsearch: true,
-                    refcolid: current.colid,
-                    startindex: 0,
-                    range: $this.pageSize
-                  };
-
-                  fkHttpRequest().fkQueryList({
-                    searchObject: this.setSeachObject(searchObject, current),
-                    serviceId: current.fkobj.serviceId,
-                    success: (res) => {
-                      this.freshDropDownSelectFilterData(res, itemIndex);
-                    }
-                  });
-                },
-                inputValueChange: (value) => {
-                  // 外键的模糊搜索
-                  if (!value) {
-                    // this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
-                    return false;
-                  }
-                  const searchObject = {
-                    ak: value,
-                    colid: current.colid,
-                    fixedcolumns: {}
-                  };
-
-                  fkHttpRequest().fkFuzzyquerybyak({
-                    searchObject: this.setSeachObject(searchObject, current),
-                    serviceId: current.fkobj.serviceId,
-                    success: (res) => {
-                      this.freshDropDownSelectFilterAutoData(res, itemIndex);
-                    }
-                  });
-                },
-                pageChange: (currentPage, $this) => {
-                  // 外键的分页查询
-                  const searchObject = {
-                    isdroplistsearch: true,
-                    refcolid: current.colid,
-                    startindex: $this.data.defaultrange * ($this.currentPage - 1),
-                    range: $this.pageSize
-                  };
-                  fkHttpRequest().fkQueryList({
-                    searchObject: this.setSeachObject(searchObject, current),
-                    serviceId: current.fkobj.serviceId,
-                    success: (res) => {
-                      this.freshDropDownSelectFilterData(res, itemIndex);
-                    }
-                  });
-                }
-              },
+              
               validate: {}
             };
 
@@ -1247,75 +1105,7 @@
 
 
             // 输入控制
-            if (current.type === 'NUMBER' && !current.display) {
-              // 只能输入 正整数 
-              let string = '';
-              current.length = 100;
-
-              if (current.webconf && current.webconf.ispositive) {
-                string = `^\\d{0,${current.length}}(\\\.[0-9]{0,${
-                  current.scale
-                }})?$`;
-              } else {
-                string = `^(-|\\+)?\\d{0,${current.length - current.scale}}(\\\.[0-9]{0,${
-                  current.scale
-                }})?$`;
-              }
-              
-              const typeRegExp = new RegExp(string);
-              if (current.scale > 0) {
-                obj.item.props.regx = typeRegExp;
-              } else if (current.webconf && current.webconf.ispositive) {
-                obj.item.props.regx = regExp.Number;
-              } else {
-                obj.item.props.regx = regExp.Digital;
-              }
-            }
-
-            // 带有combobox的添加到options属性中
-            if (current.combobox) {
-              const arr = current.combobox.reduce((sum, item) => {
-                sum.push({
-                  label: item.limitdesc,
-                  value: item.limitval
-                });
-                return sum;
-              }, []);
-              obj.item.options = arr;
-            }
-            // 多状态合并的select
-            if (current.conds && current.conds.length > 0) {
-              let sumArray = [];
-              current.conds.map((item) => {
-                sumArray = sumArray.concat(
-                  item.combobox.reduce((sum, temp) => {
-                    sum.push({
-                      label: temp.limitdesc,
-                      value: `${item.colname}|${temp.limitval}`
-                    });
-                    return sum;
-                  }, [])
-                );
-                return item;
-              });
-              obj.item.options = sumArray;
-            }
-
-            // 日期控件属性控制
-            if (current.display === 'OBJ_DATENUMBER') {
-              obj.item.props.type = 'daterange';
-              obj.item.props.display = current.display;
-              obj.item.props.format = 'yyyy/MM/dd';
-            }
-            if (current.display === 'OBJ_DATE') {
-              obj.item.props.type = 'datetimerange';
-              obj.item.props.format = 'yyyy/MM/dd HH:mm:ss';
-            }
-            if (current.display === 'OBJ_TIME') {
-              obj.item.props.type = 'timerange';
-              obj.item.props.format = 'yyyy/MM/dd HH:mm:ss';
-            }
-
+            
             // 属性isuppercase控制
             if (current.isuppercase) {
               // obj.item.props.regx = regExp.Capital;
@@ -1326,61 +1116,7 @@
 
             // 外键的单选多选判断
 
-            if (current.display === 'OBJ_FK') {
-              switch (current.fkobj.searchmodel) {
-              case 'drp':
-                obj.item.props.single = true;
-                obj.item.props.fk_type = 'drp';
-                obj.item.props.fkobj = current.fkobj;
-                obj.item.props.defaultSelected = this.defaultValue(current) || [];
-                break;
-              case 'mrp':
-                obj.item.props.single = false;
-                obj.item.props.fk_type = 'mrp';
-                obj.item.props.fkobj = current.fkobj;
-                obj.item.props.defaultSelected = this.defaultValue(current) || [];
-                break;
-              case 'pop':
-                obj.item.props = current;
-                obj.item.props.blurType = false;
-                obj.item.props.optionTip = false;
-                obj.item.props.enterType = true;
-                obj.item.props.fkdisplay = 'pop';
-                obj.item.props.show = false;
-                // 失去光标是否保存
-                obj.item.props.dialog = {
-                  model: {
-                    title: current.fkdesc,
-                    width: 920,
-                    mask: true,
-                    draggable: true,
-                    closable: true,
-                    scrollable: true,
-                    maskClosable: false,
-                    'footer-hide': true
-                  }
-                };
-                //  单对象界面
-                obj.item.props.AutoData = [];
-                obj.item.props.fkobj = {
-                  colid: current.colid,
-                  reftable: current.fkobj.reftable,
-                  serviceId: current.fkobj.serviceId,
-                  reftableid: current.fkobj.reftableid,
-                  show: false,
-                  url:
-                    `${current.fkobj.serviceId ? (`/${current.fkobj.serviceId}`) : ''
-                    }/p/cs/menuimport`
-                };
-                obj.item.props.datalist = [];
-                obj.item.props.Selected = [];
-                if (current.refobjid && current.refobjid !== -1) {
-                  obj.item.props.Selected.push({
-                    ID: current.refobjid,
-                    Label: current.default
-                  });
-                  obj.item.value = current.default;
-                }
+            
                 
                 // if (!item.props.readonly && !this.objreadonly) {
                 //   item.props.Selected.push(this.defaultValue(current)[0]);
@@ -1388,48 +1124,9 @@
                 // } else {
                 //   item.value = this.defaultValue(current)[0].Label;
                 // }
-                break;
-              case 'mop':
-                obj.item.props.fkobj = current.fkobj;
-                obj.item.props.fkobj.colid = current.colid;
-                obj.item.props.blurType = false;
-                // obj.item.props.fkobj.saveType = 'object';
-                obj.item.props.fkobj.url = '/p/cs/menuimport'; // 处理导入接口  去除网关`/${obj.item.props.fkobj.serviceId}/p/cs/menuimport`
-                obj.item.props.datalist = [];
-                obj.item.props.Selected = [];
-                obj.item.props.filterDate = {};
-                break;
-              default:
-                break;
-              }
-            }
+              
 
-            // 设置indexDB默认查询条件 
-            if (enableKAQueryDataForUser() || this.webConf.enableKAQueryDataForUser) {
-              Object.keys(this.searchDBdata).map((temp) => {
-                // console.log(obj.item);
-                // if (temp === obj.item.field && obj.item.value) {
-                //   return temp;
-                // }
-                if (temp === obj.item.field && this.searchDBdata[temp]) {
-                  obj.item.value = this.searchDBdata[temp];
-                }
-
-                if (current.display === 'OBJ_FK' && temp === obj.item.field && this.searchDBdata[temp]) {
-                  switch (current.fkobj.searchmodel) {
-                  case 'drp':
-                    obj.item.props.defaultSelected = this.searchDBdata[temp];
-                    break;
-                  case 'mrp':
-                    obj.item.props.defaultSelected = this.searchDBdata[temp];
-                    break;
-                  default:
-                    break;
-                  }
-                }
-              });
-            }
-            
+           
             array.push(obj);
             return array;
           },
@@ -1473,7 +1170,7 @@
         this.resetTabParam();
         // 列表查询重置
         this.resetType = true;
-        const promise = new Promise((resolve, reject) => {
+        const promise = new Promise(async (resolve, reject) => {
           const searchData = this.searchData;
           if (searchData.reffixedcolumns) {
             delete searchData.reffixedcolumns;
@@ -1492,144 +1189,16 @@
             search.R3UserId = `${this.userInfo.id}_${this.searchData.table}`;
             addSearch(search);
 
-            this.updateSearchDBdata({});
-            this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
+            // this.updateSearchDBdata({});
+            this.updateFormData(await this.dataProcessing());
           }
           this.getTableQueryForForm({ searchData, resolve, reject });
         });
-      },
-      defaultValue(item) {
-        // 设置表单的默认值
-
-        // OBJ_DATENUMBER OBJ_DATE OBJ_SELECT OBJ_FK
-        if (item.display === 'OBJ_DATENUMBER') {
-          if (item.customDefault) {
-            const timeRange = [
-              `${new Date().r3Format(new Date(item.customDefault[0]), 'yyyy/MM/dd')}`,
-              `${new Date().r3Format(new Date(item.customDefault[1]), 'yyyy/MM/dd')}`
-            ];
-            return timeRange;
-          }
-          // 日期控件;
-          if (item.default === '-1') {
-            return '';
-          } if (item.default !== '-1' && item.default) {
-            const timeRange = [
-              new Date().setNewFormt(new Date().minusDays(Number(item.default)).toIsoDateString(), '-', ''),
-              new Date().setNewFormt(new Date().toIsoDateString(), '-', '')
-            ];
-            return timeRange;
-          }
-
-          // 设置默认值
-          if (item.daterange) {
-            const timeRange = [
-              new Date().setNewFormt(new Date().minusDays(Number(item.daterange)).toIsoDateString(), '-', ''),
-              new Date().setNewFormt(new Date().toIsoDateString(), '-', '')
-            ];
-            return timeRange;
-          }
-        }
-        if (item.display === 'OBJ_DATE') {
-          if (item.customDefault) {
-            const timeRange = [
-              `${new Date().r3Format(new Date(item.customDefault[0]), 'yyyy/MM/dd hh:mm:ss')}`,
-              `${new Date().r3Format(new Date(item.customDefault[1]), 'yyyy/MM/dd hh:mm:ss')}`
-            ];
-            return timeRange;
-          }
-          if (item.default === '-1') {
-            return '';
-          }
-          const timeRange = [
-            `${new Date().setNewFormt(new Date()
-              .minusDays(Number(item.daterange))
-              .toIsoDateString(), '-', '/')} 00:00:00`,
-            `${new Date().setNewFormt(new Date().toIsoDateString(), '-', '/')} 23:59:59`
-          ];
-          return timeRange;
-        }
-
-        if ((item.display === 'OBJ_SELECT' || item.display === 'RADIO_GROUP') && item.default) {
-          // 处理select的默认值
-          let arr = [];
-          arr = item.default.split(',');
-          return arr;
-        }
-
-        if (item.display === 'OBJ_FK' && item.default) {
-          // 外键默认值
-          const arr = [];
-          arr.push({
-            ID: item.refobjid,
-            Label: item.default
-          });
-          if (item.fkobj && (item.fkobj.searchmodel === 'pop' || item.fkobj.searchmodel === 'mop')) {
-            return item.default;
-          }
-          return arr;
-        }
-        // if(item.display === 'OBJ_FK' && item.fkobj){
-        //     return '';
-        // }
-        
-        return item.default;
       },
       getTableQuery() {
         // 获取列表的查询字段
         const searchData = this.searchData;
         this.getTableQueryForForm({ searchData });
-      },
-      formDataChange(data, item, index) { // 表单数据修改
-        if (JSON.stringify(this.formItems.data) !== JSON.stringify(data)) {
-          if (this.formItemsLists.length > 0) {
-            this.formItemsLists[index].item.value = item.item.value;
-          }
-
-          this.updateFormData(data);
-        }
-      },
-      freshDropDownPopFilterData(res, index) {
-        // 外键下拉时，更新下拉数据
-        // this.formItemsLists[index].item.props.datalist = res.data.data;
-        if (res.length > 0) {
-          res.forEach((item) => {
-            item.label = item.value;
-            item.value = item.key;
-            item.delete = true;
-          });
-          this.formItemsLists[index].item.props.datalist = res;
-        } else {
-          this.formItemsLists[index].item.props.datalist = res;
-        }
-      },
-      freshDropDownSelectFilterData(res, index) {
-        // 外键下拉时，更新下拉数据
-        this.formItemsLists[index].item.props.data = Object.assign({}, res.data.data);
-        this.formItemsLists[index].item.props.totalRowCount = res.data.data.totalRowCount;
-        this.formItemsLists[index].item.props.pageSize = res.data.data.defaultrange;
-        this.formItemsLists = this.formItemsLists.concat([]);
-      },
-      freshDropDownSelectFilterAutoData(res, index, type) {
-        // 外键的模糊搜索数据更新
-        this.formItemsLists[index].item.props.hidecolumns = ['id', 'value'];        
-        if (type === 'empty') {
-          this.formItemsLists[index].item.props.defaultSelected = [];
-
-          // this.formItemsLists[index].item.props.AutoData = [];
-        } else {
-          this.formItemsLists[index].item.props.AutoData = res.data.data;
-        }
-        // this.formItemsLists = this.formItemsLists.concat([]);
-        if (this.$refs.FormItemComponent) {
-          this.$refs.FormItemComponent.FormItemLists[index].item.props.AutoData = res.data.data;
-        }
-      },
-      lowercaseToUppercase(index) {
-        // 将字符串转化为大写
-        const UppercaseValue = this.formItemsLists[index].item.value ? this.formItemsLists[index].item.value.toUpperCase() : '';
-        this.formItemsLists[index].item.value = UppercaseValue;
-        this.formItemsLists = this.formItemsLists.concat([]);
       },
 
       // 按钮组操作
@@ -2075,88 +1644,15 @@
         }
       },
 
-      dataProcessing() { // 查询数据处理
-        const jsonData = Object.keys(this.formItems.data).reduce((obj, item) => {
-          if (this.formItems.data[item] && JSON.stringify(this.formItems.data[item]).indexOf('bSelect-all') < 0) {
-            obj[item] = this.formItems.data[item];
-          }
-          return obj;
-        }, {});
-        const newData = Object.keys(jsonData).reduce((obj, item) => {
-          let value = '';
-          this.formItemsLists.concat([]).every((temp) => {
-            if (temp.item.field === item) { // 等于当前节点，判断节点类型
-              if (temp.item.type === 'DatePicker' && (temp.item.props.type === 'datetimerange' || temp.item.props.type === 'daterange')) { // 当为日期控件时，数据处理
-                if ((jsonData[item][0] && jsonData[item][1])) {  
-                  if (jsonData[item][0].includes('/')) {
-                    const formDate = temp.item.props.type === 'datetimerange' ? 'yyyy/MM/dd hh:mm:ss' : 'yyyyMMdd';
-                    const array = JSON.parse(JSON.stringify(jsonData[item]));
-                    // 日期格式传参处理，主要是处理第一次默认值查询
-                    array[0] = new Date().r3Format(new Date(array[0]), formDate);
-                    array[1] = new Date().r3Format(new Date(array[1]), formDate);
-                    value = array.join('~').replace(/-/g, '/');
-                  } else {
-                    value = jsonData[item].join('~');
-                  }
-                } else {
-                  value = '';
-                }
-                return false;
-              }
-
-              if (temp.item.type === 'DropDownSelectFilter' && temp.item.value) {
-                value = temp.item.value.map(selectedValue => selectedValue.ID);
-                return false;
-              }
-
-              if (
-                temp.item.type === 'TimePicker'
-                && temp.item.props.type === 'timerange'
-                && (jsonData[item][0] && jsonData[item][1])
-              ) {
-                // 时分秒的时间段处理
-                value = jsonData[item].join('~');
-                return false;
-              }
-
-              if (temp.item.type === 'select') {
-                if (jsonData[item].length > 0) {
-                  value = jsonData[item].map(option => `=${option}`);
-                } else {
-                  value = '';
-                }
-
-                // 处理select，分为单个字段select和合并型select
-                return false;
-              }
-              value = jsonData[item];
-              return false;
-            }
-
-            if (
-              !temp.item.field
-              && temp.item.type === 'select'
-              && item.indexOf(':') < 0
-            ) {
-              // 处理合并型select
-              value = jsonData[item].map(option => `=${option}`);
-              return false;
-            }
-            if (temp.item.inputname === item) {
-              value = jsonData[item];
-            }
-
-
-            return true;
-          });
-          if (value) {
-            obj[item] = value;
-          }
-          return obj;
-        }, {});
-        return newData;
+       async dataProcessing() { // 查询数据处理
+        const Form = this.$_live_getChildComponent(this, 'listsForm');
+        let obj = {};
+        if(Form){
+          obj = await Form.getFormData()
+        }
+        return obj
       },
-      searchClickData(value) {
+      async searchClickData(value) {
         this.resetButtonsStatus();
         // 按钮查找 查询第一页数据
         if (value && !value.flag) { // 返回时查询之前页码
@@ -2171,8 +1667,7 @@
           }
         }
 
-        let json = value && value.searchDataRes ? value.searchDataRes : this.searchData;
-        json = Object.assign({}, json, this.treeSearchData);
+     
 
 
         // if (Object.keys(this.currentTabValue).length > 0 && this.currentTabValue.tabValue.tab_value) {
@@ -2215,7 +1710,18 @@
         //     return arr;
         //   }, {});
         // }
-        // this.getQueryListForAg(this.searchData);
+        
+        if (this.getFilterTable) {
+          const el = this.$_live_getChildComponent(this, 'tabBar');
+          const tabCurrentIndex = el.$refs.R3_Tabs.focusedKey;
+          el.tabClick(tabCurrentIndex);
+          return
+        } else {
+          this.searchData.fixedcolumns = await this.dataProcessing();
+        }
+        let json = value && value.searchDataRes ? value.searchDataRes : this.searchData;
+        json = Object.assign({}, json, this.treeSearchData);
+         // this.getQueryListForAg(this.searchData);
         if (this.buttons.isBig) {
           this.updataIsBig(false);
         }
@@ -2225,14 +1731,14 @@
       requiredCheck(data) { // 查询条件必填校验
         return new Promise((resolve, reject) => {
           this.formItems.defaultFormItemsLists.map((item) => {
-            const value = Array.isArray(this.formItems.data[item.colname]) ? this.formItems.data[item.colname][0] : (Object.prototype.toString.call(this.formItems.data[item.colname]) === '[Object Object]' ? Object.keys(this.formItems.data[item.colname]).length > 0 : this.formItems.data[item.colname]);
+            const value = data.fixedcolumns[item.colname]
             if (item.webconf && item.webconf.required && !value) {
               this.$Modal.fcError({
                 title: '错误',
                 content: `查询条件[${item.coldesc}]不能为空!`,
                 mask: true
               });
-
+              this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
               reject();
             }
           });
@@ -2243,29 +1749,33 @@
         // 重拼树的数据
         data = Object.assign(data, JSON.parse(JSON.stringify(this.treeSearchData || {})));
         const promise = new Promise((resolve, reject) => {
-          this.requiredCheck().then(() => {
+          this.requiredCheck(data).then(() => {
             this.$R3loading.show();
             data.resolve = resolve;
             data.reject = reject;
             data.isolr = this.buttons.isSolr;
 
             if (enableKAQueryDataForUser() || this.webConf.enableKAQueryDataForUser) {
-              const search = JSON.parse(JSON.stringify(this.$refs.FormItemComponent.formDataObject));
-
-              this.formItemsLists.map((temp) => {
-                if (temp.item.type === 'AttachFilter') {
-                  delete search[temp.item.field];
-                }
-
-                if (temp.item.type === 'DropDownSelectFilter' && !Array.isArray(search[temp.item.field])) {
-                  delete search[temp.item.field];
-                }
-              });
+             this.$_live_getChildComponent(this,'listsForm').getFormDataLabel().then(async search => {
+                this.formItems.defaultFormItemsLists.map((temp) => {
+                  // 存储查询条件时过滤掉弹窗多选类型
+                  if (temp.display === 'OBJ_FK' && temp.fkobj.searchmodel === 'mop') { 
+                    delete search[temp.colname];
+                  }
+                  // 过滤外键字符串
+                  if (temp.display === 'OBJ_FK') { 
+                      if(!Array.isArray(search[temp.colname])){
+                          delete search[temp.colname];
+                      }
+                  }
+                });
               search.R3UserId = `${this.userInfo.id}_${this.searchData.table}`;
               addSearch(search);
 
-              this.updateSearchDBdata({});
-              this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
+              // this.updateSearchDBdata({});
+              this.updateFormData(await this.dataProcessing());
+             })
+
             }
             this.getQueryListForAg(data);
           });
@@ -3012,7 +2522,6 @@
             this.searchData.startIndex = this.searchData.startIndex >= 0 ? this.searchData.startIndex : 0;
           }
           // this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
-         
           this.getQueryListPromise(Object.assign({}, this.searchData, { merge }));                 
         }
       },
@@ -3021,64 +2530,20 @@
       async networkGetTableQuery(event) {
         if (this._inactive) { return; }
         const { detail } = event;
+        
         if (detail.url === '/p/cs/getTableQuery' && (Version() === '1.4' ? detail.response.data.data.tabcmd : detail.response.data.tabcmd)) {
-          this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
+          this.updateFormData(await this.dataProcessing());
           const enableKAQueryDataForUserFlag = Version() === '1.4' ? !!(detail.response.data.data.datas.webconf && detail.response.data.data.datas.webconf.enableKAQueryDataForUser) : !!(detail.response.data.datas.webconf && detail.response.data.datas.webconf.enableKAQueryDataForUser);
-          if (enableKAQueryDataForUser() || enableKAQueryDataForUserFlag) {
-            await querySearch(`${this.$store.state.global.userInfo.id}_${this.searchData.table}`).then((response) => {
-              if (response) {
-                const lists = Version() === '1.4' ? detail.response.data.data.datas.dataarry : detail.response.data.datas.dataarry;
-                lists.map((item) => {
-                  if (item.default) {
-                    delete response[item.colname];
-                  }
-
-                  if (item.display === 'OBJ_FK' && response[item.colname] && !Array.isArray(response[item.colname])) {
-                    delete response[item.colname];
-                  }
-                  
-                  if (item.display === 'OBJ_FK' && response[item.colname] && item.fkobj.fkdisplay !== 'mrp') {
-                    response[item.colname] = response[item.colname].reduce((array, current) => {
-                      array.push(current.ID);
-                      return array;
-                    }, []);
-                  }
-
-
-                  // 处理select类型
-                  if (item.display === 'OBJ_SELECT' && response[item.colname]) {
-                    response[item.colname] = response[item.colname].map(temp => temp = temp.replace(/\=/g, ''));
-                  }
-
-                  // 处理外健
-                  if (item.display === 'OBJ_FK' && response[item.colname] && item.fkobj.fkdisplay !== 'mrp') {
-                    item.default = response[item.colname][0].Label;
-                    item.refobjid = response[item.colname][0].ID;
-                  }
-
-                  if (!item.default && response[item.colname]) {
-                    item.default = response[item.colname];
-                  }
-                  return item;
-                });
-                // 过滤部分处理不了的类型字段
-                delete response.undefined; // 过滤配置的下拉多字段类型
-                this.updateSearchDBdata(response);
-                this.updateFormData(Object.assign({}, this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists), response));
-              }
-              // if (!this.buttons.isBig) {
-              //   this.firstSearchTable();
-              // }
-              this.firstSearchTable();
-            });
-          } else if (!this.buttons.isBig) {
+          if (!this.buttons.isBig) {
             // 初始化调用时，ie环境下增加500ms延时调用
             if (this.isIE()) {
               setTimeout(() => {
                 this.firstSearchTable();
               }, 500);
             } else {
-              this.firstSearchTable();
+              setTimeout(() => {
+                this.firstSearchTable();
+              }, 100);
             }
           }
         }
