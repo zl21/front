@@ -49,13 +49,12 @@ function HiddenFields(){
       if(item.source.activeTab.keepAliveModuleName.split('.')[0].toLocaleUpperCase() ==='S'){
         return false;
       }
-      let target = FindInstance(item.source,temp.target,`${item.source.activeTab.tableName}`)[0];
-      let panelFormParent = item.source.$_live_getChildComponent(window.vm, `${item.source.activeTab.keepAliveModuleName}`);
-      let panelForm = item.source.$_live_getChildComponent(panelFormParent, 'panelForm');
-      
+      // let target = FindInstance(item.source,temp.target,`${item.source.activeTab.tableName}`)[0];
+      let target = FindInstance(item.source,temp.target,item.source.items.tableName)[0];      
       if(!target){
         return
       }
+      let panelForm = target.$parent.$parent.$parent;
       let panelIndex = target.items && target.items._index && target.items._index.split('_')[0];
       let itemIndex = target.items && target.items._index && target.items._index.split('_')[1]
 

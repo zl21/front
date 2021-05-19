@@ -45,12 +45,12 @@ function HiddenFields(){
       if(item.source.activeTab.keepAliveModuleName.split('.')[0].toLocaleUpperCase() ==='S'){
         return false;
       }
-      let panelFormParent = item.source.$_live_getChildComponent(window.vm, `${item.source.activeTab.keepAliveModuleName}`);
-      let panelForm = item.source.$_live_getChildComponent(panelFormParent, 'panelForm');
-      let target = item.source.$_live_getChildComponent(panelForm,`${item.source.activeTab.tableName}${temp.field.refcolumn}`)
+      let target = FindInstance(item.source,temp.field.refcolumn,item.source.items.tableName)[0];
+      
       if(!target || !target.items){
         return;
       }
+      let panelForm = target.$parent.$parent.$parent;
       if(!target.items.original){
         target.items.original = {};
         target.items.original.isnotnull = target.items.isnotnull;
@@ -90,13 +90,12 @@ function JudgeValue(source,conf,panelForm) {
 
     let flag = true
     conf.source.every(item => {
-      let sourceCom = source.$_live_getChildComponent(panelForm,`${source.activeTab.tableName}${item.refcolumn}`)
+      let sourceCom = FindInstance(source,item.refcolumn,source.items.tableName)[0]
       let value = sourceCom.value;
       if(sourceCom.$_live_type.isArray(value)){
         if(sourceCom.items.fkobj){  //处理外健字段
           value = value.map(item => conf.match === 'label'?item.Label:item.ID)
         }
-
         if(item.refval.split(',').filter((x)=>{
           return value.includes(String(x))
         }).length === 0){
