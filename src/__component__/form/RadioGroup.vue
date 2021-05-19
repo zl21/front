@@ -44,7 +44,14 @@
     },
 
     watch: {
+      // 主表组件被隐藏时，需要清空CheckboxGroup组件的值
       'options.show'(newVal) {
+        if(newVal === false) {
+          this.selectedValues = [];
+        }
+      },
+      // 子表组件被隐藏时，需要清空CheckboxGroup组件的值
+      'options.showCol'(newVal) {
         if(newVal === false) {
           this.selectedValues = [];
         }
