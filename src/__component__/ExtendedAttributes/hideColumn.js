@@ -78,10 +78,12 @@ function HiddenFields(){
           if(target.items.display === 'OBJ_CHECK'){
             target.value = target.items.combobox.filter(item => !item.limitdis)[0].limitval
           }else{
-            //target.value = '';
+           
             let dom =  target.$el && target.$el.querySelector('.iconios-close-circle');
             if(dom){
                dom.click();
+            }else{
+              target.value = '';
             }
 
           }
