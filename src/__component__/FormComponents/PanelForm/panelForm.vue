@@ -436,6 +436,10 @@ export default {
         }
       })
     }
+    // 渲染完毕后调整排版
+    this.$nextTick(() => {
+      this.setResize()
+    })
     // 监听大小
     window.addEventListener('resize', this.setResize);
   }
