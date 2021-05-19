@@ -90,7 +90,7 @@
   import getUserenv from '../__utils__/getUserenv';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import { getSessionObject, updateSessionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
-  import {FindInstance } from './ExtendedAttributes/common.js'
+  import {FindInstance ,FindInstanceAll} from './ExtendedAttributes/common.js'
   export default {
     data() {
       return {
@@ -3174,11 +3174,17 @@
         
         this.saveParameters();// 获取主子表参数
         // 处理主表必填控制
-        let panelForm = FindInstance(this,'panelForm')
+        let panelForm = FindInstanceAll(this,'panelForm');
+        console.log(panelForm,'panelForm');
         if(panelForm && panelForm[0]){
-          if(panelForm[0].validate().length > 0){
-            return false
-          }
+          let validate = panelForm.reduce((arr,item)=>{
+              arr.push(...item.validate())
+              return arr;
+          },[])
+          return validate.length <1;
+          // if(panelForm[0].validate().length > 0){
+          //   return false
+          // }
         }
         // const checkedInfo = this.currentParameter.checkedInfo;// 主表校验信息
         // if (checkedInfo) {

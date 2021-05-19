@@ -72,6 +72,17 @@ export const FindInstance = ($this,name,tableName,maintable) => {
 }
 /*
 $this 目标实例
+name  string  实例名称 
+*/
+export const FindInstanceAll = ($this,name) => {
+    let panelFormParent = $this.$_live_getChildComponent(window.vm, `${$this.activeTab.keepAliveModuleName}`);
+    let panelForm = $this.$_live_getChildComponent(panelFormParent, name,'all');
+    
+    // 获取来源值的实例
+    return panelForm;
+}
+/*
+$this 目标实例
 name  string  表明+字段名称 
 */
 
