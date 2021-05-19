@@ -289,7 +289,10 @@
         </div>
       </AttachFilter>
  -->
-      <div class="img-upload-wrap">
+      <div 
+        class="img-upload-wrap"
+        v-if="_items.type === 'ImageUpload'"
+      >
         <ImageUpload
           v-if="_items.type === 'ImageUpload'"
           :ref="_items.field"
