@@ -65,7 +65,8 @@ export default {
 
           // ParentForm.formData 表单组件的所有有值的值
           ParentForm.formData = Object.assign({}, ParentForm.formData, current_data)
-          ParentForm.formChangeDataLabel[this.items.colname] = val
+          ParentForm.formDataLabel[this.items.colname] = val
+
           if(this.items.display === 'image' || this.items.display === 'OBJ_DOC'){
             ParentForm.formDataLabel[this.items.colname] = current_value;
           }else{
@@ -180,15 +181,14 @@ export default {
   methods:{
     InitializationForm(ParentForm){
       // 默认值
-      console.log(1212);
       ParentForm.initializationForm();
     },
     changeForm(ParentForm){
       // 修改后
       if (ParentForm.$parent.formPanelChange) {
-        ParentForm.$parent.formPanelChange(ParentForm.formChangeData, ParentForm.formChangeDataLabel)
+        ParentForm.$parent.formPanelChange(ParentForm.formChangeData, ParentForm.formDataLabel,ParentForm.formChangeDataLabel)
       }else{
-        ParentForm.$parent.formChange(ParentForm.formChangeData, ParentForm.formChangeDataLabel)
+        ParentForm.$parent.formChange(ParentForm.formChangeData, ParentForm.formDataLabel,ParentForm.formChangeDataLabel)
       }
     }
   },

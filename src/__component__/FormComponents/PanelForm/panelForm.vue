@@ -104,9 +104,7 @@ export default {
         if(!checked){
           return;
         }
-        
         // 清空表单的值
-        this.clearForm();
 
       },
       deep: true
@@ -122,8 +120,8 @@ export default {
         this.$R3loading.show(this.tableName);
         clearTimeout(this.formTime);
         this.formTime = setTimeout(()=>{
-              this.setFormlist();
-
+            this.setFormlist();
+            this.clearForm();
         },50);
 
       },
@@ -137,12 +135,12 @@ export default {
       this.timer = setTimeout(() => {
         if (this.$parent.formPanelChange) {
           // v
-          this.$parent.initFormPanel(this.defaulData, this.defaulDataLabel)
+          this.$parent.initFormPanel(this.defaulData, this.formDataLabel,this.defaulDataLabel)
         } else {
           // H
-          this.$parent.InitializationForm(this.defaulData, this.defaulDataLabel)
+          this.$parent.InitializationForm(this.defaulData, this.formDataLabel,this.defaulDataLabel)
         }
-      })
+      },50)
 
     },
     setFormlist(){
@@ -406,6 +404,7 @@ export default {
       // });
     },
     clearForm(){
+      // 清空默认值
         this.formData = {};
         this.formChangeData = {};
         this.defaulData = {}

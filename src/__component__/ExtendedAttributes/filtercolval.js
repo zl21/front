@@ -12,8 +12,10 @@ import {
         let value = $current.value;
         const $this = targetVm[0];
         let filterArry = config.map[value] || [];
-        if(!$this.items.olderCombobox){
+        if(!$this.items.olderCombobox && $this.items.combobox){
             $this.items.olderCombobox = [...$this.items.combobox];
+        }else{
+          return;
         }
         const optionsArr = $this.items.olderCombobox.reduce((arr, option) => {
             const index = filterArry.findIndex(x => x === option.value);

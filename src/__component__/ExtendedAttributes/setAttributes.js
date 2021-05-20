@@ -96,14 +96,14 @@ function JudgeValue(source,conf,panelForm) {
         if(sourceCom.items.fkobj){  //处理外健字段
           value = value.map(item => conf.match === 'label'?item.Label:item.ID)
         }
-        if(item.refval.split(',').filter((x)=>{
+        if((item.refval || '').toString().split(',').filter((x)=>{
           return value.includes(String(x))
         }).length === 0){
           flag = false;
           return false;
         }
       }else {
-        if(!item.refval.split(',').includes(value)){
+        if(!(item.refval || '').toString().split(',').includes(value)){
           flag = false;
           return false
         }

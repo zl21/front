@@ -2063,6 +2063,7 @@
              const copyData = { ...panelForm[0].formDataLabel };
             //const copyData = { ...formData };
             const modifyData = this.updateData[this.tableName].changeData;// 取changeData值，因外键形式需要lable和ID
+            console.log(panelForm[0],panelForm[0].formDataLabel,'copyDatacopyData');
             this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
             this.copyModifyDataForSingleObject(modifyData);// 将复制修改过所保存的数据存到global中
             this.updateFormDataForRefshow();
@@ -3175,7 +3176,6 @@
         this.saveParameters();// 获取主子表参数
         // 处理主表必填控制
         let panelForm = FindInstanceAll(this,'panelForm');
-        console.log(panelForm,'panelForm');
         let validate = [];
         if(panelForm && panelForm[0]){
            validate = panelForm.reduce((arr,item)=>{
@@ -3357,6 +3357,7 @@
           }
           this.performMainTableSaveAction({ parame, resolve, reject });
         });
+        console.log(promise);
         this.temporaryStoragePath = '';
         let stop = false;
         let removeMessage = false;
