@@ -3176,27 +3176,37 @@
         // 处理主表必填控制
         let panelForm = FindInstanceAll(this,'panelForm');
         console.log(panelForm,'panelForm');
+        let validate = [];
         if(panelForm && panelForm[0]){
-          let validate = panelForm.reduce((arr,item)=>{
+           validate = panelForm.reduce((arr,item)=>{
               arr.push(...item.validate())
               return arr;
           },[])
-          return validate.length <1;
-          // if(panelForm[0].validate().length > 0){
-          //   return false
-          // }
         }
+        if(validate.length > 0){
+            this.$Message.warning(validate[0].tip);
+            let dom = document.querySelector(`#${validate[0].colname}`);
+            if(dom){
+              let Input = dom.querySelector('input') || dom.querySelector('textarea');
+              if(Input){
+                  Input.focus();
+              }
+
+            }
+            return false;
+        }
+        
         // const checkedInfo = this.currentParameter.checkedInfo;// 主表校验信息
-        // if (checkedInfo) {
-        //   const messageTip = checkedInfo.messageTip;
+        // if (checkedInfo || validate) {
+        //   const messageTip = validate.concat(checkedInfo.messageTip || []);
         //   if (messageTip) {
+        //     console.log(messageTip,'messageTip');
         //     if (messageTip.length > 0) {
         //       this.$Message.warning(messageTip[0]);
         //       // checkedInfo.validateForm.focus();
         //       if (checkedInfo && checkedInfo.validateForm) {
         //         checkedInfo.validateForm.focus();
         //       }
-        //       return false;
         //     }
         //   }
         // }
@@ -3214,7 +3224,8 @@
               if (this.objectType === 'vertical') {
                 if (this.itemId === 'New') {
                   if (this.itemNameGroup.length > 0) { // 有子表
-                    if (KEEP_SAVE_ITEM_TABLE_MANDATORY) { // 为true时，子表没有必填项也必须要输入值才能保存
+                    if (KEEP_SAVE_ITEM_TABLE_MANDATORY) {
+                       // 为true时，子表没有必填项也必须要输入值才能保存
                       const addInfo = this.itemCurrentParameter.add[this.itemName];
                       if (itemCheckedInfo) {
                         const itemMessageTip = itemCheckedInfo.messageTip;

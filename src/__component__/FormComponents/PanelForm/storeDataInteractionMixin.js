@@ -113,7 +113,8 @@ export default {
                 // 默认值
                 ParentForm.defaulData = JSON.parse(JSON.stringify(ParentForm.formData));
                 ParentForm.defaulDataLabel = JSON.parse(JSON.stringify(ParentForm.formDataLabel));
-                this.InitializationForm(ParentForm)
+                // this.InitializationForm(ParentForm)
+                this.changeForm(ParentForm);
                 return;
                 
               }else{
@@ -162,13 +163,11 @@ export default {
                 }
               }
             }
+            this.changeForm(ParentForm);
+            
          
 
-          if (ParentForm.$parent.formPanelChange) {
-            ParentForm.$parent.formPanelChange(ParentForm.formChangeData, ParentForm.formChangeDataLabel)
-          }else{
-            ParentForm.$parent.formChange(ParentForm.formChangeData, ParentForm.formChangeDataLabel)
-          }
+         
           
 
 
@@ -181,7 +180,16 @@ export default {
   methods:{
     InitializationForm(ParentForm){
       // 默认值
+      console.log(1212);
       ParentForm.initializationForm();
+    },
+    changeForm(ParentForm){
+      // 修改后
+      if (ParentForm.$parent.formPanelChange) {
+        ParentForm.$parent.formPanelChange(ParentForm.formChangeData, ParentForm.formChangeDataLabel)
+      }else{
+        ParentForm.$parent.formChange(ParentForm.formChangeData, ParentForm.formChangeDataLabel)
+      }
     }
   },
   mounted() {

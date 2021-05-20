@@ -68,12 +68,17 @@ export class Validate extends Vue {
                 }
 
             },
-            items: { 
+            colname:{ // 字段值
+                type:String,
+                default: () => {
+                    return '';
+                }
+            },
+            show:{
                 type: [Object],
                 default: () => {
                     return {};
                 }
-
             },
             labelWidth:{
                 type:[String,Number],
@@ -81,7 +86,7 @@ export class Validate extends Vue {
                     return 0;
                 }
             },
-            showTip:{
+            showTip:{  // 是否显示提示
                 type:Boolean,
                 default: () => {
                     return false;
@@ -119,14 +124,14 @@ export class Validate extends Vue {
 
     setMethods() {
         this.methods = {
-            validateFormInt(){
+            validateFormInt(type){
                 // 点击按钮校验规则
                 let trigger = this.rulesData.trigger || {};
                 let required = this.rulesData.required;
                 let self = this;
                 // 事件的校验
                 if (required && required.type) {
-                    self.verifyTypes(self.value, trigger['blur'],'blur');
+                    self.verifyTypes(self.value, trigger['blur'],'blur',type);
                 }
                 return this.message;
             },
@@ -142,11 +147,15 @@ export class Validate extends Vue {
                 }
                 return true;
             },
-            verifyTypes(val, rule,type) {
+            verifyTypes(val, rule,type,required) {
                 // 校验规则
                 this.message = '';
                 // 先判断是否空值
                 if(!this.validateRequire(val,type)){
+                    return;
+                }
+                if(required ==='required'){
+                    // 保存只校验非空
                     return;
                 }
                 if(!rule){
@@ -287,9 +296,13 @@ export const validateForm = function(name){
         let message = [];
         formItem.forEach((item)=>{
             let  ValidateItem = item.$refs.ValidateItem;
-            let  errorTip = ValidateItem.validateFormInt();
+            let  errorTip = ValidateItem.validateFormInt('required');
             if(errorTip.replace(/(^[ \t\n\r]*)|([ \t\n\r]*$)/g, '').length>0){
-                message.push(errorTip);
+                console.log(ValidateItem);
+                message.push({
+                    tip:errorTip,
+                    colname:ValidateItem.colname
+                });
             }
         })
         return message;

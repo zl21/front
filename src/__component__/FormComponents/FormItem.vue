@@ -1,10 +1,11 @@
 /* eslint-disable import/no-dynamic-require */
 <template>
+<!-- :show-tip="items.detailType" -->
  <ValidateCom 
     :rules="rules"
     :labelWidth="labelWidth"
     :items="propsMessage"
-    :show-tip="items.detailType"
+    :colname="items.colname"
     :value="value">
   <div :class="_items.props.fkdisplay === 'pop' ? 'ItemComponentRoot AttachFilter-pop':'ItemComponentRoot'">
    
@@ -220,6 +221,7 @@ export default {
       filterDate: {},
       resultData: {}, // 结果传值
       componentsName:'',// 组件名称
+      show:false,// 是否展示报错内容
       propsMessage:{
        
       }, // 各个组件的props
@@ -680,7 +682,7 @@ export default {
 }
 .panelForm{
   .ItemComponentRoot{
-      padding-top: 0px;
+      // padding-top: 0px;
     }
 }
 .validate_item {
