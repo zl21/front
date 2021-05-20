@@ -103,17 +103,8 @@ export default {
         const checked = this.moduleComponentName.split('.').includes(tableName || customizedModuleName);
         if(!checked){
           return;
-
         }
-        if (Object.keys(val).length > 0) {
-          this.collapseValue = []
-          Object.keys(val).map(item => {
-            let data = val[item]
-            if (data.hrdisplay === 'expand') {
-              this.collapseValue.push(data.parentname)
-            }
-          })
-        }
+        
         // 清空表单的值
         this.clearForm();
 
@@ -261,6 +252,16 @@ export default {
        }
     },
     validate () {
+      // 校验前展开panel,避免拿不到数据
+      if (Object.keys(this.formItemLists).length > 0) {
+        this.collapseValue = []
+        Object.keys(this.formItemLists).map(item => {
+          let data = this.formItemLists[item]
+          if (data.hrdisplay === 'expand') {
+            this.collapseValue.push(data.parentname)
+          }
+        })
+      }
       // 获取校验
       let messageTip = validateForm.call(this, 'formItem');
 
