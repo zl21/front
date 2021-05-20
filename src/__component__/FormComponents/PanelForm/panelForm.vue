@@ -229,7 +229,7 @@ export default {
         })
         return item;
       })
-      // 处理表单关闭
+            // 处理表单关闭
       this.loading = setInterval(() => {
         let index = Object.keys(data.addcolums.reverse()[0].childs).length - 1
         let lastItem = data.addcolums[0].childs[index]
@@ -242,6 +242,9 @@ export default {
        // 兼容子表
         this.linkFormSet();
        this.formItemLists = { ...data.addcolums }
+
+      // 调整排版
+      this.setResize()
     },
     deleteFormData(data){
       //删除状态的key
@@ -252,16 +255,6 @@ export default {
        }
     },
     validate () {
-      // 校验前展开panel,避免拿不到数据
-      if (Object.keys(this.formItemLists).length > 0) {
-        this.collapseValue = []
-        Object.keys(this.formItemLists).map(item => {
-          let data = this.formItemLists[item]
-          if (data.hrdisplay === 'expand') {
-            this.collapseValue.push(data.parentname)
-          }
-        })
-      }
       // 获取校验
       let messageTip = validateForm.call(this, 'formItem');
 
@@ -428,19 +421,7 @@ export default {
   },
   mounted () {
     this.setFormlist();
-    if (Object.keys(this.formItemLists).length > 0) {
-      this.collapseValue = []
-      Object.keys(this.formItemLists).map(item => {
-        let data = this.formItemLists[item]
-        if (data.hrdisplay === 'expand') {
-          this.collapseValue.push(data.parentname)
-        }
-      })
-    }
-    // 渲染完毕后调整排版
-    this.$nextTick(() => {
-      this.setResize()
-    })
+    
     // 监听大小
     window.addEventListener('resize', this.setResize);
   }
