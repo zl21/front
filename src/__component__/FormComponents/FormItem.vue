@@ -154,6 +154,7 @@ import CustomWangeditor from '../inheritanceComponents/Wangeditor';
 import CustomEnumerableInput from '../inheritanceComponents/EnumerableInput';
 import CustomExtensionProperty from '../inheritanceComponents/ExtensionProperty';
 import CustomRadioGroup from '../inheritanceComponents/RadioGroup'
+import CustomDefined from '../inheritanceComponents/Defined'
 
 import ParameterDataProcessing from './parameterDataProcessing';
 import { Validate } from './PanelForm/Validate';
@@ -379,17 +380,16 @@ export default {
           break;
         case 'radioGroup': 
           componentInstance = new CustomRadioGroup(item).init();
+          break;
+        case 'defined': 
+          componentInstance = new CustomDefined(item).init();
+          break;
         default:
           break;
       }
-      if(componentInstance){
-          component = componentInstance.Components;
-          this.propsMessage = componentInstance.props;
-      }else{
-          console.log(item);
 
-      }
-    
+      component = componentInstance.Components;
+      this.propsMessage = componentInstance.props;
       return component;
     },
     routerNext (value) {

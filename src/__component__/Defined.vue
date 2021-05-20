@@ -1,12 +1,9 @@
 <template>
   <component
     :is="componentName"
-    :storage-item="storageItem"
-    :readonly="items.props.readonly"
-    :itemdata="items.props"
-    v-bind="$attrs"
-    v-on="$listeners"
-    @objSave="objSave"
+    :options='items'
+    @change="onChange"
+    @save="onSave"
   />
 </template>
 
@@ -20,10 +17,17 @@
     customizeModules[key.toUpperCase()] = customize[key];
   });
   export default {
-    // name: 'DialogComponent',
+    name: 'Defined',
+
     components: {
       PageNotFound
     },
+
+    model: {
+      prop: 'value',
+      event: 'change'
+    },
+
     data() {
       return {
         componentName: null,
@@ -34,55 +38,49 @@
         }
       };
     },
+
     props: {
-      itemdata: {
-        type: Object
-      },
-      objList: {// 返回所有的数据，全部数据
-        type: Array
-      },
-      isActive: {
-        type: Boolean,
-        default: true
-      },
-      isdisabled: {
-        type: Boolean
-      },
       items: {
         type: Object
       },
-      refaddcol: null,
+      value: {
+        default: null
+      }
+      // refaddcol: null,
     },
-    computed: {
 
-    },
-    watch: {
-      
-    },
     mounted() {
       this.generateComponent();
     },
+
     methods: {
-      objSave() {
-        const currentTableDom = document.getElementById(this.storageItem.name);
-        const dom = currentTableDom.getElementById('actionMODIFY');
+      // 改变值
+      onChange(e) {
+        this.$emit('change', e)
+      },
+
+      // 触发保存按钮
+      onSave() {
+        const currentTableDom = document.querySelector(`#${this.storageItem.name}`);
+        const dom = currentTableDom.querySelector('#actionMODIFY');
         const myEvent = document.createEvent('HTMLEvents');
         myEvent.initEvent('click', false, true);
         dom.dispatchEvent(myEvent);
       },
+
+      // 生成组件
       generateComponent() {
-        // window.ProjectConfig.custommizeMainTableField = customizeModules;
-        if (window.ProjectConfig && window.ProjectConfig.custommizeMainTableField) {
+        // window.ProjectConfig.customizeMainTableField = customizeModules;
+        if (window.ProjectConfig && window.ProjectConfig.customizeMainTableField) {
           let target = '';
 
-          if (this.items.props.webconf && this.items.props.webconf.definedType) {
-            this.componentName = `${this.storageItem.name}_${this.items.props.webconf.definedType}`;
-            target = window.ProjectConfig.custommizeMainTableField[this.items.props.webconf.definedType]; 
+          if (this.items.webconf && this.items.webconf.definedType) {
+            this.componentName = `${this.storageItem.name}_${this.items.webconf.definedType}`;
+            target = window.ProjectConfig.customizeMainTableField[this.items.webconf.definedType]; 
           } else {
-            this.componentName = `${this.storageItem.name}_${this.items.props.colname}`;
-            target = window.ProjectConfig.custommizeMainTableField[this.items.props.colname];
+            this.componentName = `${this.storageItem.name}_${this.items.colname}`;
+            target = window.ProjectConfig.customizeMainTableField[this.items.colname];
           }
-          console.log(target);
           if (Vue.component(this.componentName) === undefined) {
             if (target) {
               if (typeof target.component === 'function') {
