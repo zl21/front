@@ -7,9 +7,6 @@ import {
   Version,
   ossRealtimeSave
 } from '../../../constants/global';
-import {
-  container
-} from 'webpack';
 export default {
   data() {
     return {
@@ -66,11 +63,24 @@ export default {
           // ParentForm.formData 表单组件的所有有值的值
           ParentForm.formData = Object.assign({}, ParentForm.formData, current_data)
           ParentForm.formDataLabel[this.items.colname] = val
-
           if(this.items.display === 'image' || this.items.display === 'OBJ_DOC'){
             ParentForm.formDataLabel[this.items.colname] = current_value;
           }else{
             ParentForm.formDataLabel[this.items.colname] = val;
+          }
+          if(this.items.display ==='OBJ_CHECK' || this.items.display ==='OBJ_SELECT'){
+            const optionIndex = this.items.combobox.findIndex(x => x.limitval === val);
+            if (optionIndex !== -1) {
+              ParentForm.formDataLabel[this.items.colname] = this.items.combobox[optionIndex].limitdesc;
+            }
+          }
+          if(this.items.fkobj && (this.items.fkobj.searchmode === 'pop' || this.items.fkobj.searchmode === 'drp')){
+            if (Version() === '1.4') {
+              if (current_value === '') {
+                current_value = 0;
+              }
+            }
+
           }
          
           let keepAliveModuleName = this.activeTab.keepAliveModuleName && (this.activeTab.keepAliveModuleName).toLocaleUpperCase();

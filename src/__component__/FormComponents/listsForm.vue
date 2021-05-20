@@ -152,6 +152,9 @@
           let formData = {};
           this.formArray.every((item) => {
             const components = this.$_live_getChildComponent(this, `${this.id}${item.colname.TextFilter()}`);
+            if(!components){
+              return;
+            }
             const value = item && item.isuppercase && components.value &&  !item.display ?components.value.toUpperCase():components.value;
             const json = this.dealData(item, value);
             formData = Object.assign({}, formData, json);
@@ -166,8 +169,11 @@
         return new Promise((resolve,reject) => {
           let formData = {};
           this.formArray.every((item) => {
-            const components = this.$_live_getChildComponent(this, `${this.id}${item.colname.TextFilter()}`);
-            let value = item.isuppercase && components.value && !item.display ?components.value.toUpperCase():components.value;
+            const components = this.$_live_getChildComponent(this,`${this.id}${item.colname.TextFilter()}`);
+            if(!components){
+              return;
+            }
+            let value = item.isuppercase && components && components.value && !item.display ?components.value.toUpperCase():components.value;
             if(value && value[0] && item.display === 'OBJ_DATENUMBER'){
               value = [new Date().r3Format(new Date(value[0]), 'yyyy-MM-dd'),new Date().r3Format(new Date(value[1]), 'yyyy-MM-dd')]
             }

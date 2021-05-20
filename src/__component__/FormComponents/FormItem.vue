@@ -392,9 +392,9 @@ export default {
     
       return component;
     },
-    routerNext (value) {
+    routerNext () {
       // 路由跳转
-      const props = this._items.props;
+      const props = this.items;
       const type = props.objdisplay;
       const serviceId = props.serviceId;
 
@@ -404,24 +404,8 @@ export default {
       const label = this._items.props.fkdesc;
       // xhj修改，改为使用tabOpen方法，以下存serviceId逻辑已弃用
 
-      // const serviceIdMap = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
-      // const addname = `S.${tableName}.${props.reftableid}`;
-      // this.addKeepAliveLabelMaps({
-      //   name: addname,
-      //   label
-      // });
-      // updateSessionObject('keepAliveLabelMaps', { k: addname, v: label });
-      // if (props.serviceId) {
-      //   if (Version() === '1.4') {
-      //     serviceIdMap[tableName] = props.serviceId;
-      //     window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMap));
-      //     this.addServiceIdMap({
-      //       tableName,
-      //       gateWay: props.serviceId
-      //     });
-      //   }
-      // }
-
+      let value = this.value;
+      console.log(this.value,props);
       let id = 0;
       if (!props.readonly) {
         id = value[0].ID;

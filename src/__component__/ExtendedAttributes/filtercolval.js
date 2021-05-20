@@ -14,10 +14,9 @@ import {
         let filterArry = config.map[value] || [];
         if(!$this.items.olderCombobox && $this.items.combobox){
             $this.items.olderCombobox = [...$this.items.combobox];
-        }else{
-          return;
         }
-        const optionsArr = $this.items.olderCombobox.reduce((arr, option) => {
+        if($this.items.olderCombobox){
+          const optionsArr = $this.items.olderCombobox.reduce((arr, option) => {
             const index = filterArry.findIndex(x => x === option.value);
             if (index !== -1) {
               arr.push(option);
@@ -31,6 +30,9 @@ import {
         }
         $this.inheritanceComponents();
 
+        }
+        
+        
         // $this.$forceUpdate();
     }
 
