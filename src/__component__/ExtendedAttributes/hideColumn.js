@@ -3,13 +3,16 @@ import {
   FindInstance
 } from './common.js';
 
-let eventLoops = []
+let eventLoops = {}
 let t = null
 var proxy = new Proxy(eventLoops, {
   set:function (target, key, value) {
     if(value.source){
       let a = -1;
-      target.find((item,index) => {
+      if(!target[value.tableName]){
+        target[value.tableName] = [];
+      }
+      target[value.tableName].find((item,index) => {
         if(item.source.items.colname == value.source.items.colname){
           a = index;
         }
@@ -17,32 +20,31 @@ var proxy = new Proxy(eventLoops, {
       })
 
       if(a >= 0){   
-        target.splice(a,1)
+        target[value.tableName].splice(a,1)
       }
-      target.push(value)
+     
+      target[value.tableName].push(value)
     }
     if(t!=null){
   　　　clearTimeout(t)
   　 }
     t=setTimeout(function(){
-        HiddenFields()
+        HiddenFields(value.tableName)
   　 },100)
     return true
-  },
-  get:function (target, key) {
-    return target[key];
   }
 });
 
 function hideColumn(source,configuration) {
-  proxy.push({
+  proxy.tableName = {
     source,
+    tableName:source.activeTab.keepAliveModuleName,
     configuration
-  })
+  }
 }
 
-function HiddenFields(){
-  eventLoops.every(item => {
+function HiddenFields(tableName){
+  eventLoops[tableName].every(item => {
     item.configuration.every(temp => {
 
       // 当temp中ishide为true时，则refval控制字段的隐藏。当ishide为false时，则控制字段的显示
