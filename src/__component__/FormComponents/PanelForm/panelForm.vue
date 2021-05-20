@@ -443,6 +443,12 @@ export default {
     })
     // 监听大小
     window.addEventListener('resize', this.setResize);
+  },
+  activated(){
+    // 渲染完毕后调整排版
+    this.$nextTick(() => {
+      this.setResize()
+    })
   }
 }
 </script>
