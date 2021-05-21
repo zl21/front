@@ -1298,7 +1298,6 @@
         } else if (type === 'reset') {
           // 重置列表渲染
           this.resetForm();
-          console.log('重置');
           // 查询成功后清除表格选中项
           this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });
           this.$refs.agTableElement.clearChecked();
@@ -1652,7 +1651,6 @@
         return obj
       },
       async searchClickData(value) {
-        console.log(value,'121212');
         this.resetButtonsStatus();
         // 按钮查找 查询第一页数据
         // if (value && !value.flag) { // 返回时查询之前页码
@@ -1931,9 +1929,6 @@
         }
 
         if (obj.name === this.buttonMap.CMD_EXPORT.name) {
-          // console.log('导出--', obj, this.buttons.selectIdArr, this.buttons.dataArray.waListButtonsConfig.waListButtons);
-          console.log('配置项', this.exportDialogConfig, this.buttons, obj);
-          
           // 导出
           if (this.buttons.selectIdArr.length === 0) {
             const title = '警告';
@@ -2011,12 +2006,12 @@
         //   startindex: 0
         // };
 
-       
+        const searchdata = JSON.parse(JSON.stringify(this.searchData))
         if (this.buttons.selectIdArr.length !== 0) {
-          this.searchData.fixedcolumns = { ID: this.buttons.selectIdArr };
+          searchdata.fixedcolumns = { ID: this.buttons.selectIdArr };
         } 
         const OBJ = {
-          searchdata: this.searchData,
+          searchdata: searchdata,
           filename: this.activeTab.label,
           filetype: '.xlsx',
           showColumnName: true,
