@@ -1860,9 +1860,6 @@
     white-space: nowrap;
     overflow: hidden;
     line-height: 16px;
-    // display: flex;
-    // align-items: center;
-    // justify-content: flex-end;
 
     i {
       font-size: 12px;
@@ -1872,7 +1869,7 @@
 
   .itemComponent {
     flex: 1;
-    // overflow: hidden;
+    overflow: hidden;
   }
   .label-tip {
     color: red;
@@ -1884,7 +1881,6 @@
   }
 }
 textarea.ark-input{
-    // height: 100%!important;
     resize:auto;
 }
 // .height100{

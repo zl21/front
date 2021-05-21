@@ -55,7 +55,7 @@
         <span :title="items.coldesc">{{ items.coldesc }}:</span>
       </span>
       <div :class=" [_items.props.row >1 ? 'itemComponent height100':'itemComponent',items.isuppercase?'isuppercase':'']"
-           :style="_items.props.type==='ImageUpload' ? 'overflow:visible' :''">
+           :style="_items.display==='image' ? 'overflow:visible' :''">
         <!-- <Input
         v-if="_items.type === 'input'"
         :ref="_items.field"
@@ -626,9 +626,6 @@ export default {
     white-space: nowrap;
     overflow: hidden;
     line-height: 16px;
-    // display: flex;
-    // align-items: center;
-    // justify-content: flex-end;
 
     i {
       font-size: 12px;
@@ -638,10 +635,7 @@ export default {
 
   .itemComponent {
     flex: 1;
-    // overflow: hidden;
-    max-width: calc(100% - 94px);
-    display: flex;
-    align-items: center;
+    overflow: hidden;
 
     > div {
       flex: 1;
@@ -664,18 +658,8 @@ export default {
     }
   }
 }
-.panelForm{
-  .ItemComponentRoot{
-      // padding-top: 0px;
-    }
-}
+
 .validate_item {
-    // display: inline-block;
-    // width: 100%;
-    // box-sizing: border-box;
-    // vertical-align: middle;
-    // font-size: 12px;
-    
     .validate_item_tip {
       height: 16px;
       font-size: 12px;
@@ -694,7 +678,6 @@ export default {
     }
   }
 textarea.ark-input {
-  // height: 100%!important;
   resize: auto;
 }
 
