@@ -38,6 +38,16 @@ export default {
             }  
           }
           
+          if(this.items.fkobj && (this.items.fkobj.searchmodel === 'pop' || this.items.fkobj.searchmodel === 'drp')){
+           
+            if (Version() === '1.4') {
+              
+              if (current_value === '') {
+                current_value = 0;
+              }
+            }
+
+          }
         
            // number类型空值传0
            if (this.items.type === 'NUMBER') {
@@ -74,14 +84,7 @@ export default {
               ParentForm.formDataLabel[this.items.colname] = this.items.combobox[optionIndex].limitdesc;
             }
           }
-          if(this.items.fkobj && (this.items.fkobj.searchmode === 'pop' || this.items.fkobj.searchmode === 'drp')){
-            if (Version() === '1.4') {
-              if (current_value === '') {
-                current_value = 0;
-              }
-            }
-
-          }
+         
          
           let keepAliveModuleName = this.activeTab.keepAliveModuleName && (this.activeTab.keepAliveModuleName).toLocaleUpperCase();
             // 初始化的状态
@@ -114,6 +117,7 @@ export default {
                 ParentForm.formChangeData = Object.assign({}, ParentForm.formChangeData, current_data)
                 if (isEmpty(val) && isEmpty(this.defaultVale)) {
                   delete ParentForm.formData[this.items.colname]
+                  delete ParentForm.formChangeData[this.items.colname]
                   const data = {
                     key: this.items.colname,
                     itemName: this.activeTab.tableName
