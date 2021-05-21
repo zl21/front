@@ -1705,6 +1705,7 @@
       getQueryListPromise(data) {
         // 重拼树的数据
         data = Object.assign(data, JSON.parse(JSON.stringify(this.treeSearchData || {})));
+        delete data.fixedcolumns.ID // fix: 点击导出，再查询会携带id参数
         const promise = new Promise((resolve, reject) => {
           this.requiredCheck(data).then(() => {
             this.$R3loading.show();
