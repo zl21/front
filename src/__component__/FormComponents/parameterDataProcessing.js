@@ -19,8 +19,8 @@ function get_default_datenumber(formItem, isDetailPage) {
     let timeRange = ''
     if (formItem.customDefault) {
       timeRange = [
-        `${new Date().r3Format(new Date(formItem.customDefault[0]), 'yyyy/MM/dd')}`,
-        `${new Date().r3Format(new Date(formItem.customDefault[1]), 'yyyy/MM/dd')}`
+        `${new Date().r3Format(new Date(formItem.customDefault[0]), 'yyyy/MM/dd hh:mm:ss')}`,
+        `${new Date().r3Format(new Date(formItem.customDefault[1]), 'yyyy/MM/dd hh:mm:ss')}`
       ];
       return timeRange;
     }
