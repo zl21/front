@@ -588,6 +588,9 @@ export default {
 
     resetItem () {
       this.value = new ParameterDataProcessing(JSON.parse(JSON.stringify(this.items))).defaultDataProcessing();
+    },
+    getLable(){
+      return new ParameterDataProcessing(JSON.parse(JSON.stringify(this.items)),this.value).getLable();
     }
 
   },

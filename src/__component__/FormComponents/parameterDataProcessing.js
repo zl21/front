@@ -334,18 +334,19 @@ export default class ParameterDataProcessing {
 
   getLable() {
     if (this.item.display === 'OBJ_SELECT') {
-      const optionIndex = this.item.options.findIndex(x => x.value === this.value);
+      const optionIndex = this.item.combobox.findIndex(x => x.value === this.value);
       if (optionIndex !== -1) {
-        return this.item.options[optionIndex].label;
+        return this.item.combobox[optionIndex].limitdesc;
       } else {
         return ''
       }
 
     }
-
-    if (this.item.display === 'checkbox') {
+   
+    if (this.item.display === 'OBJ_CHECK') {
+      const optionIndex = this.item.combobox.findIndex(x => x.limitval === this.value);
       if (optionIndex !== -1) {
-        return this.item.combobox[optionIndex].limitval;
+        return this.item.combobox[optionIndex].limitdesc;
       } else {
         return this.item.falseLabel;
       }
@@ -359,8 +360,9 @@ export default class ParameterDataProcessing {
           return arr;
         }, []).join(',');
       }
+    }else{
+      return this.value
     }
 
-    return value;
   }
 }

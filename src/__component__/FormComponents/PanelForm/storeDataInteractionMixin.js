@@ -21,7 +21,10 @@ export default {
           // 获取当前组件的值
           let current_value = ParentForm.dealData(this.items, val)[this.items.colname];
           let current_data = {};
-
+          // 1.3 label
+          let R3Label = {
+            [this.items.colname]:this.getLable()
+          };
           // 去除空格
           if (typeof current_value === 'string' && !isEmpty(current_value)) {
             current_value = current_value.toString().replace(/^\s+|\s+$/g, '')
@@ -86,10 +89,11 @@ export default {
                 // 删除空值
                 if (isEmpty(val)) {
                   delete ParentForm.formData[this.items.colname]
+                  delete ParentForm.defaulDataLabel[this.items.colname]
                 }
               }
               ParentForm.defaulData = JSON.parse(JSON.stringify(ParentForm.formData));
-              ParentForm.defaulDataLabel = JSON.parse(JSON.stringify(ParentForm.formDataLabel));
+              ParentForm.defaulDataLabel = Object.assign(JSON.parse(JSON.stringify(ParentForm.defaulDataLabel)),R3Label);
               this.InitializationForm(ParentForm);
               return;
             } else {
@@ -111,6 +115,8 @@ export default {
                 if (isEmpty(val) && isEmpty(this.defaultVale)) {
                   delete ParentForm.formData[this.items.colname]
                   delete ParentForm.formChangeData[this.items.colname]
+                  delete ParentForm.defaulDataLabel[this.items.colname]
+
                   const data = {
                     key: this.items.colname,
                     itemName: this.activeTab.tableName
@@ -120,7 +126,7 @@ export default {
                 }
                 // 默认值
                 ParentForm.defaulData = JSON.parse(JSON.stringify(ParentForm.formData));
-                ParentForm.defaulDataLabel = JSON.parse(JSON.stringify(ParentForm.formDataLabel));
+                ParentForm.defaulDataLabel = Object.assign(JSON.parse(JSON.stringify(ParentForm.defaulDataLabel)),R3Label);
                 // this.InitializationForm(ParentForm)
                 this.changeForm(ParentForm);
                 return;
@@ -128,7 +134,7 @@ export default {
               }else{
                 //详情明细  有值 
                 ParentForm.formChangeData = Object.assign({}, ParentForm.formChangeData, current_data)
-                ParentForm.formChangeDataLabel = Object.assign({}, ParentForm.formDataLabel, current_data)
+                ParentForm.formChangeDataLabel = Object.assign({}, ParentForm.formChangeDataLabel, R3Label)
 
                 if (JSON.stringify(val) === JSON.stringify(this.defaultVale)) {
                   delete ParentForm.formChangeData[this.items.colname]
