@@ -150,9 +150,7 @@ export const setNewlValue = ($this,name,tableName,value) => {
                         }
                         return arr;
                     }, []);
-                    if(values.length>0){
-                        $vm.value =values;
-                    }
+                    $vm.value =values;
 
                 }
            }else if(value[$vm.items.colname].COLUMN_TYPE === 1){

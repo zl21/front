@@ -211,7 +211,10 @@ export default class ParameterDataProcessing {
       if(this.item.valuedata){
         return this.item.valuedata;
       }else if(this.item.default){
-        return this.item.default.split(',');
+        if(!isDetailPage){
+          return this.item.default.split(',');
+        }
+        return this.item.default;
       }
      
     }
