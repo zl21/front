@@ -162,7 +162,7 @@ import { Validate } from './PanelForm/Validate';
 // 验证组件的插件
 let ValidateCom = new Validate().init();
 import {
-  Version, MODULE_COMPONENT_NAME, ossRealtimeSave, defaultrange
+  Version, MODULE_COMPONENT_NAME, ossRealtimeSave, defaultrange,custommizedRequestUrl
 } from '../../constants/global';
 import createModal from '../PreviewPicture/index';
 import EnumerableInput from '../EnumerableInput.vue';

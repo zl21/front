@@ -440,7 +440,7 @@ export default {
         if (d.keepAliveModuleName === keepAliveModuleName) {
           d.isActive = true;
           state.activeTab = d;
-        } else if ((keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
+        } else if ((keepAliveModuleNameRes !== ''&& d.tableName === keepAliveModuleNameRes && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
           const obj = {
             keepAliveModuleName,
             routeFullPath,

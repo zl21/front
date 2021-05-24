@@ -210,6 +210,7 @@ export default (router) => {
     const dynamicModuleTag = getDynamicModuleTag(to); // 当前界面对应的路由标识。
 
     // 处理 keepAliveModuleName：目标路由的模块默认都要加入keepAlive列表
+    // debugger;
     if (!keepAliveLists.includes(keepAliveModuleName) && keepAliveModuleName !== '') {
       const data = {
         name: keepAliveModuleName, 
@@ -220,6 +221,7 @@ export default (router) => {
     }
 
     // 判断是否状态中已经存在某个模块，不存在则创建。用户自定义界面不创建
+
     if (preventRegisterModule.indexOf(routePrefix) === -1 && dynamicModuleTag !== '' && store.state[keepAliveModuleName] === undefined) {
       store.registerModule(keepAliveModuleName, moduleGenerator[dynamicModuleTag]());
     }
@@ -234,7 +236,6 @@ export default (router) => {
       }
       return false;
     })[0];
-
     if (existModuleIndex !== -1 && KEEP_MODULE_STATE_WHEN_CLICK_MENU) {
       // Condition One:
       // 如果目标路由界面所对应的[表]已经存在于已经打开的菜单列表中(不论其当前是列表状态还是编辑状态)
@@ -288,8 +289,11 @@ export default (router) => {
     // 通过activateSameCustomizePage配置路由到自定义界面，如果自定义界面标识相同，是否只激活同一个tab,默认为true,只激活同一个tab
     let activateSameCustomizePageFlag = false;
     if (enableActivateSameCustomizePage()) {
-      // 当前打开的tab的keepAliveModuleName===要跳转页面的keepAliveModuleName，或是当前是自定义界面的keepAliveModuleName包含当前要跳转的自定义界面的标识，不必keepAliveModuleName相等，包含自定义界面的标识即可
-      if (dynamicModuleTag !== '' && openedMenuLists.length > 0 && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))).length > 0) {
+      // 当前打开的tab的keepAliveModuleName===要跳转页面的keepAliveModuleName，
+      // 或是当前是自定义界面的keepAliveModuleName包含当前要跳转的自定义界面的标识，
+      // 不必keepAliveModuleName相等，包含自定义界面的标识即可
+      console.log(openedMenuLists,keepAliveModuleNameRes);
+      if (dynamicModuleTag !== '' && openedMenuLists.length > 0 && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== ''&& d.tableName===keepAliveModuleNameRes  && d.keepAliveModuleName.includes(keepAliveModuleNameRes))).length > 0) {
         activateSameCustomizePageFlag = true;
       }
     }

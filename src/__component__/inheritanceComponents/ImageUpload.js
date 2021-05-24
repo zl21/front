@@ -7,7 +7,10 @@
 
 import { ImageUpload } from '@syman/ark-ui-bcl';
 // import ImageUpload from 'arkui_BCL/ImageUpload';
-import network from '../../__utils__/network';
+import network ,{ getGateway }from '../../__utils__/network';
+import {
+  custommizedRequestUrl
+} from '../../constants/global';
 import { SetPlaceholder ,SetDisable} from './setProps';
 class CustomImageUpload {
   constructor(item) {
@@ -34,7 +37,7 @@ class CustomImageUpload {
       PropsData:{
         readonly: new SetDisable(this.item).init(), //控制字段是否可编辑
         disabled:new SetDisable(this.item).init(),
-        url: '/ad-app/p/cs/upload2',
+        url: getGateway(custommizedRequestUrl()['/p/cs/upload2'] || '/p/cs/upload2'),
         sendData:{
           path: `${this.item.tableName}/${this.item.itemId}/`,
           column: this.item.colname,
