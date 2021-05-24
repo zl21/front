@@ -49,11 +49,11 @@ export const refcolvalMap = ($this, config,key) => {
     let linkFormMap = {
         [key]: [`${$this.item.tableName}${$this.item.colname}`]
     };
-
+    console.log(targetVm,'1212');
     //挂载映射关系到对方 
     let checked = [];
     targetVm.forEach((target)=>{
-        if(target){
+        if(target.items.show){
             if(!target.items._linkFormMap ||  target.items._linkFormMap && !target.items._linkFormMap[key]){
                 target.items._linkFormMap = linkFormMap;
             }else{

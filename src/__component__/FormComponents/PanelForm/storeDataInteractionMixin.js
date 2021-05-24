@@ -78,14 +78,7 @@ export default {
           }else{
             ParentForm.formDataLabel[this.items.colname] = val;
           }
-          if(this.items.display ==='OBJ_CHECK' || this.items.display ==='OBJ_SELECT'){
-            const optionIndex = this.items.combobox.findIndex(x => x.limitval === val);
-            if (optionIndex !== -1) {
-              ParentForm.formDataLabel[this.items.colname] = this.items.combobox[optionIndex].limitdesc;
-            }
-          }
-         
-         
+          ParentForm.formLabel[this.items.colname] = val;         
           let keepAliveModuleName = this.activeTab.keepAliveModuleName && (this.activeTab.keepAliveModuleName).toLocaleUpperCase();
             // 初始化的状态
             if (!this.actived) {

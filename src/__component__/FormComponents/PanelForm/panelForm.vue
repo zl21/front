@@ -68,6 +68,7 @@ export default {
       formDataLabel: {}, //整个表单数据--显示值
       formChangeData: {}, //表单修改过的数据
       formDatadefault: {}, // 表单默认值
+      formLabel:{}, // 1.3 LABEL
       formItemLists:{}, // 表单数据重绘制
       objviewcol: 4, // 表单默认展示几列
       LinkageForm: [],// 联动状态

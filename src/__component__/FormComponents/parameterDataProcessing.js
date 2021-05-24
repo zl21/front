@@ -201,14 +201,19 @@ export default class ParameterDataProcessing {
     const isDetailPage = this.item.detailType // 是否是单对象界面
 
     if (this.item.defval) {
-      //  兼容默认值
+      //  兼容默认值defval 是单对象默认值， default 是列表默认值   valuedata:是单对象的值
       this.item.default = this.item.defval
     }
     // select
     if ((this.item.default || this.item.defval) && this.item.display === 'OBJ_SELECT') {
       // detailType为真，说明是单对象
       // return this.item.default ? this.item.default.split(',') : this.item.defval;
-      return this.item.detailType ? this.item.default : this.item.default.split(',');
+      if(this.item.valuedata){
+        return this.item.valuedata;
+      }else if(this.item.default){
+        return this.item.default.split(',');
+      }
+     
     }
 
     // fk外健
@@ -270,7 +275,7 @@ export default class ParameterDataProcessing {
       case 'OBJ_TIME': 
         return this.item.valuedata || this.item.defval || '';
       case 'YearMonth': 
-        return this.item.default || this.item.valuedata || this.item.defval || ''
+        return this.item.valuedata || this.item.default  || ''
       default:
         break
     }
@@ -316,7 +321,7 @@ export default class ParameterDataProcessing {
       }
     }
 
-    return this.item.default || this.item.valuedata || this.item.defval;
+    return this.item.valuedata || this.item.default ;
   }
 
 

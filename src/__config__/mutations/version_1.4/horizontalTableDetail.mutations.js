@@ -390,9 +390,9 @@ export default {
                   c.valuedata = copyDatas[item].map(item => item.Label).join(',');
                   copySaveDataForParam[c.colname] = [{ ID: copyDatas[item][0].ID, Label: copyDatas[item][0].Label }];
                 } else if (c.display === 'OBJ_DATENUMBER') {
-                  c.customDefault = copyDatas[item];
-                  c.valuedata = -1;
-                  c.defaultrange = -1;
+                  c.valuedata = copyDatas[item];
+                  // c.valuedata = -1;
+                  // c.defaultrange = -1;
                   copySaveDataForParam[c.colname] = copyDatas[item].replace(/-/g, '');
                 } else if(c.display === 'select') {
                   if(Array.isArray(copyDatas[item])){
@@ -449,15 +449,15 @@ export default {
                   copySaveDataForParam[c.colname] = c.valuedata;
                 }
               } else if (c.display === 'OBJ_DATENUMBER') {
-                c.customDefault = copyDatas[item];
-                c.default = -1;
-                c.defaultrange = -1;
+                c.valuedata = copyDatas[item];
+                // c.default = -1;
+                // c.defaultrange = -1;
                 copySaveDataForParam[c.colname] = copyDatas[item].replace(/-/g, '');
               } else if(c.display === 'select') {
                 if(Array.isArray(copyDatas[item])){
-                  c.default = copyDatas[item].join(',');
+                  c.valuedata = copyDatas[item].join(',');
                 }else{
-                  c.default = copyDatas[item];
+                  c.valuedata = copyDatas[item];
                 }
               }else{
                 // this.$set(c,'valuedata',copyDatas[item])

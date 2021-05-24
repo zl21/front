@@ -2079,6 +2079,8 @@
         } else { // 纵向布局
           let panelForm = FindInstance(this,'panelForm')
           const copyData = { ...panelForm[0].formDataLabel };
+         console.log(panelForm[0],panelForm[0].formDataLabel,'copyDatacopyData');
+
           this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
           const modifyData = this.updateData[this.tableName].changeData;// 取changeData值，因外键形式需要lable和ID
           // this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
@@ -3178,8 +3180,15 @@
         let panelForm = FindInstanceAll(this,'panelForm');
         let validate = [];
         if(panelForm && panelForm[0]){
-           validate = panelForm.reduce((arr,item)=>{
-              arr.push(...item.validate())
+           validate = panelForm.reduce((arr,item,index)=>{
+              console.log(item.tableName);
+              if(index === 0){
+                // 默认第一个主表
+                arr.push(...item.validate())
+              }else if(this.itemName ===item.tableName){
+                arr.push(...item.validate())
+              }
+              
               return arr;
           },[])
         }
@@ -3217,6 +3226,7 @@
               tabinlinemode = item.tabinlinemode;
             }
           });
+          console.log( this.tabPanel,' this.tabPanel');
           if (tabinlinemode === 'Y') { // 当子表中存在form时
             if (!this.itemTableValidation) {
               const itemCheckedInfo = this.itemCurrentParameter.checkedInfo;// 子表校验信息
