@@ -76,7 +76,12 @@
       this.item = this.PropsData.item;
       this.activeTab = this.$parent.$parent.activeTab;
       this.PropsData.isShowPopTip=()=>{
-
+        if(this.item.refcolval){
+          if(!this.item.webconf){
+            this.item.webconf = {}
+          }
+          this.item.webconf.refcolval = this.item.refcolval
+        }
         return setisShowPopTip(this, this.item.webconf,network)
       }  
       if(defaultrange()){
