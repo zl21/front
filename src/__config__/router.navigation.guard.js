@@ -181,6 +181,7 @@ export default (router) => {
     const {
       tableName, tableId, itemId, customizedModuleName, pluginModuleName, linkModuleName, customizedModuleId
     } = to.params;
+
     const preventRegisterModule = [CUSTOMIZED_MODULE_PREFIX, PLUGIN_MODULE_PREFIX, LINK_MODULE_PREFIX];
     const { routePrefix } = to.meta;
     const { isBack } = to.query;
@@ -229,7 +230,8 @@ export default (router) => {
     // 处理 openedMenuLists
     let existModuleIndex = -1;
     const existModule = openedMenuLists.filter((d, i) => {
-      if (d.tableName === tableName) {
+      let currentName = tableName || customizedModuleName || pluginModuleName || linkModuleName;
+      if (d.tableName === currentName) {
         // 已存在打开的模块界面，但是并不是同一个界面
         existModuleIndex = i;
         return true;
@@ -261,7 +263,7 @@ export default (router) => {
             isActive: true,
             label: `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
             keepAliveModuleName,
-            tableName,
+            tableName: tableName || customizedModuleName || pluginModuleName || linkModuleName,
             routeFullPath: to.fullPath, // 由to.path改为to.fullPath为取带query的路径
             routePrefix
           },
@@ -292,7 +294,6 @@ export default (router) => {
       // 当前打开的tab的keepAliveModuleName===要跳转页面的keepAliveModuleName，
       // 或是当前是自定义界面的keepAliveModuleName包含当前要跳转的自定义界面的标识，
       // 不必keepAliveModuleName相等，包含自定义界面的标识即可
-      console.log(openedMenuLists,keepAliveModuleNameRes);
       if (dynamicModuleTag !== '' && openedMenuLists.length > 0 && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== ''&& d.tableName===keepAliveModuleNameRes  && d.keepAliveModuleName.includes(keepAliveModuleNameRes))).length > 0) {
         activateSameCustomizePageFlag = true;
       }
@@ -317,7 +318,6 @@ export default (router) => {
               pluginModules = Object.assign({}, pluginModules, window.ProjectConfig.externalPluginModules);
             }
           }
-         
           commit('global/increaseOpenedMenuLists', {
             label: routePrefix === PLUGIN_MODULE_PREFIX ? pluginModules[pluginModuleName].name : `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
             keepAliveModuleName,

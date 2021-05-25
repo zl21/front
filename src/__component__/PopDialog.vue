@@ -86,6 +86,7 @@
         formItems:{
 
         },
+        showKey:'',
         newformList: {},
         Condition: 'list',
         parms: {},
@@ -198,22 +199,27 @@
         };
         
         searchObject.fixedcolumns = { ...this.formChangeData };
-        console.log(searchObject,'===');
         fkHttpRequest().fkQueryListPop({
           searchObject,
           serviceId: this.fkobj.serviceId,
           success: (res) => {
             if (res.data.code === 0) {
               const data = res.data.data;
+                            console.log(data,'1212');
+
               this.selectOperation.currentPageIndex = data.selectrange; // 当前页码
               this.selectOperation.pageSize = data.defaultrange; // 显示条数
               this.selectOperation.totalRowCount = data.totalRowCount;
               this.selectOperation.selectrange = data.selectrange;
               this.selectOperation.defaultrange = data.defaultrange;
               this.selectOperation.startindex = data.start;
+              
               this.SelectionData.thead = data.tabth.reduce((arr, item) => {
                 const title = data.tabth.find(x => x.colname === item.colname)
                   .name;
+                  if(item.isak){
+                  this.showKey = item.colname;
+                  }
                 if (title === 'ID') {
                   arr.unshift({
                     title: '序号',

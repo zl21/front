@@ -312,7 +312,18 @@ export default {
       removeSessionObject('savePath');
     }
   },
-  
+  modifycurrentLabel(state,data){
+    let extindex = -1;
+    state.openedMenuLists.forEach((item,index)=>{
+        if(item.keepAliveModuleName === data.name){
+          item.label = data.label;
+          extindex = index;
+        }
+    });
+    if(extindex == -1){
+      state.keepAliveLabelMaps[data.name] = data.label;
+    }
+  },
   increaseLinkUrl(state, { linkModuleName, linkUrl }) {
     const linkType = {};
     linkType[linkModuleName] = linkUrl;
@@ -349,6 +360,8 @@ export default {
     state.openedMenuLists[index].isActive = true;
   },
   forceUpdateOpenedMenuLists(state, { openedMenuInfo, index }) {
+    console.log(state,'==========');
+
     state.openedMenuLists.forEach((d) => { d.isActive = false; });
     state.openedMenuLists[index] = openedMenuInfo;
     state.openedMenuLists = state.openedMenuLists.concat([]);
@@ -373,6 +386,8 @@ export default {
       routeFullPath,
       routePrefix
     };
+    console.log('increaseOpenedMenuLists');
+
     if (notExist) {
       state.openedMenuLists = state.openedMenuLists
         .map(d => Object.assign({}, d, { isActive: false }))
@@ -419,6 +434,21 @@ export default {
     // 清空updataTreeId
     removeSessionObject('TreeId');
   },
+
+  modifycurrentLabel(state,data){
+    let extindex = -1;
+    state.openedMenuLists.forEach((item,index)=>{
+        if(item.keepAliveModuleName === data.name){
+          item.label = data.label;
+          extindex = index;
+        }
+    });
+    if(extindex == -1){
+      state.keepAliveLabelMaps[data.name] = data.label;
+      console.log(state.keepAliveLabelMaps,'12')
+      state.commit('increaseOpenedMenuLists',data)
+    }
+  },
   againClickOpenedMenuLists(state, {
     label,
     keepAliveModuleName,
@@ -428,6 +458,7 @@ export default {
     routePrefix,
     routeFullPath
   }) {
+    console.log('againClickOpenedMenuLists');
     state.openedMenuLists.forEach((d) => {
       d.isActive = false;
       let keepAliveModuleNameRes = '';

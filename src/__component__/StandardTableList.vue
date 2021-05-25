@@ -2514,6 +2514,7 @@
       }
     },
     mounted() {
+      
       setTimeout(() => {
         // 判断页面是否渲染完成,用于判断树是否调用
         this.mountedChecked = true;

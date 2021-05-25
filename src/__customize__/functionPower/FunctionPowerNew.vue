@@ -537,8 +537,15 @@
     created() {
       this.refresh();
       this.getButtonData();
+     
     },
     mounted() {
+       const { customizedModuleName, customizedModuleId } = this.$route.params;//获取定制界面ID，Name 
+      const keepAliveModuleName = `C.${customizedModuleName}.${customizedModuleId}`;//拼接当前定制界面模块名称
+      this.$store.commit('global/modifycurrentLabel', {
+          label:'测试',
+          name:keepAliveModuleName,//当前界面模块名称
+        });
       if (!this._inactive) {
         window.addEventListener('resize',
                                 this.fixTableColumnWidth());
@@ -997,13 +1004,22 @@
         }
       }, // 树选中改变触发
       btnClick(item) {
-        if (item.webdesc === '刷新') {
-          this.refreshButtonClick();
-        } else if (item.webdesc === '复制权限') {
-          this.copyPerm();
-        } else if (item.webdesc === '保存') {
-          this.savePermission();
-        }
+         this.$store.commit('global/tabOpen', {
+          // type: 'S',
+          // tableName:'T_V_OMSONLINEORDER',
+          // tableId:'10883',
+          url: '/SYSTEM/TABLE/V_ORDER_INFO/24503',
+          back: true
+        });
+        
+        
+        // if (item.webdesc === '刷新') {
+        //   this.refreshButtonClick();
+        // } else if (item.webdesc === '复制权限') {
+        //   this.copyPerm();
+        // } else if (item.webdesc === '保存') {
+        //   this.savePermission();
+        // }
       }, // 点击按钮触发
       customize() {
         const { fullPath } = this.$route;

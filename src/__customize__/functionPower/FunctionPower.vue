@@ -11,6 +11,9 @@
       >
         {{ item.webdesc }}
       </Button>
+      <Button @click="back">
+        返回
+      </Button>
     </div>
     <div class="content">
       <div class="contentLeft">
@@ -583,6 +586,16 @@
       this.getButtonData();
     },
     methods: {
+      back(){
+        this.$store.commit('global/tabOpen', {
+          // type: 'S',
+          // tableName:'T_V_OMSONLINEORDER',
+          // tableId:'10883',
+          url: '/SYSTEM/TABLE/V_ORDER_INFO/24503',
+          back: true
+        });
+
+      },
       refresh() {
         this.spinShow = true;
         const menuPromise = new Promise((resolve, reject) => { this.getMenuData(resolve, reject); });
