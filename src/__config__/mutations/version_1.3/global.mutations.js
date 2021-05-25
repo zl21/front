@@ -889,8 +889,29 @@ export default {
       // const domForMargin = dom.parentNode.parentNode.style.margin = '0px';
     }
   },
+  modifycurrentLabel(state,data){
+    let extindex = -1;
+    state.openedMenuLists.forEach((item,index)=>{
+        if(item.keepAliveModuleName === data.name){
+          item.label = data.label;
+          extindex = index;
+        }
+    });
+    if(extindex == -1){
+      state.keepAliveLabelMaps[data.name] = data.label;
+    }
+    store.commit('global/addKeepAliveLabelMaps',data)
+  },
   addKeepAliveLabelMaps(state, { name, label }) {
+    // name：C.AAO_SR_TEST.2326模块名称
+    // label：中文名
     state.keepAliveLabelMaps[name] = `${label}`;
+    const keepAliveLabelMapsObj = {
+      k: name,
+      v: label
+    };
+    updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);
+    // keepAliveLabel因刷新后来源信息消失，存入session
   },
   addServiceIdMap(state, { tableName, gateWay }) {
     state.serviceIdMap[tableName] = `${gateWay}`;

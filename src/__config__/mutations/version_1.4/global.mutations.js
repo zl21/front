@@ -323,6 +323,7 @@ export default {
     if(extindex == -1){
       state.keepAliveLabelMaps[data.name] = data.label;
     }
+    store.commit('global/addKeepAliveLabelMaps',data)
   },
   increaseLinkUrl(state, { linkModuleName, linkUrl }) {
     const linkType = {};
@@ -434,21 +435,6 @@ export default {
     // 清空updataTreeId
     removeSessionObject('TreeId');
   },
-
-  modifycurrentLabel(state,data){
-    let extindex = -1;
-    state.openedMenuLists.forEach((item,index)=>{
-        if(item.keepAliveModuleName === data.name){
-          item.label = data.label;
-          extindex = index;
-        }
-    });
-    if(extindex == -1){
-      state.keepAliveLabelMaps[data.name] = data.label;
-      console.log(state.keepAliveLabelMaps,'12')
-      state.commit('increaseOpenedMenuLists',data)
-    }
-  },
   againClickOpenedMenuLists(state, {
     label,
     keepAliveModuleName,
@@ -458,7 +444,6 @@ export default {
     routePrefix,
     routeFullPath
   }) {
-    console.log('againClickOpenedMenuLists');
     state.openedMenuLists.forEach((d) => {
       d.isActive = false;
       let keepAliveModuleNameRes = '';
