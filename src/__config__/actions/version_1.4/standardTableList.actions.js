@@ -83,47 +83,7 @@ export default {
           });
           commit('updateDefaultButtonsdatas', queryData.datas);
           commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
-          // queryData.datas.listbutton_filter_conf = [
-          //   {
-          //     action_id: '2296',
-          //     filter: [
-          //       {
-          //         col_id: '1',
-          //         match_value: '是,否'
-
-          //       },
-          //       {
-          //         col_id: '3',
-          //         match_value: '2019-08-06,2019-08-08'
-          //       }
-          //     ]
-          //   },
-          //   {
-          //     action_id: '2324',
-          //     filter: [
-          //       {
-          //         col_id: '2',
-          //         match_value: '是,否'
-          //       },
-          //       {
-          //         col_id: '4',
-          //         match_value: '2019-08-06,2019-08-08'
-          //       }
-          //     ]
-          //   }
-          // ];
-
           commit('updateFilterButtons', queryData.datas.listbutton_filter_conf);
-          // queryData.datas.multi_tab = [
-          //   {
-          //     tab_name: 'tab名1',
-          //     tab_value: [
-          //       {
-          //         SX: ['=N', '=Y']
-          //       }
-          //     ]
-          //   },
-          // ];
           queryData.datas.tablequery = {
             multi_tab: queryData.datas.multi_tab
           };

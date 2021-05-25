@@ -154,8 +154,23 @@ export default class ParameterDataProcessing {
         };
       }
       if (this.item.display === 'OBJ_DATE') {
-        const format = this.item.customDefault? 'yyyy/MM/dd hh:mm:ss' : 'yyyy/MM/dd'
-        arr = [new Date().r3Format(new Date(this.value[0]), format), new Date().r3Format(new Date(this.value[1]), format)];
+        if(this.item.customDefault) {
+          const format = 'yyyy/MM/dd hh:mm:ss'
+          arr = [new Date().r3Format(new Date(this.value[0]), format), new Date().r3Format(new Date(this.value[1]), format)];
+        }
+
+        if (this.item.default !== '-1') {
+          // default值为-1，没有默认值
+          // default值为0，查询当天
+          // default值为2，查询近2天
+          arr = [
+            `${new Date().setNewFormt(new Date()
+              .minusDays(Number(this.item.daterange))
+              .toIsoDateString(), '-', '/')} 00:00:00`,
+            `${new Date().setNewFormt(new Date().toIsoDateString(), '-', '/')} 23:59:59`
+          ];
+        }
+        
       }
       
       if (this.item.display === 'OBJ_DATENUMBER') {
