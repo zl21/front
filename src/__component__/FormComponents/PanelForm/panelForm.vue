@@ -43,6 +43,7 @@ import {
   console.log(MODULE_COMPONENT_NAME,'MODULE_COMPONENT_NAMEMODULE_COMPONENT_NAME')
 export default {
   components: { DownComponent, FormItem },
+  name:'PanelForm',
   props: {
     tableName: {  // 表名
       type: [Number, String],
