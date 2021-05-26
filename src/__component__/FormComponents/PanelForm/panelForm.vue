@@ -19,7 +19,7 @@
                            :id="formItemLists[item].childs[temp].colname"
                            :is="formItemLists[item].childs[temp].component"
                            :items="formItemLists[item].childs[temp]"
-                           :label-width="90" />
+                           :label-width="120" />
               </keep-alive>
             </div>
           </div>
