@@ -7,6 +7,7 @@
       class="input"
       icon="ios-search"
       @on-click="search"
+      @on-change="change"
       @on-enter="search"
     />
     <p class="orange" v-if="showTip && inputValue.length>0">"{{inputValue}}"{{Notice}}</p>
@@ -196,6 +197,9 @@
         const regu = '^[ ]+$';
         const re = new RegExp(regu);
         return re.test(str);
+      },
+      change(){
+          this.showTip = false;
       },
       search() {
         const isNull = this.isNull(this.inputValue);

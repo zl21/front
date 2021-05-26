@@ -31,6 +31,7 @@
         menuTreeQuery: '', // 菜单树检索的值
         oldMenuTreeObj: null, // 上一次选中的菜单节点的数据
         newMenuTreeObj: null, // 当前选中的菜单节点的数据
+        Notice:'', // 提示信息
         treeData: [
           // {
           //   title: 'parent 1',
