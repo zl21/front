@@ -117,11 +117,17 @@ class CustomInput {
   // 合并props
   mergeProps() {
     this.item.props = this.item.props || {}
+    const disabled = new SetDisable(this.item).init();
     this.props = {
       maxlength: this.item.length || 100,
       item: this.item,
       placeholder: new SetPlaceholder(this.item).init(),
-      disabled: new SetDisable(this.item).init(),
+      disabled,
+      clearable: true
+    }
+
+    if(disabled) {
+      this.props.clearable = false
     }
 
     if (this.item.isuppercase) {
@@ -158,7 +164,6 @@ class CustomInput {
     this.props.readonly = this.props.disabled
 
     this.props.rows = this.item.row || 1
-    this.props.clearable = true
     this.props.autofocus = this.item.autofocus
     this.props.size = this.item.size
     this.props.icon = this.item.icon
