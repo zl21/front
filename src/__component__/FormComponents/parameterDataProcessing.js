@@ -154,11 +154,6 @@ export default class ParameterDataProcessing {
         };
       }
       if (this.item.display === 'OBJ_DATE') {
-        if(this.item.customDefault) {
-          const format = 'yyyy/MM/dd hh:mm:ss'
-          arr = [new Date().r3Format(new Date(this.value[0]), format), new Date().r3Format(new Date(this.value[1]), format)];
-        }
-
         if (this.item.default !== '-1') {
           // default值为-1，没有默认值
           // default值为0，查询当天
@@ -170,7 +165,11 @@ export default class ParameterDataProcessing {
             `${new Date().setNewFormt(new Date().toIsoDateString(), '-', '/')} 23:59:59`
           ];
         }
-        
+
+        if(this.item.customDefault) {
+          const format = 'yyyy/MM/dd hh:mm:ss'
+          arr = [new Date().r3Format(new Date(this.value[0]), format), new Date().r3Format(new Date(this.value[1]), format)];
+        }
       }
       
       if (this.item.display === 'OBJ_DATENUMBER') {

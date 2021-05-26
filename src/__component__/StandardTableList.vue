@@ -1657,7 +1657,8 @@
         // if (value && !value.flag) { // 返回时查询之前页码
         //   this.searchData.startIndex = 0;
         // }
-        this.searchData.fixedcolumns = this.dataProcessing();
+        const fixedcolumns = await this.dataProcessing();
+        this.searchData.fixedcolumns = fixedcolumns
         // this.searchData.fixedcolumns = Object.assign({}, this.searchData.fixedcolumns, this.dataProcessing());
         if (value) { // 返回时查询之前页码
             if(!value.flag){
@@ -1673,7 +1674,7 @@
           el.tabClick(tabCurrentIndex);
           return
         } else {
-          this.searchData.fixedcolumns = await this.dataProcessing();
+          this.searchData.fixedcolumns = fixedcolumns;
         }
         let json = JSON.parse(JSON.stringify(this.searchData));
         json = Object.assign({}, json, this.treeSearchData);
