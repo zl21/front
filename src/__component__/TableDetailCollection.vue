@@ -3362,6 +3362,9 @@
       docRender(cellData, tag) {
         const that = this;
         return (h, params) => {
+          if(!this.copyDataSource.row[params.index]){
+              return false;
+          }
           const content = `${this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).reduce((acc, cur) => {
             acc.push(`【${cur.name}】`);
             return acc;
@@ -3445,6 +3448,9 @@
       docReadonlyRender(cellData, tag) {
         const that = this;
         return (h, params) => {
+          if(!this.copyDataSource.row[params.index]){
+              return false;
+          }
           const content = `${this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).reduce((acc, cur) => {
             acc.push(`【${cur.name}】`);
             return acc;
