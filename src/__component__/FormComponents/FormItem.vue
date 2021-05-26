@@ -405,7 +405,7 @@ export default {
       this.propsMessage = componentInstance.props;
       // 是否有外部配置
       this.propsMessage = Object.assign(
-        this.propsMessage, (setComponentsProps())(this.items, this.propsMessage)
+        this.propsMessage, (setComponentsProps())(this.items.display, this.propsMessage)
       );
       return component;
     },

@@ -229,15 +229,21 @@ export default (router) => {
 
     // 处理 openedMenuLists
     let existModuleIndex = -1;
-    const existModule = openedMenuLists.filter((d, i) => {
-      let currentName = tableName || customizedModuleName || pluginModuleName || linkModuleName;
-      if (d.tableName === currentName) {
-        // 已存在打开的模块界面，但是并不是同一个界面
-        existModuleIndex = i;
-        return true;
-      }
-      return false;
-    })[0];
+    
+      const existModule = openedMenuLists.filter((d, i) => {
+        let currentName = tableName || customizedModuleName || pluginModuleName || linkModuleName;
+        if (d.tableName === currentName) {
+          // 已存在打开的模块界面，但是并不是同一个界面
+          if(enableActivateSameCustomizePage()){
+              existModuleIndex = i;
+            }
+          return true;
+        }
+        return false;
+      })[0];
+
+  
+    
     if (existModuleIndex !== -1 && KEEP_MODULE_STATE_WHEN_CLICK_MENU) {
       // Condition One:
       // 如果目标路由界面所对应的[表]已经存在于已经打开的菜单列表中(不论其当前是列表状态还是编辑状态)
@@ -298,6 +304,7 @@ export default (router) => {
         activateSameCustomizePageFlag = true;
       }
     }
+    console.log('新开',keepAliveModuleName,activateSameCustomizePageFlag);
     if (dynamicModuleTag !== '' && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName).length === 0 && !activateSameCustomizePageFlag) {
       // 新开tab
       // 目标路由所对应的[功能模块]没有存在于openedMenuLists中，则将目标路由应该对应的模块信息写入openedMenuLists
