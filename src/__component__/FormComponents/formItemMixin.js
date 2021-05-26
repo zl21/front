@@ -35,8 +35,12 @@ export default {
           if(this.items.webconf && this.items.webconf.formRequest){
             // 多字段赋值、配置在来源字段  字段B、C、D根据A字段查询结果赋值
             // 默认值时候不走
+            console.log(val,this.items.name,this.actived);
             if(this.actived){
               formRequestInit(this,this.items.webconf.formRequest);
+            }else if(this.items.webconf.formRequest.copy){
+              formRequestInit(this,this.items.webconf.formRequest);
+
             }
           }
           if(this.items.webconf && this.items.webconf.dynamicforcompute){

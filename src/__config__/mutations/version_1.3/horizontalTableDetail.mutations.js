@@ -361,12 +361,14 @@ export default {
     //     }
     //   });
     // });
-    console.log(copyDatas,'copyDatascopyDatas')
     state.copyDataForReadOnly.addcolums.forEach((d) => { 
       // 复制按钮操作时江接口请求回来的配置信息赋值给form
       Object.keys(copyDatas).forEach((item) => {
         if (d.childs) {
           d.childs.forEach((c) => {
+            if(c.webconf&& c.webconf.formRequest){
+              c.webconf.formRequest.copy = true;
+            }
             if (item === c.colname) {
               // b.readonly = c.readonly;
               if (c.readonly === true) {
@@ -419,6 +421,9 @@ export default {
           });
         }  else if (!d.childs) { // 处理hr外面不可编辑字段的默认值逻辑
           const c = d.child;
+          if(c.webconf&& c.webconf.formRequest){
+            c.webconf.formRequest.copy = true;
+          }
           if (item === c.name) {
             // b.readonly = c.readonly;
             if (c.readonly === true) {
