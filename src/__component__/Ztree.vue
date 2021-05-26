@@ -9,6 +9,7 @@
       @on-click="search"
       @on-enter="search"
     />
+    <p class="orange" v-if="showTip && inputValue.length>0">"{{inputValue}}"{{Notice}}</p>
     <!-- <p>
       关键字：<input
         id="key"
@@ -43,6 +44,7 @@
       return {
         inputValue: '',
         tableName: 'treeDemo',
+        showTip:false,
         setting: {
           check: {
             enable: false// checkbox
@@ -111,6 +113,10 @@
       placeholder: {// 设置查询框placeholder
         type: String,
         default: () => '请输入角色'
+      },
+      Notice:{
+        type: String,
+        default: () => '匹配失败，请重新输入'
       },
       treeDatas: {
         type: Function,
@@ -194,8 +200,19 @@
       search() {
         const isNull = this.isNull(this.inputValue);
         if (!isNull) {
-          fuzzySearch(`${this.tableName}`, this.inputValue, null, true); // 初始化模糊搜索方法
+         
+          let checkoutZtree = fuzzySearch(`${this.tableName}`, this.inputValue, null, true); // 初始化模糊搜索方法
+          checkoutZtree.then((res)=>{
+            if(res.length>0){
+              this.showTip = false;
+            }else{
+              this.showTip = true;
+              this.expandAll();
+            }
+
+          })
         } else {
+          this.showTip = false;
           this.expandAll();
         }
       },
@@ -233,6 +250,10 @@
 <style>
 .cancelNode{
   background:transparent !important;
+}
+.orange{
+  color:#fd6442;
+  line-height: 30px;
 }
     /* #areaTree{
         border:1px solid #e5e5e5;    margin-bottom: 2px;border-radius: 4px;overflow: scroll;width: 300px;

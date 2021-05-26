@@ -7,6 +7,7 @@
       ref="zTree"
       :z-nodes="treeData"
       :placeholder="placeholder"
+      :Notice="Notice"
       @clickTreeNode="clickTreeNode"
     />
   </div>
@@ -123,6 +124,7 @@
           this.treeData = value.data;
           this.treeName = value.name;
           this.placeholder = value.placeholder;
+          this.Notice  = value.Notice;
           this.query = value.query;
           this.searchData = value.searchData;
           this.checkNode();
