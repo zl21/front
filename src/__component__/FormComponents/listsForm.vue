@@ -164,7 +164,9 @@
             const json = this.dealData(item, value);
              if(item.fkobj && (item.fkobj.searchmodel === 'mop')){
                if(Version()==='1.3'){
-                 json[item.colname] = [json[item.colname]]
+                 if(!Array.isArray(json[item.colname])){
+                  json[item.colname] = [json[item.colname]]
+                 }
                }
 
             }
