@@ -1,4 +1,5 @@
 /* eslint-disable */
+const webpack = require('webpack');
 const path = require('path');
 // const { VueLoaderPlugin } = require('vue-loader');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
@@ -140,6 +141,9 @@ module.exports = () => ({
         from: path.resolve(__dirname, "./src/assets/theme/custom.less"),
         to: path.resolve(__dirname, "./r3.publish/src/assets/theme")
     }]),
+    new webpack.DefinePlugin({
+      'process.env.BUILD_ENV': JSON.stringify(process.env.BUILD_ENV)
+    }),
     // new ModuleFederationPlugin({ 
     //   name: '', 
     //   remotes: {
