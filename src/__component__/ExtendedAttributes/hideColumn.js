@@ -47,10 +47,8 @@ function HiddenFields(tableName){
   eventLoops[tableName].every(item => {
     item.configuration.every(temp => {
 
-      // 当temp中ishide为true时，则refval控制字段的隐藏。当ishide为false时，则控制字段的显示
-      if(item.source.activeTab.keepAliveModuleName.split('.')[0].toLocaleUpperCase() ==='S'){
-        return false;
-      }
+      // 
+    
       // let target = FindInstance(item.source,temp.target,`${item.source.activeTab.tableName}`)[0];
       let target = FindInstance(item.source,temp.target,item.source.items.tableName)[0];      
       if(!target){
