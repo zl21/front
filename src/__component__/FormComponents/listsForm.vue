@@ -162,10 +162,13 @@
 
            
             const json = this.dealData(item, value);
-             if(item.fkobj && (item.fkobj.searchmodel === 'mop')){
+             if(item.fkobj && item.fkobj.searchmodel){
                if(Version()==='1.3'){
                  if(!Array.isArray(json[item.colname])){
-                  json[item.colname] = [json[item.colname]]
+                  if(json[item.colname]){
+                      let id = json[item.colname].split(',');
+                      json[item.colname] = id;
+                  }
                  }
                }
 
