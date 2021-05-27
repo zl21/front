@@ -46,6 +46,7 @@
           disabled: this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true),
           hidecolumns:['id', 'value'],
           enterType:this.item.detailType,
+          singleTurn:true,
           blurType: this.item.detailType,
           placeholder:new SetPlaceholder(this.item).init()
      };

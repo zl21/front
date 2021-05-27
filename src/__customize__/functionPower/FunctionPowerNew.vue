@@ -185,32 +185,11 @@
                         />{{ item.description }}
                       </td>
                       <td>
-                        <!-- <Checkbox
+                        <Checkbox
                           v-show="item.children && item.children.length > 0"
                           :value="item.children && item.children.length > 0 ? item.children[0].permission === 128 : false"
                           @on-change="(currentValue) => functionCheckboxChange(currentValue, {row: item, index: index})"
-                        />{{ item.children.length > 0 ? item.children[0].description : '' }} -->
-
-                        <!-- <div v-if="item.children && item.children.length > 0">
-                          <div
-                            v-for="checkItem in item.children"
-                            :key="checkItem.description"
-                          >
-                            {{ checkItem.description }}
-                          </div>
-                        </div> -->
-
-                        <div v-if="item.children && item.children.length > 0">
-                          <template
-                            v-for="(checkItem, j) in item.children"
-                          >
-                            <Checkbox
-                              :key="j"
-                              :value="checkItem.permission === 128"
-                              @on-change="(currentValue) => functionCheckboxChange(currentValue, {row: item, index: index, itemIndex: j})"
-                            />{{ checkItem.description ? checkItem.description : '' }}
-                          </template>
-                        </div>
+                        />{{ item.children.length > 0 ? item.children[0].description : '' }}
                       </td>
                     </tr>
                   </tbody>
@@ -420,39 +399,39 @@
         //   }
         // ], // 表格头部,
         extendTableData: [], // 扩展功能表格数据
-        // columnsBottom: [
-        //   {
-        //     title: '扩展功能',
-        //     key: 'extendFunction',
-        //     width: 200,
-        //     render: (h, params) => h('div', [
-        //       h('Checkbox', {
-        //         style: {},
-        //         props: {
-        //           value: params.row.permission === 128
-        //         },
-        //         on: {
-        //           'on-change': (val) => this.extendFunctionCheckboxChange(val, params)
-        //         }
-        //       }, params.row.description)
-        //     ]),
-        //   },
-        //   {
-        //     title: '功能',
-        //     key: 'function',
-        //     render: (h, params) => h('div', [
-        //       h(params.row.children.length > 0 ? 'Checkbox' : '', {
-        //         style: {},
-        //         props: {
-        //           value: params.row.children && params.row.children.length > 0 ? params.row.children[0].permission === 128 : false
-        //         },
-        //         on: {
-        //           'on-change': (val) => this.functionCheckboxChange(val, params)
-        //         }
-        //       }, params.row.children.length > 0 ? params.row.children[0].description : '',)
-        //     ]),
-        //   }
-        // ], // 扩展功能表格头部
+        columnsBottom: [
+          {
+            title: '扩展功能',
+            key: 'extendFunction',
+            width: 200,
+            render: (h, params) => h('div', [
+              h('Checkbox', {
+                style: {},
+                props: {
+                  value: params.row.permission === 128
+                },
+                on: {
+                  'on-change': (val) => this.extendFunctionCheckboxChange(val, params)
+                }
+              }, params.row.description)
+            ]),
+          },
+          {
+            title: '功能',
+            key: 'function',
+            render: (h, params) => h('div', [
+              h(params.row.children.length > 0 ? 'Checkbox' : '', {
+                style: {},
+                props: {
+                  value: params.row.children && params.row.children.length > 0 ? params.row.children[0].permission === 128 : false
+                },
+                on: {
+                  'on-change': (val) => this.functionCheckboxChange(val, params)
+                }
+              }, params.row.children.length > 0 ? params.row.children[0].description : '',)
+            ]),
+          }
+        ], // 扩展功能表格头部
 
         columns: [
           {
@@ -537,15 +516,8 @@
     created() {
       this.refresh();
       this.getButtonData();
-     
     },
     mounted() {
-       const { customizedModuleName, customizedModuleId } = this.$route.params;//获取定制界面ID，Name 
-      const keepAliveModuleName = `C.${customizedModuleName}.${customizedModuleId}`;//拼接当前定制界面模块名称
-      this.$store.commit('global/modifycurrentLabel', {
-          label:'测试',
-          name:keepAliveModuleName,//当前界面模块名称
-        });
       if (!this._inactive) {
         window.addEventListener('resize',
                                 this.fixTableColumnWidth());
@@ -576,9 +548,6 @@
         if (this.tableData.length > 0) {
           this.$nextTick(() => {
             const { upperTable, functionColumnTd, functionColumnTh } = this.$refs;
-            if (!upperTable && !functionColumnTd && !functionColumnTh) {
-              return;
-            }
             if (functionColumnTd) {
               this.functionColumnWidth = functionColumnTd[0].offsetWidth;
             }
@@ -1004,22 +973,13 @@
         }
       }, // 树选中改变触发
       btnClick(item) {
-         this.$store.commit('global/tabOpen', {
-          // type: 'S',
-          // tableName:'T_V_OMSONLINEORDER',
-          // tableId:'10883',
-          url: '/SYSTEM/TABLE/V_ORDER_INFO/24503',
-          back: true
-        });
-        
-        
-        // if (item.webdesc === '刷新') {
-        //   this.refreshButtonClick();
-        // } else if (item.webdesc === '复制权限') {
-        //   this.copyPerm();
-        // } else if (item.webdesc === '保存') {
-        //   this.savePermission();
-        // }
+        if (item.webdesc === '刷新') {
+          this.refreshButtonClick();
+        } else if (item.webdesc === '复制权限') {
+          this.copyPerm();
+        } else if (item.webdesc === '保存') {
+          this.savePermission();
+        }
       }, // 点击按钮触发
       customize() {
         const { fullPath } = this.$route;
@@ -1286,13 +1246,13 @@
           this.tableData[row.extendIndex] = tableObj;
         }
       }, // 下边表格扩展功能数据修改
-      editTableDataForFunction(permission, row, itemIndex) {
+      editTableDataForFunction(permission, row) {
         // const tableIndex = this.tableData.findIndex(item => item.ad_table_id === row.ad_table_id);
         // const tableObj = this.tableData.find(item => item.ad_table_id === row.ad_table_id);
         const tableObj = this.tableData[row.extendIndex];
         if (tableObj.actionList && tableObj.actionList.length > 0) {
           const actionListIndex = tableObj.actionList.findIndex(item => item.ad_action_id === row.ad_action_id);
-          tableObj.actionList[actionListIndex].children[itemIndex].permission = permission;
+          tableObj.actionList[actionListIndex].children[0].permission = permission;
           this.tableData[row.extendIndex] = tableObj;
         }
       }, // 下边表格功能数据修改
@@ -1576,14 +1536,13 @@
         // this.getExtendTableSaveData(val, params.row);
       }, // 下边表格扩展功能的checkbox改变时触发
       functionCheckboxChange(val, params) {
-        const { itemIndex } = params;
         // 判断是否选中
         if (val) {
-          params.row.children[itemIndex].permission = 128;
-          this.editTableDataForFunction(128, params.row, itemIndex);
+          params.row.children[0].permission = 128;
+          this.editTableDataForFunction(128, params.row);
         } else {
-          params.row.children[itemIndex].permission = 0;
-          this.editTableDataForFunction(0, params.row, itemIndex);
+          params.row.children[0].permission = 0;
+          this.editTableDataForFunction(0, params.row);
         }
         this.extendTableData[params.index] = params.row;
 

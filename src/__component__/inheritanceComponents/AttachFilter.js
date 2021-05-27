@@ -40,6 +40,7 @@
          colid: this.item.colid, // 表id
          colname: this.item.colname, // 表名称
          enterType:this.item.detailType,
+         singleTurn:true,
          fkobj: {
            colid: this.item.colid,
            fkdisplay: this.item.fkobj.searchmodel,
