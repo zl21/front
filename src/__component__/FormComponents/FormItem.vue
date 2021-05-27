@@ -400,13 +400,16 @@ export default {
         default:
           break;
       }
+      if(componentInstance){
+         component = componentInstance.Components || '';
+        this.propsMessage = componentInstance.props || {};
+        // 是否有外部配置
+        this.propsMessage = Object.assign(
+          this.propsMessage, (setComponentsProps())(this.items.display, this.propsMessage)
+        );
 
-      component = componentInstance.Components;
-      this.propsMessage = componentInstance.props;
-      // 是否有外部配置
-      this.propsMessage = Object.assign(
-        this.propsMessage, (setComponentsProps())(this.items.display, this.propsMessage)
-      );
+      }
+     
       return component;
     },
     routerNext () {
