@@ -261,7 +261,6 @@ export default {
     const copySaveDataForParam = {};
     state.copyDataForReadOnly.addcolums.forEach((d) => { // 复制按钮操作时江接口请求回来的配置信息赋值给form
       Object.keys(copyDatas).forEach((item) => {
-       
         if (d.childs) {
           d.childs.forEach((c) => {
             if(c.webconf&& c.webconf.formRequest){
@@ -291,7 +290,7 @@ export default {
                   copySaveDataForParam[c.colname] = JSON.parse(copyDatas[item]);
                 } else if (c.fkdisplay === 'drp' || c.fkdisplay === 'mrp' || c.fkdisplay === 'pop') {
                   c.refobjid = copyDatas[item].map(item => item.ID).join(',');
-                  c.default = copyDatas[item].map(item => item.Label).join(',');
+                  c.valuedata = copyDatas[item].map(item => item.Label).join(',');
                   copySaveDataForParam[c.colname] = [{ ID: copyDatas[item][0].ID, Label: copyDatas[item][0].Label }];
                 }else if (c.display === 'OBJ_DATENUMBER') {
                   c.valuedata = copyDatas[item];
@@ -300,9 +299,9 @@ export default {
                   copySaveDataForParam[c.colname] = copyDatas[item].replace(/-/g, '');
                 } else if(c.display === 'select') {
                   if(Array.isArray(copyDatas[item])){
-                    c.default = copyDatas[item].join(',');
+                    c.valuedata = copyDatas[item].join(',');
                   }else{
-                    c.default = copyDatas[item];
+                    c.valuedata = copyDatas[item];
                   }
                 }else{
                   // this.$set(c,'valuedata',copyDatas[item])
@@ -341,6 +340,7 @@ export default {
                 }
               }
             } else if (copyDatas[item]) {
+
               if (c.display === 'doc') {
                 c.valuedata = copyDatas[item]
                 copySaveDataForParam[c.colname] = JSON.parse(copyDatas[item]);
@@ -362,9 +362,9 @@ export default {
                 copySaveDataForParam[c.colname] = copyDatas[item].replace(/-/g, '');
               } else if(c.display === 'select') {
                 if(Array.isArray(copyDatas[item])){
-                  c.default = copyDatas[item].join(',');
+                  c.valuedata = copyDatas[item].join(',');
                 }else{
-                  c.default = copyDatas[item];
+                  c.valuedata = copyDatas[item];
                 }
               }else{
                 // this.$set(c,'valuedata',copyDatas[item])
