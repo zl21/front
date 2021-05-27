@@ -65,6 +65,9 @@ export default class LinkageRelationships{
   // 处理字段隐藏
   hideColumn(target){
     let source = this.findItem(target.hidecolumn.refcolumn)
+    if(!source){
+      return false
+    }
     source.linkage = source.linkage || JSON.parse(JSON.stringify(this.linkage))
     let obj = Object.assign(target.hidecolumn,{
       target: target.colname,
@@ -78,7 +81,10 @@ export default class LinkageRelationships{
   setAttributes(target){
     target.setAttributes.field.every(item => {
       let source = this.findItem(item.refcolumn);
-      source.linkage = source.linkage || JSON.parse(JSON.stringify(this.linkage))
+      if(!source){
+         return false
+      }
+      source.linkage = source.linkage || JSON.parse(JSON.stringify(this.linkage || []))
       let obj = {
         field: {
           refcolumn: target.colname,
