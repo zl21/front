@@ -10,6 +10,8 @@
  * @value 需要处理的数据值
  */
 
+ import { Version } from '../../constants/global'
+
 function get_default_datenumber(formItem, isDetailPage) {
   // 单对象界面
   if(isDetailPage) {
@@ -154,22 +156,28 @@ export default class ParameterDataProcessing {
         };
       }
       if (this.item.display === 'OBJ_DATE') {
-        if (this.item.default !== '-1') {
-          // default值为-1，没有默认值
-          // default值为0，查询当天
-          // default值为2，查询近2天
-          arr = [
-            `${new Date().setNewFormt(new Date()
-              .minusDays(Number(this.item.daterange))
-              .toIsoDateString(), '-', '/')} 00:00:00`,
-            `${new Date().setNewFormt(new Date().toIsoDateString(), '-', '/')} 23:59:59`
-          ];
+        if(Version() === '1.3') {
+          return {
+            [this.item.colname]: this.value.join('~')
+          };
+        } else {
+          if (this.item.default !== '-1') {
+            // default值为-1，没有默认值
+            // default值为0，查询当天
+            // default值为2，查询近2天
+            arr = [
+              `${new Date().setNewFormt(new Date()
+                .minusDays(Number(this.item.daterange))
+                .toIsoDateString(), '-', '/')} 00:00:00`,
+              `${new Date().setNewFormt(new Date().toIsoDateString(), '-', '/')} 23:59:59`
+            ];
+          } 
+          if(this.item.customDefault) {
+            const format = 'yyyy/MM/dd hh:mm:ss'
+            arr = [new Date().r3Format(new Date(this.value[0]), format), new Date().r3Format(new Date(this.value[1]), format)];
+          }
         }
-
-        if(this.item.customDefault) {
-          const format = 'yyyy/MM/dd hh:mm:ss'
-          arr = [new Date().r3Format(new Date(this.value[0]), format), new Date().r3Format(new Date(this.value[1]), format)];
-        }
+        
       }
       
       if (this.item.display === 'OBJ_DATENUMBER') {
