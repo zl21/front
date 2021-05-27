@@ -41,6 +41,7 @@ function setAttributes(source,configuration) {
 }
 
 function HiddenFields(tableName){
+  eventLoops[tableName].every(item => {
     item.configuration.every(temp => {
       // if(item.source.activeTab.keepAliveModuleName.split('.')[0].toLocaleUpperCase() ==='S'){
       //   return false;
