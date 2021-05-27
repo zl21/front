@@ -910,6 +910,11 @@ export default {
       k: name,
       v: label
     };
+    state.openedMenuLists.forEach((item)=>{
+        if(item.keepAliveModuleName === name){
+          item.label = label;
+        }
+    });
     updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);
     // keepAliveLabel因刷新后来源信息消失，存入session
   },
