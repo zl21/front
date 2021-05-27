@@ -32,6 +32,9 @@
 <script>
   import RenderComponent from './RenderComponent';
   import ParameterDataProcessing from './parameterDataProcessing';
+  import {
+  Version
+} from '../../constants/global';
 
   export default {
     computed: {
@@ -156,7 +159,17 @@
               return;
             }
             const value = item && item.isuppercase && components.value &&  !item.display ?components.value.toUpperCase():components.value;
+
+           
             const json = this.dealData(item, value);
+             if(item.fkobj && (item.fkobj.searchmodel === 'mop')){
+               if(Version()==='1.3'){
+                 if(!Array.isArray(json[item.colname])){
+                  json[item.colname] = [json[item.colname]]
+                 }
+               }
+
+            }
             formData = Object.assign({}, formData, json);
             return item;
           });

@@ -36,10 +36,10 @@
  
      let PropsData = {
          disabled: this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true), //控制字段是否可编辑
-         blurType: this.item.detailType,
+         blurType: this.item.detailType || false,
          colid: this.item.colid, // 表id
          colname: this.item.colname, // 表名称
-         enterType:this.item.detailType,
+         enterType:this.item.detailType || false,
          singleTurn:true,
          fkobj: {
            colid: this.item.colid,
