@@ -1,7 +1,7 @@
 
 <template>
   <div 
-    class="listsForm"
+    class="listsForm downComponent-context"
   >
     <div
       v-if="Object.keys(ItemLists).length > (defaultColumn*searchFoldnum) "

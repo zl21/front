@@ -9,7 +9,7 @@
           {{ formItemLists[item].parentdesc }}
           <div slot="content"
                :style="setWidth"
-               class="content">
+               class="content R3masterForm">
             <div v-for="(temp,index) in Object.keys(formItemLists[item].childs)"
                  :key="formItemLists[item].childs[temp]._index"
                  :index="index"
