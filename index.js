@@ -33,7 +33,6 @@ import './src/assets/theme/custom.less';
 import './src/assets/css/loading.css';
 import './src/assets/css/custom-ext.less';
 import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
-import '@syman/ark-ui-bcl/dist/tailwindcss.css'
 
 // 全局指令
 import inputNumber from './src/directive/inputNumber';
