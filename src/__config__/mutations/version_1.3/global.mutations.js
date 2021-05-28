@@ -55,7 +55,7 @@ export default {
     // isMenu,
     // lablel:名称,
     // type:link外链类型需要传类型，
-    // lingName:外链表名，
+    // linkName:外链表名，
     // linkId:外链表ID，
     // query:路由参数
     if (param && param.url && param.url.includes('?')) {
@@ -76,7 +76,7 @@ export default {
         );
       }
     } else if (actionType === 'https:' || actionType === 'http:') {
-      const name = `${LINK_MODULE_COMPONENT_PREFIX}.${param.lingName.toUpperCase()}.${param.linkId}`;     
+      const name = `${LINK_MODULE_COMPONENT_PREFIX}.${param.linkName.toUpperCase()}.${param.linkId}`;     
       // this.addKeepAliveLabelMaps({ name, label: param.lablel });
       state.keepAliveLabelMaps[name] = `${param.lablel}`;
       if (param.query) {
@@ -85,18 +85,18 @@ export default {
       }
       const linkUrl = param.url;
       // const linkId = param.linkId;
-      const linkModuleName = param.lingName.toUpperCase();
+      const linkModuleName = param.linkName.toUpperCase();
       if (!store.state.global.LinkUrl[linkModuleName]) {      
         store.commit('global/increaseLinkUrl', { linkModuleName, linkUrl });
       }
       const obj = {
-        linkName: param.lingName.toUpperCase(),
+        linkName: param.linkName.toUpperCase(),
         linkId: param.linkId,
         linkUrl,
         linkLabel: param.lablel
       };
       window.sessionStorage.setItem('tableDetailUrlMessage', JSON.stringify(obj));
-      const path = `${LINK_MODULE_PREFIX}/${param.lingName.toUpperCase()}/${param.linkId}`;
+      const path = `${LINK_MODULE_PREFIX}/${param.linkName.toUpperCase()}/${param.linkId}`;
       router.push({
         path
       });

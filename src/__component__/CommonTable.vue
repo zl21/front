@@ -597,7 +597,7 @@
                   query: params.column.customerurl.refobjid,
                   lablel: params.column.customerurl.reftabdesc,
                   isMenu: true,
-                  lingName: params.column.customerurl.linkname,
+                  linkName: params.column.customerurl.linkname,
                   linkId: params.column.customerurl.refobjid,
                 };
                 this.directionalRouter(param);// 定向路由跳转方法
