@@ -21,23 +21,23 @@ export default class DropMethods {
      let blur = this.instance.eventFunction[blurName];
      let self = this;
 
-    //  this.instance.eventFunction[blurName] =function(){
-    //     if(self.item.detailType){
-    //       // 单对象保存界面,必须有值才能展示
-    //       setTimeout(()=>{
-    //         if(!Array.isArray(self.instance.value)){
-    //          let dom =  self.instance.$el.querySelector('.iconios-close-circle');
-    //          if(dom){
-    //             dom.click();
-    //          }
-    //         }
-    //       },200)
+     this.instance.eventFunction[blurName] =function(){
+        if(self.item.detailType){
+          // 单对象保存界面,必须有值才能展示
+          setTimeout(()=>{
+            if(!Array.isArray(self.instance.value)){
+             let dom =  self.instance.$el.querySelector('.iconios-close-circle');
+             if(dom){
+                dom.click();
+             }
+            }
+          },200)
             
-    //     }
-    //     if(blur){
-    //       blur.call(this, ...arguments);
-    //     }
-    // }
+        }
+        if(blur){
+          blur.call(this, ...arguments);
+        }
+    }
     
   }
 
