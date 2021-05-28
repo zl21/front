@@ -33,14 +33,10 @@ module.exports = {
     'import/no-dynamic-require':'off',
     'no-console':'off',
     'vue/no-async-in-computed-properties': 'off',
-<<<<<<< HEAD
     'prefer-rest-params': 'off',
-    'func-names': 'off'
-    'vue/html-self-closing': 'off'
-=======
+    'func-names': 'off',
     'vue/html-self-closing': 'off',
     'no-nested-ternary': 'off'
->>>>>>> theme_jflow_dev_new
   },
   overrides: [
     {
