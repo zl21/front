@@ -51,6 +51,7 @@
          coldesc: this.item.coldesc,
          colid: this.item.colid,
          colname: this.item.colname,
+         singleTurn:true,
          datalist: this.item.fkobj.searchmodel === 'mop' ? [{
            lable: 0,
            value: '更多筛选'
