@@ -3267,7 +3267,7 @@
                   query: params.row[cellData.customerurl.refobjid],
                   lablel: cellData.customerurl.reftabdesc,
                   isMenu: true,
-                  lingName: cellData.customerurl.linkname,
+                  linkName: cellData.customerurl.linkname,
                   linkId: params.row[cellData.customerurl.refobjid],
                 };
                 this.directionalRouter(param);// 定向路由跳转方法

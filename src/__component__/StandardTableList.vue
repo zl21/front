@@ -1011,22 +1011,52 @@
             };
             this.tabOpen(tab);
           } else if (objdistype === 'link') { // 支持跳转外链界面配置动态参数
-            const param = {
-              url: colDef.customerurl.tableurl,
-              query: rowData[colDef.customerurl.refobjid].val,
-              lablel: colDef.customerurl.reftabdesc,
-              isMenu: true,
-              lingName: colDef.customerurl.linkname,
-              linkId: rowData[colDef.customerurl.refobjid].val,
-            };
-            this.directionalRouter(param);// 定向路由跳转方法
-            const data = {
-              type: 'standardCustomerurlLink',
-              value: rowData,
-              customizedModuleName: colDef.customerurl.linkname.toUpperCase()
-              // 因外链界面tablinkName相同时，只激活一个tab,所以外链界面用linkName作为key存入session,避免因勾选的id不同存入多个，导致关闭当前tab时无法清除存入的多个
-            };
-            this.updateCustomizeMessage(data);
+            // 字段链接跳转外链界面扩展
+            if (this.onCellSingleClick_type_link && typeof this.onCellSingleClick_type_link === 'function') {
+              const obj = {
+                colDef,
+                rowData
+              };
+              this.onCellSingleClick_type_link(obj);
+            } else {
+              const query = {};
+              const queryArray = colDef.customerurl.refobjid.split(',');
+              if (queryArray.length > 1) {
+                queryArray.reduce((a, o) => {
+                  if (rowData[o] && rowData[o].val) query[o] = rowData[o].val;
+                }, {});
+              } else if (queryArray.length === 1) {
+                query.objId = rowData[colDef.customerurl.refobjid].val;
+              }
+
+              const param = {
+                url: colDef.customerurl.tableurl, // 跳转的外链界面内加载的iframe的src地址，即加载的页面地址
+                query, // 地址携带的参数
+                label: colDef.customerurl.reftabdesc, // 外链界面对应的Tab展示名称
+                isMenu: true, // 设置了label则该参数必须设置为true
+                linkName: colDef.customerurl.linkname, // 外链界面表名，作为路由参数
+                linkId: queryArray.length > 1 ? rowData.ID.val : rowData[colDef.customerurl.refobjid].val, // 外链界面表ID，作为路由参数
+              };
+
+              // const param = {
+              //   url: colDef.customerurl.tableurl,
+              //   query: rowData[colDef.customerurl.refobjid].val,
+              //   lablel: colDef.customerurl.reftabdesc,
+              //   isMenu: true,
+              //   linkName: colDef.customerurl.linkname,
+              //   linkId: rowData[colDef.customerurl.refobjid].val,
+              // };
+              this.directionalRouter(param);// 定向路由跳转方法
+
+              const data = {
+                type: 'standardCustomerurlLink',
+                value: rowData,
+                customizedModuleName: colDef.customerurl.linkname.toUpperCase()
+                // 因外链界面tablinkName相同时，只激活一个tab,所以外链界面用linkName作为key存入session,避免因勾选的id不同存入多个，导致关闭当前tab时无法清除存入的多个
+              };
+              this.updateCustomizeMessage(data);
+            }
+            
           }
         }
       },
