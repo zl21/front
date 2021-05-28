@@ -1,7 +1,7 @@
 /* eslint-disable vue/html-indent */
 /* eslint-disable vue/html-self-closing */
 <template>
-  <div class="TableDetailCollection">
+  <div :class="classes">
     <div class="detail-collection">
       <div class="detail-top">
         <div class="page-buttons">
@@ -139,7 +139,7 @@
   // import { setTimeout } from 'timers';
   import regExp from '../constants/regExp';
   import {
-    Version, LINK_MODULE_COMPONENT_PREFIX, INSTANCE_ROUTE_QUERY, enableActivateSameCustomizePage, ossRealtimeSave
+    Version, LINK_MODULE_COMPONENT_PREFIX, INSTANCE_ROUTE_QUERY, enableActivateSameCustomizePage, ossRealtimeSave, classFix
   } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
   import ComplexsDialog from './ComplexsDialog'; // emit 选中的行
@@ -299,7 +299,7 @@
         type: Boolean,
         default: false
       },
-      
+
       objreadonly: {
         // 主表按钮的
         type: Boolean,
@@ -340,6 +340,11 @@
         exportTasks: ({ exportTasks }) => exportTasks
 
       }),
+      classes () {
+        return [
+          `${classFix}TableDetailCollection`,
+        ];
+      },
       currentTabIndex() {
         return this.tabCurrentIndex;
 
@@ -392,7 +397,7 @@
         console.log(55, pageType.Horizontal);
         return this.type === pageType.Horizontal;
       },
-      
+
       buttonGroups() { // 按钮组的数据组合
         // let tabIndex = null;
         // if (this.WebConf && this.WebConf.isCustomizeTab && this.type === 'horizontal') {
@@ -516,7 +521,7 @@
       }
     },
     watch: {
-     
+
       buttonGroups: {
         handler(val) {
           this.buttonData = val;
@@ -575,7 +580,6 @@
     },
     created() {
       this.ChineseDictionary = ChineseDictionary;
-
       this.setSelectDefaultValue();
     },
     methods: {
@@ -1087,7 +1091,7 @@
         //   tabIndex = this.tabCurrentIndex;
         // }
         const { itemId, tableName } = this.$route.params;
-      
+
         if (this.type === 'vertical') { // 上下结构
           new Promise((resolve, reject) => {
             this.getObjectTabForMainTable({
@@ -1198,7 +1202,7 @@
               value: tab,
               customizedModuleId: tab.webname.toUpperCase()
             // 因外链界面tablinkName相同时，只激活一个tab,所以外链界面用linkName作为key存入session,避免因勾选的id不同存入多个，导致关闭当前tab时无法清除存入的多个
-              
+
             };
             this.updateCustomizeMessage(data);
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
@@ -1245,7 +1249,7 @@
             // updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
             updateSessionObject('undataFromPageCustomizeButtonInfo', undataFromPageCustomizeButtonInfo);// 将自定义按钮为跳转自定义界面类型的自定义按钮信息存入session
 
-           
+
             const customizedModuleName = tabAction.split('/')[1];
             const urlRes = `${actionType}/${customizedModuleName.toLocaleUpperCase()}/${tab.webid}`;
             const param = {
@@ -1268,9 +1272,9 @@
               data.customizedModuleId = id;
             }
             this.updateCustomizeMessage(data);
-          } 
-          
-          
+          }
+
+
           // else if (actionType.toUpperCase() === 'CUSTOMIZED') {
           //   const name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
           //   this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
@@ -1289,7 +1293,7 @@
           //     customizedModuleId: tab.webid
           //   };
           //   this.updateCustomizeMessage(data);
-         
+
           // }
         }
 
@@ -1531,7 +1535,7 @@
               tdAlign: ele.type === 'NUMBER' ? 'right' : 'center',
               width: ele.webconf && ele.webconf.standard_width
             };
-            
+
             if (ele.comment) {
               param.renderHeader = this.tooltipRenderHeader();
             }
@@ -1552,7 +1556,7 @@
             if (ele.isorder) {
               param.sortable = 'custom';
             }
-            
+
             const item = Object.assign({}, ele, param);
             return item;
           });
@@ -1746,27 +1750,27 @@
         }
         return this.DISPLAY_ENUM[cellData.display].event(cellData, this.DISPLAY_ENUM[cellData.display].tag);
       },
-      strLen(str) {  
-        let len = 0;  
-        for (let i = 0; i < str.length; i++) {  
-          if (str.charCodeAt(i) > 127 || str.charCodeAt(i) === 94) {  
-            len += 2;  
-          } else {  
-            len++;  
-          }  
-        }  
-        return len;  
+      strLen(str) {
+        let len = 0;
+        for (let i = 0; i < str.length; i++) {
+          if (str.charCodeAt(i) > 127 || str.charCodeAt(i) === 94) {
+            len += 2;
+          } else {
+            len++;
+          }
+        }
+        return len;
       },
       textRender(cellData) {
         return (h, params) => {
           let maxlength = '';
-          
+
           if (params.column.webconf && params.column.webconf.maxlength) {
             maxlength = params.column.webconf.maxlength;
           }
           const dom = document.createElement('div');// 创建dom
           dom.id = 'domID';
-          dom.innerHTML = '';// 
+          dom.innerHTML = '';//
           if (params.row[cellData.colname] && params.row[cellData.colname].length > maxlength) {
             dom.innerHTML = params.row[cellData.colname].slice(0, maxlength);
           } else {
@@ -1804,7 +1808,7 @@
               innerHTML,
               title: innerHTML
             },
-        
+
           },);
         };
       },
@@ -2186,7 +2190,7 @@
                       value.transferDefaultSelected = [];
                     }
                     this.fkAutoData = [];
-                    
+
                     const serviceId = this.copyDataSource.tabth.find(item => item.colname === params.column.colname).serviceId;
                     fkHttpRequest().fkFuzzyquerybyak({
                       searchObject: {
@@ -2470,8 +2474,8 @@
                           value.transferDefaultSelected = [];
                         }
                         this.fkAutoData = [];
-                        
-              
+
+
                         const serviceId = this.copyDataSource.tabth.find(item => item.colname === params.column.colname).serviceId;
 
                         fkHttpRequest().fkFuzzyquerybyak({
@@ -2680,7 +2684,7 @@
                 this.fkAutoData = [];
                 this.putDataFromCell(null, this.dataSource.row[params.index][cellData.colname].refobjid !== -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
                 console.log(7, this.dataSource.row[params.index][cellData.colname].refobjid, this.dataSource.row[params.index][cellData.colname].refobjid > -1);
-                
+
                 this.putLabelDataFromCell('', this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, this.dataSource.row[params.index][cellData.colname].val);
               }
             }
@@ -3253,7 +3257,7 @@
                 this.updateCustomizeMessage(datas);
                 // 将元数据配置的refobjid，字符串，可配置多个字段，将配置的字段解析后用作lu y，供弹框作为参数使用
                 const type = 'tableDetailAction';
-            
+
                 const url = `/${cellData.customerurl.tableurl.toUpperCase()}/${params.row[cellData.customerurl.refobjid]}`;
                 const tab = {
                   type,
@@ -3425,7 +3429,7 @@
                       this.copyDataSource.row[params.index][cellData.colname].val = JSON.stringify(val);
                       this.putDataFromCell(val.length > 0 ? JSON.stringify(val) : '', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
                       this.putLabelDataFromCell(val.length > 0 ? JSON.stringify(val) : '', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                    
+
                       if (!ossRealtimeSave()) {
                         DispatchEvent('childTableSaveFile', { detail: { type: 'save' } });
                       }
@@ -3616,7 +3620,7 @@
         const assignDataSource = Object.assign({}, this.dataSource);
         assignDataSource.tabth.timestamp = new Date().getTime(); // 确保会改变并刷新
 
-        this.isRefreshClick = true;// 清除删除前修改的存储在表格组件内用于存入模块状态内的表格数据，不清除则下次修改表格数据时，会再次抛出上一次的，因为删除失败是模拟刷新，通过数据重新的方式触发表格数据更新，不是通过接口的方式 
+        this.isRefreshClick = true;// 清除删除前修改的存储在表格组件内用于存入模块状态内的表格数据，不清除则下次修改表格数据时，会再次抛出上一次的，因为删除失败是模拟刷新，通过数据重新的方式触发表格数据更新，不是通过接口的方式
 
         if (this.isHorizontal) {
           this.updateTableData(assignDataSource);
@@ -3913,7 +3917,7 @@
           fixedcolumns[this.searchCondition] = this.searchInfo;
         }
 
-         
+
         const { itemId } = this.$route.params;
         // table, objid, refcolid, startindex, range, fixedcolumns
         // let tabIndex = null;
@@ -4495,79 +4499,6 @@
   };
 </script>
 
-<style scoped lang="less">
-    .TableDetailCollection {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        overflow-y: hidden;
-        margin: 10px 5px 10px 5px;
-        .detail-collection {
-            display: flex;
-            flex: 1;
-            flex-direction: column;
-            overflow-y: hidden;
-            .detail-top {
-                margin-bottom: 6px;
-                display: flex;
-                justify-content: space-between;
-                .page-buttons {
-                    display: flex;
-                    flex-wrap: wrap;
-                }
-                .table-page {
-                    white-space: nowrap;
-                }
-                .detail-buttons {
-                    margin-left: 10px;
-                    a {
-                        line-height: 26px;
-                        vertical-align: middle;
-                    }
-                }
-                .detail-search {
-                    display: inline-block;
-                    display: flex;
-                    // justify-content: space-around;
-                    // align-content: stretch;
-                    .ark-select {
-                        width: 120px;
-                    }
-                    .detail-search-input {
-                        margin-left: 10px;
-                        .ark-input-group {
-                            top: 0px;
-                        }
-                        .ark-input-group-with-prepend {
-                            width: 270px;
-                        }
-                        .ark-input-group-prepend {
-                            .ark-btn {
-                                display: flex;
-                                align-items: center;
-                                span {
-                                    bottom: 2px;
-                                    position: relative;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            .table-outside {
-                flex: 1;
-                overflow-y: hidden;
-                display: flex;
-                .table-in {
-                    flex: 1;
-                }
-            }
-            .queryCondition {
-                margin-top: 5px;
-            }
-        }
-    }
-</style>
 <style lang="less">
     .table-in {
         flex: 1;

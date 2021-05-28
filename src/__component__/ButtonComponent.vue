@@ -1,8 +1,6 @@
 <template>
-  <div
-    class="R3-buttonList"
-  >
-    <div class="R3-button-group">
+  <div :class="classes">
+    <div :class="classGroup">
       <!-- //查找 -->
       <!-- <Poptip
         trigger="hover"
@@ -16,7 +14,7 @@
         v-text="search"
       />
       <!-- </Poptip> -->
-     
+
       <Button
         v-show="dataArray.reset"
         id="reset"
@@ -31,7 +29,7 @@
         :ref="item.ref"
         type="fcdefault"
         @click="btnclick('fix', item,index)"
-        v-text="item.name" 
+        v-text="item.name"
       />
       <Button
         v-for="(item,index) in dataArray.waListButtonsConfig.waListButtons"
@@ -41,7 +39,7 @@
         :disabled="item.disabled"
         type="fcdefault"
         @click="btnclick('custom', item)"
-        v-text="item.webdesc" 
+        v-text="item.webdesc"
       >
         <!-- <Poptip
           trigger="hover"
@@ -82,10 +80,10 @@
         :ref="item"
         type="fcdefault"
         @click="btnclick('extraposition', item)"
-        v-text="item.name" 
+        v-text="item.name"
       />
-    
-     
+
+
       <Dropdown
         v-if="dataArray.printValue"
         id="print"
@@ -140,7 +138,7 @@
         @click="btnclick('refresh')"
         v-text="refresh"
       /> -->
-     
+
       <Button
         v-if="dataArray.temporaryStorage"
         id="temporaryStorage"
@@ -155,7 +153,7 @@
         @click="btnclick('back')"
         v-text="back"
       />
-      
+
       <Dialog
         ref="dialogRef"
         :id-array="idArray"
@@ -173,12 +171,12 @@
     </div>
   </div>
 </template>
-<script> 
-  
+<script>
+
   import { mapState } from 'vuex';
   import Dialog from './Dialog.vue';
   import network from '../__utils__/network';
-  import { MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, enableHistoryAndFavoriteUI } from '../constants/global';
+  import { MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, enableHistoryAndFavoriteUI, classFix } from '../constants/global';
 
 
   export default {
@@ -300,6 +298,16 @@
       ...mapState('global', {
         userInfo: ({ userInfo }) => userInfo,
       }),
+      classes () {
+        return [
+          `${classFix}buttonList`,
+        ];
+      },
+      classGroup () {
+        return [
+          `${classFix}buttonGroup`,
+        ];
+      },
     },
     methods: {
       choseWaListButton(data) {
@@ -315,7 +323,7 @@
       //   }, 1000);
       // },
       clearSelectIdArray() { // 用于关闭打印相关弹框清空标准列表界面选中项
-        this.$emit('clearSelectIdArray'); 
+        this.$emit('clearSelectIdArray');
       },
       clearDialogComponentName() {
         this.dialogComponentName = null;
@@ -376,7 +384,7 @@
                 if (id === 2530) {
                   this.$R3loading.hide(tableName);
                   this.objTabActionDialog(tab);
-                } else { 
+                } else {
                   src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${this.idArray}&userId=${this.userInfo.id}`;
                   this.setIframeForPrint(src);
                 }
@@ -415,14 +423,14 @@
         document.getElementById('iFrame').contentWindow.print();
         this.clearSelectIdArray();
         const dom = document.getElementById('iFrame');
-        if (dom.attachEvent) {  
-          dom.attachEvent('onload', () => { // IE  
+        if (dom.attachEvent) {
+          dom.attachEvent('onload', () => { // IE
             this.$R3loading.hide(tableName);
-          });  
-        } else {  
-          dom.onload = () => { // 非IE  
+          });
+        } else {
+          dom.onload = () => { // 非IE
             this.$R3loading.hide(tableName);
-          };  
+          };
         }
       },
       objTabActionDialog(tab) { // 动作定义弹出框
@@ -445,74 +453,7 @@
     created() {
       // this[MODULE_COMPONENT_NAME] = getComponentName();
     },
-   
+
   };
 </script>
 
-<style lang="less" scope>
-.R3-buttonList {
-  padding: 8px 0px;
-  
-  > div {
-    display: inline-block;
-  }
-  }
-  .R3-button-group {
-    display: flex;
-    justify-content: flex-start;
-    overflow: hidden;
-    flex-wrap: wrap;
-    .hide{
-      display:none;
-    }
-    .ark-select-dropdown {
-      .ark-dropdown-menu {
-        min-width: 58px;
-        .ark-dropdown-item {
-          padding: 5px 6px;
-        }
-      }
-    }
-    .ff--el-dropdown {
-      float: left;
-    }
-    button {
-      height: 22px;
-      line-height: 18px;
-      margin-right: 8px;
-      margin-left: 0px;
-      padding: 0 8px;
-      margin-bottom: 4px;
-    }
-    > button:last-child {
-      margin-right: 0px;
-    }
-    .hiddenDropdown {
-      height: 24px;
-      button {
-        margin-top: -1px;
-      }
-    }
-    .iconfont{
-      font-size: 12px;
-    }
-    .collection,.ark-btn-fcdefault{
-      min-width: auto !important;
-    }
-//     .ark-dropdown-item {
-//     border: 1px solid #fd6442;
-//     border-radius: 4px;
-//     margin: 4px;
-//    color: #fd6442;
-
-// }
-//    .ark-dropdown-item:hover {
-//    color: #feb2a1;
-//     background-color: #fff;
-//     border-color: #feb2a1;
-// }
-
-  
-  }
- 
-</style>

@@ -47,7 +47,7 @@
       };
     },
     computed: {
-     
+
     },
     methods: {
       setValue(value) {

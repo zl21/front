@@ -1,5 +1,5 @@
 <template>
-  <div class="set-panel">
+  <div :class="classes">
     <div class="panel-main">
       <div class="panel-item">
         <p :title="userInfo.ename">
@@ -65,7 +65,7 @@
 
 <script>
   import { mapState, mapMutations, mapActions } from 'vuex';
-  import { layoutDirection, enableInitializationRequest, customizeMixins } from '../constants/global';
+  import { layoutDirection, enableInitializationRequest, customizeMixins, classFix } from '../constants/global';
   import network, { urlSearchParams } from '../__utils__/network';
   import moduleName from '../__utils__/getModuleName';
 
@@ -77,7 +77,12 @@
       ...mapState('global', {
         userInfo: ({ userInfo }) => userInfo,
         collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
-      })
+      }),
+      classes () {
+        return [
+          `${classFix}set-panel`,
+        ];
+      },
     },
     watch: {
       num7() {
@@ -151,7 +156,7 @@
         network
           .post('/p/cs/setUserParam', urlSearchParams(param))
           .then(() => {
-            
+
           });
       },
       operationFavorites(showFavorites) {
@@ -183,53 +188,3 @@
 </script>
 
 
-<style lang="less" scoped>
-.set-panel {
-  .panel-main {
-    .panel-item {
-      height: 49px;
-      line-height: 49px;
-      border-bottom: solid 1px #d8d8d8;
-      position: relative;
-      .explanatory{
-         position: relative;
-         top: 2px;
-      }
-      .set-panel-number{
-         position: absolute;
-        right: 15px;
-        top: 15px;
-        width:50px;
-      }
-      cursor: pointer;
-      p {
-        height: 50px;
-        line-height: 50px;
-        margin: 0 20px;
-        overflow: hidden;
-      }
-      span {
-        font-size: 12px;
-        color: #000;
-      }
-      svg {
-        width: 18px;
-        height: 18px;
-      }
-      .switch {
-        position: absolute;
-        right: 15px;
-        top: 15px;
-      }
-    }
-  }
-  .ark-switch-checked {
-        border: 1px solid#19be6b !important;
-    background-color: #19be6b !important;
-}
-    .ark-input-number-handler-wrap {
-    opacity: 1 !important;
-    background :red  !important;
-}
-}
-</style>

@@ -1,0 +1,20 @@
+@list-item-prefix-cls: ~"@{css-prefix}ListsForm";
+@defaultCol: 4;  //控制一行展示的列数
+
+.@{list-item-prefix-cls} {
+  flex-wrap: wrap;
+  display: flex;
+  border: 1px solid #d8d8d8;
+  padding: 0 28px 8px 0;
+  position: relative;
+  transition: height 0 ease;
+  overflow: hidden;
+  margin-bottom: 6px;
+  .item {
+    width: percentage(1/@defaultCol);
+    box-sizing: border-box;
+  }
+  .long{
+    display: none;
+  }
+}

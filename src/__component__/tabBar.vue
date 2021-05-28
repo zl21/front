@@ -1,5 +1,5 @@
 <template>
-  <div class="r3-tab-nav">
+  <div :class="classes">
     <Tabs
       ref="R3_Tabs"
       type="card"
@@ -16,6 +16,8 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import { classFix } from '../constants/global';
+
   export default {
     name: 'TabBar',
     props: {
@@ -31,7 +33,13 @@
         lastIndex: null
       };
     },
-
+    computed: {
+      classes () {
+        return [
+          `${classFix}TabBar`,
+        ];
+      },
+    },
     methods: {
       tabClick(index) {
         this.currentIndex = index;
@@ -50,45 +58,5 @@
   display: flex;
   background: #f5f7f7;
   margin-top: 20px;
-}
-</style>
-
-<style lang="less">
-@import url('../assets/theme/custom.less');
-.r3-tab-nav {
-  .ark-tabs-bar {
-    margin-bottom: 0;
-    border-bottom: none;
-    width: 100%;
-  }
-
-  .ark-tabs-card {
-    width: 100%;
-  }
-
-  .ark-tabs.ark-tabs-card > .ark-tabs-bar .ark-tabs-tab {
-      background: #f5f7f7;
-      color: @primary-color;
-      border: none;
-      line-height: 22px;
-      width: auto;
-      padding: 4px 20px;
-      font-weight: bold;
-      &:hover {
-        color: @primary-color;
-      }
-      &:last-child {
-        border-right: none;
-      }
-    }
-
-  .ark-tabs.ark-tabs-card > .ark-tabs-bar .ark-tabs-tab-active {
-      background: @primary-color;
-      border-color: @primary-color;
-      color: #f5f7f7;
-      &:hover {
-        color: #f5f7f7;
-      }
-    }
 }
 </style>

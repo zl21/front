@@ -2,7 +2,7 @@
   <!-- v-if="newformList.addcolums" -->
   <div
     ref="modify"
-    class="popDialog_pop"
+    :class="classes"
   >
     <Spin
       v-if="loading"
@@ -11,7 +11,7 @@
       <Icon
         type="ios-loading"
         size="18"
-        class="demo-spin-icon-load" 
+        class="demo-spin-icon-load"
       />
     </Spin>
     <component
@@ -23,7 +23,7 @@
       :default-column="Number(4)"
       :searchFoldnum="10"
       @onHandleEnter="searchForm"
-      
+
     />
     <div class="pageInfo">
       <Page
@@ -67,7 +67,7 @@
   </div>
 </template>
 <script>
-  import { Version, defaultrange } from '../constants/global';
+  import { Version, defaultrange, classFix } from '../constants/global';
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
   // import listsForm from '../__component__/FormComponents/listsForm.vue';
@@ -123,6 +123,13 @@
         }
       }
     },
+    computed: {
+      classes () {
+        return [
+          `${classFix}PopDialog`,
+        ];
+      },
+    },
     created() {
       this.loading = true;
       const params = {
@@ -131,7 +138,7 @@
         table: this.fkobj.reftable
       };
       this.params = params;
-      
+
       this.getData(params);
     },
     mounted() {
@@ -196,7 +203,7 @@
           startindex: this.selectOperation.startindex,
           range: defaultrange() ? defaultrange() : this.selectOperation.pageSize
         };
-        
+
         searchObject.fixedcolumns = { ...this.formChangeData };
         console.log(searchObject,'===');
         fkHttpRequest().fkQueryListPop({
@@ -246,14 +253,14 @@
         });
       },
       searchForm() {
-        
+
          this.$refs.listsForm.getFormData().then((res)=>{
                     this.formChangeData = res;
                     this.selectOperation.startindex = 0;
         //this.getList();
                     this.getList();
           });
-        
+
       },
       saveData() {
 
@@ -345,22 +352,3 @@
     }
   };
 </script>
-<style lang="less" scoped>
-.modify-tip {
-  display: inline-block;
-  margin-left: 20px;
-  font-size: 12px;
-  margin: 0px 0 10px;
-  height: 24px;
-  line-height: 24px;
-}
-.popDialog_pop {
-  padding: 20px;
-}
-.pageInfo {
-  padding: 10px 0;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-}
-</style>

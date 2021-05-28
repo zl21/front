@@ -76,7 +76,7 @@
 
           if (this.items.webconf && this.items.webconf.definedType) {
             this.componentName = `${this.storageItem.name}_${this.items.webconf.definedType}`;
-            target = window.ProjectConfig.customizeMainTableField[this.items.webconf.definedType]; 
+            target = window.ProjectConfig.customizeMainTableField[this.items.webconf.definedType];
           } else {
             this.componentName = `${this.storageItem.name}_${this.items.colname}`;
             target = window.ProjectConfig.customizeMainTableField[this.items.colname];
@@ -102,6 +102,3 @@
   };
 </script>
 
-<style lang="less" scoped>
- 
-</style>

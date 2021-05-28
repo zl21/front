@@ -29,11 +29,19 @@ import './src/__utils__/getChildComponent';
 import './node_modules/ag-grid/dist/styles/ag-grid.css';
 import './src/assets/r3.iconfont/iconfont.css';
 import './src/assets/css/ag-theme-balham.less';
-import './src/assets/theme/custom.less';
 import './src/assets/css/loading.css';
 import './src/assets/css/custom-ext.less';
 import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
 import '@syman/ark-ui-bcl/dist/tailwindcss.css'
+
+
+// 组件css汇总
+import './src/assets/styles/index.less';
+import './src/assets/theme/custom.less';
+
+// 自定义
+// import './src/assets/styles/xc.less';
+// import './src/assets/styles/xc1.less';
 
 // 全局指令
 import inputNumber from './src/directive/inputNumber';
@@ -156,7 +164,7 @@ const init = () => {
           lineHeight: '16px'
         }
       }, [
-        
+
         h('i', {
           props: {
           },
@@ -190,7 +198,7 @@ const init = () => {
       ])
     });
   };
-  
+
 
   window.getObjdisType = getObjdisType;
 
@@ -226,7 +234,7 @@ const getCategory = () => {
               const name = n.substring(n.lastIndexOf('/') + 1, n.length);
               a[name.toUpperCase()] = c.serviceId;
             } else {
-              a[c.value.toUpperCase()] = c.serviceId; 
+              a[c.value.toUpperCase()] = c.serviceId;
             }
             return a;
           }, {});
@@ -291,8 +299,8 @@ if (enableGateWay()) {
 
 const packageMessage = {
   version: '1.8.7',
-  packageTime: '2020.09.21.09.39', 
-  user: 'AD',   
+  packageTime: '2020.09.21.09.39',
+  user: 'AD',
 };
 projectConfig.packageMessage = packageMessage;
 window.ProjectConfig = projectConfig;

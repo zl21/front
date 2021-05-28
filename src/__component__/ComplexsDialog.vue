@@ -1,9 +1,9 @@
 <template>
-  <div class="dialog">
+  <div :class="classes">
     <Complexs-dialog
       ref="dialog"
       :treedata="Tree"
-      :loading="loading"   
+      :loading="loading"
       :tree-loading="tree_loading"
       :table-loading="tableLoading"
       :component-data="componentData"
@@ -29,6 +29,7 @@
 
 <script>
   import { Version } from '../constants/global';
+  import { classFix } from '../constants/global';
 
   const multipleComple = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/compleHttpRequest.js`).default;
 
@@ -59,6 +60,11 @@
       }
     },
     computed: {
+      classes () {
+        return [
+          `${classFix}ComplexSelect`,
+        ];
+      },
       Tree() {
         // console.log(this.treedata,'computed');
         return this.treedata;
@@ -128,7 +134,7 @@
             pageNum: 1,
             tableprops: {
               tabindex: false,
-            },  
+            },
             height: true,
             pageOptions: [10, 20, 50, 100],
             search: '',
@@ -136,7 +142,7 @@
           }
         ],
         CONDITIONList: [], // 组织树 选中值
-        CONDITIONTable: {}, // 组织树 --查询条件 
+        CONDITIONTable: {}, // 组织树 --查询条件
         sendMessage: {
           CONDITION: [], // 组织树 -- 选中结果查询条件
           GLOBAL: '', //  文字查询
@@ -172,7 +178,7 @@
         },
         listData: {
           id: [],
-          list: [] 
+          list: []
         },
         CONDITIONThis: {}, // 当前的条件
         idslist: [], // 选中所有的id
@@ -188,7 +194,7 @@
           arr.push(item.AKNAME);
           return arr;
         }, []);
-       
+
         this.treedata = data.data.map((obj, i) => {
           const option = {};
           option.title = obj.NAME;
@@ -339,7 +345,7 @@
       },
       changeTtree(obj) {
         if (!this.flag) {
-          return; 
+          return;
         }
         this.treeId(obj);
         this.treeSelectData = obj;
@@ -364,7 +370,7 @@
             ids[item] = this.chooseTreeData.reduce((arr, option) => {
               if (option.AKNAME === item && option.ID) {
                 arr.push(option.ID);
-              } 
+              }
               return arr;
             }, []);
           });
@@ -378,7 +384,7 @@
               exids[item] = this.chooseTreeData.reduce((arr, option) => {
                 if (option.AKNAME === item && option.ID) {
                   arr.push(option.ID);
-                } 
+                }
                 return arr;
               }, []);
             });
@@ -477,7 +483,7 @@
       },
       clickChoose(row, rowIndex, type) {
         // 单击或者双击的选中id
-        const tip = type !== 'click' ? 'tip' : '';  
+        const tip = type !== 'click' ? 'tip' : '';
         if (this.checkbox) {
           const checkd = this.verify(this.NOTIN, row.ID, tip);
           if (checkd) {
@@ -579,7 +585,7 @@
       // eslint-disable-next-line consistent-return
       transfertwo() {
         // console.log(this.treeSelectData.findIndex((item)=>{ return item.nodeKey === 1}));
-        // this.sendMessage = 
+        // this.sendMessage =
         if (this.chooseTreeData.length < 1) {
           return false;
         }
@@ -602,7 +608,7 @@
               screen: this.CONDITIONThis,
               screen_string: this.HRORG_STRING.join(',')
             });
-            
+
             this.multipleScreenResultCheck(this.sendMessage, 1, 'all');
             this.clearTree();
           } else {
@@ -625,7 +631,7 @@
               screen: this.CONDITIONThis,
               screen_string: this.HRORG_STRING.join(',')
             });
-           
+
             this.multipleScreenResultCheck(this.sendMessage, 1, 'all');
             this.clearTree();
           }
@@ -653,7 +659,7 @@
               this.listData.list[i].exclude = true;
               this.text.result.push(this.listData.list[i]);
             }
-          });  
+          });
         } else {
           this.listData.id.forEach((id, i) => {
             const eq = this.IN.findIndex(x => x === id);
@@ -762,7 +768,7 @@
           text: JSON.stringify(this.text)
         };
       },
-      savObjemessage() {  
+      savObjemessage() {
         const sendMessage = {
           idArray: [],
           lists: {
@@ -825,7 +831,7 @@
         this.sendMessage.GLOBAL = '';
         this.sendMessage.PAGENUM = 1;
         this.sendMessage.PAGESIZE = 50;
-        
+
         this.treeChecked();
         // this.multipleSelectionTable(this.sendMessage, 0);
       },
@@ -885,7 +891,7 @@
         let CONDITION = [];
         if (!Array.isArray(obj.CONDITION)) {
           CONDITION = Object.keys(obj.CONDITION).reduce((arr, item) => {
-            arr.push({ [item]: obj.CONDITION[item] });            
+            arr.push({ [item]: obj.CONDITION[item] });
             return arr;
           }, []);
         } else {
@@ -947,7 +953,7 @@
         // this.componentData[1].pageSize = 50;
         // this.componentData[1].pageNum = 1;
         // this.index = 0;
-        
+
         this.multipleSelectionTable(tableData, 0);
         if (Object.prototype.hasOwnProperty.call(this.filter, 'value')) {
           if (this.filter.text) {
@@ -955,7 +961,7 @@
             this.text.result = JSON.parse(this.filter.text).result;
           }
           //  有默认值
-          this.sendMessage = { ...JSON.parse(JSON.stringify(this.filter.value)) };  
+          this.sendMessage = { ...JSON.parse(JSON.stringify(this.filter.value)) };
           this.sendMessage.PAGENUM = 1;
           this.sendMessage.PAGESIZE = 50;
           this.CONDITIONList = JSON.parse(JSON.stringify(this.sendMessage.CONDITION));
@@ -1012,12 +1018,10 @@
         this.multipleScreenResultCheck(this.sendMessage, 1, 'init');
       }
     }
-
-
   };
 </script>
 <style lang="less">
-.ark--dialog {
+  .ark--dialog {
     .iconbj_delete2{
         cursor: pointer;
         &:hover{
@@ -1049,88 +1053,13 @@
     }
     .dialog_center .dialog_center_bottom .dialog_center_bottom_fix input{
         height: 26px!important;
-        line-height: 26px!important;  
+        line-height: 26px!important;
     }
     .dialog_center{
       overflow: hidden;
     }
     .ark--dialog .dialog_center .table{
-        height: 345px!important; 
+        height: 345px!important;
     }
 }
-  
-</style>
-<style lang="less" scoped>
-  .ark-select-item{
-    position: relative;
-
-  }
-  .span_action{
-    position: relative;
-    display: block;
-    height: 30px;
-    width: 20px;
-    margin: 0 auto;
-    text-align: center;
-  }
-
-
-  .ark--dialog {
-    
-    .dialog_center .dialog_p10{
-      padding:0px 0 6px 0px
-    }
-    .ark-tabs-bar{
-      margin-bottom: 0px
-    }
-    .right_center {
-      ul li{
-        position: relative;
-        .icon-bj_delete2{
-          top:5px;
-        }
-      }
-    }
-      .icon-bj_delete2{
-          position: absolute;
-          right: 5px;
-          top: 7px;
-          border-radius: 100%;
-          font-size: 14px;
-          &:hover {
-              background-color: #e6502f;
-              color: #f3cec5;
-              border: 1px solid #e6502f;
-          }
-      }
-  }
-  .ark-poptip-body{
-      
-      padding: 0px;
-      .icon-bj_delete2{
-          position: absolute;
-          right: 5px;
-          top: 7px;
-          border-radius: 100%;
-          font-size: 14px;
-          &:hover {
-              background-color: #e6502f;
-              color: #f3cec5;
-              border: 1px solid #e6502f;
-          }
-      }
-  }
- .dialog_center .dialog_center_bottom .dialog_center_bottom_fix input{
-      height: 26px;
-      line-height: 26px;
- }
- .dialog_center .dialog_center_bottom .dialog_center_bottom_fix input{
-      height: 26px;
-      line-height: 26px;
- }
- .ark--dialog .dialog_center .dialog_center_bottom{
-     height: 26px;
-      line-height: 26px;
- }
-
 </style>

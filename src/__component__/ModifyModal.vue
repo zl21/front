@@ -1,8 +1,6 @@
 <template>
   <!-- v-if="newformList.addcolums" -->
-  <div
-    ref="modify"
-  >
+  <div ref="modify">
     <ModalConfirm
       ref="Modal"
       :title="poptitle"
@@ -12,10 +10,7 @@
       :footer-hide="true"
       @on-cancle="oncancle"
     >
-      <div
-        slot="Modalsolt"
-        class="ModalModify"
-      >
+      <div slot="Modalsolt" :class="classes">
         <Spin
           v-if="loading"
           fix
@@ -23,13 +18,13 @@
           <Icon
             type="ios-loading"
             size="18"
-            class="demo-spin-icon-load" 
+            class="demo-spin-icon-load"
           />
         </Spin>
         <div class="modify-tip">
           已选中批量修改记录数：{{ ids }}行
         </div>
-        <component 
+        <component
           :is="'CompositeFormpop'"
           :default-data="newformList"
           :default-column-col="formList.objviewcol"
@@ -57,7 +52,7 @@
   </div>
 </template>
 <script>
-  import { Version } from '../constants/global';
+  import { Version, classFix } from '../constants/global';
   import ModalConfirm from './Dialog/Confirm.vue';
 
 
@@ -112,6 +107,13 @@
       // };
       // this.getData(searchObject);
     },
+    computed: {
+      classes () {
+        return [
+          `${classFix}ModifyDialog`,
+        ];
+      },
+    },
     watch: {
       formList: {
         handler(val) {
@@ -128,8 +130,8 @@
                 if (itemChilds.display !== 'hr') {
                   arr.push(itemChilds);
                 }
-              }   
-              
+              }
+
 
               return arr;
             }, []);
@@ -180,9 +182,9 @@
         if (!this.type) {
           localdata.objids = this.objids;
         } else {
-          localdata.fixedcolumns = this.fixedcolumns; // 参数 条件 
+          localdata.fixedcolumns = this.fixedcolumns; // 参数 条件
         }
-        
+
         const searchObject = {
           data: {
             [this.router.tableName]: this.formChangeData
@@ -215,7 +217,7 @@
         if (!this.type) {
           localdata.objids = this.objids;
         } else {
-          localdata.fixedcolumns = this.fixedcolumns; // 参数 条件 
+          localdata.fixedcolumns = this.fixedcolumns; // 参数 条件
         }
         const searchObject = {
           fixedData: this.formChangeData,
@@ -290,30 +292,3 @@
     }
   };
 </script>
-<style lang="less" scoped>
-.modify-tip {
-    display: inline-block;
-    margin-left: 20px;
-    font-size: 12px;
-    margin: 0px 0 10px;
-    height: 24px;
-    line-height:24px;
-}
-.modifyButton{
-    text-align: right;
-    position: absolute;
-    bottom: 0px;
-    right: 0px;
-
-}
-.ModalModify{
-  position: relative;
-  max-height: 500px;
-  overflow: auto;
-  padding-bottom: 40px
-}
-.pop-formPanel{
-    padding: 16px;
-    border: 1px solid #dcdee2
-}
-</style>

@@ -1,6 +1,6 @@
 <template>
   <div class="commonTable">
-    <Table
+    <Tables
       ref="table"
       :columns="columns"
       class="table"
@@ -50,6 +50,8 @@
   import DispatchEvent from '../__utils__/dispatchEvent';
   import createModal from './PreviewPicture/index.js';
 
+  import Tables from '../../../../front-end/burgeon-UI/src/components/table'
+
   Vue.component('buttons', Vue.extend(ButtonComponent));
   export default {
     data() {
@@ -83,11 +85,12 @@
           confirm: () => {
           }
         }, // 弹框配置信息
-        selectedIndex: []
+        selectedIndex: [],
+        tableOb: '',
       };
     },
     name: 'CommonTable',
-    components: { Dialog },
+    components: { Dialog, Tables },
     props: {
       // buttonsData: {// 获取自定义按钮组
       //   type: Array,
@@ -388,7 +391,7 @@
               }
             }
 
-            
+
             return acc;
           }, []));
           return columns;
@@ -412,7 +415,7 @@
               data[curIndex]._checked = true;
             }
           });
-          
+
           this.spinShow = false;
           return data;
         }
@@ -475,14 +478,18 @@
       }, // 总计和合计
     },
     watch: {},
-    mounted() {
-      // const myObserver = new ResizeObserver(((entries) => {
-      //   entries.forEach(() => {
-      //     (this.$refs.table && this.$refs.table.handleResize) ? this.$refs.table.handleResize() : null;
-      //   });
-      // }));
-      // myObserver.observe(document.getElementsByClassName('commonTable')[0]); // dom
-    },
+    // mounted() {
+    //   console.log(this.$refs.table)
+    //   this.tableOb = new ResizeObserver(((entries) => {
+    //     entries.forEach(() => {
+    //       (this.$refs.table && this.$refs.table.handleResize) ? this.$refs.table.handleResize() : null;
+    //     });
+    //   }));
+    //   this.tableOb.observe(document.getElementsByClassName('commonTable')[0]); // dom
+    // },
+    // beforeDestroy() {
+    //   this.tableOb.unobserve(document.getElementsByClassName('commonTable')[0])
+    // },
     methods: {
       ...mapMutations('global', ['tabOpen', 'directionalRouter', 'updateCustomizeMessage']),
       // btnclick(obj) {
@@ -497,7 +504,7 @@
       //   // case 'navbar':
       //   //   this.$emit('objTabActionNavbar', obj);
       //   //   break;
-       
+
       //   // default:
       //   //   break;
       //   // }
@@ -1054,11 +1061,11 @@
 <style lang="less">
   .ark-spin-fix {
     z-index: 999;
-    
+
     .demo-spin-icon-load {
       animation: ani-demo-spin 1s linear infinite;
     }
-    
+
     @keyframes ani-demo-spin {
       from {
         transform: rotate(0deg);
@@ -1071,56 +1078,56 @@
       }
     }
   }
-  
+
   .commonTable {
     height: 100%;
     overflow-y: hidden;
     position: relative;
-    
+
     .table {
       height: 100% !important;
-      
+
       thead th {
         font-weight: 400;
       }
-      
+
       thead tr {
         height: 28px;
       }
-      
+
       tbody tr {
         height: 28px;
       }
-      
+
       tbody tr.ark-table-row-hover td {
         background-color: #ecf0f1;
       }
-      
+
       tfoot tr {
         height: 28px;
         background-color: #fff;
       }
-      
+
       .ark-table td {
         background-color: rgba(255, 255, 255, 0);
       }
-      
+
       .ark-table-fixed tfoot td {
         border-bottom: 1px solid #e8eaec;
       }
-      
+
       .doc-wrapper {
         margin-right: 5px;
         display: inline-block;
-        
+
         a {
           color: #575757;
         }
       }
-      
+
       .doc-wrapper:hover {
         border-bottom: 1px solid #000;
-        
+
         a {
           color: #2d8cf0;
         }

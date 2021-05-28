@@ -3,18 +3,13 @@
     ref="downComponent"
     class="downComponent-context"
   >
-    <div
-      v-if="rowAll > searchFoldnum"
-      class="tag-close"
-    >
+    <div v-if="rowAll > searchFoldnum" :class="tagCloseCls">
       <Icon
         :class="className"
         @click="toggle"
       />
     </div>
-    <div
-      class="downComponent"
-    >
+    <div class="downComponent">
       <div
         v-if="title"
         class="downComponent-h5"
@@ -32,6 +27,7 @@
 </template>
 
 <script>
+  import { classFix } from '../constants/global';
 
   export default {
     name: 'DownComponent',
@@ -109,7 +105,8 @@
       },
       downContent() {
         return `${this.title ? 'down-contain ' : 'down-contain down-right'}`;
-      }
+      },
+      tagCloseCls: () => `${classFix}TagClose`,
     },
     methods: {
       toggle() {
@@ -147,21 +144,6 @@
     }
     .down-right{
         padding-right: 28px;
-    }
-    .tag-close{
-        width: 28px;
-        height: 16px;
-        position: absolute;
-        top: 0;
-        right: 0;
-        margin-left: -20px;
-        background-color: #fe6846;
-        text-align: center;
-        line-height: 16px;
-        cursor: pointer;
-        color: #fff;
-        border-radius: 0 0 2px 2px;
-        z-index: 9;
     }
     .icon-xiadown{
         transform: rotate(180deg);

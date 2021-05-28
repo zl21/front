@@ -1,14 +1,14 @@
 /* eslint-disable import/no-dynamic-require */
 <template>
 <!-- :show-tip="items.detailType" -->
- <ValidateCom 
+ <ValidateCom
     :rules="rules"
     :labelWidth="labelWidth"
     :items="propsMessage"
     :colname="items.colname"
     :value="value">
   <div :class="_items.props.fkdisplay === 'pop' ? 'ItemComponentRoot AttachFilter-pop':'ItemComponentRoot'">
-   
+
 
       <span class="itemLabel"
             :style="labelStyle">
@@ -119,7 +119,7 @@
           formIndex,
         }" />
       </div>
-    
+
 
   </div>
   </ValidateCom>
@@ -224,7 +224,7 @@ export default {
       componentsName:'',// 组件名称
       show:false,// 是否展示报错内容
       propsMessage:{
-       
+
       }, // 各个组件的props
       errorTip: '',
       value: '', //实时数据
@@ -378,10 +378,10 @@ export default {
         case 'ExtensionProperty':
           componentInstance = new CustomExtensionProperty(item).init();
           break;
-        case 'radioGroup': 
+        case 'radioGroup':
           componentInstance = new CustomRadioGroup(item).init();
           break;
-        case 'defined': 
+        case 'defined':
           componentInstance = new CustomDefined(item).init();
           break;
         default:
@@ -499,7 +499,7 @@ export default {
                 this._items.value = item.LABLE_VALUES[0].VALUE || '';
               }
             } else if (item.COLUMN_TYPE === 1) {
-              // INPUT 
+              // INPUT
               if (this._items.type === 'checkbox') {
                 this._items.value = item.LABLE_VALUES[0].VALUE || this._items.props.falseValue;
               } else {
@@ -652,7 +652,7 @@ export default {
     top: 3px;
     right: 3px;
   }
-  
+
 
   // 处理大小写转换
   .isuppercase {
