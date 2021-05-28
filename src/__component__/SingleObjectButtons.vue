@@ -2063,7 +2063,6 @@
              const copyData = { ...panelForm[0].formDataLabel };
             //const copyData = { ...formData };
             const modifyData = this.updateData[this.tableName].changeData;// 取changeData值，因外键形式需要lable和ID
-            console.log(panelForm[0],panelForm[0].formDataLabel,'copyDatacopyData');
             this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
             this.copyModifyDataForSingleObject(modifyData);// 将复制修改过所保存的数据存到global中
             this.updateFormDataForRefshow();
@@ -2079,8 +2078,6 @@
         } else { // 纵向布局
           let panelForm = FindInstance(this,'panelForm')
           const copyData = { ...panelForm[0].formDataLabel };
-         console.log(panelForm[0],panelForm[0].formDataLabel,'copyDatacopyData');
-
           this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
           const modifyData = this.updateData[this.tableName].changeData;// 取changeData值，因外键形式需要lable和ID
           // this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中

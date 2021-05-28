@@ -30,9 +30,12 @@
   </div>
 </template>
 <script>
-  import { classFix } from '../../constants/global';
   import RenderComponent from './RenderComponent';
   import ParameterDataProcessing from './parameterDataProcessing';
+  import {
+  Version,
+    classFix
+} from '../../constants/global';
 
   export default {
     computed: {
@@ -42,6 +45,7 @@
       classes () {
         return [
           `${classFix}ListsForm`,
+          'downComponent-context'
         ];
       },
       tagCloseCls: () => `${classFix}TagClose`,
@@ -87,7 +91,6 @@
         // 处理合并字段
         this.ItemLists = {}
         this.formArray = []
-        console.log('this.formItemLists', this.formItemLists)
         this.formItemLists.map((item, index) => {
           if(item.webconf && item.webconf.display === 'YearMonth'){
             item.display = 'YearMonth';
@@ -164,7 +167,20 @@
               return;
             }
             const value = item && item.isuppercase && components.value &&  !item.display ?components.value.toUpperCase():components.value;
+
+
             const json = this.dealData(item, value);
+             if(item.fkobj && item.fkobj.searchmodel){
+               if(Version()==='1.3'){
+                 if(!Array.isArray(json[item.colname])){
+                  if(json[item.colname]){
+                      let id = json[item.colname].split(',');
+                      json[item.colname] = id;
+                  }
+                 }
+               }
+
+            }
             formData = Object.assign({}, formData, json);
             return item;
           });
@@ -219,3 +235,24 @@
   };
 
 </script>
+<style lang="less" scoped>
+@defaultCol: 4;  //控制一行展示的列数
+.listsForm{
+  flex-wrap: wrap;
+  display: flex;
+  border: 1px solid #d8d8d8;
+  padding: 0 28px 8px 0;
+  position: relative;
+  transition: height 0 ease;
+  overflow: hidden;
+  margin-bottom: 6px;
+  >.item{
+    width: percentage(1/@defaultCol);
+    box-sizing: border-box;
+
+    &.long{
+      display: none;
+    }
+  }
+}
+</style>

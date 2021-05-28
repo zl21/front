@@ -3271,7 +3271,7 @@
                   query: params.row[cellData.customerurl.refobjid],
                   lablel: cellData.customerurl.reftabdesc,
                   isMenu: true,
-                  lingName: cellData.customerurl.linkname,
+                  linkName: cellData.customerurl.linkname,
                   linkId: params.row[cellData.customerurl.refobjid],
                 };
                 this.directionalRouter(param);// 定向路由跳转方法
@@ -3366,6 +3366,9 @@
       docRender(cellData, tag) {
         const that = this;
         return (h, params) => {
+          if(!this.copyDataSource.row[params.index]){
+              return false;
+          }
           const content = `${this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).reduce((acc, cur) => {
             acc.push(`【${cur.name}】`);
             return acc;
@@ -3449,6 +3452,9 @@
       docReadonlyRender(cellData, tag) {
         const that = this;
         return (h, params) => {
+          if(!this.copyDataSource.row[params.index]){
+              return false;
+          }
           const content = `${this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).reduce((acc, cur) => {
             acc.push(`【${cur.name}】`);
             return acc;

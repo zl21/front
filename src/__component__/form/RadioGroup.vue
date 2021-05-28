@@ -55,6 +55,11 @@
         if(newVal === false) {
           this.selectedValues = [];
         }
+      },
+      value(newVal) {
+        if(newVal) {
+          this.selectedValues = this.getSelectedValues(newVal);
+        }
       }
     },
 
@@ -87,20 +92,25 @@
         }
         
         this.$emit('change', checkedList.join(','));
-      }
-    },
+      },
 
-    mounted() {
-      const checkedList = [];
-      const defaultData = this.options.defval || this.options.valuedata;
-      if (defaultData) {
-        const selectedArr = defaultData.split(',');
+      // 获取勾选的值
+      getSelectedValues(value) {
+        const checkedList = [];
+        const selectedArr = value.split(',');
         this.options.combobox.forEach((item) => {
           if (selectedArr.includes(item.limitval)) {
             checkedList.push(item.limitdesc);
           }
         });
-        this.selectedValues = checkedList;
+        return checkedList
+      }
+    },
+
+    mounted() {
+      const defaultData = this.options.defval || this.options.valuedata;
+      if (defaultData) {
+        this.selectedValues = this.getSelectedValues(defaultData);
       }
     }
   };

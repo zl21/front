@@ -43,6 +43,7 @@
     this.propstype = {
           ...this.item,
           item:this.item,
+          singleTurn:true,
           disabled: this.item.readonly  &&  (this.item.webconf ? !this.item.webconf.ignoreDisableWhenEdit : true),
           hidecolumns:['id', 'value'],
           placeholder:new SetPlaceholder(this.item).init()

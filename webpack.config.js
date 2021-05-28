@@ -2,7 +2,7 @@ const path = require('path');
 // const { VueLoaderPlugin } = require('vue-loader');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const webpack = require('webpack');
+// const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -211,9 +211,9 @@ module.exports = env => ({
         ignore: ['.*'],
       },
     ]),
-    new webpack.DefinePlugin({
-      'process.env.BUILD_ENV': JSON.stringify(process.env.BUILD_ENV)
-    }),
+    // new webpack.DefinePlugin({
+    //   'process.env.BUILD_ENV': JSON.stringify(process.env.BUILD_ENV)
+    // }),
     // new webpack.ProvidePlugin({
     //   $: 'jquery',
     //   jQuery: 'jquery',

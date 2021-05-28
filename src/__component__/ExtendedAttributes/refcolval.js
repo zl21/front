@@ -49,7 +49,6 @@ export const refcolvalMap = ($this, config,key) => {
     let linkFormMap = {
         [key]: [`${$this.item.tableName}${$this.item.colname}`]
     };
-    console.log(targetVm,'1212');
     //挂载映射关系到对方 
     let checked = [];
     targetVm.forEach((target)=>{
@@ -229,7 +228,7 @@ export  const refcolvalCustomUrl =  ($this, config,network) => {
         fixedcolumns: {...$this._srccolValue}
       }).then((res) => {
         if (res.data.code === 0) {
-            result = res.data.fixedcolumns;
+            let result = res.data.fixedcolumns;
             $this._datafixedcolumns = result;
             resolve(true);
         }else{

@@ -181,6 +181,7 @@ export default (router) => {
     const {
       tableName, tableId, itemId, customizedModuleName, pluginModuleName, linkModuleName, customizedModuleId
     } = to.params;
+
     const preventRegisterModule = [CUSTOMIZED_MODULE_PREFIX, PLUGIN_MODULE_PREFIX, LINK_MODULE_PREFIX];
     const { routePrefix } = to.meta;
     const { isBack } = to.query;
@@ -228,14 +229,21 @@ export default (router) => {
 
     // 处理 openedMenuLists
     let existModuleIndex = -1;
-    const existModule = openedMenuLists.filter((d, i) => {
-      if (d.tableName === tableName) {
-        // 已存在打开的模块界面，但是并不是同一个界面
-        existModuleIndex = i;
-        return true;
-      }
-      return false;
-    })[0];
+    
+      const existModule = openedMenuLists.filter((d, i) => {
+        let currentName = tableName || customizedModuleName || pluginModuleName || linkModuleName;
+        if (d.tableName === currentName) {
+          // 已存在打开的模块界面，但是并不是同一个界面
+          if(enableActivateSameCustomizePage()){
+              existModuleIndex = i;
+            }
+          return true;
+        }
+        return false;
+      })[0];
+
+  
+    
     if (existModuleIndex !== -1 && KEEP_MODULE_STATE_WHEN_CLICK_MENU) {
       // Condition One:
       // 如果目标路由界面所对应的[表]已经存在于已经打开的菜单列表中(不论其当前是列表状态还是编辑状态)
@@ -261,7 +269,7 @@ export default (router) => {
             isActive: true,
             label: `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
             keepAliveModuleName,
-            tableName,
+            tableName: tableName || customizedModuleName || pluginModuleName || linkModuleName,
             routeFullPath: to.fullPath, // 由to.path改为to.fullPath为取带query的路径
             routePrefix
           },
@@ -292,11 +300,11 @@ export default (router) => {
       // 当前打开的tab的keepAliveModuleName===要跳转页面的keepAliveModuleName，
       // 或是当前是自定义界面的keepAliveModuleName包含当前要跳转的自定义界面的标识，
       // 不必keepAliveModuleName相等，包含自定义界面的标识即可
-      console.log(openedMenuLists,keepAliveModuleNameRes);
       if (dynamicModuleTag !== '' && openedMenuLists.length > 0 && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== ''&& d.tableName===keepAliveModuleNameRes  && d.keepAliveModuleName.includes(keepAliveModuleNameRes))).length > 0) {
         activateSameCustomizePageFlag = true;
       }
     }
+    console.log('新开',keepAliveModuleName,activateSameCustomizePageFlag);
     if (dynamicModuleTag !== '' && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName).length === 0 && !activateSameCustomizePageFlag) {
       // 新开tab
       // 目标路由所对应的[功能模块]没有存在于openedMenuLists中，则将目标路由应该对应的模块信息写入openedMenuLists
@@ -317,7 +325,6 @@ export default (router) => {
               pluginModules = Object.assign({}, pluginModules, window.ProjectConfig.externalPluginModules);
             }
           }
-         
           commit('global/increaseOpenedMenuLists', {
             label: routePrefix === PLUGIN_MODULE_PREFIX ? pluginModules[pluginModuleName].name : `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
             keepAliveModuleName,

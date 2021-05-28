@@ -13,7 +13,7 @@
  */	
 
 
-export const fuzzySearch = (zTreeId, searchField, isHighLight, isExpand) => {
+export const  fuzzySearch = async (zTreeId, searchField, isHighLight, isExpand) => {
   const zTreeObj = $.fn.zTree.getZTreeObj(zTreeId);// get the ztree object by ztree id
   if (!zTreeObj) {
     alert('fail to get ztree object');
@@ -94,6 +94,7 @@ export const fuzzySearch = (zTreeId, searchField, isHighLight, isExpand) => {
     }
     const nodesShow = zTreeObj.getNodesByFilter(filterFunc); // get all nodes that would be shown
     processShowNodes(nodesShow, _keywords);// nodes should be reprocessed to show correctly
+    return nodesShow;
   }
 	
   /**
@@ -111,23 +112,29 @@ export const fuzzySearch = (zTreeId, searchField, isHighLight, isExpand) => {
   let timeoutId = null;
   let lastKeyword = '';
   // excute lazy load once after input change, the last pending task will be cancled  
-  function searchNodeLazy(_keywords) {
+  async function searchNodeLazy(_keywords) {
     if (timeoutId) { 
       // clear pending task
       clearTimeout(timeoutId);
     }
-    timeoutId = setTimeout(() => {
-      if (lastKeyword === _keywords) {
-        return;
-      }
-      ztreeFilter(zTreeObj, _keywords); // lazy load ztreeFilter function 
-      // $(searchField).focus();//focus input field again after filtering
-      lastKeyword = _keywords;
-      document.getElementById(zTreeId).scrollTop = 0;// 检索字符完成后将滚动条设置到顶部
-    }, 500);
+    // let noode = await
+    return new Promise((resolve)=>{
+            timeoutId = setTimeout(() => {
+            if (lastKeyword === _keywords) {
+              return;
+            }
+            let node = ztreeFilter(zTreeObj, _keywords); // lazy load ztreeFilter function 
+            // $(searchField).focus();//focus input field again after filtering
+            lastKeyword = _keywords;
+            document.getElementById(zTreeId).scrollTop = 0;// 检索字符完成后将滚动条设置到顶部
+            resolve(node);
+          }, 500);
+      });
   }
   if (searchField) { // 检测到搜索的字符，调用以下逻辑
-    searchNodeLazy(searchField); 
+    let node = await searchNodeLazy(searchField); 
+    return node;
+
   }
 };
 export default fuzzySearch;

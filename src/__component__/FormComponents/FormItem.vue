@@ -162,7 +162,7 @@ import { Validate } from './PanelForm/Validate';
 // 验证组件的插件
 let ValidateCom = new Validate().init();
 import {
-  Version, MODULE_COMPONENT_NAME, ossRealtimeSave, defaultrange,custommizedRequestUrl
+  Version, MODULE_COMPONENT_NAME, ossRealtimeSave, defaultrange,setComponentsProps
 } from '../../constants/global';
 import createModal from '../PreviewPicture/index';
 import EnumerableInput from '../EnumerableInput.vue';
@@ -323,7 +323,20 @@ export default {
     ...mapMutations('global', ['tabOpen', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
     inheritanceComponents () {
       let component = null;
+      // 兼容webcof
+      if(this.items.dynamicforcompute){
+         if(!this.items.webconf){
+           this.items.webconf = {
+              dynamicforcompute:{}
+           };
+         }else{
+           this.items.webconf.dynamicforcompute = {}
+         }
+          
+          this.items.webconf.dynamicforcompute = this.items.dynamicforcompute;
+      }
       let item = this.items;
+     
       let componentInstance = null
       switch (item.display) {
         case undefined:
@@ -387,9 +400,16 @@ export default {
         default:
           break;
       }
+      if(componentInstance){
+         component = componentInstance.Components || '';
+        this.propsMessage = componentInstance.props || {};
+        // 是否有外部配置
+        this.propsMessage = Object.assign(
+          this.propsMessage, (setComponentsProps())(this.items.display, this.propsMessage)
+        );
 
-      component = componentInstance.Components;
-      this.propsMessage = componentInstance.props;
+      }
+     
       return component;
     },
     routerNext () {

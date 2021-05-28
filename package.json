@@ -1,6 +1,6 @@
 {
-    "name": "burgeon-r3",
-    "version": "1.8.3",
+    "name": "@syman/burgeon-r3",
+    "version": "1.4.73",
     "description": "A Project for R3 Erp.",
     "main": "r3.publish/r3.min.js",
     "files": [
@@ -73,8 +73,8 @@
     },
     "dependencies": {
         "@babel/polyfill": "^7.10.4",
-        "@syman/ark-ui": "^1.1.32",
-        "@syman/ark-ui-bcl": "0.0.66",
+        "@syman/ark-ui": "^1.1.33",
+        "@syman/ark-ui-bcl": "0.1.0",
         "ag-grid": "^17.1.1",
         "ag-grid-enterprise": "^17.1.1",
         "awe-dnd": "^0.3.4",

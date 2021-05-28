@@ -31,7 +31,6 @@ import { createWatermark } from './__utils__/waterMark';
 import R3Dialog from './__globalComponentModule__/dialog';
 import panelForm from './__component__/FormComponents/PanelForm/panelForm.vue'
 import listsForm from './__component__/FormComponents/listsForm.vue'
-import '@syman/ark-ui-bcl/dist/tailwindcss.css'
 import './__utils__/getChildComponent'
 
 // 全局指令

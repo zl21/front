@@ -117,7 +117,6 @@ export default class RenderComponent {
 
   Initialize() {
     const mixins = require('./formItemMixin').default;
-    
     this.ObjectToMerge(FormItem.methods, mixins.methods);
     Object.assign(FormItem.methods, mixins.methods);
     FormItem.name = `${this.id}${this.item.colname.TextFilter()}`;

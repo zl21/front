@@ -30,6 +30,7 @@ export default {
         id: 'ID'
       },
       placeholder: '88', // placeholder自定义
+      // Notice:'DEEEE',
       searchData: {// 定义查询接口参数
         table: '1111',
         value: 'value'

@@ -168,7 +168,9 @@ export default {
     // itemName;子表表名
     const { tableName } = router.currentRoute.params;
     if (data.itemName) {
-      delete state.updateData[data.itemName].add[data.itemName][data.key];
+      if(state.updateData[data.itemName].add[data.itemName]){
+        delete state.updateData[data.itemName].add[data.itemName][data.key];
+      }
     } else if (state.updateData[tableName] && state.updateData[tableName].add && state.updateData[tableName].add[tableName]) {
       delete state.updateData[tableName].add[tableName][data.key];
     }
@@ -261,6 +263,9 @@ export default {
       Object.keys(copyDatas).forEach((item) => {
         if (d.childs) {
           d.childs.forEach((c) => {
+            if(c.webconf&& c.webconf.formRequest){
+              c.webconf.formRequest.copy = true;
+            }
             if (item === c.colname) {
               // b.readonly = c.readonly;
               if (c.readonly === true) {
@@ -285,7 +290,7 @@ export default {
                   copySaveDataForParam[c.colname] = JSON.parse(copyDatas[item]);
                 } else if (c.fkdisplay === 'drp' || c.fkdisplay === 'mrp' || c.fkdisplay === 'pop') {
                   c.refobjid = copyDatas[item].map(item => item.ID).join(',');
-                  c.default = copyDatas[item].map(item => item.Label).join(',');
+                  c.valuedata = copyDatas[item].map(item => item.Label).join(',');
                   copySaveDataForParam[c.colname] = [{ ID: copyDatas[item][0].ID, Label: copyDatas[item][0].Label }];
                 }else if (c.display === 'OBJ_DATENUMBER') {
                   c.valuedata = copyDatas[item];
@@ -294,9 +299,9 @@ export default {
                   copySaveDataForParam[c.colname] = copyDatas[item].replace(/-/g, '');
                 } else if(c.display === 'select') {
                   if(Array.isArray(copyDatas[item])){
-                    c.default = copyDatas[item].join(',');
+                    c.valuedata = copyDatas[item].join(',');
                   }else{
-                    c.default = copyDatas[item];
+                    c.valuedata = copyDatas[item];
                   }
                 }else{
                   // this.$set(c,'valuedata',copyDatas[item])
@@ -313,6 +318,9 @@ export default {
           });
         }  else if (!d.childs) { // 处理hr外面不可编辑字段的默认值逻辑
           const c = d.child;
+          if(c.webconf&& c.webconf.formRequest){
+            c.webconf.formRequest.copy = true;
+          }
           if (item === c.name) {
             // b.readonly = c.readonly;
             if (c.readonly === true) {
@@ -332,6 +340,7 @@ export default {
                 }
               }
             } else if (copyDatas[item]) {
+
               if (c.display === 'doc') {
                 c.valuedata = copyDatas[item]
                 copySaveDataForParam[c.colname] = JSON.parse(copyDatas[item]);
@@ -353,9 +362,9 @@ export default {
                 copySaveDataForParam[c.colname] = copyDatas[item].replace(/-/g, '');
               } else if(c.display === 'select') {
                 if(Array.isArray(copyDatas[item])){
-                  c.default = copyDatas[item].join(',');
+                  c.valuedata = copyDatas[item].join(',');
                 }else{
-                  c.default = copyDatas[item];
+                  c.valuedata = copyDatas[item];
                 }
               }else{
                 // this.$set(c,'valuedata',copyDatas[item])

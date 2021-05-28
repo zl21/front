@@ -339,8 +339,7 @@ export default {
     attachFilterOk ($this) {
       // this.resultData = Object.assign({}, this.$refs.complex);
       if ($this._data.params) {
-        const type = this.propsData.inputname.split(':').length > 1 ? this.propsData.inputname.split(':')[1] : 'ENAME';
-        const value = $this._data.parms[type].val;
+          const value = $this._data.parms[$this._data.showKey].val;
         this.selected = [
           {
             Label: value,

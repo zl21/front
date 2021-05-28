@@ -43,9 +43,9 @@ function setAttributes(source,configuration) {
 function HiddenFields(tableName){
   eventLoops[tableName].every(item => {
     item.configuration.every(temp => {
-      if(item.source.activeTab.keepAliveModuleName.split('.')[0].toLocaleUpperCase() ==='S'){
-        return false;
-      }
+      // if(item.source.activeTab.keepAliveModuleName.split('.')[0].toLocaleUpperCase() ==='S'){
+      //   return false;
+      // }
       let target = FindInstance(item.source,temp.field.refcolumn,item.source.items.tableName)[0];
       
       if(!target || !target.items){
