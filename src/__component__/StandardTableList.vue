@@ -1028,7 +1028,7 @@
               } else if (queryArray.length === 1) {
                 query.objId = rowData[colDef.customerurl.refobjid].val;
               }
-
+              
               const param = {
                 url: colDef.customerurl.tableurl, // 跳转的外链界面内加载的iframe的src地址，即加载的页面地址
                 query, // 地址携带的参数
@@ -1041,7 +1041,7 @@
               // const param = {
               //   url: colDef.customerurl.tableurl,
               //   query: rowData[colDef.customerurl.refobjid].val,
-              //   lablel: colDef.customerurl.reftabdesc,
+              //   label: colDef.customerurl.reftabdesc,
               //   isMenu: true,
               //   linkName: colDef.customerurl.linkname,
               //   linkId: rowData[colDef.customerurl.refobjid].val,

@@ -3265,7 +3265,7 @@
                 const param = {
                   url: cellData.customerurl.tableurl,
                   query: params.row[cellData.customerurl.refobjid],
-                  lablel: cellData.customerurl.reftabdesc,
+                  label: cellData.customerurl.reftabdesc,
                   isMenu: true,
                   linkName: cellData.customerurl.linkname,
                   linkId: params.row[cellData.customerurl.refobjid],

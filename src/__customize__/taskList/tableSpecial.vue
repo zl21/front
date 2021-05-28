@@ -344,7 +344,7 @@
                               const param = {
                                 url,
                                 id: params.row.ID,
-                                lablel: null,
+                                label: null,
                                 isMenu: true
                               };
                               this.directionalRouter(param);// 定向路由跳转方法
@@ -355,7 +355,7 @@
                             const param = {
                               url,
                               id: params.row.ID,
-                              lablel: null,
+                              label: null,
                               isMenu: true
                             };
                             this.directionalRouter(param);// 定向路由跳转方法
@@ -382,7 +382,7 @@
                             const param = {
                               url,
                               id: params.row.ID,
-                              lablel: null,
+                              label: null,
                               isMenu: true
                             };
                             this.directionalRouter(param);// 定向路由跳转方法
@@ -393,7 +393,7 @@
                           const param = {
                             url,
                             id: params.row.ID,
-                            lablel: null,
+                            label: null,
                             isMenu: true
                           };
                           this.directionalRouter(param);// 定向路由跳转方法
