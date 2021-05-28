@@ -391,7 +391,7 @@
       attachFilterOk($this) {
         // this.resultData = Object.assign({}, this.$refs.complex);
         if ($this._data.params) {
-          const value = $this._data.parms[$this._data.showKey];
+          const value = $this._data.parms[$this._data.showKey].val;
           this.selected = [
             {
               Label: value,
