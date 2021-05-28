@@ -79,9 +79,13 @@ export default {
       const name = `${LINK_MODULE_COMPONENT_PREFIX}.${param.linkName.toUpperCase()}.${param.linkId}`;     
       // this.addKeepAliveLabelMaps({ name, label: param.label });
       state.keepAliveLabelMaps[name] = `${param.label}`;
-      if (param.query) {
-        const query = `?objId=${param.query}`;
+      if (param.query && typeof param.query === 'object' && Object.keys(param.query) && Object.keys(param.query).length > 0) {
+        let query = '?';
+        Object.keys(param.query).reduce((arr, obj) => {
+          query = query.concat(`&&${obj}=${param.query[obj]}`);
+        }, {});
         param.url = param.url.concat(query);
+        param.url = param.url.replace('?&&', '?');
       }
       const linkUrl = param.url;
       // const linkId = param.linkId;
