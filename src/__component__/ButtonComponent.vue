@@ -300,12 +300,12 @@
       }),
       classes () {
         return [
-          `${classFix}buttonList`,
+          `${classFix}R3-buttonList`,
         ];
       },
       classGroup () {
         return [
-          `${classFix}buttonGroup`,
+          `${classFix}R3-button-group`,
         ];
       },
     },

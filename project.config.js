@@ -133,5 +133,6 @@ module.exports = {
   //   component: FunctionPowerNew,
   //   labelName: '功能权限',
   // }
-  classFix: 'r3-', // 样式前缀
+  // classFix: 'r3-', // 样式前缀
+  classFix: '', // 样式前缀
 };
