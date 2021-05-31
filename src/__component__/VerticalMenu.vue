@@ -42,7 +42,7 @@
         menuLists: ({ menuLists }) => menuLists,
         primaryMenuIndex: state => state.primaryMenuIndex,
       }),
-      classes () {
+      classes() {
         return [
           `${classFix}middle`,
         ];

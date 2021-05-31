@@ -1,6 +1,6 @@
 <template>
   <!-- 打印模版PublishPrintTemplate -->
-  <div class="publishContent">
+  <div :class="classes">
     <div class="pop-title">
       <div class="pop-input">
         <ul>
@@ -43,6 +43,7 @@
   import ChineseDictionary from '../../assets/js/ChineseDictionary';
   import network, { urlSearchParams } from '../../__utils__/network';
   import router from '../../__config__/router.config';
+  import { classFix } from '../../constants/global';
 
   export default {
     name: 'PublishPrintTemplate',
@@ -61,6 +62,13 @@
         env: [],
         envValue: ''
       };
+    },
+    computed: {
+      classes() {
+        return [
+          `${classFix}publishContent`,
+        ];
+      },
     },
     components: {},
     methods: {
@@ -83,9 +91,9 @@
           this.$Modal.fcWarning(data);
           return;
         }
-        
+
         const searchdata = {
-          env: this.envValue, 
+          env: this.envValue,
         };
         const { tableName } = router.currentRoute.params;
 
@@ -148,77 +156,6 @@
 
       this.getEnvs();
     },
-   
+
   };
 </script>
-<style lang="less" scoped type="text/less">
-.publishContent {
-  font-size: 12px;
-  height: 98px;
-  .pop-title {
-    // width: 400px;
-    height: 152px;
-    box-sizing: border-box;
-  }
-  .pop-input {
-    padding-top: 10px;
-    ul {
-      list-style: none;
-    }
-    li {
-      margin-bottom: 10px;
-      .version {
-        width: 228px;
-        height: 22px;
-        border-radius: 2px;
-      }
-    }
-    .resTop{
-      margin-bottom: 15px;
-    }
-    span {
-      display: inline-block;
-      width: 100px;
-      text-align: right;
-    }
-    input {
-      border: 1px solid #d8d8d8;
-      width: 228px;
-      height: 24px;
-      padding: 0 7px;
-      border-radius: 2px;
-      font-size: 12px;
-      color: #575757;
-      transition: border-color 0.2s ease;
-      margin-left: -1px;
-    }
-    input:focus {
-      border-color: #0f8ee9;
-    }
-  }
-  .pop-btn {
-    text-align: right;
-    padding: 6px 40px 0 0;
-    .sav-btn,
-    .cancel-btn {
-      padding: 0 18px;
-      width: 66px;
-      height: 24px;
-      box-sizing: border-box;
-      background-color: #fff;
-      border: 1px solid;
-      color: #fd6442;
-      font-size: 12px;
-      border-radius: 2px;
-      span {
-        color: #fd6442;
-      }
-    }
-    .sav-btn:hover,
-    .cancel-btn:hover {
-      background-color: rgba(253, 100, 66, 0.3);
-      color: rgba(253, 100, 66, 0.6);
-    }
-  }
-}
-</style>

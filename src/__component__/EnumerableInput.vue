@@ -206,7 +206,7 @@
       },
     },
     computed: {
-      classes () {
+      classes() {
         return [
           `${classFix}EnumerableInput`,
         ];

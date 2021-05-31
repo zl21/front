@@ -1,5 +1,5 @@
 <template>
-  <div class="FormComponent">
+  <div :class="classes">
     <div
       class="FormItemComponent"
       :style="setWidth"
@@ -38,6 +38,7 @@
 <script>
   import Vue from 'vue';
   import layoutAlgorithm from '../utils/layoutAlgorithm';
+  import { classFix } from "../../src/constants/global";
 
   export default {
     name: 'FormItemComponent',
@@ -80,8 +81,8 @@
           return item => ` grid-column:${item.x}/${item.col + item.x};grid-row:${
             item.y
           }/${item.y + item.row};`;
-        } 
-        return item => ` 
+        }
+        return item => `
         grid-column:${item.x};
         -ms-grid-columns:${item.x};
         grid-column-span:${item.col};
@@ -98,7 +99,12 @@
         const width = (100 / columns).toFixed(2);
         const fr = new Array(columns).fill('1fr').join(' ');
         return `display: -ms-grid; grid-columns: ${fr};grid-template-columns: repeat(${columns}, ${width}%);`;
-      }
+      },
+      classes() {
+        return [
+          `${classFix}FormComponent`,
+        ];
+      },
     },
     watch: {
       formItemLists() {
@@ -136,32 +142,3 @@
     }
   };
 </script>
-<style lang="less" scoped>
-.FormComponent{
-  padding: 2px 10px 10px 10px;
-  border:1px solid rgba(228,228,228,1);
-}
-
-.FormComponent > p{
-  padding-left: 108px;
-  margin-top: 10px;
-  display: flex;
-  width: 300px;
-
-  >button{
-    margin-right: 10px;
-  }
-}
-.FormItemComponent > div {
-  /*border:1px solid #fff;*/
-  box-sizing: border-box;
-}
-.FormItemComponent {
-  display: grid;
-  display: -ms-grid;
-  -ms-grid-columns: 1fr 1fr 1fr 1fr;
-  grid-template-columns: repeat(4, 25%);
-  -ms-grid-template-columns: repeat(4, 25%);
-  grid-auto-rows: minmax(auto);
-}
-</style>

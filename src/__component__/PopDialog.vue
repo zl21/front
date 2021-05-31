@@ -125,7 +125,7 @@
       }
     },
     computed: {
-      classes () {
+      classes() {
         return [
           `${classFix}PopDialog`,
         ];
@@ -220,7 +220,7 @@
               this.selectOperation.selectrange = data.selectrange;
               this.selectOperation.defaultrange = data.defaultrange;
               this.selectOperation.startindex = data.start;
-              
+
               this.SelectionData.thead = data.tabth.reduce((arr, item) => {
                 const title = data.tabth.find(x => x.colname === item.colname)
                   .name;

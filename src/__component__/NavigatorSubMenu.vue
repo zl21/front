@@ -68,7 +68,7 @@
       ...mapState('global', {
         collapseHistoryAndFavorite: state => state.collapseHistoryAndFavorite,
       }),
-      classes () {
+      classes() {
         return [
           `${classFix}NavigatorSubMenu`,
           {

@@ -65,7 +65,7 @@
       };
     },
     computed: {
-      classes () {
+      classes() {
         return [
           `${classFix}Publish`,
         ];

@@ -74,7 +74,7 @@
       },
     },
     computed: {
-      classes () {
+      classes() {
         return [
           `${classFix}message-panel`,
         ];

@@ -595,7 +595,7 @@
         // 气泡选中过滤条件
         return this.filterDate;
       },
-      classes () {
+      classes() {
         return [
           `${classFix}ItemComponentRoot`,
           {

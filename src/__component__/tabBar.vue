@@ -34,7 +34,7 @@
       };
     },
     computed: {
-      classes () {
+      classes() {
         return [
           `${classFix}TabBar`,
         ];
@@ -52,11 +52,3 @@
   };
 </script>
 
-<style lang="less" scoped>
-@import url('../assets/theme/custom.less');
-.r3-tab-nav {
-  display: flex;
-  background: #f5f7f7;
-  margin-top: 20px;
-}
-</style>

@@ -122,7 +122,7 @@
         }
         return this.showModule.HistoryAndFavorite;
       },
-      classes () {
+      classes() {
         return [
           `${classFix}history-and-favorite`,
         ];

@@ -33,22 +33,22 @@
   import RenderComponent from './RenderComponent';
   import ParameterDataProcessing from './parameterDataProcessing';
   import {
-  Version,
+    Version,
     classFix
-} from '../../constants/global';
+  } from '../../constants/global';
 
   export default {
     computed: {
       className() {
         return `${this.dowClass === false ? ' iconfont  iconios-arrow-down' : 'iconfont  iconios-arrow-down icon-xiadown'}`;
       },
-      classes () {
+      classes() {
         return [
           `${classFix}ListsForm`,
           'downComponent-context'
         ];
       },
-      tagCloseCls: () => `${classFix}TagClose`,
+      tagCloseCls: () => `${classFix}tag-close`,
     },
     props: {
       id: {
@@ -235,24 +235,3 @@
   };
 
 </script>
-<style lang="less" scoped>
-@defaultCol: 4;  //控制一行展示的列数
-.listsForm{
-  flex-wrap: wrap;
-  display: flex;
-  border: 1px solid #d8d8d8;
-  padding: 0 28px 8px 0;
-  position: relative;
-  transition: height 0 ease;
-  overflow: hidden;
-  margin-bottom: 6px;
-  >.item{
-    width: percentage(1/@defaultCol);
-    box-sizing: border-box;
-
-    &.long{
-      display: none;
-    }
-  }
-}
-</style>

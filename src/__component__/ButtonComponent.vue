@@ -298,7 +298,7 @@
       ...mapState('global', {
         userInfo: ({ userInfo }) => userInfo,
       }),
-      classes () {
+      classes() {
         return [
           `${classFix}R3-buttonList`,
         ];

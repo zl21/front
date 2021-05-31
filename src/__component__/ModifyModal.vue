@@ -108,7 +108,7 @@
       // this.getData(searchObject);
     },
     computed: {
-      classes () {
+      classes() {
         return [
           `${classFix}ModifyDialog`,
         ];

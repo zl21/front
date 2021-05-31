@@ -110,7 +110,7 @@
       };
     },
     computed: {
-      classes () {
+      classes() {
         return [
           `${classFix}ChangePassword`,
         ];

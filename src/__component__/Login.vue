@@ -80,7 +80,7 @@
     mounted() {
     },
     computed: {
-      classes () {
+      classes() {
         return [
           `${classFix}login`,
         ];
@@ -157,4 +157,3 @@
     },
   };
 </script>
-

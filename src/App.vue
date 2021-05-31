@@ -50,3 +50,7 @@
     },
   };
 </script>
+
+<style lang="less" scoped>
+  @import "./assets/styles/index";
+</style>

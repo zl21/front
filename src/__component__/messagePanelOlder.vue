@@ -76,7 +76,7 @@
       messagePanel() {
         return this.panel;
       },
-      classes () {
+      classes() {
         return [
           `${classFix}message-panel`,
         ];

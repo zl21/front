@@ -106,7 +106,7 @@
         const openedMenuListsLength = this.openedMenuLists.length;
         return openedMenuListsLength;
       },
-      classes () {
+      classes() {
         return [
           `${classFix}openedMenuLists`,
         ];

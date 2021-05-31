@@ -340,7 +340,7 @@
         exportTasks: ({ exportTasks }) => exportTasks
 
       }),
-      classes () {
+      classes() {
         return [
           `${classFix}TableDetailCollection`,
         ];

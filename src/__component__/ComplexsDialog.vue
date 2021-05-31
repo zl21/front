@@ -60,7 +60,7 @@
       }
     },
     computed: {
-      classes () {
+      classes() {
         return [
           `${classFix}ComplexSelect`,
         ];

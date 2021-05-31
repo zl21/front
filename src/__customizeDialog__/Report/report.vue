@@ -65,7 +65,7 @@
     },
     components: {},
     computed: {
-      classes () {
+      classes() {
         return [
           `${classFix}publishContent`,
         ];

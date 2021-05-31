@@ -78,7 +78,7 @@
         userInfo: ({ userInfo }) => userInfo,
         collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
       }),
-      classes () {
+      classes() {
         return [
           `${classFix}set-panel`,
         ];

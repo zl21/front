@@ -1,5 +1,5 @@
 <template>
-  <div class="StandardTable">
+  <div :class="classes">
     <Page
       v-if="showPage"
       class="page"
@@ -32,6 +32,8 @@
   </div>
 </template>
 <script>
+  import { classFix } from '../../src/constants/global';
+
   export default {
     name: 'StandardTable',
     props: {
@@ -84,22 +86,14 @@
         }
       }
     },
+    computed: {
+      classes() {
+        return [
+          `${classFix}StandardTable`,
+        ];
+      },
+    },
     methods: {
     }
   };
 </script>
-<style lang="less" scoped>
-.StandardTable{
-  display: flex;
-  overflow: hidden;
-  flex-direction: column;
-  .page{
-    margin-bottom: 8px;
-  }
-
-  .table{
-    flex: 1;
-    overflow: hidden;
-  }
-}
-</style>
