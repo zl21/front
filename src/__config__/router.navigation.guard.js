@@ -187,6 +187,7 @@ export default (router) => {
     const {
       tableName, tableId, itemId, customizedModuleName, pluginModuleName, linkModuleName, customizedModuleId, pluginModuleId, linkModuleId
     } = to.params;
+
     const preventRegisterModule = [CUSTOMIZED_MODULE_PREFIX, PLUGIN_MODULE_PREFIX, LINK_MODULE_PREFIX];
     const { routePrefix } = to.meta;
     const { isBack } = to.query;
@@ -270,22 +271,29 @@ export default (router) => {
     }
 
     // 判断是否状态中已经存在某个模块，不存在则创建。用户自定义界面不创建
+
     if (preventRegisterModule.indexOf(routePrefix) === -1 && dynamicModuleTag !== '' && store.state[keepAliveModuleName] === undefined) {
       store.registerModule(keepAliveModuleName, moduleGenerator[dynamicModuleTag]());
     }
      
     // 处理 openedMenuLists
     let existModuleIndex = -1;
-    const existModule = openedMenuLists.filter((d, i) => {
-      if (d.tableName === tableName) { 
-        // 已存在打开的模块界面，但是并不是同一个界面
-        existModuleIndex = i;
-        return true;
-      }
-      return false;
-    })[0];
-    if (existModuleIndex !== -1 && KEEP_MODULE_STATE_WHEN_CLICK_MENU && !enableOpenNewTab()) { // 列表界面打开同表单对象逻辑
-      // enableOpenNewTab用于判断 列表界面打开 同表 单对象是否新开tab,默认为false
+    
+      const existModule = openedMenuLists.filter((d, i) => {
+        let currentName = tableName || customizedModuleName || pluginModuleName || linkModuleName;
+        if (d.tableName === currentName) {
+          // 已存在打开的模块界面，但是并不是同一个界面
+          if(enableActivateSameCustomizePage()){
+              existModuleIndex = i;
+            }
+          return true;
+        }
+        return false;
+      })[0];
+
+  
+    
+    if (existModuleIndex !== -1 && KEEP_MODULE_STATE_WHEN_CLICK_MENU) {
       // Condition One:
       // 如果目标路由界面所对应的[表]已经存在于已经打开的菜单列表中(不论其当前是列表状态还是编辑状态)
       // 则都应该显示其当前对应的状态页。
@@ -310,7 +318,7 @@ export default (router) => {
             isActive: true,
             label: `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
             keepAliveModuleName,
-            tableName,
+            tableName: tableName || customizedModuleName || pluginModuleName || linkModuleName,
             routeFullPath: to.fullPath, // 由to.path改为to.fullPath为取带query的路径
             routePrefix
           },
@@ -332,14 +340,16 @@ export default (router) => {
         customizedModuleName,
         customizedModuleId,
       };
-      setCustomeLabel(data);
+      // setCustomeLabel(data);
     } 
     
     // 通过activateSameCustomizePage配置路由到自定义界面，如果自定义界面标识相同，是否只激活同一个tab,默认为true,只激活同一个tab
     let activateSameCustomizePageFlag = false;
     if (enableActivateSameCustomizePage()) {
-      // 当前打开的tab的keepAliveModuleName===要跳转页面的keepAliveModuleName，或是当前是自定义界面的keepAliveModuleName包含当前要跳转的自定义界面的标识，不必keepAliveModuleName相等，包含自定义界面的标识即可
-      if (dynamicModuleTag !== '' && openedMenuLists.length > 0 && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))).length > 0) {
+      // 当前打开的tab的keepAliveModuleName===要跳转页面的keepAliveModuleName，
+      // 或是当前是自定义界面的keepAliveModuleName包含当前要跳转的自定义界面的标识，
+      // 不必keepAliveModuleName相等，包含自定义界面的标识即可
+      if (dynamicModuleTag !== '' && openedMenuLists.length > 0 && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== ''&& d.tableName===keepAliveModuleNameRes  && d.keepAliveModuleName.includes(keepAliveModuleNameRes))).length > 0) {
         activateSameCustomizePageFlag = true;
       }
     }
@@ -363,7 +373,6 @@ export default (router) => {
               pluginModules = Object.assign({}, pluginModules, window.ProjectConfig.externalPluginModules);
             }
           }
-         
           commit('global/increaseOpenedMenuLists', {
             label: routePrefix === PLUGIN_MODULE_PREFIX ? pluginModules[pluginModuleName].name : `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
             keepAliveModuleName,

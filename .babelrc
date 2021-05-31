@@ -1,6 +1,6 @@
 {
-  "plugins": [["import", {
-    "libraryName": "@syman/ark-ui-bcl",
-    "libraryDirectory": "src/components"
-  }]]
-}
+    "plugins": [["import", {
+      "libraryName": "@syman/ark-ui-bcl",
+      "libraryDirectory": "src/components"
+    }]]
+  }

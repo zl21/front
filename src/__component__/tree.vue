@@ -7,6 +7,7 @@
       ref="zTree"
       :z-nodes="treeData"
       :placeholder="placeholder"
+      :Notice="Notice"
       @clickTreeNode="clickTreeNode"
     />
   </div>
@@ -30,6 +31,7 @@
         menuTreeQuery: '', // 菜单树检索的值
         oldMenuTreeObj: null, // 上一次选中的菜单节点的数据
         newMenuTreeObj: null, // 当前选中的菜单节点的数据
+        Notice:'', // 提示信息
         treeData: [
           // {
           //   title: 'parent 1',
@@ -123,6 +125,7 @@
           this.treeData = value.data;
           this.treeName = value.name;
           this.placeholder = value.placeholder;
+          this.Notice  = value.Notice;
           this.query = value.query;
           this.searchData = value.searchData;
           this.checkNode();

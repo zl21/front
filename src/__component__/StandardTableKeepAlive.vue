@@ -11,7 +11,7 @@
   import { mapState } from 'vuex';
   import mixins from '../__config__/mixins/standardTableLists';
   import { STANDARD_TABLE_LIST_PREFIX, STANDARD_TABLE_COMPONENT_PREFIX, STANDARD_COMMONTABLE_COMPONENT_PREFIX } from '../constants/global';
-  import StandardTableList from './StandardTableList';
+  import StandardTableList from './StandardTableList.vue';
   import moduleName from '../__utils__/getModuleName';
 
   export default {

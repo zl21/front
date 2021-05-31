@@ -33,11 +33,12 @@ export default {
   // },
 
   // 表单
-  async updateDefaultFormItemsLists({ formItems, userInfo }, data) {
+  async updateDefaultFormItemsLists({ formItems, userInfo }, {data, indexDB}) {
     const { tableId } = router.currentRoute.params;
 
     const getSTDefaultQuery = getSessionObject(tableId);
     if (data && data.length > 0 && getSTDefaultQuery && getSTDefaultQuery.length > 0) {
+      
       getSTDefaultQuery.map((c) => {
         data.map((d) => {
           if (Number(c.colid) === Number(d.colid)) {
@@ -53,6 +54,38 @@ export default {
           return d;
         });
         return c;
+      });
+    }
+
+    // 处理indexDB的默认值
+    if(indexDB && data && data.length > 0){
+      Object.keys(indexDB).map((c) => {
+        data.map((d) => {
+          if (c === d.colname && indexDB[c]) {
+            d.default = indexDB[c];
+            if(d.display && d.display === 'OBJ_FK') { // 如果是外键类型，需要配置refobjid
+              if(Array.isArray(indexDB[c])){
+                d.refobjid = indexDB[c].map(item => item.ID).join(',');
+                d.default = indexDB[c].map(item => item.Label).join(',');
+              }
+              
+            }
+            
+            if (d.display && ['OBJ_DATENUMBER','OBJ_DATE'].includes(d.display)) {
+              d.customDefault = indexDB[c];
+              d.default = -1;
+              d.defaultrange = -1;
+            }
+
+            if (d.display && d.display === 'OBJ_SELECT') {
+              if(Array.isArray(indexDB[c])){
+                d.default = indexDB[c].join(',');
+              }else{
+                d.default = indexDB[c];
+              }
+            }
+          }
+        });
       });
     }
     
@@ -254,9 +287,6 @@ export default {
   }, // 修改state中dynamicRouting的值
   updataWebConf(state, data) {
     state.webConf = data;
-  },
-  updateSearchDBdata(state, data) {
-    state.searchDBdata = data;
   },
   updateTabParam(state, data) { // 更新当前tab参数
     if (data.index) {

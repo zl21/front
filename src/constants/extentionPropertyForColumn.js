@@ -272,7 +272,7 @@ export default [
         type: 'input'
       },
       {
-        name: '本表对应字段',
+        name: '来源表中的字段',
         key: 'refcol',
         type: 'input'
       },

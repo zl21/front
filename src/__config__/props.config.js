@@ -34,11 +34,11 @@ const input = {
     // 最大输入长度
     maxlength: null,
     // 输入框尾部图标，仅在 text 类型下有效
-    icon: null,
+    icon: '',
     // 输入框头部图标
-    prefix: null,
+    prefix: '',
     // 输入框尾部图标
-    suffix: null,
+    suffix: '',
     // 给表单元素设置 id，详见 Form 用法。
     'element-id': null,
     // 原生的 spellcheck 属性

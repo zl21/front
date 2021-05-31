@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Viewer from 'v-viewer';
-
 import { getGuid } from './__utils__/random';
 import router from './__config__/router.config';
 import routerPrototype from './__config__/router.prototype';
@@ -30,15 +29,21 @@ import './assets/css/loading.css';
 import './assets/css/custom-ext.less';
 import { createWatermark } from './__utils__/waterMark';
 import R3Dialog from './__globalComponentModule__/dialog';
+import panelForm from './__component__/FormComponents/PanelForm/panelForm.vue'
+import listsForm from './__component__/FormComponents/listsForm.vue'
+import './__utils__/getChildComponent'
 
 // 全局指令
 import inputNumber from './directive/inputNumber';
+import draggable from 'vuedraggable';
 
 Vue.use(inputNumber);
 
 Vue.prototype.$createWatermark = createWatermark;// 挂在水印
 
 Vue.component('CompositeFormpop', CompositeForm);
+Vue.component('panelForm',panelForm)
+Vue.component('listsForm',listsForm)
 Vue.use(Loading);
 Vue.use(R3Dialog); // 注册全局api调用组件
 Vue.use(Viewer);
@@ -170,6 +175,7 @@ const getCategory = () => {
     network.post('/p/cs/getSubSystems').then((res) => {
       if (res.data.code === '-1') {
         backTouristRoute();
+       
       } else if (res.data.data.length > 0) {
         store.commit('global/updateMenuLists', res.data.data);
         const serviceIdMaps = res.data.data.map(d => d.children)

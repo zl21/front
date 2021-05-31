@@ -33,7 +33,7 @@
         v-if="_items.required"
         class="label-tip"
       >*</span>
-      <template v-if="getVersion() === '1.4' && _items.props.fkdisplay === 'pop' && type==='PanelForm'&&_items.type !== 'defined'">
+      <template v-if="getVersion() === '1.4' && _items.props.fkdisplay === 'pop' && type==='PanelForm'">
         <!-- 路由跳转 -->
         <template v-if="!!_items.value &&_items.props.Selected &&_items.props.Selected[0] && !!_items.props.Selected[0].ID && _items.props.Selected[0].ID !=='-1'&& _items.props.Selected[0].ID !==0 && _items.props.Selected[0].ID !=='0'">
           <i
@@ -45,7 +45,7 @@
         </template>
 
       </template>
-      <template v-if="getVersion() === '1.4' && _items.props.fkdisplay === 'drp' && type==='PanelForm'&&_items.type !== 'defined'">
+      <template v-if="getVersion() === '1.4' && _items.props.fkdisplay === 'drp' && type==='PanelForm'">
         <!-- 路由跳转 -->
         <template v-if="!!_items.value && _items.props.defaultSelected && _items.props.defaultSelected[0] && !!_items.props.defaultSelected[0].ID && _items.props.defaultSelected[0].ID !=='-1'&& _items.props.defaultSelected[0].ID !=='0'&& _items.props.defaultSelected[0].ID !==0">
           <i
@@ -59,7 +59,6 @@
       </template>
 
       <span
-        v-if="_items.type !== 'defined'"
         :title="_items.title"
       >{{ _items.title }}:</span>
     </span>
@@ -95,6 +94,11 @@
         @on-keypress="inputKeyPress"
         @on-regx-check="inputRegxCheck"
       />
+
+      <!-- <component
+        :is="inheritanceComponents(_items)"
+        :ref="_items.field"
+      /> -->
 
       <Checkbox
         v-if="_items.type === 'checkbox'"
@@ -184,6 +188,7 @@
           :class-name="`R3_${_items.field}`"
           :data="_items.props.data"
           :single="_items.props.single"
+          :singleTurn="true"
           :placeholder="!_items.props.disabled? _items.props.placeholder:''"
           :total-row-count="_items.props.totalRowCount"
           :page-size="_items.props.pageSize"
@@ -211,6 +216,7 @@
           :ref="_items.field"
           :class-name="`R3_${_items.field}`"
           :data="_items.props.data"
+          :singleTurn="true"
           :single="_items.props.single"
           :placeholder="!_items.props.disabled? _items.props.placeholder:''"
           :total-row-count="_items.props.totalRowCount"
@@ -284,7 +290,10 @@
         </div>
       </AttachFilter>
  -->
-      <div class="img-upload-wrap">
+      <div 
+        class="img-upload-wrap"
+        v-if="_items.type === 'ImageUpload'"
+      >
         <ImageUpload
           v-if="_items.type === 'ImageUpload'"
           :ref="_items.field"
@@ -369,9 +378,8 @@
       <radio-group
         v-if="_items.type === 'radioGroup'"
         :ref="_items.field"
-        v-model="_items.props.value"
+        v-model="_items.value"
         :options="_items.props"
-        :form-item-value="_items.value"
         @change="radioValueChange"
       />
       
@@ -434,8 +442,8 @@
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
+  
   export default {
-    name: 'ItemComponent',
     components: {
       EnumerableInput, ExtentionInput, ComAttachFilter, Docfile, RadioGroup, Defined
     },
@@ -498,7 +506,7 @@
       },
       labelStyle() {
         let style = '';
-        style = `width:${this.labelWidth}px`;
+        style = `flex: 0 0 ${this.labelWidth}px;`;
         return style;
       },
       _items() {
@@ -583,7 +591,7 @@
       filterList() {
         // 气泡选中过滤条件
         return this.filterDate;
-      }
+      },
     },
     methods: {
       ...mapMutations('global', ['tabOpen', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
@@ -1856,9 +1864,6 @@
     white-space: nowrap;
     overflow: hidden;
     line-height: 16px;
-    // display: flex;
-    // align-items: center;
-    // justify-content: flex-end;
 
     i {
       font-size: 12px;
@@ -1880,15 +1885,14 @@
   }
 }
 textarea.ark-input{
-    // height: 100%!important;
     resize:auto;
 }
-.height100{
-    height: 100%!important;
-    .ark-input-wrapper{
-    height: 100%!important;
-    }
-}
+// .height100{
+//     height: 100%!important;
+//     .ark-input-wrapper{
+//     height: 100%!important;
+//     }
+// }
 .AttachFilter-pop {
   .icon-bj_tcduo:before {
     content: "\e6b1";

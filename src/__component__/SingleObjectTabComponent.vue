@@ -91,7 +91,14 @@
       />
     </div>
     <!-- 左右结构主表和子表1:1模式的form(面板) -->
-    <compositeForm
+    <panelForm
+      v-if="panelData.isShow&&!componentName"
+      :tableName="tableName"
+      :readonly="objreadonly"
+      :is-main-table="isMainTable"
+      :defaultData="panelData.data"
+    ></panelForm>
+    <!-- <compositeForm
       v-if="panelData.isShow&&!componentName"
       :is-main-table="isMainTable"
       :object-type="type"
@@ -112,7 +119,7 @@
       @formChange="formPanelChange"
       @InitializationForm="initFormPanel"
       @VerifyMessage="verifyFormPanel"
-    />
+    /> -->
     <!-- 明细表格 -->
     <component
       :is="objectTableComponent"
@@ -483,6 +490,9 @@
         const tableDetailCollectionMixin = (window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.tableDetailCollectionMixin) || {};
         const singleObjectButtonsMixin = (window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.singleObjectButtonsMixin) || {};
         const vuexModuleName = this.moduleComponentName;
+
+        const singlePanelForm= `tabComponent.${this.tableName}.PanelForm`;
+
         if (this.type === 'vertical') {
           if (Vue.component(tableComponent) === undefined) {
             Vue.component(tableComponent, Vue.extend(Object.assign({ mixins: [verticalMixins(), tableDetailCollectionMixin] }, tableDetailCollection)));
@@ -497,6 +507,7 @@
           if (Vue.component(buttonComponent) === undefined) {
             Vue.component(buttonComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins(vuexModuleName), singleObjectButtonsMixin] }, singleObjectButtons)));
           }
+
         }
         if(this.componentName) { // 定制tab自定义组件
           const customizedModuleName = this.componentName.toUpperCase();
@@ -515,6 +526,7 @@
         }
         this.objectTableComponent = tableComponent;
         this.objectButtonComponent = buttonComponent;
+        this.currentSinglePanelForm = singlePanelForm;
       },
       itemTableCheckFunc() {
         if (this.$refs.objectTableRef && Object.keys(this.$refs.objectTableRef.tableFormVerify()).length > 0) {
@@ -967,7 +979,7 @@
       flex: 1;
       overflow:auto;
     }
-    .verticalFormPanel {
+    .panelForm {
       margin: 10px 16px;
       flex: 1;
       overflow: auto;

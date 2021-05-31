@@ -94,7 +94,7 @@ export const custommizedRequestUrl = () => (window.ProjectConfig && window.Proje
 
 export const connector = () => (window.ProjectConfig && window.ProjectConfig.connector ? window.ProjectConfig.connector : connectorConfig);
 export const functionPowerRequestURL = () => (window.ProjectConfig && window.ProjectConfig.functionPowerRequestURL ? window.ProjectConfig.functionPowerRequestURL : project.functionPowerRequestURL);
-export const Version = () => (process.env.BUILD_ENV === 'publish' ? 1.3 : (window.ProjectConfig && window.ProjectConfig.Version ? window.ProjectConfig.Version : project.Version));
+export const Version = () => (window.ProjectConfig && window.ProjectConfig.Version && window.ProjectConfig.Version === '1.4' ? '1.4' : '1.3');
 export const interlocks = () => (window.ProjectConfig && typeof window.ProjectConfig.interlocks === 'boolean' ? window.ProjectConfig.interlocks : project.interlocks);
 export const enableGateWay = () => (window.ProjectConfig && typeof window.ProjectConfig.enableGateWay === 'boolean' ? window.ProjectConfig.enableGateWay : project.enableGateWay);
 export const enableCustomInterface = () => (window.ProjectConfig && typeof window.ProjectConfig.enableCustomInterface === 'boolean' ? window.ProjectConfig.enableCustomInterface : project.enableCustomInterface);
@@ -145,7 +145,7 @@ export const getProjectQuietRoutes = () => {
 export const defaultrange = () => (window.ProjectConfig && window.ProjectConfig.defaultrange ? window.ProjectConfig.defaultrange : null); // 配置外健查询下拉每页展示多少条数据
 
 
-export const dashboardConfig = () => (window.ProjectConfig && window.ProjectConfig.DashboardComponent ? window.ProjectConfig.DashboardComponent : null); // 根路由界面
+export const dashboardConfig = () => (window.ProjectConfig && window.ProjectConfig.DashboardPage ? window.ProjectConfig.DashboardPage : null); // 根路由界面
 export const floatingFilter = () => (window.ProjectConfig && typeof window.ProjectConfig.floatingFilter === 'boolean' ? window.ProjectConfig.floatingFilter : true);
 
 

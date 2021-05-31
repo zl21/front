@@ -10,7 +10,8 @@
   import network from './__utils__/network';
   import { enableInitializationRequest, cbs, dateStorageTime } from './constants/global';
   import DispatchEvent from './__utils__/dispatchEvent';
-  
+
+
   export default {
     name: 'App',
     mounted() {

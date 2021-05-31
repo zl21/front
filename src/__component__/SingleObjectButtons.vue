@@ -91,7 +91,7 @@
   import getUserenv from '../__utils__/getUserenv';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import { getSessionObject, updateSessionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
-
+  import {FindInstance ,FindInstanceAll} from './ExtendedAttributes/common.js'
   export default {
     data() {
       return {
@@ -1376,6 +1376,7 @@
         this.activeTabAction = obj;
         switch (obj.vuedisplay) {
         case 'slient':
+        case 'slient_custom':
           this.objTabActionSlient(obj);
           break;
         case 'jflow_trigger':
@@ -1800,10 +1801,9 @@
         }
 
         
-
         const promise = new Promise((resolve, reject) => {
           this.getObjTabActionSlientConfirm({
-            tab, params, path: tab.action, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
+            tab, params, path: tab.action, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE], vuedisplay: tab.vuedisplay
           });
           this.$R3loading.show(this.loadingName);
         });
@@ -2101,14 +2101,15 @@
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.currentTabIndex === 0) { // 主表
             let formData = {};
-            this.tabPanel.forEach((item) => {
-              if (item.tablename === this.tableName) {
-                formData = item.componentAttribute.panelData;
-              }
-            });
-            formData = JSON.parse(JSON.stringify(formData));// 此值会导致更新其它表数据
-
-            const copyData = { ...formData };
+            // this.tabPanel.forEach((item) => {
+            //   if (item.tablename === this.tableName) {
+            //     formData = item.componentAttribute.panelData;
+            //   }
+            // });
+            
+            let panelForm = FindInstance(this,'panelForm')
+             const copyData = { ...panelForm[0].formDataLabel };
+            //const copyData = { ...formData };
             const modifyData = this.updateData[this.tableName].changeData;// 取changeData值，因外键形式需要lable和ID
             this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
             this.copyModifyDataForSingleObject(modifyData);// 将复制修改过所保存的数据存到global中
@@ -2124,9 +2125,8 @@
             });
           }
         } else { // 纵向布局
-          let formDataV = {};
-          formDataV = JSON.parse(JSON.stringify(this.mainFormInfo.formData));// 此值会导致更新其它表数据
-          const copyData = { ...formDataV };
+          let panelForm = FindInstance(this,'panelForm')
+          const copyData = { ...panelForm[0].formDataLabel };
           this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
           const modifyData = this.updateData[this.tableName].changeData;// 取changeData值，因外键形式需要lable和ID
           // this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
@@ -3298,21 +3298,52 @@
           this.temporaryStorage = false;
           return true;
         }
+
+        
         this.saveParameters();// 获取主子表参数
-        const checkedInfo = this.currentParameter.checkedInfo;// 主表校验信息
-        if (checkedInfo) {
-          const messageTip = checkedInfo.messageTip;
-          if (messageTip) {
-            if (messageTip.length > 0) {
-              this.$Message.warning(messageTip[0]);
-              // checkedInfo.validateForm.focus();
-              if (checkedInfo && checkedInfo.validateForm) {
-                checkedInfo.validateForm.focus();
+        // 处理主表必填控制
+        let panelForm = FindInstanceAll(this,'panelForm');
+        let validate = [];
+        if(panelForm && panelForm[0]){
+           validate = panelForm.reduce((arr,item,index)=>{
+              console.log(item.tableName);
+              if(index === 0){
+                // 默认第一个主表
+                arr.push(...item.validate())
+              }else if(this.itemName ===item.tableName){
+                arr.push(...item.validate())
               }
-              return false;
-            }
-          }
+              
+              return arr;
+          },[])
         }
+        if(validate.length > 0){
+            this.$Message.warning(validate[0].tip);
+            let dom = document.querySelector(`#${validate[0].colname}`);
+            if(dom){
+              let Input = dom.querySelector('input') || dom.querySelector('textarea');
+              if(Input){
+                  Input.focus();
+              }
+
+            }
+            return false;
+        }
+        
+        // const checkedInfo = this.currentParameter.checkedInfo;// 主表校验信息
+        // if (checkedInfo || validate) {
+        //   const messageTip = validate.concat(checkedInfo.messageTip || []);
+        //   if (messageTip) {
+        //     console.log(messageTip,'messageTip');
+        //     if (messageTip.length > 0) {
+        //       this.$Message.warning(messageTip[0]);
+        //       // checkedInfo.validateForm.focus();
+        //       if (checkedInfo && checkedInfo.validateForm) {
+        //         checkedInfo.validateForm.focus();
+        //       }
+        //     }
+        //   }
+        // }
         if (this.subtables()) { // 存在子表时
           let tabinlinemode = '';
           this.tabPanel.forEach((item) => {
@@ -3320,6 +3351,7 @@
               tabinlinemode = item.tabinlinemode;
             }
           });
+          console.log( this.tabPanel,' this.tabPanel');
           if (tabinlinemode === 'Y') { // 当子表中存在form时
             if (!this.itemTableValidation) {
               const itemCheckedInfo = this.itemCurrentParameter.checkedInfo;// 子表校验信息
@@ -3327,7 +3359,8 @@
               if (this.objectType === 'vertical') {
                 if (this.itemId === 'New') {
                   if (this.itemNameGroup.length > 0) { // 有子表
-                    if (KEEP_SAVE_ITEM_TABLE_MANDATORY) { // 为true时，子表没有必填项也必须要输入值才能保存
+                    if (KEEP_SAVE_ITEM_TABLE_MANDATORY) {
+                       // 为true时，子表没有必填项也必须要输入值才能保存
                       const addInfo = this.itemCurrentParameter.add[this.itemName];
                       if (itemCheckedInfo) {
                         const itemMessageTip = itemCheckedInfo.messageTip;
@@ -3459,6 +3492,7 @@
           }
           this.performMainTableSaveAction({ parame, resolve, reject });
         });
+        console.log(promise);
         this.temporaryStoragePath = '';
         let stop = false;
         let removeMessage = false;
@@ -3631,6 +3665,7 @@
             return obj;
           }, {});
         }
+
         Object.keys(this.updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
           if (current === this.tableName) {
             this.currentParameter = this.updateData[current];

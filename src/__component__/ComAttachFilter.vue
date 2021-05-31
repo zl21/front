@@ -9,6 +9,7 @@
       v-bind="propsData"
       :auot-data="propsData.AutoData"
       :default-selected="selected"
+      :singleTurn="true"
       @on-show="attachFilterPopperShow"
       @input="attachFilterInput"
       @on-change="attachFilterChange"
@@ -154,7 +155,8 @@
           this.propsData.componentType = Dialog;
           if (this.defaultSelected[0] && this.defaultSelected[0].ID && /选中/.test(this.value)) {
             // const data = this.defaultSelected[0].ID; 
-            const data = this.defaultSelected[0].ID; 
+            console.log(this.defaultSelected[0]);
+            const data = Array.isArray(this.defaultSelected[0].ID) ? this.defaultSelected[0].ID : JSON.parse(this.defaultSelected[0].ID); 
             // 谢世华  修改处理默认值逻辑
             
             if (data.value) {
@@ -192,6 +194,7 @@
       attachFilterInput(value) {
         this.value = value;
         this.selected = [];
+        console.log('attachFilterInput');
         this.inputValueChange(value);
       },
       inputValueChange(value) {
@@ -217,9 +220,11 @@
       attachFilterChange(value) {
         this.value = value;
         // 谢世华  为了处理标准列表界面字段数据消失问题
-        if (value.indexOf('已经选中') >= 0) {
-          this.valueChange('change');
-        }
+        // if (value.indexOf('已经选中') >= 0) {
+        //   this.valueChange('change');
+        // }
+        this.valueChange('change');
+
       },
       attachFilterSelected(row) {
         this.value = row.label;
@@ -392,8 +397,7 @@
       attachFilterOk($this) {
         // this.resultData = Object.assign({}, this.$refs.complex);
         if ($this._data.params) {
-          const type = this.propsData.inputname.split(':').length > 1 ? this.propsData.inputname.split(':')[1] : 'ENAME';
-          const value = $this._data.parms[type].val;
+          const value = $this._data.parms[$this._data.showKey].val;
           this.selected = [
             {
               Label: value,

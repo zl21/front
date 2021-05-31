@@ -1033,6 +1033,7 @@
           this.objectTryDelete(obj);
           break;
         case 'slient':
+        case 'slient_custom':
           this.objTabActionSlient(obj);// 静默类型
           break;
         case 'download':
@@ -1095,7 +1096,7 @@
 
         const promise = new Promise((resolve, reject) => {
           this.getObjTabActionSlientConfirm({
-            tab, params, path: tab.action, resolve, reject
+            tab, params, path: tab.action, resolve, reject, vuedisplay: tab.vuedisplay
           });
           this.$R3loading.show(this.loadingName);
         });
@@ -2810,39 +2811,50 @@
         ]);
       },
       comAttachFilterRender(cellData, tag) {
-        return (h, params) => {
-          if(!this.copyDataSource.row[params.index]) {
-            return null
-          }
-          let data = this.copyDataSource.row[params.index][cellData.colname].val
-          // 如果是json化的对象
-          if(data.startsWith('{"')) {
-            data = JSON.parse(data)
-            this.copyDataSource.row[params.index][cellData.colname].val = `已经选中${data.total}条数据`;
-            this.copyDataSource.row[params.index][cellData.colname].defaultSelected = [{
-              ID: data,
-              Label: `已经选中${data.total}条数据`
-            }];
-          } else {
-            this.copyDataSource.row[params.index][cellData.colname].val = data
-          }
-
-          const defaultValue = this.copyDataSource.row[params.index][cellData.colname].val
-          const defaultSelected = this.copyDataSource.row[params.index][cellData.colname].defaultSelected || []
-          return h('div', [
-            h(tag, {
-              style: {
-                width: '130px'
-              },
-              domProps: {
-                id: `${params.index}-${params.column._index - 1}`
-              },
-              props: {
-                defaultValue,
-                defaultSelected,
-                propstype: {
-                  optionTip: true,
-                  // 是否显示输入完成后是否禁用 true、false
+        return (h, params) => h('div', [
+          h(tag, {
+            style: {
+              width: '130px'
+            },
+            domProps: {
+              id: `${params.index}-${params.column._index - 1}`
+            },
+            props: {
+              defaultValue: this.copyDataSource.row[params.index][cellData.colname].val,
+              defaultSelected: this.copyDataSource.row[params.index][cellData.colname].val ? [{
+                ID: /选中/.test(this.copyDataSource.row[params.index][cellData.colname].val) ? this.copyDataSource.row[params.index][cellData.colname].refobjid :this.copyDataSource.row[params.index][cellData.colname].val,
+                Label: `${/选中/.test(this.copyDataSource.row[params.index][cellData.colname].val) ? this.copyDataSource.row[params.index][cellData.colname].val : `已经选中${JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).total}条数据`}`
+              }] : [],
+              propstype: {
+                optionTip: true,
+                // 是否显示输入完成后是否禁用 true、false
+                show: true,
+                // 是否显示筛选提示弹窗 true、false
+                filterTip: true,
+                // 是否选中后禁止编辑 true、false
+                enterType: true,
+                // 是否回车选中第一行
+                disabled: false,
+                // 默认提示框
+                placeholder: null,
+                // 定义选中展示的文字的key
+                hideColumnsKey: ['id'],
+                // 配置弹窗的配置项 model
+                dialog: {
+                  model: {
+                    title: '弹窗多选',
+                    mask: true,
+                    draggable: true,
+                    scrollable: true,
+                    width: 920
+                  }
+                },
+                fkobj: {
+                  refobjid: cellData.refobjid,
+                  reftable: cellData.reftable,
+                  colid: this.dataSource.row[params.index][cellData.colname].colid,
+                  reftableid: cellData.reftableid,
+                  saveType: 'object',
                   show: true,
                   // 是否显示筛选提示弹窗 true、false
                   filterTip: true,
@@ -2909,9 +2921,10 @@
                   }
                 }
               }
-            })
-          ]);
-        };
+            }
+           
+          })
+        ]);
       },
       comAttachFilterpopRender(cellData, tag) {
         return (h, params) => {
@@ -3403,14 +3416,33 @@
                 };
                 this.tabOpen(tab);
               } else if (data.objdistype === 'link') { // 支持跳转外链界面配置动态参数
+                const query = {};
+                const queryArray = cellData.customerurl.refobjid.split(',');
+                if (queryArray.length > 1) {
+                  queryArray.reduce((a, o) => {
+                    if (params.row[o] && params.row[o]) query[o] = params.row[o];
+                  }, {});
+                } else if (queryArray.length === 1) {
+                  query.objId = params.row[cellData.customerurl.refobjid];
+                }
+
                 const param = {
-                  url: cellData.customerurl.tableurl,
-                  query: params.row[cellData.customerurl.refobjid],
-                  lablel: cellData.customerurl.reftabdesc,
-                  isMenu: true,
-                  lingName: cellData.customerurl.linkname,
-                  linkId: params.row[cellData.customerurl.refobjid],
+                  url: cellData.customerurl.tableurl, // 跳转的外链界面内加载的iframe的src地址，即加载的页面地址
+                  query, // 地址携带的参数
+                  label: cellData.customerurl.reftabdesc, // 外链界面对应的Tab展示名称
+                  isMenu: true, // 设置了label则该参数必须设置为true
+                  linkName: cellData.customerurl.linkname, // 外链界面表名，作为路由参数
+                  linkId: queryArray.length > 1 ? params.row.ID : params.row[cellData.customerurl.refobjid], // 外链界面表ID，作为路由参数
                 };
+
+                // const param = {
+                //   url: cellData.customerurl.tableurl,
+                //   query: params.row[cellData.customerurl.refobjid],
+                //   label: cellData.customerurl.reftabdesc,
+                //   isMenu: true,
+                //   linkName: cellData.customerurl.linkname,
+                //   linkId: params.row[cellData.customerurl.refobjid],
+                // };
                 this.directionalRouter(param);// 定向路由跳转方法
                 const datas = {
                   type: 'singleCustomerurlLink',
@@ -3504,8 +3536,8 @@
       docRender(cellData, tag) {
         const that = this;
         return (h, params) => {
-          if(!this.copyDataSource.row[params.index]) {
-            return null
+          if(!this.copyDataSource.row[params.index]){
+              return false;
           }
           const content = `${this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).reduce((acc, cur) => {
             acc.push(`【${cur.name}】`);
@@ -3593,6 +3625,9 @@
       docReadonlyRender(cellData, tag) {
         const that = this;
         return (h, params) => {
+          if(!this.copyDataSource.row[params.index]){
+              return false;
+          }
           const content = `${this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).reduce((acc, cur) => {
             acc.push(`【${cur.name}】`);
             return acc;

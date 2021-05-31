@@ -1,6 +1,6 @@
 import { stringify } from 'querystring';
-import { cpus } from 'os';
-import { ComponentResolver } from 'ag-grid/dist/lib/components/framework/componentResolver';
+// import { cpus } from 'os';
+// import { ComponentResolver } from 'ag-grid/dist/lib/components/framework/componentResolver';
 import router from '../../router.config';
 import { enableOpenNewTab } from '../../../constants/global';
 
@@ -237,56 +237,69 @@ export default {
   savaCopyData(state, { copyDatas, tableName, modifyData }) { // 执行按钮复制操作存储form默认值数据
     const copySaveDataForParam = {};
     state.copyDataForReadOnly.addcolums.forEach((d) => { // 复制按钮操作时江接口请求回来的配置信息赋值给form
-      copyDatas.data.addcolums.forEach((item) => {
+      Object.keys(copyDatas).forEach((item) => {
         if (d.childs) {
           d.childs.forEach((c) => {
-            if (item.childs) {
-              item.childs.forEach((b) => {
-                if (b.name === c.name) {
-                  b.readonly = c.readonly;
-                  if (c.readonly === true) {
-                    if (c.defval) { // 处理复制时有不可编辑，且有默认值情况
-                      if (JSON.stringify(modifyData) !== '{}') { // 修改新增时不可编辑且有默认值，将修改后的值删除
-                        delete (modifyData[b.colname]);
-                      }
-                      if (c.display === 'select' || c.display === 'check') {
-                        copySaveDataForParam[b.colname] = c.defval;
-                      } else if (c.fkdisplay === 'drp' || c.fkdisplay === 'mrp' || c.fkdisplay === 'pop' || c.fkdisplay === 'mop') {
-                        copySaveDataForParam[b.colname] = [{ ID: c.refobjid, Label: c.defval }];
-                      } 
-                    } else {
-                      b.valuedata = '';// 将配置为不可编辑的值置空
-                      if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'mop') {
-                        b.refobjid = '';
-                      }
-                    }
-                  } else if (b.valuedata) {
-                    if (b.display === 'doc') {
-                      copySaveDataForParam[b.colname] = JSON.parse(b.valuedata);
-                    } else if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop') {
-                      copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
-                    } else if (b.fkdisplay === 'mop') {
-                      try {
-                        const number = JSON.parse(b.valuedata).lists.result.length;
-                        copySaveDataForParam[b.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
-                      } catch (e) {
-                        copySaveDataForParam[b.colname] = b.valuedata;
-                      }
-                    } else if (c.display === 'OBJ_DATENUMBER') {
-                      copySaveDataForParam[b.colname] = b.valuedata.replace(/-/g, '');
-                    } else {
-                      copySaveDataForParam[b.colname] = b.valuedata;
-                    }
+            if(c.webconf&& c.webconf.formRequest){
+              c.webconf.formRequest.copy = true;
+            }
+            if (item === c.colname) {
+              // b.readonly = c.readonly;
+              if (c.readonly === true) {
+                if (c.defval) { // 处理复制时有不可编辑，且有默认值情况
+                  if (JSON.stringify(modifyData) !== '{}') { // 修改新增时不可编辑且有默认值，将修改后的值删除
+                    delete (modifyData[c.colname]);
+                  }
+                  if (c.display === 'select' || c.display === 'check') {
+                    copySaveDataForParam[c.colname] = c.defval;
+                  } else if (c.fkdisplay === 'drp' || c.fkdisplay === 'mrp' || c.fkdisplay === 'pop' || c.fkdisplay === 'mop') {
+                    copySaveDataForParam[c.colname] = [{ ID: c.refobjid, Label: c.defval }];
+                  } 
+                } else {
+                  c.valuedata = '';// 将配置为不可编辑的值置空
+                  if (c.fkdisplay === 'drp' || c.fkdisplay === 'mrp' || c.fkdisplay === 'pop' || c.fkdisplay === 'mop') {
+                    c.refobjid = '';
                   }
                 }
-              });
-            } 
+              } else if (copyDatas[item]) {
+                if (c.display === 'doc') {
+                  c.valuedata = copyDatas[item]
+                  copySaveDataForParam[c.colname] = JSON.parse(copyDatas[item]);
+                } else if (c.fkdisplay === 'drp' || c.fkdisplay === 'mrp' || c.fkdisplay === 'pop') {
+                  c.refobjid = copyDatas[item].map(item => item.ID).join(',');
+                  c.valuedata = copyDatas[item].map(item => item.Label).join(',');
+                  copySaveDataForParam[c.colname] = [{ ID: copyDatas[item][0].ID, Label: copyDatas[item][0].Label }];
+                }else if (c.display === 'OBJ_DATENUMBER') {
+                  c.valuedata = copyDatas[item];
+                  // c.default = -1;
+                  // c.defaultrange = -1;
+                  copySaveDataForParam[c.colname] = copyDatas[item].replace(/-/g, '');
+                } else if(c.display === 'select') {
+                  if(Array.isArray(copyDatas[item])){
+                    c.valuedata = copyDatas[item].join(',');
+                  }else{
+                    c.valuedata = copyDatas[item];
+                  }
+                }else{
+                  // this.$set(c,'valuedata',copyDatas[item])
+                  c.valuedata = copyDatas[item]
+                  copySaveDataForParam[c.colname] = copyDatas[item];
+                }
+              }else{
+                c.valuedata ='';
+                c.refobjid = '';
+                c.defval = '';
+                copySaveDataForParam[c.colname] = '';
+              }
+            }
           });
-        } else if (!item.childs) { // 处理hr外面不可编辑字段的默认值逻辑
-          const b = item.child;
+        }  else if (!d.childs) { // 处理hr外面不可编辑字段的默认值逻辑
           const c = d.child;
-          if (b.name === c.name) {
-            b.readonly = c.readonly;
+          if(c.webconf&& c.webconf.formRequest){
+            c.webconf.formRequest.copy = true;
+          }
+          if (item === c.name) {
+            // b.readonly = c.readonly;
             if (c.readonly === true) {
               if (c.defval) { // 处理复制时有不可编辑，且有默认值情况
                 if (JSON.stringify(modifyData) !== '{}') { // 修改新增时不可编辑且有默认值，将修改后的值删除
@@ -298,36 +311,74 @@ export default {
                   copySaveDataForParam[b.colname] = [{ ID: c.refobjid, Label: c.defval }];
                 }
               } else {
-                b.valuedata = '';// 将配置为不可编辑的值置空
-                if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'mop') {
-                  b.refobjid = '';
+                c.valuedata = '';// 将配置为不可编辑的值置空
+                if (c.fkdisplay === 'drp' || c.fkdisplay === 'mrp' || c.fkdisplay === 'pop' || c.fkdisplay === 'mop') {
+                  c.refobjid = '';
                 }
               }
-            } else if (b.valuedata) {
-              if (b.display === 'doc') {
-                copySaveDataForParam[b.colname] = JSON.parse(b.valuedata);
-              } else if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop') {
-                copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
-              } else if (b.fkdisplay === 'mop') {
+            } else if (copyDatas[item]) {
+
+              if (c.display === 'doc') {
+                c.valuedata = copyDatas[item]
+                copySaveDataForParam[c.colname] = JSON.parse(copyDatas[item]);
+              } else if (c.fkdisplay === 'drp' || c.fkdisplay === 'mrp' || c.fkdisplay === 'pop') {
+                c.refobjid = copyDatas[item].map(item => item.ID).join(',');
+                c.default = copyDatas[item].map(item => item.Label).join(',');
+                copySaveDataForParam[c.colname] = [{ ID: copyDatas[item][0].ID, Label: copyDatas[item][0].Label }];
+              } else if (c.fkdisplay === 'mop') {
                 try {
                   const number = JSON.parse(b.valuedata).lists.result.length;
-                  copySaveDataForParam[b.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
+                  copySaveDataForParam[c.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
                 } catch (e) {
-                  copySaveDataForParam[b.colname] = b.valuedata;
+                  copySaveDataForParam[c.colname] = c.valuedata;
                 }
               } else if (c.display === 'OBJ_DATENUMBER') {
-                copySaveDataForParam[b.colname] = b.valuedata.replace(/-/g, '');
-              } else {
-                copySaveDataForParam[b.colname] = b.valuedata;
+                c.valuedata = copyDatas[item];
+                // c.default = -1;
+                // c.defaultrange = -1;
+                copySaveDataForParam[c.colname] = copyDatas[item].replace(/-/g, '');
+              } else if(c.display === 'select') {
+                if(Array.isArray(copyDatas[item])){
+                  c.valuedata = copyDatas[item].join(',');
+                }else{
+                  c.valuedata = copyDatas[item];
+                }
+              }else{
+                // this.$set(c,'valuedata',copyDatas[item])
+                c.valuedata = copyDatas[item]
+                copySaveDataForParam[c.colname] = copyDatas[item];
               }
+              // if (c.display === 'doc') {
+              //   copySaveDataForParam[b.colname] = JSON.parse(b.valuedata);
+              // } else if (c.fkdisplay === 'drp' || c.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') { // 外键类型要特殊整合
+              //   copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
+              // } else if (b.fkdisplay === 'mop') {
+              //   try {
+              //     const number = JSON.parse(b.valuedata).lists.result.length;
+              //     copySaveDataForParam[b.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
+              //   } catch (e) {
+              //     copySaveDataForParam[b.colname] = b.valuedata;
+              //   }
+              // } else if (c.display === 'OBJ_DATENUMBER') {
+              //   copySaveDataForParam[b.colname] = b.valuedata.replace(/-/g, '');
+              // } else {
+              //   copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
+              // }
+            }else{
+              c.valuedata ='';
+              c.refobjid = '';
+              c.defval = '';
+              copySaveDataForParam[c.colname] = '';
             }
           }
         }
       });
     });
+
     state.updateData[tableName].add = {};
     state.updateData = Object.assign({}, state.updateData);
-    const data = state.copyDataForReadOnly;
+    const data = JSON.parse(JSON.stringify(state.copyDataForReadOnly));
+
     state.mainFormInfo.formData.data.copy = true;
     state.mainFormInfo.formData.data.addcolums = data.addcolums;
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);

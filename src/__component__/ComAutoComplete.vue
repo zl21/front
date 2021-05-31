@@ -112,7 +112,7 @@
       searchBtn(val) {
         if (val === false) {
           setTimeout(() => {
-            this.$refs.AutoComplete.$el.querySelector('input').focus();
+            this.$refs.AutoComplete && this.$refs.AutoComplete.$el.querySelector('input').focus();
             // this.$refs.AutoComplete.$el.querySelector('input').click();
           }, 300);
         }

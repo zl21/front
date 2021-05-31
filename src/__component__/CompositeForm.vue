@@ -562,6 +562,9 @@
                 if (item.item.props.qtyisshow === false) {
                   show = false;
                 }
+                if (item.item.props.display === 'none') {
+                  show = false;
+                }
                 item.show = show;
                 if (!show) {
                   if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
@@ -623,22 +626,6 @@
           // 通知清空
           window.eventType(`${this[MODULE_COMPONENT_NAME]}setLinkForm`, window, { key: Object.keys(data)[0], data, tableName: this.tableGetName });
         }
-        // let documentkey = '';
-
-        // if (LinkageFormItem && this.tableGetName && !LinkageFormItem.item.maintable) {
-        //   documentkey = document.querySelector(`.${this.tableGetName}`).querySelector(`#${key}`);
-        // } else {
-        //   documentkey = document.querySelector(`#${key}`);
-        // }
-        // // console.log(key, mappStatus, LinkageFormItem, 'key');
-        // if (!document.querySelector(`#${key}`)) {
-        //   return false;
-        // }
-        // const LinkageFormInput = documentkey.querySelector('.ark-icon-ios-close-circle');
-        // if (LinkageFormInput) {
-        //   LinkageFormInput.click();
-        // }
-        // return true;
       },
       // eslint-disable-next-line consistent-return
       setHideColms(data) {
@@ -904,15 +891,6 @@
           return arr;
         }, {});
 
-        // 1.3 外键传参 label
-        // if (Version() === '1.3') {
-        //   const formItemArry = formItem.reduce((arr, item) => {
-        //     console.log(item.item.value);
-        //     return arr;
-        //   }, {});
-        //   console.log(this.defaultFormData, formItemArry, '66');
-        // }
-
         // 1.3 版本的 label 
         this.r3Form = Object.assign(this.r3Form, formItem);
 
@@ -1002,7 +980,11 @@
         }
         obj.component = ItemComponent;
         obj.show = true;
-        console.log(this.checkDisplay(current));
+
+        if (current.display === 'none') {
+          obj.show = false;
+        }
+        
         obj.item = {
           type: this.checkDisplay(current),
           title: current.name,
@@ -1403,11 +1385,7 @@
             }
           });
         }
-        //  display none
-        if (current.display === 'none') {
-          obj.show = false;
-        }
-
+        
         
         return obj;
       },
@@ -1519,34 +1497,14 @@
               refcolval = this.refcolvalAll[item]; 
               return item;
             });
-            
-            // refcolval = this.refcolvalAll[current.refcolval.srccol]
-            //     ? this.refcolvalAll[current.refcolval.srccol]
-            //     : '';
-            
-            // if (this.refcolvalAll[current.refcolval.srccol] === undefined) {
-            //   const data = Object.assign(this.defaultFormData, this.formData);
-            //   refcolval = data[current.refcolval.srccol]; 
-            // }
           } else {
             // 判断来源字段是否是多字段的联动,srccol以前是单个字段,现在有可能是多个字段
             const data = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), this.formData);
 
             current.refcolval.srccol.split(',').map((item) => {
-              // if (current.webconf && current.webconf.refcolval_custom) {
-              //   refcolval[item] = data[item];
-              // } else {
-              //   refcolval = data[item];
-              // }
               refcolval = data[item];
               return item;
             });
-
-            // if (current.refcolval.srccol.includes(',')) {
-            //   console.log(data, current.refcolval.srccol);
-            // } else {
-                
-            // }
           }
 
 
@@ -1580,7 +1538,7 @@
           if (this.tableGetName && (!current.refcolval.maintable && !current.refcolval.mainsrccol)) {
             LinkageFormInput = LinkageForm[this.tableGetName + current.refcolval.srccol];
           } else {
-            LinkageFormInput = LinkageForm[current.refcolval.srccol];
+            LinkageFormInput = LinkageForm[this.masterName+current.refcolval.srccol];
           }
 
           if (!refcolval) {
@@ -1983,7 +1941,6 @@
           }
           return item.valuedata || item.defval;
         }
-        // console.log(item, this.defaultSetValue);
 
         if (item.display === 'OBJ_SELECT' || item.display === 'select') {
           // 处理select的默认值
@@ -2220,7 +2177,6 @@
           //  数字校验  '^\\d{0,8}(\\.[0-9]{0,2})?$'
 
           item.props.number = true;
-          // console.log(current.display);
           if (current.display === 'text' && !current.fkdisplay) {
             // 只能输入 正整数 
             let string = '';
@@ -2479,7 +2435,8 @@
             // 过滤值
             item.props.filterDate = {};
             item.value = '';
-            item.props.Selected.push(this.defaultValue(current)[0]);
+            const defaultObj = this.defaultValue(current)[0]
+            defaultObj.id && item.props.Selected.push(defaultObj);
             // if (!item.props.readonly && !this.objreadonly) {
             //   item.value = this.defaultValue(current)[1];
             //   item.props.Selected.push(this.defaultValue(current)[0]);
@@ -2620,7 +2577,6 @@
         } else {
           if (res.data.data.length < 1) {
             delete this.formData[`${current.colname}:NAME`];
-          // console.log(current.colname,this.formData);
           }
           item[index].item.props.AutoData = res.data.data;
         }
@@ -2793,11 +2749,6 @@
         if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {
           // 父子查询关系映射
           if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
-            // if (this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm) {
-            //   Object.keys(this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm).map((item) => {
-            //     this.LinkageForm[3] = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm[item];
-            //   });
-            // }
             const data = {
               formList: this.LinkageForm,
               formIndex: this.formIndex

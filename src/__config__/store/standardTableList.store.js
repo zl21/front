@@ -167,7 +167,6 @@ export default () => ({
       dynamicRouting: false, // 表格时候开启动态路由
     },
     webConf: {},
-    searchDBdata: {}, // 存储indexDB的查询条件
   },
   actions: actions(),
   mutations: mutations()

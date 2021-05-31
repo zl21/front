@@ -70,7 +70,7 @@ Date.prototype.setNewFormt = function (fmt, from, to) {
   return fmt.replace(new RegExp(from, 'g'), to); 
 };  
 
-
+// 
 Date.prototype.r3Format = (date, fmt = 'yyyy-MM-dd') => {
   const _date = date;
   const o = {
@@ -93,3 +93,18 @@ Date.prototype.r3Format = (date, fmt = 'yyyy-MM-dd') => {
   }
   return fmt;
 };
+
+/**
+ * 返回相差的天数
+ * 
+ * 传参格式: 日期格式
+ * dateStart: 开始日期
+ * dateEnd: 结束日期
+ */
+Date.prototype.dateMinus = (dateStart, dateEnd) => {
+  var sdate = new Date(dateStart); 
+　var now = new Date(dateEnd); 
+　var days = now.getTime() - sdate.getTime(); 
+　var day = Math.floor(days / (1000 * 60 * 60 * 24)); 
+	return day;
+}

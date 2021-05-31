@@ -119,52 +119,22 @@ export default {
       getcmd: 'y'
     })).then(async (res) => {
       if (res.data.code === 0) {
+        let indexDBResponse = null;
         if (enableKAQueryDataForUser() || (res.data.datas.webconf && res.data.datas.webconf.enableKAQueryDataForUser)) {
-          await querySearch(`${this.state.global.userInfo.id}_${searchData.table}`).then((response) => {
-            if (response) {
-              commit('updateSearchDBdata', response);
-            }
-  
-            const queryData = res.data;
-            if (searchData.closeIsBig) {
-              queryData.datas.isbig = false;
-            }
-            commit('updateButtonsTabcmd', queryData.tabcmd);
-            commit('updateButtonWaListButtons', queryData.waListButtons);
-            commit('updateTableStatus4css', queryData.datas);
-            commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
-            commit('updateDefaultButtonsdatas', queryData.datas);
-            commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
-            queryData.datas.tablequery = {
-              multi_tab: queryData.datas.multi_tab
-            };
-            if (queryData.datas.tablequery && queryData.datas.tablequery.multi_tab && queryData.datas.tablequery.multi_tab.length > 0) {
-              queryData.datas.tablequery.multi_tab.unshift({ tab_name: '全部' });
-              queryData.datas.tablequery.open = true;
-            }
-            commit('updateFilterButtons', queryData.datas.listbutton_filter_conf);
-            commit('updateFilterTableData', queryData.datas.tablequery);
+          indexDBResponse = await querySearch(`${this.state.global.userInfo.id}_${searchData.table}`)
+        }
 
-            if (queryData.datas.webconf) {
-              if (queryData.datas.webconf.commonTable) {
-                commit('updateWebconfCommonTable', queryData.datas.webconf);
-              }
-              if (queryData.datas.webconf.dynamicRouting) {
-                commit('updateWebconfDynamicRouting', queryData.datas.webconf);
-              }
-              commit('updataWebConf', queryData.datas.webconf);
-            }
-            resolve();
-          });
-        } else {
-          const queryData = res.data;
+        const queryData = res.data;
           if (searchData.closeIsBig) {
             queryData.datas.isbig = false;
           }
           commit('updateButtonsTabcmd', queryData.tabcmd);
           commit('updateButtonWaListButtons', queryData.waListButtons);
           commit('updateTableStatus4css', queryData.datas);
-          commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
+          commit('updateDefaultFormItemsLists', {
+            data:queryData.datas.dataarry,
+            indexDB: indexDBResponse
+          });
           commit('updateDefaultButtonsdatas', queryData.datas);
           commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
           queryData.datas.tablequery = {
@@ -187,7 +157,6 @@ export default {
             commit('updataWebConf', queryData.datas.webconf);
           }
           resolve();
-        }
       }
     });
   },
@@ -265,11 +234,19 @@ export default {
     } else {
       actionName = '';
     }
+
+    // slient_custom类型的按钮默认不加网关
+    let serviceconfig;
+    if (item.vuedisplay === 'slient_custom') {
+      serviceconfig = {
+        noServiceId: true
+      };
+    }
     network.post(actionName || '/p/cs/exeAction', urlSearchParams({
       actionid: item.webid,
       webaction: null,
       param: JSON.stringify(obj),
-    })).then((res) => {
+    }), serviceconfig).then((res) => {
       if (res.data.code === 0) {
         resolve(res, actionName);
         commit('updateButtonExeActionData', res.data.message);

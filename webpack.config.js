@@ -1,12 +1,14 @@
 const path = require('path');
-const { VueLoaderPlugin } = require('vue-loader');
+// const { VueLoaderPlugin } = require('vue-loader');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const webpack = require('webpack');
+// const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const { ModuleFederationPlugin } = require('webpack').container;
 const projectConfig = require('./project.config');
 
 const target = projectConfig.target; // 框架研发网关开启环境
@@ -26,7 +28,7 @@ const indexHtml = path.posix.join('/', 'index.html');
 
 module.exports = env => ({
   entry: {
-    index: './index.js',
+    index: './main.js',
   },
   externals: {
     vue: 'Vue',
@@ -40,8 +42,11 @@ module.exports = env => ({
   },
   devServer: {
     compress: true,
+    stats:{
+      errorDetails:true,
+    },
     port: 8209,
-    host: '0.0.0.0',
+    host: 'localhost',
     open: true,
     historyApiFallback: {
       rewrites: [
@@ -116,7 +121,7 @@ module.exports = env => ({
     ]
   },
   target: 'web',
-  devtool: env && env.production ? 'source-map' : 'cheap-module-eval-source-map',
+  devtool: env && env.production ? 'source-map' : false,
   output: {
     filename: '[name].js',
     chunkFilename: '[name].js',
@@ -124,6 +129,7 @@ module.exports = env => ({
     publicPath: '/',
   },
   module: {
+    exprContextCritical: false,
     rules: [
       {
         test: /\.vue$/,
@@ -141,7 +147,15 @@ module.exports = env => ({
         },
       },
       {
-        test: /\.(sa|sc|c|le)ss$/,
+        test: /\.css$/,
+        use: [{
+          loader: env && env.production ? MiniCssExtractPlugin.loader : 'style-loader',
+        }, {
+          loader: 'css-loader',
+        }],
+      },
+      {
+        test: /\.(sa|sc|le)ss$/,
         use: [{
           loader: env && env.production ? MiniCssExtractPlugin.loader : 'style-loader',
         }, {
@@ -197,26 +211,56 @@ module.exports = env => ({
         ignore: ['.*'],
       },
     ]),
-    new webpack.DefinePlugin({
-      'process.env.BUILD_ENV': JSON.stringify(process.env.BUILD_ENV)
-    })
+    // new webpack.DefinePlugin({
+    //   'process.env.BUILD_ENV': JSON.stringify(process.env.BUILD_ENV)
+    // }),
     // new webpack.ProvidePlugin({
     //   $: 'jquery',
     //   jQuery: 'jquery',
     //   jquery: 'jquery',
     //   'window.jQuery': 'jquery'
     // })
+
+    // new ModuleFederationPlugin({ 
+    //   name: '', 
+    //   remotes: {
+    //     arkui_BCL: 'arkui_BCL@http://0.0.0.0:3800/remoteEntry.js',
+    //     shared: ['vue', '@syman/ark-ui', 'axios']
+    //   }
+    // })
   ],
   mode: env && env.production ? 'production' : 'development',
   resolve: {
     extensions: ['.js', '.json', '.vue', '.css'],
+    fallback: {
+      path: require.resolve('path-browserify'),
+      module: false,
+      dgram: false,
+      dns: false,
+      fs:false,
+      https: false,
+      http:false,
+      net: false,
+      inspector:false,
+      tls:false,
+      crypto:false,
+      request:false,
+      stream_http:false,
+      vm:false,
+      stream:false,
+      constants:false,
+      os:false,
+      worker_threads:false,
+      child_process:false
+    },
   },
   optimization: {
     minimizer: [new TerserJSPlugin({
       sourceMap: true,
       terserOptions: {
         compress: {
-          pure_funcs: ['console.log']
+          pure_funcs: ['console.log'],
+          warnings: false
         }
       }
     }), new OptimizeCSSAssetsPlugin({})],

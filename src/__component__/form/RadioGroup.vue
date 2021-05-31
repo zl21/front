@@ -1,7 +1,7 @@
 <template>
   <div ref="radio-container">
     <CheckboxGroup
-      v-model="value"
+      v-model="selectedValues"
       @on-change="handleChange"
     >
       <Checkbox
@@ -21,36 +21,44 @@
     name: 'RadioGroup',
 
     model: {
-      props: 'selectedValues',
+      props: 'value',
       event: 'change'
     },
 
     props: {
-      selectedValues: {
-        type: Array,
-        default: () => []
+      // 双向绑定值
+      value: {
+        type: [String, Array],
       },
+      // 外部传入的所有参数
       options: {
         type: Object,
         default: () => {}
       },
-      formItemValue: {
-        type: [String, Array],
-        default: ''
-      }
     },
 
     data() {
       return {
-        value: []
+        selectedValues: []
       };
     },
 
     watch: {
-      // 监听组件隐藏时，清除勾选值
-      formItemValue(newVal) {
-        if (newVal === '') {
-          this.value = [];
+      // 主表组件被隐藏时，需要清空CheckboxGroup组件的值
+      'options.show'(newVal) {
+        if(newVal === false) {
+          this.selectedValues = [];
+        }
+      },
+      // 子表组件被隐藏时，需要清空CheckboxGroup组件的值
+      'options.showCol'(newVal) {
+        if(newVal === false) {
+          this.selectedValues = [];
+        }
+      },
+      value(newVal) {
+        if(newVal) {
+          this.selectedValues = this.getSelectedValues(newVal);
         }
       }
     },
@@ -59,7 +67,7 @@
       handleChange(values) {
         const checkedList = [];
         if (values.length === 0) {
-          this.$emit('change', []);
+          this.$emit('change', '');
           return;
         }
 
@@ -80,25 +88,29 @@
             }
           });
           
-          this.value = [currentLabel];
+          this.selectedValues = [currentLabel];
         }
         
-        console.log('提交值', checkedList.join(','));
         this.$emit('change', checkedList.join(','));
-      }
-    },
+      },
 
-    mounted() {
-      const checkedList = [];
-      const defaultData = this.options.defval || this.options.valuedata;
-      if (defaultData) {
-        const selectedArr = defaultData.split(',');
+      // 获取勾选的值
+      getSelectedValues(value) {
+        const checkedList = [];
+        const selectedArr = value.split(',');
         this.options.combobox.forEach((item) => {
           if (selectedArr.includes(item.limitval)) {
             checkedList.push(item.limitdesc);
           }
         });
-        this.value = checkedList;
+        return checkedList
+      }
+    },
+
+    mounted() {
+      const defaultData = this.options.defval || this.options.valuedata;
+      if (defaultData) {
+        this.selectedValues = this.getSelectedValues(defaultData);
       }
     }
   };

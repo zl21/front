@@ -839,16 +839,26 @@ export default {
     resolve, reject,
     moduleName,
     routeQuery,
-    routePath
+    routePath,
+    vuedisplay
   }) {
     let actionName = '';
+
+    // slient_custom类型的按钮默认不加网关
+    let serviceconfig;
+    if (vuedisplay === 'slient_custom') {
+      serviceconfig = {
+        noServiceId: true
+      };
+    }
+
     if (path.search('/') === -1) {
       actionName = '';
       network.post(actionName || '/p/cs/exeAction', urlSearchParams({
         actionid: tab.webid,
         webaction: null,
         param: JSON.stringify(params),
-      })).then((res) => {
+      }), serviceconfig).then((res) => {
         if (res.data.code === 0) {
           const invalidData = res.data;
           resolve(res, actionName);
@@ -875,7 +885,7 @@ export default {
     } else {
       actionName = path;
 
-      network.post(actionName || '/p/cs/exeAction', params).then((res) => {
+      network.post(actionName || '/p/cs/exeAction', params, serviceconfig).then((res) => {
         if (res.data.code === 0) {
           const invalidData = res.data;
           resolve(res, actionName);

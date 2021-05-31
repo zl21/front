@@ -17,15 +17,26 @@ Vue.mixin({
     this.$_live_type = Type;
       
     // use: this.$getChildComponent(vm, 'xx-xx')
-    this.$_live_getChildComponent = function (vueInstance, componentTag) {
+    this.$_live_getChildComponent = function (vueInstance, componentTag,type) {
       let component = null;
       const allComp = getAllChildComp(vueInstance);
-      
-      const i = allComp.findIndex(vm => vm.$options._componentTag === componentTag);
+      let componentArr = [];
+      const i = allComp.findIndex((vm,index)=>{
+        if(type=== 'all' && vm.$options._componentTag === componentTag){
+          componentArr.push(vm);
+        }else{
+          return vm.$options._componentTag === componentTag
+        }
+
+      });
       if (i !== -1) {
         component = allComp[i];
       }
-      return component;
+      if(type=== 'all'){
+        return componentArr;
+      }else{
+        return component;
+      }
       
       function getAllChildComp(instance) {
         let allComp = []; let 
@@ -36,6 +47,9 @@ Vue.mixin({
           child = instance;
         }
       
+        if(!child){
+          return;
+        }
         for (let i = 0; i < child.length; i++) {
           allComp.push(child[i]);
           if (child[i].$children.length > 0) { // 还有孩子

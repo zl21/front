@@ -113,6 +113,7 @@
           break;
         }
         if ([STANDARD_TABLE_LIST_PREFIX, STANDARD_COMMONTABLE_LIST_PREFIX, VERTICAL_TABLE_DETAIL_PREFIX, HORIZONTAL_TABLE_DETAIL_PREFIX].indexOf(routePrefix) === -1) { return; }
+          component.name = componentName;
         if (Vue.component(componentName) === undefined) {
           Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins, mixinsCustomize], isKeepAliveModel: true }, component)));
         } else if (this.sameNewPage) {

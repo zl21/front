@@ -92,15 +92,16 @@ export default {
     // id:勾选ID，
     // url:配置url,
     // isMenu,
-    // lablel:名称,
+    // label:名称,
     // type:link外链类型需要传类型，
-    // lingName:外链表名，
+    // linkName:外链表名，
     // linkId:外链表ID，
     // query:路由参数
     // 注：url前不能加/ ，格式应为'CUSTOMIZED/FUNCTIONPERMISSION/2299'
     if (param && param.url && param.url.includes('?')) {
       param.url = getUserenv({ url: param.url });
     }
+    
     const actionType = param.url.substring(0, param.url.indexOf('/'));
     const singleEditType = param.url.substring(param.url.lastIndexOf('/') + 1, param.url.length);
     if (actionType === 'SYSTEM') {
@@ -116,27 +117,31 @@ export default {
         );
       }
     } else if (actionType === 'https:' || actionType === 'http:') {
-      const name = `${LINK_MODULE_COMPONENT_PREFIX}.${param.lingName.toUpperCase()}.${param.linkId}`;     
-      // this.addKeepAliveLabelMaps({ name, label: param.lablel });
-      state.keepAliveLabelMaps[name] = `${param.lablel}`;
-      if (param.query) {
-        const query = `?objId=${param.query}`;
+      const name = `${LINK_MODULE_COMPONENT_PREFIX}.${param.linkName.toUpperCase()}.${param.linkId}`;     
+      // this.addKeepAliveLabelMaps({ name, label: param.label });
+      state.keepAliveLabelMaps[name] = `${param.label}`;
+      if (param.query && typeof param.query === 'object' && Object.keys(param.query) && Object.keys(param.query).length > 0) {
+        let query = '?';
+        Object.keys(param.query).reduce((arr, obj) => {
+          query = query.concat(`&&${obj}=${param.query[obj]}`);
+        }, {});
         param.url = param.url.concat(query);
+        param.url = param.url.replace('?&&', '?');
       }
       const linkUrl = param.url;
       // const linkId = param.linkId;
-      const linkModuleName = param.lingName.toUpperCase();
+      const linkModuleName = param.linkName.toUpperCase();
       if (!store.state.global.LinkUrl[linkModuleName]) {      
         store.commit('global/increaseLinkUrl', { linkModuleName, linkUrl });
       }
       const obj = {
-        linkName: param.lingName.toUpperCase(),
+        linkName: param.linkName.toUpperCase(),
         linkId: param.linkId,
         linkUrl,
-        linkLabel: param.lablel
+        linkLabel: param.label
       };
       window.sessionStorage.setItem('tableDetailUrlMessage', JSON.stringify(obj));
-      const path = `${LINK_MODULE_PREFIX}/${param.lingName.toUpperCase()}/${param.linkId}`;
+      const path = `${LINK_MODULE_PREFIX}/${param.linkName.toUpperCase()}/${param.linkId}`;
       router.push({
         path
       });
@@ -351,7 +356,19 @@ export default {
       removeSessionObject('savePath');
     }
   },
-  
+  modifycurrentLabel(state,data){
+    let extindex = -1;
+    state.openedMenuLists.forEach((item,index)=>{
+        if(item.keepAliveModuleName === data.name){
+          item.label = data.label;
+          extindex = index;
+        }
+    });
+    if(extindex == -1){
+      state.keepAliveLabelMaps[data.name] = data.label;
+    }
+    store.commit('global/addKeepAliveLabelMaps',data)
+  },
   increaseLinkUrl(state, { linkModuleName, linkUrl }) {
     const linkType = {};
     linkType[linkModuleName] = linkUrl;
@@ -463,6 +480,8 @@ export default {
       itemId,
       sameNewPage
     };
+    console.log('increaseOpenedMenuLists');
+
     if (notExist) {
       if (state.openedMenuLists.length > openTabNumber() && enableOpenNewTab()) { // 新开tab限制为6个，超过6个后，替换最后一个
         state.activeTab = currentTabInfo;
@@ -546,8 +565,7 @@ export default {
         if (d.keepAliveModuleName === keepAliveModuleName) {
           d.isActive = true;
           state.activeTab = d;
-          this.commit('global/changeCurrentTabName', { keepAliveModuleName, label: label || state.keepAliveLabelMaps[keepAliveModuleName], customizedModuleName: keepAliveModuleNameRes });
-        } else if ((keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
+        } else if ((keepAliveModuleNameRes !== ''&& d.tableName === keepAliveModuleNameRes && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
           const obj = {
             keepAliveModuleName,
             routeFullPath,
@@ -1055,10 +1073,17 @@ export default {
     // name：C.AAO_SR_TEST.2326模块名称
     // label：中文名
     state.keepAliveLabelMaps[name] = `${label}`;
+  
     const keepAliveLabelMapsObj = {
       k: name,
       v: label
     };
+    state.openedMenuLists.forEach((item)=>{
+        if(item.keepAliveModuleName === name){
+          item.label = label;
+        }
+    });
+    
     updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
     state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSessionObject('keepAliveLabelMaps'));
   },

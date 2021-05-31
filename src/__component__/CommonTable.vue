@@ -410,7 +410,9 @@
 
           // 回填勾选
           this.selectedIndex.forEach((curIndex) => {
-            data[curIndex]._checked = true;
+            if(data[curIndex]){
+              data[curIndex]._checked = true;
+            }
           });
           
           this.spinShow = false;
@@ -586,20 +588,21 @@
               } else if (objdistype === 'customized') {
                 // 自定义界面
                 const type = 'tableDetailAction';
+                const field = params.column.customerurl.refobjid
+                const url = `/${params.column.customerurl.tableurl.toUpperCase()}/${params.row[field]}`;
                 const tab = {
                   type,
                   label: params.column.customerurl.reftabdesc,
-                  customizedModuleName: params.column.customerurl.tableurl,
-                  customizedModuleId: params.column.customerurl.reftableid
+                  url
                 };
                 this.tabOpen(tab);
               } else if (objdistype === 'link') { // 支持跳转外链界面配置动态参数
                 const param = {
                   url: params.column.customerurl.tableurl,
                   query: params.column.customerurl.refobjid,
-                  lablel: params.column.customerurl.reftabdesc,
+                  label: params.column.customerurl.reftabdesc,
                   isMenu: true,
-                  lingName: params.column.customerurl.linkname,
+                  linkName: params.column.customerurl.linkname,
                   linkId: params.column.customerurl.refobjid,
                 };
                 this.directionalRouter(param);// 定向路由跳转方法
