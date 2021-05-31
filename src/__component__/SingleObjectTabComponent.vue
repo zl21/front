@@ -1,5 +1,5 @@
 <template>
-  <div class="tabComponent">
+  <div :class="classes">
     <div
       v-if="itemInfo.tabrelation==='1:1'&&watermarkimg"
       class="submit-img"
@@ -35,7 +35,7 @@
       :web-conf-single="webConfSingle"
     />
     <!-- 子表表格新增区域form -->
-    <compositeForm  
+    <compositeForm
       v-if="formData.isShow&&itemInfo.tabrelation!=='1:1'"
       v-show="status === 1 && !objreadonly"
       :object-type="type"
@@ -93,10 +93,10 @@
     <!-- 左右结构主表和子表1:1模式的form(面板) -->
     <panelForm
       v-if="panelData.isShow&&!componentName"
-      :tableName="tableName"
+      :table-name="tableName"
       :readonly="objreadonly"
       :is-main-table="isMainTable"
-      :defaultData="panelData.data"
+      :default-data="panelData.data"
     ></panelForm>
     <!-- <compositeForm
       v-if="panelData.isShow&&!componentName"
@@ -165,18 +165,16 @@
   import CustomizeModule from '../__config__/customize.config';
   import WaterMark from './WaterMark.vue';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
-
-
   import {
-    getCustomizeWaterMark,
-    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, notificationOfMain
+    classFix, getCustomizeWaterMark, KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, notificationOfMain
   } from '../constants/global';
+
 
   const customizeModules = {};
   Object.keys(CustomizeModule).forEach((key) => {
     customizeModules[key.toUpperCase()] = CustomizeModule[key];
   });
-  
+
 
   export default {
 
@@ -190,7 +188,7 @@
         objectTableComponent: '', // 单对象表格组件
         customizeComponent: '', // 自定义组件
         isRequest: false,
-       
+
         // tableName: this[INSTANCE_ROUTE_QUERY].tableName
       };
     },
@@ -293,11 +291,15 @@
         default: ''
       }// 定制界面自定义组件类型，为ALL时不显示单对象按钮组件
     },
-    inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY],  
-    computed: { 
+    inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY],
+    computed: {
       ...mapState('global', {
       }),
-
+      classes() {
+        return [
+          `${classFix}tabComponent`,
+        ];
+      },
       // 是否是子表
       isChildTable() {
         if(this.type === 'horizontal' && this.currentTabIndex !== 0) {
@@ -316,7 +318,7 @@
             return customizeWaterMark[src].top;
           }
         }
-       
+
         return '42px';
       },
       waterMarkLeft() {
@@ -339,7 +341,7 @@
         }
         return '80px';
       },
-      
+
       waterMarkText() {
         const customizeWaterMark = getCustomizeWaterMark();
         const textMap = Object.assign({
@@ -415,7 +417,7 @@
         // const WebConf = this.$store.state[this[MODULE_COMPONENT_NAME]].WebConf;
         // if (WebConf && WebConf.isCustomizeTab && this.type === 'horizontal') {
         //   return tabCurrentIndex + 1;
-        // } 
+        // }
         return tabCurrentIndex;
       },
 
@@ -476,7 +478,7 @@
         const tableDetailCollectionMixin = (window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.tableDetailCollectionMixin) || {};
         const singleObjectButtonsMixin = (window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.singleObjectButtonsMixin) || {};
 
-        const singlePanelForm= `tabComponent.${this.tableName}.PanelForm`;
+        const singlePanelForm = `tabComponent.${this.tableName}.PanelForm`;
 
         if (this.type === 'vertical') {
           if (Vue.component(tableComponent) === undefined) {
@@ -492,7 +494,6 @@
           if (Vue.component(buttonComponent) === undefined) {
             Vue.component(buttonComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins(), singleObjectButtonsMixin] }, singleObjectButtons)));
           }
-
         }
         if(this.componentName) { // 定制tab自定义组件
           const customizedModuleName = this.componentName.toUpperCase();
@@ -729,7 +730,7 @@
             this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getObjectForMainTableForm`, { table: tableName, objid: id, tabIndex });
             new Promise((resolve, reject) => {
               this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getObjectTabForMainTable`, {
-                table: tableName, objid: id, tabIndex, resolve, reject 
+                table: tableName, objid: id, tabIndex, resolve, reject
               });
             }).then(() => {
             });
@@ -737,7 +738,7 @@
             this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getObjectForMainTableForm`, { table: tableName, objid: itemId, tabIndex });
             new Promise((resolve, reject) => {
               this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getObjectTabForMainTable`, {
-                table: tableName, objid: itemId, tabIndex, resolve, reject 
+                table: tableName, objid: itemId, tabIndex, resolve, reject
               });
             }).then(() => {
             });
@@ -935,41 +936,3 @@
     }
   };
 </script>
-
-<style lang="less">
-  .tabComponent{
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-     .submit-img { //no-active
-    position: absolute;
-    top: 30px;
-    right:0px;
-    width: 104px;
-    z-index: 1000;
-    img {
-      width: 100%;
-    }
-  }
-    .objectButtons {
-      .buttonList {
-        padding-left: 0;
-      }
-    }
-    .form {
-      padding: 0 10px 8px 0;
-      background-color: #F8F8F8;
-    }
-    .formPanel {
-      flex: 1;
-      overflow:auto;
-    }
-    .panelForm {
-      margin: 10px 16px;
-      flex: 1;
-      overflow: auto;
-    }
-    .objectTable {
-    }
-  }
-</style>

@@ -35,7 +35,7 @@ import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
 
 
 // 组件css汇总
-// import './src/assets/styles/index.less';
+import './src/assets/styles/index.less';
 import './src/assets/theme/custom.less';
 
 // 自定义

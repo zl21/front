@@ -1,25 +1,27 @@
 <template>
-    <div class="filterTreeContainer">
-        <Input
-                :placeholder="placeholder"
-                :clearable="clearable"
-                icon="ios-search"
-                @on-clear="searchInputClear"
-                @on-change="searchInputChange"
-        >
-        <span slot="prepend">检索</span>
-        </Input>
-        <div class="menuContainer">
-            <Tree
-                    ref="menuTree"
-                    v-bind="treeAttribute"
-                    v-on="treeEvent"
-                    :query="treeQuery"></Tree>
-        </div>
+  <div :class="classes">
+    <Input
+            :placeholder="placeholder"
+            :clearable="clearable"
+            icon="ios-search"
+            @on-clear="searchInputClear"
+            @on-change="searchInputChange"
+    >
+      <span slot="prepend">检索</span>
+    </Input>
+    <div class="menuContainer">
+      <Tree
+              ref="menuTree"
+              v-bind="treeAttribute"
+              v-on="treeEvent"
+              :query="treeQuery"></Tree>
     </div>
+  </div>
 </template>
 
 <script>
+  import { classFix } from '../../constants/global';
+
   export default {
     data() {
       return {
@@ -31,6 +33,11 @@
     components: {},
     watch: {},
     computed: {
+      classes() {
+        return [
+          `${classFix}filterTreeContainer`,
+        ];
+      },
       treeQuery() {
         return this.treeAttribute && this.treeAttribute.query ? this.treeAttribute.query : this.menuTreeQuery;
       }
@@ -73,30 +80,3 @@
     }
   };
 </script>
-
-<style lang="less">
-    .filterTreeContainer {
-        width: 240px;
-        height: 100%;
-        padding: 10px;
-        border: solid 1px #d8d8d8;
-        border-radius: 6px;
-        margin-right: 10px;
-        display: flex;
-        flex-direction: column;
-        .menuContainer {
-            flex: 1;
-            margin-top: 10px;
-            overflow-y: auto;
-
-            .ark-tree-title {
-                width: 100%;
-                font-size: 12px;
-                line-height: 26px;
-            }
-            .ark-tree-title-selected, .ark-tree-title-selected:hover {
-                background-color: rgb(196, 226, 255);
-            }
-        }
-    }
-</style>
