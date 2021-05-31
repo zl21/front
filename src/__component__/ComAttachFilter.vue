@@ -9,6 +9,7 @@
       v-bind="propsData"
       :auot-data="propsData.AutoData"
       :default-selected="selected"
+      :singleTurn="true"
       @on-show="attachFilterPopperShow"
       @input="attachFilterInput"
       @on-change="attachFilterChange"
@@ -390,7 +391,7 @@
       attachFilterOk($this) {
         // this.resultData = Object.assign({}, this.$refs.complex);
         if ($this._data.params) {
-          const value = $this._data.params[$this._data.show];
+          const value = $this._data.parms[$this._data.showKey].val;
           this.selected = [
             {
               Label: value,

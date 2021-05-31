@@ -3266,14 +3266,33 @@
                 };
                 this.tabOpen(tab);
               } else if (data.objdistype === 'link') { // 支持跳转外链界面配置动态参数
+                const query = {};
+                const queryArray = cellData.customerurl.refobjid.split(',');
+                if (queryArray.length > 1) {
+                  queryArray.reduce((a, o) => {
+                    if (params.row[o] && params.row[o]) query[o] = params.row[o];
+                  }, {});
+                } else if (queryArray.length === 1) {
+                  query.objId = params.row[cellData.customerurl.refobjid];
+                }
+
                 const param = {
-                  url: cellData.customerurl.tableurl,
-                  query: params.row[cellData.customerurl.refobjid],
-                  lablel: cellData.customerurl.reftabdesc,
-                  isMenu: true,
-                  linkName: cellData.customerurl.linkname,
-                  linkId: params.row[cellData.customerurl.refobjid],
+                  url: cellData.customerurl.tableurl, // 跳转的外链界面内加载的iframe的src地址，即加载的页面地址
+                  query, // 地址携带的参数
+                  label: cellData.customerurl.reftabdesc, // 外链界面对应的Tab展示名称
+                  isMenu: true, // 设置了label则该参数必须设置为true
+                  linkName: cellData.customerurl.linkname, // 外链界面表名，作为路由参数
+                  linkId: queryArray.length > 1 ? params.row.ID : params.row[cellData.customerurl.refobjid], // 外链界面表ID，作为路由参数
                 };
+
+                // const param = {
+                //   url: cellData.customerurl.tableurl,
+                //   query: params.row[cellData.customerurl.refobjid],
+                //   label: cellData.customerurl.reftabdesc,
+                //   isMenu: true,
+                //   linkName: cellData.customerurl.linkname,
+                //   linkId: params.row[cellData.customerurl.refobjid],
+                // };
                 this.directionalRouter(param);// 定向路由跳转方法
                 const datas = {
                   type: 'singleCustomerurlLink',

@@ -53,7 +53,7 @@ export default {
     // id:勾选ID，
     // url:配置url,
     // isMenu,
-    // lablel:名称,
+    // label:名称,
     // type:link外链类型需要传类型，
     // linkName:外链表名，
     // linkId:外链表ID，
@@ -77,11 +77,15 @@ export default {
       }
     } else if (actionType === 'https:' || actionType === 'http:') {
       const name = `${LINK_MODULE_COMPONENT_PREFIX}.${param.linkName.toUpperCase()}.${param.linkId}`;     
-      // this.addKeepAliveLabelMaps({ name, label: param.lablel });
-      state.keepAliveLabelMaps[name] = `${param.lablel}`;
-      if (param.query) {
-        const query = `?objId=${param.query}`;
+      // this.addKeepAliveLabelMaps({ name, label: param.label });
+      state.keepAliveLabelMaps[name] = `${param.label}`;
+      if (param.query && typeof param.query === 'object' && Object.keys(param.query) && Object.keys(param.query).length > 0) {
+        let query = '?';
+        Object.keys(param.query).reduce((arr, obj) => {
+          query = query.concat(`&&${obj}=${param.query[obj]}`);
+        }, {});
         param.url = param.url.concat(query);
+        param.url = param.url.replace('?&&', '?');
       }
       const linkUrl = param.url;
       // const linkId = param.linkId;
@@ -93,7 +97,7 @@ export default {
         linkName: param.linkName.toUpperCase(),
         linkId: param.linkId,
         linkUrl,
-        linkLabel: param.lablel
+        linkLabel: param.label
       };
       window.sessionStorage.setItem('tableDetailUrlMessage', JSON.stringify(obj));
       const path = `${LINK_MODULE_PREFIX}/${param.linkName.toUpperCase()}/${param.linkId}`;

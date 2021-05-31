@@ -602,7 +602,7 @@
                 const param = {
                   url: params.column.customerurl.tableurl,
                   query: params.column.customerurl.refobjid,
-                  lablel: params.column.customerurl.reftabdesc,
+                  label: params.column.customerurl.reftabdesc,
                   isMenu: true,
                   linkName: params.column.customerurl.linkname,
                   linkId: params.column.customerurl.refobjid,
