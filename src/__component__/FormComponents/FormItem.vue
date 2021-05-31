@@ -52,7 +52,7 @@
 
         </template>
 
-        <span :title="items.coldesc">{{ items.coldesc }}:</span>
+        <span :title="items.coldesc" v-if="_items.display !== 'defined'">{{ items.coldesc }}:</span>
       </span>
       <div :class=" [_items.props.row >1 ? 'itemComponent height100':'itemComponent',items.isuppercase?'isuppercase':'']"
            :style="_items.display==='image' ? 'overflow:visible' :''">
