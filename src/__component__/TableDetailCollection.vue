@@ -79,6 +79,7 @@
       </div>
       <div class="table-outside">
         <Table
+          v-if="isCommonTable || !useAgGrid"
           ref="selection"
           class="table-in"
           :height="tableHeight? tableHeight :true"
@@ -91,7 +92,27 @@
           @on-sort-change="tableSortChange"
           @on-row-dblclick="tableRowDbclick"
         />
+        <CommonTableByAgGrid
+          v-else
+          class="table-in"
+          :height="tableHeight? `${tableHeight}px` :'calc(100% - 10px)'"
+          border
+          mode="commonTable"
+          :columns="columns"
+          :data="tabledata"
+          :render-params="renderParams"
+          :options="{
+            suppressMovableColumns: true,
+            afterColumnMoved: afterColumnMoved,
+            ...agGridOptions,
+            datas: dataSource,
+          }"
+          @ag-selection-change="tableSelectedChange"
+          @ag-sort-change="tableSortChange"
+          @ag-row-dblclick="tableRowDbclick"
+        ></CommonTableByAgGrid>
       </div>
+
       <div
         v-if="isHorizontal"
         class="queryCondition"
@@ -137,25 +158,25 @@
 
   import { mapState, mapMutations, mapActions } from 'vuex';
   // import { setTimeout } from 'timers';
+  import { CommonTableByAgGrid } from '@syman/ark-ui-bcl';
   import regExp from '../constants/regExp';
   import {
     Version, LINK_MODULE_COMPONENT_PREFIX, INSTANCE_ROUTE_QUERY, enableActivateSameCustomizePage, ossRealtimeSave
   } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
-  import ComplexsDialog from './ComplexsDialog'; // emit 选中的行
+  import ComplexsDialog from './ComplexsDialog.vue'; // emit 选中的行
   import Dialog from './Dialog.vue';
-  import ImportDialog from './ImportDialog';
+  import ImportDialog from './ImportDialog.vue';
   import router from '../__config__/router.config';
-  import { getGateway } from '../__utils__/network';
-  import ComAttachFilter from './ComAttachFilter';
-  import Docfile from './docfile/DocFileComponent';
+  import network, { getGateway, urlSearchParams } from '../__utils__/network';
+  import ComAttachFilter from './ComAttachFilter.vue';
+  import Docfile from './docfile/DocFileComponent.vue';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import { getUrl, getLabel } from '../__utils__/url';
   import { updateSessionObject } from '../__utils__/sessionStorage';
   import getUserenv from '../__utils__/getUserenv';
-  import createModal from './PreviewPicture/index.js';
-
+  import createModal from './PreviewPicture/index';
 
   Vue.component('ComAttachFilter', ComAttachFilter);
   Vue.component('TableDocFile', Docfile);
@@ -175,12 +196,17 @@
   const TABLE_DATA_CHANGE_LABEL_BEFORE = 'tableDataChangeLabelBefore'; // emit 修改数据的label
   const TABLE_VERIFY_MESSAGE = 'tableVerifyMessage'; // emit 修改数据
   const TABLE_SELECTED_ROW = 'tableSelectedRow';
-
+  const FLEX_ALIGN = {
+    left: 'flex-start',
+    center: 'center',
+    right: 'flex-end'
+  }
   export default {
     inject: [INSTANCE_ROUTE_QUERY],
     components: {
       Dialog,
       ImportDialog, // 导入弹框
+      CommonTableByAgGrid,
     },
     data() {
       return {
@@ -272,7 +298,9 @@
 
         columnEditElementId: {}, // 保存每列的可编辑元素的id
         editElementId: [], // 表格可编辑元素id 用于回车键使用
-        routerParams: {}
+        routerParams: {},
+        agGridOptions: window.ProjectConfig.agGridOptions || {},
+        useAgGrid: window.ProjectConfig.useAgGrid,
       };
     },
     props: {
@@ -329,6 +357,11 @@
       tooltipForItemTable: {
         type: Array,
         default: () => ([])
+      },
+      // 是否用普通表格渲染
+      isCommonTable: {
+        type: Boolean,
+        default: true
       }
     },
     computed: {
@@ -340,6 +373,7 @@
         exportTasks: ({ exportTasks }) => exportTasks
 
       }),
+
       currentTabIndex() {
         return this.tabCurrentIndex;
 
@@ -389,7 +423,6 @@
         return this.dataSource.isSubTotalEnabled;
       },
       isHorizontal() { // 是否是左右结构
-        console.log(55, pageType.Horizontal);
         return this.type === pageType.Horizontal;
       },
       
@@ -549,10 +582,16 @@
             this.isRefreshClick = false;
           }
           const isTableRender = this.isTableRender;
-          this.columns = this.filterColumns(this.dataSource.tabth, isTableRender); // 每列的属性
+          
           setTimeout(() => {
+            if(this.isCommonTable || !this.useAgGrid) {
+              this.columns = this.filterColumns(this.dataSource.tabth, isTableRender); // 每列的属性
+            } else {
+              this.columns = this.filterAgColumns(this.dataSource.tabth)
+            }
             this.tabledata = this.filterData(this.dataSource.row); // 每列的数据
             this.totalDataNumber = this.totalData();
+            this.$emit('setSearchValue') // 设置下拉的默认查询条件
           }, 50);
 
           this.tableRowSelectedIds = [];
@@ -567,7 +606,11 @@
       objreadonly: {
         handler() {
           const isTableRender = this.isTableRender;
-          this.columns = this.filterColumns(this.dataSource.tabth, isTableRender); // 每列的属性
+          if(this.useAgGrid) {
+            this.columns = this.filterAgColumns(this.dataSource.tabth)
+          } else {
+            this.columns = this.filterColumns(this.dataSource.tabth, isTableRender); // 每列的属性
+          }
           this.getEditAbleId(JSON.parse(JSON.stringify(this.dataSource)));
         }
       },
@@ -576,11 +619,9 @@
     created() {
       this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');
       this.ChineseDictionary = ChineseDictionary;
-
-      // 设置查询条件默认值。默认取选项数组的第一个值
-      if (this.filterList && this.filterList[0]) {
-        this.searchCondition = this.filterList[0].key;
-      }
+      this.$once('setSearchValue', () => {
+        this.setSelectDefaultValue(); // 设置下拉的默认查询条件
+      })
     },
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
@@ -629,6 +670,82 @@
             serviceId: row._SERVICEID
           });
         }
+      },
+
+      setColPosition(data) {
+        network.post('/p/cs/setColPosition', urlSearchParams(data));
+      },
+
+      // ag表格重置列位置的回调
+      afterColumnMoved(cols) {
+        const { tableId } = this[INSTANCE_ROUTE_QUERY];
+        this.setColPosition({
+          tableid: tableId,
+          colposition: cols
+        });
+        // this.updateAgConfig({ key: 'colPosition', value: cols });
+      },
+
+      // ag表格列组件筛选器
+      renderParams(cellData) {
+        let componentInfo = null;
+        const renderFn = this.collectionCellRender(cellData);
+
+        if (renderFn) {
+          componentInfo = {
+            renderContainer: 'CellRenderByFunction', // 用专门的render函数容器渲染
+            renderComponent: renderFn,
+          };
+        }
+        
+        // 序号按正常文本渲染
+        if (cellData.colname === EXCEPT_COLUMN_NAME) {
+          componentInfo = null;
+        }
+
+        return componentInfo;
+      },
+
+      // 过滤commonTable列数据给ag用
+      filterAgColumns(columns) {
+        if (!columns) {
+          return [];
+        }
+        // 整合表头数据
+        const newColumns = columns
+          .map((ele) => {
+            const param = {
+              title: ele.name,
+              key: ele.colname,
+              field: ele.colname,
+              align: 'center',
+              tdAlign: ele.type === 'NUMBER' ? 'right' : 'center',
+              isagfilter: false // 关闭过滤功能
+            };
+
+            // 序号按行索引渲染
+            if (ele.colname === EXCEPT_COLUMN_NAME) {
+              param.field = '__ag_sequence_column_name__.val';
+            }
+
+            if (!param.sortable && this.dataSource.ordids && this.dataSource.ordids.length > 0) {
+              this.dataSource.ordids.map((order) => {
+                if (ele.colname === order.colname && param.title !== '序号') {
+                  param.sortType = order.ordasc ? 'asc' : 'desc';
+                }
+                return order;
+              });
+            }
+
+            if (ele.isorder) {
+              param.sortable = 'custom';
+            }
+
+            const item = Object.assign({}, ele, param);
+            return item;
+          });
+
+        return newColumns;
       },
 
       // 设置查询条件默认值。默认取选项数组的第一个值
@@ -1549,7 +1666,6 @@
             }
             // 2021-04-01 禁用掉表格的默认排序，这样在初始化时不会对后端返回的数据进行二次排序
             param.sortMethod = () => {
-              console.log(123123);
             };
 
             if (ele.isorder) {
@@ -1769,11 +1885,14 @@
           }
           const dom = document.createElement('div');// 创建dom
           dom.id = 'domID';
-          dom.innerHTML = '';// 
-          if (params.row[cellData.colname] && params.row[cellData.colname].length > maxlength) {
-            dom.innerHTML = params.row[cellData.colname].slice(0, maxlength);
+          dom.innerHTML = '';
+          let content = ''; // 展示的文字
+          if (maxlength && params.row[cellData.colname] && params.row[cellData.colname].length > maxlength) {
+            content = params.row[cellData.colname].slice(0, maxlength);
+            dom.innerHTML = content;
           } else {
-            dom.innerHTML = params.row[cellData.colname];
+            content = params.row[cellData.colname];
+            dom.innerHTML = content;
           }
           dom.style.width = 'auto';
           dom.style.display = 'inline';
@@ -1782,14 +1901,16 @@
           const getWIdth = dom.offsetWidth;
           dom.remove();
 
-          let width = maxlength > 0 ? `${getWIdth + 18}px` : 'auto';
+          let width = maxlength > 0 ? `${getWIdth + 18}px` : '100%';
           if (cellData.width) {
-            width = cellData.width;
+            // 这里需要减掉单元格左右padding宽度，才是真实宽度
+            const paddingWidh = 22
+            width = `${cellData.width - paddingWidh}px`;
           }
-          const innerHTML = params.row[cellData.colname];
+          const innerHTML = content;
           const overflow = maxlength || cellData.width ? 'hidden' : 'none';
 
-          return h('div', {
+          return h('div', [h('div', {
             style: {
               width,
               overflow,
@@ -1805,67 +1926,68 @@
             },
             domProps: {
               innerHTML,
-              title: innerHTML
             },
         
-          },);
+          })],);
         };
       },
       inputRender(cellData, tag) {
         // 输入框
-        return (h, params) => h('div', [
-          h(tag, {
-            style: {
-              width: '100px'
-            },
-            class: {
-              'input-align-right': cellData.type === 'NUMBER',
-              'input-align-center': cellData.type !== 'NUMBER'
-            },
-            domProps: {
-              id: `${params.index}-${params.column._index - 1}`,
-              title: this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname].val : ''
+        return (h, params) => {
+          return h('div', [
+            h(tag, {
+              style: {
+                width: '100px'
+              },
+              class: {
+                'input-align-right': cellData.type === 'NUMBER',
+                'input-align-center': cellData.type !== 'NUMBER'
+              },
+              domProps: {
+                id: `${params.index}-${params.column._index - 1}`,
+                title: this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname].val : ''
 
-            },
-            props: {
-              // value: this.afterSendData[this.tableName] && this.afterSendData[this.tableName][params.index] && this.afterSendData[this.tableName][params.index][cellData.colname] !== undefined ? this.afterSendData[this.tableName][params.index][cellData.colname] : params.row[cellData.colname],
-              value: this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname].val : '',
-              regx: this.inputRegx(cellData, params),
-              maxlength: cellData.length
-            },
-            nativeOn: {
-              // click: (e) => {
-              //   e.stopPropagation();
-              // }
-            },
-            on: {
-              'on-change': (event, data) => {
-                this.copyDataSource.row[params.index][cellData.colname].val = event.target.value;
-                this.putDataFromCell(event.target.value, this.dataSource.row[params.index][cellData.colname].val, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                this.putLabelDataFromCell(event.target.value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, this.dataSource.row[params.index][cellData.colname].val);
               },
-              'on-focus': (e, i) => {
+              props: {
+                // value: this.afterSendData[this.tableName] && this.afterSendData[this.tableName][params.index] && this.afterSendData[this.tableName][params.index][cellData.colname] !== undefined ? this.afterSendData[this.tableName][params.index][cellData.colname] : params.row[cellData.colname],
+                value: this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname].val : '',
+                regx: this.inputRegx(cellData, params),
+                maxlength: cellData.length
               },
-              'on-keydown': (e, i) => {
-                if (e.keyCode === 13) {
-                  // 回车
-                  const elementId = i.$el.id;
-                  this.tableCellFocusByEnter(elementId);
-                } else if (e.keyCode === 40) {
-                  // 下键
-                  const elementId = i.$el.id;
-                  const currentColumn = params.column._index - 1;
-                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'down');
-                } else if (e.keyCode === 38) {
-                  // 上键
-                  const elementId = i.$el.id;
-                  const currentColumn = params.column._index - 1;
-                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'up');
+              nativeOn: {
+                // click: (e) => {
+                //   e.stopPropagation();
+                // }
+              },
+              on: {
+                'on-change': (event, data) => {
+                  this.copyDataSource.row[params.index][cellData.colname].val = event.target.value;
+                  this.putDataFromCell(event.target.value, this.dataSource.row[params.index][cellData.colname].val, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                  this.putLabelDataFromCell(event.target.value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, this.dataSource.row[params.index][cellData.colname].val);
+                },
+                'on-focus': (e, i) => {
+                },
+                'on-keydown': (e, i) => {
+                  if (e.keyCode === 13) {
+                    // 回车
+                    const elementId = i.$el.id;
+                    this.tableCellFocusByEnter(elementId);
+                  } else if (e.keyCode === 40) {
+                    // 下键
+                    const elementId = i.$el.id;
+                    const currentColumn = params.column._index - 1;
+                    this.tableCellFocusByUpOrDown(elementId, currentColumn, 'down');
+                  } else if (e.keyCode === 38) {
+                    // 上键
+                    const elementId = i.$el.id;
+                    const currentColumn = params.column._index - 1;
+                    this.tableCellFocusByUpOrDown(elementId, currentColumn, 'up');
+                  }
                 }
               }
-            }
-          })
-        ]);
+            })
+          ])
+        };
       },
       checkboxRender(cellData, tag) {
         // 999
@@ -2316,7 +2438,6 @@
                   return acc;
                 }, []).join(',');
                 this.putDataFromCell(ids, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid.toString() : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay, labelValueID);
-                console.log(8, data, value);
 
                 this.putLabelDataFromCell(labelValue, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, this.dataSource.row[params.index][cellData.colname].val, labelValueID);
               },
@@ -2334,7 +2455,6 @@
                 this.copyDataSource.row[params.index][cellData.colname].val = '';
                 this.fkAutoData = [];
                 this.putDataFromCell(null, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
-                console.log(9, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, null);
                 this.putLabelDataFromCell('', this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, null);
               }
             }
@@ -2682,7 +2802,6 @@
                 this.copyDataSource.row[params.index][cellData.colname].val = '';
                 this.fkAutoData = [];
                 this.putDataFromCell(null, this.dataSource.row[params.index][cellData.colname].refobjid !== -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
-                console.log(7, this.dataSource.row[params.index][cellData.colname].refobjid, this.dataSource.row[params.index][cellData.colname].refobjid > -1);
                 
                 this.putLabelDataFromCell('', this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, this.dataSource.row[params.index][cellData.colname].val);
               }
@@ -2691,172 +2810,191 @@
         ]);
       },
       comAttachFilterRender(cellData, tag) {
-        return (h, params) => h('div', [
-          h(tag, {
-            style: {
-              width: '130px'
-            },
-            domProps: {
-              id: `${params.index}-${params.column._index - 1}`
-            },
-            props: {
-              defaultValue: this.copyDataSource.row[params.index][cellData.colname].val,
-              defaultSelected: this.copyDataSource.row[params.index][cellData.colname].val ? [{
-                ID: this.copyDataSource.row[params.index][cellData.colname].val,
-                Label: `已经选中${JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).total}条数据`
-              }] : [],
-              propstype: {
-                optionTip: true,
-                // 是否显示输入完成后是否禁用 true、false
-                show: true,
-                // 是否显示筛选提示弹窗 true、false
-                filterTip: true,
-                // 是否选中后禁止编辑 true、false
-                enterType: true,
-                // 是否回车选中第一行
-                disabled: false,
-                // 默认提示框
-                placeholder: null,
-                // 定义选中展示的文字的key
-                hideColumnsKey: ['id'],
-                // 配置弹窗的配置项 model
-                dialog: {
-                  model: {
-                    title: '弹窗多选',
-                    mask: true,
-                    draggable: true,
-                    scrollable: true,
-                    width: 920
+        return (h, params) => {
+          if(!this.copyDataSource.row[params.index]) {
+            return null
+          }
+          let data = this.copyDataSource.row[params.index][cellData.colname].val
+          // 如果是json化的对象
+          if(data.startsWith('{"')) {
+            data = JSON.parse(data)
+            this.copyDataSource.row[params.index][cellData.colname].val = `已经选中${data.total}条数据`;
+            this.copyDataSource.row[params.index][cellData.colname].defaultSelected = [{
+              ID: data,
+              Label: `已经选中${data.total}条数据`
+            }];
+          } else {
+            this.copyDataSource.row[params.index][cellData.colname].val = data
+          }
+
+          const defaultValue = this.copyDataSource.row[params.index][cellData.colname].val
+          const defaultSelected = this.copyDataSource.row[params.index][cellData.colname].defaultSelected || []
+          return h('div', [
+            h(tag, {
+              style: {
+                width: '130px'
+              },
+              domProps: {
+                id: `${params.index}-${params.column._index - 1}`
+              },
+              props: {
+                defaultValue,
+                defaultSelected,
+                propstype: {
+                  optionTip: true,
+                  // 是否显示输入完成后是否禁用 true、false
+                  show: true,
+                  // 是否显示筛选提示弹窗 true、false
+                  filterTip: true,
+                  // 是否选中后禁止编辑 true、false
+                  enterType: true,
+                  // 是否回车选中第一行
+                  disabled: false,
+                  // 默认提示框
+                  placeholder: null,
+                  // 定义选中展示的文字的key
+                  hideColumnsKey: ['id'],
+                  // 配置弹窗的配置项 model
+                  dialog: {
+                    model: {
+                      title: '弹窗多选',
+                      mask: true,
+                      draggable: true,
+                      scrollable: true,
+                      width: 920
+                    }
+                  },
+                  fkobj: {
+                    refobjid: cellData.refobjid,
+                    reftable: cellData.reftable,
+                    colid: this.dataSource.row[params.index][cellData.colname].colid,
+                    reftableid: cellData.reftableid,
+                    saveType: 'object',
+                    show: true,
+                    url: `${cellData.serviceId ? +'/' + cellData.serviceId : ''}/p/cs/menuimport`
+
+                  },
+                  datalist: this.popFilterDataList,
+                  ...cellData,
+                // 模糊查询的文字信息，支持多列
+                },
+
+              },
+              on: {
+                'on-keydown': (v, e, i) => {
+                  if (e.keyCode === 13) {
+                    const elementId = i.$parent.$el.id;
+                    this.tableCellFocusByEnter(elementId);
+                  } else if (e.keyCode === 40) {
+                    // 下键
+                    const elementId = i.$parent.$el.id;
+                    const currentColumn = params.column._index - 1;
+                    this.tableCellFocusByUpOrDown(elementId, currentColumn, 'down');
+                  } else if (e.keyCode === 38) {
+                    // 上键
+                    const elementId = i.$parent.$el.id;
+                    const currentColumn = params.column._index - 1;
+                    this.tableCellFocusByUpOrDown(elementId, currentColumn, 'up');
                   }
                 },
-                fkobj: {
-                  refobjid: cellData.refobjid,
-                  reftable: cellData.reftable,
-                  colid: this.dataSource.row[params.index][cellData.colname].colid,
-                  reftableid: cellData.reftableid,
-                  saveType: 'object',
-                  show: true,
-                  url: `${cellData.serviceId ? +'/' + cellData.serviceId : ''}/p/cs/menuimport`
-
-                },
-                datalist: this.popFilterDataList,
-                ...cellData,
-                // 模糊查询的文字信息，支持多列
-              },
-
-            },
-            on: {
-              'on-keydown': (v, e, i) => {
-                if (e.keyCode === 13) {
-                  const elementId = i.$parent.$el.id;
-                  this.tableCellFocusByEnter(elementId);
-                } else if (e.keyCode === 40) {
-                  // 下键
-                  const elementId = i.$parent.$el.id;
-                  const currentColumn = params.column._index - 1;
-                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'down');
-                } else if (e.keyCode === 38) {
-                  // 上键
-                  const elementId = i.$parent.$el.id;
-                  const currentColumn = params.column._index - 1;
-                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'up');
-                }
-              },
-              valuechange: (item) => {
-                this.copyDataSource.row[params.index][cellData.colname].val = item.value;
-                this.copyDataSource.row[params.index][cellData.colname].defaultSelected = item.selected;
-                if (item.selected[0]) {
-                  this.putDataFromCell(item.selected[0].ID, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                  this.putLabelDataFromCell(item.selected[0].Label, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, item.selected[0].ID);
-                } else {
-                  this.putDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                  this.putLabelDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, '');
+                valuechange: (item) => {
+                  this.copyDataSource.row[params.index][cellData.colname].val = item.value;
+                  this.copyDataSource.row[params.index][cellData.colname].defaultSelected = item.selected;
+                  if (item.selected[0]) {
+                    this.putDataFromCell(item.selected[0].ID, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                    this.putLabelDataFromCell(item.selected[0].Label, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, item.selected[0].ID);
+                  } else {
+                    this.putDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                    this.putLabelDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, '');
+                  }
                 }
               }
-            }
-          })
-        ]);
+            })
+          ]);
+        };
       },
       comAttachFilterpopRender(cellData, tag) {
-        return (h, params) => h('div', [
-          h(tag, {
-            style: {
-              width: '130px'
-            },
-            domProps: {
-              id: `${params.index}-${params.column._index - 1}`
-            },
-            props: {
-              defaultValue: this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname].val : undefined,
-              defaultSelected: (this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname].defaultSelected : undefined) ? this.copyDataSource.row[params.index][cellData.colname].defaultSelected : [],
-              propstype: {
-                // 是否显示输入完成后是否禁用 true、false
-                show: true,
-                // 是否显示筛选提示弹窗 true、false
-                filterTip: true,
-                // 是否选中后禁止编辑 true、false
-                enterType: true,
-                // 是否回车选中第一行
-                disabled: false,
-                // 默认提示框
-                placeholder: null,
-                // 定义选中展示的文字的key
-                hideColumnsKey: ['id'],
-                // 配置弹窗的配置项 model
-                dialog: {
-                  model: {
-                    title: cellData.fkdesc,
-                    mask: true,
-                    draggable: true,
-                    scrollable: true,
-                    'footer-hide': true,
-                    width: 920
+        return (h, params) => {
+          return h('div', [
+            h(tag, {
+              style: {
+                width: '130px'
+              },
+              domProps: {
+                id: `${params.index}-${params.column._index - 1}`
+              },
+              props: {
+                defaultValue: this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname].val : undefined,
+                defaultSelected: (this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname].defaultSelected : undefined) ? this.copyDataSource.row[params.index][cellData.colname].defaultSelected : [],
+                propstype: {
+                  // 是否显示输入完成后是否禁用 true、false
+                  show: true,
+                  // 是否显示筛选提示弹窗 true、false
+                  filterTip: true,
+                  // 是否选中后禁止编辑 true、false
+                  enterType: true,
+                  // 是否回车选中第一行
+                  disabled: false,
+                  // 默认提示框
+                  placeholder: null,
+                  // 定义选中展示的文字的key
+                  hideColumnsKey: ['id'],
+                  // 配置弹窗的配置项 model
+                  dialog: {
+                    model: {
+                      title: cellData.fkdesc,
+                      mask: true,
+                      draggable: true,
+                      scrollable: true,
+                      'footer-hide': true,
+                      width: 920
+                    }
+                  },
+                  fkobj: {
+                    refobjid: cellData.refobjid,
+                    reftable: cellData.reftable,
+                    colid: this.dataSource.row[params.index] ? this.dataSource.row[params.index][cellData.colname].colid : undefined,
+                    reftableid: cellData.reftableid,
+                    saveType: 'object',
+                    show: true,
+                  },
+                  ...cellData,
+                // 模糊查询的文字信息，支持多列
+                },
+
+              },
+              on: {
+                'on-keydown': (v, e, i) => {
+                  if (e.keyCode === 13) {
+                    const elementId = i.$parent.$el.id;
+                    this.tableCellFocusByEnter(elementId);
+                  } else if (e.keyCode === 40) {
+                    // 下键
+                    const elementId = i.$parent.$el.id;
+                    const currentColumn = params.column._index - 1;
+                    this.tableCellFocusByUpOrDown(elementId, currentColumn, 'down');
+                  } else if (e.keyCode === 38) {
+                    // 上键
+                    const elementId = i.$parent.$el.id;
+                    const currentColumn = params.column._index - 1;
+                    this.tableCellFocusByUpOrDown(elementId, currentColumn, 'up');
                   }
                 },
-                fkobj: {
-                  refobjid: cellData.refobjid,
-                  reftable: cellData.reftable,
-                  colid: this.dataSource.row[params.index] ? this.dataSource.row[params.index][cellData.colname].colid : undefined,
-                  reftableid: cellData.reftableid,
-                  saveType: 'object',
-                  show: true,
-                },
-                ...cellData,
-                // 模糊查询的文字信息，支持多列
-              },
-
-            },
-            on: {
-              'on-keydown': (v, e, i) => {
-                if (e.keyCode === 13) {
-                  const elementId = i.$parent.$el.id;
-                  this.tableCellFocusByEnter(elementId);
-                } else if (e.keyCode === 40) {
-                  // 下键
-                  const elementId = i.$parent.$el.id;
-                  const currentColumn = params.column._index - 1;
-                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'down');
-                } else if (e.keyCode === 38) {
-                  // 上键
-                  const elementId = i.$parent.$el.id;
-                  const currentColumn = params.column._index - 1;
-                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'up');
-                }
-              },
-              valuechange: (item) => {
-                this.copyDataSource.row[params.index][cellData.colname].val = item.value;
-                this.copyDataSource.row[params.index][cellData.colname].defaultSelected = item.selected;
-                if (item.selected[0]) {
-                  this.putDataFromCell(item.selected[0].ID, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                  this.putLabelDataFromCell(item.selected[0].Label, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, item.selected[0].ID);
-                } else {
-                  this.putDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                  this.putLabelDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, '');
+                valuechange: (item) => {
+                  this.copyDataSource.row[params.index][cellData.colname].val = item.value;
+                  this.copyDataSource.row[params.index][cellData.colname].defaultSelected = item.selected;
+                  if (item.selected[0]) {
+                    this.putDataFromCell(item.selected[0].ID, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                    this.putLabelDataFromCell(item.selected[0].Label, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, item.selected[0].ID);
+                  } else {
+                    this.putDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                    this.putLabelDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, '');
+                  }
                 }
               }
-            }
-          })
-        ]);
+            })
+          ]);
+        };
       },
       attachFilterRender(cellData, tag) {
         return (h, params) => h('div', [
@@ -3331,7 +3469,8 @@
               scopedSlots: {
                 default: () => h('img', {
                   style: {
-                    height: '20px'
+                    height: '20px',
+                    'vertical-align': 'middle',
                   },
                   domProps: {
                     src: params.row[cellData.colname] && this.isJsonString(params.row[cellData.colname]) ? JSON.parse(params.row[cellData.colname])[0].URL : params.row[cellData.colname]
@@ -3365,23 +3504,29 @@
       docRender(cellData, tag) {
         const that = this;
         return (h, params) => {
+          if(!this.copyDataSource.row[params.index]) {
+            return null
+          }
           const content = `${this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).reduce((acc, cur) => {
             acc.push(`【${cur.name}】`);
             return acc;
           }, []).join('') : ''}`;
+          const align = cellData.tdAlign || cellData.align || 'center'
           return h('div', {
             style: {
-              display: 'flex'
+              display: 'flex',
+              'justify-content':FLEX_ALIGN[align],
+              'align-items': 'center',
             },
           }, [
             h('div', {
               style: {
                 display: cellData.width ? 'block' : 'flex',
-                'align-items': 'center',
                 width: cellData.width,
                 overflow: cellData.width ? 'hidden' : '',
                 'text-overflow': cellData.width ? 'ellipsis' : '',
                 'white-space': cellData.width ? 'nowrap' : '',
+                width: cellData.width? `${cellData.width - 38}px` : ''
               },
               attrs: {
                 title: content
@@ -3452,15 +3597,17 @@
             acc.push(`【${cur.name}】`);
             return acc;
           }, []).join('') : '暂无文件'}`;
+          const align = cellData.tdAlign || cellData.align || 'center'
           return h('div', {
             style: {
-              display: 'flex'
+              display: 'flex',
+              'justify-content':FLEX_ALIGN[align],
+              'align-items': 'center',
             },
           }, [
             h('div', {
               style: {
                 display: cellData.width ? 'block' : 'flex',
-                'align-items': 'center',
                 width: cellData.width,
                 overflow: cellData.width ? 'hidden' : '',
                 'text-overflow': cellData.width ? 'ellipsis' : '',
@@ -3698,7 +3845,6 @@
                 return item;
               }
             });
-            console.log(5, this.afterSendData[this.tableName]);
           }
         } else {
           this.afterSendData[this.tableName] = [];
@@ -4506,10 +4652,12 @@
         overflow-y: hidden;
         margin: 10px 5px 10px 5px;
         .detail-collection {
-            display: flex;
-            flex: 1;
+            // height: calc(100% - 38px);
+            height: 100%;
+            // display: flex;
+            // flex: 1;
             flex-direction: column;
-            overflow-y: hidden;
+            overflow-y: visible; // fix: 表格内下拉框超出表格的部分看不见了
             .detail-top {
                 margin-bottom: 6px;
                 display: flex;
@@ -4558,14 +4706,16 @@
                 }
             }
             .table-outside {
-                flex: 1;
-                overflow-y: hidden;
+                // flex: 1;
+                // overflow-y: hidden;
                 display: flex;
+                height: calc(100% - 57px);
                 .table-in {
                     flex: 1;
                 }
             }
             .queryCondition {
+                height: 20px;
                 margin-top: 5px;
             }
         }
@@ -4613,4 +4763,16 @@
     .input-align-right input {
         text-align: right;
     }
+
+    .table-in .ag-cell{
+      overflow: visible;
+    }
+
+    // // ag表格查询控件展示不全
+    // .table-in .ag-theme-balham .ag-menu {
+    //   overflow-y: auto;
+    //   .ag-column-container {
+    //     overflow: hidden;
+    //   }
+    // }
 </style>

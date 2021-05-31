@@ -1922,13 +1922,13 @@
       objectEXPORT() { // 导出功能
         let page = {};
         if (this.objectType === 'horizontal') { // 横向布局
-          this.tabPanel.every((item) => {
+          this.tabPanel.forEach((item) => {
             if (this.itemName !== this.tableName && item.tablename === this.itemName) {
               page = item.tablePageInfo;
             }
           });
         } else {
-          this.tabPanel.every((item) => {
+          this.tabPanel.forEach((item) => {
             if (item.tablename === this.itemName) {
               page = item.tablePageInfo;
             }
@@ -1968,15 +1968,15 @@
           this.$R3loading.show(this.loadingName);
         });
         const { tablename } = this.getCurrentItemInfo();
-             
         let pageRes = {}; 
         let searchdata = {};  
         if (this.objectType === 'horizontal') { // 横向布局
-          this.tabPanel.every((item) => {
+          this.tabPanel.forEach((item) => {
             if (this.itemName !== this.tableName && item.tablename === this.itemName) {
               pageRes = item.tablePageInfo;
             }
           }); 
+          
           searchdata = {
             column_include_uicontroller: true,
             startindex: 0,
@@ -2053,7 +2053,6 @@
               //   return true;
               // });
           
-
               this.getObjectTableItemForTableData({
                 table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex: this.currentTabIndex
               });

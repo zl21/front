@@ -234,6 +234,7 @@
                   // sortable: cur.isorder ? 'custom' : false,
                   // sortType: this.datas.ordids.find(item => item.colname === cur.colname).ordasc ? 'asc' : 'desc',
                   renderHeader: this.tooltipRenderHeader(),
+                  render: this.textRender(cur),
                   width: cur.webconf && cur.webconf.standard_width
                 }, cur));
               } else if (cur.customerurl) {
@@ -257,6 +258,7 @@
                   key: cur.colname,
                   // sortable: cur.isorder ? 'custom' : false,
                   renderHeader: this.tooltipRenderHeader(),
+                  render: this.textRender(cur),
                   width: cur.webconf && cur.webconf.standard_width
                 }, cur));
               }
@@ -545,6 +547,9 @@
       }, // 行样式
       customerUrlRender() {
         return (h, params) => h('span', {
+          domProps: {
+            innerHTML:`<span title='${params.row[params.column.colname] || ""}'>${params.row[params.column.colname] || ''}</span>`
+          },
           style: {
             color: '#0f8ee9',
             'text-decoration': 'underline',
@@ -608,7 +613,7 @@
               }
             }
           },
-        }, params.row[params.column.colname]);
+        });
       }, // 外键连接定制界面
       tooltipRenderHeader() {
         return (h, params) => h('span', [

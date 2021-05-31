@@ -133,7 +133,13 @@
         //   const valuedata = JSON.parse(this.selected[0].Label);
         //   this.selected[0].Label = `已经选中${valuedata.total}条` || '';
         // }
-
+        
+        // 如果存在cellRendererParams说明是用ag表格渲染的commonTable，需要删除用不到的字段，不然json转化会报错
+        if (this.propstype.cellRendererParams) {
+          delete this.propstype.cellRendererParams;
+          delete this.propstype.headerComponentParams;
+          delete this.propstype.pinnedRowCellRendererParams
+        }
         this.propsData = JSON.parse(JSON.stringify(this.propstype));
 
         if (this.propsData.disabled) {
@@ -148,7 +154,7 @@
           this.propsData.componentType = Dialog;
           if (this.defaultSelected[0] && this.defaultSelected[0].ID && /选中/.test(this.value)) {
             // const data = this.defaultSelected[0].ID; 
-            const data = Array.isArray(this.defaultSelected[0].ID) ? this.defaultSelected[0].ID : JSON.parse(this.defaultSelected[0].ID); 
+            const data = this.defaultSelected[0].ID; 
             // 谢世华  修改处理默认值逻辑
             
             if (data.value) {
@@ -446,6 +452,12 @@
       }
     },
     created() {
+      // 如果存在cellRendererParams说明是用ag表格渲染的commonTable，需要删除用不到的字段，不然json转化会报错
+      if (this.propstype.cellRendererParams) {
+        delete this.propstype.cellRendererParams;
+        delete this.propstype.headerComponentParams;
+        delete this.propstype.pinnedRowCellRendererParams
+      }
       this.propsData = JSON.parse(JSON.stringify(this.propstype));
       this.value = this.defaultValue;
       if (this.propsData.disabled) {
@@ -475,7 +487,7 @@
       }
 
       if (this.defaultSelected[0] && this.defaultSelected[0].ID && /选中/.test(this.defaultSelected[0].Label)) {
-        const data = Array.isArray(this.defaultSelected[0].ID) ? this.defaultSelected[0].ID : JSON.parse(this.defaultSelected[0].ID); 
+        const data = this.defaultSelected[0].ID; 
         // 谢世华  修改处理默认值逻辑
         if (data.value) {
           data.value.reftable = this.propsData.reftable;

@@ -33,6 +33,7 @@
         "babel-eslint": "^10.1.0",
         "babel-helper-vue-jsx-merge-props": "^2.0.3",
         "babel-loader": "^8.1.0",
+        "babel-plugin-import": "^1.13.3",
         "babel-plugin-syntax-jsx": "^6.18.0",
         "babel-plugin-transform-vue-jsx": "^3.7.0",
         "clean-webpack-plugin": "^1.0.1",
@@ -64,7 +65,8 @@
     },
     "dependencies": {
         "@babel/polyfill": "^7.10.4",
-        "@syman/ark-ui": "^1.1.15",
+        "@syman/ark-ui": "^1.0.54",
+        "@syman/ark-ui-bcl": "0.0.52",
         "ag-grid": "^17.1.1",
         "ag-grid-enterprise": "^17.1.1",
         "awe-dnd": "^0.3.4",

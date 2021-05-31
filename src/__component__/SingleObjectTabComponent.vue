@@ -131,6 +131,7 @@
       :status="status"
       :tabwebact="buttonsData.data.tabwebact"
       :tooltip-for-item-table="tooltipForItemTable"
+      :isCommonTable="isCommonTable"
       @tableBeforeData="tableBeforeData"
       @tableBeforeLabelData="tableBeforeLabelData"
       @tableDataChangeLabel="tableDataChangeLabel"
@@ -290,6 +291,19 @@
     computed: { 
       ...mapState('global', {
       }),
+
+      // 根据接口判断是否用普通表格渲染
+      isCommonTable() {
+        const buttonsData = this.buttonsData.data
+        const useAgGrid = window.ProjectConfig.useAgGrid
+        if(buttonsData.webconf && buttonsData.webconf.commonTable === true) {
+          return true
+        } else if(useAgGrid && (!buttonsData.webconf || (buttonsData.webconf && buttonsData.webconf.commonTable === undefined))) {
+          return false
+        } else {
+          return false
+        } 
+      },
 
       // 是否是子表
       isChildTable() {

@@ -34,7 +34,8 @@ module.exports = {
     'no-console':'off',
     'vue/no-async-in-computed-properties': 'off',
     'vue/html-self-closing': 'off',
-    'no-nested-ternary': 'off'
+    'no-nested-ternary': 'off',
+    'arrow-body-style': 'never'
   },
   overrides: [
     {
