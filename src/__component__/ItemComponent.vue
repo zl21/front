@@ -33,7 +33,7 @@
         v-if="_items.required"
         class="label-tip"
       >*</span>
-      <template v-if="getVersion() === '1.4' && _items.props.fkdisplay === 'pop' && type==='PanelForm'&&_items.type !== 'defined'">
+      <template v-if="getVersion() === '1.4' && _items.props.fkdisplay === 'pop' && type==='PanelForm'">
         <!-- 路由跳转 -->
         <template v-if="!!_items.value &&_items.props.Selected &&_items.props.Selected[0] && !!_items.props.Selected[0].ID && _items.props.Selected[0].ID !=='-1'&& _items.props.Selected[0].ID !==0 && _items.props.Selected[0].ID !=='0'">
           <i
@@ -45,7 +45,7 @@
         </template>
 
       </template>
-      <template v-if="getVersion() === '1.4' && _items.props.fkdisplay === 'drp' && type==='PanelForm'&&_items.type !== 'defined'">
+      <template v-if="getVersion() === '1.4' && _items.props.fkdisplay === 'drp' && type==='PanelForm'">
         <!-- 路由跳转 -->
         <template v-if="!!_items.value && _items.props.defaultSelected && _items.props.defaultSelected[0] && !!_items.props.defaultSelected[0].ID && _items.props.defaultSelected[0].ID !=='-1'&& _items.props.defaultSelected[0].ID !=='0'&& _items.props.defaultSelected[0].ID !==0">
           <i
@@ -59,7 +59,6 @@
       </template>
 
       <span
-        v-if="_items.type !== 'defined'"
         :title="_items.title"
       >{{ _items.title }}:</span>
     </span>
