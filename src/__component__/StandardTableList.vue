@@ -453,7 +453,7 @@
           this.searchClickData();
         }
       },
-      async tabClick({ data, index }) {
+      async tabClick({ data, index,stopRequest }) {
         this.filterTableParam = {};
         if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].startIndex) {
           this.searchData.startIndex = data.startIndex;
