@@ -34,10 +34,9 @@
   // import { setTimeout } from 'timers';
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
   import { Version, interlocks, MODULE_COMPONENT_NAME } from '../constants/global';
-
+  import getComponentName from '../__utils__/getModuleName'
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
-
 
   export default {
     name: 'FormItemComponent',
@@ -297,7 +296,6 @@
         type: Boolean
       }
     },
-    inject: [MODULE_COMPONENT_NAME],
     data() {
       return {
         indexItem: -1,
@@ -349,6 +347,7 @@
     // this.VerificationFormInt();
     },
     created() {
+      this[MODULE_COMPONENT_NAME] = getComponentName() // fix:ag表格中如果用到该组件,从inject获取模块名会失败。所以改成主动获取。如果以后ag表格自定义单元格组件是改用component注册，可以用inject
       this.newFormItemLists = this.formItemLists.concat([]);
     },
     watch: {

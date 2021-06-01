@@ -23,3 +23,20 @@ export default function urlParse(path) {
   }
   return obj;
 }
+
+// 获取url里的表明
+export function getTableName() {
+  const path = window.location.pathname
+  const arr = path.split('/')
+  let tableName = ''
+  for(let i = arr.length - 1; i >= 0; i--) {
+    const str = arr[i]
+    const isNumber = /(^[1-9]\d*$)/.test(str)
+    const isNew = /^New$/.test(str) // 新增界面的id标识,即New
+    if(!isNumber && !isNew) {
+      tableName = str
+      break
+    }
+  }
+  return tableName
+}

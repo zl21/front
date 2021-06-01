@@ -235,9 +235,6 @@
       },
       dateRestructure(data, index, type, name) {
         // 表格数据的 重新组合
-        if (!this.akname) {
-          this.akname = data.akname || 'ECODE';
-        }
         if (name !== 'clear') {
           if (type !== 'search') {
             // this.IN = data.ids || [];
@@ -870,6 +867,7 @@
           serviceId: this.fkobj.serviceId,
           success: (res) => {
             if (obj.clear !== '1') {
+              this.akname = res.data.data.akname || 'ECODE';
               this.dateRestructure(res.data.data, index, name, 'clear');
             }
             this.sendMessage.GLOBAL = '';
