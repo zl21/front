@@ -9,7 +9,6 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const copyWebpackPlugin = require('copy-webpack-plugin');
 const {ModuleFederationPlugin} = require('webpack').container;
 
-
 module.exports = () => ({
   entry: {
     index: './index.publish.js'
@@ -22,7 +21,7 @@ module.exports = () => ({
     libraryTarget: 'umd',
     umdNamedDefine: true
   },
-  devtool: 'source-map',
+  // devtool: 'source-map',
   externals: {
     vue: {
       commonjs: 'vue',
@@ -87,7 +86,7 @@ module.exports = () => ({
       {
         test: /\.css$/,
         use: [{
-          loader: MiniCssExtractPlugin.loader,
+          loader: 'style-loader',
         }, {
           loader: 'css-loader',
         }],
@@ -96,7 +95,7 @@ module.exports = () => ({
         test: /\.(sa|sc|le)ss$/,
         use: [{
           // loader: env && env.production ? MiniCssExtractPlugin.loader : 'style-loader',
-          loader: MiniCssExtractPlugin.loader,
+          loader: 'style-loader',
         }, {
           loader: 'css-loader',
         }, {
@@ -131,24 +130,20 @@ module.exports = () => ({
     ],
   },
   plugins: [
-    new MiniCssExtractPlugin({
-      filename: 'r3.min.css',
-    }),
+    // new MiniCssExtractPlugin({
+    //   filename: 'r3.min.css',
+    // }),
     new CleanWebpackPlugin(['r3.publish']),
     new VueLoaderPlugin(),
     new copyWebpackPlugin([
       {
-        from: path.resolve(__dirname, "./src/assets/theme/custom.less"),
-        to: path.resolve(__dirname, "./r3.publish/src/assets/theme")
+        from: path.resolve(__dirname, "./src/assets"),
+        to: path.resolve(__dirname, "./r3.publish/src/assets")
       },
       {
-        from: path.resolve(__dirname, "./src/assets/styles"),
-        to: path.resolve(__dirname, "./r3.publish/src/assets/styles")
+        from: path.resolve(__dirname, "./src/index.less"),
+        to: path.resolve(__dirname, "./r3.publish/src")
       },
-      {
-        from: path.resolve(__dirname, "./src/assets/image"),
-        to: path.resolve(__dirname, "./r3.publish/src/assets/image")
-      }
     ]),
     // new ModuleFederationPlugin({
     //   name: '',

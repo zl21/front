@@ -7,7 +7,3 @@
     name: 'StandardSingleObject'
   };
 </script>
-
-<style scoped>
-
-</style>

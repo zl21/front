@@ -499,23 +499,3 @@
     }
   };
 </script>
-<style lang="less">
-.AttachFilter-pop {
-  .iconbj_tcduo:before {
-    content: "\e6b1";
-  }
-  .iconbj_tcduo {
-    padding-top: 2px;
-  }
-
-}
-.attachfiter-pop{
-  .ark-select-item-selected{
-    color: #333333!important;
-  }
-  .ark-select-item-focus{
-    background-color: #fff!important;
-  }
-
-}
-</style>

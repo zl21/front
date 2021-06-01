@@ -46,7 +46,7 @@
       change(status) {
         this.switchV = status;
       },
-      
+
       save() {
         if (this.switchV) {
           this.$emit('ok');
@@ -59,6 +59,3 @@
     }
   };
 </script>
-
-<style lang="scss" scoped>
-</style>

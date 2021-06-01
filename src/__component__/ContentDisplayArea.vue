@@ -20,7 +20,7 @@
   import { mapState } from 'vuex';
   import TabLists from './TabLists';
   import { enableTabLists } from '../constants/global';
-  
+
   export default {
     data() {
       return {
@@ -42,11 +42,3 @@
     }
   };
 </script>
-
-<style scoped>
-  .dispalyArea {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-</style>

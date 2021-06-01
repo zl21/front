@@ -1,0 +1,150 @@
+@metricsDefinition-prefix-cls: ~"@{css-prefix}metricsDefinition";
+
+.@{metricsDefinition-prefix-cls} {
+
+  .treeBox {
+    box-sizing: border-box;
+    height: calc(100% - 30px);
+    padding: 10px 10px;
+    overflow: scroll;
+  }
+
+  .btn {
+    height: 22px;
+    line-height: 18px;
+    margin-right: 8px;
+    margin-left: 0px;
+    padding: 0 8px;
+
+    span {
+      vertical-align: initial;
+    }
+  }
+
+  .buttonGroup {
+    padding: 8px 0px;
+
+    button {
+      .btn();
+      // height: 22px;
+      // line-height: 18px;
+      // margin-right: 8px;
+      // margin-left: 0px;
+      // padding: 0 8px;
+      // span {
+      //   vertical-align: initial;
+      // }
+    }
+  }
+
+  .report-intro {
+    padding: 8px 0 15px;
+
+    span {
+      padding-right: 10px;
+
+      em {
+        font-style: normal;
+        color: #fd6442;
+      }
+    }
+  }
+
+  li {
+    list-style-type: none;
+  }
+
+  main {
+    display: block;
+    position: relative;
+    width: 700px;
+    height: 500px;
+
+    .list {
+      display: inline-block;
+      width: 180px;
+      height: 210px;
+      font-size: 12px;
+      border: 1px solid #e8eaec;
+      border-radius: 6px;
+      overflow: hidden;
+
+      .list-header {
+        padding: 8px 16px;
+        background: #f9fafc;
+        color: #575757;
+        border-bottom: 1px solid #e8eaec;
+        overflow: hidden;
+        width: 100%;
+      }
+
+      .list-body {
+        padding: 8px 16px;
+        line-height: 28px;
+        overflow: scroll;
+        /*   label {
+             cursor: move;
+           }*/
+      }
+    }
+
+    .parent-box {
+      float: left;
+      margin-right: 20px;
+      width: 180px;
+      height: 500px;
+
+      .list {
+        height: 500px;
+
+        .list-body {
+          height: 460px;
+        }
+      }
+    }
+
+    .child-box {
+      float: left;
+      width: 500px;
+      height: 500px;
+
+      .child-item {
+        float: left;
+        margin: 0 10px 10px 0;
+        width: 240px;
+        height: 240px;
+
+        .burgeon-transfer-operation {
+          float: left;
+          margin-top: 100px;
+        }
+
+        .child-list {
+          float: right;
+          width: 180px;
+          height: 260px;
+
+          .list-body {
+            height: 180px;
+          }
+
+          button {
+            .btn();
+          }
+        }
+      }
+    }
+  }
+
+  .tips {
+    width: 100%;
+    padding: 20px 0;
+
+    i:before {
+      margin-right: 5px;
+      color: #fd6442;
+      font-size: 14px;
+      font-weight: bold;
+    }
+  }
+}

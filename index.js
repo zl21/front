@@ -22,23 +22,17 @@ import projectConfig from './project.config';
 import { addSearch } from './src/__utils__/indexedDB';
 import { createWatermark } from './src/__utils__/waterMark';
 
-import './node_modules/viewerjs/dist/viewer.css';
 import './src/__utils__/getChildComponent';
 
 // css import
-import './node_modules/ag-grid/dist/styles/ag-grid.css';
-import './src/assets/r3.iconfont/iconfont.css';
-import './src/assets/css/ag-theme-balham.less';
-import './src/assets/css/loading.css';
-import './src/assets/css/custom-ext.less';
-import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
-
+// import './node_modules/viewerjs/dist/viewer.css';
+// import './node_modules/ag-grid/dist/styles/ag-grid.css';
 
 // 组件css汇总
-import './src/assets/styles/index.less';
+import './src/index.less';
 import './src/assets/theme/custom.less';
 
-// 自定义
+// // 自定义
 import './src/assets/styles/xc.less';
 import './src/assets/styles/xc1.less';
 

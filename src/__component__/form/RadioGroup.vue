@@ -87,10 +87,10 @@
               checkedList.push(item.limitval);
             }
           });
-          
+
           this.selectedValues = [currentLabel];
         }
-        
+
         this.$emit('change', checkedList.join(','));
       },
 
@@ -115,7 +115,3 @@
     }
   };
 </script>
-
-<style lang="scss" scoped>
-  
-</style>

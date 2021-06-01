@@ -107,7 +107,7 @@
       open() {
         this.showModal = true;
       },
-      
+
       // 确定
       onOk() {
         if (typeof this.confirm === 'function') {
@@ -122,27 +122,7 @@
         }
         this.$emit('on-cancle');
       },
-    
+
     }
   };
 </script>
-
-<style lang="less">
-.ark-modal-footer {
-  border: none;
-}
-
-.ark-modal-footer button > span {
-  font-size: 12px;
-}
-
-.ark-modal-footer button {
-  width: auto;
-  border-radius: 2px;
-  height: 26px;
-  line-height: 0px;
-}
-.show-dialog{
-  position: relative;
-}
-</style>

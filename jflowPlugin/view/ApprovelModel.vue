@@ -3,7 +3,7 @@
   <div>
     <Modal
       v-model="modalConfig.control"
-      class-name="ApprovelModel"
+      :class-name="classes"
       :title="type==='3'?'选择转派人':type==='9'?'人工干预':'审批意见'"
       :mask="true"
       :mask-closable="false"
@@ -229,6 +229,7 @@
   import Back from './Back';
   import Delegate from './Delegate';
   import Intervention from './Intervention';
+  import { classFix } from '../../src/constants/global';
 
   export default {
     name: 'ApprovelModel',
@@ -239,6 +240,7 @@
       }
     },
     computed: {
+      classes: () => `${classFix}ApprovelModel`,
       modalConfig() {
         return this.config;
       },
@@ -254,7 +256,7 @@
             acc.push(itemobj);
             return acc;
           }, []);
-        } 
+        }
         return [];
       }
     },
@@ -293,10 +295,3 @@
     }
   };
 </script>
-<style lang="less">
-.ApprovelModel {
-  .ark-modal-body{
-    padding: 0;
-  }
-}
-</style>

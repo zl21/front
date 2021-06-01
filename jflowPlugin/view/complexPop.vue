@@ -180,7 +180,3 @@
     }
   };
 </script>
-<style lang="less">
-.complexBox {
-}
-</style>
