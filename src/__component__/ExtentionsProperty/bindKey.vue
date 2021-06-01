@@ -48,7 +48,7 @@
         v-model="item.source"
         axis="y"
         :lock-to-container-edges="true"
-        :press-delay="200"
+        :press-delay="600"
         helper-class="r3-slick"
       >
         <SlickItem
