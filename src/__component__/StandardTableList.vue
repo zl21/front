@@ -456,7 +456,11 @@
       async tabClick({ data, index,stopRequest }) {
         this.filterTableParam = {};
         if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].startIndex) {
-          this.searchData.startIndex = data.startIndex;
+          if (this.$route.query.isBack || this.$route.query.ISBACK) {
+              this.searchData.startIndex = data.startIndex;
+            }else{
+              this.searchData.startIndex = 0;
+            }
         } else {
           this.searchData.startIndex = 0;
         }

@@ -260,7 +260,18 @@
         this.currentIndex = index;
       // document.querySelector(`#${item.key}-${index}-${this.guid}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
       },
+      
       updateRootData(key, value) {
+        // fix: ispassword没清空值
+        if(key === 'password_type' &&  this.rootData.password_type) {
+          if(this.rootData.password_type.password_prefix_digit === '') {
+            delete this.rootData.password_type.password_prefix_digit
+          }
+          if(this.rootData.password_type.password_suffix_digit === '') {
+            delete this.rootData.password_type.password_suffix_digit
+          }
+        }
+
         if (value === '') {
           delete this.rootData[key];
           this.rootData = Object.assign({}, this.rootData);

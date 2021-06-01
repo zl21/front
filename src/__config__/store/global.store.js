@@ -55,7 +55,7 @@ export default () => ({
       openedImg,
       bigDataImg
     },
-
+    isShowDashboardPage: false,
     previewPictureInstance: [], // 记录图片预览实例
     sameNewPage: false,
     switchTag: false
