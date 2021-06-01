@@ -246,6 +246,11 @@
   }
 }
 
+/* extentionInputGroup */
+.@{css-prefix}extentionInputGroup{
+  display: flex;
+  flex-direction: column;
+}
 
 
 
@@ -459,4 +464,55 @@
     flex: 1;
     overflow: hidden;
   }
+}
+
+/* TodoProcess */
+.@{css-prefix}TodoProcess{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  .btn-agent {
+    display: flex;
+    justify-content: space-between;
+    .btnArea {
+      margin-bottom: 10px;
+      .ark-btn {
+        margin-right: 9px;
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+    .agentshow {
+      display: inline-block;
+      height: 30px;
+      line-height: 30px;
+      margin-bottom: 10px;
+    }
+  }
+
+  .form {
+    margin-bottom: 16px;
+  }
+
+  .StandardTable {
+    position: relative;
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    .table {
+      flex: 1;
+    }
+  }
+  .ark-spin-fix {
+    z-index: 100;
+  }
+  .modalCotent {
+    .ark-tree {
+      overflow-y: auto;
+    }
+  }
+
 }

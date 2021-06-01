@@ -1,6 +1,6 @@
 /* eslint-disable import/no-dynamic-require */
 <template>
-  <div class="r3-file-doc">
+  <div :class="classes">
     <div v-if="docList.valuedata.length >0||docList.valuedata.url">
       <ul class="re-doc-list">
         <li
@@ -24,10 +24,10 @@
           />
         </li>
       </ul>
-    </div>      
-    
-    <!-- 
-       
+    </div>
+
+    <!--
+
      -->
     <form
       ref="file"
@@ -59,13 +59,13 @@
 
 <script>
   import Upload from '../../__utils__/upload';
-  import { encodeControl } from '../../constants/global';
+  import { encodeControl, classFix } from '../../constants/global';
 
 
   export default {
     name: 'Docfile',
     // inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, INSTANCE_ROUTE],
-    
+
     props: {
       dataitem: {// 上传文件类型字段元数据配置，如在定制界面使用，需和元数据配置参数保持一致
         type: Object,
@@ -108,12 +108,13 @@
     },
     data() {
       return {
-        percent: false,  
+        percent: false,
         docList: {},
         uploadProgress: 0, // 上传进度
       };
     },
     computed: {
+      classes: () => `${classFix}r3-file-doc`,
       // getDocFileWebConf() {
       //   if (this.itemWebconf && this.itemWebconf.docFile) {
       //     return this.itemWebconf.docFile.isPreview;
@@ -203,17 +204,17 @@
       filechange() {
         const valuedata = this.docList.valuedata;
         this.$emit('filechange', valuedata);
-      }, 
+      },
       checkFile(files) {
         if ((this.docList.valuedata.length + files.length) > this.docList.filesLength && this.docList.filesLength) {
           this.$Message.info(`只能上传${this.docList.filesLength}个文件`);
           return false;
         }
 
-        
+
         for (let i = 0; i < files.length; i++) {
-          const idx = files[i].name.lastIndexOf('.'); 
-          const ext = files[i].name.substr(idx + 1).toUpperCase();   
+          const idx = files[i].name.lastIndexOf('.');
+          const ext = files[i].name.substr(idx + 1).toUpperCase();
           const accept = this.itemWebconf && this.itemWebconf.UploadAccept ? this.itemWebconf.UploadAccept.toUpperCase() : this.accept.toUpperCase();
           const arr = accept.split(',');
           if (accept !== '*' && !arr.includes(ext)) {
@@ -233,7 +234,7 @@
         }
         const url = this.docList.url;
         const sendData = this.docList.sendData;
-        
+
         const aUploadParame = Object.assign(
           {},
           {
@@ -280,7 +281,7 @@
             content: res.message,
             mask: true
           });
-        }        
+        }
         if (!this.checkFile(filelist)) {
           return false;
         }
@@ -345,50 +346,3 @@
     }
   };
 </script>
-
-<style lang="less">
-.r3-file-doc{
-    color: #0f8ee9; 
-    
-   label{
-       cursor: pointer; 
-   }
-   .disbaled{
-     color:#999;
-   }
-   .proInfo{
-     height:20px;
-     color:#999;
-     transition: all 0.4s;
-     margin-top: 10px;
-   }
-   .iconios-close-circle-outline{
-    vertical-align: inherit;
-    font-size: 14px;
-    cursor:pointer;
-       
-   }
-   .r3-filedoc-disabled{
-      color: #999;
-      cursor: not-allowed;
-    }
-   input{
-        opacity: 0;
-        display: none
-   }
-   .re-doc-list{
-       li{
-              padding:5px 6px;
-            line-height: 16px;
-            vertical-align: middle; 
-            list-style-type:none
-
-           }
-         
-   }
-
-   .ark-progress-bg {
-    background-color: #2d8cf0;
-  }
-}  
-</style>

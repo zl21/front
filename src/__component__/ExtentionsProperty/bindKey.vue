@@ -1,5 +1,5 @@
 <template>
-  <div class="bindKey">
+  <div :class="classes">
     <Description
       :option="option"
       @removeOption="removeOption"
@@ -168,6 +168,7 @@
   import { SlickList, SlickItem } from 'vue-slicksort';
   import Description from './Description.vue';
   import network, { urlSearchParams } from '../../__utils__/network';
+  import { classFix } from "../../constants/global";
 
   const GROUP_CONSTRUCTOR = {
     target: {
@@ -216,6 +217,10 @@
         targetColumnsKey: ['DBNAME'],
         sourceColumnsKey: ['NAME']
       };
+    },
+
+    computed: {
+      classes: () => `${classFix}bindKey`
     },
 
     watch: {
@@ -531,115 +536,6 @@
     }
   };
 </script>
-
-<style lang="scss" scoped>
-.bindKey {
-  .ml-5 {
-    margin-left: 5px;
-  }
-
-  .mb-10 {
-    margin-bottom: 10px;
-  }
-
-  .ml-10 {
-    margin-left: 10px;
-  }
-
-  .required-item {
-    position: relative;
-    &::before {
-      content: '*';
-      color: red;
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      left: -6px;
-    }
-  }
-
-  .target-key {
-    display: inline-block;
-    width: 240px;
-  }
-  .tab-label-name {
-    width: 240px;
-  }
-  .tabContent {
-    border: 1px solid #d3d3d3;
-    position: relative;
-    margin-bottom: 10px;
-
-    .label-input {
-      display: flex;
-      align-items: center;
-      margin: 10px;
-
-      > span {
-        display: inline-block;
-        width: 100px;
-        text-align: right;
-      }
-    }
-
-    .blank {
-      position: absolute;
-      width: 100%;
-      height: 1px;
-      background: #d3d3d3;
-      left: 0;
-    }
-
-    .colnameContent {
-      display: flex;
-      padding: 10px;
-      cursor: move;
-
-      > div {
-        flex: 1;
-        margin-right: 10px;
-
-        > p {
-          height: 12px;
-          margin-bottom: 4px;
-        }
-
-        &.colname {
-          flex: 2;
-        }
-
-        &.oprate {
-          width: 50px;
-          flex: none;
-        }
-
-        &:last-child {
-          margin: 0;
-        }
-      }
-    }
-  }
-
-  .operate-button {
-    background-color: transparent;
-    outline: none;
-    font-size: 16px;
-    // padding: 5px;
-    border: 1px solid lightgrey;
-    width: 20px;
-    display: inline-block;
-    height: 20px;
-    line-height: -1px;
-    border-radius: 50%;
-    color: grey;
-  }
-  .operate-button:hover {
-    color: #000;
-    cursor: pointer;
-    opacity: 0.8;
-  }
-}
-</style>
 
 <style lang="less">
 #drag-tip {

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="verticalCls">
     <div :class="classes">
       <div style="">
         <NavigatorPrimaryMenu
@@ -47,6 +47,7 @@
           `${classFix}middle`,
         ];
       },
+      verticalCls: () => `${classFix}verticalCls`,
     },
     methods: {
       ...mapMutations('global', ['changeSelectedPrimaryMenu', 'hideMenu']),

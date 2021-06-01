@@ -1,5 +1,5 @@
 <template>
-  <div class="NetworkMonitorContainer" >
+  <div :class="classes" >
     <div style="margin: 15px;">
       <Button @click="doQuery">
         刷新
@@ -38,8 +38,8 @@
 
 <script>
   import { queryAllNetwork, emptyRecord } from '../../__utils__/indexedDB';
-  import { ENABLE_NETWORK_MONITOR } from '../../constants/global';
-  
+  import { ENABLE_NETWORK_MONITOR, classFix } from '../../constants/global';
+
   export default {
     data() {
       return ({
@@ -90,6 +90,9 @@
         this.doQuery();
       }
     },
+    computed: {
+      classes: () => `${classFix}NetworkMonitorContainer`,
+    },
     methods: {
       pageChange(pageNum) {
         this.page = pageNum;
@@ -121,31 +124,3 @@
     },
   };
 </script>
-
-<style lang="less">
-  .NetworkMonitorContainer {
-    height: 100%;
-    overflow: scroll;
-    display: flex;
-    flex-direction: column;
-    h1 {
-      text-align: center;
-      margin: 15px auto;
-    }
-    h4 {
-      font-size: 20px;
-      text-align: center;
-      padding: 15px;
-      font-weight: 400;
-    }
-    .tableWrapper {
-      /*border: 1px solid lightgrey;*/
-      width: 100%;
-      flex: 1;
-      overflow: hidden;
-      .ark-table-cell span {
-        font-weight: 400;
-      }
-    }
-  }
-</style>

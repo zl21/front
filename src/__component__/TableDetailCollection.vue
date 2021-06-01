@@ -340,11 +340,7 @@
         exportTasks: ({ exportTasks }) => exportTasks
 
       }),
-      classes() {
-        return [
-          `${classFix}TableDetailCollection`,
-        ];
-      },
+      classes: () => `${classFix}TableDetailCollection`,
       currentTabIndex() {
         return this.tabCurrentIndex;
 
@@ -4523,47 +4519,3 @@
     }
   };
 </script>
-
-<style lang="less">
-    .table-in {
-        flex: 1;
-        tbody tr.ark-table-row-hover td {
-            background-color: #ecf0f1;
-        }
-        thead th {
-            font-weight: 400;
-        }
-        .ark-input-wrapper > input {
-            height: 22px;
-        }
-        .ark-select-selection {
-            height: 22px;
-        }
-        .ark-table th, .ark-table td {
-            height: 26px;
-        }
-        .ark-fkrp-select-icon {
-            top: 2px;
-        }
-        .ark-fkrp-select .ark-icon-ios-close-circle {
-            top: -2px;
-        }
-        .ark-fkrp-poptip .fkrp-poptip-text {
-            top: 2px;
-        }
-        .fkrp-poptip-two .ark-icon-ios-close-circle {
-            top: -2px;
-        }
-        .ark-input-icon {
-            top: -2px;
-        }
-    }
-
-    .input-align-center input {
-        text-align: center;
-    }
-
-    .input-align-right input {
-        text-align: right;
-    }
-</style>
