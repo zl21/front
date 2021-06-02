@@ -79,7 +79,7 @@
       },
     },
     methods: {
-      ...mapMutations('global', ['increaseKeepAliveLists', 'hideMenu', 'increaseOpenedMenuLists', 'changeSelectedPrimaryMenu']),
+      ...mapMutations('global', ['increaseKeepAliveLists', 'hideMenu', 'increaseOpenedMenuLists', 'changeSelectedPrimaryMenu','updateDashboardPageValue']),
 
       // 渲染label
       renderLabel(label, itemConfig) {
@@ -120,6 +120,7 @@
             updateSessionObject('clickMenuAddSingleObject', clickMenuAddSingleObjectData);
           }
         }
+         this.updateDashboardPageValue(false);
         routeTo({ type, info: { tableName: value, tableId: id, url } }, () => {
           this.hideMenu();
         });

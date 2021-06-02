@@ -121,10 +121,10 @@
         }
       }, // 确定
       publish(data) {
-        this.$R3loading.show();
+        this.$R3loading.show(this.loadingName);
         network.post('/p/cs/report/release', urlSearchParams(data.searchdata))
           .then((res) => {
-            this.$R3loading.hide(data.tableName);
+            this.$R3loading.hide(this.loadingName);
 
             if (res.data.code !== 0) {
               return;
@@ -140,7 +140,7 @@
               this.$emit('closeActionDialog', true); // 关闭弹框
             }
           }).catch(() => {
-            this.$R3loading.hide(data.tableName);
+            this.$R3loading.hide(this.loadingName);
           });
       },
       cancel() {
@@ -148,6 +148,7 @@
       }, // 取消
     },
     created() {
+      this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');
       this.chineseName = ChineseDictionary;
     },
     mounted() {

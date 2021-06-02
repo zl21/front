@@ -2,9 +2,9 @@
   <div :class="classes">
     <div class="panel-main">
       <div class="panel-item">
-        <p :title="userInfo.ename">
+        <p :title="getEname">
           <i class="iconfont iconmd-contact explanatory" />
-          欢迎: {{ userInfo.ename }}
+          欢迎: {{ getEname }}
         </p>
       </div>
       <div class="panel-item">
@@ -83,6 +83,13 @@
           `${classFix}set-panel`,
         ];
       },
+      }),
+      getEname() {
+        if (this.userInfo) {
+          return this.userInfo.ename;
+        }
+        return null;
+      }
     },
     watch: {
       num7() {

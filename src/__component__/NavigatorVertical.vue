@@ -117,16 +117,16 @@
         return true;
       },
       taskMessageCounts() {
-        return this.userInfo.id;
+        if (this.userInfo) {
+          return this.userInfo.id;
+        }
+        return null;
       }
 
     },
     watch: {
       taskMessageCounts(val) {
-        // if (val && Version() === '1.3') {
-        //   this.getTaskMessageCount(val);
-        // }
-        if (val) {
+        if (val && Version() === '1.3') {
           this.getTaskMessageCount(val);
         }
       },

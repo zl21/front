@@ -315,6 +315,19 @@
         } 
       },
 
+      // 根据接口判断是否用普通表格渲染
+      isCommonTable() {
+        const buttonsData = this.buttonsData.data
+        const useAgGrid = window.ProjectConfig.useAgGrid
+        if(buttonsData.webconf && buttonsData.webconf.commonTable === true) {
+          return true
+        } else if(useAgGrid && (!buttonsData.webconf || (buttonsData.webconf && buttonsData.webconf.commonTable === undefined))) {
+          return false
+        } else {
+          return false
+        } 
+      },
+
       // 是否是子表
       isChildTable() {
         if(this.type === 'horizontal' && this.currentTabIndex !== 0) {
@@ -492,6 +505,7 @@
         const buttonComponent = `${this[MODULE_COMPONENT_NAME]}.SingleObjectButtons`;
         const tableDetailCollectionMixin = (window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.tableDetailCollectionMixin) || {};
         const singleObjectButtonsMixin = (window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.singleObjectButtonsMixin) || {};
+        const vuexModuleName = this.moduleComponentName;
 
         const singlePanelForm = `tabComponent.${this.tableName}.PanelForm`;
 
@@ -504,10 +518,10 @@
           }
         } else {
           if(Vue.component(tableComponent) === undefined) {
-            Vue.component(tableComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins(), tableDetailCollectionMixin] }, tableDetailCollection)));
+            Vue.component(tableComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins(vuexModuleName), tableDetailCollectionMixin] }, tableDetailCollection)));
           }
           if (Vue.component(buttonComponent) === undefined) {
-            Vue.component(buttonComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins(), singleObjectButtonsMixin] }, singleObjectButtons)));
+            Vue.component(buttonComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins(vuexModuleName), singleObjectButtonsMixin] }, singleObjectButtons)));
           }
         }
         if(this.componentName) { // 定制tab自定义组件

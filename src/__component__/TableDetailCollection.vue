@@ -374,6 +374,7 @@
 
       }),
       classes: () => `${classFix}TableDetailCollection`,
+
       currentTabIndex() {
         return this.tabCurrentIndex;
 
@@ -582,7 +583,7 @@
             this.isRefreshClick = false;
           }
           const isTableRender = this.isTableRender;
-          
+
           setTimeout(() => {
             if(this.isCommonTable || !this.useAgGrid) {
               this.columns = this.filterColumns(this.dataSource.tabth, isTableRender); // 每列的属性
@@ -613,10 +614,11 @@
           }
           this.getEditAbleId(JSON.parse(JSON.stringify(this.dataSource)));
         }
-      }
+      },
 
     },
     created() {
+      this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');
       this.ChineseDictionary = ChineseDictionary;
       this.$once('setSearchValue', () => {
         this.setSelectDefaultValue(); // 设置下拉的默认查询条件
@@ -696,7 +698,7 @@
             renderComponent: renderFn,
           };
         }
-        
+
         // 序号按正常文本渲染
         if (cellData.colname === EXCEPT_COLUMN_NAME) {
           componentInfo = null;
@@ -765,7 +767,7 @@
               });
             });
             promises.then(() => {
-              this.$R3loading.hide(this.routerParams.tableName);
+              this.$R3loading.hide(this.loadingName);
               this.closeImportDialog();
               if (this.exportTasks.dialog) {
                 const message = {
@@ -805,12 +807,12 @@
               //   };
               //   this.$Modal.error(data);
               // }
-              this.$R3loading.hide(this.routerParams.tableName);
+              this.$R3loading.hide(this.loadingName);
               this.closeImportDialog();
             });
           }
         } else {
-          this.$R3loading.hide(this.routerParams.tableName);
+          this.$R3loading.hide(this.loadingName);
         }
       },
       getEditAbleId(data) {
@@ -1097,7 +1099,7 @@
           this.getObjTabActionSlientConfirm({
             tab, params, path: tab.action, resolve, reject, vuedisplay: tab.vuedisplay
           });
-          this.$R3loading.show();
+          this.$R3loading.show(this.loadingName);
         });
         if (tab.cuscomponent) {
           const nextOperate = JSON.parse(// 配置信息
@@ -1105,7 +1107,7 @@
           );
 
           promise.then(() => {
-            this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            this.$R3loading.hide(this.loadingName);
             if (nextOperate.success) {
               let successAction = null;
               let successActionParam = {};
@@ -1131,7 +1133,7 @@
               this.$Modal.fcSuccess(data);
             }
           }, () => {
-            this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            this.$R3loading.hide(this.loadingName);
             if (nextOperate.failure) {
               let errorAction = null;
               let errorActionParam = {};
@@ -1151,7 +1153,7 @@
           });
         } else {
           promise.then(() => {
-            this.$R3loading.hide(tableName);
+            this.$R3loading.hide(this.loadingName);
             const message = this.objTabActionSlientConfirmData.message;
             const data = {
               mask: true,
@@ -1163,7 +1165,7 @@
               this.refresh();
             }
           }, () => {
-            this.$R3loading.hide(this.routerParams.tableName);
+            this.$R3loading.hide(this.loadingName);
           });
         }
       },
@@ -1927,7 +1929,7 @@
             domProps: {
               innerHTML,
             },
-        
+
           })],);
         };
       },
@@ -2802,7 +2804,7 @@
                 this.copyDataSource.row[params.index][cellData.colname].val = '';
                 this.fkAutoData = [];
                 this.putDataFromCell(null, this.dataSource.row[params.index][cellData.colname].refobjid !== -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
-                
+
                 this.putLabelDataFromCell('', this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, this.dataSource.row[params.index][cellData.colname].val);
               }
             }
@@ -2810,30 +2812,50 @@
         ]);
       },
       comAttachFilterRender(cellData, tag) {
-        return (h, params) => {
-          if(!this.copyDataSource.row[params.index]) {
-            return null
-          }
-          const valueObj = this.copyDataSource.row[params.index][cellData.colname]
-          const defaultValue = valueObj.val
-          const defaultSelected = valueObj.val ? [{
-            ID:  /选中/.test(valueObj.val) ? valueObj.refobjid : valueObj.val,
-            Label: /选中/.test(valueObj.val) ? valueObj.val : `已经选中${JSON.parse(valueObj.val).total}条数据`
-          }] : []
-          return h('div', [
-            h(tag, {
-              style: {
-                width: '130px'
-              },
-              domProps: {
-                id: `${params.index}-${params.column._index - 1}`
-              },
-              props: {
-                defaultValue,
-                defaultSelected,
-                propstype: {
-                  optionTip: true,
-                  // 是否显示输入完成后是否禁用 true、false
+        return (h, params) => h('div', [
+          h(tag, {
+            style: {
+              width: '130px'
+            },
+            domProps: {
+              id: `${params.index}-${params.column._index - 1}`
+            },
+            props: {
+              defaultValue: this.copyDataSource.row[params.index][cellData.colname].val,
+              defaultSelected: this.copyDataSource.row[params.index][cellData.colname].val ? [{
+                ID: /选中/.test(this.copyDataSource.row[params.index][cellData.colname].val) ? this.copyDataSource.row[params.index][cellData.colname].refobjid :this.copyDataSource.row[params.index][cellData.colname].val,
+                Label: `${/选中/.test(this.copyDataSource.row[params.index][cellData.colname].val) ? this.copyDataSource.row[params.index][cellData.colname].val : `已经选中${JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).total}条数据`}`
+              }] : [],
+              propstype: {
+                optionTip: true,
+                // 是否显示输入完成后是否禁用 true、false
+                show: true,
+                // 是否显示筛选提示弹窗 true、false
+                filterTip: true,
+                // 是否选中后禁止编辑 true、false
+                enterType: true,
+                // 是否回车选中第一行
+                disabled: false,
+                // 默认提示框
+                placeholder: null,
+                // 定义选中展示的文字的key
+                hideColumnsKey: ['id'],
+                // 配置弹窗的配置项 model
+                dialog: {
+                  model: {
+                    title: '弹窗多选',
+                    mask: true,
+                    draggable: true,
+                    scrollable: true,
+                    width: 920
+                  }
+                },
+                fkobj: {
+                  refobjid: cellData.refobjid,
+                  reftable: cellData.reftable,
+                  colid: this.dataSource.row[params.index][cellData.colname].colid,
+                  reftableid: cellData.reftableid,
+                  saveType: 'object',
                   show: true,
                   // 是否显示筛选提示弹窗 true、false
                   filterTip: true,
@@ -2900,9 +2922,10 @@
                   }
                 }
               }
-            })
-          ]);
-        };
+            }
+
+          })
+        ]);
       },
       comAttachFilterpopRender(cellData, tag) {
         return (h, params) => {
@@ -4454,13 +4477,13 @@
           menu: this.itemInfo.tabledesc
         };
         const promise = new Promise((resolve, reject) => {
-          this.$R3loading.show();
+          this.$R3loading.show(this.loadingName);
           this.getExportQueryForButtons({ OBJ, resolve, reject });
         });
         promise.then(() => {
           if (this.buttonsData.exportdata) {
             if (Version() === '1.4') {
-              this.$R3loading.hide(this.routerParams.tableName);
+              this.$R3loading.hide(this.loadingName);
               this.searchCondition = null;
               this.searchInfo = '';
               this.currentPage = 1;
@@ -4479,7 +4502,7 @@
                 });
               });
               promises.then(() => {
-                this.$R3loading.hide(this.routerParams.tableName);
+                this.$R3loading.hide(this.loadingName);
                 if (this.exportTasks.dialog) {
                   const message = {
                     mask: true,
@@ -4517,17 +4540,17 @@
                     content: `${this.exportTasks.resultMsg}`,
                   });
                 }
-                this.$R3loading.hide(this.routerParams.tableName);
+                this.$R3loading.hide(this.loadingName);
               });
               this.getTabelList(1);
             }
           } else {
-            this.$R3loading.hide(this.routerParams.tableName);
+            this.$R3loading.hide(this.loadingName);
           }
         }, () => {
           // 导出失败时，刷新当前表格
           this.getTabelList(1);
-          this.$R3loading.hide(this.routerParams.tableName);
+          this.$R3loading.hide(this.loadingName);
         });
       },
       objectIMPORT() { // 导入

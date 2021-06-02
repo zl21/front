@@ -49,10 +49,12 @@
     </div>
     <div class="queryDesc">
       <div
-        v-if="(legend.length > 0) & isLegendShow"
+        v-if="legend.length > 0 & isLegendShow"
         class="legend"
       >
-        <span style="font-weight: bold"> 图例: </span>
+        <span style="font-weight: bold;">
+          图例:
+        </span>
         <p
           v-for="(item, index) in legend"
           :key="index"

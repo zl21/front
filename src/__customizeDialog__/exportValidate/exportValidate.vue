@@ -28,11 +28,10 @@
     name: '',
 
     props: {
-      exportFn: {
-        type: Function,
-        default: () => {
-          console.log('未传入导出函数');
-        }
+      // 给内容组件的所有参数
+      externalOptions: {
+        type: Object,
+        default: () => {}
       }
     },
 
@@ -40,6 +39,10 @@
       return {
         switchV: false
       };
+    },
+
+    mounted() {
+      console.log(this);
     },
 
     methods: {

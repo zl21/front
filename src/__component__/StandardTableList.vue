@@ -359,10 +359,18 @@
           temp.labelWidth = 90;
           return temp;
         });
-
+        clearTimeout(this.resetTypeTime);
+        this.resetTypeTime = setTimeout(()=>{
+          this.resetType = false;
+        },500);
         if (JSON.stringify(arr) !== JSON.stringify(this.formItemsLists)) {
           this.formItemsLists = arr;
         }
+        // let value_copty = JSON.parse(JSON.stringify(value));
+        // let old_copty = JSON.parse(JSON.stringify(old));
+        // if (JSON.stringify(value_copty) !== JSON.stringify(old_copty)) {
+        //   this.formItemsLists = arr;
+        // }
       },
       $route() {
         setTimeout(() => {
@@ -447,10 +455,14 @@
           this.searchClickData();
         }
       },
-      async tabClick({ data, index }) {
+      async tabClick({ data, index,stopRequest }) {
         this.filterTableParam = {};
         if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].startIndex) {
-          this.searchData.startIndex = data.startIndex;
+          if (this.$route.query.isBack || this.$route.query.ISBACK) {
+              this.searchData.startIndex = data.startIndex;
+            }else{
+              this.searchData.startIndex = 0;
+            }
         } else {
           this.searchData.startIndex = 0;
         }
@@ -466,7 +478,7 @@
           //   this.searchData.fixedcolumns = Object.assign({}, item, this.searchData.fixedcolumns);
           //   this.filterTableParam = item;
           // });
-          let arrRes = [];
+          const arrRes = [];
           const tabValue = JSON.parse(JSON.stringify(data.tab_value));
           this.searchData.fixedcolumns = Object.values(tabValue).reduce((arr, obj) => {
             Object.keys(this.searchData.fixedcolumns).map((key) => {
@@ -482,9 +494,9 @@
                       arr[key] = [dateArray[0], dateArray[3]].join('~');
                     } else {
                       arr[key] = `${obj[key]},${this.searchData.fixedcolumns[key]}`;
-                      arrRes = arr[key].split(',');
-                      arr[key] = Array.from(new Set(arrRes));
-                      arr[key] = arr[key].toString();
+                      arr[key] = arr[key].split(',');
+                      // arr[key] = Array.from(new Set(arrRes));
+                      // arr[key] = arr[key].toString();
                     }
 
                     break;
@@ -513,7 +525,19 @@
           tabValue: data
         };
         this.currentTabValue = obj;
-        this.getQueryListPromise(this.searchData);
+        let parameData={}
+        if(!stopRequest){//若stopRequest为true,则只通过以上逻辑整合参数，不发送请求
+         if(this.treeSearchData){
+           let copySearchData=this.searchData
+           copySearchData=Object.assign({},copySearchData,this.treeSearchData)
+           copySearchData.fixedcolumns= this.searchData.fixedcolumns
+           parameData=copySearchData
+         }else{
+           parameData=this.searchData
+         }
+         this.getQueryListPromise(parameData);
+
+        }
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
       // a() {
@@ -523,17 +547,17 @@
       //     values: [
       //       {
       //         display: 'OBJ_FK',
-      //         colid: '99525',
-      //         defaultValue: '元数据',
-      //         refobjid: '666666'// OBJ_FK类型
+      //         colid: '178112',
+      //         defaultValue: '555元数据,元数据2',
+      //         refobjid: '666666,2'// OBJ_FK类型
       //       }
       //     ]
       //   };
       //   // this.updataSTDefaultQuery(data);
       //   this.tabOpen({
       //     type: 'S',
-      //     tableName: 'SHANGPIN',
-      //     tableId: '24445',
+      //     tableName: 'ZD2',
+      //     tableId: '24551',
       //     isSetQuery: true,
       //     queryData: data
       //   });
@@ -566,7 +590,7 @@
 
         const searchDataRes = Object.assign({}, this.searchData, searchData);
 
-        this.getQueryListPromise(searchDataRes);
+         this.getQueryListPromise(searchDataRes);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
         this.$refs.agTableElement.clearChecked();
         // 按钮查找 查询第一页数据
@@ -627,7 +651,7 @@
             });
             promises.then(() => {
               this.setImportDialogTitle(false);
-              this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+              this.$R3loading.hide(this.loadingName);
               if (this.exportTasks.dialog) {
                 const message = {
                   mask: true,
@@ -666,12 +690,12 @@
               //   };
               //   this.$Modal.fcError(data);
               // }
-              this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+              this.$R3loading.hide(this.loadingName);
               this.setImportDialogTitle(false);
             });
           }
         } else {
-          this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+          this.$R3loading.hide(this.loadingName);
         }
       },
       commonTableCustomizedDialog(params) {
@@ -1182,7 +1206,7 @@
         //     this.searchClickData();
         //   }, 200);
         // }
-        this.resetType = false;
+        /// this.resetType = false;
         return items;
       },
       setSeachObject(obj, current) {
@@ -1199,6 +1223,7 @@
       },
       resetForm() {
         this.filterTableParam = {};
+        sessionStorage.removeItem(this.instanceRouteQuery.tableId);
         this.resetTabParam();
         // 列表查询重置
         this.resetType = true;
@@ -1322,6 +1347,7 @@
       buttonClick(type, obj) {
         this.TreeChange = false;
         this.setActiveTabActionValue({});// 点击按钮前清除上一次按钮存的信息
+        // this.resetType = false;
         if (type === 'fix') {
           this.AddDetailClick(type, obj);
         } else if (type === 'custom') {
@@ -1345,7 +1371,7 @@
           callBack: () => new Promise((searchBeforeResolve, searchBeforeReject) => {
             this.searchData.searchBeforeResolve = searchBeforeResolve;
             this.searchData.searchBeforeReject = searchBeforeReject;
-            this.searchClickData();
+            this.searchClickData({value:'true'});
           })
         };
         if (this.R3_searchBefore && typeof this.R3_searchBefore === 'function') {
@@ -1581,7 +1607,7 @@
         }
 
         let promise = new Promise((resolve, reject) => {
-          this.$R3loading.show();
+          this.$R3loading.show(this.loadingName);
           this.getExeActionDataForButtons({
             item, obj, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
           });
@@ -1596,7 +1622,7 @@
             this.buttons.activeTabAction.cuscomponent
           );
           promise.then(() => {
-            this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            this.$R3loading.hide(this.loadingName);
             if (nextOperate.success) {
               let successAction = null;
               let successActionParam = {};
@@ -1623,7 +1649,7 @@
               this.$Modal.fcSuccess(data);
             }
           }, () => {
-            this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            this.$R3loading.hide(this.loadingName);
             if (nextOperate.failure) {
               let errorAction = null;
               let errorActionParam = {};
@@ -1644,7 +1670,7 @@
           });
         } else { // 没有配置动作定义调动作定义逻辑
           promise.then((res, actionName) => {
-            this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            this.$R3loading.hide(this.loadingName);
             const message = this.buttons.ExeActionData;
             const data = {
               mask: true,
@@ -1670,7 +1696,7 @@
               this.searchClickData();
             }
           }, () => {
-            this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            this.$R3loading.hide(this.loadingName);
           });
         }
       },
@@ -1717,6 +1743,39 @@
         this.getQueryListPromise(json);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
+
+      getResSearchDataForFilterTable(data){
+        //此方法用于整合当前查询的参数以及当前激活的tab所配置的参数，执行过此方法后，会将整合好的参数更新至this.searchData，需要用到表格过滤参数的逻辑，可直接调用该方法即可，调用过后拿到的this.searchData即为最新参数
+         if (this.getFilterTable) {
+          const el = this.$_live_getChildComponent(this, 'tabBar');
+          const tabCurrentIndex = el.$refs.R3_Tabs.focusedKey;
+          const {stopRequest}=data
+          el.tabClick(tabCurrentIndex,stopRequest);
+        }
+      },
+  // searchClickData(value) {
+  //       this.resetButtonsStatus();
+  //       // 按钮查找 查询第一页数据
+  //       if (!value) { // 返回时查询之前页码
+  //         this.searchData.startIndex = 0;
+  //       }
+  //       if (this.getFilterTable) {
+  //         const el = this.$_live_getChildComponent(this, 'tabBar');
+  //         const tabCurrentIndex = el.$refs.R3_Tabs.focusedKey;
+  //         el.tabClick(tabCurrentIndex);
+  //       } else {
+  //         this.searchData.fixedcolumns = this.dataProcessing();
+  //       }
+  //       // this.getQueryListForAg(this.searchData);
+  //       if (this.buttons.isBig) {
+  //         this.updataIsBig(false);
+  //       }
+  //       this.getQueryListPromise(this.searchData);
+  //       this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+  //     },
+
+
+
       requiredCheck(data) { // 查询条件必填校验
         return new Promise((resolve, reject) => {
           this.formItems.defaultFormItemsLists.map((item) => {
@@ -1727,23 +1786,24 @@
                 content: `查询条件[${item.coldesc}]不能为空!`,
                 mask: true
               });
-              this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+              this.$R3loading.hide(this.loadingName);
               reject();
             }
           });
           resolve();
         });
       },
-      getQueryListPromise(data) {
+      getQueryListPromise(data,searchDataRes) {
         // 重拼树的数据
         data = Object.assign(data, JSON.parse(JSON.stringify(this.treeSearchData || {})));
         delete data.fixedcolumns.ID // fix: 点击导出，再查询会携带id参数
         const promise = new Promise((resolve, reject) => {
           this.requiredCheck(data).then(() => {
-            this.$R3loading.show();
-            data.resolve = resolve;
-            data.reject = reject;
-            data.isolr = this.buttons.isSolr;
+            this.$R3loading.show(this.loadingName);
+           const currentParame=this.paramePreEvent(data,searchDataRes)
+            currentParame.resolve = resolve;
+            currentParame.reject = reject;
+            currentParame.isolr = this.buttons.isSolr;
 
             if (enableKAQueryDataForUser() || this.webConf.enableKAQueryDataForUser) {
              this.$_live_getChildComponent(this,'listsForm').getFormDataLabel().then(async search => {
@@ -1767,7 +1827,7 @@
              })
 
             }
-            this.getQueryListForAg(data);
+            this.getQueryListForAg(currentParame);
           });
         });
         promise.then((res) => {
@@ -1780,10 +1840,20 @@
               this.searchData.range = res.data.data.defaultrange;
             }
           }
-          this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+          this.$R3loading.hide(this.loadingName);
         }, () => { // 状态为rejected时执行
-          this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+          this.$R3loading.hide(this.loadingName);
         });
+      },
+      paramePreEvent(data,searchDataRes){
+        //data：全局参数
+        //searchDataRes:局部方法根据全局参数进行整合的参数
+        //
+        if (searchDataRes) {
+          searchDataRes.fixedcolumns = data.fixedcolumns
+        }
+        const currentParame=searchDataRes|| data
+       return currentParame
       },
 
       // 弹出消息提示框
@@ -1803,9 +1873,6 @@
         };
         this.$Modal.fcWarning(data);
         // this.$refs.dialogRefs.open();
-      },
-      getSingleObjectPageType() {
-
       },
       AddDetailClick(type, obj) {
         DispatchEvent('R3StandardButtonClick', {
@@ -2028,7 +2095,7 @@
       },
 
       batchExport(buttonsData) {
-        this.$R3loading.show();
+        this.$R3loading.show(this.loadingName);
         // let searchData = {};
         // const { tableName } = this[INSTANCE_ROUTE_QUERY];
         // 导出
@@ -2059,7 +2126,7 @@
         promise.then(() => {
           if (this.buttons.exportdata) {
             if (Version() === '1.4') { // Version() === '1.4'
-              this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+              this.$R3loading.hide(this.loadingName);
               const eleLink = document.createElement('a');
               const path = getGateway(`/p/cs/download?filename=${this.buttons.exportdata}`);
               eleLink.setAttribute('href', path);
@@ -2074,7 +2141,7 @@
                 });
               });
               promises.then(() => {
-                this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+                this.$R3loading.hide(this.loadingName);
                 if (this.exportTasks.dialog) {
                   const message = {
                     mask: true,
@@ -2106,7 +2173,7 @@
                 this.searchClickData();
               }, () => {
                 if (this.exportTasks.warningMsg) {
-                  this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+                  this.$R3loading.hide(this.loadingName);
                   const data = {
                     mask: true,
                     title: '错误',
@@ -2117,11 +2184,11 @@
               });
             }
           } else {
-            this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            this.$R3loading.hide(this.loadingName);
           }
         }, () => {
           this.searchClickData();
-          this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+          this.$R3loading.hide(this.loadingName);
         });
       },
       deleteTableList(data) { // 删除方法
@@ -2145,14 +2212,12 @@
       batchVoid(data) {
         const tableName = this.buttons.tableName;
         const ids = this.buttons.selectIdArr.map(d => parseInt(d));
-        // this.$R3loading.show();
         const promise = new Promise((resolve, reject) => {
           this.batchVoidForButtons({
             tableName, ids, resolve, reject, data
           });
         });
         promise.then(() => {
-          // this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName)
           const message = this.buttons.batchVoidForButtonsData.message;
           const data = {
             mask: true,
@@ -2331,7 +2396,6 @@
           }
         }
       },
-
       errorDialogClose() {
         const errorDialogvalue = false;
         this.setErrorModalValue({ errorDialogvalue });
@@ -2575,6 +2639,7 @@
     created() {
       this.buttonMap = buttonmap;
       this.ChineseDictionary = ChineseDictionary;
+      this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');
     },
     beforeDestroy() {
       window.removeEventListener('network', this.networkEventListener);

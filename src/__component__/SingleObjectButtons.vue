@@ -21,7 +21,7 @@
       :data-array="dataArray"
       class="buttonGroup"
       :item-id="itemId"
-      :id-array="itemName ? updateData[itemName] :{}"
+      :id-array="itemName && updateData? updateData[itemName] :{}"
       @buttonClick="buttonClick"
     />
     <Dialog
@@ -81,7 +81,8 @@
     LINK_MODULE_COMPONENT_PREFIX,
     getCustomizeWaterMark,
     enableActivateSameCustomizePage,
-    classFix
+    classFix,
+    enableOpenNewTab
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import { getUrl, getLabel } from '../__utils__/url';
@@ -163,6 +164,23 @@
     },
 
     watch: {
+      // $route() {
+      //   console.log(3333, this.$route.params.itemId === 'New' , this.sameNewPage , !this._inactive);
+
+      //   setTimeout(() => {
+      //     if (this.$route.params.itemId === 'New' && this.sameNewPage && !this._inactive) {
+      //       debugger;
+      //       // this.upData();
+      //       const dom = document.getElementById('refresh');
+      //       if (dom) {
+      //         const event = document.createEvent('HTMLEvents');
+      //         event.initEvent('click', false, true);
+      //         dom.dispatchEvent(event);
+      //         this.$store.commit('global/updataNewTagForNewTab', false);
+      //       }
+      //     }
+      //   }, 1000);
+      // },
       isItemTable: {// 当前操作的表是否是子表
         // 此逻辑用于控制jflow按钮，当前组件在上下结构子表时，不需展示刷新与返回按钮
         handler(val) {
@@ -263,16 +281,17 @@
     },
     computed: {
       ...mapState('global', {
-        activeTab: ({ activeTab }) => activeTab, // 当前表基本数据，包含路由信息，表名，ID等
-        keepAliveLists: ({ keepAliveLists }) => keepAliveLists, // 当前已被缓存的表名
+        activeTab: ({ activeTab }) => activeTab,// 当前表基本数据，包含路由信息，表名，ID等
+        keepAliveLists: ({ keepAliveLists }) => keepAliveLists,// 当前已被缓存的表名
         keepAliveLabelMaps: ({ keepAliveLabelMaps }) => keepAliveLabelMaps,
-        copyDatas: ({ copyDatas }) => copyDatas, // 复制逻辑用到的复制来源的数据
-        modifyData: ({ modifyData }) => modifyData, // 当前界面组件向上抛出的，修改的值，所有页面修改过后的值都会存入该对象
+        copyDatas: ({ copyDatas }) => copyDatas,// 复制逻辑用到的复制来源的数据
+        modifyData: ({ modifyData }) => modifyData,// 当前界面组件向上抛出的，修改的值，所有页面修改过后的值都会存入该对象
         serviceIdMap: ({ serviceIdMap }) => serviceIdMap,
-        LinkUrl: ({ LinkUrl }) => LinkUrl, // 当前外链表对应的外链地址，为解决刷新后地址丢失问题维护的数据
-        exportTasks: ({ exportTasks }) => exportTasks, // 导出任务数据
-        currentLoading: ({ currentLoading }) => currentLoading, // 当前正在loading状态的表
-        userInfo: ({ userInfo }) => userInfo, // 登陆用户信息
+        LinkUrl: ({ LinkUrl }) => LinkUrl,// 当前外链表对应的外链地址，为解决刷新后地址丢失问题维护的数据
+        exportTasks: ({ exportTasks }) => exportTasks,// 导出任务数据
+        currentLoading: ({ currentLoading }) => currentLoading,// 当前正在loading状态的表
+        userInfo: ({ userInfo }) => userInfo,// 登陆用户信息
+        allMenu: ({ allMenu }) => allMenu,
       }),
       getCurrentItemTableRef() { // 当前子表明细表格实例
         return this.$_live_getChildComponent(window.vm, 'H.SHANGPIN.24445.5.TableDetailCollection') ? this.$_live_getChildComponent(window.vm, 'H.SHANGPIN.24445.5.TableDetailCollection') : null;
@@ -498,7 +517,6 @@
     inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, INSTANCE_ROUTE],
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
-
       ...mapMutations('global', ['directionalRouter', 'updateCustomizeMessage', 'deleteLoading', 'tabCloseAppoint', 'decreasekeepAliveLists', 'copyDataForSingleObject', 'tabOpen', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
       updataCurrentTableDetailInfo() { // 更新当前单对象信息
         if (this[INSTANCE_ROUTE_QUERY].tableName === this.$route.params.tableName && this.$route.meta.routePrefix.includes('/SYSTEM/TABLE_DETAIL/')) { // 当前路由包含单对象标记
@@ -521,9 +539,9 @@
               });
             });
             promises.then(() => {
-              this.$R3loading.hide(this.tableName);
+              this.$R3loading.hide(this.loadingName);
               this.closeActionDialog();// 关闭导入弹框
-              if (this.exportTasks.dialog) { // 开启我的任务弹框
+              if (this.exportTasks.dialog) {// 开启我的任务弹框
                 const message = {
                   mask: true,
                   title: '提醒',
@@ -554,11 +572,11 @@
               }
             }, () => {
               this.closeActionDialog();
-              this.$R3loading.hide(this.tableName);
+              this.$R3loading.hide(this.loadingName);
             });
           }
         } else {
-          this.$R3loading.hide(this.tableName);
+          this.$R3loading.hide(this.loadingName);
         }
       },
       dialogComponentSaveSuccess(value) { // 自定义弹框执行确定按钮操作
@@ -599,7 +617,8 @@
           //     this.getbuttonGroupData(buttonData);
           //   }
           // }
-          if (this.copy === true) { // 通过点击复制按钮打开的界面，需将刷新按钮去除
+          if (this.copy === true && this[MODULE_COMPONENT_NAME].includes('New')) {// 通过点击复制按钮打开的界面，需将刷新按钮去除
+            console.log(4444, this.[INSTANCE_ROUTE_QUERY], this.[INSTANCE_ROUTE]);
             this.updateRefreshButton(false);
             this.addButtonShow(buttonData);// 复制即为新增，将按钮置为新增状态，只显示新增状态该显示的按钮
           }
@@ -622,7 +641,7 @@
         } else if (type === 'Collection') {
           this.clickButtonsCollect();// 收藏按钮执行方法
         } else if (type === 'back') {
-          this.clickButtonsBack();// 返回按钮执行方法
+          this.clickButtonsBack({ type, obj });// 返回按钮执行方法
         } else if (type === 'temporaryStorage') {
           this.clickButtonsTemporaryStorage();// 暂存按钮执行方法(暂存按钮根据webConf配置显示，同时与保存按钮显示逻辑相同)
         } else if (type === 'refresh') {
@@ -1512,7 +1531,7 @@
           }
         } else if (actionType === 'https:' || actionType === 'http:') { // 外链界面
           const name = `${LINK_MODULE_COMPONENT_PREFIX}.${tab.webname.toUpperCase()}.${tab.webid}`;
-          // this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
+          this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
           const linkUrl = tabAction;
           // const linkId = tab.webid;
           const linkModuleName = tab.webname.toUpperCase();
@@ -1777,15 +1796,18 @@
         }
 
         // 处理存储过程逻辑，配置的path中带有sp|时则走框架的标准逻辑，不走定制path
-        if (tab.action && tab.action.includes('sp|')) {
-          tab.action = null;
+        if(tab.actiontype === 'sp' || (tab.action && tab.action.includes('sp|'))){
+          params.actionName = tab.webname;
+          params.tableName = this.tableName;
         }
+
+
 
         const promise = new Promise((resolve, reject) => {
           this.getObjTabActionSlientConfirm({
             tab, params, path: tab.action, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE], vuedisplay: tab.vuedisplay
           });
-          this.$R3loading.show(this.tableName);
+          this.$R3loading.show(this.loadingName);
         });
         if (tab.cuscomponent) {
           const nextOperate = JSON.parse(// 配置信息
@@ -1793,7 +1815,7 @@
           );
 
           promise.then(() => {
-            this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            this.$R3loading.hide(this.loadingName);
             if (nextOperate.success) {
               let successAction = null;
               let successActionParam = {};
@@ -1819,7 +1841,7 @@
               this.$Modal.fcSuccess(data);
             }
           }, () => {
-            this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            this.$R3loading.hide(this.loadingName);
             if (nextOperate.failure) {
               let errorAction = null;
               let errorActionParam = {};
@@ -1862,7 +1884,7 @@
             this.$Modal.fcSuccess(data);
             if (tab.isrefrsh) {
               // 左右结构子表时，接收不到主表的表单监听，需要关闭loading
-              // this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+              // this.$R3loading.hide(this.loadingName);
               if (this.objectType === 'horizontal') {
                 const itemNames = this.itemNameGroup.map((c) => {
                   if (c.tableName !== this.tableName) {
@@ -1870,17 +1892,17 @@
                   }
                 });// 因左右结构itemNameGroup包含主表，上下结构不包括
                 if (itemNames.includes(this.itemName)) {
-                  this.$R3loading.hide(this.tableName);
+                  this.$R3loading.hide(this.loadingName);
                 }
               }
 
               this.upData();
             } else {
               // this.upData();
-              this.$R3loading.hide(this.tableName);
+              this.$R3loading.hide(this.loadingName);
             }
           }, () => {
-            this.$R3loading.hide(this.tableName);
+            this.$R3loading.hide(this.loadingName);
           });
         }
       },
@@ -1942,20 +1964,21 @@
           showColumnName: true,
         };
 
+
         const promise = new Promise((resolve, reject) => {
           this.getExportQueryForButtons({ OBJ, resolve, reject });
-          this.$R3loading.show(this.tableName);
+          this.$R3loading.show(this.loadingName);
         });
         const { tablename } = this.getCurrentItemInfo();
-        let pageRes = {}; 
-        let searchdata = {};  
+        let pageRes = {};
+        let searchdata = {};
         if (this.objectType === 'horizontal') { // 横向布局
           this.tabPanel.forEach((item) => {
             if (this.itemName !== this.tableName && item.tablename === this.itemName) {
               pageRes = item.tablePageInfo;
             }
-          }); 
-          
+          });
+
           searchdata = {
             column_include_uicontroller: true,
             startindex: 0,
@@ -1965,7 +1988,7 @@
         promise.then(() => {
           if (this.buttonsData.exportdata) {
             if (Version() === '1.4') {
-              this.$R3loading.hide(this.tableName);
+              this.$R3loading.hide(this.loadingName);
               const eleLink = document.createElement('a');
               const path = getGateway(`/p/cs/download?filename=${this.buttonsData.exportdata}`);
               eleLink.setAttribute('href', encodeURI(path));
@@ -1980,7 +2003,7 @@
                 });
               });
               promises.then(() => {
-                this.$R3loading.hide(this.tableName);
+                this.$R3loading.hide(this.loadingName);
                 if (this.exportTasks.dialog) {
                   const message = {
                     mask: true,
@@ -2010,7 +2033,7 @@
                   this.$Modal.fcSuccess(data);
                 }
               }, () => {
-                this.$R3loading.hide(this.tableName);
+                this.$R3loading.hide(this.loadingName);
                 if (this.exportTasks.warningMsg) {
                   this.$Modal.fcError({
                     mask: true,
@@ -2031,22 +2054,49 @@
               //   }
               //   return true;
               // });
-          
+
               this.getObjectTableItemForTableData({
                 table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex: this.currentTabIndex
               });
             }
             this.updateDeleteData({ tableName: this.itemName, value: {} });
           } else {
-            this.$R3loading.hide(this.tableName);
+            this.$R3loading.hide(this.loadingName);
           }
         }, () => {
           this.getObjectTableItemForTableData({
             table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex: this.currentTabIndex
           });
-          this.$R3loading.hide(this.tableName);
+          this.$R3loading.hide(this.loadingName);
         });
       },
+      // enableOpenNewTab_objectCopy() {
+      //   const id = 'New';// 修改路由,复制操作时路由为新增
+      //   const label = `${this.activeTab.label.replace('编辑', '新增')}`;
+      //   if (this.objectType === 'horizontal') { // 横向布局
+      //     if (this.currentTabIndex === 0) { // 主表
+      //       const type = 'tableDetailHorizontal';
+      //       const url = `/SYSTEM/TABLE_DETAIL/H/${this.tableName}/${this.tableId}/${id}?iscopy=true&copyItemId=${this.itemId}`;
+      //       this.tabOpen({// 跳转路由，复制是新增逻辑
+      //         back: true,
+      //         type,
+      //         NToUpperCase: true,
+      //         url,
+      //         id
+      //       });
+      //     }
+      //   } else { // 纵向布局
+      //     const type = 'tableDetailVertical';
+      //     const url = `/SYSTEM/TABLE_DETAIL/V/${this.tableName}/${this.tableId}/${id}?iscopy=true&copyItemId=${this.itemId}`;
+      //     this.tabOpen({
+      //       url,
+      //       type,
+      //       label,
+      //       back: true,
+      //       NToUpperCase: true,
+      //     });
+      //   }
+      // },
       objectCopy() { // 按钮复制功能
         const id = 'New';// 修改路由,复制操作时路由为新增
         const label = `${this.activeTab.label.replace('编辑', '新增')}`;
@@ -2067,6 +2117,7 @@
             this.copyModifyDataForSingleObject(modifyData);// 将复制修改过所保存的数据存到global中
             this.updateFormDataForRefshow();
             const type = 'tableDetailHorizontal';
+
             this.tabOpen({// 跳转路由，复制是新增逻辑
               type,
               tableName: this.tableName,
@@ -2083,7 +2134,7 @@
           // this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
           this.copyModifyDataForSingleObject(modifyData);// 将复制修改过所保存的数据存到global中
           const type = 'tableDetailVertical';
-          this.tabOpen({
+          this.tabOpen({// 跳转路由，复制是新增逻辑
             type,
             tableName: this.tableName,
             tableId: this.tableId,
@@ -2098,32 +2149,34 @@
       copyForHorizontal() { // 横向结构接口 请求成功后复制逻辑
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
         this.copyDataForSingleObject({});// 清除global中复制所保存的数据
-        this.$R3loading.show(this.tableName);
+        this.$R3loading.show(this.loadingName);
       },
       copyForVertical() { // 纵向结构接口 请求成功后复制逻辑
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
         this.copyDataForSingleObject({});// 清除global中复制所保存的数据
-        this.$R3loading.show(this.tableName);
+        this.$R3loading.show(this.loadingName);
       },
-      clickButtonsBack(stop) { // 按钮返回事件
+      clickButtonsBack({ stop, type, obj }) { // 按钮返回事件
         if (stop) {
-          this.back();
+          this.back({ stop, type, obj });
           this.isValue = null;
         } else {
           this.testUpdata();
           if (this.isValue) {
             this.Warning('修改的数据未保存,确定返回？', () => {
-              this.back();
+              this.back({ stop, type, obj });
             });
           } else {
-            this.back();
+            this.back({ stop, type, obj });
             this.isValue = null;
           }
         }
       },
-      back() {
+      back({ stop, type, obj }) {
         this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
         const { tableId, tableName } = this.$route.params;
+        const { routePrefix } = this.$route.meta;
+
         // 列表界面配置动态路由
         const routeMapRecord = getSessionObject('routeMapRecord');
 
@@ -2138,11 +2191,11 @@
         const currentPath = this.$router.currentRoute.path;
 
 
-        const SinglePageRouteNew = currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));
-        const SinglePageRouteModify = currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));
+        const SinglePageRouteNew = enableOpenNewTab() ? currentPath : currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));
+        const SinglePageRouteModify = enableOpenNewTab() ? currentPath : currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));
 
-        const newListPageRouteNew = keepAliveModuleName.substring(keepAliveModuleName.indexOf('.') + 1, keepAliveModuleName.lastIndexOf('.'));
-        const newListPageRouteMOdify = keepAliveModuleName.substring(keepAliveModuleName.indexOf('.') + 1, keepAliveModuleName.lastIndexOf('.'));
+        const newListPageRouteNew = enableOpenNewTab() ? keepAliveModuleName : keepAliveModuleName.substring(keepAliveModuleName.indexOf('.') + 1, keepAliveModuleName.lastIndexOf('.'));
+        const newListPageRouteMOdify = enableOpenNewTab() ? keepAliveModuleName : keepAliveModuleName.substring(keepAliveModuleName.indexOf('.') + 1, keepAliveModuleName.lastIndexOf('.'));
 
 
         let routeMapRecordForSingleObjectNew = '';
@@ -2192,7 +2245,6 @@
           } else {
             param.type = directionalRouterType;
           }
-          this.tabOpen(param);
           const deleteValue = {
             k: 'keepAliveModuleName',
             v: keepAliveModuleName
@@ -2203,18 +2255,34 @@
           } else { // 从插件界面双击进入单对象界面时，返回时需清除routeMapRecord对应关系
             deleteFromSessionObject('routeMapRecord', keepAliveModuleName);
           }
-          console.log('======清除');
-          this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName });
+          if (!enableOpenNewTab()) {
+            this.decreasekeepAliveLists(keepAliveModuleName);
+          }
+          this.tabCloseAppoint({
+            routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName, routePrefix, itemId: this.itemId, tableName: this.tableName
+          });
+          this.tabOpen(param);
+
+          // }
         } else if (routeMapRecordForSingleObject[currentPath]) {
-          router.push(routeMapRecordForSingleObject[currentPath]);
+          // if (!enableOpenNewTab()) {
           this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName });
+          this.tabCloseAppoint({
+            routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName, routePrefix, itemId: this.itemId, tableName: this.tableName
+          });
+          router.push(routeMapRecordForSingleObject[currentPath]);
+
+          // }
           // this.clickButtonsRefresh();
         } else if (routeMapRecordForSingleObjectNew) {
-          router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectNew]);
+          // if (!enableOpenNewTab()) {
           this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName });
+          this.tabCloseAppoint({
+            routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName, routePrefix, itemId: this.itemId, tableName: this.tableName
+          });
+          router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectNew]);
+
+          // }
           // this.clickButtonsRefresh();
         } else if (routeMapRecordForListNew.to) { // 动态路由（新增返回）
           const directionalRouterType = this.getDirectionalRouterType(routeMapRecordForListNew.from);
@@ -2228,7 +2296,6 @@
           } else {
             param.type = directionalRouterType;
           }
-          this.tabOpen(param);
           if (routeMapRecordForListNew.from.indexOf('SYSTEM') > -1) { // 返回列表界面
             const deleteValue = {
               k: 'keepAliveModuleName',
@@ -2239,28 +2306,70 @@
             deleteFromSessionObject('routeMapRecord', routeMapRecordForListNew.to);// 清除动态路由对应关系
           }
           window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
+          // if (!enableOpenNewTab()) {
+
           this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName });
+          this.tabCloseAppoint({
+            routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName, routePrefix, itemId: this.itemId, tableName: this.tableName
+          });
+          this.tabOpen(param);
+
+          // }
         } else if (routeMapRecordForSingleObjectModify) { // 单对象动态路由新增以及复制保存后跳转到编辑界面的返回需回到动态路由对应的界面
-          router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectModify]);
+          // if (!enableOpenNewTab()) {
           this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName });
+          this.tabCloseAppoint({
+            routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName, routePrefix, itemId: this.itemId, tableName: this.tableName
+          });
+          router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectModify]);
+
+          // }
         } else if (routeMapRecordForListModify.to) { // 列表动态路由（新增/复制保存成功后跳转到单对象界面执行返回操作）
           const directionalRouterType = this.getDirectionalRouterType(routeMapRecordForListNew.from);
           const param = {
             type: directionalRouterType,
             url: routeMapRecord[routeMapRecordForListModify.to]
           };
-          this.tabOpen(param);
           const deleteValue = {
             k: 'keepAliveModuleName',
             v: routeMapRecordForListModify.to
           };
           updateSessionObject('dynamicRoutingIsBackForDelete', deleteValue);
           window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
+          // if (!enableOpenNewTab()) {
           this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName });
-        } else {
+          this.tabCloseAppoint({
+            routeFullPath: currentRoute, stopRouterPush: true, keepAliveModuleName, routePrefix, itemId: this.itemId, tableName: this.tableName
+          });
+          this.tabOpen(param);
+
+          // }
+        } else if (enableOpenNewTab()) {
+          const keepAliveModuleNameForOpenNewTab = this[MODULE_COMPONENT_NAME];
+          const currentRouteForOpenNewTab = this.$router.currentRoute.fullPath;
+          this.decreasekeepAliveLists(keepAliveModuleNameForOpenNewTab);
+          const closeParame = {
+            tableName: this.tableName, routeFullPath: currentRouteForOpenNewTab, routePrefix, keepAliveModuleName, itemId: this.itemId
+          };
+
+          if (type === 'back') {
+            this.tabCloseAppoint(closeParame);
+            if (this.currentMenuExists({ tableName })) {
+              closeParame.stopRouterPush = true;// 筛选到菜单内配置了当前单对象对应的标准列表界面，则可返回到其列表界面，反之，回到前一个tab
+              const url = `/SYSTEM/TABLE/${this.tableName}/${this.tableId}`;
+              const param = {
+                tableId,
+                tableName,
+                back: true,
+                url,
+                NToUpperCase: true,
+              };
+              this.tabOpen(param);
+            }
+          } else {
+            this.tabCloseAppoint(closeParame);
+          }
+        } else if (type === 'back') {
           const param = {
             tableId,
             tableName,
@@ -2268,6 +2377,14 @@
           };
           this.tabOpen(param);
         }
+      },
+      currentMenuExists(data) { // 判断当前表是否配置在菜单内
+        // data.tableName:当前表名
+        const name = Object.keys(this.allMenu).filter(d => d.includes(data.tableName));
+        if (name.length > 0) {
+          return true;
+        }
+        return false;
       },
       getDirectionalRouterType(url) { // 根据路由获取对应的页面类型
         // url：
@@ -2447,6 +2564,7 @@
         }
 
         if (this.objectType === 'horizontal') { // 横向布局
+          // 如果判断this.itemName === this.tableName会导致在别的界面加载完，再切回当前界面时，按钮会丢失
           if (this.itemName === this.tableName) {
             if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
               this.webactButton(tabwebact.objbutton);
@@ -2455,6 +2573,11 @@
             (tabwebact.objtabbutton && tabwebact.objtabbutton.length > 0) {
             this.webactButton(tabwebact.objtabbutton);
           }
+          // if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
+          //   this.webactButton(tabwebact.objbutton);
+          // } else if (tabwebact.objtabbutton && tabwebact.objtabbutton.length > 0) {
+          //   this.webactButton(tabwebact.objtabbutton);
+          // }
         } else if (this.isItemTable) {
           if (tabwebact.objtabbutton && tabwebact.objtabbutton.length > 0) {
             this.webactButton(tabwebact.objtabbutton);
@@ -2463,6 +2586,7 @@
           this.webactButton(tabwebact.objbutton);
         }
       },
+
       webactButton(buttonData) { // 自定义按钮渲染
         if (buttonData && buttonData.length > 0) {
           buttonData.forEach((item, index) => {
@@ -2668,7 +2792,7 @@
                         buttonInfo,
                         path: obj.requestUrlPath,
                         table: this.tableName,
-                        objId: this.itemId,
+                        objId: this.tableId,
                         currentParameter: this.currentParameter,
                         itemName: this.itemName,
                         isreftabs: this.subtables(),
@@ -2864,14 +2988,21 @@
       },
       deleteSuccessEvent() {
         const value = this.hideBackButton();
+        const keepAliveModuleName = this.activeTab.keepAliveModuleName;
+        const currentRoute = this.$router.currentRoute.path;
+        const routePrefix = this.$router.currentRoute.meta.routePrefix;
         if (value) {
-          const keepAliveModuleName = this.activeTab.keepAliveModuleName;
-          const currentRoute = this.$router.currentRoute.path;
           this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ tableName: this.tableName, routeFullPath: currentRoute });
+          this.tabCloseAppoint({
+            tableName: this.tableName, routeFullPath: currentRoute, routePrefix, itemId: this.itemId, tableName: this.tableName
+          });
         } else {
           const stop = true;
-          this.clickButtonsBack(stop);
+          this.clickButtonsBack({ stop });
+          // if (enableOpenNewTab()) {
+          //   this.decreasekeepAliveLists(keepAliveModuleName);
+          //   this.tabCloseAppoint({ tableName: this.tableName, routeFullPath: currentRoute, routePrefix });
+          // }
         }
       },
       objectAdd() { // 新增
@@ -3360,7 +3491,7 @@
         };
         const promise = new Promise((resolve, reject) => {
           if (this.itemId === 'New') {
-            this.$R3loading.show(this.tableName);
+            this.$R3loading.show(this.loadingName);
           }
           this.performMainTableSaveAction({ parame, resolve, reject });
         });
@@ -3412,10 +3543,12 @@
             }
           });
           this.saveCallBack = null; // 清除jflow回调
-        }).then(() => {
-
+        }).finally(() => {
+          this.$R3loading.hide(this.loadingName);
         });
       },
+
+      // 保存后的回调
       saveAfter(type, tableName, stop, removeMessage) {
         if (!stop) { // 保存失败时，不清空store里面存的参数，
           // this.clearEditData();// 清空store update数据
@@ -3431,6 +3564,12 @@
         if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
           // this.updateChangeData({ tableName: this.tableName, value: {} });
           if (!stop) { // 如果保存失败，不执行以下操作
+            if (enableOpenNewTab()) {
+              // 当开启同表新开tab模式，为解决新增成功后跳转到新开的编辑界面后，新增界面loading未关闭问题
+              this.$R3loading.hide(this.loadingName);
+              this.clearEditData();// 清空store update数据
+              this.upData();// 为解决新增保存后新开tab，新增界面信息未清除问题
+            }
             let types = '';
             if (this.objectType === 'horizontal') {
               types = 'tableDetailHorizontal';
@@ -3471,7 +3610,9 @@
           if (message) {
             this.$Message.success(data);
           }
-          this.decreasekeepAliveLists(this[MODULE_COMPONENT_NAME]);
+          if (!enableOpenNewTab()) {
+            this.decreasekeepAliveLists(this[MODULE_COMPONENT_NAME]);
+          }
         } else {
           this.saveEventAfterClick(stop, removeMessage);// 保存成功后执行的事件
         }
@@ -3643,12 +3784,37 @@
           // this.upData();//保存失败不刷新
         }
       },
+      getCopyData() {
+        const copyItemId = this.$route.query.copyItemId;
+        const copyTableModuleName = `${this.objectType.substr(0, 1).toUpperCase()}.${this.tableName}.${this.tableId}.${copyItemId}`;// 目标复制界面的模块名称
+        const copyTableState = this.$store.state[copyTableModuleName];
+        const modifyData = JSON.parse(JSON.stringify(copyTableState.updateData[this.tableName].changeData));
+
+        let copyDatas = {};
+        if (this.objectType === 'horizontal') { // 横向布局
+          // 开启enableOpenNewTab功能后，复制逻辑改为，从路由参数上获取要复制的界面的明细id,取复制界面的数据用于赋值当前界面，作为复制数据
+          let formData = {};
+          formData = copyTableState.tabPanels[0].componentAttribute.panelData;
+          formData = JSON.parse(JSON.stringify(formData));// 此值会导致更新其它表数据
+          copyDatas = { ...formData };
+        } else { // 纵向布局
+          copyDatas = { ...copyTableState.mainFormInfo.formData };
+        }
+        this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas, tableName: this.tableName, modifyData });
+        this.$R3loading.show(this.loadingName);
+      },
       networkEventListener(event) {
         const { detail } = event;
         const { response } = detail;
         const url = '/p/cs/getObject';
         if (!this._inactive && url === detail.url) {
           if (response && response.data && response.data.code === 0) {
+            // if (enableOpenNewTab()) {
+            //   const iscopy = this.$route.query.iscopy;
+            //   if (iscopy) {
+            //     this.getCopyData();
+            //   }
+            // } else
             if (this.copyDatas) {
               if (this.objectType === 'vertical') {
                 this.copyForVertical();
@@ -3776,10 +3942,9 @@
       },
 
       closeCurrentLoading() { // 关闭当前tab loading
-        const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
-        const dom = document.querySelector(`#${currentTableName}-loading`);
+        const dom = document.querySelector(`#${this.loadingName}-loading`);
         if (dom) {
-          this.$R3loading.hide(currentTableName);
+          this.$R3loading.hide(this.loadingName);
         }
       },
       hideListenerLoading(value) { // 根据监听关闭loading
@@ -3787,9 +3952,9 @@
         // const dom = document.querySelector(`#${currentTableName}-loading`);
         if (value.detail.hideCopyLoading || value.detail.hideLoadingForButton) {
           // if (currentTableName) {
-          this.$R3loading.hide(currentTableName);
+          this.$R3loading.hide(this.loadingName);
           // } else {
-          //   this.$R3loading.hide(this.instanceRouteQuery.tableName);
+          //   this.$R3loading.hide(this.loadingName);
           // }
         }
       },
@@ -3843,7 +4008,6 @@
     },
     mounted() {
       this.updataCurrentTableDetailInfo();
-
       this.setDisableButtons();
       if (this.isItemTable) {
         this.dataArray.refresh = false;
@@ -3867,7 +4031,7 @@
         window.addEventListener('network', this.networkEventListener);// 监听接口
       }
       if (this.objectType === 'horizontal') { // 横向布局
-        if (this.tabPanel.length > 0) {
+        if (this.tabPanel && this.tabPanel.length > 0) {
           this.tabPanel.forEach((item) => {
             if (this.itemName !== this.tableName) {
               const objreadonly = item.componentAttribute.buttonsData.data.objreadonly;
@@ -3938,6 +4102,7 @@
       this.tableId = tableId;
       this.itemId = itemId;
       this.buttonMap = buttonmap;
+      this.loadingName = this.moduleComponentName.replace(/\./g, '-');
     },
 
   };

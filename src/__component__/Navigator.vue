@@ -73,6 +73,18 @@
         />
       </Badge>
     </div>
+    <div
+      v-if="getDashboardConfig"
+      @click="dashboardClick"
+      class="tag right"
+    >
+      <i
+        :class="getDashboardConfig"
+        title="回到首页"
+
+      />
+    </div>
+
     <ComAutoComplete />
     <!-- <div
       :class="searchBtn ? 'tag right' :'tag tag-search right' "
@@ -185,7 +197,7 @@
   import network, { urlSearchParams } from '../__utils__/network';
   import NavigatorSubMenu from './NavigatorSubMenu';
   import {
-    STANDARD_TABLE_LIST_PREFIX, Version, enableHistoryAndFavoriteUI, enableGateWay, getGatewayValue, messageSwitch, classFix
+    STANDARD_TABLE_LIST_PREFIX, Version, enableHistoryAndFavoriteUI, enableGateWay, getGatewayValue,dashboardConfig,messageSwitch, classFix
   } from '../constants/global';
   import { updateSessionObject } from '../__utils__/sessionStorage';
 
@@ -243,8 +255,17 @@
         userInfo: ({ userInfo }) => userInfo,
         primaryMenuIndex: state => state.primaryMenuIndex,
         taskMessageCount: state => state.taskMessageCount,
-        imgSrc: state => state.imgSrc
+        imgSrc: state => state.imgSrc,
+        isShowDashboardPage: state => state.isShowDashboardPage,
+
+
       }),
+      getDashboardConfig() {
+        if (dashboardConfig() && dashboardConfig().iconClass) {
+          return dashboardConfig().iconClass;
+        }
+        return false;
+      },
       enableHistoryAndFavoriteUI() {
         return enableHistoryAndFavoriteUI();
       },
@@ -299,13 +320,18 @@
     },
     methods: {
       ...mapActions('global', ['getTaskMessageCount', 'updataTaskMessageCount']),
-      ...mapMutations('global', ['updateTaskMessageCount', 'doCollapseHistoryAndFavorite', 'changeSelectedPrimaryMenu', 'hideMenu', 'tabOpen', 'directionalRouter']),
+      ...mapMutations('global', ['updateDashboardPageValue', 'updateTaskMessageCount', 'doCollapseHistoryAndFavorite', 'changeSelectedPrimaryMenu', 'hideMenu', 'tabOpen', 'directionalRouter']),
       togglePrimaryMenu(data, index) {
         this.togglePrimaryMenuData = data;
         if (index === this.primaryMenuIndex) {
           this.hideMenu();
         } else {
           this.changeSelectedPrimaryMenu(index);
+        }
+      },
+      dashboardClick() {
+        if (this.$router.currentRoute.path !== '/') {
+          this.updateDashboardPageValue();
         }
       },
       messageSlide() {

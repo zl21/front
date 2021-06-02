@@ -501,7 +501,6 @@
         imgProgressController: window.ProjectConfig.imgProgressController
       };
     },
-
     computed: {
       getVersion() {
         return Version;

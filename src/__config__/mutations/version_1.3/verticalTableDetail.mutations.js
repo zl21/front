@@ -1,6 +1,8 @@
 import { stringify } from 'querystring';
 // import { cpus } from 'os';
 import router from '../../router.config';
+import { enableOpenNewTab } from '../../../constants/global';
+
 
 export default {
   updataClickSave(state, func) {
@@ -21,8 +23,13 @@ export default {
     state.mainFormInfo.tableid = tableId;
     state.mainFormInfo.formData.isShow = data && data.addcolums && data.addcolums.length > 0;
     state.mainFormInfo.formData.data = Object.assign({}, data);
+
+    let addValue = {};
+    if (enableOpenNewTab() && state.updateData[tableName] && state.updateData[tableName].default) {
+      addValue = state.updateData[tableName].default[tableName];
+    }
     state.updateData[tableName] = {
-      add: Object.assign({}, { [tableName]: {} }),
+      add: Object.assign({}, { [tableName]: addValue }),
       modify: Object.assign({}, { [tableName]: {} }),
       modifyLabel: Object.assign({}, { [tableName]: {} }),
       delete: Object.assign({}, { [tableName]: {} }),
@@ -137,9 +144,11 @@ export default {
     state.mainFormInfo.formData.isShow = false;
   },
   updateTableListForRefTable(state, data) { // 更新子表列表数据
-    const { componentAttribute } = state.tabPanels[data.tabIndex];
-    componentAttribute.tableData.isShow = data.tabth && data.tabth.length > 0;
-    componentAttribute.tableData.data = data;
+    const { componentAttribute } = state.tabPanels[data.tabIndex] || {};
+    if (componentAttribute) {
+      componentAttribute.tableData.isShow = data.tabth && data.tabth.length > 0;
+      componentAttribute.tableData.data = data;
+    }
   },
   updateTabCurrentIndex(state, index) { // 更新当前tab的索引
     state.tabCurrentIndex = index;

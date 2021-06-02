@@ -9,7 +9,10 @@
         @click="toggle"
       />
     </div>
-    <div class="downComponent">
+    <div
+      class="downComponent"
+      :style="downComponent"
+    >
       <div
         v-if="title"
         class="downComponent-h5"
@@ -18,9 +21,7 @@
         {{ title }}<Icon :class="icon" />
       </div>
       <div :class="downContent">
-        <slot
-          name="dwonContent"
-        />
+        <slot name="dwonContent" />
       </div>
     </div>
   </div>

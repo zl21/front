@@ -4,6 +4,7 @@ import network, {
 } from '../../../__utils__/network';
 import getComponentName from '../../../__utils__/getModuleName';
 import { DispatchEvent } from '../../../__utils__/dispatchEvent';
+import { enableOpenNewTab } from '../../../constants/global';
 
 export default {
   getObjectForMainTableForm({
@@ -168,10 +169,14 @@ export default {
     inlinemode,
     tabIndex
   }) {
-    network.post('/p/cs/inputForitem', urlSearchParams({
+    const params = {
       table,
       inlinemode
-    })).then((res) => {
+    };
+    if (enableOpenNewTab()) { // 此逻辑用于处理开启enableOpenNewTab功能，新增时，获取子表新增数据接口因network拦截未请求问题导致的子表新增区域表单组件未显示
+      params.tag = Math.random() + (new Date()).valueOf();
+    }
+    network.post('/p/cs/inputForitem', urlSearchParams(params)).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
         resData.tabIndex = tabIndex;

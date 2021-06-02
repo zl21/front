@@ -205,6 +205,9 @@
         }
       }
     },
+    created() {
+      this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');
+    },
     mounted() {
       this.ChineseDictionary = ChineseDictionary;
       if (this.visible) this.modalVisible = true;
@@ -351,7 +354,7 @@
         this.loading = true;
         // 上传文件
         const fileInformationUploaded = this.files;
-        this.$R3loading.show();
+        this.$R3loading.show(this.loadingName);
         const url = `${getGateway('/p/cs/import')}`;
         const updataValue = this.singleValue ? 'Y' : 'N';
         const sendData = {
@@ -376,19 +379,19 @@
 
           }
         );
+        // eslint-disable-next-line no-unused-vars
         const article = new Upload(aUploadParame);
       },
 
       // 上传成功
       handleSuccess(response) {
-        const { tableName } = this.$route.params;
         if (response.code === 0) {
-          if (Version() === '1.4') { // Version() === '1.4'
-            this.$R3loading.hide(tableName);
+          if (Version() === '1.4') {
+            this.$R3loading.hide(this.loadingName);
             this.closeDialog();
             this.fileName = '';
             this.$Modal.fcSuccess({
-              title: '提示',
+              title: '成功',
               mask: true,
               content: response.message
             });
@@ -397,7 +400,7 @@
             this.$emit('imporSuccess', response.data);
           }
         } else {
-          this.$R3loading.hide(tableName);
+          this.$R3loading.hide(this.loadingName);
           if (response.data) {
             if (response.data.path) {
               if (response.data.path === 'undefined ===') {
@@ -439,8 +442,7 @@
       },
       // 上传失败
       handleError(e) {
-        const { tableName } = this.$route.params;
-        this.$R3loading.hide(tableName);
+        this.$R3loading.hide(this.loadingName);
         const emg = e;
         let formatJsonEmg = null;
         try {
