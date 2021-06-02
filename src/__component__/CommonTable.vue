@@ -50,7 +50,6 @@
   import DispatchEvent from '../__utils__/dispatchEvent';
   import createModal from './PreviewPicture/index.js';
 
-  import Tables from '../../../burgeon-UI/src/components/table';
   import { classFix } from '../constants/global';
 
   Vue.component('buttons', Vue.extend(ButtonComponent));
