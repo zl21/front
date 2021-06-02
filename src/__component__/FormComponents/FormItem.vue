@@ -93,7 +93,7 @@
         @valuechange="attachFilterInput"
       /> -->
         <component :is="componentsName"
-                   :ref="items.field"
+                   :ref="items.colname"
                     v-bind="propsMessage"
                     v-model="value">
           <slot v-if="items.display === 'OBJ_SELECT'">
@@ -109,7 +109,7 @@
         <!-- 自定义组件 -->
          <component :is="_items.componentName"
                    v-if="_items.type === 'customization'"
-                   :ref="_items.field"
+                   :ref="items.colname"
                    v-model="value"
                     v-on="$listeners"
                     v-bind="propsMessage"
