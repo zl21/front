@@ -4781,11 +4781,11 @@
       overflow: visible;
     }
 
-    // // ag表格查询控件展示不全
-    // .table-in .ag-theme-balham .ag-menu {
-    //   overflow-y: auto;
-    //   .ag-column-container {
-    //     overflow: hidden;
-    //   }
-    // }
+    // ag表格查询控件展示不全
+    .table-in .ag-theme-balham .ag-menu {
+      overflow-y: auto;
+      .ag-column-container {
+        overflow: hidden;
+      }
+    }
 </style>
