@@ -83,7 +83,6 @@
           `${classFix}set-panel`,
         ];
       },
-      }),
       getEname() {
         if (this.userInfo) {
           return this.userInfo.ename;
@@ -193,5 +192,3 @@
     },
   };
 </script>
-
-
