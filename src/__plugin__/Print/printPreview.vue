@@ -6,7 +6,7 @@
     height="100%"
     :src="src"
   />
-</template> 
+</template>
 <script>
 
   export default {
@@ -58,8 +58,3 @@
 
   };
 </script>
-<style scoped>
-   #printframe{
-     border:0;
-   }
-</style>

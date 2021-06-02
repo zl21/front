@@ -1,5 +1,5 @@
 <template>
-  <div class="R3ButtonConfig">
+  <div :class="classes">
     <Description
       :option="option"
       @removeOption="removeOption"
@@ -139,6 +139,7 @@
 <script type="text/ecmascript-6">
   import Description from './Description.vue';
   import network, { urlSearchParams } from '../../__utils__/network';
+  import { classFix } from '../../constants/global';
 
   const ITEM_CONSTRUCTOR = {
     action_id: '',
@@ -182,6 +183,10 @@
         currentRowIndex: 0,
         actionColumnsKey: ['DESCRIPTION']
       };
+    },
+
+    computed: {
+      classes: () => `${classFix}R3ButtonConfig`
     },
 
     watch: {
@@ -451,106 +456,3 @@
     }
   };
 </script>
-
-<style lang="scss" scoped>
-.R3ButtonConfig {
-  .required-item {
-    position: relative;
-    &::before {
-      content: '*';
-      color: red;
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      left: 13px;
-    }
-  }
-
-  .border-b {
-    border-bottom: 1px solid #dcdee2;
-  }
-
-  .pt-10 {
-    padding-top: 10px;
-  }
-
-  .pb-10 {
-    padding-bottom: 10px;
-  }
-
-  .group {
-    border: 1px solid #dcdee2;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
-  }
-  .header {
-    padding: 10px 54px 10px 80px;
-    box-sizing: border-box;
-    display: flex;
-    .title {
-      flex: 1;
-      text-align: center;
-      &:last-child {
-        margin-left: 10px;
-      }
-
-      >span {
-        position: relative;
-      }
-      >span::before {
-        content: '*';
-        color: red;
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        left: -7px;
-      }
-    }
-  }
-
-  .row {
-    display: flex;
-    align-items: center;
-    padding-right: 10px;
-    padding-bottom: 10px;
-
-    .name {
-      flex: 80px 0 0;
-      text-align: right;
-    }
-    .item {
-      flex: 1;
-      &:nth-child(3) {
-        margin-left: 10px;
-      }
-    }
-
-    .btn-wrap {
-      margin-left: 10px;
-      flex: 44px 0 0;
-    }
-  }
-
-  .group-btn > .operate-button:first-child {
-    margin-left: 10px;
-  }
-
-  .operate-button {
-    background-color: transparent;
-    outline: none;
-    font-size: 16px;
-    border: 1px solid lightgrey;
-    width: 20px;
-    display: inline-block;
-    height: 20px;
-    line-height: -1px;
-    border-radius: 50%;
-    color: grey;
-  }
-  .operate-button:hover {
-    color: #000;
-    cursor: pointer;
-    opacity: 0.8;
-  }
-}
-</style>

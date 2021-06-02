@@ -21,7 +21,7 @@
       ><br>
     </p>
     <Button
-      
+
       type="posdefault"
       @click="search"
     >
@@ -82,7 +82,7 @@
         isClick: false,
         treeId: ''
 
-        
+
       };
     },
     watch: {
@@ -99,18 +99,18 @@
       //     if (val === 'Y') {
       //       this.inputValue = '';
       //       this.search();
-           
+
       //       // this.$emit('changeTreeConfigData', '');
       //     }
       //   }
       // },
     },
-   
+
     props: {
       // isChangeTreeConfigData: {
       //   type: String,
       //   default: ''
-      // }, 
+      // },
       placeholder: {// 设置查询框placeholder
         type: String,
         default: () => '请输入角色'
@@ -122,11 +122,11 @@
       treeDatas: {
         type: Function,
         default: () => {}
-      },     
+      },
       zNodes: {
         type: Array,
         default: () => []
-      }, 
+      },
     },
     methods: {
 
@@ -159,17 +159,17 @@
 
       //   return true;
       // },
-      checkNode() { 
+      checkNode() {
         // 选中
         const treeObj = $.fn.zTree.getZTreeObj(`${this.tableName}`);
         if (JSON.stringify(this.treeNode) !== '{}' && this.treeNode) {
-          const node = treeObj.getNodeByTId(this.treeNode.tId);   
+          const node = treeObj.getNodeByTId(this.treeNode.tId);
           if (node) {
             treeObj.selectNode(node);
           }
         } else if (treeObj) {
           treeObj.refresh();
-        } 
+        }
       },
       onClick(e, treeId, treeNode) {
         const arr = [];
@@ -204,7 +204,7 @@
       search() {
         const isNull = this.isNull(this.inputValue);
         if (!isNull) {
-         
+
           let checkoutZtree = fuzzySearch(`${this.tableName}`, this.inputValue, null, true); // 初始化模糊搜索方法
           checkoutZtree.then((res)=>{
             if(res.length>0){
@@ -242,7 +242,7 @@
       this.$nextTick(() => {
         $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
       });
-     
+
       // $(document).ready(() => {
       //   $.fn.zTree.init($('#treeDemo'), this.setting, this.zNodes);
       //   fuzzySearch('treeDemo', '#key', null, true); // 初始化模糊搜索方法
@@ -250,27 +250,3 @@
     }
   };
 </script>
-
-<style>
-.cancelNode{
-  background:transparent !important;
-}
-.orange{
-  color:#fd6442;
-  line-height: 30px;
-}
-    /* #areaTree{
-        border:1px solid #e5e5e5;    margin-bottom: 2px;border-radius: 4px;overflow: scroll;width: 300px;
-    }
-    .box-title{
-        border-radius: 3px 3px 0 0;background-color: #f5f5f5;
-    }
-    .box-title a{
-        color: #2fa4e7;
-        text-decoration: none;font-size:14px;    display: block;
-        padding: 8px 15px;cursor: pointer;
-    }
-    .box-title .fa{
-        float:right;line-height: 20px;
-    } */
-</style>

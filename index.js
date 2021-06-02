@@ -25,9 +25,6 @@ import { createWatermark } from './src/__utils__/waterMark';
 import './src/__utils__/getChildComponent';
 
 // css import
-// import './node_modules/viewerjs/dist/viewer.css';
-// import './node_modules/ag-grid/dist/styles/ag-grid.css';
-
 // 组件css汇总
 import './src/index.less';
 import './src/assets/theme/custom.less';

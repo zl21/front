@@ -48,7 +48,7 @@
             isPass: false,
             msg: '请填入具体值'
           };
-        } 
+        }
         return {
           isPass: true,
           msg: ''
@@ -70,12 +70,3 @@
     }
   };
 </script>
-
-<style lang="scss" scoped>
-  .validate-msg {
-      margin-top: 4px;
-      margin-bottom: 10px;
-      color: red;
-      font-size: 12px;
-    }
-</style>

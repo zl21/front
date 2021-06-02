@@ -6,7 +6,7 @@
 
 <script>
 
-  
+
   export default {
     data() {
       return {
@@ -16,14 +16,3 @@
     }
   };
 </script>
-
-<style scoped>
-.notfonud{
-    height: 200px;
-    line-height: 160px;
-}
-h1 {
-  text-align: center;
-  margin-top: 30px;
-}
-</style>
