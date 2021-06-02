@@ -122,7 +122,6 @@ export default class RenderComponent {
     Object.assign(FormItem.methods, mixins.methods);
     let formExternalMixins = formItemMixins().default || {};
     FormItem.name = `${this.id}${this.item.colname.TextFilter()}`;
-    console.log(Vue.component(FormItem.name));
     if(!Vue.component(FormItem.name)){
       Vue.component(`${this.id}${this.item.colname.TextFilter()}`, Vue.extend(Object.assign({ mixins: [mixins,formExternalMixins], isKeepAliveModel: true },FormItem)));
     }

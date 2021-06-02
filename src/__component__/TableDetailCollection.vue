@@ -1964,7 +1964,7 @@
         }
         return true;
       }, // 下拉外键是否显示弹出框
-      dropDownSelectFilterRender(cellData, tag) { // 外键关联下拉选择(drp mrp)
+      dropDownSelectFilterRender(cellData, tag) { // 外键关联下拉选择(drp mrp)Y
         return (h, params) => h('div', [
           h(tag, {
             style: {
@@ -1977,6 +1977,7 @@
               defaultSelected: this.dropDefaultSelectedData(params, cellData),
               // defaultSelected: () =>{},
               single: cellData.fkdisplay === 'drp',
+              singleTurn:true,
               pageSize: this.fkDropPageInfo.pageSize,
               totalRowCount: this.fkData.totalRowCount,
               data: this.fkData,
@@ -2362,6 +2363,7 @@
               defaultSelected: this.dropDefaultSelectedData(params, cellData),
               // defaultSelected: () =>{},
               single: cellData.fkdisplay === 'drp',
+              singleTurn:true,
               pageSize: this.fkDropPageInfo.pageSize,
               totalRowCount: this.fkData.totalRowCount,
               data: this.fkData,
@@ -2703,6 +2705,7 @@
                 Label: `${/选中/.test(this.copyDataSource.row[params.index][cellData.colname].val) ? this.copyDataSource.row[params.index][cellData.colname].val : `已经选中${JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).total}条数据`}`
               }] : [],
               propstype: {
+                singleTurn:true,
                 optionTip: true,
                 // 是否显示输入完成后是否禁用 true、false
                 show: true,
