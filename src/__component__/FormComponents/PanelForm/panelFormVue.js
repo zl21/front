@@ -8,7 +8,6 @@ import { validateForm } from './Validate';
 import {
      MODULE_COMPONENT_NAME 
   } from '../../../constants/global';
-  console.log(MODULE_COMPONENT_NAME,'MODULE_COMPONENT_NAMEMODULE_COMPONENT_NAME')
 export default {
   name:'PanelForm',
   props: {
@@ -42,6 +41,7 @@ export default {
       formItemLists:{}, // 表单数据重绘制
       objviewcol: 4, // 表单默认展示几列
       LinkageForm: [],// 联动状态
+      id:'', // id 名称
       formChangeDataLabel: {},  //表单修改过的数据--显示值
       timer: null,
 
@@ -391,9 +391,14 @@ export default {
   },
   mounted () {
     this.setFormlist();
-    
+    // 通过dom 查找实例
+    this.$el._vue_ = this;
+    this.id = this.tableName +'-'+ ((this.moduleComponentName.split('.').splice(2,2)).join('-'));
     // 监听大小
     window.addEventListener('resize', this.setResize);
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.setResize);
   },
   activated(){
     // 渲染完毕后调整排版
