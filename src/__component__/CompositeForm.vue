@@ -100,7 +100,7 @@
   import FormItemComponent from './ComFormItemComponent.vue';
   import ComponentPlaceholder from './ComponentPlaceholder.vue';
   import {
-    Version, MODULE_COMPONENT_NAME, custommizedRequestUrl, formItemConfig 
+    Version, MODULE_COMPONENT_NAME, custommizedRequestUrl, formItemConfig
   } from '../constants/global';
   import getComponentName from '../__utils__/getModuleName'
 
@@ -112,7 +112,7 @@
 
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
-  
+
   export default {
     name: 'CompositeForm',
     components: {},
@@ -169,7 +169,7 @@
         default() {
           return false;
         }
-      }, 
+      },
       childTableName: {
         // 子表表明
         type: String,
@@ -249,7 +249,7 @@
         refcolvalAll: {}, // 关联当前页面的 所有数据
         conditiontype: '', // 是查询还是保存界面
         InitializationFormTime: '', // 当前初始化时间
-        childFormData: [],    
+        childFormData: [],
         labelForm: {}, // label 值
         r3Form: {},
         timeChange: 0,
@@ -324,7 +324,7 @@
         return this.isMainTable ? '' : this.childTableName;
       },
       isreftabsForm() {
-        // 
+        //
         if (this.masterName.length > 0 && this.childTableName.length > 0 && Version() === '1.3') {
           return true;
         }
@@ -343,7 +343,7 @@
     methods: {
       CollapseClose() {},
       isCopy() {
-        // 是否是copty 
+        // 是否是copty
         return this.defaultData.copy;
       },
       Comparison() {
@@ -375,7 +375,7 @@
         if (current.disabled || current.readonly) {
           return true;
         }
-        
+
         return current.disabled || false;
       },
       childForm(option) {
@@ -494,7 +494,7 @@
               if (Array.isArray(item.childs)) {
                 item.childs.forEach((option, j) => {
                   let show = true;
-                 
+
                   if (option.item && Object.hasOwnProperty.call(option.item.validate, 'hidecolumn')) {
                     const showHide = this.hidecolumn(option, i, j);
                     if (option.item.validate.hidecolumn.ishide) {
@@ -506,21 +506,21 @@
                   // option.show = Object.hasOwnProperty.call(option.item.validate, 'hidecolumn') ? this.hidecolumn(option, i, j) : true;
                   if (option.item.props.display === 'none') {
                     show = false;
-                  }  
+                  }
 
                   if (!show) {
                     if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
                       if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
                         const data = {
                           formList: [
-                            { 
+                            {
                               key: !this.isMainTable ? `${this.childTableName}${option.item.field}` : option.item.field,
                               name: option.item.title,
                               show,
                               srccol: option.item.validate.refcolval && option.item.validate.refcolval.srccol,
                               tableName: this.isMainTable ? '' : this.childTableName
                             },
-                            { 
+                            {
                               key: option.item.field,
                               name: option.item.title,
                               show,
@@ -533,7 +533,7 @@
                         setTimeout(() => {
                           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
                         }, 500);
-                      }  
+                      }
                     }
                   }
 
@@ -545,7 +545,7 @@
                         option.item.value = option.item.props.falseValue;
                       } else {
                         option.item.value = '';
-                      } 
+                      }
                     }
                   }
                 });
@@ -571,14 +571,14 @@
                     if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
                       const data = {
                         formList: [
-                          { 
+                          {
                             key: !this.isMainTable ? `${this.childTableName}${item.item.field}` : item.item.field,
                             name: item.item.title,
                             show,
                             srccol: item.item.validate.refcolval && item.item.validate.refcolval.srccol,
                             tableName: this.isMainTable ? '' : this.childTableName
                           },
-                          { 
+                          {
                             key: item.item.field,
                             name: item.item.title,
                             show,
@@ -591,7 +591,7 @@
                       setTimeout(() => {
                         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
                       }, 500);
-                    }  
+                    }
                   }
                 }
                 if (show === false) {
@@ -601,7 +601,7 @@
                       item.item.value = item.item.props.falseValue;
                     } else {
                       item.item.value = '';
-                    } 
+                    }
                   }
                 }
               }
@@ -616,7 +616,7 @@
           return true;
         }
 
-      
+
         const mappStatus = (this.$store.state[this[MODULE_COMPONENT_NAME]] && this.$store.state[this[MODULE_COMPONENT_NAME]].mappStatus) || [];
         const LinkageForm = (this.$store.state[this[MODULE_COMPONENT_NAME]] && this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm) || {};
 
@@ -634,7 +634,7 @@
           // 通知隐藏关系
           const refcolvaData = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), data);
           window.eventType(`${this[MODULE_COMPONENT_NAME]}setHideForm`, window, {
-            key, list: this.hidecolumnForm[key], data: refcolvaData, tableName: this.tableGetName 
+            key, list: this.hidecolumnForm[key], data: refcolvaData, tableName: this.tableGetName
           });
         }
         return true;
@@ -651,7 +651,7 @@
       formDataChange(data, setdefval, current, label) {
         // 表单数据修改  判断vuex 里面是否有input name
         if (current.item.props.isuppercase && data[current.item.field]) {
-          if (typeof data[current.item.field] === 'string') { 
+          if (typeof data[current.item.field] === 'string') {
             data[current.item.field] = data[current.item.field].toUpperCase();
           }
         }
@@ -736,7 +736,7 @@
         this.labelFormSave = Object.assign(this.labelFormSave, label);
         // 必填校验
         clearTimeout(this.setVerifyMessageTimeII);
-        this.setVerifyMessageTimeII = setTimeout(() => { 
+        this.setVerifyMessageTimeII = setTimeout(() => {
           this.VerificationFormItem = [];
           this.setVerifyMessageForm();
         }, 100);
@@ -786,12 +786,12 @@
               this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/seleteAddData`, data);
             }
           }
-        } 
+        }
 
         this.$emit('formChange', this.formDataSave, this.formDataDef, this.labelFormSave, this.formData, this.defaultDataInt);
         this.getStateData();
 
-        
+
         // 注释
       },
       VerifyMessageForm(value, type) {
@@ -812,8 +812,8 @@
               }
             });
           });
-          
-          const data = this.setVerifiy();     
+
+          const data = this.setVerifiy();
           if (data.messageTip.length > 0) {
             this.verifyMessItem = data;
           }
@@ -891,7 +891,7 @@
           return arr;
         }, {});
 
-        // 1.3 版本的 label 
+        // 1.3 版本的 label
         this.r3Form = Object.assign(this.r3Form, formItem);
 
 
@@ -929,7 +929,7 @@
         this.formData = Object.assign({}, this.defaultFormData);
         this.refcolvaData = Object.assign({}, this.defaultFormData);
         // 默认值
-        
+
         this.copyInt = false;
         clearTimeout(this.InitializationFormTime);
         this.InitializationFormTime = setTimeout(() => {
@@ -939,7 +939,7 @@
                 detail: {
                   hideCopyLoading: true
                 }
-              }); 
+              });
             } else {
               if (this.tableGetName !== '') {
                 return false;
@@ -952,7 +952,7 @@
             }
           }, 50);
         }, 100);
-        
+
 
         this.$emit('InitializationForm', defaultFormData, this.defaultSetValue, this.r3Form);
         // 注释
@@ -964,7 +964,7 @@
             return false;
           }
           return this.$route.params.itemId;
-        } 
+        }
         return false;
       },
       reduceForm(array, current, index) {
@@ -984,7 +984,7 @@
         if (current.display === 'none') {
           obj.show = false;
         }
-        
+
         obj.item = {
           type: this.checkDisplay(current),
           title: current.name,
@@ -1004,7 +1004,7 @@
                 if (this.type === 'PanelForm') {
                   // 是否是面板
                   //  组建是否获取光标
-                  
+
                   this.focusItem(index, current, array);
                 }
                 this.searchClickData();
@@ -1161,7 +1161,7 @@
                   }, 0);
                 }($this));
               }
-              
+
 
               if (current.webconf && current.webconf.refcolval_custom) {
                 searchObject = {
@@ -1206,7 +1206,7 @@
                   serviceId = current.fkobj.serviceId;
                 }
               }
-              
+
               fkHttpRequest().fkQueryList({
                 searchObject,
                 serviceId,
@@ -1214,7 +1214,7 @@
                   this.freshDropDownSelectFilterData(res, index, current);
                 }
               });
-              
+
 
               return false;
             },
@@ -1309,11 +1309,11 @@
                 if (refArray[0]) {
                   searchObject.fixedcolumns = refArray[1];
                 }
-              }              
+              }
               // 权限查询
               searchObject = this.setSeachObject(searchObject, current);
 
-              
+
               if (current.fixedcolumns) {
                 searchObject = Object.assign(searchObject, { fixedcolumns: current.fixedcolumns });
               }
@@ -1329,9 +1329,9 @@
           validate: this.validateList({}, current)
         };
         this.propsType(current, obj.item);
-        // ignoreDisableWhenEdit 去除不可编辑的状态 
-       
-       
+        // ignoreDisableWhenEdit 去除不可编辑的状态
+
+
         // 获取全部
         const srccol = obj.item.validate.refcolval && obj.item.validate.refcolval.srccol;
         const prmsrccol = current.refcolprem && current.refcolprem.srccol;
@@ -1362,10 +1362,10 @@
           srccol: `${this.tableGetName}${srccol || prmsrccol}`,
           maintable: (obj.item.validate.refcolval && obj.item.validate.refcolval.maintable) || false,
           tableName: this.tableGetName
-        }); 
+        });
         //  表单 存值
         this.defaultDataInt[obj.item.field] = obj.item.value;
-        
+
         //  隐藏字段的映射
         const hideSrccol = obj.item.validate.hidecolumn && obj.item.validate.hidecolumn.refcolumn;
         if (hideSrccol) {
@@ -1385,8 +1385,8 @@
             }
           });
         }
-        
-        
+
+
         return obj;
       },
       setSeachObject(obj, current) {
@@ -1453,7 +1453,7 @@
           }
           if (!premValue) {
             let pretableName = document.querySelector('.compositeAllform');
-            if (this.tableGetName) {  
+            if (this.tableGetName) {
               pretableName = document.querySelector(`.${premLinkageFormInput.item.tableName}`);
             }
             if (pretableName && pretableName.querySelector(`#${current.refcolprem.srccol}`)) {
@@ -1470,14 +1470,14 @@
           const checkGetObjId = this.getObjId(current);
           // 判断 来源值是否是 objid，新增不需要
           if (checkGetObjId !== false) {
-            return [true, checkGetObjId];  
+            return [true, checkGetObjId];
           }
 
           if (current.webconf && current.webconf.refcolval_custom) {
             current.webconf.refcolval_custom.srccols.split(',').map((item) => {
               if (item.includes('.')) { // 来源字段为主表
                 this.getStateData(); // 获取主表信息
-                refcolval[item.split('.')[1]] = this.refcolvalAll[item.split('.')[1]]; 
+                refcolval[item.split('.')[1]] = this.refcolvalAll[item.split('.')[1]];
               } else { // 来源字段为字表
                 const data = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), this.formData);
                 refcolval[item] = data[item];
@@ -1490,11 +1490,11 @@
             // 判断来源字段是否是多字段的联动,srccol以前是单个字段,现在有可能是多个字段
             current.refcolval.srccol.split(',').map((item) => {
               // if (current.webconf && current.webconf.refcolval_custom) {
-              //   refcolval[item] = this.refcolvalAll[item]; 
+              //   refcolval[item] = this.refcolvalAll[item];
               // } else {
-              //   refcolval = this.refcolvalAll[item]; 
+              //   refcolval = this.refcolvalAll[item];
               // }
-              refcolval = this.refcolvalAll[item]; 
+              refcolval = this.refcolvalAll[item];
               return item;
             });
           } else {
@@ -1531,7 +1531,7 @@
               return [true, refcolval];
             }
           }
-          
+
           const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
 
           let LinkageFormInput = {};
@@ -1567,7 +1567,7 @@
                   }, 100);
                 }
                 return [false];
-              } 
+              }
               const LinkageFormfocus = document.querySelector(`#${LinkageFormInput.item.key}`).querySelector('input');
               if (LinkageFormfocus) {
                 setTimeout(() => {
@@ -1577,7 +1577,7 @@
               }
             }
           } else {
-            return [true, refcolval];  
+            return [true, refcolval];
           }
           return [true];
         }
@@ -1590,7 +1590,7 @@
           const refval = current.item.validate.hidecolumn.refval;
           const data = this.getValue(this.defaultDataInt);
           // 添加查询条件
-          
+
           const refvalArr = refval.split(',');
 
           if (data[refcolumn]) {
@@ -1610,13 +1610,13 @@
               return eval(val.replace(/\s+/g, '') + expression + refval.replace(/\s+/g, ''));
             }
           }
-         
+
 
           const arrIndex = refvalArr.findIndex(x => x.toString() === val);
           return arrIndex !== -1;
         }
-       
-        
+
+
         return true;
       },
       async focusChange(value, current, index) {
@@ -1646,7 +1646,7 @@
             }
           });
         }
-        
+
         if (!check[0] && !check[1]) {
           document.activeElement.value = '';
         }
@@ -1671,13 +1671,13 @@
             ak: value,
             colid: current.colid,
             fixedcolumns: {}
-          }; 
+          };
           // 多值查询判断
           const refArray = this.getRefcolvalArray(current);
           if (refArray[0]) {
             sendData.fixedcolumns = {
               whereKeys: refArray[1]
-            }; 
+            };
           }
         }
         if (!check[0]) {
@@ -1747,7 +1747,7 @@
         const checkIsReadonly = this.isReadonly(item);
         // if (item.webconf && item.webconf.display && item.webconf.display === 'timerange') {
         //   //  日期区间
-         
+
         // }
 
 
@@ -1824,8 +1824,8 @@
         if (item.display === 'defined') {
           str = 'defined';
         }
-       
-       
+
+
         return str;
       },
       checkPanelShow(item) {
@@ -1876,7 +1876,7 @@
         // this.labelForm = Object.assign(this.labelForm, valueLabel);
       },
       defaultValue(item) {
-        // 组件的默认值  
+        // 组件的默认值
         const checkIsReadonly = this.isReadonly(item);
 
         // if (item.readonly === true && item.fkdisplay) {
@@ -1929,7 +1929,7 @@
           }
           // eslint-disable-next-line no-unused-vars
           let check = '';
-          
+
           if (Array.isArray(item.combobox)) {
             item.combobox.forEach((option) => {
               if (option.limitdis) {
@@ -1952,7 +1952,7 @@
           }
           return arr;
         }
-        // 
+        //
         if (item.display === 'image') {
           let arr = [];
           try {
@@ -2178,7 +2178,7 @@
 
           item.props.number = true;
           if (current.display === 'text' && !current.fkdisplay) {
-            // 只能输入 正整数 
+            // 只能输入 正整数
             let string = '';
 
             if (current.webconf && current.webconf.ispositive) {
@@ -2190,7 +2190,7 @@
                 current.scale
               }})?$`;
             }
-            
+
             const typeRegExp = new RegExp(string);
             if (current.scale > 0) {
               item.props.regx = typeRegExp;
@@ -2201,7 +2201,7 @@
             }
           }
         }
-        
+
         if (!item.display || item.display === 'text') {
           item.props.type = 'text';
           if (item.display === 'textarea') {
@@ -2218,7 +2218,7 @@
               } else if (current.webconf.isNeedEncrypt) {
                 item.props.type = 'text';
               }
-            } 
+            }
           }
           item.props.disabled = checkIsReadonly;
         }
@@ -2497,13 +2497,13 @@
         //       ID: refobjid,
         //       Label: current.valuedata
         //     }];
-           
+
         //     item.value = current.valuedata;
         //   }
         //   if (
         //     item.props.fkdisplay === 'mop'
         //     || item.props.fkdisplay === 'pop'
-        //   ) {           
+        //   ) {
         //     item.props.Selected = [{
         //       ID: refobjid,
         //       Label: current.valuedata
@@ -2754,7 +2754,7 @@
               formIndex: this.formIndex
             };
             this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
-          }  
+          }
         }
       }, 500);
       if (this.$el) {
@@ -2763,7 +2763,7 @@
       this.conditiontype = this.condition;
 
       window.addEventListener('resize', this.setResize);
-      
+
       if (this.type === 'PanelForm') {
         return false;
       }
@@ -2811,25 +2811,3 @@
     }
   };
 </script>
-
-<style>
-.ark-collapse > .ark-collapse-item > .ark-collapse-header {
-  text-align: center;
-  padding: 0;
-  margin: 0;
-  height: 28px!important;
-  line-height: 28px!important;
-  font-size: 12px;
-  font-weight: normal;
-  color: #1f2d3d;
-  background: #f8f7f7;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-}
-.Rark-collapse-content-box .ark-collapse-content > .ark-collapse-content-box{
-   padding-top: 8px!important;
-}
-.ark-collapse {
-  margin-bottom: 10px;
-}
-</style>

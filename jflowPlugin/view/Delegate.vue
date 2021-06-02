@@ -1,6 +1,6 @@
 // 转派
 <template>
-  <div class="Delegate">
+  <div :class="classes">
     <div class="content">
       <mutipleSelectPop
         v-if="modalConfig.control"
@@ -36,6 +36,7 @@
   import { global } from '../utils/global.config';
   import mutipleSelectPop from './MutipleSelectPop';
   import { refreshSystem } from '../js/index';
+  import { classFix } from '../../src/constants/global';
 
   export default {
     props: {
@@ -51,6 +52,13 @@
         buttonDisabled: false,
         selectRow: []
       };
+    },
+    computed: {
+      classes() {
+        return [
+          `${classFix}Delegate`,
+        ];
+      },
     },
     methods: {
       cancel() {
@@ -91,25 +99,3 @@
     }
   };
 </script>
-<style lang="less" scoped>
-.Delegate{
-  .content{
-    padding: 16px;
-    display: flex;
-    align-items: center;
-
-    >label{
-      margin-right: 5px;
-      color: red;
-      font-size: 20px;
-    }
-  }
-  .footer{
-    border-top: 1px solid #e8eaec;
-    padding: 8px 20px 8px 0;
-    border-bottom-left-radius: 6px;
-    border-bottom-right-radius: 6px;
-    text-align: right;
-  }
-}
-</style>

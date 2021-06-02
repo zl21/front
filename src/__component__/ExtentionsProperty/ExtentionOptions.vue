@@ -1,6 +1,6 @@
 /* eslint-disable func-names */
 <template>
-  <div class="ExtentionOptions">
+  <div :class="classes">
     <Description
       v-if="showDescription"
       :option="option"
@@ -36,6 +36,7 @@
   import Description from './Description';
   import ObjectGroupItem from './ObjectGroupItem';
   import LabelWithInput from './LabelWithInput';
+  import { classFix } from '../../constants/global';
 
   export default {
     name: 'ExtentionOptions',
@@ -70,6 +71,13 @@
         },
         clonameChange: false, // 判断条件字段是否改变，失去焦点时候需要
       };
+    },
+    computed: {
+      classes() {
+        return [
+          `${classFix}ExtentionOptions`,
+        ];
+      },
     },
     watch: {
       // eslint-disable-next-line func-names
@@ -128,10 +136,3 @@
     }
   };
 </script>
-<style lang="less" scoped>
-.ExtentionOptions{
-  .content{
-    border-bottom: 1px solid #999;
-  }
-}
-</style>

@@ -163,4 +163,7 @@ export const messageSwitch = () => (window.ProjectConfig && window.ProjectConfig
 export const getGatewayValue = (key) => {
   const getServiceIdMap = JSON.parse(window.localStorage.getItem('serviceIdMap'));
   return getServiceIdMap[key];
-}; 
+};
+
+// 获取全局class前缀
+export const classFix = window.ProjectConfig && window.ProjectConfig.classFix ? window.ProjectConfig.classFix : project.classFix;

@@ -2,6 +2,7 @@
  * select组件的自定义逻辑处理
  */
 import Vue from 'vue';
+import Ark from '@syman/ark-ui'
 
 import { SetPlaceholder ,SetDisable} from './setProps';
 
@@ -13,8 +14,8 @@ class CustomSelect {
   constructor(item) {
     this.item = item;
     this.Vm = Select;
-    this.mergeProps();   
-    this.mergeMethods(); 
+    this.mergeProps();
+    this.mergeMethods();
   }
 
   init() {
@@ -27,7 +28,7 @@ class CustomSelect {
 
   // 合并props
   mergeProps() {
-   
+
     this.settingOptions();
     this.props = {
       transfer:true,
@@ -38,7 +39,7 @@ class CustomSelect {
       placeholder:new SetPlaceholder(this.item).init(),
       disabled:new SetDisable(this.item).init(),
     }
-   
+
   }
 
   // 合并methods
@@ -47,7 +48,7 @@ class CustomSelect {
 
   }
 
-  
+
   settingOptions() {
     if(!this.item.props){
       this.item.props = {}

@@ -191,20 +191,3 @@
     }
   };
 </script>
-<style >
-.R3tree{
-    width:300px;
-    height:100%;
-    padding:10px;
-    border-right:1px solid #d2d2d2;
-    overflow-x: scroll;
-    overflow-y: scroll;
-  }
-.ztree li span{
-  font-family: "Microsoft YaHei", Helvetica;
-
-}
-.input{
-  margin-bottom:10px
-}
-</style>

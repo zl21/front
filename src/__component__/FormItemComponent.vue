@@ -13,7 +13,7 @@
     >
       <div
         slot="dwonContent"
-        class="FormItemComponent"
+        :class="classes"
         :style="setWidth"
       >
         <div
@@ -62,6 +62,7 @@
 <script>
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
   import DownComponent from './DownComponent';
+  import { classFix } from '../constants/global';
 
 
   export default {
@@ -70,6 +71,7 @@
       DownComponent
     },
     computed: {
+      classes: () => `${classFix}FormItemComponent`,
       FormItemLists() {
         const arr = JSON.parse(JSON.stringify(this.formItemLists));
         arr.map((temp, index) => {
@@ -257,7 +259,7 @@
 
               return objData;
             }, {}));
-          } 
+          }
           return obj;
         }, {});
       },
@@ -317,18 +319,3 @@
     }
   };
 </script>
-
-<style lang="less">
-.FormItemComponent > div {
-  /*border:1px solid #fff;*/
-  box-sizing: border-box;
-}
-.itemComponent .ark-date-picker{
-    width: 100%;
-}
-.FormItemComponent {
-  display: grid;
-  grid-template-columns: repeat(4, 25%);
-  grid-auto-rows: minmax(auto);
-}
-</style>

@@ -1,6 +1,6 @@
 // 同意
 <template>
-  <div class="agree">
+  <div :class="classes">
     <div class="content">
       <Input
         v-model="agreecontent"
@@ -33,6 +33,7 @@
   import network from '../utils/network';
   import { global } from '../utils/global.config';
   import { refreshSystem } from '../js/index';
+  import { classFix } from '../../src/constants/global';
 
   export default {
     props: {
@@ -46,6 +47,13 @@
         agreecontent: '',
         buttonDisabled: false
       };
+    },
+    computed: {
+      classes() {
+        return [
+          `${classFix}agree`,
+        ];
+      },
     },
     methods: {
       cancel() {
@@ -83,17 +91,3 @@
     }
   };
 </script>
-<style lang="less" scoped>
-.agree{
-  .content{
-    padding: 16px;
-  }
-  .footer{
-    border-top: 1px solid #e8eaec;
-    padding: 8px 20px 8px 0;
-    border-bottom-left-radius: 6px;
-    border-bottom-right-radius: 6px;
-    text-align: right;
-  }
-}
-</style>

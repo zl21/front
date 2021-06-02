@@ -1,5 +1,5 @@
 <template>
-  <div class="TodoProcess">
+  <div :class="classes">
     <div class="btn-agent">
       <div class="btnArea">
         <Button
@@ -49,7 +49,7 @@
       <Spin
         v-if="spinShow"
         size="large"
-        fix 
+        fix
       />
       <StandardTable
         class="table"
@@ -104,6 +104,7 @@
   import network from '../utils/network';
   import { BacklogData } from '../js/todoList';
   import { global, globalChange } from '../utils/global.config';
+  import { classFix } from '../../src/constants/global';
 
   export default {
     components: { FormItemComponent, StandardTable, mutipleSelectPop },
@@ -214,7 +215,7 @@
               this.searchData.sortable = row.key;
               this.searchData.sortType = row.order;
             }
-            
+
             this.searchData.page = 1;
             this.queryLists();
           }
@@ -228,6 +229,9 @@
 
         detail: {}, // 点击的单据
       };
+    },
+    computed: {
+      classes: () => `${classFix}TodoProcess`,
     },
     methods: {
       urlParse(path) {
@@ -424,8 +428,8 @@
             if (global.changePattern && this.tabalive === 'todoList') {
               res.data.data.headers.splice(0, 1);
             }
-            
-            
+
+
             this.columns = res.data.data.headers;
           }
         });
@@ -478,13 +482,13 @@
       async getselectOption() {
         let type = null;
         switch (this.tabalive) {
-        case 'todoList': 
+        case 'todoList':
           type = 0; break;
-        case 'approvalList': 
+        case 'approvalList':
           type = 1; break;
-        case 'launchList': 
+        case 'launchList':
           type = 2; break;
-        case 'copyList': 
+        case 'copyList':
           type = 3; break;
         default: break;
         }
@@ -628,7 +632,7 @@
           this.modaltitle = '单据详情';
         }
       },
-      
+
       // 设置外出代理人
       setAgent() {
         const needdata = {};
@@ -730,53 +734,3 @@
     }
   };
 </script>
-<style lang="less">
-.ark-spin-fix {
-  z-index: 100;
-}
-.TodoProcess {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  .btn-agent {
-    display: flex;
-    justify-content: space-between;
-    .btnArea {
-      margin-bottom: 10px;
-      .ark-btn {
-        margin-right: 9px;
-        &:last-child {
-          margin-right: 0;
-        }
-      }
-    }
-    .agentshow {
-      display: inline-block;
-      height: 30px;
-      line-height: 30px;
-      margin-bottom: 10px;
-    }
-  }
-
-  .form {
-    margin-bottom: 16px;
-  }
-
-  .StandardTable {
-    position: relative;
-    flex: 1;
-    display: flex;
-    overflow: hidden;
-    .table {
-      flex: 1;
-    }
-  }
-}
-.modalCotent {
-  .ark-tree {
-    overflow-y: auto;
-  }
-}
-</style>

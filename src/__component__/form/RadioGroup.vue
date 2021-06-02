@@ -7,7 +7,7 @@
       <Checkbox
         v-for="item in options.combobox"
         :key="item.limitdesc"
-        :circle="options.circle"
+        :circle="options.circle !== false"
         :label="item.limitdesc"
         :disabled="options.disabled"
         :size="options.size"
@@ -87,10 +87,10 @@
               checkedList.push(item.limitval);
             }
           });
-          
+
           this.selectedValues = [currentLabel];
         }
-        
+
         this.$emit('change', checkedList.join(','));
       },
 
@@ -115,7 +115,3 @@
     }
   };
 </script>
-
-<style lang="scss" scoped>
-  
-</style>

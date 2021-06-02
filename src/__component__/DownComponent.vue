@@ -1,12 +1,9 @@
 <template>
   <div
     ref="downComponent"
-    class="downComponent-context"
+    :class="DCTCls"
   >
-    <div
-      v-if="rowAll > searchFoldnum"
-      class="tag-close"
-    >
+    <div v-if="rowAll > searchFoldnum" :class="tagCloseCls">
       <Icon
         :class="className"
         @click="toggle"
@@ -31,6 +28,7 @@
 </template>
 
 <script>
+  import { classFix } from '../constants/global';
 
   export default {
     name: 'DownComponent',
@@ -108,7 +106,9 @@
       },
       downContent() {
         return `${this.title ? 'down-contain ' : 'down-contain down-right'}`;
-      }
+      },
+      tagCloseCls: () => `${classFix}TagClose`,
+      DCTCls: () => `${classFix}downComponent-context`,
     },
     methods: {
       toggle() {
@@ -132,51 +132,3 @@
 
   };
 </script>
-
-<style lang="less">
-    .downComponent-context{
-        position: relative;
-    }
-    .downComponent{
-        border: 1px solid #d8d8d8;
-        transition: height .5s;
-        box-sizing: border-box;
-        overflow: hidden;
-        padding-bottom: 8px;
-    }
-    .down-right{
-        padding-right: 28px;
-    }
-    .tag-close{
-        width: 28px;
-        height: 16px;
-        position: absolute;
-        top: 0;
-        right: 0;
-        margin-left: -20px;
-        background-color: #fe6846;
-        text-align: center;
-        line-height: 16px;
-        cursor: pointer;
-        color: #fff;
-        border-radius: 0 0 2px 2px;
-        z-index: 9;
-    }
-    .icon-xiadown{
-        transform: rotate(180deg);
-
-    }
-    .downComponent-h5{
-        text-align: center;
-        padding: 0;
-        margin: 0;
-        line-height: 24px;
-        font-size: 12px;
-        font-weight: 400;
-        color: #1f2d3d;
-        background: #f8f7f7;
-        border-top-left-radius: 4px;
-        border-top-right-radius: 4px;
-        border-bottom: 1px solid #b4b4b4;
-    }
-</style>

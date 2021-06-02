@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="standardTable"
-    :class="isFilterTable ? 'isFilterTable' : ''"
-  >
+  <div :class="classes">
     <Page
       v-if="isPageShow"
       ref="page"
@@ -83,7 +80,7 @@
   import { mapState } from 'vuex';
   import agTable from '../assets/js/ag-grid-table-pure';
   import CommonTable from './CommonTable.vue';
-  import { floatingFilter } from '../constants/global';
+  import { floatingFilter, classFix } from '../constants/global';
 
   export default {
     name: 'AgTable',
@@ -102,6 +99,14 @@
       ...mapState('global', {
         bigBackground: ({ imgSrc }) => imgSrc.bigDataImg,
       }),
+      classes() {
+        return [
+          `${classFix}standardTable`,
+          {
+            ['isFilterTable']: this.isFilterTable,
+          }
+        ];
+      },
     },
     props: {
       doTableSearch: {
@@ -279,7 +284,7 @@
         if (!data) {
           return result;
         }
-        
+
         for (let i = 0; i < data.length; i++) {
           if (data[i].isagfilter) {
             result = true;
@@ -465,87 +470,3 @@
     },
   };
 </script>
-
-<style lang="less">
-.standardTable {
-  overflow: hidden;
-  padding: 20px 0 0 0;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  height: 100%;
-  .common-table {
-     margin-top: 10px;
-    overflow-y: hidden;
-    flex: 1;
-  }
-}
-.detailTable,
-.isBig {
-  border: 1px solid #d8d8d8;
-  margin-top: 10px;
-  height: 100%;
-  width: 100%;
-}
-.isBig {
-  //  background-repeat: no-repeat;
-  //  background-position: center center;
-  //  background-size: 24%;
-  display: flex;
-  height: 100%;
-  width: 100%;
-  align-items: center;
-  justify-content: center;
-
-  > img {
-    width: 25%;
-    height: 65%;
-  }
-}
-
-.queryDesc {
-  height: 20px;
-  margin: 5px 0;
-  line-height: 18px;
-  display: flex;
-
-  > div {
-    flex: 1;
-  }
-  .legend {
-    > p {
-      display: inline-block;
-      button {
-        border: 1px solid #575757;
-        margin-right: 2px;
-        background: white;
-        padding: 0 3px;
-      }
-
-      margin-right: 3px;
-    }
-  }
-}
-.isFilterTable {
-  padding: 0;
-  .agPage {
-    order: 2;
-    margin-top: 10px;
-  }
-  .isBig {
-    order: 1;
-    margin-top: 0px;
-  }
-  .queryDesc {
-    order: 3;
-  }
-  .detailTable{
-    margin-top: 0px;
-
-  }
-.common-table{
-    margin-top: 0px;
-
-}
-}
-</style>

@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="middle">
+  <div :class="verticalCls">
+    <div :class="classes">
       <div style="">
         <NavigatorPrimaryMenu
           v-for="(menu, index) in menuLists"
@@ -22,7 +22,7 @@
 </template>
 <script>
   import { mapState, mapMutations } from 'vuex';
-
+  import { classFix } from '../constants/global';
   import NavigatorPrimaryMenu from './NavigatorPrimaryMenu.vue';
   import NavigatorSubMenu from './NavigatorSubMenu.vue';
 
@@ -30,7 +30,6 @@
     data() {
       return {
         togglePrimaryMenuData: [],
-
       };
     },
     components: {
@@ -38,12 +37,17 @@
       NavigatorSubMenu,
     },
     computed: {
-      
+
       ...mapState('global', {
         menuLists: ({ menuLists }) => menuLists,
         primaryMenuIndex: state => state.primaryMenuIndex,
-
       }),
+      classes() {
+        return [
+          `${classFix}middle`,
+        ];
+      },
+      verticalCls: () => `${classFix}verticalCls`,
     },
     methods: {
       ...mapMutations('global', ['changeSelectedPrimaryMenu', 'hideMenu']),
@@ -59,32 +63,3 @@
     }
   };
 </script>
-<style lang="less" scoped>
-   .middle {
-      position: relative;
-      display: flex;
-      flex: 1 1 1px;
-      overflow: auto;
-      div{
-        width: 100%;
-      }
-        .navigator-primary-menu{
-          font-size: 14px;
-          flex-direction: row;
-          padding: 14px 20px;
-          justify-content: space-around;
-          .navigator-primary-menu-div{
-           padding-right: 20px;
-           overflow: hidden;
-           height: 14px;
-           line-height: 14px;
-           white-space: nowrap;
-           text-overflow:ellipsis
-          }
-          
-        }
-    }
-     .middle::-webkit-scrollbar {
-        display: none;
-    }
-</style>

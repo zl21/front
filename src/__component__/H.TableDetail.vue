@@ -1,15 +1,12 @@
 <template>
-  <div
-    :id="currentTableName"
-    class="horizontalTableDetail"
-  >
+  <div :id="currentTableName" :class="classes">
     <!-- <button @click="aa">
       不可编辑
     </button>
     <button @click="bb">
       同意
     </button> -->
-    
+
     <TabPanels
       type="line"
       is-keep-alive
@@ -25,6 +22,7 @@
   import Vue from 'vue';
   import tabComponent from './SingleObjectTabComponent.vue';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
+  import { classFix } from '../constants/global';
 
 
   export default {
@@ -45,10 +43,10 @@
         }
         return '';
       },
-      
+      classes: () => `${classFix}horizontalTableDetail`,
       tabPanels() {
         const arr = [];
-       
+
         if (this.tabPanel) {
           this.tabPanel.forEach((item, index) => {
             const obj = { ...item };
@@ -56,7 +54,7 @@
               obj.label = this.activeTab.label;
               obj.componentAttribute.isactive = this.tabPanel[0].componentAttribute.buttonsData.data.isactive;
               obj.componentAttribute.watermarkimg = this.tabPanel[0].componentAttribute.buttonsData.data.watermarkimg;
-              obj.componentAttribute.isMainTable = true;     
+              obj.componentAttribute.isMainTable = true;
               obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.tabPanel[0].componentAttribute.panelData.data.isdefault;
             } else {
               obj.componentAttribute.watermarkimg = obj.componentAttribute.panelData.data.watermarkimg;// 子表水印
@@ -82,7 +80,7 @@
                 obj.componentAttribute.componentName = obj.webact.substring(obj.webact.lastIndexOf('/') + 1, obj.webact.length);// 自定义组件名称
                 obj.componentAttribute.componentType = webactType;// 自定义组件类型ALL/HALF
                 obj.componentAttribute.itemInfo = item;
-              } 
+              }
               // else {
               //   const data = {
               //     mask: true,
@@ -122,7 +120,7 @@
       }
     },
     methods: {
-      
+
       // ...mapMutations('global', ['isRequestUpdata', 'emptyTestData']),
       // aa() {
       //   this.a = !this.a;
@@ -209,7 +207,7 @@
                 }).then(() => {
 
                 });
-               
+
                 this.getItemObjForChildTableForm({
                   table: tablename, objid: itemId, refcolid, tabIndex: index
                 });
@@ -276,22 +274,3 @@
     }
   };
 </script>
-
-<style lang="less">
-  .horizontalTableDetail {
-    flex: 1;
-    height: 100%;
-    overflow: hidden;
-    .ark-tabs-panels{
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      .ark-tabs-panels-content{
-        flex: 1;
-        overflow: hidden;
-        height: 100%;
-      }
-    }
-  }
-
-</style>

@@ -1,6 +1,6 @@
 <template>
-  <div class="commonTable">
-    <Table
+  <div :class="classes">
+    <Tables
       ref="table"
       :columns="columns"
       class="table"
@@ -50,6 +50,9 @@
   import DispatchEvent from '../__utils__/dispatchEvent';
   import createModal from './PreviewPicture/index.js';
 
+  import Tables from '../../../burgeon-UI/src/components/table';
+  import { classFix } from '../constants/global';
+
   Vue.component('buttons', Vue.extend(ButtonComponent));
   export default {
     data() {
@@ -83,11 +86,12 @@
           confirm: () => {
           }
         }, // 弹框配置信息
-        selectedIndex: []
+        selectedIndex: [],
+        tableOb: '',
       };
     },
     name: 'CommonTable',
-    components: { Dialog },
+    components: { Dialog, Tables },
     props: {
       // buttonsData: {// 获取自定义按钮组
       //   type: Array,
@@ -390,7 +394,7 @@
               }
             }
 
-            
+
             return acc;
           }, []));
           return columns;
@@ -410,11 +414,11 @@
 
           // 回填勾选
           this.selectedIndex.forEach((curIndex) => {
-            if(data[curIndex]){
+            if (data[curIndex]) {
               data[curIndex]._checked = true;
             }
           });
-          
+
           this.spinShow = false;
           return data;
         }
@@ -475,16 +479,21 @@
         }
         return total;
       }, // 总计和合计
+      classes: () => `${classFix}commonTable`
     },
     watch: {},
-    mounted() {
-      // const myObserver = new ResizeObserver(((entries) => {
-      //   entries.forEach(() => {
-      //     (this.$refs.table && this.$refs.table.handleResize) ? this.$refs.table.handleResize() : null;
-      //   });
-      // }));
-      // myObserver.observe(document.getElementsByClassName('commonTable')[0]); // dom
-    },
+    // mounted() {
+    //   console.log(this.$refs.table)
+    //   this.tableOb = new ResizeObserver(((entries) => {
+    //     entries.forEach(() => {
+    //       (this.$refs.table && this.$refs.table.handleResize) ? this.$refs.table.handleResize() : null;
+    //     });
+    //   }));
+    //   this.tableOb.observe(document.getElementsByClassName('commonTable')[0]); // dom
+    // },
+    // beforeDestroy() {
+    //   this.tableOb.unobserve(document.getElementsByClassName('commonTable')[0])
+    // },
     methods: {
       ...mapMutations('global', ['tabOpen', 'directionalRouter', 'updateCustomizeMessage']),
       // btnclick(obj) {
@@ -499,7 +508,7 @@
       //   // case 'navbar':
       //   //   this.$emit('objTabActionNavbar', obj);
       //   //   break;
-       
+
       //   // default:
       //   //   break;
       //   // }
@@ -588,7 +597,7 @@
               } else if (objdistype === 'customized') {
                 // 自定义界面
                 const type = 'tableDetailAction';
-                const field = params.column.customerurl.refobjid
+                const field = params.column.customerurl.refobjid;
                 const url = `/${params.column.customerurl.tableurl.toUpperCase()}/${params.row[field]}`;
                 const tab = {
                   type,
@@ -1055,81 +1064,3 @@
     }
   };
 </script>
-
-<style lang="less">
-  .ark-spin-fix {
-    z-index: 999;
-    
-    .demo-spin-icon-load {
-      animation: ani-demo-spin 1s linear infinite;
-    }
-    
-    @keyframes ani-demo-spin {
-      from {
-        transform: rotate(0deg);
-      }
-      50% {
-        transform: rotate(180deg);
-      }
-      to {
-        transform: rotate(360deg);
-      }
-    }
-  }
-  
-  .commonTable {
-    height: 100%;
-    overflow-y: hidden;
-    position: relative;
-    
-    .table {
-      height: 100% !important;
-      
-      thead th {
-        font-weight: 400;
-      }
-      
-      thead tr {
-        height: 28px;
-      }
-      
-      tbody tr {
-        height: 28px;
-      }
-      
-      tbody tr.ark-table-row-hover td {
-        background-color: #ecf0f1;
-      }
-      
-      tfoot tr {
-        height: 28px;
-        background-color: #fff;
-      }
-      
-      .ark-table td {
-        background-color: rgba(255, 255, 255, 0);
-      }
-      
-      .ark-table-fixed tfoot td {
-        border-bottom: 1px solid #e8eaec;
-      }
-      
-      .doc-wrapper {
-        margin-right: 5px;
-        display: inline-block;
-        
-        a {
-          color: #575757;
-        }
-      }
-      
-      .doc-wrapper:hover {
-        border-bottom: 1px solid #000;
-        
-        a {
-          color: #2d8cf0;
-        }
-      }
-    }
-  }
-</style>

@@ -6,7 +6,7 @@ import ParameterDataProcessing from '../parameterDataProcessing';
 import LinkageRelationships from '../../ExtendedAttributes/LinkageRelationships';
 import { validateForm } from './Validate';
 import {
-     MODULE_COMPONENT_NAME 
+     MODULE_COMPONENT_NAME, classFix
   } from '../../../constants/global';
   console.log(MODULE_COMPONENT_NAME,'MODULE_COMPONENT_NAMEMODULE_COMPONENT_NAME')
 export default {
@@ -49,7 +49,7 @@ export default {
   },
   computed: {
     // formItemLists () {
-      
+    classes: () => `${classFix}panelForm compositeAllform`,
     // },
     // 计算属性的 div的排列格式
     setWidth () {
@@ -386,7 +386,7 @@ export default {
         };
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
        }
-        
+
     }
   },
   created() {
@@ -394,7 +394,7 @@ export default {
   },
   mounted () {
     this.setFormlist();
-    
+
     // 监听大小
     window.addEventListener('resize', this.setResize);
   },

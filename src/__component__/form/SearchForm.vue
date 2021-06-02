@@ -1,5 +1,5 @@
 <template>
-  <div class="searchFormContainer">
+  <div :class="classes">
     <DownComponent
       :search-foldnum="searchFoldnum"
       :default-spread="defaultSpread"
@@ -20,6 +20,7 @@
 
 <script>
   import DownComponent from '../DownComponent';
+  import { classFix } from '../../constants/global';
 
   export default {
     data() {
@@ -30,7 +31,9 @@
       DownComponent
     },
     watch: {},
-    computed: {},
+    computed: {
+      classes: () => `${classFix}searchFormContainer`
+    },
     props: {
       setHeight: {
         type: Number,
@@ -78,11 +81,3 @@
     }
   };
 </script>
-
-<style lang="less">
-    .searchFormContainer {
-        .formLayout {
-            margin-top: 10px;
-        }
-    }
-</style>

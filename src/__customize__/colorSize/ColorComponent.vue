@@ -161,7 +161,7 @@
         type: Array,
         default: () => ([])
       },
-      
+
     },
     watch: {
       rightTableDataForColor: {
@@ -267,7 +267,7 @@
 
       }, // 手动新增颜色输入框改变时触发
       addIconClick() {
-        
+
         const { itemId } = this.$route.params;
         if (itemId == 'New') {
           return;
@@ -424,90 +424,3 @@
     }
   };
 </script>
-
-<style lang="less" scope="this api replaced by slot-scope in 2.5.0+">
-    .color_container {
-        height: 100%;
-        padding: 10px;
-        display: flex;
-        .left_container {
-            height: 100%;
-            width: 27%;
-            border: 1px solid #b4b4b4;
-            border-radius: 6px;
-            padding: 10px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            .left_button {
-                margin-bottom: 8px;
-            }
-            .left_table {
-                flex: 1;
-                overflow: hidden;
-            }
-        }
-        .center_container {
-            height: 100%;
-            width: 6%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            > div {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                height: 20px;
-                width: 20px;
-                border: 1px solid #b4b4b4;
-                border-radius: 6px;
-                margin: 20px 0px;
-            }
-            .right_single {
-            }
-            .right_double {
-            }
-            .left_single {
-            }
-            .right_double {
-            }
-        }
-        .right_container {
-            height: 100%;
-            width: 67%;
-            border: 1px solid #b4b4b4;
-            border-radius: 6px;
-            padding: 10px;
-            overflow: auto;
-            display: flex;
-            flex-direction: column;
-            .right_input {
-                width: 50%;
-                margin-bottom: 8px;
-                .ark-input-group {
-                    top: 0px;
-                }
-                .ark-input-group-prepend {
-                    .ark-btn {
-                        display: flex;
-                        align-items: center;
-                        span {
-                            position: relative;
-                        }
-                    }
-                }
-            }
-            .right_table {
-                flex: 1;
-                .ark-select-selection {
-                    height: 22px;
-                }
-                .ark-input-wrapper > input {
-                    height: 22px;
-                }
-            }
-        }
-    }
-</style>

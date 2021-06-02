@@ -65,7 +65,7 @@
       if (this.$router.currentRoute.path === '/') {
         this.flag = true;
       }
-     
+
     },
     computed: {
       ...mapState('global', ['keepAliveLists', 'openedMenuLists', 'isShowDashboardPage']),
@@ -88,11 +88,3 @@
     }
   };
 </script>
-
-<style scoped>
-  .dispalyArea {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-</style>

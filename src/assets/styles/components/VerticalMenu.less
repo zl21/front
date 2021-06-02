@@ -1,0 +1,32 @@
+@vertical-menu-prefix-cls: ~"@{css-prefix}verticalCls";
+
+.@{vertical-menu-prefix-cls} {
+  .middle{
+    position: relative;
+    display: flex;
+    flex: 1 1 1px;
+    overflow: auto;
+    div{
+      width: 100%;
+    }
+    .navigator-primary-menu{
+      font-size: 14px;
+      flex-direction: row;
+      //padding: 14px 20px;
+      justify-content: space-around;
+      .navigator-primary-menu-div{
+        padding-right: 20px;
+        overflow: hidden;
+        height: 14px;
+        line-height: 14px;
+        white-space: nowrap;
+        text-overflow:ellipsis
+      }
+    }
+  }
+
+}
+
+.@{vertical-menu-prefix-cls}::-webkit-scrollbar{
+  display: none;
+}

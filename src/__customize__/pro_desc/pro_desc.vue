@@ -1,5 +1,5 @@
 <template>
-  <div class="pro_desc">
+  <div :class="classes">
     <div class="buttonGroup">
       <Button
         v-for="(item, index) in buttonGroup"
@@ -8,7 +8,7 @@
         v-text="item.name"
       />
     </div>
-    
+
     <div class="content">
       <!-- 商品／颜色主图 -->
       <Collapse
@@ -18,7 +18,7 @@
           name="1"
           title-type="center"
         >
-          商品/颜色主图 
+          商品/颜色主图
           <div
             slot="content"
             class="item-area"
@@ -76,7 +76,7 @@
                     >
                       <div
                         :style="{'background-position': 'center','background-repeat':'no-repeat','background-size':'auto 100%',backgroundImage: 'url('+item.URL+'?x-oss-process=image/quality,q_80)',height:'64px',width:'64px'}"
-                        :title="item.NAME" 
+                        :title="item.NAME"
                       />
                       <div
                         slot="content"
@@ -153,7 +153,7 @@
                         @click.stop="colImgDelete(item,index)"
                         @mousedown.stop
                       />
-                     
+
                       <Poptip
                         v-model="item.flag"
                         placement="right"
@@ -182,10 +182,10 @@
                             </div>
                           </form>
                         </span>
-                       
+
                         <div
                           :style="{'background-position': 'center','background-repeat':'no-repeat','background-size':'auto 100%',backgroundImage: 'url('+item.URL+'?x-oss-process=image/quality,q_80)',height:'62px',width:'64px'}"
-                          :title="item.NAME" 
+                          :title="item.NAME"
                         />
                         <div
                           v-if="item.URL"
@@ -227,12 +227,12 @@
 <script>
   import axios from 'axios';
   import network, { urlSearchParams } from '../../__utils__/network';
-  import { custommizedRequestUrl, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY } from '../../constants/global';
+  import { custommizedRequestUrl, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, classFix } from '../../constants/global';
   import store from '../../__config__/store.config';
 
   export default {
     name: 'ProDesc',
-    inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY],  
+    inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY],
 
     created() {
       const { itemId } = this.$route.params;
@@ -296,6 +296,9 @@
         uploadImage: 'http://signin.aliyun.com/qiaodan/login.htm'
       };
     },
+    computed: {
+      classes: () => `${classFix}pro_desc`
+    },
     components: {
     },
     methods: {
@@ -338,7 +341,7 @@
       // },
       getData(type) {
         // 获取数据
-       
+
         const { itemId } = this.$route.params;
 
         // 获取主图
@@ -360,7 +363,7 @@
                 this.proImg.forEach((item) => {
                   this.$set(item, 'flag', false);
                 });
-              } 
+              }
               if (res.data.data.VIDEO) {
                 this.video = res.data.data.VIDEO;
               }
@@ -368,19 +371,19 @@
               if (res.data.data.DETAILDESC) { // 更新框架表单修改数据
                 const values = {};
                 values[this.itemInfo.tablename] = { DETAILDESC: res.data.data.DETAILDESC };
-                store.commit(`${this[MODULE_COMPONENT_NAME]}/updateModifyData`, { 
+                store.commit(`${this[MODULE_COMPONENT_NAME]}/updateModifyData`, {
                   tableName: this.itemInfo.tablename,
                   value: values,
                 });
                 if (type === 'refresh') {
-                  store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { 
+                  store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, {
                     tableName: this.itemInfo.tablename,
                     value: values,
                   });
                 }
               }
-              
-             
+
+
               // else if (!this.modify) {
               //   this.proImg.push({
               //     NAME: '默认图片',
@@ -402,7 +405,7 @@
           }).then((col) => {
             if (col.data.code === 0) {
               const indexTab = null;
-            
+
               this.colorList = [];
               this.colorList = col.data.data.COLOR;
 
@@ -590,7 +593,7 @@
           }
           const data = new FormData();
           const path = `PS_C_PRO/${this.objId}/`;
-          
+
           data.append('file', value);
           data.append('path', path);
           if (value === undefined) {
@@ -694,330 +697,10 @@
         //   titleAlign: 'center'
         // };
       },
-     
+
     },
     beforeDestroy() {
       window.removeEventListener('tabClick', this.tabClick);
     },
   };
 </script>
-
-<style lang="less">
-.pro_desc {
-  display: flex;
-  flex-direction: column;
-  font-size: 12px;
-  .buttonGroup {
-    margin-top: 10px;
-    margin-bottom: 9px;
-    font-size: 0;
-    height: 24px;
-    button {
-      height: 24px;
-      width: auto;
-      margin-right: 8px;
-      margin-left: 0px;
-      padding: 0 8px;
-      background: #fff;
-      color: #fd6442;
-      border: 1px solid #fd6442;
-      border-radius: 2px;
-      font-size: 12px;
-
-      &:hover {
-        border-color: rgba(253, 100, 66, 0.6);
-        color: rgba(253, 100, 66, 0.6);
-      }
-    }
-
-    > button:last-child {
-      margin-right: 0px;
-    }
-  }
-
-  .content {
-    flex: 1;
-    overflow: auto;
-      .item-area {
-        .imageContent{
-          display: flex;
-          flex-direction: column;
-        }
-         >div{
-            min-height: 64px;
-          }
-        .pro_img {
-          display: flex;
-          > div {
-            // display: inline-block;
-            .upload-span {
-              cursor: pointer;
-              display: block;
-              height: 62px;
-              width: 62px;
-              line-height: 62px;
-              transform: scale(0.9);
-            }
-            .span-tip {
-              color: #0f8ee9;
-              cursor: pointer;
-              margin: 0 6px;
-              a {
-                color: #0f8ee9;
-                text-decoration: none;
-              }
-            }
-          }
-
-          > div:first-child {
-            width: 90px;
-            margin-right: 12px;
-            text-align: right;
-          }
-
-          > div:last-child {
-            flex: 1;
-            
-            > p {
-              color: #d3d3d3;
-              font-size: 12px;
-            }
-
-
-            .clearfix::before,
-            .clearfix::after {
-              content: "";
-            }
-            .clearfix::after {
-              clear: both;
-            }
-            ul {
-              list-style:none;
-              li {
-                width: 64px;
-                height: 64px;
-                margin-right:15px;
-                // padding-right: 12px;
-                padding-bottom: 10px;
-                float: left;
-                margin-bottom: 10px;
-                position: relative;
-                > i.iconios-close-circle {
-                  color: #e80000;
-                  position: absolute;
-                  top: -11px;
-                  right: -4px;
-                  cursor: pointer;
-                  z-index: 10;
-                }
-
-                > span {
-                  width: 64px;
-                  height: 64px;
-                  display: inline-block;
-
-                  > div {
-                    background-size: auto 100%;
-                    background-position: center;
-                    background-repeat: no-repeat;
-                  }
-                }
-
-                > div {
-                  // width: 100%;
-                  // height: 100%;
-                  // border: 1px solid #c7c7c7;
-                  // color: #0f8ee9;
-                  // text-align: center;
-                  // box-sizing: border-box;
-                  // background-size: auto 100%;
-                  // background-position: center;
-                  // background-repeat: no-repeat;
-                }
-              }
-
-              li:last-child {
-                div {
-                  background-size: auto 90%;
-                }
-              }
-            }
-          }
-        }
-
-        .pro_color_img {
-          margin-top: 12px;
-          display: flex;
-          > div {
-            // display: inline-block;
-          }
-
-          > div:first-child {
-            width: 90px;
-            margin-right: 12px;
-            text-align: right;
-          }
-
-          > div:last-child {
-            flex: 1;
-            .clearfix::before,
-            .clearfix::after {
-              content: "";
-            }
-            .clearfix::after {
-              clear: both;
-            }
-            ul {
-              list-style:none;
-              li {
-                min-width: 64px;
-                margin-right: 12px;
-                float: left;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                margin-bottom: 10px;
-                > span {
-                  display: inline-block;
-                  height: 20px;
-                  line-height: 20px;
-                  width: 100%;
-                  text-align: center;
-                  box-sizing: border-box;
-                  border: 1px solid #c7c7c7;
-                  border-radius: 2px;
-                  padding: 0 5px;
-                }
-
-                > div {
-                  /*padding: 2px;*/
-                  border: 1px solid #c7c7c7;
-                  height: 64px;
-                  box-sizing: border-box;
-                  position: relative;
-                  margin-top: 2px;
-                  width: 64px;
-
-                  i.iconios-close-circle {
-                    color: #e80000;
-                    position: absolute;
-                    right: -5px;
-                    top: -6px;
-                    cursor: pointer;
-                    z-index: 10;
-                  }
-                  > span:first-child {
-                    display: inline-block;
-                    position: absolute;
-                    top: -4px;
-                    left: 50%;
-                    margin-left: -2px;
-                    border-left: 4px solid transparent;
-                    border-right: 4px solid transparent;
-                    border-bottom: 4px solid #c7c7c7;
-
-                    &:after {
-                      content: "";
-                      position: absolute;
-                      top: 1px;
-                      left: -3px;
-                      border-left: 3px solid transparent;
-                      border-right: 3px solid transparent;
-                      border-bottom: 3px solid white;
-                    }
-                  }
-
-                  > span:last-child {
-                    display: block;
-                    width: 100%;
-                    height: 100%;
-                    div {
-                      width: 100%;
-                      display: inline-block;
-                      background-size: auto 100%;
-                      background-position: center;
-                      background-repeat: no-repeat;
-                    }
-
-                    .default {
-                      background-size: auto 90%;
-                    
-                    }
-                  }
-                  > div {
-                    width: 100%;
-                    display: inline-block;
-                    background-size: auto 100%;
-                    background-position: center;
-                    background-repeat: no-repeat;
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    .pro_detail {
-      .item-area {
-        position: relative;
-        padding: 10px;
-        > div {
-          position: relative;
-        }
-      }
-    }
-
-    .pro_mark {
-      .item-area {
-        display: flex;
-        .el-col {
-          flex: 1;
-          height: 28px;
-          display: flex;
-          label {
-            text-align: right;
-            width: 102px;
-            display: inline-block;
-            height: 28px;
-            line-height: 28px;
-          }
-
-          span {
-            display: inline-block;
-            flex: 1;
-            height: 24px;
-            line-height: 22px;
-            margin-top: 2px;
-            box-sizing: border-box;
-            border: 1px solid #bfcbd9;
-            padding: 0 4px;
-            background: #f4f4f4;
-            border-radius: 2px;
-          }
-        }
-      }
-    }
-    .imageInstruction{
-        color: #d3d3d3;
-        font-size: 12px;
-        margin-top: 8px;
-    }
-      .upload-span {
-                        cursor: pointer;
-                        color: #0f8ee9;
-                        display: block;
-                        height: 62px;
-                        width: 62px;
-                        line-height: 62px;
-                        transform: scale(0.9);
-                      }
-  }
-  
-}
-.dialog-scroll {
-    height: 560px;
-        width: 1000px;
-        overflow: auto;
-  }
-</style>

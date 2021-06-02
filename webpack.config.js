@@ -70,7 +70,7 @@ module.exports = env => ({
         target,
         changeOrigin: true
       },
-      
+
       {
         context: proxyLists,
         target,
@@ -221,8 +221,8 @@ module.exports = env => ({
     //   'window.jQuery': 'jquery'
     // })
 
-    // new ModuleFederationPlugin({ 
-    //   name: '', 
+    // new ModuleFederationPlugin({
+    //   name: '',
     //   remotes: {
     //     arkui_BCL: 'arkui_BCL@http://0.0.0.0:3800/remoteEntry.js',
     //     shared: ['vue', '@syman/ark-ui', 'axios']

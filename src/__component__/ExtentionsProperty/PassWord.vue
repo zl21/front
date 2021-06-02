@@ -1,5 +1,5 @@
 <template>
-  <div class="PassWord">
+  <div :class="classes">
     <Description
       :option="option"
       @removeOption="removeOption"
@@ -72,6 +72,7 @@
   import LabelWithSelect from './LabelWithSelect.vue';
   import EnumerateRadioItem from './EnumerateRadioItem.vue';
   import LabelWithInput from './LabelWithInput.vue';
+  import { classFix } from '../../constants/global';
 
   export default {
     components: {
@@ -107,7 +108,7 @@
           key: 'password_type',
           value: {
             is_all: this.selectValue
-          } 
+          }
         });
       },
       radioValueChange({ key, value }) {
@@ -118,14 +119,14 @@
           this.selectValue = true;
         }
         this.value = value;
-        
+
         this.$emit('dataChange', { key, value });
         if (value) {
           this.$emit('dataChange', {
             key: 'password_type',
             value: {
               is_all: this.selectValue
-            } 
+            }
           });
         } else {
           this.$emit('dataChange', {
@@ -143,6 +144,9 @@
         });
       }
     },
+    computed: {
+      classes: () => `${classFix}PassWord`
+    },
     created() {
       const root = this.$parent.rootData;
 
@@ -158,62 +162,3 @@
     }
   };
 </script>
-<style lang="less">
-.PassWord{
-  .input-group-item {
-          margin: 5px 7px;
-          display: flex;
-          flex-direction: column;
-          .logInfo {
-            color: orangered;
-            font-style: italic;
-            text-align: right;
-            padding: 5px 5px 5px;
-          }
-          .cell {
-            text-align: right;
-            line-height: 24px;
-            vertical-align: middle;
-            display: flex;
-            flex: 1;
-            .label {
-              flex: 1.5;
-              display: flex;
-              justify-content: flex-end;
-              align-items: center;
-            }
-            .input,
-            .select {
-              flex: 3;
-              padding: 0 5px;
-              border: 1px solid lightgrey;
-            }
-            input[type='text']::placeholder {
-              color: grey;
-              font-size: 12px;
-              font-style: italic;
-              letter-spacing: 1px;
-            }
-          }
-        }
-  .radioItemWrapper {
-      display: flex;
-      align-items: center;
-      flex: 3;
-      flex-wrap: wrap;
-      .radioItem {
-        cursor: pointer;
-        padding: 5px;
-        text-align: left;
-        min-width: 150px;
-        input[type='radio'] {
-          line-height: 100%;
-          vertical-align: middle;
-        }
-      }
-      .radioItem:hover {
-        opacity: 0.8;
-      }
-    }
-}
-</style>

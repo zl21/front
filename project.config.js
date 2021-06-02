@@ -38,8 +38,8 @@ module.exports = {
   // target: ' http://47.103.6.45:27777/', // 森马
   // target: 'http://cs.yqdev.burgeononline.com/', // 云雀
   // target: 'http://47.102.164.111:27777', // 卡宾
- 
-  
+
+
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
   enableGateWay: true, // 网关是否打开,
@@ -71,7 +71,7 @@ module.exports = {
   layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
   backDashboardRoute: [], // 配置刷新浏览器回到Dashboard界面
   custommizedRequestURL: {
-    
+
   }, // 配置内置自定义界面requestURL
   requestPenddingExpire: 1000 * 0.5, // 单位S
   enableRestrictSave: true, // 是否限制保存，默认为true,true:界面未修改值则点击保存按钮不调用保存服务，false:无论是否修改值都会调用保存服务
@@ -150,7 +150,7 @@ module.exports = {
     //   AD_COLUMN: ['/ad-app/p/cs/QueryList', '/ad-app/p/cs/getTableQuery'],
     // },
     // customizePage: ['FUNCTIONPERMISSION'], // 自定义界面
-  }, 
+  },
   filterUrlForNetworkScript: () => true, // 框架默认true,
   listDefaultColumn: 4,
   // setComponentsProps: (type, props) => {  // 框架自定义表单配置
@@ -164,6 +164,7 @@ module.exports = {
   },
   useAgGrid: true, // 明细界面的表格全局用ag表格进行渲染
   messageSwitch: true, // 消息开关
+  useAgGrid: true, // 明细界面的表格全局用ag表格进行渲染
   // (data) => {
   //   if (data.router.params) {
   //     if (data.router.params.tableName && data.config().configPage[data.router.params.tableName].filter(u => u === data.url).length > 0) { // 筛选出配置界面不需要根据框架code报错提示框的接口
@@ -186,4 +187,6 @@ module.exports = {
   //   ),
   //   iconClass: 'iconfont iconmd-grid'
   // }
+  // classFix: 'r3-', // 样式前缀
+  classFix: '', // 样式前缀
 };

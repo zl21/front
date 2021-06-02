@@ -16,6 +16,7 @@
     :width="modalWidth"
     @on-cancel="onCancel"
     @on-ok="onOk"
+    class-name="ark-modal"
   >
     <p v-if="contentText">
       {{ contentText }}
@@ -49,6 +50,7 @@
 
 <script>
   import { DispatchEvent } from '../__utils__/dispatchEvent';
+  import { classFix } from '../constants/global';
 
   export default {
     // name: 'DialogComponent',
@@ -61,7 +63,7 @@
         type: [Array, Object],
         default: () => {}
       },
-      
+
       objTabActionDialogConfig: {// 当前自定义按钮配置信息
         type: [Object],
         default: () => {}
@@ -78,7 +80,7 @@
         type: Object,
         default: () => {}
       },
-      
+
       // showModal: {
       //   type: Boolean,
       //   default: () => false
@@ -175,7 +177,12 @@
           return this.setTitleName;
         }
         return this.title;
-      }
+      },
+      classes() {
+        return [
+          `${classFix}ark-modal`,
+        ];
+      },
     },
     watch: {
       dialogComponentName() {
@@ -250,27 +257,10 @@
         this.showModal = false;
         if (value === true && this.objTabActionDialogConfig.isrefrsh) {
           this.$emit('dialogComponentSaveSuccess');
-        } 
+        }
       },
-      
-   
+
+
     }
   };
 </script>
-
-<style lang="less" scoped>
-  .ark-modal-footer {
-    border: none;
-  }
-
-  .ark-modal-footer button > span {
-    font-size: 12px;
-  }
-
-  .ark-modal-footer button {
-    width: auto;
-    border-radius: 2px;
-    height: 26px;
-    line-height: 0px;
-  }
-</style>
