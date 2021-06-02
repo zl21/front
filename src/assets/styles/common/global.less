@@ -2,9 +2,7 @@
 
 // ExtentionInput
 
-@ExtentionInput-prefix-cls: ~"@{css-prefix}ExtentionInput";
-
-.@{ExtentionInput-prefix-cls} {
+.ExtentionInput {
   position: relative;
   textarea {
     resize: vertical !important;
@@ -44,9 +42,7 @@
 
 // DownComponent
 
-
-@Tag-close-prefix-cls: ~"@{css-prefix}tag-close";
-.@{Tag-close-prefix-cls} {
+.tag-close {
   width: 28px;
   height: 16px;
   position: absolute;
@@ -64,9 +60,10 @@
 
 
 // TabBar
-@Tab-bar-prefix-cls: ~"@{css-prefix}TabBar";
-
-.@{Tab-bar-prefix-cls} {
+.r3-tab-nav{
+  display: flex;
+  background: #f5f7f7;
+  margin-top: 20px;
   .ark-tabs-bar {
     margin-bottom: 0;
     border-bottom: none;
@@ -102,8 +99,7 @@
 
 
 // tabComponent
-@tabComponent-prefix-cls: ~"@{css-prefix}tabComponent";
-.@{tabComponent-prefix-cls}{
+.tabComponent{
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -140,8 +136,7 @@
 }
 
 // filterTreeContainer
-@filterTree-prefix-cls: ~"@{css-prefix}filterTreeContainer";
-.@{filterTree-prefix-cls}{
+.filterTreeContainer{
   width: 240px;
   height: 100%;
   padding: 10px;
@@ -167,8 +162,7 @@
 }
 
 // selectTreeContainer
-@selTree-prefix-cls: ~"@{css-prefix}selectTreeContainer";
-.@{selTree-prefix-cls}{
+.selectTreeContainer{
   height: 100%;
   .transferRight {
     height: 100%;
@@ -210,8 +204,7 @@
 }
 
 /* downComponent-context */
-@downContext-prefix-cls: ~"@{css-prefix}downComponent-context";
-.@{downContext-prefix-cls}{
+.downComponent-context{
   position: relative;
   .downComponent{
     border: 1px solid #d8d8d8;
@@ -243,8 +236,7 @@
 }
 
 /* urlName */
-@urlName-prefix-cls: ~"@{css-prefix}urlName";
-.@{urlName-prefix-cls}{
+.urlName{
   border:none;
   width: 100%;
   height:100%;
@@ -252,8 +244,7 @@
 
 
 /* standarTableListContent */
-@standarTableListContent-prefix-cls: ~"@{css-prefix}standarTableListContent";
-.@{standarTableListContent-prefix-cls}{
+.standarTableListContent{
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -301,8 +292,7 @@
 }
 
 /* waterMarkContainer */
-@waterMarkContainer-prefix-cls: ~"@{css-prefix}waterMarkContainer";
-.@{waterMarkContainer-prefix-cls} {
+.waterMarkContainer {
   position: relative;
   i {
     font-size: 104px;
@@ -324,8 +314,7 @@
 }
 
 /* NavigatorVertical */
-@NavigatorVertical-prefix-cls: ~"@{css-prefix}NavigatorVertical";
-.@{NavigatorVertical-prefix-cls}{
+.NavigatorVertical{
   height: 100%;
   display: flex;
   overflow-y: auto;
@@ -520,8 +509,7 @@
 }
 
 /* viewer */
-@viewer-prefix-cls: ~"@{css-prefix}viewer";
-.@{viewer-prefix-cls}{
+.viewer{
   height: 300px;
   width: 100%;
   overflow: hidden;
@@ -553,16 +541,14 @@
 }
 
 /* extentionRadio */
-@extentionRadio-prefix-cls: ~"@{css-prefix}extentionRadio";
-.@{extentionRadio-prefix-cls}{
+.extentionRadio{
   display: flex;
   flex-direction: column;
 }
 
 
 /* NetworkMonitorContainer */
-@network-prefix-cls: ~"@{css-prefix}NetworkMonitorContainer";
-.@{network-prefix-cls}{
+.NetworkMonitorContainer{
   height: 100%;
   overflow: scroll;
   display: flex;
@@ -589,8 +575,7 @@
 }
 
 /* TableDetailCollection */
-@tableColl-prefix-cls: ~"@{css-prefix}TableDetailCollection";
-.@{tableColl-prefix-cls}{
+.TableDetailCollection{
   .table-in {
     flex: 1;
     tbody tr.ark-table-row-hover td {
@@ -635,8 +620,7 @@
 }
 
 /* standardTable */
-@standardTable-prefix-cls: ~"@{css-prefix}standardTable";
-.@{standardTable-prefix-cls}{
+.standardTable{
   overflow: hidden;
   padding: 20px 0 0 0;
   display: flex;
@@ -695,34 +679,33 @@
       }
     }
   }
-  .isFilterTable {
-    padding: 0;
-    .agPage {
-      order: 2;
-      margin-top: 10px;
-    }
-    .isBig {
-      order: 1;
-      margin-top: 0px;
-    }
-    .queryDesc {
-      order: 3;
-    }
-    .detailTable{
-      margin-top: 0px;
-
-    }
-    .common-table{
-      margin-top: 0px;
-
-    }
+}
+.isFilterTable {
+  padding: 0;
+  .agPage {
+    order: 2;
+    margin-top: 10px;
   }
+  .isBig {
+    order: 1;
+    margin-top: 0px;
+  }
+  .queryDesc {
+    order: 3;
+  }
+  .detailTable{
+    margin-top: 0px;
 
+  }
+  .common-table{
+    margin-top: 0px;
+
+  }
 }
 
+
 /* horizontalTableDetail */
-@horizonTable-prefix-cls: ~"@{css-prefix}horizontalTableDetail";
-.@{horizonTable-prefix-cls}{
+.horizontalTableDetail{
   flex: 1;
   height: 100%;
   overflow: hidden;
@@ -739,16 +722,14 @@
 }
 
 /* mainComponent */
-@mainComponent-prefix-cls: ~"@{css-prefix}mainComponent";
-.@{mainComponent-prefix-cls}{
+.mainComponent{
   * {
     box-sizing: border-box !important;
   }
 }
 
 /* extentionProperty */
-@extentionProperty-prefix-cls: ~"@{css-prefix}extentionProperty";
-.@{extentionProperty-prefix-cls}{
+.extentionProperty{
   ul,
   li,
   div {
@@ -938,16 +919,14 @@
 
 
 /* searchFormContainer */
-@searchForm-prefix-cls: ~"@{css-prefix}searchFormContainer";
-.@{searchForm-prefix-cls}{
+.searchFormContainer{
   .formLayout {
     margin-top: 10px;
   }
 }
 
 /* importDialog */
-@importDialog-prefix-cls: ~"@{css-prefix}importDialog";
-.@{importDialog-prefix-cls}{
+.importDialog{
   .importICon {
     margin: 0;
     text-align: center;
@@ -1101,8 +1080,7 @@
 
 
 /* editor */
-@editor-prefix-cls: ~"@{css-prefix}editor";
-.@{editor-prefix-cls}{
+.editor{
   position:relative;
   b {
     font-weight: bold;
@@ -1195,8 +1173,7 @@
 
 
 /* InstanceManagementList */
-@instanceManage-prefix-cls: ~"@{css-prefix}InstanceManagementList";
-.@{instanceManage-prefix-cls}{
+.InstanceManagementList{
   width: 100%;
   height: 100%;
   box-sizing: border-box;
@@ -1252,8 +1229,7 @@
 
 
 /* r3-file-doc */
-@r3-file-doc-prefix-cls: ~"@{css-prefix}r3-file-doc";
-.@{r3-file-doc-prefix-cls}{
+.r3-file-doc{
   color: #0f8ee9;
 
   label{
@@ -1299,8 +1275,7 @@
 }
 
 /* singleObjectButton */
-@singleObj-prefix-cls: ~"@{css-prefix}singleObjectButton";
-.@{singleObj-prefix-cls}{
+.singleObjectButton{
   .buttonGroup {
     padding: 10px 0 5px 0;
   }
@@ -1320,8 +1295,7 @@
 }
 
 /* pro_desc */
-@pro_desc-prefix-cls: ~"@{css-prefix}pro_desc";
-.@{pro_desc-prefix-cls}{
+.pro_desc{
   display: flex;
   flex-direction: column;
   font-size: 12px;
@@ -1640,15 +1614,13 @@
 }
 
 /* extentionCellInput */
-@extenInput-prefix-cls: ~"@{css-prefix}extentionCellInput";
-.@{extenInput-prefix-cls}{
+.extentionCellInput{
   display: flex;
   flex-direction: column;
 }
 
 /* size_container */
-@sizeCOntainer-prefix-cls: ~"@{css-prefix}size_container";
-.@{sizeCOntainer-prefix-cls}{
+.size_container{
   height: 100%;
   padding: 10px;
   display: flex;
@@ -1704,8 +1676,7 @@
 }
 
 /* standard_container */
-@standardContainer-prefix-cls: ~"@{css-prefix}standard_container";
-.@{standardContainer-prefix-cls}{
+.standard_container{
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -1745,8 +1716,7 @@
 }
 
 /* AttachFilter-pop */
-@attachFilter-prefix-cls: ~"@{css-prefix}AttachFilter-pop";
-.@{attachFilter-prefix-cls}{
+.AttachFilter-pop{
   .iconbj_tcduo:before {
     content: "\e6b1";
   }
@@ -1757,8 +1727,7 @@
 }
 
 /* panelForm */
-@panelForm-prefix-cls: ~"@{css-prefix}panelForm";
-.@{panelForm-prefix-cls}{
+.panelForm{
   .content {
     display: grid;
   }
@@ -1766,8 +1735,7 @@
 
 
 /* printTemplate */
-@printTemplate-prefix-cls: ~"@{css-prefix}printTemplate";
-.@{printTemplate-prefix-cls}{
+.printTemplate{
   width:520px;
   .th{
     background: #f8f8f9;
@@ -1813,8 +1781,7 @@
 }
 
 /* commonTable */
-@commonTable-prefix-cls: ~"@{css-prefix}commonTable";
-.@{commonTable-prefix-cls}{
+.commonTable{
   height: 100%;
   overflow-y: hidden;
   position: relative;

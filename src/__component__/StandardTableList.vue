@@ -418,7 +418,7 @@
 
         const { range } = this.searchData;
         this.searchData.startIndex = range * (page - 1);
-        if (this.currentTabValue.tabValue.tab_value) {
+        if (this.currentTabValue && this.currentTabValue.tabValue.tab_value) {
           Object.values(this.currentTabValue.tabValue.tab_value).map((item) => {
             this.searchData.fixedcolumns = Object.assign({}, item, this.searchData.fixedcolumns);
             this.filterTableParam = item;

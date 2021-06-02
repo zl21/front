@@ -23,6 +23,7 @@ import { addSearch } from './src/__utils__/indexedDB';
 import { createWatermark } from './src/__utils__/waterMark';
 
 import './src/__utils__/getChildComponent';
+// import '@syman/ark-ui/dist/styles/ark-ui.css';
 
 // css import
 // 组件css汇总
@@ -30,8 +31,8 @@ import './src/index.less';
 import './src/assets/theme/custom.less';
 
 // // 自定义
-import './src/assets/styles/xc.less';
-import './src/assets/styles/xc1.less';
+// import './src/assets/styles/xc.less';
+// import './src/assets/styles/xc1.less';
 
 // 全局指令
 import inputNumber from './src/directive/inputNumber';

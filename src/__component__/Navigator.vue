@@ -262,7 +262,7 @@
       },
       classes() {
         return [
-          `${classFix}Navigator`,
+          `${classFix}navigator`,
         ];
       },
     },

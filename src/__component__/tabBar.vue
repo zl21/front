@@ -1,5 +1,5 @@
 <template>
-  <div :class="classes">
+  <div class="r3-tab-nav">
     <Tabs
       ref="R3_Tabs"
       type="card"
@@ -16,7 +16,6 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import { classFix } from '../constants/global';
 
   export default {
     name: 'TabBar',
@@ -36,7 +35,7 @@
     computed: {
       classes() {
         return [
-          `${classFix}TabBar`,
+          'r3-tab-nav',
         ];
       },
     },
