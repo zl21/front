@@ -2814,21 +2814,12 @@
           if(!this.copyDataSource.row[params.index]) {
             return null
           }
-          let data = this.copyDataSource.row[params.index][cellData.colname].val
-          // 如果是json化的对象
-          if(data.startsWith('{"')) {
-            data = JSON.parse(data)
-            this.copyDataSource.row[params.index][cellData.colname].val = `已经选中${data.total}条数据`;
-            this.copyDataSource.row[params.index][cellData.colname].defaultSelected = [{
-              ID: data,
-              Label: `已经选中${data.total}条数据`
-            }];
-          } else {
-            this.copyDataSource.row[params.index][cellData.colname].val = data
-          }
-
-          const defaultValue = this.copyDataSource.row[params.index][cellData.colname].val
-          const defaultSelected = this.copyDataSource.row[params.index][cellData.colname].defaultSelected || []
+          const valueObj = this.copyDataSource.row[params.index][cellData.colname]
+          const defaultValue = valueObj.val
+          const defaultSelected = valueObj.val ? [{
+            ID:  /选中/.test(valueObj.val) ? valueObj.refobjid : valueObj.val,
+            Label: /选中/.test(valueObj.val) ? valueObj.val : `已经选中${JSON.parse(valueObj.val).total}条数据`
+          }] : []
           return h('div', [
             h(tag, {
               style: {
