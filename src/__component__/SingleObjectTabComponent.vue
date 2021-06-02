@@ -93,10 +93,10 @@
     <!-- 左右结构主表和子表1:1模式的form(面板) -->
     <panelForm
       v-if="panelData.isShow&&!componentName"
-      :table-name="tableName"
+      :tableName="tableName"
       :readonly="objreadonly"
       :is-main-table="isMainTable"
-      :default-data="panelData.data"
+      :defaultData="panelData.data"
     ></panelForm>
     <!-- <compositeForm
       v-if="panelData.isShow&&!componentName"
