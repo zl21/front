@@ -160,9 +160,9 @@
     },
     mounted() {
     },
-    created() {
-      this.dowClass = this.defaultSpread;
-    },
+    // created() {
+    //   this.dowClass = this.defaultSpread;
+    // },
     watch: {
       FormItemLists: {
         handler(val) {
@@ -201,6 +201,9 @@
           }
         },
         deep: true
+      },
+      defaultSpread(newVal) {
+        this.dowClass = !newVal;
       }
     },
     methods: {

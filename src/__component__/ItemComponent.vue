@@ -33,7 +33,7 @@
         v-if="_items.required"
         class="label-tip"
       >*</span>
-      <template v-if="getVersion() === '1.4' && _items.props.fkdisplay === 'pop' && type==='PanelForm'&&_items.type !== 'defined'">
+      <template v-if="getVersion() === '1.4' && _items.props.fkdisplay === 'pop' && type==='PanelForm'">
         <!-- 路由跳转 -->
         <template v-if="!!_items.value &&_items.props.Selected &&_items.props.Selected[0] && !!_items.props.Selected[0].ID && _items.props.Selected[0].ID !=='-1'&& _items.props.Selected[0].ID !==0 && _items.props.Selected[0].ID !=='0'">
           <i
@@ -45,7 +45,7 @@
         </template>
 
       </template>
-      <template v-if="getVersion() === '1.4' && _items.props.fkdisplay === 'drp' && type==='PanelForm'&&_items.type !== 'defined'">
+      <template v-if="getVersion() === '1.4' && _items.props.fkdisplay === 'drp' && type==='PanelForm'">
         <!-- 路由跳转 -->
         <template v-if="!!_items.value && _items.props.defaultSelected && _items.props.defaultSelected[0] && !!_items.props.defaultSelected[0].ID && _items.props.defaultSelected[0].ID !=='-1'&& _items.props.defaultSelected[0].ID !=='0'&& _items.props.defaultSelected[0].ID !==0">
           <i
@@ -59,7 +59,6 @@
       </template>
 
       <span
-        v-if="_items.type !== 'defined'"
         :title="_items.title"
       >{{ _items.title }}:</span>
     </span>
@@ -439,6 +438,7 @@
   import EnumerableInput from './EnumerableInput.vue';
   import ExtentionInput from './ExtentionInput.vue';
   import network, { urlSearchParams } from '../__utils__/network';
+  import getComponentName from '../__utils__/getModuleName'
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -447,7 +447,6 @@
     components: {
       EnumerableInput, ExtentionInput, ComAttachFilter, Docfile, RadioGroup, Defined
     },
-    inject: [MODULE_COMPONENT_NAME],
     props: {
       webConfSingle: {// 当前子表webConf
         type: Object,
@@ -1853,6 +1852,10 @@
       window.addEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
       window.addEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
       window.addEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
+    },
+
+    created() {
+      this[MODULE_COMPONENT_NAME] = getComponentName()// fix:ag表格中如果用到该组件,从inject获取模块名会失败。所以改成主动获取。如果以后ag表格自定义单元格组件是改用component注册，可以用inject
     }
   };
 </script>

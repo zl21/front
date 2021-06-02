@@ -11,7 +11,8 @@
 
 
       <span class="itemLabel"
-            :style="labelStyle">
+            :style="labelStyle"
+            v-if="_items.display !== 'defined'">
         <Poptip v-if="items.comment"
                 word-wrap
                 trigger="hover"
@@ -52,7 +53,7 @@
 
         </template>
 
-        <span :title="items.coldesc">{{ items.coldesc }}:</span>
+        <span :title="items.coldesc" >{{ items.coldesc }}:</span>
       </span>
       <div :class=" [_items.props.row >1 ? 'itemComponent height100':'itemComponent',items.isuppercase?'isuppercase':'']"
            :style="_items.display==='image' ? 'overflow:visible' :''">
@@ -167,16 +168,16 @@ import {
 import createModal from '../PreviewPicture/index';
 import EnumerableInput from '../EnumerableInput.vue';
 import ExtentionInput from '../ExtentionInput.vue';
+import getComponentName from '../../__utils__/getModuleName'
 
-const fkHttpRequest = () => require(`../../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
-
+// const fkHttpRequest = () => require(`../../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
 export default {
   components: {
     EnumerableInput, ExtentionInput, ComAttachFilter, Docfile, ValidateCom
   },
   // mixins: [mixins],
-  inject: [MODULE_COMPONENT_NAME],
+  // inject: [MODULE_COMPONENT_NAME],
   props: {
     webConfSingle: {// 当前子表webConf
       type: Object,
@@ -621,6 +622,7 @@ export default {
     window.removeEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
   },
   created () {
+    this[MODULE_COMPONENT_NAME] = getComponentName()
     this.componentsName = this.inheritanceComponents();
   },
   mounted () {
