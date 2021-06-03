@@ -12,7 +12,7 @@
 
       <span class="itemLabel"
             :style="labelStyle"
-            v-if="_items.display !== 'defined'">
+            v-if="showLabel">
         <Poptip v-if="items.comment"
                 word-wrap
                 trigger="hover"
@@ -320,6 +320,16 @@ export default {
       // 气泡选中过滤条件
       return this.filterDate;
     },
+
+    showLabel() {
+      if (this._items.type === 'defined') {
+        return false
+      }
+      if (this._items.webconf && this._items.webconf.hiddenLabel) {
+        return false
+      }
+      return true
+    }
   },
   methods: {
     ...mapMutations('global', ['tabOpen', 'addKeepAliveLabelMaps', 'addServiceIdMap']),

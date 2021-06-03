@@ -2,6 +2,7 @@
   <div
     v-html="customizedDefaultValue || value"
     :style="options.webconf && options.webconf.styleForString"
+    class="string-wrap"
   >
   </div>
 </template>
@@ -44,4 +45,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.string-wrap {
+  height: 26px;
+  line-height: 26px;
+}
 </style>
