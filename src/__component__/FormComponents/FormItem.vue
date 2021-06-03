@@ -156,6 +156,7 @@ import CustomEnumerableInput from '../inheritanceComponents/EnumerableInput';
 import CustomExtensionProperty from '../inheritanceComponents/ExtensionProperty';
 import CustomRadioGroup from '../inheritanceComponents/RadioGroup'
 import CustomDefined from '../inheritanceComponents/Defined'
+import CustomStringRender from '../inheritanceComponents/StringRender'
 
 import ParameterDataProcessing from './parameterDataProcessing';
 import { Validate } from './PanelForm/Validate';
@@ -394,6 +395,9 @@ export default {
           break;
         case 'radioGroup': 
           componentInstance = new CustomRadioGroup(item).init();
+          break;
+        case 'String': 
+          componentInstance = new CustomStringRender(item).init();
           break;
         case 'defined': 
           componentInstance = new CustomDefined(item).init();
