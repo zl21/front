@@ -72,6 +72,7 @@
 
       <AgTable
         ref="agTableElement"
+        :moduleComponentName='moduleComponentName'
         :style="agTableElementStyles"
         :page-attribute="pageAttribute"
         :datas="ag.datas"
