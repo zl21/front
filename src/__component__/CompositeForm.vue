@@ -102,11 +102,13 @@
   import {
     Version, MODULE_COMPONENT_NAME, custommizedRequestUrl, formItemConfig 
   } from '../constants/global';
+  import getComponentName from '../__utils__/getModuleName'
 
   import regExp from '../constants/regExp';
   import network, { getGateway } from '../__utils__/network';
   import ItemComponent from './ItemComponent.vue';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
+  import store from '../__config__/store.config';
 
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
@@ -228,7 +230,7 @@
         type: Boolean
       }
     },
-    inject: [MODULE_COMPONENT_NAME],
+    // inject: [MODULE_COMPONENT_NAME],
     data() {
       return {
         newdefaultData: [], // 初始化form
@@ -1822,8 +1824,11 @@
         if (item.display === 'defined') {
           str = 'defined';
         }
-       
-       
+        
+        // 扩展属性里定义的类型
+        if(item.webconf && item.webconf.display) {
+          str = item.webconf.display
+        }
         return str;
       },
       checkPanelShow(item) {
@@ -1887,6 +1892,10 @@
           if (this.defaultData.copy) {
             this.setLabel(item.colname, this.defaultSetValue[item.colname], item);
           }
+        }
+        
+        if (item.webconf && item.webconf.display === 'String') {
+          return item.valuedata || item.defval || ''; 
         }
         if (
           (item.display === 'textarea' && !item.fkdisplay)
@@ -2728,7 +2737,7 @@
         }
       },
       openLoading() { // 表单更新时重新加载loading
-        if (!this.tableGetName) { // 子表不添加loading
+        if (!this.tableGetName && this[MODULE_COMPONENT_NAME]) { // 子表不添加loading
           const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
           const dom = document.querySelector(`#${currentTableName}-loading`);
           if (!dom && this.from === 'singlePage') {
@@ -2768,6 +2777,10 @@
       return true;
     },
     created() {
+      this[MODULE_COMPONENT_NAME] = getComponentName()// fix:ag表格中如果用到该组件,从inject获取模块名会失败。所以改成主动获取。如果以后ag表格自定义单元格组件是改用component注册，可以用inject
+      if(!this.$store) {
+        this.$store = store // fix: 使用业务组件里的ag表格，通过render在单元格里渲染该组件会丢失r3框架全局注册的$store和$router，因为注册组件这步是放在业务组件库执行的
+      }
       this.reorganizeForm();
       this.mountNumber = (Math.random() * 1000).toFixed(0);
       window.eventType = function eventType(name, docm, obj) {

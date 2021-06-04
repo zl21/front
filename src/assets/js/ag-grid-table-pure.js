@@ -313,7 +313,7 @@ const customerUrlComponent = function () {
 customerUrlComponent.prototype.init = function (params) {
   const eGui = document.createElement('span');
   this.eGui = eGui;
-  const template = `<span class="${cssFeatures.hover}" style="text-decoration: underline; color: #0F8EE9; " data-target-tag="customerUrlText">${params.value || ''}</span>`;
+  const template = `<span class="${cssFeatures.hover}" style="text-decoration: underline; color: #0F8EE9; " data-target-tag="customerUrlText" title='${params.value || ""}'>${params.value || ''}</span>`;
   eGui.innerHTML = template;
 };
 
@@ -642,7 +642,11 @@ const initializeAgTable = (container, opt) => {
         if (params.colDef.type.toLocaleLowerCase() === 'string' && params.value && params.value.length > 1000) {
           return `${params.value.substring(0, 50)}...`;
         }
-        return `<span title="${params.value || ''}">${params.value || ''}</span>`;
+        // 实际宽度需要减去padding值
+        const paddingWidth = 22
+        const standard_width = params.column.colDef.webconf && params.column.colDef.webconf.standard_width
+        const width = standard_width ? `${Math.max(standard_width - paddingWidth, 0)}px;` : 'auto;'
+        return `<div class="one-line-flow" style="width:${width}"><span title="${params.value || ''}">${params.value || ''}</span></div>`;
       };
     };
 

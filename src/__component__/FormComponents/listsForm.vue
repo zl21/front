@@ -87,6 +87,9 @@
           if(item.webconf && item.webconf.display === 'YearMonth'){
             item.display = 'YearMonth';
           }
+          if(item.webconf && item.webconf.display === 'String'){
+            item.display = 'String';
+          }
           if (item.colname) {
             item._index = Math.random()
             this.ItemLists[item.colname] = JSON.parse(JSON.stringify(item));

@@ -288,7 +288,7 @@ export default {
                 if (c.display === 'doc') {
                   c.valuedata = copyDatas[item]
                   copySaveDataForParam[c.colname] = JSON.parse(copyDatas[item]);
-                } else if (c.fkdisplay === 'drp' || c.fkdisplay === 'mrp' || c.fkdisplay === 'pop') {
+                } else if ((c.fkdisplay === 'drp' || c.fkdisplay === 'mrp' || c.fkdisplay === 'pop') && Array.isArray(copyDatas[item])) {
                   c.refobjid = copyDatas[item].map(item => item.ID).join(',');
                   c.valuedata = copyDatas[item].map(item => item.Label).join(',');
                   copySaveDataForParam[c.colname] = [{ ID: copyDatas[item][0].ID, Label: copyDatas[item][0].Label }];

@@ -140,7 +140,7 @@ export default {
     // const { isreftabs } = parame;
     // const { itemNameGroup } = parame;
     const {
-      tabrelation, itemObjId, sataType, temporaryStoragePath, itemCurrentParameter, itemName, type, objId, tableName 
+      tabrelation, itemObjId, sataType, temporaryStoragePath, itemCurrentParameter, itemName, type, objId, tableName,dialogType 
     } = parame;
     const sataTypeName = sataType ? sataType.sataType : '';
     let parames = {};
@@ -443,6 +443,13 @@ export default {
           after: modifyLabel,
           before: labelregroupTableName,
         };
+      }
+      if(dialogType){
+        // 兼容子表数据导入
+        if(parames.fixedData[itemName] && parames.fixedData[itemName][0]){
+          let import_dialog = parames.fixedData[itemName][0]._import_dialog;
+          parames.fixedData[itemName] = [...import_dialog]
+        }
       }
     
       network.post(temporaryStoragePath || '/p/cs/objectSave', urlSearchParams(parames)).then((res) => {

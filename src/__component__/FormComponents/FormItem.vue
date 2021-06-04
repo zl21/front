@@ -12,7 +12,7 @@
 
       <span class="itemLabel"
             :style="labelStyle"
-            v-if="_items.display !== 'defined'">
+            v-if="showLabel">
         <Poptip v-if="items.comment"
                 word-wrap
                 trigger="hover"
@@ -93,7 +93,7 @@
         @valuechange="attachFilterInput"
       /> -->
         <component :is="componentsName"
-                   :ref="items.field"
+                   :ref="items.colname"
                     v-bind="propsMessage"
                     v-model="value">
           <slot v-if="items.display === 'OBJ_SELECT'">
@@ -109,7 +109,7 @@
         <!-- 自定义组件 -->
          <component :is="_items.componentName"
                    v-if="_items.type === 'customization'"
-                   :ref="_items.field"
+                   :ref="items.colname"
                    v-model="value"
                     v-on="$listeners"
                     v-bind="propsMessage"
@@ -156,6 +156,7 @@ import CustomEnumerableInput from '../inheritanceComponents/EnumerableInput';
 import CustomExtensionProperty from '../inheritanceComponents/ExtensionProperty';
 import CustomRadioGroup from '../inheritanceComponents/RadioGroup'
 import CustomDefined from '../inheritanceComponents/Defined'
+import CustomStringRender from '../inheritanceComponents/StringRender'
 
 import ParameterDataProcessing from './parameterDataProcessing';
 import { Validate } from './PanelForm/Validate';
@@ -168,16 +169,16 @@ import {
 import createModal from '../PreviewPicture/index';
 import EnumerableInput from '../EnumerableInput.vue';
 import ExtentionInput from '../ExtentionInput.vue';
+import getComponentName from '../../__utils__/getModuleName'
 
-const fkHttpRequest = () => require(`../../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
-
+// const fkHttpRequest = () => require(`../../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
 export default {
   components: {
     EnumerableInput, ExtentionInput, ComAttachFilter, Docfile, ValidateCom
   },
   // mixins: [mixins],
-  inject: [MODULE_COMPONENT_NAME],
+  // inject: [MODULE_COMPONENT_NAME],
   props: {
     webConfSingle: {// 当前子表webConf
       type: Object,
@@ -319,6 +320,16 @@ export default {
       // 气泡选中过滤条件
       return this.filterDate;
     },
+
+    showLabel() {
+      if (this._items.type === 'defined') {
+        return false
+      }
+      if (this._items.webconf && this._items.webconf.hiddenLabel) {
+        return false
+      }
+      return true
+    }
   },
   methods: {
     ...mapMutations('global', ['tabOpen', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
@@ -394,6 +405,9 @@ export default {
           break;
         case 'radioGroup': 
           componentInstance = new CustomRadioGroup(item).init();
+          break;
+        case 'String': 
+          componentInstance = new CustomStringRender(item).init();
           break;
         case 'defined': 
           componentInstance = new CustomDefined(item).init();
@@ -622,6 +636,7 @@ export default {
     window.removeEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
   },
   created () {
+    this[MODULE_COMPONENT_NAME] = getComponentName()
     this.componentsName = this.inheritanceComponents();
   },
   mounted () {

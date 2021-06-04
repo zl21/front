@@ -1,5 +1,5 @@
 <template>
-  <div class="panelForm compositeAllform">
+  <div class="panelForm compositeAllform" :id="id">
     <div v-for="(item,index) in Object.keys(formItemLists)"
          :key="index">
       <Collapse :value="collapseValue">

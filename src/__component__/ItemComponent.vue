@@ -2,7 +2,7 @@
 <template>
   <div :class="_items.props.fkdisplay === 'pop' ? 'ItemComponentRoot AttachFilter-pop':'ItemComponentRoot'">
     <span
-      v-if="_items.type !== 'defined'"
+      v-if="showLabel"
       class="itemLabel"
       :style="labelStyle"
     >
@@ -383,6 +383,15 @@
         @change="radioValueChange"
       />
       
+      <!-- string组件 -->
+      <string-render 
+        v-if="_items.type === 'String'"
+        :ref="_items.field"
+        v-model="_items.value"
+        :customizedDefaultValue="_items.props.customizedDefaultValue"
+        :options="_items.props">
+      </string-render>
+
       <!-- 自定义组件 -->
       <component
         :is="_items.componentName"
@@ -429,6 +438,7 @@
   import Docfile from './docfile/DocFileComponent.vue';
   import RadioGroup from './form/RadioGroup.vue';
   import Defined from './Defined.vue';
+  import StringRender from './form/StringRender'
 
 
   import {
@@ -438,15 +448,15 @@
   import EnumerableInput from './EnumerableInput.vue';
   import ExtentionInput from './ExtentionInput.vue';
   import network, { urlSearchParams } from '../__utils__/network';
+  import getComponentName from '../__utils__/getModuleName'
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
   
   export default {
     components: {
-      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile, RadioGroup, Defined
+      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile, RadioGroup, Defined, StringRender
     },
-    inject: [MODULE_COMPONENT_NAME],
     props: {
       webConfSingle: {// 当前子表webConf
         type: Object,
@@ -577,8 +587,14 @@
         if (item.type === 'Wangeditor') {
           item.componentType = WangeditorVue;
         }
-
-        if (item.type === 'input' && (item.props.webconf && item.props.webconf.display === 'YearMonth')) {
+        // if (item.type === 'input' && (item.props.webconf && item.props.webconf.display === 'YearMonth')) {
+        //   item.type = 'DatePicker';
+        //   item.props = Object.assign({}, item.props, {
+        //     type: 'month',
+        //     clearable: true
+        //   });
+        // }
+        if (item.type === 'YearMonth') {
           item.type = 'DatePicker';
           item.props = Object.assign({}, item.props, {
             type: 'month',
@@ -593,6 +609,16 @@
         // 气泡选中过滤条件
         return this.filterDate;
       },
+
+      showLabel() {
+        if (this._items.type === 'defined') {
+          return false
+        }
+        if (this._items.props.webconf && this._items.props.webconf.hiddenLabel) {
+          return false
+        }
+        return true
+      }
     },
     methods: {
       ...mapMutations('global', ['tabOpen', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
@@ -1841,6 +1867,10 @@
       window.addEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
       window.addEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
       window.addEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
+    },
+
+    created() {
+      this[MODULE_COMPONENT_NAME] = getComponentName()// fix:ag表格中如果用到该组件,从inject获取模块名会失败。所以改成主动获取。如果以后ag表格自定义单元格组件是改用component注册，可以用inject
     }
   };
 </script>

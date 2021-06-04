@@ -237,6 +237,9 @@
         type: Boolean,
         default: false,
       },
+      moduleComponentName: {
+        type: String,
+      }
     },
     watch: {
       userConfigForAgTable(val) {
@@ -259,8 +262,9 @@
               agGridTableContainer.agTable.fixContainerHeight();
               agGridTableContainer.agTable.emptyAllFilters();
               agGridTableContainer.agTable.dealWithPinnedColumns(true, val.fixedColumn || '');
-
-              this.setTableSelected();
+              if(this.$route.query.isBack) {
+                this.setTableSelected();
+              }
             }
           }, 30);
         }
@@ -365,6 +369,9 @@
             }
           },
           onSelectionChanged: (rowIdArray, rowArray) => {
+            if(this.lockSelected) {
+              return
+            }
             if (typeof self.onSelectionChanged === 'function') {
               self.onSelectionChanged(rowIdArray, rowArray);
 
@@ -430,10 +437,14 @@
 
       // 回填表格勾选
       setTableSelected() {
+        const { tableName } = this.$route.params;
+        if(!this.moduleComponentName.includes(tableName)) {
+          return
+        }
         setTimeout(() => {
           if (this.selectRow.length > 0) {
+            this.lockSelected = true;
             const { agGridTableContainer } = this.$refs;
-
             const selectedIndex = [];
             this.datas.row.forEach((row, index) => {
               if (this.selectRow.includes(row.ID.val)) {
@@ -446,9 +457,15 @@
                 agGridTableContainer.agTable.api.selectNode(node, true);
               }
             });
+            setTimeout(() => {
+              this.lockSelected = false;
+            }, 25)
           }
         }, 20);
       }
+    },
+    beforeCreate() {
+      this.lockSelected = false // 防止回调勾选时触发回调事件用的
     },
     activated() {
       if (!this.isCommonTable && !this.isBig) {
@@ -456,7 +473,7 @@
         if (agGridTableContainer.agTable) {
           agGridTableContainer.agTable.fixAgRenderChoke();
           agGridTableContainer.agTable.fixContainerHeight();
-
+        
           this.setTableSelected();
         }
       }

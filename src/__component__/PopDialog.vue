@@ -18,7 +18,7 @@
       :is="'listsForm'"
       ref="listsForm"
       v-if="formItems.defaultFormItemsLists && formItems.defaultFormItemsLists.length > 0"
-      :id="$route.params.tableName+'pop'"
+      :id="tableName+'pop'"
       :form-item-lists="formItems.defaultFormItemsLists"
       :default-column="Number(4)"
       :searchFoldnum="10"
@@ -30,6 +30,7 @@
         :total="selectOperation.totalRowCount"
         :page-size-opts="selectOperation.selectrange"
         :page-size="selectOperation.defaultrange"
+        :current="selectOperation.currentPageIndex"
         class="table-page"
         size="small"
         show-total
@@ -68,6 +69,7 @@
 </template>
 <script>
   import { Version, defaultrange } from '../constants/global';
+  import { getTableName } from '../__utils__/urlParse'
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
   // import listsForm from '../__component__/FormComponents/listsForm.vue';
@@ -113,7 +115,8 @@
           startindex: 0,
           selectrange: [10, 20, 50, 100, 200]
         },
-        ids: []
+        ids: [],
+        tableName: ''
       };
     },
     props: {
@@ -125,6 +128,9 @@
       }
     },
     created() {
+      // fix: 表格里的表单，无法从$route里拿到表名，需要自己从url地址去取出
+      this.tableName = getTableName()
+
       this.loading = true;
       const params = {
         tableid: this.fkobj.reftableid,
@@ -205,9 +211,7 @@
           success: (res) => {
             if (res.data.code === 0) {
               const data = res.data.data;
-                            console.log(data,'1212');
-
-              this.selectOperation.currentPageIndex = data.selectrange; // 当前页码
+              // this.selectOperation.currentPageIndex = data.selectrange; // 当前页码
               this.selectOperation.pageSize = data.defaultrange; // 显示条数
               this.selectOperation.totalRowCount = data.totalRowCount;
               this.selectOperation.selectrange = data.selectrange;
@@ -257,6 +261,7 @@
                     this.formChangeData = res;
                     this.selectOperation.startindex = 0;
         //this.getList();
+                    this.selectOperation.currentPageIndex = 1;
                     this.getList();
           });
         
