@@ -1822,8 +1822,11 @@
         if (item.display === 'defined') {
           str = 'defined';
         }
-       
-       
+        
+        // 扩展属性里定义的类型
+        if(item.webconf && item.webconf.display) {
+          str = item.webconf.display
+        }
         return str;
       },
       checkPanelShow(item) {

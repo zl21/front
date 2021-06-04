@@ -383,6 +383,15 @@
         @change="radioValueChange"
       />
       
+      <!-- string组件 -->
+      <string-render 
+        v-if="_items.type === 'String'"
+        :ref="_items.field"
+        v-model="_items.value"
+        :customizedDefaultValue="_items.props.customizedDefaultValue"
+        :options="_items.props">
+      </string-render>
+
       <!-- 自定义组件 -->
       <component
         :is="_items.componentName"
@@ -429,6 +438,7 @@
   import Docfile from './docfile/DocFileComponent.vue';
   import RadioGroup from './form/RadioGroup.vue';
   import Defined from './Defined.vue';
+  import StringRender from './form/StringRender'
 
 
   import {
@@ -444,7 +454,7 @@
   
   export default {
     components: {
-      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile, RadioGroup, Defined
+      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile, RadioGroup, Defined, StringRender
     },
     inject: [MODULE_COMPONENT_NAME],
     props: {
