@@ -171,7 +171,6 @@
     getCustomizeWaterMark,
     KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, notificationOfMain
   } from '../constants/global';
-import draggable from 'vuedraggable';
 
   const customizeModules = {};
   Object.keys(CustomizeModule).forEach((key) => {
@@ -834,7 +833,6 @@ import draggable from 'vuedraggable';
         const obj = {};
         const { itemId } = this[INSTANCE_ROUTE_QUERY];
         obj[tableName] = formData;
-                console.log(obj,'2323');
 
         if (itemId) {
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { tableName, value: defaultDataInt });
