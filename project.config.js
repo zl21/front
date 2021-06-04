@@ -108,11 +108,12 @@ module.exports = {
   filterUrlForNetworkScript: () => true, // 框架默认true,
   listDefaultColumn: 4,
   // setComponentsProps: (type, props) => {  // 框架自定义表单配置
-  //   if (type === 'select') {
-  //     props.chooseAll = false;
+  //   if (type === 'String') {
+  //     props.customizedDefaultValue = '劫持后';
   //   }
+  //   console.log(props)
   //   return props;
-  // }
+  // },
   agGridOptions: { // ag表格的配置
     // rowHeight: 100
   },
