@@ -112,6 +112,12 @@ export default {
               if (/NEW/.test(keepAliveModuleName)) {
                 // 新增  删除空值,且没有默认值     
                 ParentForm.formChangeData = Object.assign({}, ParentForm.formChangeData, current_data)
+                 // 虚拟区间不用传值
+                if (this.items.rangecolumn) {
+                  delete ParentForm.formData[this.items.colname];
+                  delete ParentForm.formDatadefault[this.items.colname];
+                  delete ParentForm.formChangeData[this.items.colname];
+                }
                 if (isEmpty(val) && isEmpty(this.defaultVale)) {
                   delete ParentForm.formData[this.items.colname]
                   delete ParentForm.formChangeData[this.items.colname]
