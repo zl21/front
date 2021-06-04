@@ -191,6 +191,10 @@
         objectTableComponent: '', // 单对象表格组件
         customizeComponent: '', // 自定义组件
         isRequest: false,
+        dialogType:false, // 是否是导入弹窗
+        callbackFun:()=>{  // 回调函数
+              
+        }
        
         // tableName: this[INSTANCE_ROUTE_QUERY].tableName
       };
@@ -475,6 +479,7 @@
     },
     mounted() {
       // this.generateComponent();
+      this.$el._vue_=this;
     },
     created() {
       this.generateComponent();
@@ -538,9 +543,12 @@
           this.$refs.objectTableRef.clearSearchData();
         }
       }, // 清空表格搜索框的值
-      enterClick() {
+      enterClick(callback) {
         if(this.itemInfo && this.itemInfo.tabrelation && this.itemInfo.tabrelation !== '1:1') {
           this.formEnter();
+          if(callback){
+            this.callbackFun = callback;
+          }
         }
       },
       formEnter() {
@@ -662,7 +670,6 @@
         const tabIndex = this.currentTabIndex;
         const objectType = this.type;
         const Id = objId === 'New' ? '-1' : objId;
-
         const childTableNames = this.childTableNames;
         const { tableName } = router.currentRoute.params;
         const parame = {
@@ -677,15 +684,19 @@
           itemNameGroup: childTableNames,
           sataType,
           enter,
+          dialogType:this.dialogType,
           isreftabs: this.verifyForm
         };
         const promise = new Promise((resolve, reject) => {
           this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/performMainTableSaveAction`, { parame, resolve, reject });
         });
+       
 
         // this.performMainTableSaveAction(parame);
 
-        promise.then(() => {
+        promise.then((res) => {
+           // 关闭子表导入
+        this.dialogType = false;
           if (this.type === 'vertical') {
             this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { tableName: this.tableName, value: {} });
             this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateAddData`, { tableName: this.tableName, value: {} });
@@ -702,6 +713,11 @@
             id = itemId;
           }
           const message = this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData.message;
+          // 弹窗回调结果
+          if(typeof this.callbackFun ==='function'){
+            this.callbackFun(res);
+          }
+
           // this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/emptyTestData`);
 
@@ -835,6 +851,7 @@
         const obj = {};
         const { itemId } = this[INSTANCE_ROUTE_QUERY];
         obj[tableName] = formData;
+
         if (itemId) {
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { tableName, value: defaultDataInt });
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateAddData`, { tableName, value: obj });

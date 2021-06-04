@@ -130,6 +130,7 @@ module.exports = {
   //   }
   //   return true;
   // }
+  // formItemMixins:require('./src/demo/formItemMixins'),
   isFilterTable: true, // 是否开启表格过滤功能
   // DashboardRoute: {
   //   component: FunctionPowerNew,

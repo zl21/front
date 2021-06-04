@@ -3,6 +3,7 @@
 
 import Vue from 'vue';
 import FormItem from './FormItem.vue';
+import {formItemMixins} from '../../constants/global.js';
 
 // 处理列表逻辑
 import { SetListProps } from './list/props';
@@ -119,9 +120,10 @@ export default class RenderComponent {
     const mixins = require('./formItemMixin').default;
     this.ObjectToMerge(FormItem.methods, mixins.methods);
     Object.assign(FormItem.methods, mixins.methods);
+    let formExternalMixins = formItemMixins().default || {};
     FormItem.name = `${this.id}${this.item.colname.TextFilter()}`;
     if(!Vue.component(FormItem.name)){
-      Vue.component(`${this.id}${this.item.colname.TextFilter()}`, Vue.extend(Object.assign({ mixins: [mixins], isKeepAliveModel: true },FormItem)));
+      Vue.component(`${this.id}${this.item.colname.TextFilter()}`, Vue.extend(Object.assign({ mixins: [mixins,formExternalMixins], isKeepAliveModel: true },FormItem)));
     }
     return `${this.id}${this.item.colname.TextFilter()}`;
   }

@@ -74,6 +74,14 @@
         type: Object,
         default: () => {}
       },
+      idArray: {// 获取ID用于多选
+        type: [Array, Object],
+        default: () => {}
+      },
+      itemId: {// 获取当前子表表名
+        type: String,
+        default: () => ''
+      },
       actionId: {// 获取自定按钮ID
         type: [Number, String],
         default: () => ''
@@ -82,6 +90,12 @@
         type: Object,
         default: () => {}
       },
+      saveDialog:{
+         type: Function,
+        default: () =>{
+
+        }  
+      }
     },
     data() {
       return {
@@ -149,6 +163,17 @@
           });
       },
       save() {
+        let data  = [
+          {TMCODE: "1212", ID: -1},
+          {TMCODE: "2222", ID: -1},
+          {TMCODE: "3333", ID: -1}];
+          this.saveDialog(data,data).then((res)=>{
+            if(res.data.code ===0){
+               this.$emit('closeActionDialog', true); // 关闭弹框
+            }
+          });
+           
+        return;
         if (!this.t_table_name.trim()) {
           const data = {
             mask: true,
@@ -228,7 +253,7 @@
       this.chineseName = ChineseDictionary;
     },
     mounted() {
-      console.log('popwinMessage', this.popwinMessage);
+      console.log('popwinMessage', this);
       this.o_table_name = this.findName(this.objList, '基本信息', '名称');
     },
     destroyed() {
