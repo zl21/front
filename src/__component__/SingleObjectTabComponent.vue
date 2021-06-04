@@ -532,7 +532,7 @@
       enterClick(callback) {
         if(this.itemInfo && this.itemInfo.tabrelation && this.itemInfo.tabrelation !== '1:1') {
           this.formEnter();
-          if(callbackFun){
+          if(callback){
             this.callbackFun = callback;
           }
         }

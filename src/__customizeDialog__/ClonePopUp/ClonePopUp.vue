@@ -160,7 +160,8 @@
           {TMCODE: "2222", ID: -1},
           {TMCODE: "3333", ID: -1}];
           this.saveDialog(data,data).then((res)=>{
-            if(res.code ===0){
+            console.log(res);
+            if(res.data.code ===0){
                this.$emit('closeActionDialog', true); // 关闭弹框
             }
           });

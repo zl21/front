@@ -184,13 +184,13 @@ export default {
     clearSelectIdArray () { // 清空列表选中项
       this.$emit('clearSelectIdArray');
     },
-    saveDialog (data,label) {
+    saveDialog (data,label,defalut) {
       // 保存导入弹窗
      return new Promise((resolve) => {
         if (document.querySelector('.tabComponent')) {
           let tabpanleVm = document.querySelector('.tabComponent')._vue_;
           if (tabpanleVm.formData.isShow && tabpanleVm.itemInfo.tabrelation !== '1:1') {
-            tabpanleVm.formChange({}, {}, label, {_import_dialog:data}, {});
+            tabpanleVm.formChange({}, {}, label, {_import_dialog:data}, defalut ||{});
             tabpanleVm.dialogType = true;
             tabpanleVm.enterClick(function(message){
               resolve(message);
