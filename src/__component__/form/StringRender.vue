@@ -2,7 +2,7 @@
   <div
     v-html="customizedDefaultValue || value"
     :style="options.webconf && options.webconf.styleForString"
-    class="string-wrap"
+    class="string-wrap one-line-flow"
   >
   </div>
 </template>
