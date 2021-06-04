@@ -32,9 +32,11 @@
           </ul>
           <Dialog
             ref="dialogRef"
-            :title="dialogConfig.title"
+            :title="dialogConfig.title"            
             :mask="dialogConfig.mask"
             :content-text="dialogConfig.contentText"
+            :idArray="tableRowSelectedIds"
+            :itemId="tableName"
             :footer-hide="dialogConfig.footerHide"
             :confirm="dialogConfig.confirm"
           />
@@ -123,6 +125,8 @@
       :footer-hide="dialogConfig.footerHide"
       :confirm="dialogConfig.confirm"
       :isrefrsh="isrefrsh"
+      :idArray="tableRowSelectedIds"
+      :itemId="tableName"
       :dialog-component-name="dialogComponentName"
       :obj-list="dialogComponentName?objList:[]"
       @dialogComponentSaveSuccess="dialogComponentSaveSuccess"
