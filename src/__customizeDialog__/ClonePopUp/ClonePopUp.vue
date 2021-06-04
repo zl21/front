@@ -82,6 +82,12 @@
         type: Object,
         default: () => {}
       },
+      saveDialog:{
+         type: Function,
+        default: () =>{
+
+        }  
+      }
     },
     data() {
       return {
@@ -149,6 +155,17 @@
           });
       },
       save() {
+        let data  = [
+          {TMCODE: "1212", ID: -1},
+          {TMCODE: "2222", ID: -1},
+          {TMCODE: "3333", ID: -1}];
+          this.saveDialog(data,data).then((res)=>{
+            if(res.code ===0){
+               this.$emit('closeActionDialog', true); // 关闭弹框
+            }
+          });
+           
+        return;
         if (!this.t_table_name.trim()) {
           const data = {
             mask: true,

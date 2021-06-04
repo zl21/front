@@ -169,7 +169,7 @@ export default {
   // 按钮
   performMainTableSaveAction({ commit }, { parame, resolve, reject }) { // 主表保存
     const {
-      tabrelation, itemObjId, tableName, objId, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup, sataType, temporaryStoragePath, jflowPath
+      tabrelation, itemObjId, tableName, objId, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup, sataType, temporaryStoragePath, jflowPath,dialogType
     } = parame;
     const sataTypeName = sataType ? sataType.sataType : '';
     let { path } = parame;
@@ -418,6 +418,13 @@ export default {
     // if (buttonInfo && buttonInfo.jflowpath) {
     //   jflowpath = buttonInfo.jflowpath;
     // }
+    if(dialogType){
+      // 兼容子表数据导入
+      if(parames.fixedData[itemName] && parames.fixedData[itemName][0]){
+        let import_dialog = parames.fixedData[itemName][0]._import_dialog;
+        parames.fixedData[itemName] = [...import_dialog]
+      }
+    }
     network.post(temporaryStoragePath || jflowPath || path || '/p/cs/objectSave', parames).then((res) => {
       if (res.data.code === 0) {
         const data = res.data;
