@@ -12,7 +12,7 @@
 
       <span class="itemLabel"
             :style="labelStyle"
-            v-if="_items.display !== 'defined'">
+            v-if="showLabel">
         <Poptip v-if="items.comment"
                 word-wrap
                 trigger="hover"
@@ -156,6 +156,7 @@ import CustomEnumerableInput from '../inheritanceComponents/EnumerableInput';
 import CustomExtensionProperty from '../inheritanceComponents/ExtensionProperty';
 import CustomRadioGroup from '../inheritanceComponents/RadioGroup'
 import CustomDefined from '../inheritanceComponents/Defined'
+import CustomStringRender from '../inheritanceComponents/StringRender'
 
 import ParameterDataProcessing from './parameterDataProcessing';
 import { Validate } from './PanelForm/Validate';
@@ -319,6 +320,16 @@ export default {
       // 气泡选中过滤条件
       return this.filterDate;
     },
+
+    showLabel() {
+      if (this._items.type === 'defined') {
+        return false
+      }
+      if (this._items.webconf && this._items.webconf.hiddenLabel) {
+        return false
+      }
+      return true
+    }
   },
   methods: {
     ...mapMutations('global', ['tabOpen', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
@@ -394,6 +405,9 @@ export default {
           break;
         case 'radioGroup': 
           componentInstance = new CustomRadioGroup(item).init();
+          break;
+        case 'String': 
+          componentInstance = new CustomStringRender(item).init();
           break;
         case 'defined': 
           componentInstance = new CustomDefined(item).init();
