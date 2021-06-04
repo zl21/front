@@ -587,8 +587,14 @@
         if (item.type === 'Wangeditor') {
           item.componentType = WangeditorVue;
         }
-
-        if (item.type === 'input' && (item.props.webconf && item.props.webconf.display === 'YearMonth')) {
+        // if (item.type === 'input' && (item.props.webconf && item.props.webconf.display === 'YearMonth')) {
+        //   item.type = 'DatePicker';
+        //   item.props = Object.assign({}, item.props, {
+        //     type: 'month',
+        //     clearable: true
+        //   });
+        // }
+        if (item.type === 'YearMonth') {
           item.type = 'DatePicker';
           item.props = Object.assign({}, item.props, {
             type: 'month',
