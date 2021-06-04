@@ -74,6 +74,14 @@
         type: Object,
         default: () => {}
       },
+      idArray: {// 获取ID用于多选
+        type: [Array, Object],
+        default: () => {}
+      },
+      itemId: {// 获取当前子表表名
+        type: String,
+        default: () => ''
+      },
       actionId: {// 获取自定按钮ID
         type: [Number, String],
         default: () => ''
@@ -246,7 +254,7 @@
       this.chineseName = ChineseDictionary;
     },
     mounted() {
-      console.log('popwinMessage', this.popwinMessage);
+      console.log('popwinMessage', this);
       this.o_table_name = this.findName(this.objList, '基本信息', '名称');
     },
     destroyed() {
