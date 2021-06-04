@@ -1891,6 +1891,10 @@
             this.setLabel(item.colname, this.defaultSetValue[item.colname], item);
           }
         }
+        
+        if (item.webconf && item.webconf.display === 'String') {
+          return item.valuedata || item.defval || ''; 
+        }
         if (
           (item.display === 'textarea' && !item.fkdisplay)
           || (item.display === 'text' && !item.fkdisplay)
