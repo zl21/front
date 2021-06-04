@@ -191,8 +191,8 @@
         customizeComponent: '', // 自定义组件
         isRequest: false,
         dialogType:false, // 是否是导入弹窗
-        callbackFun:function(){  // 回调函数
-              console.log(1212);
+        callbackFun:()=>{  // 回调函数
+              
         }
        
         // tableName: this[INSTANCE_ROUTE_QUERY].tableName
@@ -532,7 +532,9 @@
       enterClick(callback) {
         if(this.itemInfo && this.itemInfo.tabrelation && this.itemInfo.tabrelation !== '1:1') {
           this.formEnter();
-          this.callbackFun = callback;
+          if(callbackFun){
+            this.callbackFun = callback;
+          }
         }
       },
       formEnter() {
@@ -698,7 +700,9 @@
           }
           const message = this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData.message;
           // 弹窗回调结果
-          this.callbackFun(res);
+          if(typeof this.callbackFun ==='function'){
+            this.callbackFun(res);
+          }
 
           // this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/emptyTestData`);
