@@ -448,6 +448,7 @@
   import EnumerableInput from './EnumerableInput.vue';
   import ExtentionInput from './ExtentionInput.vue';
   import network, { urlSearchParams } from '../__utils__/network';
+  import getComponentName from '../__utils__/getModuleName'
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -456,7 +457,6 @@
     components: {
       EnumerableInput, ExtentionInput, ComAttachFilter, Docfile, RadioGroup, Defined, StringRender
     },
-    inject: [MODULE_COMPONENT_NAME],
     props: {
       webConfSingle: {// 当前子表webConf
         type: Object,
@@ -1867,6 +1867,10 @@
       window.addEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
       window.addEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
       window.addEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
+    },
+
+    created() {
+      this[MODULE_COMPONENT_NAME] = getComponentName()// fix:ag表格中如果用到该组件,从inject获取模块名会失败。所以改成主动获取。如果以后ag表格自定义单元格组件是改用component注册，可以用inject
     }
   };
 </script>

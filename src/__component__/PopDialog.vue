@@ -18,7 +18,7 @@
       :is="'listsForm'"
       ref="listsForm"
       v-if="formItems.defaultFormItemsLists && formItems.defaultFormItemsLists.length > 0"
-      :id="$route.params.tableName+'pop'"
+      :id="tableName+'pop'"
       :form-item-lists="formItems.defaultFormItemsLists"
       :default-column="Number(4)"
       :searchFoldnum="10"
@@ -69,6 +69,7 @@
 </template>
 <script>
   import { Version, defaultrange } from '../constants/global';
+  import { getTableName } from '../__utils__/urlParse'
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
   // import listsForm from '../__component__/FormComponents/listsForm.vue';
@@ -114,7 +115,8 @@
           startindex: 0,
           selectrange: [10, 20, 50, 100, 200]
         },
-        ids: []
+        ids: [],
+        tableName: ''
       };
     },
     props: {
@@ -126,6 +128,9 @@
       }
     },
     created() {
+      // fix: 表格里的表单，无法从$route里拿到表名，需要自己从url地址去取出
+      this.tableName = getTableName()
+
       this.loading = true;
       const params = {
         tableid: this.fkobj.reftableid,
