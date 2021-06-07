@@ -67,7 +67,7 @@
   </div>
 </template>
 <script>
-  import { Version, defaultrange } from '../constants/global';
+  import { Version, defaultrange, classFix } from '../constants/global';
   import { getTableName } from '../__utils__/urlParse'
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
