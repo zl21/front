@@ -90,7 +90,7 @@
       };
     },
     name: 'CommonTable',
-    components: { Dialog},
+    components: { Dialog },
     props: {
       // buttonsData: {// 获取自定义按钮组
       //   type: Array,
