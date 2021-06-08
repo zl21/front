@@ -4,7 +4,7 @@ import router from '../__config__/router.config';
 import store from '../__config__/store.config';
 
 import {
-  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, getProjectQuietRoutes, REQUEST_PENDDING_EXPIRE, getTouristRoute, logoutTips, Version, filterUrlForNetworkScript, getFilterUrlForNetworkData
+  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, getProjectQuietRoutes, REQUEST_PENDDING_EXPIRE, getTouristRoute, logoutTips, Version, filterUrlForNetworkScript, getFilterUrlForNetworkData,autoGatewayUrl
 } from '../constants/global';
 import { addNetwork } from './indexedDB';
 // import FilterUrlForNetwork from '../launchApplicationConfig/filterUrlForNetwork';
@@ -431,6 +431,10 @@ export const getCenterByTable = async () => {
   if (!enableGateWay()) {
     // 1.3 是无网关的
     return false;
+  }
+  if(!autoGatewayUrl()){
+    // 配置不请求网关
+    return false
   }
   if (!getGlobalServiceId) {
     return false;
