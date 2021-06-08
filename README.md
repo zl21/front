@@ -31,7 +31,7 @@
 |standard_dev |npm 早期基发版分支，目前不维护|
 |R3-1.3 |npm 定制包的文件，目前不维护|
 |npm-test-branch-new |所有分支代码，走测试|
-|npm-test-branch-new |所有分支代码，走测试|
+|new branch |卡宾和云雀分支代码|
 |customizeComponentForConfigPage-new|联客分支(支持模块自定义布局)|
 
 
