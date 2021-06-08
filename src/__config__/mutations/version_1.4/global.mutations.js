@@ -73,7 +73,6 @@ export default {
     if (param && param.url && param.url.includes('?')) {
       param.url = getUserenv({ url: param.url });
     }
-    
     const actionType = param.url.substring(0, param.url.indexOf('/'));
     const singleEditType = param.url.substring(param.url.lastIndexOf('/') + 1, param.url.length);
     if (actionType === 'SYSTEM') {
@@ -126,6 +125,8 @@ export default {
         path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${param.id}`;
       } else if (singleEditType !== ':itemId') {
         path = `/${param.url}`;
+        // 固定id label 匹配错误
+        param.id =  param.url.substring(param.url.lastIndexOf('/')+1);
       } else {
         path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${param.id}`;
       }

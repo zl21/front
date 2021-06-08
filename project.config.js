@@ -94,7 +94,8 @@ module.exports = {
     verticalTableDetailCustomize: null,
     standardTableListsCustomize: null,
     horizontalTableDetailCustomize: null,
-    taskList: null
+    taskList: null,
+    // tableDetailCollectionMixin:require('./src/demo/mixin').default
   },
   imgProgressController: false, // 是否显示图片上传进度
   ossRealtimeSave: false,
@@ -136,4 +137,5 @@ module.exports = {
   //   component: FunctionPowerNew,
   //   labelName: '功能权限',
   // }
+  autoGatewayUrl:false,  // 是否请求网关
 };
