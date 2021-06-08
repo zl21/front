@@ -138,7 +138,11 @@
       @tableDataChange="tableDataChange"
       @tableSelectedRow="tableSelectedRow"
       @tableVerifyMessage="tableVerifyMessage"
-    />
+    > 
+      <div slot="detail-buttons" slot-scope="slotProps" v-if="slotArray.detailbuttons">
+         <component :is="slotArray.detailbuttons" :slotProps="slotProps" />
+      </div>
+    </component>
   </div>
 </template>
 
@@ -183,6 +187,11 @@
         objectTableComponent: '', // 单对象表格组件
         customizeComponent: '', // 自定义组件
         isRequest: false,
+        dialogType:false, // 是否是导入弹窗
+        slotArray:{}, // 内置卡槽组件
+        callbackFun:()=>{  // 回调函数
+              
+        }
        
         // tableName: this[INSTANCE_ROUTE_QUERY].tableName
       };
@@ -467,6 +476,11 @@
         const tableComponent = `${this[MODULE_COMPONENT_NAME]}.TableDetailCollection`;
         const buttonComponent = `${this[MODULE_COMPONENT_NAME]}.SingleObjectButtons`;
         const tableDetailCollectionMixin = (window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.tableDetailCollectionMixin) || {};
+        // 混入卡槽
+        if(tableDetailCollectionMixin.slotArray){
+          this.slotArray.detailbuttons = tableDetailCollectionMixin.slotArray.detailbuttons;
+        }
+       
         const singleObjectButtonsMixin = (window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.singleObjectButtonsMixin) || {};
 
         if (this.type === 'vertical') {
@@ -501,6 +515,11 @@
         }
         this.objectTableComponent = tableComponent;
         this.objectButtonComponent = buttonComponent;
+<<<<<<< HEAD
+=======
+        this.currentSinglePanelForm = singlePanelForm;
+        
+>>>>>>> 7be0c561... 添加子表明细表格渲染
       },
       itemTableCheckFunc() {
         if (this.$refs.objectTableRef && Object.keys(this.$refs.objectTableRef.tableFormVerify()).length > 0) {
