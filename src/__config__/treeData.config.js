@@ -20,7 +20,7 @@ import json from './treeData.json';
 // 注意：返回值中的所有ENAME字段请改为title
 export default {
   // value：框架传入的参数，模糊查询的字符
-  SHANGPIN: value => async () => {
+  V_ORDER_INFO: value => async () => {
     // ....
     const treeData = {
       data: [], // 树结构列表数据

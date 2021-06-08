@@ -457,6 +457,7 @@
         delete this.propstype.pinnedRowCellRendererParams
       }
       this.propsData = JSON.parse(JSON.stringify(this.propstype));
+      this.propsData.singleTurn = true;
       this.value = this.defaultValue;
       if (this.propsData.disabled) {
         this.showDisabled = this.propsData.disabled;

@@ -158,6 +158,7 @@ export const globalGateWay = () => {
 export const setComponentsProps = () => (window.ProjectConfig && window.ProjectConfig.setComponentsProps ? window.ProjectConfig.setComponentsProps : () => ({}));
 export const agGridOptions = () => (window.ProjectConfig && window.ProjectConfig.agGridOptions ? window.ProjectConfig.agGridOptions : {}); // ag表格的配置
 export const messageSwitch = () => (window.ProjectConfig && window.ProjectConfig.messageSwitch ? window.ProjectConfig.messageSwitch : false); // 消息设置
+export const formItemMixins = () => (window.ProjectConfig && window.ProjectConfig.formItemMixins ? window.ProjectConfig.formItemMixins : false); // 添加表单mixins
 
 // 获取表单网关
 export const getGatewayValue = (key) => {

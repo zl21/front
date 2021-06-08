@@ -154,11 +154,12 @@ module.exports = {
   filterUrlForNetworkScript: () => true, // 框架默认true,
   listDefaultColumn: 4,
   // setComponentsProps: (type, props) => {  // 框架自定义表单配置
-  //   if (type === 'select') {
-  //     props.chooseAll = false;
+  //   if (type === 'String') {
+  //     props.customizedDefaultValue = '劫持后';
   //   }
+  //   console.log(props)
   //   return props;
-  // }
+  // },
   agGridOptions: { // ag表格的配置
     // rowHeight: 100
   },
@@ -180,6 +181,7 @@ module.exports = {
   // standardTableCellRenderer: { // 标准列表里，定制ag-grid的单元格
   //   customlink: params => `<div onclick="console.log('${params.value}')">-定制-${params.value}</div>`
   // }
+  // formItemMixins:require('./src/demo/formItemMixins'),
   isFilterTable: true, // 是否开启表格过滤功能
   // DashboardComponent: {
   //   compontent: () => import(

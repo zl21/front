@@ -30,6 +30,7 @@
         :total="selectOperation.totalRowCount"
         :page-size-opts="selectOperation.selectrange"
         :page-size="selectOperation.defaultrange"
+        :current="selectOperation.currentPageIndex"
         class="table-page"
         size="small"
         show-total
@@ -217,9 +218,7 @@
           success: (res) => {
             if (res.data.code === 0) {
               const data = res.data.data;
-                            console.log(data,'1212');
-
-              this.selectOperation.currentPageIndex = data.selectrange; // 当前页码
+              // this.selectOperation.currentPageIndex = data.selectrange; // 当前页码
               this.selectOperation.pageSize = data.defaultrange; // 显示条数
               this.selectOperation.totalRowCount = data.totalRowCount;
               this.selectOperation.selectrange = data.selectrange;
@@ -269,6 +268,7 @@
                     this.formChangeData = res;
                     this.selectOperation.startindex = 0;
         //this.getList();
+                    this.selectOperation.currentPageIndex = 1;
                     this.getList();
           });
 

@@ -277,7 +277,7 @@ export default {
     reject
   }) { // 主表保存
     const {
-      tabrelation, itemObjId, tableName, add, objId, type, sataType, itemName, itemCurrentParameter, isreftabs, itemNameGroup, temporaryStoragePath
+      tabrelation, itemObjId, tableName, add, objId, type, sataType, itemName, itemCurrentParameter, isreftabs, itemNameGroup, temporaryStoragePath,dialogType
     } = parame;
     let parames = {};
     if (type === 'add') { // 新增保存参数
@@ -703,6 +703,13 @@ export default {
           after: { ...modifyLabel },
           before: value,
         };
+      }
+      if(dialogType){
+        // 兼容子表数据导入
+        if(parames.fixedData[itemName] && parames.fixedData[itemName][0]){
+          let import_dialog = parames.fixedData[itemName][0]._import_dialog;
+          parames.fixedData[itemName] = [...import_dialog]
+        }
       }
       network.post(temporaryStoragePath || '/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
         if (res.data.code === 0) {

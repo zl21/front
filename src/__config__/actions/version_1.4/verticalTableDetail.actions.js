@@ -274,10 +274,9 @@ export default {
     reject
   }) { // 主表保存
     const {
-      tabrelation, itemObjId, tableName, temporaryStoragePath, objId, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup, jflowPath
+      tabrelation, itemObjId, tableName, temporaryStoragePath, objId, path, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup, jflowPath,dialogType
     } = parame;
-
-    let { path } = parame;
+    // dialogType 是否是子表弹窗导入
     let parames = {};
     // 处理存储过程逻辑，配置的path中带有sp|时则走框架的标准逻辑，不走定制path
     if (path && path.includes('sp|')) {
@@ -636,6 +635,14 @@ export default {
     // if (buttonInfo && buttonInfo.jflowpath) {
     //   jflowpath = buttonInfo.jflowpath;
     // }
+    if(dialogType){
+      // 兼容子表数据导入
+      if(parames.fixedData[itemName] && parames.fixedData[itemName][0]){
+        let import_dialog = parames.fixedData[itemName][0]._import_dialog;
+        parames.fixedData[itemName] = [...import_dialog]
+      }
+    }
+   
     network.post(temporaryStoragePath || jflowPath || path || '/p/cs/objectSave', parames).then((res) => {
       if (res.data.code === 0) {
         const data = res.data;

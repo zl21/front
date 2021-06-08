@@ -2,7 +2,7 @@
 <template>
   <div :class="classes">
     <span
-      v-if="_items.type !== 'defined'"
+      v-if="showLabel"
       class="itemLabel"
       :style="labelStyle"
     >
@@ -382,6 +382,15 @@
         :options="_items.props"
         @change="radioValueChange"
       />
+      
+      <!-- string组件 -->
+      <string-render 
+        v-if="_items.type === 'String'"
+        :ref="_items.field"
+        v-model="_items.value"
+        :customizedDefaultValue="_items.props.customizedDefaultValue"
+        :options="_items.props">
+      </string-render>
 
       <!-- 自定义组件 -->
       <component
@@ -429,6 +438,7 @@
   import Docfile from './docfile/DocFileComponent.vue';
   import RadioGroup from './form/RadioGroup.vue';
   import Defined from './Defined.vue';
+  import StringRender from './form/StringRender'
 
 
   import {
@@ -445,7 +455,7 @@
 
   export default {
     components: {
-      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile, RadioGroup, Defined
+      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile, RadioGroup, Defined, StringRender
     },
     props: {
       webConfSingle: {// 当前子表webConf
@@ -577,8 +587,14 @@
         if (item.type === 'Wangeditor') {
           item.componentType = WangeditorVue;
         }
-
-        if (item.type === 'input' && (item.props.webconf && item.props.webconf.display === 'YearMonth')) {
+        // if (item.type === 'input' && (item.props.webconf && item.props.webconf.display === 'YearMonth')) {
+        //   item.type = 'DatePicker';
+        //   item.props = Object.assign({}, item.props, {
+        //     type: 'month',
+        //     clearable: true
+        //   });
+        // }
+        if (item.type === 'YearMonth') {
           item.type = 'DatePicker';
           item.props = Object.assign({}, item.props, {
             type: 'month',
@@ -601,6 +617,16 @@
           },
         ];
       },
+
+      showLabel() {
+        if (this._items.type === 'defined') {
+          return false
+        }
+        if (this._items.props.webconf && this._items.props.webconf.hiddenLabel) {
+          return false
+        }
+        return true
+      }
     },
     methods: {
       ...mapMutations('global', ['tabOpen', 'addKeepAliveLabelMaps', 'addServiceIdMap']),

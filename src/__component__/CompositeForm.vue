@@ -1824,8 +1824,11 @@
         if (item.display === 'defined') {
           str = 'defined';
         }
-
-
+        
+        // 扩展属性里定义的类型
+        if(item.webconf && item.webconf.display) {
+          str = item.webconf.display
+        }
         return str;
       },
       checkPanelShow(item) {
@@ -1889,6 +1892,10 @@
           if (this.defaultData.copy) {
             this.setLabel(item.colname, this.defaultSetValue[item.colname], item);
           }
+        }
+        
+        if (item.webconf && item.webconf.display === 'String') {
+          return item.valuedata || item.defval || ''; 
         }
         if (
           (item.display === 'textarea' && !item.fkdisplay)

@@ -343,45 +343,50 @@ export default {
         return arr;
       }, []);
       
-      Object.values(filterButtonsRest).reduce((arr, obj) => {
-        rowArray.map((row) => { // 所有选中行数据
+      const filterConditionArr = Object.values(filterButtonsRest)
+      let keys = []
+      if(filterConditionArr.length > 0) {
+        filterConditionArr.forEach(obj => {
+          const objKeys = Object.keys(obj)
+          objKeys.forEach(key => {
+            if(key !== 'actionId' && !keys.includes(key)) {
+              keys.push(key)
+            }
+          })
+        })
+      }
+      const disabledId = [];
+      filterConditionArr.reduce((arr, obj) => {
+        rowArray.forEach((row) => { // 所有选中行数据
           const conditionNum = [];
 
-          Object.keys(row).map((rowKey) => {
-            if (obj.hasOwnProperty(rowKey)) {
-              if (obj[rowKey].split(',').includes(row[rowKey].val)) {
+          keys.forEach(key => {
+            if(row[key] && obj[key]) {
+              if (obj[key].split(',').includes(row[key].val)) {
                 conditionNum.push(obj.actionId);
               }
             }
-          });
-          if (Number(Object.keys(obj).length) - 1 === Number(conditionNum.length)) {
-            buttons.disableButtons = buttons.disableButtons.concat(conditionNum);
+          })
+          if (Object.keys(obj).length - 1 === conditionNum.length && conditionNum.length > 0) {
+            disabledId.push(...conditionNum)
           }
+
+          // Object.keys(row).forEach((rowKey) => {
+          //   if (obj.hasOwnProperty(rowKey)) {
+          //     if (obj[rowKey].split(',').includes(row[rowKey].val)) {
+          //       conditionNum.push(obj.actionId);
+          //     }
+          //   }
+          // });
+          // if (Number(Object.keys(obj).length) - 1 === Number(conditionNum.length)) {
+          //   buttons.disableButtons = buttons.disableButtons.concat(conditionNum);
+          // }
         });
-        // Object.keys(obj).map((o, i) => {
-        //   if (o !== 'actionId') {
-        //     Object.keys(currentRow).map((rowKey) => {
-        //       if (rowKey === o) {
-        //         if (obj[o].split(',').includes(currentRow[o].val)) {
-        //           conditionNum.push(obj.actionId);
-        //         }
-        //       }
-        //     });
-        //   }
-        // });
-        // if (Number(Object.keys(obj).length) - 1 === Number(conditionNum.length)) {
-        //   if (rowFlag === 'selectRow') { // 勾选过滤出的需要置为disabled状态的按钮
-        //     buttons.disableButtons = buttons.disableButtons.concat(conditionNum);
-        //   } else if (rowFlag === 'deleteRow') { // 取消勾选过滤出的需要置为disabled状态的按钮
-        //     conditionNum.map((d, i) => {
-        //       const index =  buttons.disableButtons.findIndex(b => b === d);
-        //       buttons.disableButtons.splice(index,1)
-            
-        //     });
-        //   }
-        //   console.log(222, buttons.disableButtons, conditionNum);
-        // }
       }, []);
+
+      if (disabledId.length > 0) {
+        buttons.disableButtons = buttons.disableButtons.concat([...new Set(disabledId)]);
+      }
 
       // 处理按钮不可编辑逻辑
       const waListButtonsConfig = buttons.dataArray.waListButtonsConfig;// 折叠按钮

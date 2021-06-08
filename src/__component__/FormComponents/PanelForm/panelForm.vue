@@ -1,5 +1,5 @@
 <template>
-  <div :class="classes">
+  <div :class="classes" :id="id">
     <div v-for="(item,index) in Object.keys(formItemLists)"
          :key="index">
       <Collapse :value="collapseValue">
