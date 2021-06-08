@@ -18,8 +18,8 @@
 | ------------ | ------------ |
 | npm_publish_r3  | npm 基本表线上发版分支   |
 | npm_dev_r3  | npm 基本表线上开发分支   |
-| npm_test_8098  | npm 基本表线上发版测试分支   |
-
+| npm_test_8098_1.4  | npm 基本表线上发版1.4测试分支   |
+| npm_test_8098_1.3  | npm 基本表线上发版1.3测试分支   |
 | feature_list_form   | npm 基本版开发分支   |
 | test_8098测试分支   | 早期npm 发版测试分支,目前不要合并,因为有未合并代码   |
 | wings   | 云雀项目的开发分支代码  |
@@ -29,6 +29,9 @@
 |compatible_ie11|IE版本发布分支|
 |theme_jflow_dev_new |npm 早期基开发分支，目前不维护|
 |standard_dev |npm 早期基发版分支，目前不维护|
+|R3-1.3 |npm 定制包的文件，目前不维护|
+|npm-test-branch-new |所有分支代码，走测试|
+|npm-test-branch-new |所有分支代码，走测试|
 |customizeComponentForConfigPage-new|联客分支(支持模块自定义布局)|
 
 
