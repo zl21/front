@@ -66,7 +66,7 @@ export default class LinkageRelationships{
   hideColumn(target){
     let source = this.findItem(target.hidecolumn.refcolumn)
     if(!source){
-      return false
+      return this.nonexistence(target);
     }
     source.linkage = source.linkage || JSON.parse(JSON.stringify(this.linkage))
     let obj = Object.assign(target.hidecolumn,{
@@ -75,6 +75,15 @@ export default class LinkageRelationships{
     })
     source.linkage.hidecolumn.push(obj)
     delete target.hidecolumn
+  }
+  // 不存在的字段
+  nonexistence(target,key){
+    if(key ==='hideColumn' && target.hideColumn.ishide ){
+        target.show = true;
+      }else{
+        target.show = false;
+      }
+    return false;
   }
 
   // 处理字段静态规则配置
