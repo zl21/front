@@ -1642,13 +1642,14 @@
         // 整合表头数据
         const columns = data
           .filter(ele => ele.name !== EXCEPT_COLUMN_NAME)
-          .map((ele) => {
+          .map((ele, index) => {
             const param = {
               title: ele.name,
               key: ele.colname,
               align: 'center',
               tdAlign: ele.type === 'NUMBER' ? 'right' : 'center',
-              width: ele.webconf && ele.webconf.standard_width
+              width: ele.webconf && ele.webconf.standard_width,
+              _index: index
             };
             
             if (ele.comment) {
@@ -1937,7 +1938,7 @@
         Object.values(dynamicforcompute.refcolumns).forEach(colname => {
           expression = expression.replace(new RegExp(colname, 'g'), currentRowData[colname].val || 0)
         })
-        
+
         let newTargetValue
         if(targetColObj.scale || targetColObj.scale === 0) {
           newTargetValue = eval(expression).toFixed(targetColObj.scale)
@@ -1946,9 +1947,16 @@
         }
 
         // 手动更新input的值。如果通过响应式更新会导致input不能一直输入，此外ag只提供更新行的api，不能精确到dan
-        this.tabledata[params.index][dynamicforcompute.computecolumn] = newTargetValue
+        // this.tabledata  里的值不要改，会影响普通表格的性能。而且this.tabledata在计算中用不到，不更新也没事
         this.copyDataSource.row[params.index][dynamicforcompute.computecolumn].val = newTargetValue
-        const dom = document.querySelector(`#ag-${params.index}-${targetColObj._index - 1}`)
+        let colIndex // 列索引
+        if(this.useAgGrid) {
+          colIndex = targetColObj._index - 1
+        } else {
+          colIndex = targetColObj._index + 1
+        }
+        const dom = document.querySelector(`#ag-${params.index}-${colIndex}`)
+        
         if(dom) {
           const input = dom.querySelector('input')
           input.value = newTargetValue
