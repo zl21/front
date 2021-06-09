@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Button>{{slotProps.item.name}}</Button>
+        <Button  type="primary">{{slotProps.item.name}}</Button>
       </div>
 </template>
 <script>
@@ -12,3 +12,11 @@
     }
 }
 </script>
+<style lang="less">
+ .detail-buttons {
+     a{
+        display: inline-block;
+        padding: 8px 10px;
+    }
+ }
+</style>

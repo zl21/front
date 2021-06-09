@@ -3,7 +3,7 @@
   import detailbuttons from './detailbuttons';
   export default {
    slotArray:{
-    // detailbuttons:detailbuttons
+    detailbuttons:detailbuttons
    }, 
     mounted () {
     }

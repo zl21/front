@@ -515,11 +515,7 @@
         }
         this.objectTableComponent = tableComponent;
         this.objectButtonComponent = buttonComponent;
-<<<<<<< HEAD
-=======
-        this.currentSinglePanelForm = singlePanelForm;
         
->>>>>>> 7be0c561... 添加子表明细表格渲染
       },
       itemTableCheckFunc() {
         if (this.$refs.objectTableRef && Object.keys(this.$refs.objectTableRef.tableFormVerify()).length > 0) {
