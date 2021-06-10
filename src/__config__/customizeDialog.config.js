@@ -1,4 +1,11 @@
 export default {
+  batchChangePassword: {
+    component: () => import(
+      /* webpackChunkName: 'batchChangePassword' */
+      /* webpackMode: 'eager' */
+      '../__customizeDialog__/batchChangePassword/batchChangePassword.vue'
+    )
+  },
   ChangePassword: {
     component: () => import(
       /* webpackChunkName: 'ChangePassword' */
