@@ -1,10 +1,13 @@
 
 
-  import detailbuttons from './detailbuttons';
+  import detailbuttons from './detailbuttons.vue';
+  import tableDetailCollectionSlot from './tableDetailCollectionSlot';
+
   export default {
    slotArray:{
-    // detailbuttons:detailbuttons
+    detailbuttonsa:detailbuttons
    }, 
+   slotTableTemplate:tableDetailCollectionSlot,
     mounted () {
     }
 }
