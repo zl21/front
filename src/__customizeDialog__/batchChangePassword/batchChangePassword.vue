@@ -162,8 +162,9 @@
         };
         if (this.idArray && this.idArray.length > 0) {
           param.user_ids = this.idArray
+        } else {
+          return this.$Message.info('请勾选需要重置的用户')
         }
-        console.log(param)
         network.post('/p/cs/modifyPwd', param).then((res) => {
           if (res.data.code === 0) {
             const message = {
