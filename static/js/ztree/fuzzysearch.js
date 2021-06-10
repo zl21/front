@@ -62,6 +62,10 @@ export const  fuzzySearch = async (zTreeId, searchField, isHighLight, isExpand) 
             return highLightText;				
           });
           zTreeObjRes.updateNode(node); // update node for modifications take effect
+          setTimeout(()=>{
+            $(`#${node.tId}_a`).attr('title',node.oldname);
+          },100)
+
         }
         zTreeObjRes.showNode(node);// show node with matching keywords
         return true; // return true and show this node
