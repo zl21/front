@@ -17,11 +17,15 @@
 }
 </script>
 <style lang="less" scoped>
-.detail-content {
-    margin-bottom: 6px;
-    display: flex;
-    justify-content: space-between;
-   
-  }
+
+.detail-top{
+    height: calc(100% - 20px);
+    overflow: hidden;
+    .detail-content {
+        margin-bottom: 6px;
+        display: flex;
+        justify-content: space-between;
+    }
+}
 </style>
 

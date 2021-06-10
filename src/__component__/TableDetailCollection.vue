@@ -647,6 +647,11 @@
       this.$once('setSearchValue', () => {
         this.setSelectDefaultValue(); // 设置下拉的默认查询条件
       })
+      if(this.$parent.slotTableTemplate!== ''){
+        this.slotTableTemplate = this.$parent.slotTableTemplate;
+      }else{
+          this.slotTableTemplate = TableTemplate;
+      }  
     },
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
@@ -4650,13 +4655,6 @@
         }
       }
 
-    },
-    created(){
-        if(this.$parent.slotTableTemplate!== ''){
-          this.slotTableTemplate = this.$parent.slotTableTemplate;
-        }else{
-            this.slotTableTemplate = TableTemplate;
-        }    
     },
     mounted() {
       this.buttonData = this.buttonGroups;       
