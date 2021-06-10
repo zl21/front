@@ -8,6 +8,7 @@
        <slot name="detail-search"></slot>
     </div>
     <slot name="detail-table"></slot>
+    <slot name="detail-queryCondition"></slot>
   </div>
 </template>
 <script>
@@ -19,7 +20,7 @@
 <style lang="less" scoped>
 
 .detail-top{
-    height: calc(100% - 20px);
+    height: calc(100% - 0px);
     overflow: hidden;
     .detail-content {
         margin-bottom: 6px;

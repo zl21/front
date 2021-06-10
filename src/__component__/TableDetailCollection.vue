@@ -132,13 +132,17 @@
           @ag-row-dblclick="tableRowDbclick"
         ></CommonTableByAgGrid>
       </div>
-  </component>
-   <div
+      <div
         v-if="isHorizontal"
+        slot="detail-queryCondition"
         class="queryCondition"
       >
         查询条件:{{ dataSource.queryDesc }}
       </div>
+      
+     
+  </component>
+
     </div>
     <!-- 导入弹框 -->
     <ImportDialog
@@ -4760,7 +4764,7 @@
             }
             .queryCondition {
                 height: 20px;
-                margin-top: 5px;
+                padding-top: 10px;
             }
         }
     }
