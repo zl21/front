@@ -256,7 +256,7 @@
 
       .pop-btn {
 
-        text-align: left;
+        text-align: right;
         padding: 0px 0px 0 65px;
 
         .sav-btn, .cancel-btn {
