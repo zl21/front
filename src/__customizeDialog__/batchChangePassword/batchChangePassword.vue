@@ -136,7 +136,7 @@
           this.errorpawdgrade1 = 'red';
           return false;
         }
-        if (this.newpaswd.length < 5) { // 密码长度小于6
+        if (this.newpaswd.length <= 5) { // 密码长度小于6
           this.pawdgrade = false;
           this.errorpawdgrade1 = 'red';
           this.pawdgrade1 = true;
