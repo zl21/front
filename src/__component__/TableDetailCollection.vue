@@ -63,7 +63,7 @@
             clearable
             placeholder="查询条件"
             @on-change="selectedChange"
-            @on-clear="searchCondition=null"
+            @on-clear="searchCondition=''"
           >
             <Option
               v-for="item in filterList"
