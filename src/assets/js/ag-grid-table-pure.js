@@ -118,7 +118,7 @@ const fieldMergeRender = function () {
 fieldMergeRender.prototype.init = function (params) {
   const eGui = document.createElement('div');
   this.eGui = eGui;
-  let template = '';
+  let template;
 
   const divEle = document.createElement('div')
   params.colDef.key_group.map(item => {
@@ -126,10 +126,10 @@ fieldMergeRender.prototype.init = function (params) {
 
     item.label.map((temp) => {
       if (temp.value == value.val) {
+        const spanEle = document.createElement('span')
+        spanEle.innerText = temp.description
+        spanEle.className = `${temp.cssclass}`
         if(temp.comments) {
-          const spanEle = document.createElement('span')
-          spanEle.innerText = temp.description
-          spanEle.className = `${temp.cssclass}`
           spanEle.style = 'display:inline-block;padding:4px 6px;border:1px solid;border-radius:4px;line-height:1;cursor: pointer;'
           spanEle.onmouseenter = function(e) {
             const frag = document.createDocumentFragment()
@@ -151,23 +151,17 @@ fieldMergeRender.prototype.init = function (params) {
             tipDom && document.body.removeChild(tipDom)
           }
           divEle.appendChild(spanEle)
-          template = divEle
         } else {
-          template = template+`<span style="display:inline-block;padding:4px 6px;border:1px solid;border-radius:4px;line-height:1"  class="${temp.cssclass}">${temp.description}</span>`
+          spanEle.style = 'display:inline-block;padding:4px 6px;border:1px solid;border-radius:4px;line-height:1;'
+          divEle.appendChild(spanEle)
         }
       }
       return temp;
     });
   })
 
-  template = typeof template === 'string' ? `<div>${template}</div>` : divEle
-  
-  
-  if(typeof template === 'string') {
-    eGui.innerHTML = template;
-  } else{ 
-    eGui.appendChild(template)
-  }
+  template = divEle
+  eGui.appendChild(template)
 };
 
 fieldMergeRender.prototype.getGui = function () {
