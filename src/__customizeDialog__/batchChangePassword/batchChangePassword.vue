@@ -152,6 +152,12 @@
           this.pawdgrade1 = true;
           return false;
         }
+        if (!/[^%&',;=?$\x22]+/.test(this.newpaswd) || /^[\u4e00-\u9fa5]$/.test(this.newpaswd)) { // 不能包含中文和特殊字符
+          this.pawdgrade = false;
+          this.errorpawdgrade1 = 'red';
+          this.pawdgrade1 = true;
+          return false;
+        }
         if (this.newpaswd !== this.againpaswd) { // 两次密码不一样
           this.inconformity3 = true;
           return false;
