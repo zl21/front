@@ -41,6 +41,8 @@
             trigger="hover" 
             transfer
             :key="item.webid"
+            word-wrap
+            width="200"
             :content="JSON.parse(item.confirm).supPrompt">
             <Button
               :id="item.eName"
