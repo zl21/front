@@ -113,6 +113,8 @@ export default {
         path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${param.id}`;
       } else if (singleEditType !== ':itemId') {
         path = `/${param.url}`;
+         // 固定id label 匹配错误
+         param.id =  param.url.substring(param.url.lastIndexOf('/')+1);
       } else {
         path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${param.id}`;
       }

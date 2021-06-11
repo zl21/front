@@ -3,31 +3,44 @@
 <template>
   <div class="TableDetailCollection">
     <div class="detail-collection">
-      <div class="detail-top">
-        <div class="page-buttons">
-          <Page
-            ref="page"
-            :total="dataSource.totalRowCount"
-            :page-size-opts="dataSource.selectrange"
-            :current="currentPage"
-            class="table-page"
-            size="small"
-            show-elevator
-            show-sizer
-            show-total
-            @on-change="pageChangeEvent"
-            @on-page-size-change="pageSizeChangeEvent"
-          />
+      <component :is="slotTableTemplate" :tabwebact="tabwebact"
+      :webConfSingle = webConfSingle
+      :dataSource ="dataSource"
+      :readonly="readonly"
+      :tableReadonly="tableReadonly"
+      :objreadonly="objreadonly"
+      :tableHeight="tableHeight"
+      :status="status"
+      :tableName="tableName"
+      :type="type"
+      :itemInfo="itemInfo"> 
+        <div class="page-buttons" slot="detail-page">
+            <Page
+              ref="page"
+              :total="dataSource.totalRowCount"
+              :page-size-opts="dataSource.selectrange"
+              :current="currentPage"
+              class="table-page"
+              size="small"
+              show-elevator
+              show-sizer
+              show-total
+              @on-change="pageChangeEvent"
+              @on-page-size-change="pageSizeChangeEvent"
+            />
+        </div>
+         
           <ul
             v-if="!isHorizontal && !readonly"
-            class="detail-buttons"
+            class="detail-buttons" slot="detail-buttons" 
           >
             <a
               v-for="item in buttonData"
               :key="item.name"
               @click="buttonClick(item)"
             >
-              【{{ item.name }}】
+              <slot name="detail-buttons-a" 
+               v-bind:item="item">【{{ item.name }}】</slot>
             </a>
           </ul>
           <Dialog
@@ -40,17 +53,17 @@
             :footer-hide="dialogConfig.footerHide"
             :confirm="dialogConfig.confirm"
           />
-        </div>
+        
         <div
           v-if="filterList.length > 0"
-          class="detail-search"
+          class="detail-search" slot="detail-search"
         >
           <Select
             v-model="searchCondition"
             clearable
             placeholder="查询条件"
             @on-change="selectedChange"
-            @on-clear="searchCondition=null"
+            @on-clear="searchCondition=''"
           >
             <Option
               v-for="item in filterList"
@@ -78,8 +91,13 @@
             </Input>
           </div>
         </div>
-      </div>
-      <div class="table-outside">
+
+      <!-- <div class="detail-top">
+      
+      </div> -->
+      <div class="table-outside" slot="detail-table" 
+          v-bind:columns="columns" 
+          v-bind:tabledata="tabledata">
         <Table
           v-if="isCommonTable || !useAgGrid"
           ref="selection"
@@ -114,13 +132,17 @@
           @ag-row-dblclick="tableRowDbclick"
         ></CommonTableByAgGrid>
       </div>
-
       <div
         v-if="isHorizontal"
+        slot="detail-queryCondition"
         class="queryCondition"
       >
         查询条件:{{ dataSource.queryDesc }}
       </div>
+      
+     
+  </component>
+
     </div>
     <!-- 导入弹框 -->
     <ImportDialog
@@ -181,6 +203,7 @@
   import { updateSessionObject } from '../__utils__/sessionStorage';
   import getUserenv from '../__utils__/getUserenv';
   import createModal from './PreviewPicture/index';
+  import TableTemplate from './TableDetailCollectionslot';
 
   Vue.component('ComAttachFilter', ComAttachFilter);
   Vue.component('TableDocFile', Docfile);
@@ -211,6 +234,7 @@
       Dialog,
       ImportDialog, // 导入弹框
       CommonTableByAgGrid,
+      // TableTemplate // slot 的模板
     },
     data() {
       return {
@@ -223,7 +247,7 @@
         buttonData: [],
         currentPage: 1, // 当前页码
         isRefreshClick: false, // 是否点击了刷新
-
+        slotTableTemplate:{}, // 渲染模板
         fkSelectedChangeData: [], // 保存外键修改的数据
         verifyTipObj: {}, // 保存校验对象
         isTableRender: false, // 表格是否重新渲染
@@ -625,6 +649,11 @@
       this.$once('setSearchValue', () => {
         this.setSelectDefaultValue(); // 设置下拉的默认查询条件
       })
+      if(this.$parent.slotTableTemplate!== ''){
+        this.slotTableTemplate = this.$parent.slotTableTemplate;
+      }else{
+          this.slotTableTemplate = TableTemplate;
+      }  
     },
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
@@ -4630,7 +4659,7 @@
 
     },
     mounted() {
-      this.buttonData = this.buttonGroups;
+      this.buttonData = this.buttonGroups;       
       window.addEventListener('tabRefreshClick', () => {
         if (!this._inactive) {
           this.isRefreshClick = true;
@@ -4677,10 +4706,10 @@
             // flex: 1;
             flex-direction: column;
             overflow-y: visible; // fix: 表格内下拉框超出表格的部分看不见了
-            .detail-top {
-                margin-bottom: 6px;
-                display: flex;
-                justify-content: space-between;
+            //.detail-top {  }
+                // margin-bottom: 6px;
+                // display: flex;
+                // justify-content: space-between;
                 .page-buttons {
                     display: flex;
                     flex-wrap: wrap;
@@ -4723,7 +4752,7 @@
                         }
                     }
                 }
-            }
+          
             .table-outside {
                 // flex: 1;
                 // overflow-y: hidden;
@@ -4735,7 +4764,7 @@
             }
             .queryCondition {
                 height: 20px;
-                margin-top: 5px;
+                padding-top: 10px;
             }
         }
     }
