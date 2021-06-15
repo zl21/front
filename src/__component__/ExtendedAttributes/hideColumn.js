@@ -70,10 +70,23 @@ function HiddenFields(tableName){
       if((JudgeValue(item.source,temp) && !temp.ishide) || (!JudgeValue(item.source,temp) && temp.ishide)){  
         //判断当前字段与配置的value值进行对比
         // console.log('显示的字段',temp.target)
-        formItem.show = true
+        formItem.show = true;
+        if(temp.visibility === false){
+          // 只是不可见,但是存在
+          formItem.show = true 
+          let dom = document.querySelector(`.R3masterForm #${formItem.colname}`);
+          dom.style.display = "block";
+        }
       }else{
         // console.log('隐藏的字段',item.source)
-        formItem.show = false 
+        if(temp.visibility === false){
+          // 只是不可见,但是存在
+          formItem.show = true 
+          let dom = document.querySelector(`.R3masterForm #${formItem.colname}`);
+          dom.style.display="none";
+        }else{
+          formItem.show = false 
+        }
         if(temp.clear){  //是否配置了隐藏字段时需要清空数据
           if(target.items.display === 'OBJ_CHECK'){
             target.value = target.items.combobox.filter(item => !item.limitdis)[0].limitval
