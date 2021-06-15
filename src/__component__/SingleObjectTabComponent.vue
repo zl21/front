@@ -147,8 +147,8 @@
       @tableSelectedRow="tableSelectedRow"
       @tableVerifyMessage="tableVerifyMessage"
     > 
-      <div slot="detail-buttons" slot-scope="slotProps" v-if="slotArray.detailbuttons">
-         <component :is="slotArray.detailbuttons" :slotProps="slotProps" />
+      <div slot="detail-buttons-a" slot-scope="slotProps" v-if="slotArray.detailbuttonsa">
+         <component :is="slotArray.detailbuttonsa" :slotProps="slotProps" />
       </div>
     </component>
   </div>
@@ -195,6 +195,7 @@
         isRequest: false,
         dialogType:false, // 是否是导入弹窗
         slotArray:{}, // 内置卡槽组件
+        slotTableTemplate:'', // 接入外部的渲染组件
         callbackFun:()=>{  // 回调函数
               
         }
@@ -516,7 +517,13 @@
         const tableDetailCollectionMixin = (window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.tableDetailCollectionMixin) || {};
         // 混入卡槽
         if(tableDetailCollectionMixin.slotArray){
-          this.slotArray.detailbuttons = tableDetailCollectionMixin.slotArray.detailbuttons;
+          Object.keys(tableDetailCollectionMixin.slotArray).forEach((key)=>{
+            this.slotArray[key] = tableDetailCollectionMixin.slotArray[key];
+          })
+        }
+          // 混入外部接入的渲染
+        if (tableDetailCollectionMixin.slotTableTemplate) {
+          this.slotTableTemplate = tableDetailCollectionMixin.slotTableTemplate;
         }
        
         const singleObjectButtonsMixin = (window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.singleObjectButtonsMixin) || {};
@@ -557,6 +564,7 @@
         this.objectTableComponent = tableComponent;
         this.objectButtonComponent = buttonComponent;
         this.currentSinglePanelForm = singlePanelForm;
+        
       },
       itemTableCheckFunc() {
         if (this.$refs.objectTableRef && Object.keys(this.$refs.objectTableRef.tableFormVerify()).length > 0) {

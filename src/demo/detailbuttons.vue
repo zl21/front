@@ -7,7 +7,7 @@
  export default {
     props:{
         slotProps:{
-            type:Object
+          type:Object
         }
     }
 }

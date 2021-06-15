@@ -116,9 +116,8 @@ module.exports = {
   agGridOptions: { // ag表格的配置
     // rowHeight: 100
   },
-  useAgGrid: true, // 明细界面的表格全局用ag表格进行渲染
-  messageSwitch: true, // 消息开关
-  useAgGrid: true, // 明细界面的表格全局用ag表格进行渲染
+  // messageSwitch: true, // 消息开关
+  // useAgGrid: true, // 明细界面的表格全局用ag表格进行渲染
   // (data) => {
   //   if (data.router.params) {
   //     if (data.router.params.tableName && data.config().configPage[data.router.params.tableName].filter(u => u === data.url).length > 0) { // 筛选出配置界面不需要根据框架code报错提示框的接口
@@ -144,4 +143,5 @@ module.exports = {
   // }
   // classFix: 'r3-', // 样式前缀
   classFix: '', // 样式前缀
+  autoGatewayUrl:false,  // 是否请求网关
 };

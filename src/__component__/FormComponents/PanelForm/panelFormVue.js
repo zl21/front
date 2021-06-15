@@ -121,7 +121,7 @@ export default {
         this.$R3loading.hide(this.loadingName)
         return []
       }
-      data.addcolums = new LinkageRelationships(JSON.parse(JSON.stringify(this.defaultData)).addcolums).initializeData()
+      data.addcolums = new LinkageRelationships(JSON.parse(JSON.stringify(this.defaultData)).addcolums,this).initializeData()
       this.objviewcol = this.defaultData.objviewcol;
       // 处理单字段分组
       let sumObject = {
@@ -151,9 +151,8 @@ export default {
       data.addcolums.map((item, index) => {
         let _childs = item.childs ? item.childs : [item.child];
         _childs.map((option) => {
-
           // 判断是否展示组件
-          if (option.display === 'none') {
+          if (option.display === 'none' || option.show === false) {
             option.show = false;
           } else {
             option.show = true;
@@ -193,6 +192,7 @@ export default {
           item.childs[temp].itemId = this.$route.params.itemId;
           item.childs[temp].component = this.initComponent(item.childs[temp], index);
           item.childs[temp].isMainTable = this.isMainTable;
+          item.childs[temp].moduleComponentName = this.moduleComponentName;
           item.childs[temp] = new RenderComponent(JSON.parse(JSON.stringify(item.childs[temp]))).itemConversion();
           return temp
         })

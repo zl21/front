@@ -30,6 +30,7 @@ import './src/constants/dateApi';
 
 import { getKeepAliveModuleName } from './src/__config__/router.navigation.guard';
 import './src/constants/dateApi';
+import packJson from './package.json';
 
 
 const validateConfig = config => ({
@@ -37,7 +38,7 @@ const validateConfig = config => ({
   message: 'xxx'
 });
 const packageMessage = {
-  version: '3.0.0',
+  version: packJson.version,
   packageTime: new Date(), 
   user: 'local',   
 };
