@@ -817,8 +817,8 @@
         }
       },
       inputKeyDown(event, $this) {
-        // 禁止输入特殊字符  222->'
-        if ([222].includes(event.keyCode)) {
+        // 禁止输入特殊字符单引号  222->'
+        if (event.key === "'") {
           event.stopPropagation();
           event.preventDefault();
         }

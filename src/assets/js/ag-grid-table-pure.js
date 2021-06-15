@@ -118,25 +118,50 @@ const fieldMergeRender = function () {
 fieldMergeRender.prototype.init = function (params) {
   const eGui = document.createElement('div');
   this.eGui = eGui;
-  let template = '';
+  let template;
 
-  if(true){
-    params.colDef.key_group.map(item => {
-      const value = params.data[item.col_name]; // 来源字段的值
-      item.label.map((temp) => {
-        if (temp.value == value.val) {
-          template = template+`<span style="display:inline-block;padding:4px 6px;border:1px solid;border-radius:4px;line-height:1"  class="${temp.cssclass}">${temp.description}</span>`
+  const divEle = document.createElement('div')
+  params.colDef.key_group.map(item => {
+    const value = params.data[item.col_name]; // 来源字段的值
+
+    item.label.map((temp) => {
+      if (temp.value == value.val) {
+        const spanEle = document.createElement('span')
+        spanEle.innerText = temp.description
+        spanEle.className = `${temp.cssclass}`
+        if(temp.comments) {
+          spanEle.style = 'display:inline-block;padding:4px 6px;border:1px solid;border-radius:4px;line-height:1;cursor: pointer;'
+          spanEle.onmouseenter = function(e) {
+            const frag = document.createDocumentFragment()
+            const dom = document.createElement('div')
+            dom.className = 'r3-pop-tip-wrap'
+            dom.innerHTML = `<p class="pop-tip-content">${temp.comments}</p>
+              <div class="pop-tip-arrow"></div>`
+            
+            const {left, top} = e.target.getBoundingClientRect()
+            const { offsetWidth, offsetHeight } = e.target
+            dom.style.left = `${left - (100 - offsetWidth) / 2}px`
+            dom.style.top = `${top - 10}px`
+            
+            frag.appendChild(dom)
+            document.body.appendChild(frag)
+          }
+          spanEle.onmouseleave = function () {
+            const tipDom = document.querySelector('.r3-pop-tip-wrap')
+            tipDom && document.body.removeChild(tipDom)
+          }
+          divEle.appendChild(spanEle)
+        } else {
+          spanEle.style = 'display:inline-block;padding:4px 6px;border:1px solid;border-radius:4px;line-height:1;'
+          divEle.appendChild(spanEle)
         }
-        return temp;
-      });
-    })
+      }
+      return temp;
+    });
+  })
 
-    template = `<div>${template}</div>`
-  }else{
-    template = `<span class="${cssFeatures.hover}" style="text-decoration: underline; color: #0F8EE9; " data-target-tag="customerUrlText">${params.value || ''}</span>`
-  }
-  
-  eGui.innerHTML = template;
+  template = divEle
+  eGui.appendChild(template)
 };
 
 fieldMergeRender.prototype.getGui = function () {

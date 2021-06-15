@@ -4,7 +4,7 @@ module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
   projectIconPath: '', // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
-  target: 'http://r3-8098.dev.syman.cn/', // 框架研发网关开启环境
+  // target: 'http://r3-8098.dev.syman.cn/', // 框架研发网关开启环境
   // target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 新版本jflow测试环境
   // target: 'http://r3dev.qiaodan.com:28888', // 乔丹开发环境
   // target: 'http://r3dev.qiaodan.com:26666', // 乔丹开发环境
@@ -38,11 +38,11 @@ module.exports = {
   // target: ' http://47.103.6.45:27777/', // 森马
   // target: 'http://cs.yqdev.burgeononline.com/', // 云雀
   // target: 'http://47.102.164.111:27777', // 卡宾
-
-
+  target: 'http://dev.dev.lark-erp.cn/',
+  
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
-  enableGateWay: true, // 网关是否打开,
+  // enableGateWay: true, // 网关是否打开,
   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用接口请求
   enableHistoryAndFavoriteUI: true, // 是否显示收藏与最近使用UI
   ignoreGateWayPattern: [/\/jflow\/*/g, /\/api\/*/g], // 框架默认禁用的网关逻辑的正则模式匹配
@@ -92,57 +92,10 @@ module.exports = {
     verticalTableDetailCustomize: null,
     standardTableListsCustomize: null,
     horizontalTableDetailCustomize: null,
-    taskList: null
+    taskList: null,
+    // tableDetailCollectionMixin:require('./src/demo/mixin').default
   },
   imgProgressController: false, // 是否显示图片上传进度
-  // customizeMixins: { // 获取所有外部接入的mixins对象
-  //   setPanel: null,
-  //   verticalTableDetailCustomize: null,
-  //   standardTableListsCustomize: {
-  //     methods: {
-  //       R3_openedApi_export(event) {
-  //         console.log('混入啦2----------');
-  //         this.$R3Dialog({
-  //           dialogComponentName: 'exportValidate',
-  //           title: '导出校验',
-  //           footerHide: true
-  //         }, () => {
-  //           this.batchExport(event);
-  //         });
-  //       },
-  //     }
-  //   },
-  //   horizontalTableDetailCustomize: null,
-  //   taskList: null,
-  //   singleObjectButtonsMixin: {
-  //     methods: {
-  //       R3_openedApi_export() {
-  //         console.log('混入啦3----------');
-  //         this.$R3Dialog({
-  //           dialogComponentName: 'exportValidate',
-  //           title: '导出校验',
-  //           footerHide: true
-  //         }, () => {
-  //           this.objectEXPORT();
-  //         });
-  //       }
-  //     }
-  //   },
-  //   tableDetailCollectionMixin: {
-  //     methods: {
-  //       R3_openedApi_export() {
-  //         console.log('混入啦1----------');
-  //         this.$R3Dialog({
-  //           dialogComponentName: 'exportValidate',
-  //           title: '导出校验',
-  //           footerHide: true
-  //         }, () => {
-  //           this.objectEXPORT();
-  //         });
-  //       }
-  //     }
-  //   }
-  // },
   ossRealtimeSave: false,
   notificationOfMain: false, // 是否开启主表数据修改通知
   filterUrlForNetwork: {// 过滤不需要用框架报错提示信息的接口请求

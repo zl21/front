@@ -146,7 +146,11 @@
       @tableDataChange="tableDataChange"
       @tableSelectedRow="tableSelectedRow"
       @tableVerifyMessage="tableVerifyMessage"
-    />
+    > 
+      <div slot="detail-buttons" slot-scope="slotProps" v-if="slotArray.detailbuttons">
+         <component :is="slotArray.detailbuttons" :slotProps="slotProps" />
+      </div>
+    </component>
   </div>
 </template>
 
@@ -190,6 +194,7 @@
         customizeComponent: '', // 自定义组件
         isRequest: false,
         dialogType:false, // 是否是导入弹窗
+        slotArray:{}, // 内置卡槽组件
         callbackFun:()=>{  // 回调函数
               
         }
@@ -509,6 +514,11 @@
         const tableComponent = `${this[MODULE_COMPONENT_NAME]}.TableDetailCollection`;
         const buttonComponent = `${this[MODULE_COMPONENT_NAME]}.SingleObjectButtons`;
         const tableDetailCollectionMixin = (window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.tableDetailCollectionMixin) || {};
+        // 混入卡槽
+        if(tableDetailCollectionMixin.slotArray){
+          this.slotArray.detailbuttons = tableDetailCollectionMixin.slotArray.detailbuttons;
+        }
+       
         const singleObjectButtonsMixin = (window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.singleObjectButtonsMixin) || {};
         const vuexModuleName = this.moduleComponentName;
 

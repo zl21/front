@@ -27,7 +27,8 @@
               :key="item.name"
               @click="buttonClick(item)"
             >
-              【{{ item.name }}】
+              <slot name="detail-buttons" 
+               v-bind:item="item">【{{ item.name }}】</slot>
             </a>
           </ul>
           <Dialog

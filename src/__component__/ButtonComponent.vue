@@ -31,22 +31,40 @@
         @click="btnclick('fix', item,index)"
         v-text="item.name"
       />
-      <Button
-        v-for="(item,index) in dataArray.waListButtonsConfig.waListButtons"
-        :id="item.eName"
-        :key="item.webid"
-        :ref="item.ref"
-        :disabled="item.disabled"
-        type="fcdefault"
-        @click="btnclick('custom', item)"
-        v-text="item.webdesc"
-      >
-        <!-- <Poptip
-          trigger="hover"
-          content="waListButtonsAnnotation"
-          placement="bottom-start"
-        /> -->
-      </Button>
+
+      <!-- 定制按钮 -->
+      <template v-for="item in dataArray.waListButtonsConfig.waListButtons">
+        <template v-if="item.confirm && item.confirm.includes('supPrompt')">
+          <Poptip 
+            trigger="hover" 
+            transfer
+            :key="item.webid"
+            word-wrap
+            width="200"
+            :content="JSON.parse(item.confirm).supPrompt">
+            <Button
+              :id="item.eName"
+              :ref="item.ref"
+              :disabled="item.disabled"
+              type="fcdefault"
+              @click="btnclick('custom', item)"
+              v-text="item.webdesc"> 
+            </Button>
+          </Poptip>
+        </template>
+        <Button
+          v-else
+          :id="item.eName"
+          :key="item.webid"
+          :ref="item.ref"
+          :disabled="item.disabled"
+          type="fcdefault"
+          @click="btnclick('custom', item)"
+          v-text="item.webdesc"
+          > 
+        </Button>
+      </template>
+      
       <Dropdown
         v-for="(group,i) in dataArray.waListButtonsConfig.waListButtonsGroup"
         :key="group.webid"
