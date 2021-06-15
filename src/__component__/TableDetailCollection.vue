@@ -1828,7 +1828,6 @@
               // value: this.afterSendData[this.tableName] && this.afterSendData[this.tableName][params.index] && this.afterSendData[this.tableName][params.index][cellData.colname] !== undefined ? this.afterSendData[this.tableName][params.index][cellData.colname] : params.row[cellData.colname],
               value: this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname].val : '',
               regx: this.inputRegx(cellData, params),
-              clearable: true,
               maxlength: cellData.length
             },
             nativeOn: {
