@@ -12,7 +12,7 @@ const input = {
     // 输入框类型，可选值为 text、password、textarea、url、email、date
     type: 'text', // 必填!
     // 是否显示清空按钮
-    clearable: false,
+    clearable: true,
     // 设置输入框为禁用状态
     disabled: false,
     // 设置输入框为只读
