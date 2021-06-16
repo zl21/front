@@ -170,7 +170,7 @@ function JudgeValue(source,conf) {
           return value.includes(String(x))
         }).length > 0       
       }else{
-        if(source.items.display === 'OBJ_SELECT' && conf.match === 'label'){
+        if(source.items.combobox && conf.match === 'label'){
           let arr = source.items.combobox.filter(item => item.limitval == value)
           value = arr.length > 0 ? arr[0].limitdesc : ''
         }
