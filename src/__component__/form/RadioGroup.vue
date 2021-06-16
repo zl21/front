@@ -55,11 +55,14 @@ export default {
         this.selectedValues = '';
       }
     },
-    value(newVal) {
-      if (newVal) {
-        const option = this.options.combobox.find(option => option.limitval === newVal)
-        this.selectedValues = option.limitdesc
-      }
+    value: {
+      handler(newVal) {
+        if (newVal) {
+          const option = this.options.combobox.find(option => option.limitval === newVal)
+          this.selectedValues = option.limitdesc
+        }
+      },
+      immediate: true
     }
   },
 
@@ -68,11 +71,6 @@ export default {
       const option = this.options.combobox.find(option => option.limitdesc === value)
       this.$emit('change', option.limitval)
     },
-  },
-
-  mounted() {
-    const defaultData = this.options.defval || this.options.valuedata;
-    this.selectedValues = defaultData
   }
 };
 </script>
