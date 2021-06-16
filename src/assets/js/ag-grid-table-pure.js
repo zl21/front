@@ -10,6 +10,7 @@ import store from '../../__config__/store.config';
 import router from '../../__config__/router.config';
 import createModal from '../../__component__/PreviewPicture/index.js';
 import { agGridOptions } from '../../constants/global';
+import { toThousands } from '../../__utils__/number'
 
 // 设置enterprise key
 // const { Grid, LicenseManager } = agGrid;
@@ -549,6 +550,8 @@ const initializeAgTable = (container, opt) => {
     let updateColumnPositionDelay = -1; // column move 延迟计时器
     let updateColumnVisibleDelay = -1; // column visible 延迟计时器
     let updateBodyScrollDelay = -1; // 横向滚动延迟计时器
+    let subtotalRowData = null // 合计对象
+    let fullRangeSubTotalRowData = null // 总计对象
     if (!(agGridTableContainer instanceof HTMLElement)) {
       console.log('agGridTableContainer is not a HTMLElement: agGridTableContainer = ', agGridTableContainer);
       agTable.containerIsNull = true;
@@ -763,6 +766,7 @@ const initializeAgTable = (container, opt) => {
       });
     };
 
+    // 处理总计行
     const dealWithFullRangeSubTotalRow = (fullRangeSubTotalRow) => {
       const fullRangeSubTotalRowData = {};
       columnApi.getAllColumns().forEach((d) => {
@@ -774,6 +778,37 @@ const initializeAgTable = (container, opt) => {
       }
       return fullRangeSubTotalRowData;
     };
+
+    // 计算每一列的和，返回一个对象，对象key对应是某一列的值
+    // 参数1是的存放列字段的数组，参数2是行数据
+    const getSumOfEachColumn = (columns, rows) => {
+      const result = {}
+      let subtotal = 0
+      columns.forEach(fieldName => {
+        // 合计值为过滤勾选项之和
+        const currentColumn = columnApi.getAllColumns().find(d => d.colId === fieldName)
+        const scale = currentColumn.colDef.scale || 0 // 获取计算精度
+        subtotal = rows.reduce((sum,item) => {
+          const value = item[fieldName].val || 0
+          return sum + Number(value)
+        }, 0)
+        subtotal = subtotal.toFixed(scale)
+        result[fieldName] = subtotal
+      })
+      return result
+    }
+
+    // 处理合计行
+    const dealWithSubTotalRow = (subtotalRow) => {
+      const subtotalRowData = {};
+      // 前端计算合计值
+      columnApi.getAllColumns().forEach((d) => {
+        const { colname } = d.colDef;
+        subtotalRowData[colname] = { val: colname === 'ID' ? '合计' : (subtotalRow[colname] || '') };
+      });
+      subtotalRowData.__ag_is_statistic_row__ = true;
+      return subtotalRowData
+    }
 
     // 处理行数据
     const transformRowData = (data) => {
@@ -793,50 +828,49 @@ const initializeAgTable = (container, opt) => {
       let fullRangeSubTotalRow = null;
       let isFullRangeSubTotalEnabled = null;
       let isSubTotalEnabled = null;
+      let subtotalRow = null
       if (options.datas) {
         const { datas } = options;
         fullRangeSubTotalRow = datas.fullRangeSubTotalRow;
         isFullRangeSubTotalEnabled = datas.isFullRangeSubTotalEnabled;
         isSubTotalEnabled = datas.isSubTotalEnabled;
+        subtotalRow = datas.subtotalRow
       }
 
       // 计算合计值
       if (isSubTotalEnabled) {
-        const subtotalRowData = {};
-
-        // 前端计算合计值
-        const sumField = [];
-        columnApi.getAllColumns().forEach((d) => {
-          subtotalRowData[d.colDef.colname] = { val: '' };
-          if (d.colDef.issubtotal) {
-            sumField.push(d.colDef.colname);
-          }
-        });
-        sumField.forEach((field) => {
-          // subtotalRowData[field].val = data.reduce((sum, row) => sum + (parseFloat(`${row[field].val}`.replace(/\,/g, '')) || 0), 0);
-          subtotalRowData[field].val = options.datas.subtotalRow[field]  //获取后端返回数据
-          let scale = 0;
-          columnApi.getAllColumns().some((d) => {
-            if (d.colId === field) {
-              scale = d.colDef.scale || 0;
-              return true;
-            }
-            return false;
-          });
-          // subtotalRowData[field].val = currencyFormat(subtotalRowData[field].val.toFixed(scale), scale !== 0);
-          subtotalRowData[field].val = subtotalRowData[field].val
-        });
-        subtotalRowData.ID.val = '合计';
-        subtotalRowData.__ag_is_statistic_row__ = true;
-        console.log(subtotalRowData)
+        // const subtotalRowData = {};
+        // // 前端计算合计值
+        // const sumField = [];
+        // columnApi.getAllColumns().forEach((d) => {
+        //   subtotalRowData[d.colDef.colname] = { val: '' };
+        //   if (d.colDef.issubtotal) {
+        //     sumField.push(d.colDef.colname);
+        //   }
+        // });
+        // sumField.forEach((field) => {
+        //   subtotalRowData[field].val = options.datas.subtotalRow[field]  //获取后端返回数据
+        //   // let scale = 0;
+        //   // columnApi.getAllColumns().some((d) => {
+        //   //   if (d.colId === field) {
+        //   //     scale = d.colDef.scale || 0;
+        //   //     return true;
+        //   //   }
+        //   //   return false;
+        //   // });
+        //   // subtotalRowData[field].val = subtotalRowData[field].val
+        // });
+        // subtotalRowData.ID.val = '合计';
+        // subtotalRowData.__ag_is_statistic_row__ = true;
+        subtotalRowData = dealWithSubTotalRow(subtotalRow)
         pinnedBottomRowData.push(subtotalRowData);
       }
 
       // 计算总计值
       if (isFullRangeSubTotalEnabled && fullRangeSubTotalRow) {
-        pinnedBottomRowData.push(dealWithFullRangeSubTotalRow(fullRangeSubTotalRow));
+        fullRangeSubTotalRowData = dealWithFullRangeSubTotalRow(fullRangeSubTotalRow)
+        pinnedBottomRowData.push(fullRangeSubTotalRowData);
       }
-
       return { rowData, pinnedBottomRowData };
     };
 
@@ -1162,6 +1196,56 @@ const initializeAgTable = (container, opt) => {
           }
           return className;
         }, // 处理行级样式
+        // 过滤回调
+        onFilterChanged(params) {
+          const { api, columnApi } = params;
+          const datas = options.datas 
+          const { isFullRangeSubTotalEnabled, isSubTotalEnabled, fullRangeSubTotalRow, subtotalRow } = datas
+
+          if(!datas || (!isFullRangeSubTotalEnabled && !isSubTotalEnabled)) {
+            return
+          }
+
+          // 获取行数据
+          const rows = api.getModel().rowsToDisplay.map(row => row.data)
+
+          // 计算合计
+          if(isSubTotalEnabled || isFullRangeSubTotalEnabled) {
+            const subTotalResult = getSumOfEachColumn(Object.keys(subtotalRow), rows)
+            Object.keys(subTotalResult).forEach(columnName => {
+              const value = subTotalResult[columnName]
+              subtotalRowData[columnName].val = toThousands(value) // 转千分位
+            })
+          }
+
+          // 总计是根据合计得到结果，所以算总计前要算下合计
+          // 总计可以根据 原始合计与现在合计的差值算出
+          if(isFullRangeSubTotalEnabled) {
+            Object.keys(fullRangeSubTotalRow).forEach(fieldName => {
+              const originSubTotal = subtotalRow[fieldName].replace(/,/, '')
+              const currentSubTotal = subtotalRowData[fieldName].val.replace(/,/, '')
+              const diffValue = Number(originSubTotal) - Number(currentSubTotal) // 获取合计的差值
+              const originTotal = fullRangeSubTotalRow[fieldName].val.replace(/,/, '')
+              const currentTotal = Number(originTotal) - Number(diffValue) // 获取总计
+              const currentColumn = columnApi.getAllColumns().find(d => d.colId === fieldName)
+              const scale = currentColumn.colDef.scale || 0 // 获取计算精度
+              const value =  currentTotal.toFixed(scale)
+              fullRangeSubTotalRowData[fieldName].val = toThousands(value)
+            })
+          }
+          
+          // 设置底部数据
+          const pinnedBottom = []
+          if(isSubTotalEnabled) {
+            pinnedBottom.push(subtotalRowData)
+          }
+          if(isFullRangeSubTotalEnabled) {
+            pinnedBottom.push(fullRangeSubTotalRowData)
+          }
+          if(pinnedBottom.length > 0) {
+            api.setPinnedBottomRowData(pinnedBottom)
+          }
+        },
       };
 
       return Object.assign({},obj,agGridOptions())
