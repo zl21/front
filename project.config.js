@@ -136,4 +136,5 @@ module.exports = {
   //   component: FunctionPowerNew,
   //   labelName: '功能权限',
   // }
+  computeForSubtable: false
 };

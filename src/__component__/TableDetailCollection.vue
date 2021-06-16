@@ -2000,7 +2000,7 @@
                   const oldId = this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val
  
                   // 是否进行联动计算
-                  if(cellData.webconf && cellData.webconf.dynamicforcompute) {
+                  if(window.ProjectConfig.computeForSubtable) {
                     const dynamicforcompute = cellData.webconf.dynamicforcompute
                     const oldTargetValue = this.dataSource.row[params.index][dynamicforcompute.computecolumn].val
                     // 找到目标字段相关的信息
