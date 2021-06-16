@@ -121,10 +121,13 @@ export default {
   }) {
     // 参数说明  table 子表表名，objid列表界面该行数据的id也就是rowid，refcolid子表id,searchdata查询条件
     const id = objid === 'New' ? '-1' : objid;
+    let mainTableName = this.state.global.activeTab && this.state.global.activeTab.tableName;
+
     network.post('/p/cs/objectTableItem', urlSearchParams({
       table,
       objid: id,
       refcolid,
+      mainTableName:mainTableName,
       searchdata
     })).then((res) => {
       if (res.data.code === 0) {
