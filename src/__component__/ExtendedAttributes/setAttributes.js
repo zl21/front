@@ -65,8 +65,12 @@ function HiddenFields(tableName){
       }
       let formItem = panelForm.formItemLists[panelIndex].childs[itemIndex];
       if(JudgeValue(item.source,temp,panelForm)){
-        formItem.isnotnull = temp.props.required;
-        formItem.readonly = temp.props.disabled;
+        if(temp.props.required !== undefined){
+          formItem.isnotnull = temp.props.required;
+        }
+        if(temp.props.disabled !== undefined){
+          formItem.readonly = temp.props.disabled;
+        }
        
       }else{
         formItem.isnotnull = target.items.original.isnotnull;
