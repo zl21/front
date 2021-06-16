@@ -57,14 +57,16 @@ export default {
     },
     value(newVal) {
       if (newVal) {
-        this.selectedValues = newVal
+        const option = this.options.combobox.find(option => option.limitval === newVal)
+        this.selectedValues = option.limitdesc
       }
     }
   },
 
   methods: {
     handleChange(value) {
-      this.$emit('change', value)
+      const option = this.options.combobox.find(option => option.limitdesc === value)
+      this.$emit('change', option.limitval)
     },
   },
 
