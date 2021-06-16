@@ -138,4 +138,5 @@ module.exports = {
   //   labelName: '功能权限',
   // }
   autoGatewayUrl:false,  // 是否请求网关
+  computeForSubtable: false
 };
