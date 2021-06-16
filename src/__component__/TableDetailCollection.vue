@@ -125,7 +125,7 @@
             suppressMovableColumns: true,
             afterColumnMoved: afterColumnMoved,
             ...agGridOptions,
-            datas: dataSource,
+            datas: dataSource
           }"
           @ag-selection-change="tableSelectedChange"
           @ag-sort-change="tableSortChange"
@@ -745,14 +745,15 @@
         }
         // 整合表头数据
         const newColumns = columns
-          .map((ele) => {
+          .map((ele, index) => {
             const param = {
               title: ele.name,
               key: ele.colname,
               field: ele.colname,
               align: 'center',
               tdAlign: ele.type === 'NUMBER' ? 'right' : 'center',
-              isagfilter: false // 关闭过滤功能
+              isagfilter: false, // 关闭过滤功能
+              _index: index
             };
 
             // 序号按行索引渲染
@@ -912,14 +913,7 @@
           const cell = {
             COLLECTION_INDEX: '<div class="text-center">合计</div>'
           };
-          // const needSubtotalList = this.columns.filter(ele => ele.issubtotal);
-          // needSubtotalList.map((ele) => {
-          //   const needSubtotalDatas = [];
-          //   this.tabledata.reduce((a, c) => needSubtotalDatas.push(c[ele.colname]), []); //
-          //   const totalNumber = needSubtotalDatas.reduce((a, c) => Number(a) + Number(c), []);
-          //   cell[ele.colname] = `${totalNumber}`;
-          //   return ele;
-          // });
+
           if (this.dataSource.subtotalRow && Object.keys(this.dataSource.subtotalRow).length > 0) {
             Object.keys(this.dataSource.subtotalRow).forEach((key) => {
               cell[key] = `<div class="text-right">${this.dataSource.subtotalRow[key]}</div>`;
@@ -927,7 +921,7 @@
           }
           total.push(cell);
         }
-        // if (this.isHorizontal) {
+
         if (this.dataSource.isFullRangeSubTotalEnabled) {
           // 总计
           const cell = {
@@ -1676,13 +1670,14 @@
         // 整合表头数据
         const columns = data
           .filter(ele => ele.name !== EXCEPT_COLUMN_NAME)
-          .map((ele) => {
+          .map((ele, index) => {
             const param = {
               title: ele.name,
               key: ele.colname,
               align: 'center',
               tdAlign: ele.type === 'NUMBER' ? 'right' : 'center',
-              width: ele.webconf && ele.webconf.standard_width
+              width: ele.webconf && ele.webconf.standard_width,
+              _index: index
             };
             
             if (ele.comment) {
@@ -1964,6 +1959,40 @@
           })],);
         };
       },
+
+      // 获取联动计算结果
+      getComputedValue(currentRowData, targetColObj, dynamicforcompute, params) {
+        let expression = dynamicforcompute.express 
+        Object.values(dynamicforcompute.refcolumns).forEach(colname => {
+          expression = expression.replace(new RegExp(colname, 'g'), currentRowData[colname].val || 0)
+        })
+
+        let newTargetValue
+        if(targetColObj.scale || targetColObj.scale === 0) {
+          newTargetValue = eval(expression).toFixed(targetColObj.scale)
+        } else {
+          newTargetValue = eval(expression)
+        }
+
+        // 手动更新input的值。如果通过响应式更新会导致input不能一直输入，此外ag只提供更新行的api，不能精确到dan
+        // this.tabledata  里的值不要改，会影响普通表格的性能。而且this.tabledata在计算中用不到，不更新也没事
+        this.copyDataSource.row[params.index][dynamicforcompute.computecolumn].val = newTargetValue
+        let colIndex // 列索引
+        if(this.useAgGrid) {
+          colIndex = targetColObj._index - 1
+        } else {
+          colIndex = targetColObj._index + 1
+        }
+        const dom = document.querySelector(`#ag-${params.index}-${colIndex}`)
+        
+        if(dom) {
+          const input = dom.querySelector('input')
+          input.value = newTargetValue
+        }
+        
+        return newTargetValue
+      },
+
       inputRender(cellData, tag) {
         // 输入框
         return (h, params) => {
@@ -1977,9 +2006,8 @@
                 'input-align-center': cellData.type !== 'NUMBER'
               },
               domProps: {
-                id: `${params.index}-${params.column._index - 1}`,
-                title: this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname].val : ''
-
+                id: `ag-${params.index}-${params.column._index - 1}`,
+                title: this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname].val : '',
               },
               props: {
                 // value: this.afterSendData[this.tableName] && this.afterSendData[this.tableName][params.index] && this.afterSendData[this.tableName][params.index][cellData.colname] !== undefined ? this.afterSendData[this.tableName][params.index][cellData.colname] : params.row[cellData.colname],
@@ -1994,9 +2022,31 @@
               },
               on: {
                 'on-change': (event, data) => {
-                  this.copyDataSource.row[params.index][cellData.colname].val = event.target.value;
-                  this.putDataFromCell(event.target.value, this.dataSource.row[params.index][cellData.colname].val, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                  this.putLabelDataFromCell(event.target.value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, this.dataSource.row[params.index][cellData.colname].val);
+                  const currentRowData = this.copyDataSource.row[params.index]
+                  currentRowData[cellData.colname].val = event.target.value;
+
+                  const oldCurrentValue = this.dataSource.row[params.index][cellData.colname].val
+                  const oldId = this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val
+ 
+                  // 是否进行联动计算
+                  if(window.ProjectConfig.computeForSubtable) {
+                    const dynamicforcompute = cellData.webconf.dynamicforcompute
+                    const oldTargetValue = this.dataSource.row[params.index][dynamicforcompute.computecolumn].val
+                    // 找到目标字段相关的信息
+                    const targetColObj = this.columns.find(colObj => colObj.colname === dynamicforcompute.computecolumn)
+
+                    // 提交变化字段
+                    this.putDataFromCell(event.target.value, oldCurrentValue, cellData.colname, oldId, params.column.type);
+                    this.putLabelDataFromCell(event.target.value, data.value, cellData.colname, oldId, oldCurrentValue);
+
+                    const newTargetValue = this.getComputedValue(currentRowData, targetColObj, dynamicforcompute, params)
+                    // 提交联动的目标字段
+                    this.putDataFromCell(newTargetValue, oldTargetValue, dynamicforcompute.computecolumn, oldId, targetColObj.type);
+                    this.putLabelDataFromCell(newTargetValue, oldTargetValue, dynamicforcompute.computecolumn, oldId, oldTargetValue); 
+                  } else {
+                    this.putDataFromCell(event.target.value, oldCurrentValue, cellData.colname, oldId, params.column.type);
+                    this.putLabelDataFromCell(event.target.value, data.value, cellData.colname, oldId, oldCurrentValue);
+                  }
                 },
                 'on-focus': (e, i) => {
                 },
@@ -3876,17 +3926,6 @@
             }
           } else if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
             delete rowDatas[0][colname];
-            // if (rowDatas && rowDatas.length === 1 && rowDatas[0].ID) {
-            //   const rowDatasIndex = this.afterSendData[this.tableName].map((ele, i) => {
-            //     if (ele[EXCEPT_COLUMN_NAME] === IDValue) {
-            //       return i;
-            //     }
-            //   })[0];
-            //   delete rowDatas[0][colname];
-            // delete rowDatas[0].ID;
-            //   this.afterSendData[this.tableName] = this.afterSendData[this.tableName].filter((item, i) => i !== rowDatasIndex);
-            //   console.log(333, this.afterSendData[this.tableName]);
-            // }
             this.afterSendData[this.tableName] = this.afterSendData[this.tableName].filter((item, i) => {
               if (item && Object.keys(item).length && Object.keys(item).length === 1 && item.ID) {
               } else {
@@ -3903,45 +3942,6 @@
             this.afterSendData[this.tableName].push(param);
           }
         }
-        // if (Version() === '1.3') {
-        //
-        // } else {
-        // if (this.afterSendData[this.tableName]) {
-        //   const rowDatas = this.afterSendData[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
-        //   if (rowDatas.length > 0) {
-        //     rowDatas[0][colname] = currentValue;
-        //   } else {
-        //     const param = {};
-        //     param[EXCEPT_COLUMN_NAME] = IDValue;
-        //     param[colname] = currentValue;
-        //     this.afterSendData[this.tableName].push(param);
-        //   }
-        // } else {
-        //   this.afterSendData[this.tableName] = [];
-        //   const param = {};
-        //   param[EXCEPT_COLUMN_NAME] = IDValue;
-        //   param[colname] = currentValue;
-        //   this.afterSendData[this.tableName].push(param);
-        // }
-
-        // console.log(currentValue, oldValue);
-        // if (this.beforeSendData[this.tableName]) {
-        //   const rowDatas = this.beforeSendData[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
-        //   if (rowDatas.length > 0) {
-        //     rowDatas[0][colname] = oldValue;
-        //   } else {
-        //     const param = {};
-        //     param[EXCEPT_COLUMN_NAME] = IDValue;
-        //     param[colname] = oldValue;
-        //     this.beforeSendData[this.tableName].push(param);
-        //   }
-        // } else {
-        //   this.beforeSendData[this.tableName] = [];
-        //   const param = {};
-        //   param[EXCEPT_COLUMN_NAME] = IDValue;
-        //   param[colname] = oldValue;
-        //   this.beforeSendData[this.tableName].push(param);
-        // }
         this.$emit(TABLE_DATA_CHANGE, this.afterSendData);
         // 表单验证
         this.verifyMessage();
