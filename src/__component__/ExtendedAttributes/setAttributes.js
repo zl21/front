@@ -92,8 +92,15 @@ function JudgeValue(source,conf,panelForm) {
     let flag = true
     conf.source.every(item => {
       let sourceCom = FindInstance(source,item.refcolumn,source.items.tableName)[0]
-      let value = sourceCom.value;
+      let value = sourceCom.value || '';
+              // 空值判断
+      if(item.refval ==="''" || item.refval ==="undefined" || item.refval ==="null"){
+        item.refval = "";
+      }
+      console.log(value,'34343');
+
       if(sourceCom.$_live_type.isArray(value)){
+        
         if(sourceCom.items.fkobj){  //处理外健字段
           value = value.map(item => conf.match === 'label'?item.Label:item.ID)
         }
@@ -104,6 +111,10 @@ function JudgeValue(source,conf,panelForm) {
           return false;
         }
       }else {
+        // 空值判断
+        if( item.refval === ""  && value === ''){
+              return true;
+        }
         if(!(item.refval || '').toString().split(',').includes(value)){
           flag = false;
           return false
