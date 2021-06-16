@@ -97,8 +97,6 @@ function JudgeValue(source,conf,panelForm) {
       if(item.refval ==="''" || item.refval ==="undefined" || item.refval ==="null"){
         item.refval = "";
       }
-      console.log(value,'34343');
-
       if(sourceCom.$_live_type.isArray(value)){
         
         if(sourceCom.items.fkobj){  //处理外健字段
