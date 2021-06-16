@@ -2255,9 +2255,9 @@
           if (current.ispassword) {
             item.props.type = 'password';
             if (current.webconf) {
-              if (current.webconf.isNeedEncrypt !== false) {
+              if (current.webconf.isNeedEncrypt) {
                 item.props.type = 'password';
-              } else if (current.webconf.isNeedEncrypt) {
+              } else if (current.webconf.isNeedEncrypt ===false) {
                 item.props.type = 'text';
               }
             } 
