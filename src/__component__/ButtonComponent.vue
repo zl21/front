@@ -111,6 +111,7 @@
                 transfer
                 :key="item.webid"
                 word-wrap
+                placement="right"
                 width="200"
                 :content="JSON.parse(item.confirm).supPrompt">
                 <DropdownItem
@@ -130,28 +131,6 @@
               {{ item.webdesc }}
             </DropdownItem>
           </template>
-
-          <!-- <DropdownItem
-            v-for="(item,index) in group.childrens "
-            :key="item.webid"
-            :name="item"
-            :disabled="item.disabled"
-          >
-            <template v-if="item.confirm && item.confirm.includes('supPrompt')">
-              <Poptip 
-                trigger="hover" 
-                transfer
-                :key="item.webid"
-                word-wrap
-                width="200"
-                :content="JSON.parse(item.confirm).supPrompt">
-                {{ item.webdesc }}
-              </Poptip>
-            </template>
-            <template v-else>
-              {{ item.webdesc }}
-            </template>
-          </DropdownItem> -->
         </DropdownMenu>
       </Dropdown>
       
