@@ -1218,21 +1218,21 @@ const initializeAgTable = (container, opt) => {
             })
           }
 
-          // 总计是根据合计得到结果，所以算总计前要算下合计
-          // 总计可以根据 原始合计与现在合计的差值算出
-          if(isFullRangeSubTotalEnabled) {
-            Object.keys(fullRangeSubTotalRow).forEach(fieldName => {
-              const originSubTotal = subtotalRow[fieldName].replace(/,/, '')
-              const currentSubTotal = subtotalRowData[fieldName].val.replace(/,/, '')
-              const diffValue = Number(originSubTotal) - Number(currentSubTotal) // 获取合计的差值
-              const originTotal = fullRangeSubTotalRow[fieldName].val.replace(/,/, '')
-              const currentTotal = Number(originTotal) - Number(diffValue) // 获取总计
-              const currentColumn = columnApi.getAllColumns().find(d => d.colId === fieldName)
-              const scale = currentColumn.colDef.scale || 0 // 获取计算精度
-              const value =  currentTotal.toFixed(scale)
-              fullRangeSubTotalRowData[fieldName].val = toThousands(value)
-            })
-          }
+          // // 总计是根据合计得到结果，所以算总计前要算下合计
+          // // 总计可以根据 原始合计与现在合计的差值算出
+          // if(isFullRangeSubTotalEnabled) {
+          //   Object.keys(fullRangeSubTotalRow).forEach(fieldName => {
+          //     const originSubTotal = subtotalRow[fieldName].replace(/,/, '')
+          //     const currentSubTotal = subtotalRowData[fieldName].val.replace(/,/, '')
+          //     const diffValue = Number(originSubTotal) - Number(currentSubTotal) // 获取合计的差值
+          //     const originTotal = fullRangeSubTotalRow[fieldName].val.replace(/,/, '')
+          //     const currentTotal = Number(originTotal) - Number(diffValue) // 获取总计
+          //     const currentColumn = columnApi.getAllColumns().find(d => d.colId === fieldName)
+          //     const scale = currentColumn.colDef.scale || 0 // 获取计算精度
+          //     const value =  currentTotal.toFixed(scale)
+          //     fullRangeSubTotalRowData[fieldName].val = toThousands(value)
+          //   })
+          // }
           
           // 设置底部数据
           const pinnedBottom = []
