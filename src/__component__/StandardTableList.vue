@@ -16,9 +16,9 @@
       @changeTreeConfigData="changeTreeConfigData"
     />
      -->
-    
+
     <div v-if="isTreeList">
-     
+
       <tree
         v-show="treeShow"
         ref="tree"
@@ -26,7 +26,7 @@
         @menuTreeChange="menuTreeChange"
       />
     </div>
-    
+
     <div
       v-if="isTreeList"
       class="treeSwitch"
@@ -97,7 +97,7 @@
         @CommonTableCustomizedDialog="commonTableCustomizedDialog"
       />
     </div>
-   
+
     <!-- <Modal/>//动作定义弹框，已将动作定义弹框和提示弹框整合，此弹框暂时弃用
       v-if="buttons.actionDialog.show"
       v-model="actionModal"
@@ -197,7 +197,7 @@
   import treeData from '../__config__/treeData.config';
   import getUserenv from '../__utils__/getUserenv';
   import { addSearch, querySearch } from '../__utils__/indexedDB';
-  import tabBar from './tabBar.vue';  
+  import tabBar from './tabBar.vue';
   import listsForm from './FormComponents/listsForm';
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
@@ -278,7 +278,7 @@
           return []
         // return this.refactoringData(
         //   this.formItems.defaultFormItemsLists.concat([])
-        // );         
+        // );
       },
       isCommonTable() {
         return isCommonTable();
@@ -286,7 +286,7 @@
       commonTable() {
         if (router.currentRoute.meta.routePrefix === '/SYSTEM/COMMONTABLE') {
           return true;
-        }  
+        }
         return this.isCommonTable || this.webconf.commonTable;
         //  (router.currentRoute.meta.routePrefix === '/SYSTEM/TABLE')
         // return false;
@@ -322,8 +322,8 @@
             }
             return null;
           }
-        } 
-      
+        }
+
         return [];
       },
       defaultColumn() { // 获取配置列表一行几列数据
@@ -339,7 +339,7 @@
           // }
           const { tableName, customizedModuleName } = router.currentRoute.params;
 
-          
+
           clearTimeout(this.ztreetimer);
           const checked = this.moduleComponentName.split('.').includes(tableName || customizedModuleName);
           this.ztreetimer = setTimeout(() => {
@@ -402,7 +402,7 @@
             this.filterTableParam = item;
           });
         }
-         
+
         const param = {
           startIndex: this.searchData.startIndex,
           range: this.searchData.range,
@@ -411,7 +411,7 @@
         this.updateTabParam(param);
         this.getQueryList();
       },
-      
+
       onPageChangeForFilterTable(page) {
         this.resetButtonsStatus();
 
@@ -458,7 +458,7 @@
         } else {
           delete this.searchData.range;
         }
-        this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName; 
+        this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
         this.searchData.fixedcolumns = await this.dataProcessing();
         if (data.tab_value) {
           // Object.values(data.tab_value).map((item) => {
@@ -485,18 +485,18 @@
                       arr[key] = Array.from(new Set(arrRes));
                       arr[key] = arr[key].toString();
                     }
-                    
+
                     break;
                   case '[object Array]':
                     arr[key] = obj[key].concat(this.searchData.fixedcolumns[key]);
                     arr[key] = Array.from(new Set(arr[key]));
-                    
+
                     break;
                   default:
                     break;
                   }
                   return obj[key];
-                } 
+                }
               }
               arr[key] = this.searchData.fixedcolumns[key];
             });
@@ -537,7 +537,7 @@
       //     queryData: data
       //   });
       // },
-     
+
       ...mapActions('global', ['updateAccessHistory', 'getExportedState', 'updataTaskMessageCount', 'getMenuLists']),
       ...mapMutations('global', ['updateCustomizeMessage', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter', 'updataSTDefaultQuery']),
       // changeTreeConfigData(value) {//oldTree
@@ -562,7 +562,7 @@
         this.treeSearchData = searchData || {};
         this.searchData.startIndex = 0;
         // this.getQueryListForAg(this.searchData);
-       
+
         const searchDataRes = Object.assign({}, this.searchData, searchData);
 
         this.getQueryListPromise(searchDataRes);
@@ -588,7 +588,7 @@
       //   this.getQueryListForAg(this.searchData);
       //   this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       //   // 按钮查找 查询第一页数据
-       
+
       //   const { tableName } = this[INSTANCE_ROUTE_QUERY];
       //   const data = {
       //     k: tableName,
@@ -607,7 +607,7 @@
       //     this.webActionSlient(obj);
       //     break;
       //   case 'dialog':
-      //     // 
+      //     //
       //     break;
       //   case 'navbar':
       //     this.objTabActionNavbar(obj); // 新标签跳转
@@ -621,10 +621,10 @@
           if (id) {
             const promises = new Promise((resolve, reject) => {
               this.getExportedState({
-                objid: id, id, resolve, reject 
+                objid: id, id, resolve, reject
               });
             });
-            promises.then(() => {          
+            promises.then(() => {
               this.setImportDialogTitle(false);
               this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
               if (this.exportTasks.dialog) {
@@ -792,7 +792,7 @@
               treeTableListSelectId
             };
             this.directionalRouter(param);// 定向路由跳转方法
-            
+
             const data = {
               type: 'standardTableurlCustomized',
               value: row,
@@ -838,7 +838,7 @@
           orderbyData: this.transferFormat(transferFormat_param),
           searchData: this.searchData
         };
-        this.orderby(obj); 
+        this.orderby(obj);
         this.getQueryList();
       },
       transferFormat(obj) {
@@ -862,7 +862,7 @@
             this.searchData.orderby.map((d) => {
               if (d.column === obj.orderbyData[0].column && d.asc !== obj.orderbyData[0].asc) {
                 d.asc = obj.orderbyData[0].asc;
-              } 
+              }
             });
           } else {
             this.searchData.orderby = this.searchData.orderby.concat(obj.orderbyData);
@@ -1003,7 +1003,7 @@
             this.updateCustomizeMessage(data);
             // 将元数据配置的refobjid，字符串，可配置多个字段，将配置的字段解析后用作lu y，供弹框作为参数使用
             const type = 'tableDetailAction';
-           
+
             const url = `/${colDef.customerurl.tableurl.toUpperCase()}/${rowData[colDef.customerurl.refobjid].val}`;
             const tab = {
               type,
@@ -1029,7 +1029,7 @@
               } else if (queryArray.length === 1) {
                 query.objId = rowData[colDef.customerurl.refobjid].val;
               }
-              
+
               const param = {
                 url: colDef.customerurl.tableurl, // 跳转的外链界面内加载的iframe的src地址，即加载的页面地址
                 query, // 地址携带的参数
@@ -1057,7 +1057,7 @@
               };
               this.updateCustomizeMessage(data);
             }
-            
+
           }
         }
       },
@@ -1116,7 +1116,7 @@
             obj.row = current.row ? current.row : 1;
             obj.col = current.col ? current.col : 1;
             obj.component = ItemComponent;
-            
+
 
             obj.item = {
               type: checkDisplay(current),
@@ -1126,7 +1126,7 @@
               inputname: current.inputname,
               props: {
               },
-              
+
               validate: {}
             };
 
@@ -1136,7 +1136,7 @@
 
 
             // 输入控制
-            
+
             // 属性isuppercase控制
             if (current.isuppercase) {
               // obj.item.props.regx = regExp.Capital;
@@ -1147,17 +1147,17 @@
 
             // 外键的单选多选判断
 
-            
-                
+
+
                 // if (!item.props.readonly && !this.objreadonly) {
                 //   item.props.Selected.push(this.defaultValue(current)[0]);
                 //   item.value = this.defaultValue(current)[0].Label;
                 // } else {
                 //   item.value = this.defaultValue(current)[0].Label;
                 // }
-              
 
-           
+
+
             array.push(obj);
             return array;
           },
@@ -1252,7 +1252,7 @@
         if (tabcmdData.cmds) {
           const buttonGroupShow = [];
           // 导入导出按钮配置规则：disableImport：true(隐藏导入按钮) false(显示导入按钮)，导出按钮和导入按钮保持一致
-          
+
           if (this.webConf) {
             if (this.webConf.disableImport || this.webConf.disableImport === false) {
               tabcmdData.prem[7] = false;
@@ -1273,7 +1273,7 @@
               } else {
                 this.buttonMap[str].eName = item;
                 const buttonConfigInfo = JSON.parse(JSON.stringify(this.buttonMap[str]));
-                
+
                 if (tabcmdData.paths) {
                   buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
                 }
@@ -1282,7 +1282,7 @@
                   buttonConfigInfo.jflowpath = jflowpathsRes[index];
                   this.urlArr.push(jflowpathsRes[index]);
                 }
-              
+
                 if (this.webConf && ((this.webConf.disableImport && str === 'CMD_IMPORT') || (this.webConf.disableExport && str === 'CMD_EXPORT'))) {
                   // 根据webConf控制列表界面导入导出按钮
                 } else {
@@ -1291,7 +1291,7 @@
               }
             }
           });
-       
+
           if (this.webConf) {
             if (this.webConf.disableExport === false) {
               const buttonConfigInfo = {
@@ -1307,7 +1307,7 @@
               };
               buttonGroupShow.push(buttonConfigInfo);
             }
-          } 
+          }
           this.updateDefaultButtonGroupData(buttonGroupShow);
           this.collectTablelist();
         }
@@ -1317,7 +1317,7 @@
         // 获取表格选中明细
         this.onSelectionChangedAssignment({ rowIdArray, rowArray });
       },
-    
+
       buttonClick(type, obj) {
         this.TreeChange = false;
         this.setActiveTabActionValue({});// 点击按钮前清除上一次按钮存的信息
@@ -1373,7 +1373,7 @@
           this.dialogComponentName = filePath;
         }
       },
-     
+
       webactionClick(type, obj) {
         // 点击自定义按钮 创建table
         this.setActiveTabActionValue(obj);
@@ -1748,11 +1748,11 @@
              this.$_live_getChildComponent(this,'listsForm').getFormDataLabel().then(async search => {
                 this.formItems.defaultFormItemsLists.map((temp) => {
                   // 存储查询条件时过滤掉弹窗多选类型
-                  if (temp.display === 'OBJ_FK' && temp.fkobj.searchmodel === 'mop') { 
+                  if (temp.display === 'OBJ_FK' && temp.fkobj.searchmodel === 'mop') {
                     delete search[temp.colname];
                   }
                   // 过滤外键字符串
-                  if (temp.display === 'OBJ_FK') { 
+                  if (temp.display === 'OBJ_FK') {
                       if(!Array.isArray(search[temp.colname])){
                           delete search[temp.colname];
                       }
@@ -1804,7 +1804,7 @@
         // this.$refs.dialogRefs.open();
       },
       getSingleObjectPageType() {
-        
+
       },
       AddDetailClick(type, obj) {
         DispatchEvent('R3StandardButtonClick', {
@@ -1864,9 +1864,9 @@
             const id = 'New';
             const label = `${this.activeTab.label}新增`;
             let type = '';
-            if (this.buttons.isBigStatus) { // 配置海量 
+            if (this.buttons.isBigStatus) { // 配置海量
               window.getObjdisType({ table: tableName }).then((res) => {
-                type = res === 'tabpanle' ? 'H' : 'V';  
+                type = res === 'tabpanle' ? 'H' : 'V';
                 this.tabOpen({
                   type,
                   tableName,
@@ -1881,7 +1881,7 @@
               type = 'tableDetailVertical'; // 左右结构的单对项页面
             }
 
-           
+
             this.tabOpen({
               type,
               tableName,
@@ -2042,7 +2042,7 @@
         const searchdata = JSON.parse(JSON.stringify(this.searchData))
         if (this.buttons.selectIdArr.length !== 0) {
           searchdata.fixedcolumns = { ID: this.buttons.selectIdArr };
-        } 
+        }
         const OBJ = {
           searchdata: searchdata,
           filename: this.activeTab.label,
@@ -2052,7 +2052,7 @@
         };
         const promise = new Promise((resolve, reject) => {
           this.getExportQueryForButtons({
-            OBJ, resolve, reject, buttonsData 
+            OBJ, resolve, reject, buttonsData
           });
         });
         promise.then(() => {
@@ -2069,7 +2069,7 @@
             } else if (Version() === '1.3') { // Version() === '1.3'
               const promises = new Promise((resolve, reject) => {
                 this.getExportedState({
-                  objid: this.buttons.exportdata, id: this.buttons.exportdata, resolve, reject 
+                  objid: this.buttons.exportdata, id: this.buttons.exportdata, resolve, reject
                 });
               });
               promises.then(() => {
@@ -2237,7 +2237,7 @@
           case 'actionVOID': // 作废
             this.batchVoid(obj); // 按钮作废动作
             break;
-       
+
           default:
             break;
           }
@@ -2335,7 +2335,7 @@
         const errorDialogvalue = false;
         this.setErrorModalValue({ errorDialogvalue });
       },
-     
+
       objTabActionNavbar(tab) {
         if (tab.action) {
           // const a = 'SYSTEM/TABLE/AD_TABLE/992?AD_CLIENT_NAME={AD_CLIENT_NAME}&AD_ORG_ID={AD_ORG_ID}';
@@ -2408,7 +2408,7 @@
               customizedModuleName: tab.webname.toUpperCase()
               // 因外链界面tablinkName相同时，只激活一个tab,所以外链界面用linkName作为key存入session,避免因勾选的id不同存入多个，导致关闭当前tab时无法清除存入的多个
             };
-          
+
             this.updateCustomizeMessage(data);
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
             const name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
@@ -2445,7 +2445,7 @@
                 isMenu: true,
               };
               this.directionalRouter(param);// 定向路由跳转方法
-             
+
               // router.push(
               //   path
               // );
@@ -2463,7 +2463,7 @@
               this.directionalRouter(param);// 定向路由跳转方法
             }
             const customizedModuleName = tab.action.split('/')[1];
-            
+
             const data = {
               type: 'standardCustomizeButton',
               value: tab,
@@ -2492,9 +2492,9 @@
           if (response && response.data && response.data.code === -1) {
             merge = true;
           }
-          
+
           const {
-            allPages, currentPage, currentPageSize, total 
+            allPages, currentPage, currentPageSize, total
           } = this.$refs.agTableElement.$children[0];
           const selectIdArrLength = this.buttons.selectIdArr ? this.buttons.selectIdArr.length : 0;
           // const detailTable = document.querySelector('.detailTable').agTable.api.paginationProxy.pageSize;
@@ -2508,7 +2508,7 @@
             this.searchData.startIndex = this.searchData.startIndex >= 0 ? this.searchData.startIndex : 0;
           }
           // this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
-          this.getQueryListPromise(Object.assign({}, this.searchData, { merge }));                 
+          this.getQueryListPromise(Object.assign({}, this.searchData, { merge }));
         }
       },
 
@@ -2516,7 +2516,7 @@
       async networkGetTableQuery(event) {
         if (this._inactive) { return; }
         const { detail } = event;
-        
+
         if (detail.url === '/p/cs/getTableQuery' && (Version() === '1.4' ? detail.response.data.data.tabcmd : detail.response.data.tabcmd)) {
           this.updateFormData(await this.dataProcessing());
           const enableKAQueryDataForUserFlag = Version() === '1.4' ? !!(detail.response.data.data.datas.webconf && detail.response.data.data.datas.webconf.enableKAQueryDataForUser) : !!(detail.response.data.datas.webconf && detail.response.data.datas.webconf.enableKAQueryDataForUser);
@@ -2534,7 +2534,7 @@
           }
         }
       },
-    
+
       isIE() {
         if (!!window.ActiveXObject || 'ActiveXObject' in window) return true;
         return false;
@@ -2547,7 +2547,7 @@
       }
     },
     mounted() {
-      
+
       setTimeout(() => {
         // 判断页面是否渲染完成,用于判断树是否调用
         this.mountedChecked = true;
@@ -2621,7 +2621,10 @@
     border-right:1px solid #d2d2d2;
     overflow-x: scroll;
     overflow-y: hidden;
-   
+
+  }
+  .R3tree{
+    width: 300px;
   }
 .StandardTableListRootDiv {
   width: 100%;
