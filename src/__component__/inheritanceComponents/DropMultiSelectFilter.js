@@ -53,12 +53,14 @@
         PropsData:{...this.propstype},
         Url:{
           autoUrl: `/p/cs/fuzzyquerybyak`,
-          tableUrl: `/p/cs/QueryList`
+          tableUrl: `/p/cs/QueryList`,
+          tableSearchUrl:'/p/cs/newQueryList'
         },
         AutoRequest: {
           colid: this.item.colid,
           fixedcolumns: {}
         },
+        filterMode:false,
         TableRequest : {
           isdroplistsearch: true,
           refcolid: this.item.colid,
