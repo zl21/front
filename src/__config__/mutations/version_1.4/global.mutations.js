@@ -309,7 +309,7 @@ export default {
       state.keepAliveLabelMaps[name] = `${tableDetailUrlMessage.linkLabel}`;
     }
     state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSessionObject('keepAliveLabelMaps'));
-    state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSessionObject('serviceIdMap'));
+    state.serviceIdMap = Object.assign({}, state.serviceIdMap, window.RgetItemLocalStorage('serviceIdMap'));
     const path = getSessionObject('savePath').path;
     if (path && path !== router.currentRoute.path) {
       router.push(path);
@@ -746,7 +746,7 @@ export default {
         k: tableName,
         v: serviceId
       };
-      updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
+      window.RupdateLocalStorage('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
     }
     let path = '';
     if (type === STANDARD_TABLE_LIST_PREFIX || type === 'S') {

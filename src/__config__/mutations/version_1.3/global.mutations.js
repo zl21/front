@@ -317,7 +317,7 @@ export default {
       state.keepAliveLabelMaps[name] = `${tableDetailUrlMessage.linkLabel}`;
     }
     state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSessionObject('keepAliveLabelMaps'));
-    // state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSessionObject('serviceIdMap'));
+    //state.serviceIdMap = Object.assign({}, state.serviceIdMap, window.RgetItemLocalStorage('serviceIdMap'));
   },
   increaseLinkUrl(state, { linkModuleName, linkUrl }) {
     const linkType = {};
@@ -725,7 +725,7 @@ export default {
         k: tableName,
         v: serviceId
       };
-      updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
+      window.RupdateLocalStorage('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
     }
    
     let path = '';
