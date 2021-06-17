@@ -1,121 +1,79 @@
 <template>
   <div ref="radio-container">
-    <CheckboxGroup
+    <RadioGroup
       v-model="selectedValues"
       @on-change="handleChange"
     >
-      <Checkbox
+      <Radio
         v-for="item in options.combobox"
         :key="item.limitdesc"
-        :circle="options.circle !== false"
         :label="item.limitdesc"
         :disabled="options.disabled"
         :size="options.size"
-      />
-    </CheckboxGroup>
+      ></Radio>
+    </RadioGroup>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  export default {
-    name: 'RadioGroup',
+export default {
+  name: 'R3RadioGroup',
 
-    model: {
-      props: 'value',
-      event: 'change'
+  model: {
+    props: 'value',
+    event: 'change'
+  },
+
+  props: {
+    // 双向绑定值
+    value: {
+      type: [String, Array],
     },
-
-    props: {
-      // 双向绑定值
-      value: {
-        type: [String, Array],
-      },
-      // 外部传入的所有参数
-      options: {
-        type: Object,
-        default: () => {}
-      },
+    // 外部传入的所有参数
+    options: {
+      type: Object,
+      default: () => ({})
     },
+  },
 
-    data() {
-      return {
-        selectedValues: []
-      };
-    },
+  data() {
+    return {
+      selectedValues: '',
+    };
+  },
 
-    watch: {
-      // 主表组件被隐藏时，需要清空CheckboxGroup组件的值
-      'options.show'(newVal) {
-        if(newVal === false) {
-          this.selectedValues = [];
-        }
-      },
-      // 子表组件被隐藏时，需要清空CheckboxGroup组件的值
-      'options.showCol'(newVal) {
-        if(newVal === false) {
-          this.selectedValues = [];
-        }
-      },
-      value(newVal) {
-        if(newVal) {
-          this.selectedValues = this.getSelectedValues(newVal);
-        }
+  watch: {
+    // 主表组件被隐藏时，需要清空CheckboxGroup组件的值
+    'options.show'(newVal) {
+      if (newVal === false) {
+        this.selectedValues = '';
       }
     },
-
-    methods: {
-      handleChange(values) {
-        const checkedList = [];
-        if (values.length === 0) {
-          this.$emit('change', '');
-          return;
-        }
-
-        if (this.options.mutiple) {
-          // 多选
-          // * 元数据暂时不支持通过配置，控制是多选还是单选，这里只是提前写好逻辑
-          this.options.combobox.forEach((item) => {
-            if (values.includes(item.limitdesc)) {
-              checkedList.push(item.limitval);
-            }
-          });
-        } else {
-          // 单选，取最后一个值作为勾选值
-          const currentLabel = values[values.length - 1];
-          this.options.combobox.forEach((item) => {
-            if (currentLabel === item.limitdesc) {
-              checkedList.push(item.limitval);
-            }
-          });
-          
-          this.selectedValues = [currentLabel];
-        }
-        
-        this.$emit('change', checkedList.join(','));
-      },
-
-      // 获取勾选的值
-      getSelectedValues(value) {
-        const checkedList = [];
-        const selectedArr = value.split(',');
-        this.options.combobox.forEach((item) => {
-          if (selectedArr.includes(item.limitval)) {
-            checkedList.push(item.limitdesc);
-          }
-        });
-        return checkedList
+    // 子表组件被隐藏时，需要清空CheckboxGroup组件的值
+    'options.showCol'(newVal) {
+      if (newVal === false) {
+        this.selectedValues = '';
       }
     },
-
-    mounted() {
-      const defaultData = this.options.defval || this.options.valuedata;
-      if (defaultData) {
-        this.selectedValues = this.getSelectedValues(defaultData);
-      }
+    value: {
+      handler(newVal) {
+        if (newVal) {
+          const option = this.options.combobox.find(option => option.limitval === newVal)
+          this.selectedValues = option.limitdesc
+        }
+      },
+      immediate: true
     }
-  };
+  },
+
+  methods: {
+    handleChange(value) {
+      const option = this.options.combobox.find(option => option.limitdesc === value)
+      this.$emit('change', option.limitval)
+    },
+  }
+};
 </script>
 
 <style lang="scss" scoped>
-  
 </style>

@@ -991,7 +991,10 @@
       },
       dynamicforcompute(data) {
         // 被计算 属性 加减乘除
-
+        if(window.ProjectConfig.computeForSubtable) {
+          // 是否开启子表
+            data.data = Object.assign(JSON.parse(JSON.stringify(data.data)),JSON.parse(JSON.stringify(this.formDataObject)));
+        }
         const str = data.dynamicforcompute.refcolumns.reduce(
           (temp, current) => {
             temp = temp.replace(new RegExp(current, 'g'), ((Number(data.data[current]) * 1000) / 1000));
