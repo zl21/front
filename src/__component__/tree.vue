@@ -122,6 +122,7 @@
       getTreeData() {
         // 获取数据
         this.treeDatas().then((value) => {
+          // console.log('ztree-value', value)
           this.treeData = value.data;
           this.treeName = value.name;
           this.placeholder = value.placeholder;
@@ -194,7 +195,6 @@
 </script>
 <style >
 .R3tree{
-    width:300px;
     height:100%;
     padding:10px;
     border-right:1px solid #d2d2d2;

@@ -14,7 +14,7 @@ import {
   KEEP_MODULE_STATE_WHEN_CLICK_MENU,
   PLUGIN_MODULE_PREFIX,
   PLUGIN_MODULE_COMPONENT_PREFIX,
-  LINK_MODULE_PREFIX, 
+  LINK_MODULE_PREFIX,
   LINK_MODULE_COMPONENT_PREFIX
 } from '../constants/global';
 import standardTableListModule from './store/standardTableList.store';
@@ -46,7 +46,7 @@ const getKeepAliveModuleName = (routeInfo) => {
     case STANDARD_COMMONTABLE_LIST_PREFIX:
       keepAliveModuleName = `${STANDARD_COMMONTABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
       break;
-      
+
 
     // Condition Two: 路由到左右Tab页签切换（纵向布局）的列表明细界面
     case VERTICAL_TABLE_DETAIL_PREFIX:
@@ -91,7 +91,7 @@ const getDynamicModuleTag = (to) => {
     case STANDARD_COMMONTABLE_LIST_PREFIX:
       dynamicModuleTag = STANDARD_COMMONTABLE_COMPONENT_PREFIX;
       break;
-     
+
     // Condition Two: 路由到左右Tab页签切换（纵向布局）的列表明细界面
     case VERTICAL_TABLE_DETAIL_PREFIX:
       dynamicModuleTag = VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX;
@@ -141,7 +141,7 @@ const getOriginModuleName = (to) => {
     case STANDARD_COMMONTABLE_LIST_PREFIX:
       originModuleName = `${STANDARD_COMMONTABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
       break;
-       
+
     default:
       originModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
   }
@@ -175,7 +175,7 @@ export default (router) => {
     if (router.getMatchedComponents(to.path).length === 0) {
       next('/');
     }
-  
+
     const { commit } = store;
     const { keepAliveLists, openedMenuLists } = store.state.global;
     const {
@@ -204,7 +204,7 @@ export default (router) => {
     const fromParamItemId = String(from.params.itemId) === '-1' ? 'New' : `${from.params.itemId}`;
     const fromParamTableId = from.params.tableId;
 
-   
+
     const fromKeepAliveModuleName = getKeepAliveModuleName(from); // 来源字段的keepAliveModuleName，即模块的moduleComponentName
     const originModuleName = getOriginModuleName(to); // 单对象界面对应的原标准列表界面的moduleComponentName
     const keepAliveModuleName = getKeepAliveModuleName(to); // 当前界面对应的keepAliveModuleName，即模块的moduleComponentName
@@ -214,7 +214,7 @@ export default (router) => {
     // debugger;
     if (!keepAliveLists.includes(keepAliveModuleName) && keepAliveModuleName !== '') {
       const data = {
-        name: keepAliveModuleName, 
+        name: keepAliveModuleName,
         to,
         dynamicModuleTag
       };
@@ -229,7 +229,7 @@ export default (router) => {
 
     // 处理 openedMenuLists
     let existModuleIndex = -1;
-    
+
       const existModule = openedMenuLists.filter((d, i) => {
         let currentName = tableName || customizedModuleName || pluginModuleName || linkModuleName;
         if (d.tableName === currentName) {
@@ -242,8 +242,8 @@ export default (router) => {
         return false;
       })[0];
 
-  
-    
+
+
     if (existModuleIndex !== -1 && KEEP_MODULE_STATE_WHEN_CLICK_MENU) {
       // Condition One:
       // 如果目标路由界面所对应的[表]已经存在于已经打开的菜单列表中(不论其当前是列表状态还是编辑状态)
@@ -295,8 +295,8 @@ export default (router) => {
         customizedModuleId,
       };
       // setCustomeLabel(data);
-    } 
-    
+    }
+
     // 通过activateSameCustomizePage配置路由到自定义界面，如果自定义界面标识相同，是否只激活同一个tab,默认为true,只激活同一个tab
     let activateSameCustomizePageFlag = false;
     if (enableActivateSameCustomizePage()) {
@@ -307,11 +307,11 @@ export default (router) => {
         activateSameCustomizePageFlag = true;
       }
     }
-    console.log('新开',keepAliveModuleName,activateSameCustomizePageFlag);
+    // console.log('新开',keepAliveModuleName,activateSameCustomizePageFlag);
     if (dynamicModuleTag !== '' && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName).length === 0 && !activateSameCustomizePageFlag) {
       // 新开tab
       // 目标路由所对应的[功能模块]没有存在于openedMenuLists中，则将目标路由应该对应的模块信息写入openedMenuLists
-     
+
       let tempInterval = -1;
       tempInterval = setInterval(() => {
         let ready = null;
@@ -353,7 +353,7 @@ export default (router) => {
         tableName: tableName || customizedModuleName || pluginModuleName || linkModuleName,
       });
     }
-    
+
 
     next();
   });
@@ -363,7 +363,7 @@ export default (router) => {
     // 记录规则一：由列表界面跳转到单对象界面，如果目标单对象界面和列表界面属于不同的表（Table不同），则将此种关系维护到路由记录“栈”。
     const isFromStandardTable = from.meta.routePrefix === (STANDARD_TABLE_LIST_PREFIX || STANDARD_COMMONTABLE_LIST_PREFIX);
 
-   
+
     const isFromPlugin = from.meta.routePrefix === PLUGIN_MODULE_PREFIX;// 目标单对象界面和列表界面属于不同的表（路由类型不同（插件类型路由））
     const isFromCustomize = from.meta.routePrefix === CUSTOMIZED_MODULE_PREFIX;// 目标单对象界面和列表界面属于不同的表（路由类型不同（自定义界面类型路由））
 
@@ -386,7 +386,7 @@ export default (router) => {
       }
 
       const routeMapRecord = getSessionObject('routeMapRecord');
-      // JSON.stringify(routeMapRecord) !== '{}' 
+      // JSON.stringify(routeMapRecord) !== '{}'
       if (routeMapRecord[getKeepAliveModuleName(to)] !== from.fullPath) {
         updateSessionObject('routeMapRecord', { k: getKeepAliveModuleName(to), v: from.fullPath });
       }
@@ -404,7 +404,7 @@ export default (router) => {
     // 记录规则三：不是由列表跳转到单对象界面，由新增界面跳转到编辑界面（itemID不同），则将此种关系维护到路由记录“栈”。
     if (!isFromStandardTable && !isFromCustomize && !isFromPlugin && isNotFromSameTableForHideBackButton && (to.path !== '/' && from.path !== '/')) { // 非列表
       const toPath = to.path.substring(to.path.indexOf('/') + 1, to.path.lastIndexOf('/') + 1);
-      updateSessionObject('addRouteToEditor', { k: from.path, v: toPath }); 
+      updateSessionObject('addRouteToEditor', { k: from.path, v: toPath });
     }
 
     // 记录规则四：由单对象界面跳转到单对象界面，则将此种关系维护到路由记录“栈”。
