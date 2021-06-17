@@ -193,6 +193,7 @@ export default {
           item.childs[temp].component = this.initComponent(item.childs[temp], index);
           item.childs[temp].isMainTable = this.isMainTable;
           item.childs[temp].moduleComponentName = this.moduleComponentName;
+          item.childs[temp].formName = this.tableName +'-'+ ((this.moduleComponentName.split('.').splice(2,2)).join('-'));
           item.childs[temp] = new RenderComponent(JSON.parse(JSON.stringify(item.childs[temp]))).itemConversion();
           return temp
         })
