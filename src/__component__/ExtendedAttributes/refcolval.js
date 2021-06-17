@@ -245,8 +245,6 @@ self 当前实例
 
  // 字段联动 表格数据查询
 export const postTableData = async function(self,url){
-    console.log(this.PropsData,'3====');
-
     let Fixedcolumns = setFixedcolumns(self,'TableRequest');
       if (JSON.stringify(Fixedcolumns) !== '{}') {
         this.searchdata.fixedcolumns = Fixedcolumns;

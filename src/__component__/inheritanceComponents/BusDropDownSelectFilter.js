@@ -55,7 +55,7 @@
                 if(!this.item.webconf){
                   this.item.webconf = {}
                 }
-                this.item.webconf.refcolval = this.item.refcolval
+               this.item.webconf.refcolval = this.item.refcolval
             }
             return setisShowPopTip(this, this.item.webconf,network)
           },
@@ -83,16 +83,16 @@
  
    // 合并methods
    mergeMethods() {
-    this.Vm.create = function(){  
-      // this.PropsData.isShowPopTip=()=>{
-      //   if(this.item.refcolval){
-      //     if(!this.item.webconf){
-      //       this.item.webconf = {}
-      //     }
-      //     this.item.webconf.refcolval = this.item.refcolval
-      //   }
-      //   return setisShowPopTip(this, this.item.webconf,network)
-      // }  
+    this.Vm.created = function(){   
+      this.activeTab = this.$parent.$parent.activeTab;
+      console.log(this.activeTab);
+      this.item = this.PropsData.item;
+        if(this.item.refcolval){
+          if(!this.item.webconf){
+            this.item.webconf = {}
+          }
+          this.item.webconf.refcolval = this.item.refcolval
+        }
       if(defaultrange()){
         this.pageSize = defaultrange();
       }

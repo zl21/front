@@ -1,5 +1,5 @@
 import {
-  FindInstance
+  FindInstance,isEmpty
 } from './common.js';
 let eventLoops = {}
 let t = null
@@ -98,6 +98,9 @@ function JudgeValue(source,conf,panelForm) {
       let sourceCom = FindInstance(source,item.refcolumn,source.items.tableName)[0]
       let value = sourceCom.value || '';
               // 空值判断
+      if(isEmpty(value)){
+        value = ''
+      }        
       if(item.refval ==="''" || item.refval ==="undefined" || item.refval ==="null"){
         item.refval = "";
       }
