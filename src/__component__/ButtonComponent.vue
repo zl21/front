@@ -102,14 +102,41 @@
           </Button>
         </template>
         
-        <DropdownMenu slot="list">
-          <DropdownItem
+        <DropdownMenu slot="list" class="btn-menu">
+          <!-- 按钮菜单有气泡提示 -->
+          <template v-for="(item,index) in group.childrens ">
+            <Poptip 
+                v-if="item.confirm && item.confirm.includes('supPrompt')"
+                trigger="hover" 
+                transfer
+                :key="item.webid"
+                word-wrap
+                width="200"
+                :content="JSON.parse(item.confirm).supPrompt">
+                <DropdownItem
+                  :key="item.webid"
+                  :name="item"
+                  :disabled="item.disabled"
+                >
+                  {{ item.webdesc }}
+                </DropdownItem>
+            </Poptip>
+            <DropdownItem
+              v-else
+              :key="item.webid"
+              :name="item"
+              :disabled="item.disabled"
+            >
+              {{ item.webdesc }}
+            </DropdownItem>
+          </template>
+
+          <!-- <DropdownItem
             v-for="(item,index) in group.childrens "
             :key="item.webid"
             :name="item"
             :disabled="item.disabled"
           >
-            <!-- 按钮菜单有气泡提示 -->
             <template v-if="item.confirm && item.confirm.includes('supPrompt')">
               <Poptip 
                 trigger="hover" 
@@ -124,7 +151,7 @@
             <template v-else>
               {{ item.webdesc }}
             </template>
-          </DropdownItem>
+          </DropdownItem> -->
         </DropdownMenu>
       </Dropdown>
       
@@ -186,13 +213,6 @@
         @click="btnclick('refresh')"
         v-text="refresh"
       />
-      <!-- <Button
-        id="hideRefresh"
-        class="hide"
-        type="fcdefault"
-        @click="btnclick('refresh')"
-        v-text="refresh"
-      /> -->
      
       <Button
         v-if="dataArray.temporaryStorage"
@@ -567,5 +587,11 @@
 
   
   }
- 
+
+.btn-menu {
+  .ark-poptip,
+  .ark-poptip-rel {
+    display: block;
+  }
+}
 </style>
