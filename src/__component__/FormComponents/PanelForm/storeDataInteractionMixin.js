@@ -212,6 +212,15 @@ export default {
     }
   },
   mounted() {
+    let ParentForm = this.findParentForm();
     this.defaultVale = new ParameterDataProcessing(JSON.parse(JSON.stringify(this.items))).defaultDataProcessing() || '';
+    if(this.items.colname && ParentForm){
+      if(ParentForm.formDataLabel && /NEW/.test(this.$route.params.itemId) === false){
+        
+        ParentForm.formDataLabel[this.items.colname] = this.defaultVale
+      }
+    }
+
+    
   }
 };
