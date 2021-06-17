@@ -144,4 +144,5 @@ module.exports = {
   // classFix: 'r3-', // 样式前缀
   classFix: '', // 样式前缀
   autoGatewayUrl:false,  // 是否请求网关
+  computeForSubtable: false
 };
