@@ -284,6 +284,7 @@
           check: { tag: 'Checkbox', event: this.checkboxRender },
           select: { tag: 'Select', event: this.selectRender },
           radioGroup: { tag: 'Select', event: this.selectRender },
+          checkboxgroup: { tag: 'Select', event: this.selectRender },
           drp: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender },
           mrp: { tag: 'DropMultiSelectFilter', event: this.dropMultiSelectFilterRender },
           mop: { tag: 'ComAttachFilter', event: this.comAttachFilterRender },

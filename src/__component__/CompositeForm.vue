@@ -1820,6 +1820,10 @@
           str = 'radioGroup';
         }
 
+        if (item.display === 'checkboxgroup') {
+          str = 'checkboxgroup';
+        }
+
         // 单对象主表属性定制字段
         if (item.display === 'defined') {
           str = 'defined';
