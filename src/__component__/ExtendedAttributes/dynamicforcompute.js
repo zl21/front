@@ -9,9 +9,12 @@ config  webcof 的配置
 // 联动计算
 export const dynamicforcompute = function dynamicforcompute($this, config) {
   // 服务端赋值
-  let panelForm = FindInstance($this,'panelForm');
+  let panelForm = document.querySelector(`#${$this.items.formName}`)._vue_;
+  if(!panelForm){
+      return false;
+  }
 
-  let FormData = panelForm[0].getFormData();
+  let FormData = panelForm.getFormData();
   let str = '';
 
   FormData.then((res) => {

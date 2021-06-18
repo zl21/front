@@ -21,7 +21,7 @@
       ><br>
     </p>
     <Button
-      
+
       type="posdefault"
       @click="search"
     >
@@ -82,7 +82,7 @@
         isClick: false,
         treeId: ''
 
-        
+
       };
     },
     watch: {
@@ -95,22 +95,20 @@
       // isChangeTreeConfigData: {
       //   handler(val) {
       //     debugger;
-
       //     if (val === 'Y') {
       //       this.inputValue = '';
       //       this.search();
-           
       //       // this.$emit('changeTreeConfigData', '');
       //     }
       //   }
       // },
     },
-   
+
     props: {
       // isChangeTreeConfigData: {
       //   type: String,
       //   default: ''
-      // }, 
+      // },
       placeholder: {// 设置查询框placeholder
         type: String,
         default: () => '请输入角色'
@@ -122,11 +120,11 @@
       treeDatas: {
         type: Function,
         default: () => {}
-      },     
+      },
       zNodes: {
         type: Array,
         default: () => []
-      }, 
+      },
     },
     methods: {
 
@@ -159,17 +157,17 @@
 
       //   return true;
       // },
-      checkNode() { 
+      checkNode() {
         // 选中
         const treeObj = $.fn.zTree.getZTreeObj(`${this.tableName}`);
         if (JSON.stringify(this.treeNode) !== '{}' && this.treeNode) {
-          const node = treeObj.getNodeByTId(this.treeNode.tId);   
+          const node = treeObj.getNodeByTId(this.treeNode.tId);
           if (node) {
             treeObj.selectNode(node);
           }
         } else if (treeObj) {
           treeObj.refresh();
-        } 
+        }
       },
       onClick(e, treeId, treeNode) {
         const arr = [];
@@ -204,7 +202,7 @@
       search() {
         const isNull = this.isNull(this.inputValue);
         if (!isNull) {
-         
+
           let checkoutZtree = fuzzySearch(`${this.tableName}`, this.inputValue, null, true); // 初始化模糊搜索方法
           checkoutZtree.then((res)=>{
             if(res.length>0){
@@ -236,13 +234,13 @@
       // }
     },
     created() {
-      this.tableName = `${this.$route.params.tableName}treeDemo`;
+      this.tableName = this.$route.params.tableName ? `${this.$route.params.tableName}treeDemo` : 'treeDemo';
     },
     mounted() {
       this.$nextTick(() => {
         $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
       });
-     
+
       // $(document).ready(() => {
       //   $.fn.zTree.init($('#treeDemo'), this.setting, this.zNodes);
       //   fuzzySearch('treeDemo', '#key', null, true); // 初始化模糊搜索方法

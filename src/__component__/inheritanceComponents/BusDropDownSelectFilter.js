@@ -48,6 +48,17 @@
           enterType:this.item.detailType,
           singleTurn:true,
           blurType: this.item.detailType,
+          isShowPopTip:function(){
+            this.item = this.$attrs.item;
+            this.activeTab = this.$parent.$parent.$parent.activeTab;
+            if(this.item.refcolval){
+                if(!this.item.webconf){
+                  this.item.webconf = {}
+                }
+               this.item.webconf.refcolval = this.item.refcolval
+            }
+            return setisShowPopTip(this, this.item.webconf,network)
+          },
           placeholder:new SetPlaceholder(this.item).init()
      };
      
@@ -72,18 +83,16 @@
  
    // 合并methods
    mergeMethods() {
-    this.Vm.created = function(){  
-      this.item = this.PropsData.item;
+    this.Vm.created = function(){   
       this.activeTab = this.$parent.$parent.activeTab;
-      this.PropsData.isShowPopTip=()=>{
+      console.log(this.activeTab);
+      this.item = this.PropsData.item;
         if(this.item.refcolval){
           if(!this.item.webconf){
             this.item.webconf = {}
           }
           this.item.webconf.refcolval = this.item.refcolval
         }
-        return setisShowPopTip(this, this.item.webconf,network)
-      }  
       if(defaultrange()){
         this.pageSize = defaultrange();
       }
