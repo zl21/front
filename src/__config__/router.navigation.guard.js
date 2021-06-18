@@ -259,15 +259,7 @@ export default (router) => {
         next({ path: existModule.routeFullPath });
       } else {
         // [返回][新增]动作需要清除当前明细界面模块的keepAlive（且to与form不相同）
-<<<<<<< HEAD
-<<<<<<< HEAD
-        const includesKeepAliveLists = keepAliveLists.includes(fromKeepAliveModuleName); 
-=======
         const includesKeepAliveLists = keepAliveLists.includes(fromKeepAliveModuleName);
->>>>>>> ll_npm_dev
-=======
-        const includesKeepAliveLists = keepAliveLists.includes(fromKeepAliveModuleName);
->>>>>>> ac7d59997ed9c2042a6cd385c506ed3755e92588
         // customizedModuleName, pluginModuleName, linkModuleName
         let fromTableName = from.params.tableName ||from.params.customizedModuleName;
         let toTableName =  to.params.tableName || to.params.customizedModuleName;
