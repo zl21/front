@@ -175,7 +175,8 @@
           if (res.data.code === 0) {
             const message = {
               title: '成功',
-              content: res.data.message
+              content: res.data.message,
+              mask: true,
             };
             this.$Modal.fcSuccess(message);
             this.newpaswd = '';
