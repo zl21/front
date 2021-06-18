@@ -133,6 +133,7 @@ export default {
       } else {
         this.showDisabled = false;
       }
+      this.propsData.componentType = myPopDialog;
 
     },
     deep: true
