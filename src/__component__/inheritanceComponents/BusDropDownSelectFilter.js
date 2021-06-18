@@ -7,35 +7,37 @@
 
 
  import { defaultrange } from '../../constants/global';
- import { DropDownSelectFilter } from '@syman/ark-ui-bcl';
+ // import { DropDownSelectFilter } from '@syman/ark-ui-bcl';
  import DropMethods from '../ExtendedMethods/DropMethods';
  import network from '../../__utils__/network';
  import { SetPlaceholder } from './setProps';
- 
+
+ import DropDownSelectFilter from '../../../../../front-end/arkui-bus/src/components/drop-down-select-filter/DropDownSelectFilter'
+
  import {
   setisShowPopTip,
   postData,
   postTableData
 } from '../ExtendedAttributes/refcolval.js'
- 
+
  class BusDropDownSelectFilter {
    constructor(item) {
      this.item = item;
      this.Vm = Object.create(DropDownSelectFilter);
-     this.mergeProps();   
-     this.mergeMethods(); 
+     this.mergeProps();
+     this.mergeMethods();
    }
- 
+
    init() {
       return {
         Components:this.Vm,
         props:this.props
       };
    }
- 
+
    // 合并props
    mergeProps() {
-     
+
     if (this.item.fkobj && this.item.fkobj.serviceId) {
       // 字段的网关
       this.item.serviceId = this.item.fkobj.serviceId;
@@ -50,7 +52,7 @@
           blurType: this.item.detailType,
           placeholder:new SetPlaceholder(this.item).init()
      };
-     
+
      this.props = {
         PropsData:{...this.propstype},
         Url:{
@@ -67,12 +69,12 @@
         },
         http: network
       }
-     return 
+     return
    }
- 
+
    // 合并methods
    mergeMethods() {
-    this.Vm.created = function(){  
+    this.Vm.created = function(){
       this.item = this.PropsData.item;
       this.activeTab = this.$parent.$parent.activeTab;
       this.PropsData.isShowPopTip=()=>{
@@ -83,7 +85,7 @@
           this.item.webconf.refcolval = this.item.refcolval
         }
         return setisShowPopTip(this, this.item.webconf,network)
-      }  
+      }
       if(defaultrange()){
         this.pageSize = defaultrange();
       }
@@ -94,7 +96,7 @@
             resolve(res)
          });
         })
-        
+
       };
       this.postData = function (url) {
         // 字段联动 模糊查询数据
@@ -102,7 +104,7 @@
           postData.call(this,this,url).then((res)=>{
              resolve(res)
           });
-         })   
+         })
       };
       if(this.item.detailType){
           // 失去光标
@@ -110,20 +112,19 @@
       }
 
     }
-   
+
     if(!this.item.detailType){
       // 回车查询
     new DropMethods(this.item,this.Vm).keydown();
   }
-    
-    
 
 
-  
+
+
+
    }
- 
-   
+
+
  }
- 
+
  export default BusDropDownSelectFilter;
- 
