@@ -263,14 +263,16 @@ export const postTableData = async function(self,url){
  // 字段联动 模糊查询
  export  function postData(self,url){
     let Fixedcolumns = setFixedcolumns(self,'AutoRequest');
-    if(typeof this.PropsData.isShowPopTip === 'function'){
-        if(!this.PropsData.isShowPopTip()){
+    let childrenself = this.$children[0];
+    let isShowPopTip = this.PropsData.isShowPopTip.bind(childrenself);
+    if(typeof isShowPopTip === 'function'){
+        if(!isShowPopTip()){
             this.$el.querySelector('input').value ='';
            return new Promise((resolve) => {
             resolve([]);
           });
-        }else if(this.PropsData.isShowPopTip() &&  typeof this.PropsData.isShowPopTip().then === 'function'){
-            this.PropsData.isShowPopTip().then((res)=>{
+        }else if(isShowPopTip() &&  typeof isShowPopTip().then === 'function'){
+            isShowPopTip().then((res)=>{
               if(res === true){
                 return newpostData(Fixedcolumns,this,url)
               }
