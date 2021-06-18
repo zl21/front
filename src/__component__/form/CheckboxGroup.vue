@@ -59,6 +59,8 @@ export default {
       handler(newVal) {
         if (newVal) {
           this.selectedValues = this.getSelectedValues(newVal);
+        } else {
+          this.selectedValues = []
         }
       },
       immediate: true
