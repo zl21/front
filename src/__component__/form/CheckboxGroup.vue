@@ -1,23 +1,23 @@
 <template>
   <div ref="radio-container">
-    <RadioGroup
+    <CheckboxGroup
       v-model="selectedValues"
       @on-change="handleChange"
     >
-      <Radio
+      <Checkbox
         v-for="item in options.combobox"
         :key="item.limitdesc"
         :label="item.limitdesc"
         :disabled="options.disabled"
         :size="options.size"
-      ></Radio>
-    </RadioGroup>
+      />
+    </CheckboxGroup>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
 export default {
-  name: 'R3RadioGroup',
+  name: 'R3CheckboxGroup',
 
   model: {
     props: 'value',
@@ -32,13 +32,13 @@ export default {
     // 外部传入的所有参数
     options: {
       type: Object,
-      default: () => ({})
+      default: () => { }
     },
   },
 
   data() {
     return {
-      selectedValues: '',
+      selectedValues: []
     };
   },
 
@@ -46,20 +46,21 @@ export default {
     // 主表组件被隐藏时，需要清空CheckboxGroup组件的值
     'options.show'(newVal) {
       if (newVal === false) {
-        this.selectedValues = '';
+        this.selectedValues = [];
       }
     },
     // 子表组件被隐藏时，需要清空CheckboxGroup组件的值
     'options.showCol'(newVal) {
       if (newVal === false) {
-        this.selectedValues = '';
+        this.selectedValues = [];
       }
     },
     value: {
       handler(newVal) {
         if (newVal) {
-          const option = this.options.combobox.find(option => option.limitval === newVal)
-          this.selectedValues = option.limitdesc
+          this.selectedValues = this.getSelectedValues(newVal);
+        } else {
+          this.selectedValues = []
         }
       },
       immediate: true
@@ -67,11 +68,34 @@ export default {
   },
 
   methods: {
-    handleChange(value) {
-      const option = this.options.combobox.find(option => option.limitdesc === value)
-      this.$emit('change', option.limitval)
+    handleChange(values) {
+      const checkedList = [];
+      if (values.length === 0) {
+        this.$emit('change', '');
+        return;
+      }
+
+      this.options.combobox.forEach((item) => {
+        if (values.includes(item.limitdesc)) {
+          checkedList.push(item.limitval);
+        }
+      });
+
+      this.$emit('change', checkedList.join(','));
     },
-  }
+
+    // 获取勾选的值
+    getSelectedValues(value) {
+      const checkedList = [];
+      const selectedArr = value.split(',');
+      this.options.combobox.forEach((item) => {
+        if (selectedArr.includes(item.limitval)) {
+          checkedList.push(item.limitdesc);
+        }
+      });
+      return checkedList
+    }
+  },
 };
 </script>
 
