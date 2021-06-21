@@ -123,7 +123,7 @@
           :render-params="renderParams"
           :options="{
             suppressMovableColumns: true,
-            afterColumnMoved: afterColumnMoved,
+            onColumnMoved: onColumnMoved,
             ...agGridOptions,
             datas: dataSource
           }"
@@ -709,7 +709,7 @@
       },
 
       // ag表格重置列位置的回调
-      afterColumnMoved(cols) {
+      onColumnMoved(cols) {
         const { tableId } = this[INSTANCE_ROUTE_QUERY];
         this.setColPosition({
           tableid: tableId,
@@ -4772,6 +4772,7 @@
 <style lang="less">
     .table-in {
         flex: 1;
+        margin-top: 10px;
         tbody tr.ark-table-row-hover td {
             background-color: #ecf0f1;
         }
