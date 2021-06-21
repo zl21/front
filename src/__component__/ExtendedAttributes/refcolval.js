@@ -44,7 +44,6 @@ export const refcolvalMap = ($this, config,key) => {
          config = {};
         config.srccol = srccol;
     }
-
     let targetVm = FindInstance($this,config.srccol,$this.item.tableName,maintable);
     let linkFormMap = {
         [key]: [`${$this.item.tableName}${$this.item.colname}`]
@@ -101,7 +100,7 @@ export const messageTip = ($this, target,key) => {
         return true;
     }
     if (!value.ID) {
-        $this.$Message.info(`请先选择${target.items.name}`);
+        $this.$Message.info(`请先选择${target.items.name || target.items.coldesc}`);
         setTimeout(() => {
             if(target.$el.querySelector('input')){
                 target.$el.querySelector('input').focus();
@@ -123,8 +122,8 @@ type  是否是模糊查询还是外键查询
 // 接口拼接 fixcolumn
 export const setFixedcolumns = ($this, type) => {
     let webconf = $this.item.webconf;  
-    if(!$this.item.detailType){
-        // 列表界面
+    if(!$this.item.Query){
+        // 不走关联字段查询
         return {};
     }
     if (webconf && webconf.refcolval) {
@@ -184,8 +183,8 @@ network
 
 // 点击是否出现下拉
 export const setisShowPopTip = ($this, config,network) => {
-    if(!$this.item.detailType){
-        // 列表界面
+    if(!$this.item.Query){
+        // 不走关联字段查询
         return ()=>{
             return true;
         }
