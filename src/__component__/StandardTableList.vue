@@ -515,38 +515,11 @@
         this.getQueryListPromise(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
-      // a() {
-      //   // 插入列表界面默认值
-      //   const data = {
-      //     // tableId: '992',
-      //     values: [
-      //       {
-      //         display: 'OBJ_FK',
-      //         colid: '99525',
-      //         defaultValue: '元数据',
-      //         refobjid: '666666'// OBJ_FK类型
-      //       }
-      //     ]
-      //   };
-      //   // this.updataSTDefaultQuery(data);
-      //   this.tabOpen({
-      //     type: 'S',
-      //     tableName: 'SHANGPIN',
-      //     tableId: '24445',
-      //     isSetQuery: true,
-      //     queryData: data
-      //   });
-      // },
+
      
       ...mapActions('global', ['updateAccessHistory', 'getExportedState', 'updataTaskMessageCount', 'getMenuLists']),
       ...mapMutations('global', ['updateCustomizeMessage', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter', 'updataSTDefaultQuery']),
-      // changeTreeConfigData(value) {//oldTree
-      //   this.isChangeTreeConfigData = value;
-      // },
-      // searchClick(value) { // 用于和读取的树配置文件传参，用于模糊查询功能
-      //   this.searchTreeDatas.menuTreeQuery = value;
-      //   this.treeDatas = this.getTreeDatas(this.searchTreeDatas);
-      // },
+
       async menuTreeChange(treeName, currentId, flag, queryFilterData, searchData) {
         this.searchData.fixedcolumns = await this.dataProcessing();
         if (Object.keys(queryFilterData) && Object.keys(queryFilterData).length > 0 && flag) {
@@ -576,46 +549,7 @@
         };
         updateSessionObject('TreeId', data);
       },
-      // menuTreeChange(arrayIDs, treeName, val, item) {//oldTree
-      //   this.searchData.fixedcolumns = this.dataProcessing();
-      //   if (val.length > 0 && arrayIDs.length > 0) {
-      //     this.searchData.reffixedcolumns = {
-      //       [treeName]: `in (${arrayIDs})`
-      //     };
-      //   } else if (this.searchData && this.searchData.reffixedcolumns) {
-      //     delete this.searchData.reffixedcolumns;
-      //   }
-      //   this.getQueryListForAg(this.searchData);
-      //   this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
-      //   // 按钮查找 查询第一页数据
-       
-      //   const { tableName } = this[INSTANCE_ROUTE_QUERY];
-      //   const data = {
-      //     k: tableName,
-      //     v: item.ID
-      //   };
-      //   updateSessionObject('TreeId', data);
-      //   // const data = {
-      //   //   [tableName]: item.ID
-      //   // };
-      //   // this.updataTreeId(data);
-      // },
-      // btnclick(obj) { // 表格操作按钮组
-      //   this.updataSelectIdArr(obj.ID);
-      //   switch (obj.vuedisplay) {
-      //   case 'slient':
-      //     this.webActionSlient(obj);
-      //     break;
-      //   case 'dialog':
-      //     // 
-      //     break;
-      //   case 'navbar':
-      //     this.objTabActionNavbar(obj); // 新标签跳转
-      //     break;
-      //   default:
-      //     break;
-      //   }
-      // },
+     
       imporSuccess(id) {
         if (true) { // Version() === '1.3'
           if (id) {
@@ -1164,23 +1098,6 @@
           []
         );
 
-        // 处理默认数据，然后进行查询
-        // if (defaultFormItemsLists.length === 0 && !this.formDefaultComplete) {
-        //   this.formDefaultComplete = true;
-        //   this.searchClickData();
-        // }
-        // if (Object.keys(this.formItems.data).length === 0 && defaultFormItemsLists.length !== 0) {
-        //   this.formDataChange(
-        //     items.reduce((obj, current) => {
-        //       obj[current.item.field] = current.item.value;
-        //       return obj;
-        //     }, {})
-        //   );
-
-        //   setTimeout(() => {
-        //     this.searchClickData();
-        //   }, 200);
-        // }
         this.resetType = false;
         return items;
       },
