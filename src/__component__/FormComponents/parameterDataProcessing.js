@@ -255,7 +255,7 @@ export default class ParameterDataProcessing {
           }
         ]
       }else{
-        if (['mrp', 'drp', 'pop', 'mop'].includes(fkobj) && (this.item.refobjid && this.item.refobjid != '-1')) {
+        if (['mrp', 'drp', 'pop', 'mop'].includes(fkobj) && (this.item.refobjid && this.item.refobjid != '-1' && this.item.refobjid!='0')) {
           let arr = []
           // 多选change
           const refobjid = (this.item.refobjid.toString() || '').split(',') || [];

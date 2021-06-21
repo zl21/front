@@ -3842,7 +3842,7 @@
     },
     mounted() {
       this.updataCurrentTableDetailInfo();
-
+      this.$el._vue_ = this;
       this.setDisableButtons();
       if (this.isItemTable) {
         this.dataArray.refresh = false;
