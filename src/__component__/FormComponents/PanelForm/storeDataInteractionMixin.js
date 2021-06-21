@@ -51,6 +51,11 @@ export default {
             }
 
           }
+          if(this.items.fkobj && (this.items.fkobj.searchmodel === 'mrp')){
+            current_value = (current_value ||'').split(',').map((item)=>{
+              return item;
+            }).sort(function(a,b){ return a-b}).join(',');
+          }
         
            // number类型空值传0
            if (this.items.type === 'NUMBER') {
@@ -67,6 +72,12 @@ export default {
               }
             }
             
+          }
+          // 兼容1.3
+          if (Version() === '1.3') {
+            if (isEmpty(current_value)) {
+               current_value = null;
+            }
           }
           // 拼接当前key 和 value
           current_data = {
