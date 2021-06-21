@@ -414,7 +414,7 @@
               data[curIndex]._checked = true;
             }
           });
-          
+    
           this.spinShow = false;
           return data;
         }
@@ -634,7 +634,7 @@
               default: () => h('div', {
                 style: {},
                 domProps: {
-                  innerHTML: `<i class="iconfont comment iconios-information-circle-outline" style="color: orangered"></i> <span>${params.column.name}</span>`
+                  innerHTML: `<span>${params.column.name}</span><i class="iconfont comment iconios-information-circle-outline" style="color: orangered"></i>`
                 }
               }),
               content: () => h('div', {

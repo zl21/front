@@ -368,12 +368,14 @@
         if (!floatingFilter()) {
           isOpenfloatingFilter = false;
         }
-        console.log('参数', datas);
         if(datas.row && Array.isArray(datas.row)) {
           this.rows = datas.row 
         }
         if(datas.tabth && Array.isArray(datas.tabth)) {
-          this.columns = datas.tabth 
+          this.columns = datas.tabth.map(item => {
+            item.tdAlign = item.type === 'NUMBER' ? 'right' : 'left'
+            return item
+          }) 
         }
 
         this.options = {
