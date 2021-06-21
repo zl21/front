@@ -51,6 +51,11 @@ export default {
             }
 
           }
+          if(this.items.fkobj && (this.items.fkobj.searchmodel === 'mrp')){
+            current_value = (current_value ||'').split(',').map((item)=>{
+              return item;
+            }).sort(function(a,b){ return a-b}).join(',');
+          }
         
            // number类型空值传0
            if (this.items.type === 'NUMBER') {
