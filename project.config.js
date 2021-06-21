@@ -91,9 +91,9 @@ module.exports = {
   blockFullOperation: false, // 禁止不选数据时的批量修改操作,
   customizeMixins: { // 获取所有外部接入的mixins对象
     setPanel: null,
-    verticalTableDetailCustomize: null,
+    // verticalTableDetailCustomize: require('./src/demo/horizontalTableDetailCustomize.js').default,
     standardTableListsCustomize: null,
-    horizontalTableDetailCustomize: null,
+    // horizontalTableDetailCustomize: require('./src/demo/horizontalTableDetailCustomize.js').default,
     taskList: null,
     // tableDetailCollectionMixin:require('./src/demo/mixin').default
   },
@@ -111,7 +111,7 @@ module.exports = {
   setComponentsProps: (type, props) => {  // 框架自定义表单配置
     // 列表支持联动查询
     if (type === 'OBJ_FK') {
-      if(props.PropsData.fkobj.searchmodel ==='mrp' || props.PropsData.fkobj.searchmodel ==='drp'){
+      if(props.PropsData && (props.PropsData.fkobj.searchmodel ==='mrp' || props.PropsData.fkobj.searchmodel ==='drp')){
         props.PropsData.Query = true;
       }
     }

@@ -19,7 +19,7 @@ export default {
         if (this.items.detailType) {
           let ParentForm = this.findParentForm();
           // 获取当前组件的值
-          let current_value = ParentForm.dealData(this.items, val)[this.items.colname];
+          let current_value = ParentForm.dealData(this.items, val)[this.items.colname] || '';
           let current_data = {};
           // 1.3 label
           let R3Label = {
@@ -215,6 +215,7 @@ export default {
     },
     changeForm(ParentForm){
       // 修改后
+      console.log(ParentForm.formChangeData, ParentForm.formDataLabel);
       if (ParentForm.$parent.formPanelChange) {
         ParentForm.$parent.formPanelChange(ParentForm.formChangeData, ParentForm.formDataLabel,ParentForm.formChangeDataLabel)
       }else{
