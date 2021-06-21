@@ -3,7 +3,7 @@ export class SetListProps {
       this.item = item;
       this.configuration = {
          // 列表查询条件需要展示的
-         webconf:['queryrule','placeholder','ispositive','required']
+         webconf:['queryrule','placeholder','ispositive','required','refcolval']
       }
    }
    filterData(){
@@ -12,6 +12,10 @@ export class SetListProps {
           let check = this.configuration.webconf.includes(x);
           if(!check){
                delete this.item.webconf[x];
+          }else{
+             if(x==='refcolval'){
+                this.item.refcolval = this.item.webconf[x]
+             }
           }
        })
       }
