@@ -157,6 +157,7 @@ import CustomExtensionProperty from '../inheritanceComponents/ExtensionProperty'
 import CustomRadioGroup from '../inheritanceComponents/RadioGroup'
 import CustomDefined from '../inheritanceComponents/Defined'
 import CustomStringRender from '../inheritanceComponents/StringRender'
+import CustomCheckboxGroup from '../inheritanceComponents/CheckboxGroup';
 
 import ParameterDataProcessing from './parameterDataProcessing';
 import { Validate } from './PanelForm/Validate';
@@ -379,8 +380,11 @@ export default {
           break;
         case 'OBJ_SELECT':
         case 'RADIO_GROUP':
+        case 'CHECKBOX_GROUP':
           // 列表界面把radio-group渲染成select
-          if(!item.detailType && item.display === 'RADIO_GROUP') {
+          // 列表界面把checkbox-group渲染成select
+          const typeList = ['RADIO_GROUP', 'CHECKBOX_GROUP']
+          if(!item.detailType && typeList.includes(item.display)) {
             item.display = 'OBJ_SELECT'
           }
           componentInstance = new CustomSelect(item).init();
@@ -405,6 +409,9 @@ export default {
           break;
         case 'radioGroup':
           componentInstance = new CustomRadioGroup(item).init();
+          break;
+        case 'checkboxgroup': 
+          componentInstance = new CustomCheckboxGroup(item).init();
           break;
         case 'String': 
           componentInstance = new CustomStringRender(item).init();

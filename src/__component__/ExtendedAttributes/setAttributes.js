@@ -1,5 +1,5 @@
 import {
-  FindInstance
+  FindInstance,isEmpty
 } from './common.js';
 let eventLoops = {}
 let t = null
@@ -65,8 +65,12 @@ function HiddenFields(tableName){
       }
       let formItem = panelForm.formItemLists[panelIndex].childs[itemIndex];
       if(JudgeValue(item.source,temp,panelForm)){
-        formItem.isnotnull = temp.props.required;
-        formItem.readonly = temp.props.disabled;
+        if(temp.props.required !== undefined){
+          formItem.isnotnull = temp.props.required;
+        }
+        if(temp.props.disabled !== undefined){
+          formItem.readonly = temp.props.disabled;
+        }
        
       }else{
         formItem.isnotnull = target.items.original.isnotnull;
@@ -92,8 +96,16 @@ function JudgeValue(source,conf,panelForm) {
     let flag = true
     conf.source.every(item => {
       let sourceCom = FindInstance(source,item.refcolumn,source.items.tableName)[0]
-      let value = sourceCom.value;
+      let value = sourceCom.value || '';
+              // 空值判断
+      if(isEmpty(value)){
+        value = ''
+      }        
+      if(item.refval ==="''" || item.refval ==="undefined" || item.refval ==="null"){
+        item.refval = "";
+      }
       if(sourceCom.$_live_type.isArray(value)){
+        
         if(sourceCom.items.fkobj){  //处理外健字段
           value = value.map(item => conf.match === 'label'?item.Label:item.ID)
         }
@@ -104,6 +116,10 @@ function JudgeValue(source,conf,panelForm) {
           return false;
         }
       }else {
+        // 空值判断
+        if( item.refval === ""  && value === ''){
+              return true;
+        }
         if(!(item.refval || '').toString().split(',').includes(value)){
           flag = false;
           return false

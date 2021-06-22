@@ -245,6 +245,8 @@ self 当前实例
 
  // 字段联动 表格数据查询
 export const postTableData = async function(self,url){
+    console.log(this.PropsData,'3====');
+
     let Fixedcolumns = setFixedcolumns(self,'TableRequest');
       if (JSON.stringify(Fixedcolumns) !== '{}') {
         this.searchdata.fixedcolumns = Fixedcolumns;
@@ -263,14 +265,16 @@ export const postTableData = async function(self,url){
  // 字段联动 模糊查询
  export  function postData(self,url){
     let Fixedcolumns = setFixedcolumns(self,'AutoRequest');
-    if(typeof this.PropsData.isShowPopTip === 'function'){
-        if(!this.PropsData.isShowPopTip()){
+    let selfChildren = this.$children[0];
+    console.log(selfChildren.isShowPopTip);
+    if(typeof selfChildren.isShowPopTip === 'function'){
+        if(!selfChildren.isShowPopTip()){
             this.$el.querySelector('input').value ='';
            return new Promise((resolve) => {
             resolve([]);
           });
-        }else if(this.PropsData.isShowPopTip() &&  typeof this.PropsData.isShowPopTip().then === 'function'){
-            this.PropsData.isShowPopTip().then((res)=>{
+        }else if(selfChildren.isShowPopTip() &&  typeof selfChildren.isShowPopTip().then === 'function'){
+            selfChildren.isShowPopTip().then((res)=>{
               if(res === true){
                 return newpostData(Fixedcolumns,this,url)
               }

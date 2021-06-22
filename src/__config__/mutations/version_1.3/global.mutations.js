@@ -911,7 +911,7 @@ export default {
         k: tableName,
         v: serviceId
       };
-      updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
+      window.RupdateLocalStorage('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
     }
    
     let path = '';

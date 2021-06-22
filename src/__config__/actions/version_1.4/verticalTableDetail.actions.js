@@ -228,11 +228,13 @@ export default {
     searchdata,
     tabIndex // fixedcolumns - objectIds
   }) {
+    let mainTableName = this.state.global.activeTab && this.state.global.activeTab.tableName;
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTableItem', urlSearchParams({
       table,
       objid: id, // -1 代表新增
       refcolid,
+      mainTableName:mainTableName,
       searchdata
     })).then((res) => {
       if (res.data.code === 0) {
