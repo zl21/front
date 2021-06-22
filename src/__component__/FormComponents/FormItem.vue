@@ -323,9 +323,6 @@ export default {
     },
 
     showLabel() {
-      if (this._items.display === 'defined') {
-        return false
-      }
       if (this._items.webconf && this._items.webconf.hiddenLabel) {
         return false
       }
