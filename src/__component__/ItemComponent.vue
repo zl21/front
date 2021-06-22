@@ -621,9 +621,6 @@
       },
 
       showLabel() {
-        if (this._items.type === 'defined') {
-          return false
-        }
         if (this._items.props.webconf && this._items.props.webconf.hiddenLabel) {
           return false
         }
