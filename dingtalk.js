@@ -5,7 +5,7 @@ const package = require('./package.json');
 const queryParams = {
     msgtype: 'link',
     link: {
-        text: package.version,
+        text: '版本：'+package.version,
         title: package.name+' 框架发版了,点击链接查看更新日志',
         picUrl: '',
         messageUrl: 'http://share.ark.burgeononline.com/knowledge/documentation_58582'
