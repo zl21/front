@@ -195,6 +195,7 @@
   import treeData from '../__config__/treeData.config';
   import getUserenv from '../__utils__/getUserenv';
   import { addSearch, querySearch } from '../__utils__/indexedDB';
+  import { getPinnedColumns } from '../__utils__/tableMethods'
   import tabBar from './tabBar.vue';
 
 
@@ -905,9 +906,30 @@
       },
       onColumnPinned(pinnedCols) {
         const { tableId } = this[INSTANCE_ROUTE_QUERY];
+
+        let resultColumns = pinnedCols
+        // 剔除掉扩展属性里的固定列
+        if(this.ag.pinnedColumns) {
+          let { pinnedLeftColumns:paramsLeft, pinnedRightColumns:paramsRight } = getPinnedColumns(pinnedCols)
+          const { pinnedLeftColumns, pinnedRightColumns } = getPinnedColumns(this.ag.pinnedColumns)
+          for(let i = paramsLeft.length-1; i>=0;i--) {
+            if(pinnedLeftColumns.includes(paramsLeft[i])) {
+              paramsLeft.splice(i, 1)
+            }
+          }
+          for(let i = paramsRight.length-1; i>=0;i--) {
+            if(pinnedRightColumns.includes(paramsRight[i])) {
+              paramsRight.splice(i, 1)
+            }
+          }
+          paramsLeft = paramsLeft.join(',')
+          paramsRight = paramsRight.join(',')
+          resultColumns = `${paramsLeft}${paramsRight? ('|'+paramsRight) : ''}`
+        }
+
         this.setColPin({
           tableid: tableId,
-          fixedcolumn: pinnedCols
+          fixedcolumn: resultColumns
         });
         this.updateAgConfig({ key: 'fixedColumn', value: pinnedCols });
       },
