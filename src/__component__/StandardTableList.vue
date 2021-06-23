@@ -199,6 +199,7 @@
   import { addSearch, querySearch } from '../__utils__/indexedDB';
   import tabBar from './tabBar.vue';
   import listsForm from './FormComponents/listsForm';
+  import { getPinnedColumns } from '../__utils__/tableMethods'
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -813,11 +814,34 @@
         });
         this.updateAgConfig({ key: 'colPosition', value: cols });
       },
+
+      // 列固定的回调
       onColumnPinned(pinnedCols) {
         const { tableId } = this[INSTANCE_ROUTE_QUERY];
+
+        let resultColumns = pinnedCols
+        // 剔除掉扩展属性里的固定列
+        if(this.ag.pinnedColumns) {
+          let { pinnedLeftColumns:paramsLeft, pinnedRightColumns:paramsRight } = getPinnedColumns(pinnedCols)
+          const { pinnedLeftColumns, pinnedRightColumns } = getPinnedColumns(this.ag.pinnedColumns)
+          for(let i = paramsLeft.length-1; i>=0;i--) {
+            if(pinnedLeftColumns.includes(paramsLeft[i])) {
+              paramsLeft.splice(i, 1)
+            }
+          }
+          for(let i = paramsRight.length-1; i>=0;i--) {
+            if(pinnedRightColumns.includes(paramsRight[i])) {
+              paramsRight.splice(i, 1)
+            }
+          }
+          paramsLeft = paramsLeft.join(',')
+          paramsRight = paramsRight.join(',')
+          resultColumns = `${paramsLeft}${paramsRight? ('|'+paramsRight) : ''}`
+        }
+
         this.setColPin({
           tableid: tableId,
-          fixedcolumn: pinnedCols
+          fixedcolumn: resultColumns
         });
         this.updateAgConfig({ key: 'fixedColumn', value: pinnedCols });
       },
@@ -1153,11 +1177,10 @@
       clearSelectIdArray() { // 关闭打印预览与直接打印后清空选中项
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
         this.$refs.agTableElement.clearChecked();
-        const detailTable = document.querySelector('.detailTable');
         const commonTable = document.querySelector('.commonTable');
 
-        if (detailTable && detailTable.agTable) { // ag表格
-          detailTable.agTable.deselectAll();
+        if (this.$refs.agTableElement.$refs.agGridTableContainer) { // ag表格
+          this.$refs.agTableElement.$refs.agGridTableContainer.api.deselectAll();
         }
         if (commonTable) { // 普通表格
           commonTable.deselectAll();
@@ -2464,7 +2487,6 @@
       }
     },
     mounted() {
-
       setTimeout(() => {
         // 判断页面是否渲染完成,用于判断树是否调用
         this.mountedChecked = true;
