@@ -131,11 +131,12 @@
         // 将设置的props和默认props进行assign
         this.propsData = JSON.parse(JSON.stringify(this.propstype));
 
-        if (this.propsData.disabled) {
-          this.showDisabled = this.propsData.disabled;
-        } else {
-          this.showDisabled = false;
-        }
+      if (this.propsData.disabled) {
+        this.showDisabled = this.propsData.disabled;
+      } else {
+        this.showDisabled = false;
+      }
+      this.propsData.componentType = myPopDialog;
 
       },
       deep: true

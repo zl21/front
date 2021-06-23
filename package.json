@@ -17,7 +17,9 @@
         "build:style": "gulp --gulpfile build-style.js",
         "build:test": "cross-env BUILD_ENV=test webpack --color --progress --config webpack.test.js --env.NODE_ENV=development",
         "build:publish": "cross-env BUILD_ENV=publish webpack --color --progress --config webpack.publish.js  --env.NODE_ENV=production",
-        "zip": "node doZip.js"
+        "zip": "node doZip.js",
+        "deploy": "npm publish && node dingtalk.js"
+
     },
     "repository": {
         "type": "git",
@@ -32,7 +34,7 @@
         "@babel/plugin-proposal-optional-chaining": "^7.11.0",
         "@babel/plugin-syntax-dynamic-import": "^7.8.3",
         "@babel/preset-env": "^7.11.0",
-        "@syman/ark-ui": "^1.1.32",
+        "@syman/ark-ui": "^1.1.36",
         "babel-eslint": "^10.1.0",
         "babel-helper-vue-jsx-merge-props": "^2.0.3",
         "babel-loader": "^8.1.0",
@@ -74,7 +76,8 @@
     "dependencies": {
         "@babel/polyfill": "^7.10.4",
         "@syman/ark-ui": "^1.1.36",
-        "@syman/ark-ui-bcl": "0.1.5",
+        "@syman/ark-ui-bcl": "0.1.8",
+        "@syman/jflow-plugin": "^1.1.9",
         "ag-grid": "^17.1.1",
         "ag-grid-enterprise": "^17.1.1",
         "awe-dnd": "^0.3.4",

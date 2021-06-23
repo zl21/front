@@ -122,6 +122,7 @@
       getTreeData() {
         // 获取数据
         this.treeDatas().then((value) => {
+          // console.log('ztree-value', value)
           this.treeData = value.data;
           this.treeName = value.name;
           this.placeholder = value.placeholder;

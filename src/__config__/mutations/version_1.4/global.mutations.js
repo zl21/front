@@ -16,7 +16,7 @@ import {
 import router from '../../router.config';
 import setCustomeLabel from '../../../__utils__/setCustomeLabel';
 import {
-  getSessionObject, updateSessionObject, deleteFromSessionObject, removeSessionObject 
+  getSessionObject, updateSessionObject, deleteFromSessionObject, removeSessionObject
 } from '../../../__utils__/sessionStorage';
 import { getLabel } from '../../../__utils__/url';
 import { DispatchEvent } from '../../../__utils__/dispatchEvent';
@@ -61,8 +61,8 @@ export default {
     // tableId:跳转目标表ID
     // colid：目标表字段ID
     // defaultValue：目标表设置的默认值
-   
-    
+
+
     window.sessionStorage.setItem(data.tableId, JSON.stringify(data.values));
     // updateSessionObject(data.tableId, param);
   },
@@ -74,7 +74,7 @@ export default {
   },
   updataLoading(state, tableName) {
     if (!state.currentLoading.includes(tableName)) { // 没有则添加
-      state.currentLoading.push(tableName); 
+      state.currentLoading.push(tableName);
     }
   },
   deleteLoading(state, tableName) {
@@ -116,7 +116,7 @@ export default {
         );
       }
     } else if (actionType === 'https:' || actionType === 'http:') {
-      const name = `${LINK_MODULE_COMPONENT_PREFIX}.${param.linkName.toUpperCase()}.${param.linkId}`;     
+      const name = `${LINK_MODULE_COMPONENT_PREFIX}.${param.linkName.toUpperCase()}.${param.linkId}`;
       // this.addKeepAliveLabelMaps({ name, label: param.label });
       state.keepAliveLabelMaps[name] = `${param.label}`;
       if (param.query && typeof param.query === 'object' && Object.keys(param.query) && Object.keys(param.query).length > 0) {
@@ -130,7 +130,7 @@ export default {
       const linkUrl = param.url;
       // const linkId = param.linkId;
       const linkModuleName = param.linkName.toUpperCase();
-      if (!store.state.global.LinkUrl[linkModuleName]) {      
+      if (!store.state.global.LinkUrl[linkModuleName]) {
         store.commit('global/increaseLinkUrl', { linkModuleName, linkUrl });
       }
       const obj = {
@@ -307,7 +307,7 @@ export default {
           if (customizedModuleName) {
             setCustomeLabel(data);
           }
-          
+
           return a;
         }, {});
 
@@ -348,7 +348,7 @@ export default {
       state.keepAliveLabelMaps[name] = `${tableDetailUrlMessage.linkLabel}`;
     }
     state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSessionObject('keepAliveLabelMaps'));
-    state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSessionObject('serviceIdMap'));
+    state.serviceIdMap = Object.assign({}, state.serviceIdMap, window.RgetItemLocalStorage('serviceIdMap'));
     const path = getSessionObject('savePath').path;
     if (path && path !== router.currentRoute.path) {
       router.push(path);
@@ -433,7 +433,7 @@ export default {
       } else {
         state.keepAliveLists = state.keepAliveLists.concat([data.name]);
       }
-    } 
+    }
   },
   spliceMenuLists(state, menu) {
     state.activeTab = menu;
@@ -481,7 +481,7 @@ export default {
       itemId,
       sameNewPage
     };
-    console.log('increaseOpenedMenuLists');
+    // console.log('increaseOpenedMenuLists');
 
     if (notExist) {
       if (state.openedMenuLists.length > openTabNumber() && enableOpenNewTab()) { // 新开tab限制为6个，超过6个后，替换最后一个
@@ -530,7 +530,7 @@ export default {
     //   const openedMenuListId = openedMenuList.keepAliveModuleName.split('.')[2];
     //   removeSessionObject(openedMenuListId);
     // });
-    
+
     state.openedMenuLists = [];
     state.keepAliveLists = [];
     state.activeTab = {};
@@ -558,9 +558,9 @@ export default {
       d.isActive = false;
       let keepAliveModuleNameRes = '';
       if (type === 'C') {
-        // const index = keepAliveModuleName.lastIndexOf('.');  
+        // const index = keepAliveModuleName.lastIndexOf('.');
         keepAliveModuleNameRes = keepAliveModuleName.split('.')[1];
-      } 
+      }
       // 去除对label的限制，自定义配置，自定义标识相同，label不同，也可认为是同一个自定义界面
       if (enableActivateSameCustomizePage() && type === 'C') {
         if (d.keepAliveModuleName === keepAliveModuleName) {
@@ -604,7 +604,7 @@ export default {
 
 
     deleteFromSessionObject('TreeId', tab.tableName);
-    
+
     // window.sessionStorage.removeItem('dynamicRoutingIsBack');// 清除动态路由返回标记
 
     const tabRouteFullPath = tab.routeFullPath;
@@ -676,7 +676,7 @@ export default {
     // 删除规则六： 关闭页签时，清除定制界面跳转单对象界面session中存储的对应关系
     const routeMapRecordForCustomizePage = getSessionObject('routeMapRecordForCustomizePage');
     Object.keys(routeMapRecordForCustomizePage).map((item) => {
-      const index = tab.routeFullPath.lastIndexOf('\/');  
+      const index = tab.routeFullPath.lastIndexOf('\/');
       const tabPath = tab.routeFullPath.substring(0, index + 1);
       if (item.includes(tabPath)) {
         deleteFromSessionObject('routeMapRecordForCustomizePage', item);
@@ -783,12 +783,12 @@ export default {
   tabHref(state, {// 当前tab更换路由
     back, type, tableName, tableId, id, label, serviceId
   }) {
-    // back:返回标志, 
+    // back:返回标志,
     // type:跳转类型,
     // tableName:主表表名,
     // tableId:主表ID,
     // id:明细ID,
-    // label:显示名称, 
+    // label:显示名称,
     // gateWay:网关
     const keepAliveModuleName = `S.${tableName}.${tableId}`;
     if (state.keepAliveLabelMaps[keepAliveModuleName] === undefined) {
@@ -810,7 +810,7 @@ export default {
     let path = '';
     if (type === 'tableDetailHorizontal') {
       path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
-     
+
       router.push({ path });
     }
     if (type === 'tableDetailVertical') {
@@ -831,7 +831,7 @@ export default {
         path,
         query
       };
-  
+
       router.push(routeInfo);
     }
   },
@@ -839,7 +839,7 @@ export default {
     back, type, tableName, tableId, id, customizedModuleName, customizedModuleId, linkName,
     linkId, url, label, serviceId, dynamicRoutingForCustomizePage, isSetQuery, queryData, NToUpperCase,
   }) {
-    // back:返回标志, 
+    // back:返回标志,
     // type:跳转类型,
     // tableName:主表表名,
     // tableId:主表ID,
@@ -888,7 +888,7 @@ export default {
       };
       updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
     }
-    
+
     if (state.serviceIdMap[tableName] === undefined) {
       if (serviceId) {
         state.serviceIdMap[tableName] = `${serviceId}`;
@@ -897,7 +897,7 @@ export default {
         k: tableName,
         v: serviceId
       };
-      updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
+      window.RupdateLocalStorage('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
     }
     let path = '';
     if (type === STANDARD_TABLE_LIST_PREFIX || type === 'S') {
@@ -906,7 +906,7 @@ export default {
       } else {
         path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
       }
-    } 
+    }
     if (type === 'tableDetailHorizontal' || type === 'H') {
       if (dynamicRoutingForCustomizePage) {
         window.sessionStorage.setItem('dynamicRoutingForCustomizePage', true);
@@ -917,7 +917,7 @@ export default {
       } else {
         path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
       }
-    } 
+    }
     if (type === 'tableDetailVertical' || type === 'V') {
       if (dynamicRoutingForCustomizePage) {
         window.sessionStorage.setItem('dynamicRoutingForCustomizePage', true);
@@ -958,12 +958,12 @@ export default {
         };
         setCustomeLabel(data);
       }
-    } 
+    }
     if (type === 'P') {
       if (url) {
         path = `${url.toUpperCase()}`;
       }
-    } 
+    }
     if (type === 'tableDetailUrl' || type === 'URL') {
       if (url) {
         path = `${url.toUpperCase()}`;
@@ -973,7 +973,7 @@ export default {
     }
     if (back) {
       const routeMapRecordForCustomizePage = getSessionObject('routeMapRecordForCustomizePage');
-     
+
       if (routeMapRecordForCustomizePage[router.currentRoute.fullPath]) {
         const CustomizePagePath = routeMapRecordForCustomizePage[router.currentRoute.fullPath];
         Object.keys(routeMapRecordForCustomizePage).map((item) => {
@@ -981,7 +981,7 @@ export default {
             deleteFromSessionObject('routeMapRecordForCustomizePage', router.currentRoute.fullPath);
           }
         });
-      
+
         // const flag = state.openedMenuLists.filter((d, i) => { // 判断单对象界面要返回来源定制界面是否在前一个
         //   if (d.tableName === router.currentRoute.params.tableName) {
         //     d.index = i;
@@ -996,7 +996,7 @@ export default {
         // if (state.openedMenuLists.length > 1) { // 框架路由tab逻辑为刷新浏览器保留最后一个打开的tab页签，则关闭当前会自动激活前一个
         router.push(CustomizePagePath);
         // }
-        
+
         // state.openedMenuLists.map((menu) => {
         //   if (menu.routeFullPath === CustomizePagePath) {
         //     menu.isActive = true;
@@ -1074,7 +1074,7 @@ export default {
     // name：C.AAO_SR_TEST.2326模块名称
     // label：中文名
     state.keepAliveLabelMaps[name] = `${label}`;
-  
+
     const keepAliveLabelMapsObj = {
       k: name,
       v: label
@@ -1084,7 +1084,7 @@ export default {
           item.label = label;
         }
     });
-    
+
     updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
     state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSessionObject('keepAliveLabelMaps'));
   },
@@ -1105,7 +1105,7 @@ export default {
   //       if (arr[i] !== true) {
   //         arr[i] = oldRequestData[i];
   //       }
-  //     }); 
+  //     });
   //   }
   //   state.isRequest = arr;
   // },
@@ -1118,7 +1118,7 @@ export default {
   updateFavoriteData(state, data) { // 收藏
     state.favorite = data.data;
   },
-  updateCustomizeMessage(state, data) { 
+  updateCustomizeMessage(state, data) {
     // type:类型
     // value:更新的值
     // type='customerurl', // 列表界面链接型字段配置objdistype === 'customized'，配置在customerurl.refobjid的字段，解析的值
@@ -1158,7 +1158,7 @@ export default {
   //   // index:需替换的索引
   //   // currentMenuData
   //   console.log(2, state.openedMenuLists);
-  //   state.openedMenuLists.splice(data.index, 1, data.currentMenuData); 
+  //   state.openedMenuLists.splice(data.index, 1, data.currentMenuData);
   //   console.log(3, state.openedMenuLists);
   // }
   updateDashboardPageValue(state,type) {

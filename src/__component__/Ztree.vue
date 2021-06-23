@@ -95,11 +95,9 @@
       // isChangeTreeConfigData: {
       //   handler(val) {
       //     debugger;
-
       //     if (val === 'Y') {
       //       this.inputValue = '';
       //       this.search();
-
       //       // this.$emit('changeTreeConfigData', '');
       //     }
       //   }
@@ -236,7 +234,7 @@
       // }
     },
     created() {
-      this.tableName = `${this.$route.params.tableName}treeDemo`;
+      this.tableName = this.$route.params.tableName ? `${this.$route.params.tableName}treeDemo` : 'treeDemo';
     },
     mounted() {
       this.$nextTick(() => {

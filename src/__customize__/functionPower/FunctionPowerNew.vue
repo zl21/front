@@ -16,8 +16,8 @@
         @click="customize"
       >
         测试跳转到单对象界面
-      </Button>
-      <Button
+      </Button> -->
+      <!-- <Button
         type="fcdefault"
         class="Button"
         @click="customize1"
@@ -28,6 +28,7 @@
     <div class="content">
       <div class="contentLeft">
         <Input
+                v-if="false"
           placeholder="请输入角色"
           clearable
           icon="ios-search"
@@ -36,11 +37,10 @@
         <span slot="prepend">检索</span>
         </Input>
         <div class="menuContainer">
-          <Tree
-            ref="menuTree"
-            :data="menuTreeData"
-            :query="menuTreeQuery"
-            @on-select-change="menuTreeChange"
+          <tree
+                  ref="tree"
+                  :tree-datas="treeConfigData"
+                  @menuTreeChange="menuTreeChange"
           />
         </div>
         <!--<ul class="menuContainer">-->
@@ -313,13 +313,16 @@
   // import network, { urlSearchParams } from '../../__utils__/network';
   import { Version, classFix } from '../../constants/global';
   import store from '../../__config__/store.config';
+  import tree from '../../__component__/tree';
 
   const functionPowerActions = () => require(`../../__config__/actions/version_${Version()}/functionPower.actions.js`);
 
 
   export default {
+    components: {tree},
     data() {
       return {
+        pageInit: false,
         isSaveError: false, // 是否保存失败
         spinShow: false, // loading是否显示
 
@@ -496,6 +499,9 @@
         unCommitThMinWidth: '74px', // 反提交的宽度
         upperTableTbodyHighlightIndex: 0, // 上边表格高亮的下标
         bottomTableTbodyHighlightIndex: null, // 下边表格高亮的下标
+
+        menuPromise: null,
+        treePromise: null,
       };
     },
     watch: {
@@ -512,7 +518,10 @@
       }
     },
     computed: {
-      classes: () => `${classFix}functionPower`
+      classes: () => `${classFix}functionPower`,
+      treeConfigData() {
+        return this.getTreeConfig()
+      },
     },
     created() {
       this.refresh();
@@ -525,6 +534,13 @@
         window.addEventListener('doCollapseHistoryAndFavorite',
                                 this.fixTableColumnWidth());
       }
+    },
+    updated() {
+      this.$nextTick(() => {
+        if (!this.pageInit && !this.spinShow) {
+          this.selectFirstOnce();
+        }
+      })
     },
     beforeDestroy() {
       window.removeEventListener('resize', this.fixTableColumnWidth);
@@ -572,10 +588,10 @@
       }, // 计算表格的列宽
       refresh() {
         this.spinShow = true;
-        const menuPromise = new Promise((resolve, reject) => { this.getMenuData(resolve, reject); });
-        const treePromise = new Promise((resolve, reject) => { this.getTreeData(resolve, reject); });
-        Promise.all([menuPromise, treePromise]).then(() => {
-          this.getTableData();
+        this.menuPromise = new Promise((resolve, reject) => this.getMenuData(resolve, reject));
+        this.treePromise = new Promise((resolve, reject) => this.getTreeData(resolve, reject));
+        Promise.all([this.menuPromise, this.treePromise]).then(() => {
+          this.groupId && this.getTableData()
         });
       }, // 刷新数据
       refreshButtonClick() {
@@ -666,15 +682,15 @@
       menuTreeChange(val, item) {
         this.oldMenuTreeObj = JSON.parse(JSON.stringify(this.newMenuTreeObj));
         this.newMenuTreeObj = JSON.parse(JSON.stringify(item));
-        if (val.length === 0) {
-          this.$refs.menuTree.handleSelect(item.nodeKey);
-        }
-        this.newGroupId = item.ID;
+        // if (val.length === 0) {
+        //   this.$refs.menuTree.handleSelect(item.nodeKey);
+        // }
+        this.newGroupId = item;
         if (!this.isSaveError) {
           if (this.checkNoSaveData('menuTree')) {
           } else {
             this.spinShow = true;
-            this.groupId = item.ID;
+            this.groupId = item;
             const treePromise = new Promise((resolve, reject) => {
               this.getTreeData(resolve, reject);
             });
@@ -733,16 +749,57 @@
           return item;
         });
       }, //  整合树数据
+
+      // 数据
+      getTreeConfig() {
+        return async () => {
+          const treeData = {
+            data: [], // 树结构列表数据
+            // name: 'eeee', // 定义查询参数
+            query: {// 支持配置多参数
+              name: 'NAME', // 参数中的key:需要筛选的字段
+              id: 'ID'
+            },
+            placeholder: '', // placeholder自定义
+            searchData: {// 定义查询接口参数
+              table: '1111',
+              value: 'value'
+            }
+
+          };
+          await this.menuPromise.then(res => treeData.data = this.handleChildrenKey(res));
+          return treeData;
+        }
+      },
+      handleChildrenKey(arr) {
+        return arr.map(v => {
+          v.CHILDREN = v.children;
+          if (v.children && v.children.length > 0) {
+            this.handleChildrenKey(v.children)
+          }
+          return v
+        })
+      },
+      selectFirstOnce() {
+        var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+        var nodes = treeObj.getNodes();
+        if (nodes.length > 0) {
+          treeObj.selectNode(nodes[0]);
+          this.pageInit = true;
+        }
+      },
+
       getMenuData(resolve, reject) {
         functionPowerActions().groupTreeload({
           success: (res) => {
             if (res.data.code === 0) {
-              resolve();
+              resolve(res.data.data);
               this.groupId = res.data.data[0].ID;
               this.newGroupId = res.data.data[0].ID;
               this.oldMenuTreeObj = JSON.parse(JSON.stringify(res.data.data[0]));
               this.newMenuTreeObj = JSON.parse(JSON.stringify(res.data.data[0]));
-              this.menuTreeData = this.restructureMenuTreeData(res.data.data, true);
+              // this.menuTreeData = this.restructureMenuTreeData(res.data.data, true);
+              // this.getTableData()
             } else {
               reject();
             }
@@ -995,6 +1052,18 @@
         };
         store.commit('global/tabCloseAppoint', params);
 
+        // const { fullPath } = this.$route;// 获取当前路由fullPath
+        // const { keepAliveModuleName, tableName } = this.$store.state.global.activeTab;// 获取当前缓存模块名称，自定义标识
+        // const params = {
+        //   routeFullPath: fullPath, // 当前路由fullPath
+        //   keepAliveModuleName, // 当前模块名称
+        //   tableName, // 当前自定义表标识
+        //   event: () => {
+        //     // alert(177);
+        //   }
+        // };
+        // store.commit('global/tabCloseAppoint', params);
+
         // // return;
         // const param = {
         //   url: '/CUSTOMIZED/FUNCTIONPERMISSION/2096',
@@ -1010,13 +1079,21 @@
         // store.commit('global/directionalRouter', param);
       },
       customize1() {
-        const param = {
-          url: '/CUSTOMIZED/FUNCTIONPERMISSION/2099',
-          type: 'C',
-          label: '基础档案',
-          dynamicRoutingForCustomizePage: true
-        };
-        store.commit('global/tabOpen', param);
+         this.$store.commit('global/tabOpen', {
+          // type: 'S',
+          // tableName:'T_V_OMSONLINEORDER',
+          // tableId:'10883',
+          url: '/SYSTEM/TABLE/FUNCTIONPERMISSION/24627',
+          back: true
+        });
+        
+        // const param = {
+        //   url: '/CUSTOMIZED/FUNCTIONPERMISSION/2099',
+        //   type: 'C',
+        //   label: '基础档案',
+        //   dynamicRoutingForCustomizePage: true
+        // };
+        // store.commit('global/tabOpen', param);
       },
       copyPerm() {
         this.copyPermission = true;

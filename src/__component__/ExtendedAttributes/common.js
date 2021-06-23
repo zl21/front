@@ -178,3 +178,29 @@ export const isEmpty = (obj)=>{
     }
    
 }
+
+/*
+$this 目标实例
+*/
+// 清除
+export const clearFormRefcolval = function ($this) {
+    if($this.items._linkFormMap){
+        // refcolval
+        let _linkFormMap = $this.items._linkFormMap;
+        if(_linkFormMap.refcolval){
+          // 清除目标字段的值
+          ClearRefcolValue($this,_linkFormMap.refcolval);
+        }
+        if(_linkFormMap.refcolvalArray){
+          // 清除目标字段的值
+          ClearRefcolValue($this,_linkFormMap.refcolvalArray);
+        }
+        if(_linkFormMap.refcolval_custom){
+          // 清除目标字段的值
+          ClearRefcolValue($this,_linkFormMap.refcolval_custom);
+        }
+        if(_linkFormMap.filtercolval){
+        }
+      }
+
+}
