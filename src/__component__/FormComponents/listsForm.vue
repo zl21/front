@@ -30,6 +30,7 @@
   </div>
 </template>
 <script>
+  import { mapState } from 'vuex';
   import RenderComponent from './RenderComponent';
   import ParameterDataProcessing from './parameterDataProcessing';
   import {
@@ -38,6 +39,11 @@
 
   export default {
     computed: {
+      ...mapState('global', {
+        activeTab: ({ activeTab }) => activeTab,
+        // isRequest: ({ isRequest }) => isRequest,
+
+      }),
       className() {
         return `${this.dowClass === false ? ' iconfont  iconios-arrow-down' : 'iconfont  iconios-arrow-down icon-xiadown'}`;
       }
@@ -84,6 +90,8 @@
         this.ItemLists = {}
         this.formArray = []
         this.formItemLists.map((item, index) => {
+          item.tableName = this.activeTab.tableName;
+          item.show = true;
           if(item.webconf && item.webconf.display === 'YearMonth'){
             item.display = 'YearMonth';
           }
