@@ -19,7 +19,7 @@ export default {
         if (this.items.detailType) {
           let ParentForm = this.findParentForm();
           // 获取当前组件的值
-          let current_value = ParentForm.dealData(this.items, val)[this.items.colname];
+          let current_value = ParentForm.dealData(this.items, val)[this.items.colname] || '';
           let current_data = {};
           // 1.3 label
           let R3Label = {
@@ -51,6 +51,11 @@ export default {
             }
 
           }
+          if(this.items.fkobj && (this.items.fkobj.searchmodel === 'mrp')){
+            current_value = (current_value ||'').split(',').map((item)=>{
+              return item;
+            }).sort(function(a,b){ return a-b}).join(',');
+          }
         
            // number类型空值传0
            if (this.items.type === 'NUMBER') {
@@ -67,6 +72,12 @@ export default {
               }
             }
             
+          }
+          // 兼容1.3
+          if (Version() === '1.3') {
+            if (isEmpty(current_value)) {
+               current_value = null;
+            }
           }
           // 拼接当前key 和 value
           current_data = {
@@ -204,6 +215,7 @@ export default {
     },
     changeForm(ParentForm){
       // 修改后
+      console.log(ParentForm.formChangeData, ParentForm.formDataLabel);
       if (ParentForm.$parent.formPanelChange) {
         ParentForm.$parent.formPanelChange(ParentForm.formChangeData, ParentForm.formDataLabel,ParentForm.formChangeDataLabel)
       }else{

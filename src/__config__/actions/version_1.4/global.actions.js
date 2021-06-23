@@ -86,8 +86,9 @@ export default {
                 }
               });
               if (exportTask.exportedState) { // 导出成功执行以下逻辑
-                const obj = Version() === '1.3' ? urlSearchParams({ id }) : { objId: id };
-                network.post(Version() === '1.3' ? '/p/cs/ignoreMsg' : '/p/cs/u_note/ignoreMsg', obj, {
+                let obj = Version() === '1.3' ? urlSearchParams({ id }) : { objId: id };
+                obj.id = obj.objId;
+                twork.post(Version() === '1.3' ? '/p/cs/ignoreMsg' : '/p/cs/u_note/ignoreMsg', obj, {
                   serviceId: enableGateWay() ? 'asynctask' : ''
                 }).then((r) => {
                   const datas = r.data;
@@ -262,6 +263,7 @@ export default {
   },
   updataTaskMessageCount({ commit }, { id, stopUpdataQuantity }) { // 更新我的任务数量
     const obj = Version() === '1.3' ? urlSearchParams({ id }) : { objId: id };
+    obj.id = obj.objId;
     network.post(Version() === '1.3' ? '/p/cs/ignoreMsg' : '/p/cs/u_note/ignoreMsg', obj, {
       serviceId: enableGateWay() ? 'asynctask' : ''
     }).then((res) => {

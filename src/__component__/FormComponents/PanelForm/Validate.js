@@ -298,7 +298,6 @@ export const validateForm = function(name){
             let  ValidateItem = item.$refs.ValidateItem;
             let  errorTip = ValidateItem.validateFormInt('required');
             if(errorTip.replace(/(^[ \t\n\r]*)|([ \t\n\r]*$)/g, '').length>0){
-                console.log(ValidateItem);
                 message.push({
                     tip:errorTip,
                     colname:ValidateItem.colname

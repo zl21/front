@@ -40,6 +40,12 @@
       // 字段的网关
       this.item.serviceId = this.item.fkobj.serviceId;
     }
+    if(this.item.detailType){
+     // 走关联字段查询
+      this.item.Query = true;
+    }else{
+      this.item.Query = false;
+    }
     this.propstype = {
           ...this.item,
           item:this.item,
@@ -74,6 +80,7 @@
    mergeMethods() {
     this.Vm.created = function(){  
       this.item = this.PropsData.item;
+      this.item.Query = this.PropsData.Query;
       this.activeTab = this.$parent.$parent.activeTab;
       this.PropsData.isShowPopTip=()=>{
         if(this.item.refcolval){

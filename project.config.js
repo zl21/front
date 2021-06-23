@@ -89,9 +89,9 @@ module.exports = {
   blockFullOperation: false, // 禁止不选数据时的批量修改操作,
   customizeMixins: { // 获取所有外部接入的mixins对象
     setPanel: null,
-    verticalTableDetailCustomize: null,
+    // verticalTableDetailCustomize: require('./src/demo/horizontalTableDetailCustomize.js').default,
     standardTableListsCustomize: null,
-    horizontalTableDetailCustomize: null,
+    // horizontalTableDetailCustomize: require('./src/demo/horizontalTableDetailCustomize.js').default,
     taskList: null,
     // tableDetailCollectionMixin:require('./src/demo/mixin').default
   },
@@ -106,13 +106,15 @@ module.exports = {
   },
   filterUrlForNetworkScript: () => true, // 框架默认true,
   listDefaultColumn: 4,
-  // setComponentsProps: (type, props) => {  // 框架自定义表单配置
-  //   if (type === 'String') {
-  //     props.customizedDefaultValue = '劫持后';
-  //   }
-  //   console.log(props)
-  //   return props;
-  // },
+  setComponentsProps: (type, props) => {  // 框架自定义表单配置
+    // 列表支持联动查询
+    if (type === 'OBJ_FK') {
+      if(props.PropsData && (props.PropsData.fkobj.searchmodel ==='mrp' || props.PropsData.fkobj.searchmodel ==='drp')){
+        props.PropsData.Query = true;
+      }
+    }
+    return props;
+  },
   agGridOptions: { // ag表格的配置
     // rowHeight: 100
   },
