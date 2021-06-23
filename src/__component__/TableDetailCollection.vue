@@ -125,7 +125,10 @@
             suppressMovableColumns: true,
             onColumnMoved: onColumnMoved,
             ...agGridOptions,
-            datas: dataSource
+            datas: {
+              dataSource,
+              pinnedColumns: webConfSingle.pinnedColumns
+            }
           }"
           @ag-selection-change="tableSelectedChange"
           @ag-sort-change="tableSortChange"
@@ -204,6 +207,7 @@
   import getUserenv from '../__utils__/getUserenv';
   import createModal from './PreviewPicture/index';
   import TableTemplate from './TableDetailCollectionslot';
+  import { getPinnedColumns } from '../__utils__/tableMethods'
 
   Vue.component('ComAttachFilter', ComAttachFilter);
   Vue.component('TableDocFile', Docfile);
@@ -744,6 +748,9 @@
         if (!columns) {
           return [];
         }
+
+        const { pinnedLeftColumns, pinnedRightColumns } = getPinnedColumns(this.webConfSingle.pinnedColumns)
+
         // 整合表头数据
         const newColumns = columns
           .map((ele, index) => {
@@ -756,6 +763,18 @@
               isagfilter: false, // 关闭过滤功能
               _index: index
             };
+
+            // 设置固定列
+            if(pinnedLeftColumns.includes(ele.colname)) {
+              param.pinned = 'left'
+              param.suppressMovable = true
+              param.suppressMenu = true
+            }
+            if(pinnedRightColumns.includes(ele.colname)) {
+              param.pinned = 'right'
+              param.suppressMovable = true
+              param.suppressMenu = true
+            }
 
             // 序号按行索引渲染
             if (ele.colname === EXCEPT_COLUMN_NAME) {
