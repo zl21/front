@@ -202,7 +202,6 @@
       search() {
         const isNull = this.isNull(this.inputValue);
         if (!isNull) {
-
           let checkoutZtree = fuzzySearch(`${this.tableName}`, this.inputValue, null, true); // 初始化模糊搜索方法
           checkoutZtree.then((res)=>{
             if(res.length>0){
@@ -211,12 +210,12 @@
               this.showTip = true;
               this.expandAll();
             }
-
           })
         } else {
           this.showTip = false;
           this.expandAll();
         }
+        this.$emit('treeSearch')
       },
       expandAll() {
         // fuzzySearch('treeDemo','', null, false); // 初始化模糊搜索方法

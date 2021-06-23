@@ -41,6 +41,7 @@
                   ref="tree"
                   :tree-datas="treeConfigData"
                   @menuTreeChange="menuTreeChange"
+                  @treeSearch="treeSearch"
           />
         </div>
         <!--<ul class="menuContainer">-->
@@ -795,6 +796,9 @@
           treeObj.selectNode(nodes[0]);
           this.pageInit = true;
         }
+      },
+      treeSearch() {
+        this.refreshButtonClick();
       },
 
       getMenuData(resolve, reject) {
