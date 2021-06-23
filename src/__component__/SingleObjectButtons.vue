@@ -4018,10 +4018,7 @@
     },
     mounted() {
       this.updataCurrentTableDetailInfo();
-<<<<<<< HEAD
-=======
       this.$el._vue_ = this;
->>>>>>> ll_npm_dev
       this.setDisableButtons();
       if (this.isItemTable) {
         this.dataArray.refresh = false;
