@@ -1177,11 +1177,10 @@
       clearSelectIdArray() { // 关闭打印预览与直接打印后清空选中项
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
         this.$refs.agTableElement.clearChecked();
-        const detailTable = document.querySelector('.detailTable');
         const commonTable = document.querySelector('.commonTable');
 
-        if (detailTable && detailTable.agTable) { // ag表格
-          detailTable.agTable.deselectAll();
+        if (this.$refs.agTableElement.$refs.agGridTableContainer) { // ag表格
+          this.$refs.agTableElement.$refs.agGridTableContainer.api.deselectAll();
         }
         if (commonTable) { // 普通表格
           commonTable.deselectAll();
@@ -2488,7 +2487,6 @@
       }
     },
     mounted() {
-      
       setTimeout(() => {
         // 判断页面是否渲染完成,用于判断树是否调用
         this.mountedChecked = true;
