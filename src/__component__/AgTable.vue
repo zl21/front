@@ -272,42 +272,17 @@
       },
       moduleComponentName: {
         type: String,
-      }
+      },
     },
     watch: {
-      userConfigForAgTable(val) {
-        if (!this.isCommonTable && !this.isBig) {
-          const { agGridTableContainer } = this.$refs;
-          // if (agGridTableContainer.agTable) {
-          //   agGridTableContainer.agTable.dealWithPinnedColumns(
-          //     true,
-          //     val.fixedColumn || ''
-          //   );
-          // }
-          if (agGridTableContainer) {
-            agGridTableContainer.dealWithPinnedColumns(
-              true,
-              val.fixedColumn || ''
-            );
-          }
-        }
-      },
       datas(val) {
         if (!this.isCommonTable && !this.isBig) {
           this.agGridTable(val.tabth, val.row, val);
           setTimeout(() => {
             const { agGridTableContainer } = this.$refs;
-            // if (agGridTableContainer && agGridTableContainer.agTable) {
-            //   agGridTableContainer.agTable.fixContainerHeight();
-            //   agGridTableContainer.agTable.emptyAllFilters();
-            //   agGridTableContainer.agTable.dealWithPinnedColumns(true, val.fixedColumn || '');
-            //   if(this.$route.query.isBack) {
-            //     this.setTableSelected();
-            //   }
-            // }
+
             if (agGridTableContainer) {
               agGridTableContainer.emptyAllFilters();
-              agGridTableContainer.dealWithPinnedColumns(true, val.fixedColumn || '');
               if(this.$route.query.isBack) {
                 this.setTableSelected();
               }
@@ -334,6 +309,52 @@
           }
         }
         return result;
+      },
+
+      // 获取固定列
+      getPinnedColumns(pinnedPosition) {
+        let pinnedLeftColumns = []
+        let pinnedRightColumns = []
+
+        if (pinnedPosition) {
+          // 举例：接口返回数据值为 ID, KEY | DATE, NUM ，其中 | 左侧的数据代表固定在右边， | 右侧的数据代表固定在右边
+          const pinnedColumns = pinnedPosition.split('|');
+          pinnedLeftColumns = pinnedColumns[0].split(',');
+          if (pinnedColumns[1]) {
+            pinnedRightColumns = pinnedColumns[1].split(',');
+          }
+        }
+        return {
+          pinnedLeftColumns,
+          pinnedRightColumns
+        }
+      },
+
+      // 处理列数据
+      processColumns(datas) {
+        // 所有的固定列为 扩展属性固定列和用户固定列的集合
+        let columns = []
+        const { pinnedPosition, pinnedColumns } = datas
+        const { pinnedLeftColumns:webconfLeft, pinnedRightColumns:webconfRight } = this.getPinnedColumns(pinnedColumns)
+        const { pinnedLeftColumns:userLeft, pinnedRightColumns:userRight } = this.getPinnedColumns(pinnedPosition)
+
+        // 获取最终的固定列
+        const pinnedLeftColumns = [...new Set(userLeft.concat(webconfLeft))]
+        const pinnedRightColumns = [...new Set(userRight.concat(webconfRight))]
+
+        columns = datas.tabth.map(item => {
+          // 固定左侧列
+          if(pinnedLeftColumns.includes(item.colname)) {
+            item.pinned = 'left'
+          }
+          // 固定右侧列
+          if(pinnedRightColumns.includes(item.colname)) {
+            item.pinned = 'right'
+          }
+          item.tdAlign = item.type === 'NUMBER' ? 'right' : 'left'
+          return item
+        }) 
+        return columns
       },
 
       agGridTable(th, row, data) { // agGrid
@@ -371,11 +392,10 @@
         if(datas.row && Array.isArray(datas.row)) {
           this.rows = datas.row 
         }
+
+        // 处理列数据
         if(datas.tabth && Array.isArray(datas.tabth)) {
-          this.columns = datas.tabth.map(item => {
-            item.tdAlign = item.type === 'NUMBER' ? 'right' : 'left'
-            return item
-          }) 
+          this.columns = this.processColumns(datas)
         }
 
         this.options = {
@@ -446,81 +466,6 @@
             }
           },
         }
-        // // selectIdArr
-        // const agTableRes = agTable(this.$refs.agGridTableContainer, {
-        //   cssStatus: self.legend, // 颜色配置信息
-        //   defaultSort: arr, // 默认排序
-        //   datas, //  所有返回数据
-        //   floatingFilter: isOpenfloatingFilter,
-        //   cellSingleClick: (colDef, rowData, target) => {
-        //     // 参数说明
-        //     // colDef：包含表头信息的对象
-        //     // row：包含当前行所有数据的对象
-        //     // target：事件触发对象，即event.target所返回的dom结点
-        //     if (typeof self.onCellSingleClick === 'function') {
-        //       self.onCellSingleClick(colDef, rowData, target);
-        //     }
-        //   }, // 单元格单击回调
-        //   cellDoubleClick: (colDef, rowData, target) => {
-        //     // 参数说明同cellSingleClick
-        //     if (typeof self.onCellDoubleClick === 'function') {
-        //       self.onCellDoubleClick(colDef, rowData, target);
-        //     }
-        //   }, // 单元格双击回调
-        //   rowSingleClick: (colDef, rowData, target) => {
-        //     // 参数说明同cellSingleClick
-        //     if (typeof self.onRowSingleClick === 'function') {
-        //       self.onRowSingleClick(colDef, rowData, target);
-        //     }
-        //   }, // 行单击回调
-        //   rowDoubleClick: (colDef, rowData, target) => {
-        //     // 参数说明同cellSingleClick
-        //     if (typeof self.onRowDoubleClick === 'function') {
-        //       self.onRowDoubleClick(colDef, rowData, target);
-        //     }
-        //   }, // 行双击回调
-        //   onSortChanged: (arrayOfSortInfo) => {
-        //     // 参数说明
-        //     // arrayOfSortInfo: 返回当前用户触发的排序信息
-        //     // 形如： [{"colId":"PS_C_BRAND_ID.val","sort":"asc"},{"colId":"ECODE.val","sort":"desc"}]
-        //     if (typeof self.onSortChanged === 'function') {
-        //       self.onSortChanged(arrayOfSortInfo);
-        //     }
-        //   }, // 排序事件触发回调
-        //   onColumnVisibleChanged: (colName) => {
-        //     if (typeof self.onColumnVisibleChanged === 'function') {
-        //       self.onColumnVisibleChanged(colName);
-        //     }
-        //   },
-        //   onSelectionChanged: (rowIdArray, rowArray) => {
-        //     if(this.lockSelected) {
-        //       return
-        //     }
-        //     if (typeof self.onSelectionChanged === 'function') {
-        //       self.onSelectionChanged(rowIdArray, rowArray);
-
-        //       // ag回填
-        //       this.selectRow = rowIdArray;
-        //     }
-        //   },
-        //   onColumnMoved: (columnState) => {
-        //     // 记住移动列
-        //     if (typeof self.onColumnMoved === 'function') {
-        //       self.onColumnMoved(columnState);
-        //     }
-        //   },
-        //   onColumnPinned: (ColumnPinned) => {
-        //     if (typeof self.onColumnPinned === 'function') {
-        //       self.onColumnPinned(ColumnPinned);
-        //     }
-        //   },
-        // });
-        // if (agTableRes && agTableRes.setCols) {
-        //   return agTableRes
-        //     .setCols(th) // 设置数据列
-        //     .setRows(row); // 设置数据行
-        // }
-        // return null;
       },
 
       // 清除勾选
@@ -576,11 +521,6 @@
               }
             });
 
-            // agGridTableContainer.agTable.api.forEachNode((node, index) => {
-            //   if (selectedIndex.includes(index)) {
-            //     agGridTableContainer.agTable.api.selectNode(node, true);
-            //   }
-            // });
             agGridTableContainer.api.forEachNode((node, index) => {
               if (selectedIndex.includes(index)) {
                 agGridTableContainer.api.selectNode(node, true);
@@ -599,12 +539,6 @@
     activated() {
       if (!this.isCommonTable && !this.isBig) {
         const { agGridTableContainer } = this.$refs;
-        // if (agGridTableContainer.agTable) {
-        //   agGridTableContainer.agTable.fixAgRenderChoke();
-        //   agGridTableContainer.agTable.fixContainerHeight();
-        
-        //   this.setTableSelected();
-        // }
         if (agGridTableContainer) {
           agGridTableContainer.fixAgRenderChoke();
           this.setTableSelected();
