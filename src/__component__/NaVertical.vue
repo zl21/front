@@ -21,8 +21,8 @@
         v-if="enableHistoryAndFavoriteUI"
         class="HistoryAndFavorite-time"
       >
-        <Dropdown>
-          <Icon type="iconmd-time"></Icon>
+        <Dropdown trigger="click"  class="HistoryAndFavorite-Dropdown" placement="bottom-start">
+            <Icon type="iconmd-time"></Icon>
           <DropdownMenu
             slot="list"
           >
@@ -248,6 +248,9 @@
         } else {
           this.changeSelectedPrimaryMenu(index);
         }
+      },
+      mouseover(){
+          console.log(1212);
       },
       showDropdown() {
         console.log(1212);
