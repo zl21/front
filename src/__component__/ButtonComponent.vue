@@ -76,23 +76,64 @@
         type="primary"
         @on-click="choseWaListButton"
       >
-        <Button
-          type="fcdefault"
-        >
-          {{ group.webdesc }}
-          <Icon type="ios-arrow-down" />
-        </Button>
-        <DropdownMenu slot="list">
-          <DropdownItem
-            v-for="(item,index) in group.childrens "
-            :key="item.webid"
-            :name="item"
-            :disabled="item.disabled"
+        <!-- 按钮有气泡提示 -->
+        <template v-if="group.confirm && group.confirm.includes('supPrompt')">
+          <Poptip 
+            trigger="hover" 
+            transfer
+            :key="group.webid"
+            word-wrap
+            width="200"
+            :content="JSON.parse(group.confirm).supPrompt">
+            <Button
+              type="fcdefault"
+            >
+              {{ group.webdesc }}
+              <Icon type="ios-arrow-down" />
+            </Button>
+          </Poptip>
+        </template>
+        <template v-else>
+          <Button
+            type="fcdefault"
           >
-            {{ item.webdesc }}
-          </DropdownItem>
+            {{ group.webdesc }}
+            <Icon type="ios-arrow-down" />
+          </Button>
+        </template>
+        
+        <DropdownMenu slot="list" class="btn-menu">
+          <!-- 按钮菜单有气泡提示 -->
+          <template v-for="(item,index) in group.childrens ">
+            <Poptip 
+                v-if="item.confirm && item.confirm.includes('supPrompt')"
+                trigger="hover" 
+                transfer
+                :key="item.webid"
+                word-wrap
+                placement="right"
+                width="200"
+                :content="JSON.parse(item.confirm).supPrompt">
+                <DropdownItem
+                  :key="item.webid"
+                  :name="item"
+                  :disabled="item.disabled"
+                >
+                  {{ item.webdesc }}
+                </DropdownItem>
+            </Poptip>
+            <DropdownItem
+              v-else
+              :key="item.webid"
+              :name="item"
+              :disabled="item.disabled"
+            >
+              {{ item.webdesc }}
+            </DropdownItem>
+          </template>
         </DropdownMenu>
       </Dropdown>
+      
       <!-- jflow配置按钮-->
       <Button
         v-for="(item) in dataArray.jflowButton"
@@ -151,13 +192,6 @@
         @click="btnclick('refresh')"
         v-text="refresh"
       />
-      <!-- <Button
-        id="hideRefresh"
-        class="hide"
-        type="fcdefault"
-        @click="btnclick('refresh')"
-        v-text="refresh"
-      /> -->
      
       <Button
         v-if="dataArray.temporaryStorage"
@@ -532,5 +566,11 @@
 
   
   }
- 
+
+.btn-menu {
+  .ark-poptip,
+  .ark-poptip-rel {
+    display: block;
+  }
+}
 </style>
