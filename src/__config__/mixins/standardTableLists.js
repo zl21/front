@@ -82,6 +82,7 @@ export default () => ({
         'setAgTableErrorMessage',
         'setPrintValueForButtons',
         'updataSelectIdArr',
+        'updateTableData',
         'updatestopOnRowDoubleClickData',
         'updataIsBig',
         'updateTabParam',
