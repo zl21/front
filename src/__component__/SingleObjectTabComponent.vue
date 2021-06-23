@@ -139,8 +139,8 @@
       @tableSelectedRow="tableSelectedRow"
       @tableVerifyMessage="tableVerifyMessage"
     > 
-      <div slot="detail-buttons" slot-scope="slotProps" v-if="slotArray.detailbuttons">
-         <component :is="slotArray.detailbuttons" :slotProps="slotProps" />
+      <div slot="detail-buttons" slot-scope="slotProps" v-if="slotArray.detailbuttonsa">
+         <component :is="slotArray.detailbuttonsa" :slotProps="slotProps" />
       </div>
     </component>
   </div>
@@ -478,7 +478,7 @@
         const tableDetailCollectionMixin = (window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.tableDetailCollectionMixin) || {};
         // 混入卡槽
         if(tableDetailCollectionMixin.slotArray){
-          this.slotArray.detailbuttons = tableDetailCollectionMixin.slotArray.detailbuttons;
+          this.slotArray.detailbuttonsa = tableDetailCollectionMixin.slotArray.detailbuttonsa;
         }
        
         const singleObjectButtonsMixin = (window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.singleObjectButtonsMixin) || {};
