@@ -45,7 +45,7 @@
       ></CommonTableByAgGrid>
     </div> -->
     <CommonTableByAgGrid
-        v-show="!isCommonTable && !isBig"
+        v-if="!isCommonTable && !isBig && options"
         mode="r3-list"
         class="detailTable"
         ref="agGridTableContainer"
@@ -119,7 +119,7 @@
     data() {
       return {
         selectRow: [],
-        options: {},
+        options: null,
         rows: [],
         columns: [],
         agGridOptions: window.ProjectConfig.agGridOptions || {},
@@ -388,13 +388,16 @@
         if(datas.tabth && Array.isArray(datas.tabth)) {
           this.columns = this.processColumns(datas)
         }
+        if(this.columns.length === 0) {
+          return
+        }
 
         this.options = {
           cssStatus: self.legend, // 颜色配置信息
           defaultSort: arr, // 默认排序
           datas, //  所有返回数据
           floatingFilter: isOpenfloatingFilter,
-          cellSingleClick: (colDef, rowData, target) => {
+          agCellSingleClick: (colDef, rowData, target) => {
             // 参数说明
             // colDef：包含表头信息的对象
             // row：包含当前行所有数据的对象
@@ -403,25 +406,25 @@
               self.onCellSingleClick(colDef, rowData, target);
             }
           }, // 单元格单击回调
-          cellDoubleClick: (colDef, rowData, target) => {
+          agCellDoubleClick: (colDef, rowData, target) => {
             // 参数说明同cellSingleClick
             if (typeof self.onCellDoubleClick === 'function') {
               self.onCellDoubleClick(colDef, rowData, target);
             }
           }, // 单元格双击回调
-          rowSingleClick: (colDef, rowData, target) => {
+          agRowClick: (colDef, rowData, target) => {
             // 参数说明同cellSingleClick
             if (typeof self.onRowSingleClick === 'function') {
               self.onRowSingleClick(colDef, rowData, target);
             }
           }, // 行单击回调
-          rowDoubleClick: (colDef, rowData, target) => {
+          agRowDoubleClick: (colDef, rowData, target) => {
             // 参数说明同cellSingleClick
             if (typeof self.onRowDoubleClick === 'function') {
               self.onRowDoubleClick(colDef, rowData, target);
             }
           }, // 行双击回调
-          onSortChanged: (arrayOfSortInfo) => {
+          agSortChanged: (arrayOfSortInfo) => {
             // 参数说明
             // arrayOfSortInfo: 返回当前用户触发的排序信息
             // 形如： [{"colId":"PS_C_BRAND_ID.val","sort":"asc"},{"colId":"ECODE.val","sort":"desc"}]
@@ -429,12 +432,12 @@
               self.onSortChanged(arrayOfSortInfo);
             }
           }, // 排序事件触发回调
-          onColumnVisibleChanged: (colName) => {
+          agColumnVisibleChanged: (colName) => {
             if (typeof self.onColumnVisibleChanged === 'function') {
               self.onColumnVisibleChanged(colName);
             }
           },
-          onSelectionChanged: (rowIdArray, rowArray) => {
+          agSelectionChanged: (rowIdArray, rowArray) => {
             if(this.lockSelected) {
               return
             }
@@ -445,13 +448,13 @@
               this.selectRow = rowIdArray;
             }
           },
-          onColumnMoved: (columnState) => {
+          agColumnMoved: (columnState) => {
             // 记住移动列
             if (typeof self.onColumnMoved === 'function') {
               self.onColumnMoved(columnState);
             }
           },
-          onColumnPinned: (ColumnPinned) => {
+          agColumnPinned: (ColumnPinned) => {
             if (typeof self.onColumnPinned === 'function') {
               self.onColumnPinned(ColumnPinned);
             }
