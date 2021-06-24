@@ -191,8 +191,8 @@
         // treeNodeID：当前点击节点ID
         // flag:true:查询选中的节点，false:查询空
       }, // 左侧树点击
-      treeSearch() {
-        this.$emit('treeSearch')
+      treeSearch(e) {
+        this.$emit('treeSearch', e)
       },
     }
   };

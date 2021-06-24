@@ -812,8 +812,11 @@
       resetTree() {
         this.selectFirstOnce()
       },
-      treeSearch() {
-        this.refreshButtonClick();
+      treeSearch(e) {
+        if (!e) {
+          this.pageInit = false;
+          this.refreshButtonClick();
+        }
       },
 
       getMenuData(resolve, reject) {

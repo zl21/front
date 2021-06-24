@@ -215,7 +215,7 @@
           this.showTip = false;
           this.expandAll();
         }
-        this.$emit('treeSearch')
+        this.$emit('treeSearch', this.inputValue)
       },
       expandAll() {
         // fuzzySearch('treeDemo','', null, false); // 初始化模糊搜索方法
