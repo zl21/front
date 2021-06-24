@@ -123,7 +123,7 @@
           :render-params="renderParams"
           :options="{
             suppressMovableColumns: true,
-            onColumnMoved: onColumnMoved,
+            agColumnMoved,
             ...agGridOptions,
             datas: {
               ...dataSource,
@@ -713,7 +713,7 @@
       },
 
       // ag表格重置列位置的回调
-      onColumnMoved(cols) {
+      agColumnMoved(cols) {
         const { tableId } = this[INSTANCE_ROUTE_QUERY];
         this.setColPosition({
           tableid: tableId,
