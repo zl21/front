@@ -423,7 +423,7 @@ customHeader.prototype.init = function (params) {
     </span>
     <div ref="eLabel" class="ag-header-cell-label" role="presentation" style="${enableMenu ? '' : 'width: 100%;'}">
         <span ref="eText" class="ag-header-cell-text" role="columnheader">
-          ${params.column.colDef.comment ? `<i class="iconfont comment iconios-information-circle-outline ${cssFeatures.hover}" style="color: orangered"></i> ` : ''} ${displayName}
+        ${displayName} ${params.column.colDef.comment ? `<i class="iconfont comment iconios-information-circle-outline ${cssFeatures.hover}" style="color: orangered"></i> ` : ''} 
         </span>
         <span ref="eSortOrder" class="ag-header-icon ag-sort-order" ></span>
         <span ref="eSortAsc" class="ag-header-icon ag-sort-ascending-icon ${params.column.colDef.isorder && params.column.colDef.sort === 'asc' ? '' : 'ag-hidden'}" >
