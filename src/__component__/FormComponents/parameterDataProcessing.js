@@ -180,6 +180,11 @@ export default class ParameterDataProcessing {
             const format = 'yyyy/MM/dd hh:mm:ss'
             arr = [new Date().r3Format(new Date(this.value[0]), format), new Date().r3Format(new Date(this.value[1]), format)];
           }
+          if(this.item.default === '-1'){
+            if(this.value){
+              arr = [new Date().r3Format(new Date(this.value[0]), 'yyyy/MM/dd hh:mm:ss'), new Date().r3Format(new Date(this.value[1]), 'yyyy/MM/dd hh:mm:ss')];
+            }
+          }
         }
         
       }
