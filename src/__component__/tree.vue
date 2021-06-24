@@ -153,6 +153,7 @@
         }
       },
       clickTreeNode(datas, treeNodeID, flag) {
+
         if (flag) { // 为true时查询当前节点以及全部子节点
           this.currentClickNoded = datas;
           this.treeNodeID = treeNodeID;
