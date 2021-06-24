@@ -603,7 +603,7 @@
       }, // 刷新按钮
       checkNoSaveData(type) {
         // console.log(type)
-        // console.log(this.tableSaveData)
+        // console.log('checkNoSaveData', this.groupId)
         this.getSaveData();
         if (this.tableSaveData.length > 0) {
           this.$Modal.fcWarning({
@@ -694,17 +694,13 @@
         // if (val.length === 0) {
         //   this.$refs.menuTree.handleSelect(item.nodeKey);
         // }
-        this.newGroupId = item;
+        this.newGroupId = flag ? item : '';
+        this.groupId = flag ? item : '';
         if (!this.isSaveError) {
           if (this.checkNoSaveData('menuTree')) {
-            this.groupId = item;
           } else {
-            if (flag === false) {
-              this.groupId = '';
-              this.newGroupId = '';
-            } else {
+            if (flag) {
               this.spinShow = true;
-              this.groupId = item;
               const treePromise = new Promise((resolve, reject) => {
                 this.getTreeData(resolve, reject);
               });
