@@ -22,7 +22,7 @@
         v-if="enableHistoryAndFavoriteUI"
         class="HistoryAndFavorite-time"
       >
-        <Dropdown trigger="click"  class="HistoryAndFavorite-Dropdown" placement="bottom-start">
+        <Dropdown ref="Dropdown" trigger="click"  class="HistoryAndFavorite-Dropdown" placement="bottom-start">
             <Icon type="iconmd-time"></Icon>
           <DropdownMenu
             slot="list"
@@ -459,6 +459,7 @@
       }
     },
     mounted() {
+      this.$el._vue_=this;
       if (Version() === '1.3') {
         this.messageTimer = setInterval(() => {
           this.getMessageCount();

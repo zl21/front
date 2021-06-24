@@ -42,6 +42,9 @@
     },
     methods: {
       togglePrimaryMenu(data) {
+        if(document.querySelector('.NaVertical')){
+          document.querySelector('.NaVertical').__vue__.$refs.Dropdown.onClickoutside();
+        }
         this.$emit('togglePrimaryMenu', data, this.index);
       },
       ...mapMutations('global', ['changeSelectedPrimaryMenu', 'hideMenu', 'saveLastIndexForMenu'])
