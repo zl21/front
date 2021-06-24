@@ -126,7 +126,7 @@
             onColumnMoved: onColumnMoved,
             ...agGridOptions,
             datas: {
-              dataSource,
+              ...dataSource,
               pinnedColumns: webConfSingle.pinnedColumns
             }
           }"
