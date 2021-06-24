@@ -6,6 +6,7 @@
     <div class="NaVertical-icons">
       <div
         class="tag"
+        title="折叠"
         @click="toggle"
       >
         <i
@@ -117,7 +118,6 @@
         :dialog-component-name="dialogComponentName"
       />
     </div>
-    </historyandfavorite>
   </div>
 </template>
 
@@ -169,7 +169,7 @@
           show: true,
           list: [],
         },
-        iconShow: false,
+        iconShow: true,
         keyWord: '',
         dialogConfig: {
           title: '提示',
@@ -430,6 +430,7 @@
       },
       toggle() {
         const navigator = document.querySelector('.NavigatorVertical');
+        const navigatorMenu = document.querySelector('.navigator-sub-menu');
         if (this.iconShow) {
           navigator.className = 'NavigatorVertical transferRight';
           this.iconShow = false;
@@ -437,6 +438,10 @@
           navigator.className = 'NavigatorVertical transferLeft';
           this.iconShow = true;
         }
+        setTimeout(()=>{
+          let leftWidth = navigator.offsetWidth;
+          navigatorMenu.style.left = leftWidth+'px';
+        },500)
       },
       routerNext(name) {
         const index = name.value;
@@ -458,6 +463,9 @@
         this.messageTimer = setInterval(() => {
           this.getMessageCount();
         }, 30000);
+      }
+      if(document.querySelector('.NavigatorVertical')){
+        this.toggle();
       }
     },
     beforeDestroy() {

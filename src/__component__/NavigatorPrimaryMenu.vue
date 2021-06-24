@@ -6,9 +6,12 @@
     @click.stop="togglePrimaryMenu(data.children)"
   >
     <template v-if="type==='Vertical'">
-      <div class="navigator-primary-menu-div">
-        {{ data.label }}
-      </div> <Icon type="ios-arrow-forward" />
+      <component :is="NavigatorPrimaryMenuBar" :data="data" />
+      <div v-if="NavigatorPrimaryMenuBar===''">
+         <div class="navigator-primary-menu-div">
+          {{ data.label }}
+        </div> <Icon type="ios-arrow-forward" />
+      </div>
     </template>
     <template v-else>
       {{ data.label }}
@@ -23,7 +26,12 @@
     name: 'NavigatorPrimaryMenu',
     components: {
     },
-  
+    data(){
+        return {
+          NavigatorPrimaryMenuBar:''
+        }
+
+    },
     computed: {
       ...mapState('global', {
         primaryMenuIndex: state => state.primaryMenuIndex,
@@ -53,6 +61,12 @@
         type: Number,
         default: undefined
       }
+    },
+    mounted(){
+      if(window.ProjectConfig.layoutDirectionSlot){
+        this.NavigatorPrimaryMenuBar = window.ProjectConfig.layoutDirectionSlot.NavigatorSubMenu || '';
+      }
+
     }
   };
 </script>
@@ -81,6 +95,9 @@
     width: 76px;
     color: #fff;
     font-size: 13px;
+    div{
+       display: flex;
+    }
   }
   
   .navigator-primary-menu:hover {
