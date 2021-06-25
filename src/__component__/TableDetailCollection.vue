@@ -3670,7 +3670,9 @@
                       this.putLabelDataFromCell(val.length > 0 ? JSON.stringify(val) : '', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
                     
                       if (!ossRealtimeSave()) {
-                        DispatchEvent('childTableSaveFile', { detail: { type: 'save' } });
+                        //DispatchEvent('childTableSaveFile', { detail: { type: 'save' } });
+                         const dom = document.getElementById('actionMODIFY');
+                         dom.click();
                       }
                     }
                   }
