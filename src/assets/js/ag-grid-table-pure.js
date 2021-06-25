@@ -1258,6 +1258,9 @@ const initializeAgTable = (container, opt) => {
       let leftPoint = 0 // 左指针
       let rightPoint = Math.max(visibleColumns.length - 1, 0) // 右指针
       visibleColumns.forEach((columnObj, index) => {
+        if(index > rightPoint) {
+          return
+        }
         if (pinnedLeftColumns.includes(columnObj.colname) || columnObj.colname === 'ID') {
           // 与前面的元素交换位置，保持固定列字段在前面
           const temp = visibleColumns[leftPoint]
@@ -1321,7 +1324,12 @@ const initializeAgTable = (container, opt) => {
         // console.table(unVisibleColumns.map(d => ({ name: d.name, colname: d.colname })));
         api.setColumnDefs(transformColumnDefs(visibleColumns.concat(unVisibleColumns)));
       } else {
-        api.setColumnDefs(transformColumnDefs(data));
+        const columns = transformColumnDefs(data)
+        // 实现扩展属性配的固定列位置不变。手动添加的固定列只能追加在已有固定列后面
+        if (options.datas && options.datas.pinnedColumns) {
+          _sortPinnedColumns(columns)
+        }
+        api.setColumnDefs(columns);
       }
 
       // 自适应所有列宽
