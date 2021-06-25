@@ -10,4 +10,3 @@ dist/
 *.tgz
 burgeon-r3-*/
 *.log
-package-lock.json
