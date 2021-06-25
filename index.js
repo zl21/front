@@ -34,6 +34,14 @@ import './src/assets/css/loading.css';
 import './src/assets/css/custom-ext.less';
 import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
 
+// import jflowPlugin,  { components } from '@syman/jflow-plugin';
+// import '@syman/jflow-plugin/dist/jflowPlugin.min.css'
+
+// Vue.use(jflowPlugin, {
+//   changePattern: true, // 控制待办列表转派的选择模式 true为单选,false为多选
+//   gateway: null  //jflow网关配置
+// });
+
 // 全局指令
 import inputNumber from './src/directive/inputNumber';
 

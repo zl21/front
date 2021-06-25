@@ -379,10 +379,10 @@
           
           if (result.code === 0) {
             self.messagePanel.list = self.messagePanel.list.concat(result.datas.row);
-            console.log(result, self.messagePanel.list);
-
             self.messagePanel.start = result.datas.start + result.datas.rowCount;
             self.messagePanel.total = result.datas.totalRowCount;
+            // 更新消息
+            this.updateTaskMessageCount(self.messagePanel.total);
           //            self.panel.start = result.start
           }
         });

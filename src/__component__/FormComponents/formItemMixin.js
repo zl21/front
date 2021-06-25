@@ -6,7 +6,7 @@
   // 设置字段静态规则
   import setAttributes from '../ExtendedAttributes/setAttributes';
   // 清除字段
-  import {ClearRefcolValue} from '../ExtendedAttributes/common.js';
+  import {clearFormRefcolval} from '../ExtendedAttributes/common.js';
   //  多字段赋值
   import {formRequestInit} from '../ExtendedAttributes/formRequest';
   // 联动计算
@@ -35,7 +35,6 @@ export default {
           if(this.items.webconf && this.items.webconf.formRequest){
             // 多字段赋值、配置在来源字段  字段B、C、D根据A字段查询结果赋值
             // 默认值时候不走
-            console.log(val,this.items.name,this.actived);
             if(this.actived){
               formRequestInit(this,this.items.webconf.formRequest);
             }else if(this.items.webconf.formRequest.copy){
@@ -56,28 +55,12 @@ export default {
            filtercolval(this,this.items.webconf.filtercolval)
          }
 
-          //  清空字段
-          if(this.items._linkFormMap){
-            // refcolval
-            let _linkFormMap = this.items._linkFormMap;
-            if(_linkFormMap.refcolval){
-              // 清除目标字段的值
-              ClearRefcolValue(this,_linkFormMap.refcolval);
-            }
-            if(_linkFormMap.refcolvalArray){
-              // 清除目标字段的值
-              ClearRefcolValue(this,_linkFormMap.refcolvalArray);
-            }
-            if(_linkFormMap.refcolval_custom){
-              // 清除目标字段的值
-              ClearRefcolValue(this,_linkFormMap.refcolval_custom);
-            }
-            if(_linkFormMap.filtercolval){
-              // 清除目标字段的值
-             // ClearRefcolValue(this,_linkFormMap.filtercolval);
-              // resetFiltercolval(this,_linkFormMap.filtercolval)
-            }
-          }
+          //  清空字段refcolval
+          clearFormRefcolval(this);
+          
+        }else if(this.items.Query){
+          // 清除标准列表的数据
+          clearFormRefcolval(this)
         }
       }
     }

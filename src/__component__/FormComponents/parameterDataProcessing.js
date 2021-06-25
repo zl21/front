@@ -165,12 +165,16 @@ export default class ParameterDataProcessing {
             // default值为-1，没有默认值
             // default值为0，查询当天
             // default值为2，查询近2天
-            arr = [
-              `${new Date().setNewFormt(new Date()
-                .minusDays(Number(this.item.daterange))
-                .toIsoDateString(), '-', '/')} 00:00:00`,
-              `${new Date().setNewFormt(new Date().toIsoDateString(), '-', '/')} 23:59:59`
-            ];
+            if(this.value){
+              arr = this.value;
+            }else{
+              arr = [
+                `${new Date().setNewFormt(new Date()
+                  .minusDays(Number(this.item.daterange))
+                  .toIsoDateString(), '-', '/')} 00:00:00`,
+                `${new Date().setNewFormt(new Date().toIsoDateString(), '-', '/')} 23:59:59`
+              ];
+            }
           } 
           if(this.item.customDefault) {
             const format = 'yyyy/MM/dd hh:mm:ss'
@@ -255,7 +259,7 @@ export default class ParameterDataProcessing {
           }
         ]
       }else{
-        if (['mrp', 'drp', 'pop', 'mop'].includes(fkobj) && (this.item.refobjid && this.item.refobjid != '-1')) {
+        if (['mrp', 'drp', 'pop', 'mop'].includes(fkobj) && (this.item.refobjid && this.item.refobjid != '-1' && this.item.refobjid!='0')) {
           let arr = []
           // 多选change
           const refobjid = (this.item.refobjid.toString() || '').split(',') || [];

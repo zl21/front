@@ -280,3 +280,8 @@ export default {
   line-height: 0px;
 }
 </style>
+<style lang="less">
+ .ark-modal-body{
+   overflow: auto;
+ }
+</style>

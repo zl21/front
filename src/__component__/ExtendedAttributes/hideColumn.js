@@ -74,6 +74,8 @@ function HiddenFields(tableName){
         if(temp.occupied === true){
           // 只是不可见,但是存在
           formItem.show = true 
+          formItem.show_occupied = true;
+          // 兼容隐藏是校验
           let dom = document.querySelector(`.R3masterForm #${formItem.colname}`);
           dom.style.display = "block";
         }
@@ -81,6 +83,8 @@ function HiddenFields(tableName){
         // console.log('隐藏的字段',item.source)
         if(temp.occupied === true){
           // 只是不可见,但是存在
+          formItem.show_occupied = false;
+           // 兼容隐藏是校验
           formItem.show = true 
           let dom = document.querySelector(`.R3masterForm #${formItem.colname}`);
           dom.style.display="none";
