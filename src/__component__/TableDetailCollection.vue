@@ -1592,7 +1592,7 @@
               default: () => h('div', {
                 style: {},
                 domProps: {
-                  innerHTML: `<i class="iconfont iconios-information-circle-outline" style="color: orangered; font-size: 13px"></i> <span>${params.column.name}</span>`
+                  innerHTML: `<span>${params.column.name}</span> <i class="iconfont iconios-information-circle-outline" style="color: orangered; font-size: 13px"></i>`
                 }
               }),
               content: () => h('div', {

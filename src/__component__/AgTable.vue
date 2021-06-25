@@ -82,6 +82,7 @@
   import agTable from '../assets/js/ag-grid-table-pure';
   import CommonTable from './CommonTable.vue';
   import { floatingFilter } from '../constants/global';
+  import { getPinnedColumns } from '../__utils__/tableMethods'
 
   export default {
     name: 'AgTable',
@@ -242,17 +243,17 @@
       }
     },
     watch: {
-      userConfigForAgTable(val) {
-        if (!this.isCommonTable && !this.isBig) {
-          const { agGridTableContainer } = this.$refs;
-          if (agGridTableContainer.agTable) {
-            agGridTableContainer.agTable.dealWithPinnedColumns(
-              true,
-              val.fixedColumn || ''
-            );
-          }
-        }
-      },
+      // userConfigForAgTable(val) {
+      //   if (!this.isCommonTable && !this.isBig) {
+      //     const { agGridTableContainer } = this.$refs;
+      //     if (agGridTableContainer.agTable) {
+      //       agGridTableContainer.agTable.dealWithPinnedColumns(
+      //         true,
+      //         val.fixedColumn || ''
+      //       );
+      //     }
+      //   }
+      // },
       datas(val) {
         if (!this.isCommonTable && !this.isBig) {
           this.agGridTable(val.tabth, val.row, val);
@@ -261,7 +262,7 @@
             if (agGridTableContainer && agGridTableContainer.agTable) {
               agGridTableContainer.agTable.fixContainerHeight();
               agGridTableContainer.agTable.emptyAllFilters();
-              agGridTableContainer.agTable.dealWithPinnedColumns(true, val.fixedColumn || '');
+              // agGridTableContainer.agTable.dealWithPinnedColumns(true, val.fixedColumn || '');
               if(this.$route.query.isBack) {
                 this.setTableSelected();
               }
@@ -288,6 +289,41 @@
           }
         }
         return result;
+      },
+
+      // 处理列数据
+      processColumns(datas) {
+        // 所有的固定列为 扩展属性固定列和用户固定列的集合
+        let columns = []
+        const { pinnedPosition, pinnedColumns } = datas
+        const { pinnedLeftColumns:webconfLeft, pinnedRightColumns:webconfRight } = getPinnedColumns(pinnedColumns)
+        const { pinnedLeftColumns:userLeft, pinnedRightColumns:userRight } = getPinnedColumns(pinnedPosition)
+
+        // 获取最终的固定列
+        const pinnedLeftColumns = [...new Set(userLeft.concat(webconfLeft))]
+        const pinnedRightColumns = [...new Set(userRight.concat(webconfRight))]
+
+        columns = datas.tabth.map(item => {
+          // 固定左侧列
+          if(pinnedLeftColumns.includes(item.colname)) {
+            item.pinned = 'left'
+            // 扩展属性里配置的固定列
+            if(webconfLeft.includes(item.colname)) {
+              item.suppressMovable = true // 禁止拖拽移动
+              item.suppressMenu = true // 禁止表头工具菜单
+            }
+          }
+          // 固定右侧列
+          if(pinnedRightColumns.includes(item.colname)) {
+            item.pinned = 'right'
+            if(webconfRight.includes(item.colname)) {
+              item.suppressMovable = true
+              item.suppressMenu = true
+            }
+          }
+          return item
+        }) 
+        return columns
       },
 
       agGridTable(th, row, data) { // agGrid
@@ -322,6 +358,12 @@
         if (!floatingFilter()) {
           isOpenfloatingFilter = false;
         }
+
+        // 处理列数据
+        if(datas.tabth && Array.isArray(datas.tabth)) {
+          datas.tabth = this.processColumns(datas)
+        }
+
         // selectIdArr
         const agTableRes = agTable(this.$refs.agGridTableContainer, {
           cssStatus: self.legend, // 颜色配置信息

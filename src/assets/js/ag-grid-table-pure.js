@@ -423,7 +423,7 @@ customHeader.prototype.init = function (params) {
     </span>
     <div ref="eLabel" class="ag-header-cell-label" role="presentation" style="${enableMenu ? '' : 'width: 100%;'}">
         <span ref="eText" class="ag-header-cell-text" role="columnheader">
-          ${params.column.colDef.comment ? `<i class="iconfont comment iconios-information-circle-outline ${cssFeatures.hover}" style="color: orangered"></i> ` : ''} ${displayName}
+        ${displayName} ${params.column.colDef.comment ? `<i class="iconfont comment iconios-information-circle-outline ${cssFeatures.hover}" style="color: orangered"></i> ` : ''} 
         </span>
         <span ref="eSortOrder" class="ag-header-icon ag-sort-order" ></span>
         <span ref="eSortAsc" class="ag-header-icon ag-sort-ascending-icon ${params.column.colDef.isorder && params.column.colDef.sort === 'asc' ? '' : 'ag-hidden'}" >
@@ -696,18 +696,18 @@ const initializeAgTable = (container, opt) => {
       };
     };
 
-    const getPinnedState = (colId) => {
-      const { pinnedLeft, pinnedRight } = JSON.parse(decodeURI(agGridTableContainer.getAttribute('data-pinned-status'))) || {
-        pinnedLeft: [],
-        pinnedRight: [],
-      };
-      if (pinnedLeft.indexOf(colId) > -1) {
-        return 'left';
-      } if (pinnedRight.indexOf(colId) > -1) {
-        return 'right';
-      }
-      return null;
-    };
+    // const getPinnedState = (colId) => {
+    //   const { pinnedLeft, pinnedRight } = JSON.parse(decodeURI(agGridTableContainer.getAttribute('data-pinned-status'))) || {
+    //     pinnedLeft: [],
+    //     pinnedRight: [],
+    //   };
+    //   if (pinnedLeft.indexOf(colId) > -1) {
+    //     return 'left';
+    //   } if (pinnedRight.indexOf(colId) > -1) {
+    //     return 'right';
+    //   }
+    //   return null;
+    // };
 
     // 处理列数据
     const transformColumnDefs = (data) => {
@@ -753,7 +753,7 @@ const initializeAgTable = (container, opt) => {
         item.headerName = d.colname === 'ID' ? '序号' : d.name || '未定义';
         item.lockVisible = d.colname === 'ID'; // 锁定序号列的隐藏功能
         item.suppressToolPanel = d.colname === 'ID'; // 锁定ID列工具栏操作能力
-        item.pinned = d.colname === 'ID' ? 'left' : getPinnedState(d.colname);
+        item.pinned = d.pinned || (d.colname === 'ID' ? 'left' : d.pinned);
         item.maxWidth = d.colname === 'ID' ? 80 : null; // 为ID列预设最大宽度
         item.width = d.webconf && d.webconf.standard_width ? Number(d.webconf.standard_width) : null; // 为ID列预设宽度
         // 此处加判断条件，是因为autoSizeAllColumns()方法会让width失效，但是如果设置了最小和最大宽，那么无论使用任何API按钮，都无法限制列的大小
@@ -763,7 +763,7 @@ const initializeAgTable = (container, opt) => {
         } 
 
         item.suppressResize = d.colname === 'ID'; // 禁止拖动ID列边缘以改变其列宽
-        item.suppressMovable = d.colname === 'ID'; // 禁用ID列拖拽
+        item.suppressMovable = d.suppressMovable || d.colname === 'ID'; // 禁用ID列拖拽
         item.lockPinned = true; // 锁定序号列的pinned功能
         item.lockPosition = d.colanme === 'ID'; //  锁定ID列的位置
         item.headerComponent = options && options.useDefaultHeader ? null : 'customHeader'; // 如果外界传值useDefaultHeader = true，则不适用headerComponent
@@ -784,7 +784,7 @@ const initializeAgTable = (container, opt) => {
         item.sortingOrder = item.isorder ? ['asc', 'desc'] : [null]; // 处理每列默认的单击后的排序顺序
         item.unSortIcon = item.isorder; // 设置未排序图表Icon
         item.hide = hideColumn.indexOf(item.colname) > -1;
-        item.suppressMenu = d.colname === 'ID'; // 是否禁用每一列的菜单选择
+        item.suppressMenu = d.suppressMenu || d.colname === 'ID'; // 是否禁用每一列的菜单选择
         if (d.agfilter === 'FUZZY') {
           item.filter = 'agTextColumnFilter';
         }
@@ -979,7 +979,7 @@ const initializeAgTable = (container, opt) => {
                   // 向后台发送API，清除所有隐藏列
                   options.onColumnVisibleChanged('');
                   agTable.preventPinnedEmit = true;
-                  agTable.dealWithPinnedColumns();
+                  // agTable.dealWithPinnedColumns();
                   setTimeout(function() {
                     agTable.preventPinnedEmit = false;
                   }, 100);
@@ -1093,7 +1093,7 @@ const initializeAgTable = (container, opt) => {
           document.body.appendChild(tooltipTopBox);
           // 移除ag-tool-panel
           agGridDiv.querySelector('.ag-tool-panel').remove();
-          agTable.dealWithPinnedColumns(true);
+          // agTable.dealWithPinnedColumns(true);
         }, // 当表格渲染好之后，触发onGridReady
         // onBodyScroll(params) {
         //   const { columnApi, direction } = params;
@@ -1153,10 +1153,10 @@ const initializeAgTable = (container, opt) => {
         onColumnPinned(params) {
           const pinnedLeft = params.columnApi.getDisplayedLeftColumns().map(d => d.colId);
           const pinnedRight = params.columnApi.getDisplayedRightColumns().map(d => d.colId);
-          agGridTableContainer.setAttribute('data-pinned-status', encodeURI(JSON.stringify({
-            pinnedLeft,
-            pinnedRight,
-          })));
+          // agGridTableContainer.setAttribute('data-pinned-status', encodeURI(JSON.stringify({
+          //   pinnedLeft,
+          //   pinnedRight,
+          // })));
 
           //  取消固定列的时候将该固定放到固定位置
           if (typeof options.onColumnPinned === 'function') {
@@ -1233,6 +1233,51 @@ const initializeAgTable = (container, opt) => {
       }
     };
 
+    // 获取固定列
+    function _getPinnedColumns(pinnedPosition) {
+      let pinnedLeftColumns = []
+      let pinnedRightColumns = []
+
+      if (pinnedPosition) {
+        // 举例：接口返回数据值为 ID, KEY | DATE, NUM ，其中 | 左侧的数据代表固定在右边， | 右侧的数据代表固定在右边
+        const pinnedColumns = pinnedPosition.split('|');
+        pinnedLeftColumns = pinnedColumns[0].split(',');
+        if (pinnedColumns[1]) {
+          pinnedRightColumns = pinnedColumns[1].split(',');
+        }
+      }
+      return {
+        pinnedLeftColumns,
+        pinnedRightColumns
+      }
+    }
+
+    // 对固定列进行排序
+    function _sortPinnedColumns(visibleColumns) {
+      const { pinnedLeftColumns, pinnedRightColumns } = _getPinnedColumns(options.datas.pinnedColumns)
+      let leftPoint = 0 // 左指针
+      let rightPoint = Math.max(visibleColumns.length - 1, 0) // 右指针
+      visibleColumns.forEach((columnObj, index) => {
+        if(index > rightPoint) {
+          return
+        }
+        if (pinnedLeftColumns.includes(columnObj.colname) || columnObj.colname === 'ID') {
+          // 与前面的元素交换位置，保持固定列字段在前面
+          const temp = visibleColumns[leftPoint]
+          visibleColumns[leftPoint] = columnObj
+          visibleColumns[index] = temp
+          leftPoint++
+        }
+        if (pinnedRightColumns.includes(columnObj.colname)) {
+          // 与前面的元素交换位置，保持固定列字段在前面
+          const temp = visibleColumns[rightPoint]
+          visibleColumns[rightPoint] = columnObj
+          visibleColumns[index] = temp
+          rightPoint--
+        }
+      })
+    }
+
     // 设置columnDefs
     agTable.setCols = (data) => {
       agTable.colPosition = '';
@@ -1269,12 +1314,22 @@ const initializeAgTable = (container, opt) => {
           }
         });
 
+        // 实现扩展属性配的固定列位置不变。手动添加的固定列只能追加在已有固定列后面
+        if (options.datas && options.datas.pinnedColumns) {
+          _sortPinnedColumns(visibleColumns)
+        }
+
         // console.table(positionColumns.map(colname => ({ name: columnMap[colname].name, colname })));
         // console.table(visibleColumns.map(d => ({ name: d.name, colname: d.colname })));
         // console.table(unVisibleColumns.map(d => ({ name: d.name, colname: d.colname })));
         api.setColumnDefs(transformColumnDefs(visibleColumns.concat(unVisibleColumns)));
       } else {
-        api.setColumnDefs(transformColumnDefs(data));
+        const columns = transformColumnDefs(data)
+        // 实现扩展属性配的固定列位置不变。手动添加的固定列只能追加在已有固定列后面
+        if (options.datas && options.datas.pinnedColumns) {
+          _sortPinnedColumns(columns)
+        }
+        api.setColumnDefs(columns);
       }
 
       // 自适应所有列宽
@@ -1282,26 +1337,26 @@ const initializeAgTable = (container, opt) => {
       return agTable;
     };
 
-    // 处理pinned columns
-    agTable.dealWithPinnedColumns = (preventPinnedEmit, fixedColumns) => {
-      if (preventPinnedEmit) {
-        agTable.preventPinnedEmit = true;
-        setTimeout(() => {
-          agTable.preventPinnedEmit = false;
-        }, 400);
-      }
-      const options = agTable.customizeOptions;
-      const pinnedPosition = fixedColumns || options.datas.pinnedPosition;
-      if (pinnedPosition !== null && pinnedPosition !== undefined) {
-        const pinnedColumns = pinnedPosition.split('|');
-        const pinnedLeftColumns = pinnedColumns[0].split(',');
-        if (pinnedColumns[1] != null) {
-          const pinnedRightColumns = pinnedColumns[1].split(',');
-          columnApi.setColumnsPinned(pinnedRightColumns, 'right');
-        }
-        columnApi.setColumnsPinned(pinnedLeftColumns, 'left');
-      }
-    };
+    // // 处理pinned columns
+    // agTable.dealWithPinnedColumns = (preventPinnedEmit, fixedColumns) => {
+    //   if (preventPinnedEmit) {
+    //     agTable.preventPinnedEmit = true;
+    //     setTimeout(() => {
+    //       agTable.preventPinnedEmit = false;
+    //     }, 400);
+    //   }
+    //   const options = agTable.customizeOptions;
+    //   const pinnedPosition = fixedColumns || options.datas.pinnedPosition;
+    //   if (pinnedPosition !== null && pinnedPosition !== undefined) {
+    //     const pinnedColumns = pinnedPosition.split('|');
+    //     const pinnedLeftColumns = pinnedColumns[0].split(',');
+    //     if (pinnedColumns[1] != null) {
+    //       const pinnedRightColumns = pinnedColumns[1].split(',');
+    //       columnApi.setColumnsPinned(pinnedRightColumns, 'right');
+    //     }
+    //     columnApi.setColumnsPinned(pinnedLeftColumns, 'left');
+    //   }
+    // };
 
     // 设置rowData
     agTable.setRows = (data) => {
