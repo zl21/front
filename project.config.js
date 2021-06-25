@@ -72,6 +72,9 @@ module.exports = {
   functionPowerRequestURL: '', // 功能权限获取检索项数据接口名称
   cbs: undefined, // 框架回调，形如 { loginCb: function() {} }
   layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
+  layoutDirectionSlot:{  // 模板渲染
+    // NavigatorSubMenu:require('./src/demo/NavigatorSubMenu.vue').default  // 模板渲染
+  },
   backDashboardRoute: [], // 配置刷新浏览器回到Dashboard界面
   custommizedRequestURL: {
     
@@ -109,7 +112,7 @@ module.exports = {
   filterUrlForNetworkScript: () => true, // 框架默认true,
   listDefaultColumn: 4,
   setComponentsProps: (type, props) => {  // 框架自定义表单配置
-    // // 列表支持联动查询
+    // 列表支持联动查询
     // if (type === 'OBJ_FK') {
     //   if(props.PropsData && (props.PropsData.fkobj.searchmodel ==='mrp' || props.PropsData.fkobj.searchmodel ==='drp')){
     //     props.PropsData.Query = true;

@@ -33,6 +33,8 @@
   import { mapState } from 'vuex';
   import RenderComponent from './RenderComponent';
   import ParameterDataProcessing from './parameterDataProcessing';
+    import store from '../../__config__/store.config';
+
   import {
   Version
 } from '../../constants/global';
@@ -47,6 +49,11 @@
       className() {
         return `${this.dowClass === false ? ' iconfont  iconios-arrow-down' : 'iconfont  iconios-arrow-down icon-xiadown'}`;
       }
+    },
+    beforeCreate(){
+      if(!this.$store){
+          this.$store =store 
+      } 
     },
     props: {
       id: {

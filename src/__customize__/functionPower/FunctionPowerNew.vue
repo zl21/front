@@ -41,6 +41,7 @@
                   ref="tree"
                   :tree-datas="treeConfigData"
                   @menuTreeChange="menuTreeChange"
+                  @treeSearch="treeSearch"
           />
         </div>
         <!--<ul class="menuContainer">-->
@@ -590,16 +591,19 @@
         this.menuPromise = new Promise((resolve, reject) => this.getMenuData(resolve, reject));
         this.treePromise = new Promise((resolve, reject) => this.getTreeData(resolve, reject));
         Promise.all([this.menuPromise, this.treePromise]).then(() => {
-          this.groupId && this.getTableData()
+          this.groupId && this.getTableData();
         });
       }, // 刷新数据
       refreshButtonClick() {
         if (this.checkNoSaveData('refresh')) {
         } else {
           this.refresh();
+          this.selectFirstOnce();
         }
       }, // 刷新按钮
       checkNoSaveData(type) {
+        // console.log(type)
+        // console.log('checkNoSaveData', this.groupId)
         this.getSaveData();
         if (this.tableSaveData.length > 0) {
           this.$Modal.fcWarning({
@@ -612,7 +616,11 @@
             },
             onCancel: () => {
               if (type === 'refresh') {
+                this.tableSaveData = [];
+                this.pageInit = false;
                 this.refresh();
+                setTimeout(() => this.selectFirstOnce(), 1000);
+
               } else {
                 this.groupId = this.newGroupId;
                 this.adSubsystemId = this.newAdSubsystemId;
@@ -678,24 +686,28 @@
       searchInputChange(e) {
         this.menuTreeQuery = e.target.value;
       }, // 检索输入框值改变
-      menuTreeChange(val, item) {
+      menuTreeChange(val, item, flag) {
+        // console.log('item-menuTreeChange', item)
+        // console.log('flag-menuTreeChange', flag)
         this.oldMenuTreeObj = JSON.parse(JSON.stringify(this.newMenuTreeObj));
         this.newMenuTreeObj = JSON.parse(JSON.stringify(item));
         // if (val.length === 0) {
         //   this.$refs.menuTree.handleSelect(item.nodeKey);
         // }
-        this.newGroupId = item;
+        this.newGroupId = flag ? item : '';
+        this.groupId = flag ? item : '';
         if (!this.isSaveError) {
           if (this.checkNoSaveData('menuTree')) {
           } else {
-            this.spinShow = true;
-            this.groupId = item;
-            const treePromise = new Promise((resolve, reject) => {
-              this.getTreeData(resolve, reject);
-            });
-            treePromise.then(() => {
-              this.getTableData();
-            });
+            if (flag) {
+              this.spinShow = true;
+              const treePromise = new Promise((resolve, reject) => {
+                this.getTreeData(resolve, reject);
+              });
+              treePromise.then(() => {
+                this.getTableData();
+              });
+            }
           }
         }
       }, // 左侧树点击
@@ -781,10 +793,25 @@
       },
       selectFirstOnce() {
         var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+        // console.log('this.groupId', this.groupId)
+        // console.log('this.pageInit', this.pageInit)
         var nodes = treeObj.getNodes();
+        if (this.pageInit && nodes.length > 0 && nodes[0].ID === this.groupId) return false;
+        // console.log('not return')
         if (nodes.length > 0) {
           treeObj.selectNode(nodes[0]);
+          treeObj.setting.callback.onClick('','treeDemo',nodes[0]);//手动触发onClick事件
+          // treeObj.checkNode(nodes[0], true, true, true);
           this.pageInit = true;
+        }
+      },
+      resetTree() {
+        this.selectFirstOnce()
+      },
+      treeSearch(e) {
+        if (!e) {
+          this.pageInit = false;
+          this.refreshButtonClick();
         }
       },
 
@@ -836,6 +863,19 @@
           return item;
         });
       }, // 重构树数据
+      checkGroupID() {
+        // console.log('this.groupId', this.groupId)
+        this.spinShow = false;
+        if (!this.groupId) {
+          this.$Modal.fcWarning({
+            mask: true,
+            title: '警告',
+            content: '无分组信息'
+          });
+          return false;
+        }
+        return true
+      },
       getTableData() {
         this.tableSaveData = []; // 清空保存的数据
         let obj = {};
@@ -853,6 +893,7 @@
             GROUP_ID: this.groupId
           };
         }
+        if(!this.checkGroupID()) return false;
         this.spinShow = true;
         functionPowerActions().queryMenuPermission({
           params: obj,
@@ -1181,7 +1222,11 @@
               this.singlePermissionId = null;
               this.multiplePermissionId = null;
               this.copyType = '';
-              this.getTableData();
+              if (this.groupId) {
+                this.getTableData();
+              } else {
+                return this.refreshButtonClick();
+              }
               this.$Message.success({
                 content: res.data.message
               });
@@ -1655,6 +1700,7 @@
             GROUPID: this.groupId,
             CP_C_GROUPPERM: this.tableSaveData
           };
+          if(!this.checkGroupID()) return false;
           functionPowerActions().savePermission({
             params: obj,
             success: (res) => {

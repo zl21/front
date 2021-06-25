@@ -1,6 +1,6 @@
 {
     "name": "@syman/burgeon-r3",
-    "version": "1.4.80",
+    "version": "1.5.1",
     "description": "A Project for R3 Erp.",
     "main": "r3.publish/r3.min.js",
     "files": [
@@ -17,7 +17,6 @@
         "build:publish": "cross-env BUILD_ENV=publish webpack --color --progress --config webpack.publish.js  --env.NODE_ENV=production",
         "zip": "node doZip.js",
         "deploy": "npm publish && node dingtalk.js"
-
     },
     "repository": {
         "type": "git",
@@ -69,7 +68,7 @@
     "dependencies": {
         "@babel/polyfill": "^7.10.4",
         "@syman/ark-ui": "^1.1.36",
-        "@syman/ark-ui-bcl": "0.1.8",
+        "@syman/ark-ui-bcl": "0.1.15",
         "@syman/jflow-plugin": "^1.1.9",
         "ag-grid": "^17.1.1",
         "ag-grid-enterprise": "^17.1.1",
