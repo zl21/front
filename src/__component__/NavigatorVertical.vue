@@ -21,6 +21,7 @@
         >
       </div>
     </div>
+  
     <VerticalMenu />
     <!-- <div class="middle">
       <div style="">
@@ -533,11 +534,22 @@
   .NavigatorVertical{
      .navigator-sub-menu{
       top:60px!important;
-      left: 220px!important;
+      // left: 220px!important;
       border-bottom:none!important;
       width: calc(100% - 190px - 40px);
       box-shadow:1px 2px 6px 0px rgba(190,189,189,0.3)!important;
+       &:before {
+        content: "";
+        width: 100%;
+        height: 100%;
+        display: block;
+        z-index: -4;
+        background: rgba(0, 0, 0, 0);
+        position: fixed;
+      }
     }
+   
+
 
   }
  

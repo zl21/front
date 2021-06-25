@@ -260,7 +260,10 @@ export default (router) => {
       } else {
         // [返回][新增]动作需要清除当前明细界面模块的keepAlive（且to与form不相同）
         const includesKeepAliveLists = keepAliveLists.includes(fromKeepAliveModuleName);
-        if ((isBack && to.params.tableName === from.params.tableName && includesKeepAliveLists) || (paramItemId === 'New' && fromParamItemId !== 'undefined' && paramTableId === fromParamTableId && includesKeepAliveLists)) {
+        // customizedModuleName, pluginModuleName, linkModuleName
+        let fromTableName = from.params.tableName ||from.params.customizedModuleName;
+        let toTableName =  to.params.tableName || to.params.customizedModuleName;
+        if ((isBack && toTableName === fromTableName && includesKeepAliveLists) || (paramItemId === 'New' && fromParamItemId !== 'undefined' && paramTableId === fromParamTableId && includesKeepAliveLists)) {
           commit('global/decreasekeepAliveLists', fromKeepAliveModuleName);
         }
         // Step One: 处理菜单Tab页签的显示逻辑。

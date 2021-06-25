@@ -123,9 +123,12 @@
           :render-params="renderParams"
           :options="{
             suppressMovableColumns: true,
-            afterColumnMoved: afterColumnMoved,
+            agColumnMoved,
             ...agGridOptions,
-            datas: dataSource,
+            datas: {
+              ...dataSource,
+              pinnedColumns: webConfSingle.pinnedColumns
+            }
           }"
           @ag-selection-change="tableSelectedChange"
           @ag-sort-change="tableSortChange"
@@ -204,6 +207,7 @@
   import getUserenv from '../__utils__/getUserenv';
   import createModal from './PreviewPicture/index';
   import TableTemplate from './TableDetailCollectionslot';
+  import { getPinnedColumns } from '../__utils__/tableMethods'
 
   Vue.component('ComAttachFilter', ComAttachFilter);
   Vue.component('TableDocFile', Docfile);
@@ -284,6 +288,7 @@
           check: { tag: 'Checkbox', event: this.checkboxRender },
           select: { tag: 'Select', event: this.selectRender },
           radioGroup: { tag: 'Select', event: this.selectRender },
+          checkboxgroup: { tag: 'Select', event: this.mutiSelectRender },
           drp: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender },
           mrp: { tag: 'DropMultiSelectFilter', event: this.dropMultiSelectFilterRender },
           mop: { tag: 'ComAttachFilter', event: this.comAttachFilterRender },
@@ -709,7 +714,7 @@
       },
 
       // ag表格重置列位置的回调
-      afterColumnMoved(cols) {
+      agColumnMoved(cols) {
         const { tableId } = this[INSTANCE_ROUTE_QUERY];
         this.setColPosition({
           tableid: tableId,
@@ -743,17 +748,33 @@
         if (!columns) {
           return [];
         }
+
+        const { pinnedLeftColumns, pinnedRightColumns } = getPinnedColumns(this.webConfSingle.pinnedColumns)
+
         // 整合表头数据
         const newColumns = columns
-          .map((ele) => {
+          .map((ele, index) => {
             const param = {
               title: ele.name,
               key: ele.colname,
               field: ele.colname,
               align: 'center',
               tdAlign: ele.type === 'NUMBER' ? 'right' : 'center',
-              isagfilter: false // 关闭过滤功能
+              isagfilter: false, // 关闭过滤功能
+              _index: index
             };
+
+            // 设置固定列
+            if(pinnedLeftColumns.includes(ele.colname)) {
+              param.pinned = 'left'
+              param.suppressMovable = true
+              param.suppressMenu = true
+            }
+            if(pinnedRightColumns.includes(ele.colname)) {
+              param.pinned = 'right'
+              param.suppressMovable = true
+              param.suppressMenu = true
+            }
 
             // 序号按行索引渲染
             if (ele.colname === EXCEPT_COLUMN_NAME) {
@@ -912,14 +933,7 @@
           const cell = {
             COLLECTION_INDEX: '<div class="text-center">合计</div>'
           };
-          // const needSubtotalList = this.columns.filter(ele => ele.issubtotal);
-          // needSubtotalList.map((ele) => {
-          //   const needSubtotalDatas = [];
-          //   this.tabledata.reduce((a, c) => needSubtotalDatas.push(c[ele.colname]), []); //
-          //   const totalNumber = needSubtotalDatas.reduce((a, c) => Number(a) + Number(c), []);
-          //   cell[ele.colname] = `${totalNumber}`;
-          //   return ele;
-          // });
+
           if (this.dataSource.subtotalRow && Object.keys(this.dataSource.subtotalRow).length > 0) {
             Object.keys(this.dataSource.subtotalRow).forEach((key) => {
               cell[key] = `<div class="text-right">${this.dataSource.subtotalRow[key]}</div>`;
@@ -927,7 +941,7 @@
           }
           total.push(cell);
         }
-        // if (this.isHorizontal) {
+
         if (this.dataSource.isFullRangeSubTotalEnabled) {
           // 总计
           const cell = {
@@ -1676,13 +1690,14 @@
         // 整合表头数据
         const columns = data
           .filter(ele => ele.name !== EXCEPT_COLUMN_NAME)
-          .map((ele) => {
+          .map((ele, index) => {
             const param = {
               title: ele.name,
               key: ele.colname,
               align: 'center',
               tdAlign: ele.type === 'NUMBER' ? 'right' : 'center',
-              width: ele.webconf && ele.webconf.standard_width
+              width: ele.webconf && ele.webconf.standard_width,
+              _index: index
             };
             
             if (ele.comment) {
@@ -1744,7 +1759,7 @@
               default: () => h('div', {
                 style: {},
                 domProps: {
-                  innerHTML: `<i class="iconfont iconios-information-circle-outline" style="color: orangered; font-size: 13px"></i> <span>${params.column.name}</span>`
+                  innerHTML: `<span>${params.column.name}</span><i class="iconfont iconios-information-circle-outline" style="color: orangered; font-size: 13px"></i> `
                 }
               }),
               content: () => h('div', {
@@ -1964,6 +1979,40 @@
           })],);
         };
       },
+
+      // 获取联动计算结果
+      getComputedValue(currentRowData, targetColObj, dynamicforcompute, params) {
+        let expression = dynamicforcompute.express 
+        Object.values(dynamicforcompute.refcolumns).forEach(colname => {
+          expression = expression.replace(new RegExp(colname, 'g'), currentRowData[colname].val || 0)
+        })
+
+        let newTargetValue
+        if(targetColObj.scale || targetColObj.scale === 0) {
+          newTargetValue = eval(expression).toFixed(targetColObj.scale)
+        } else {
+          newTargetValue = eval(expression)
+        }
+
+        // 手动更新input的值。如果通过响应式更新会导致input不能一直输入，此外ag只提供更新行的api，不能精确到dan
+        // this.tabledata  里的值不要改，会影响普通表格的性能。而且this.tabledata在计算中用不到，不更新也没事
+        this.copyDataSource.row[params.index][dynamicforcompute.computecolumn].val = newTargetValue
+        let colIndex // 列索引
+        if(this.useAgGrid) {
+          colIndex = targetColObj._index - 1
+        } else {
+          colIndex = targetColObj._index + 1
+        }
+        const dom = document.querySelector(`#ag-${params.index}-${colIndex}`)
+        
+        if(dom) {
+          const input = dom.querySelector('input')
+          input.value = newTargetValue
+        }
+        
+        return newTargetValue
+      },
+
       inputRender(cellData, tag) {
         // 输入框
         return (h, params) => {
@@ -1977,9 +2026,8 @@
                 'input-align-center': cellData.type !== 'NUMBER'
               },
               domProps: {
-                id: `${params.index}-${params.column._index - 1}`,
-                title: this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname].val : ''
-
+                id: `ag-${params.index}-${params.column._index - 1}`,
+                title: this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname].val : '',
               },
               props: {
                 // value: this.afterSendData[this.tableName] && this.afterSendData[this.tableName][params.index] && this.afterSendData[this.tableName][params.index][cellData.colname] !== undefined ? this.afterSendData[this.tableName][params.index][cellData.colname] : params.row[cellData.colname],
@@ -1994,9 +2042,31 @@
               },
               on: {
                 'on-change': (event, data) => {
-                  this.copyDataSource.row[params.index][cellData.colname].val = event.target.value;
-                  this.putDataFromCell(event.target.value, this.dataSource.row[params.index][cellData.colname].val, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                  this.putLabelDataFromCell(event.target.value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, this.dataSource.row[params.index][cellData.colname].val);
+                  const currentRowData = this.copyDataSource.row[params.index]
+                  currentRowData[cellData.colname].val = event.target.value;
+
+                  const oldCurrentValue = this.dataSource.row[params.index][cellData.colname].val
+                  const oldId = this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val
+ 
+                  // 是否进行联动计算
+                  if(window.ProjectConfig.computeForSubtable) {
+                    const dynamicforcompute = cellData.webconf.dynamicforcompute
+                    const oldTargetValue = this.dataSource.row[params.index][dynamicforcompute.computecolumn].val
+                    // 找到目标字段相关的信息
+                    const targetColObj = this.columns.find(colObj => colObj.colname === dynamicforcompute.computecolumn)
+
+                    // 提交变化字段
+                    this.putDataFromCell(event.target.value, oldCurrentValue, cellData.colname, oldId, params.column.type);
+                    this.putLabelDataFromCell(event.target.value, data.value, cellData.colname, oldId, oldCurrentValue);
+
+                    const newTargetValue = this.getComputedValue(currentRowData, targetColObj, dynamicforcompute, params)
+                    // 提交联动的目标字段
+                    this.putDataFromCell(newTargetValue, oldTargetValue, dynamicforcompute.computecolumn, oldId, targetColObj.type);
+                    this.putLabelDataFromCell(newTargetValue, oldTargetValue, dynamicforcompute.computecolumn, oldId, oldTargetValue); 
+                  } else {
+                    this.putDataFromCell(event.target.value, oldCurrentValue, cellData.colname, oldId, params.column.type);
+                    this.putLabelDataFromCell(event.target.value, data.value, cellData.colname, oldId, oldCurrentValue);
+                  }
                 },
                 'on-focus': (e, i) => {
                 },
@@ -2092,6 +2162,40 @@
             this.getSelectValueCombobox(h, cellData))
         ]);
       },
+
+      // 下拉多选框
+      mutiSelectRender(cellData, tag) {
+        return (h, params) => {
+          const rowData = this.dataSource.row[params.index]
+          const oldArr = rowData[cellData.colname].val.split(',')
+          const defaultValue = cellData.combobox.filter(option => oldArr.includes(option.limitdesc)).map(option => option.limitval)
+          return h('div', [
+            h(tag, {
+                style: {
+                  width: '100px'
+                },
+                props: {
+                  transfer: true,
+                  clearable: true,
+                  multiple: true,
+                  chooseAll: true,
+                  value: defaultValue
+                },
+                on: {
+                  'on-change': (event, data) => {
+                    const currentValue = event.join(',')
+                    const oldValue = cellData.combobox.filter(option => oldArr.includes(option.limitdesc)).map(option => option.limitval)
+                    this.putDataFromCell(currentValue, oldValue, cellData.colname, rowData[EXCEPT_COLUMN_NAME].val, params.column.type);
+                    const labelValue = data.values.length > 0 ? data.values[0].label : '';
+                    this.putLabelDataFromCell(labelValue, oldValue, cellData.colname, rowData[EXCEPT_COLUMN_NAME].val, currentValue);
+                  }
+                }
+              },
+              this.getSelectValueCombobox(h, cellData))
+          ])
+        };
+      },
+
       dropDownIsShowPopTip(cellData, params) {
         if (cellData.refcolval.srccol === '$OBJID$') {
           return true;
@@ -3620,7 +3724,9 @@
                       this.putLabelDataFromCell(val.length > 0 ? JSON.stringify(val) : '', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
                     
                       if (!ossRealtimeSave()) {
-                        DispatchEvent('childTableSaveFile', { detail: { type: 'save' } });
+                        //DispatchEvent('childTableSaveFile', { detail: { type: 'save' } });
+                         const dom = document.getElementById('actionMODIFY');
+                         dom.click();
                       }
                     }
                   }
@@ -3844,8 +3950,7 @@
         }
         return null;
       },
-      putDataFromCell(currentValue, oldValue, colname, IDValue, type, fkdisplay, oldFkIdValue) {
-        // 组装数据 存入store
+      putDataFromCell(currentValue, oldValue, colname, IDValue, type, fkdisplay, oldFkIdValue) {        // 组装数据 存入store
         if (!currentValue) {
           if (fkdisplay === 'mrp' || fkdisplay === 'mop') {
             currentValue = '';
@@ -3876,17 +3981,6 @@
             }
           } else if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
             delete rowDatas[0][colname];
-            // if (rowDatas && rowDatas.length === 1 && rowDatas[0].ID) {
-            //   const rowDatasIndex = this.afterSendData[this.tableName].map((ele, i) => {
-            //     if (ele[EXCEPT_COLUMN_NAME] === IDValue) {
-            //       return i;
-            //     }
-            //   })[0];
-            //   delete rowDatas[0][colname];
-            // delete rowDatas[0].ID;
-            //   this.afterSendData[this.tableName] = this.afterSendData[this.tableName].filter((item, i) => i !== rowDatasIndex);
-            //   console.log(333, this.afterSendData[this.tableName]);
-            // }
             this.afterSendData[this.tableName] = this.afterSendData[this.tableName].filter((item, i) => {
               if (item && Object.keys(item).length && Object.keys(item).length === 1 && item.ID) {
               } else {
@@ -3903,45 +3997,6 @@
             this.afterSendData[this.tableName].push(param);
           }
         }
-        // if (Version() === '1.3') {
-        //
-        // } else {
-        // if (this.afterSendData[this.tableName]) {
-        //   const rowDatas = this.afterSendData[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
-        //   if (rowDatas.length > 0) {
-        //     rowDatas[0][colname] = currentValue;
-        //   } else {
-        //     const param = {};
-        //     param[EXCEPT_COLUMN_NAME] = IDValue;
-        //     param[colname] = currentValue;
-        //     this.afterSendData[this.tableName].push(param);
-        //   }
-        // } else {
-        //   this.afterSendData[this.tableName] = [];
-        //   const param = {};
-        //   param[EXCEPT_COLUMN_NAME] = IDValue;
-        //   param[colname] = currentValue;
-        //   this.afterSendData[this.tableName].push(param);
-        // }
-
-        // console.log(currentValue, oldValue);
-        // if (this.beforeSendData[this.tableName]) {
-        //   const rowDatas = this.beforeSendData[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
-        //   if (rowDatas.length > 0) {
-        //     rowDatas[0][colname] = oldValue;
-        //   } else {
-        //     const param = {};
-        //     param[EXCEPT_COLUMN_NAME] = IDValue;
-        //     param[colname] = oldValue;
-        //     this.beforeSendData[this.tableName].push(param);
-        //   }
-        // } else {
-        //   this.beforeSendData[this.tableName] = [];
-        //   const param = {};
-        //   param[EXCEPT_COLUMN_NAME] = IDValue;
-        //   param[colname] = oldValue;
-        //   this.beforeSendData[this.tableName].push(param);
-        // }
         this.$emit(TABLE_DATA_CHANGE, this.afterSendData);
         // 表单验证
         this.verifyMessage();
@@ -3954,14 +4009,6 @@
         if (this.afterSendDataLabel[this.tableName] && this.afterSendDataLabel[this.tableName].length && this.afterSendDataLabel[this.tableName].length > 0) {
           const rowDatas = this.afterSendDataLabel[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
           oldIdValue = oldIdValue || '';
-          // if (colname === 'ISACTIVE') {
-          //   console.log(444, currentValue === '是' && (oldIdValue === 'Y' || oldIdValue === '1'));
-          //   if (currentValue === '是' && (oldIdValue === 'Y' || oldIdValue === '1')) {
-          //     oldIdValue = '是';
-          //   } else if (currentValue === '否' && (oldIdValue === 'N' || oldIdValue === '0')) {
-          //     oldIdValue = '否';
-          //   }
-          // }
           if (type === 'checkbox') { // checkbox类型
             // 有改动
             if ((currentValue !== oldIdValue || (oldValue && oldFkIdValue && Number(oldFkIdValue) !== Number(oldValue))) && (oldValue && oldIdValue && Number(oldValue) !== Number(oldIdValue))) {
@@ -3976,20 +4023,12 @@
             // 改动值相同
             } else if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
               delete rowDatas[0][colname];
-
-              // const rowDatasIndex = this.afterSendDataLabel[this.tableName].map((ele, i) => {
-              //   if (ele[EXCEPT_COLUMN_NAME] === IDValue) {
-              //     return i;
-              //   }
-              // })[0];
-              // delete rowDatas[0].ID;
               this.afterSendDataLabel[this.tableName] = this.afterSendDataLabel[this.tableName].filter((item, i) => { // 改动值相同不抛出值
                 if (item && Object.keys(item).length && Object.keys(item).length === 1 && item.ID) {
                 } else {
                   return item;
                 }
               });
-            // this.afterSendDataLabel[this.tableName] = this.afterSendDataLabel[this.tableName].filter((item, i) => i !== rowDatasIndex);
             }
           } else if (currentValue !== oldIdValue || (oldValue && oldFkIdValue && Number(oldFkIdValue) !== Number(oldValue))) { // 除checkbox类型外，有改动
             if (rowDatas.length > 0) {
@@ -4002,20 +4041,12 @@
             }
           } else if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) { // 除checkbox类型外，改动值相同
             delete rowDatas[0][colname];
-
-            // const rowDatasIndex = this.afterSendDataLabel[this.tableName].map((ele, i) => {
-            //   if (ele[EXCEPT_COLUMN_NAME] === IDValue) {
-            //     return i;
-            //   }
-            // })[0];
-            // delete rowDatas[0].ID;
             this.afterSendDataLabel[this.tableName] = this.afterSendDataLabel[this.tableName].filter((item, i) => { // 改动值相同不抛出值
               if (item && Object.keys(item).length && Object.keys(item).length === 1 && item.ID) {
               } else {
                 return item;
               }
             });
-            // this.afterSendDataLabel[this.tableName] = this.afterSendDataLabel[this.tableName].filter((item, i) => i !== rowDatasIndex);
           }
         } else {
           this.afterSendDataLabel[this.tableName] = [];
@@ -4772,6 +4803,7 @@
 <style lang="less">
     .table-in {
         flex: 1;
+        margin-top: 10px;
         tbody tr.ark-table-row-hover td {
             background-color: #ecf0f1;
         }

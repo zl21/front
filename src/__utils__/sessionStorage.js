@@ -18,6 +18,19 @@ const removeSessionObject = (target) => {
   window.sessionStorage.removeItem(target);
 };
 
+window.RupdateLocalStorage = (target,{ k, v })=>{
+  // 更新本地
+  let data = JSON.parse(window.localStorage.getItem(target));
+  data[k] = v;
+  window.localStorage.setItem(target, JSON.stringify(data));     
+}
+
+window.RgetItemLocalStorage = (target)=>{
+  // 获取
+  let data = JSON.parse(window.localStorage.getItem(target) || '{}');
+  return data;    
+}
+
 export {
   updateSessionObject, getSessionObject, deleteFromSessionObject, removeSessionObject 
 };

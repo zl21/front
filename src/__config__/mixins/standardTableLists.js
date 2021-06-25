@@ -82,6 +82,7 @@ export default () => ({
         'setAgTableErrorMessage',
         'setPrintValueForButtons',
         'updataSelectIdArr',
+        'updateTableData',
         'updatestopOnRowDoubleClickData',
         'updataIsBig',
         'updateTabParam',
@@ -108,34 +109,6 @@ export default () => ({
           });
         }
 
-        // data.key_group = [
-        //   {
-        //     target: 'NAME',
-        //     source: [
-        //       {
-        //         col_name: 'SEX',
-        //         label: [
-        //           {
-        //             value: '0',
-        //             description: '男女',
-        //             cssclass: 'color-bold-brown'
-        //           },
-        //           {
-        //             value: '1',
-        //             description: '保密',
-        //             cssclass: 'color-bold-qing'
-        //           },
-        //           {
-        //             value: '2',
-        //             description: 'M',
-        //             cssclass: 'color-qing'
-        //           }
-        //         ]
-        //       }
-        //     ]
-        //   }
-        // ];
-
         // 列表字段支持字段合并样式展示
 
         if (data.key_group && data.key_group.length > 0 && data.datas.tabth) {
@@ -148,6 +121,10 @@ export default () => ({
             });
             return item;
           });
+        }
+
+        if(data.pinnedColumns) {
+          data.datas.pinnedColumns = data.pinnedColumns
         }
         return data;
       },

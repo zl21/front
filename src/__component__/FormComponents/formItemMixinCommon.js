@@ -35,7 +35,11 @@ export default {
     });
     },
     setRules(){
-      let required = this.items.show && !this.items.readonly && this.items.isnotnull; 
+      let required = this.items.show && !this.items.readonly && this.items.isnotnull ; 
+      if(this.items.show && this.items.show_occupied === false){
+        // 兼容隐藏时候的占位
+        required = false;
+      }
       let self = this;
       this.rules = {
         required: {
@@ -62,6 +66,6 @@ export default {
     setTimeout(()=>{
       // 延时渲染完成,阻止页面初始化调用事件
       this.actived = true;    
-    },200);
+    },400);
   }  
 };

@@ -40,6 +40,12 @@
       // 字段的网关
       this.item.serviceId = this.item.fkobj.serviceId;
     }
+    if(this.item.detailType){
+     // 走关联字段查询
+      this.item.Query = true;
+    }else{
+      this.item.Query = false;
+    }
     this.propstype = {
           ...this.item,
           item:this.item,
@@ -53,12 +59,14 @@
         PropsData:{...this.propstype},
         Url:{
           autoUrl: `/p/cs/fuzzyquerybyak`,
-          tableUrl: `/p/cs/QueryList`
+          tableUrl: `/p/cs/QueryList`,
+          tableSearchUrl:'/p/cs/newQueryList'
         },
         AutoRequest: {
           colid: this.item.colid,
           fixedcolumns: {}
         },
+        filterMode:false,
         TableRequest : {
           isdroplistsearch: true,
           refcolid: this.item.colid,
@@ -72,9 +80,11 @@
    mergeMethods() {
     let self = this;  
     new DropMethods(this.item,this.Vm).blur();
+    
 
     this.Vm.created = function(){  
       this.item = this.PropsData.item;
+      this.item.Query = this.PropsData.Query;
       this.activeTab = this.$parent.$parent.activeTab;
       this.PropsData.isShowPopTip=()=>{
         if(this.item.refcolval){

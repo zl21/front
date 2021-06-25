@@ -698,12 +698,22 @@
         if (obj && obj.jflowType && obj.jflowType === 'jflowLaunch') {
           eventName = 'jflowLaunch';
         }  
-        DispatchEvent(eventName, {
-          detail: {
-            obj,
-            currentItemInfo, // 当前操作的子表或主表信息
-          }
-        });
+        const data = {
+            mask: true,
+            title: '警告',
+            content: '确认执行提交？',
+             onOk: () => {
+               DispatchEvent(eventName, {
+                detail: {
+                  obj,
+                  currentItemInfo, // 当前操作的子表或主表信息
+                }
+              });
+
+             }
+          };
+        this.$Modal.fcWarning(data);
+        
       },
       testUpdata() { // 校验是否修改过值
         // 校验逻辑为判断单对象各个组件向当前状态模块内抛出的修改后的值，如果该表名对应的对象内有值，则认为该表修改了值
@@ -3842,7 +3852,7 @@
     },
     mounted() {
       this.updataCurrentTableDetailInfo();
-
+      this.$el._vue_ = this;
       this.setDisableButtons();
       if (this.isItemTable) {
         this.dataArray.refresh = false;
