@@ -48,6 +48,11 @@
         return `${this.dowClass === false ? ' iconfont  iconios-arrow-down' : 'iconfont  iconios-arrow-down icon-xiadown'}`;
       }
     },
+     beforeCreate(){
+      if(!this.$store){
+          this.$store =store 
+      } 
+    },
     props: {
       id: {
         type: [Number, String],
