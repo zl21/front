@@ -142,6 +142,15 @@
     padding: 20px 10px 0;
     position: absolute;
     top: 50px;
+     &:before {
+        content: "";
+        width: 100%;
+        height: 100%;
+        display: block;
+        z-index: -4;
+        background: rgba(0, 0, 0, 0);
+        position: fixed;
+      }
     
     .menu-group {
       min-width: 150px;
