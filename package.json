@@ -19,7 +19,6 @@
         "build:publish": "cross-env BUILD_ENV=publish webpack --color --progress --config webpack.publish.js  --env.NODE_ENV=production",
         "zip": "node doZip.js",
         "deploy": "npm publish && node dingtalk.js"
-
     },
     "repository": {
         "type": "git",
