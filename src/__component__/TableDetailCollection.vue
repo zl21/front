@@ -123,9 +123,12 @@
           :render-params="renderParams"
           :options="{
             suppressMovableColumns: true,
-            afterColumnMoved: afterColumnMoved,
+            agColumnMoved,
             ...agGridOptions,
-            datas: dataSource
+            datas: {
+              ...dataSource,
+              pinnedColumns: webConfSingle.pinnedColumns
+            }
           }"
           @ag-selection-change="tableSelectedChange"
           @ag-sort-change="tableSortChange"
@@ -204,6 +207,7 @@
   import getUserenv from '../__utils__/getUserenv';
   import createModal from './PreviewPicture/index';
   import TableTemplate from './TableDetailCollectionslot';
+  import { getPinnedColumns } from '../__utils__/tableMethods'
 
   Vue.component('ComAttachFilter', ComAttachFilter);
   Vue.component('TableDocFile', Docfile);
@@ -709,7 +713,7 @@
       },
 
       // ag表格重置列位置的回调
-      afterColumnMoved(cols) {
+      agColumnMoved(cols) {
         const { tableId } = this[INSTANCE_ROUTE_QUERY];
         this.setColPosition({
           tableid: tableId,
@@ -743,6 +747,9 @@
         if (!columns) {
           return [];
         }
+
+        const { pinnedLeftColumns, pinnedRightColumns } = getPinnedColumns(this.webConfSingle.pinnedColumns)
+
         // 整合表头数据
         const newColumns = columns
           .map((ele, index) => {
@@ -755,6 +762,18 @@
               isagfilter: false, // 关闭过滤功能
               _index: index
             };
+
+            // 设置固定列
+            if(pinnedLeftColumns.includes(ele.colname)) {
+              param.pinned = 'left'
+              param.suppressMovable = true
+              param.suppressMenu = true
+            }
+            if(pinnedRightColumns.includes(ele.colname)) {
+              param.pinned = 'right'
+              param.suppressMovable = true
+              param.suppressMenu = true
+            }
 
             // 序号按行索引渲染
             if (ele.colname === EXCEPT_COLUMN_NAME) {
@@ -1739,7 +1758,7 @@
               default: () => h('div', {
                 style: {},
                 domProps: {
-                  innerHTML: `<i class="iconfont iconios-information-circle-outline" style="color: orangered; font-size: 13px"></i> <span>${params.column.name}</span>`
+                  innerHTML: `<span>${params.column.name}</span><i class="iconfont iconios-information-circle-outline" style="color: orangered; font-size: 13px"></i> `
                 }
               }),
               content: () => h('div', {
@@ -4772,6 +4791,7 @@
 <style lang="less">
     .table-in {
         flex: 1;
+        margin-top: 10px;
         tbody tr.ark-table-row-hover td {
             background-color: #ecf0f1;
         }
