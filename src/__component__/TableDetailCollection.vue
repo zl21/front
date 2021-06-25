@@ -2936,33 +2936,6 @@
                   }
                 },
                 fkobj: {
-                  refobjid: cellData.refobjid,
-                  reftable: cellData.reftable,
-                  colid: this.dataSource.row[params.index][cellData.colname].colid,
-                  reftableid: cellData.reftableid,
-                  saveType: 'object',
-                  show: true,
-                  // 是否显示筛选提示弹窗 true、false
-                  filterTip: true,
-                  // 是否选中后禁止编辑 true、false
-                  enterType: true,
-                  // 是否回车选中第一行
-                  disabled: false,
-                  // 默认提示框
-                  placeholder: null,
-                  // 定义选中展示的文字的key
-                  hideColumnsKey: ['id'],
-                  // 配置弹窗的配置项 model
-                  dialog: {
-                    model: {
-                      title: '弹窗多选',
-                      mask: true,
-                      draggable: true,
-                      scrollable: true,
-                      width: 920
-                    }
-                  },
-                  fkobj: {
                     refobjid: cellData.refobjid,
                     reftable: cellData.reftable,
                     colid: this.dataSource.row[params.index][cellData.colname].colid,
@@ -2974,9 +2947,6 @@
                   },
                   datalist: this.popFilterDataList,
                   ...cellData,
-                // 模糊查询的文字信息，支持多列
-                },
-
               },
               on: {
                 'on-keydown': (v, e, i) => {

@@ -134,6 +134,13 @@
         //   const valuedata = JSON.parse(this.selected[0].Label);
         //   this.selected[0].Label = `已经选中${valuedata.total}条` || '';
         // }
+        
+        // 如果存在cellRendererParams说明是用ag表格渲染的commonTable，需要删除用不到的字段，不然json转化会报错
+        if (this.propstype.cellRendererParams) {
+          delete this.propstype.cellRendererParams;
+          delete this.propstype.headerComponentParams;
+          delete this.propstype.pinnedRowCellRendererParams
+        }
 
         this.propsData = JSON.parse(JSON.stringify(this.propstype));
 
