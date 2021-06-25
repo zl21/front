@@ -33,6 +33,8 @@
   import { mapState } from 'vuex';
   import RenderComponent from './RenderComponent';
   import ParameterDataProcessing from './parameterDataProcessing';
+    import store from '../../__config__/store.config';
+
   import {
   Version
 } from '../../constants/global';
