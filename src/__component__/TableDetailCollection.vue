@@ -2948,37 +2948,36 @@
                   datalist: this.popFilterDataList,
                   ...cellData,
               },
-              on: {
-                'on-keydown': (v, e, i) => {
-                  if (e.keyCode === 13) {
-                    const elementId = i.$parent.$el.id;
-                    this.tableCellFocusByEnter(elementId);
-                  } else if (e.keyCode === 40) {
-                    // 下键
-                    const elementId = i.$parent.$el.id;
-                    const currentColumn = params.column._index - 1;
-                    this.tableCellFocusByUpOrDown(elementId, currentColumn, 'down');
-                  } else if (e.keyCode === 38) {
-                    // 上键
-                    const elementId = i.$parent.$el.id;
-                    const currentColumn = params.column._index - 1;
-                    this.tableCellFocusByUpOrDown(elementId, currentColumn, 'up');
-                  }
-                },
-                valuechange: (item) => {
-                  this.copyDataSource.row[params.index][cellData.colname].val = item.value;
-                  this.copyDataSource.row[params.index][cellData.colname].defaultSelected = item.selected;
-                  if (item.selected[0]) {
-                    this.putDataFromCell(item.selected[0].ID, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                    this.putLabelDataFromCell(item.selected[0].Label, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, item.selected[0].ID);
-                  } else {
-                    this.putDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                    this.putLabelDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, '');
-                  }
+            },
+            on: {
+              'on-keydown': (v, e, i) => {
+                if (e.keyCode === 13) {
+                  const elementId = i.$parent.$el.id;
+                  this.tableCellFocusByEnter(elementId);
+                } else if (e.keyCode === 40) {
+                  // 下键
+                  const elementId = i.$parent.$el.id;
+                  const currentColumn = params.column._index - 1;
+                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'down');
+                } else if (e.keyCode === 38) {
+                  // 上键
+                  const elementId = i.$parent.$el.id;
+                  const currentColumn = params.column._index - 1;
+                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'up');
+                }
+              },
+              valuechange: (item) => {
+                this.copyDataSource.row[params.index][cellData.colname].val = item.value;
+                this.copyDataSource.row[params.index][cellData.colname].defaultSelected = item.selected;
+                if (item.selected[0]) {
+                  this.putDataFromCell(item.selected[0].ID, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                  this.putLabelDataFromCell(item.selected[0].Label, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, item.selected[0].ID);
+                } else {
+                  this.putDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                  this.putLabelDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, '');
                 }
               }
             }
-
           })
         ]);
       },
