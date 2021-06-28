@@ -6,6 +6,7 @@
     <div class="NaVertical-icons">
       <div
         class="tag"
+        title="折叠"
         @click="toggle"
       >
         <i
@@ -21,8 +22,8 @@
         v-if="enableHistoryAndFavoriteUI"
         class="HistoryAndFavorite-time"
       >
-        <Dropdown>
-          <Icon type="iconmd-time"></Icon>
+        <Dropdown ref="Dropdown" trigger="click"  class="HistoryAndFavorite-Dropdown" placement="bottom-start">
+            <Icon type="iconmd-time"></Icon>
           <DropdownMenu
             slot="list"
           >
@@ -168,7 +169,7 @@
           show: true,
           list: [],
         },
-        iconShow: false,
+        iconShow: true,
         keyWord: '',
         dialogConfig: {
           title: '提示',
@@ -248,6 +249,9 @@
         } else {
           this.changeSelectedPrimaryMenu(index);
         }
+      },
+      mouseover(){
+          console.log(1212);
       },
       showDropdown() {
         console.log(1212);
@@ -427,6 +431,7 @@
       },
       toggle() {
         const navigator = document.querySelector('.NavigatorVertical');
+        const navigatorMenu = document.querySelector('.navigator-sub-menu');
         if (this.iconShow) {
           navigator.className = 'NavigatorVertical transferRight';
           this.iconShow = false;
@@ -434,6 +439,10 @@
           navigator.className = 'NavigatorVertical transferLeft';
           this.iconShow = true;
         }
+        setTimeout(()=>{
+          let leftWidth = navigator.offsetWidth;
+          navigatorMenu.style.left = leftWidth+'px';
+        },500)
       },
       routerNext(name) {
         const index = name.value;
@@ -451,10 +460,14 @@
       }
     },
     mounted() {
+      this.$el._vue_=this;
       if (Version() === '1.3') {
         this.messageTimer = setInterval(() => {
           this.getMessageCount();
         }, 30000);
+      }
+      if(document.querySelector('.NavigatorVertical')){
+        this.toggle();
       }
     },
     beforeDestroy() {

@@ -9,6 +9,7 @@
       :placeholder="placeholder"
       :Notice="Notice"
       @clickTreeNode="clickTreeNode"
+      @treeSearch="treeSearch"
     />
   </div>
 </template>
@@ -152,6 +153,7 @@
         }
       },
       clickTreeNode(datas, treeNodeID, flag) {
+
         if (flag) { // 为true时查询当前节点以及全部子节点
           this.currentClickNoded = datas;
           this.treeNodeID = treeNodeID;
@@ -189,6 +191,9 @@
         // treeNodeID：当前点击节点ID
         // flag:true:查询选中的节点，false:查询空
       }, // 左侧树点击
+      treeSearch(e) {
+        this.$emit('treeSearch', e)
+      },
     }
   };
 </script>

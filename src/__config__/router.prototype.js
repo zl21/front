@@ -1,5 +1,5 @@
 import Login from '../__component__/Login';
-import Content from '../__component__/Content';
+import Content from '../__component__/ContentTemplate.vue';
 import WelcomePage from '../__component__/WelcomePage';
 import ComponentProtoType from '../__component__/ComponentPrototype';
 import AutomaticPathGeneration from '../__component__/AutomaticPathGeneration';

@@ -46,7 +46,7 @@ module.exports = env => ({
       errorDetails:true,
     },
     port: 8209,
-    host: 'localhost',
+    host: '0.0.0.0',
     open: true,
     historyApiFallback: {
       rewrites: [

@@ -21,6 +21,7 @@
         >
       </div>
     </div>
+  
     <VerticalMenu />
     <!-- <div class="middle">
       <div style="">
@@ -355,3 +356,212 @@
     }
   };
 </script>
+
+<style lang="less">
+  .ark-drawer-content {
+    //重置arkUI样式
+    border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+  }
+  
+  .ark-drawer-body {
+    //重置arkUI样式
+    padding: 0px !important;
+  }
+
+  .NavigatorVertical {
+    height: 100%;
+    display: flex;
+    overflow-y: auto;
+    flex-direction: column;
+    width: 220px;
+    background-color: #1f272c;
+     a{
+          color:white
+        }
+      .badge{
+        width: 42px;
+        height: 42px;
+        // background: #eee;
+        border-radius: 6px;
+        display: inline-block;
+       
+       
+    }
+    .left {
+      padding: 26px 0;
+      text-align: center;
+      img.trigger {
+        height: 50px;
+      }
+      
+      img.logo {
+        position: absolute;
+        width: 30px;
+        top: 10px;
+        left: 18px;
+      }
+      
+      img.banner {
+        width: 76px;
+        height: 30px;
+        // position: absolute;
+        // top: 11px;
+        // left: 64px;
+      }
+      
+      img:hover {
+        cursor: pointer;
+      }
+    }
+    
+    .middle {
+      position: relative;
+      display: flex;
+      flex: 1 1 1px;
+      overflow: auto;
+      div{
+        width: 100%;
+      }
+        .navigator-primary-menu{
+          font-size: 14px;
+          flex-direction: row;
+          padding: 14px 20px;
+          justify-content: space-around;
+          .navigator-primary-menu-div{
+           padding-right: 20px;
+           overflow: hidden;
+           height: 14px;
+           line-height: 14px;
+           white-space: nowrap;
+           text-overflow:ellipsis
+          }
+          
+        }
+    }
+     .middle::-webkit-scrollbar {
+        display: none;
+    }
+   .buttonIcon{
+     width:100%;
+     height:100%;
+     display: inline-block;
+   } 
+    .nav-search {
+      input {
+        display: inline-block;
+        width: 100%;
+        padding: 0 8px;
+        border: solid 1px #fff;
+        border-radius: 15px;
+        background: #4f5356;
+        height: 28px;
+        line-height: 28px;
+        color: #fff;
+        font-size: 13px;
+        transition: all 0.25s;
+
+        &:hover{
+            font-size: 12px;
+            padding: 0px 14px;
+            transition: all 0.25s;
+        }
+      }
+      
+      i {
+        color: #c0c4cc;
+        padding-top: 2px;
+      }
+    }
+    
+    .tag {
+      width: 50px;
+      float: left;
+      font-size: 24px;
+      text-align: center;
+      line-height: 50px;
+      cursor: pointer;
+      color: #fff;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      
+      i {
+        font-size: 22px;
+      }
+      
+      .ark-badge-count{
+        top: 2px;
+      }
+    }
+    
+    .tag-search {
+      width: 192px;
+      line-height: 40px;
+      .ark-select{
+          text-align: left;
+      }
+    }
+    
+    .tag:hover {
+      background: #2e373c;
+    }
+  }
+
+  
+  .Poptip-nav {
+    ul {
+      li {
+        &:hover {
+          background: #f4f4f4;
+        }
+        
+        padding: 0 20px;
+        text-align: left;
+        margin: 0;
+        line-height: 34px;
+        cursor: pointer;
+        color: #606266;
+        font-size: 14px;
+        list-style: none;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+    
+  }
+  .NavigatorVertical{
+     .navigator-sub-menu{
+      top:60px!important;
+      // left: 220px!important;
+      border-bottom:none!important;
+      width: calc(100% - 190px - 40px);
+      box-shadow:1px 2px 6px 0px rgba(190,189,189,0.3)!important;
+       &:before {
+        content: "";
+        width: 100%;
+        height: 100%;
+        display: block;
+        z-index: -4;
+        background: rgba(0, 0, 0, 0);
+        position: fixed;
+      }
+    }
+   
+
+
+  }
+ 
+    .transferLeft{
+      //transform: translateX(-100px);
+      width: 0px;
+      transition: all ease-in-out 0.5s;
+    }
+  .transferRight{
+    //transform: translateX(0px);
+    width: 220px;
+        transition: all ease-in-out 0.5s;
+  }
+</style>

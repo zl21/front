@@ -123,9 +123,12 @@
           :render-params="renderParams"
           :options="{
             suppressMovableColumns: true,
-            afterColumnMoved: afterColumnMoved,
+            agColumnMoved,
             ...agGridOptions,
-            datas: dataSource
+            datas: {
+              ...dataSource,
+              pinnedColumns: webConfSingle.pinnedColumns
+            }
           }"
           @ag-selection-change="tableSelectedChange"
           @ag-sort-change="tableSortChange"
@@ -204,6 +207,7 @@
   import getUserenv from '../__utils__/getUserenv';
   import createModal from './PreviewPicture/index';
   import TableTemplate from './TableDetailCollectionslot';
+  import { getPinnedColumns } from '../__utils__/tableMethods'
 
   Vue.component('ComAttachFilter', ComAttachFilter);
   Vue.component('TableDocFile', Docfile);
@@ -284,6 +288,7 @@
           check: { tag: 'Checkbox', event: this.checkboxRender },
           select: { tag: 'Select', event: this.selectRender },
           radioGroup: { tag: 'Select', event: this.selectRender },
+          checkboxgroup: { tag: 'Select', event: this.mutiSelectRender },
           drp: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender },
           mrp: { tag: 'DropMultiSelectFilter', event: this.dropMultiSelectFilterRender },
           mop: { tag: 'ComAttachFilter', event: this.comAttachFilterRender },
@@ -711,7 +716,7 @@
       },
 
       // ag表格重置列位置的回调
-      afterColumnMoved(cols) {
+      agColumnMoved(cols) {
         const { tableId } = this[INSTANCE_ROUTE_QUERY];
         this.setColPosition({
           tableid: tableId,
@@ -745,6 +750,9 @@
         if (!columns) {
           return [];
         }
+
+        const { pinnedLeftColumns, pinnedRightColumns } = getPinnedColumns(this.webConfSingle.pinnedColumns)
+
         // 整合表头数据
         const newColumns = columns
           .map((ele, index) => {
@@ -757,6 +765,18 @@
               isagfilter: false, // 关闭过滤功能
               _index: index
             };
+
+            // 设置固定列
+            if(pinnedLeftColumns.includes(ele.colname)) {
+              param.pinned = 'left'
+              param.suppressMovable = true
+              param.suppressMenu = true
+            }
+            if(pinnedRightColumns.includes(ele.colname)) {
+              param.pinned = 'right'
+              param.suppressMovable = true
+              param.suppressMenu = true
+            }
 
             // 序号按行索引渲染
             if (ele.colname === EXCEPT_COLUMN_NAME) {
@@ -1741,7 +1761,7 @@
               default: () => h('div', {
                 style: {},
                 domProps: {
-                  innerHTML: `<i class="iconfont iconios-information-circle-outline" style="color: orangered; font-size: 13px"></i> <span>${params.column.name}</span>`
+                  innerHTML: `<span>${params.column.name}</span><i class="iconfont iconios-information-circle-outline" style="color: orangered; font-size: 13px"></i> `
                 }
               }),
               content: () => h('div', {
@@ -2144,6 +2164,40 @@
             this.getSelectValueCombobox(h, cellData))
         ]);
       },
+
+      // 下拉多选框
+      mutiSelectRender(cellData, tag) {
+        return (h, params) => {
+          const rowData = this.dataSource.row[params.index]
+          const oldArr = rowData[cellData.colname].val.split(',')
+          const defaultValue = cellData.combobox.filter(option => oldArr.includes(option.limitdesc)).map(option => option.limitval)
+          return h('div', [
+            h(tag, {
+                style: {
+                  width: '100px'
+                },
+                props: {
+                  transfer: true,
+                  clearable: true,
+                  multiple: true,
+                  chooseAll: true,
+                  value: defaultValue
+                },
+                on: {
+                  'on-change': (event, data) => {
+                    const currentValue = event.join(',')
+                    const oldValue = cellData.combobox.filter(option => oldArr.includes(option.limitdesc)).map(option => option.limitval)
+                    this.putDataFromCell(currentValue, oldValue, cellData.colname, rowData[EXCEPT_COLUMN_NAME].val, params.column.type);
+                    const labelValue = data.values.length > 0 ? data.values[0].label : '';
+                    this.putLabelDataFromCell(labelValue, oldValue, cellData.colname, rowData[EXCEPT_COLUMN_NAME].val, currentValue);
+                  }
+                }
+              },
+              this.getSelectValueCombobox(h, cellData))
+          ])
+        };
+      },
+
       dropDownIsShowPopTip(cellData, params) {
         if (cellData.refcolval.srccol === '$OBJID$') {
           return true;
@@ -3662,7 +3716,9 @@
                       this.putLabelDataFromCell(val.length > 0 ? JSON.stringify(val) : '', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
 
                       if (!ossRealtimeSave()) {
-                        DispatchEvent('childTableSaveFile', { detail: { type: 'save' } });
+                        //DispatchEvent('childTableSaveFile', { detail: { type: 'save' } });
+                         const dom = document.getElementById('actionMODIFY');
+                         dom.click();
                       }
                     }
                   }
@@ -3886,8 +3942,7 @@
         }
         return null;
       },
-      putDataFromCell(currentValue, oldValue, colname, IDValue, type, fkdisplay, oldFkIdValue) {
-        // 组装数据 存入store
+      putDataFromCell(currentValue, oldValue, colname, IDValue, type, fkdisplay, oldFkIdValue) {        // 组装数据 存入store
         if (!currentValue) {
           if (fkdisplay === 'mrp' || fkdisplay === 'mop') {
             currentValue = '';
@@ -3946,14 +4001,6 @@
         if (this.afterSendDataLabel[this.tableName] && this.afterSendDataLabel[this.tableName].length && this.afterSendDataLabel[this.tableName].length > 0) {
           const rowDatas = this.afterSendDataLabel[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
           oldIdValue = oldIdValue || '';
-          // if (colname === 'ISACTIVE') {
-          //   console.log(444, currentValue === '是' && (oldIdValue === 'Y' || oldIdValue === '1'));
-          //   if (currentValue === '是' && (oldIdValue === 'Y' || oldIdValue === '1')) {
-          //     oldIdValue = '是';
-          //   } else if (currentValue === '否' && (oldIdValue === 'N' || oldIdValue === '0')) {
-          //     oldIdValue = '否';
-          //   }
-          // }
           if (type === 'checkbox') { // checkbox类型
             // 有改动
             if ((currentValue !== oldIdValue || (oldValue && oldFkIdValue && Number(oldFkIdValue) !== Number(oldValue))) && (oldValue && oldIdValue && Number(oldValue) !== Number(oldIdValue))) {
@@ -3968,20 +4015,12 @@
             // 改动值相同
             } else if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
               delete rowDatas[0][colname];
-
-              // const rowDatasIndex = this.afterSendDataLabel[this.tableName].map((ele, i) => {
-              //   if (ele[EXCEPT_COLUMN_NAME] === IDValue) {
-              //     return i;
-              //   }
-              // })[0];
-              // delete rowDatas[0].ID;
               this.afterSendDataLabel[this.tableName] = this.afterSendDataLabel[this.tableName].filter((item, i) => { // 改动值相同不抛出值
                 if (item && Object.keys(item).length && Object.keys(item).length === 1 && item.ID) {
                 } else {
                   return item;
                 }
               });
-            // this.afterSendDataLabel[this.tableName] = this.afterSendDataLabel[this.tableName].filter((item, i) => i !== rowDatasIndex);
             }
           } else if (currentValue !== oldIdValue || (oldValue && oldFkIdValue && Number(oldFkIdValue) !== Number(oldValue))) { // 除checkbox类型外，有改动
             if (rowDatas.length > 0) {
@@ -3994,20 +4033,12 @@
             }
           } else if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) { // 除checkbox类型外，改动值相同
             delete rowDatas[0][colname];
-
-            // const rowDatasIndex = this.afterSendDataLabel[this.tableName].map((ele, i) => {
-            //   if (ele[EXCEPT_COLUMN_NAME] === IDValue) {
-            //     return i;
-            //   }
-            // })[0];
-            // delete rowDatas[0].ID;
             this.afterSendDataLabel[this.tableName] = this.afterSendDataLabel[this.tableName].filter((item, i) => { // 改动值相同不抛出值
               if (item && Object.keys(item).length && Object.keys(item).length === 1 && item.ID) {
               } else {
                 return item;
               }
             });
-            // this.afterSendDataLabel[this.tableName] = this.afterSendDataLabel[this.tableName].filter((item, i) => i !== rowDatasIndex);
           }
         } else {
           this.afterSendDataLabel[this.tableName] = [];
@@ -4683,3 +4714,137 @@
     }
   };
 </script>
+
+<style scoped lang="less">
+    .TableDetailCollection {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow-y: hidden;
+        margin: 10px 5px 10px 5px;
+        .detail-collection {
+            // height: calc(100% - 38px);
+            height: 100%;
+            // display: flex;
+            // flex: 1;
+            flex-direction: column;
+            overflow-y: visible; // fix: 表格内下拉框超出表格的部分看不见了
+            //.detail-top {  }
+                // margin-bottom: 6px;
+                // display: flex;
+                // justify-content: space-between;
+                .page-buttons {
+                    display: flex;
+                    flex-wrap: wrap;
+                }
+                .table-page {
+                    white-space: nowrap;
+                }
+                .detail-buttons {
+                    margin-left: 10px;
+                    a {
+                        line-height: 26px;
+                        vertical-align: middle;
+                    }
+                }
+                .detail-search {
+                    display: inline-block;
+                    display: flex;
+                    // justify-content: space-around;
+                    // align-content: stretch;
+                    .ark-select {
+                        width: 120px;
+                    }
+                    .detail-search-input {
+                        margin-left: 10px;
+                        .ark-input-group {
+                            top: 0px;
+                        }
+                        .ark-input-group-with-prepend {
+                            width: 270px;
+                        }
+                        .ark-input-group-prepend {
+                            .ark-btn {
+                                display: flex;
+                                align-items: center;
+                                span {
+                                    bottom: 2px;
+                                    position: relative;
+                                }
+                            }
+                        }
+                    }
+                }
+          
+            .table-outside {
+                // flex: 1;
+                // overflow-y: hidden;
+                display: flex;
+                height: calc(100% - 57px);
+                .table-in {
+                    flex: 1;
+                }
+            }
+            .queryCondition {
+                height: 20px;
+                padding-top: 10px;
+            }
+        }
+    }
+</style>
+<style lang="less">
+    .table-in {
+        flex: 1;
+        margin-top: 10px;
+        tbody tr.ark-table-row-hover td {
+            background-color: #ecf0f1;
+        }
+        thead th {
+            font-weight: 400;
+        }
+        .ark-input-wrapper > input {
+            height: 22px;
+        }
+        .ark-select-selection {
+            height: 22px;
+        }
+        .ark-table th, .ark-table td {
+            height: 26px;
+        }
+        .ark-fkrp-select-icon {
+            top: 2px;
+        }
+        .ark-fkrp-select .ark-icon-ios-close-circle {
+            top: -2px;
+        }
+        .ark-fkrp-poptip .fkrp-poptip-text {
+            top: 2px;
+        }
+        .fkrp-poptip-two .ark-icon-ios-close-circle {
+            top: -2px;
+        }
+        .ark-input-icon {
+            top: -2px;
+        }
+    }
+
+    .input-align-center input {
+        text-align: center;
+    }
+
+    .input-align-right input {
+        text-align: right;
+    }
+
+    .table-in .ag-cell{
+      overflow: visible;
+    }
+
+    // ag表格查询控件展示不全
+    .table-in .ag-theme-balham .ag-menu {
+      overflow-y: auto;
+      .ag-column-container {
+        overflow: hidden;
+      }
+    }
+</style>

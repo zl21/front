@@ -382,6 +382,15 @@
         :options="_items.props"
         @change="radioValueChange"
       />
+
+      <!-- checkbox-group组件 -->
+      <checkbox-group
+        v-if="_items.type === 'checkboxgroup'"
+        :ref="_items.field"
+        v-model="_items.value"
+        :options="_items.props"
+        @change="checkboxGroupValueChange"
+      />
       
       <!-- string组件 -->
       <string-render 
@@ -438,7 +447,8 @@
   import Docfile from './docfile/DocFileComponent.vue';
   import RadioGroup from './form/RadioGroup.vue';
   import Defined from './Defined.vue';
-  import StringRender from './form/StringRender'
+  import StringRender from './form/StringRender.vue'
+  import CheckboxGroup from './form/CheckboxGroup.vue'
 
 
   import {
@@ -455,7 +465,7 @@
 
   export default {
     components: {
-      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile, RadioGroup, Defined, StringRender
+      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile, RadioGroup, Defined, StringRender, CheckboxGroup
     },
     props: {
       webConfSingle: {// 当前子表webConf
@@ -619,9 +629,6 @@
       },
 
       showLabel() {
-        if (this._items.type === 'defined') {
-          return false
-        }
         if (this._items.props.webconf && this._items.props.webconf.hiddenLabel) {
           return false
         }
@@ -703,6 +710,10 @@
         this.valueChange();
       },
       radioValueChange(value) {
+        this._items.value = value;
+        this.valueChange();
+      },
+      checkboxGroupValueChange(value) {
         this._items.value = value;
         this.valueChange();
       },
