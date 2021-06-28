@@ -14,7 +14,8 @@
          :cancel-text="cancelText"
          :width="modalWidth"
          @on-cancel="onCancel"
-         @on-ok="onOk">
+         @on-ok="onOk"
+         class-name="ark-modal">
     <p v-if="contentText">
       {{ contentText }}
     </p>
@@ -167,7 +168,12 @@ export default {
         return this.setTitleName;
       }
       return this.title;
-    }
+    },
+    classes() {
+        return [
+          `${classFix}ark-modal`,
+        ];
+      },
   },
   watch: {
     dialogComponentName () {
@@ -264,24 +270,3 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
-.ark-modal-footer {
-  border: none;
-}
-
-.ark-modal-footer button > span {
-  font-size: 12px;
-}
-
-.ark-modal-footer button {
-  width: auto;
-  border-radius: 2px;
-  height: 26px;
-  line-height: 0px;
-}
-</style>
-<style lang="less">
- .ark-modal-body{
-   overflow: auto;
- }
-</style>

@@ -1,7 +1,7 @@
 <template>
   <div
     ref="extentionInput"
-    class="extentionInput"
+    :class="classes"
     @dblclick="popUp"
   >
     <Input
@@ -48,9 +48,9 @@
 </template>
 
 <script>
-  import { extentionForColumn, extentionForTable } from '../constants/global';
+  import { extentionForColumn, extentionForTable, classFix } from '../constants/global';
   import ExtentionProperty from './ExtentionsProperty/ExtentionProperty.vue';
-  
+
   export default {
     name: 'ExtentionInput',
     components: {
@@ -106,6 +106,7 @@
         }
         return configOptions;
       },
+      classes: () => `${classFix}ExtentionInput`
     },
     methods: {
       // 过滤多tab配置
@@ -145,13 +146,13 @@
             delete group.target.defaultselected;
             delete group.target.label;
           }
-          
+
           for (let j = Math.max(group.source.length - 1, 0); j >= 0; j--) {
             const row = group.source[j];
             if (deleteDefault) {
               delete row.defaultselected;
             }
-            
+
             // 删除无效来源字段
             if (!row.col_id || !row.label) {
               group.source.splice(j, 1);
@@ -174,14 +175,14 @@
           if (deleteDefault) {
             delete group.defaultselected;
           }
-          
+
           for (let j = Math.max(group.filter.length - 1, 0); j >= 0; j--) {
             const row = group.filter[j];
 
             if (deleteDefault) {
               delete row.defaultselected;
             }
-            
+
             // 删除无效来源字段
             if (!row.col_id || !row.match_value) {
               group.filter.splice(j, 1);
@@ -207,7 +208,7 @@
         const hasKey = keyList.some(key => key in data);
         return hasKey;
       },
-      
+
       onKeydown(e) {
         this.$emit('keydown', e);
       },
@@ -221,14 +222,14 @@
           if (fakeValue.multi_tab_conf.length === 0) {
             delete fakeValue.multi_tab_conf;
           }
-        } 
+        }
         // 针对字段组配置特殊处理,显示假的配置
         if (fakeValue && 'key_group_conf' in fakeValue) {
           fakeValue.key_group_conf = this.filterKeyData(fakeValue.key_group_conf, deleteDefault);
           if (fakeValue.key_group_conf.length === 0) {
             delete fakeValue.key_group_conf;
           }
-        } 
+        }
 
         // 针对按钮过滤特殊处理,显示假的配置
         if (fakeValue && 'listbutton_filter_conf' in fakeValue) {
@@ -395,43 +396,3 @@
     }
   };
 </script>
-
-<style lang="less">
-  .extentionInput {
-    position: relative;
-    textarea {
-      resize: vertical !important;
-    }
-    textarea::placeholder {
-      font-family: Consolas, "Hiragino Sans GB", "Microsoft YaHei", serif;
-      color: red;
-      font-size: 13px;
-    }
-    i {
-      font-size: 16px;
-      position: absolute;
-      right: 12px;
-      bottom: 12px;
-      color:#fd6442;
-    }
-    .R3iconbj_delete{
-      right: 42px;
-    }
-    i:hover {
-      cursor: pointer;
-      opacity: 0.7;
-    }
-    .popUp {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: fixed;
-      z-index: 99999;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0,0,0, 0.5);
-      top: 0;
-      left: 0;
-    }
-  }
-</style>

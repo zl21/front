@@ -1,11 +1,11 @@
 
 <template>
-  <div 
-    class="listsForm downComponent-context"
+  <div
+    :class="classes"
   >
     <div
       v-if="Object.keys(ItemLists).length > (defaultColumn*searchFoldnum) "
-      class="tag-close"
+      :class="tagCloseCls"
       @click="toggle"
     >
       <Icon
@@ -33,9 +33,12 @@
   import { mapState } from 'vuex';
   import RenderComponent from './RenderComponent';
   import ParameterDataProcessing from './parameterDataProcessing';
+    import store from '../../__config__/store.config';
+
   import {
-  Version
-} from '../../constants/global';
+    Version,
+    classFix
+  } from '../../constants/global';
 
   export default {
     computed: {
@@ -46,7 +49,19 @@
       }),
       className() {
         return `${this.dowClass === false ? ' iconfont  iconios-arrow-down' : 'iconfont  iconios-arrow-down icon-xiadown'}`;
-      }
+      },
+      classes() {
+        return [
+          `${classFix}ListsForm`,
+          'downComponent-context'
+        ];
+      },
+      tagCloseCls: () => `${classFix}tag-close`,
+    },
+    beforeCreate(){
+      if(!this.$store){
+          this.$store =store 
+      } 
     },
      beforeCreate(){
       if(!this.$store){
@@ -156,7 +171,7 @@
             }
           } else if (value === '' || value === null || value === undefined) {
             delete object[i];
-          } 
+          }
         }
       },
       // 组件回车事件
@@ -176,7 +191,7 @@
             }
             const value = item && item.isuppercase && components.value &&  !item.display ?components.value.toUpperCase():components.value;
 
-           
+
             const json = this.dealData(item, value);
              if(item.fkobj && item.fkobj.searchmodel){
                if(Version()==='1.3'){
@@ -218,7 +233,7 @@
             formData = Object.assign({}, formData, json);
             return item;
           });
-          
+
           this.deleteEmptyProperty(formData);
 
           resolve(formData)
@@ -243,24 +258,3 @@
   };
 
 </script>
-<style lang="less" scoped>
-@defaultCol: 4;  //控制一行展示的列数
-.listsForm{
-  flex-wrap: wrap;
-  display: flex;
-  border: 1px solid #d8d8d8;
-  padding: 0 28px 8px 0;
-  position: relative;
-  transition: height 0 ease;
-  overflow: hidden;
-  margin-bottom: 6px;
-  >.item{
-    width: percentage(1/@defaultCol);
-    box-sizing: border-box;
-
-    &.long{
-      display: none;
-    }
-  }
-}
-</style>

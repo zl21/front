@@ -36,7 +36,7 @@
 <script>
   import Description from './Description';
   import ObjectGroupItem from './ObjectGroupItem';
-  
+
   const generateObjectArray = (length) => {
     const temp = [];
     if (length <= 0) { return []; }
@@ -45,7 +45,7 @@
     }
     return temp;
   };
-  
+
   export default {
     name: 'ExtentionObjectGroup',
     data() {
@@ -109,10 +109,3 @@
     }
   };
 </script>
-
-<style scoped>
-  .extentionObjectGroup {
-    display: flex;
-    flex-direction: column;
-  }
-</style>

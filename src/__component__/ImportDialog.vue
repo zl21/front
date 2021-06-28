@@ -7,7 +7,7 @@
       :closable="true"
       :mask-closable="false"
       :width="width"
-      class="importDialog"
+      :class="classes"
     >
       <div>
         <div class="importICon">
@@ -32,7 +32,7 @@
             AK重复是否更新已有记录;
           </div>
           <!-- <div class="el-upload__tip">
-           
+
           </div> -->
           <div class="el-upload__tip">
             {{ ChineseDictionary.IMPORTTITLE }}
@@ -133,7 +133,7 @@
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import network, { urlSearchParams, getGateway } from '../__utils__/network';
   import Upload from '../__utils__/upload';
-  import { Version, encodeControl } from '../constants/global';
+  import { Version, encodeControl, classFix } from '../constants/global';
 
   export default {
     name: 'ImportDialog',
@@ -205,6 +205,9 @@
         }
       }
     },
+    created() {
+      this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');
+    },
     mounted() {
       this.ChineseDictionary = ChineseDictionary;
       if (this.visible) this.modalVisible = true;
@@ -213,6 +216,7 @@
     },
 
     computed: {
+      classes: () => `${classFix}importDialog`,
       completeTitle() {
         return `${this.title}导入`;
       },
@@ -337,7 +341,7 @@
             content: '请先选择要导入的文件！'
           });
           return;
-        } 
+        }
         this.uploadFileChange();
       },
       uploadFileChange() {
@@ -350,7 +354,7 @@
         this.loading = true;
         // 上传文件
         const fileInformationUploaded = this.files;
-        this.$R3loading.show();
+        this.$R3loading.show(this.loadingName);
         const url = `${getGateway('/p/cs/import')}`;
         const updataValue = this.singleValue ? 'Y' : 'N';
         const sendData = {
@@ -375,19 +379,19 @@
 
           }
         );
+        // eslint-disable-next-line no-unused-vars
         const article = new Upload(aUploadParame);
       },
 
       // 上传成功
       handleSuccess(response) {
-        const { tableName } = this.$route.params;
         if (response.code === 0) {
-          if (Version() === '1.4') { // Version() === '1.4'
-            this.$R3loading.hide(tableName);
+          if (Version() === '1.4') {
+            this.$R3loading.hide(this.loadingName);
             this.closeDialog();
             this.fileName = '';
             this.$Modal.fcSuccess({
-              title: '提示',
+              title: '成功',
               mask: true,
               content: response.message
             });
@@ -396,7 +400,7 @@
             this.$emit('imporSuccess', response.data);
           }
         } else {
-          this.$R3loading.hide(tableName);
+          this.$R3loading.hide(this.loadingName);
           if (response.data) {
             if (response.data.path) {
               if (response.data.path === 'undefined ===') {
@@ -438,8 +442,7 @@
       },
       // 上传失败
       handleError(e) {
-        const { tableName } = this.$route.params;
-        this.$R3loading.hide(tableName);
+        this.$R3loading.hide(this.loadingName);
         const emg = e;
         let formatJsonEmg = null;
         try {
@@ -460,7 +463,7 @@
               lineHeight: '16px'
             }
           }, [
-            
+
             h('i', {
               props: {
               },
@@ -498,156 +501,3 @@
     }
   };
 </script>
-<style lang="less">
-.importDialog {
-  .importICon {
-    margin: 0;
-    text-align: center;
-    .icon-span {
-      display: inline-block;
-      height: 28px;
-      width: 28px;
-      i {
-        color: #09a155;
-        font-size: 28px;
-      }
-    }
-  }
-  .import-panel {
-    padding: 0 40px;
-    position: relative;
-    .el-upload__tip {
-      margin-top: 10px;
-      font-size: 12px;
-      color: #575757;
-      .downloadTemplate{
-        color: #2D8cF0;
-        cursor:pointer
-      }
-      .inputValue{
-        border: none;
-        border-bottom: 1px solid #b8b8b8;
-        text-align: center;
-        width: 100px;
-      }
-      .singleValue{
-        margin-left:10px;
-      }
-    }
-    .upload-panel {
-      height: 50px;
-      margin-top: 10px;
-    }
-    .fileName {
-      height: 21px;
-      line-height: 21px;
-      color: #606266;
-    }
-  }
-  .fileInput {
-    position: relative;
-    left: -67px;
-    opacity: 0;
-    width: 62px;
-  }
-  .tip {
-    font-size: 12px;
-    display: inline-block;
-    margin-left: -61px;
-    color: #b8b8b8;
-  }
-  .error-content {
-    border-top: solid 1px #bcbcbc;
-    text-align: left;
-    position: relative;
-    font-size: 12px;
-    margin-top: 10px;
-    .error-message {
-      height: auto;
-      margin: 10px 0px;
-      max-height: 240px;
-      position: relative;
-      width: 550px;
-      .left-icon {
-        height: 28px;
-        width: 28px;
-        position: absolute;
-        left: 0;
-        top: 0;
-        i {
-          font-size: 28px;
-          color: #e80000;
-        }
-      }
-      .right-content {
-        position: relative;
-        margin-left: 38px;
-        .link {
-          line-height: 16px;
-          a {
-            color: #0f8ee9;
-            cursor: pointer;
-            display: inline-block;
-            padding-top: 6px;
-            text-decoration: none;
-          }
-        }
-        .content-message {
-          max-height: 220px;
-          min-height: 28px;
-          overflow: auto;
-          p {
-            word-break: break-word;
-            line-height: 16px;
-            margin: 6px 0;
-          }
-        }
-      }
-    }
-  }
-  // .ark-modal-header {
-  //   height: 30px !important;
-  //   line-height: 30px !important;
-  //   background: #f8f8f8 !important;
-  //   border-top-right-radius: 10px !important;
-  //   border-top-left-radius: 10px !important;
-  //   .modal-header-inner {
-  //     padding: 0;
-  //     height: 30px !important;
-  //     line-height: 30px !important;
-  //     text-align: center !important;
-  //     background: #f8f8f8 !important;
-  //     border-bottom: solid 1px #ddd !important;
-  //     border-top-right-radius: 10px !important;
-  //     border-top-left-radius: 10px !important;
-  //     cursor: move !important;
-  //   }
-  //   .ark-modal-header-inner {
-  //     line-height: 31px !important;
-  //     font-size: 13px !important;
-  //     color: #303133 !important;
-  //     font-weight: normal;
-  //   }
-  // }
-  .ark-modal-body {
-    padding: 20px !important;
-  }
-  .iconios-close {
-    color: #999 !important;
-  }
-  .ark-modal-footer {
-    border-top: none !important;
-    padding: 0 20px 20px;
-    margin: 10px 40px;
-  }
-  .ark-btn-fcdefault {
-    height: 24px !important;
-    font-size: 12px !important;
-    width: 66px !important;
-    padding: 0 !important;
-  }
-  .ark-modal-footer button > span {
-    font-size: 12px;
-  }
-}
-</style>

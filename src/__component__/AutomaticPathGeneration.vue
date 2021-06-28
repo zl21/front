@@ -1,5 +1,5 @@
 <template>
-  <div class="AutomaticPathGeneration">
+  <div :class="classes">
     <Form
       :model="formItem"
       :label-width="200"
@@ -36,7 +36,7 @@
           v-model="formItem.idValue"
         />
       </FormItem>
-    
+
       <FormItem
         v-if="currentInfo.type&&currentInfo.type==='TABLE_DETAIL'"
         label="请选择需要跳转的单对象界面类型:"
@@ -72,7 +72,7 @@
           disabled
         />
       </FormItem>
-    
+
       <FormItem>
         <Button
           type="primary"
@@ -93,6 +93,7 @@
     VERTICAL_TABLE_DETAIL_PREFIX,
     PLUGIN_MODULE_PREFIX,
     LINK_MODULE_PREFIX,
+    classFix
   } from '../constants/global';
 
   export default {
@@ -139,7 +140,7 @@
               itemId: ':itemId'
             }
           ],
-          pathType: 
+          pathType:
             [{
                value: `${STANDARD_TABLE_LIST_PREFIX}/`,
                label: '标准列表界面',
@@ -187,16 +188,20 @@
             ],
         },
         currentInfo: {
-            
+
         }
-       
+
       };
     },
     computed: {
-     
+      classes() {
+        return [
+          `${classFix}AutomaticPathGeneration`,
+        ];
+      },
     },
     methods: {
-     
+
       AutomaticPathGeneration() {
         if (this.currentInfo.itemId) {
           this.formItem.path = `${this.currentInfo.value}${this.formItem.nameValue}/${this.formItem.idValue}/${this.currentInfo.itemId}`;
@@ -212,7 +217,7 @@
         const dataRes = this.formItem.singleObjectPageData.filter(item => item.value === data.value)[0];
         if (this.formItem.singleObjectPageValue === '1') {
           this.currentInfo.itemId = dataRes.itemId;
-        } 
+        }
       },
       pathTypeModelChange(data) {
         this.currentInfo = this.formItem.pathType.filter(item => item.value === data.value)[0];
@@ -229,8 +234,3 @@
     }
   };
 </script>
-<style lang="less" scoped>
-.AutomaticPathGeneration{
-    width:1000px;
-}
-</style>

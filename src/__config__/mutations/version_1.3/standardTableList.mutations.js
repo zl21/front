@@ -11,7 +11,7 @@ export default {
     ag.datas = Object.assign({}, ag.datas);
   },
   updateTableDataWithMerge({ ag }, data) {
-    ag.datas = Object.assign({}, ag.datas, data);
+    ag.datas.row = data.row;
   },
   updateTableData({
     ag
@@ -26,6 +26,7 @@ export default {
     }
     ag.status4css = data.status4css;
     ag.key_group = data.key_group;
+    ag.pinnedColumns = data.webconf && data.webconf.pinnedColumns
   },
   // setAgTableErrorMessage({ ag }, errorData) { // ag iconfont
   //   ag.datas.deleteFailInfo = Object.assign({}, ag.datas.deleteFailInfo, errorData);

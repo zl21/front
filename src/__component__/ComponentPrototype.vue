@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="componentPrototype"
-    style="height: 100%; overflow: scroll"
-  >
+  <div :class="classes" style="height: 100%; overflow: scroll">
     <h1> Component Prototype </h1>
     <div class="container">
       <div class="wrapper">
@@ -25,7 +22,7 @@
         />
       </div>
     </div>
-    
+
     <!--  拓展属性   -->
     <div class="container">
       <div style="width: 90%; height: 500px; margin: 0 auto;">
@@ -38,9 +35,9 @@
         />
       </div>
     </div>
-    
+
     <div class="divider" />
-    
+
     <div clss="container">
       <div style="width: 90%; height: 500px; margin: 0 auto;">
         <h3>Extention For Column</h3>
@@ -60,8 +57,8 @@
   import ExtentionInput from './ExtentionInput';
   import enumerableForColumn from '../constants/enumerateInputForColumn';
   import enumerableForTable from '../constants/enumerateInputForTable';
-  import { extentionForColumn, extentionForTable } from '../constants/global';
-  
+  import { extentionForColumn, extentionForTable, classFix } from '../constants/global';
+
   const extentionDataForTable = {
     fkdrplist: {
       orderby: [
@@ -145,7 +142,7 @@
       action: '12'
     }
   };
-  
+
   export default {
     name: 'ComponentPrototype',
     data: () => ({
@@ -158,6 +155,9 @@
     components: {
       EnumerableInput,
       ExtentionInput
+    },
+    computed: {
+      classes: () => `${classFix}componentPrototype`
     },
     methods: {
       onKeydown(e) {
@@ -178,25 +178,3 @@
     }
   };
 </script>
-
-<style scoped lang="less">
-  .componentPrototype {
-    font-family: Consolas, "Hiragino Sans GB", "Microsoft YaHei", serif;
-    .divider {
-      height: 30px;
-      width: 100%;
-    }
-    h1, h2, h3, h4, h5, h6 {
-      margin-bottom: 5px;
-    }
-    .container {
-      font-family: "Roboto", "Microsoft YaHei", sans-serif;
-      display: flex;
-      .wrapper {
-        margin: 30px auto;
-        width: 30%;
-        padding: 5px;
-      }
-    }
-  }
-</style>

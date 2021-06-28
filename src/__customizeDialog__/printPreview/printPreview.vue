@@ -6,7 +6,7 @@
     height="600px"
     :src="src"
   />
-</template> 
+</template>
 <script>
   import { mapState } from 'vuex';
   import router from '../../__config__/router.config';
@@ -39,19 +39,19 @@
       //   type: Boolean,
       //   default: () => false
       // },
-      
+
     },
     watch: {
-      
+
     },
     computed: {
       ...mapState('global', {
         userInfo: ({ userInfo }) => userInfo,
       }),
-     
-    }, 
+
+    },
     methods: {
-        
+
     },
     mounted() {
       this.src = '';
@@ -68,14 +68,14 @@
       this.src = `/api/rpt/preview?tableName=${tableName}&objIds=${printIds}&userId=${userId}`;
 
       // const dom = document.getElementById('printframe');
-      // if (dom.attachEvent) {  
-      //   dom.attachEvent('onload', () => { // IE  
+      // if (dom.attachEvent) {
+      //   dom.attachEvent('onload', () => { // IE
       //     this.$R3loading.hide();
-      //   });  
-      // } else {  
-      //   dom.onload = () => { // 非IE  
+      //   });
+      // } else {
+      //   dom.onload = () => { // 非IE
       //     this.$R3loading.hide();
-      //   };  
+      //   };
       // }
 
       // network.get(`/api/rpt/preview?tableName=${tableName}&objIds=${printIds}&userId=${userId}`).then((res) => {
@@ -92,8 +92,3 @@
 
   };
 </script>
-<style scoped>
-   #printframe{
-     border:0;
-   }
-</style>

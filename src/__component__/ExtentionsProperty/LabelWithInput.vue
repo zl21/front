@@ -22,7 +22,7 @@
 
 <script>
   import LabelForInput from './LabelForInput';
-  
+
   export default {
     name: 'LabelWithInput',
     components: {
@@ -98,7 +98,3 @@
     }
   };
 </script>
-
-<style scoped>
-
-</style>

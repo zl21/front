@@ -33,11 +33,13 @@ module.exports = {
     'import/no-dynamic-require':'off',
     'no-console':'off',
     'vue/no-async-in-computed-properties': 'off',
+    'vue/html-self-closing': 'off',
+    'no-nested-ternary': 'off',
+    'arrow-body-style': 'never',
     'prefer-rest-params': 'off',
     'func-names': 'off',
     'vue/html-self-closing': 'off',
-    'no-nested-ternary': 'off',
-    'arrow-body-style': 'never'
+    'no-nested-ternary': 'off'
   },
   overrides: [
     {

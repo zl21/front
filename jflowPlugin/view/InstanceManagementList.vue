@@ -1,5 +1,5 @@
 <template>
-  <div class="InstanceManagementList">
+  <div :class="classes">
     <div class="content">
       <Tabs
         v-if="tabConfig.length > 0"
@@ -62,6 +62,7 @@
   import Vue from 'vue';
   import todoProcess from './TodoProcess';
   import { global } from '../utils/global.config';
+  import { classFix } from '../../src/constants/global';
 
   export default {
     components: {
@@ -82,7 +83,7 @@
           {
             label: '我发起的',
             name: 'launchList'
-          }, 
+          },
           {
             label: '抄送我的',
             name: 'copyList'
@@ -98,7 +99,7 @@
         this.tabalive = val;
         if (!Vue.component(this.tabalive)) {
           Vue.component(this.tabalive, Vue.extend(todoProcess));
-        } 
+        }
         this.currentComponents = this.tabalive;
       },
       init() {
@@ -110,13 +111,13 @@
         });
         let type = null;
         switch (global.displayList ? global.displayList.split(',')[0] : '1') {
-        case '1': 
+        case '1':
           type = 'todoList'; break;
-        case '2': 
+        case '2':
           type = 'approvalList'; break;
-        case '3': 
+        case '3':
           type = 'launchList'; break;
-        case '4': 
+        case '4':
           type = 'copyList'; break;
         default: break;
         }
@@ -124,9 +125,12 @@
 
         if (!Vue.component(this.tabalive)) {
           Vue.component(this.tabalive, Vue.extend(todoProcess));
-        } 
+        }
         this.currentComponents = this.tabalive;
       }
+    },
+    computed: {
+      classes: () => `${classFix}InstanceManagementList`,
     },
     created() {
       if (global.displayList) {
@@ -142,58 +146,3 @@
     }
   };
 </script>
-<style lang="less" >
-.InstanceManagementList {
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  z-index: 2000;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-
-  .content {
-    height: 100%;
-    flex: 1;
-    display: flex;
-    background: white;
-    padding: 10px;
-    position: relative;
-
-    .InstanceManagementListDelete {
-      width: 12px;
-      position: absolute;
-      top: 0;
-      right: 0;
-      top: 12px;
-      right: 14px;
-      font-size: 20px;
-      cursor: pointer;
-    }
-  }
-
-  .ark-breadcrumb {
-    font-size: 18px;
-    margin-bottom: 12px;
-  }
-  .ark-tabs {
-    flex: 1;
-    display: flex;
-    -webkit-box-direction: column;
-    flex-direction: column;
-    background: white;
-    .ark-tabs-bar {
-      height: 27px;
-    }
-    .ark-tabs-content-animated {
-      height: calc(~"100% - 43px");
-      flex: 1;
-      .ark-tabs-tabpane {
-        display: flex;
-        height: 100%;
-        overflow: hidden;
-      }
-    }
-  }
-}
-</style>

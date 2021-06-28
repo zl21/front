@@ -1,5 +1,5 @@
 <template>
-  <div class="tabComponent">
+  <div :class="classes">
     <div
       v-if="itemInfo.tabrelation==='1:1'&&watermarkimg"
       class="submit-img"
@@ -35,6 +35,7 @@
       :web-conf-single="webConfSingle"
     />
     <!-- 子表表格新增区域form -->
+<<<<<<< HEAD
     <childrenForm
       v-if="formData.isShow&&itemInfo.tabrelation!=='1:1'"
       v-show="status === 1 && !objreadonly"
@@ -49,6 +50,9 @@
     ></childrenForm>
 
     <!-- <compositeForm  
+=======
+    <compositeForm
+>>>>>>> npm_dev_r3
       v-if="formData.isShow&&itemInfo.tabrelation!=='1:1'"
       v-show="status === 1 && !objreadonly"
       :object-type="type"
@@ -185,18 +189,16 @@
   import CustomizeModule from '../__config__/customize.config';
   import WaterMark from './WaterMark.vue';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
-
-
   import {
-    getCustomizeWaterMark,
-    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, notificationOfMain
+    classFix, getCustomizeWaterMark, KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, notificationOfMain
   } from '../constants/global';
+
 
   const customizeModules = {};
   Object.keys(CustomizeModule).forEach((key) => {
     customizeModules[key.toUpperCase()] = CustomizeModule[key];
   });
-  
+
 
   export default {
 
@@ -320,10 +322,28 @@
         default: ''
       }// 定制界面自定义组件类型，为ALL时不显示单对象按钮组件
     },
-    inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY],  
-    computed: { 
+    inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY],
+    computed: {
       ...mapState('global', {
       }),
+      classes() {
+        return [
+          `${classFix}tabComponent`,
+        ];
+      },
+
+      // 根据接口判断是否用普通表格渲染
+      isCommonTable() {
+        const buttonsData = this.buttonsData.data
+        const useAgGrid = window.ProjectConfig.useAgGrid
+        if(buttonsData.webconf && buttonsData.webconf.commonTable === true) {
+          return true
+        } else if(useAgGrid && (!buttonsData.webconf || (buttonsData.webconf && buttonsData.webconf.commonTable === undefined))) {
+          return false
+        } else {
+          return false
+        } 
+      },
 
       // 根据接口判断是否用普通表格渲染
       isCommonTable() {
@@ -356,7 +376,7 @@
             return customizeWaterMark[src].top;
           }
         }
-       
+
         return '42px';
       },
       waterMarkLeft() {
@@ -379,7 +399,7 @@
         }
         return '80px';
       },
-      
+
       waterMarkText() {
         const customizeWaterMark = getCustomizeWaterMark();
         const textMap = Object.assign({
@@ -455,7 +475,7 @@
         // const WebConf = this.$store.state[this[MODULE_COMPONENT_NAME]].WebConf;
         // if (WebConf && WebConf.isCustomizeTab && this.type === 'horizontal') {
         //   return tabCurrentIndex + 1;
-        // } 
+        // }
         return tabCurrentIndex;
       },
 
@@ -527,8 +547,9 @@
         }
        
         const singleObjectButtonsMixin = (window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.singleObjectButtonsMixin) || {};
+        const vuexModuleName = this.moduleComponentName;
 
-        const singlePanelForm= `tabComponent.${this.tableName}.PanelForm`;
+        const singlePanelForm = `tabComponent.${this.tableName}.PanelForm`;
 
         if (this.type === 'vertical') {
           if (Vue.component(tableComponent) === undefined) {
@@ -539,12 +560,11 @@
           }
         } else {
           if(Vue.component(tableComponent) === undefined) {
-            Vue.component(tableComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins(), tableDetailCollectionMixin] }, tableDetailCollection)));
+            Vue.component(tableComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins(vuexModuleName), tableDetailCollectionMixin] }, tableDetailCollection)));
           }
           if (Vue.component(buttonComponent) === undefined) {
-            Vue.component(buttonComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins(), singleObjectButtonsMixin] }, singleObjectButtons)));
+            Vue.component(buttonComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins(vuexModuleName), singleObjectButtonsMixin] }, singleObjectButtons)));
           }
-
         }
         if(this.componentName) { // 定制tab自定义组件
           const customizedModuleName = this.componentName.toUpperCase();
@@ -793,7 +813,7 @@
             this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getObjectForMainTableForm`, { table: tableName, objid: id, tabIndex });
             new Promise((resolve, reject) => {
               this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getObjectTabForMainTable`, {
-                table: tableName, objid: id, tabIndex, resolve, reject 
+                table: tableName, objid: id, tabIndex, resolve, reject
               });
             }).then(() => {
             });
@@ -801,7 +821,7 @@
             this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getObjectForMainTableForm`, { table: tableName, objid: itemId, tabIndex });
             new Promise((resolve, reject) => {
               this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getObjectTabForMainTable`, {
-                table: tableName, objid: itemId, tabIndex, resolve, reject 
+                table: tableName, objid: itemId, tabIndex, resolve, reject
               });
             }).then(() => {
             });
@@ -1000,41 +1020,3 @@
     }
   };
 </script>
-
-<style lang="less">
-  .tabComponent{
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-     .submit-img { //no-active
-    position: absolute;
-    top: 30px;
-    right:0px;
-    width: 104px;
-    z-index: 1000;
-    img {
-      width: 100%;
-    }
-  }
-    .objectButtons {
-      .buttonList {
-        padding-left: 0;
-      }
-    }
-    .form {
-      padding: 0 10px 8px 0;
-      background-color: #F8F8F8;
-    }
-    .formPanel {
-      flex: 1;
-      overflow:auto;
-    }
-    .panelForm {
-      margin: 10px 16px;
-      flex: 1;
-      overflow: auto;
-    }
-    .objectTable {
-    }
-  }
-</style>

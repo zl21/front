@@ -1,5 +1,5 @@
 <template>
-  <div class="extentionInputGroup">
+  <div :class="classes">
     <Description
       :option="option"
       @removeOption="removeOption"
@@ -49,7 +49,8 @@
   import LabelWithRadio from './LabelWithRadio';
   import LabelWithSelect from './LabelWithSelect';
   import ExtentionObjectGroup from './ExtentionObjectGroup';
-  
+  import { classFix } from '../../constants/global';
+
   export default {
     name: 'ExtentionInputGroup',
     components: {
@@ -58,6 +59,9 @@
       LabelWithRadio,
       LabelWithSelect,
       ExtentionObjectGroup
+    },
+    computed: {
+      classes: () => `${classFix}extentionInputGroup`,
     },
     methods: {
       setDefaultData(option, item) {
@@ -105,7 +109,7 @@
           const webconfKey = 'webconf';
           if (value === '') {
             const cloneRootData = JSON.parse(JSON.stringify(this.defaultData));
-            
+
             delete cloneRootData[webconfKey][key];
             this.$emit('dataChange', { key: webconfKey, value: JSON.stringify(cloneRootData[webconfKey]) === '{}' ? '' : cloneRootData[webconfKey] });
           } else {
@@ -132,10 +136,3 @@
     }
   };
 </script>
-
-<style scoped lang="less">
-  .extentionInputGroup {
-    display: flex;
-    flex-direction: column;
-  }
-</style>

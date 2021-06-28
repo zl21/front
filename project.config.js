@@ -1,7 +1,4 @@
 
-// 此分支用于开发表格过滤功能
-// 需求为：根据配置条件进行表格过滤，以tab的展现形式
-
 
 module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
@@ -41,11 +38,11 @@ module.exports = {
   // target: ' http://47.103.6.45:27777/', // 森马
   // target: 'http://cs.yqdev.burgeononline.com/', // 云雀
   // target: 'http://47.102.164.111:27777', // 卡宾
- 
+  // target: 'http://dev.dev.lark-erp.cn/',
   
-  Version: '1.4', // 版本号
+  Version: '1.3', // 版本号
   interlocks: true, // 是否打开三级联动装置
-  enableGateWay: true, // 网关是否打开,
+  enableGateWay: false, // 网关是否打开,
   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用接口请求
   enableHistoryAndFavoriteUI: true, // 是否显示收藏与最近使用UI
   ignoreGateWayPattern: [/\/jflow\/*/g, /\/api\/*/g], // 框架默认禁用的网关逻辑的正则模式匹配
@@ -72,9 +69,12 @@ module.exports = {
   functionPowerRequestURL: '', // 功能权限获取检索项数据接口名称
   cbs: undefined, // 框架回调，形如 { loginCb: function() {} }
   layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
+  layoutDirectionSlot:{  // 模板渲染
+    // NavigatorSubMenu:require('./src/demo/NavigatorSubMenu.vue').default  // 模板渲染
+  },
   backDashboardRoute: [], // 配置刷新浏览器回到Dashboard界面
   custommizedRequestURL: {
-    
+
   }, // 配置内置自定义界面requestURL
   requestPenddingExpire: 1000 * 0.5, // 单位S
   enableRestrictSave: true, // 是否限制保存，默认为true,true:界面未修改值则点击保存按钮不调用保存服务，false:无论是否修改值都会调用保存服务
@@ -88,6 +88,7 @@ module.exports = {
   logoutTips: false, // 失去会话是否需要登出提示 默认false直接登出
   enableKAQueryDataForUser: false, // 是否开启存储全表查询条件
   dateStorageTime: 1, // 查询条件存储时间，默认1天,建议不要设置太大影响性能
+  enableOpenNewTab: true, // 列表界面打开 同表 单对象是否新开tab,默认为false
   blockFullOperation: false, // 禁止不选数据时的批量修改操作,
   customizeMixins: { // 获取所有外部接入的mixins对象
     setPanel: null,
@@ -105,17 +106,17 @@ module.exports = {
     //   AD_COLUMN: ['/ad-app/p/cs/QueryList', '/ad-app/p/cs/getTableQuery'],
     // },
     // customizePage: ['FUNCTIONPERMISSION'], // 自定义界面
-  }, 
+  },
   filterUrlForNetworkScript: () => true, // 框架默认true,
   listDefaultColumn: 4,
   setComponentsProps: (type, props) => {  // 框架自定义表单配置
     // 列表支持联动查询
-    if (type === 'OBJ_FK') {
-      if(props.PropsData && (props.PropsData.fkobj.searchmodel ==='mrp' || props.PropsData.fkobj.searchmodel ==='drp')){
-        props.PropsData.Query = true;
-      }
-    }
-    return props;
+    // if (type === 'OBJ_FK') {
+    //   if(props.PropsData && (props.PropsData.fkobj.searchmodel ==='mrp' || props.PropsData.fkobj.searchmodel ==='drp')){
+    //     props.PropsData.Query = true;
+    //   }
+    // }
+    // return props;
   },
   agGridOptions: { // ag表格的配置
     // rowHeight: 100
@@ -133,12 +134,20 @@ module.exports = {
   //   }
   //   return true;
   // }
+  // },
+  // standardTableCellRenderer: { // 标准列表里，定制ag-grid的单元格
+  //   customlink: params => `<div onclick="console.log('${params.value}')">-定制-${params.value}</div>`
+  // }
   // formItemMixins:require('./src/demo/formItemMixins'),
   isFilterTable: true, // 是否开启表格过滤功能
-  // DashboardRoute: {
-  //   component: FunctionPowerNew,
-  //   labelName: '功能权限',
+  // DashboardComponent: {
+  //   compontent: () => import(
+  //     './src/__component__/Login.vue'
+  //   ),
+  //   iconClass: 'iconfont iconmd-grid'
   // }
+  // classFix: 'r3-', // 样式前缀
+  classFix: '', // 样式前缀
   autoGatewayUrl:false,  // 是否请求网关
   computeForSubtable: false
 };

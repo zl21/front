@@ -27,11 +27,9 @@ export default () => ({
   // mixins: [customizeMixins().standardTableListsCustomize ? customizeMixins().standardTableListsCustomize : false],
   data() {
     return {
-      noMounted: true, // 进入单对象会同时触发mounted与actived两个生命周期，因此无法判断是否在切换tab
     };
   },
   created() {
-    this.noMounted = false;
     this[MODULE_COMPONENT_NAME] = getComponentName();
     this[INSTANCE_ROUTE] = router.currentRoute.fullPath;
     this[INSTANCE_ROUTE_QUERY] = router.currentRoute.params;
@@ -109,34 +107,6 @@ export default () => ({
           });
         }
 
-        // data.key_group = [
-        //   {
-        //     target: 'NAME',
-        //     source: [
-        //       {
-        //         col_name: 'SEX',
-        //         label: [
-        //           {
-        //             value: '0',
-        //             description: '男女',
-        //             cssclass: 'color-bold-brown'
-        //           },
-        //           {
-        //             value: '1',
-        //             description: '保密',
-        //             cssclass: 'color-bold-qing'
-        //           },
-        //           {
-        //             value: '2',
-        //             description: 'M',
-        //             cssclass: 'color-qing'
-        //           }
-        //         ]
-        //       }
-        //     ]
-        //   }
-        // ];
-
         // 列表字段支持字段合并样式展示
 
         if (data.key_group && data.key_group.length > 0 && data.datas.tabth) {
@@ -149,6 +119,10 @@ export default () => ({
             });
             return item;
           });
+        }
+        
+        if(data.pinnedColumns) {
+          data.datas.pinnedColumns = data.pinnedColumns
         }
         return data;
       },
@@ -167,19 +141,6 @@ export default () => ({
       webconf: ({ webconf }) => webconf, // 局部webconf，用于控制普通表格
       webConf: ({ webConf }) => webConf, // 列表界面webConf
     }),
-  },
-  activated() {
-    if (this.noMounted) { // 因进入单对象界面会触发activated生命周期，以下操作为切换tab时的处理逻辑，第一次加载组件不需要执行以下操作，故在mounted里加标示区分
-      const currentTableName = this.$router.currentRoute.params.tableName;
-      const tpl = document.querySelector(`#${currentTableName}-loading`);
-      if (tpl) {
-        if (store.state.global.currentLoading.indexOf(currentTableName) !== -1) {
-          tpl.remove();
-          store.commit('global/deleteLoading', currentTableName);
-        }
-      }
-    }
-    this.noMounted = true;
   },
   beforeDestroy() {
     try {

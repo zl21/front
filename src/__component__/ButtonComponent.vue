@@ -1,8 +1,6 @@
 <template>
-  <div
-    class="R3-buttonList"
-  >
-    <div class="R3-button-group">
+  <div :class="classes">
+    <div :class="classGroup">
       <!-- //查找 -->
       <!-- <Poptip
         trigger="hover"
@@ -16,7 +14,7 @@
         v-text="search"
       />
       <!-- </Poptip> -->
-     
+
       <Button
         v-show="dataArray.reset"
         id="reset"
@@ -31,24 +29,42 @@
         :ref="item.ref"
         type="fcdefault"
         @click="btnclick('fix', item,index)"
-        v-text="item.name" 
+        v-text="item.name"
       />
-      <Button
-        v-for="(item,index) in dataArray.waListButtonsConfig.waListButtons"
-        :id="item.eName"
-        :key="item.webid"
-        :ref="item.ref"
-        :disabled="item.disabled"
-        type="fcdefault"
-        @click="btnclick('custom', item)"
-        v-text="item.webdesc" 
-      >
-        <!-- <Poptip
-          trigger="hover"
-          content="waListButtonsAnnotation"
-          placement="bottom-start"
-        /> -->
-      </Button>
+
+      <!-- 定制按钮 -->
+      <template v-for="item in dataArray.waListButtonsConfig.waListButtons">
+        <template v-if="item.confirm && item.confirm.includes('supPrompt')">
+          <Poptip 
+            trigger="hover" 
+            transfer
+            :key="item.webid"
+            word-wrap
+            width="200"
+            :content="JSON.parse(item.confirm).supPrompt">
+            <Button
+              :id="item.eName"
+              :ref="item.ref"
+              :disabled="item.disabled"
+              type="fcdefault"
+              @click="btnclick('custom', item)"
+              v-text="item.webdesc"> 
+            </Button>
+          </Poptip>
+        </template>
+        <Button
+          v-else
+          :id="item.eName"
+          :key="item.webid"
+          :ref="item.ref"
+          :disabled="item.disabled"
+          type="fcdefault"
+          @click="btnclick('custom', item)"
+          v-text="item.webdesc"
+          > 
+        </Button>
+      </template>
+      
       <Dropdown
         v-for="(group,i) in dataArray.waListButtonsConfig.waListButtonsGroup"
         :key="group.webid"
@@ -58,23 +74,64 @@
         type="primary"
         @on-click="choseWaListButton"
       >
-        <Button
-          type="fcdefault"
-        >
-          {{ group.webdesc }}
-          <Icon type="ios-arrow-down" />
-        </Button>
-        <DropdownMenu slot="list">
-          <DropdownItem
-            v-for="(item,index) in group.childrens "
-            :key="item.webid"
-            :name="item"
-            :disabled="item.disabled"
+        <!-- 按钮有气泡提示 -->
+        <template v-if="group.confirm && group.confirm.includes('supPrompt')">
+          <Poptip 
+            trigger="hover" 
+            transfer
+            :key="group.webid"
+            word-wrap
+            width="200"
+            :content="JSON.parse(group.confirm).supPrompt">
+            <Button
+              type="fcdefault"
+            >
+              {{ group.webdesc }}
+              <Icon type="ios-arrow-down" />
+            </Button>
+          </Poptip>
+        </template>
+        <template v-else>
+          <Button
+            type="fcdefault"
           >
-            {{ item.webdesc }}
-          </DropdownItem>
+            {{ group.webdesc }}
+            <Icon type="ios-arrow-down" />
+          </Button>
+        </template>
+        
+        <DropdownMenu slot="list" class="btn-menu">
+          <!-- 按钮菜单有气泡提示 -->
+          <template v-for="(item,index) in group.childrens ">
+            <Poptip 
+                v-if="item.confirm && item.confirm.includes('supPrompt')"
+                trigger="hover" 
+                transfer
+                :key="item.webid"
+                word-wrap
+                placement="right"
+                width="200"
+                :content="JSON.parse(item.confirm).supPrompt">
+                <DropdownItem
+                  :key="item.webid"
+                  :name="item"
+                  :disabled="item.disabled"
+                >
+                  {{ item.webdesc }}
+                </DropdownItem>
+            </Poptip>
+            <DropdownItem
+              v-else
+              :key="item.webid"
+              :name="item"
+              :disabled="item.disabled"
+            >
+              {{ item.webdesc }}
+            </DropdownItem>
+          </template>
         </DropdownMenu>
       </Dropdown>
+      
       <!-- jflow配置按钮-->
       <Button
         v-for="(item) in dataArray.jflowButton"
@@ -82,10 +139,10 @@
         :ref="item"
         type="fcdefault"
         @click="btnclick('extraposition', item)"
-        v-text="item.name" 
+        v-text="item.name"
       />
-    
-     
+
+
       <Dropdown
         v-if="dataArray.printValue"
         id="print"
@@ -133,13 +190,6 @@
         @click="btnclick('refresh')"
         v-text="refresh"
       />
-      <!-- <Button
-        id="hideRefresh"
-        class="hide"
-        type="fcdefault"
-        @click="btnclick('refresh')"
-        v-text="refresh"
-      /> -->
      
       <Button
         v-if="dataArray.temporaryStorage"
@@ -155,7 +205,7 @@
         @click="btnclick('back')"
         v-text="back"
       />
-      
+
       <Dialog
         ref="dialogRef"
         :id-array="idArray"
@@ -173,12 +223,12 @@
     </div>
   </div>
 </template>
-<script> 
-  
+<script>
+
   import { mapState } from 'vuex';
   import Dialog from './Dialog.vue';
   import network from '../__utils__/network';
-  import { MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, enableHistoryAndFavoriteUI } from '../constants/global';
+  import { MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY,layoutDirection, enableHistoryAndFavoriteUI, classFix } from '../constants/global';
 
 
   export default {
@@ -300,6 +350,16 @@
       ...mapState('global', {
         userInfo: ({ userInfo }) => userInfo,
       }),
+      classes() {
+        return [
+          `${classFix}R3-buttonList`,
+        ];
+      },
+      classGroup () {
+        return [
+          `${classFix}R3-button-group`,
+        ];
+      },
     },
     methods: {
       choseWaListButton(data) {
@@ -315,7 +375,7 @@
       //   }, 1000);
       // },
       clearSelectIdArray() { // 用于关闭打印相关弹框清空标准列表界面选中项
-        this.$emit('clearSelectIdArray'); 
+        this.$emit('clearSelectIdArray');
       },
       clearDialogComponentName() {
         this.dialogComponentName = null;
@@ -362,7 +422,7 @@
 
         if (id === 2527 || id === 2530) { // 直接打印
           let src = '';
-          this.$R3loading.show();
+          this.$R3loading.show(this.loadingName);
           let api = '';
           if (printIdArray.length === 0) { // 直接打印 新增需求，如列表界面不勾选则传参加上筛选值
             api = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printIdArray}&userId=${this.userInfo.id}&searchData=${JSON.stringify(this.searchDatas)}`;
@@ -374,16 +434,16 @@
             if (res.status === 200) {
               if (this[MODULE_COMPONENT_NAME][0] === 'S') {
                 if (id === 2530) {
-                  this.$R3loading.hide(tableName);
+                  this.$R3loading.hide(this.loadingName);
                   this.objTabActionDialog(tab);
-                } else { 
+                } else {
                   src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${this.idArray}&userId=${this.userInfo.id}`;
                   this.setIframeForPrint(src);
                 }
               } else {
                 const printId = this.itemId;
                 if (id === 2530) {
-                  this.$R3loading.hide(tableName);
+                  this.$R3loading.hide(this.loadingName);
                   this.objTabActionDialog(tab);
                 } else {
                   src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printId}&userId=${this.userInfo.id}`;
@@ -391,10 +451,10 @@
                 }
               }
             } else {
-              this.$R3loading.hide(tableName);
+              this.$R3loading.hide(this.loadingName);
             }
           }).catch(() => {
-            this.$R3loading.hide(tableName);
+            this.$R3loading.hide(this.loadingName);
           });
         } else {
           this.objTabActionDialog(tab);
@@ -415,14 +475,14 @@
         document.getElementById('iFrame').contentWindow.print();
         this.clearSelectIdArray();
         const dom = document.getElementById('iFrame');
-        if (dom.attachEvent) {  
-          dom.attachEvent('onload', () => { // IE  
-            this.$R3loading.hide(tableName);
-          });  
-        } else {  
-          dom.onload = () => { // 非IE  
-            this.$R3loading.hide(tableName);
-          };  
+        if (dom.attachEvent) {
+          dom.attachEvent('onload', () => { // IE
+            this.$R3loading.hide(this.loadingName);
+          });
+        } else {
+          dom.onload = () => { // 非IE
+            this.$R3loading.hide(this.loadingName);
+          };
         }
       },
       objTabActionDialog(tab) { // 动作定义弹出框
@@ -438,14 +498,15 @@
         // }
       },
       btnclick(type, item) {
-        if (item && item.disabled) { return; }
         this.$emit('buttonClick', type, item);
       },
+
     },
     created() {
+      this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');
       // this[MODULE_COMPONENT_NAME] = getComponentName();
     },
-   
+
   };
 </script>
 
@@ -514,5 +575,11 @@
 
   
   }
- 
+
+.btn-menu {
+  .ark-poptip,
+  .ark-poptip-rel {
+    display: block;
+  }
+}
 </style>

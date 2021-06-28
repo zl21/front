@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="standardTable"
-    :class="isFilterTable ? 'isFilterTable' : ''"
-  >
+  <div :class="classes">
     <Page
       v-if="isPageShow"
       ref="page"
@@ -24,12 +21,41 @@
       <img :src="bigBackground">
     </div>
 
-    <div
+    <!-- <div
       v-show="!isCommonTable && !isBig"
       ref="agGridTableContainer"
       class="detailTable"
-    />
+    /> -->
+    <!-- ag表格 -->
+    <!-- <div class="detailTable"
+      v-show="!isCommonTable && !isBig">
+        <CommonTableByAgGrid
+          style="height:100%;"
+          ref="agGridTableContainer"
+          height="100%"
+          :columns="columns"
+          :data="rows"
+          :options="{
+            ...options,
+            ...agGridOptions,
+          }"
+      ></CommonTableByAgGrid>
+    </div> -->
+    <CommonTableByAgGrid
+        v-if="!isCommonTable && !isBig && options"
+        mode="r3-list"
+        class="detailTable"
+        ref="agGridTableContainer"
+        height="100%"
+        :columns="columns"
+        :data="rows"
+        :options="{
+          ...options,
+          ...agGridOptions,
+        }"
+      ></CommonTableByAgGrid>
 
+    <!-- 普通表格 -->
     <div
       v-if="isCommonTable && !isBig"
       class="common-table"
@@ -52,10 +78,12 @@
     </div>
     <div class="queryDesc">
       <div
-        v-if="(legend.length > 0) & isLegendShow"
+        v-if="legend.length > 0 & isLegendShow"
         class="legend"
       >
-        <span style="font-weight: bold"> 图例: </span>
+        <span style="font-weight: bold;">
+          图例:
+        </span>
         <p
           v-for="(item, index) in legend"
           :key="index"
@@ -79,27 +107,40 @@
 /* eslint-disable no-lonely-if */
 
   import { mapState } from 'vuex';
-  import agTable from '../assets/js/ag-grid-table-pure';
+  // import agTable from '../assets/js/ag-grid-table-pure';
   import CommonTable from './CommonTable.vue';
-  import { floatingFilter } from '../constants/global';
+  import { floatingFilter, classFix } from '../constants/global';
+  import { CommonTableByAgGrid } from '@syman/ark-ui-bcl';
+  import { getPinnedColumns } from '../__utils__/tableMethods'
 
   export default {
     name: 'AgTable',
     data() {
       return {
-        // bigBackground: require('../assets/image/isBig.png')
-        // isCommonTable: true, // 是否显示普通表格
-        // isCommonTable: false, // 是否显示普通表格
-        selectRow: []
+        selectRow: [],
+        options: null,
+        rows: [],
+        columns: [],
+        agGridOptions: window.ProjectConfig.agGridOptions || {},
+        useAgGrid: window.ProjectConfig.useAgGrid,
       };
     },
     components: {
       CommonTable,
+      CommonTableByAgGrid
     },
     computed: {
       ...mapState('global', {
         bigBackground: ({ imgSrc }) => imgSrc.bigDataImg,
       }),
+      classes() {
+        return [
+          `${classFix}standardTable`,
+          {
+            ['isFilterTable']: this.isFilterTable,
+          }
+        ];
+      },
     },
     props: {
       doTableSearch: {
@@ -239,29 +280,17 @@
       },
       moduleComponentName: {
         type: String,
-      }
+      },
     },
     watch: {
-      userConfigForAgTable(val) {
-        if (!this.isCommonTable && !this.isBig) {
-          const { agGridTableContainer } = this.$refs;
-          if (agGridTableContainer.agTable) {
-            agGridTableContainer.agTable.dealWithPinnedColumns(
-              true,
-              val.fixedColumn || ''
-            );
-          }
-        }
-      },
       datas(val) {
         if (!this.isCommonTable && !this.isBig) {
           this.agGridTable(val.tabth, val.row, val);
           setTimeout(() => {
             const { agGridTableContainer } = this.$refs;
-            if (agGridTableContainer && agGridTableContainer.agTable) {
-              agGridTableContainer.agTable.fixContainerHeight();
-              agGridTableContainer.agTable.emptyAllFilters();
-              agGridTableContainer.agTable.dealWithPinnedColumns(true, val.fixedColumn || '');
+
+            if (agGridTableContainer) {
+              agGridTableContainer.emptyAllFilters();
               if(this.$route.query.isBack) {
                 this.setTableSelected();
               }
@@ -281,13 +310,49 @@
         if (!data) {
           return result;
         }
-        
+
         for (let i = 0; i < data.length; i++) {
           if (data[i].isagfilter) {
             result = true;
           }
         }
         return result;
+      },
+
+      // 处理列数据
+      processColumns(datas) {
+        // 所有的固定列为 扩展属性固定列和用户固定列的集合
+        let columns = []
+        const { pinnedPosition, pinnedColumns } = datas
+        const { pinnedLeftColumns:webconfLeft, pinnedRightColumns:webconfRight } = getPinnedColumns(pinnedColumns)
+        const { pinnedLeftColumns:userLeft, pinnedRightColumns:userRight } = getPinnedColumns(pinnedPosition)
+
+        // 获取最终的固定列
+        const pinnedLeftColumns = [...new Set(userLeft.concat(webconfLeft))]
+        const pinnedRightColumns = [...new Set(userRight.concat(webconfRight))]
+
+        columns = datas.tabth.map(item => {
+          // 固定左侧列
+          if(pinnedLeftColumns.includes(item.colname)) {
+            item.pinned = 'left'
+            // 扩展属性里配置的固定列
+            if(webconfLeft.includes(item.colname)) {
+              item.suppressMovable = true // 禁止拖拽移动
+              item.suppressMenu = true // 禁止表头工具菜单
+            }
+          }
+          // 固定右侧列
+          if(pinnedRightColumns.includes(item.colname)) {
+            item.pinned = 'right'
+            if(webconfRight.includes(item.colname)) {
+              item.suppressMovable = true
+              item.suppressMenu = true
+            }
+          }
+          item.tdAlign = item.type === 'NUMBER' ? 'right' : 'left'
+          return item
+        }) 
+        return columns
       },
 
       agGridTable(th, row, data) { // agGrid
@@ -322,13 +387,24 @@
         if (!floatingFilter()) {
           isOpenfloatingFilter = false;
         }
-        // selectIdArr
-        const agTableRes = agTable(this.$refs.agGridTableContainer, {
+        if(datas.row && Array.isArray(datas.row)) {
+          this.rows = datas.row 
+        }
+
+        // 处理列数据
+        if(datas.tabth && Array.isArray(datas.tabth)) {
+          this.columns = this.processColumns(datas)
+        }
+        if(this.columns.length === 0) {
+          return
+        }
+
+        this.options = {
           cssStatus: self.legend, // 颜色配置信息
           defaultSort: arr, // 默认排序
           datas, //  所有返回数据
           floatingFilter: isOpenfloatingFilter,
-          cellSingleClick: (colDef, rowData, target) => {
+          agCellSingleClick: (colDef, rowData, target) => {
             // 参数说明
             // colDef：包含表头信息的对象
             // row：包含当前行所有数据的对象
@@ -337,25 +413,25 @@
               self.onCellSingleClick(colDef, rowData, target);
             }
           }, // 单元格单击回调
-          cellDoubleClick: (colDef, rowData, target) => {
+          agCellDoubleClick: (colDef, rowData, target) => {
             // 参数说明同cellSingleClick
             if (typeof self.onCellDoubleClick === 'function') {
               self.onCellDoubleClick(colDef, rowData, target);
             }
           }, // 单元格双击回调
-          rowSingleClick: (colDef, rowData, target) => {
+          agRowClick: (colDef, rowData, target) => {
             // 参数说明同cellSingleClick
             if (typeof self.onRowSingleClick === 'function') {
               self.onRowSingleClick(colDef, rowData, target);
             }
           }, // 行单击回调
-          rowDoubleClick: (colDef, rowData, target) => {
+          agRowDoubleClick: (colDef, rowData, target) => {
             // 参数说明同cellSingleClick
             if (typeof self.onRowDoubleClick === 'function') {
               self.onRowDoubleClick(colDef, rowData, target);
             }
           }, // 行双击回调
-          onSortChanged: (arrayOfSortInfo) => {
+          agSortChanged: (arrayOfSortInfo) => {
             // 参数说明
             // arrayOfSortInfo: 返回当前用户触发的排序信息
             // 形如： [{"colId":"PS_C_BRAND_ID.val","sort":"asc"},{"colId":"ECODE.val","sort":"desc"}]
@@ -363,12 +439,12 @@
               self.onSortChanged(arrayOfSortInfo);
             }
           }, // 排序事件触发回调
-          onColumnVisibleChanged: (colName) => {
+          agColumnVisibleChanged: (colName) => {
             if (typeof self.onColumnVisibleChanged === 'function') {
               self.onColumnVisibleChanged(colName);
             }
           },
-          onSelectionChanged: (rowIdArray, rowArray) => {
+          agSelectionChanged: (rowIdArray, rowArray) => {
             if(this.lockSelected) {
               return
             }
@@ -379,24 +455,18 @@
               this.selectRow = rowIdArray;
             }
           },
-          onColumnMoved: (columnState) => {
+          agColumnMoved: (columnState) => {
             // 记住移动列
             if (typeof self.onColumnMoved === 'function') {
               self.onColumnMoved(columnState);
             }
           },
-          onColumnPinned: (ColumnPinned) => {
+          agColumnPinned: (ColumnPinned) => {
             if (typeof self.onColumnPinned === 'function') {
               self.onColumnPinned(ColumnPinned);
             }
           },
-        });
-        if (agTableRes && agTableRes.setCols) {
-          return agTableRes
-            .setCols(th) // 设置数据列
-            .setRows(row); // 设置数据行
         }
-        return null;
       },
 
       // 清除勾选
@@ -452,9 +522,9 @@
               }
             });
 
-            agGridTableContainer.agTable.api.forEachNode((node, index) => {
+            agGridTableContainer.api.forEachNode((node, index) => {
               if (selectedIndex.includes(index)) {
-                agGridTableContainer.agTable.api.selectNode(node, true);
+                agGridTableContainer.api.selectNode(node, true);
               }
             });
             setTimeout(() => {
@@ -470,10 +540,8 @@
     activated() {
       if (!this.isCommonTable && !this.isBig) {
         const { agGridTableContainer } = this.$refs;
-        if (agGridTableContainer.agTable) {
-          agGridTableContainer.agTable.fixAgRenderChoke();
-          agGridTableContainer.agTable.fixContainerHeight();
-        
+        if (agGridTableContainer) {
+          agGridTableContainer.fixAgRenderChoke();
           this.setTableSelected();
         }
       }
@@ -499,7 +567,7 @@
 .isBig {
   border: 1px solid #d8d8d8;
   margin-top: 10px;
-  height: 100%;
+  height: calc(100% - 65px);
   width: 100%;
 }
 .isBig {
@@ -556,7 +624,6 @@
   }
   .detailTable{
     margin-top: 0px;
-
   }
 .common-table{
     margin-top: 0px;

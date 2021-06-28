@@ -1,19 +1,15 @@
 <template>
   <div>
-    <div
-      id="editor"
-      ref="editor"
-      class="editor"
-    />
+    <div id="editor" ref="editor" :class="classes" />
   </div>
 </template>
 
   <script>
   import wangEditor from '../assets/js/wangeditor/wangEditor';
-  import { Version } from '../constants/global';
+  import { Version, classFix } from '../constants/global';
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
- 
+
   export default {
     name: 'Wangeditor',
     props: {
@@ -24,7 +20,7 @@
       isActives: { // 是否可点编辑
         type: Boolean,
         default: true
-      }, 
+      },
       valuedata: {
         type: String,
         default: ''
@@ -54,6 +50,7 @@
       this.editor.txt.html(this.textHtml);
     },
     computed: {
+      classes: () => `${classFix}editor`,
       itemData() {
         return this.item;
       }
@@ -75,7 +72,7 @@
         // 或者 let editor = new E(document.getElementById('#editor'))
         this.editor.customConfig.zIndex = 100;
         // 使用 base64 保存图片
-        this.editor.customConfig.uploadImgShowBase64 = true; 
+        this.editor.customConfig.uploadImgShowBase64 = true;
         this.editor.customConfig.customUploadImg = function (files, insert) {
           // files 是 input 中选中的文件列表
           // insert 是获取图片 url 后，插入到编辑器的方法
@@ -86,7 +83,7 @@
           }
           self.tomUploadImg();
         };
-       
+
         this.editor.customConfig.onchange = function (html) { // html 即变化之后的内容
           self.value = html == '<p><br></p>' ? null : html;
           self.$emit('getChangeItem', self.value);
@@ -112,9 +109,9 @@
         ];
 
         this.editor.create(); // 初始化编辑器
-       
+
         const editorSelector = this.$refs.editor;
-        this.$nextTick(() => { 
+        this.$nextTick(() => {
           // 默认值
           self.value = this.textHtml;
           this.editor.txt.html(this.textHtml);
@@ -127,7 +124,7 @@
           }
 
 
-          this.editor.$textElem.attr('contenteditable', !this.tabAction); 
+          this.editor.$textElem.attr('contenteditable', !this.tabAction);
           const _block = !this.tabAction ? 'none' : 'block';
           const _html = document.createElement('div');
           _html.setAttribute('id', 'editor_layer');
@@ -141,12 +138,12 @@
           }
           const wangEditoMenu = document.createElement('div');
           wangEditoMenu.style.display = 'inline-flex';
-          
+
           wangEditoMenu.innerHTML = `<div class="w-e-menu" id="_wangEditor_btn_fullscreen">
                                     <a class="_wangEditor_btn_fullscreen" href="###">全屏</a></div>
                                     <div class="w-e-menu" id="_wangEditor_btn_html">
                                     <a class="_wangEditor_btn_html" href="###">html</a></div>`;
-         
+
           // // 添加全屏 html 按钮
           editorSelector.querySelector('.w-e-toolbar').appendChild(wangEditoMenu);
           editorSelector.querySelector('#_wangEditor_btn_fullscreen').addEventListener('click', () => {
@@ -154,7 +151,7 @@
           });
           editorSelector.querySelector('#_wangEditor_btn_html').addEventListener('click', () => {
             self.toggleHtml(editorSelector);
-          });    
+          });
         });
       },
       toggleFullscreen(editorSelector) {
@@ -169,7 +166,7 @@
       toggleHtml(editorSelector) {
         if (editorSelector.querySelector('._wangEditor_btn_html').innerText === 'html') {
           editorSelector.querySelector('._wangEditor_btn_html').innerText = '退出';
-         
+
           document.getElementById('editor_layer').style.display = 'block';
           editorSelector.querySelector('#textarea').style.display = 'block';
           editorSelector.querySelector('.w-e-text').style.display = 'none';
@@ -209,7 +206,7 @@
           file: data.file,
           path
         };
-        // 
+        //
         fkHttpRequest().editorUpload({
           params: {
             customUploadImg
@@ -243,7 +240,7 @@
         const self = this;
         fkHttpRequest().fkQueuploadProgressry({
           searchObject: {
-            uploadId: upload.UploadId 
+            uploadId: upload.UploadId
           },
           // eslint-disable-next-line consistent-return
           success: (res) => {
@@ -260,74 +257,8 @@
           }
         });
       }
-      
-    
+
+
     }
   };
   </script>
-
-  <style lang="less">
-    .editor {
-      position:relative;
-        b {
-        font-weight: bold;
-        }
-    }
-
-    #editor_layer {
-    background: #f1f1f1;
-    position: absolute;
-    width: 100%;
-    top: 0px;
-    height: 33px;
-    z-index: 103;
-    opacity: 0.5;
-    }
-
-    #_wangEditor_btn_fullscreen {
-    position: relative;
-    z-index: 150;
-    }
-
-    .w-e-toolbar {
-    flex-wrap: wrap;
-    -webkit-box-lines: multiple;
-    }
-
-    .w-e-toolbar .w-e-menu:hover {
-    z-index: 10002 !important;
-    }
-
-    .w-e-menu a {
-    text-decoration: none;
-    }
-
-    .fullscreen-editor {
-    position: fixed !important;
-    width: 100% !important;
-    height: 100% !important;
-    left: 0px !important;
-    top: 0px !important;
-    background-color: white;
-    z-index: 9999;
-    }
-
-    #_wangEditor_btn_html {
-    position: relative;
-    z-index: 150;
-    }
-
-    .fullscreen-editor .w-e-text-container {
-    width: 100% !important;
-    height: 95% !important;
-    }
-    #editor_layer_mask{
-        display: block;
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0px;
-        z-index: 999;
-        background: rgba(0,0,0,0.01);
-    }
-  </style>

@@ -127,8 +127,8 @@
         } else {
           this.value = this.defaultSelected && this.defaultSelected.length > 0 ? Array.isArray(this.defaultSelected[0].ID) ? `已经选中${this.defaultSelected[0].ID.length}条数据` : `已经选中${this.defaultSelected.length}条数据` : '';
         }
-        
-        
+
+
         this.selected = this.defaultSelected;
         // if (this.selected[0].Label && /total/.test(this.selected[0].Label)) {
         //   const valuedata = JSON.parse(this.selected[0].Label);
@@ -141,6 +141,7 @@
           delete this.propstype.headerComponentParams;
           delete this.propstype.pinnedRowCellRendererParams
         }
+
         this.propsData = JSON.parse(JSON.stringify(this.propstype));
 
         if (this.propsData.disabled) {
@@ -154,11 +155,11 @@
         } else {
           this.propsData.componentType = Dialog;
           if (this.defaultSelected[0] && this.defaultSelected[0].ID && /选中/.test(this.value)) {
-            // const data = this.defaultSelected[0].ID; 
+            // const data = this.defaultSelected[0].ID;
             // console.log(this.defaultSelected[0]);
-            const data = Array.isArray(this.defaultSelected[0].ID) ? this.defaultSelected[0].ID : JSON.parse(this.defaultSelected[0].ID); 
+            const data = Array.isArray(this.defaultSelected[0].ID) ? this.defaultSelected[0].ID : JSON.parse(this.defaultSelected[0].ID);
             // 谢世华  修改处理默认值逻辑
-            
+
             if (data.value) {
               data.value.reftable = this.propsData.reftable;
               data.value.reftableid = this.propsData.reftableid;
@@ -210,7 +211,7 @@
           },
           serviceId: this.propsData.fkobj.serviceId,
           success: (res) => {
-            this.propsData.hidecolumns = ['id', 'value']; 
+            this.propsData.hidecolumns = ['id', 'value'];
             this.propsData.AutoData = res.data.data;
           }
         });
@@ -324,7 +325,7 @@
           instance.datalist.forEach((item) => {
             item.class = '';
           });
-        }        
+        }
         if (instance.showModal === false) {
           fkHttpRequest().fkGetMultiQuery({
             searchObject: {
@@ -412,8 +413,8 @@
           this.resultData = savemessage;
           if (saveType > 0) {
             const value = `已经选中${this.$refs.complex.resultData.total}条数据`;
-           
-        
+
+
             if (!this.propsData.fkobj.saveType) {
               const ids = $this.idslist;
               const Select = [
@@ -470,7 +471,7 @@
       } else {
         this.showDisabled = false;
       }
-      
+
       this.selected = this.defaultSelected;
       if (!this.selected[0]) {
         this.selected = [{
@@ -492,8 +493,8 @@
       }
 
       if (this.defaultSelected[0] && this.defaultSelected[0].ID && /选中/.test(this.defaultSelected[0].Label)) {
-        const data = Array.isArray(this.defaultSelected[0].ID) ? this.defaultSelected[0].ID : JSON.parse(this.defaultSelected[0].ID); 
-        // const data = this.defaultSelected[0].ID; 
+        const data = this.defaultSelected[0].ID;
+        // const data = this.defaultSelected[0].ID;
         // 谢世华  修改处理默认值逻辑
         if (data.value) {
           data.value.reftable = this.propsData.reftable;
@@ -513,23 +514,3 @@
     }
   };
 </script>
-<style lang="less">
-.AttachFilter-pop {
-  .iconbj_tcduo:before {
-    content: "\e6b1";
-  }
-  .iconbj_tcduo {
-    padding-top: 2px;
-  }
-  
-}
-.attachfiter-pop{
-  .ark-select-item-selected{
-    color: #333333!important;
-  }
-  .ark-select-item-focus{
-    background-color: #fff!important;
-  }
-
-}
-</style>

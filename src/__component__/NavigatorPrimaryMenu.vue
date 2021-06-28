@@ -6,9 +6,12 @@
     @click.stop="togglePrimaryMenu(data.children)"
   >
     <template v-if="type==='Vertical'">
-      <div class="navigator-primary-menu-div">
-        {{ data.label }}
-      </div> <Icon type="ios-arrow-forward" />
+      <component :is="NavigatorPrimaryMenuBar" :data="data" />
+      <div v-if="NavigatorPrimaryMenuBar===''">
+         <div class="navigator-primary-menu-div">
+          {{ data.label }}
+        </div> <Icon type="ios-arrow-forward" />
+      </div>
     </template>
     <template v-else>
       {{ data.label }}
@@ -23,17 +26,25 @@
     name: 'NavigatorPrimaryMenu',
     components: {
     },
-  
+    data(){
+        return {
+          NavigatorPrimaryMenuBar:''
+        }
+
+    },
     computed: {
       ...mapState('global', {
         primaryMenuIndex: state => state.primaryMenuIndex,
       }),
       isShow() {
         return this.data.children.filter(subMenu => subMenu.children.length > 0 && subMenu.children.filter(c => !c.isHidden).length > 0).length > 0;
-      }
+      },
     },
     methods: {
       togglePrimaryMenu(data) {
+        if(document.querySelector('.NaVertical')){
+          document.querySelector('.NaVertical').__vue__.$refs.Dropdown.onClickoutside();
+        }
         this.$emit('togglePrimaryMenu', data, this.index);
       },
       ...mapMutations('global', ['changeSelectedPrimaryMenu', 'hideMenu', 'saveLastIndexForMenu'])
@@ -53,6 +64,12 @@
         type: Number,
         default: undefined
       }
+    },
+    mounted(){
+      if(window.ProjectConfig.layoutDirectionSlot){
+        this.NavigatorPrimaryMenuBar = window.ProjectConfig.layoutDirectionSlot.NavigatorSubMenu || '';
+      }
+
     }
   };
 </script>
@@ -81,6 +98,9 @@
     width: 76px;
     color: #fff;
     font-size: 13px;
+    div{
+       display: flex;
+    }
   }
   
   .navigator-primary-menu:hover {

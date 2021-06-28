@@ -1,5 +1,5 @@
 <template>
-  <div class="mainComponent">
+  <div :class="classes">
     <ApprovelModel
       v-if="modalConfigShow"
       :config="modalConfig"
@@ -8,6 +8,7 @@
 </template>
 <script>
   import ApprovelModel from './ApprovelModel';
+  import { classFix } from '../../src/constants/global';
 
   export default {
     name: 'MainComponent',
@@ -21,6 +22,9 @@
         // 待办列表数据
         todoListsShow: false
       };
+    },
+    computed: {
+      classes: () => `${classFix}mainComponent`
     },
     methods: {
       open(option) {
@@ -62,10 +66,3 @@
     }
   };
 </script>
-<style lang="less" >
-.mainComponent {
-  * {
-    box-sizing: border-box !important;
-  }
-}
-</style>

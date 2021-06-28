@@ -11,7 +11,7 @@
       @on-click="searchClick"
       @on-enter="searchClick"
     />
-                           
+
     <Tree
       ref="menuTree"
       class="treeContent"
@@ -54,16 +54,16 @@
       currentLabel: {
         type: String,
         default: ''
-      }, 
+      },
       treeDatas: {
         type: Function,
         default: () => {}
-      },     
+      },
       isChangeTreeConfigData: {
         type: String,
         default: ''
-      }, 
-    
+      },
+
     },
     watch: {
       treeDatas: {
@@ -113,7 +113,7 @@
       }
     },
     methods: {
-     
+
       searchInputChange(e) {
         this.menuTreeQuery = e.target.value;
       }, // 检索输入框值改变
@@ -173,16 +173,3 @@
     }
   };
 </script>
-<style >
-.ark-tree-title-selected{
-  background:red !important;
-}
-.treeContent{
-  overflow: scroll;
-    width: 100%;
-    height: 100%;
-}
-.input{
-  margin-bottom:10px
-}
-</style>

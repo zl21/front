@@ -9,7 +9,7 @@
   import './js/jquery.ztree.excheck.min';
   import './js/jquery.ztree.exedit.min';
   import './js/jquery.ztree.exhide.min';
-  
+
 
   export default {
     props: {
@@ -96,7 +96,3 @@
     }
   };
 </script>
-<style lang="less">
-@import "./css/zTreeStyle/zTreeStyle.css";
-
-</style>

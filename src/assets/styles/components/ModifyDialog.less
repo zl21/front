@@ -1,0 +1,26 @@
+@modify-dialog-prefix-cls: ~"@{css-prefix}ModifyDialog";
+
+.@{modify-dialog-prefix-cls} {
+    position: relative;
+    max-height: 500px;
+    overflow: auto;
+    padding-bottom: 40px;
+    .modify-tip {
+      display: inline-block;
+      margin-left: 20px;
+      font-size: 12px;
+      margin: 0px 0 10px;
+      height: 24px;
+      line-height:24px;
+    }
+    .modifyButton{
+      text-align: right;
+      position: absolute;
+      bottom: 0px;
+      right: 0px;
+    }
+    .pop-formPanel{
+      padding: 16px;
+      border: 1px solid #dcdee2
+    }
+}

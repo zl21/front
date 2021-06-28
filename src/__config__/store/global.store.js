@@ -13,6 +13,7 @@ const actions = () => require(`../actions/version_${Version()}/global.actions`).
 export default () => ({
   namespaced: true,
   state: {
+    allMenu: {}, // 全部菜单
     // customizeMessage: [], // 存入跳转到定制界面携带的参数    
     primaryMenuIndex: -1,
     collapseHistoryAndFavorite: false,
@@ -54,8 +55,10 @@ export default () => ({
       openedImg,
       bigDataImg
     },
-
-    previewPictureInstance: [] // 记录图片预览实例
+    isShowDashboardPage: false,
+    previewPictureInstance: [], // 记录图片预览实例
+    sameNewPage: false,
+    switchTag: false
   },
   mutations: mutations(),
   actions: actions(),

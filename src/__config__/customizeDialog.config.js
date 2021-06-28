@@ -1,4 +1,11 @@
 export default {
+  batchChangePassword: {
+    component: () => import(
+      /* webpackChunkName: 'batchChangePassword' */
+      /* webpackMode: 'eager' */
+      '../__customizeDialog__/batchChangePassword/batchChangePassword.vue'
+      )
+  },
   ChangePassword: {
     component: () => import(
       /* webpackChunkName: 'ChangePassword' */
@@ -48,11 +55,11 @@ export default {
       '../__customizeDialog__/Report/report.vue'
     )
   },
-  exportValidate: {
-    component: () => import(
-      /* webpackChunkName: 'PublishPrintTemplate' */
-      /* webpackMode: 'eager' */
-      '../__customizeDialog__/exportValidate/exportValidate.vue'
-    )
-  },
+  // exportValidate: {
+  //   component: () => import(
+  //     /* webpackChunkName: 'PublishPrintTemplate' */
+  //     /* webpackMode: 'eager' */
+  //     '../__customizeDialog__/exportValidate/exportValidate.vue'
+  //   )
+  // },
 };

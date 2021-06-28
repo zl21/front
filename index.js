@@ -22,17 +22,17 @@ import projectConfig from './project.config';
 import { addSearch } from './src/__utils__/indexedDB';
 import { createWatermark } from './src/__utils__/waterMark';
 
-import './node_modules/viewerjs/dist/viewer.css';
 import './src/__utils__/getChildComponent';
+// import '@syman/ark-ui/dist/styles/ark-ui.css';
 
 // css import
-import './node_modules/ag-grid/dist/styles/ag-grid.css';
-import './src/assets/r3.iconfont/iconfont.css';
-import './src/assets/css/ag-theme-balham.less';
+// 组件css汇总
+import './src/index.less';
 import './src/assets/theme/custom.less';
-import './src/assets/css/loading.css';
-import './src/assets/css/custom-ext.less';
-import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
+
+// // 自定义
+// import './src/assets/styles/xc.less';
+// import './src/assets/styles/xc1.less';
 
 // import jflowPlugin,  { components } from '@syman/jflow-plugin';
 // import '@syman/jflow-plugin/dist/jflowPlugin.min.css'
@@ -163,7 +163,7 @@ const init = () => {
           lineHeight: '16px'
         }
       }, [
-        
+
         h('i', {
           props: {
           },
@@ -197,7 +197,7 @@ const init = () => {
       ])
     });
   };
-  
+
 
   window.getObjdisType = getObjdisType;
 
@@ -233,7 +233,7 @@ const getCategory = () => {
               const name = n.substring(n.lastIndexOf('/') + 1, n.length);
               a[name.toUpperCase()] = c.serviceId;
             } else {
-              a[c.value.toUpperCase()] = c.serviceId; 
+              a[c.value.toUpperCase()] = c.serviceId;
             }
             return a;
           }, {});
@@ -298,7 +298,7 @@ if (enableGateWay()) {
 
 const packageMessage = {
   version: '1.8.7',
-  packageTime: '2020.09.21.09.39', 
+  packageTime: '2021.06.25', 
   user: 'AD',   
 };
 projectConfig.packageMessage = packageMessage;

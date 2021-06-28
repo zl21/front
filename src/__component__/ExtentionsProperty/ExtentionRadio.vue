@@ -1,5 +1,5 @@
 <template>
-  <div class="extentionRadio">
+  <div :class="extentionRadioCls">
     <Description
       :option="option"
       @removeOption="removeOption"
@@ -17,7 +17,8 @@
 <script>
   import Description from './Description';
   import EnumerateRadioItem from './EnumerateRadioItem';
-  
+  import { classFix } from '../../constants/global';
+
   export default {
     name: 'ExtentionRadio',
     components: {
@@ -32,6 +33,9 @@
         this.$emit('dataChange', { key, value });
       }
     },
+    computed: {
+      extentionRadioCls: () => `${classFix}extentionRadio`,
+    },
     props: {
       option: {
         type: Object,
@@ -45,9 +49,3 @@
   };
 </script>
 
-<style lang="less">
-  .extentionRadio {
-    display: flex;
-    flex-direction: column;
-  }
-</style>

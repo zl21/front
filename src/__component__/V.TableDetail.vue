@@ -1,7 +1,7 @@
 <template>
   <div
     :id="currentTableName"
-    class="verticalTableDetail"
+    :class="classes"
   >
     <component
       :is="currentSingleButtonComponentName"
@@ -97,9 +97,9 @@
   // import getComponentName from '../__utils__/getModuleName';
   import tabComponent from './SingleObjectTabComponent.vue';
   import AutomaticPathGenerationInput from './AutomaticPathGenerationInput.vue';
-  
+
   import {
-    MODULE_COMPONENT_NAME, notificationOfMain
+    MODULE_COMPONENT_NAME, notificationOfMain, classFix
   } from '../constants/global';
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
 
@@ -127,7 +127,7 @@
       customizeDataRes() {
         const obj = {};
         return Object.keys(customizeData).reduce((arr, key) => {
-          arr.push(obj[key] = customizeData[key]);  
+          arr.push(obj[key] = customizeData[key]);
           return arr;
         }, []);
       },
@@ -158,7 +158,7 @@
             obj.componentAttribute.formReadonly = this.mainFormInfo.buttonsData.data.objreadonly;
             obj.componentAttribute.status = this.mainFormInfo.buttonsData.data.status;
             obj.componentAttribute.webConfSingle = this.mainFormInfo.buttonsData.data.webconf;
-          } 
+          }
           obj.componentAttribute.watermarkimg = obj.componentAttribute.panelData.data.watermarkimg;// 子表水印
           obj.componentAttribute.webConfSingle = obj.componentAttribute.buttonsData.data.webconf;
           obj.componentAttribute.childTableNames = this.childTableNames;
@@ -170,7 +170,7 @@
             if (webact === 'HALF' || webact === 'ALL') {
               Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
               obj.componentAttribute.componentName = obj.webact.substring(obj.webact.lastIndexOf('/') + 1, obj.webact.length);
-            } 
+            }
           } else if (Vue.component(`tapComponent.${item.tablename}`) === undefined) {
             Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
           }
@@ -194,6 +194,11 @@
           return this.tabPanel[this.tabCurrentIndex].tablename;
         }
         return '';
+      },
+      classes() {
+        return [
+          `${classFix}verticalTableDetail`,
+        ];
       },
     },
     components: {
@@ -330,7 +335,7 @@
                   });
                 });
               }
-            
+
               const formParam = {
                 table: refTab.tablename,
                 inlinemode: refTab.tabinlinemode,
@@ -370,41 +375,3 @@
     },
   };
 </script>
-
-<style lang="less" scoped >
-  .verticalTableDetail {
-   height: 100%;
-    display: flex;
-    flex-direction: column;
-    .verticalTableDetailContent{
-      flex: 1;
-      overflow: auto;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .verticalTabs{
-      flex: 1;
-
-      *{
-        flex-shrink: 0;
-      }
-
-      .verticalFormPanel{
-        flex: none;
-      }
-      
-      .tabComponent,.ark-tabs-panels{
-        height: auto;
-      }
-      
-
-      /deep/ .verticalFormPanel{
-        flex: none;
-      }
-    }
-    .tabPanel {
-      margin: 10px 0;
-    }
-  }
-</style>

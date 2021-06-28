@@ -1,19 +1,21 @@
 <template>
-    <div class="selectTreeContainer">
-        <i v-if="!show" class="iconfont iconbj_transfer_right transferRight" @click="transferRight()"></i>
-        <div class="selectContent" v-if="show" :style="selectContentStyle">
-            <div class="menuContainer">
-                <Tree
-                        ref="menuTree"
-                        v-bind="treeAttribute"
-                        v-on="treeEvent"></Tree>
-            </div>
-            <i class="iconfont iconbj_transfer_left transferLeft" @click="transferLeft()"></i>
-        </div>
+  <div :class="classes">
+    <i v-if="!show" class="iconfont iconbj_transfer_right transferRight" @click="transferRight()"></i>
+    <div class="selectContent" v-if="show" :style="selectContentStyle">
+      <div class="menuContainer">
+        <Tree
+                ref="menuTree"
+                v-bind="treeAttribute"
+                v-on="treeEvent"></Tree>
+      </div>
+      <i class="iconfont iconbj_transfer_left transferLeft" @click="transferLeft()"></i>
     </div>
+  </div>
 </template>
 
 <script>
+  import { classFix } from '../../constants/global';
+
   export default {
     data() {
       return {
@@ -27,7 +29,13 @@
         this.showTree = val;
       }
     },
-    computed: {},
+    computed: {
+      classes() {
+        return [
+          `${classFix}selectTreeContainer`,
+        ];
+      },
+    },
     mounted() {
       this.show = this.showTree;
     },
@@ -71,46 +79,3 @@
     }
   };
 </script>
-
-<style lang="less">
-    .selectTreeContainer {
-        height: 100%;
-        .transferRight {
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 24px;
-        }
-        .selectContent {
-            height: 100%;
-            display: flex;
-            padding: 10px;
-            border-left: solid 1px #d8d8d8;
-            border-top: solid 1px #d8d8d8;
-            border-bottom: solid 1px #d8d8d8;
-            border-radius: 6px 0 0 6px;
-            .menuContainer {
-                flex: 1;
-                overflow-y: auto;
-                .ark-tree-title {
-                    width: 100%;
-                    font-size: 12px;
-                    line-height: 26px;
-                }
-                .ark-tree-title-selected, .ark-tree-title-selected:hover {
-                    background-color: rgb(196, 226, 255);
-                }
-            }
-            .transferLeft {
-                height: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                font-size: 24px;
-            }
-        }
-    }
-</style>

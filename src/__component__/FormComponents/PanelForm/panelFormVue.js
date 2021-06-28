@@ -6,7 +6,7 @@ import ParameterDataProcessing from '../parameterDataProcessing';
 import LinkageRelationships from '../../ExtendedAttributes/LinkageRelationships';
 import { validateForm } from './Validate';
 import {
-     MODULE_COMPONENT_NAME 
+     MODULE_COMPONENT_NAME, classFix
   } from '../../../constants/global';
 export default {
   name:'PanelForm',
@@ -49,7 +49,7 @@ export default {
   },
   computed: {
     // formItemLists () {
-      
+    classes: () => `${classFix}panelForm compositeAllform`,
     // },
     // 计算属性的 div的排列格式
     setWidth () {
@@ -88,7 +88,7 @@ export default {
           return;
 
         }
-        this.$R3loading.show(this.tableName);
+        this.$R3loading.show(this.loadingName);
         clearTimeout(this.formTime);
         this.formTime = setTimeout(()=>{
             this.setFormlist();
@@ -118,7 +118,7 @@ export default {
 
       let data = JSON.parse(JSON.stringify(this.defaultData))
       if (!data.addcolums) {
-        this.$R3loading.hide(this.tableName)
+        this.$R3loading.hide(this.loadingName)
         return []
       }
       data.addcolums = new LinkageRelationships(JSON.parse(JSON.stringify(this.defaultData)).addcolums,this).initializeData()
@@ -205,7 +205,7 @@ export default {
         let lastItem = data.addcolums[0].childs[index]
         let com = this.$_live_getChildComponent(this, `${this.tableName}${lastItem.colname}`);
         if (com) {
-          this.$R3loading.hide(this.tableName)
+          this.$R3loading.hide(this.loadingName)
           clearInterval(this.loading)
         }
       }, 50)
@@ -387,8 +387,11 @@ export default {
         };
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
        }
-        
+
     }
+  },
+  created() {
+    this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');
   },
   mounted () {
     this.setFormlist();

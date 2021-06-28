@@ -9,7 +9,3 @@
     name: 'EmptyPage'
   };
 </script>
-
-<style scoped>
-
-</style>

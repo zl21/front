@@ -1,6 +1,6 @@
 // 人工干预
 <template>
-  <div class="Intervention">
+  <div :class="classes">
     <div class="content">
       <div
         class="ApprovelModel"
@@ -174,6 +174,7 @@
   import { global } from '../utils/global.config';
   import ComplexBox from './complexPop';
   import { refreshSystem } from '../js/index';
+  import { classFix } from '../../src/constants/global';
 
 
   export default {
@@ -197,6 +198,13 @@
         selectBackNode: null, // 提交失败驳回节点
         remark: null, // 备注
       };
+    },
+    computed: {
+      classes() {
+        return [
+          `${classFix}Intervention`,
+        ];
+      },
     },
     methods: {
       cancel() {
@@ -286,7 +294,7 @@
               }
             }
           });
-      }, 
+      },
       // 节点报错的人员指派
       getTotalResult(data) {
         this.ApproverLists = data;
@@ -346,11 +354,11 @@
                 content: '服务参数数据格式错误',
                 mask: true
               });
-              
+
               return;
             }
           }
-        
+
           const obj = {
             instanceId: global.jflowInfo.instanceId,
             id: this.intervention.exceptionId,
@@ -448,108 +456,3 @@
     }
   };
 </script>
-<style lang="less" scoped>
-.Intervention{
-  .content{
-    padding: 16px;
-    display: flex;
-    align-items: center;
-
-    .ApprovelModel{
-      width: 100%;
-      .title{
-        border-bottom: 1px solid #D8D8D8;
-        padding: 4px 10px;
-        margin-bottom: 10px;
-
-        >span:first-child{
-          width:2px;
-          height:12px;
-          background:rgba(253,100,66,1);
-          vertical-align: middle;
-          display: inline-block;
-        }
-        span{
-          color: #FD6442;
-        }
-      }
-
-      .details{
-        >div{
-          padding-left: 20px;
-          p{
-            font-size:12px;
-            font-weight:400;
-            color:rgba(84,84,84,1);
-            line-height:17px;
-            margin-bottom: 4px;
-          }
-
-          >p:last-child{
-            margin-bottom: 16px;
-          }
-        }
-      }
-
-      .deal{
-        >div{
-          >.checkSelect{
-            display: inline-block;
-            flex: 1;
-
-            .burgeon-select-selection{
-              border-color: #dcdee2;
-              box-shadow: none;
-            }
-
-            &:first-child{
-              width: 60px;
-              flex: none;
-              .burgeon-select-selection{
-                background: #F9F9F9;
-                border-top-right-radius: 0;
-                border-bottom-right-radius: 0;
-              }
-            }
-
-            &:last-child{
-              .burgeon-select-selection{
-                border-left: none;
-                border-top-left-radius: 0;
-                border-bottom-left-radius: 0;
-              }
-            } 
-          }
-
-          .complexBox{
-            width: 100%;
-          }
-          p{
-            line-height: 24px;
-            display: flex;
-            margin-bottom: 8px;
-
-            >label{
-              width: 60px;
-              margin-right: 8px;
-            }
-
-            .textarea{
-              textarea{
-                resize: none;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  .footer{
-    border-top: 1px solid #e8eaec;
-    padding: 8px 20px 8px 0;
-    border-bottom-left-radius: 6px;
-    border-bottom-right-radius: 6px;
-    text-align: right;
-  }
-}
-</style>

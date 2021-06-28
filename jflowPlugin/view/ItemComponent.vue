@@ -1,5 +1,5 @@
 <template>
-  <div class="ItemComponentRoot">
+  <div :class="classes">
     <span
       class="itemLabel"
     >
@@ -121,6 +121,7 @@
 </template>
 <script>
   import dataProp from '../utils/props.config';
+  import { classFix } from '../../src/constants/global';
 
   export default {
     name: 'ItemComponent',
@@ -133,6 +134,11 @@
       },
     },
     computed: {
+      classes() {
+        return [
+          `${classFix}ItemComponentRoot`,
+        ];
+      },
       _items() {
         // 将设置的props和默认props进行assign
         const item = JSON.parse(JSON.stringify(this.items));
@@ -393,35 +399,3 @@
     },
   };
 </script>
-<style lang="less" scoped>
-.ItemComponentRoot{
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-top:8px;
-
-    .itemLabel{
-      width: 100px;
-      margin-right: 8px;
-      text-align: right;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      display: inline-block;
-    }
-
-    .itemComponent{
-      flex: 1;
-      overflow: hidden;
-    }
-    .label-tip{
-      color: red;
-      font-size: 16px;
-      vertical-align: middle;
-      position: relative;
-      top: -1px;
-      right: 3px;
-    }
-  }
-</style>

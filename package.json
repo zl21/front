@@ -1,6 +1,6 @@
 {
     "name": "@syman/burgeon-r3",
-    "version": "1.4.74",
+    "version": "1.5.1",
     "description": "A Project for R3 Erp.",
     "main": "r3.publish/r3.min.js",
     "files": [
@@ -8,16 +8,17 @@
         "r3.publish/r3.min.js.map",
         "r3.publish/r3.min.css",
         "r3.publish/src/assets/image",
-        "r3.publish/src/assets/theme"
+        "r3.publish/src/assets/theme",
+        "r3.publish/src/assets/styles"
     ],
     "scripts": {
         "start": " webpack-dev-server --progress --env.develop",
         "build": "webpack --color --progress --config webpack.config.js --env.production",
+        "build:style": "gulp --gulpfile build-style.js",
         "build:test": "cross-env BUILD_ENV=test webpack --color --progress --config webpack.test.js --env.NODE_ENV=development",
         "build:publish": "cross-env BUILD_ENV=publish webpack --color --progress --config webpack.publish.js  --env.NODE_ENV=production",
         "zip": "node doZip.js",
         "deploy": "npm publish && node dingtalk.js"
-
     },
     "repository": {
         "type": "git",
@@ -52,6 +53,11 @@
         "html-webpack-plugin": "^4.5.0",
         "less": "~3.9.0",
         "less-loader": "^4.1.0",
+        "gulp": "^3.9.1",
+        "gulp-autoprefixer": "^5.0.0",
+        "gulp-clean-css": "^3.9.3",
+        "gulp-less": "^4.0.0",
+        "gulp-rename": "^1.2.2",
         "mini-css-extract-plugin": "^0.7.0",
         "optimize-css-assets-webpack-plugin": "^5.0.1",
         "style-loader": "^0.23.1",
@@ -69,7 +75,7 @@
     "dependencies": {
         "@babel/polyfill": "^7.10.4",
         "@syman/ark-ui": "^1.1.36",
-        "@syman/ark-ui-bcl": "0.1.8",
+        "@syman/ark-ui-bcl": "0.1.15",
         "@syman/jflow-plugin": "^1.1.9",
         "ag-grid": "^17.1.1",
         "ag-grid-enterprise": "^17.1.1",
