@@ -2,7 +2,6 @@
  * select组件的自定义逻辑处理
  */
 import Vue from 'vue';
-import Ark from '@syman/ark-ui'
 
 import { SetPlaceholder ,SetDisable} from './setProps';
 

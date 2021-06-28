@@ -4,7 +4,6 @@
  */
 import InputMethod from '../ExtendedMethods/Input'
 import { SetPlaceholder, SetDisable } from './setProps'
-import Ark from '@syman/ark-ui'
 
 let Input = Ark.Input
 
