@@ -56,6 +56,7 @@
           ...options,
           ...agGridOptions,
         }"
+        @grid-ready="ready"
       ></CommonTableByAgGrid>
 
     <!-- 普通表格 -->
@@ -281,7 +282,7 @@
           this.agGridTable(val.tabth, val.row, val);
           setTimeout(() => {
             const { agGridTableContainer } = this.$refs;
-
+            
             if (agGridTableContainer) {
               agGridTableContainer.emptyAllFilters();
               if(this.$route.query.isBack) {
@@ -293,6 +294,9 @@
       },
     },
     methods: {
+      ready() {
+        this.agGridTable(this.datas.tabth, this.datas.row, this.datas);
+      },
       btnclick(obj) {
         this.$emit('btnclick', obj);
       },
@@ -380,9 +384,6 @@
         if (!floatingFilter()) {
           isOpenfloatingFilter = false;
         }
-        if(datas.row && Array.isArray(datas.row)) {
-          this.rows = datas.row 
-        }
 
         // 处理列数据
         if(datas.tabth && Array.isArray(datas.tabth)) {
@@ -390,6 +391,10 @@
         }
         if(this.columns.length === 0) {
           return
+        }
+
+        if(datas.row && Array.isArray(datas.row)) {
+          this.rows = [...datas.row] 
         }
 
         this.options = {
