@@ -201,7 +201,6 @@
   import { getPinnedColumns } from '../__utils__/tableMethods'
   import tabBar from './tabBar.vue';
   import listsForm from './FormComponents/listsForm';
-  import { getPinnedColumns } from '../__utils__/tableMethods'
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
