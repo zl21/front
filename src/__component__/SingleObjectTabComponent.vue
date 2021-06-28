@@ -35,7 +35,6 @@
       :web-conf-single="webConfSingle"
     />
     <!-- 子表表格新增区域form -->
-<<<<<<< HEAD
     <childrenForm
       v-if="formData.isShow&&itemInfo.tabrelation!=='1:1'"
       v-show="status === 1 && !objreadonly"
@@ -50,9 +49,6 @@
     ></childrenForm>
 
     <!-- <compositeForm  
-=======
-    <compositeForm
->>>>>>> npm_dev_r3
       v-if="formData.isShow&&itemInfo.tabrelation!=='1:1'"
       v-show="status === 1 && !objreadonly"
       :object-type="type"

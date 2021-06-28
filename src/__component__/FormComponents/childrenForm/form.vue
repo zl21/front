@@ -1,6 +1,5 @@
 <template>
 <div>
-    23232323
      <panelForm
        v-bind="$attrs"
       :defaultData="formList"
