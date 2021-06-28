@@ -215,7 +215,6 @@ export default {
     },
     changeForm(ParentForm){
       // 修改后
-      console.log(ParentForm.formChangeData, ParentForm.formDataLabel);
       if (ParentForm.$parent.formPanelChange) {
         ParentForm.$parent.formPanelChange(ParentForm.formChangeData, ParentForm.formDataLabel,ParentForm.formChangeDataLabel)
       }else{

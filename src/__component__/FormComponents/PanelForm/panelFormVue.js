@@ -122,7 +122,6 @@ export default {
     setFormlist(){
 
       let data = JSON.parse(JSON.stringify(this.defaultData))
-      console.log(data,'this.tableName',this.tableName);
       if (!data.addcolums) {
         this.$R3loading.hide(this.loadingName)
         return []
@@ -206,18 +205,24 @@ export default {
         return item;
       })
             // 处理表单关闭
-            this.$R3loading.hide(this.tableName)
+        this.loading = setInterval(() => {
+          let index = Object.keys(data.addcolums.reverse()[0].childs).length - 1
+          let lastItem = data.addcolums[0].childs[index];
 
-      this.loading = setInterval(() => {}, 50)
-        let index = Object.keys(data.addcolums.reverse()[0].childs).length - 1
-        let lastItem = data.addcolums[0].childs[index]
-        console.log(index,data.addcolums.reverse(),lastItem)
-        // let com = this.$_live_getChildComponent(this, `${this.tableName}${lastItem.colname}`);
-        // if (com) {
-        //   this.$R3loading.hide(this.tableName)
-        //   clearInterval(this.loading)
-        // }
-      
+          console.log(this.loadingName,'===========',lastItem);
+         
+          if(lastItem){
+             let com = this.$_live_getChildComponent(this, `${this.tableName}${lastItem.colname}`);
+              if (com) {
+                this.$R3loading.hide(this.loadingName)
+                clearInterval(this.loading)
+              }
+
+          }else{
+            this.$R3loading.hide(this.loadingName)
+            clearInterval(this.loading)
+          }
+        }, 50)
        // 兼容子表
         this.linkFormSet();
        this.formItemLists = { ...data.addcolums }

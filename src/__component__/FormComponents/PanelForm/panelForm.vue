@@ -20,6 +20,7 @@
                  :style="formItemLists[item].childs[temp].styles">
               <keep-alive>
                 <component ref="formItem"
+                           v-on="$listeners"
                            :id="formItemLists[item].childs[temp].colname"
                            :is="formItemLists[item].childs[temp].component"
                            :items="formItemLists[item].childs[temp]"
