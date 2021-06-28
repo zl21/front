@@ -15,7 +15,8 @@ import {
   PLUGIN_MODULE_PREFIX,
   PLUGIN_MODULE_COMPONENT_PREFIX,
   LINK_MODULE_PREFIX,
-  LINK_MODULE_COMPONENT_PREFIX
+  LINK_MODULE_COMPONENT_PREFIX,
+  enableOpenNewTab
 } from '../constants/global';
 import standardTableListModule from './store/standardTableList.store';
 import verticalTableDetailModule from './store/verticalTableDetail';
@@ -26,6 +27,7 @@ import {
   getLocalObject,
 } from '../__utils__/localStorage';
 import setCustomeLabel from '../__utils__/setCustomeLabel';
+import getModuleName from '../__utils__/getModuleName';
 
 
 let pluginModules = {};
@@ -160,6 +162,10 @@ export default (router) => {
     // if (Object.keys(getSessionObject('loginStatus')) && Object.keys(getSessionObject('loginStatus')).length === 0) {
     //   debugger;
     // }
+
+    // 注入模块名
+    to.meta.moduleName = getModuleName({ route: to });
+
     const loginText = '/login'.toUpperCase();
     if (to.path && getLocalObject('loginStatus') !== true && (to.path.indexOf(loginText) !== -1) && to.path !== '/') {
       const data = {
@@ -179,7 +185,7 @@ export default (router) => {
     const { commit } = store;
     const { keepAliveLists, openedMenuLists } = store.state.global;
     const {
-      tableName, tableId, itemId, customizedModuleName, pluginModuleName, linkModuleName, customizedModuleId
+      tableName, tableId, itemId, customizedModuleName, pluginModuleName, linkModuleName, customizedModuleId, pluginModuleId, linkModuleId
     } = to.params;
 
     const preventRegisterModule = [CUSTOMIZED_MODULE_PREFIX, PLUGIN_MODULE_PREFIX, LINK_MODULE_PREFIX];
@@ -209,14 +215,57 @@ export default (router) => {
     const originModuleName = getOriginModuleName(to); // 单对象界面对应的原标准列表界面的moduleComponentName
     const keepAliveModuleName = getKeepAliveModuleName(to); // 当前界面对应的keepAliveModuleName，即模块的moduleComponentName
     const dynamicModuleTag = getDynamicModuleTag(to); // 当前界面对应的路由标识。
+  
+    let sameNewPage = false;
+    if (enableOpenNewTab() && !store.state.global.switchTag) {
+      if (itemId === 'New') { // 当前打开的新增界面，需要判断是否已经存在该表的新增界面,存在即开启新tab,并关闭原有存在的该表新增界面tab
+        openedMenuLists.map((d) => {
+          if (d.keepAliveModuleName === keepAliveModuleName// 模块名相同
+             && ((`${d.routeFullPath}?isBack=true` === to.fullPath || `${to.fullPath}?isBack=true` === d.routeFullPath) 
+             || (`${router.currentRoute.fullPath}?isBack=true` === to.fullPath || `${to.fullPath}?isBack=true` === router.currentRoute.fullPath) 
+             || (`${router.currentRoute.fullPath}?isBack=true` === to.fullPath)
+             || (to.fullPath.includes('?isBack=true') && d.routeFullPath === to.fullPath)
 
+             )// 当前处于激活状态的不是即将要打开的新增tab或者复制tab
+          // 当前激活的tab不是即将打开的tab，用于区分新增和复制
+          ) {
+            // const a = `${d.tableName}${d.itemId}`;
+            // const doms = document.querySelector(`.${a}`);
+            // doms.click();
+            sameNewPage = true;
+            // commit('global/updataNewTagForNewTab', sameNewPage);
+            
+            commit('global/decreasekeepAliveLists', d.keepAliveModuleName);
+            // commit('global/switchTabForActiveTab', d);// 更新当前ActiveTab
+
+            
+            // if (!preventRegisterModule.includes(d.routePrefix)) {
+            delete store.state[keepAliveModuleName];
+            //   store.unregisterModule(keepAliveModuleName);
+            // }
+            // const a = window.vm.$children[0].$children[0].$children[2].$children[1].$children;
+            // a.map((item, i) => {
+            //   if (item.moduleComponentName === d.keepAliveModuleName) {
+            //     a.splice(i, 1);
+            //   }
+            // });
+            // commit('global/tabCloseAppoint', {
+            //   routeFullPath: d.routeFullPath, stopRouterPush: true, keepAliveModuleName: d.keepAliveModuleName, tableName, routePrefix: d.routePrefix, itemId
+            // });
+          }
+        });
+      }
+    }
+    // if (sameNewPage) {
+    //   return;
+    // }
     // 处理 keepAliveModuleName：目标路由的模块默认都要加入keepAlive列表
-    // debugger;
-    if (!keepAliveLists.includes(keepAliveModuleName) && keepAliveModuleName !== '') {
+    if ((!keepAliveLists.includes(keepAliveModuleName) && keepAliveModuleName !== '')) {
       const data = {
         name: keepAliveModuleName,
         to,
-        dynamicModuleTag
+        dynamicModuleTag,
+        // sameNewPage
       };
       commit('global/increaseKeepAliveLists', data);
     }
@@ -226,7 +275,7 @@ export default (router) => {
     if (preventRegisterModule.indexOf(routePrefix) === -1 && dynamicModuleTag !== '' && store.state[keepAliveModuleName] === undefined) {
       store.registerModule(keepAliveModuleName, moduleGenerator[dynamicModuleTag]());
     }
-
+     
     // 处理 openedMenuLists
     let existModuleIndex = -1;
 
@@ -242,9 +291,9 @@ export default (router) => {
         return false;
       })[0];
 
-
-
-    if (existModuleIndex !== -1 && KEEP_MODULE_STATE_WHEN_CLICK_MENU) {
+  
+    
+    if (existModuleIndex !== -1 && KEEP_MODULE_STATE_WHEN_CLICK_MENU && !enableOpenNewTab()) {
       // Condition One:
       // 如果目标路由界面所对应的[表]已经存在于已经打开的菜单列表中(不论其当前是列表状态还是编辑状态)
       // 则都应该显示其当前对应的状态页。
@@ -284,7 +333,7 @@ export default (router) => {
       // Step Three: 结束本次路由守卫。
       return;
     }
-
+    
     // 处理label逻辑。因为引入了框架插件界面，故而label显示逻辑会有些需要注意的地方。
     // 跳转至定制界面的逻辑改为：只要单对象标记相同，不进行ID判断，只激活同一个单对象标记相同的界面
     let keepAliveModuleNameRes = '';
@@ -333,7 +382,9 @@ export default (router) => {
             keepAliveModuleName,
             tableName: tableName || customizedModuleName || pluginModuleName || linkModuleName,
             routeFullPath: to.fullPath,
-            routePrefix
+            routePrefix,
+            itemId: itemId || customizedModuleId || pluginModuleId || linkModuleId,
+            sameNewPage
           });
         }
       }, 125);
@@ -348,12 +399,25 @@ export default (router) => {
         keepAliveModuleName,
         type: dynamicModuleTag,
         fullPath: to.fullPath,
+        itemId: itemId || customizedModuleId || pluginModuleId || linkModuleId,
         routeFullPath: to.fullPath,
         routePrefix,
         tableName: tableName || customizedModuleName || pluginModuleName || linkModuleName,
       });
+      if (enableOpenNewTab()) {
+        // 处理同表新开tab要跳转的表已打开时，需更新activeTab
+        const existModuleForOpenNewTab = openedMenuLists.filter((d, i) => {
+          if (d.keepAliveModuleName === keepAliveModuleName) { 
+            d.isActive = true;
+            // 已存在打开的模块界面，但是并不是同一个界面
+            return true;
+          }
+        })[0];
+        if (existModuleForOpenNewTab) {
+          commit('global/switchTabForActiveTab', existModuleForOpenNewTab);// 更新当前ActiveTab
+        }
+      }
     }
-
 
     next();
   });
@@ -377,7 +441,6 @@ export default (router) => {
     }
     const isDynamicRouting = Boolean(window.sessionStorage.getItem('dynamicRouting'));
     // const ignore = Boolean(window.sessionStorage.getItem('ignore'));
-
     if (isDynamicRouting && (isFromStandardTable || isFromPlugin) && isTableDetail && isNotFromSameTable) {
       window.sessionStorage.removeItem('dynamicRouting');
       const routeMapRecordForSingleObject = getSessionObject('routeMapRecordForSingleObject');

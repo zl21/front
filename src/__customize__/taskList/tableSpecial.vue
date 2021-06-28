@@ -1,5 +1,5 @@
 <template>
-  <div class="commonTable">
+  <div :class="classes">
     <Table
       ref="table"
       :columns="columns"
@@ -43,7 +43,7 @@
   import { mapMutations } from 'vuex';
   import Dialog from '../../__component__/Dialog';
   import getObjdisType from '../../__utils__/getObjdisType.js';
-  import { customizeMixins } from '../../constants/global';
+  import { customizeMixins, classFix } from '../../constants/global';
 
   export default {
     data() {
@@ -111,7 +111,7 @@
       onSingleCellClick: {
         type: Function,
         default: () => {
-          
+
         }
       }
     },
@@ -467,6 +467,7 @@
         // }
         return total;
       }, // 总计和合计
+      classes: () => `${classFix}commonTable`
     },
     watch: {},
     methods: {
@@ -759,7 +760,7 @@
       }, // 表格排序触发
       switchRender(data) {
         // 开关选择器
-        return (h, data) => h('div', 
+        return (h, data) => h('div',
                               [
                                 h('i-switch', {
                                   on: {
@@ -816,7 +817,7 @@
         ];
         // display按钮操作类型（3种）
         // 跳转/弹出框/删除/
-        return (h, param) => params.map(item => h('ButtonGroup', 
+        return (h, param) => params.map(item => h('ButtonGroup',
                                                   [
                                                     h('i-Button', {
                                                       on: {
@@ -850,66 +851,3 @@
     }
   };
 </script>
-
-<style lang="less">
-    .ark-spin-fix {
-        z-index: 999;
-        .demo-spin-icon-load {
-            animation: ani-demo-spin 1s linear infinite;
-        }
-        @keyframes ani-demo-spin {
-            from {
-                transform: rotate(0deg);
-            }
-            50% {
-                transform: rotate(180deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
-        }
-    }
-
-    .commonTable {
-        height: 100%;
-        overflow-y: hidden;
-        position: relative;
-        .table {
-            height: 100% !important;
-            thead th {
-                font-weight: 400;
-            }
-            thead tr{
-                height: 28px;
-            }
-            tbody tr{
-                height: 28px;
-            }
-            tbody tr.ark-table-row-hover td{
-                background-color: #ecf0f1;
-            }
-            tfoot tr {
-                height: 28px;
-            }
-            .ark-table td {
-              background-color: rgba(255, 255, 255, 0);
-            }
-            .ark-table-fixed tfoot td {
-                border-bottom: 1px solid #e8eaec;
-            }
-            .doc-wrapper {
-                margin-right: 5px;
-                display: inline-block;
-                a {
-                    color: #575757;
-                }
-            }
-            .doc-wrapper:hover {
-                border-bottom: 1px solid #000;
-                a {
-                    color: #2d8cf0;
-                }
-            }
-        }
-    }
-</style>

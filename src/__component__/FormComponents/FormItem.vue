@@ -1,14 +1,14 @@
 /* eslint-disable import/no-dynamic-require */
 <template>
 <!-- :show-tip="items.detailType" -->
- <ValidateCom 
+ <ValidateCom
     :rules="rules"
     :labelWidth="labelWidth"
     :items="propsMessage"
     :colname="items.colname"
     :value="value">
   <div :class="_items.props.fkdisplay === 'pop' ? 'ItemComponentRoot AttachFilter-pop':'ItemComponentRoot'">
-   
+
 
       <span class="itemLabel"
             :style="labelStyle"
@@ -120,7 +120,7 @@
           formIndex,
         }" />
       </div>
-    
+
 
   </div>
   </ValidateCom>
@@ -227,7 +227,7 @@ export default {
       componentsName:'',// 组件名称
       show:false,// 是否展示报错内容
       propsMessage:{
-       
+
       }, // 各个组件的props
       errorTip: '',
       value: '', //实时数据
@@ -342,11 +342,11 @@ export default {
          }else{
            this.items.webconf.dynamicforcompute = {}
          }
-          
+
           this.items.webconf.dynamicforcompute = this.items.dynamicforcompute;
       }
       let item = this.items;
-     
+
       let componentInstance = null
       switch (item.display) {
         case undefined:
@@ -404,7 +404,7 @@ export default {
         case 'ExtensionProperty':
           componentInstance = new CustomExtensionProperty(item).init();
           break;
-        case 'radioGroup': 
+        case 'radioGroup':
           componentInstance = new CustomRadioGroup(item).init();
           break;
         case 'checkboxgroup': 
@@ -428,7 +428,7 @@ export default {
         );
 
       }
-     
+
       return component;
     },
     routerNext () {
@@ -538,7 +538,7 @@ export default {
                 this._items.value = item.LABLE_VALUES[0].VALUE || '';
               }
             } else if (item.COLUMN_TYPE === 1) {
-              // INPUT 
+              // INPUT
               if (this._items.type === 'checkbox') {
                 this._items.value = item.LABLE_VALUES[0].VALUE || this._items.props.falseValue;
               } else {
@@ -652,118 +652,3 @@ export default {
   }
 };
 </script>
-
-<style lang="less" >
-.ItemComponentRoot {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-top: 8px;
-
-  .itemLabel {
-    margin-right: 4px;
-    text-align: right;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    line-height: 16px;
-
-    i {
-      font-size: 12px;
-      color: red;
-    }
-  }
-
-  .itemComponent {
-    flex: 1;
-    overflow: hidden;
-
-    > div {
-      flex: 1;
-    }
-  }
-  .label-tip {
-    color: red;
-    font-size: 16px;
-    vertical-align: middle;
-    position: relative;
-    top: 3px;
-    right: 3px;
-  }
-  
-
-  // 处理大小写转换
-  .isuppercase {
-    input {
-      text-transform: uppercase;
-    }
-  }
-}
-
-.validate_item {
-    .validate_item_tip {
-      height: 16px;
-      font-size: 12px;
-      line-height: 12px;
-       .iconios-alert {
-          margin: 4px;
-          color: red;
-          font-size: 12px;
-        }
-        span {
-          color: red;
-          line-height: 20px;
-          word-break: keep-all;
-          display: inline-block;
-        }
-    }
-  }
-textarea.ark-input {
-  resize: auto;
-}
-
-.AttachFilter-pop {
-  .icon-bj_tcduo:before {
-    content: "\e6b1";
-  }
-  .icon-bj_tcduo {
-    padding-top: 2px;
-  }
-}
-.Wangeditor-disabled {
-  border: 1px solid #d8d8d8;
-  background-color: #f4f4f4;
-  overflow: auto;
-  padding: 2px 5px;
-  height: 100%;
-}
-.auto-com-table tr td {
-  max-width: 500px !important;
-}
-.attachfiter-pop {
-  .ark-select-item {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    justify-content: space-between;
-    .iconbj_delete2 {
-      display: none;
-      width: 12px;
-      height: 12px;
-      font-size: 12px;
-      line-height: 12px;
-    }
-    &:hover {
-      .iconbj_delete2 {
-        border-radius: 100%;
-        overflow: hidden;
-        display: block;
-        background-color: #e6502f;
-        color: #fff;
-      }
-    }
-  }
-}
-</style>

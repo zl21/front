@@ -1,5 +1,5 @@
 <template>
-  <div class="panelForm compositeAllform" :id="id">
+  <div :class="classes" :id="id">
     <div v-for="(item,index) in Object.keys(formItemLists)"
          :key="index">
       <Collapse :value="collapseValue">
@@ -33,11 +33,3 @@
 import panelFormVue from './panelFormVue.js'
 export default panelFormVue;
 </script>
-
-<style lang="less" >
-.panelForm {
-  .content {
-    display: grid;
-  }
-}
-</style>

@@ -1,8 +1,5 @@
 <template>
-  <div
-    ref="dataPermission"
-    class="dataPermission dataPermission_Version"
-  >
+  <div ref="dataPermission" :class="classes">
     <div class="buttonGroup">
       <Button
         type="fcdefault"
@@ -178,7 +175,7 @@
                     class="searchItemCom"
                     clearable
                     @on-clear="inputOnClear(index)"
-                    @on-change="(e) => inputOnChange(e, index)" 
+                    @on-change="(e) => inputOnChange(e, index)"
                   />
                 </div>
               </div>
@@ -279,7 +276,8 @@
   import ComAttachFilter from '../../__component__/ComAttachFilter.vue';
 
   import {
-    Version 
+    Version,
+    classFix
   } from '../../constants/global';
 
   export default {
@@ -347,6 +345,7 @@
       }
     },
     computed: {
+      classes: () => `${classFix}dataPermission dataPermission_Version`
     },
     created() {
       if (this.Version === '1.3') {
@@ -1414,248 +1413,3 @@
     }
   };
 </script>
-
-<style lang="less">
-    .ark-spin-fix{
-        z-index: 999;
-        .demo-spin-icon-load{
-            animation: ani-demo-spin 1s linear infinite;
-        }
-        @keyframes ani-demo-spin {
-            from { transform: rotate(0deg);}
-            50%  { transform: rotate(180deg);}
-            to   { transform: rotate(360deg);}
-        }
-    }
-    .dataPermission {
-        position: relative;
-        height: 100%;
-        padding: 16px;
-        display: flex;
-        flex-direction: column;
-        box-sizing: border-box;
-        background-color: #ffffff;
-        .ark-tree-title {
-          line-height: 26px;
-        }
-        .buttonGroup {
-            display: flex;
-            .Button {
-                min-width: 0;
-                padding: 0 21px;
-                border-radius:2px;
-                font-size:12px;
-                font-weight:400;
-                box-sizing: border-box;
-                margin-right: 10px;
-                height: 28px;
-                span {
-                    vertical-align: initial;
-                }
-            }
-        }
-        .content {
-            flex: 1;
-            margin-top: 10px;
-            display: flex;
-            overflow-y: hidden;
-            .contentLeft {
-                width: 240px;
-                height: 100%;
-                padding: 10px;
-                border: solid 1px #d8d8d8;
-                border-radius: 6px;
-                margin-right: 10px;
-                display: flex;
-                flex-direction: column;
-                .menuContainer {
-                    flex: 1;
-                    margin-top: 10px;
-                    overflow-y: auto;
-
-                    .burgeon-tree-title {
-                        width: 100%;
-                        font-size: 12px;
-                        line-height: 26px;
-                    }
-                    .burgeon-tree-title-selected, .burgeon-tree-title-selected:hover {
-                        background-color: rgb(196, 226, 255);
-                    }
-
-                    .menuList {
-                        cursor: pointer;
-                        font-size: 12px;
-                        line-height: 26px;
-                    }
-                    .menuHighlight {
-                        background-color: rgb(196, 226, 255);
-                    }
-                }
-            }
-            .contentRight {
-                height: 100%;
-                flex: 1;
-                border: solid 1px #d8d8d8;
-                border-radius: 6px;
-                display: flex;
-                flex-direction: column;
-                width: 100%;
-                overflow: hidden;
-                .rightButton {
-                    margin: 10px 10px 0 10px;
-                }
-                .rightTable {
-                    flex: 1;
-                    overflow: hidden;
-                    margin: 10px;
-                    .table {
-                        border: 0;
-                        tbody tr.burgeon-table-row-hover td{
-                            background-color: #ecf0f1;
-                        }
-                        .burgeon-table-row-highlight {
-                            background-color: rgb(196, 226, 255);
-                        }
-                        .burgeon-input-wrapper > input {
-                            height: 22px;
-                        }
-                        .burgeon-fkrp-poptip .fkrp-poptip-text {
-                            top: 2px;
-                        }
-                        .burgeon-input-icon {
-                            top: -2px;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    .dataPermissionDialog {
-        .burgeon-modal-body {
-            padding: 0;
-        }
-        .dataPermissionContainer {
-            height: 505px;
-            display: flex;
-            .dataPermissionContainerLeft {
-                height: 100%;
-                width: 650px;
-                display: flex;
-                flex-direction: column;
-                padding: 10px;
-                border-right: 1px solid #D8D8D8;
-                .buttonGroup {
-                    display: flex;
-                    .Button {
-                        min-width: 0;
-                        padding: 0 8px;
-                        border-radius:2px;
-                        font-size:12px;
-                        font-weight:400;
-                        box-sizing: border-box;
-                        margin-right: 10px;
-                        height: 22px;
-                        span {
-                            vertical-align: initial;
-                        }
-                    }
-                }
-                .searchContainer {
-                    margin-top: 10px;
-                    .searchContent {
-                        display: flex;
-                        flex-wrap: wrap;
-                        width: 100%;
-                        .searchItem {
-                            padding-top: 8px;
-                            width: 50%;
-                            display: flex;
-                            align-items: center;
-                            .searchItemLabel {
-                                flex: 1;
-                                text-align: right;
-                                margin-right: 4px;
-                                font-size:12px;
-                                font-weight:400;
-                                color:rgba(87,87,87,1);
-                                line-height:16px;
-                            }
-                            .searchItemCom {
-                                width: 173px;
-                            }
-                        }
-                    }
-                }
-                .pageContainer {
-                    margin-top: 10px;
-                }
-                .tableContainer {
-                    flex: 1;
-                    overflow: hidden;
-                    margin-top: 6px;
-                }
-            }
-            .dataPermissionContainerRight {
-                width: 230px;
-                padding: 10px;
-                display: flex;
-                flex-direction: column;
-                .selectedContainerTitle {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    padding-bottom: 6px;
-                    border-bottom: 1px solid #D8D8D8;
-                    .selectedDataDeleteAllIcon {
-                        cursor: pointer;
-                        font-size: 14px
-                    }
-                    .selectedDataDeleteAllIcon:hover {
-                        color: #FD6442;
-                    }
-                }
-                .selectedContainerData {
-                    flex: 1;
-                    overflow-y: auto;
-                    margin-top: 10px;
-                    .selectedDataItem {
-                        display: flex;
-                        align-items: center;
-                        padding: 4px;
-                        background-color: #F8F8F8;
-                        border-radius:4px;
-                        margin-bottom: 4px;
-                        .selectedDataItemLabel {
-                            flex: 1;
-                            font-size:12px;
-                            font-weight:400;
-                            color:rgba(15,141,232,1);
-                            line-height:17px;
-                            word-break: break-all;
-                        }
-                        .selectedDataItemIcon {
-                            cursor: pointer;
-                            font-size: 13px;
-                            border-radius:50%;
-                        }
-                        .selectedDataItemIcon:hover {
-                            background-color: #FD6442;
-                            color: #fff;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    .environmentVariableDialog {
-        .environmentVariableContainer {
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            .environmentVariableLabel {
-                text-align: right;
-                white-space: nowrap;
-            }
-        }
-    }
-</style>

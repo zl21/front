@@ -1,6 +1,6 @@
 <template>
   <div
-    class="waterMarkContainer"
+    :class="waterMarkContainerCls"
     :style="waterMarkStyle"
   >
     <i class="iconfont iconbj_docstate" />
@@ -20,6 +20,8 @@
 </template>
 
 <script>
+  import { classFix } from '../constants/global';
+
   export default {
     data() {
       return {};
@@ -51,6 +53,7 @@
     methods: {},
     watch: {},
     computed: {
+      waterMarkContainerCls: () => `${classFix}waterMarkContainer`,
       waterMarkStyle() {
         return { color: this.color };
       },
@@ -63,26 +66,3 @@
     }
   };
 </script>
-
-<style lang="less">
-    .waterMarkContainer {
-        position: relative;
-        i {
-            font-size: 104px;
-        }
-        .textTip {
-            position: absolute;
-            transform: rotate(-30deg);
-            font-size: 20px;
-            // top: 42px;
-            // left: 11px;
-            // width: 80px;
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-        }
-        .smallText {
-          font-size: 14px;
-        }
-    }
-</style>

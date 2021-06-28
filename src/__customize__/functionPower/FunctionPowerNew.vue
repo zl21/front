@@ -1,5 +1,5 @@
 <template>
-  <div class="functionPower">
+  <div :class="classes">
     <div class="buttonGroup">
       <Button
         v-for="(item, index) in buttonsData"
@@ -33,7 +33,7 @@
           clearable
           icon="ios-search"
           @on-change="searchInputChange"
-        >
+            >
         <span slot="prepend">检索</span>
         </Input>
         <div class="menuContainer">
@@ -312,7 +312,7 @@
 <script>
   /* eslint-disable arrow-parens,no-lonely-if,no-empty */
   // import network, { urlSearchParams } from '../../__utils__/network';
-  import { Version } from '../../constants/global';
+  import { Version, classFix } from '../../constants/global';
   import store from '../../__config__/store.config';
   import tree from '../../__component__/tree';
 
@@ -519,6 +519,7 @@
       }
     },
     computed: {
+      classes: () => `${classFix}functionPower`,
       treeConfigData() {
         return this.getTreeConfig()
       },
@@ -1080,26 +1081,17 @@
         }
       }, // 点击按钮触发
       customize() {
-        const { fullPath } = this.$route;
-        const {
-          keepAliveModuleName,
-          tableName,
-        } = this.$store.state.global.activeTab;
-        this.$store.commit('global/tabCloseAppoint', {
-          tableName,
-          routeFullPath: fullPath,
-          keepAliveModuleName,
-        // stopRouterPush: true,
-        });
-        // 跳转
-        this.$store.commit('global/tabOpen', {
-          // type: 'S',
-          // tableName:'T_V_OMSONLINEORDER',
-          // tableId:'10883',
-          url: '/SYSTEM/TABLE/VV_SHANGPIN/24548',
-          back: true
-        });
-
+        const { fullPath } = this.$route;// 获取当前路由fullPath
+        const { keepAliveModuleName, tableName } = this.$store.state.global.activeTab;// 获取当前缓存模块名称，自定义标识
+        const params = {
+          routeFullPath: fullPath, // 当前路由fullPath
+          keepAliveModuleName, // 当前模块名称
+          tableName, // 当前自定义表标识
+          event: () => {
+            // alert(177);
+          }
+        };
+        store.commit('global/tabCloseAppoint', params);
 
         // const { fullPath } = this.$route;// 获取当前路由fullPath
         // const { keepAliveModuleName, tableName } = this.$store.state.global.activeTab;// 获取当前缓存模块名称，自定义标识
@@ -1934,277 +1926,3 @@
     }
   };
 </script>
-
-<style lang="less">
-    .ark-spin-fix{
-        z-index: 999;
-        .demo-spin-icon-load{
-            animation: ani-demo-spin 1s linear infinite;
-        }
-        @keyframes ani-demo-spin {
-            from { transform: rotate(0deg);}
-            50%  { transform: rotate(180deg);}
-            to   { transform: rotate(360deg);}
-        }
-    }
-
-    .functionPower {
-        position: relative;
-        height: 100%;
-        padding: 10px 0;
-        display: flex;
-        flex-direction: column;
-        box-sizing: border-box;
-        .buttonGroup {
-            display: flex;
-            .Button {
-                min-width: 0;
-                padding: 0 8px;
-                border-radius:2px;
-                font-size:12px;
-                font-weight:400;
-                box-sizing: border-box;
-                margin-right: 10px;
-                height: 22px;
-                span {
-                    vertical-align: initial;
-                }
-            }
-        }
-        .content {
-            flex: 1;
-            margin-top: 10px;
-            display: flex;
-            overflow-y: hidden;
-            .contentLeft {
-                width: 240px;
-                height: 100%;
-                padding: 10px;
-                border: solid 1px #d8d8d8;
-                border-radius: 6px;
-                margin-right: 10px;
-                display: flex;
-                flex-direction: column;
-                .menuContainer {
-                    flex: 1;
-                    margin-top: 10px;
-                    overflow-y: auto;
-
-                    .ark-tree-title {
-                        width: 100%;
-                        font-size: 12px;
-                        line-height: 26px;
-                    }
-                    .ark-tree-title-selected, .ark-tree-title-selected:hover {
-                        background-color: rgb(196, 226, 255);
-                    }
-
-                    .menuList {
-                        cursor: pointer;
-                        font-size: 12px;
-                        line-height: 26px;
-                    }
-                    .menuHighlight {
-                        background-color: rgb(196, 226, 255);
-                    }
-                }
-            }
-            .contentRight {
-                height: 100%;
-                flex: 1;
-                border: solid 1px #d8d8d8;
-                border-radius: 6px;
-                display: flex;
-                width: 100%;
-                .left-tree {
-                    width: 200px;
-                    padding: 10px;
-                    border-right: solid 1px #d8d8d8;
-                    overflow: auto;
-                    .ark-tree-title-selected, .ark-tree-title-selected:hover {
-                        background-color: rgb(196, 226, 255);
-                    }
-                }
-                .right-list {
-                    flex: 1;
-                    height: 100%;
-                    width: 10px;
-                    .ark-checkbox-inner {
-                        transition: 0s !important;
-                    }
-                    .upper-part {
-                        height: 60%;
-                        padding: 10px;
-                        border-bottom: solid 1px #d8d8d8;
-                        /*overflow-x: auto;*/
-                        /*overflow-y: hidden;*/
-                        .upper-table {
-                            height: 100%;
-                            width: 100%;
-                            position: relative;
-                            overflow: hidden;
-                            .upper-table-tabth {
-                                position: relative;
-                                table {
-                                    border-collapse: collapse;
-                                    border-spacing: 0px;
-                                    border: 0;
-                                    box-sizing: border-box;
-                                    background-color: #f5f6fa;
-                                }
-                                table th {
-                                    box-sizing: border-box;
-                                    padding: 3px 8px;
-                                    font-weight: 400 !important;
-                                    white-space: nowrap;
-                                    text-align: left;
-                                    min-width: 62px;
-                                    border-bottom: 1px solid #e8eaec;
-                                }
-                                .functionColumnClass {
-                                    text-align: left;
-                                }
-                            }
-                            .upper-table-tabtd-empty {
-                                height: calc(100% - 22px) !important;
-                                width: 100%;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                color: #575757;
-                                font-size: 12px;
-                            }
-                            .upper-table-tabtd {
-                                overflow: auto;
-                                height: calc(100% - 22px) !important;
-                                .upper-table-tabtd-highlight {
-                                    background-color: rgb(196, 226, 255);
-                                }
-                                table {
-                                    border-spacing: 0px;
-                                }
-                                table td {
-                                    padding: 4px 8px 4px 8px;
-                                    font-weight: 400 !important;
-                                    white-space: nowrap;
-                                    text-align: left;
-                                    border-bottom: 1px solid #e8eaec;
-                                    min-width: 62px;
-                                }
-                                table tr:hover {
-                                    background-color: #ecf0f1;
-                                }
-                            }
-                        }
-                    }
-                    .bottom-part {
-                        height: 40%;
-                        padding: 10px;
-                        .bottom-table {
-                            height: 100%;
-                            width: 100%;
-                            .bottom-table-tabth {
-                                width: 100%;
-                                position: relative;
-                                background-color: #f5f6fa;
-                                border-bottom: 1px solid #e8eaec;
-                                table {
-                                    border-collapse: collapse;
-                                    border-spacing: 0px;
-                                    border: 0;
-                                    box-sizing: border-box;
-                                }
-                                table th {
-                                    box-sizing: border-box;
-                                    padding: 5px 8px;
-                                    font-weight: 400 !important;
-                                    white-space: nowrap;
-                                    text-align: left;
-                                    min-width: 200px;
-                                }
-                            }
-                            .bottom-table-tbody {
-                                overflow: auto;
-                                height: calc(100% - 22px) !important;
-                                .bottom-table-tbody-highlight {
-                                    background-color: rgb(196, 226, 255);
-                                }
-                                table {
-                                    width: 100%;
-                                    border-spacing: 0px;
-                                }
-                                table td {
-                                    padding: 4px 8px 4px 8px;
-                                    font-weight: 400 !important;
-                                    white-space: nowrap;
-                                    text-align: left;
-                                    border-bottom: 1px solid #e8eaec;
-                                    min-width: 200px;
-                                }
-                                table tr:hover {
-                                    background-color: #ecf0f1;
-                                }
-                                table tr {
-                                    width: 100%;
-                                }
-                                table tr:last-child {
-                                    width: calc(100% - 200px);
-                                }
-                            }
-                            .bottom-table-tbody-empty {
-                                height: calc(100% - 22px) !important;
-                                width: 100%;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                color: #575757;
-                                font-size: 12px;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    .modalContent {
-        .itemContent {
-            display: flex;
-            margin-bottom: 10px;
-            overflow: hidden;
-            .labelContent {
-                margin-right: 4px;
-                width: 100px;
-                display: flex;
-                align-items: center;
-                justify-content: flex-end;
-                .labelTip {
-                    font-size: 16px;
-                    height: 10px;
-                    color: red;
-                    margin-right: 4px;
-                }
-            }
-            .itemCom {
-                width: 220px;
-            }
-        }
-        .modalButton {
-            width: 324px;
-            display: flex;
-            justify-content: flex-end;
-            .Button {
-                margin-left: 10px;
-                min-width: 0;
-                padding: 0 8px;
-                border-radius:2px;
-                font-size:12px;
-                font-weight:400;
-                box-sizing: border-box;
-                height: 22px;
-                span {
-                    vertical-align: initial;
-                }
-            }
-        }
-    }
-</style>

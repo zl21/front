@@ -38,7 +38,7 @@
       }),
       isShow() {
         return this.data.children.filter(subMenu => subMenu.children.length > 0 && subMenu.children.filter(c => !c.isHidden).length > 0).length > 0;
-      }
+      },
     },
     methods: {
       togglePrimaryMenu(data) {

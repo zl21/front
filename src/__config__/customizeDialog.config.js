@@ -4,7 +4,11 @@ export default {
       /* webpackChunkName: 'batchChangePassword' */
       /* webpackMode: 'eager' */
       '../__customizeDialog__/batchChangePassword/batchChangePassword.vue'
+<<<<<<< HEAD
     )
+=======
+      )
+>>>>>>> npm-test-branch-new
   },
   ChangePassword: {
     component: () => import(
@@ -55,11 +59,11 @@ export default {
       '../__customizeDialog__/Report/report.vue'
     )
   },
-  exportValidate: {
-    component: () => import(
-      /* webpackChunkName: 'PublishPrintTemplate' */
-      /* webpackMode: 'eager' */
-      '../__customizeDialog__/exportValidate/exportValidate.vue'
-    )
-  },
+  // exportValidate: {
+  //   component: () => import(
+  //     /* webpackChunkName: 'PublishPrintTemplate' */
+  //     /* webpackMode: 'eager' */
+  //     '../__customizeDialog__/exportValidate/exportValidate.vue'
+  //   )
+  // },
 };

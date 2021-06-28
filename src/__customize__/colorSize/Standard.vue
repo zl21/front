@@ -1,5 +1,5 @@
 <template>
-  <div class="standard_container">
+  <div :class="classes">
     <div class="tabs_container">
       <div class="navButton">
         <button
@@ -28,14 +28,14 @@
   import SizeComponent from './SizeComponent';
   import ColorComponent from './ColorComponent';
   import network, { urlSearchParams } from '../../__utils__/network';
-  import { custommizedRequestUrl } from '../../constants/global';
+  import { custommizedRequestUrl, classFix } from '../../constants/global';
 
   export default {
     name: 'Standard',
     data() {
       return {
         actionFlag: { produceFlag: false }, // 动作权限
-      
+
         colorData: [],
         sizeData: [],
         rightTableDataForSize: [],
@@ -43,6 +43,7 @@
       };
     },
     computed: {
+      classes: () => `${classFix}standard_container`,
       tabPanels() {
         const tabPanel = [
           {
@@ -106,7 +107,7 @@
       getSizeAndColorRightTableData() {
         const { itemId } = this.$route.params;
 
-        // 新增主表数据时，颜色尺寸不调用接口        
+        // 新增主表数据时，颜色尺寸不调用接口
         if (itemId === 'New') {
           return;
         }
@@ -148,7 +149,7 @@
       },
       getImage(colorData) {
         const { itemId } = this.$route.params;
-        // 新增主表数据时，颜色尺寸不调用接口        
+        // 新增主表数据时，颜色尺寸不调用接口
         if (itemId === 'New') {
           return;
         }
@@ -195,7 +196,7 @@
           this.getSizeData(this.rightTableDataForSize);
           // }
         }
-        
+
         if (this.$refs.tabPanels.$refs.size) {
           rightTableDataForSizeRes = this.$refs.tabPanels.$refs.size.rightTableData;
           this.getSizeData(rightTableDataForSizeRes);
@@ -204,7 +205,7 @@
           }
           this.getColorData(this.rightTableDataForColor);
         }
-      
+
         const params = {
           param: {
             table: tableName,
@@ -249,47 +250,6 @@
       }
     },
     watch: {},
-    
+
   };
 </script>
-
-<style lang="less">
-    .standard_container {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        padding: 10px 0px;
-        .tabs_container{
-            flex: 1;
-            margin-top: 10px;
-              .navButton {
-                padding: 0;
-                flex: 1;
-                height: 24px;
-                width: 100%;
-                margin-bottom: 10px;
-                margin-top: -10px;
-                button{
-                  height: 24px;
-                  width: auto;
-                  margin: 0 8px 0 0;
-                  padding: 0 8px;
-                  background: #fff;
-                  color: #fd6442;
-                  border: 1px solid #fd6442;
-                  border-radius: 2px;
-                  float: left;
-                }
-              }
-        }
-        .ark-tabs-panels{
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            .ark-tabs-panels-content{
-                flex: 1;
-                overflow: hidden;
-            }
-        }
-    }
-</style>

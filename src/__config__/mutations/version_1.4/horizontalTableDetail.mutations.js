@@ -153,9 +153,11 @@ export default {
 
   updatePanelData(state, data) { // 更新子表面板数据
     state.itemObjId = data.id;
-    const { componentAttribute } = state.tabPanels[data.tabIndex];
-    componentAttribute.panelData.isShow = true;
-    componentAttribute.panelData.data = data;
+    const { componentAttribute } = state.tabPanels[data.tabIndex] || {};
+    if (componentAttribute) {
+      componentAttribute.panelData.isShow = true;
+      componentAttribute.panelData.data = data;
+    }
   }, 
   
   updateTableData(state, data) {
@@ -255,13 +257,13 @@ export default {
   changeCopy(state, data) {
     state.copy = data;
   },
-  copyDefaultData(state, { tableName }) { // 执行按钮复制操作重新给form赋值
-    // state.tabPanels.forEach((item) => {
-    //   if (item.tablename === tableName) {
-    state.tabPanels[0].componentAttribute.panelData = Object.assign(state.tabPanels[0].componentAttribute.panelData, state.defaultForCopyData);
-    //   }
-    // });
-  },
+  // copyDefaultData(state, { tableName }) { // 执行按钮复制操作重新给form赋值
+  //   // state.tabPanels.forEach((item) => {
+  //   //   if (item.tablename === tableName) {
+  //   state.tabPanels[0].componentAttribute.panelData = Object.assign(state.tabPanels[0].componentAttribute.panelData, state.defaultForCopyData);
+  //   //   }
+  //   // });
+  // },
   // changeFormDataForCopy(state, { defaultForCopyDatas, tableName }) {
   //   state.updateData[tableName].add = defaultForCopyDatas;
   // },

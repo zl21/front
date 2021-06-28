@@ -1,6 +1,6 @@
 /* eslint-disable import/no-dynamic-require */
 <template>
-  <div :class="_items.props.fkdisplay === 'pop' ? 'ItemComponentRoot AttachFilter-pop':'ItemComponentRoot'">
+  <div :class="classes">
     <span
       v-if="showLabel"
       class="itemLabel"
@@ -26,7 +26,7 @@
               target="_blank"
             >...</a>
           </span>
-        </div>  
+        </div>
         <i class="iconfont iconios-information-circle-outline" />
       </Poptip>
       <span
@@ -290,7 +290,7 @@
         </div>
       </AttachFilter>
  -->
-      <div 
+      <div
         class="img-upload-wrap"
         v-if="_items.type === 'ImageUpload'"
       >
@@ -418,7 +418,7 @@
         <!-- 单对象主表属性定制字段 -->
         <!-- _items.type：display
         _items.props:元数据配置字段 -->
-       
+
         <Defined
           :readonly="_items.props.readonly"
           :itemdata="_items.props"
@@ -433,7 +433,7 @@
 <script>
   import Vue from 'vue';
   import { mapMutations } from 'vuex';
-  
+
   import dataProp from '../__config__/props.config';
   // 弹窗多选面板
   // import Dialog from './ComplexsDialog';
@@ -452,7 +452,7 @@
 
 
   import {
-    Version, MODULE_COMPONENT_NAME, ossRealtimeSave, defaultrange, setComponentsProps
+    Version, MODULE_COMPONENT_NAME, ossRealtimeSave, defaultrange, setComponentsProps, classFix
   } from '../constants/global';
   import createModal from './PreviewPicture/index';
   import EnumerableInput from './EnumerableInput.vue';
@@ -462,7 +462,7 @@
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
-  
+
   export default {
     components: {
       EnumerableInput, ExtentionInput, ComAttachFilter, Docfile, RadioGroup, Defined, StringRender, CheckboxGroup
@@ -513,6 +513,7 @@
     },
     data() {
       return {
+        classFix,
         filterDate: {},
         resultData: {}, // 结果传值
         showImgUploadProcess: false, // 显示上传进度条
@@ -520,7 +521,6 @@
         imgProgressController: window.ProjectConfig.imgProgressController
       };
     },
-
     computed: {
       getVersion() {
         return Version;
@@ -535,7 +535,7 @@
           dataProp.DropDownSelectFilter.props.pageSize = defaultrange();
           dataProp.DropMultiSelectFilter.props.pageSize = defaultrange();
         }
-        
+
         // 将设置的props和默认props进行assign
         const item = this.items;
         // const item = this.items;
@@ -555,7 +555,7 @@
 
         const placeholder = this.items.props.webconf && this.items.props.webconf.placeholder ? this.items.props.webconf.placeholder : null;
         item.props.placeholder = placeholder || `${(dataProp[item.type] && dataProp[item.type].props) ? dataProp[item.type].props.placeholder : '请输入'}${item.title}`;
-        
+
 
         if (item.type === 'docfile') {
           if (!Array.isArray(item.props.itemdata.valuedata)) {
@@ -580,7 +580,7 @@
                 );
               }
             }
-            
+
 
             item.props.dialog.model['footer-hide'] = false;
             item.props.datalist.forEach((option, i) => {
@@ -618,6 +618,14 @@
       filterList() {
         // 气泡选中过滤条件
         return this.filterDate;
+      },
+      classes() {
+        return [
+          `${classFix}ItemComponentRoot`,
+          {
+            [`${classFix}AttachFilter-pop`]: this._items.props.fkdisplay === 'pop',
+          },
+        ];
       },
 
       showLabel() {
@@ -744,7 +752,7 @@
             this._items.props.maxlength = valLength;
           }
         }
-      
+
 
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'change')
@@ -820,8 +828,8 @@
         }
       },
       inputKeyDown(event, $this) {
-        // 禁止输入特殊字符  222->'
-        if ([222].includes(event.keyCode)) {
+        // 禁止输入特殊字符单引号  222->'
+        if (event.key === "'") {
           event.stopPropagation();
           event.preventDefault();
         }
@@ -1349,7 +1357,7 @@
                   const dom = document.getElementById('actionMODIFY');
                   if (dom) {
                     dom.click();
-                  } 
+                  }
                 }
               } else if (this.$parent.pathcheck === '') {
                 // parms.path = '/p/cs/objectSave';
@@ -1456,7 +1464,7 @@
             dom.click();
           }, 500);
         }
-        
+
 
         return false;
         // eslint-disable-next-line no-unreachable
@@ -1510,7 +1518,7 @@
           this.$Message.info(`只能上传${this._items.props.itemdata.ImageSize}张图片`);
           return false;
         }
-       
+
 
         const valuedata = this._items.props.itemdata.valuedata;
         const fixedData = Array.isArray(valuedata) ? [...valuedata] : [];
@@ -1548,7 +1556,7 @@
 
           if (!ossRealtimeSave()) {
             // 去除图片上传成功后的保存
-              
+
             // childTableName &&
             if (this.$parent.type === 'PanelForm') {
               setTimeout(() => {
@@ -1557,7 +1565,7 @@
               }, 500);
             }
           }
-          // } 
+          // }
           // else {
           //   this._items.props.itemdata.valuedata.push(
           //     fixedData[fixedData.length - 1]
@@ -1678,8 +1686,8 @@
           const dom = document.getElementById('actionMODIFY');
           dom.click();
         }, 500);
-        
-       
+
+
         return false;
       },
       uploadFileChangeOnerror(e) {
@@ -1770,7 +1778,7 @@
                   this._items.value = item.LABLE_VALUES[0].VALUE || '';
                 }
               } else if (item.COLUMN_TYPE === 1) {
-                // INPUT 
+                // INPUT
                 if (this._items.type === 'checkbox') {
                   this._items.value = item.LABLE_VALUES[0].VALUE || this._items.props.falseValue;
                 } else {
@@ -1786,7 +1794,7 @@
                     });
                     labelIput.push(options.LABLE);
                   }
-                 
+
                   return arr;
                 }, []);
                 this._items.value = this._items.props.defaultSelected;
@@ -1868,6 +1876,8 @@
     },
 
     mounted() {
+      // debugger
+      // console.log('items', this.items.type)
       // this.$nextTick(() => {
       //   // 处理字段联动时多个来源字段联动禁用模糊搜索
       //   if (this.items.props.webconf && this.items.props.webconf.refcolval_custom) {
@@ -1886,112 +1896,3 @@
   };
 </script>
 
-<style lang="less">
-.ItemComponentRoot {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-top: 8px;
-
-  .itemLabel {
-    margin-right: 4px;
-    text-align: right;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    line-height: 16px;
-
-    i {
-      font-size: 12px;
-      color: red;
-    }
-  }
-
-  .itemComponent {
-    flex: 1;
-    overflow: hidden;
-  }
-  .label-tip {
-    color: red;
-    font-size: 16px;
-    vertical-align: middle;
-    position: relative;
-    top: 3px;
-    right: 3px;
-  }
-}
-textarea.ark-input{
-    resize:auto;
-}
-// .height100{
-//     height: 100%!important;
-//     .ark-input-wrapper{
-//     height: 100%!important;
-//     }
-// }
-.AttachFilter-pop {
-  .icon-bj_tcduo:before {
-    content: "\e6b1";
-  }
-  .icon-bj_tcduo {
-    padding-top: 2px;
-  }
-}
-.Wangeditor-disabled {
-  border: 1px solid #d8d8d8;
-  background-color: #f4f4f4;
-  overflow: auto;
-  padding: 2px 5px;
-  height: 100%;
-}
-.auto-com-table tr td{
-  max-width:500px!important;
-}
-.attachfiter-pop{
-    .ark-select-item{
-        display: flex;
-        width: 100%;
-        align-items: center;
-        justify-content: space-between;
-        .iconbj_delete2{
-            display: none;
-            width: 12px;
-            height: 12px;
-            font-size: 12px;
-            line-height: 12px;
-        }
-        &:hover{
-          .iconbj_delete2{
-           border-radius: 100%;
-           overflow: hidden;
-           display: block;
-           background-color: #e6502f;
-           color: #fff
-        }
-
-        }
-
-
-    }
-}
-
-.encode-text textarea.ark-input {
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.img-upload-wrap {
-  position: relative;
-  .img-process {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 120px;
-    height: 100px;
-    background: #fff;
-    z-index: 300;
-  }
-}
-</style>

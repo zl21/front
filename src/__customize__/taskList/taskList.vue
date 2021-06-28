@@ -1,7 +1,7 @@
 /* eslint-disable vue/no-dupe-keys */
 // 任务记录列表
 <template>
-  <div class="task-list-container">
+  <div :class="classes">
     <div class="btn-area">
       <Button
         type="posdefault"
@@ -79,8 +79,8 @@
   import FormItemComponent from '../../__component__/FormItemComponent';
   import ItemComponent from '../../__component__/ItemComponent';
   import commonTable from './tableSpecial';
-  import { Version, custommizedRequestUrl } from '../../constants/global';
-  
+  import { Version, custommizedRequestUrl, classFix } from '../../constants/global';
+
 
   const version = Version();
   const fkHttpRequest = () => require(`../../__config__/actions/version_${version}/formHttpRequest/fkHttpRequest.js`);
@@ -112,6 +112,7 @@
       };
     },
     computed: {
+      classes: () => `${classFix}task-list-container`,
       tableTotalData() {
         return [];
       }
@@ -752,71 +753,4 @@
       });
     }
   };
-</script>  
-<style lang="less">
-.ark-btn > span {
-      vertical-align: baseline!important;
-    }
-.task-list-container {
-  overflow: hidden;
-  height: 100%;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  .btn-area {
-    padding: 8px 0px;
-    
-    button {
-      height: 22px;
-      font-size: 12px;
-      line-height: 18px;
-      margin-right: 8px;
-      margin-left: 0px;
-      padding: 0 8px;
-      margin-bottom: 4px;
-    }
-    > button:last-child {
-      margin-right: 0px;
-    }
-  }
-  .form-area {
-    padding: 8px 26px 8px 0px;
-    border: 1px solid #d8d8d8;
-    .formlayout-Item {
-      box-sizing: border-box;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding-top: 8px;
-      .formlayout-div {
-        padding-left: 8px;
-        height: 26px;
-        border: 1px solid #d8d8d8;
-        overflow: hidden;
-        input {
-          width: 100%;
-          height: 100%;
-          border: none;
-        }
-        select {
-          width: 100%;
-          height: 100%;
-          border: none;
-        }
-      }
-    }
-  }
-  .table-area {
-    box-sizing: border-box;
-    padding-top: 20px;
-    flex: 1;
-    overflow: auto;
-    .table-wrap {
-      margin-top: 10px;
-      height: calc(100% - 40px;);
-    }
-  }
-}
-</style>
+</script>

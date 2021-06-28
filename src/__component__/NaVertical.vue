@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="showModule.Navigator"
-    class="NaVertical"
+    :class="classes"
   >
     <div class="NaVertical-icons">
       <div
@@ -17,7 +17,7 @@
           v-if="iconShow"
           class="iconfont iconbj-unfold"
         />
-      </div> 
+      </div>
       <div
         v-if="enableHistoryAndFavoriteUI"
         class="HistoryAndFavorite-time"
@@ -33,23 +33,23 @@
         <!-- <div class="iconfont iconmd-time">
         </div> -->
       </div>
-    </div> 
-    
-   
+    </div>
+
+
     <div>
       <div
         v-for="(item,index) in navigatorSetting"
         :key="index"
-        class="tag right" 
+        class="tag right"
       >
-        <Badge 
-          
+        <Badge
+
           style="width:40px;height:40px"
           :offset="['6px','-8px']"
           :count="item.count"
           @click.native="item.callback"
         >
-          <i 
+          <i
             class="iconfont"
             :class="item.icon"
           />
@@ -57,7 +57,7 @@
       </div>
       <ComAutoComplete />
 
-    
+
       <div
         v-if="versionValue"
         class="tag right"
@@ -65,7 +65,7 @@
       >
         <Badge :count="taskMessageCount">
           <i
-            class="iconfont iconbj_message badge"  
+            class="iconfont iconbj_message badge"
           />
         </Badge>
       </div>
@@ -134,7 +134,7 @@
   import network, { urlSearchParams } from '../__utils__/network';
   import NavigatorSubMenu from './NavigatorSubMenu';
   import {
-    STANDARD_TABLE_LIST_PREFIX, Version, enableGateWay, getGatewayValue, enableHistoryAndFavoriteUI, messageSwitch 
+    classFix, STANDARD_TABLE_LIST_PREFIX, Version, enableGateWay, getGatewayValue, enableHistoryAndFavoriteUI, messageSwitch
   } from '../constants/global';
   import { updateSessionObject } from '../__utils__/sessionStorage';
   import HistoryAndFavorite from './HistoryAndFavorite';
@@ -150,7 +150,7 @@
       HistoryAndFavorite,
       messagePanelOlder
     },
-    
+
     data() {
       return {
         // primaryMenuShow: false,
@@ -207,8 +207,9 @@
       },
       taskMessageCounts() {
         return this.userInfo.id;
-      }
-      
+      },
+      classes: () => `${classFix}NaVertical`
+
     },
     watch: {
       taskMessageCounts(val) {
@@ -318,7 +319,7 @@
           multiple: [],
           startindex: self.messagePanel.start,
           range: 20,
-          orderby: [{ column: Version() === '1.3' ? 'CP_C_TASK.ID' : 'U_NOTE.ID', asc: false }]  
+          orderby: [{ column: Version() === '1.3' ? 'CP_C_TASK.ID' : 'U_NOTE.ID', asc: false }]
         };
         network.post('/p/cs/QueryList', urlSearchParams({ searchdata }), {
           serviceId: enableGateWay() ? getGatewayValue('U_NOTE') : ''
@@ -365,9 +366,9 @@
             index = this.$refs.AutoComplete.$refs.select.focusIndex;
           } else {
             index = 0;
-          }  
+          }
           const routerItem = this.searchList[index];
-   
+
           if (routerItem) {
             this.routeTonext(routerItem);
           }
@@ -388,7 +389,7 @@
         if (url) {
           const menuType = url.substring(url.lastIndexOf('/') + 1, url.length);
           if (menuType === 'New') {
-            const modifyPageUrl = url.substring(0, Number(url.length) - 3);         
+            const modifyPageUrl = url.substring(0, Number(url.length) - 3);
             const clickMenuAddSingleObjectData = {
               k: `/${url}`,
               v: modifyPageUrl
@@ -474,206 +475,3 @@
     }
   };
 </script>
-
-<style lang="less">
-  .ark-drawer-content {
-    //重置arkUI样式
-    border-top-left-radius: 0px !important;
-    border-top-right-radius: 0px !important;
-  }
-  
-  .ark-drawer-body {
-    //重置arkUI样式
-    padding: 0px !important;
-  }
-
-  .NaVertical {
-    height: 40px;
-    display: flex;
-    justify-content: space-between ;
-    background-color: #fff;
-     a{
-          color:white
-        }
-      .badge{
-        width: 42px;
-        height: 42px;
-        // background: #eee;
-        border-radius: 6px;
-        display: inline-block;
-       
-       
-    }
-    .left {
-      padding: 26px 0;
-      text-align: center;
-      img.trigger {
-        height: 40px;
-      }
-      
-      img.logo {
-        position: absolute;
-        width: 30px;
-        top: 10px;
-        left: 18px;
-      }
-      
-      img.banner {
-        width: 76px;
-        height: 30px;
-        // position: absolute;
-        // top: 11px;
-        // left: 64px;
-      }
-      
-      img:hover {
-        cursor: pointer;
-      }
-    }
-    
-    .middle {
-      position: relative;
-      display: flex;
-      flex: 1 1 1px;
-      overflow: auto;
-      div{
-        width: 100%;
-      }
-        .navigator-primary-menu{
-          font-size: 14px;
-          flex-direction: row;
-          padding: 14px 20px;
-          justify-content: space-around;
-          .navigator-primary-menu-div{
-           padding-right: 20px;
-           overflow: hidden;
-           text-overflow:ellipsis
-          }
-          
-        }
-    }
-     .middle::-webkit-scrollbar {
-        display: none;
-    }
-   .buttonIcon{
-     width:100%;
-     height:100%;
-     display: inline-block;
-     vertical-align: middle;
-
-   } 
-    .nav-search {
-      input {
-        display: inline-block;
-        width: 100%;
-        padding: 0 8px;
-        border: solid 1px rgba(46,55,60,1);
-        border-radius: 15px;
-        height: 28px;
-        line-height: 28px;
-        color: rgba(46,55,60,1);;
-        font-size: 12px;
-        transition: all 0.25s;
-        margin-top: -8px;
-
-        &:hover{
-            font-size: 12px;
-            padding: 0px 14px;
-            transition: all 0.25s;
-        }
-      }
-      
-      i {
-        color: #1F272C;
-        margin-top: -5px;
-
-      }
-    }
-    
-    .tag {
-      width: 40px;
-      float: left;
-      font-size: 24px;
-      text-align: center;
-      line-height: 40px;
-      cursor: pointer;
-      color: #1F272C;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-      
-      i {
-        font-size: 20px;
-      }
-      .iconmd-search{
-        font-size: 24px;
-      }
-      
-      .ark-badge-count{
-        top: 2px;
-      }
-    }
-    
-    .tag-search {
-      width: 192px;
-      line-height: 40px;
-      .ark-select{
-          text-align: left;
-      }
-    }
-    
-    .tag:hover {
-      // background: #2e373c;
-    }
-  }
-
-  
-  .Poptip-nav {
-    ul {
-      li {
-        &:hover {
-          background: #f4f4f4;
-        }
-        
-        padding: 0 20px;
-        text-align: left;
-        margin: 0;
-        line-height: 34px;
-        cursor: pointer;
-        color: #606266;
-        font-size: 14px;
-        list-style: none;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-    }
-  }
-  .HistoryAndFavorite-time{
-    min-width: 100px;
-    .iconmd-time{
-      font-size:20px;
-      line-height: 33px;
-      color: #1F272C;
-      cursor: pointer;
-      &::after{
-        content: '...';
-        font-size: 14px;
-        vertical-align: super;
-        margin: 2px;
-      }
-    }
-    .history-and-favorite{
-      //  margin-left: -10px;
-       max-height: 700px;
-       overflow-y: auto;
-      .ark-select-dropdown{
-       
-      }
-      // position: absolute;
-       z-index: 99999;
-    }
-    
-  }
-</style>

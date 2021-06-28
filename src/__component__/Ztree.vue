@@ -247,27 +247,3 @@
     }
   };
 </script>
-
-<style>
-.cancelNode{
-  background:transparent !important;
-}
-.orange{
-  color:#fd6442;
-  line-height: 30px;
-}
-    /* #areaTree{
-        border:1px solid #e5e5e5;    margin-bottom: 2px;border-radius: 4px;overflow: scroll;width: 300px;
-    }
-    .box-title{
-        border-radius: 3px 3px 0 0;background-color: #f5f5f5;
-    }
-    .box-title a{
-        color: #2fa4e7;
-        text-decoration: none;font-size:14px;    display: block;
-        padding: 8px 15px;cursor: pointer;
-    }
-    .box-title .fa{
-        float:right;line-height: 20px;
-    } */
-</style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="AutomaticPathGenerationInput">
+  <div :class="classes">
     <Input
       v-model="automaticPathGenerationValue"
       placeholder="生成路由..."
@@ -27,9 +27,10 @@
   import Vue from 'vue';
   import Dialog from './Dialog.vue';
   import AutomaticPathGeneration from './AutomaticPathGeneration.vue';
+  import { classFix } from '../constants/global';
 
 
-  export default {
+export default {
     components: { Dialog },
     data() {
       return {
@@ -47,7 +48,11 @@
       };
     },
     computed: {
-     
+      classes() {
+        return [
+          `${classFix}AutomaticPathGenerationInput`,
+        ];
+      },
     },
     methods: {
       setValue(value) {
@@ -70,8 +75,3 @@
     }
   };
 </script>
-<style lang="less" scoped>
-.AutomaticPathGenerationInput{
-    width:1000px;
-}
-</style>

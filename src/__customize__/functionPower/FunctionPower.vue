@@ -1,6 +1,6 @@
 
 <template>
-  <div class="functionPower">
+  <div :class="classes">
     <div class="buttonGroup">
       <Button
               v-for="(item, index) in buttonsData"
@@ -173,7 +173,7 @@
 <script>
   /* eslint-disable arrow-parens,no-lonely-if,no-empty */
   // import network, { urlSearchParams } from '../../__utils__/network';
-  import { Version } from '../../constants/global';
+  import { Version, classFix } from '../../constants/global';
 
   const functionPowerActions = () => require(`../../__config__/actions/version_${Version()}/functionPower.actions.js`);
 
@@ -577,6 +577,7 @@
       }
     },
     computed: {
+      classes: () => `${classFix}functionPower`
     },
     created() {
       this.refresh();
@@ -1706,172 +1707,3 @@
     }
   };
 </script>
-
-<style lang="less">
-  .ark-spin-fix{
-    z-index: 999;
-    .demo-spin-icon-load{
-      animation: ani-demo-spin 1s linear infinite;
-    }
-    @keyframes ani-demo-spin {
-      from { transform: rotate(0deg);}
-      50%  { transform: rotate(180deg);}
-      to   { transform: rotate(360deg);}
-    }
-  }
-
-  .functionPower {
-    position: relative;
-    height: 100%;
-    padding: 10px 0;
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    .buttonGroup {
-      display: flex;
-      .Button {
-        min-width: 0;
-        padding: 0 8px;
-        border-radius:2px;
-        font-size:12px;
-        font-weight:400;
-        box-sizing: border-box;
-        margin-right: 10px;
-        height: 22px;
-        span {
-          vertical-align: initial;
-        }
-      }
-    }
-    .content {
-      flex: 1;
-      margin-top: 10px;
-      display: flex;
-      overflow-y: hidden;
-      .contentLeft {
-        width: 240px;
-        height: 100%;
-        padding: 10px;
-        border: solid 1px #d8d8d8;
-        border-radius: 6px;
-        margin-right: 10px;
-        display: flex;
-        flex-direction: column;
-        .menuContainer {
-          flex: 1;
-          margin-top: 10px;
-          overflow-y: auto;
-
-          .ark-tree-title {
-            width: 100%;
-            font-size: 12px;
-            line-height: 26px;
-          }
-          .ark-tree-title-selected, .ark-tree-title-selected:hover {
-            background-color: rgb(196, 226, 255);
-          }
-
-          .menuList {
-            cursor: pointer;
-            font-size: 12px;
-            line-height: 26px;
-          }
-          .menuHighlight {
-            background-color: rgb(196, 226, 255);
-          }
-        }
-      }
-      .contentRight {
-        height: 100%;
-        flex: 1;
-        border: solid 1px #d8d8d8;
-        border-radius: 6px;
-        display: flex;
-        width: 100%;
-        .left-tree {
-          width: 200px;
-          padding: 10px;
-          border-right: solid 1px #d8d8d8;
-          overflow: auto;
-          .ark-tree-title-selected, .ark-tree-title-selected:hover {
-            background-color: rgb(196, 226, 255);
-          }
-        }
-        .right-list {
-          flex: 1;
-          height: 100%;
-          width: 10px;
-          .upper-part {
-            height: 60%;
-            padding: 10px;
-            border-bottom: solid 1px #d8d8d8;
-            .upper-table {
-              height: 100%;
-              .table {
-                border: 0;
-                tbody tr.ark-table-row-hover td{
-                  background-color: #ecf0f1;
-                }
-                .ark-table-row-highlight {
-                  background-color: rgb(196, 226, 255);
-                }
-              }
-            }
-          }
-          .bottom-part {
-            height: 40%;
-            padding: 10px;
-            .bottom-table {
-              height: 100%;
-              .table {
-                height: 100%;
-                border: 0;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  .modalContent {
-    .itemContent {
-      display: flex;
-      margin-bottom: 10px;
-      overflow: hidden;
-      .labelContent {
-        margin-right: 4px;
-        width: 100px;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        .labelTip {
-          font-size: 16px;
-          height: 10px;
-          color: red;
-          margin-right: 4px;
-        }
-      }
-      .itemCom {
-        width: 220px;
-      }
-    }
-    .modalButton {
-      width: 324px;
-      display: flex;
-      justify-content: flex-end;
-      .Button {
-        margin-left: 10px;
-        min-width: 0;
-        padding: 0 8px;
-        border-radius:2px;
-        font-size:12px;
-        font-weight:400;
-        box-sizing: border-box;
-        height: 22px;
-        span {
-          vertical-align: initial;
-        }
-      }
-    }
-  }
-</style>

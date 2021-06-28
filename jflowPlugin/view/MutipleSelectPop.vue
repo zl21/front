@@ -1,5 +1,5 @@
 <template>
-  <div class="MutipleSelectPop">
+  <div :class="classes">
     <div class="dialog_left">
       <p class="label">
         部门:
@@ -217,6 +217,7 @@
   import { fuzzySearch } from '../ztree/js/fuzzysearch';
   import network from '../utils/network';
   import { global } from '../utils/global.config';
+  import { classFix } from '../../src/constants/global';
 
   export default {
     name: 'Mutiple',
@@ -404,6 +405,7 @@
       };
     },
     computed: {
+      classes: () => `${classFix}MutipleSelectPop`,
       roleSwitch() {
         return global.roleSwitch;
       }
@@ -551,7 +553,7 @@
         this.$emit('on-search', event, this);
       },
 
-    
+
       operationTwo() { // 选择部门
         const organizationTree = $.fn.zTree.getZTreeObj('organizationTree');
         let selectNode = organizationTree.getCheckedNodes(true);
@@ -776,7 +778,7 @@
             });
           }
         }
-        
+
 
         const selectrow = this.component[0].list; // 表格数据
         selectrow.map((row, Index) => {
@@ -807,7 +809,7 @@
             });
           }
         }
-        
+
 
         const selectrow = this.component[0].list; // 表格数据
         if (selectrow && selectrow.length > 0) {
@@ -954,16 +956,16 @@
       if (this.isUse && global.roleSwitch) {
         this.getRoleData();
       }
-    
+
       if (this.resultData.list) {
         this.resultRightData = this.deepCopy(this.resultData);
       }
 
-      // 
+      //
       if (!global.notGroupDeliver) {
         await this.getRoleConfig();
       }
-      
+
       // 获取人员信息
       this.findUser({});
     },
@@ -980,188 +982,3 @@
     }
   };
 </script>
-<style lang="less">
-
-.burgeon-tree-arrow-open i:after{
-  left: 6px;
-  height: 19px;
-  top: 11px;
-}
-
-.MutipleSelectPop {
-  display: flex;
-  height: 484px;
-  position: relative;
-  .demo-spin-icon-load {
-    animation: ani-demo-spin 1s linear infinite;
-  }
-  .complex-spin-fix {
-    z-index: 20;
-  }
-  @keyframes ani-demo-spin {
-    from {
-      transform: rotate(0deg);
-    }
-    50% {
-      transform: rotate(180deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-  overflow: hidden;
-  .dialog_left {
-    width: 170px;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    padding: 10px;
-    border: 1px solid #dcdee2;
-    border-right: none;
-
-    .label{
-      line-height: 20px;
-      border-bottom: 1px solid #ccc;
-      margin-bottom: 10px;
-    }
-    .left_top {
-      height: 32px;
-      line-height: 32px;
-      box-sizing: border-box;
-      border-bottom: 1px solid #e8eaec;
-      font-size: 12px;
-      color: #575757;
-      display: flex;
-      input {
-        line-height: 32px;
-        height: 32px;
-      }
-
-      div:first-child {
-        flex: 1;
-      }
-    }
-    .left_center {
-      flex: 1;
-      padding-top: 10px;
-      position: relative;
-      height: 390px;
-      padding-bottom: 10px;
-      width: 156px;
-      overflow-y: auto;
-    }
-  }
-  .dialog_center {
-    width: 400px;
-    position: relative;
-    height: 484px;
-    border: 1px solid #dcdee2;
-    border-right: none;
-    //box-shadow: 2px -2px 9px @shadow-color;
-    padding: 10px;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-direction: column;
-    flex-direction: column;
-
-    .label{
-      line-height: 20px;
-      border-bottom: 1px solid #ccc;
-      margin-bottom: 10px;
-    }
-    .dialog_p10 {
-      padding: 10px 0;
-    }
-    .dialog_center_top {
-      display: flex;
-      line-height: 32px;
-      vertical-align: middle;
-      box-sizing: border-box;
-      .dialog_center_top_fix {
-        width: 100%;
-        box-sizing: border-box;
-        padding-right: 20px;
-        input {
-          line-height: 32px;
-          height: 32px;
-        }
-      }
-    }
-  }
-  .dialog-operation {
-    width: 92px;
-    padding: 0px;
-    border-left: 1px solid #dcdee2;
-    background-color: #fff;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    div {
-      text-align: center;
-      .operatebtn {
-        margin-bottom: 10px;
-        padding: 8px 12px;
-        &:last-child {
-          margin-bottom: 0;
-        }
-      }
-    }
-  }
-  .dialog_right {
-    width: 220px;
-    padding: 10px;
-    border: 1px solid #dcdee2;
-    box-sizing: border-box;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    .left_top {
-      height: 30px;
-      line-height: 30px;
-      box-sizing: border-box;
-      border-bottom: 1px solid #e8eaec;
-      font-size: 12px;
-      color: #575757;
-      display: flex;
-      div:first-child {
-        flex: 1;
-      }
-      i {
-        margin-right: 10px;
-      }
-    }
-    ul {
-      height: 390px;
-      overflow: auto;
-      li {
-        margin-bottom: 4px;
-        display: -ms-flexbox;
-        display: flex;
-        -ms-flex-align: center;
-        align-items: center;
-        background-color: #f8f8f8;
-        border-radius: 2px;
-        font-size: 12px;
-        p {
-          flex: 1;
-          line-height: 18px;
-          margin-left: 4px;
-          box-sizing: border-box;
-          border-radius: 4px;
-          padding: 4px 6px;
-          color: #0f8ee9;
-          word-wrap: break-word;
-          word-break: break-all;
-        }
-      }
-    }
-  }
-  .right_center {
-    flex: 1;
-    padding-top: 10px;
-  }
-}
-</style>

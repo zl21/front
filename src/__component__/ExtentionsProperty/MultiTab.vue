@@ -1,5 +1,5 @@
 <template>
-  <div class="MultiTab">
+  <div :class="classes">
     <Description
       :option="option"
       @removeOption="removeOption"
@@ -9,7 +9,7 @@
       v-model="sumTabs"
       axis="y"
       :lock-to-container-edges="true"
-      :press-delay="200"
+      :press-delay="600"
       helper-class="r3-slick"
       class="drag-scroll"
     >
@@ -155,6 +155,7 @@
   import Description from './Description.vue';
   import Validate from '../form/Validate.vue';
   import network, { urlSearchParams } from '../../__utils__/network';
+  import { classFix } from '../../constants/global';
 
   const TAB_CONSTRUCTOR = {
     tab_name: '',
@@ -209,6 +210,11 @@
     },
 
     computed: {
+      classes() {
+        return [
+          `${classFix}MultiTab`,
+        ];
+      },
       currentData() {
         return this.sumTabs[this.currentTabIndex];
       }
@@ -229,7 +235,7 @@
         document.body.appendChild(this.dom);
 
         window.addEventListener('mousemove', this.setPos);
-        
+
         this.$once('hook:beforeDestroy', () => {
           window.removeEventListener('mousemove', this.setPos);
           if (this.dom) {
@@ -287,7 +293,7 @@
       },
       addColname(item) { // 新增字段配置
         /*
-入参: 
+入参:
 item:  //当前tab的字段配置数组  type array
 出参:
 修改后的tab配置
@@ -301,7 +307,7 @@ item:  //当前tab的字段配置数组  type array
       },
       deleteColname(item, index) { // 删除字段配置
         /*
-入参: 
+入参:
 item:  //当前tab的字段配置数组  type:Array
 index:  //需要删除的配置下标 type:number
 出参:
@@ -615,261 +621,3 @@ index:  //需要删除的配置下标 type:number
     }
   };
 </script>
-<style lang="less" scoped>
-.MultiTab {
-  .ml-5 {
-    margin-left: 5px;
-  }
-
-  .ml-10 {
-    margin-left: 10px;
-  }
-
-  .mb-10 {
-    margin-bottom: 10px;
-  }
-
-  .required-item {
-    position: relative;
-    &::before {
-      content: '*';
-      color: red;
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      left: -6px;
-    }
-  }
-  .tab-label-name {
-    width: 240px;
-  }
-  .tabContent {
-    border: 1px solid #d3d3d3;
-    position: relative;
-    margin-bottom: 10px;
-    cursor: move;
-
-    .label-input {
-      display: flex;
-      align-items: center;
-      margin: 10px;
-
-      > span {
-        display: inline-block;
-        width: 100px;
-        text-align: right;
-      }
-    }
-
-    .blank {
-      position: absolute;
-      width: 100%;
-      height: 1px;
-      background: #d3d3d3;
-      left: 0;
-    }
-
-    .colnameContent {
-      display: flex;
-      padding: 10px;
-
-      > div {
-        flex: 1;
-        margin-right: 10px;
-
-        > p {
-          height: 12px;
-          margin-bottom: 4px;
-        }
-
-        &.colname {
-          flex: 1;
-        }
-
-        &.oprate {
-          width: 50px;
-          flex: none;
-        }
-
-        &:last-child {
-          margin: 0;
-        }
-      }
-
-      .operator {
-        flex: 100px 0 0;
-      }
-    }
-  }
-
-  .operate-button {
-    background-color: transparent;
-    outline: none;
-    font-size: 16px;
-    // padding: 5px;
-    border: 1px solid lightgrey;
-    width: 20px;
-    display: inline-block;
-    height: 20px;
-    line-height: -1px;
-    border-radius: 50%;
-    color: grey;
-  }
-  .operate-button:hover {
-    color: #000;
-    cursor: pointer;
-    opacity: 0.8;
-  }
-}
-
-::v-deep .ark-date-picker {
-  .ark-select-dropdown {
-    right: 72px !important;
-    left: auto !important;
-  }
-}
-
-// 拖拽容器滚动
-.drag-scroll {
-  height: 361px;
-  overflow-y: auto;
-}
-</style>
-
-<style lang="less">
-#drag-tip {
-  display: inline-block;
-  padding: 4px 8px;
-  box-shadow: 0px 2px 8px rgba(136, 136, 136, 0.4);
-  background: #f4f4f4;
-  font-size: 12px;
-  position: fixed;
-  z-index: 3000;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.showTip {
-  opacity: 1!important;
-}
-
-// 拖拽时候的样式
-.r3-slick {
-  z-index: 2000;
-  box-shadow: 0px 2px 8px rgba(136, 136, 136, 0.4);
-  cursor: move;
-  pointer-events: auto !important;
-  z-index: 99999;
-  background: #fff;
-
-  .ml-5 {
-    margin-left: 5px;
-  }
-
-  .ml-10 {
-    margin-left: 10px;
-  }
-
-  .mb-10 {
-    margin-bottom: 10px;
-  }
-
-  .required-item {
-    position: relative;
-    &::before {
-      content: '*';
-      color: red;
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      left: -6px;
-    }
-  }
-  .tab-label-name {
-    width: 240px;
-  }
-  .tabContent {
-    border: 1px solid #d3d3d3;
-    position: relative;
-    margin-bottom: 10px;
-    cursor: move;
-
-    .label-input {
-      display: flex;
-      align-items: center;
-      margin: 10px;
-
-      > span {
-        display: inline-block;
-        width: 100px;
-        text-align: right;
-      }
-    }
-
-    .blank {
-      position: absolute;
-      width: 100%;
-      height: 1px;
-      background: #d3d3d3;
-      left: 0;
-    }
-  }
-
-  .colnameContent {
-    display: flex;
-    padding: 10px;
-
-    > div {
-      flex: 1;
-      margin-right: 10px;
-
-      > p {
-        height: 12px;
-        margin-bottom: 4px;
-      }
-
-      &.colname {
-        flex: 1;
-      }
-
-      &.oprate {
-        width: 50px;
-        flex: none;
-      }
-
-      &:last-child {
-        margin: 0;
-      }
-    }
-
-    .operator {
-      flex: 100px 0 0;
-    }
-  }
-
-  .operate-button {
-    background-color: transparent;
-    outline: none;
-    font-size: 16px;
-    // padding: 5px;
-    border: 1px solid lightgrey;
-    width: 20px;
-    display: inline-block;
-    height: 20px;
-    line-height: -1px;
-    border-radius: 50%;
-    color: grey;
-  }
-  .operate-button:hover {
-    color: #000;
-    cursor: pointer;
-    opacity: 0.8;
-  }
-
-  .ark-date-picker {
-    .ark-select-dropdown {
-      right: 72px !important;
-      left: auto !important;
-    }
-  }
-}
-</style>

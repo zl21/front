@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="showModule.Navigator"
-    class="NavigatorVertical"
+    :class="classes"
   >
     <div
       class="left"
@@ -46,11 +46,11 @@
 
 <script>
   import { mapState, mapMutations, mapActions } from 'vuex';
-  
+
   import { routeTo } from '../__config__/event.config';
   import network, { urlSearchParams } from '../__utils__/network';
   import {
-    STANDARD_TABLE_LIST_PREFIX, Version, enableGateWay, getGatewayValue 
+    STANDARD_TABLE_LIST_PREFIX, Version, enableGateWay, getGatewayValue, classFix
   } from '../constants/global';
   import { updateSessionObject } from '../__utils__/sessionStorage';
 
@@ -61,7 +61,7 @@
     components: {
       VerticalMenu
     },
-    
+
     data() {
       return {
         // primaryMenuShow: false,
@@ -110,6 +110,7 @@
         taskMessageCount: state => state.taskMessageCount,
         imgSrc: state => state.imgSrc
       }),
+      classes: () => `${classFix}NavigatorVertical`,
       versionValue() {
         if (Version() === '1.4') {
           return false;
@@ -117,16 +118,16 @@
         return true;
       },
       taskMessageCounts() {
-        return this.userInfo.id;
+        if (this.userInfo) {
+          return this.userInfo.id;
+        }
+        return null;
       }
-      
+
     },
     watch: {
       taskMessageCounts(val) {
-        // if (val && Version() === '1.3') {
-        //   this.getTaskMessageCount(val);
-        // }
-        if (val) {
+        if (val && Version() === '1.3') {
           this.getTaskMessageCount(val);
         }
       },
@@ -262,9 +263,9 @@
             index = this.$refs.AutoComplete.$refs.select.focusIndex;
           } else {
             index = 0;
-          }  
+          }
           const routerItem = this.searchList[index];
-   
+
           if (routerItem) {
             this.routeTonext(routerItem);
           }
@@ -285,7 +286,7 @@
         if (url) {
           const menuType = url.substring(url.lastIndexOf('/') + 1, url.length);
           if (menuType === 'New') {
-            const modifyPageUrl = url.substring(0, Number(url.length) - 3);         
+            const modifyPageUrl = url.substring(0, Number(url.length) - 3);
             const clickMenuAddSingleObjectData = {
               k: `/${url}`,
               v: modifyPageUrl

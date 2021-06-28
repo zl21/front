@@ -1,7 +1,7 @@
 /* eslint-disable vue/html-indent */
 /* eslint-disable vue/html-self-closing */
 <template>
-  <div class="TableDetailCollection">
+  <div :class="classes">
     <div class="detail-collection">
       <component :is="slotTableTemplate" :tabwebact="tabwebact"
       :webConfSingle = webConfSingle
@@ -190,7 +190,7 @@
   import { CommonTableByAgGrid } from '@syman/ark-ui-bcl';
   import regExp from '../constants/regExp';
   import {
-    Version, LINK_MODULE_COMPONENT_PREFIX, INSTANCE_ROUTE_QUERY, enableActivateSameCustomizePage, ossRealtimeSave
+    Version, LINK_MODULE_COMPONENT_PREFIX, INSTANCE_ROUTE_QUERY, enableActivateSameCustomizePage, ossRealtimeSave, classFix
   } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
   import ComplexsDialog from './ComplexsDialog.vue'; // emit 选中的行
@@ -360,7 +360,7 @@
         type: Boolean,
         default: false
       },
-      
+
       objreadonly: {
         // 主表按钮的
         type: Boolean,
@@ -406,6 +406,7 @@
         exportTasks: ({ exportTasks }) => exportTasks
 
       }),
+      classes: () => `${classFix}TableDetailCollection`,
 
       currentTabIndex() {
         return this.tabCurrentIndex;
@@ -458,7 +459,7 @@
       isHorizontal() { // 是否是左右结构
         return this.type === pageType.Horizontal;
       },
-      
+
       buttonGroups() { // 按钮组的数据组合
         // let tabIndex = null;
         // if (this.WebConf && this.WebConf.isCustomizeTab && this.type === 'horizontal') {
@@ -582,7 +583,7 @@
       }
     },
     watch: {
-     
+
       buttonGroups: {
         handler(val) {
           this.buttonData = val;
@@ -615,7 +616,7 @@
             this.isRefreshClick = false;
           }
           const isTableRender = this.isTableRender;
-          
+
           setTimeout(() => {
             if(this.isCommonTable || !this.useAgGrid) {
               this.columns = this.filterColumns(this.dataSource.tabth, isTableRender); // 每列的属性
@@ -646,10 +647,11 @@
           }
           this.getEditAbleId(JSON.parse(JSON.stringify(this.dataSource)));
         }
-      }
+      },
 
     },
     created() {
+      this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');
       this.ChineseDictionary = ChineseDictionary;
       this.$once('setSearchValue', () => {
         this.setSelectDefaultValue(); // 设置下拉的默认查询条件
@@ -734,7 +736,7 @@
             renderComponent: renderFn,
           };
         }
-        
+
         // 序号按正常文本渲染
         if (cellData.colname === EXCEPT_COLUMN_NAME) {
           componentInfo = null;
@@ -819,7 +821,7 @@
               });
             });
             promises.then(() => {
-              this.$R3loading.hide(this.routerParams.tableName);
+              this.$R3loading.hide(this.loadingName);
               this.closeImportDialog();
               if (this.exportTasks.dialog) {
                 const message = {
@@ -859,12 +861,12 @@
               //   };
               //   this.$Modal.error(data);
               // }
-              this.$R3loading.hide(this.routerParams.tableName);
+              this.$R3loading.hide(this.loadingName);
               this.closeImportDialog();
             });
           }
         } else {
-          this.$R3loading.hide(this.routerParams.tableName);
+          this.$R3loading.hide(this.loadingName);
         }
       },
       getEditAbleId(data) {
@@ -1144,7 +1146,7 @@
           this.getObjTabActionSlientConfirm({
             tab, params, path: tab.action, resolve, reject, vuedisplay: tab.vuedisplay
           });
-          this.$R3loading.show();
+          this.$R3loading.show(this.loadingName);
         });
         if (tab.cuscomponent) {
           const nextOperate = JSON.parse(// 配置信息
@@ -1152,7 +1154,7 @@
           );
 
           promise.then(() => {
-            this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            this.$R3loading.hide(this.loadingName);
             if (nextOperate.success) {
               let successAction = null;
               let successActionParam = {};
@@ -1178,7 +1180,7 @@
               this.$Modal.fcSuccess(data);
             }
           }, () => {
-            this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            this.$R3loading.hide(this.loadingName);
             if (nextOperate.failure) {
               let errorAction = null;
               let errorActionParam = {};
@@ -1198,7 +1200,7 @@
           });
         } else {
           promise.then(() => {
-            this.$R3loading.hide(tableName);
+            this.$R3loading.hide(this.loadingName);
             const message = this.objTabActionSlientConfirmData.message;
             const data = {
               mask: true,
@@ -1210,7 +1212,7 @@
               this.refresh();
             }
           }, () => {
-            this.$R3loading.hide(this.routerParams.tableName);
+            this.$R3loading.hide(this.loadingName);
           });
         }
       },
@@ -1254,7 +1256,7 @@
         //   tabIndex = this.tabCurrentIndex;
         // }
         const { itemId, tableName } = this.$route.params;
-      
+
         if (this.type === 'vertical') { // 上下结构
           new Promise((resolve, reject) => {
             this.getObjectTabForMainTable({
@@ -1365,7 +1367,7 @@
               value: tab,
               customizedModuleId: tab.webname.toUpperCase()
             // 因外链界面tablinkName相同时，只激活一个tab,所以外链界面用linkName作为key存入session,避免因勾选的id不同存入多个，导致关闭当前tab时无法清除存入的多个
-              
+
             };
             this.updateCustomizeMessage(data);
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
@@ -1412,7 +1414,7 @@
             // updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
             updateSessionObject('undataFromPageCustomizeButtonInfo', undataFromPageCustomizeButtonInfo);// 将自定义按钮为跳转自定义界面类型的自定义按钮信息存入session
 
-           
+
             const customizedModuleName = tabAction.split('/')[1];
             const urlRes = `${actionType}/${customizedModuleName.toLocaleUpperCase()}/${tab.webid}`;
             const param = {
@@ -1435,9 +1437,9 @@
               data.customizedModuleId = id;
             }
             this.updateCustomizeMessage(data);
-          } 
-          
-          
+          }
+
+
           // else if (actionType.toUpperCase() === 'CUSTOMIZED') {
           //   const name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
           //   this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
@@ -1456,7 +1458,7 @@
           //     customizedModuleId: tab.webid
           //   };
           //   this.updateCustomizeMessage(data);
-         
+
           // }
         }
 
@@ -1699,7 +1701,7 @@
               width: ele.webconf && ele.webconf.standard_width,
               _index: index
             };
-            
+
             if (ele.comment) {
               param.renderHeader = this.tooltipRenderHeader();
             }
@@ -1719,7 +1721,7 @@
             if (ele.isorder) {
               param.sortable = 'custom';
             }
-            
+
             const item = Object.assign({}, ele, param);
             return item;
           });
@@ -1759,7 +1761,7 @@
               default: () => h('div', {
                 style: {},
                 domProps: {
-                  innerHTML: `<span>${params.column.name}</span><i class="iconfont iconios-information-circle-outline" style="color: orangered; font-size: 13px"></i> `
+                  innerHTML: `<span>${params.column.name}</span> <i class="iconfont iconios-information-circle-outline" style="color: orangered; font-size: 13px"></i>`
                 }
               }),
               content: () => h('div', {
@@ -1913,21 +1915,21 @@
         }
         return this.DISPLAY_ENUM[cellData.display].event(cellData, this.DISPLAY_ENUM[cellData.display].tag);
       },
-      strLen(str) {  
-        let len = 0;  
-        for (let i = 0; i < str.length; i++) {  
-          if (str.charCodeAt(i) > 127 || str.charCodeAt(i) === 94) {  
-            len += 2;  
-          } else {  
-            len++;  
-          }  
-        }  
-        return len;  
+      strLen(str) {
+        let len = 0;
+        for (let i = 0; i < str.length; i++) {
+          if (str.charCodeAt(i) > 127 || str.charCodeAt(i) === 94) {
+            len += 2;
+          } else {
+            len++;
+          }
+        }
+        return len;
       },
       textRender(cellData) {
         return (h, params) => {
           let maxlength = '';
-          
+
           if (params.column.webconf && params.column.webconf.maxlength) {
             maxlength = params.column.webconf.maxlength;
           }
@@ -1975,7 +1977,7 @@
             domProps: {
               innerHTML,
             },
-        
+
           })],);
         };
       },
@@ -2449,7 +2451,7 @@
                       value.transferDefaultSelected = [];
                     }
                     this.fkAutoData = [];
-                    
+
                     const serviceId = this.copyDataSource.tabth.find(item => item.colname === params.column.colname).serviceId;
                     fkHttpRequest().fkFuzzyquerybyak({
                       searchObject: {
@@ -2732,8 +2734,8 @@
                           value.transferDefaultSelected = [];
                         }
                         this.fkAutoData = [];
-                        
-              
+
+
                         const serviceId = this.copyDataSource.tabth.find(item => item.colname === params.column.colname).serviceId;
 
                         fkHttpRequest().fkFuzzyquerybyak({
@@ -2941,7 +2943,7 @@
                 this.copyDataSource.row[params.index][cellData.colname].val = '';
                 this.fkAutoData = [];
                 this.putDataFromCell(null, this.dataSource.row[params.index][cellData.colname].refobjid !== -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
-                
+
                 this.putLabelDataFromCell('', this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, this.dataSource.row[params.index][cellData.colname].val);
               }
             }
@@ -2949,52 +2951,45 @@
         ]);
       },
       comAttachFilterRender(cellData, tag) {
-        return (h, params) => {
-          if(!this.copyDataSource.row[params.index]) {
-            return null
-          }
-          const valueObj = this.copyDataSource.row[params.index][cellData.colname]
-          const defaultValue = valueObj.val
-          const defaultSelected = valueObj.val ? [{
-            ID:  /选中/.test(valueObj.val) ? valueObj.refobjid : valueObj.val,
-            Label: /选中/.test(valueObj.val) ? valueObj.val : `已经选中${JSON.parse(valueObj.val).total}条数据`
-          }] : []
-          return h('div', [
-            h(tag, {
-              style: {
-                width: '130px'
-              },
-              domProps: {
-                id: `${params.index}-${params.column._index - 1}`
-              },
-              props: {
-                defaultValue,
-                defaultSelected,
-                propstype: {
-                  optionTip: true,
-                  // 是否显示输入完成后是否禁用 true、false
-                  show: true,
-                  // 是否显示筛选提示弹窗 true、false
-                  filterTip: true,
-                  // 是否选中后禁止编辑 true、false
-                  enterType: true,
-                  // 是否回车选中第一行
-                  disabled: false,
-                  // 默认提示框
-                  placeholder: null,
-                  // 定义选中展示的文字的key
-                  hideColumnsKey: ['id'],
-                  // 配置弹窗的配置项 model
-                  dialog: {
-                    model: {
-                      title: '弹窗多选',
-                      mask: true,
-                      draggable: true,
-                      scrollable: true,
-                      width: 920
-                    }
-                  },
-                  fkobj: {
+        return (h, params) => h('div', [
+          h(tag, {
+            style: {
+              width: '130px'
+            },
+            domProps: {
+              id: `${params.index}-${params.column._index - 1}`
+            },
+            props: {
+              defaultValue: this.copyDataSource.row[params.index][cellData.colname].val,
+              defaultSelected: this.copyDataSource.row[params.index][cellData.colname].val ? [{
+                ID: /选中/.test(this.copyDataSource.row[params.index][cellData.colname].val) ? this.copyDataSource.row[params.index][cellData.colname].refobjid :this.copyDataSource.row[params.index][cellData.colname].val,
+                Label: `${/选中/.test(this.copyDataSource.row[params.index][cellData.colname].val) ? this.copyDataSource.row[params.index][cellData.colname].val : `已经选中${JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).total}条数据`}`
+              }] : [],
+              propstype: {
+                optionTip: true,
+                // 是否显示输入完成后是否禁用 true、false
+                show: true,
+                // 是否显示筛选提示弹窗 true、false
+                filterTip: true,
+                // 是否选中后禁止编辑 true、false
+                enterType: true,
+                // 是否回车选中第一行
+                disabled: false,
+                // 默认提示框
+                placeholder: null,
+                // 定义选中展示的文字的key
+                hideColumnsKey: ['id'],
+                // 配置弹窗的配置项 model
+                dialog: {
+                  model: {
+                    title: '弹窗多选',
+                    mask: true,
+                    draggable: true,
+                    scrollable: true,
+                    width: 920
+                  }
+                },
+                fkobj: {
                     refobjid: cellData.refobjid,
                     reftable: cellData.reftable,
                     colid: this.dataSource.row[params.index][cellData.colname].colid,
@@ -3006,42 +3001,39 @@
                   },
                   datalist: this.popFilterDataList,
                   ...cellData,
-                // 模糊查询的文字信息，支持多列
-                },
-
               },
-              on: {
-                'on-keydown': (v, e, i) => {
-                  if (e.keyCode === 13) {
-                    const elementId = i.$parent.$el.id;
-                    this.tableCellFocusByEnter(elementId);
-                  } else if (e.keyCode === 40) {
-                    // 下键
-                    const elementId = i.$parent.$el.id;
-                    const currentColumn = params.column._index - 1;
-                    this.tableCellFocusByUpOrDown(elementId, currentColumn, 'down');
-                  } else if (e.keyCode === 38) {
-                    // 上键
-                    const elementId = i.$parent.$el.id;
-                    const currentColumn = params.column._index - 1;
-                    this.tableCellFocusByUpOrDown(elementId, currentColumn, 'up');
-                  }
-                },
-                valuechange: (item) => {
-                  this.copyDataSource.row[params.index][cellData.colname].val = item.value;
-                  this.copyDataSource.row[params.index][cellData.colname].defaultSelected = item.selected;
-                  if (item.selected[0]) {
-                    this.putDataFromCell(item.selected[0].ID, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                    this.putLabelDataFromCell(item.selected[0].Label, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, item.selected[0].ID);
-                  } else {
-                    this.putDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                    this.putLabelDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, '');
-                  }
+            },
+            on: {
+              'on-keydown': (v, e, i) => {
+                if (e.keyCode === 13) {
+                  const elementId = i.$parent.$el.id;
+                  this.tableCellFocusByEnter(elementId);
+                } else if (e.keyCode === 40) {
+                  // 下键
+                  const elementId = i.$parent.$el.id;
+                  const currentColumn = params.column._index - 1;
+                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'down');
+                } else if (e.keyCode === 38) {
+                  // 上键
+                  const elementId = i.$parent.$el.id;
+                  const currentColumn = params.column._index - 1;
+                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'up');
+                }
+              },
+              valuechange: (item) => {
+                this.copyDataSource.row[params.index][cellData.colname].val = item.value;
+                this.copyDataSource.row[params.index][cellData.colname].defaultSelected = item.selected;
+                if (item.selected[0]) {
+                  this.putDataFromCell(item.selected[0].ID, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                  this.putLabelDataFromCell(item.selected[0].Label, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, item.selected[0].ID);
+                } else {
+                  this.putDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                  this.putLabelDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, '');
                 }
               }
-            })
-          ]);
-        };
+            }
+          })
+        ]);
       },
       comAttachFilterpopRender(cellData, tag) {
         return (h, params) => {
@@ -3524,7 +3516,7 @@
                 this.updateCustomizeMessage(datas);
                 // 将元数据配置的refobjid，字符串，可配置多个字段，将配置的字段解析后用作lu y，供弹框作为参数使用
                 const type = 'tableDetailAction';
-            
+
                 const url = `/${cellData.customerurl.tableurl.toUpperCase()}/${params.row[cellData.customerurl.refobjid]}`;
                 const tab = {
                   type,
@@ -3722,7 +3714,7 @@
                       this.copyDataSource.row[params.index][cellData.colname].val = JSON.stringify(val);
                       this.putDataFromCell(val.length > 0 ? JSON.stringify(val) : '', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
                       this.putLabelDataFromCell(val.length > 0 ? JSON.stringify(val) : '', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                    
+
                       if (!ossRealtimeSave()) {
                         //DispatchEvent('childTableSaveFile', { detail: { type: 'save' } });
                          const dom = document.getElementById('actionMODIFY');
@@ -3920,7 +3912,7 @@
         const assignDataSource = Object.assign({}, this.dataSource);
         assignDataSource.tabth.timestamp = new Date().getTime(); // 确保会改变并刷新
 
-        this.isRefreshClick = true;// 清除删除前修改的存储在表格组件内用于存入模块状态内的表格数据，不清除则下次修改表格数据时，会再次抛出上一次的，因为删除失败是模拟刷新，通过数据重新的方式触发表格数据更新，不是通过接口的方式 
+        this.isRefreshClick = true;// 清除删除前修改的存储在表格组件内用于存入模块状态内的表格数据，不清除则下次修改表格数据时，会再次抛出上一次的，因为删除失败是模拟刷新，通过数据重新的方式触发表格数据更新，不是通过接口的方式
 
         if (this.isHorizontal) {
           this.updateTableData(assignDataSource);
@@ -4141,7 +4133,7 @@
           fixedcolumns[this.searchCondition] = this.searchInfo;
         }
 
-         
+
         const { itemId } = this.$route.params;
         // table, objid, refcolid, startindex, range, fixedcolumns
         // let tabIndex = null;
@@ -4520,13 +4512,13 @@
           menu: this.itemInfo.tabledesc
         };
         const promise = new Promise((resolve, reject) => {
-          this.$R3loading.show();
+          this.$R3loading.show(this.loadingName);
           this.getExportQueryForButtons({ OBJ, resolve, reject });
         });
         promise.then(() => {
           if (this.buttonsData.exportdata) {
             if (Version() === '1.4') {
-              this.$R3loading.hide(this.routerParams.tableName);
+              this.$R3loading.hide(this.loadingName);
               this.searchCondition = null;
               this.searchInfo = '';
               this.currentPage = 1;
@@ -4545,7 +4537,7 @@
                 });
               });
               promises.then(() => {
-                this.$R3loading.hide(this.routerParams.tableName);
+                this.$R3loading.hide(this.loadingName);
                 if (this.exportTasks.dialog) {
                   const message = {
                     mask: true,
@@ -4583,17 +4575,17 @@
                     content: `${this.exportTasks.resultMsg}`,
                   });
                 }
-                this.$R3loading.hide(this.routerParams.tableName);
+                this.$R3loading.hide(this.loadingName);
               });
               this.getTabelList(1);
             }
           } else {
-            this.$R3loading.hide(this.routerParams.tableName);
+            this.$R3loading.hide(this.loadingName);
           }
         }, () => {
           // 导出失败时，刷新当前表格
           this.getTabelList(1);
-          this.$R3loading.hide(this.routerParams.tableName);
+          this.$R3loading.hide(this.loadingName);
         });
       },
       objectIMPORT() { // 导入

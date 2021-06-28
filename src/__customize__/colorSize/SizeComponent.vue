@@ -1,5 +1,5 @@
 <template>
-  <div class="size_container">
+  <div :class="classes">
     <div class="left_container">
       <div
         ref="leftTable"
@@ -61,7 +61,7 @@
 
 <script>
   import network, { urlSearchParams } from '../../__utils__/network';
-  import { custommizedRequestUrl } from '../../constants/global';
+  import { custommizedRequestUrl, classFix } from '../../constants/global';
 
   export default {
     name: 'SizeComponent',
@@ -128,7 +128,9 @@
         deep: true
       },
     },
-    computed: {},
+    computed: {
+      classes: () => `${classFix}size_container`
+    },
     mounted() {
       this.leftTableHeight = this.$refs.leftTable.offsetHeight + 1;
       this.rightTableHeight = this.$refs.rightTable.offsetHeight + 1;
@@ -222,60 +224,3 @@
     }
   };
 </script>
-
-<style lang="less">
-    .size_container {
-        height: 100%;
-        padding: 10px;
-        display: flex;
-        .left_container {
-            height: 100%;
-            width: 27%;
-            border: 1px solid #b4b4b4;
-            border-radius: 6px;
-            padding: 10px;
-            overflow: hidden;
-            .left_table {
-                height: 100%;
-            }
-        }
-        .center_container {
-            height: 100%;
-            width: 6%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            > div {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                height: 20px;
-                width: 20px;
-                border: 1px solid #b4b4b4;
-                border-radius: 6px;
-                margin: 20px 0px;
-            }
-            .right_single {
-            }
-            .right_double {
-            }
-            .left_single {
-            }
-            .right_double {
-            }
-        }
-        .right_container {
-            height: 100%;
-            width: 67%;
-            border: 1px solid #b4b4b4;
-            border-radius: 6px;
-            padding: 10px;
-            overflow: auto;
-            .right_table {
-                height: 100%;
-            }
-        }
-    }
-</style>

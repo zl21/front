@@ -1,5 +1,5 @@
 <template>
-  <div class="printTemplate">
+  <div :class="classes">
     <div class="table-c">
       <table
         border="0"
@@ -40,7 +40,7 @@
       </table>
     </div>
 
- 
+
     <div class="pop-btn">
       <button
         class="sav-btn"
@@ -60,11 +60,13 @@
 <script>
   import { mapState } from 'vuex';
   import network, { urlSearchParams } from '../../__utils__/network';
+  import { classFix } from '../../constants/global';
+
 
   export default {
     name: 'PrintTemplate',
     props: {
-     
+
     },
     data() {
       return {
@@ -78,9 +80,10 @@
       ...mapState('global', {
         showModule: ({ showModule }) => showModule// 隐藏菜单栏和收藏夹
       }),
-    }, 
+      classes: () => `${classFix}printTemplate`
+    },
     watch: {
-     
+
     },
     components: {},
     methods: {
@@ -106,12 +109,12 @@
             }
           });
       },
-             
+
       CheckItem(item) {
         this.checkItem = item;
       },
       save() {
-        const userId = this.userId; 
+        const userId = this.userId;
         const printId = this.checkItem.ID;
         const { tableId } = this.$route.params;
 
@@ -126,7 +129,7 @@
           this.$Modal.fcWarning(data);
           return;
         }
-       
+
         network.post('/api/rpt/userprint/save', urlSearchParams({ printId, userId, tableId }))
           .then((res) => {
             if (res.data.code !== 0) {
@@ -146,7 +149,7 @@
               };
               this.$Modal.fcSuccess(data);
               setTimeout(() => {
-                window.close(); 
+                window.close();
               }, 1000);
               // const path = this.$route.path;// 获取当前路由
               // const templatePath = path.replace('PRINTTEMPLATE', 'PRINTPREVIEW');
@@ -155,7 +158,7 @@
           });
       }, // 确定
       cancel() {
-        window.close(); 
+        window.close();
       }, // 取消
       getEventListenerParam() {
         if (!this._inactive) {
@@ -196,48 +199,3 @@
     }
   };
 </script>
-<style lang='less'>
-.printTemplate{
-  .th{
-    background: #f8f8f9;
-  }
- .table-c {
-   table{
-   width:100%;
-   border-right:1px solid #e8eaec;
-   border-bottom:1px solid #e8eaec;
-      td{
-        border-left:1px solid #e8eaec;
-        border-top:1px solid #e8eaec;
-        height: 26px;
-        padding: 0 10px;
-        }
-   }
- }
- .pop-btn {
-    text-align: right;
-    padding: 6px 0 0 0;
-    .sav-btn,
-    .cancel-btn {
-      padding: 0 18px;
-      width: 66px;
-      height: 24px;
-      box-sizing: border-box;
-      background-color: #fff;
-      border: 1px solid;
-      color: #fd6442;
-      font-size: 12px;
-      border-radius: 2px;
-      span {
-        color: #fd6442;
-      }
-    }
-    .sav-btn:hover,
-    .cancel-btn:hover {
-      background-color: rgba(253, 100, 66, 0.3);
-      color: rgba(253, 100, 66, 0.6);
-    }
-  }
-}
-   
-</style>

@@ -4,6 +4,7 @@
  */
 import InputMethod from '../ExtendedMethods/Input'
 import { SetPlaceholder, SetDisable } from './setProps'
+import Ark from '@syman/ark-ui'
 
 let Input = Ark.Input
 
@@ -35,7 +36,7 @@ const mixin = {
           return
         }
       }
-  
+
       const nextItemDom = currentWrapDom.nextElementSibling // 下一个兄弟节点
       if (!nextItemDom) {
         return

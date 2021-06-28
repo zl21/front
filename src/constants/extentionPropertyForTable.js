@@ -337,4 +337,17 @@ export default [
     enableIncrease: true,
     description: '增加按钮禁用条件的配置'
   },
+  {
+    name: '列表查询前置操作',
+    key: 'querypretrigger',
+    type: 'input',
+    description: '支持表扩展属性查询条件前配置。目前可填入的字段有：text',
+  },
+  {
+    name: '表格固定列',
+    key: 'pinnedColumns',
+    type: 'custom',
+    component: 'PinnedColumns',
+    description: '设置表格固定列的展示。该配置返回的格式为xx|xx，其中竖线左侧的字段代表固定在左侧的列，竖线右侧的字段代表固定在右侧的列'
+  },
 ];
