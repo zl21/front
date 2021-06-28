@@ -120,7 +120,7 @@ export default () => ({
             return item;
           });
         }
-
+        
         if(data.pinnedColumns) {
           data.datas.pinnedColumns = data.pinnedColumns
         }

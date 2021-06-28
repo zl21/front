@@ -198,6 +198,7 @@
   import treeData from '../__config__/treeData.config';
   import getUserenv from '../__utils__/getUserenv';
   import { addSearch, querySearch } from '../__utils__/indexedDB';
+  import { getPinnedColumns } from '../__utils__/tableMethods'
   import tabBar from './tabBar.vue';
   import listsForm from './FormComponents/listsForm';
   import { getPinnedColumns } from '../__utils__/tableMethods'

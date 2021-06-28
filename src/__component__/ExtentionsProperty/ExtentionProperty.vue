@@ -97,6 +97,8 @@
   import bindKey from './bindKey.vue';
   import ButtonFilter from './ButtonFilter.vue';
   import PassWord from './PassWord.vue';
+  import PinnedColumns from './PinnedColumns.vue';
+
   import { classFix } from '../../constants/global';
 
   const getGuid = () => Math.round(Math.random() * 10000000000);
@@ -119,7 +121,8 @@
       MultiTab,
       bindKey,
       ButtonFilter,
-      PassWord
+      PassWord,
+      PinnedColumns
     },
     props: {
       options: {

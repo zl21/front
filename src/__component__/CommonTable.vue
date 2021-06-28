@@ -642,7 +642,7 @@
               default: () => h('div', {
                 style: {},
                 domProps: {
-                  innerHTML: `<span>${params.column.name}</span><i class="iconfont comment iconios-information-circle-outline" style="color: orangered"></i>`
+                  innerHTML: `<span>${params.column.name}</span> <i class="iconfont comment iconios-information-circle-outline" style="color: orangered"></i>`
                 }
               }),
               content: () => h('div', {
