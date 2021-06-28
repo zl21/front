@@ -1,21 +1,25 @@
 <template>
 <div>
      <panelForm
-       v-bind="$attrs"
+      v-bind="$attrs"
+      :CollapseName="CollapseName"
       :defaultData="formList"
     ></panelForm>
 </div>
 </template>
 <script>
+import CollapseName from './CollapseComponent.vue';
+
 export default {
       name:'childrenForm',
       data(){
           return {
+                CollapseName:CollapseName,
                 formList: {
-                    defaultData:{
-                        addcolums:[],
-                        objviewcol:4
-                    }
+                    addcolums:[{
+                       childs:[]
+                    }],
+                    objviewcol:4
                 },  //控制面板的展开数据
             }
 
@@ -27,7 +31,7 @@ export default {
       },
       methods:{
           setFormList(){
-              this.formList.defaultData.addcolums = this.defaultData.inpubobj.concat([]);
+              this.formList.addcolums[0].childs = this.defaultData.inpubobj.concat([])
           }
 
       },

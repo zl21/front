@@ -5,6 +5,7 @@ import RenderComponent from '../RenderComponent';
 import ParameterDataProcessing from '../parameterDataProcessing';
 import LinkageRelationships from '../../ExtendedAttributes/LinkageRelationships';
 import { validateForm } from './Validate';
+import CollapseComponent from './CollapseComponent.vue';
 import {
      MODULE_COMPONENT_NAME, classFix
   } from '../../../constants/global';
@@ -25,6 +26,9 @@ export default {
     readonly: {  //表单是否整体禁用
       type: Boolean,
       default: false
+    },
+    CollapseName:{   // 表单的面板
+      type: [Object]
     }
   },
   components: { DownComponent, FormItem },
@@ -43,6 +47,7 @@ export default {
       LinkageForm: [],// 联动状态
       id:'', // id 名称
       formChangeDataLabel: {},  //表单修改过的数据--显示值
+      CollapseComponent:'', // Collapse 组件名称
       timer: null,
 
     }
@@ -117,6 +122,7 @@ export default {
     setFormlist(){
 
       let data = JSON.parse(JSON.stringify(this.defaultData))
+      console.log(data,'this.tableName',this.tableName);
       if (!data.addcolums) {
         this.$R3loading.hide(this.loadingName)
         return []
@@ -200,15 +206,18 @@ export default {
         return item;
       })
             // 处理表单关闭
-      this.loading = setInterval(() => {
+            this.$R3loading.hide(this.tableName)
+
+      this.loading = setInterval(() => {}, 50)
         let index = Object.keys(data.addcolums.reverse()[0].childs).length - 1
         let lastItem = data.addcolums[0].childs[index]
-        let com = this.$_live_getChildComponent(this, `${this.tableName}${lastItem.colname}`);
-        if (com) {
-          this.$R3loading.hide(this.loadingName)
-          clearInterval(this.loading)
-        }
-      }, 50)
+        console.log(index,data.addcolums.reverse(),lastItem)
+        // let com = this.$_live_getChildComponent(this, `${this.tableName}${lastItem.colname}`);
+        // if (com) {
+        //   this.$R3loading.hide(this.tableName)
+        //   clearInterval(this.loading)
+        // }
+      
        // 兼容子表
         this.linkFormSet();
        this.formItemLists = { ...data.addcolums }
@@ -395,6 +404,12 @@ export default {
   },
   mounted () {
     this.setFormlist();
+    this.CollapseComponent = CollapseComponent;
+    if(this.CollapseName === undefined){
+      this.CollapseComponent = CollapseComponent;
+    }else{
+      this.CollapseComponent = this.CollapseName;
+    }
     // 通过dom 查找实例
     this.$el._vue_ = this;
     this.id = this.tableName +'-'+ ((this.moduleComponentName.split('.').splice(2,2)).join('-'));
