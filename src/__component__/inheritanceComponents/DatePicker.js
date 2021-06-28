@@ -6,7 +6,6 @@ import Vue from 'vue';
 // import { DatePicker } from 'ark-ui';
 import dataProp from '../../__config__/props.config';
 import { SetPlaceholder ,SetDisable} from './setProps';
-import Ark from '@syman/ark-ui'
 
 let DatePicker = Ark.DatePicker;
 let TimePicker = Ark.TimePicker;
