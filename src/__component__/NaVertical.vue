@@ -3,10 +3,12 @@
     v-if="showModule.Navigator"
     :class="classes"
   >
-    <div class="NaVertical-icons">
+   <component :is="slotName">
+<!-- 操作按钮切换左边面板 -->
       <div
         class="tag"
         title="折叠"
+        slot="icon-tag"
         @click="toggle"
       >
         <i
@@ -17,26 +19,31 @@
           v-if="iconShow"
           class="iconfont iconbj-unfold"
         />
-      </div>
+      </div>  
+      <!-- 最近操作 -->
+
       <div
         v-if="enableHistoryAndFavoriteUI"
         class="HistoryAndFavorite-time"
+        slot="icon-time"
       >
         <Dropdown ref="Dropdown" trigger="click"  class="HistoryAndFavorite-Dropdown" placement="bottom-start">
             <Icon type="iconmd-time"></Icon>
           <DropdownMenu
             slot="list"
           >
+          <slot name="collect">
             <HistoryAndFavorite />
+              
+             </slot>  
           </DropdownMenu>
         </Dropdown>
         <!-- <div class="iconfont iconmd-time">
         </div> -->
-      </div>
+      
     </div>
+      <!-- 最近操作navigatorSetting -->
 
-
-    <div>
       <div
         v-for="(item,index) in navigatorSetting"
         :key="index"
@@ -55,12 +62,15 @@
           />
         </Badge>
       </div>
-      <ComAutoComplete />
+      <ComAutoComplete slot="nav-input" />
 
+      <Lately slot="icon-Lately"></Lately>
+      <Collect slot="icon-Collect"></Collect>
 
       <div
         v-if="versionValue"
         class="tag right"
+        slot="icon-message"
         @click.prevent="messageSlide"
       >
         <Badge :count="taskMessageCount">
@@ -68,56 +78,60 @@
             class="iconfont iconbj_message badge"
           />
         </Badge>
+        <Drawer
+            v-model="messagePanel.show"
+            :closable="false"
+          >
+            <messagePanel
+              v-if="Version==='1.4'"
+              :panel="messagePanel"
+              @markRead="markReadNote"
+              @ignoreMsg="ignoreMsg"
+              @jumpTask="jumpTask"
+              @nextPage="nextPage"
+            />
+            <message-panel-older
+              v-if="Version==='1.3'"
+              :panel="messagePanel"
+              @markRead="markReadNote"
+              @ignoreMsg="ignoreMsg"
+              @jumpTask="jumpTask"
+              @nextPage="nextPage"
+            />
+          </Drawer>
       </div>
-      <Drawer
-        v-model="messagePanel.show"
-        :closable="false"
-      >
-        <messagePanel
-          v-if="Version==='1.4'"
-          :panel="messagePanel"
-          @markRead="markReadNote"
-          @ignoreMsg="ignoreMsg"
-          @jumpTask="jumpTask"
-          @nextPage="nextPage"
-        />
-        <message-panel-older
-          v-if="Version==='1.3'"
-          :panel="messagePanel"
-          @markRead="markReadNote"
-          @ignoreMsg="ignoreMsg"
-          @jumpTask="jumpTask"
-          @nextPage="nextPage"
-        />
-      </Drawer>
+     
       <div
         class="tag right"
+        slot="icon-person"
         @click="show = true"
       >
-        <i
-          class="iconfont iconmd-person"
-          title="设置"
-        />
-      </div>
-      <Drawer
-        v-model="show"
-        :closable="false"
-      >
-        <SetPanel
-          :panel="setPanel"
-          @changePwdBox="changePwdBox"
-        />
+          <i
+            class="iconfont iconmd-person"
+            title="设置"
+          />
+          <Drawer
+            v-model="show"
+            :closable="false"
+          >
+            <SetPanel
+              :panel="setPanel"
+              @changePwdBox="changePwdBox"
+            />
       </Drawer>
-      <Dialog
-        ref="dialogRef"
-        :title="dialogConfig.title"
-        :mask="dialogConfig.mask"
-        :content-text="dialogConfig.contentText"
-        :footer-hide="dialogConfig.footerHide"
-        :confirm="dialogConfig.confirm"
-        :dialog-component-name="dialogComponentName"
-      />
-    </div>
+        <Dialog
+          ref="dialogRef"
+          :title="dialogConfig.title"
+          :mask="dialogConfig.mask"
+          :content-text="dialogConfig.contentText"
+          :footer-hide="dialogConfig.footerHide"
+          :confirm="dialogConfig.confirm"
+          :dialog-component-name="dialogComponentName"
+        />
+
+      </div>
+      
+   </component>
   </div>
 </template>
 
@@ -127,6 +141,10 @@
   import SetPanel from './SetPanel';
   import messagePanel from './messagePanel';
   import messagePanelOlder from './messagePanelOlder'; // 1.3
+  import Collect from './nav/collect.vue';
+  import Lately from './nav/lately.vue';
+  import NaVerticalslot from './nav/NaVerticalslot.vue';
+
 
   import ComAutoComplete from './ComAutoComplete';
   import Dialog from './Dialog.vue';
@@ -148,12 +166,15 @@
       messagePanel,
       ComAutoComplete,
       HistoryAndFavorite,
-      messagePanelOlder
+      messagePanelOlder,
+      Collect,
+      Lately
     },
 
     data() {
       return {
         // primaryMenuShow: false,
+        slotName:'',
         messagePanel: {
           show: false,
           list: [],
@@ -208,7 +229,7 @@
       taskMessageCounts() {
         return this.userInfo.id;
       },
-      classes: () => `${classFix}NaVertical`
+      classes: () => `${classFix}NaVertical-bar`
 
     },
     watch: {
@@ -431,7 +452,7 @@
       },
       toggle() {
         const navigator = document.querySelector('.NavigatorVertical');
-        const navigatorMenu = document.querySelector('.navigator-sub-menu');
+        const navigatorMenu = document.querySelector('.NavigatorSubMenu');
         if (this.iconShow) {
           navigator.className = 'NavigatorVertical transferRight';
           this.iconShow = false;
@@ -461,6 +482,11 @@
     },
     mounted() {
       this.$el._vue_=this;
+      if(window.ProjectConfig.layoutDirectionSlot && window.ProjectConfig.layoutDirectionSlot.NaVertical){
+      this.slotName = window.ProjectConfig.layoutDirectionSlot.NaVertical;
+      }else{
+      this.slotName = NaVerticalslot;
+      }
       if (Version() === '1.3') {
         this.messageTimer = setInterval(() => {
           this.getMessageCount();
