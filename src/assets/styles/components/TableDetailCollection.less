@@ -7,57 +7,59 @@
   overflow-y: hidden;
   margin: 10px 5px 10px 5px;
   .detail-collection {
-    display: flex;
-    flex: 1;
+    // height: calc(100% - 38px);
+    height: 100%;
+    // display: flex;
+    // flex: 1;
     flex-direction: column;
-    overflow-y: hidden;
-    .detail-top {
+    overflow-y: visible; // fix: 表格内下拉框超出表格的部分看不见了
+    //.detail-top {
       //margin-bottom: 6px;
       //display: flex;
       //justify-content: space-between;
-      .page-buttons {
-        display: flex;
-        flex-wrap: wrap;
+    .page-buttons {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .table-page {
+      white-space: nowrap;
+    }
+    .detail-buttons {
+      margin-left: 10px;
+      a {
+        line-height: 26px;
+        vertical-align: middle;
       }
-      .table-page {
-        white-space: nowrap;
+    }
+    .detail-search {
+      display: inline-block;
+      display: flex;
+      // justify-content: space-around;
+      // align-content: stretch;
+      .ark-select {
+        width: 120px;
       }
-      .detail-buttons {
+      .detail-search-input {
         margin-left: 10px;
-        a {
-          line-height: 26px;
-          vertical-align: middle;
+        .ark-input-group {
+          top: 0px;
         }
-      }
-      .detail-search {
-        display: inline-block;
-        display: flex;
-        // justify-content: space-around;
-        // align-content: stretch;
-        .ark-select {
-          width: 120px;
+        .ark-input-group-with-prepend {
+          width: 270px;
         }
-        .detail-search-input {
-          margin-left: 10px;
-          .ark-input-group {
-            top: 0px;
-          }
-          .ark-input-group-with-prepend {
-            width: 270px;
-          }
-          .ark-input-group-prepend {
-            .ark-btn {
-              display: flex;
-              align-items: center;
-              span {
-                bottom: 2px;
-                position: relative;
-              }
+        .ark-input-group-prepend {
+          .ark-btn {
+            display: flex;
+            align-items: center;
+            span {
+              bottom: 2px;
+              position: relative;
             }
           }
         }
       }
     }
+    //}
     .table-outside {
       // flex: 1;
       // overflow-y: hidden;
@@ -69,7 +71,7 @@
   }
   .queryCondition {
       height: 20px;
-      margin-top: 5px;
+      margin-top: 10px;
   }
   }
 }

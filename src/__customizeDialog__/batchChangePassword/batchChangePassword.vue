@@ -1,5 +1,5 @@
 <template>
-  <div class="batchChangePassword">
+  <div :class="classes">
     <div class="clonePopUp">
       <div class="pop-title">
         <div class="pop-input">
@@ -41,6 +41,7 @@
 
 <script type="text/javascript">
   import network from '../../__utils__/network';
+  import { classFix } from "../../constants/global";
 
   export default {
     name: 'batchChangePassword',
@@ -73,6 +74,13 @@
         type: String,
         default: () => ''
       }
+    },
+    computed: {
+      classes() {
+        return [
+          `${classFix}batchChangePassword`,
+        ];
+      },
     },
     mounted() {
       document.getElementById('newPwd').focus();
@@ -189,107 +197,3 @@
     }
   };
 </script>
-<style lang="less" scoped>
-  .batchChangePassword {
-    width: 380px;
-    .clonePopUp {
-      font-size: 12px;
-      line-height: 25px;
-
-      .pop-title {
-        box-sizing: border-box;
-      }
-
-      .pop-input {
-        li {
-          margin-bottom: 18px;
-
-          &:last-child {
-            margin-bottom: 10px;
-          }
-        }
-
-        span {
-          display: inline-block;
-          width: 65px;
-          text-align: right;
-        }
-
-        input {
-          border: 1px solid #d8d8d8;
-          width: 200px;
-          height: 22px;
-          padding: 0 5px;
-          border-radius: 2px;
-          font-size: 12px;
-          color: #575757;
-          transition: border-color .2s ease;
-        }
-
-        .borderactive {
-          border-color: #e80000
-        }
-
-        p {
-          height: 14px;
-          padding-left: 67px;
-          margin: 2px 0;
-          color: #818181;
-          line-height: 14px;
-
-          i {
-            margin-left: 10px;
-            margin-right: 4px;
-            font-weight: 0;
-          }
-
-          .icon-cha {
-            color: rgb(232, 0, 0);
-          }
-
-          .icon-right-copy {
-            color: #09a115;
-          }
-
-          b {
-            color: #09a115;
-          }
-        }
-
-        input:focus {
-          border-color: #0F8EE9;
-        }
-      }
-
-      .pop-btn {
-
-        text-align: right;
-        padding: 0px 0px 0 65px;
-
-        .sav-btn, .cancel-btn {
-          cursor: pointer;
-          padding: 4px 18px;
-          box-sizing: border-box;
-          background-color: #fff;
-          border: 1px solid #FD6442;
-          color: #FD6442;
-          font-size: 12px;
-          border-radius: 2px;
-
-          span {
-            color: #FD6442;
-          }
-        }
-
-        .cancel-btn {
-          margin-left: 6px
-        }
-
-        .sav-btn:hover, .cancel-btn:hover {
-          opacity: 0.6;
-        }
-      }
-    }
-  }
-
-</style>

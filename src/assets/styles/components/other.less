@@ -716,6 +716,31 @@
   }
 }
 
+/* detail-top */
+.detail-top{
+  height: calc(100% - 0px);
+  overflow: hidden;
+  .detail-content {
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+/* form-group */
+.form-group{
+  border: 1px solid #d8d8d8;
+  border-radius: 4px;
+  padding: 10px 20px;
+  margin: 20px 5px;
+}
+// .r3-slick {
+//   z-index: 99999;
+//   box-shadow: 0px 2px 8px rgba(136, 136, 136, 0.4);
+//   .tw-mt-10 {
+//     margin-top: 0px;
+//   }
+// }
 
 /* jflow */
 /* Intervention */
@@ -914,11 +939,14 @@
   }
 }
 
-/* StandardTable */
+/* StandardTable/ AgTable */
 .StandardTable{
   display: flex;
   overflow: hidden;
   flex-direction: column;
+  padding: 20px 0 0 0;
+  flex: 1;
+  height: 100%;
   .page{
     margin-bottom: 8px;
   }
@@ -927,6 +955,90 @@
     flex: 1;
     overflow: hidden;
   }
+
+  .common-table {
+    margin-top: 10px;
+    overflow-y: hidden;
+    flex: 1;
+  }
+
+  .detailTable,
+  .isBig {
+    border: 1px solid #d8d8d8;
+    margin-top: 10px;
+    height: calc(100% - 65px);
+    width: 100%;
+  }
+
+  .isBig {
+    //  background-repeat: no-repeat;
+    //  background-position: center center;
+    //  background-size: 24%;
+    display: flex;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+
+    > img {
+      width: 25%;
+      height: 65%;
+    }
+  }
+
+  .queryDesc {
+    height: 20px;
+    margin: 5px 0;
+    line-height: 18px;
+    display: flex;
+
+    > div {
+      flex: 1;
+    }
+
+    .legend {
+      > p {
+        display: inline-block;
+
+        button {
+          border: 1px solid #575757;
+          margin-right: 2px;
+          background: white;
+          padding: 0 3px;
+        }
+
+        margin-right: 3px;
+      }
+    }
+  }
+
+  .isFilterTable {
+    padding: 0;
+
+    .agPage {
+      order: 2;
+      margin-top: 10px;
+    }
+
+    .isBig {
+      order: 1;
+      margin-top: 0px;
+    }
+
+    .queryDesc {
+      order: 3;
+    }
+
+    .detailTable {
+      margin-top: 0px;
+    }
+
+    .common-table {
+      margin-top: 0px;
+
+    }
+  }
+
 }
 
 /* TodoProcess */
@@ -1153,4 +1265,10 @@
   .ark-modal-body{
     padding: 0;
   }
+}
+
+/* StringRender */
+.string-wrap{
+  height: 26px;
+  line-height: 26px;
 }
