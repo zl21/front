@@ -1,13 +1,13 @@
 <template>
   <div :class="classes">
     <Page
-      v-if="isPageShow"
-      ref="page"
-      class="agPage"
-      size="small"
-      v-bind="pageAttribute"
-      @on-change="pageChange"
-      @on-page-size-change="pageSizeChange"
+            v-if="isPageShow"
+            ref="page"
+            class="agPage"
+            size="small"
+            v-bind="pageAttribute"
+            @on-change="pageChange"
+            @on-page-size-change="pageSizeChange"
     />
     <!-- <div
       v-if="isBig"
@@ -15,8 +15,8 @@
       :style=" { backgroundImage : 'url( ' + bigBackground + ') '} "
     /> -->
     <div
-      v-if="isBig"
-      class="isBig"
+            v-if="isBig"
+            class="isBig"
     >
       <img :src="bigBackground">
     </div>
@@ -42,58 +42,58 @@
       ></CommonTableByAgGrid>
     </div> -->
     <CommonTableByAgGrid
-        v-if="!isCommonTable && !isBig && options"
-        mode="r3-list"
-        class="detailTable"
-        ref="agGridTableContainer"
-        height="100%"
-        :columns="columns"
-        :data="rows"
-        :options="{
+            v-if="!isCommonTable && !isBig && options"
+            mode="r3-list"
+            class="detailTable"
+            ref="agGridTableContainer"
+            height="100%"
+            :columns="columns"
+            :data="rows"
+            :options="{
           ...options,
           ...agGridOptions,
         }"
-      ></CommonTableByAgGrid>
+    ></CommonTableByAgGrid>
 
     <!-- 普通表格 -->
     <div
-      v-if="isCommonTable && !isBig"
-      class="common-table"
+            v-if="isCommonTable && !isBig"
+            class="common-table"
     >
       <CommonTable
-        ref="commonTable"
-        :datas="datas"
-        :buttons-data="buttonsData"
-        :is-big="isBig"
-        :css-status="cssStatus"
-        :error-arr="errorArr"
-        :on-row-double-click="onRowDoubleClick"
-        :on-sort-changed="onSortChanged"
-        :on-selection-changed="onSelectionChanged"
-        :on-row-single-click="onRowSingleClick"
-        :do-table-search="doTableSearch"
-        @CustomizedDialog="customizedDialog"
-        @btnclick="btnclick"
+              ref="commonTable"
+              :datas="datas"
+              :buttons-data="buttonsData"
+              :is-big="isBig"
+              :css-status="cssStatus"
+              :error-arr="errorArr"
+              :on-row-double-click="onRowDoubleClick"
+              :on-sort-changed="onSortChanged"
+              :on-selection-changed="onSelectionChanged"
+              :on-row-single-click="onRowSingleClick"
+              :do-table-search="doTableSearch"
+              @CustomizedDialog="customizedDialog"
+              @btnclick="btnclick"
       />
     </div>
     <div class="queryDesc">
       <div
-        v-if="legend.length > 0 & isLegendShow"
-        class="legend"
+              v-if="legend.length > 0 & isLegendShow"
+              class="legend"
       >
         <span style="font-weight: bold;">
           图例:
         </span>
         <p
-          v-for="(item, index) in legend"
-          :key="index"
+                v-for="(item, index) in legend"
+                :key="index"
         >
           <span>{{ item.desc }}:&nbsp;</span>
 
           <button
-            v-for="(temp, index2) in item.value"
-            :key="index2"
-            :class="item.css[index2]"
+                  v-for="(temp, index2) in item.value"
+                  :key="index2"
+                  :class="item.css[index2]"
           >
             {{ temp }}
           </button>
@@ -104,14 +104,14 @@
 </template>
 
 <script>
-/* eslint-disable no-lonely-if */
+  /* eslint-disable no-lonely-if */
 
-  import { mapState } from 'vuex';
+  import {mapState} from 'vuex';
   // import agTable from '../assets/js/ag-grid-table-pure';
   import CommonTable from './CommonTable.vue';
-  import { floatingFilter, classFix } from '../constants/global';
-  import { CommonTableByAgGrid } from '@syman/ark-ui-bcl';
-  import { getPinnedColumns } from '../__utils__/tableMethods'
+  import {floatingFilter, classFix} from '../constants/global';
+  import {CommonTableByAgGrid} from '@syman/ark-ui-bcl';
+  import {getPinnedColumns} from '../__utils__/tableMethods'
 
   export default {
     name: 'AgTable',
@@ -131,7 +131,7 @@
     },
     computed: {
       ...mapState('global', {
-        bigBackground: ({ imgSrc }) => imgSrc.bigDataImg,
+        bigBackground: ({imgSrc}) => imgSrc.bigDataImg,
       }),
       classes() {
         return [
@@ -145,7 +145,8 @@
     props: {
       doTableSearch: {
         type: Function,
-        default: () => {},
+        default: () => {
+        },
       },
       userConfigForAgTable: {
         type: Object,
@@ -167,13 +168,13 @@
       onPageChange: {
         type: Function,
         default: () => {
-        // 参数 pageNum 页码
+          // 参数 pageNum 页码
         },
       }, // 页码改变的回调
       onPageSizeChange: {
         type: Function,
         default: () => {
-        // 参数 pageSize 每页条数
+          // 参数 pageSize 每页条数
         },
       }, // 切换每页条数时的回调
       isRecreateAgInstance: {
@@ -201,60 +202,60 @@
       onCellSingleClick: {
         type: Function,
         default: () => {
-        // 参数说明
-        // colDef：包含表头信息的对象
-        // row：包含当前行所有数据的对象
-        // target：事件触发对象，即event.target所返回的dom结点
+          // 参数说明
+          // colDef：包含表头信息的对象
+          // row：包含当前行所有数据的对象
+          // target：事件触发对象，即event.target所返回的dom结点
         },
       }, // 单元格单击回调
       onCellDoubleClick: {
         type: Function,
         default: () => {
-        // 参数说明同cellSingleClick
+          // 参数说明同cellSingleClick
         },
       }, // 单元格双击回调
       onRowSingleClick: {
         type: Function,
         default: () => {
-        // 参数说明同cellSingleClick
+          // 参数说明同cellSingleClick
         },
       }, // 行单击回调
       onRowDoubleClick: {
         type: Function,
         default: () => {
-        // 参数说明同cellSingleClick
+          // 参数说明同cellSingleClick
         },
       }, // 行双击回调
       onSortChanged: {
         type: Function,
         default: () => {
-        // 参数说明
-        // arrayOfSortInfo: 返回当前用户触发的排序信息
-        // 形如： [{"colId":"PS_C_BRAND_ID.val","sort":"asc"},{"colId":"ECODE.val","sort":"desc"}]
+          // 参数说明
+          // arrayOfSortInfo: 返回当前用户触发的排序信息
+          // 形如： [{"colId":"PS_C_BRAND_ID.val","sort":"asc"},{"colId":"ECODE.val","sort":"desc"}]
         },
       }, // 排序事件触发回调
       onColumnVisibleChanged: {
         type: Function,
         default: () => {
-        // 参数 列名
+          // 参数 列名
         },
       }, // 显示或者隐藏列的监听
       onSelectionChanged: {
         type: Function,
         default: () => {
-        // 参数 rowIdArray选中的数据id数组 rowArray选中的数据数组
+          // 参数 rowIdArray选中的数据id数组 rowArray选中的数据数组
         },
       }, // 行选中事件
       onColumnMoved: {
         type: Function,
         default: () => {
-        // 参数 columnState 移动状态
+          // 参数 columnState 移动状态
         },
       }, // 列移动的监听
       onColumnPinned: {
         type: Function,
         default: () => {
-        // 参数 ColumnPinned 固定列状态
+          // 参数 ColumnPinned 固定列状态
         },
       },
       isLegendShow: {
@@ -272,7 +273,7 @@
       isBig: {
         // 是否海量
         type: Boolean,
-      // default: false
+        // default: false
       },
       isFilterTable: {
         type: Boolean,
@@ -287,11 +288,11 @@
         if (!this.isCommonTable && !this.isBig) {
           this.agGridTable(val.tabth, val.row, val);
           setTimeout(() => {
-            const { agGridTableContainer } = this.$refs;
+            const {agGridTableContainer} = this.$refs;
 
             if (agGridTableContainer) {
               agGridTableContainer.emptyAllFilters();
-              if(this.$route.query.isBack) {
+              if (this.$route.query.isBack) {
                 this.setTableSelected();
               }
             }
@@ -323,9 +324,9 @@
       processColumns(datas) {
         // 所有的固定列为 扩展属性固定列和用户固定列的集合
         let columns = []
-        const { pinnedPosition, pinnedColumns } = datas
-        const { pinnedLeftColumns:webconfLeft, pinnedRightColumns:webconfRight } = getPinnedColumns(pinnedColumns)
-        const { pinnedLeftColumns:userLeft, pinnedRightColumns:userRight } = getPinnedColumns(pinnedPosition)
+        const {pinnedPosition, pinnedColumns} = datas
+        const {pinnedLeftColumns: webconfLeft, pinnedRightColumns: webconfRight} = getPinnedColumns(pinnedColumns)
+        const {pinnedLeftColumns: userLeft, pinnedRightColumns: userRight} = getPinnedColumns(pinnedPosition)
 
         // 获取最终的固定列
         const pinnedLeftColumns = [...new Set(userLeft.concat(webconfLeft))]
@@ -333,25 +334,25 @@
 
         columns = datas.tabth.map(item => {
           // 固定左侧列
-          if(pinnedLeftColumns.includes(item.colname)) {
+          if (pinnedLeftColumns.includes(item.colname)) {
             item.pinned = 'left'
             // 扩展属性里配置的固定列
-            if(webconfLeft.includes(item.colname)) {
+            if (webconfLeft.includes(item.colname)) {
               item.suppressMovable = true // 禁止拖拽移动
               item.suppressMenu = true // 禁止表头工具菜单
             }
           }
           // 固定右侧列
-          if(pinnedRightColumns.includes(item.colname)) {
+          if (pinnedRightColumns.includes(item.colname)) {
             item.pinned = 'right'
-            if(webconfRight.includes(item.colname)) {
+            if (webconfRight.includes(item.colname)) {
               item.suppressMovable = true
               item.suppressMenu = true
             }
           }
           item.tdAlign = item.type === 'NUMBER' ? 'right' : 'left'
           return item
-        }) 
+        })
         return columns
       },
 
@@ -387,15 +388,15 @@
         if (!floatingFilter()) {
           isOpenfloatingFilter = false;
         }
-        if(datas.row && Array.isArray(datas.row)) {
-          this.rows = datas.row 
+        if (datas.row && Array.isArray(datas.row)) {
+          this.rows = datas.row
         }
 
         // 处理列数据
-        if(datas.tabth && Array.isArray(datas.tabth)) {
+        if (datas.tabth && Array.isArray(datas.tabth)) {
           this.columns = this.processColumns(datas)
         }
-        if(this.columns.length === 0) {
+        if (this.columns.length === 0) {
           return
         }
 
@@ -445,7 +446,7 @@
             }
           },
           agSelectionChanged: (rowIdArray, rowArray) => {
-            if(this.lockSelected) {
+            if (this.lockSelected) {
               return
             }
             if (typeof self.onSelectionChanged === 'function') {
@@ -493,7 +494,7 @@
       }, // 每页条数改变
       showAgLoading() {
         if (!this.isCommonTable && !this.isBig) {
-          const { agGridTableContainer } = this.$refs;
+          const {agGridTableContainer} = this.$refs;
           if (agGridTableContainer.agTable) {
             agGridTableContainer.agTable.showLoading();
           }
@@ -507,14 +508,14 @@
 
       // 回填表格勾选
       setTableSelected() {
-        const { tableName } = this.$route.params;
-        if(!this.moduleComponentName.includes(tableName)) {
+        const {tableName} = this.$route.params;
+        if (!this.moduleComponentName.includes(tableName)) {
           return
         }
         setTimeout(() => {
           if (this.selectRow.length > 0) {
             this.lockSelected = true;
-            const { agGridTableContainer } = this.$refs;
+            const {agGridTableContainer} = this.$refs;
             const selectedIndex = [];
             this.datas.row.forEach((row, index) => {
               if (this.selectRow.includes(row.ID.val)) {
@@ -539,7 +540,7 @@
     },
     activated() {
       if (!this.isCommonTable && !this.isBig) {
-        const { agGridTableContainer } = this.$refs;
+        const {agGridTableContainer} = this.$refs;
         if (agGridTableContainer) {
           agGridTableContainer.fixAgRenderChoke();
           this.setTableSelected();
@@ -548,86 +549,3 @@
     },
   };
 </script>
-
-<style lang="less">
-.standardTable {
-  overflow: hidden;
-  padding: 20px 0 0 0;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  height: 100%;
-  .common-table {
-     margin-top: 10px;
-    overflow-y: hidden;
-    flex: 1;
-  }
-}
-.detailTable,
-.isBig {
-  border: 1px solid #d8d8d8;
-  margin-top: 10px;
-  height: calc(100% - 65px);
-  width: 100%;
-}
-.isBig {
-  //  background-repeat: no-repeat;
-  //  background-position: center center;
-  //  background-size: 24%;
-  display: flex;
-  height: 100%;
-  width: 100%;
-  align-items: center;
-  justify-content: center;
-
-  > img {
-    width: 25%;
-    height: 65%;
-  }
-}
-
-.queryDesc {
-  height: 20px;
-  margin: 5px 0;
-  line-height: 18px;
-  display: flex;
-
-  > div {
-    flex: 1;
-  }
-  .legend {
-    > p {
-      display: inline-block;
-      button {
-        border: 1px solid #575757;
-        margin-right: 2px;
-        background: white;
-        padding: 0 3px;
-      }
-
-      margin-right: 3px;
-    }
-  }
-}
-.isFilterTable {
-  padding: 0;
-  .agPage {
-    order: 2;
-    margin-top: 10px;
-  }
-  .isBig {
-    order: 1;
-    margin-top: 0px;
-  }
-  .queryDesc {
-    order: 3;
-  }
-  .detailTable{
-    margin-top: 0px;
-  }
-.common-table{
-    margin-top: 0px;
-
-}
-}
-</style>

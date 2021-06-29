@@ -12,11 +12,3 @@
     }
 }
 </script>
-<style lang="less">
- .detail-buttons {
-     a{
-        display: inline-block;
-        padding: 8px 10px;
-    }
- }
-</style>

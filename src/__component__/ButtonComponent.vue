@@ -35,8 +35,8 @@
       <!-- 定制按钮 -->
       <template v-for="item in dataArray.waListButtonsConfig.waListButtons">
         <template v-if="item.confirm && item.confirm.includes('supPrompt')">
-          <Poptip 
-            trigger="hover" 
+          <Poptip
+            trigger="hover"
             transfer
             :key="item.webid"
             word-wrap
@@ -48,7 +48,7 @@
               :disabled="item.disabled"
               type="fcdefault"
               @click="btnclick('custom', item)"
-              v-text="item.webdesc"> 
+              v-text="item.webdesc">
             </Button>
           </Poptip>
         </template>
@@ -61,10 +61,10 @@
           type="fcdefault"
           @click="btnclick('custom', item)"
           v-text="item.webdesc"
-          > 
+          >
         </Button>
       </template>
-      
+
       <Dropdown
         v-for="(group,i) in dataArray.waListButtonsConfig.waListButtonsGroup"
         :key="group.webid"
@@ -76,8 +76,8 @@
       >
         <!-- 按钮有气泡提示 -->
         <template v-if="group.confirm && group.confirm.includes('supPrompt')">
-          <Poptip 
-            trigger="hover" 
+          <Poptip
+            trigger="hover"
             transfer
             :key="group.webid"
             word-wrap
@@ -99,13 +99,13 @@
             <Icon type="ios-arrow-down" />
           </Button>
         </template>
-        
+
         <DropdownMenu slot="list" class="btn-menu">
           <!-- 按钮菜单有气泡提示 -->
           <template v-for="(item,index) in group.childrens ">
-            <Poptip 
+            <Poptip
                 v-if="item.confirm && item.confirm.includes('supPrompt')"
-                trigger="hover" 
+                trigger="hover"
                 transfer
                 :key="item.webid"
                 word-wrap
@@ -131,7 +131,7 @@
           </template>
         </DropdownMenu>
       </Dropdown>
-      
+
       <!-- jflow配置按钮-->
       <Button
         v-for="(item) in dataArray.jflowButton"
@@ -190,7 +190,7 @@
         @click="btnclick('refresh')"
         v-text="refresh"
       />
-     
+
       <Button
         v-if="dataArray.temporaryStorage"
         id="temporaryStorage"
@@ -509,77 +509,3 @@
 
   };
 </script>
-
-<style lang="less" scope>
-.R3-buttonList {
-  padding: 8px 0px;
-  
-  > div {
-    display: inline-block;
-  }
-  }
-  .R3-button-group {
-    display: flex;
-    justify-content: flex-start;
-    overflow: hidden;
-    flex-wrap: wrap;
-    .hide{
-      display:none;
-    }
-    .ark-select-dropdown {
-      .ark-dropdown-menu {
-        min-width: 58px;
-        .ark-dropdown-item {
-          padding: 5px 6px;
-        }
-      }
-    }
-    .ff--el-dropdown {
-      float: left;
-    }
-    button {
-      height: 22px;
-      line-height: 18px;
-      margin-right: 8px;
-      margin-left: 0px;
-      padding: 0 8px;
-      margin-bottom: 4px;
-    }
-    > button:last-child {
-      margin-right: 0px;
-    }
-    .hiddenDropdown {
-      height: 24px;
-      button {
-        margin-top: -1px;
-      }
-    }
-    .iconfont{
-      font-size: 12px;
-    }
-    .collection,.ark-btn-fcdefault{
-      min-width: auto !important;
-    }
-//     .ark-dropdown-item {
-//     border: 1px solid #fd6442;
-//     border-radius: 4px;
-//     margin: 4px;
-//    color: #fd6442;
-
-// }
-//    .ark-dropdown-item:hover {
-//    color: #feb2a1;
-//     background-color: #fff;
-//     border-color: #feb2a1;
-// }
-
-  
-  }
-
-.btn-menu {
-  .ark-poptip,
-  .ark-poptip-rel {
-    display: block;
-  }
-}
-</style>

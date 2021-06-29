@@ -43,10 +43,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.string-wrap {
-  height: 26px;
-  line-height: 26px;
-}
-</style>

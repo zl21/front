@@ -13,7 +13,7 @@
       :status="status"
       :tableName="tableName"
       :type="type"
-      :itemInfo="itemInfo"> 
+      :itemInfo="itemInfo">
         <div class="page-buttons" slot="detail-page">
             <Page
               ref="page"
@@ -29,23 +29,23 @@
               @on-page-size-change="pageSizeChangeEvent"
             />
         </div>
-         
+
           <ul
             v-if="!isHorizontal && !readonly"
-            class="detail-buttons" slot="detail-buttons" 
+            class="detail-buttons" slot="detail-buttons"
           >
             <a
               v-for="item in buttonData"
               :key="item.name"
               @click="buttonClick(item)"
             >
-              <slot name="detail-buttons-a" 
+              <slot name="detail-buttons-a"
                v-bind:item="item">【{{ item.name }}】</slot>
             </a>
           </ul>
           <Dialog
             ref="dialogRef"
-            :title="dialogConfig.title"            
+            :title="dialogConfig.title"
             :mask="dialogConfig.mask"
             :content-text="dialogConfig.contentText"
             :idArray="tableRowSelectedIds"
@@ -53,7 +53,7 @@
             :footer-hide="dialogConfig.footerHide"
             :confirm="dialogConfig.confirm"
           />
-        
+
         <div
           v-if="filterList.length > 0"
           class="detail-search" slot="detail-search"
@@ -93,10 +93,10 @@
         </div>
 
       <!-- <div class="detail-top">
-      
+
       </div> -->
-      <div class="table-outside" slot="detail-table" 
-          v-bind:columns="columns" 
+      <div class="table-outside" slot="detail-table"
+          v-bind:columns="columns"
           v-bind:tabledata="tabledata">
         <Table
           v-if="isCommonTable || !useAgGrid"
@@ -142,8 +142,8 @@
       >
         查询条件:{{ dataSource.queryDesc }}
       </div>
-      
-     
+
+
   </component>
 
     </div>
@@ -660,7 +660,7 @@
         this.slotTableTemplate = this.$parent.slotTableTemplate;
       }else{
           this.slotTableTemplate = TableTemplate;
-      }  
+      }
     },
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
@@ -1984,7 +1984,7 @@
 
       // 获取联动计算结果
       getComputedValue(currentRowData, targetColObj, dynamicforcompute, params) {
-        let expression = dynamicforcompute.express 
+        let expression = dynamicforcompute.express
         Object.values(dynamicforcompute.refcolumns).forEach(colname => {
           expression = expression.replace(new RegExp(colname, 'g'), currentRowData[colname].val || 0)
         })
@@ -2006,12 +2006,12 @@
           colIndex = targetColObj._index + 1
         }
         const dom = document.querySelector(`#ag-${params.index}-${colIndex}`)
-        
+
         if(dom) {
           const input = dom.querySelector('input')
           input.value = newTargetValue
         }
-        
+
         return newTargetValue
       },
 
@@ -2049,7 +2049,7 @@
 
                   const oldCurrentValue = this.dataSource.row[params.index][cellData.colname].val
                   const oldId = this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val
- 
+
                   // 是否进行联动计算
                   if(window.ProjectConfig.computeForSubtable) {
                     const dynamicforcompute = cellData.webconf.dynamicforcompute
@@ -2064,7 +2064,7 @@
                     const newTargetValue = this.getComputedValue(currentRowData, targetColObj, dynamicforcompute, params)
                     // 提交联动的目标字段
                     this.putDataFromCell(newTargetValue, oldTargetValue, dynamicforcompute.computecolumn, oldId, targetColObj.type);
-                    this.putLabelDataFromCell(newTargetValue, oldTargetValue, dynamicforcompute.computecolumn, oldId, oldTargetValue); 
+                    this.putLabelDataFromCell(newTargetValue, oldTargetValue, dynamicforcompute.computecolumn, oldId, oldTargetValue);
                   } else {
                     this.putDataFromCell(event.target.value, oldCurrentValue, cellData.colname, oldId, params.column.type);
                     this.putLabelDataFromCell(event.target.value, data.value, cellData.colname, oldId, oldCurrentValue);
@@ -4682,7 +4682,7 @@
 
     },
     mounted() {
-      this.buttonData = this.buttonGroups;       
+      this.buttonData = this.buttonGroups;
       window.addEventListener('tabRefreshClick', () => {
         if (!this._inactive) {
           this.isRefreshClick = true;
@@ -4714,137 +4714,3 @@
     }
   };
 </script>
-
-<style scoped lang="less">
-    .TableDetailCollection {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        overflow-y: hidden;
-        margin: 10px 5px 10px 5px;
-        .detail-collection {
-            // height: calc(100% - 38px);
-            height: 100%;
-            // display: flex;
-            // flex: 1;
-            flex-direction: column;
-            overflow-y: visible; // fix: 表格内下拉框超出表格的部分看不见了
-            //.detail-top {  }
-                // margin-bottom: 6px;
-                // display: flex;
-                // justify-content: space-between;
-                .page-buttons {
-                    display: flex;
-                    flex-wrap: wrap;
-                }
-                .table-page {
-                    white-space: nowrap;
-                }
-                .detail-buttons {
-                    margin-left: 10px;
-                    a {
-                        line-height: 26px;
-                        vertical-align: middle;
-                    }
-                }
-                .detail-search {
-                    display: inline-block;
-                    display: flex;
-                    // justify-content: space-around;
-                    // align-content: stretch;
-                    .ark-select {
-                        width: 120px;
-                    }
-                    .detail-search-input {
-                        margin-left: 10px;
-                        .ark-input-group {
-                            top: 0px;
-                        }
-                        .ark-input-group-with-prepend {
-                            width: 270px;
-                        }
-                        .ark-input-group-prepend {
-                            .ark-btn {
-                                display: flex;
-                                align-items: center;
-                                span {
-                                    bottom: 2px;
-                                    position: relative;
-                                }
-                            }
-                        }
-                    }
-                }
-          
-            .table-outside {
-                // flex: 1;
-                // overflow-y: hidden;
-                display: flex;
-                height: calc(100% - 57px);
-                .table-in {
-                    flex: 1;
-                }
-            }
-            .queryCondition {
-                height: 20px;
-                padding-top: 10px;
-            }
-        }
-    }
-</style>
-<style lang="less">
-    .table-in {
-        flex: 1;
-        margin-top: 10px;
-        tbody tr.ark-table-row-hover td {
-            background-color: #ecf0f1;
-        }
-        thead th {
-            font-weight: 400;
-        }
-        .ark-input-wrapper > input {
-            height: 22px;
-        }
-        .ark-select-selection {
-            height: 22px;
-        }
-        .ark-table th, .ark-table td {
-            height: 26px;
-        }
-        .ark-fkrp-select-icon {
-            top: 2px;
-        }
-        .ark-fkrp-select .ark-icon-ios-close-circle {
-            top: -2px;
-        }
-        .ark-fkrp-poptip .fkrp-poptip-text {
-            top: 2px;
-        }
-        .fkrp-poptip-two .ark-icon-ios-close-circle {
-            top: -2px;
-        }
-        .ark-input-icon {
-            top: -2px;
-        }
-    }
-
-    .input-align-center input {
-        text-align: center;
-    }
-
-    .input-align-right input {
-        text-align: right;
-    }
-
-    .table-in .ag-cell{
-      overflow: visible;
-    }
-
-    // ag表格查询控件展示不全
-    .table-in .ag-theme-balham .ag-menu {
-      overflow-y: auto;
-      .ag-column-container {
-        overflow: hidden;
-      }
-    }
-</style>
