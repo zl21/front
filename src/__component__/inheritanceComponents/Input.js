@@ -62,7 +62,7 @@ const mixin = {
       if (!this.item || this.item.type !== 'NUMBER') {
         return
       }
-      const value = event.target.value
+      const value = event.target.value || ''
       const { webconf, scale, length } = this.item
       let valLength = length || 100
       let string = ''
