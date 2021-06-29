@@ -16,7 +16,7 @@
         "build": "webpack --color --progress --config webpack.config.js --env.production",
         "build:style": "gulp --gulpfile build-style.js",
         "build:test": "cross-env BUILD_ENV=test webpack --color --progress --config webpack.test.js --env.NODE_ENV=development",
-        "build:publish": "cross-env BUILD_ENV=publish webpack --color --progress --config webpack.publish.js  --env.NODE_ENV=production",
+        "build:publish": "npm i && cross-env BUILD_ENV=publish webpack --color --progress --config webpack.publish.js  --env.NODE_ENV=production",
         "zip": "node doZip.js",
         "deploy": "npm publish && node dingtalk.js"
     },
