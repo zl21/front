@@ -38,7 +38,7 @@
         </Input>
         <div class="menuContainer">
           <tree
-                  ref="tree"
+                  ref="ztree"
                   :tree-datas="treeConfigData"
                   @menuTreeChange="menuTreeChange"
                   @treeSearch="treeSearch"
@@ -596,6 +596,7 @@
         });
       }, // 刷新数据
       refreshButtonClick() {
+        this.$refs.ztree.clearInputVal();
         if (this.checkNoSaveData('refresh')) {
         } else {
           this.refresh();
@@ -809,10 +810,14 @@
       resetTree() {
         this.selectFirstOnce()
       },
-      treeSearch(e) {
+      treeSearch(e, flag) {
         if (!e) {
           this.pageInit = false;
           this.refreshButtonClick();
+        }
+        if (flag) {
+          this.groupId = '';
+          this.newGroupId = '';
         }
       },
 
@@ -1127,7 +1132,7 @@
           url: '/SYSTEM/TABLE/FUNCTIONPERMISSION/24627',
           back: true
         });
-        
+
         // const param = {
         //   url: '/CUSTOMIZED/FUNCTIONPERMISSION/2099',
         //   type: 'C',
