@@ -493,8 +493,11 @@
       }
 
       if (this.defaultSelected[0] && this.defaultSelected[0].ID && /选中/.test(this.defaultSelected[0].Label)) {
-        const data = this.defaultSelected[0].ID;
+        let data = this.defaultSelected[0].ID;
         // const data = this.defaultSelected[0].ID;
+        if(typeof data ==='string' && (/\{/).test(data)){
+            data = JSON.parse(data);
+        }
         // 谢世华  修改处理默认值逻辑
         if (data.value) {
           data.value.reftable = this.propsData.reftable;
