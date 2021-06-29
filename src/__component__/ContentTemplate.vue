@@ -1,12 +1,12 @@
 <template>
   <div style="height:100%"
   >
-
-    <Contentverticalslot>
+   <contentdiv/>
+    <!-- <Contentverticalslot>
         <NavigatorVertical slot="R3-header"/>
         <NaVertical  slot="R3-left"/>
         <ContentDisplayArea slot="R3-content" />
-    </Contentverticalslot>  
+    </Contentverticalslot>   -->
     
   </div>
 </template>
@@ -17,7 +17,7 @@ import NaVertical from '../__component__/NaVertical';
 import ContentDisplayArea from '../__component__/ContentDisplayArea';
 import contentdiv from './Content.vue';
 
-import Contentverticalslot from './Contentverticalslot.vue';
+// import Contentverticalslot from './Contentverticalslot.vue';
 
   
   export default {
@@ -28,7 +28,6 @@ import Contentverticalslot from './Contentverticalslot.vue';
     },
     components: {
       contentdiv,
-      Contentverticalslot,
       NavigatorVertical,NaVertical,ContentDisplayArea
 
     },

@@ -71,7 +71,7 @@ module.exports = {
   layoutDirection: true, // 默认是false ,水平排版 ，true 是垂直排版
   layoutDirectionSlot:{  // 模板渲染
     //NavigatorSubMenu:require('./src/demo/NavigatorSubMenu.vue').default,  // 模板渲染
-    NaVertical:require('./src/demo/NaVerticalslot.vue').default  // 模板渲染
+    //NaVertical:require('./src/demo/NaVerticalslot.vue').default  // 模板渲染
   },
   backDashboardRoute: [], // 配置刷新浏览器回到Dashboard界面
   custommizedRequestURL: {
@@ -122,7 +122,7 @@ module.exports = {
   agGridOptions: { // ag表格的配置
     // rowHeight: 100
   },
-  // messageSwitch: true, // 消息开关
+  messageSwitch: true, // 消息开关
   // useAgGrid: true, // 明细界面的表格全局用ag表格进行渲染
   // (data) => {
   //   if (data.router.params) {
@@ -150,6 +150,7 @@ module.exports = {
   // classFix: 'r3-', // 样式前缀
   classFix: '', // 样式前缀
   openTabNumber:2,
+
   autoGatewayUrl:false,  // 是否请求网关
   computeForSubtable: false
 };
