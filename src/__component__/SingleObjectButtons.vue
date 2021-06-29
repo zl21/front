@@ -702,6 +702,7 @@
             mask: true,
             title: '警告',
             content: '确认执行提交？',
+            showCancel: true,
              onOk: () => {
                DispatchEvent(eventName, {
                 detail: {
