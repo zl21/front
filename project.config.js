@@ -39,6 +39,10 @@ module.exports = {
   // target: 'http://cs.yqdev.burgeononline.com/', // 云雀
   // target: 'http://47.102.164.111:27777', // 卡宾
   // target: 'http://dev.dev.lark-erp.cn/',
+<<<<<<< HEAD
+=======
+  
+>>>>>>> ll_npm_dev
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
   enableGateWay: true, // 网关是否打开,
@@ -147,6 +151,7 @@ module.exports = {
   // }
   // classFix: 'r3-', // 样式前缀
   classFix: '', // 样式前缀
+  openTabNumber:2,
   autoGatewayUrl:false,  // 是否请求网关
   computeForSubtable: false
 };
