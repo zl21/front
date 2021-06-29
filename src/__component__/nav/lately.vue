@@ -5,7 +5,7 @@
         @mouseenter="onMouseOverHistorySeen"
         @mouseleave="onMoueOuthHistorySeen"
       >
-        <Dropdown>
+        <Dropdown @on-click="routeTo">
           <slot>
             <i
               class="iconfont iconmd-time"
@@ -16,6 +16,7 @@
                v-for="(d, i) in history"
               :key="`history-${i}`"
               :title="d.label "
+              :name="d"
               placement="bottom-end"
               @click="routeTo(d)">
                  {{ d.label }}
