@@ -4,6 +4,7 @@
                   ref="AttachFilter"
                   v-model="InputValue"
                   v-bind="propsData"
+                  :singleTurn="true"
                   :auot-data="propsData.AutoData"
                   :default-selected="selected"
                   @on-show="attachFilterPopperShow"
