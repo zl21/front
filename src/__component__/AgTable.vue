@@ -56,7 +56,6 @@
           ...options,
           ...agGridOptions,
         }"
-        @grid-ready="ready"
       ></CommonTableByAgGrid>
 
     <!-- 普通表格 -->
@@ -294,9 +293,6 @@
       },
     },
     methods: {
-      ready() {
-        this.agGridTable(this.datas.tabth, this.datas.row, this.datas);
-      },
       btnclick(obj) {
         this.$emit('btnclick', obj);
       },
