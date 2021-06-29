@@ -1,22 +1,21 @@
 <template>
    <div
         class="tag favorite"
-        @mouseenter="onMouseOverFavoriteSeen"
-        @mouseleave="onMoueOutFavoriteSeen"
+      
       >
-      <Dropdown>
+      <Dropdown  @on-click="routeTo">
         <slot>
           <i
             class="iconfont iconbj_col left-icon"
           />
         </slot>
-          
         <DropdownMenu slot="list" trigger="click">
             <DropdownItem  v-for="(d, i) in favorite"
               :key="`favorite-${i}`"
               :title="d.label "
+              :name="d"
               placement="bottom-end"
-              @click="routeTo(d)">
+              >
                  {{ d.label }}
               </DropdownItem>
         </DropdownMenu>
@@ -84,6 +83,7 @@
         }
       },
       routeTo(data) {
+        console.log(data,'21212')
         const {
           type
         } = data;
