@@ -1,6 +1,7 @@
 @nav-primary-menu-prefix-cls: ~"@{css-prefix}navigator-primary-menu";
 
 .@{nav-primary-menu-prefix-cls} {
+
   user-select: none;
   display: flex;
   flex-direction: column;
@@ -9,6 +10,9 @@
   width: 76px;
   color: #fff;
   font-size: 13px;
+  div{
+    display: flex;
+  }
   &:hover{
     background-color: #2e373c;
     cursor: pointer;
@@ -20,6 +24,7 @@
   &:hover{
     background-color: #fff;
     color: #575757;
+    cursor: pointer;
   }
 }
 

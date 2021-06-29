@@ -12,21 +12,8 @@
   </div>
 </template>
 <script>
-    
+
  export default {
     inheritAttrs: false
 }
 </script>
-<style lang="less" scoped>
-
-.detail-top{
-    height: calc(100% - 0px);
-    overflow: hidden;
-    .detail-content {
-        margin-bottom: 6px;
-        display: flex;
-        justify-content: space-between;
-    }
-}
-</style>
-
