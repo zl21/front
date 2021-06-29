@@ -2951,45 +2951,52 @@
         ]);
       },
       comAttachFilterRender(cellData, tag) {
-        return (h, params) => h('div', [
-          h(tag, {
-            style: {
-              width: '130px'
-            },
-            domProps: {
-              id: `${params.index}-${params.column._index - 1}`
-            },
-            props: {
-              defaultValue: this.copyDataSource.row[params.index][cellData.colname].val,
-              defaultSelected: this.copyDataSource.row[params.index][cellData.colname].val ? [{
-                ID: /选中/.test(this.copyDataSource.row[params.index][cellData.colname].val) ? this.copyDataSource.row[params.index][cellData.colname].refobjid :this.copyDataSource.row[params.index][cellData.colname].val,
-                Label: `${/选中/.test(this.copyDataSource.row[params.index][cellData.colname].val) ? this.copyDataSource.row[params.index][cellData.colname].val : `已经选中${JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).total}条数据`}`
-              }] : [],
-              propstype: {
-                optionTip: true,
-                // 是否显示输入完成后是否禁用 true、false
-                show: true,
-                // 是否显示筛选提示弹窗 true、false
-                filterTip: true,
-                // 是否选中后禁止编辑 true、false
-                enterType: true,
-                // 是否回车选中第一行
-                disabled: false,
-                // 默认提示框
-                placeholder: null,
-                // 定义选中展示的文字的key
-                hideColumnsKey: ['id'],
-                // 配置弹窗的配置项 model
-                dialog: {
-                  model: {
-                    title: '弹窗多选',
-                    mask: true,
-                    draggable: true,
-                    scrollable: true,
-                    width: 920
-                  }
-                },
-                fkobj: {
+        return (h, params) => {
+          if(!this.copyDataSource.row[params.index]) {
+            return null
+          }
+          const valueObj = this.copyDataSource.row[params.index][cellData.colname]
+          const defaultValue = valueObj.val
+          const defaultSelected = valueObj.val ? [{
+            ID:  /选中/.test(valueObj.val) ? valueObj.refobjid : valueObj.val,
+            Label: /选中/.test(valueObj.val) ? valueObj.val : `已经选中${JSON.parse(valueObj.val).total}条数据`
+          }] : []
+          return h('div', [
+            h(tag, {
+              style: {
+                width: '130px'
+              },
+              domProps: {
+                id: `${params.index}-${params.column._index - 1}`
+              },
+              props: {
+                defaultValue,
+                defaultSelected,
+                propstype: {
+                  optionTip: true,
+                  // 是否显示输入完成后是否禁用 true、false
+                  show: true,
+                  // 是否显示筛选提示弹窗 true、false
+                  filterTip: true,
+                  // 是否选中后禁止编辑 true、false
+                  enterType: true,
+                  // 是否回车选中第一行
+                  disabled: false,
+                  // 默认提示框
+                  placeholder: null,
+                  // 定义选中展示的文字的key
+                  hideColumnsKey: ['id'],
+                  // 配置弹窗的配置项 model
+                  dialog: {
+                    model: {
+                      title: '弹窗多选',
+                      mask: true,
+                      draggable: true,
+                      scrollable: true,
+                      width: 920
+                    }
+                  },
+                  fkobj: {
                     refobjid: cellData.refobjid,
                     reftable: cellData.reftable,
                     colid: this.dataSource.row[params.index][cellData.colname].colid,
@@ -3001,39 +3008,44 @@
                   },
                   datalist: this.popFilterDataList,
                   ...cellData,
+                // 模糊查询的文字信息，支持多列
+                },
+
               },
-            },
-            on: {
-              'on-keydown': (v, e, i) => {
-                if (e.keyCode === 13) {
-                  const elementId = i.$parent.$el.id;
-                  this.tableCellFocusByEnter(elementId);
-                } else if (e.keyCode === 40) {
-                  // 下键
-                  const elementId = i.$parent.$el.id;
-                  const currentColumn = params.column._index - 1;
-                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'down');
-                } else if (e.keyCode === 38) {
-                  // 上键
-                  const elementId = i.$parent.$el.id;
-                  const currentColumn = params.column._index - 1;
-                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'up');
-                }
-              },
-              valuechange: (item) => {
-                this.copyDataSource.row[params.index][cellData.colname].val = item.value;
-                this.copyDataSource.row[params.index][cellData.colname].defaultSelected = item.selected;
-                if (item.selected[0]) {
-                  this.putDataFromCell(item.selected[0].ID, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                  this.putLabelDataFromCell(item.selected[0].Label, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, item.selected[0].ID);
-                } else {
-                  this.putDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                  this.putLabelDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, '');
+              on: {
+                'on-keydown': (v, e, i) => {
+                  if (e.keyCode === 13) {
+                    const elementId = i.$parent.$el.id;
+                    this.tableCellFocusByEnter(elementId);
+                  } else if (e.keyCode === 40) {
+                    // 下键
+                    const elementId = i.$parent.$el.id;
+                    const currentColumn = params.column._index - 1;
+                    this.tableCellFocusByUpOrDown(elementId, currentColumn, 'down');
+                  } else if (e.keyCode === 38) {
+                    // 上键
+                    const elementId = i.$parent.$el.id;
+                    const currentColumn = params.column._index - 1;
+                    this.tableCellFocusByUpOrDown(elementId, currentColumn, 'up');
+                  }
+                },
+                valuechange: (item) => {
+                  this.copyDataSource.row[params.index][cellData.colname].val = item.value;
+                  this.copyDataSource.row[params.index][cellData.colname].defaultSelected = item.selected;
+                  if (item.selected[0]) {
+                    this.putDataFromCell(item.selected[0].ID, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                    this.putLabelDataFromCell(item.selected[0].Label, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, item.selected[0].ID);
+                  } else {
+                    this.putDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                    this.putLabelDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, '');
+                  }
                 }
               }
-            }
-          })
-        ]);
+            })
+          ]);
+        };
+
+       
       },
       comAttachFilterpopRender(cellData, tag) {
         return (h, params) => {
