@@ -2,7 +2,7 @@
   <div class="NaVertical"
   >
     <div class="NaVertical-icons">
-         这个是一个测试
+         这个是一个测试333
         <slot name="icon-tag">操作按钮切换左边面板</slot> 
     </div>
     <div>

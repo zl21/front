@@ -718,9 +718,11 @@
         if (obj && obj.jflowType && obj.jflowType === 'jflowLaunch') {
           eventName = 'jflowLaunch';
         }  
-        const data = {
+        if(obj.name === '提交'){
+            const data = {
             mask: true,
             title: '警告',
+            showCancel:true,
             content: '确认执行提交？',
              onOk: () => {
                DispatchEvent(eventName, {
@@ -732,7 +734,17 @@
 
              }
           };
-        this.$Modal.fcWarning(data);
+          this.$Modal.fcWarning(data);
+
+        }else{
+          DispatchEvent(eventName, {
+                detail: {
+                  obj,
+                  currentItemInfo, // 当前操作的子表或主表信息
+                }
+              });
+        }
+        
         
       },
       testUpdata() { // 校验是否修改过值
