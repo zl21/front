@@ -52,6 +52,7 @@
           ...options,
           ...agGridOptions,
         }"
+        height="100%"
       ></CommonTableByAgGrid>
 
     <!-- 普通表格 -->
