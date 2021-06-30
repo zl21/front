@@ -63,6 +63,7 @@ export default () => ({
         'updateFailInfo',
         'updateAgConfig',
         'updateFormData',
+        'updateFormAssignData',
         'updateFormLists',
         'updateDefaultButtonGroupData',
         'deleteTableData',
