@@ -205,6 +205,10 @@ export default {
 
 
 
+        }else{
+          if (this.actived) {
+            this.$emit('on-change',this.items,val )
+          }
         }
 
       }
