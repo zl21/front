@@ -440,7 +440,7 @@ export default {
       // console.log(this._items.props);
       const tableName = props.reftable;
       const tableId = props.reftableid;
-      const label = this._items.props.fkdesc;
+      const label = props.fkdesc;
       // xhj修改，改为使用tabOpen方法，以下存serviceId逻辑已弃用
 
       let value = this.value;
