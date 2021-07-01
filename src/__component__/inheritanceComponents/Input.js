@@ -4,7 +4,6 @@
  */
 import InputMethod from '../ExtendedMethods/Input'
 import { SetPlaceholder, SetDisable } from './setProps'
-import Ark from '@syman/ark-ui'
 
 let Input = Ark.Input
 
@@ -63,7 +62,7 @@ const mixin = {
       if (!this.item || this.item.type !== 'NUMBER') {
         return
       }
-      const value = event.target.value
+      const value = event.target.value || ''
       const { webconf, scale, length } = this.item
       let valLength = length || 100
       let string = ''

@@ -3,7 +3,6 @@
  * checkbox组件的自定义逻辑处理
  */
 import { SetDisable } from './setProps';
-import Ark from '@syman/ark-ui'
 
 
 let Checkbox = Ark.Checkbox
