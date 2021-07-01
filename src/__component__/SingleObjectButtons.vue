@@ -1913,9 +1913,10 @@
                     return c.tableName;
                   }
                 });// 因左右结构itemNameGroup包含主表，上下结构不包括
-                if (itemNames.includes(this.itemName)) {
-                  this.$R3loading.hide(this.loadingName);
-                }
+                // if (itemNames.includes(this.itemName)) {
+                //   this.$R3loading.hide(this.loadingName);
+                // }
+                this.$R3loading.hide(this.loadingName);
               }
 
               this.upData();
