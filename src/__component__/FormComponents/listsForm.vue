@@ -23,6 +23,7 @@
         <component
           :is="ItemLists[item].component"
           :items="ItemLists[item]"
+           @on-change="valueChange"
           :label-width="90"
         />
       </keep-alive>
@@ -92,6 +93,11 @@
       };
     },
     methods: {
+      valueChange(item,val){
+        // 表单change
+        let arrjson = this.dealData(item, val);
+        this.$parent.updateFormAssignData(arrjson);
+      },
       resetForm() {
         // 处理合并字段
         this.ItemLists = {}

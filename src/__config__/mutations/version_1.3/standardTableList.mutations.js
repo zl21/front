@@ -92,8 +92,11 @@ export default {
   updateDefaultSearchFoldnum({ formItems }, data) {
     formItems.searchFoldnum = data;
   },
- 
-
+  updateFormAssignData({
+    formItems
+  }, data) {
+    formItems.data = Object.assign(formItems.data,data);
+  },
   // 按钮组
   updataIsBig({ buttons }, value) {
     buttons.isBig = value; // 更新是否为海量表

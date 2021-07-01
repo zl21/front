@@ -100,8 +100,11 @@ export default {
   updateDefaultSearchFoldnum({ formItems }, data) {
     formItems.searchFoldnum = data;
   },
-  
-
+  updateFormAssignData({
+    formItems
+  }, data) {
+    formItems.data = Object.assign(formItems.data,data);
+  },
   // 按钮组
   updatestopOnRowDoubleClickData({
     buttons
