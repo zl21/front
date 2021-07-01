@@ -107,3 +107,9 @@
     }
   };
 </script>
+<style lang="scss" scoped>
+.ark-dropdown-menu{
+  max-width: 150px;
+  overflow-x: auto;
+}
+</style>

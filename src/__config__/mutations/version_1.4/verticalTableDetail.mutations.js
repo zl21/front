@@ -508,6 +508,17 @@ export default {
   //     });
   //   });
   // }
+  updateChildTabPanels(state, data){
+    state.tabPanels.forEach((item)=>{
+      // 隐藏子表
+      console.log(data);
+      if(item.tablename === data.key){
+        item.webcofhidden = data.type;
+      }
+       return item;
+    });
+    state.tabPanels = state.tabPanels.concat([]);
+  },
   updateRefreshButton(state, value) { // 控制刷新按钮开关
     state.refreshButton = value;
   },

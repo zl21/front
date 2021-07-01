@@ -98,6 +98,11 @@ export default {
   }, data) {
     formItems.data = data;
   },
+  updateFormAssignData({
+    formItems
+  }, data) {
+    formItems.data = Object.assign(formItems.data,data);
+  },
   updateDefaultSearchFoldnum({ formItems }, data) {
     formItems.searchFoldnum = data;
   },

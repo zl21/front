@@ -46,13 +46,13 @@
         mode="r3-list"
         class="detailTable"
         ref="agGridTableContainer"
-        height="100%"
         :columns="columns"
         :data="rows"
         :options="{
           ...options,
           ...agGridOptions,
         }"
+        height="100%"
       ></CommonTableByAgGrid>
 
     <!-- 普通表格 -->

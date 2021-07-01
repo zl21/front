@@ -31,6 +31,7 @@ import './src/constants/dateApi';
 import { getKeepAliveModuleName } from './src/__config__/router.navigation.guard';
 import './src/constants/dateApi';
 import packJson from './package.json';
+import './src/index.less';
 
 
 const validateConfig = config => ({

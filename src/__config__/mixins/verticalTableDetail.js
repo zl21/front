@@ -6,6 +6,7 @@ import {
   MODULE_COMPONENT_NAME, INSTANCE_ROUTE, HAS_BEEN_DESTROYED_MODULE, INSTANCE_ROUTE_QUERY, customizeMixins
 } from '../../constants/global';
 import { updateSessionObject } from '../../__utils__/sessionStorage';
+import minx from '../../__component__/tableDetailjs/mixin';
 
 export default () => ({
   provide: {
@@ -17,7 +18,7 @@ export default () => ({
   data() {
     return {};
   },
-  
+  mixins:[minx],
   mounted() {
   },
   created() {
@@ -33,7 +34,8 @@ export default () => ({
   },
   computed: {
     ...mapState('global', {
-      keepAliveLists: ({ keepAliveLists }) => keepAliveLists
+      keepAliveLists: ({ keepAliveLists }) => keepAliveLists,
+      activeTab: ({ activeTab }) => activeTab,// 当前表基本数据，包含路由信息，表名，ID等
     }),
     ...mapState(getComponentName(), {
       childReadonly: ({ childTableReadonly }) => childTableReadonly,
@@ -60,7 +62,7 @@ export default () => ({
       isHideTempStorage: ({ isHideTempStorage }) => isHideTempStorage,
       saveInfo: ({ saveInfo }) => saveInfo,
       isRequest: ({ isRequest }) => isRequest,
-
+      WebConf:({WebConf}) => WebConf,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur) => {
         acc.push({ tableName: cur.tablename });
         return acc;
@@ -120,7 +122,8 @@ export default () => ({
         'isRequestUpdata',
         'emptyTestData',
         'updateScrollPosition',
-        'updateLabelData'
+        'updateLabelData',
+        'updateChildTabPanels'
         // 'resetFormReadOnlyAttribute'
 
       ]),

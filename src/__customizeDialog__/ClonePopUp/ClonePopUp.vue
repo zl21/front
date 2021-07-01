@@ -2,6 +2,7 @@
   <div :class="classes">
     <div class="pop-title">
       <div class="pop-input">
+        {{allFormData}}
         <ul>
           <li>
             <span>{{ chineseName.SOURCETABLENAME }}：</span>
@@ -124,6 +125,9 @@
         return [
           `${classFix}clonePopUp`,
         ];
+      },
+      allFormData() {
+        return this.$store.state[`S.${this.$route.params.tableName}.${this.$route.params.tableId}`].formItems.data;
       },
     },
     components: {},
