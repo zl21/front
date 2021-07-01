@@ -96,7 +96,9 @@
       valueChange(item,val){
         // 表单change
         let arrjson = this.dealData(item, val);
-        this.$parent.updateFormAssignData(arrjson);
+        if(this.$parent.updateFormAssignData){
+          this.$parent.updateFormAssignData(arrjson);
+        }
       },
       resetForm() {
         // 处理合并字段
