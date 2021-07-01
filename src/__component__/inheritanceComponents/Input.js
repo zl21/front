@@ -96,9 +96,9 @@ const mixin = {
         if (scale > 0) {
           string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9]{0,${scale}})?$`
         } else {
-          string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9])?$`
+          // string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9])?$`
           // 整数
-          // string = `^${regxString}\\d{0,${valLength}}$`
+          string = `^${regxString}\\d{0,${valLength}}$`
         }
       }
 
