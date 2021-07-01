@@ -3756,30 +3756,8 @@
             return acc;
           }, []).join('') : '暂无文件'}`;
           const align = cellData.tdAlign || cellData.align || 'center'
-          return h('div', {
-            style: {
-              display: 'flex',
-              'justify-content':FLEX_ALIGN[align],
-              'align-items': 'center',
-            },
-          }, [
-            h('div', {
+          const poptip = h(tag, {
               style: {
-                display: cellData.width ? 'block' : 'flex',
-                width: cellData.width,
-                overflow: cellData.width ? 'hidden' : '',
-                'text-overflow': cellData.width ? 'ellipsis' : '',
-                'white-space': cellData.width ? 'nowrap' : '',
-              },
-              attrs: {
-                title: content
-              },
-              domProps: {
-              },
-            }, content),
-            h(tag, {
-              style: {
-                width: '100%',
                 'text-align': 'center',
                 cursor: 'pointer',
                 color: '#2D8CF0'
@@ -3821,12 +3799,30 @@
                   });
                 },
               },
-            // on: {
-            //   'on-change': (event, dateType, data) => {
-            //     this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
-            //   }
-            // }
             })
+
+          return h('div', {
+            style: {
+              display: 'flex',
+              'justify-content':FLEX_ALIGN[align],
+              'align-items': 'center',
+            },
+          }, [
+            h('div', {
+              style: {
+                display: cellData.width ? 'block' : 'flex',
+                width: cellData.width,
+                overflow: cellData.width ? 'hidden' : '',
+                'text-overflow': cellData.width ? 'ellipsis' : '',
+                'white-space': cellData.width ? 'nowrap' : '',
+              },
+              attrs: {
+                title: content
+              },
+              domProps: {
+              },
+            }, content),
+            this.copyDataSource.row[params.index][cellData.colname].val ? poptip : null
           ]);
         };
       },
