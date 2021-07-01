@@ -69,22 +69,17 @@ const mixin = {
       let regxString = ''
 
       if (valLength) {
-        // if (value.split('.').length > 1) {
-        //   valLength = valLength + 1
-        // } else if (value.split('-').length > 1) {
-        //   valLength = valLength + 1
-        // }
-        // if (value.split('.').length > 1 && value.split('-').length > 1) {
-        //   valLength = valLength + 2
-        // }
-
-        // 最大长度包含符号
-        if (value.includes('-') && value.includes('.')) {
-          valLength = valLength - 2
-        } else if (value.includes('+') && value.includes('.')) {
-          valLength = valLength - 2
-        } else if (value.includes('.')) {
-          valLength = valLength - 1
+        const isNegativeDecimal = value.split('.').length > 1 && value.split('-').length > 1 // 是否是负小数
+        const isDecimal = value.split('.').length > 1 && value.split('+').length > 1 // 是否是正小数
+        if (isNegativeDecimal || isDecimal) {
+          // 正负小数 
+          valLength = valLength + 2
+        } else if (value.split('.').length > 1) {
+          // 小数
+          valLength = valLength + 1
+        } else if (value.split('-').length > 1) {
+          // 负整数
+          valLength = valLength + 1
         }
 
         if (webconf && webconf.ispositive) {
@@ -92,6 +87,7 @@ const mixin = {
         } else {
           regxString = '(-|\\+)?'
         }
+
         // 小数
         if (scale > 0) {
           string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9]{0,${scale}})?$`
@@ -105,7 +101,7 @@ const mixin = {
       const itemComponent = this.$parent.$parent
       const typeRegExp = new RegExp(string)
       itemComponent.propsMessage.regx = typeRegExp
-      itemComponent.propsMessage.maxlength = valLength
+      itemComponent.propsMessage.maxlength = valLength // 最大长度不包含符号
     })
   },
 }
