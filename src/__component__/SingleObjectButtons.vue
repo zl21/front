@@ -906,6 +906,10 @@
         }
       },
       upData(message) { // 页面刷新判断逻辑
+        // 如果不在当前界面就不刷新,不然点重载再返回界面会导致按钮丢失
+        if(this.tableName !== this.$route.params.tableName) {
+          return
+        }
         // this.emptyTestData();
         const webact = this.getCurrentItemInfo().webact;// 定制子表配置
         if (this.objectType === 'vertical' && webact) { // 兼容半定制界面，保存成功时通知外部
@@ -2575,7 +2579,6 @@
         }
 
         if (this.objectType === 'horizontal') { // 横向布局
-          // 如果判断this.itemName === this.tableName会导致在别的界面加载完，再切回当前界面时，按钮会丢失
           if (this.itemName === this.tableName) {
             if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
               this.webactButton(tabwebact.objbutton);
