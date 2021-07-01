@@ -618,7 +618,6 @@
           //   }
           // }
           if (this.copy === true && this[MODULE_COMPONENT_NAME].includes('New')) {// 通过点击复制按钮打开的界面，需将刷新按钮去除
-            console.log(4444, this.[INSTANCE_ROUTE_QUERY], this.[INSTANCE_ROUTE]);
             this.updateRefreshButton(false);
             this.addButtonShow(buttonData);// 复制即为新增，将按钮置为新增状态，只显示新增状态该显示的按钮
           }
@@ -2131,7 +2130,8 @@
             //   }
             // });
 
-            let panelForm = FindInstance(this,'panelForm')
+            let panelForm = FindInstance(this,'panelForm');
+            console.log(panelForm,'panelForm');
              const copyData = { ...panelForm[0].formDataLabel };
             //const copyData = { ...formData };
             const modifyData = this.updateData[this.tableName].changeData;// 取changeData值，因外键形式需要lable和ID
