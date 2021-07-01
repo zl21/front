@@ -69,13 +69,22 @@ const mixin = {
       let regxString = ''
 
       if (valLength) {
-        if (value.split('.').length > 1) {
-          valLength = valLength + 1
-        } else if (value.split('-').length > 1) {
-          valLength = valLength + 1
-        }
-        if (value.split('.').length > 1 && value.split('-').length > 1) {
-          valLength = valLength + 2
+        // if (value.split('.').length > 1) {
+        //   valLength = valLength + 1
+        // } else if (value.split('-').length > 1) {
+        //   valLength = valLength + 1
+        // }
+        // if (value.split('.').length > 1 && value.split('-').length > 1) {
+        //   valLength = valLength + 2
+        // }
+
+        // 最大长度包含符号
+        if (value.includes('-') && value.includes('.')) {
+          valLength = valLength - 2
+        } else if (value.includes('+') && value.includes('.')) {
+          valLength = valLength - 2
+        } else if (value.includes('.')) {
+          valLength = valLength - 1
         }
 
         if (webconf && webconf.ispositive) {
@@ -87,9 +96,9 @@ const mixin = {
         if (scale > 0) {
           string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9]{0,${scale}})?$`
         } else {
-          // string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9])?$`
+          string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9])?$`
           // 整数
-          string = `^${regxString}\\d{0,${valLength}}$`
+          // string = `^${regxString}\\d{0,${valLength}}$`
         }
       }
 
@@ -212,11 +221,11 @@ class CustomInput {
     const keyDownFn = this.instance.methods.handleKeydown
     const isDetailPage = this.item.detailType
     this.instance.methods.handleKeydown = function(e) {
-      // 禁止输入单引号 '
-      if (e.key==='\'') {
-        e.stopPropagation()
-        e.preventDefault()
-      }
+      // // 禁止输入单引号 '
+      // if (e.key==='\'') {
+      //   e.stopPropagation()
+      //   e.preventDefault()
+      // }
 
       // 明细界面的input，按下回车后，光标自动移到下一个Input框里
       if (isDetailPage && e.keyCode === 13) {
