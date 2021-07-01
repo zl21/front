@@ -14,6 +14,7 @@ export default {
   methods:{
     setTabPanels(){
       // 设置子表是否隐藏
+      return;
       let formName = document.querySelector('.panelForm');
           //formName = 
       if(formName && this.WebConf.hiddenSubtable && this.WebConf.hiddenSubtable[this.getItemName]){
@@ -23,7 +24,6 @@ export default {
           console.log(formData[item.colName], item.value,formData[item.colName] === item.value);
            return formData[item.colName] !== item.value;
         });
-        console.log(checked,'========checked');
         this.updateChildTabPanels({
           key:this.getItemName,
           type:!checked
