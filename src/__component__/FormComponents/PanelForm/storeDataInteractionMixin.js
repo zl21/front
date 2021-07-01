@@ -221,11 +221,14 @@ export default {
     },
     changeForm(ParentForm){
       // 修改后
-      console.log(ParentForm.formChangeData, ParentForm.formDataLabel);
       if (ParentForm.$parent.formPanelChange) {
         ParentForm.$parent.formPanelChange(ParentForm.formChangeData, ParentForm.formDataLabel,ParentForm.formChangeDataLabel)
       }else{
         ParentForm.$parent.formChange(ParentForm.formChangeData, ParentForm.formDataLabel,ParentForm.formChangeDataLabel)
+      }
+      let tabPanelsDom = document.querySelector(`#${this.activeTab.tableName}`);
+      if(tabPanelsDom){
+        tabPanelsDom._vue_.setTabPanels();
       }
     }
   },

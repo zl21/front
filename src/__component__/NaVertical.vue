@@ -43,30 +43,30 @@
       
     </div>
       <!-- 最近操作navigatorSetting -->
-
-      <div
-        v-for="(item,index) in navigatorSetting"
-        :key="index"
-        class="tag right"
-      >
-        <Badge
-
-          style="width:40px;height:40px"
-          :offset="['6px','-8px']"
-          :count="item.count"
-          @click.native="item.callback"
+      <div class="icon-setting right" slot="icon-Setting">
+        <div
+          v-for="(item,index) in navigatorSetting" 
+          :key="index"
+          class="tag right"
         >
-          <i
-            class="iconfont"
-            :class="item.icon"
-          />
-        </Badge>
+          <Badge
+
+            style="width:40px;height:40px"
+            :offset="['6px','-8px']"
+            :count="item.count"
+            @click.native="item.callback"
+          >
+            <i
+              class="iconfont"
+              :class="item.icon"
+            />
+          </Badge>
+        </div>
+        <ComAutoComplete slot="nav-input" />
+
+        <Lately slot="icon-Lately"></Lately>
+        <Collect slot="icon-Collect"></Collect>
       </div>
-      <ComAutoComplete slot="nav-input" />
-
-      <Lately slot="icon-Lately"></Lately>
-      <Collect slot="icon-Collect"></Collect>
-
       <div
         v-if="versionValue"
         class="tag right"
