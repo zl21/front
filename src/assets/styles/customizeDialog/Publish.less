@@ -1,0 +1,76 @@
+@publish-prefix-cls: ~"@{css-prefix}Publish";
+
+.@{publish-prefix-cls} {
+
+  font-size: 12px;
+  height: 98px;
+  .pop-title {
+    // width: 400px;
+    height: 152px;
+    box-sizing: border-box;
+  }
+  .pop-input {
+    padding-top: 10px;
+    ul {
+      list-style: none;
+    }
+    li {
+      margin-bottom: 10px;
+      .version {
+        width: 228px;
+        height: 22px;
+        border-radius: 2px;
+      }
+    }
+    .resTop{
+      margin-bottom: 15px;
+    }
+    span {
+      display: inline-block;
+      width: 100px;
+      text-align: right;
+    }
+    input {
+      border: 1px solid #d8d8d8;
+      width: 228px;
+      height: 24px;
+      padding: 0 7px;
+      border-radius: 2px;
+      font-size: 12px;
+      color: #575757;
+      transition: border-color 0.2s ease;
+      margin-left: -1px;
+    }
+    input:focus {
+      border-color: #0f8ee9;
+    }
+  }
+  .pop-btn {
+    text-align: right;
+    padding: 6px 40px 0 0;
+    .sav-btn,
+    .cancel-btn {
+      padding: 0 18px;
+      width: 66px;
+      height: 24px;
+      box-sizing: border-box;
+      background-color: #fff;
+      border: 1px solid;
+      color: @primary-color;
+      font-size: 12px;
+      border-radius: 2px;
+      cursor: pointer;
+      span {
+        color: @primary-color;
+      }
+    }
+    .sav-btn:hover,
+    .cancel-btn:hover {
+      background-color: tint(@primary-color, 20%);
+      color: tint(@primary-color, 20%);
+      span{
+        color: #fff;
+      }
+    }
+  }
+}

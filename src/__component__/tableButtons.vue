@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="R3-buttonList"
-  >
+  <div :class="classes">
     <div class="R3-button-group">
       <Button
         v-for="(item) in buttonsData"
@@ -10,13 +8,14 @@
         :ref="item.ref"
         type="fcdefault"
         @click="btnclick(item)"
-        v-text="item.webdesc" 
+        v-text="item.webdesc"
       />
     </div>
   </div>
 </template>
-<script> 
+<script>
 
+  import { classFix } from '../constants/global';
 
   export default {
     name: 'ButtonList',
@@ -28,6 +27,13 @@
     },
     mounted() {
     },
+    computed: {
+      classes() {
+        return [
+          `${classFix}R3-buttonList"`,
+        ];
+      },
+    },
     components: {
     },
     methods: {
@@ -37,64 +43,8 @@
     },
     data() {
       return {
-     
+
       };
     },
- 
-   
   };
 </script>
-
-<style lang="less" scope>
-.R3-buttonList {
-  padding: 8px 0px;
-  
-  > div {
-    display: inline-block;
-  }
-  }
-  .R3-button-group {
-    display: flex;
-    justify-content: flex-start;
-    overflow: hidden;
-    flex-wrap: wrap;
-    .hide{
-      display:none;
-    }
-    .ark-select-dropdown {
-      .ark-dropdown-menu {
-        min-width: 58px;
-        .ark-dropdown-item {
-          padding: 5px 6px;
-        }
-      }
-    }
-    .ff--el-dropdown {
-      float: left;
-    }
-    button {
-      height: 22px;
-      line-height: 18px;
-      margin-right: 8px;
-      margin-left: 0px;
-      padding: 0 8px;
-      margin-bottom: 4px;
-    }
-    > button:last-child {
-      margin-right: 0px;
-    }
-    .hiddenDropdown {
-      height: 24px;
-      button {
-        margin-top: -1px;
-      }
-    }
-    .iconfont{
-      font-size: 12px;
-    }
-    .collection,.ark-btn-fcdefault{
-      min-width: auto !important;
-    }
-  }
-
-</style>

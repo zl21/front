@@ -11,8 +11,8 @@ class CustomCheckbox {
   constructor(item) {
     this.item = item;
     this.Vm = Object.create(Checkbox);
-    this.mergeProps();   
-    this.mergeMethods(); 
+    this.mergeProps();
+    this.mergeMethods();
   }
 
   init() {
@@ -39,7 +39,7 @@ class CustomCheckbox {
 
   }
 
-  
+
   settingOptions() {
     if (this.item.combobox) {
       this.item.combobox.map((item) => {

@@ -7,8 +7,7 @@ const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const copyWebpackPlugin = require('copy-webpack-plugin');
-const { ModuleFederationPlugin } = require('webpack').container;
-
+const {ModuleFederationPlugin} = require('webpack').container;
 
 module.exports = () => ({
   entry: {
@@ -20,7 +19,8 @@ module.exports = () => ({
     globalObject: 'this',
     library: 'R3',
     libraryTarget: 'umd',
-    umdNamedDefine: true
+    umdNamedDefine: true,
+    publicPath: './'
   },
   devtool: 'source-map',
   externals: {
@@ -87,7 +87,7 @@ module.exports = () => ({
       {
         test: /\.css$/,
         use: [{
-          loader:  MiniCssExtractPlugin.loader,
+          loader: 'style-loader',
         }, {
           loader: 'css-loader',
         }],
@@ -95,13 +95,12 @@ module.exports = () => ({
       {
         test: /\.(sa|sc|le)ss$/,
         use: [{
-          // loader: env && env.production ? MiniCssExtractPlugin.loader : 'style-loader',
           loader: MiniCssExtractPlugin.loader,
         }, {
           loader: 'css-loader',
         }, {
           loader: 'less-loader',
-          options: { javascriptEnabled: true }
+          options: {javascriptEnabled: true}
         }],
       },
       {
@@ -136,12 +135,18 @@ module.exports = () => ({
     }),
     new CleanWebpackPlugin(['r3.publish']),
     new VueLoaderPlugin(),
-    new copyWebpackPlugin([{
-        from: path.resolve(__dirname, "./src/assets/theme/custom.less"),
-        to: path.resolve(__dirname, "./r3.publish/src/assets/theme")
-    }]),
-    // new ModuleFederationPlugin({ 
-    //   name: '', 
+    new copyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, "./src/assets"),
+        to: path.resolve(__dirname, "./r3.publish/src/assets")
+      },
+      {
+        from: path.resolve(__dirname, "./src/index.less"),
+        to: path.resolve(__dirname, "./r3.publish/src")
+      },
+    ]),
+    // new ModuleFederationPlugin({
+    //   name: '',
     //   remotes: {
     //     arkui_BCL: 'arkui_BCL@https://cdn.jsdelivr.net/npm/@syman/ark-ui-bcl@0.0.10/dist/remoteEntry.js',
     //     shared: ['vue', '@syman/ark-ui', 'axios']
@@ -156,21 +161,21 @@ module.exports = () => ({
       module: false,
       dgram: false,
       dns: false,
-      fs:false,
+      fs: false,
       https: false,
-      http:false,
+      http: false,
       net: false,
-      inspector:false,
-      tls:false,
-      crypto:false,
-      request:false,
-      stream_http:false,
-      vm:false,
-      stream:false,
-      constants:false,
-      os:false,
-      worker_threads:false,
-      child_process:false
+      inspector: false,
+      tls: false,
+      crypto: false,
+      request: false,
+      stream_http: false,
+      vm: false,
+      stream: false,
+      constants: false,
+      os: false,
+      worker_threads: false,
+      child_process: false
     },
   },
   optimization: {

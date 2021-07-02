@@ -182,7 +182,7 @@
           }
         );
       },
-    
+
 
       /**
        * 调整适配iframe的高度问题
@@ -254,7 +254,7 @@
         network.post(`${urlPath}/preview`, params, config).then(
           (res) => {
             const { data } = res.data;
-            
+
             self.reportUrl = `${data.url}&session_id=${data.sessionid}&userid=${this.userInfo.name ? this.userInfo.name : self.POSNAME}`;
             const shadowFrame = document.getElementById(`${this.iframeId}-shadow`);
             if (shadowFrame) {
@@ -395,113 +395,3 @@
     }
   };
 </script>
-
-<style scoped>
-iframe {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
-div,
-input,
-iframe {
-  margin: 0;
-  padding: 0;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
-.iframe-container {
-  min-height: 100px;
-  line-height: 0;
-  color: #575757;
-}
-.filter-container {
-  height: auto;
-  padding-bottom: 7px;
-  margin-top: 5px;
-  font-size: 12px;
-  position: relative;
-  min-height: 20px;
-  width: 100%;
-  border: 1px solid #d8d8d8;
-}
-.filter-content {
-  padding-right: 30px;
-}
-.filter-item {
-  display: inline-block;
-  width: 25%;
-  margin-right: 0;
-  margin-bottom: 0;
-  margin-top: 8px;
-  position: relative;
-  color: #575757;
-}
-.filter-label {
-  display: inline-block;
-  text-align: right;
-  font-size: 12px;
-  width: 90px;
-  height: 24px;
-  line-height: 24px;
-  padding: 0;
-  margin: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.filter-input {
-  position: relative;
-  display: inline-block;
-  height: 24px;
-  line-height: 0;
-  vertical-align: top;
-  width: calc(100% - 94px);
-  text-align: left;
-}
-.filter-input input {
-  width: 100%;
-  font-size: 12px;
-  text-align: left;
-  border: 1px solid #b4b4b4;
-  border-radius: 2px;
-  padding: 0 4px;
-  height: 24px;
-  position: relative;
-}
-.tag-close {
-  /*border: 1px solid black;*/
-  width: 28px;
-  height: 16px;
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin-left: -20px;
-  background-color: #fe6846;
-  text-align: center;
-  line-height: 16px;
-  cursor: pointer;
-  color: #fff;
-  border-radius: 0 0 2px 2px;
-}
-.button-group {
-  margin-top: 5px;
-}
-.button-group button {
-  height: 24px;
-  width: auto;
-  margin-right: 8px;
-  margin-left: 0px;
-  padding: 0 8px;
-  background: #fff;
-  color: #fd6442;
-  border: 1px solid #fd6442;
-  border-radius: 2px;
-  font-size: 12px;
-}
-.button-group button:hover {
-  border-color: rgba(253, 100, 66, 0.6);
-  color: rgba(253, 100, 66, 0.6);
-}
-</style>

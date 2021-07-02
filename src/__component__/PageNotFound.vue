@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%">
+  <div class="pageNotFound" style="height: 100%">
     <h1>没有找到与如下路由：</h1>
     <h1>{{info}}</h1>
     <h1>相匹配的页面</h1>
@@ -8,7 +8,7 @@
 
 <script>
   import { CUSTOMIZED_MODULE_PREFIX, PLUGIN_MODULE_PREFIX } from '../constants/global';
-  
+
   export default {
     data() {
       return {
@@ -25,10 +25,3 @@
     }
   };
 </script>
-
-<style scoped>
-h1 {
-  text-align: center;
-  margin-top: 30px;
-}
-</style>

@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="standardTable"
-    :class="isFilterTable ? 'isFilterTable' : ''"
-  >
+  <div :class="classes">
     <Page
       v-if="isPageShow"
       ref="page"
@@ -49,13 +46,13 @@
         mode="r3-list"
         class="detailTable"
         ref="agGridTableContainer"
-        height="100%"
         :columns="columns"
         :data="rows"
         :options="{
           ...options,
           ...agGridOptions,
         }"
+        height="100%"
       ></CommonTableByAgGrid>
 
     <!-- 普通表格 -->
@@ -81,10 +78,12 @@
     </div>
     <div class="queryDesc">
       <div
-        v-if="(legend.length > 0) & isLegendShow"
+        v-if="legend.length > 0 & isLegendShow"
         class="legend"
       >
-        <span style="font-weight: bold"> 图例: </span>
+        <span style="font-weight: bold;">
+          图例:
+        </span>
         <p
           v-for="(item, index) in legend"
           :key="index"
@@ -110,7 +109,7 @@
   import { mapState } from 'vuex';
   // import agTable from '../assets/js/ag-grid-table-pure';
   import CommonTable from './CommonTable.vue';
-  import { floatingFilter } from '../constants/global';
+  import { floatingFilter, classFix } from '../constants/global';
   import { CommonTableByAgGrid } from '@syman/ark-ui-bcl';
   import { getPinnedColumns } from '../__utils__/tableMethods'
 
@@ -134,6 +133,14 @@
       ...mapState('global', {
         bigBackground: ({ imgSrc }) => imgSrc.bigDataImg,
       }),
+      classes() {
+        return [
+          `${classFix}standardTable`,
+          {
+            ['isFilterTable']: this.isFilterTable,
+          }
+        ];
+      },
     },
     props: {
       doTableSearch: {
@@ -303,7 +310,7 @@
         if (!data) {
           return result;
         }
-        
+
         for (let i = 0; i < data.length; i++) {
           if (data[i].isagfilter) {
             result = true;

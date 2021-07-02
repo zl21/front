@@ -1,7 +1,7 @@
 /* eslint-disable vue/html-indent */
 /* eslint-disable vue/html-self-closing */
 <template>
-  <div class="TableDetailCollection">
+  <div :class="classes">
     <div class="detail-collection">
       <component :is="slotTableTemplate" :tabwebact="tabwebact"
       :webConfSingle = webConfSingle
@@ -13,7 +13,7 @@
       :status="status"
       :tableName="tableName"
       :type="type"
-      :itemInfo="itemInfo"> 
+      :itemInfo="itemInfo">
         <div class="page-buttons" slot="detail-page">
             <Page
               ref="page"
@@ -29,23 +29,23 @@
               @on-page-size-change="pageSizeChangeEvent"
             />
         </div>
-         
+
           <ul
             v-if="!isHorizontal && !readonly"
-            class="detail-buttons" slot="detail-buttons" 
+            class="detail-buttons" slot="detail-buttons"
           >
             <a
               v-for="item in buttonData"
               :key="item.name"
               @click="buttonClick(item)"
             >
-              <slot name="detail-buttons-a" 
+              <slot name="detail-buttons-a"
                v-bind:item="item">【{{ item.name }}】</slot>
             </a>
           </ul>
           <Dialog
             ref="dialogRef"
-            :title="dialogConfig.title"            
+            :title="dialogConfig.title"
             :mask="dialogConfig.mask"
             :content-text="dialogConfig.contentText"
             :idArray="tableRowSelectedIds"
@@ -53,7 +53,7 @@
             :footer-hide="dialogConfig.footerHide"
             :confirm="dialogConfig.confirm"
           />
-        
+
         <div
           v-if="filterList.length > 0"
           class="detail-search" slot="detail-search"
@@ -93,10 +93,10 @@
         </div>
 
       <!-- <div class="detail-top">
-      
+
       </div> -->
-      <div class="table-outside" slot="detail-table" 
-          v-bind:columns="columns" 
+      <div class="table-outside" slot="detail-table"
+          v-bind:columns="columns"
           v-bind:tabledata="tabledata">
         <Table
           v-if="isCommonTable || !useAgGrid"
@@ -142,8 +142,8 @@
       >
         查询条件:{{ dataSource.queryDesc }}
       </div>
-      
-     
+
+
   </component>
 
     </div>
@@ -190,7 +190,7 @@
   import { CommonTableByAgGrid } from '@syman/ark-ui-bcl';
   import regExp from '../constants/regExp';
   import {
-    Version, LINK_MODULE_COMPONENT_PREFIX, INSTANCE_ROUTE_QUERY, enableActivateSameCustomizePage, ossRealtimeSave
+    Version, LINK_MODULE_COMPONENT_PREFIX, INSTANCE_ROUTE_QUERY, enableActivateSameCustomizePage, ossRealtimeSave, classFix
   } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
   import ComplexsDialog from './ComplexsDialog.vue'; // emit 选中的行
@@ -360,7 +360,7 @@
         type: Boolean,
         default: false
       },
-      
+
       objreadonly: {
         // 主表按钮的
         type: Boolean,
@@ -406,6 +406,7 @@
         exportTasks: ({ exportTasks }) => exportTasks
 
       }),
+      classes: () => `${classFix}TableDetailCollection`,
 
       currentTabIndex() {
         return this.tabCurrentIndex;
@@ -458,7 +459,7 @@
       isHorizontal() { // 是否是左右结构
         return this.type === pageType.Horizontal;
       },
-      
+
       buttonGroups() { // 按钮组的数据组合
         // let tabIndex = null;
         // if (this.WebConf && this.WebConf.isCustomizeTab && this.type === 'horizontal') {
@@ -582,7 +583,7 @@
       }
     },
     watch: {
-     
+
       buttonGroups: {
         handler(val) {
           this.buttonData = val;
@@ -615,7 +616,7 @@
             this.isRefreshClick = false;
           }
           const isTableRender = this.isTableRender;
-          
+
           setTimeout(() => {
             if(this.isCommonTable || !this.useAgGrid) {
               this.columns = this.filterColumns(this.dataSource.tabth, isTableRender); // 每列的属性
@@ -646,10 +647,11 @@
           }
           this.getEditAbleId(JSON.parse(JSON.stringify(this.dataSource)));
         }
-      }
+      },
 
     },
     created() {
+      this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');
       this.ChineseDictionary = ChineseDictionary;
       this.$once('setSearchValue', () => {
         this.setSelectDefaultValue(); // 设置下拉的默认查询条件
@@ -658,7 +660,7 @@
         this.slotTableTemplate = this.$parent.slotTableTemplate;
       }else{
           this.slotTableTemplate = TableTemplate;
-      }  
+      }
     },
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
@@ -734,7 +736,7 @@
             renderComponent: renderFn,
           };
         }
-        
+
         // 序号按正常文本渲染
         if (cellData.colname === EXCEPT_COLUMN_NAME) {
           componentInfo = null;
@@ -819,7 +821,7 @@
               });
             });
             promises.then(() => {
-              this.$R3loading.hide(this.routerParams.tableName);
+              this.$R3loading.hide(this.loadingName);
               this.closeImportDialog();
               if (this.exportTasks.dialog) {
                 const message = {
@@ -859,12 +861,12 @@
               //   };
               //   this.$Modal.error(data);
               // }
-              this.$R3loading.hide(this.routerParams.tableName);
+              this.$R3loading.hide(this.loadingName);
               this.closeImportDialog();
             });
           }
         } else {
-          this.$R3loading.hide(this.routerParams.tableName);
+          this.$R3loading.hide(this.loadingName);
         }
       },
       getEditAbleId(data) {
@@ -1144,7 +1146,7 @@
           this.getObjTabActionSlientConfirm({
             tab, params, path: tab.action, resolve, reject, vuedisplay: tab.vuedisplay
           });
-          this.$R3loading.show();
+          this.$R3loading.show(this.loadingName);
         });
         if (tab.cuscomponent) {
           const nextOperate = JSON.parse(// 配置信息
@@ -1152,7 +1154,7 @@
           );
 
           promise.then(() => {
-            this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            this.$R3loading.hide(this.loadingName);
             if (nextOperate.success) {
               let successAction = null;
               let successActionParam = {};
@@ -1178,7 +1180,7 @@
               this.$Modal.fcSuccess(data);
             }
           }, () => {
-            this.$R3loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            this.$R3loading.hide(this.loadingName);
             if (nextOperate.failure) {
               let errorAction = null;
               let errorActionParam = {};
@@ -1198,7 +1200,7 @@
           });
         } else {
           promise.then(() => {
-            this.$R3loading.hide(tableName);
+            this.$R3loading.hide(this.loadingName);
             const message = this.objTabActionSlientConfirmData.message;
             const data = {
               mask: true,
@@ -1210,7 +1212,7 @@
               this.refresh();
             }
           }, () => {
-            this.$R3loading.hide(this.routerParams.tableName);
+            this.$R3loading.hide(this.loadingName);
           });
         }
       },
@@ -1254,7 +1256,7 @@
         //   tabIndex = this.tabCurrentIndex;
         // }
         const { itemId, tableName } = this.$route.params;
-      
+
         if (this.type === 'vertical') { // 上下结构
           new Promise((resolve, reject) => {
             this.getObjectTabForMainTable({
@@ -1365,7 +1367,7 @@
               value: tab,
               customizedModuleId: tab.webname.toUpperCase()
             // 因外链界面tablinkName相同时，只激活一个tab,所以外链界面用linkName作为key存入session,避免因勾选的id不同存入多个，导致关闭当前tab时无法清除存入的多个
-              
+
             };
             this.updateCustomizeMessage(data);
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
@@ -1412,7 +1414,7 @@
             // updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
             updateSessionObject('undataFromPageCustomizeButtonInfo', undataFromPageCustomizeButtonInfo);// 将自定义按钮为跳转自定义界面类型的自定义按钮信息存入session
 
-           
+
             const customizedModuleName = tabAction.split('/')[1];
             const urlRes = `${actionType}/${customizedModuleName.toLocaleUpperCase()}/${tab.webid}`;
             const param = {
@@ -1435,9 +1437,9 @@
               data.customizedModuleId = id;
             }
             this.updateCustomizeMessage(data);
-          } 
-          
-          
+          }
+
+
           // else if (actionType.toUpperCase() === 'CUSTOMIZED') {
           //   const name = getLabel({ url: tabAction, id: tab.webid, type: 'customized' });
           //   this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
@@ -1456,7 +1458,7 @@
           //     customizedModuleId: tab.webid
           //   };
           //   this.updateCustomizeMessage(data);
-         
+
           // }
         }
 
@@ -1699,7 +1701,7 @@
               width: ele.webconf && ele.webconf.standard_width,
               _index: index
             };
-            
+
             if (ele.comment) {
               param.renderHeader = this.tooltipRenderHeader();
             }
@@ -1719,7 +1721,7 @@
             if (ele.isorder) {
               param.sortable = 'custom';
             }
-            
+
             const item = Object.assign({}, ele, param);
             return item;
           });
@@ -1759,7 +1761,7 @@
               default: () => h('div', {
                 style: {},
                 domProps: {
-                  innerHTML: `<span>${params.column.name}</span><i class="iconfont iconios-information-circle-outline" style="color: orangered; font-size: 13px"></i> `
+                  innerHTML: `<span>${params.column.name}</span> <i class="iconfont iconios-information-circle-outline" style="color: orangered; font-size: 13px"></i>`
                 }
               }),
               content: () => h('div', {
@@ -1913,21 +1915,21 @@
         }
         return this.DISPLAY_ENUM[cellData.display].event(cellData, this.DISPLAY_ENUM[cellData.display].tag);
       },
-      strLen(str) {  
-        let len = 0;  
-        for (let i = 0; i < str.length; i++) {  
-          if (str.charCodeAt(i) > 127 || str.charCodeAt(i) === 94) {  
-            len += 2;  
-          } else {  
-            len++;  
-          }  
-        }  
-        return len;  
+      strLen(str) {
+        let len = 0;
+        for (let i = 0; i < str.length; i++) {
+          if (str.charCodeAt(i) > 127 || str.charCodeAt(i) === 94) {
+            len += 2;
+          } else {
+            len++;
+          }
+        }
+        return len;
       },
       textRender(cellData) {
         return (h, params) => {
           let maxlength = '';
-          
+
           if (params.column.webconf && params.column.webconf.maxlength) {
             maxlength = params.column.webconf.maxlength;
           }
@@ -1975,14 +1977,14 @@
             domProps: {
               innerHTML,
             },
-        
+
           })],);
         };
       },
 
       // 获取联动计算结果
       getComputedValue(currentRowData, targetColObj, dynamicforcompute, params) {
-        let expression = dynamicforcompute.express 
+        let expression = dynamicforcompute.express
         Object.values(dynamicforcompute.refcolumns).forEach(colname => {
           expression = expression.replace(new RegExp(colname, 'g'), currentRowData[colname].val || 0)
         })
@@ -2004,12 +2006,12 @@
           colIndex = targetColObj._index + 1
         }
         const dom = document.querySelector(`#ag-${params.index}-${colIndex}`)
-        
+
         if(dom) {
           const input = dom.querySelector('input')
           input.value = newTargetValue
         }
-        
+
         return newTargetValue
       },
 
@@ -2047,7 +2049,7 @@
 
                   const oldCurrentValue = this.dataSource.row[params.index][cellData.colname].val
                   const oldId = this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val
- 
+
                   // 是否进行联动计算
                   if(window.ProjectConfig.computeForSubtable) {
                     const dynamicforcompute = cellData.webconf.dynamicforcompute
@@ -2062,7 +2064,7 @@
                     const newTargetValue = this.getComputedValue(currentRowData, targetColObj, dynamicforcompute, params)
                     // 提交联动的目标字段
                     this.putDataFromCell(newTargetValue, oldTargetValue, dynamicforcompute.computecolumn, oldId, targetColObj.type);
-                    this.putLabelDataFromCell(newTargetValue, oldTargetValue, dynamicforcompute.computecolumn, oldId, oldTargetValue); 
+                    this.putLabelDataFromCell(newTargetValue, oldTargetValue, dynamicforcompute.computecolumn, oldId, oldTargetValue);
                   } else {
                     this.putDataFromCell(event.target.value, oldCurrentValue, cellData.colname, oldId, params.column.type);
                     this.putLabelDataFromCell(event.target.value, data.value, cellData.colname, oldId, oldCurrentValue);
@@ -2279,7 +2281,7 @@
                       this.$Message.info(`请选择主表${obj.name}`);
                     }
                   } else if (!this.dropDownIsShowPopTip(cellData, params)) {
-                    const obj = this.copyDataSource.tabth.find(item => item.key === cellData.refcolval.srccol);
+                    const obj = this.copyDataSource.tabth.find(item => item.colname === cellData.refcolval.srccol);
                     this.$Message.info(`请选择${obj.name}`);
                   }
                   return this.dropDownIsShowPopTip(cellData, params);
@@ -2449,7 +2451,7 @@
                       value.transferDefaultSelected = [];
                     }
                     this.fkAutoData = [];
-                    
+
                     const serviceId = this.copyDataSource.tabth.find(item => item.colname === params.column.colname).serviceId;
                     fkHttpRequest().fkFuzzyquerybyak({
                       searchObject: {
@@ -2732,8 +2734,8 @@
                           value.transferDefaultSelected = [];
                         }
                         this.fkAutoData = [];
-                        
-              
+
+
                         const serviceId = this.copyDataSource.tabth.find(item => item.colname === params.column.colname).serviceId;
 
                         fkHttpRequest().fkFuzzyquerybyak({
@@ -2941,7 +2943,7 @@
                 this.copyDataSource.row[params.index][cellData.colname].val = '';
                 this.fkAutoData = [];
                 this.putDataFromCell(null, this.dataSource.row[params.index][cellData.colname].refobjid !== -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
-                
+
                 this.putLabelDataFromCell('', this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, this.dataSource.row[params.index][cellData.colname].val);
               }
             }
@@ -3042,6 +3044,8 @@
             })
           ]);
         };
+
+       
       },
       comAttachFilterpopRender(cellData, tag) {
         return (h, params) => {
@@ -3524,7 +3528,7 @@
                 this.updateCustomizeMessage(datas);
                 // 将元数据配置的refobjid，字符串，可配置多个字段，将配置的字段解析后用作lu y，供弹框作为参数使用
                 const type = 'tableDetailAction';
-            
+
                 const url = `/${cellData.customerurl.tableurl.toUpperCase()}/${params.row[cellData.customerurl.refobjid]}`;
                 const tab = {
                   type,
@@ -3722,7 +3726,7 @@
                       this.copyDataSource.row[params.index][cellData.colname].val = JSON.stringify(val);
                       this.putDataFromCell(val.length > 0 ? JSON.stringify(val) : '', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
                       this.putLabelDataFromCell(val.length > 0 ? JSON.stringify(val) : '', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                    
+
                       if (!ossRealtimeSave()) {
                         //DispatchEvent('childTableSaveFile', { detail: { type: 'save' } });
                          const dom = document.getElementById('actionMODIFY');
@@ -3752,30 +3756,8 @@
             return acc;
           }, []).join('') : '暂无文件'}`;
           const align = cellData.tdAlign || cellData.align || 'center'
-          return h('div', {
-            style: {
-              display: 'flex',
-              'justify-content':FLEX_ALIGN[align],
-              'align-items': 'center',
-            },
-          }, [
-            h('div', {
+          const poptip = h(tag, {
               style: {
-                display: cellData.width ? 'block' : 'flex',
-                width: cellData.width,
-                overflow: cellData.width ? 'hidden' : '',
-                'text-overflow': cellData.width ? 'ellipsis' : '',
-                'white-space': cellData.width ? 'nowrap' : '',
-              },
-              attrs: {
-                title: content
-              },
-              domProps: {
-              },
-            }, content),
-            h(tag, {
-              style: {
-                width: '100%',
                 'text-align': 'center',
                 cursor: 'pointer',
                 color: '#2D8CF0'
@@ -3817,12 +3799,30 @@
                   });
                 },
               },
-            // on: {
-            //   'on-change': (event, dateType, data) => {
-            //     this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
-            //   }
-            // }
             })
+
+          return h('div', {
+            style: {
+              display: 'flex',
+              'justify-content':FLEX_ALIGN[align],
+              'align-items': 'center',
+            },
+          }, [
+            h('div', {
+              style: {
+                display: cellData.width ? 'block' : 'flex',
+                width: cellData.width,
+                overflow: cellData.width ? 'hidden' : '',
+                'text-overflow': cellData.width ? 'ellipsis' : '',
+                'white-space': cellData.width ? 'nowrap' : '',
+              },
+              attrs: {
+                title: content
+              },
+              domProps: {
+              },
+            }, content),
+            this.copyDataSource.row[params.index][cellData.colname].val ? poptip : null
           ]);
         };
       },
@@ -3920,7 +3920,7 @@
         const assignDataSource = Object.assign({}, this.dataSource);
         assignDataSource.tabth.timestamp = new Date().getTime(); // 确保会改变并刷新
 
-        this.isRefreshClick = true;// 清除删除前修改的存储在表格组件内用于存入模块状态内的表格数据，不清除则下次修改表格数据时，会再次抛出上一次的，因为删除失败是模拟刷新，通过数据重新的方式触发表格数据更新，不是通过接口的方式 
+        this.isRefreshClick = true;// 清除删除前修改的存储在表格组件内用于存入模块状态内的表格数据，不清除则下次修改表格数据时，会再次抛出上一次的，因为删除失败是模拟刷新，通过数据重新的方式触发表格数据更新，不是通过接口的方式
 
         if (this.isHorizontal) {
           this.updateTableData(assignDataSource);
@@ -4141,7 +4141,7 @@
           fixedcolumns[this.searchCondition] = this.searchInfo;
         }
 
-         
+
         const { itemId } = this.$route.params;
         // table, objid, refcolid, startindex, range, fixedcolumns
         // let tabIndex = null;
@@ -4520,13 +4520,13 @@
           menu: this.itemInfo.tabledesc
         };
         const promise = new Promise((resolve, reject) => {
-          this.$R3loading.show();
+          this.$R3loading.show(this.loadingName);
           this.getExportQueryForButtons({ OBJ, resolve, reject });
         });
         promise.then(() => {
           if (this.buttonsData.exportdata) {
             if (Version() === '1.4') {
-              this.$R3loading.hide(this.routerParams.tableName);
+              this.$R3loading.hide(this.loadingName);
               this.searchCondition = null;
               this.searchInfo = '';
               this.currentPage = 1;
@@ -4545,7 +4545,7 @@
                 });
               });
               promises.then(() => {
-                this.$R3loading.hide(this.routerParams.tableName);
+                this.$R3loading.hide(this.loadingName);
                 if (this.exportTasks.dialog) {
                   const message = {
                     mask: true,
@@ -4583,17 +4583,17 @@
                     content: `${this.exportTasks.resultMsg}`,
                   });
                 }
-                this.$R3loading.hide(this.routerParams.tableName);
+                this.$R3loading.hide(this.loadingName);
               });
               this.getTabelList(1);
             }
           } else {
-            this.$R3loading.hide(this.routerParams.tableName);
+            this.$R3loading.hide(this.loadingName);
           }
         }, () => {
           // 导出失败时，刷新当前表格
           this.getTabelList(1);
-          this.$R3loading.hide(this.routerParams.tableName);
+          this.$R3loading.hide(this.loadingName);
         });
       },
       objectIMPORT() { // 导入
@@ -4690,7 +4690,7 @@
 
     },
     mounted() {
-      this.buttonData = this.buttonGroups;       
+      this.buttonData = this.buttonGroups;
       window.addEventListener('tabRefreshClick', () => {
         if (!this._inactive) {
           this.isRefreshClick = true;
@@ -4722,137 +4722,3 @@
     }
   };
 </script>
-
-<style scoped lang="less">
-    .TableDetailCollection {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        overflow-y: hidden;
-        margin: 10px 5px 10px 5px;
-        .detail-collection {
-            // height: calc(100% - 38px);
-            height: 100%;
-            // display: flex;
-            // flex: 1;
-            flex-direction: column;
-            overflow-y: visible; // fix: 表格内下拉框超出表格的部分看不见了
-            //.detail-top {  }
-                // margin-bottom: 6px;
-                // display: flex;
-                // justify-content: space-between;
-                .page-buttons {
-                    display: flex;
-                    flex-wrap: wrap;
-                }
-                .table-page {
-                    white-space: nowrap;
-                }
-                .detail-buttons {
-                    margin-left: 10px;
-                    a {
-                        line-height: 26px;
-                        vertical-align: middle;
-                    }
-                }
-                .detail-search {
-                    display: inline-block;
-                    display: flex;
-                    // justify-content: space-around;
-                    // align-content: stretch;
-                    .ark-select {
-                        width: 120px;
-                    }
-                    .detail-search-input {
-                        margin-left: 10px;
-                        .ark-input-group {
-                            top: 0px;
-                        }
-                        .ark-input-group-with-prepend {
-                            width: 270px;
-                        }
-                        .ark-input-group-prepend {
-                            .ark-btn {
-                                display: flex;
-                                align-items: center;
-                                span {
-                                    bottom: 2px;
-                                    position: relative;
-                                }
-                            }
-                        }
-                    }
-                }
-          
-            .table-outside {
-                // flex: 1;
-                // overflow-y: hidden;
-                display: flex;
-                height: calc(100% - 57px);
-                .table-in {
-                    flex: 1;
-                }
-            }
-            .queryCondition {
-                height: 20px;
-                padding-top: 10px;
-            }
-        }
-    }
-</style>
-<style lang="less">
-    .table-in {
-        flex: 1;
-        margin-top: 10px;
-        tbody tr.ark-table-row-hover td {
-            background-color: #ecf0f1;
-        }
-        thead th {
-            font-weight: 400;
-        }
-        .ark-input-wrapper > input {
-            height: 22px;
-        }
-        .ark-select-selection {
-            height: 22px;
-        }
-        .ark-table th, .ark-table td {
-            height: 26px;
-        }
-        .ark-fkrp-select-icon {
-            top: 2px;
-        }
-        .ark-fkrp-select .ark-icon-ios-close-circle {
-            top: -2px;
-        }
-        .ark-fkrp-poptip .fkrp-poptip-text {
-            top: 2px;
-        }
-        .fkrp-poptip-two .ark-icon-ios-close-circle {
-            top: -2px;
-        }
-        .ark-input-icon {
-            top: -2px;
-        }
-    }
-
-    .input-align-center input {
-        text-align: center;
-    }
-
-    .input-align-right input {
-        text-align: right;
-    }
-
-    .table-in .ag-cell{
-      overflow: visible;
-    }
-
-    // ag表格查询控件展示不全
-    .table-in .ag-theme-balham .ag-menu {
-      overflow-y: auto;
-      .ag-column-container {
-        overflow: hidden;
-      }
-    }
-</style>

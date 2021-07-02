@@ -33,33 +33,8 @@ export default {
       // Notice:'DEEEE',
       searchData: {// 定义查询接口参数
         table: '1111',
-        value: 'value'
-      }
+        table2: '222'
 
-    };
-    // await network.post('api',)
-    //   .then((res) => {
-    //     if (res.data.resultCode === 0) {
-    //       treeData.data = json.data;
-    //     }
-    //   });
-    treeData.data = json.data;
-  
-    return treeData;
-  },
-  CHAXUN: value => async () => {
-    // ....
-    const treeData = {
-      data: [], // 树结构列表数据
-      // name: 'eeee', // 定义查询参数
-      query: {// 支持配置多参数
-        name: 'NAME', // 参数中的key:需要筛选的字段
-        id: 'ID'
-      },
-      placeholder: '9999', // placeholder自定义
-      searchData: {// 定义查询接口参数
-        table: '1111',
-        value: 'value'
       }
 
     };
@@ -79,5 +54,31 @@ export default {
   //   content: '接口错误信息',
   //   mask: true
   // });
+  CHAXUN: value => async () => {
+    // ....
+    const treeData = {
+      data: [], // 树结构列表数据
+      name: 'uuu', // 定义查询参数
+      query: {// 支持配置多参数
+        name: 'NAME', // 参数中的key:需要筛选的字段
+        id: 'ID'
+      },
+      placeholder: '88', // placeholder自定义
+      searchData: {// 定义查询接口参数
+        table: '1111',
+        table2: '222'
 
+      }
+
+    };
+    // await network.post('api',)
+    //   .then((res) => {
+    //     if (res.data.resultCode === 0) {
+    //       treeData.data = json.data;
+    //     }
+    //   });
+    treeData.data = json.data;
+  
+    return treeData;
+  }, // return  调用接口，同步请求，返回Promice，可直接复制原1.3框架接口请求逻辑  
 };

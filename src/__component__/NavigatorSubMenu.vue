@@ -1,7 +1,6 @@
 <template>
   <div
-    class="navigator-sub-menu"
-    :class="collapseHistoryAndFavorite ? 'close':'open'"
+    :class="classes"
     @click="toggleSubMenu()"
   >
     <ul
@@ -31,7 +30,7 @@
   import { mapMutations, mapState } from 'vuex';
   import { routeTo } from '../__config__/event.config';
   import { updateSessionObject } from '../__utils__/sessionStorage';
-  import { navConfig } from '../constants/global';
+  import { navConfig, classFix } from '../constants/global';
 
 
   export default {
@@ -68,10 +67,19 @@
     computed: {
       ...mapState('global', {
         collapseHistoryAndFavorite: state => state.collapseHistoryAndFavorite,
-      })
+      }),
+      classes() {
+        return [
+          `${classFix}NavigatorSubMenu`,
+          {
+            [`${classFix}nav-close`]: this.collapseHistoryAndFavorite,
+            [`${classFix}nav-open`]: !this.collapseHistoryAndFavorite,
+          },
+        ];
+      },
     },
     methods: {
-      ...mapMutations('global', ['increaseKeepAliveLists', 'hideMenu', 'increaseOpenedMenuLists', 'changeSelectedPrimaryMenu']),
+      ...mapMutations('global', ['increaseKeepAliveLists', 'hideMenu', 'increaseOpenedMenuLists', 'changeSelectedPrimaryMenu','updateDashboardPageValue']),
 
       // 渲染label
       renderLabel(label, itemConfig) {
@@ -82,7 +90,7 @@
         }
 
         const indent = itemConfig.indent;
-        const textArr = [text]; 
+        const textArr = [text];
         for (let i = 0; i < indent; i++) {
           textArr.unshift('&nbsp;');
         }
@@ -97,7 +105,7 @@
           type
         } = data;
         const {
-          value, id, url 
+          value, id, url
         } = data;
         if (url) {
           // window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
@@ -112,6 +120,7 @@
             updateSessionObject('clickMenuAddSingleObject', clickMenuAddSingleObjectData);
           }
         }
+         this.updateDashboardPageValue(false);
         routeTo({ type, info: { tableName: value, tableId: id, url } }, () => {
           this.hideMenu();
         });
@@ -119,68 +128,3 @@
     },
   };
 </script>
-
-<style scoped lang="less">
-  .open{
-     width: calc(100% - 190px - 50px);
-    left: 190px;
-  }
-  .close{
-     width: calc(100% - 60px - 50px);
-     left: 60px;
-  }
-  .navigator-sub-menu {
-    z-index: 9999;
-    border-bottom: 1px solid #d1dbe5;
-    // width: calc(100% - 190px - 50px);
-    max-height: calc(100vh - 50px);
-    overflow-y: auto;
-    display: flex;
-    flex-wrap: wrap;
-    background-color: #fff;
-    color: #575757;
-    padding: 20px 10px 0;
-    position: absolute;
-    top: 50px;
-     &:before {
-        content: "";
-        width: 100%;
-        height: 100%;
-        display: block;
-        z-index: -4;
-        background: rgba(0, 0, 0, 0);
-        position: fixed;
-      }
-    
-    .menu-group {
-      min-width: 150px;
-      padding-right: 10px;
-      margin: 0 30px 20px 0;
-      li {
-        list-style: none;
-      }
-      li.title {
-        border-bottom: 1px solid #d8d8d8;
-        display: block;
-        font-size: 14px;
-        font-weight: 700;
-        line-height: 14px;
-        height: 20px;
-        margin-left: 10px;
-      }
-      li.item {
-        white-space: normal;
-        cursor: pointer;
-        height: 28px;
-        line-height: 28px;
-        margin-top: 1px;
-        padding-left: 10px;
-        font-size: 12px;
-      }
-      li.item:hover {
-        background-color: #fd6442;
-        color: #fff;
-      }
-    }
-  }
-</style>

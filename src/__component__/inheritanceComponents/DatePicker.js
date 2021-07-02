@@ -3,7 +3,6 @@
  * DatePicker组件的自定义逻辑处理
  */
 import Vue from 'vue';
-// import { DatePicker } from 'ark-ui';
 import dataProp from '../../__config__/props.config';
 import { SetPlaceholder ,SetDisable} from './setProps';
 
@@ -13,8 +12,8 @@ class CustomDatePicker {
   constructor(item) {
     this.item = item;
     this.Vm = Object.create(this.item.display === 'OBJ_TIME'?TimePicker:DatePicker);
-    this.mergeProps();   
-    this.mergeMethods(); 
+    this.mergeProps();
+    this.mergeMethods();
   }
 
   init() {
@@ -32,7 +31,8 @@ class CustomDatePicker {
       disabled:new SetDisable(this.item).init(),
       transfer:true,
       type:this.type(),
-      format:this.format()
+      format:this.format(),
+      editable: false
     }
     let _that = this;
 

@@ -6,7 +6,7 @@
       v-if="urlName"
       id="iframe"
       :src="urlName"
-      class="urlName"
+      :class="classes"
     />
     <component
       :is="PageNotFound"
@@ -19,9 +19,9 @@
   import Vue from 'vue';
   import { mapState, mapActions, mapMutations } from 'vuex';
   import PageNotFound from './PageNotFound';
-  import { LINK_MODULE_PREFIX, LINK_MODULE_COMPONENT_PREFIX } from '../constants/global';
-  
-  
+  import { LINK_MODULE_PREFIX, LINK_MODULE_COMPONENT_PREFIX, classFix } from '../constants/global';
+
+
   export default {
     name: `${LINK_MODULE_COMPONENT_PREFIX}.Table.KeepAlive`,
     data() {
@@ -31,7 +31,8 @@
       };
     },
     computed: {
-      ...mapState('global', ['keepAliveLists', 'menuLists', 'LinkUrl', 'primaryMenuIndex', 'keepAliveLabelMaps'])
+      ...mapState('global', ['keepAliveLists', 'menuLists', 'LinkUrl', 'primaryMenuIndex', 'keepAliveLabelMaps']),
+      classes: () => `${classFix}urlName`
     },
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
@@ -95,11 +96,3 @@
     }
   };
 </script>
-<style lang="less" >
-  .urlName{
-    border:none;
-    width: 100%;
-    height:100%;
-  }
-  
-</style>

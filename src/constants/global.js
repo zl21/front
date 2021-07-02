@@ -126,11 +126,13 @@ export const blockFullOperation = () => (window.ProjectConfig && typeof window.P
 export const customizeMixins = () => (window.ProjectConfig && window.ProjectConfig.customizeMixins ? window.ProjectConfig.customizeMixins : project.customizeMixins || {});
 // export const REQUEST_PENDDING_EXPIRE = 1000 * 2;
 export const enableActivateSameCustomizePage = () => (window.ProjectConfig && typeof window.ProjectConfig.enableActivateSameCustomizePage === 'boolean' ? window.ProjectConfig.enableActivateSameCustomizePage : project.enableActivateSameCustomizePage);
+export const enableOpenNewTab = () => (window.ProjectConfig && typeof window.ProjectConfig.enableOpenNewTab === 'boolean' ? window.ProjectConfig.enableOpenNewTab : project.enableOpenNewTab);
 export const filterUrlForNetworkScript = data => (window.ProjectConfig && window.ProjectConfig.filterUrlForNetworkScript ? window.ProjectConfig.filterUrlForNetworkScript(data) : project.filterUrlForNetworkScript);
 export const getFilterUrlForNetworkData = () => (window.ProjectConfig && window.ProjectConfig.filterUrlForNetwork ? window.ProjectConfig.filterUrlForNetwork : project.filterUrlForNetwork);
 export const navConfig = () => (window.ProjectConfig && window.ProjectConfig.navMenuConfig ? window.ProjectConfig.navMenuConfig : navMenuConfig);
 export const notificationOfMain = () => (window.ProjectConfig && typeof window.ProjectConfig.notificationOfMain === 'boolean' ? window.ProjectConfig.notificationOfMain : project.notificationOfMain);
 export const formItemConfig = () => (window.ProjectConfig && window.ProjectConfig.formItemConfig ? window.ProjectConfig.formItemConfig : customizeFormItem);
+export const openTabNumber = () => (window.ProjectConfig && window.ProjectConfig.openTabNumber ? window.ProjectConfig.openTabNumber : project.openTabNumber);
 
 export const isFilterTable = () => (window.ProjectConfig && window.ProjectConfig.isFilterTable ? window.ProjectConfig.isFilterTable : project.isFilterTable);
 export const listDefaultColumn = () => (window.ProjectConfig && window.ProjectConfig.listDefaultColumn ? window.ProjectConfig.listDefaultColumn : 4); // 配置列表查询条件一行几列展示
@@ -143,7 +145,7 @@ export const getProjectQuietRoutes = () => {
 export const defaultrange = () => (window.ProjectConfig && window.ProjectConfig.defaultrange ? window.ProjectConfig.defaultrange : null); // 配置外健查询下拉每页展示多少条数据
 
 
-export const DashboardPage = () => (window.ProjectConfig && window.ProjectConfig.DashboardPage ? window.ProjectConfig.DashboardPage : null); // 根路由界面
+export const dashboardConfig = () => (window.ProjectConfig && window.ProjectConfig.DashboardComponent ? window.ProjectConfig.DashboardComponent : null); // 根路由界面
 export const floatingFilter = () => (window.ProjectConfig && typeof window.ProjectConfig.floatingFilter === 'boolean' ? window.ProjectConfig.floatingFilter : true);
 
 
@@ -164,4 +166,7 @@ export const autoGatewayUrl = () => (window.ProjectConfig && window.ProjectConfi
 export const getGatewayValue = (key) => {
   const getServiceIdMap = JSON.parse(window.localStorage.getItem('serviceIdMap'));
   return getServiceIdMap[key];
-}; 
+};
+
+// 获取全局class前缀
+export const classFix = window.ProjectConfig && window.ProjectConfig.classFix ? window.ProjectConfig.classFix : project.classFix;

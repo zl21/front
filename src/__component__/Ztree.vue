@@ -80,7 +80,8 @@
           },
         },
         isClick: false,
-        treeId: ''
+        treeId: '',
+        searchNoData: false
 
 
       };
@@ -206,16 +207,19 @@
           checkoutZtree.then((res)=>{
             if(res.length>0){
               this.showTip = false;
+              this.searchNoData = false;
             }else{
               this.showTip = true;
+              this.searchNoData = true;
               this.expandAll();
             }
+            this.$emit('treeSearch', this.inputValue, this.searchNoData)
           })
         } else {
           this.showTip = false;
           this.expandAll();
+          this.$emit('treeSearch', this.inputValue, this.searchNoData)
         }
-        this.$emit('treeSearch', this.inputValue)
       },
       expandAll() {
         // fuzzySearch('treeDemo','', null, false); // 初始化模糊搜索方法
@@ -227,6 +231,9 @@
       callMethod() { // 重置
         this.inputValue = '';
         this.search();
+      },
+      clearInputVal() {
+        this.inputValue = '';
       }
       // freshArea() {
       //   $.fn.zTree.init($('#treeDemo'), this.setting, this.zNodes);
@@ -247,27 +254,3 @@
     }
   };
 </script>
-
-<style>
-.cancelNode{
-  background:transparent !important;
-}
-.orange{
-  color:#fd6442;
-  line-height: 30px;
-}
-    /* #areaTree{
-        border:1px solid #e5e5e5;    margin-bottom: 2px;border-radius: 4px;overflow: scroll;width: 300px;
-    }
-    .box-title{
-        border-radius: 3px 3px 0 0;background-color: #f5f5f5;
-    }
-    .box-title a{
-        color: #2fa4e7;
-        text-decoration: none;font-size:14px;    display: block;
-        padding: 8px 15px;cursor: pointer;
-    }
-    .box-title .fa{
-        float:right;line-height: 20px;
-    } */
-</style>

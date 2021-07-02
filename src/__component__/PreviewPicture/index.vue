@@ -3,7 +3,7 @@
     ref="viewer"
     :options="options"
     :images="images"
-    class="viewer"
+    :class="viewerCls"
     @inited="inited"
   >
     <template slot-scope="scope">
@@ -32,6 +32,7 @@
       source: `https://picsum.photos/id/${base + i}/1440/900`
     });
   }
+  import { classFix } from '../../constants/global';
 
   export default {
     name: 'PreviewPicture',
@@ -65,6 +66,9 @@
         },
       };
     },
+    computed: {
+      viewerCls: () => `${classFix}viewer`,
+    },
     methods: {
       getOffset(el) {
         el = el.getBoundingClientRect();
@@ -90,34 +94,3 @@
     }
   };
 </script>
-<style lang="less" >
-.viewer-wrapper {
-    position: relative;
-    background: #333;
-    height: 100%;
-  }
-   .viewer {
-    height: 300px;
-    width: 100%;
-    overflow: hidden;
-    .images {
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-content: center;
-      align-items: center;
-      flex-wrap: wrap;
-      padding: 5px;
-      .image-wrapper {
-        display: inline-block;
-        width: calc(33% - 20px);
-        margin: 5px 5px 0 5px;
-        .image {
-          width: 100%;
-          cursor: pointer;
-          display: inline-block;
-        }
-      }
-    }
-  }
-</style>

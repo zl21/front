@@ -11,7 +11,7 @@
   </div>
 </template>
 <script>
-    
+
  export default {
     inheritAttrs: false,
     mounted(){
@@ -19,12 +19,3 @@
     }
 }
 </script>
-<style lang="less" scoped>
-.detail-content {
-    margin-bottom: 6px;
-    display: flex;
-    justify-content: space-between;
-   
-  }
-</style>
-

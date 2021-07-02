@@ -136,6 +136,9 @@
       callMethod() {
         this.$refs.zTree.callMethod();
       },
+      clearInputVal() {
+        this.$refs.zTree.clearInputVal();
+      },
       callBackFunction(tdata, resData, key, value) {
         // key:要筛选的字段
         // value:当前参数
@@ -191,25 +194,9 @@
         // treeNodeID：当前点击节点ID
         // flag:true:查询选中的节点，false:查询空
       }, // 左侧树点击
-      treeSearch(e) {
-        this.$emit('treeSearch', e)
+      treeSearch(e, flag) {
+        this.$emit('treeSearch', e, flag)
       },
     }
   };
 </script>
-<style >
-.R3tree{
-    height:100%;
-    padding:10px;
-    border-right:1px solid #d2d2d2;
-    overflow-x: scroll;
-    overflow-y: scroll;
-  }
-.ztree li span{
-  font-family: "Microsoft YaHei", Helvetica;
-
-}
-.input{
-  margin-bottom:10px
-}
-</style>

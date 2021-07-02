@@ -1,5 +1,5 @@
 <template>
-  <div class="extentionCellInput">
+  <div :class="classes">
     <Description
       :option="option"
       @removeOption="removeOption"
@@ -17,7 +17,8 @@
 <script>
   import Description from './Description.vue';
   import LabelWithInput from './LabelWithInput.vue';
-  
+  import { classFix } from '../../constants/global';
+
   export default {
     name: 'ExtentionInput',
     components: {
@@ -32,6 +33,9 @@
         this.$emit('dataChange', { key, value });
       }
     },
+    computed: {
+      classes: () => `${classFix}extentionCellInput`
+    },
     props: {
       option: {
         type: Object,
@@ -44,10 +48,3 @@
     }
   };
 </script>
-
-<style lang="less">
-  .extentionCellInput {
-    display: flex;
-    flex-direction: column;
-  }
-</style>

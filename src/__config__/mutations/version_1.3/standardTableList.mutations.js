@@ -11,7 +11,7 @@ export default {
     ag.datas = Object.assign({}, ag.datas);
   },
   updateTableDataWithMerge({ ag }, data) {
-    ag.datas = Object.assign({}, ag.datas, data);
+    ag.datas.row = data.row;
   },
   updateTableData({
     ag
@@ -88,6 +88,11 @@ export default {
     formItems
   }, data) {
     formItems.data = data;
+  },
+  updateFormAssignData({
+    formItems
+  }, data) {
+    formItems.data = Object.assign(formItems.data,data);
   },
   updateDefaultSearchFoldnum({ formItems }, data) {
     formItems.searchFoldnum = data;

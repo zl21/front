@@ -1,17 +1,14 @@
 <template>
-  <div class="welcomepage" />
+  <div :class="classes" />
 </template>
 
 <script>
+  import { classFix } from '../constants/global';
+
   export default {
-    name: 'WelcomePage'
+    name: 'WelcomePage',
+    computed: {
+      classes: () => `${classFix}welcomepage`
+    }
   };
 </script>
-
-<style scoped lang="less">
-  .welcomepage {
-    width: 100%;
-    height: 100%;
-    background: url('../assets/image/homepage.png') center / 90% no-repeat;
-  }
-</style>

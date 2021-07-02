@@ -36,8 +36,14 @@ maintable 主子映射
 */
 export const FindInstance = ($this,name,tableName,maintable) => {
     let target = [];
-    let panelFormParent = $this.$_live_getChildComponent(window.vm, `${$this.activeTab.keepAliveModuleName}`);
-    let panelForm = $this.$_live_getChildComponent(panelFormParent, 'panelForm');
+    // let panelFormParent = $this.$_live_getChildComponent(window.vm, `${$this.activeTab.keepAliveModuleName}`);
+    let mainTableName = $this.$route.params.tableName;
+
+    let panelFormParent = document.querySelector(`#${mainTableName}`)._vue_;
+    if(name === 'panelForm'){
+        let panelForm = $this.$_live_getChildComponent(panelFormParent, 'panelForm');
+        return [panelForm];
+    }
     if(!name){
         return [];
     }

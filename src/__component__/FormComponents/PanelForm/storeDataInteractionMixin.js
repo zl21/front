@@ -92,11 +92,13 @@ export default {
           }else{
             ParentForm.formDataLabel[this.items.colname] = val;
           }
-          ParentForm.formLabel[this.items.colname] = val;         
+          ParentForm.formLabel[this.items.colname] = val; 
+          let id = (ParentForm.defaultData.id || '').toString();  
+          console.log(id=== '-1','===',id);
           let keepAliveModuleName = this.activeTab.keepAliveModuleName && (this.activeTab.keepAliveModuleName).toLocaleUpperCase();
             // 初始化的状态
             if (!this.actived) {
-              if (/NEW/.test(keepAliveModuleName)) {
+              if (/NEW/.test(keepAliveModuleName)  || id ==='-1') {
                 // 删除空值
                 if (isEmpty(val)) {
                   delete ParentForm.formData[this.items.colname]
@@ -120,7 +122,7 @@ export default {
                 }
               }
 
-              if (/NEW/.test(keepAliveModuleName)) {
+              if (/NEW/.test(keepAliveModuleName) || id ==='-1') {
                 // 新增  删除空值,且没有默认值     
                 ParentForm.formChangeData = Object.assign({}, ParentForm.formChangeData, current_data)
                  // 虚拟区间不用传值
@@ -219,11 +221,14 @@ export default {
     },
     changeForm(ParentForm){
       // 修改后
-      console.log(ParentForm.formChangeData, ParentForm.formDataLabel);
       if (ParentForm.$parent.formPanelChange) {
         ParentForm.$parent.formPanelChange(ParentForm.formChangeData, ParentForm.formDataLabel,ParentForm.formChangeDataLabel)
       }else{
         ParentForm.$parent.formChange(ParentForm.formChangeData, ParentForm.formDataLabel,ParentForm.formChangeDataLabel)
+      }
+      let tabPanelsDom = document.querySelector(`#${this.activeTab.tableName}`);
+      if(tabPanelsDom){
+        tabPanelsDom._vue_.setTabPanels();
       }
     }
   },

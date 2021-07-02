@@ -6,6 +6,7 @@ import {
   MODULE_COMPONENT_NAME, INSTANCE_ROUTE, HAS_BEEN_DESTROYED_MODULE, INSTANCE_ROUTE_QUERY, customizeMixins
 } from '../../constants/global';
 import { updateSessionObject } from '../../__utils__/sessionStorage';
+import minx from '../../__component__/tableDetailjs/mixin';
 
 export default () => ({
   provide: {
@@ -15,35 +16,26 @@ export default () => ({
   },
   // mixins: [customizeMixins().verticalTableDetailCustomize ? customizeMixins().verticalTableDetailCustomize : false],
   data() {
-    return {
-      noMounted: true, // 进入单对象会同时触发mounted与actived两个生命周期，因此无法判断是否在切换tab
-    };
+    return {};
   },
-  
+  mixins:[minx],
   mounted() {
-    this.noMounted = false;
   },
   created() {
-    this[MODULE_COMPONENT_NAME] = getComponentName();
-    this[INSTANCE_ROUTE] = router.currentRoute.fullPath;
-    this[INSTANCE_ROUTE_QUERY] = router.currentRoute.params;
-  },
-  activated() {
-    if (this.noMounted) { // 因进入单对象界面会触发activated生命周期，以下操作为切换tab时的处理逻辑，第一次加载组件不需要执行以下操作，故在mounted里加标示区分
-      const currentTableName = this.$router.currentRoute.params.tableName;
-      const tpl = document.querySelector(`#${currentTableName}-loading`);
-      if (tpl) {
-        if (store.state.global.currentLoading.indexOf(currentTableName) !== -1) {
-          tpl.remove();
-          store.commit('global/deleteLoading', currentTableName);
-        }
-      }
+    if (!this[MODULE_COMPONENT_NAME]) {
+      this[MODULE_COMPONENT_NAME] = getComponentName();
     }
-    this.noMounted = true;
+    if (!this[INSTANCE_ROUTE]) {
+      this[INSTANCE_ROUTE] = router.currentRoute.fullPath;
+    }
+    if (!this[INSTANCE_ROUTE_QUERY]) {
+      this[INSTANCE_ROUTE_QUERY] = router.currentRoute.params;
+    }
   },
   computed: {
     ...mapState('global', {
-      keepAliveLists: ({ keepAliveLists }) => keepAliveLists
+      keepAliveLists: ({ keepAliveLists }) => keepAliveLists,
+      activeTab: ({ activeTab }) => activeTab,// 当前表基本数据，包含路由信息，表名，ID等
     }),
     ...mapState(getComponentName(), {
       childReadonly: ({ childTableReadonly }) => childTableReadonly,
@@ -70,7 +62,7 @@ export default () => ({
       isHideTempStorage: ({ isHideTempStorage }) => isHideTempStorage,
       saveInfo: ({ saveInfo }) => saveInfo,
       isRequest: ({ isRequest }) => isRequest,
-
+      WebConf:({WebConf}) => WebConf,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur) => {
         acc.push({ tableName: cur.tablename });
         return acc;
@@ -111,7 +103,7 @@ export default () => ({
         'changeCopy',
         'changeUpdateDataForForm',
         'savaCopyData',
-        'copyDefaultData',
+        // 'copyDefaultData',
         'updateUnSubmitData',
         'updateTableListForRefTable',
         'updateTablePageInfo',
@@ -130,7 +122,8 @@ export default () => ({
         'isRequestUpdata',
         'emptyTestData',
         'updateScrollPosition',
-        'updateLabelData'
+        'updateLabelData',
+        'updateChildTabPanels'
         // 'resetFormReadOnlyAttribute'
 
       ]),

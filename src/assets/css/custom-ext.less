@@ -310,7 +310,52 @@ tbody tr.ark-table-row-hover td{
   text-overflow: ellipsis; 
 }
 
+// 表格标记悬停提示
+.r3-pop-tip-wrap {
+  display: block;
+  padding: 8px 16px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, .2);
+  width: 100px;
+  position: fixed;
+  transform: translateY(-100%);
+  background-color: #fff;
+  color: #333;
+  border-radius: 4px;
+  z-index: 5;
+  .pop-tip-content {
+    white-space: pre-wrap;
+    text-align: justify;
+  }
+  .pop-tip-arrow {
+    position: absolute;
+    z-index: 1;
+    will-change: top, left;
+    bottom: -7px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 7px 7px 0;
+    border-color: transparent;
+    border-top-color: hsla(0,0%,85%,.5);
+    border-style: solid;
+    display: block;
+    &::after {
+      content: '';
+      display: block;
+      border-width: 7px 7px 0;
+      border-color: transparent;
+      border-top-color: #fff;
+      border-style: solid;
+      bottom: 1px;
+      left: 50%;
+      transform: translateX(-50%);
+      position: absolute;
+    }
+  }
+}
+
 // fix:表格里的表单图标会挡住固定列
-.ark-table-fixed {
-  z-index: 20;
+.ark-table {
+  .ark-table-fixed {
+    z-index: 20;
+  }
 }

@@ -28,11 +28,10 @@
     name: '',
 
     props: {
-      exportFn: {
-        type: Function,
-        default: () => {
-          console.log('未传入导出函数');
-        }
+      // 给内容组件的所有参数
+      externalOptions: {
+        type: Object,
+        default: () => {}
       }
     },
 
@@ -42,11 +41,15 @@
       };
     },
 
+    mounted() {
+      console.log(this);
+    },
+
     methods: {
       change(status) {
         this.switchV = status;
       },
-      
+
       save() {
         if (this.switchV) {
           this.$emit('ok');
@@ -59,6 +62,3 @@
     }
   };
 </script>
-
-<style lang="scss" scoped>
-</style>

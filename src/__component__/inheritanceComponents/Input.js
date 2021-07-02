@@ -35,7 +35,7 @@ const mixin = {
           return
         }
       }
-  
+
       const nextItemDom = currentWrapDom.nextElementSibling // 下一个兄弟节点
       if (!nextItemDom) {
         return
@@ -62,20 +62,24 @@ const mixin = {
       if (!this.item || this.item.type !== 'NUMBER') {
         return
       }
-      const value = event.target.value
+      const value = event.target.value || ''
       const { webconf, scale, length } = this.item
       let valLength = length || 100
       let string = ''
       let regxString = ''
 
       if (valLength) {
-        if (value.split('.').length > 1) {
-          valLength = valLength + 1
-        } else if (value.split('-').length > 1) {
-          valLength = valLength + 1
-        }
-        if (value.split('.').length > 1 && value.split('-').length > 1) {
+        const isNegativeDecimal = value.split('.').length > 1 && value.split('-').length > 1 // 是否是负小数
+        const isDecimal = value.split('.').length > 1 && value.split('+').length > 1 // 是否是正小数
+        if (isNegativeDecimal || isDecimal) {
+          // 正负小数 
           valLength = valLength + 2
+        } else if (value.split('.').length > 1) {
+          // 小数
+          valLength = valLength + 1
+        } else if (value.split('-').length > 1 || value.split('+').length > 1) {
+          // 正负整数
+          valLength = valLength + 1
         }
 
         if (webconf && webconf.ispositive) {
@@ -83,17 +87,21 @@ const mixin = {
         } else {
           regxString = '(-|\\+)?'
         }
+
+        // 小数
         if (scale > 0) {
           string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9]{0,${scale}})?$`
         } else {
-          string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9])?$`
+          // string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9])?$`
+          // 整数
+          string = `^${regxString}\\d{0,${valLength}}$`
         }
       }
 
       const itemComponent = this.$parent.$parent
       const typeRegExp = new RegExp(string)
       itemComponent.propsMessage.regx = typeRegExp
-      itemComponent.propsMessage.maxlength = valLength
+      itemComponent.propsMessage.maxlength = valLength // 最大长度不包含符号
     })
   },
 }
@@ -146,9 +154,9 @@ class CustomInput {
         this.props.encrypt = true
       }
 
-      this.props.autosize = {
-        minRows: this.item.row + 1,
-      }
+      // this.props.autosize = {
+      //   minRows: this.item.row + 1,
+      // }
     } else {
       // 处理ispassword属性
 
@@ -187,8 +195,11 @@ class CustomInput {
     if (this.item.webconf && this.item.webconf.ispositive) {
       string = `^\\d{0,${length}}(\\\.[0-9]{0,${this.item.scale}})?$`
     } else {
-      string = `^(-|\\+)?\\d{0,${length -
-        this.item.scale}}(\\\.[0-9]{${this.item.scale - 1},${
+      // string = `^(-|\\+)?\\d{0,${length -
+      //   this.item.scale}}(\\\.[0-9]{${this.item.scale - 1},${
+      //   this.item.scale
+      // }})?$`
+      string = `^(-|\\+)?\\d{0,${length}}(\\\.[0-9]{0,${
         this.item.scale
       }})?$`
     }
@@ -209,11 +220,11 @@ class CustomInput {
     const keyDownFn = this.instance.methods.handleKeydown
     const isDetailPage = this.item.detailType
     this.instance.methods.handleKeydown = function(e) {
-      // 禁止输入单引号 '
-      if (e.key==='\'') {
-        e.stopPropagation()
-        e.preventDefault()
-      }
+      // // 禁止输入单引号 '
+      // if (e.key==='\'') {
+      //   e.stopPropagation()
+      //   e.preventDefault()
+      // }
 
       // 明细界面的input，按下回车后，光标自动移到下一个Input框里
       if (isDetailPage && e.keyCode === 13) {
