@@ -195,8 +195,11 @@ class CustomInput {
     if (this.item.webconf && this.item.webconf.ispositive) {
       string = `^\\d{0,${length}}(\\\.[0-9]{0,${this.item.scale}})?$`
     } else {
-      string = `^(-|\\+)?\\d{0,${length -
-        this.item.scale}}(\\\.[0-9]{${this.item.scale - 1},${
+      // string = `^(-|\\+)?\\d{0,${length -
+      //   this.item.scale}}(\\\.[0-9]{${this.item.scale - 1},${
+      //   this.item.scale
+      // }})?$`
+      string = `^(-|\\+)?\\d{0,${length}}(\\\.[0-9]{0,${
         this.item.scale
       }})?$`
     }
