@@ -6,6 +6,7 @@
     </div>
     <div class="NaVertical-box">
         <slot name="nav-input"></slot>
+        <slot name="icon-home"></slot>
         <slot name="icon-Collect"></slot>
         <slot name="icon-Lately"></slot>
         <slot name="icon-Setting"></slot>
