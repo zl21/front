@@ -1,4 +1,4 @@
-import Vue from 'vue';
+// import Vue from 'vue';
 import VueDND from 'awe-dnd';
 import Viewer from 'v-viewer';
 import { getGuid } from './src/__utils__/random';

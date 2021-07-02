@@ -1,5 +1,5 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
+// import Vue from 'vue';
+// import VueRouter from 'vue-router';
 import Viewer from 'v-viewer';
 import { getGuid } from './__utils__/random';
 import router from './__config__/router.config';
@@ -37,14 +37,14 @@ import './__utils__/getChildComponent'
 import inputNumber from './directive/inputNumber';
 import draggable from 'vuedraggable';
 
-Vue.use(inputNumber);
+
 
 Vue.prototype.$createWatermark = createWatermark;// 挂在水印
 
+Vue.use(inputNumber);
 Vue.component('CompositeFormpop', CompositeForm);
 Vue.component('panelForm',panelForm)
 Vue.component('listsForm',listsForm)
-Vue.use(Loading);
 Vue.use(R3Dialog); // 注册全局api调用组件
 Vue.use(Viewer);
 // const createRouter = routes => new VueRouter({
@@ -57,7 +57,6 @@ const createRouter = routes => new VueRouter({
   routes,
   mode
 });
-
 
 const createDOM = () => {
   const div = document.createElement('div');
@@ -74,7 +73,6 @@ const init = () => {
     store,
     render: createElement => createElement(App)
   }).$mount(rootDom);
-  
   
   window.R3message = (data) => {
     window.vm.$Modal.fcError({
@@ -257,6 +255,9 @@ export default (projectConfig = {
   } else {
     router.matcher = createRouter(routerPrototype).matcher;
   }
+
+  // 等路由挂载完毕再注册，避免丢失路由
+  Vue.use(Loading);
 
   // 注册自定义全局弹框（模态框）组件
   const modalConfig = Object.assign({}, customizedModalConfig, externalModals);
