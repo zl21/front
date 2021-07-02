@@ -68,7 +68,7 @@ module.exports = {
   isCommonTable: false, // 是否开启普通表格，默认关闭
   functionPowerRequestURL: '', // 功能权限获取检索项数据接口名称
   cbs: undefined, // 框架回调，形如 { loginCb: function() {} }
-  layoutDirection: true, // 默认是false ,水平排版 ，true 是垂直排版
+  layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
   layoutDirectionSlot:{  // 模板渲染
     //NavigatorSubMenu:require('./src/demo/NavigatorSubMenu.vue').default,  // 模板渲染
     //NaVertical:require('./src/demo/NaVerticalslot.vue').default  // 模板渲染
@@ -89,7 +89,7 @@ module.exports = {
   logoutTips: false, // 失去会话是否需要登出提示 默认false直接登出
   enableKAQueryDataForUser: false, // 是否开启存储全表查询条件
   dateStorageTime: 1, // 查询条件存储时间，默认1天,建议不要设置太大影响性能
-  enableOpenNewTab: true, // 列表界面打开 同表 单对象是否新开tab,默认为false
+  enableOpenNewTab: false, // 列表界面打开 同表 单对象是否新开tab,默认为false
   blockFullOperation: false, // 禁止不选数据时的批量修改操作,
   customizeMixins: { // 获取所有外部接入的mixins对象
     setPanel: null,
