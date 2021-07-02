@@ -2065,11 +2065,11 @@
           });
         });
         promise.then(() => {
-          if (this.buttons.exportdata) {
+          if (this.buttons.exportdata) {     
             if (Version() === '1.4') { // Version() === '1.4'
               this.$R3loading.hide(this.loadingName);
               const eleLink = document.createElement('a');
-              const path = getGateway(`/p/cs/download?filename=${this.buttons.exportdata}`);
+              const path = getGateway(`/p/cs/download?filename=${this.buttons.exportdata.fileUrl}`);
               eleLink.setAttribute('href', path);
               eleLink.style.display = 'none';
               document.body.appendChild(eleLink);
