@@ -149,9 +149,9 @@ class CustomInput {
         this.props.encrypt = true
       }
 
-      this.props.autosize = {
-        minRows: this.item.row + 1,
-      }
+      // this.props.autosize = {
+      //   minRows: this.item.row + 1,
+      // }
     } else {
       // 处理ispassword属性
 
