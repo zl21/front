@@ -13,21 +13,28 @@ export default {
  },
   methods:{
     setTabPanels(){
-      // 设置子表是否隐藏
+      // 设置子表是否隐藏      return;
       return;
       let formName = document.querySelector('.panelForm');
           //formName = 
-      if(formName && this.WebConf.hiddenSubtable && this.WebConf.hiddenSubtable[this.getItemName]){
+          //this.tabClick(1);
+      if(formName && this.WebConf && this.WebConf.hiddenSubtable && this.WebConf.hiddenSubtable[this.getItemName]){
         let formData = formName._vue_.formData;
         let hiddenSubtable = this.WebConf.hiddenSubtable;
-        let checked = hiddenSubtable[this.getItemName].some((item)=>{
-          console.log(formData[item.colName], item.value,formData[item.colName] === item.value);
-           return formData[item.colName] !== item.value;
-        });
-        this.updateChildTabPanels({
-          key:this.getItemName,
-          type:!checked
-        });
+        
+        let checked = this.tabPanel.reduce((arr,option)=>{
+          console.log( hiddenSubtable[option.tablename]);
+            let checked_value = hiddenSubtable[option.tablename].some((item)=>{
+              return formData[item.colName] !== item.value;
+          });
+          arr[option.tablename] = !checked_value;
+          return arr;
+
+        },{});
+
+        this.updateChildTabPanels(checked);
+        //this.tabClick
+        //let inde 
        
 
 

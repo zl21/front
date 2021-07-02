@@ -511,10 +511,7 @@ export default {
   updateChildTabPanels(state, data){
     state.tabPanels.forEach((item)=>{
       // 隐藏子表
-      console.log(data);
-      if(item.tablename === data.key){
-        item.webcofhidden = data.type;
-      }
+      item.webcofhidden = data[item.tablename];
        return item;
     });
     state.tabPanels = state.tabPanels.concat([]);
