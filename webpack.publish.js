@@ -19,7 +19,8 @@ module.exports = () => ({
     globalObject: 'this',
     library: 'R3',
     libraryTarget: 'umd',
-    umdNamedDefine: true
+    umdNamedDefine: true,
+    publicPath: './'
   },
   devtool: 'source-map',
   externals: {
@@ -94,8 +95,7 @@ module.exports = () => ({
       {
         test: /\.(sa|sc|le)ss$/,
         use: [{
-          // loader: env && env.production ? MiniCssExtractPlugin.loader : 'style-loader',
-          loader: 'style-loader',
+          loader: MiniCssExtractPlugin.loader,
         }, {
           loader: 'css-loader',
         }, {
@@ -130,9 +130,9 @@ module.exports = () => ({
     ],
   },
   plugins: [
-    // new MiniCssExtractPlugin({
-    //   filename: 'r3.min.css',
-    // }),
+    new MiniCssExtractPlugin({
+      filename: 'r3.min.css',
+    }),
     new CleanWebpackPlugin(['r3.publish']),
     new VueLoaderPlugin(),
     new copyWebpackPlugin([

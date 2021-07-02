@@ -20,7 +20,8 @@ module.exports = () => ({
     globalObject: 'this',
     library: 'R3',
     libraryTarget: 'umd',
-    umdNamedDefine: true
+    umdNamedDefine: true,
+    publicPath: './'
   },
   devtool: 'eval-cheap-module-source-map',
   externals: {
