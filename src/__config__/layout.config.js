@@ -4,6 +4,7 @@ import HistoryAndFavorite from '../__component__/HistoryAndFavorite';
 
 export default {
   direction: 'column',
+  class:'r3-horizontal-content',
   items: [
     {
       height: 50,
