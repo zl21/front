@@ -77,8 +77,8 @@ const mixin = {
         } else if (value.split('.').length > 1) {
           // 小数
           valLength = valLength + 1
-        } else if (value.split('-').length > 1) {
-          // 负整数
+        } else if (value.split('-').length > 1 || value.split('+').length > 1) {
+          // 正负整数
           valLength = valLength + 1
         }
 
