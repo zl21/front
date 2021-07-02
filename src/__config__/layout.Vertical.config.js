@@ -5,6 +5,7 @@ import ContentDisplayArea from '../__component__/ContentDisplayArea';
 
 export default {
   direction: 'row',
+  class:'r3-vertical-content',
   items: [
     {
       component: NavigatorVertical,

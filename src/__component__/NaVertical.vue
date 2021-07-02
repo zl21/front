@@ -21,7 +21,17 @@
         />
       </div>  
       <!-- 最近操作 -->
+       <div
+      v-if="getDashboardConfig"
+      @click="dashboardClick" slot="icon-home"
+      class="tag right"
+    >
+      <i
+        :class="getDashboardConfig"
+        title="回到首页"
 
+      />
+    </div>
       <div
         v-if="enableHistoryAndFavoriteUI"
         class="HistoryAndFavorite-time"
@@ -152,7 +162,7 @@
   import network, { urlSearchParams } from '../__utils__/network';
   import NavigatorSubMenu from './NavigatorSubMenu';
   import {
-    classFix, STANDARD_TABLE_LIST_PREFIX, Version, enableGateWay, getGatewayValue, enableHistoryAndFavoriteUI, messageSwitch
+    classFix, STANDARD_TABLE_LIST_PREFIX, Version, enableGateWay, getGatewayValue, enableHistoryAndFavoriteUI, messageSwitch,dashboardConfig
   } from '../constants/global';
   import { updateSessionObject } from '../__utils__/sessionStorage';
   import HistoryAndFavorite from './HistoryAndFavorite';
@@ -215,6 +225,12 @@
         userInfo: ({ userInfo }) => userInfo,
         primaryMenuIndex: state => state.primaryMenuIndex,
         taskMessageCount: state => state.taskMessageCount,
+        getDashboardConfig() {
+            if (dashboardConfig() && dashboardConfig().iconClass) {
+              return dashboardConfig().iconClass;
+            }
+            return false;
+        },
         imgSrc: state => state.imgSrc
       }),
       versionValue() {
@@ -262,13 +278,18 @@
     },
     methods: {
       ...mapActions('global', ['getTaskMessageCount', 'updataTaskMessageCount']),
-      ...mapMutations('global', ['updateTaskMessageCount', 'doCollapseHistoryAndFavorite', 'changeSelectedPrimaryMenu', 'hideMenu', 'tabOpen', 'directionalRouter']),
+      ...mapMutations('global', ['updateDashboardPageValue','updateTaskMessageCount', 'doCollapseHistoryAndFavorite', 'changeSelectedPrimaryMenu', 'hideMenu', 'tabOpen', 'directionalRouter']),
       togglePrimaryMenu(data, index) {
         this.togglePrimaryMenuData = data;
         if (index === this.primaryMenuIndex) {
           this.hideMenu();
         } else {
           this.changeSelectedPrimaryMenu(index);
+        }
+      },
+      dashboardClick() {
+        if (this.$router.currentRoute.path !== '/') {
+          this.updateDashboardPageValue();
         }
       },
       mouseover(){

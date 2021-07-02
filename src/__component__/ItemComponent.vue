@@ -724,14 +724,29 @@
 
         let valLength = this._items.props.length;
         if (valLength) {
-          if (this._items.value.split('.').length > 1) {
-            valLength = this._items.props.length + 1;
-          } else if (this._items.value.split('-').length > 1) {
-            valLength = this._items.props.length + 1;
+          // if (this._items.value.split('.').length > 1) {
+          //   valLength = this._items.props.length + 1;
+          // } else if (this._items.value.split('-').length > 1) {
+          //   valLength = this._items.props.length + 1;
+          // }
+          // if (this._items.value.split('.').length > 1 && this._items.value.split('-').length > 1) {
+          //   valLength = this._items.props.length + 2;
+          // }
+
+          const value = this._items.value
+          const isNegativeDecimal = value.split('.').length > 1 && value.split('-').length > 1 // 是否是负小数
+          const isDecimal = value.split('.').length > 1 && value.split('+').length > 1 // 是否是正小数
+          if (isNegativeDecimal || isDecimal) {
+            // 正负小数 
+            valLength = valLength + 2
+          } else if (value.split('.').length > 1) {
+            // 小数
+            valLength = valLength + 1
+          } else if (value.split('-').length > 1 || value.split('+').length > 1) {
+            // 负整数
+            valLength = valLength + 1
           }
-          if (this._items.value.split('.').length > 1 && this._items.value.split('-').length > 1) {
-            valLength = this._items.props.length + 2;
-          }
+
           let string = '';
           let regxString = '';
           if (this._items.props.webconf && this._items.props.webconf.ispositive) {
@@ -746,6 +761,8 @@
           } else {
             string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9])?$`;
           }
+          
+          this._items.props.maxlength = valLength; // fix: 输入含符号的数字时，长度不对
           if (this._items.props.number) {
             const typeRegExp = new RegExp(string);
             this._items.props.regx = typeRegExp;
