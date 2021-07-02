@@ -39,7 +39,7 @@ module.exports = {
   // target: 'http://cs.yqdev.burgeononline.com/', // 云雀
   // target: 'http://47.102.164.111:27777', // 卡宾
   // target: 'http://dev.dev.lark-erp.cn/',
-
+  
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
   enableGateWay: true, // 网关是否打开,
@@ -68,9 +68,10 @@ module.exports = {
   isCommonTable: false, // 是否开启普通表格，默认关闭
   functionPowerRequestURL: '', // 功能权限获取检索项数据接口名称
   cbs: undefined, // 框架回调，形如 { loginCb: function() {} }
-  layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
+  layoutDirection: true, // 默认是false ,水平排版 ，true 是垂直排版
   layoutDirectionSlot:{  // 模板渲染
-    // NavigatorSubMenu:require('./src/demo/NavigatorSubMenu.vue').default  // 模板渲染
+    //NavigatorSubMenu:require('./src/demo/NavigatorSubMenu.vue').default,  // 模板渲染
+    //NaVertical:require('./src/demo/NaVerticalslot.vue').default  // 模板渲染
   },
   backDashboardRoute: [], // 配置刷新浏览器回到Dashboard界面
   custommizedRequestURL: {
@@ -121,7 +122,7 @@ module.exports = {
   agGridOptions: { // ag表格的配置
     // rowHeight: 100
   },
-  // messageSwitch: true, // 消息开关
+  messageSwitch: true, // 消息开关
   // useAgGrid: true, // 明细界面的表格全局用ag表格进行渲染
   // (data) => {
   //   if (data.router.params) {
@@ -148,6 +149,8 @@ module.exports = {
   // }
   // classFix: 'r3-', // 样式前缀
   classFix: '', // 样式前缀
+  openTabNumber:2,
+
   autoGatewayUrl:false,  // 是否请求网关
   computeForSubtable: false
 };

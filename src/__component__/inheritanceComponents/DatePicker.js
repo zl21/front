@@ -31,7 +31,8 @@ class CustomDatePicker {
       disabled:new SetDisable(this.item).init(),
       transfer:true,
       type:this.type(),
-      format:this.format()
+      format:this.format(),
+      editable: false
     }
     let _that = this;
 

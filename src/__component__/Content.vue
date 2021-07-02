@@ -25,6 +25,7 @@
    */
   const renderSubLayout = h => layout => (
     <div
+      class={layout.class }
       style={{
         flexDirection: layout.direction,
         display: 'flex',

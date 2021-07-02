@@ -618,7 +618,6 @@
           //   }
           // }
           if (this.copy === true && this[MODULE_COMPONENT_NAME].includes('New')) {// 通过点击复制按钮打开的界面，需将刷新按钮去除
-            console.log(4444, this.[INSTANCE_ROUTE_QUERY], this.[INSTANCE_ROUTE]);
             this.updateRefreshButton(false);
             this.addButtonShow(buttonData);// 复制即为新增，将按钮置为新增状态，只显示新增状态该显示的按钮
           }
@@ -718,9 +717,11 @@
         if (obj && obj.jflowType && obj.jflowType === 'jflowLaunch') {
           eventName = 'jflowLaunch';
         }  
-        const data = {
+        if(obj.name === '提交'){
+            const data = {
             mask: true,
             title: '警告',
+            showCancel:true,
             content: '确认执行提交？',
              onOk: () => {
                DispatchEvent(eventName, {
@@ -732,7 +733,17 @@
 
              }
           };
-        this.$Modal.fcWarning(data);
+          this.$Modal.fcWarning(data);
+
+        }else{
+          DispatchEvent(eventName, {
+                detail: {
+                  obj,
+                  currentItemInfo, // 当前操作的子表或主表信息
+                }
+              });
+        }
+        
         
       },
       testUpdata() { // 校验是否修改过值
@@ -906,6 +917,10 @@
         }
       },
       upData(message) { // 页面刷新判断逻辑
+        // 如果不在当前界面就不刷新,不然点重载再返回界面会导致按钮丢失
+        if(this.tableName !== this.$route.params.tableName) {
+          return
+        }
         // this.emptyTestData();
         const webact = this.getCurrentItemInfo().webact;// 定制子表配置
         if (this.objectType === 'vertical' && webact) { // 兼容半定制界面，保存成功时通知外部
@@ -1901,9 +1916,10 @@
                     return c.tableName;
                   }
                 });// 因左右结构itemNameGroup包含主表，上下结构不包括
-                if (itemNames.includes(this.itemName)) {
-                  this.$R3loading.hide(this.loadingName);
-                }
+                // if (itemNames.includes(this.itemName)) {
+                //   this.$R3loading.hide(this.loadingName);
+                // }
+                this.$R3loading.hide(this.loadingName);
               }
 
               this.upData();
@@ -2119,7 +2135,8 @@
             //   }
             // });
 
-            let panelForm = FindInstance(this,'panelForm')
+            let panelForm = FindInstance(this,'panelForm');
+            console.log(panelForm,'panelForm');
              const copyData = { ...panelForm[0].formDataLabel };
             //const copyData = { ...formData };
             const modifyData = this.updateData[this.tableName].changeData;// 取changeData值，因外键形式需要lable和ID
@@ -2574,7 +2591,6 @@
         }
 
         if (this.objectType === 'horizontal') { // 横向布局
-          // 如果判断this.itemName === this.tableName会导致在别的界面加载完，再切回当前界面时，按钮会丢失
           if (this.itemName === this.tableName) {
             if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
               this.webactButton(tabwebact.objbutton);

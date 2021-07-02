@@ -23,6 +23,7 @@
         <component
           :is="ItemLists[item].component"
           :items="ItemLists[item]"
+          @on-change="valueChange"
           :label-width="90"
         />
       </keep-alive>
@@ -125,6 +126,25 @@
           this.formArray.push(JSON.parse(JSON.stringify(item)));
           return item;
         });
+      },
+      valueChange(item,val){
+        // 表单change
+        let arrjson = this.dealData(item, val);
+        
+        if(item.fkobj && item.fkobj.searchmodel){
+               if(Version()==='1.3'){
+                 if(!Array.isArray(arrjson[item.colname])){
+                  if(arrjson[item.colname]){
+                      let id = arrjson[item.colname].split(',');
+                      arrjson[item.colname] = id;
+                  }
+                 }
+               }
+
+        }
+        if(this.$parent.updateFormAssignData){
+          this.$parent.updateFormAssignData(arrjson);
+        }
       },
       initComponent(item) { // init组件
         const Render = new RenderComponent(item, this.id);
