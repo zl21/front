@@ -130,12 +130,13 @@
       valueChange(item,val){
         // 表单change
         let arrjson = this.dealData(item, val);
+        
         if(item.fkobj && item.fkobj.searchmodel){
                if(Version()==='1.3'){
-                 if(!Array.isArray(json[item.colname])){
-                  if(json[item.colname]){
-                      let id = json[item.colname].split(',');
-                      json[item.colname] = id;
+                 if(!Array.isArray(arrjson[item.colname])){
+                  if(arrjson[item.colname]){
+                      let id = arrjson[item.colname].split(',');
+                      arrjson[item.colname] = id;
                   }
                  }
                }
