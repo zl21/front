@@ -114,6 +114,9 @@ export default {
       setTimeout(() => {
         // 模拟弹窗拖拽，处理fixed在transform下失效的问题
         const dom = this.mountedDom || this.$parent.$el.getElementsByClassName('ark-modal-body')[0]
+        if(!dom) {
+          return
+        }
         const offset = this.getOffset(dom);
         const a = {
           clientX: offset.left + 0.1,
