@@ -33,15 +33,12 @@ import panelForm from './__component__/FormComponents/PanelForm/panelForm.vue'
 import listsForm from './__component__/FormComponents/listsForm.vue'
 import './__utils__/getChildComponent'
 
-// 全局指令
-import inputNumber from './directive/inputNumber';
 import draggable from 'vuedraggable';
 
 
 
 Vue.prototype.$createWatermark = createWatermark;// 挂在水印
 
-Vue.use(inputNumber);
 Vue.component('CompositeFormpop', CompositeForm);
 Vue.component('panelForm',panelForm)
 Vue.component('listsForm',listsForm)

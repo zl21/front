@@ -121,7 +121,7 @@ module.exports = {
   agGridOptions: { // ag表格的配置
     // rowHeight: 100
   },
-  messageSwitch: true, // 消息开关
+  messageSwitch: false, // 消息开关
   // useAgGrid: true, // 明细界面的表格全局用ag表格进行渲染
   // (data) => {
   //   if (data.router.params) {
@@ -148,7 +148,7 @@ module.exports = {
   // }
   // classFix: 'r3-', // 样式前缀
   classFix: '', // 样式前缀
-  openTabNumber:2,
+  // openTabNumber:2,
 
   autoGatewayUrl:false,  // 是否请求网关
   computeForSubtable: false

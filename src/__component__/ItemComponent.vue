@@ -747,25 +747,25 @@
             valLength = valLength + 1
           }
 
-          let string = '';
-          let regxString = '';
-          if (this._items.props.webconf && this._items.props.webconf.ispositive) {
-            regxString = '';
-          } else {
-            regxString = '(-|\\+)?';
-          }
-          if (this._items.props.scale > 0) {
-            string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9]{0,${
-              this._items.props.scale
-            }})?$`;
-          } else {
-            string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9])?$`;
-          }
+          // let string = '';
+          // let regxString = '';
+          // if (this._items.props.webconf && this._items.props.webconf.ispositive) {
+          //   regxString = '';
+          // } else {
+          //   regxString = '(-|\\+)?';
+          // }
+          // if (this._items.props.scale > 0) {
+          //   string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9]{0,${
+          //     this._items.props.scale
+          //   }})?$`;
+          // } else {
+          //   string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9])?$`;
+          // }
           
           this._items.props.maxlength = valLength; // fix: 输入含符号的数字时，长度不对
           if (this._items.props.number) {
-            const typeRegExp = new RegExp(string);
-            this._items.props.regx = typeRegExp;
+            // const typeRegExp = new RegExp(string);
+            // this._items.props.regx = typeRegExp;
             this._items.props.maxlength = valLength;
           }
         }

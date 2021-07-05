@@ -65,8 +65,8 @@ const mixin = {
       const value = event.target.value || ''
       const { webconf, scale, length } = this.item
       let valLength = length || 100
-      let string = ''
-      let regxString = ''
+      // let string = ''
+      // let regxString = ''
 
       if (valLength) {
         const isNegativeDecimal = value.split('.').length > 1 && value.split('-').length > 1 // 是否是负小数
@@ -82,25 +82,25 @@ const mixin = {
           valLength = valLength + 1
         }
 
-        if (webconf && webconf.ispositive) {
-          regxString = ''
-        } else {
-          regxString = '(-|\\+)?'
-        }
+      //   if (webconf && webconf.ispositive) {
+      //     regxString = ''
+      //   } else {
+      //     regxString = '(-|\\+)?'
+      //   }
 
-        // 小数
-        if (scale > 0) {
-          string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9]{0,${scale}})?$`
-        } else {
-          // string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9])?$`
-          // 整数
-          string = `^${regxString}\\d{0,${valLength}}$`
-        }
+      //   // 小数
+      //   if (scale > 0) {
+      //     string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9]{0,${scale}})?$`
+      //   } else {
+      //     // string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9])?$`
+      //     // 整数
+      //     string = `^${regxString}\\d{0,${valLength}}$`
+      //   }
       }
-
+      
       const itemComponent = this.$parent.$parent
-      const typeRegExp = new RegExp(string)
-      itemComponent.propsMessage.regx = typeRegExp
+      // const typeRegExp = new RegExp(string)
+      // itemComponent.propsMessage.regx = typeRegExp
       itemComponent.propsMessage.maxlength = valLength // 最大长度不包含符号
     })
   },
