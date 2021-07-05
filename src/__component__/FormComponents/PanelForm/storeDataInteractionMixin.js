@@ -100,13 +100,14 @@ export default {
             if (!this.actived) {
               if (/NEW/.test(keepAliveModuleName)  || id ==='-1') {
                 // 删除空值
+                ParentForm.defaulData = JSON.parse(JSON.stringify(ParentForm.formData));
+                ParentForm.defaulDataLabel = Object.assign(JSON.parse(JSON.stringify(ParentForm.defaulDataLabel)),R3Label);
                 if (isEmpty(val)) {
                   delete ParentForm.formData[this.items.colname]
                   delete ParentForm.defaulDataLabel[this.items.colname]
                 }
               }
-              ParentForm.defaulData = JSON.parse(JSON.stringify(ParentForm.formData));
-              ParentForm.defaulDataLabel = Object.assign(JSON.parse(JSON.stringify(ParentForm.defaulDataLabel)),R3Label);
+
               this.InitializationForm(ParentForm);
               return;
             } else {
