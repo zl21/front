@@ -509,12 +509,18 @@ export default {
   //   });
   // }
   updateChildTabPanels(state, data){
-    state.tabPanels.forEach((item)=>{
-      // 隐藏子表
-      item.webcofhidden = data[item.tablename];
-       return item;
-    });
-    state.tabPanels = state.tabPanels.concat([]);
+    let tabPanels =data.tabPanel.reduce((arr,item)=>{
+      // 隐藏子表  
+      if(!data.value[item.tablename]){
+        // item.webconfHide = true;
+        arr.push(item);
+      }
+     
+       return arr;
+    },[]);
+    state.tabCurrentIndex = data.index;
+    state.isRequest = [];
+    state.tabPanels = tabPanels.concat([]);
   },
   updateRefreshButton(state, value) { // 控制刷新按钮开关
     state.refreshButton = value;
