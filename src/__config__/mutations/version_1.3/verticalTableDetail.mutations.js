@@ -17,6 +17,20 @@ export default {
   updataHideTempStorage(state, value) { // 控制单对象界面暂存按钮
     state.isHideTempStorage = value;
   },
+  updateChildTabPanels(state, data){
+    let tabPanels =data.tabPanel.reduce((arr,item)=>{
+      // 隐藏子表  
+      if(!data.value[item.tablename]){
+        // item.webconfHide = true;
+        arr.push(item);
+      }
+     
+       return arr;
+    },[]);
+    state.tabCurrentIndex = data.index;
+    state.isRequest = [];
+    state.tabPanels = tabPanels.concat([]);
+  },
   updateObjectForMainTableForm(state, data) { // 更新主表面板数据
     const { tableName, tableId } = router.currentRoute.params;
     state.mainFormInfo.tablename = tableName;

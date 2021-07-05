@@ -122,7 +122,9 @@ export default (modulename) => {
           'updataVerifyRequiredInformation',
           'isRequestUpdata',
           'emptyTestData',
-          'updateLabelData'
+          'updateLabelData',
+          'updateChildTabPanels'
+
         ]),
     },
     beforeDestroy() {
