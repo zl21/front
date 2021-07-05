@@ -290,7 +290,11 @@ export default {
     deleteValue() {
       // 清空功能
       this.transformedData = {};
-      this.placeholder = '';
+      // this.placeholder = '';
+      const dom = this.$refs.textarea && this.$refs.textarea.$el.querySelector('textarea')
+      if (dom) {
+        dom.placeholder = ''
+      }
       this.setFormatedValue()
       this.$emit('valueChange', '');
     },
@@ -357,13 +361,32 @@ export default {
               }
             });
           }
-          this.placeholder = `不被支持的扩展属性：[${unMappedKey.toString()}]，请核实后再操作。`;
-          if (Object.keys(copyData).length === 0) {
+
+          const dom = this.$refs.textarea.$el.querySelector('textarea')
+          if (!dom) {
+            return
+          }
+
+          if(unMappedKey.toString()) {
+            this.transformedData = {}
             this.$emit('valueChange', '');
+            this.setFormatedValue();
+            dom.placeholder = `不被支持的扩展属性：[${unMappedKey.toString()}]，请核实后再操作。`;
+            return
+          }
+
+          if (Object.keys(copyData).length === 0) {
+            this.transformedData = {}
+            this.$emit('valueChange', '');
+            this.setFormatedValue();
+            dom.placeholder = ''
             return;
           }
+
           this.transformedData = copyData || {};
           this.$emit('valueChange', JSON.stringify(copyData));
+          this.setFormatedValue();
+          dom.placeholder = ''
         } catch (err) {
           this.$Modal.fcWarning({
             mask: true,
@@ -419,7 +442,12 @@ export default {
     'webconf.supportType': {
       handler() {
         if (this.hasModified) {
-          this.placeholder = '';
+          // this.placeholder = '';
+          // 使用变量清除placeholder,会出现输入框不显示值的情况
+          const dom = this.$refs.textarea && this.$refs.textarea.$el.querySelector('textarea')
+          if (dom) {
+            dom.placeholder = ''
+          }
           this.deleteValue();
         }
       }
