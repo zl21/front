@@ -17,7 +17,6 @@
           @on-selection-change="tableSelectedChange"
           @on-sort-change="tableSortChange"
           @on-row-dblclick="tableRowDbclick"
-          @on-column-moved="moveFn"
           @grid-ready="ready"
         ></commonTableByAgGrid>
       </div>
@@ -85,10 +84,6 @@ export default {
         return 'highlight'
       }
       return ''
-    },
-
-    moveFn(params) {
-      console.log('移动',params);
     },
 
     tableSelectedChange() {
