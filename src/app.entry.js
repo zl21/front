@@ -1,5 +1,6 @@
 // import Vue from 'vue';
 // import VueRouter from 'vue-router';
+import VueDND from 'awe-dnd';
 import Viewer from 'v-viewer';
 import { getGuid } from './__utils__/random';
 import router from './__config__/router.config';
@@ -47,6 +48,7 @@ Vue.component('panelForm',panelForm)
 Vue.component('listsForm',listsForm)
 Vue.use(R3Dialog); // 注册全局api调用组件
 Vue.use(Viewer);
+Vue.use(VueDND);
 // const createRouter = routes => new VueRouter({
 //   routes,
 //   mode: mock() ? 'hash' : 'history'
