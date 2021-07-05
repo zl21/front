@@ -2044,6 +2044,26 @@
               },
               on: {
                 'on-change': (event, data) => {
+                  // 通过修改dom属性,控制数字类型的长度
+                  // *如果通过双向数据绑定改会导致整个表格重绘
+                  if(cellData.type === 'NUMBER') {
+                    const value = event.target.value
+                    let valLength = cellData.length
+                    const isNegativeDecimal = value.split('.').length > 1 && value.split('-').length > 1 // 是否是负小数
+                    const isDecimal = value.split('.').length > 1 && value.split('+').length > 1 // 是否是正小数
+                    if (isNegativeDecimal || isDecimal) {
+                      // 正负小数 
+                      valLength = valLength + 2
+                    } else if (value.split('.').length > 1) {
+                      // 小数
+                      valLength = valLength + 1
+                    } else if (value.split('-').length > 1 || value.split('+').length > 1) {
+                      // 正负整数
+                      valLength = valLength + 1
+                    }
+                    event.target.maxLength = valLength
+                  }
+                  
                   const currentRowData = this.copyDataSource.row[params.index]
                   currentRowData[cellData.colname].val = event.target.value;
 
