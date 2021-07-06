@@ -17,7 +17,6 @@ export default {
     setTabPanels(){
       // 设置子表是否隐藏
       //return;
-      console.log(1212);
       let formName = document.querySelector('.panelForm');
       //formName = 
       //this.tabClick(1);

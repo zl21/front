@@ -18,22 +18,27 @@ export default {
     state.isHideTempStorage = value;
   },
   updateChildTabPanels(state, data){
-    let tabPanels =data.tabPanel.reduce((arr,item)=>{
+    let isRequest= [];
+    let tabPanels =data.tabPanel.reduce((arr,item,index)=>{
       // 隐藏子表  
       if(!data.value[item.tablename]){
         // item.webconfHide = true;
         arr.push(item);
+        isRequest.push( state.isRequestTable[item.tablename]);
       }
      
        return arr;
     },[]);
-    if(tabPanels.length>0){
-      state.tabCurrentIndex = data.index;
-    }else{
-      state.tabCurrentIndex = -1;
-    }
-    state.isRequest = [];
+    state.isRequest = isRequest;
     state.tabPanels = tabPanels.concat([]);
+    let tabCurrentIndex = tabPanels.findIndex((x)=>{
+        return x.tablename === data.getItemName
+    });
+    if(tabCurrentIndex>0){
+      state.tabCurrentIndex = tabCurrentIndex;
+    }else{
+      state.tabCurrentIndex = 0;
+    }
   },
   updateObjectForMainTableForm(state, data) { // 更新主表面板数据
     const { tableName, tableId } = router.currentRoute.params;
@@ -142,6 +147,9 @@ export default {
     }
   },
   updateRefButtonsData(state, data) { // 更新子表按钮数据
+    if(state.tabPanels.length<1){
+      return
+    }
     const { componentAttribute } = state.tabPanels[data.tabIndex];
     if (data.jflowButton && data.jflowButton.length > 0) {
       componentAttribute.buttonsData.isShow = true;
@@ -154,6 +162,9 @@ export default {
     }
   },
   updateFormDataForRefTable(state, data) { // 更新子表表单数据
+    if(state.tabPanels.length<1){
+      return;
+    }
     const { componentAttribute } = state.tabPanels[data.tabIndex];
     componentAttribute.formData.isShow = data.inpubobj && data.inpubobj.length > 0;
     componentAttribute.formData.data = data || [];

@@ -115,7 +115,9 @@ export default {
 
         let tabPanelsDom = document.querySelector(`#${tableName}`);
         if(tabPanelsDom){
-          tabPanelsDom._vue_.setTabPanels();
+          setTimeout(()=>{
+            tabPanelsDom._vue_.setTabPanels();
+          },80)
         }
       },50)
 
