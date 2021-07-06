@@ -509,18 +509,30 @@ export default {
   //   });
   // }
   updateChildTabPanels(state, data){
-    let tabPanels =data.tabPanel.reduce((arr,item)=>{
+    let isRequest= [];
+    let tabCurrentIndex = -1;
+    let tabPanels =data.tabPanel.reduce((arr,item,index)=>{
       // 隐藏子表  
       if(!data.value[item.tablename]){
         // item.webconfHide = true;
         arr.push(item);
+        // isRequest.push(data._isRequest[index]);
       }
      
        return arr;
     },[]);
-    state.tabCurrentIndex = data.index;
     state.isRequest = [];
     state.tabPanels = tabPanels.concat([]);
+    state.tabCurrentIndex = tabPanels.findIndex((x)=>{
+        return x.tablename === data.getItemName
+    });
+    console.log(isRequest,state.tabCurrentIndex)
+
+    // if(tabPanels.length>0){
+    //   state.tabCurrentIndex = data.index;
+    // }else{
+    //   state.tabCurrentIndex = -1;
+    // }
   },
   updateRefreshButton(state, value) { // 控制刷新按钮开关
     state.refreshButton = value;

@@ -27,7 +27,11 @@ export default {
      
        return arr;
     },[]);
-    state.tabCurrentIndex = data.index;
+    if(tabPanels.length>0){
+      state.tabCurrentIndex = data.index;
+    }else{
+      state.tabCurrentIndex = -1;
+    }
     // state.isRequest = [];
     state.tabPanels = tabPanels.concat([]);
   },
