@@ -8,7 +8,8 @@
     ],
     "scripts": {
         "start": " webpack-dev-server --progress --env.develop",
-        "start:project": "npm publish &&  webpack-dev-server --config webpack.project.js",
+        "start:project": "npm run build:publish  &&  webpack-dev-server --config webpack.project.js",
+        "build:project": "npm run build:publish  && webpack --color --progress --config webpack.project.js --env.production",
         "build": "webpack --color --progress --config webpack.config.js --env.production",
         "build:style": "gulp --gulpfile build-style.js",
         "build:test": "cross-env BUILD_ENV=test webpack --color --progress --config webpack.test.js --env.NODE_ENV=development",
