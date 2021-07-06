@@ -134,23 +134,27 @@ export default {
 
       const result = (await this.getKeyList(searchdata)).row || [];
 
-      // 回填数据
       const defaultData = {}
-      for (let tableName in this.defaultData) {
-        const conditions = this.defaultData[tableName]
-        defaultData[tableName] = {}
-        conditions.forEach((condition, i) => {
-          if (condition.colName) {
-            const field = result.find(item => item.DBNAME.val === condition.colName)
-            defaultData[tableName][i] = [{
-              Label: condition.colName,
-              columnObj: field.ID.val,
-            }]
-          }
-        })
-      }
+      for (let tableName in data) {
+        if (this.defaultData[tableName]) {
+          // 设置表单默认值
+          data[tableName] = deepClone(this.defaultData[tableName])
 
-      this.formData = deepClone(this.defaultData)
+          // 设置下拉多选组件的默认值
+          const conditions = this.defaultData[tableName]
+          defaultData[tableName] = {}
+          conditions.forEach((condition, i) => {
+            if (condition.colName) {
+              const field = result.find(item => item.DBNAME.val === condition.colName)
+              defaultData[tableName][i] = [{
+                Label: condition.colName,
+                ID: field.ID.val,
+              }]
+            }
+          })
+        }
+      }
+      this.formData = deepClone(data)
       this.defaultFields = defaultData
     },
 
@@ -302,7 +306,7 @@ export default {
 }
 
 .text-center {
-  text-align: center
+  text-align: center;
 }
 </style>
 
