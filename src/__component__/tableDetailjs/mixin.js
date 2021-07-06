@@ -2,33 +2,74 @@
 
 
 export default {
-  watch: {
-    WebConf: {
-       handler(val) {
-           if(val){
-             this.setTabPanels();
-           }
-       }   
-   }
- },
+//   watch: {
+//     WebConf: {
+//        handler(val) {
+//            if(val){
+//              setTimeout(()=>{
+//               this.setTabPanels();
+//             },1000)
+//            }
+//        }   
+//    }
+//  },
   methods:{
     setTabPanels(){
       // 设置子表是否隐藏
-      return;
+      //return;
+      console.log(1212);
       let formName = document.querySelector('.panelForm');
-          //formName = 
-      if(formName && this.WebConf.hiddenSubtable && this.WebConf.hiddenSubtable[this.getItemName]){
-        let formData = formName._vue_.formData;
+      //formName = 
+      //this.tabClick(1);
+
+      if(!this.tabClick){
+          return;
+      }
+
+      if(formName && this.WebConf && this.WebConf.hiddenSubtable ){
+
+        let formData = Object.assign( JSON.parse(JSON.stringify(formName._vue_.defaulData))|| {},JSON.parse(JSON.stringify(formName._vue_.formData)) || {});
         let hiddenSubtable = this.WebConf.hiddenSubtable;
-        let checked = hiddenSubtable[this.getItemName].some((item)=>{
-          console.log(formData[item.colName], item.value,formData[item.colName] === item.value);
-           return formData[item.colName] !== item.value;
-        });
+        if(!this._tabPanel){
+          this._tabPanel = this.tabPanel;
+        }
+      
+        let tabCurrentIndex = this.tabCurrentIndex;
+        let checked = this._tabPanel.reduce((arr,option,index)=>{
+          // 校验是否有不等的值
+          let checked_value = true;
+          if(hiddenSubtable[option.tablename]){
+              checked_value = hiddenSubtable[option.tablename].some((item)=>{
+                let values = item.value.split(',');
+                //return formData[item.colName] !== item.value;
+                return !values.includes(formData[item.colName]);
+              });
+          }
+          
+          arr[option.tablename] = !checked_value;
+          // 判断当前的tab 是否被隐藏
+          if( !checked_value && index === tabCurrentIndex ){
+            tabCurrentIndex = '-1';
+          }
+          return arr;
+
+        },{});
         this.updateChildTabPanels({
-          key:this.getItemName,
-          type:!checked
+          value:checked,
+          index:tabCurrentIndex,
+          getItemName:this.getItemName,
+          tabPanel:this._tabPanel
         });
-       
+        if(this.tabPanel.length>0){
+          this.tabClick(this.tabCurrentIndex);
+          if(this.$refs.tabPanel){
+            this.$refs.tabPanel.activeKey = this.tabCurrentIndex;
+          }
+
+        }
+        
+
+  
 
 
       }  

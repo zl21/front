@@ -509,15 +509,30 @@ export default {
   //   });
   // }
   updateChildTabPanels(state, data){
-    state.tabPanels.forEach((item)=>{
-      // 隐藏子表
-      console.log(data);
-      if(item.tablename === data.key){
-        item.webcofhidden = data.type;
+    let isRequest= [];
+    let tabCurrentIndex = -1;
+    let tabPanels =data.tabPanel.reduce((arr,item,index)=>{
+      // 隐藏子表  
+      if(!data.value[item.tablename]){
+        // item.webconfHide = true;
+        arr.push(item);
+        // isRequest.push(data._isRequest[index]);
       }
-       return item;
+     
+       return arr;
+    },[]);
+    state.isRequest = [];
+    state.tabPanels = tabPanels.concat([]);
+    state.tabCurrentIndex = tabPanels.findIndex((x)=>{
+        return x.tablename === data.getItemName
     });
-    state.tabPanels = state.tabPanels.concat([]);
+    console.log(isRequest,state.tabCurrentIndex)
+
+    // if(tabPanels.length>0){
+    //   state.tabCurrentIndex = data.index;
+    // }else{
+    //   state.tabCurrentIndex = -1;
+    // }
   },
   updateRefreshButton(state, value) { // 控制刷新按钮开关
     state.refreshButton = value;
