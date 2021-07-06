@@ -58,7 +58,7 @@ module.exports = env => ({
     ]
   },
   target: 'web',
-  devtool: 'source-map',
+  devtool: 'eval-cheap-module-source-map',
   output: {
     filename: '[name].js',
     chunkFilename: '[name].js',
