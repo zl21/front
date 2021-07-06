@@ -33,13 +33,16 @@ export default {
         if(!this._tabPanel){
           this._tabPanel = this.tabPanel;
         }
+      
         let tabCurrentIndex = this.tabCurrentIndex;
         let checked = this._tabPanel.reduce((arr,option,index)=>{
           // 校验是否有不等的值
           let checked_value = true;
           if(hiddenSubtable[option.tablename]){
               checked_value = hiddenSubtable[option.tablename].some((item)=>{
-                return formData[item.colName] !== item.value;
+                let values = item.value.split(',');
+                //return formData[item.colName] !== item.value;
+                return !values.includes(formData[item.colName]);
               });
           }
           
@@ -51,17 +54,20 @@ export default {
           return arr;
 
         },{});
-        
         this.updateChildTabPanels({
           value:checked,
-          index:0,
+          index:tabCurrentIndex,
+          getItemName:this.getItemName,
           tabPanel:this._tabPanel
         });
-        this.tabClick(0);
-        console.log(this);
-        if(this.$refs.tabPanel){
-          this.$refs.tabPanel.activeKey = 0;
+        if(this.tabPanel.length>0){
+          this.tabClick(this.tabCurrentIndex);
+          if(this.$refs.tabPanel){
+            this.$refs.tabPanel.activeKey = this.tabCurrentIndex;
+          }
+
         }
+        
 
   
 
