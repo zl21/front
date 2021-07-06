@@ -154,6 +154,7 @@ export default {
           })
         }
       }
+      
       this.formData = deepClone(data)
       this.defaultFields = defaultData
     },
@@ -192,17 +193,24 @@ export default {
 
     // 获取子表
     async getSubTables() {
-      const api = '/p/cs/objectTab'
+      const api = '/p/cs/objectTableItem'
       const searchdata = {
-        table: this._table_name_,
-        objid: -1,
-        ismaintable: 'y'
+        table: 'AD_REFBYTABLE',
+        objid: this.$route.params.itemId,
+        mainTableName: 'AD_TABLE',
+        refcolid: 99443,
+        searchdata: {
+          column_include_uicontroller: true,
+          startindex: 0,
+          // range: 10,
+          fixedcolumns: {}
+        }
       }
       const data = await this.network.post(api, urlSearchParams(searchdata)).then((res) => {
-        const subTables = res.data.data.reftabs
         const data = {}
+        const subTables = res.data.data.row.filter(item => item.ISACTIVE.val === '是')
         subTables.forEach(table => {
-          data[table.tablename] = [deepClone(ROW_ITEM)]
+          data[table.AD_REFBY_TABLE_ID.val] = [deepClone(ROW_ITEM)]
         })
         return data
       })
