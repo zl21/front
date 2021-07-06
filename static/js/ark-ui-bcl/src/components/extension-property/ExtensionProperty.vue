@@ -78,8 +78,6 @@ export default {
       default: () => ([])
     },
     defaultData: {
-      type: [String, Object],
-      default: () => ({})
     },
     ctrlOptions: {
       type: Object,
@@ -278,7 +276,7 @@ export default {
     valueChange(val) {
       // 先过滤undefined字段，再深拷贝
       const filteredData = JSON.parse(JSON.stringify(val))
-      if(filteredData.webconf && isEmptyObject(filteredData.webconf)) {
+      if (filteredData.webconf && isEmptyObject(filteredData.webconf)) {
         delete filteredData.webconf
       }
       this.transformedData = deepClone(filteredData);
@@ -306,7 +304,7 @@ export default {
         this.$emit('valueChange', '');
       } else {
         // 因为老数据webconf会被处理一下，这里需要重新比较处理后的原始数据和扩展属性数据是否一致。一致的话需要还原webconf处理前的值
-        if(JSON.stringify(this.defaultDataCache)!==JSON.stringify(this.transformedData)) {
+        if (JSON.stringify(this.defaultDataCache) !== JSON.stringify(this.transformedData)) {
           this.$emit('valueChange', JSON.stringify(this.transformedData));
         } else {
           this.$emit('valueChange', this.defaultData);
@@ -324,18 +322,37 @@ export default {
       this.transformedData = dom.value ? JSON.parse(dom.value) : {}
       this.showModal = false;
     },
-    pasteListener(e) {
+
+    // 获取supportType
+    async getSupportType() {
+      const ModuleComponent = window.vm.$_live_getChildComponent(window.vm, this.webconf.moduleName)
+      const panelComponent = window.vm.$_live_getChildComponent(ModuleComponent, 'panelForm')
+      const data = await panelComponent.getFormData()
+      if (this.webconf.webconf && this.webconf.webconf.targetField) {
+        const targetField = this.webconf.webconf.targetField.split(',')
+        const supportType = []
+        targetField.forEach(field => {
+          supportType.push(data[field])
+        })
+        return supportType.join(',') // 为了兼容以后多字段控制
+      }
+      return ''
+    },
+
+    async pasteListener(e) {
       e.preventDefault();
       e.stopPropagation();
       const paste = (e.clipboardData || window.clipboardData).getData('text/plain');
       if (this.$refs.textarea && this.$refs.textarea.$el.querySelector('textarea') === document.activeElement) {
         try {
+          const supportType = await this.getSupportType()
           this.hasModified = true;
           const copyData = JSON.parse(paste) ? JSON.parse(paste) : '';
           let supportTypeMap = {};
           const currentTableName = this.tableName;
           if (currentTableName === 'AD_COLUMN') {
             supportTypeMap = fieldExtensionProperty.reduce((a, c) => { a[c.key] = c.supportType || 'ALL'; return a; }, {});
+            supportTypeMap['password_type'] = ["byPage"] // 【是否加密】配置项里的password_type字段是被强行加上去的，字段配置文件里没有这个相关配置，所以手动兼容一下
           } else if (currentTableName === 'AD_TABLE') {
             supportTypeMap = tableExtensionProperty.reduce((a, c) => {
               if (c.key !== '__root__') {
@@ -354,7 +371,7 @@ export default {
           if (copyData) {
             Object.keys(copyData).forEach((key) => {
               const notAllowedKey = !supportTypeMap[key];
-              const notSupportedKey = supportTypeMap[key] && supportTypeMap[key] !== 'ALL' && supportTypeMap[key].indexOf(this.webconf.supportType) === -1;
+              const notSupportedKey = supportTypeMap[key] && supportTypeMap[key] !== 'ALL' && supportTypeMap[key].indexOf(supportType) === -1;
               if (notAllowedKey || notSupportedKey) {
                 unMappedKey.push(key);
                 delete copyData[key];
@@ -367,7 +384,7 @@ export default {
             return
           }
 
-          if(unMappedKey.toString()) {
+          if (unMappedKey.toString()) {
             this.transformedData = {}
             this.$emit('valueChange', '');
             this.setFormatedValue();
@@ -407,7 +424,7 @@ export default {
 
       const newConfig = { ...deepClone(config) }
       Object.keys(webconf).forEach(key => {
-        if(!newConfig[key]) {
+        if (!newConfig[key]) {
           newConfig[key] = webconf[key]
         }
       })
@@ -439,19 +456,19 @@ export default {
       deep: true,
       immediate: true
     },
-    'webconf.supportType': {
-      handler() {
-        if (this.hasModified) {
-          // this.placeholder = '';
-          // 使用变量清除placeholder,会出现输入框不显示值的情况
-          const dom = this.$refs.textarea && this.$refs.textarea.$el.querySelector('textarea')
-          if (dom) {
-            dom.placeholder = ''
-          }
-          this.deleteValue();
-        }
-      }
-    }
+    // 'webconf.supportType': {
+    //   handler() {
+    //     if (this.hasModified) {
+    //       // this.placeholder = '';
+    //       // 使用变量清除placeholder,会出现输入框不显示值的情况
+    //       const dom = this.$refs.textarea && this.$refs.textarea.$el.querySelector('textarea')
+    //       if (dom) {
+    //         dom.placeholder = ''
+    //       }
+    //       this.deleteValue();
+    //     }
+    //   }
+    // }
   },
   beforeCreate() {
     this.defaultDataCache = '' // 缓存默认值。用于比对数据是否修改过了。为了兼容老的webconf加的

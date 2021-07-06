@@ -179,8 +179,6 @@ export default {
   },
   props: {
     defaultData: {
-      type: [String, Object],
-      default: () => ''
     },
     realData: {
       type: [String, Object],
@@ -379,7 +377,7 @@ export default {
           targetField.forEach(field => {
             supportType.push(data[field])
           })
-          this.supportType = supportType.join(',')
+          this.supportType = supportType.join(',') // 为了兼容以后多字段控制
         }
       })
     } else {
