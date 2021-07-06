@@ -125,6 +125,9 @@ export default {
     }
   },
   updateRefButtonsData(state, data) { // 更新子表按钮数据
+    if(state.tabPanels.length<1){
+      return
+    }
     const { componentAttribute } = state.tabPanels[data.tabIndex];
     if (data.tabwebact.jflowbutton && data.tabwebact.jflowbutton.length > 0) {
       componentAttribute.buttonsData.isShow = true;
@@ -138,6 +141,9 @@ export default {
     }
   },
   updateFormDataForRefTable(state, data) { // 更新子表表单数据
+    if(state.tabPanels.length<1){
+      return;
+    }
     const { componentAttribute } = state.tabPanels[data.tabIndex];
     componentAttribute.formData.isShow = data.inpubobj && data.inpubobj.length > 0;
     componentAttribute.formData.data = data || [];
@@ -510,29 +516,26 @@ export default {
   // }
   updateChildTabPanels(state, data){
     let isRequest= [];
-    let tabCurrentIndex = -1;
     let tabPanels =data.tabPanel.reduce((arr,item,index)=>{
       // 隐藏子表  
       if(!data.value[item.tablename]){
         // item.webconfHide = true;
         arr.push(item);
-        // isRequest.push(data._isRequest[index]);
+        isRequest.push( state.isRequestTable[item.tablename]);
       }
      
        return arr;
     },[]);
-    state.isRequest = [];
+    state.isRequest = isRequest;
     state.tabPanels = tabPanels.concat([]);
-    state.tabCurrentIndex = tabPanels.findIndex((x)=>{
+    let tabCurrentIndex = tabPanels.findIndex((x)=>{
         return x.tablename === data.getItemName
     });
-    console.log(isRequest,state.tabCurrentIndex)
-
-    // if(tabPanels.length>0){
-    //   state.tabCurrentIndex = data.index;
-    // }else{
-    //   state.tabCurrentIndex = -1;
-    // }
+    if(tabCurrentIndex>0){
+      state.tabCurrentIndex = tabCurrentIndex;
+    }else{
+      state.tabCurrentIndex = 0;
+    }
   },
   updateRefreshButton(state, value) { // 控制刷新按钮开关
     state.refreshButton = value;
@@ -586,6 +589,8 @@ export default {
       arr[0] = true;
     }
     arr[index] = true;
+
+
     const oldRequestData = state.isRequest;
     if (oldRequestData.length > 0) {
       arr.forEach((a, i) => {
@@ -594,11 +599,17 @@ export default {
         }
       }); 
     }
+    if(tabPanel[index]){
+      state.isRequestTable[tabPanel[index].tablename] = true;
+    }
+   
+    //state.isRequestTable = isRequestTable;
     state.isRequest = arr;
   },
   
   emptyTestData(state) { // 清空TestData
     state.isRequest = [];
+    state.isRequestTable = {};
   },
   updateScrollPosition(state, scrollPositionValue) { // 更新当前单对象滚动位置
     state.scrollPosition = scrollPositionValue;
