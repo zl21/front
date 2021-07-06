@@ -351,7 +351,18 @@ export default {
           let supportTypeMap = {};
           const currentTableName = this.tableName;
           if (currentTableName === 'AD_COLUMN') {
-            supportTypeMap = fieldExtensionProperty.reduce((a, c) => { a[c.key] = c.supportType || 'ALL'; return a; }, {});
+            supportTypeMap = fieldExtensionProperty.reduce((a, c) => { 
+              // 需要兼容type: 'keyValue'的配置项
+              if(c.components) {
+                // 获取子配置项的key
+                c.components.forEach(component => {
+                  a[component.key] = c.supportType || 'ALL'; 
+                })
+              } else {
+                a[c.key] = c.supportType || 'ALL'; 
+              }
+              return a;
+            }, {});
             supportTypeMap['password_type'] = ["byPage"] // 【是否加密】配置项里的password_type字段是被强行加上去的，字段配置文件里没有这个相关配置，所以手动兼容一下
           } else if (currentTableName === 'AD_TABLE') {
             supportTypeMap = tableExtensionProperty.reduce((a, c) => {
