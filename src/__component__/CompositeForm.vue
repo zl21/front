@@ -2194,11 +2194,11 @@
 
             if (current.webconf && current.webconf.ispositive) {
               if(current.scale) {
-                string = `^[\+]?\\d{0,${current.length}}(\\\.[0-9]{0,${
+                string = `^[\\+]?\\d{0,${current.length}}(\\\.[0-9]{0,${
                   current.scale
                 }})?$`;
               } else {
-                string = `/^[\+]?\d{0,${current.length}}$/`
+                string = `^[\\+]?\\d{0,${current.length}}$`
               }
             } else {
               // string = `^(-|\\+)?\\d{0,${current.length - current.scale}}(\\\.[0-9]{0,${
@@ -2210,7 +2210,7 @@
                   current.scale
                 }})?$`;
               } else {
-                string = `/^[-\+]?\d{0,${current.length}}$/`
+                string = `^[-\\+]?\\d{0,${current.length}}$`
               }
             }
 

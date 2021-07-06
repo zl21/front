@@ -196,7 +196,7 @@ class CustomInput {
       if(this.item.scale) {
         string = `^\\d{0,${length}}(\\\.[0-9]{0,${this.item.scale}})?$`
       } else {
-        string =`/^[\+]?\d{0,${length}}$/`
+        string =`^[\\+]?\\d{0,${length}}$`
       }
     } else {
       // string = `^(-|\\+)?\\d{0,${length -
@@ -208,7 +208,8 @@ class CustomInput {
           this.item.scale
         }})?$`
       } else {
-        string =`/^[-\+]?\d{0,${length}}$/`
+        string =`^[-\\+]?\\d{0,${length}}$`
+        console.log(111,this.item,string);
       }
     }
 
