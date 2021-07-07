@@ -4,74 +4,27 @@
     ref="openedMenuLists"
     :class="classes"
   >
-    <span
-      v-show="clickShow"
-      class="prev"
-      @click="prevClick"
-    >
-      <img
-        src="../assets/image/leftArrow.png"
-        alt
-        @click="prevClick"
-      >
-    </span>
-
-    <ul
-      ref="tabList"
-      class="tab-list"
-    >
-      <!-- v-dragging="{ item: tag, list:getOpenedMenuLists,group: 'color'}" -->
-      <a
-        v-for="(tag, index) in openedMenuLists"
-        :key="index"
+    <Tabs type="card" class="openedMenuListsItem" closable @on-click="switchTab" @on-tab-remove="handleClose" :value="tagIndex">
+        <TabPane  v-for="(tag, index) in openedMenuLists" 
         ref="tabBox"
         class="tabBox"
-        :title="tag.label"
-        @click="switchTab(tag,index)"
-      >
+        :id="`${tag.tableName}_TAB`"
+        :key="index" :label="tag.label" :name="index.toString()" ></TabPane>
         <span
-          :class="{active:tag.isActive === true}"
-          class="openedMenuListsItem"
-          :title="tag.label"
+          class="emptying"
+           slot="extra"
+          @click="emptyClick"
         >
-          {{ tag.label }}
-          <span
-            :id="`${tag.tableName}_TAB`"
-            class="close"
-            :class="`${tag.tableName}${tag.itemId}`"
-            @click.stop="handleClose(tag,index)"
-          >
-            <img
-              src="../assets/image/iconX.png"
-              alt
-            >
-          </span>
+          <i
+            class="iconfont iconbj_delete "
+            title="关闭所有已打开的单据"
+          />
+          <!-- <img
+            src="../assets/image/delete.png"
+            alt
+          > -->
         </span>
-      </a>
-    </ul>
-    <span
-      v-show="clickShow"
-      class="next"
-      @click="nextClick"
-    >
-      <img
-        src="../assets/image/rightArrow.png"
-        alt
-      >
-    </span>
-    <span
-      class="emptying"
-      @click="emptyClick"
-    >
-      <i
-        class="iconfont iconbj_delete "
-        title="关闭所有已打开的单据"
-      />
-      <!-- <img
-        src="../assets/image/delete.png"
-        alt
-      > -->
-    </span>
+    </Tabs>
   </div>
 </template>
 
@@ -101,6 +54,7 @@
     computed: {
       ...mapState('global', {
         openedMenuLists: ({ openedMenuLists }) => openedMenuLists,
+        activeTab: ({ activeTab }) => activeTab,
         showModule: ({ showModule }) => showModule
       }),
       menuLists() {
@@ -114,32 +68,43 @@
       },
     },
     watch: {
-      menuLists: {
+      activeTab:{
         handler(val) {
-          this.$nextTick(() => {
-            const tabOpenedMenuLists = this.$refs.openedMenuLists;
-            if (tabOpenedMenuLists) {
-              const length = Math.floor(
-                (tabOpenedMenuLists.offsetWidth - 75) / 122
-              );
-              const width = tabOpenedMenuLists.offsetWidth - 75;
-              const tagWidth = this.menuLists * 122;
-              const left = Math.abs(tagWidth - width);
-              if (val > length) {
-                this.clickShow = true;
-                this.$refs.tabBox.forEach((item) => {
-                  item.style.left = `-${left}px`;
-                });
-              } else {
-                this.clickShow = false;
-                this.$refs.tabBox.forEach((item) => {
-                  item.style.left = '0px';
-                });
-              }
-            }
+          this.tagIndex =  this.openedMenuLists.findIndex((x)=>{
+              return x.keepAliveModuleName === val.keepAliveModuleName;
           });
+          this.tagIndex = this.tagIndex.toString();
+          console.log(this.tagIndex,'2323')
         }
-      },
+      }
+      // menuLists: {
+      //   handler(val) {
+      //     this.$nextTick(() => {
+      //       const tabOpenedMenuLists = this.$refs.openedMenuLists;
+      //       if (tabOpenedMenuLists) {
+      //         const length = Math.floor(
+      //           (tabOpenedMenuLists.offsetWidth - 75) / 122
+      //         );
+      //         const width = tabOpenedMenuLists.offsetWidth - 75;
+      //         const tagWidth = this.menuLists * 122;
+      //         const left = Math.abs(tagWidth - width);
+      //         console.log(val , length,'-=--');
+
+      //         if (val > length) {
+      //           this.clickShow = true;
+      //           this.$refs.tabBox.forEach((item) => {
+      //             item.style.left = `-${left}px`;
+      //           });
+      //         } else {
+      //           this.clickShow = false;
+      //           this.$refs.tabBox.forEach((item) => {
+      //             item.style.left = '0px';
+      //           });
+      //         }
+      //       }
+      //     });
+      //   }
+      // },
       // openedMenuLists: {
       //   handler(val) {
       //     this.getOpenedMenuLists = JSON.parse(JSON.stringify(val));
@@ -156,16 +121,18 @@
         'updataOpenedMenuLists',
         'updataSwitchTag'
       ]),
-      switchTab(item, index) {
+      switchTab(index) {
+  
         const tag = this.openedMenuLists[index];
         if (router.currentRoute.fullPath !== tag.routeFullPath) {
           this.updataSwitchTag(true);
           router.push({ path: tag.routeFullPath });
-          this.switchTabForActiveTab(item);
+          this.switchTabForActiveTab(tag);
           // this.updataSwitchTag(false);
         }
       },
-      handleClose(tag) {
+      handleClose(index) {
+       const tag = this.openedMenuLists[index];
         this.tabCloseAppoint(tag);
       }, // 关闭当前tab
       emptyClick() {
