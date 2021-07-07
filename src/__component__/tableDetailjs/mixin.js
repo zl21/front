@@ -13,6 +13,11 @@ export default {
 //        }   
 //    }
 //  },
+  data(){
+    return {
+      exclude:[]
+    }
+  },
   methods:{
     setTabPanels(){
       // 设置子表是否隐藏
@@ -24,7 +29,7 @@ export default {
       if(!this.tabClick){
           return;
       }
-
+      this.exclude = [];
       if(formName && this.WebConf && this.WebConf.hiddenSubtable ){
 
         let formData = Object.assign( JSON.parse(JSON.stringify(formName._vue_.defaulData))|| {},JSON.parse(JSON.stringify(formName._vue_.formData)) || {});
@@ -46,6 +51,10 @@ export default {
           }
           
           arr[option.tablename] = !checked_value;
+          if(!checked_value){
+            this.exclude.push('tapComponent.'+option.tablename);
+          }
+     
           // 判断当前的tab 是否被隐藏
           if( !checked_value && index === tabCurrentIndex ){
             tabCurrentIndex = '-1';
@@ -59,6 +68,7 @@ export default {
           getItemName:this.getItemName,
           tabPanel:this._tabPanel
         });
+     
         if(this.tabPanel.length>0){
           this.tabClick(this.tabCurrentIndex);
           if(this.$refs.tabPanel){

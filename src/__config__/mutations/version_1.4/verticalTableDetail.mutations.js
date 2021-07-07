@@ -523,11 +523,17 @@ export default {
         arr.push(item);
         isRequest.push( state.isRequestTable[item.tablename]);
       }
+      
      
        return arr;
     },[]);
     state.isRequest = isRequest;
     state.tabPanels = tabPanels.concat([]);
+    if(tabPanels.length<1){
+      state.mainFormInfo.buttonsData.data.isreftabs = false;
+    }else{
+      state.mainFormInfo.buttonsData.data.isreftabs = true;
+    }
     let tabCurrentIndex = tabPanels.findIndex((x)=>{
         return x.tablename === data.getItemName
     });
