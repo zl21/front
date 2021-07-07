@@ -443,9 +443,9 @@
               self.onSortChanged(arrayOfSortInfo);
             }
           }, // 排序事件触发回调
-          agColumnVisibleChanged: (colName) => {
+          agColumnVisibleChanged: (...params) => {
             if (typeof self.onColumnVisibleChanged === 'function') {
-              self.onColumnVisibleChanged(colName);
+              self.onColumnVisibleChanged(...params);
             }
           },
           agSelectionChanged: (rowIdArray, rowArray) => {
