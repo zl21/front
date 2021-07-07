@@ -48,6 +48,9 @@ export default {
     this.params.colDef.key_group.map(item => {
       const value = this.params.data[item.col_name]; // 来源字段的值
       item.label.map((temp) => {
+        if(!value) {
+          return
+        }
         if (temp.value == value.val) {
           this.tags.push({
             cssclass: temp.cssclass,
