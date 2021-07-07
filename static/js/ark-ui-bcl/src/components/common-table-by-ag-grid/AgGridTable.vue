@@ -380,7 +380,6 @@ export default {
       this.$emit('on-row-dblclick', params)
     },
 
-
     // 行选中事件
     onSelectionChanged(params) {
       const options = this.options;
@@ -435,10 +434,10 @@ export default {
               hideColumns.push(d.colId);
             }
           });
-          options.agColumnVisibleChanged(hideColumns.toString());
+          options.agColumnVisibleChanged(hideColumns.toString(), params);
         }
       }, 10);
-      this.$emit('on-column-visible',param)
+      this.$emit('on-column-visible',params)
     },
 
     // 列移动回调
