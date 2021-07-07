@@ -247,7 +247,7 @@ export default {
         }
         
         const option = deepClone(keyConfigs.find(d => d.name === '扩展组件'));
-        if (keyForm.DISPLAYTYPE && (keyForm.DISPLAYTYPE.startsWith('textarea') || keyForm.DISPLAYTYPE.startsWith('text')) && keyForm.DESCRIPTION !== '扩展属性' && keyForm.DESCRIPTION !== '读写规则') {
+        if (this.supportType === 'byPage' && keyForm.DISPLAYTYPE && (keyForm.DISPLAYTYPE.startsWith('textarea') || keyForm.DISPLAYTYPE.startsWith('text')) && keyForm.DESCRIPTION !== '扩展属性' && keyForm.DESCRIPTION !== '读写规则') {
           option.components[0].selectOptions.push({ label: 'YearMonth', value: 'YearMonth' })
         }
         configOptions.push(option);
