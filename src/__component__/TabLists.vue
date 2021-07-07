@@ -4,7 +4,11 @@
     ref="openedMenuLists"
     :class="classes"
   >
-    <Tabs type="card" class="openedMenuListsItem" closable @on-click="switchTab" @on-tab-remove="handleClose" :value="tagIndex">
+    <Tabs type="card" class="openedMenuListsItem" 
+         closable 
+        @on-click="switchTab" 
+        :closedClick="handleClose"
+        :value="tagIndex">
         <TabPane  v-for="(tag, index) in openedMenuLists" 
         ref="tabBox"
         class="tabBox"
