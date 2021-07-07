@@ -94,7 +94,6 @@ export default {
           }
           ParentForm.formLabel[this.items.colname] = val; 
           let id = (ParentForm.defaultData.id || '').toString();  
-          console.log(id=== '-1','===',id);
           let keepAliveModuleName = this.activeTab.keepAliveModuleName && (this.activeTab.keepAliveModuleName).toLocaleUpperCase();
             // 初始化的状态
             if (!this.actived) {
@@ -104,6 +103,7 @@ export default {
                 ParentForm.defaulDataLabel = Object.assign(JSON.parse(JSON.stringify(ParentForm.defaulDataLabel)),R3Label);
                 if (isEmpty(val)) {
                   delete ParentForm.formData[this.items.colname]
+                  delete ParentForm.defaulData[this.items.colname]
                   delete ParentForm.defaulDataLabel[this.items.colname]
                 }
               }

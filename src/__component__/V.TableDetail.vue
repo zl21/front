@@ -77,6 +77,7 @@
           class="tabPanel"
           :tab-margin-left="20"
           is-keep-alive
+          :exclude="exclude"
           :type="'singleCard'"
           :tab-panels="tabPanels"
         />
