@@ -121,7 +121,7 @@ module.exports = {
   agGridOptions: { // ag表格的配置
     // rowHeight: 100
   },
-  messageSwitch: false, // 消息开关
+  messageSwitch: true, // 消息开关
   // useAgGrid: true, // 明细界面的表格全局用ag表格进行渲染
   // (data) => {
   //   if (data.router.params) {
