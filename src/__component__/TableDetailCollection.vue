@@ -467,10 +467,14 @@
         // } else {
         //   tabIndex = this.tabCurrentIndex;
         // }
+        if(!this.tabPanel[this.currentTabIndex]){
+            return;
+        }
         const { tabcmd, DisableEXPORT } = this.tabPanel[this.currentTabIndex].componentAttribute.buttonsData.data;
         if (!tabcmd) {
           return [];
         }
+        
         const buttonGroupShow = [];
         if (!this.objreadonly && this.itemInfo.tabinlinemode !== 'N') {
           if (tabcmd.cmds && tabcmd.cmds.length > 0) {

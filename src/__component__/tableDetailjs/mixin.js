@@ -38,7 +38,7 @@ export default {
           // 记录原始tab
           this._tabPanel = this.tabPanel;
         }
-        let tabCurrentIndex = this.tabCurrentIndex;
+        let showchecked = [];
         let checked = this._tabPanel.reduce((arr,option,index)=>{
           // 校验是否有不等的值
           let checked_value = true;
@@ -49,44 +49,55 @@ export default {
                 return !values.includes(formData[item.colName]);
               });
           }
-        
+          if(checked_value){
+            showchecked.push(option.tablename);
+          }
           arr[option.tablename] = !checked_value;
           if(!checked_value){
             this.exclude.push('tapComponent.'+option.tablename);
           }
      
           // 判断当前的tab 是否被隐藏
-          if( !checked_value && index === tabCurrentIndex ){
-            tabCurrentIndex = '-1';
-          }
+          // if( !checked_value && index === tabCurrentIndex ){
+          //   tabCurrentIndex = '-1';
+          // }
           return arr;
 
         },{});
         let checkedValue = this.tabPanel.some(element => {
           return checked[element.tablename]
         });
+        
+       
 
         if(checkedValue){
           // 兼容外键点击事件
           document.body.click();
 
         }
+        
        
 
-        // setTimeout(()=>{ },100)
-        
+         setTimeout(()=>{
           this.updateChildTabPanels({
-            value:checked,
-            getItemName:this.getItemName,
+            value:checked
           });
-          
-          if(this.tabCurrentIndex !==-1 ){
+          console.log(showchecked);
+          if(showchecked.length>0 ){
             this.tabClick(this.tabCurrentIndex);
             if(this.$refs.tabPanel){
-              this.$refs.tabPanel.activeKey = this.tabCurrentIndex;
+              this.$refs.tabPanel.$el.style.display='block';
+
             }
-  
+
+          }else{
+            if(this.$refs.tabPanel){
+              this.$refs.tabPanel.$el.style.display='none';
+
+            }
           }
+        },100)
+
 
        
         
