@@ -131,7 +131,7 @@ export default {
     },
 
     // 行双击事件
-    tableRowDbclick(e) { 
+    tableRowDbclick(e) {
       if(this.mode === Common_Table_Mode) {
         this.$emit('ag-row-dblclick', e.data)
       } else {
@@ -190,6 +190,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss" scoped>
-</style>
