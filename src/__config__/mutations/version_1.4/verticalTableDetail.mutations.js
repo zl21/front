@@ -536,6 +536,21 @@ export default {
     if(state.tabPanels.length<state.tabCurrentIndex+1){
       state.tabCurrentIndex = -1;
     }
+    let index = state.tabPanels.findIndex((x)=>{
+      return !x.hide;
+    });
+    if(state.tabCurrentIndex === -1){
+      state.tabCurrentIndex = 0;
+    }else{
+      state.tabCurrentIndex = index;
+
+    }
+    if(index === -1){
+      state.mainFormInfo.buttonsData.data.isreftabs = false;
+    }else{
+      state.mainFormInfo.buttonsData.data.isreftabs = true;
+    }
+
     console.log(state.tabPanels.length,state.tabCurrentIndex);
     // if(tabPanels.length<1){
     //   state.mainFormInfo.buttonsData.data.isreftabs = false;
