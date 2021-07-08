@@ -77,6 +77,7 @@
           class="tabPanel"
           :tab-margin-left="20"
           is-keep-alive
+          :exclude="exclude"
           :type="'singleCard'"
           :tab-panels="tabPanels"
         />
@@ -190,7 +191,7 @@
         return [];
       },
       getItemName() {
-        if (this.tabPanel.length > 0) {
+        if (this.tabPanel[this.tabCurrentIndex]) {
           return this.tabPanel[this.tabCurrentIndex].tablename;
         }
         return '';

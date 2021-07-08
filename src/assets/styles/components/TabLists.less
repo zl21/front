@@ -2,10 +2,53 @@
 
 .@{TabLists-prefix-cls} {
   background-color: #fff;
-  display: flex;
+  // display: flex;
   box-sizing: border-box;
   height: 33px;
-  border-bottom: 1px solid #dfdfdf;
+  .ark-tabs.ark-tabs-card > .ark-tabs-bar .ark-tabs-tab {
+  
+    line-height: 26px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    position: relative;
+    white-space: nowrap;
+    padding: 0 20px;
+    &:hover {
+      color: @primary-color;
+    }
+  }
+  .ark-tabs.ark-tabs-card > .ark-tabs-bar .ark-tabs-tab{
+    &:nth-child(2){
+      border-left: none ;
+
+    }
+    &:hover{
+      .ark-icon{
+        display: block;
+      }
+    }
+   
+  }
+  .ark-tabs-nav .ark-tabs-tab .ark-icon{
+    position: absolute;
+    top:6px;
+    right: 0px;
+    display: none;
+   
+  }
+  .ark-tabs-nav-scrollable{
+    border: none;
+  }
+ 
+  .ark-tabs.ark-tabs-card > .ark-tabs-bar .ark-tabs-tab-active {
+    color:  @primary-color;
+    position: relative;
+    border-top-width: 2px;
+
+    
+
+  }
 
   > span {
     display: inline-block;
@@ -21,10 +64,10 @@
     position: relative;
     cursor: pointer;
     .next {
-      border-left: 1px solid #dfdfdf;
+      border-left: 1px solid @border-color;
     }
     .prev {
-      border-right: 1px solid #dfdfdf;
+      border-right: 1px solid @border-color;
     }
   }
 
@@ -39,33 +82,38 @@
     overflow: hidden;
     user-select: none;
     height: 34px;
-    a {
-      display: inline-block;
-      text-decoration: none;
-      position: relative;
-      cursor: pointer;
-      color: #000;
+    // a {
+    //   display: inline-block;
+    //   text-decoration: none;
+    //   position: relative;
+    //   cursor: pointer;
+    //   color: #000;
 
       .openedMenuListsItem {
-        height: 29px;
-        width: 81px;
-        display: block;
-        padding-left: 20px;
-        padding-right: 20px;
-        line-height: 31px;
-        background-color: #fff;
-        box-sizing: content-box;
-        text-align: center;
-        border: none;
-        border-top: 2px solid #fff;
-        border-right: 1px solid #dfdfdf;
-        border-radius: 0;
-        position: relative;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        // border-bottom: 1px solid #dfdfdf;
-        margin: 0;
+         .ark-tabs-bar {
+         color: #ff0000!important;
+          // height: 29px;
+          // width: 81px;
+          // display: block;
+          // padding-left: 20px;
+          // padding-right: 20px;
+          // line-height: 31px;
+          // background-color: #fff;
+          // box-sizing: content-box;
+          // text-align: center;
+          // border: none;
+          // border-top: 2px solid #fff;
+          // border-right: 1px solid #dfdfdf;
+          // border-radius: 0;
+          // position: relative;
+          // overflow: hidden;
+          // text-overflow: ellipsis;
+          // white-space: nowrap;
+          // // border-bottom: 1px solid #dfdfdf;
+          // margin: 0;
+
+         }
+        
         .close {
           position: absolute !important;
           top: 7px !important;
@@ -92,7 +140,7 @@
           color: #000000;
         }
       }
-    }
+    // }
     .tabBox:hover {
       .close {
         opacity: 1;
@@ -103,8 +151,9 @@
 
   .emptying {
     width: 34px;
-    border-left: 1px solid #dfdfdf;
+    border-left: 1px solid @border-color;
     display: flex;
+    height: 31px;
     justify-content: center;
     align-items: center;
     img {
