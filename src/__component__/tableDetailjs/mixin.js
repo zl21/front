@@ -71,23 +71,24 @@ export default {
           document.body.click();
 
         }
-        setTimeout(()=>{
+       
+
+        // setTimeout(()=>{ },100)
+        
           this.updateChildTabPanels({
             value:checked,
-            index:tabCurrentIndex,
             getItemName:this.getItemName,
-            tabPanel:this._tabPanel
           });
           
-          if(this.tabPanel.length>0){
-            this.tabClick(this.tabCurrentIndex);
+          if(this.tabCurrentIndex !==-1 ){
+            //this.tabClick(this.tabCurrentIndex);
             if(this.$refs.tabPanel){
-              this.$refs.tabPanel.activeKey = this.tabCurrentIndex;
+              //this.$refs.tabPanel.activeKey = this.tabCurrentIndex;
             }
   
           }
 
-        },100)
+       
         
         
 

@@ -18,33 +18,38 @@ export default {
     state.isHideTempStorage = value;
   },
   updateChildTabPanels(state, data){
-    let isRequest= [];
-    let tabPanels =data.tabPanel.reduce((arr,item,index)=>{
+    let tabPanels =state.tabPanels.reduce((arr,item,index)=>{
       // 隐藏子表  
-      if(!data.value[item.tablename]){
-        // item.webconfHide = true;
-        arr.push(item);
-        isRequest.push( state.isRequestTable[item.tablename]);
+      if(data.value[item.tablename]){
+        if(state.tabCurrentIndex === index){
+          state.tabCurrentIndex += 1;
+        }
+        item.hide = true;
+      }else{
+        item.hide = false;
       }
       
-     
+      arr.push(item);
        return arr;
     },[]);
-    state.isRequest = isRequest;
-    state.tabPanels = tabPanels.concat([]);
-    if(tabPanels.length<1){
-      state.mainFormInfo.buttonsData.data.isreftabs = false;
-    }else{
-      state.mainFormInfo.buttonsData.data.isreftabs = true;
+    //state.isRequest = isRequest;
+    state.tabPanels = tabPanels;
+    if(state.tabPanels.length<state.tabCurrentIndex+1){
+      state.tabCurrentIndex = -1;
     }
-    let tabCurrentIndex = tabPanels.findIndex((x)=>{
-        return x.tablename === data.getItemName
-    });
-    if(tabCurrentIndex>0){
-      state.tabCurrentIndex = tabCurrentIndex;
-    }else{
-      state.tabCurrentIndex = 0;
-    }
+    // if(tabPanels.length<1){
+    //   state.mainFormInfo.buttonsData.data.isreftabs = false;
+    // }else{
+    //   state.mainFormInfo.buttonsData.data.isreftabs = true;
+    // }
+    // let tabCurrentIndex = tabPanels.findIndex((x)=>{
+    //     return x.tablename === data.getItemName
+    // });
+    // if(tabCurrentIndex>0){
+    //   state.tabCurrentIndex = tabCurrentIndex;
+    // }else{
+    //   state.tabCurrentIndex = 0;
+    // }
   },
   updateObjectForMainTableForm(state, data) { // 更新主表面板数据
     const { tableName, tableId } = router.currentRoute.params;
