@@ -81,9 +81,9 @@ export default {
           });
           
           if(this.tabCurrentIndex !==-1 ){
-            //this.tabClick(this.tabCurrentIndex);
+            this.tabClick(this.tabCurrentIndex);
             if(this.$refs.tabPanel){
-              //this.$refs.tabPanel.activeKey = this.tabCurrentIndex;
+              this.$refs.tabPanel.activeKey = this.tabCurrentIndex;
             }
   
           }
