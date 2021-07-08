@@ -297,6 +297,13 @@ export default {
         'autoSizeAll',
         'separator',
         {
+          name: '隐藏当前列',
+          action: ()=> {
+            const { columnApi, column } = params
+            columnApi.setColumnVisible(column.colId, false)
+          }
+        },
+        {
           name: '重置所有列位置信息',
           action: () => {
             this._isResetAllColumn = true;
