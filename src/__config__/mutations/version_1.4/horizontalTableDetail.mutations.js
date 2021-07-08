@@ -582,6 +582,26 @@ export default {
     tableSearchData.selectedValue = data.selectedValue;
     tableSearchData.inputValue = data.inputValue;
   }, // 修改单对象表格搜索的值
+  updateChildTabPanels(state, data){
+    let tabPanels =state.tabPanels.reduce((arr,item)=>{
+      // 隐藏子表  
+      if(data.value[item.tablename]){
+        item.hide = true;
+      }else{
+        item.hide = false;
+      }
+      arr.push(item);
+     
+       return arr;
+    },[]);
+    // if(tabPanels.length>0){
+    //   state.tabCurrentIndex = data.index;
+    // }else{
+    //   state.tabCurrentIndex = -1;
+    // }
+    // state.isRequest = [];
+    state.tabPanels = tabPanels;
+  },
   updateTableFixedcolumns(state, data) {
     // const { tableDefaultFixedcolumns } = state.tabPanels[state.tabCurrentIndex];
     state.tabPanels[state.tabCurrentIndex].tableDefaultFixedcolumns = data;

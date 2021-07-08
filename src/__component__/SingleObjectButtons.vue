@@ -3330,11 +3330,16 @@
 
         this.saveParameters();// 获取主子表参数
         // 处理主表必填控制
-        let panelForm = FindInstanceAll(this,'panelForm');
+        let panelForm_dom =  document.querySelectorAll('.panelForm');
+        let panelForm = [].reduce.call(panelForm_dom, function(arr,div) {
+          if(div._vue_){
+            arr.push(div._vue_);
+          }
+            return arr;
+        },[]);
         let validate = [];
         if(panelForm && panelForm[0]){
            validate = panelForm.reduce((arr,item,index)=>{
-              console.log(item.tableName);
               if(index === 0){
                 // 默认第一个主表
                 arr.push(...item.validate())

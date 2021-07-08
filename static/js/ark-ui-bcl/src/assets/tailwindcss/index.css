@@ -1,0 +1,34 @@
+/* tailwind插件弃用了，所以把之前的样式直接放这里管理 */
+.tw-inline-block {
+  display: inline-block
+}
+
+.tw-flex {
+  display: flex
+}
+
+.tw-flex-grow {
+  flex-grow: 1
+}
+
+.tw-mt-10 {
+  margin-top: 10px
+}
+
+.tw-mt-20 {
+  margin-top: 20px
+}
+
+.one-line-flow {
+  overflow: hidden;
+  white-space: nowrap; 
+  text-overflow: ellipsis; 
+}
+
+.text-right {
+  text-align: right
+}
+
+.text-center {
+  text-align: center
+}

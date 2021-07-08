@@ -111,6 +111,14 @@ export default {
           // H
           this.$parent.InitializationForm(this.defaulData, this.formDataLabel,this.defaulDataLabel)
         }
+        const { tableName, customizedModuleName } = this.$route.params;
+
+        let tabPanelsDom = document.querySelector(`#${tableName}`);
+        if(tabPanelsDom){
+          setTimeout(()=>{
+            tabPanelsDom._vue_.setTabPanels();
+          },80)
+        }
       },50)
 
     },

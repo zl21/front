@@ -3,16 +3,23 @@ function inputControl(el, binding) {
   if (el.tagName !== 'INPUT') {
     inputElement = el.querySelector('input');
   }
-
-  if (binding.arg && binding.arg.toUpperCase().startsWith('NUMBER')) {
+  
+  if (binding.arg && binding.arg === 'NUMBER') {
     inputElement.onkeypress = function press(e) {
       e = e || window.event;
       const charCode = typeof e.charCode === 'number' ? e.charCode : e.keyCode;
-      console.log('🚀 ~ file: inputNumber.js ~ line 11 ~ press ~ charCode', charCode);
 
       const re = /\d/;
-      // 44指逗号
-      if (!re.test(String.fromCharCode(charCode)) && charCode > 9 && !e.ctrlKey && charCode !== 44) {
+      const whiteList = [];
+      // 允许逗号
+      if (binding.modifiers.comma) {
+        whiteList.push(44);
+      }
+      // 允许小数
+      if (binding.modifiers.decimal) {
+        whiteList.push(46);
+      }
+      if (!re.test(String.fromCharCode(charCode)) && charCode > 9 && !e.ctrlKey && !whiteList.includes(charCode)) {
         if (e.preventDefault) {
           e.preventDefault();
         } else {

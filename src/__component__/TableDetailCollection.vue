@@ -467,10 +467,14 @@
         // } else {
         //   tabIndex = this.tabCurrentIndex;
         // }
+        if(!this.tabPanel[this.currentTabIndex]){
+            return;
+        }
         const { tabcmd, DisableEXPORT } = this.tabPanel[this.currentTabIndex].componentAttribute.buttonsData.data;
         if (!tabcmd) {
           return [];
         }
+        
         const buttonGroupShow = [];
         if (!this.objreadonly && this.itemInfo.tabinlinemode !== 'N') {
           if (tabcmd.cmds && tabcmd.cmds.length > 0) {
@@ -2018,6 +2022,9 @@
       inputRender(cellData, tag) {
         // 输入框
         return (h, params) => {
+        let rowData = this.copyDataSource.row[params.index];
+        let colnameData = this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname] : {};
+
           return h('div', [
             h(tag, {
               style: {
@@ -2029,11 +2036,11 @@
               },
               domProps: {
                 id: `ag-${params.index}-${params.column._index - 1}`,
-                title: this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname].val : '',
+                title: colnameData ? colnameData.val : '',
               },
               props: {
                 // value: this.afterSendData[this.tableName] && this.afterSendData[this.tableName][params.index] && this.afterSendData[this.tableName][params.index][cellData.colname] !== undefined ? this.afterSendData[this.tableName][params.index][cellData.colname] : params.row[cellData.colname],
-                value: this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname].val : '',
+                value: colnameData ? colnameData.val : '',
                 regx: this.inputRegx(cellData, params),
                 maxlength: cellData.length
               },
@@ -2044,6 +2051,26 @@
               },
               on: {
                 'on-change': (event, data) => {
+                  // 通过修改dom属性,控制数字类型的长度
+                  // *如果通过双向数据绑定改会导致整个表格重绘
+                  if(cellData.type === 'NUMBER') {
+                    const value = event.target.value
+                    let valLength = cellData.length
+                    const isNegativeDecimal = value.split('.').length > 1 && value.split('-').length > 1 // 是否是负小数
+                    const isDecimal = value.split('.').length > 1 && value.split('+').length > 1 // 是否是正小数
+                    if (isNegativeDecimal || isDecimal) {
+                      // 正负小数 
+                      valLength = valLength + 2
+                    } else if (value.split('.').length > 1) {
+                      // 小数
+                      valLength = valLength + 1
+                    } else if (value.split('-').length > 1 || value.split('+').length > 1) {
+                      // 正负整数
+                      valLength = valLength + 1
+                    }
+                    event.target.maxLength = valLength
+                  }
+                  
                   const currentRowData = this.copyDataSource.row[params.index]
                   currentRowData[cellData.colname].val = event.target.value;
 
@@ -3932,17 +3959,19 @@
         // 输入框正则
         if (cellData.webconf && cellData.webconf.ispositive) {
           if (cellData.type === 'NUMBER' && cellData.scale && cellData.scale > 0) {
-            return new RegExp(`^[\\-\\+]?\\d+(\\.{0,${cellData.scale}})?$`);
+            return new RegExp(`^[\\+]?\\d+(\\.{0,${cellData.scale}})?$`);
           }
-          if (cellData.type === 'NUMBER') {
-            return new RegExp('^[\\-\\+]?\\d+(\\.[0-9]{0,2)?$');
+          if (cellData.type === 'NUMBER' && !cellData.scale) {
+            // return new RegExp('^[\\-\\+]?\\d+(\\.[0-9]{0,2)?$');
+            return new RegExp(`^[\\+]?\\d{0,${cellData.length}}$`)
           }
         } else {
           if (cellData.type === 'NUMBER' && cellData.scale && cellData.scale > 0) {
             return new RegExp(`^(\\-|\\+)?\\d{0,8}(\\.[0-9]{0,${cellData.scale}})?$`);
           }
-          if (cellData.type === 'NUMBER') {
-            return new RegExp('^(\\-|\\+)?\\d{0,20}?$');
+          if (cellData.type === 'NUMBER' && !cellData.scale) {
+            // return new RegExp('^(\\-|\\+)?\\d{0,20}?$');
+            return new RegExp(`^[-\\+]?\\d{0,${cellData.length}}$`)
           }
         }
         if (cellData.type === 'STRING' && cellData.isuppercase) { // 大写
