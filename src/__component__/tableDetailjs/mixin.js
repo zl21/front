@@ -25,14 +25,18 @@ export default {
       if(!this.tabClick){
           return;
       }
-      let formName = document.querySelector('.panelForm');
 
       this.exclude = [];
+      let {tableName,tableId,itemId} = this.$route.params;
+      let formName = document.querySelector(`#${tableName}-${tableId}-${itemId}`);
         // 排除换组组件名称
- 
-      if(formName && this.WebConf && this.WebConf.hiddenSubtable ){
+      if(formName){
+        this.formName = formName;
 
-        let formData = Object.assign( JSON.parse(JSON.stringify(formName._vue_.defaulData))|| {},JSON.parse(JSON.stringify(formName._vue_.formData)) || {});
+      }   
+      if(this.formName && this.WebConf && this.WebConf.hiddenSubtable ){
+
+        let formData = Object.assign( JSON.parse(JSON.stringify(this.formName._vue_.defaulData))|| {},JSON.parse(JSON.stringify(this.formName._vue_.formData)) || {});
         let hiddenSubtable = this.WebConf.hiddenSubtable;
         if(!this._tabPanel){
           // 记录原始tab
@@ -82,11 +86,12 @@ export default {
           this.updateChildTabPanels({
             value:checked
           });
-          console.log(showchecked);
+          console.log(showchecked,this.tabCurrentIndex);
           if(showchecked.length>0 ){
             this.tabClick(this.tabCurrentIndex);
             if(this.$refs.tabPanel){
               this.$refs.tabPanel.$el.style.display='block';
+              this.$refs.tabPanel.activeKey = this.tabCurrentIndex;
 
             }
 

@@ -533,17 +533,16 @@ export default {
     },[]);
     //state.isRequest = isRequest;
     state.tabPanels = tabPanels;
-    if(state.tabPanels.length<state.tabCurrentIndex+1){
-      state.tabCurrentIndex = -1;
-    }
     let index = state.tabPanels.findIndex((x)=>{
       return !x.hide;
     });
-    if(state.tabCurrentIndex === -1){
-      state.tabCurrentIndex = 0;
-    }else{
+    if(state.tabPanels.length<state.tabCurrentIndex+1){
       state.tabCurrentIndex = index;
 
+    }
+    
+    if(state.tabCurrentIndex === -1){
+      state.tabCurrentIndex = 0;
     }
     if(index === -1){
       state.mainFormInfo.buttonsData.data.isreftabs = false;
