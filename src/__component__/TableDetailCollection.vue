@@ -2018,6 +2018,9 @@
       inputRender(cellData, tag) {
         // 输入框
         return (h, params) => {
+        let rowData = this.copyDataSource.row[params.index];
+        let colnameData = this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname] : {};
+
           return h('div', [
             h(tag, {
               style: {
@@ -2029,11 +2032,11 @@
               },
               domProps: {
                 id: `ag-${params.index}-${params.column._index - 1}`,
-                title: this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname].val : '',
+                title: colnameData ? colnameData.val : '',
               },
               props: {
                 // value: this.afterSendData[this.tableName] && this.afterSendData[this.tableName][params.index] && this.afterSendData[this.tableName][params.index][cellData.colname] !== undefined ? this.afterSendData[this.tableName][params.index][cellData.colname] : params.row[cellData.colname],
-                value: this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname].val : '',
+                value: colnameData ? colnameData.val : '',
                 regx: this.inputRegx(cellData, params),
                 maxlength: cellData.length
               },
