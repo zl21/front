@@ -73,12 +73,12 @@ export default {
         });
         
        
+      console.log(checkedValue);
+        // if(checkedValue){
+        //   // 兼容外键点击事件
+        //   document.body.click();
 
-        if(checkedValue){
-          // 兼容外键点击事件
-          document.body.click();
-
-        }
+        // }
         
        
 
