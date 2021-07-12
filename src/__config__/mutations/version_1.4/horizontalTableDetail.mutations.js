@@ -583,22 +583,24 @@ export default {
     tableSearchData.inputValue = data.inputValue;
   }, // 修改单对象表格搜索的值
   updateChildTabPanels(state, data){
-    let tabPanels =data.tabPanel.reduce((arr,item)=>{
+    let tabPanels =state.tabPanels.reduce((arr,item)=>{
       // 隐藏子表  
-      if(!data.value[item.tablename]){
-        // item.webconfHide = true;
-        arr.push(item);
+      if(data.value[item.tablename]){
+        item.hide = true;
+      }else{
+        item.hide = false;
       }
+      arr.push(item);
      
        return arr;
     },[]);
-    if(tabPanels.length>0){
-      state.tabCurrentIndex = data.index;
-    }else{
-      state.tabCurrentIndex = -1;
-    }
+    // if(tabPanels.length>0){
+    //   state.tabCurrentIndex = data.index;
+    // }else{
+    //   state.tabCurrentIndex = -1;
+    // }
     // state.isRequest = [];
-    state.tabPanels = tabPanels.concat([]);
+    state.tabPanels = tabPanels;
   },
   updateTableFixedcolumns(state, data) {
     // const { tableDefaultFixedcolumns } = state.tabPanels[state.tabCurrentIndex];

@@ -884,25 +884,7 @@
 
       // 监听表格隐藏或显示列
       onColumnVisibleChanged(hideCols, params) {
-        const { visible, columnApi, column } = params
-        if(visible) {
-          this.setColVisible(hideCols)
-        } else {
-          // 隐藏时提示
-          this.$Modal.fcWarning({
-            title: '提示',
-            content: '请确认是否保存该列隐藏',
-            showCancel: true,
-            mask: true,
-            onOk: () => {
-              this.setColVisible(hideCols)
-            },
-            onCancel: () => {
-              // 还原显示
-              columnApi.setColumnVisible(column.colId, true)
-            }
-          });
-        }
+        this.setColVisible(hideCols)
       },
       onCellSingleClick(colDef, rowData, target) {
         // 单元格无内容时禁止跳转
