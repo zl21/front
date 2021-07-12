@@ -195,7 +195,6 @@
   import { getSessionObject, deleteFromSessionObject, updateSessionObject } from '../__utils__/sessionStorage';
   import { getUrl, getLabel } from '../__utils__/url';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
-  import treeData from '../__config__/treeData.config';
   import getUserenv from '../__utils__/getUserenv';
   import { addSearch, querySearch } from '../__utils__/indexedDB';
   import { getPinnedColumns } from '../__utils__/tableMethods'
@@ -319,12 +318,12 @@
           if (window.ProjectConfig && window.ProjectConfig.externalTreeDatas && window.ProjectConfig.externalTreeDatas[tableName]) {
             return window.ProjectConfig.externalTreeDatas[tableName]();
           }
-          if (treeData) {
-            if (treeData[tableName]) {
-              return treeData[tableName]();
-            }
-            return null;
-          }
+          // if (treeData) {
+          //   if (treeData[tableName]) {
+          //     return treeData[tableName]();
+          //   }
+          //   return null;
+          // }
         }
 
         return [];
