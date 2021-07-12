@@ -868,7 +868,10 @@ export default {
       if (res.data.code === 0) {
         resolve();
         const data = res.data.data;
-        commit('updateButtonsExport', data);
+        commit('updateButtonsExport', {
+          ...data,
+          message: res.data.message
+        });
       } else {
         reject();
       }

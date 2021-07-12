@@ -4556,6 +4556,18 @@
           if (this.buttonsData.exportdata) {
             if (Version() === '1.4') {
               this.$R3loading.hide(this.loadingName);
+
+              // fileUrl字段不存在时就代表是异步导出。
+              // 异步导出在[我的任务]查看
+              if(!this.buttonsData.exportdata.fileUrl) {
+                this.$Modal.fcSuccess({
+                  title: '成功',
+                  mask: true,
+                  content: this.buttonsData.exportdata.message
+                });
+                return
+              }
+              
               this.searchCondition = null;
               this.searchInfo = '';
               this.currentPage = 1;
