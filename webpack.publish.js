@@ -116,7 +116,7 @@ const config = {
         ]
       },
       {
-        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        test: /\.(woff|woff2|eot|ttf|otf|svg)$/,
         use: [
           {
             loader: 'file-loader',
@@ -188,6 +188,7 @@ const config = {
         }
       }
     }), new OptimizeCSSAssetsPlugin({})],
+    // })],
   },
 }
 
