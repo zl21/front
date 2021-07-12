@@ -4560,7 +4560,7 @@
               this.searchInfo = '';
               this.currentPage = 1;
               const eleLink = document.createElement('a');
-              const path = getGateway(`/p/cs/download?filename=${this.buttonsData.exportdata}`);
+              const path = getGateway(`/p/cs/download?filename=${this.buttonsData.exportdata.fileUrl}`);
               eleLink.setAttribute('href', path);
               eleLink.style.display = 'none';
               document.body.appendChild(eleLink);
