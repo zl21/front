@@ -1,6 +1,6 @@
 
 
-import network from '../__utils__/network';
+
 import json from './treeData.json';
 
 // 需要在配置文件中加入externalTreeDatas配置
@@ -20,7 +20,36 @@ import json from './treeData.json';
 // 注意：返回值中的所有ENAME字段请改为title
 export default {
   // value：框架传入的参数，模糊查询的字符
-  V_ORDER_INFO: value => async () => {
+  V_ORDER_INFO:value=>async () => {
+     // ....
+     const treeData = {
+      data: [], // 树结构列表数据
+      // name: 'eeee', // 定义查询参数
+      query: {// 支持配置多参数
+        name: 'NAME', // 参数中的key:需要筛选的字段
+        id: 'ID'
+      },
+      placeholder: '88', // placeholder自定义
+      // Notice:'DEEEE',
+      searchData: {// 定义查询接口参数
+        table: '1111',
+        table2: '222'
+
+      }
+
+    };
+    // await network.post('api',)
+    //   .then((res) => {
+    //     if (res.data.resultCode === 0) {
+    //       treeData.data = json.data;
+    //     }
+    //   });
+    treeData.data = json.data;
+  
+    return treeData;
+
+  },
+  SHANGPIN: value => async () => {
     // ....
     const treeData = {
       data: [], // 树结构列表数据

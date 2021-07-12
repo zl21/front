@@ -152,6 +152,7 @@ module.exports = env => ({
   },
   optimization: {
     minimizer: [new TerserJSPlugin({
+      parallel: true,
       sourceMap: true,
       terserOptions: {
         compress: {

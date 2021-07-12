@@ -180,6 +180,7 @@ const config = {
   },
   optimization: {
     minimizer: [new TerserJSPlugin({
+      parallel: true,
       sourceMap: true,
       terserOptions: {
         compress: {
