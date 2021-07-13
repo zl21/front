@@ -590,7 +590,7 @@
 
       buttonGroups: {
         handler(val) {
-          this.buttonData = val;
+          this.buttonData =this.filterButton(val);
         },
         deep: true
       },
@@ -714,7 +714,20 @@
           });
         }
       },
+      filterButton(val){
+        // 过滤导出按钮数据
+        if(this.activeTab.itemId ==='New'){
+        let index = val.findIndex((x)=>{
+              return x.eName ==='actionEXPORT';
+            });
+           if(index !== '-1'){
+               val.splice(index,1);
+          }
+        }
+       
+        return val;
 
+      },
       setColPosition(data) {
         network.post('/p/cs/setColPosition', urlSearchParams(data));
       },
@@ -4559,7 +4572,7 @@
 
               // fileUrl字段不存在时就代表是异步导出。
               // 异步导出在[我的任务]查看
-              if(!this.buttonsData.exportdata.fileUrl) {
+              if(window.ProjectConfig.messageSwitch) {
                 this.$Modal.fcSuccess({
                   title: '成功',
                   mask: true,
@@ -4731,7 +4744,7 @@
 
     },
     mounted() {
-      this.buttonData = this.buttonGroups;
+      this.buttonData = this.filterButton(this.buttonGroups);
       window.addEventListener('tabRefreshClick', () => {
         if (!this._inactive) {
           this.isRefreshClick = true;

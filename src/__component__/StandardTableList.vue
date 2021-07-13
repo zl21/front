@@ -2076,7 +2076,7 @@
               this.$R3loading.hide(this.loadingName);
               // fileUrl字段不存在时就代表是异步导出。
               // 异步导出在[我的任务]查看
-              if(!this.buttons.exportdata.fileUrl) {
+              if(window.ProjectConfig.messageSwitch) {
                 this.$Modal.fcSuccess({
                   title: '成功',
                   mask: true,
