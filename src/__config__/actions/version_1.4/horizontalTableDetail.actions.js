@@ -344,12 +344,11 @@ export default {
           if (temporaryStoragePath) {
             console.log('子表不支持暂存');
           } else if (tabrelation) { // 处理子表1:1模式逻辑
-            // const itemModifyDefault = itemCurrentParameter.default;
+           const itemModifyDefault = itemCurrentParameter.default;
             // const itemModifyAssign = Object.assign({}, itemModifyDefault[itemName], itemModify[itemName]);// 整合子表修改和默认值数据
 
             // 子表1:1模式参数不需要传默认值
-            const itemModifyAssign = Object.assign({}, itemModify[itemName]);// 整合子表修改和默认值数据
-
+            const itemModifyAssign = Object.assign(itemModifyDefault[itemName], itemModify[itemName]);// 整合子表修改和默认值数据
             const itemModifyAssignData = {};
             itemModifyAssignData[itemName] = itemModifyAssign;
             itemModifyAssignData[itemName].ID = itemObjId;

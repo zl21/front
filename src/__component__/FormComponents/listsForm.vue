@@ -130,6 +130,18 @@
       valueChange(item,val){
         // 表单change
         let arrjson = this.dealData(item, val);
+        
+        if(item.fkobj && item.fkobj.searchmodel){
+               if(Version()==='1.3'){
+                 if(!Array.isArray(arrjson[item.colname])){
+                  if(arrjson[item.colname]){
+                      let id = arrjson[item.colname].split(',');
+                      arrjson[item.colname] = id;
+                  }
+                 }
+               }
+
+        }
         if(this.$parent.updateFormAssignData){
           this.$parent.updateFormAssignData(arrjson);
         }

@@ -1,18 +1,15 @@
 {
     "name": "@syman/burgeon-r3",
-    "version": "1.5.1",
+    "version": "2.0.3",
     "description": "A Project for R3 Erp.",
     "main": "r3.publish/r3.min.js",
     "files": [
-        "r3.publish/r3.min.js",
-        "r3.publish/r3.min.js.map",
-        "r3.publish/r3.min.css",
-        "r3.publish/src/assets/image",
-        "r3.publish/src/assets/theme",
-        "r3.publish/src/assets/styles"
+        "r3.publish"
     ],
     "scripts": {
         "start": " webpack-dev-server --progress --env.develop",
+        "start:project": "cross-env BUILD_ENV=jenkins webpack --color --progress --config webpack.publish.js  --env.NODE_ENV=production  &&  webpack-dev-server --config webpack.project.js",
+        "build:project": "cross-env BUILD_ENV=jenkins webpack --color --progress --config webpack.publish.js  --env.NODE_ENV=production  && webpack --color --progress --config webpack.project.js --env.production",
         "build": "webpack --color --progress --config webpack.config.js --env.production",
         "build:style": "gulp --gulpfile build-style.js",
         "build:test": "cross-env BUILD_ENV=test webpack --color --progress --config webpack.test.js --env.NODE_ENV=development",
@@ -75,8 +72,7 @@
     "dependencies": {
         "@babel/polyfill": "^7.10.4",
         "@syman/ark-ui": "^1.1.37",
-        "@syman/ark-ui-bcl": "0.1.16",
-        "@syman/jflow-plugin": "^1.1.9",
+        "@syman/ark-ui-bcl": "0.2.1",
         "ag-grid": "^17.1.1",
         "ag-grid-enterprise": "^17.1.1",
         "awe-dnd": "^0.3.4",

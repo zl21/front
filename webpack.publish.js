@@ -9,7 +9,7 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const copyWebpackPlugin = require('copy-webpack-plugin');
 const {ModuleFederationPlugin} = require('webpack').container;
 
-module.exports = () => ({
+const config = {
   entry: {
     index: './index.publish.js'
   },
@@ -116,7 +116,7 @@ module.exports = () => ({
         ]
       },
       {
-        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        test: /\.(woff|woff2|eot|ttf|otf|svg)$/,
         use: [
           {
             loader: 'file-loader',
@@ -180,6 +180,7 @@ module.exports = () => ({
   },
   optimization: {
     minimizer: [new TerserJSPlugin({
+      parallel: true,
       sourceMap: true,
       terserOptions: {
         compress: {
@@ -187,5 +188,14 @@ module.exports = () => ({
         }
       }
     }), new OptimizeCSSAssetsPlugin({})],
+    // })],
   },
-});
+}
+
+if(process.env.BUILD_ENV === 'jenkins') {
+  config.resolve.alias = {
+    '@syman/ark-ui-bcl': path.resolve('static/js/ark-ui-bcl') // 本地调试业务组件
+  }
+}
+
+module.exports = () => config;

@@ -42,10 +42,6 @@ import './src/assets/theme/custom.less';
 //   gateway: null  //jflow网关配置
 // });
 
-// 全局指令
-import inputNumber from './src/directive/inputNumber';
-
-Vue.use(inputNumber);
 
 import panelForm from './src/__component__/FormComponents/PanelForm/panelForm'
 // import jflowPlugin from './jflowPlugin/js/index';

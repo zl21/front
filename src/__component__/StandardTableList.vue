@@ -871,13 +871,20 @@
         });
         this.updateAgConfig({ key: 'fixedColumn', value: pinnedCols });
       },
-      onColumnVisibleChanged(hideCols) {
+
+      // 设置隐藏
+      setColVisible(hideCols) {
         const { tableId } = this[INSTANCE_ROUTE_QUERY];
         this.setColHide({
           tableid: tableId,
           hidecolumns: hideCols
         });
         this.updateAgConfig({ key: 'hideColumn', value: hideCols });
+      },
+
+      // 监听表格隐藏或显示列
+      onColumnVisibleChanged(hideCols, params) {
+        this.setColVisible(hideCols)
       },
       onCellSingleClick(colDef, rowData, target) {
         // 单元格无内容时禁止跳转
