@@ -742,6 +742,10 @@
           componentInfo = null;
         }
 
+        if(this.columnRenderer) {
+          this.columnRenderer(cellData, componentInfo)
+        }
+
         return componentInfo;
       },
 

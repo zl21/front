@@ -46,6 +46,7 @@
         mode="r3-list"
         class="detailTable"
         ref="agGridTableContainer"
+        :r3ColumnRenderer="columnRenderer"
         :columns="columns"
         :data="rows"
         :options="{
@@ -281,6 +282,10 @@
       moduleComponentName: {
         type: String,
       },
+      // 定制表格列组件
+      columnRenderer: {
+        type: Function
+      }
     },
     watch: {
       datas(val) {
