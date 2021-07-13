@@ -1026,6 +1026,10 @@ export default {
   }
 }
 
+.ag-floating-filter-input {
+  pointer-events:none;
+}
+
 .table-cell-left {
   text-align: left;
   vertical-align: middle;
