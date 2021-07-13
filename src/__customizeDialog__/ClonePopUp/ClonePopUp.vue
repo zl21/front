@@ -2,7 +2,6 @@
   <div :class="classes">
     <div class="pop-title">
       <div class="pop-input">
-        {{allFormData}}
         <ul>
           <li>
             <span>{{ chineseName.SOURCETABLENAME }}：</span>

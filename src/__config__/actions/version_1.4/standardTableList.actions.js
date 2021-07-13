@@ -125,8 +125,11 @@ export default {
     )).then((res) => {
       if (res.data.code === 0) {
         resolve();
-        const datas = res.data.data;
-        commit('updateButtonsExport', datas);
+        const data = res.data.data;
+        commit('updateButtonsExport', {
+          ...data,
+          message: res.data.message
+        });
       } else {
         reject();
       }

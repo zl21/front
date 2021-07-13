@@ -2015,8 +2015,21 @@
           if (this.buttonsData.exportdata) {
             if (Version() === '1.4') {
               this.$R3loading.hide(this.loadingName);
+
+
+              // fileUrl字段不存在时就代表是异步导出。
+              // 异步导出在[我的任务]查看
+              if(!this.buttonsData.exportdata.fileUrl) {
+                this.$Modal.fcSuccess({
+                  title: '成功',
+                  mask: true,
+                  content: this.buttonsData.exportdata.message
+                });
+                return
+              }
+
               const eleLink = document.createElement('a');
-              const path = getGateway(`/p/cs/download?filename=${this.buttonsData.exportdata}`);
+              const path = getGateway(`/p/cs/download?filename=${this.buttonsData.exportdata.fileUrl}`);
               eleLink.setAttribute('href', encodeURI(path));
               eleLink.style.display = 'none';
               document.body.appendChild(eleLink);
