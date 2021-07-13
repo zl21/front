@@ -288,7 +288,7 @@
           this.agGridTable(val.tabth, val.row, val);
           setTimeout(() => {
             const { agGridTableContainer } = this.$refs;
-            
+
             if (agGridTableContainer) {
               agGridTableContainer.emptyAllFilters();
               if(this.$route.query.isBack) {
@@ -351,7 +351,7 @@
           }
           item.tdAlign = item.type === 'NUMBER' ? 'right' : 'left'
           return item
-        }) 
+        })
         return columns
       },
 
@@ -397,7 +397,7 @@
         }
 
         if(datas.row && Array.isArray(datas.row)) {
-          this.rows = [...datas.row] 
+          this.rows = [...datas.row]
         }
 
         this.options = {
@@ -549,86 +549,3 @@
     },
   };
 </script>
-
-<style lang="less">
-.standardTable {
-  overflow: hidden;
-  padding: 20px 0 0 0;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  height: 100%;
-  .common-table {
-     margin-top: 10px;
-    overflow-y: hidden;
-    flex: 1;
-  }
-}
-.detailTable,
-.isBig {
-  border: 1px solid #d8d8d8;
-  margin-top: 10px;
-  height: calc(100% - 65px);
-  width: 100%;
-}
-.isBig {
-  //  background-repeat: no-repeat;
-  //  background-position: center center;
-  //  background-size: 24%;
-  display: flex;
-  height: 100%;
-  width: 100%;
-  align-items: center;
-  justify-content: center;
-
-  > img {
-    width: 25%;
-    height: 65%;
-  }
-}
-
-.queryDesc {
-  height: 20px;
-  margin: 5px 0;
-  line-height: 18px;
-  display: flex;
-
-  > div {
-    flex: 1;
-  }
-  .legend {
-    > p {
-      display: inline-block;
-      button {
-        border: 1px solid #575757;
-        margin-right: 2px;
-        background: white;
-        padding: 0 3px;
-      }
-
-      margin-right: 3px;
-    }
-  }
-}
-.isFilterTable {
-  padding: 0;
-  .agPage {
-    order: 2;
-    margin-top: 10px;
-  }
-  .isBig {
-    order: 1;
-    margin-top: 0px;
-  }
-  .queryDesc {
-    order: 3;
-  }
-  .detailTable{
-    margin-top: 0px;
-  }
-.common-table{
-    margin-top: 0px;
-
-}
-}
-</style>
