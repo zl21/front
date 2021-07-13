@@ -525,13 +525,13 @@ export default {
         resolve();
         const data = res.data.data;
         commit('updateButtonsExport', {
-          ...data,
+          fileUrl: data,
           message: res.data.message
         });
       } else {
         const data = res.data.data;
         commit('updateButtonsExport', {
-          ...data,
+          fileUrl: data,
           message: res.data.message
         });
         reject();
