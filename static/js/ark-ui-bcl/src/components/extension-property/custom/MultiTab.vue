@@ -154,6 +154,7 @@
 import { SlickList, SlickItem } from 'vue-slicksort';
 import Description from '../description';
 import Validate from '../validate/Validate';
+import inputNumber from '../../../directive/inputNumber'
 import { urlSearchParams } from '../../../utils/http';
 
 const TAB_CONSTRUCTOR = {
@@ -177,6 +178,8 @@ export default {
   },
 
   name: 'MultiTab',
+
+  directives: {inputNumber},
 
   inject: ['network'],
 

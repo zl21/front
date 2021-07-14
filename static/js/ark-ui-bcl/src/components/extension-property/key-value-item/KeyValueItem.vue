@@ -50,10 +50,13 @@
 <script type="text/ecmascript-6">
 import Description from '../description';
 import deepClone from '../../../utils/deepClone';
+import inputNumber from '../../../directive/inputNumber'
 import '../../../assets/tailwindcss/index.css'
 
 export default {
   name: 'KeyValueItem',
+
+  directives: {inputNumber},
 
   props: {
     option: {

@@ -201,8 +201,8 @@ export default {
       rowData.forEach((d, i) => {
         d[AG_SEQUENCE_COLUMN_NAME] = { val: i + 1 };
       });
-      console.log('设置行', rowData);
-      console.log('设置底部', pinnedBottomRowData)
+      // console.log('设置行', rowData);
+      // console.log('设置底部', pinnedBottomRowData)
       this._pinnedBottomRowData = pinnedBottomRowData;
       this.api.setRowData(rowData);
       this.api.setPinnedBottomRowData(pinnedBottomRowData);
@@ -242,7 +242,7 @@ export default {
       }
 
       this.api.setColumnDefs(this._transformColumnDefs(colData));
-      console.log('设置列', this._transformColumnDefs(colData));
+      // console.log('设置列', this._transformColumnDefs(colData));
       setTimeout(() => {
         this.columnApi.autoSizeAllColumns(); // 自适应所有列宽
       }, 20)
