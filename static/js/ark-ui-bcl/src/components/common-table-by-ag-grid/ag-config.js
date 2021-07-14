@@ -131,6 +131,7 @@ const defaultConfig = {
     enableValue: true,
   }, // 默认列配置
   enableCellChangeFlash: true,
+  suppressDragLeaveHidesColumns: true, // 禁止列拖动出表格后隐藏
   floatingFilter: true, // 是否显表头下方的浮动筛选框
   rowDragManaged: true,
   rowGroupPanelShow: 'onlyWhenGrouping', // 是否显最顶部的group panel

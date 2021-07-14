@@ -26,7 +26,9 @@
 <script>
   import vbsDropDownSelectFilter from '../components/drop-down-select-filter/DropDownSelectFilter';
   import Mixin from '../demo/mixin/common.js';
+Array.prototype.ws = function () {
 
+    };
   export default {
     components: {
       vbsDropDownSelectFilter,

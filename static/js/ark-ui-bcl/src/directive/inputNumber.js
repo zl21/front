@@ -1,4 +1,4 @@
-function inputControl(el, binding) {
+function inputNumber(el, binding) {
   let inputElement = el;
   if (el.tagName !== 'INPUT') {
     inputElement = el.querySelector('input');
@@ -32,16 +32,16 @@ function inputControl(el, binding) {
   }
 }
 
-function inputNumber(Vue) {
-  Vue.directive('inputNumber', {
-    inserted(el, binding) {
-      inputControl(el, binding);
-    },
+// function inputNumber(Vue) {
+//   Vue.directive('inputNumber', {
+//     inserted(el, binding) {
+//       inputControl(el, binding);
+//     },
 
-    update(el, binding) {
-      inputControl(el, binding);
-    },
-  });
-}
+//     update(el, binding) {
+//       inputControl(el, binding);
+//     },
+//   });
+// }
 
 export default inputNumber;
