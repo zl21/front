@@ -2075,6 +2075,17 @@
           if (this.buttons.exportdata) {     
             if (Version() === '1.4') { // Version() === '1.4'
               this.$R3loading.hide(this.loadingName);
+              // fileUrl字段不存在时就代表是异步导出。
+              // 异步导出在[我的任务]查看
+              if(window.ProjectConfig.messageSwitch) {
+                this.$Modal.fcSuccess({
+                  title: '成功',
+                  mask: true,
+                  content: this.buttons.exportdata.message
+                });
+                return
+              }
+
               const eleLink = document.createElement('a');
               const path = getGateway(`/p/cs/download?filename=${this.buttons.exportdata.fileUrl}`);
               eleLink.setAttribute('href', path);
