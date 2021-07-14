@@ -7,6 +7,7 @@
     <Tabs type="card" class="openedMenuListsItem" 
          closable 
         @on-click="switchTab" 
+        :title="true"
         :closedClick="handleClose"
         :value="tagIndex">
         <TabPane  v-for="(tag, index) in openedMenuLists" 

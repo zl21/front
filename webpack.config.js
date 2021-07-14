@@ -12,7 +12,7 @@ const { ModuleFederationPlugin } = require('webpack').container;
 const projectConfig = require('./project.config');
 
 const target = projectConfig.target; // 框架研发网关开启环境
-const proxyLists = ['/p/c', '/frr-center', '/eplan-center', '/ad-app', '/r3/qiaochu', '/retailcloud-crm2', '/retailcloud-official', '/ishop-synchronize', '/asynctask'];
+const proxyLists = ['/p/c','/r3-cp','/r3-oc-oms', '/p/cs','/frr-center', '/eplan-center', '/ad-app', '/r3/qiaochu', '/retailcloud-crm2', '/retailcloud-official', '/ishop-synchronize', '/asynctask'];
 const proxyListsForGateway = ['/ad-app/p/c', '/asynctask/p/cs'];
 const proxyListsForIShop = ['/ishopad-app', '/ishopplatform/p/c', '/ishopbill/p/c', '/ishopbase/p/c', '/ishopcrm/p/cs/'];
 const proxyListsForPalmCloud = ['/mboscloud-app'];
