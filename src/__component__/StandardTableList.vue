@@ -481,43 +481,44 @@
           // });
           const arrRes = [];
           const tabValue = JSON.parse(JSON.stringify(data.tab_value));
-          this.searchData.fixedcolumns = Object.values(tabValue).reduce((arr, obj) => {
-            Object.keys(this.searchData.fixedcolumns).map((key) => {
-              if (obj[key]) {
-                if (obj[key] !== this.searchData.fixedcolumns[key]) {
-                  switch (Object.prototype.toString.call(obj[key])) {
-                  case '[object String]':
-                    if (obj[key].includes('~')) { // 判断否是时间段类型字段,取两个时间的并集
-                      let dateArray = [];
-                      dateArray = dateArray.concat(this.searchData.fixedcolumns[key].split('~'));
-                      dateArray = dateArray.concat(obj[key].split('~'));
-                      dateArray.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-                      arr[key] = [dateArray[0], dateArray[3]].join('~');
-                    } else {
-                      arr[key] = `${obj[key]},${this.searchData.fixedcolumns[key]}`;
-                      arr[key] = arr[key].split(',');
-                      // arr[key] = Array.from(new Set(arrRes));
-                      // arr[key] = arr[key].toString();
-                    }
+          this.searchData.column_tabs = {...tabValue[0]};
+          // this.searchData.fixedtabscolname = Object.values(tabValue).reduce((arr, obj) => {
+          //   Object.keys(this.searchData.fixedcolumns).map((key) => {
+          //     if (obj[key]) {
+          //       if (obj[key] !== this.searchData.fixedcolumns[key]) {
+          //         switch (Object.prototype.toString.call(obj[key])) {
+          //         case '[object String]':
+          //           if (obj[key].includes('~')) { // 判断否是时间段类型字段,取两个时间的并集
+          //             let dateArray = [];
+          //             dateArray = dateArray.concat(this.searchData.fixedcolumns[key].split('~'));
+          //             dateArray = dateArray.concat(obj[key].split('~'));
+          //             dateArray.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+          //             arr[key] = [dateArray[0], dateArray[3]].join('~');
+          //           } else {
+          //             arr[key] = `${obj[key]},${this.searchData.fixedcolumns[key]}`;
+          //             arr[key] = arr[key].split(',');
+          //             // arr[key] = Array.from(new Set(arrRes));
+          //             // arr[key] = arr[key].toString();
+          //           }
 
-                    break;
-                  case '[object Array]':
-                    arr[key] = obj[key].concat(this.searchData.fixedcolumns[key]);
-                    arr[key] = Array.from(new Set(arr[key]));
+          //           break;
+          //         case '[object Array]':
+          //           arr[key] = obj[key].concat(this.searchData.fixedcolumns[key]);
+          //           arr[key] = Array.from(new Set(arr[key]));
 
-                    break;
-                  default:
-                    break;
-                  }
-                  return obj[key];
-                }
-              }
-              arr[key] = this.searchData.fixedcolumns[key];
-            });
+          //           break;
+          //         default:
+          //           break;
+          //         }
+          //         return obj[key];
+          //       }
+          //     }
+          //     arr[key] = this.searchData.fixedcolumns[key];
+          //   });
 
-            arr = Object.assign(obj, arr);
-            return arr;
-          }, {});
+          //   arr = Object.assign(obj, arr);
+          //   return arr;
+          // }, {});
           this.filterTableParam = this.searchData.fixedcolumns;
           // this.searchData.fixedcolumns = Object.assign(this.searchData.fixedcolumns, popwinMessage);
         }
