@@ -77,6 +77,10 @@ export default {
     // 是否加边框
     border: {
       type: Boolean
+    },
+    // r3定制表格列方法
+    r3ColumnRenderer: {
+      type: Function
     }
   },
 
@@ -156,9 +160,13 @@ export default {
       this.$refs.agGridTable._fixAgRenderChoke()
     },
 
+    // 支持r3替换渲染组件
+
+
     // r3列表渲染逻辑
     listRender(cellData) {
       let renderObj = {
+        renderContainer: 'CellRender',
         renderComponent: TextComponent
       }
       if (cellData.display === 'doc') {
@@ -183,6 +191,10 @@ export default {
 
       if(cellData.key_group && cellData.key_group.length > 0){
         renderObj.renderComponent = FieldMergeComponent
+      }
+
+      if(this.r3ColumnRenderer) {
+        this.r3ColumnRenderer(cellData, renderObj)
       }
 
       return renderObj
