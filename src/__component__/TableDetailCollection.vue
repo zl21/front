@@ -716,7 +716,7 @@
       },
       filterButton(val){
         // 过滤导出按钮数据
-        if(this.activeTab.itemId ==='New'){
+        if(this.$route.params.itemId ==='New'){
         let index = val.findIndex((x)=>{
               return x.eName ==='actionEXPORT';
             });
