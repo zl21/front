@@ -193,6 +193,19 @@
       handleEnter(){
         this.$emit('onHandleEnter',...arguments)
       },
+      r3Format(val,item){
+        // 兼容1.3 数据格式传参
+        if(Version()==='1.3'){
+            if(['OBJ_DATE', 'OBJ_DATENUMBER', 'YearMonth', 'OBJ_DATETIME'].includes(item.display) && val[item.colname]){
+               val[item.colname] = val[item.colname].replace(/-/g,'/');
+              return val
+            }else{
+              return val;
+            }
+        }else{
+            return val
+        }
+      },
 
 
       // public API
@@ -207,7 +220,7 @@
             const value = item && item.isuppercase && components.value &&  !item.display ?components.value.toUpperCase():components.value;
 
 
-            const json = this.dealData(item, value);
+            const json = this.r3Format(this.dealData(item, value),item);
              if(item.fkobj && item.fkobj.searchmodel){
                if(Version()==='1.3'){
                  if(!Array.isArray(json[item.colname])){
