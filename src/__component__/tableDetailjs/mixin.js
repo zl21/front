@@ -86,7 +86,7 @@ export default {
             value:checked
           });
 
-          if(showchecked.length>0 ){
+          if(showchecked.length>0 &&  this.$refs.tabPanel){
             if(this.$refs.tabPanel.activeKey!== this.tabCurrentIndex){
               this.tabClick(this.tabCurrentIndex);
             }
