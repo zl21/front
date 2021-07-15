@@ -73,6 +73,7 @@
 
       <AgTable
         ref="agTableElement"
+        :columnRenderer="columnRendererHandler"
         :moduleComponentName='moduleComponentName'
         :style="agTableElementStyles"
         :page-attribute="pageAttribute"
@@ -253,7 +254,6 @@
         }, // 弹框配置信息
         currentTabValue: {},
         filterTableParam: {},
-
       };
     },
     computed: {
@@ -403,6 +403,14 @@
       }
     },
     methods: {
+      // r3定制渲染列
+      // 提前定义好一个空函数，这样即使通过mixin混入进来函数没传也不会报错
+      columnRendererHandler(cellData, render) {
+        if(this.columnRenderer) {
+          this.columnRenderer(cellData, render)
+        }
+      },
+
       onPageSizeChangeForFilterTable(pageSize) {
         this.resetButtonsStatus();
         this.searchData.startIndex = 0;

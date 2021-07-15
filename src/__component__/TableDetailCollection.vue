@@ -745,6 +745,10 @@
         if (cellData.colname === EXCEPT_COLUMN_NAME) {
           componentInfo = null;
         }
+        if(this.columnRenderer) {
+          componentInfo = {}
+          this.columnRenderer(cellData, componentInfo)
+        }
 
         return componentInfo;
       },
