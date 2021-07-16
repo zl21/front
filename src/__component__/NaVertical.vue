@@ -74,8 +74,8 @@
         </div>
         <ComAutoComplete slot="nav-input" />
 
-        <Lately slot="icon-Lately"></Lately>
-        <Collect slot="icon-Collect"></Collect>
+        <Lately slot="icon-Lately"  v-if="enableHistoryAndFavoriteUI"></Lately>
+        <Collect slot="icon-Collect"  v-if="enableHistoryAndFavoriteUI"></Collect>
       </div>
       <div
         v-if="versionValue"
@@ -508,6 +508,7 @@
       }else{
       this.slotName = NaVerticalslot;
       }
+            console.log(this.slotName, window.ProjectConfig);
       if (Version() === '1.3') {
         this.messageTimer = setInterval(() => {
           this.getMessageCount();

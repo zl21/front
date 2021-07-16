@@ -21,7 +21,13 @@ import getObjdisType from './src/__utils__/getObjdisType';
 import projectConfig from './project.config';
 import { addSearch } from './src/__utils__/indexedDB';
 import { createWatermark } from './src/__utils__/waterMark';
-
+const packageMessage = {
+  version: '1.8.7',
+  packageTime: '2021.06.25', 
+  user: 'AD',   
+};
+projectConfig.packageMessage = packageMessage;
+window.ProjectConfig = projectConfig;
 import './src/__utils__/getChildComponent';
 // import '@syman/ark-ui/dist/styles/ark-ui.css';
 
@@ -292,10 +298,4 @@ if (enableGateWay()) {
 }
 
 
-const packageMessage = {
-  version: '1.8.7',
-  packageTime: '2021.06.25', 
-  user: 'AD',   
-};
-projectConfig.packageMessage = packageMessage;
-window.ProjectConfig = projectConfig;
+

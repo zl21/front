@@ -177,7 +177,8 @@ export const isEmpty = (obj)=>{
         obj = JSON.stringify(obj || {}).replace(/null|,/g,'');
 
     }
-    if(obj == undefined || obj == "null" || obj == "" || obj == "[]" || obj == "{}"){
+
+    if(obj === undefined || obj === "null" || obj === "" || obj === "[]" || obj === "{}"){
         return true;
     }else{
         return false;

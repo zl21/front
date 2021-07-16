@@ -590,7 +590,7 @@
 
       buttonGroups: {
         handler(val) {
-          this.buttonData = val;
+          this.buttonData =this.filterButton(val);
         },
         deep: true
       },
@@ -714,7 +714,20 @@
           });
         }
       },
+      filterButton(val){
+        // 过滤导出按钮数据
+        if(this.$route.params.itemId ==='New'){
+        let index = val.findIndex((x)=>{
+              return x.eName ==='actionEXPORT';
+            });
+           if(index !== '-1'){
+               val.splice(index,1);
+          }
+        }
+       
+        return val;
 
+      },
       setColPosition(data) {
         network.post('/p/cs/setColPosition', urlSearchParams(data));
       },
@@ -4735,7 +4748,7 @@
 
     },
     mounted() {
-      this.buttonData = this.buttonGroups;
+      this.buttonData = this.filterButton(this.buttonGroups);
       window.addEventListener('tabRefreshClick', () => {
         if (!this._inactive) {
           this.isRefreshClick = true;
