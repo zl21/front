@@ -166,7 +166,7 @@ export default {
       const agGridTableContainer = this.$refs.tableContainer
       // 自适应所有列
       this._horizontalScrollTo(agGridDiv.querySelector('.ag-body-viewport'), agGridTableContainer.getAttribute('data-scroll-left')); // 处理表体的横向滚动问题。
-      columnApi.autoSizeAllColumns();
+      this._autoSizeColumns()
       agGridDiv.appendChild(tooltipBox);
       document.body.appendChild(tooltipTopBox);
       // 移除ag-tool-panel
@@ -244,7 +244,7 @@ export default {
       this.api.setColumnDefs(this._transformColumnDefs(colData));
       // console.log('设置列', this._transformColumnDefs(colData));
       setTimeout(() => {
-        this.columnApi.autoSizeAllColumns(); // 自适应所有列宽
+        this._autoSizeColumns()
       }, 20)
       return agTable;
     },
@@ -529,7 +529,7 @@ export default {
           this.resizeColumnsTimer = null
         }
         this.resizeColumnsTimer = setTimeout(() => {
-          this.columnApi && this.columnApi.autoSizeAllColumns();
+          this._autoSizeColumns()
         }, 100)
       }
     },
@@ -952,7 +952,7 @@ export default {
     // 处理ag-body-viewport 横向滚动问题
     _horizontalScrollTo(element, scrollValue) {
       element.scrollLeft = parseFloat(scrollValue);
-      this.columnApi.autoSizeAllColumns();
+      this._autoSizeColumns()
     },
 
     // 重新表头位置。fix: 从别的界面返回表格界面时，表头会消失
@@ -962,13 +962,32 @@ export default {
       header.style.left = 0
     },
 
+    // 调整列宽
+    // 规则：1.所有列大于表格宽度时，此时用autoSizeAllColumns  2.所有列小于表格宽度时，此时用sizeColumnsToFit
+    _autoSizeColumns() {
+      const tableDom = this.$refs.table.$el
+      const viewport = tableDom.querySelector('.ag-body-viewport') // 表格可视区,不含固定列
+      const container = tableDom.querySelector('.ag-body-container') // 表格所有列的容器
+      // if(!viewport || !container) {
+
+      // }
+      const viewportWidth = viewport.offsetWidth
+      const containerWidth = container.offsetWidth
+
+      if(containerWidth <= viewportWidth) {
+        this.api.sizeColumnsToFit()
+      } else {
+        this.columnApi.autoSizeAllColumns()
+      }
+    },
+
     // 重新分配列宽
     _resetColumnWidth(callback) {
       // fix: 页面激活后或者数据更新后,列宽没有自动分配
       // 注意，这里不掉两次autoSizeAllColumns的话依然不能把列宽自动分配
-      this.columnApi && this.columnApi.autoSizeAllColumns();
+      this._autoSizeColumns()
       setTimeout(() => {
-        this.columnApi && this.columnApi.autoSizeAllColumns();
+        this._autoSizeColumns()
         callback && callback()
       }, 20)
     },
