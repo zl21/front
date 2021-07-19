@@ -154,7 +154,6 @@ export default {
       }
 
 
-
       // 数组转对象处理，避免vue渲染时的指针问题
       data.addcolums.map((item, index) => {
         let _childs = item.childs ? item.childs : [item.child];
@@ -254,13 +253,34 @@ export default {
     panelRedraw (array) {
       const columns = Number(this.objviewcol) || 4;
       let childs = layoutAlgorithm(columns, Object.values(array));
+      // 判断hr 是否隐藏
+      let parentIsDisplay = {};
       Object.keys(childs).map(temp => {
         let a = this.$_live_getChildComponent(this, `${this.tableName}${childs[temp].colname}`)
         if (a && a.$el && a.$el.parentNode) {
           a.$el.parentNode.style = this.setDiv(childs[temp])
+          if (childs[temp].x === -1 || childs[temp].y === -1) {
+            //  存储要隐藏的字段
+            if(!parentIsDisplay[a.$parent.$attrs.index]){
+              parentIsDisplay[a.$parent.$attrs.index] = {};
+            }
+            parentIsDisplay[a.$parent.$attrs.index][childs[temp].colname] = 'none';
+
+          }
+          
         }
         return temp
       })
+      let parentIsDisplayKey = Object.keys(parentIsDisplay);
+      // 判断hr 是否隐藏
+      if(parentIsDisplayKey.length>0 ){
+        if(Object.keys(parentIsDisplay[parentIsDisplayKey[0]]).length === Object.keys(this.formItemLists[parentIsDisplayKey[0]].childs).length){
+          this.$el.querySelector(`#Collapse_${parentIsDisplayKey[0]}`).style.display = 'none';
+        }else{
+          this.$el.querySelector(`#Collapse_${parentIsDisplayKey[0]}`).style.display = 'block';
+        }
+
+      }
       return childs
     },
     dealData (item, value) {
@@ -370,7 +390,7 @@ export default {
           })
         }
 
-      }, 200)
+      }, 300)
 
       // this.formItemLists.forEach(item => {
       // console.log(item,'1212');
