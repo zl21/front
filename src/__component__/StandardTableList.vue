@@ -73,6 +73,7 @@
 
       <AgTable
         ref="agTableElement"
+        :columnRenderer="columnRendererHandler"
         :moduleComponentName='moduleComponentName'
         :style="agTableElementStyles"
         :page-attribute="pageAttribute"
@@ -402,6 +403,12 @@
       }
     },
     methods: {
+      columnRendererHandler(cellData, render) {
+        if(this.columnRenderer) {
+          this.columnRenderer(cellData, render)
+        }
+      },
+
       onPageSizeChangeForFilterTable(pageSize) {
         this.resetButtonsStatus();
         this.searchData.startIndex = 0;
