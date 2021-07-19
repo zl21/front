@@ -183,7 +183,6 @@
             }
           });
            
-        return;
         if (!this.t_table_name.trim()) {
           const data = {
             mask: true,
