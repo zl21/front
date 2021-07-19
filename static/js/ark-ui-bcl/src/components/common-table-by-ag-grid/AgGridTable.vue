@@ -622,7 +622,7 @@ export default {
           viewport.scrollTop = 0;
           viewport.scrollLeft = currentViewPortScrollLeft || 0;
           this._resetColumnWidth()
-        }, 50);
+        }, 100);
       }
       return agTable;
     },
@@ -975,7 +975,6 @@ export default {
       if (containerWidth === 0 && viewportWidth === 0) {
         return
       }
-
       if (containerWidth <= viewportWidth) {
         this.api.sizeColumnsToFit()
       } else {
@@ -991,7 +990,7 @@ export default {
       setTimeout(() => {
         this._autoSizeColumns()
         callback && callback()
-      }, 50)
+      }, 200)
     },
 
     // 监听窗口缩放
@@ -1003,7 +1002,7 @@ export default {
         this._autoSizeColumns()
         setTimeout(() => {
           this._autoSizeColumns()
-        }, 20)
+        }, 50)
       })
       window.addEventListener('resize', handleColumnWidth)
 
