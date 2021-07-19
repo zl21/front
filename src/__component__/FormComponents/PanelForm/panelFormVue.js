@@ -42,6 +42,7 @@ export default {
       objviewcol: 4, // 表单默认展示几列
       LinkageForm: [],// 联动状态
       id:'', // id 名称
+      timerCollapse:'', // hr 隐藏时间
       formChangeDataLabel: {},  //表单修改过的数据--显示值
       timer: null,
 
@@ -254,34 +255,33 @@ export default {
       const columns = Number(this.objviewcol) || 4;
       let childs = layoutAlgorithm(columns, Object.values(array));
       // 判断hr 是否隐藏
-      let parentIsDisplay = {};
+      //let parentIsDisplay = {};
       Object.keys(childs).map(temp => {
         let a = this.$_live_getChildComponent(this, `${this.tableName}${childs[temp].colname}`)
         if (a && a.$el && a.$el.parentNode) {
           a.$el.parentNode.style = this.setDiv(childs[temp])
-          if (childs[temp].x === -1 || childs[temp].y === -1) {
-            //  存储要隐藏的字段
-            if(!parentIsDisplay[a.$parent.$attrs.index]){
-              parentIsDisplay[a.$parent.$attrs.index] = {};
-            }
-            parentIsDisplay[a.$parent.$attrs.index][childs[temp].colname] = 'none';
-
-          }
-          
+          this.setCollapseDisplay();
         }
         return temp
       })
-      let parentIsDisplayKey = Object.keys(parentIsDisplay);
-      // 判断hr 是否隐藏
-      if(parentIsDisplayKey.length>0 ){
-        if(Object.keys(parentIsDisplay[parentIsDisplayKey[0]]).length === Object.keys(this.formItemLists[parentIsDisplayKey[0]].childs).length){
-          this.$el.querySelector(`#Collapse_${parentIsDisplayKey[0]}`).style.display = 'none';
-        }else{
-          this.$el.querySelector(`#Collapse_${parentIsDisplayKey[0]}`).style.display = 'block';
-        }
-
-      }
       return childs
+    },
+    setCollapseDisplay(){
+      // 设置hr 是否隐藏
+      clearTimeout(this.timerCollapse);
+      this.timerCollapse = setTimeout(()=>{
+         Object.keys(this.formItemLists).forEach((index)=>{
+            let checked =  Object.keys(this.formItemLists[index].childs).some((i)=>{
+                return this.formItemLists[index].childs[i].show === true;
+            });
+            if(!checked){
+              this.$el.querySelector(`#Collapse_${index}`).style.display = 'none';
+            }else{
+              this.$el.querySelector(`#Collapse_${index}`).style.display = 'block';
+            }
+         });
+      },200);
+
     },
     dealData (item, value) {
       // 通过ParameterDataProcessing类对数据进行处理
