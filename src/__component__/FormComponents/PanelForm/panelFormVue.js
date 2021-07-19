@@ -255,7 +255,6 @@ export default {
       const columns = Number(this.objviewcol) || 4;
       let childs = layoutAlgorithm(columns, Object.values(array));
       // 判断hr 是否隐藏
-      //let parentIsDisplay = {};
       Object.keys(childs).map(temp => {
         let a = this.$_live_getChildComponent(this, `${this.tableName}${childs[temp].colname}`)
         if (a && a.$el && a.$el.parentNode) {
