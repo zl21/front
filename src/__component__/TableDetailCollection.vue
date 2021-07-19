@@ -758,6 +758,10 @@
         if (cellData.colname === EXCEPT_COLUMN_NAME) {
           componentInfo = null;
         }
+        if(this.columnRenderer) {
+          componentInfo = {}
+          this.columnRenderer(cellData, componentInfo)
+        }
 
         return componentInfo;
       },
@@ -4569,6 +4573,18 @@
           if (this.buttonsData.exportdata) {
             if (Version() === '1.4') {
               this.$R3loading.hide(this.loadingName);
+
+              // fileUrl字段不存在时就代表是异步导出。
+              // 异步导出在[我的任务]查看
+              if(window.ProjectConfig.messageSwitch) {
+                this.$Modal.fcSuccess({
+                  title: '成功',
+                  mask: true,
+                  content: this.buttonsData.exportdata.message
+                });
+                return
+              }
+              
               this.searchCondition = null;
               this.searchInfo = '';
               this.currentPage = 1;

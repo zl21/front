@@ -11,10 +11,10 @@ import 'viewerjs/dist/viewer.css'
 import App from './App.vue'
 import router from './router/index'
 import VueDND from 'awe-dnd'
-// 全局指令
-import inputNumber from './directive/inputNumber'
+// // 全局指令
+// import inputNumber from './directive/inputNumber'
 
-Vue.use(inputNumber)
+// Vue.use(inputNumber)
 
 Vue.use(ArkUi)
 Vue.use(Viewer)
