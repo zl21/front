@@ -73,6 +73,7 @@
 
       <AgTable
         ref="agTableElement"
+        :columnRenderer="columnRendererHandler"
         :moduleComponentName='moduleComponentName'
         :style="agTableElementStyles"
         :page-attribute="pageAttribute"
@@ -195,7 +196,6 @@
   import { getSessionObject, deleteFromSessionObject, updateSessionObject } from '../__utils__/sessionStorage';
   import { getUrl, getLabel } from '../__utils__/url';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
-  import treeData from '../__config__/treeData.config';
   import getUserenv from '../__utils__/getUserenv';
   import { addSearch, querySearch } from '../__utils__/indexedDB';
   import { getPinnedColumns } from '../__utils__/tableMethods'
@@ -319,12 +319,12 @@
           if (window.ProjectConfig && window.ProjectConfig.externalTreeDatas && window.ProjectConfig.externalTreeDatas[tableName]) {
             return window.ProjectConfig.externalTreeDatas[tableName]();
           }
-          if (treeData) {
-            if (treeData[tableName]) {
-              return treeData[tableName]();
-            }
-            return null;
-          }
+          // if (treeData) {
+          //   if (treeData[tableName]) {
+          //     return treeData[tableName]();
+          //   }
+          //   return null;
+          // }
         }
 
         return [];
@@ -403,6 +403,12 @@
       }
     },
     methods: {
+      columnRendererHandler(cellData, render) {
+        if(this.columnRenderer) {
+          this.columnRenderer(cellData, render)
+        }
+      },
+
       onPageSizeChangeForFilterTable(pageSize) {
         this.resetButtonsStatus();
         this.searchData.startIndex = 0;
@@ -457,6 +463,18 @@
           this.searchClickData();
         }
       },
+      filterTabColoname(data){
+        // 过滤tab 的字段小写
+          let tab_value = data.tab_value.reduce((arr,item)=>{
+              let key = (Object.keys(item)[0]).toLocaleLowerCase();
+              let option = {
+                [key]: item[Object.keys(item)[0]]
+              }
+              arr.push(option);
+              return arr;
+          },[]);
+          return  tab_value;
+      },
       async tabClick({ data, index,stopRequest }) {
         this.filterTableParam = {};
         if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].startIndex) {
@@ -481,7 +499,8 @@
           //   this.filterTableParam = item;
           // });
           const arrRes = [];
-          const tabValue = JSON.parse(JSON.stringify(data.tab_value));
+          
+          const tabValue = JSON.parse(JSON.stringify(this.filterTabColoname(data)));
           this.searchData.fixedcolumns = Object.values(tabValue).reduce((arr, obj) => {
             Object.keys(this.searchData.fixedcolumns).map((key) => {
               if (obj[key]) {
@@ -548,7 +567,10 @@
       ...mapMutations('global', ['updateCustomizeMessage', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter', 'updataSTDefaultQuery']),
 
       async menuTreeChange(treeName, currentId, flag, queryFilterData, searchData) {
-        this.searchData.fixedcolumns = await this.dataProcessing();
+        let fixedcolumns = await this.dataProcessing();
+        let filterTableParam = JSON.parse(JSON.stringify(this.filterTableParam));
+        let fixedcolumnsdata = JSON.parse(JSON.stringify(fixedcolumns));
+        this.searchData.fixedcolumns = Object.assign(filterTableParam,fixedcolumnsdata);
         if (Object.keys(queryFilterData) && Object.keys(queryFilterData).length > 0 && flag) {
           this.searchData.reffixedcolumns = queryFilterData;
         } else if (this.searchData && this.searchData.reffixedcolumns) {
@@ -2075,8 +2097,20 @@
           if (this.buttons.exportdata) {
             if (Version() === '1.4') { // Version() === '1.4'
               this.$R3loading.hide(this.loadingName);
+
+              // fileUrl字段不存在时就代表是异步导出。
+              // 异步导出在[我的任务]查看
+              if(window.ProjectConfig.messageSwitch) {
+                this.$Modal.fcSuccess({
+                  title: '成功',
+                  mask: true,
+                  content: this.buttons.exportdata.message
+                });
+                return
+              }
+
               const eleLink = document.createElement('a');
-              const path = getGateway(`/p/cs/download?filename=${this.buttons.exportdata}`);
+              const path = getGateway(`/p/cs/download?filename=${this.buttons.exportdata.fileUrl}`);
               eleLink.setAttribute('href', path);
               eleLink.style.display = 'none';
               document.body.appendChild(eleLink);

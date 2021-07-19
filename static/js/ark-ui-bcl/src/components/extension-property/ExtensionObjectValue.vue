@@ -55,10 +55,13 @@
 import Description from './description';
 import AKRadio from '../radio';
 import deepClone from '../../utils/deepClone';
+import inputNumber from '../../directive/inputNumber'
 import '../../assets/tailwindcss/index.css'
 
 export default {
   name: 'ObjectValue',
+
+  directives: {inputNumber},
 
   props: {
     option: {

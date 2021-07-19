@@ -420,10 +420,11 @@ export default {
           });
         }  else if (!d.childs) { // 处理hr外面不可编辑字段的默认值逻辑
           const c = d.child;
+
           if(c.webconf&& c.webconf.formRequest){
             c.webconf.formRequest.copy = true;
           }
-          if (item === c.name) {
+          if (item === c.name || item === c.colname) {
             // b.readonly = c.readonly;
             if (c.readonly === true) {
               if (c.defval) { // 处理复制时有不可编辑，且有默认值情况

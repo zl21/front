@@ -191,7 +191,7 @@ class CustomInput {
     // 数字类型输入控制
     // 只能输入 正整数
     let string = ''
-    const length = this.item.length || 100
+    const length = this.item.length || 500
     if (this.item.webconf && this.item.webconf.ispositive) {
       if(this.item.scale) {
         string = `^\\d{0,${length}}(\\\.[0-9]{0,${this.item.scale}})?$`

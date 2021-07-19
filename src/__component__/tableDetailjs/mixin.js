@@ -68,17 +68,16 @@ export default {
           return arr;
 
         },{});
-        let checkedValue = this.tabPanel.some(element => {
-          return checked[element.tablename]
-        });
-        
-       
-      console.log(checkedValue);
-        // if(checkedValue){
-        //   // 兼容外键点击事件
-        //   document.body.click();
-
-        // }
+        let checkedValue = this.tabPanel.reduce((arr,element) => {
+          if(element.hide){
+            arr.push(element.hide);
+          }
+          return  arr;
+        },[]);
+               
+       if(this.exclude.length!==checkedValue.length){
+          document.body.click();
+       }
         
        
 
@@ -86,9 +85,11 @@ export default {
           this.updateChildTabPanels({
             value:checked
           });
-          console.log(showchecked,this.tabCurrentIndex);
-          if(showchecked.length>0 ){
-            this.tabClick(this.tabCurrentIndex);
+
+          if(showchecked.length>0 &&  this.$refs.tabPanel){
+            if(this.$refs.tabPanel.activeKey!== this.tabCurrentIndex){
+              this.tabClick(this.tabCurrentIndex);
+            }
             if(this.$refs.tabPanel){
               this.$refs.tabPanel.$el.style.display='block';
               this.$refs.tabPanel.activeKey = this.tabCurrentIndex;
@@ -101,7 +102,7 @@ export default {
 
             }
           }
-        },100)
+        },200)
 
 
        

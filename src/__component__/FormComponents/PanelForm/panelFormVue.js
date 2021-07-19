@@ -42,6 +42,7 @@ export default {
       objviewcol: 4, // 表单默认展示几列
       LinkageForm: [],// 联动状态
       id:'', // id 名称
+      timerCollapse:'', // hr 隐藏时间
       formChangeDataLabel: {},  //表单修改过的数据--显示值
       timer: null,
 
@@ -154,7 +155,6 @@ export default {
       }
 
 
-
       // 数组转对象处理，避免vue渲染时的指针问题
       data.addcolums.map((item, index) => {
         let _childs = item.childs ? item.childs : [item.child];
@@ -254,14 +254,33 @@ export default {
     panelRedraw (array) {
       const columns = Number(this.objviewcol) || 4;
       let childs = layoutAlgorithm(columns, Object.values(array));
+      // 判断hr 是否隐藏
       Object.keys(childs).map(temp => {
         let a = this.$_live_getChildComponent(this, `${this.tableName}${childs[temp].colname}`)
         if (a && a.$el && a.$el.parentNode) {
           a.$el.parentNode.style = this.setDiv(childs[temp])
+          this.setCollapseDisplay();
         }
         return temp
       })
       return childs
+    },
+    setCollapseDisplay(){
+      // 设置hr 是否隐藏
+      clearTimeout(this.timerCollapse);
+      this.timerCollapse = setTimeout(()=>{
+         Object.keys(this.formItemLists).forEach((index)=>{
+            let checked =  Object.keys(this.formItemLists[index].childs).some((i)=>{
+                return this.formItemLists[index].childs[i].show === true;
+            });
+            if(!checked){
+              this.$el.querySelector(`#Collapse_${index}`).style.display = 'none';
+            }else{
+              this.$el.querySelector(`#Collapse_${index}`).style.display = 'block';
+            }
+         });
+      },200);
+
     },
     dealData (item, value) {
       // 通过ParameterDataProcessing类对数据进行处理
@@ -370,7 +389,7 @@ export default {
           })
         }
 
-      }, 200)
+      }, 300)
 
       // this.formItemLists.forEach(item => {
       // console.log(item,'1212');

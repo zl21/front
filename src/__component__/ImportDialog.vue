@@ -134,6 +134,7 @@
   import network, { urlSearchParams, getGateway } from '../__utils__/network';
   import Upload from '../__utils__/upload';
   import { Version, encodeControl, classFix } from '../constants/global';
+  import { mapState } from 'vuex';
 
   export default {
     name: 'ImportDialog',
@@ -216,6 +217,11 @@
     },
 
     computed: {
+       ...mapState('global', {
+        activeTab: ({ activeTab }) => activeTab,
+        // isRequest: ({ isRequest }) => isRequest,
+
+      }),
       classes: () => `${classFix}importDialog`,
       completeTitle() {
         return `${this.title}导入`;
@@ -365,6 +371,12 @@
           isUpdate: updataValue,
           startRow: this.inpNum
         };
+
+        if(this.mainTable !== this.tablename && this.mainTable !==''){
+          let label = this.activeTab.label.replace(/新增|编辑/g,'');
+          sendData.menu = label +'-'+this.title;
+        }
+
         const aUploadParame = Object.assign(
           {},
           {
