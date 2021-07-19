@@ -972,6 +972,9 @@ export default {
 
       const viewportWidth = viewport.offsetWidth
       const containerWidth = container.offsetWidth
+      if (containerWidth === 0 && viewportWidth === 0) {
+        return
+      }
 
       if (containerWidth <= viewportWidth) {
         this.api.sizeColumnsToFit()
@@ -988,7 +991,7 @@ export default {
       setTimeout(() => {
         this._autoSizeColumns()
         callback && callback()
-      }, 20)
+      }, 50)
     },
 
     // 监听窗口缩放
@@ -1003,6 +1006,7 @@ export default {
         }, 20)
       })
       window.addEventListener('resize', handleColumnWidth)
+
       this.$on('hook:beforeDestroy', () => {
         window.removeEventListener('resize', handleColumnWidth)
       })
@@ -1026,8 +1030,10 @@ export default {
   },
 
   activated() {
-    this._resetColumnWidth(this._resetHeaderPosition)
-  }
+    setTimeout(() => {
+      this._resetColumnWidth(this._resetHeaderPosition)
+    }, 200)
+  },
 }
 </script>
 
