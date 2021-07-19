@@ -73,7 +73,6 @@
 
       <AgTable
         ref="agTableElement"
-        :columnRenderer="columnRendererHandler"
         :moduleComponentName='moduleComponentName'
         :style="agTableElementStyles"
         :page-attribute="pageAttribute"
@@ -253,6 +252,7 @@
         }, // 弹框配置信息
         currentTabValue: {},
         filterTableParam: {},
+
       };
     },
     computed: {
@@ -402,14 +402,6 @@
       }
     },
     methods: {
-      // r3定制渲染列
-      // 提前定义好一个空函数，这样即使通过mixin混入进来函数没传也不会报错
-      columnRendererHandler(cellData, render) {
-        if(this.columnRenderer) {
-          this.columnRenderer(cellData, render)
-        }
-      },
-
       onPageSizeChangeForFilterTable(pageSize) {
         this.resetButtonsStatus();
         this.searchData.startIndex = 0;
@@ -489,44 +481,43 @@
           // });
           const arrRes = [];
           const tabValue = JSON.parse(JSON.stringify(data.tab_value));
-          this.searchData.column_tabs = {...tabValue[0]};
-          // this.searchData.fixedtabscolname = Object.values(tabValue).reduce((arr, obj) => {
-          //   Object.keys(this.searchData.fixedcolumns).map((key) => {
-          //     if (obj[key]) {
-          //       if (obj[key] !== this.searchData.fixedcolumns[key]) {
-          //         switch (Object.prototype.toString.call(obj[key])) {
-          //         case '[object String]':
-          //           if (obj[key].includes('~')) { // 判断否是时间段类型字段,取两个时间的并集
-          //             let dateArray = [];
-          //             dateArray = dateArray.concat(this.searchData.fixedcolumns[key].split('~'));
-          //             dateArray = dateArray.concat(obj[key].split('~'));
-          //             dateArray.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-          //             arr[key] = [dateArray[0], dateArray[3]].join('~');
-          //           } else {
-          //             arr[key] = `${obj[key]},${this.searchData.fixedcolumns[key]}`;
-          //             arr[key] = arr[key].split(',');
-          //             // arr[key] = Array.from(new Set(arrRes));
-          //             // arr[key] = arr[key].toString();
-          //           }
+          this.searchData.fixedcolumns = Object.values(tabValue).reduce((arr, obj) => {
+            Object.keys(this.searchData.fixedcolumns).map((key) => {
+              if (obj[key]) {
+                if (obj[key] !== this.searchData.fixedcolumns[key]) {
+                  switch (Object.prototype.toString.call(obj[key])) {
+                  case '[object String]':
+                    if (obj[key].includes('~')) { // 判断否是时间段类型字段,取两个时间的并集
+                      let dateArray = [];
+                      dateArray = dateArray.concat(this.searchData.fixedcolumns[key].split('~'));
+                      dateArray = dateArray.concat(obj[key].split('~'));
+                      dateArray.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+                      arr[key] = [dateArray[0], dateArray[3]].join('~');
+                    } else {
+                      arr[key] = `${obj[key]},${this.searchData.fixedcolumns[key]}`;
+                      arr[key] = arr[key].split(',');
+                      // arr[key] = Array.from(new Set(arrRes));
+                      // arr[key] = arr[key].toString();
+                    }
 
-          //           break;
-          //         case '[object Array]':
-          //           arr[key] = obj[key].concat(this.searchData.fixedcolumns[key]);
-          //           arr[key] = Array.from(new Set(arr[key]));
+                    break;
+                  case '[object Array]':
+                    arr[key] = obj[key].concat(this.searchData.fixedcolumns[key]);
+                    arr[key] = Array.from(new Set(arr[key]));
 
-          //           break;
-          //         default:
-          //           break;
-          //         }
-          //         return obj[key];
-          //       }
-          //     }
-          //     arr[key] = this.searchData.fixedcolumns[key];
-          //   });
+                    break;
+                  default:
+                    break;
+                  }
+                  return obj[key];
+                }
+              }
+              arr[key] = this.searchData.fixedcolumns[key];
+            });
 
-          //   arr = Object.assign(obj, arr);
-          //   return arr;
-          // }, {});
+            arr = Object.assign(obj, arr);
+            return arr;
+          }, {});
           this.filterTableParam = this.searchData.fixedcolumns;
           // this.searchData.fixedcolumns = Object.assign(this.searchData.fixedcolumns, popwinMessage);
         }
@@ -2080,22 +2071,11 @@
           });
         });
         promise.then(() => {
-          if (this.buttons.exportdata) {     
+          if (this.buttons.exportdata) {
             if (Version() === '1.4') { // Version() === '1.4'
               this.$R3loading.hide(this.loadingName);
-              // fileUrl字段不存在时就代表是异步导出。
-              // 异步导出在[我的任务]查看
-              if(window.ProjectConfig.messageSwitch) {
-                this.$Modal.fcSuccess({
-                  title: '成功',
-                  mask: true,
-                  content: this.buttons.exportdata.message
-                });
-                return
-              }
-
               const eleLink = document.createElement('a');
-              const path = getGateway(`/p/cs/download?filename=${this.buttons.exportdata.fileUrl}`);
+              const path = getGateway(`/p/cs/download?filename=${this.buttons.exportdata}`);
               eleLink.setAttribute('href', path);
               eleLink.style.display = 'none';
               document.body.appendChild(eleLink);
