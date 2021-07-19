@@ -456,6 +456,18 @@
           this.searchClickData();
         }
       },
+      filterTabColoname(data){
+        // 过滤tab 的字段小写
+          let tab_value = data.tab_value.reduce((arr,item)=>{
+              let key = (Object.keys(item)[0]).toLocaleLowerCase();
+              let option = {
+                [key]: item[Object.keys(item)[0]]
+              }
+              arr.push(option);
+              return arr;
+          },[]);
+          return  tab_value;
+      },
       async tabClick({ data, index,stopRequest }) {
         this.filterTableParam = {};
         if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].startIndex) {
@@ -480,7 +492,9 @@
           //   this.filterTableParam = item;
           // });
           const arrRes = [];
-          const tabValue = JSON.parse(JSON.stringify(data.tab_value));
+          
+          const tabValue = JSON.parse(JSON.stringify(this.filterTabColoname(data)));
+          console.log(tabValue,'===tabValue');
           this.searchData.fixedcolumns = Object.values(tabValue).reduce((arr, obj) => {
             Object.keys(this.searchData.fixedcolumns).map((key) => {
               if (obj[key]) {
