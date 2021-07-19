@@ -494,7 +494,6 @@
           const arrRes = [];
           
           const tabValue = JSON.parse(JSON.stringify(this.filterTabColoname(data)));
-          console.log(tabValue,'===tabValue');
           this.searchData.fixedcolumns = Object.values(tabValue).reduce((arr, obj) => {
             Object.keys(this.searchData.fixedcolumns).map((key) => {
               if (obj[key]) {
@@ -561,7 +560,10 @@
       ...mapMutations('global', ['updateCustomizeMessage', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter', 'updataSTDefaultQuery']),
 
       async menuTreeChange(treeName, currentId, flag, queryFilterData, searchData) {
-        this.searchData.fixedcolumns = await this.dataProcessing();
+        let fixedcolumns = await this.dataProcessing();
+        let filterTableParam = JSON.parse(JSON.stringify(this.filterTableParam));
+        let fixedcolumnsdata = JSON.parse(JSON.stringify(fixedcolumns));
+        this.searchData.fixedcolumns = Object.assign(filterTableParam,fixedcolumnsdata);
         if (Object.keys(queryFilterData) && Object.keys(queryFilterData).length > 0 && flag) {
           this.searchData.reffixedcolumns = queryFilterData;
         } else if (this.searchData && this.searchData.reffixedcolumns) {
