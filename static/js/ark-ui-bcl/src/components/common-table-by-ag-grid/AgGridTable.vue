@@ -28,6 +28,7 @@ import CellRender from './CellRender.vue'
 import CellRenderByFunction from './CellRenderByFunction.vue'
 import TextComponent from './renderComponents/TextComponent.vue'
 import { toThousands } from '../../utils/number'
+import { debounce } from '../../utils/common'
 
 LicenseManager.setLicenseKey(agGridEnterpriseLicenseKey);
 
@@ -70,11 +71,11 @@ export default {
     },
     // 行数据
     data: {
-      default: ()=>([])
+      default: () => ([])
     },
     // 列数据
     columns: {
-      default: ()=>([])
+      default: () => ([])
     },
     // 列自定义组件渲染参数
     renderParams: {
@@ -298,7 +299,7 @@ export default {
         'separator',
         {
           name: '隐藏当前列',
-          action: ()=> {
+          action: () => {
             const { columnApi, column } = params
             columnApi.setColumnVisible(column.colId, false)
           }
@@ -322,10 +323,10 @@ export default {
               const allFixedColumns = params.columnApi.getDisplayedLeftColumns().map(d => d.colId).concat(params.columnApi.getDisplayedRightColumns().map(d => d.colId))
 
               allFixedColumns.forEach((colId) => {
-                  if (colId !== 'ID' && !pinnedLeftColumns.includes(colId) && !pinnedRightColumns.includes(colId)) {
-                    params.columnApi.setColumnPinned(colId, false);
-                  }
-                });
+                if (colId !== 'ID' && !pinnedLeftColumns.includes(colId) && !pinnedRightColumns.includes(colId)) {
+                  params.columnApi.setColumnPinned(colId, false);
+                }
+              });
               setTimeout(() => {
                 updateColumnPositionDelay && clearTimeout(updateColumnPositionDelay);
               }, 0);
@@ -444,7 +445,7 @@ export default {
           options.agColumnVisibleChanged(hideColumns.toString(), params);
         }
       }, 10);
-      this.$emit('on-column-visible',params)
+      this.$emit('on-column-visible', params)
     },
 
     // 列移动回调
@@ -468,7 +469,7 @@ export default {
           options.agColumnMoved(['ID'].concat(orderedColumns).toString());
         }
       }, 500);
-      this.$emit('on-column-moved',param)
+      this.$emit('on-column-moved', param)
     },
 
     // 列固定回调
@@ -651,7 +652,7 @@ export default {
       let leftPoint = 0 // 左指针
       let rightPoint = Math.max(visibleColumns.length - 1, 0) // 右指针
       visibleColumns.forEach((columnObj, index) => {
-        if(index > rightPoint) {
+        if (index > rightPoint) {
           return
         }
         if (pinnedLeftColumns.includes(columnObj.colname) || columnObj.colname === 'ID') {
@@ -968,13 +969,11 @@ export default {
       const tableDom = this.$refs.table.$el
       const viewport = tableDom.querySelector('.ag-body-viewport') // 表格可视区,不含固定列
       const container = tableDom.querySelector('.ag-body-container') // 表格所有列的容器
-      // if(!viewport || !container) {
 
-      // }
       const viewportWidth = viewport.offsetWidth
       const containerWidth = container.offsetWidth
 
-      if(containerWidth <= viewportWidth) {
+      if (containerWidth <= viewportWidth) {
         this.api.sizeColumnsToFit()
       } else {
         this.columnApi.autoSizeAllColumns()
@@ -991,6 +990,23 @@ export default {
         callback && callback()
       }, 20)
     },
+
+    // 监听窗口缩放
+    _listenOnSize() {
+      const handleColumnWidth = debounce(() => {
+        // 这里需要执行两次_autoSizeColumns
+        // 因为窗口缩小时,大多数情况会是container比viewport。导致与实际展示效果不符(窗口放大时没这个问题)
+        // 所有需要在调整一次列后(第一次执行时，可以保证列少的情况下，使得container小于viewport)，再调整一次，此时，重新比较container和viewport得到正确的结果
+        this._autoSizeColumns()
+        setTimeout(() => {
+          this._autoSizeColumns()
+        }, 20)
+      })
+      window.addEventListener('resize', handleColumnWidth)
+      this.$on('hook:beforeDestroy', () => {
+        window.removeEventListener('resize', handleColumnWidth)
+      })
+    }
   },
 
   created() {
@@ -1006,6 +1022,7 @@ export default {
   mounted() {
     this.api = this.gridOptions.api
     this.columnApi = this.gridOptions.columnApi
+    this._listenOnSize()
   },
 
   activated() {
@@ -1046,7 +1063,7 @@ export default {
 }
 
 .ag-floating-filter-input {
-  pointer-events:none;
+  pointer-events: none;
 }
 
 .table-cell-left {
