@@ -26,7 +26,7 @@
             :total-row-count="totalCount"
             is-back-row-item
             :columns-key="actionColumnsKey"
-            :default-selected="group.defaultselected"
+            :default-selected="defaultSelected[i].action_id"
             placeholder="请输入按钮名称"
             @on-popper-show="getKeys($event, {
               key: 'action_id'
@@ -70,7 +70,7 @@
             :total-row-count="totalCount"
             is-back-row-item
             :columns-key="columnsKey"
-            :default-selected="row.defaultselected"
+            :default-selected="defaultSelected[i].filter[j]"
             placeholder="请输入表内名称"
             @on-popper-show="getKeys($event, {
               key: 'filter'
@@ -101,14 +101,14 @@
           <button
             v-if="group.filter.length - 1 === j"
             class="operate-button"
-            @click="addRow(group.filter)"
+            @click="addRow(group.filter, i)"
           >
             <i class="iconfont">&#xec3f;</i>
           </button>
           <button
             v-if="group.filter.length > 1"
             class="operate-button"
-            @click="delRow(group.filter, j)"
+            @click="delRow(group.filter,i, j)"
           >
             <i class="iconfont">&#xed15;</i>
           </button>
@@ -137,321 +137,400 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import Description from '../description';
-  import { urlSearchParams } from '../../../utils/http';
+import Description from '../description';
+import { urlSearchParams } from '../../../utils/http';
 
-  const ITEM_CONSTRUCTOR = {
-    action_id: '',
-    defaultselected: [],
-    filter: [
-      {
-        col_id: '',
-        match_value: '',
-        defaultselected: []
-      }
-    ]
-  };
+const ITEM_CONSTRUCTOR = {
+  action_id: '',
+  filter: [
+    {
+      col_id: '',
+      match_value: '',
+    }
+  ]
+};
 
-  export default {
-    name: 'DisableButton',
+export default {
+  name: 'DisableButton',
 
-    inject: ['network'],
+  inject: ['network'],
 
-    components: {
-      Description
+  components: {
+    Description
+  },
+
+  props: {
+    option: {
+      type: Object,
+      default: () => ({})
     },
+    defaultData: {
+      type: Array,
+      default: () => ([])
+    }
+  },
 
-    props: {
-      option: {
-        type: Object,
-        default: () => ({})
+  data() {
+    return {
+      keyList: {},
+      searchKeyList: [],
+      totalCount: 0,
+      pageSize: 10,
+      columnsKey: ['DBNAME'],
+      dataList: [JSON.parse(JSON.stringify(ITEM_CONSTRUCTOR))],
+      currentGroupIndex: 0,
+      currentRowIndex: 0,
+      actionColumnsKey: ['DESCRIPTION'],
+      defaultSelected: [{
+        action_id: [],
+        filter: [[]]
+      }]
+    };
+  },
+
+  watch: {
+    dataList: {
+      handler() {
+        this.syncData();
       },
-      defaultData: {
-        type: Array,
-        default: () => ([])
-      }
+      deep: true
     },
+  },
 
-    data() {
-      return {
-        keyList: {},
-        searchKeyList: [],
-        totalCount: 0,
-        pageSize: 10,
-        columnsKey: ['DBNAME'],
-        dataList: [JSON.parse(JSON.stringify(ITEM_CONSTRUCTOR))],
-        currentGroupIndex: 0,
-        currentRowIndex: 0,
-        actionColumnsKey: ['DESCRIPTION']
-      };
-    },
+  async created() {
+    const { itemId } = this.$route.params;
+    this._table_id_ = itemId
+    this.init()
+  },
 
-    watch: {
-      dataList: {
-        handler() {
-          this.syncData();
-        },
-        deep: true
-      }
-    },
-
-    async created() {
+  methods: {
+    // 初始化
+    async init() {
       const newData = JSON.parse(JSON.stringify(this.defaultData));
       if (this.defaultData && this.defaultData.length > 0) {
+        const actionIdList = [] // 动作定义id
+        const idList = [] // 字段id
+        // 取出所有id值
+        // 加 = 号可以精确查找
+        newData.forEach((group) => {
+          actionIdList.push(`=${group.action_id}`)
+          group.filter.forEach((row) => {
+            idList.push(`=${row.col_id}`)
+          })
+        })
+
+        // 找回动作定义字段信息
+        let searchdata = {
+          table: 'AD_ACTION',
+          startindex: 0,
+          range: actionIdList.length,
+          fixedcolumns: {
+            ISACTIVE: ['=Y'],
+            ID: actionIdList,
+            AD_TABLE_ID: [this._table_id_],
+          },
+          column_include_uicontroller: true,
+          isolr: false
+        }
+        if (!this._table_id_) {
+          delete searchdata.fixedcolumns.AD_TABLE_ID;
+        }
+
+        const actionIdListResult = (await this.requestKeysData(searchdata)).row || [];
+
+        // 找回字段信息
+        searchdata = {
+          table: 'AD_COLUMN',
+          startindex: 0,
+          range: idList.length,
+          fixedcolumns: {
+            ISACTIVE: ['=Y'],
+            ID: idList,
+            AD_TABLE_ID: [this._table_id_],
+          },
+          column_include_uicontroller: true,
+          isolr: false
+        }
+        if (!this._table_id_) {
+          delete searchdata.fixedcolumns.AD_TABLE_ID;
+        }
+
+        const idListResult = (await this.requestKeysData(searchdata)).row || [];
+
+        const defaultList = []
+        newData.forEach((group, groupIndex) => {
+          const actionField = actionIdListResult.find(item => item.ID.val === group.action_id)
+          defaultList.push({
+            action_id: [{
+              ID: actionField.ID.val,
+              Label: actionField.DESCRIPTION.val
+            }],
+            filter: []
+          })
+
+          group.filter.forEach(row => {
+            const filterField = idListResult.find(item => item.ID.val === row.col_id)
+            defaultList[groupIndex].filter.push([{
+              ID: filterField.ID.val,
+              Label: filterField.DBNAME.val
+            }])
+          })
+        })
+
+        this.defaultSelected = defaultList
         this.dataList = newData;
       } else {
         this.dataList = [JSON.parse(JSON.stringify(ITEM_CONSTRUCTOR))];
       }
-      console.log('初始值', newData);
     },
 
-    methods: {
-      // 新增条件
-      addRow(rows) {
-        const row = JSON.parse(JSON.stringify(ITEM_CONSTRUCTOR.filter[0]));
-        rows.push(row);
-      },
+    // 新增条件
+    addRow(rows, i) {
+      const row = JSON.parse(JSON.stringify(ITEM_CONSTRUCTOR.filter[0]));
+      rows.push(row);
+      this.defaultSelected[i].filter.push([])
+    },
 
-      // 删除条件
-      delRow(rows, rowIndex) {
-        rows.splice(rowIndex, 1);
-      },
+    // 删除条件
+    delRow(rows, groupIndex, rowIndex) {
+      rows.splice(rowIndex, 1);
+      this.defaultSelected[groupIndex].filter.splice(groupIndex, 1)
+    },
 
-      // 添加组
-      addGroup() {
-        const group = JSON.parse(JSON.stringify(ITEM_CONSTRUCTOR));
-        this.dataList.push(group);
-      },
+    // 添加组
+    addGroup() {
+      const group = JSON.parse(JSON.stringify(ITEM_CONSTRUCTOR));
+      this.dataList.push(group);
+      this.defaultSelected.push({
+        action_id: [],
+        filter: [[]]
+      })
+    },
 
-      // 删除组
-      delGroup(groupIndex) {
-        this.dataList.splice(groupIndex, 1);
-      },
+    // 删除组
+    delGroup(groupIndex) {
+      this.dataList.splice(groupIndex, 1);
+      this.defaultSelected.splice(groupIndex, 1);
+    },
 
-      // 清楚整个配置数据
-      removeOption(keyArray) {
-        this.dataList = [JSON.parse(JSON.stringify(ITEM_CONSTRUCTOR))];
-        this.$emit('removeOption', keyArray || []);
-      },
+    // 清楚整个配置数据
+    removeOption(keyArray) {
+      Object.assign(this.$data, this.$options.data.call(this));
+      this.$emit('removeOption', keyArray || []);
+    },
 
-      // 查询key
-      async getKeys(page, options) {
-        const { key } = options;
-        const { itemId } = this.$route.params;
-        let startindex = 0;
-        let searchdata = null;
-        if (typeof page === 'number') {
-          startindex = (page - 1) * this.pageSize;
-        }
+    // 查询key
+    async getKeys(page, options) {
+      const { key } = options;
+      const { itemId } = this.$route.params;
+      let startindex = 0;
+      let searchdata = null;
+      if (typeof page === 'number') {
+        startindex = (page - 1) * this.pageSize;
+      }
 
-        // 根据key决定查找哪个表
-        if (key === 'action_id') {
-          searchdata = {
-            table: 'AD_ACTION',
-            startindex,
-            range: this.pageSize,
-            fixedcolumns: {
-              ISACTIVE: ['=Y'],
-              AD_TABLE_ID: [itemId],
-            },
-            column_include_uicontroller: true,
-            isolr: false
-          };
-        }
+      // 根据key决定查找哪个表
+      if (key === 'action_id') {
+        searchdata = {
+          table: 'AD_ACTION',
+          startindex,
+          range: this.pageSize,
+          fixedcolumns: {
+            ISACTIVE: ['=Y'],
+            AD_TABLE_ID: [itemId],
+          },
+          column_include_uicontroller: true,
+          isolr: false
+        };
+      }
 
-        if (key === 'filter') {
-          searchdata = {
-            table: 'AD_COLUMN',
-            startindex,
-            range: this.pageSize,
-            fixedcolumns: {
-              AD_TABLE_ID: [itemId],
-            },
-            column_include_uicontroller: true,
-            isolr: false
-          };
-        }
+      if (key === 'filter') {
+        searchdata = {
+          table: 'AD_COLUMN',
+          startindex,
+          range: this.pageSize,
+          fixedcolumns: {
+            AD_TABLE_ID: [itemId],
+          },
+          column_include_uicontroller: true,
+          isolr: false
+        };
+      }
+
+      if (itemId === 'New') {
+        delete searchdata.fixedcolumns.AD_TABLE_ID;
+      }
+
+      this.keyList = await this.requestKeysData(searchdata, key);
+      this.totalCount = this.keyList.totalRowCount;
+    },
+
+    // 模糊查询
+    async getSearchKeys(value, options) {
+      const { key } = options;
+      const { itemId } = this.$route.params;
+      let searchdata = null;
+      if (value === '') {
+        this.searchKeyList = [];
+        return;
+      }
+
+      // 根据key决定查找哪个表
+      if (key === 'action_id') {
+        searchdata = {
+          table: 'AD_ACTION',
+          startindex: 0,
+          fixedcolumns: {
+            ISACTIVE: ['=Y'],
+            AD_TABLE_ID: [itemId],
+            DESCRIPTION: value
+          },
+          column_include_uicontroller: true,
+          isolr: false
+        };
+      }
+
+      if (key === 'filter') {
+        searchdata = {
+          table: 'AD_COLUMN',
+          startindex: 0,
+          fixedcolumns: {
+            AD_TABLE_ID: [itemId],
+            DBNAME: value
+          },
+          column_include_uicontroller: true,
+          isolr: false
+        };
 
         if (itemId === 'New') {
           delete searchdata.fixedcolumns.AD_TABLE_ID;
         }
+      }
 
-        this.keyList = await this.requestKeysData(searchdata, key);
-        this.totalCount = this.keyList.totalRowCount;
-      },
-
-      // 模糊查询
-      async getSearchKeys(value, options) {
-        const { key } = options;
-        const { itemId } = this.$route.params;
-        let searchdata = null;
-        if (value === '') {
-          this.searchKeyList = [];
-          return;
-        }
-
-        // 根据key决定查找哪个表
-        if (key === 'action_id') {
-          searchdata = {
-            table: 'AD_ACTION',
-            startindex: 0,
-            fixedcolumns: {
-              ISACTIVE: ['=Y'],
-              AD_TABLE_ID: [itemId],
-              DESCRIPTION: value
-            },
-            column_include_uicontroller: true,
-            isolr: false
-          };
-        }
-
-        if (key === 'filter') {
-          searchdata = {
-            table: 'AD_COLUMN',
-            startindex: 0,
-            fixedcolumns: {
-              AD_TABLE_ID: [itemId],
-              DBNAME: value
-            },
-            column_include_uicontroller: true,
-            isolr: false
-          };
-
-          if (itemId === 'New') {
-            delete searchdata.fixedcolumns.AD_TABLE_ID;
-          }
-        }
-
-        const request = async () => {
-          const result = (await this.requestKeysData(searchdata, key)).row || [];
-          this.searchKeyList = result.map((keyObj) => {
-            Object.keys(keyObj).forEach((k) => {
-              keyObj[k] = keyObj[k].val;
-            });
-            return keyObj;
+      const request = async () => {
+        const result = (await this.requestKeysData(searchdata, key)).row || [];
+        this.searchKeyList = result.map((keyObj) => {
+          Object.keys(keyObj).forEach((k) => {
+            keyObj[k] = keyObj[k].val;
           });
-        };
+          return keyObj;
+        });
+      };
 
-        if (this.timer) {
-          clearTimeout(this.timer);
-          this.timer = setTimeout(request, 200);
-        } else {
-          this.timer = setTimeout(request, 200);
-        }
-      },
+      if (this.timer) {
+        clearTimeout(this.timer);
+        this.timer = setTimeout(request, 200);
+      } else {
+        this.timer = setTimeout(request, 200);
+      }
+    },
 
-      // 获取字段列表
-      async requestKeysData(searchdata, dataKey) {
-        return new Promise((resolve) => {
-          this.network
-            .post('/p/cs/QueryList', urlSearchParams({ searchdata }))
-            .then((res) => {
-              if (res.data.code === 0) {
-                // 字段表过滤字段
-                const keyColumns = ['ORDERNO', 'MASK', 'AD_TABLE_ID', 'AD_VERSION_ID', 'ISORDER', 'ISACTIVE', 'ISAGFILTER', 'AGFILTER', 'ISINDEXED', 'NAME', 'OBTAINMANNER', 'REF_COLUMN_ID', 'FKDISPLAY', 'SEARCHMODEL', 'ISREMOTE', 'AD_LIMITVALUE_GROUP_ID', 'DISPLAYTYPE', 'COMMENTSTP', 'MODIFIERID', 'MODIFIEDDATE'];
-                // 按钮表过滤字段
-                const btnColumns = ['NAME', 'PRIORITY', 'AD_VERSION_ID', 'CUSTOMIZENO', 'ISACTIVE', 'ISHIDE', 'ISREFRSH', 'AD_SUBSYSTEM_ID', 'AD_TABLECATEGORY_ID', 'FILTER', 'CUSCOMPONENT', 'PROPS', 'MODIFIERNAME', 'MODIFIEDDATE', 'AD_ACTION_ID'];
+    // 获取字段列表
+    async requestKeysData(searchdata, dataKey) {
+      return new Promise((resolve) => {
+        this.network
+          .post('/p/cs/QueryList', urlSearchParams({ searchdata }))
+          .then((res) => {
+            if (res.data.code === 0) {
+              // 字段表过滤字段
+              const keyColumns = ['ORDERNO', 'MASK', 'AD_TABLE_ID', 'AD_VERSION_ID', 'ISORDER', 'ISACTIVE', 'ISAGFILTER', 'AGFILTER', 'ISINDEXED', 'NAME', 'OBTAINMANNER', 'REF_COLUMN_ID', 'FKDISPLAY', 'SEARCHMODEL', 'ISREMOTE', 'AD_LIMITVALUE_GROUP_ID', 'DISPLAYTYPE', 'COMMENTSTP', 'MODIFIERID', 'MODIFIEDDATE'];
+              // 按钮表过滤字段
+              const btnColumns = ['NAME', 'PRIORITY', 'AD_VERSION_ID', 'CUSTOMIZENO', 'ISACTIVE', 'ISHIDE', 'ISREFRSH', 'AD_SUBSYSTEM_ID', 'AD_TABLECATEGORY_ID', 'FILTER', 'CUSCOMPONENT', 'PROPS', 'MODIFIERNAME', 'MODIFIEDDATE', 'AD_ACTION_ID'];
 
-                const hideColumns = dataKey === 'action_id' ? btnColumns : keyColumns;
-                const tabth = res.data.data.tabth;
-                const row = res.data.data.row;
-                for (let i = Math.max(tabth.length - 1, 0); i >= 0; i--) {
-                  const item = tabth[i];
-                  // 让输入框显示 表内名称 字段
-                  const displayName = dataKey === 'action_id' ? '显示名称' : '表内名称';
-                  if (item.name === displayName) {
-                    item.isak = true;
-                  } else {
-                    item.isak = false;
-                  }
-
-                  // 隐藏table列
-                  if (hideColumns.includes(item.colname)) {
-                    tabth.splice(i, 1);
-                  }
+              const hideColumns = dataKey === 'action_id' ? btnColumns : keyColumns;
+              const tabth = res.data.data.tabth;
+              const row = res.data.data.row;
+              for (let i = Math.max(tabth.length - 1, 0); i >= 0; i--) {
+                const item = tabth[i];
+                // 让输入框显示 表内名称 字段
+                const displayName = dataKey === 'action_id' ? '显示名称' : '表内名称';
+                if (item.name === displayName) {
+                  item.isak = true;
+                } else {
+                  item.isak = false;
                 }
 
-                // 隐藏模糊结果列
-                row.forEach((item) => {
-                  for (const key in item) {
-                    if (hideColumns.includes(key)) {
-                      delete item[key];
-                    }
-                  }
-                });
-                resolve(res.data.data);
-              } else {
-                resolve({});
+                // 隐藏table列
+                if (hideColumns.includes(item.colname)) {
+                  tabth.splice(i, 1);
+                }
               }
-            }).catch(() => {
+
+              // 隐藏模糊结果列
+              row.forEach((item) => {
+                for (const key in item) {
+                  if (hideColumns.includes(key)) {
+                    delete item[key];
+                  }
+                }
+              });
+              resolve(res.data.data);
+            } else {
               resolve({});
-            });
-        });
-      },
-      // 获取选中字段
-      handlerSelected(value, options) {
-        const { groupIndex, rowIndex, key } = options;
-        if (key === 'action_id') {
-          this.dataList[groupIndex].action_id = value[0].ID;
-          this.dataList[groupIndex].defaultselected = value;
-        }
-
-        if (key === 'filter') {
-          this.dataList[groupIndex].filter[rowIndex].col_id = value[0].ID;
-          this.dataList[groupIndex].filter[rowIndex].defaultselected = value;
-        }
-      },
-
-      // 清空下拉所选
-      handleClear(key, groupIndex, rowIndex) {
-        if (key === 'action_id') {
-          this.dataList[groupIndex].action_id = '';
-          this.dataList[groupIndex].defaultselected = [];
-        }
-
-        if (key === 'filter') {
-          this.dataList[groupIndex].filter[rowIndex].col_id = '';
-          this.dataList[groupIndex].filter[rowIndex].defaultselected = [];
-        }
-      },
-
-      // 设置展示字段
-      setDisplayData(originData) {
-        const cacheData = JSON.parse(JSON.stringify(originData));
-        for (let i = Math.max(cacheData.length - 1, 0); i >= 0; i--) {
-          const group = cacheData[i];
-          delete group.defaultselected;
-          for (let j = Math.max(group.filter.length - 1, 0); j >= 0; j--) {
-            const row = group.filter[j];
-            delete row.defaultselected;
-            // 删除无效来源字段
-            if (!row.col_id || !row.match_value) {
-              group.filter.splice(j, 1);
             }
-          }
-          // 删除无效字段组配置
-          if ((!group.action_id) || group.filter.length === 0) {
-            cacheData.splice(i, 1);
+          }).catch(() => {
+            resolve({});
+          });
+      });
+    },
+    // 获取选中字段
+    handlerSelected(value, options) {
+      const { groupIndex, rowIndex, key } = options;
+      if (key === 'action_id') {
+        this.dataList[groupIndex].action_id = value[0].ID;
+        this.defaultSelected[groupIndex].action_id = value
+      }
+
+      if (key === 'filter') {
+        this.dataList[groupIndex].filter[rowIndex].col_id = value[0].ID;
+        this.defaultSelected[groupIndex].filter[rowIndex] = value
+      }
+    },
+
+    // 清空下拉所选
+    handleClear(key, groupIndex, rowIndex) {
+      if (key === 'action_id') {
+        this.dataList[groupIndex].action_id = '';
+      }
+
+      if (key === 'filter') {
+        this.dataList[groupIndex].filter[rowIndex].col_id = '';
+      }
+    },
+
+    // 设置展示字段
+    setDisplayData(originData) {
+      const cacheData = JSON.parse(JSON.stringify(originData));
+      for (let i = Math.max(cacheData.length - 1, 0); i >= 0; i--) {
+        const group = cacheData[i];
+        for (let j = Math.max(group.filter.length - 1, 0); j >= 0; j--) {
+          const row = group.filter[j];
+          // 删除无效来源字段
+          if (!row.col_id || !row.match_value) {
+            group.filter.splice(j, 1);
           }
         }
-
-        return cacheData;
-      },
-
-      // 同步数据到父组件
-      syncData() {
-        const cacheData = JSON.parse(JSON.stringify(this.dataList));
-
-        const displayData = this.setDisplayData(this.dataList);
-        console.log('展示字段', displayData);
-        if (displayData.length === 0) {
-          this.$emit('dataChange', { key: this.option.key, value: '' });
-        } else {
-          this.$emit('dataChange', { key: this.option.key, value: cacheData });
+        // 删除无效字段组配置
+        if ((!group.action_id) || group.filter.length === 0) {
+          cacheData.splice(i, 1);
         }
-      },
-    }
-  };
+      }
+
+      return cacheData;
+    },
+
+    // 同步数据到父组件
+    syncData() {
+      const cacheData = JSON.parse(JSON.stringify(this.dataList));
+      const displayData = this.setDisplayData(cacheData);
+      if (displayData.length === 0) {
+        this.$emit('dataChange', { key: this.option.key, value: '' });
+      } else {
+        this.$emit('dataChange', { key: this.option.key, value: displayData });
+      }
+    },
+  }
+};
 </script>
 
 <style lang="scss" scoped>
@@ -496,10 +575,10 @@
         margin-left: 10px;
       }
 
-      >span {
+      > span {
         position: relative;
       }
-      >span::before {
+      > span::before {
         content: '*';
         color: red;
         position: absolute;

@@ -383,14 +383,14 @@ export default {
           this.$set(this.formData.leftPinnedColumns, leftIndex, columnObj.DBNAME.val)
           this.$set(this.defaultFields.leftPinnedColumns, leftIndex, [{
             Label: columnObj.DBNAME.val,
-            columnObj: columnObj.ID.val,
+            ID: columnObj.ID.val,
           }])
         } else {
           const rightIndex = rightColumns.findIndex(item => item === column)
           this.$set(this.formData.rightPinnedColumns, rightIndex, columnObj.DBNAME.val)
           this.$set(this.defaultFields.rightPinnedColumns, rightIndex, [{
             Label: columnObj.DBNAME.val,
-            columnObj: columnObj.ID.val,
+            ID: columnObj.ID.val,
           }])
         }
       })

@@ -28,7 +28,7 @@ export default {
   computed: {
     propsDataCom() {
       // 属性值
-      this.newPropsData = Object.assign(this.$deepClone(this.newPropsData), this.$deepClone(this.PropsData));
+      this.newPropsData = Object.assign(JSON.parse(JSON.stringify(this.newPropsData)), JSON.parse(JSON.stringify(this.PropsData)));
       if (this.newPropsData.pageSize) {
         this.pageSize = this.newPropsData.pageSize;
       }
