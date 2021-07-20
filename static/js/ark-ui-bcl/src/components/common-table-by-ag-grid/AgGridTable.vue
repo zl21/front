@@ -1029,9 +1029,11 @@ export default {
   },
 
   activated() {
-    setTimeout(() => {
-      this._resetColumnWidth(this._resetHeaderPosition)
-    }, 200)
+    this.$nextTick(() => {
+      setTimeout(() => {
+        this._resetColumnWidth(this._resetHeaderPosition)
+      }, 500)
+    })
   },
 }
 </script>
