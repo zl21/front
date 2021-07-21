@@ -105,6 +105,8 @@
                   :value="temp.contrast_value"
                   :type="temp.type && temp.type.toUpperCase() === 'DATETIME' ? 'datetimerange' : 'daterange'"
                   placeholder="请选择"
+                  :editable="false"
+                  transfer
                   :format="temp.type && temp.type.toUpperCase() === 'DATETIME' ? 'yyyy/MM/dd HH:mm:ss' : 'yyyy/MM/dd'"
                   @on-change="handleChangeDate(index, j , $event)"
                 />
