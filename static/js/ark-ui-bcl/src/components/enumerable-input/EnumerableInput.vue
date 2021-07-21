@@ -1,6 +1,6 @@
 <template>
   <div ref="enumerableInput"
-       class="enumerableInput"
+       class="EnumerableInput"
        @click="toggleDropdownShow">
     <Input ref="input"
            :value="value"
@@ -250,89 +250,3 @@ export default {
   }
 };
 </script>
-
-<style scoped lang="less">
-.enumerableInput {
-  position: relative;
-  user-select: none;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden;
-}
-input {
-  width: 100%;
-  cursor: pointer;
-  letter-spacing: 2px;
-  padding-left: 5px;
-  padding-right: 5px;
-  text-overflow: ellipsis;
-  user-select: none;
-}
-input:hover {
-  opacity: 0.8;
-}
-ul {
-  border-radius: 2px;
-  padding: 5px;
-  position: fixed;
-  min-width: 210px;
-  max-width: 300px;
-  border: 1px solid #d8d8d8;
-  background-color: #fff;
-  z-index: 10;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  li {
-    list-style: none;
-    margin: 2px 4px;
-    padding: 5px;
-    cursor: pointer;
-    border: 1px solid orangered;
-    color: orangered;
-    border-radius: 2px;
-  }
-  li:hover {
-    opacity: 0.7;
-  }
-  li.picked {
-    border: 1px solid orangered;
-    background-color: orangered;
-    color: #fff;
-  }
-  li.disabled {
-    border: 1px solid #d8d8d8;
-    background-color: #f4f4f4;
-    color: #c3c3c3;
-    cursor: not-allowed;
-  }
-}
-.arrow:before {
-  display: block;
-  content: "";
-  border-width: 7px;
-  border-style: solid;
-  border-color: transparent transparent #d8d8d8 transparent;
-  position: absolute;
-  left: 45%;
-  top: -14px;
-}
-.pickedAll {
-  padding: 6px 7px;
-  cursor: pointer;
-}
-.pickedAll.disabled {
-  border: 1px solid #d8d8d8;
-  background-color: #f4f4f4;
-  color: #c3c3c3;
-  cursor: not-allowed;
-}
-.pickedAll:hover {
-  opacity: 0.75;
-  -webkit-box-shadow: 1px 1px 1px 1px;
-  -moz-box-shadow: 1px 1px 1px 1px;
-  box-shadow: 1px 1px 1px 1px;
-}
-</style>

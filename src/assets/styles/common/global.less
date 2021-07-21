@@ -9,7 +9,7 @@
   }
   textarea::placeholder {
     font-family: Consolas, "Hiragino Sans GB", "Microsoft YaHei", serif;
-    color: red;
+    color: @error-color;
     font-size: 13px;
   }
   i {
@@ -17,7 +17,7 @@
     position: absolute;
     right: 12px;
     bottom: 12px;
-    color:#fd6442;
+    color:@primary-color;
   }
   .R3iconbj_delete{
     right: 42px;
@@ -53,7 +53,7 @@
   text-align: center;
   line-height: 16px;
   cursor: pointer;
-  color: #fff;
+  color: @body-background;
   border-radius: 0 0 2px 2px;
   z-index: 9;
 }
@@ -325,7 +325,7 @@
   width: 220px;
   background-color: #1f272c;
   a{
-    color:white
+    color:@txt-active-bgcolor
   }
   .badge{
     width: 42px;
@@ -400,7 +400,7 @@
       display: inline-block;
       width: 100%;
       padding: 0 8px;
-      border: solid 1px #fff;
+      border: solid 1px @input-border-color;
       border-radius: 15px;
       background: #4f5356;
       height: 28px;
@@ -498,7 +498,7 @@
         font-size: 12px;
       }
       li.item:hover {
-        background-color: #fd6442;
+        background-color: @primary-color;
         color: #fff;
       }
     }
@@ -786,7 +786,7 @@
     box-sizing: border-box;
   }
   margin: 1px;
-  background-color: #fff;
+  background-color: @body-background;
   width: 100%;
   height: 450px;
   border: 1px solid lightgrey;
@@ -998,7 +998,7 @@
       font-size: 12px;
       color: #575757;
       .downloadTemplate{
-        color: #2D8cF0;
+        color: @link-color;
         cursor:pointer
       }
       .inputValue{
@@ -1169,7 +1169,7 @@
   height: 100% !important;
   left: 0px !important;
   top: 0px !important;
-  background-color: white;
+  background-color: @body-background;
   z-index: 9999;
 }
 #_wangEditor_btn_html {
@@ -1197,7 +1197,7 @@
   }
 
   .ark-select-item-focus {
-    background-color: #fff !important;
+    background-color: @body-background !important;
   }
 }
 
@@ -1236,7 +1236,7 @@
     height: 100%;
     flex: 1;
     display: flex;
-    background: white;
+    background: @body-background;
     padding: 10px;
     position: relative;
 
@@ -1320,7 +1320,7 @@
   }
 
   .ark-progress-bg {
-    background-color: #2d8cf0;
+    background-color: @link-color;
   }
 }
 
@@ -1360,15 +1360,15 @@
       margin-right: 8px;
       margin-left: 0px;
       padding: 0 8px;
-      background: #fff;
-      color: #fd6442;
-      border: 1px solid #fd6442;
+      background: @body-background;
+      color: @primary-color;
+      border: 1px solid @primary-color;
       border-radius: 2px;
       font-size: 12px;
 
       &:hover {
-        border-color: rgba(253, 100, 66, 0.6);
-        color: rgba(253, 100, 66, 0.6);
+        border-color: fade(@primary-color, 60%);
+        color: fade(@primary-color, 60%);
       }
     }
 
@@ -1747,8 +1747,8 @@
         margin: 0 8px 0 0;
         padding: 0 8px;
         background: #fff;
-        color: #fd6442;
-        border: 1px solid #fd6442;
+        color: @primary-color;
+        border: 1px solid @primary-color;
         border-radius: 2px;
         float: left;
       }
@@ -1793,11 +1793,11 @@
   .table-c {
     table{
       width:100%;
-      border-right:1px solid #e8eaec;
-      border-bottom:1px solid #e8eaec;
+      border-right:1px solid @border-color-split;
+      border-bottom:1px solid @border-color-split;
       td{
-        border-left:1px solid #e8eaec;
-        border-top:1px solid #e8eaec;
+        border-left:1px solid @border-color-split;
+        border-top:1px solid @border-color-split;
         height: 26px;
         padding: 0 10px;
       }
@@ -1857,7 +1857,7 @@
 
     tfoot tr {
       height: 28px;
-      background-color: #fff;
+      background-color: @body-background;
     }
 
     .ark-table td {
@@ -1865,7 +1865,7 @@
     }
 
     .ark-table-fixed tfoot td {
-      border-bottom: 1px solid #e8eaec;
+      border-bottom: 1px solid @border-color-split;
     }
 
     .doc-wrapper {
@@ -1906,7 +1906,7 @@
   height: 40px;
   display: flex;
   justify-content: space-between ;
-  background-color: #fff;
+  background-color: @body-background;
   .NaVertical-box{
     display: flex;
   }
@@ -2194,12 +2194,12 @@
       display: inline-block;
       width: 100%;
       padding: 0 8px;
-      border: solid 1px #fff;
+      border: solid 1px @input-border-color;
       border-radius: 15px;
       background: #4f5356;
       height: 28px;
       line-height: 28px;
-      color: #fff;
+      color: @body-background;
       font-size: 13px;
       transition: all 0.25s;
 
@@ -2223,7 +2223,7 @@
     text-align: center;
     line-height: 50px;
     cursor: pointer;
-    color: #fff;
+    color: @body-background;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -2301,7 +2301,7 @@
 
     i {
       font-size: 12px;
-      color: red;
+      color: @error-color;
     }
   }
 
@@ -2314,7 +2314,7 @@
     }
   }
   .label-tip {
-    color: red;
+    color: @error-color;
     font-size: 16px;
     vertical-align: middle;
     position: relative;
@@ -2337,11 +2337,11 @@
     line-height: 12px;
     .iconios-alert {
       margin: 4px;
-      color: red;
+      color: @error-color;
       font-size: 12px;
     }
     span {
-      color: red;
+      color: @error-color;
       line-height: 20px;
       word-break: keep-all;
       display: inline-block;
@@ -2496,7 +2496,7 @@ textarea.ark-input {
     position: relative;
     &::before {
       content: '*';
-      color: red;
+      color: @error-color;
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
@@ -2608,7 +2608,7 @@ textarea.ark-input {
     color: #333333!important;
   }
   .ark-select-item-focus{
-    background-color: #fff!important;
+    background-color: @body-background!important;
   }
 
 }
