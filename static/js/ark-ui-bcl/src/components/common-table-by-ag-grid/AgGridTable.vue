@@ -523,16 +523,16 @@ export default {
 
     // 主体水平或垂直滚动​​
     onBodyScroll(e) {
-      // 水平滚动时，重新计算列宽
-      if (e.direction === 'horizontal') {
-        if (this.resizeColumnsTimer) {
-          clearTimeout(this.resizeColumnsTimer)
-          this.resizeColumnsTimer = null
-        }
-        this.resizeColumnsTimer = setTimeout(() => {
-          this._autoSizeColumns()
-        }, 100)
-      }
+      // // 水平滚动时，重新计算列宽
+      // if (e.direction === 'horizontal') {
+      //   if (this.resizeColumnsTimer) {
+      //     clearTimeout(this.resizeColumnsTimer)
+      //     this.resizeColumnsTimer = null
+      //   }
+      //   this.resizeColumnsTimer = setTimeout(() => {
+      //     this._autoSizeColumns()
+      //   }, 100)
+      // }
     },
 
     // 处理行级样式
