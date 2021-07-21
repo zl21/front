@@ -74,6 +74,7 @@
       <AgTable
         ref="agTableElement"
         :columnRenderer="columnRendererHandler"
+        :agProcessColumns="agProcessColumns"
         :moduleComponentName='moduleComponentName'
         :style="agTableElementStyles"
         :page-attribute="pageAttribute"
@@ -403,9 +404,17 @@
       }
     },
     methods: {
+      // 定制表格渲染列
       columnRendererHandler(cellData, render) {
         if(this.columnRenderer) {
           this.columnRenderer(cellData, render)
+        }
+      },
+
+      // 拦截表格列
+      agProcessColumns(columns) {
+        if(this.R3_processColumns) {
+          this.R3_processColumns(columns)
         }
       },
 

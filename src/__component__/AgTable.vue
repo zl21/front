@@ -285,6 +285,10 @@
       // 定制表格列组件
       columnRenderer: {
         type: Function
+      },
+      // 定制表格列
+      agProcessColumns: {
+        type: Function
       }
     },
     watch: {
@@ -357,6 +361,9 @@
           item.tdAlign = item.type === 'NUMBER' ? 'right' : 'left'
           return item
         }) 
+
+        // 允许项目组定制列数据
+        this.agProcessColumns(columns)
         return columns
       },
 
