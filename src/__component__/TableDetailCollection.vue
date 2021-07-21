@@ -4777,6 +4777,9 @@
     },
     activated() {
       this.isRefreshClick = false;
+      if(this.buttonData.length>2){
+        this.buttonData = this.filterButton(this.buttonData);
+      }
     }
   };
 </script>
