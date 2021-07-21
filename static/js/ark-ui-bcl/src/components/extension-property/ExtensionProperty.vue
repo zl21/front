@@ -132,10 +132,55 @@ export default {
       }
 
       const realData = deepClone(this.transformedData);
-      return isEmptyObject(realData) ? '' : realData;
+      const filteredData = this.filterKey(realData);
+      return isEmptyObject(filteredData) ? '' : filteredData;
     }
   },
   methods: {
+    // 过滤旧数据
+    filterKey(fakeValue) {
+      if (fakeValue && 'multi_tab_conf' in fakeValue) {
+        const cacheData = fakeValue.multi_tab_conf
+        for (let i = Math.max(cacheData.length - 1, 0); i >= 0; i--) {
+          const tabIndex = i;
+          const tabObj = cacheData[tabIndex];
+          for (let j = Math.max(tabObj.tab_value.length - 1, 0); j >= 0; j--) {
+            const keyRow = tabObj.tab_value[j];
+            // 过滤不必要的字段
+            delete keyRow.type;
+            delete keyRow.selectOptions;
+            delete keyRow.defaultSelected
+          }
+        }
+      }
+
+      if (fakeValue && 'key_group_conf' in fakeValue) {
+        const cacheData = fakeValue.key_group_conf
+        for (let i = Math.max(cacheData.length - 1, 0); i >= 0; i--) {
+          const group = cacheData[i];
+          delete group.target.defaultselected;
+          delete group.target.label;
+          for (let j = Math.max(group.source.length - 1, 0); j >= 0; j--) {
+            const row = group.source[j];
+            delete row.defaultselected;
+          }
+        }
+      }
+
+      if (fakeValue && 'listbutton_filter_conf' in fakeValue) {
+        const cacheData = fakeValue.listbutton_filter_conf
+        for (let i = Math.max(cacheData.length - 1, 0); i >= 0; i--) {
+          const group = cacheData[i];
+          delete group.defaultselected
+          for (let j = Math.max(group.filter.length - 1, 0); j >= 0; j--) {
+            const row = group.filter[j];
+            delete row.defaultselected
+          }
+        }
+      }
+      return fakeValue;
+    },
+
     onKeydown(e) {
       this.$emit('keydown', e);
     },
@@ -230,15 +275,15 @@ export default {
           let supportTypeMap = {};
           const currentTableName = this.tableName;
           if (currentTableName === 'AD_COLUMN') {
-            supportTypeMap = fieldExtensionProperty.reduce((a, c) => { 
+            supportTypeMap = fieldExtensionProperty.reduce((a, c) => {
               // 需要兼容type: 'keyValue'的配置项
-              if(c.components) {
+              if (c.components) {
                 // 获取子配置项的key
                 c.components.forEach(component => {
-                  a[component.key] = c.supportType || 'ALL'; 
+                  a[component.key] = c.supportType || 'ALL';
                 })
               } else {
-                a[c.key] = c.supportType || 'ALL'; 
+                a[c.key] = c.supportType || 'ALL';
               }
               return a;
             }, {});

@@ -503,8 +503,10 @@ export default {
       const cacheData = JSON.parse(JSON.stringify(originData));
       for (let i = Math.max(cacheData.length - 1, 0); i >= 0; i--) {
         const group = cacheData[i];
+        delete group.defaultselected
         for (let j = Math.max(group.filter.length - 1, 0); j >= 0; j--) {
           const row = group.filter[j];
+          delete row.defaultselected
           // 删除无效来源字段
           if (!row.col_id || !row.match_value) {
             group.filter.splice(j, 1);

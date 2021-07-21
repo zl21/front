@@ -226,6 +226,8 @@ export default {
   },
 
   async created() {
+    const { itemId } = this.$route.params;
+    this._table_id_ = itemId
     this.initData();
     this.setHover();
   },
@@ -284,12 +286,15 @@ export default {
         // 加 = 号可以精确查找
         newData.forEach((group) => {
           group.tab_value.forEach((row) => {
-            nameList.push(`=${row.col_name}`)
+            const name = `=${row.col_name}`
+            if (!nameList.includes(name)) {
+              nameList.push(name)
+            }
           })
         })
 
         // 找回字段信息
-        let searchdata = {
+        const searchdata = {
           table: 'AD_COLUMN',
           startindex: 0,
           range: nameList.length,
@@ -517,6 +522,7 @@ export default {
           // 过滤不必要的字段
           delete keyRow.type;
           delete keyRow.selectOptions;
+          delete keyRow.defaultSelected
           // 删除无效字段配置
           if (!keyRow.col_name || !keyRow.operator || !keyRow.contrast_value) {
             tabObj.tab_value.splice(j, 1);

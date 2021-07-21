@@ -565,9 +565,11 @@ export default {
       const cacheData = JSON.parse(JSON.stringify(originData));
       for (let i = Math.max(cacheData.length - 1, 0); i >= 0; i--) {
         const group = cacheData[i];
+        delete group.target.defaultselected;
         delete group.target.label;
         for (let j = Math.max(group.source.length - 1, 0); j >= 0; j--) {
           const row = group.source[j];
+          delete row.defaultselected;
           // 删除无效来源字段
           if (!row.col_id || !row.label) {
             group.source.splice(j, 1);
