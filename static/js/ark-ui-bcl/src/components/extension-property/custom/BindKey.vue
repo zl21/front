@@ -22,9 +22,8 @@
           :auto-data="searchKeyList"
           :page-size="pageSize"
           :total-row-count="totalCount"
-          :default-selected="item.target.defaultselected"
+          :default-selected="defaultSelected[index].target"
           placeholder="请输入表内名称"
-          is-back-row-item
           :columns-key="targetColumnsKey"
           @on-popper-show="getKeys($event, 'target',{
             tableName:'AD_COLUMN'
@@ -67,12 +66,12 @@
               </p>
               <DropDownSelectFilter
                 single
+                isBackRowItem
                 :data="keyList"
                 :auto-data="searchKeyList"
                 :page-size="pageSize"
                 :total-row-count="totalCount"
-                :default-selected="temp.defaultselected.length && temp.defaultselected[0]"
-                is-back-row-item
+                :default-selected="defaultSelected[index].source[j][0]"
                 :columns-key="targetColumnsKey"
                 placeholder="请输入表内名称"
                 @on-popper-show="getKeys($event, 'source',{
@@ -96,12 +95,12 @@
               </p>
               <DropDownSelectFilter
                 single
+                isBackRowItem
                 :data="keyList"
                 :auto-data="searchKeyList"
                 :page-size="pageSize"
                 :total-row-count="totalCount"
-                :default-selected="temp.defaultselected.length && temp.defaultselected[1]"
-                is-back-row-item
+                :default-selected="defaultSelected[index].source[j][1]"
                 :columns-key="sourceColumnsKey"
                 placeholder="请输入名称"
                 @on-popper-show="getKeys($event, 'source',{
@@ -129,14 +128,14 @@
               <button
                 v-if="item.source.length - 1 === Number(j)"
                 class="operate-button"
-                @click="(event) => {item.source = addColname(item.source)}"
+                @click="addColname(item.source,index)"
               >
                 <i class="iconfont">&#xec3f;</i>
               </button>
               <button
                 v-if="item.source.length > 1"
                 class="operate-button"
-                @click="(event) => {item.source = deleteColname(item.source,j)}"
+                @click="deleteColname(item.source,index,j)"
               >
                 <i class="iconfont">&#xed15;</i>
               </button>
@@ -145,7 +144,7 @@
         </SlickItem>
       </SlickList>
 
-      <!-- 增加tab按钮 -->
+      <!-- 用于增加组配置的按钮 -->
       <button
         v-if="resultList.length - 1 === index"
         class="operate-button ml-10 mb-10"
@@ -172,16 +171,11 @@ import { urlSearchParams } from '../../../utils/http';
 const GROUP_CONSTRUCTOR = {
   target: {
     col_id: '',
-    defaultselected: []
   },
   source: [
     {
       col_id: '',
       label: '',
-      defaultselected: [
-        [],
-        []
-      ]
     }
   ]
 };
@@ -210,13 +204,17 @@ export default {
 
   data() {
     return {
-      resultList: [],
+      resultList: [JSON.parse(JSON.stringify(GROUP_CONSTRUCTOR))],
       keyList: {},
       searchKeyList: [],
       totalCount: 0,
       pageSize: 10,
       targetColumnsKey: ['DBNAME'],
-      sourceColumnsKey: ['NAME']
+      sourceColumnsKey: ['NAME'],
+      defaultSelected: [{
+        target: [],
+        source: [[[], []]]
+      }]
     };
   },
 
@@ -230,16 +228,98 @@ export default {
   },
 
   async created() {
-    const newData = JSON.parse(JSON.stringify(this.defaultData));
-    if (this.defaultData && this.defaultData.length > 0) {
-      this.resultList = newData;
-    } else {
-      this.resultList = [JSON.parse(JSON.stringify(GROUP_CONSTRUCTOR))];
-    }
+    this.init()
     this.setHover();
   },
 
   methods: {
+    // 回填数据
+    async init() {
+      const newData = JSON.parse(JSON.stringify(this.defaultData));
+      if (this.defaultData && this.defaultData.length > 0) {
+        const idList = [] // 字段id
+        const groupIdList = []// 字段选项组id
+
+        // 取出所有id值
+        // 加 = 号可以精确查找
+        this.defaultData.forEach((group) => {
+          idList.push(`=${group.target.col_id}`)
+          group.source.forEach((row) => {
+            idList.push(`=${row.col_id}`)
+            groupIdList.push(`=${row.label}`)
+          })
+        })
+
+        // 找回字段信息
+        let searchdata = {
+          table: 'AD_COLUMN',
+          startindex: 0,
+          range: idList.length,
+          fixedcolumns: {
+            ISACTIVE: ['=Y'],
+            ID: idList,
+            AD_TABLE_ID: [this._table_id_],
+          },
+          column_include_uicontroller: true,
+          isolr: false
+        }
+        if (!this._table_id_) {
+          delete searchdata.fixedcolumns.AD_TABLE_ID;
+        }
+
+        const idResult = (await this.requestKeysData(searchdata)).row || [];
+
+        // 找回字段选项组信息
+        searchdata = {
+          table: 'AD_LIMITVALUE_GROUP',
+          startindex: 0,
+          range: groupIdList.length,
+          fixedcolumns: {
+            ISACTIVE: ['=Y'],
+            ID: groupIdList,
+          },
+          column_include_uicontroller: true,
+          isolr: false
+        }
+
+        const groupResult = (await this.requestKeysData(searchdata)).row || [];
+
+        // 回填默认值
+        const tempResult = []
+        this.defaultData.forEach((group, groupIndex) => {
+          tempResult.push({
+            target: [],
+            source: [[[], []]]
+          })
+          const targetField = idResult.find(item => item.ID.val === group.target.col_id)
+          tempResult[groupIndex].target = [{
+            ID: group.target.col_id,
+            Label: targetField.DBNAME.val
+          }]
+
+          group.source.forEach((row, rowIndex) => {
+            tempResult[groupIndex].source[rowIndex] = [[], []]
+
+            const sourceField = idResult.find(item => item.ID.val === row.col_id)
+            const sourceGroupField = groupResult.find(item => item.ID.val === row.label)
+
+            tempResult[groupIndex].source[rowIndex][0] = [{
+              ID: row.col_id,
+              Label: sourceField.DBNAME.val
+            }]
+            tempResult[groupIndex].source[rowIndex][1] = [{
+              ID: row.label,
+              Label: sourceGroupField.NAME.val
+            }]
+          })
+        })
+        this.defaultSelected = tempResult
+        this.resultList = JSON.parse(JSON.stringify(newData))
+      } else {
+        this.resultList = [JSON.parse(JSON.stringify(GROUP_CONSTRUCTOR))]
+      }
+    },
+
     // 设置悬浮
     setHover() {
       // 通过hook监听组件销毁钩子函数，并取消监听事件
@@ -275,31 +355,33 @@ export default {
     },
 
     removeOption(keyArray) { // 清楚整个配置数据
-      this.resultList = [JSON.parse(JSON.stringify(GROUP_CONSTRUCTOR))];
+      Object.assign(this.$data, this.$options.data.call(this));
       this.$emit('removeOption', keyArray || []);
     },
 
     addButtonClick() { // 新增tab配置
       const tab = JSON.parse(JSON.stringify(GROUP_CONSTRUCTOR));
       this.resultList.push(tab);
+
+      this.defaultSelected.push({
+        target: [],
+        source: [[[], []]]
+      })
     },
     removeButtonClick(index) {
       this.resultList.splice(index, 1);
+      this.defaultSelected.splice(index, 1)
     },
-    addColname(item) { // 新增字段配置
+    addColname(item, groupIndex) { // 新增字段配置
       item.push({
         col_id: '',
         label: '',
-        defaultselected: [
-          [],
-          []
-        ]
       });
-      return item;
+      this.defaultSelected[groupIndex].source.push([[], []])
     },
-    deleteColname(item, index) { // 删除字段配置
-      item.splice(index, 1);
-      return item;
+    deleteColname(item, groupIndex, rowIndex) { // 删除字段配置
+      item.splice(rowIndex, 1);
+      this.defaultSelected[groupIndex].source.splice(rowIndex, 1)
     },
 
 
@@ -450,9 +532,9 @@ export default {
         const selectedObj = {
           col_id: value[0].ID,
           label: value[0].Label,
-          defaultselected: value
         };
         this.resultList[groupIndex][key] = selectedObj;
+        this.defaultSelected[groupIndex][key] = value
       }
       if (key === 'source') {
         value[0].Label = value[0].Label ? value[0].Label : value[0].rowItem.NAME.val;
@@ -460,23 +542,19 @@ export default {
           // 设置来源字段
           const selectedObj = {
             col_id: value[0].ID,
-            defaultselected: []
           };
           const row = this.resultList[groupIndex][key][rowIndex] || GROUP_CONSTRUCTOR.source; // 第n组第n行
-          selectedObj.defaultselected[0] = value;
-          selectedObj.defaultselected[1] = row.defaultselected[1];
+          this.defaultSelected[groupIndex][key][rowIndex][0] = value
 
           this.$set(this.resultList[groupIndex][key], rowIndex, Object.assign(row, selectedObj));
         } else {
           // 设置来源字段选项组
           const selectedObj = {
             label: value[0].ID,
-            defaultselected: []
           };
 
           const row = this.resultList[groupIndex][key][rowIndex] || GROUP_CONSTRUCTOR.source; // 第n组第n行
-          selectedObj.defaultselected[0] = row.defaultselected[0];
-          selectedObj.defaultselected[1] = value;
+          this.defaultSelected[groupIndex][key][rowIndex][1] = value;
           this.$set(this.resultList[groupIndex][key], rowIndex, Object.assign(row, selectedObj));
         }
       }
@@ -510,11 +588,11 @@ export default {
     syncData() {
       const cacheData = JSON.parse(JSON.stringify(this.resultList));
 
-      const displayData = this.setDisplayData(this.resultList);
+      const displayData = this.setDisplayData(cacheData);
       if (displayData.length === 0) {
         this.$emit('dataChange', { key: this.option.key, value: '' });
       } else {
-        this.$emit('dataChange', { key: this.option.key, value: cacheData });
+        this.$emit('dataChange', { key: this.option.key, value: displayData });
       }
     },
 
