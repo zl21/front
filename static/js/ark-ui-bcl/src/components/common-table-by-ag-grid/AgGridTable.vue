@@ -199,8 +199,9 @@ export default {
       }
       const { rowData, pinnedBottomRowData } = this._transformRowData(data);
       // 为每行增加序号值
+      const { start } = this.options.datas
       rowData.forEach((d, i) => {
-        d[AG_SEQUENCE_COLUMN_NAME] = { val: i + 1 };
+        d[AG_SEQUENCE_COLUMN_NAME] = { val: start + (i + 1) };
       });
       // console.log('设置行', rowData);
       // console.log('设置底部', pinnedBottomRowData)
