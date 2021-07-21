@@ -200,7 +200,7 @@
   import { addSearch, querySearch } from '../__utils__/indexedDB';
   import { getPinnedColumns } from '../__utils__/tableMethods'
   import tabBar from './tabBar.vue';
-  import listsForm from './FormComponents/listsForm';
+  import listsForm from './FormComponents/list/listsForm';
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
