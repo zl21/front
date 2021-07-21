@@ -69,6 +69,9 @@ export default {
       this.$store = store
     }
   },
+  beforeDestroy(){
+        window.removeEventListener('resize', this.setColumn);
+  },
   props: {
     id: {
       type: [Number, String],
@@ -290,6 +293,7 @@ export default {
     // 处理折叠的默认值
     this.setdefaultColumn =  this.defaultColumn;
     this.setColumn();
+    window.addEventListener('resize', this.setColumn)
     this.dowClass = !this.defaultSpread;
   },
   watch: {
