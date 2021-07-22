@@ -9,16 +9,24 @@
             class="iconfont iconbj_col left-icon"
           />
         </slot>
-        <DropdownMenu slot="list" trigger="click">
+        <DropdownMenu slot="list" trigger="click"  v-if="favorite.length>0">
             <DropdownItem  v-for="(d, i) in favorite"
-              :key="`favorite-${i}`"
-              :title="d.label "
-              :name="d"
-              placement="bottom-end"
-              >
-                 {{ d.label }}
+               
+                :key="`favorite-${i}`"
+                :title="d.label "
+                :name="d"
+                placement="bottom-end"
+                >
+                  {{ d.label }}
               </DropdownItem>
         </DropdownMenu>
+         <DropdownMenu  v-if="favorite.length===0"
+                  slot="list"
+                  >
+                  <DropdownItem>
+                    暂无收藏记录
+                  </DropdownItem>  
+              </DropdownMenu>
        </Dropdown>
    </div>   
 </template>
