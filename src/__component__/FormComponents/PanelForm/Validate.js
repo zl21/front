@@ -231,6 +231,9 @@ export class Validate extends Vue {
             },
             addEventListener() {
                 // 监听校验事件
+                if(!this.rulesData){
+                    return;
+                }
                 let trigger = this.rulesData.trigger || {};
                 let required = this.rulesData.required;
                 let self = this;

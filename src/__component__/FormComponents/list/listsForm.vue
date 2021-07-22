@@ -1,18 +1,19 @@
 
 <template>
   <div :class="classesbox">
-    <div :class="classes">
-      <div v-if="Object.keys(ItemLists).length > (setdefaultColumn*searchFoldnum) "
+    <div :class="classes" id="listForm">
+      <div v-if="Object.keys(ItemLists).length > (setdefaultColumn*searchFoldnum - indexButton) && !hiddenIcon"
            :class="tagCloseCls"
            @click="toggle">
         <Icon :class="className" />
       </div>
+      <component :class="classButton" :is="ButtonHtml"></component>
       <div :class="classesContent">
 
         <div v-for="(item,index) in Object.keys(ItemLists)"
              :key="ItemLists[item]._index"
              :index="index"
-             :class="['item',ItemLists[item].colname,(index > (setdefaultColumn*searchFoldnum - 1) && !dowClass)?'long':'']">
+             :class="['item',ItemLists[item].colname,(index > (setdefaultColumn*searchFoldnum - 1 - indexButton) && !dowClass)?'long':'']">
 
           <keep-alive>
             <component :is="ItemLists[item].component"
@@ -56,6 +57,12 @@ export default {
       return [
         `${classFix}ListsForm-content`
       ];
+    },
+    classButton(){
+       return [
+        `${classFix}ListsForm-button`
+      ];
+
     },
     classesbox(){
       return [
@@ -106,6 +113,9 @@ export default {
       ItemLists: {}, // 储存列表数据
       component: '', // 设置组件名称
       setdefaultColumn:4,
+      ButtonHtml:'',
+      hiddenIcon:false,  // 默认不隐藏icon
+      indexButton:0,  // 渲染按钮+1
       formArray: [], // 存储列表数据
     };
   },
@@ -158,10 +168,59 @@ export default {
     setColumn(){
       // 设置列数
       if(document.body.offsetWidth>900){
-        this.setdefaultColumn = 4
+        this.setdefaultColumn = 4;
       }else{
-        this.setdefaultColumn = 3
+        this.setdefaultColumn = 3;
       }
+      this.setButtonType(this.dowClass);
+     
+    },
+    setButtonType(value){
+      // 渲染查询按钮
+       this.$nextTick(()=>{
+        // 动态
+       let itemArray =  document.querySelectorAll('#listForm .item');
+       let index = this.setdefaultColumn*this.searchFoldnum-2;
+       if(value == true){
+          index = itemArray.length -1;
+
+       }
+       itemArray.forEach((item,i)=>{
+         if(index === i){
+            item.style.marginRight = '150px';
+            this.indexButton = 1;
+         }else{
+            item.style.marginRight = '0px';
+         }
+       })
+          
+      })
+      if(window.ProjectConfig.layoutDirectionSlot && window.ProjectConfig.layoutDirectionSlot.listFormButton){
+        this.ButtonHtml = window.ProjectConfig.layoutDirectionSlot.listFormButton;
+        this.hiddenIcon = this.ButtonHtml.data().hiddenIcon || false;
+        let hiddenButtons = this.ButtonHtml.data().hiddenButtons || [];
+        if(Array.isArray(hiddenButtons)){
+          // 隐藏列表查询按钮
+          let data = JSON.parse(JSON.stringify(this.$parent.buttons));
+          hiddenButtons.forEach((key)=>{
+            data.dataArray[key] = false;
+          });
+          if(this.ButtonHtml.props.ButttonCallBack){
+            // 点击回调事件
+            this.ButtonHtml.props.ButttonCallBack.default = this.$parent.buttonClick;
+          }
+          if(this.ButtonHtml.props.IconCallBack){
+            // 收拉框回调
+            this.ButtonHtml.props.IconCallBack.default = this.toggle;
+          }
+          this.$parent.filterButtonsForShow(data.dataArray);
+        }
+        
+      }else{
+        this.ButtonHtml = window.ProjectConfig.listFormButton;
+      }
+          console.log(this.$parent.buttons.dataArray, );
+
 
     },
     initComponent (item) { // init组件
@@ -170,6 +229,7 @@ export default {
     },
     toggle () { // 折叠切换
       this.dowClass = !this.dowClass;
+      this.setButtonType(this.dowClass);
       setTimeout(() => {
         const detailTable = document.querySelector('.detailTable');
         if (detailTable && detailTable.agTable) {
@@ -289,7 +349,7 @@ export default {
 
   },
   created () {
-    this.resetForm()
+    this.resetForm();
     // 处理折叠的默认值
     this.setdefaultColumn =  this.defaultColumn;
     this.setColumn();
