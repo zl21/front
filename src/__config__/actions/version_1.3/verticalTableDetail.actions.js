@@ -474,15 +474,6 @@ export default {
           ];
         }
 
-        // 跟默认值对比，没有改变的值就不传给接口
-        const item = itemTableAdd[itemName][0]
-        Object.keys(item).forEach(field => {
-          const defaultValue = addDefault[itemName][field]
-          const currentValue = item[field]
-          if((currentValue === '' && defaultValue === undefined) || (currentValue === 0 && defaultValue === undefined)) {
-            delete item[field]
-          }
-        })
         if (Object.values(modify[tableName]).length > 0) {
           const value = Object.assign({}, modify, labelregroupTableName);
           parames = {
