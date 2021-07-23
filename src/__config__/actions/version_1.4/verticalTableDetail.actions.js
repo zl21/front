@@ -554,6 +554,16 @@ export default {
           addItemName[itemName] = [
             addItem
           ];
+
+          // 跟默认值对比，没有改变的值就不传给接口
+          const item = addItemName[itemName][0]
+          Object.keys(item).forEach(field => {
+            const defaultValue = itemDefault[itemName][field]
+            const currentValue = item[field]
+            if((currentValue === '' && defaultValue === undefined) || (currentValue === 0 && defaultValue === undefined)) {
+              delete item[field]
+            }
+          })
           if (path) {
             modify[tableName].ID = objId;
             if (temporaryStoragePath) {
