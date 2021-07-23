@@ -330,16 +330,6 @@ export default {
           itemTableAdd[itemName] = [
             itemTableAdd[itemName]
           ];
-
-          // 跟默认值对比，没有改变的值就不传给接口
-          const item = itemTableAdd[itemName][0]
-          Object.keys(item).forEach(field => {
-            const defaultValue = itemDefault[itemName][field]
-            const currentValue = item[field]
-            if((currentValue === '' && defaultValue === undefined) || (currentValue === 0 && defaultValue === undefined)) {
-              delete item[field]
-            }
-          })
           if (temporaryStoragePath) {
             console.log('子表不支持暂存');
           } else {

@@ -173,7 +173,7 @@
   import {
     classFix, getCustomizeWaterMark, KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, notificationOfMain
   } from '../constants/global';
-
+  import { deepClone } from '../__utils__/common'
 
   const customizeModules = {};
   Object.keys(CustomizeModule).forEach((key) => {
@@ -880,13 +880,38 @@
           return obj;
         }, {});
       },
-      formChange(val, changeVal, labl, formData, defaultDataInt) {
+
+      // 判断数据是否修改过
+      getUpdatedValue(formData, defaultData) {
+        const form = deepClone(formData)
+        Object.keys(form).forEach(field => {
+          const defaultValue = defaultData[field]
+          const currentValue = form[field]
+          // 条件1: 没初始值，且没有输入值
+          // 条件2: 有初始值，但是值跟之前对比没发生变化
+          // currentValue === 0是因为数子输入框输入再删除会把默认值变成0，而不是''
+          if((currentValue === 0 && defaultValue === '') || (currentValue === '' && defaultValue === '') || (defaultValue && (defaultValue.toString() === currentValue.toString()))) {
+            delete form[field]
+          }
+        })
+        return form
+      },
+
+      // 表单数据变化
+      formChange(val, changeVal, label, formData, defaultDataInt) {
         const { tableName } = this;
-        const obj = {};
         const { itemId } = this[INSTANCE_ROUTE_QUERY];
-        obj[tableName] = formData;
 
         if (itemId) {
+          const updatedValue = this.getUpdatedValue(formData, defaultDataInt)
+          // 如果没变化，数据恢复原样
+          if(Object.keys(updatedValue).length === 0) {
+            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { tableName, value: {} });
+            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateAddData`, { tableName, value: {} });
+            return
+          }
+          const obj = {};
+          obj[tableName] = updatedValue;
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { tableName, value: defaultDataInt });
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateAddData`, { tableName, value: obj });
         }
@@ -914,6 +939,7 @@
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateCheckedInfoData`, { tableName, value: data });
         }
       },
+      
       formPanelChange(val, changeVal, valLabel) {
         if(notificationOfMain() && this.$route.params.tableName === this.tableName) {
           DispatchEvent('notificationOfMain', {
