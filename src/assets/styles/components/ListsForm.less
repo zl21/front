@@ -2,6 +2,9 @@
 @list-item-prefix-cls-box: ~"@{css-prefix}ListsForm-box";
 @list-item-prefix-cls-content: ~"@{css-prefix}ListsForm-content";
 @list-item-prefix-cls-button: ~"@{css-prefix}ListsForm-button";
+@list-item-prefix-cls-small:~"@{css-prefix}ListsForm-small";
+@list-item-prefix-cls-min:~"@{css-prefix}ListsForm-min";
+
 @defaultCol: 4;  //控制一行展示的列数
 .@{list-item-prefix-cls-box} {
   position: relative;
@@ -36,13 +39,23 @@
   }
 }
 
-@media screen and (max-width: 950px) {
-  .@{list-item-prefix-cls} {
+// @media screen and (max-width: 950px) {
+//   .@{list-item-prefix-cls} {
+//     .item {
+//       width: percentage(1/3);
+//     }
+//   }
+// }
+  .@{list-item-prefix-cls-small} {
     .item {
       width: percentage(1/3);
     }
   }
-}
+  .@{list-item-prefix-cls-min} {
+    .item {
+      width: percentage(1/2);
+    }
+  }
 .@{list-item-prefix-cls-button}{
   position: absolute;
   bottom: 18px;

@@ -38,6 +38,11 @@ import {
 } from '../../../constants/global';
 
 export default {
+  data () {
+    return {
+        classesContent :`${classFix}ListsForm-content`
+    }
+  },
   computed: {
     ...mapState('global', {
       activeTab: ({ activeTab }) => activeTab,
@@ -53,11 +58,11 @@ export default {
         'downComponent-context'
       ];
     },
-    classesContent () {
-      return [
-        `${classFix}ListsForm-content`
-      ];
-    },
+    // classesContent () {
+    //   return [
+    //     `${classFix}ListsForm-content ${this.calssValue}`
+    //   ];
+    // },
     classButton(){
        return [
         `${classFix}ListsForm-button`
@@ -167,11 +172,14 @@ export default {
     },
     setColumn(){
       // 设置列数
-      if(document.body.offsetWidth>900){
+      if(document.querySelector('.StandardTableListRootDiv').offsetWidth>500){
         this.setdefaultColumn = 4;
-      }else{
+        this.classesContent = `${classFix}ListsForm-content`;
+      }else if(document.querySelector('.StandardTableListRootDiv').offsetWidth<500){
         this.setdefaultColumn = 3;
+        this.classesContent = `${classFix}ListsForm-content ListsForm-small`;
       }
+      console.log(this,'===1');
       this.setButtonType(this.dowClass);
      
     },
