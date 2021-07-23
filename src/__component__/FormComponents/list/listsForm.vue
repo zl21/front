@@ -173,31 +173,40 @@ export default {
     },
     setColumn(){
       // 设置列数
-      if(document.querySelector('.StandardTableListRootDiv').offsetWidth>601){
+      let width = document.querySelector('.StandardTableListRootDiv').offsetWidth;
+      if(width>700){
         this.setdefaultColumn = 4;
         this.classesContent = `${classFix}ListsForm-content`;
-      }else if(document.querySelector('.StandardTableListRootDiv').offsetWidth<600){
+      }else if(width<700){
         this.setdefaultColumn = 3;
         this.classesContent = `${classFix}ListsForm-content ListsForm-small`;
       }
-      // if(document.querySelector('.ListsForm').offsetWidth>560){
-      //   document.querySelector('.ListsForm').style.marginBottom = '30px';
-      // }else{
-      //   document.querySelector('.ListsForm').style.marginBottom = '0px';
-      // }
+     
       this.setButtonType(this.dowClass);
      
     },
-    setButtonType(value){
+    setButtonType(){
       // 渲染查询按钮
        this.$nextTick(()=>{
         // 动态
-       let itemArray =  document.querySelectorAll('#listForm .item');
-       let index = this.setdefaultColumn*this.searchFoldnum-2;
-       if(value == true){
-          index = itemArray.length -1;
+        let itemArray =  document.querySelectorAll('#listForm .item');
+         let index = this.setdefaultColumn*this.searchFoldnum-2;
+        if(this.dowClass == true){
+            index = itemArray.length -1;
 
-       }
+        }
+        document.querySelector('.ListsForm-content').style.marginBottom = '0px';
+        if(index> itemArray.length ){
+            //  大于总常数
+            index = itemArray.length -1;
+          }
+        if(document.querySelector('.ListsForm').offsetWidth<560){
+          if(((index+1)%this.searchFoldnum) !==1 ){
+            document.querySelector('.ListsForm-content').style.marginBottom = '30px';
+          }
+        }
+         
+      
        itemArray.forEach((item,i)=>{
          if(index === i){
             item.style.marginRight = '150px';
@@ -286,7 +295,7 @@ export default {
     },
     r3Format (val, item) {
       // 兼容1.3 数据格式传参
-      if(item.display === 'OBJ_SELECT'){
+      if(['OBJ_SELECT','RADIO_GROUP','CHECKBOX_GROUP'].includes(item.display) ){
         console.log( val[item.colname],'323');
         if(val[item.colname] && Array.isArray(val[item.colname])){
           val[item.colname] = val[item.colname].reduce((arr,item)=>{
