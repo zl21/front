@@ -15,7 +15,7 @@
 <script>
   import LabelForInput from './LabelForInput';
   import EnumerateRadioItem from './EnumerateRadioItem';
-  
+
   export default {
     name: 'LabelWithRadio',
     components: {
@@ -39,7 +39,3 @@
     },
   };
 </script>
-
-<style scoped>
-
-</style>

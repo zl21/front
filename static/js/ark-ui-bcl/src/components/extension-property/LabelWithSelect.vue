@@ -21,7 +21,7 @@
 
 <script>
   import LabelForInput from './LabelForInput';
-  
+
   export default {
     name: 'LabelWithSelect',
     components: {
@@ -50,7 +50,3 @@
     }
   };
 </script>
-
-<style scoped>
-
-</style>

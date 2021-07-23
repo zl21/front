@@ -29,8 +29,8 @@
     min-width: 210px;
     max-width: 300px;
     border: 1px solid #d8d8d8;
-    background-color: #fff;
-    z-index: 10;
+    background-color: @body-background;
+    z-index: 11;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
@@ -39,16 +39,16 @@
       margin: 2px 4px;
       padding: 5px;
       cursor: pointer;
-      border: 1px solid orangered;
-      color: orangered;
+      border: 1px solid @primary-color;
+      color: @primary-color;
       border-radius: 2px;
     }
     li:hover {
       opacity: 0.7;
     }
     li.picked {
-      border: 1px solid orangered;
-      background-color: orangered;
+      border: 1px solid @primary-color;
+      background-color: @primary-color;
       color: #fff;
     }
     li.disabled {

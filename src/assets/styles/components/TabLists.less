@@ -1,12 +1,13 @@
 @TabLists-prefix-cls: ~"@{css-prefix}openedMenuLists";
 
 .@{TabLists-prefix-cls} {
-  background-color: #fff;
+  background-color: @body-background;
   // display: flex;
   box-sizing: border-box;
   height: 33px;
+
   .ark-tabs.ark-tabs-card > .ark-tabs-bar .ark-tabs-tab {
-  
+
     line-height: 26px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -14,39 +15,43 @@
     position: relative;
     white-space: nowrap;
     padding: 0 20px;
+
     &:hover {
       color: @primary-color;
     }
   }
-  .ark-tabs.ark-tabs-card > .ark-tabs-bar .ark-tabs-tab{
-    &:nth-child(2){
-      border-left: none ;
+
+  .ark-tabs.ark-tabs-card > .ark-tabs-bar .ark-tabs-tab {
+    &:nth-child(2) {
+      border-left: none;
 
     }
-    &:hover{
-      .ark-icon{
+
+    &:hover {
+      .ark-icon {
         display: block;
       }
     }
-   
+
   }
-  .ark-tabs-nav .ark-tabs-tab .ark-icon{
+
+  .ark-tabs-nav .ark-tabs-tab .ark-icon {
     position: absolute;
-    top:6px;
+    top: 6px;
     right: 0px;
     display: none;
-   
+
   }
-  .ark-tabs-nav-scrollable{
+
+  .ark-tabs-nav-scrollable {
     border: none;
   }
- 
+
   .ark-tabs.ark-tabs-card > .ark-tabs-bar .ark-tabs-tab-active {
-    color:  @primary-color;
+    color: @primary-color;
     position: relative;
     border-top-width: 2px;
 
-    
 
   }
 
@@ -63,9 +68,11 @@
     z-index: 22;
     position: relative;
     cursor: pointer;
+
     .next {
       border-left: 1px solid @border-color;
     }
+
     .prev {
       border-right: 1px solid @border-color;
     }
@@ -89,57 +96,60 @@
     //   cursor: pointer;
     //   color: #000;
 
-      .openedMenuListsItem {
-         .ark-tabs-bar {
-         color: #ff0000!important;
-          // height: 29px;
-          // width: 81px;
-          // display: block;
-          // padding-left: 20px;
-          // padding-right: 20px;
-          // line-height: 31px;
-          // background-color: #fff;
-          // box-sizing: content-box;
-          // text-align: center;
-          // border: none;
-          // border-top: 2px solid #fff;
-          // border-right: 1px solid #dfdfdf;
-          // border-radius: 0;
-          // position: relative;
-          // overflow: hidden;
-          // text-overflow: ellipsis;
-          // white-space: nowrap;
-          // // border-bottom: 1px solid #dfdfdf;
-          // margin: 0;
+    .openedMenuListsItem {
+      .ark-tabs-bar {
+        color: #ff0000 !important;
+        // height: 29px;
+        // width: 81px;
+        // display: block;
+        // padding-left: 20px;
+        // padding-right: 20px;
+        // line-height: 31px;
+        // background-color: #fff;
+        // box-sizing: content-box;
+        // text-align: center;
+        // border: none;
+        // border-top: 2px solid #fff;
+        // border-right: 1px solid #dfdfdf;
+        // border-radius: 0;
+        // position: relative;
+        // overflow: hidden;
+        // text-overflow: ellipsis;
+        // white-space: nowrap;
+        // // border-bottom: 1px solid #dfdfdf;
+        // margin: 0;
 
-         }
-        
-        .close {
-          position: absolute !important;
-          top: 7px !important;
-          right: 2px !important;
-          line-height: 16px;
-          border-radius: 2px;
-          opacity: 0;
-          color: #000000;
-          text-align: center;
-          cursor: pointer;
-          font-size: 12px;
-          height: 16px;
-          width: 16px;
-          > img {
-            position: relative;
-            left: -2px;
-            top: -2px;
-            width: 19px;
-          }
-        }
-        .close:hover {
-          opacity: 1;
-          background-color: #d4d4d4;
-          color: #000000;
+      }
+
+      .close {
+        position: absolute !important;
+        top: 7px !important;
+        right: 2px !important;
+        line-height: 16px;
+        border-radius: 2px;
+        opacity: 0;
+        color: #000000;
+        text-align: center;
+        cursor: pointer;
+        font-size: 12px;
+        height: 16px;
+        width: 16px;
+
+        > img {
+          position: relative;
+          left: -2px;
+          top: -2px;
+          width: 19px;
         }
       }
+
+      .close:hover {
+        opacity: 1;
+        background-color: #d4d4d4;
+        color: #000000;
+      }
+    }
+
     // }
     .tabBox:hover {
       .close {
@@ -156,11 +166,13 @@
     height: 31px;
     justify-content: center;
     align-items: center;
+
     img {
       width: 17px;
       height: 20px;
     }
   }
+
   .emptying:hover {
     opacity: 0.6;
   }
@@ -170,7 +182,8 @@
     border-bottom: 2px solid white !important;
     color: @primary-color !important;
   }
-  .iconbj_delete{
+
+  .iconbj_delete {
     color: @primary-color;
   }
 }
