@@ -61,6 +61,7 @@
         :id="$route.params.tableName"
         :form-item-lists="formItems.defaultFormItemsLists"
         :default-spread="changeSearchFoldnum.switchValue"
+        :search="true"
         :default-column="Number(4)"
         :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
         @onHandleEnter="searchClickData"

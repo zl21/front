@@ -7,9 +7,8 @@
            @click="toggle">
         <Icon :class="className" />
       </div>
-      <component :class="classButton" :is="ButtonHtml"></component>
+      <component v-if="ButtonHtml" :class="classButton" :is="ButtonHtml"></component>
       <div :class="classesContent">
-
         <div v-for="(item,index) in Object.keys(ItemLists)"
              :key="ItemLists[item]._index"
              :index="index"
@@ -38,11 +37,6 @@ import {
 } from '../../../constants/global';
 
 export default {
-  data () {
-    return {
-        classesContent :`${classFix}ListsForm-content`
-    }
-  },
   computed: {
     ...mapState('global', {
       activeTab: ({ activeTab }) => activeTab,
@@ -93,6 +87,10 @@ export default {
       type: [Number, String],
       default: 4
     },
+    search:{
+      type:Boolean,
+      default:false
+    },
     formItemLists: {
       type: Array,
       default () {
@@ -121,6 +119,7 @@ export default {
       ButtonHtml:'',
       hiddenIcon:false,  // 默认不隐藏icon
       indexButton:0,  // 渲染按钮+1
+      classesContent :`${classFix}ListsForm-content`,
       formArray: [], // 存储列表数据
     };
   },
@@ -198,7 +197,9 @@ export default {
         document.querySelector('.ListsForm-content').style.marginBottom = '0px';
         if(index> itemArray.length ){
             //  大于总常数
-            index = itemArray.length -1;
+            index = itemArray.length;
+            document.querySelector('.ListsForm-content').style.marginBottom = '30px';
+
           }
         if(document.querySelector('.ListsForm').offsetWidth<560){
           if(((index+1)%this.searchFoldnum) !==1 ){
@@ -384,10 +385,13 @@ export default {
   created () {
     this.resetForm();
     // 处理折叠的默认值
+    
     this.setdefaultColumn =  this.defaultColumn;
-    this.setColumn();
-    window.addEventListener('resize', this.setColumn)
     this.dowClass = !this.defaultSpread;
+    if(this.search){
+       this.setColumn();
+       window.addEventListener('resize', this.setColumn)
+    }
   },
   watch: {
     formItemLists: {
