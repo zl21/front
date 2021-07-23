@@ -166,20 +166,25 @@ export default {
         }
 
       }
+    
       if (this.$parent.updateFormAssignData) {
         this.$parent.updateFormAssignData(arrjson);
       }
     },
     setColumn(){
       // 设置列数
-      if(document.querySelector('.StandardTableListRootDiv').offsetWidth>500){
+      if(document.querySelector('.StandardTableListRootDiv').offsetWidth>601){
         this.setdefaultColumn = 4;
         this.classesContent = `${classFix}ListsForm-content`;
-      }else if(document.querySelector('.StandardTableListRootDiv').offsetWidth<500){
+      }else if(document.querySelector('.StandardTableListRootDiv').offsetWidth<600){
         this.setdefaultColumn = 3;
         this.classesContent = `${classFix}ListsForm-content ListsForm-small`;
       }
-      console.log(this,'===1');
+      // if(document.querySelector('.ListsForm').offsetWidth>560){
+      //   document.querySelector('.ListsForm').style.marginBottom = '30px';
+      // }else{
+      //   document.querySelector('.ListsForm').style.marginBottom = '0px';
+      // }
       this.setButtonType(this.dowClass);
      
     },
@@ -281,6 +286,17 @@ export default {
     },
     r3Format (val, item) {
       // 兼容1.3 数据格式传参
+      if(item.display === 'OBJ_SELECT'){
+        console.log( val[item.colname],'323');
+        if(val[item.colname] && Array.isArray(val[item.colname])){
+          val[item.colname] = val[item.colname].reduce((arr,item)=>{
+            arr.push(`=${item}`);
+            return arr;
+          },[]);
+          
+        }
+        
+      }
       if (Version() === '1.3') {
         if (['OBJ_DATE', 'OBJ_DATENUMBER', 'YearMonth', 'OBJ_DATETIME'].includes(item.display) && val[item.colname]) {
           val[item.colname] = val[item.colname].replace(/-/g, '/');
