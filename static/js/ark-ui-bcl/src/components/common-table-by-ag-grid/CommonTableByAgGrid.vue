@@ -13,7 +13,7 @@
       @on-selection-change="tableSelectedChange"
       @on-sort-change="tableSortChange"
       @on-row-dblclick="tableRowDbclick"
-      @hook:mounted="getGridApi"
+      @grid-ready="tableGridReady"
     ></ag-grid-table>
   </div>
 </template>
@@ -143,14 +143,15 @@ export default {
       }
     },
 
-    // 获取表格api
-    getGridApi() {
+    // 表格渲染完毕
+    tableGridReady(e) {
       this.api = this.$refs.agGridTable.api
       this.columnApi = this.$refs.agGridTable.columnApi
+      this.$emit('grid-ready', e)
     },
 
     emptyAllFilters() {
-      this.api.setFilterModel(null);
+      this.api && this.api.setFilterModel(null);
       if (this.$refs.agGridTable) {
         this.$refs.agGridTable.$el.querySelectorAll('.ag-floating-filter-input').forEach(e => { e.value = '' })
       }
@@ -159,9 +160,6 @@ export default {
     fixAgRenderChoke() {
       this.$refs.agGridTable._fixAgRenderChoke()
     },
-
-    // 支持r3替换渲染组件
-
 
     // r3列表渲染逻辑
     listRender(cellData) {
