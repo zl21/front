@@ -1641,6 +1641,13 @@
           });
         } else { // 没有配置动作定义调动作定义逻辑
           promise.then((res, actionName) => {
+            console.log(res,'===');
+            if(res.isrefrsh){
+              // 页面刷新兼容错误数据
+               this.getQueryListPromise(Object.assign({}, this.searchData, { merge:true }));
+               return;
+
+            }
             this.$R3loading.hide(this.loadingName);
             const message = this.buttons.ExeActionData;
             const data = {
@@ -1664,7 +1671,7 @@
             };
             this.$Modal.fcSuccess(data);
             if (item.isrefrsh) {
-              this.searchClickData();
+               this.searchClickData();
             }
           }, () => {
             this.$R3loading.hide(this.loadingName);
