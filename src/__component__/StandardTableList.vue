@@ -97,6 +97,7 @@
         :buttons-data=" buttons.dataArray.waListButtonsConfig.waListButtons"
         :do-table-search="searchClickData"
         @CommonTableCustomizedDialog="commonTableCustomizedDialog"
+        @grid-ready="gridReady"
       />
     </div>
 
@@ -401,9 +402,15 @@
             }
           }
         }, 0);
-      }
+      },
     },
     methods: {
+      gridReady(e) {
+        if(this.R3_agReady) {
+          this.R3_agReady(e)
+        }
+      },
+
       // 定制表格渲染列
       columnRendererHandler(cellData, render) {
         if(this.columnRenderer) {

@@ -54,6 +54,7 @@
           ...agGridOptions,
         }"
         height="100%"
+        @grid-ready="gridReady"
       ></CommonTableByAgGrid>
 
     <!-- 普通表格 -->
@@ -309,6 +310,9 @@
       },
     },
     methods: {
+      gridReady(e) {
+        this.$emit('grid-ready', e)
+      },
       btnclick(obj) {
         this.$emit('btnclick', obj);
       },
