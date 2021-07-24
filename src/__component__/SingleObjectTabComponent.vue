@@ -887,23 +887,34 @@
         Object.keys(form).forEach(field => {
           const defaultValue = defaultData[field]
           const currentValue = form[field]
+          const isEqual = defaultValue && (defaultValue == currentValue) // 强转化是否相等。处理数字输入框的场景用
+          const isEqualString = defaultValue && (JSON.stringify(defaultValue) === JSON.stringify(currentValue)) // 引用型对象转字符串进行比较是否相等
+
           // 条件1: 没初始值，且没有输入值
           // 条件2: 有初始值，但是值跟之前对比没发生变化
           // currentValue === 0是因为数子输入框输入再删除会把默认值变成0，而不是''
-          if((currentValue === 0 && defaultValue === '') || (currentValue === '' && defaultValue === '') || (defaultValue && (defaultValue.toString() === currentValue.toString()))) {
+          // currentValue === '[]'的出现的场景时文件上传表单
+          if((currentValue === 0 && defaultValue === undefined) || (currentValue === '' && defaultValue === undefined) || (currentValue === '[]' && defaultValue === undefined) || isEqualString || isEqual) {
             delete form[field]
+          }
+          // 如果日期组件默认值形如20210710，而且选的日期没变，例如2021-07-10也不删
+          if(typeof defaultValue === 'string' && typeof currentValue === 'string' && currentValue.includes('-')) {
+            const newVal = currentValue.replace(/-/g, '')
+            if(newVal === defaultValue) {
+              delete form[field]
+            }
           }
         })
         return form
       },
 
       // 表单数据变化
-      formChange(val, changeVal, label, formData, defaultDataInt) {
+      formChange(val, changeVal, label, formData, defaultDataInt, defaultFormData) {
         const { tableName } = this;
         const { itemId } = this[INSTANCE_ROUTE_QUERY];
 
         if (itemId) {
-          const updatedValue = this.getUpdatedValue(formData, defaultDataInt)
+          const updatedValue = this.getUpdatedValue(formData, defaultFormData)
           // 如果没变化，数据恢复原样
           if(Object.keys(updatedValue).length === 0) {
             this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { tableName, value: {} });
