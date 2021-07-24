@@ -189,7 +189,9 @@ export default {
     },
     setButtonType(){
       // 渲染查询按钮
-       this.$nextTick(()=>{
+       
+      if(window.ProjectConfig.layoutDirectionSlot && window.ProjectConfig.layoutDirectionSlot.listFormButton){
+        this.$nextTick(()=>{
         // 动态
         let itemArray =  document.querySelectorAll('#listForm .item');
          let index = this.setdefaultColumn*this.searchFoldnum-2;
@@ -221,7 +223,6 @@ export default {
        })
           
       })
-      if(window.ProjectConfig.layoutDirectionSlot && window.ProjectConfig.layoutDirectionSlot.listFormButton){
         this.ButtonHtml = window.ProjectConfig.layoutDirectionSlot.listFormButton;
         this.hiddenIcon = this.ButtonHtml.data().hiddenIcon || false;
         let hiddenButtons = this.ButtonHtml.data().hiddenButtons || [];
@@ -245,8 +246,6 @@ export default {
       }else{
         this.ButtonHtml = window.ProjectConfig.listFormButton;
       }
-          console.log(this.$parent.buttons.dataArray, );
-
 
     },
     initComponent (item) { // init组件
