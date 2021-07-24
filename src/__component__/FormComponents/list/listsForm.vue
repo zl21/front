@@ -172,6 +172,9 @@ export default {
     },
     setColumn(){
       // 设置列数
+      if(!document.querySelector('.StandardTableListRootDiv')){
+        return;
+      }
       let width = document.querySelector('.StandardTableListRootDiv').offsetWidth;
       if(width>700){
         this.setdefaultColumn = 4;
@@ -201,7 +204,7 @@ export default {
             document.querySelector('.ListsForm-content').style.marginBottom = '30px';
 
           }
-        if(document.querySelector('.ListsForm').offsetWidth<560){
+        if(document.querySelector('.ListsForm') && document.querySelector('.ListsForm').offsetWidth<560){
           if(((index+1)%this.searchFoldnum) !==1 ){
             document.querySelector('.ListsForm-content').style.marginBottom = '30px';
           }
