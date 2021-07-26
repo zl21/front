@@ -26,7 +26,7 @@
                   <DropdownItem>
                     暂无收藏记录
                   </DropdownItem>  
-              </DropdownMenu>
+          </DropdownMenu>
        </Dropdown>
    </div>   
 </template>
