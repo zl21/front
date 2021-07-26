@@ -7,7 +7,6 @@
            @click="toggle">
         <Icon :class="className" />
       </div>
-      <component v-if="ButtonHtml" :class="classButton" :is="ButtonHtml"></component>
       <div :class="classesContent">
         <div v-for="(item,index) in Object.keys(ItemLists)"
              :key="ItemLists[item]._index"
@@ -22,6 +21,7 @@
           </keep-alive>
         </div>
       </div>
+       <component v-if="ButtonHtml" :class="classButton" :is="ButtonHtml"></component>
     </div>
   </div>
 </template>
@@ -117,6 +117,7 @@ export default {
       component: '', // 设置组件名称
       setdefaultColumn:4,
       ButtonHtml:'',
+      bottombutton:false, // 按钮是否下移
       hiddenIcon:false,  // 默认不隐藏icon
       indexButton:0,  // 渲染按钮+1
       classesContent :`${classFix}ListsForm-content`,
@@ -176,7 +177,6 @@ export default {
         return;
       }
       let width = document.querySelector('.StandardTableListRootDiv').offsetWidth;
-      console.log(width,'343434===');
       if(width>700){
         this.setdefaultColumn = 4;
         this.classesContent = `${classFix}ListsForm-content`;
@@ -188,48 +188,89 @@ export default {
       this.setButtonType(this.dowClass);
      
     },
+    setSize(type,number){
+      console.log(number,'34343434');
+       //this.indexButton = 0;
+      let bottomdiv  = document.querySelector('.ListsForm-content');
+      if(document.querySelector('.ListsForm') && document.querySelector('.ListsForm').offsetWidth<550){
+        if(type === false &&( number === 0 ||  number >1)){
+           bottomdiv.style.marginBottom = '40px';
+        }
+        if(type === true ){
+          if(!this.dowClass){
+             if(number === 0 || number>1 ){
+              this.indexButton = 2;
+            }else{
+              this.indexButton = 0;
+            }
+          }
+        }
+      }else{
+        if(type === false && number === 0){
+           bottomdiv.style.marginBottom = '40px';
+        }
+        if(type === true ){
+          if(!this.dowClass){
+             if(number === 0 || number>1 ){
+              this.indexButton = 1;
+
+            }else{
+              this.indexButton = 0;
+              bottomdiv.style.marginBottom = '40px';
+
+            }
+          }
+        }
+      }    
+
+    },
     setButtonType(){
       // 渲染查询按钮
-       
+      
       if(window.ProjectConfig.layoutDirectionSlot && window.ProjectConfig.layoutDirectionSlot.listFormButton){
         this.$nextTick(()=>{
         // 动态
         let itemArray =  document.querySelectorAll('#listForm .item');
-         let index = this.setdefaultColumn*this.searchFoldnum-2;
-        if(this.dowClass == true){
-            index = itemArray.length -1;
-
-        }
+        let index = this.setdefaultColumn*this.searchFoldnum;
+        let itemArrayLength = itemArray.length;
         document.querySelector('.ListsForm-content').style.marginBottom = '0px';
-        if(index> itemArray.length ){
+       
+        let _index = index%this.setdefaultColumn;
+       
+         if(index> itemArray.length ){
             //  大于总常数
-            index = itemArray.length;
-            document.querySelector('.ListsForm-content').style.marginBottom = '30px';
 
-          }
-        let _index = (index+1)%this.setdefaultColumn;
-        if(document.querySelector('.ListsForm') && document.querySelector('.ListsForm').offsetWidth<560){
-          if(_index >1 || _index === 0 ){
-            document.querySelector('.ListsForm-content').style.marginBottom = '40px';
-          }
-        }else{
-          if(_index >2 || _index === 0 ){
-            document.querySelector('.ListsForm-content').style.marginBottom = '40px';
-          }
-        }
-         
-      
-       itemArray.forEach((item,i)=>{
-         if(index === i){
-           if((index+1) !== itemArray.length){
-              item.style.marginRight = '150px';
-              this.indexButton = 1;
-           }
+            let itemLength  = itemArray.length;
+            this.indexButton = 0;
+            let itemLength_index = itemLength%this.setdefaultColumn;
+            this.setSize(false,itemLength_index);
            
-         }else{
-            item.style.marginRight = '0px';
-         }
-       })
+          }else{
+            let itemLength  = itemArray.length;
+            let itemLength_index = itemLength%this.setdefaultColumn;
+            let _index = index%this.setdefaultColumn;
+            if(this.dowClass){
+              this.setSize(true,itemLength_index);
+            }else{
+              this.setSize(true,_index);
+            }
+
+
+            
+          }
+        // if(document.querySelector('.ListsForm') && document.querySelector('.ListsForm').offsetWidth<550){
+        //   if(!this.dowClass){
+        //     this.indexButton = 2;
+        //   }
+          
+        //   if(_index >1 || this.indexButton === 0 ){
+        //     document.querySelector('.ListsForm-content').style.marginBottom = '40px';
+        //   }
+        // }else{ 
+        //   if(this.indexButton === 0 ){
+        //     document.querySelector('.ListsForm-content').style.marginBottom = '40px';
+        //   }
+        // }
           
       })
         this.ButtonHtml = window.ProjectConfig.layoutDirectionSlot.listFormButton;
@@ -410,6 +451,15 @@ export default {
         this.resetForm()
       },
       deep: true
+    },
+    searchFoldnum:{
+       handler () {
+        if(this.search && this.searchFoldnum){
+            this.setColumn();
+        }
+      },
+      deep: true
+
     }
   }
 };
