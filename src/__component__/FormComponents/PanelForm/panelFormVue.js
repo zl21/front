@@ -38,6 +38,7 @@ export default {
       formDatadefault: {}, // 表单默认值
       formLabel:{}, // 1.3 LABEL
       defaulDataLabel:{},// 1.3 LABEL
+      defaulDataValue:{}, // 表单默认值
       formItemLists:{}, // 表单数据重绘制
       objviewcol: 4, // 表单默认展示几列
       LinkageForm: [],// 联动状态
@@ -107,10 +108,10 @@ export default {
       this.timer = setTimeout(() => {
         if (this.$parent.formPanelChange) {
           // v
-          this.$parent.initFormPanel(this.defaulData, this.formDataLabel,this.defaulDataLabel)
+          this.$parent.initFormPanel(this.defaulDataValue, this.formDataLabel,this.defaulDataLabel)
         } else {
           // H
-          this.$parent.InitializationForm(this.defaulData, this.formDataLabel,this.defaulDataLabel)
+          this.$parent.InitializationForm(this.defaulDataValue, this.formDataLabel,this.defaulDataLabel)
         }
         const { tableName, customizedModuleName } = this.$route.params;
 
@@ -399,7 +400,7 @@ export default {
       // 清空默认值
         this.formData = {};
         this.formChangeData = {};
-        this.defaulData = {}
+        this.defaulDataValue = {}
         this.defaulDataLabel = {};
         this.formDataLabel = {};
 

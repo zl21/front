@@ -121,15 +121,7 @@
           :columns="columns"
           :data="tabledata"
           :render-params="renderParams"
-          :options="{
-            suppressMovableColumns: true,
-            agColumnMoved,
-            ...agGridOptions,
-            datas: {
-              ...dataSource,
-              pinnedColumns: webConfSingle.pinnedColumns
-            }
-          }"
+          :options="agOptions"
           @ag-selection-change="tableSelectedChange"
           @ag-sort-change="tableSortChange"
           @ag-row-dblclick="tableRowDbclick"
@@ -584,6 +576,19 @@
       },
       pageItemId() {
         return router.currentRoute.params.itemId;
+      },
+
+      agOptions() {
+        const options = {
+          suppressMovableColumns: true,
+          agColumnMoved:this.agColumnMoved,
+          ...this.agGridOptions,
+          datas: {
+            ...this.dataSource,
+            pinnedColumns: this.webConfSingle.pinnedColumns
+          }
+        }
+        return options
       }
     },
     watch: {
@@ -718,7 +723,7 @@
         // 过滤导出按钮数据
         if(this.$route.params.itemId ==='New'){
         let index = val.findIndex((x)=>{
-              return x.eName ==='actionEXPORT';
+              return x.eName ==='actionEXPORT' && x.name === "导出";
             });
            if(index !== '-1'){
                val.splice(index,1);
@@ -821,6 +826,10 @@
             return item;
           });
 
+        // 允许项目组定制列数据
+        if(this.R3_processColumns) {
+          this.R3_processColumns(newColumns)
+        }
         return newColumns;
       },
 
@@ -1980,14 +1989,13 @@
           }
           const innerHTML = content;
           const overflow = maxlength || cellData.width ? 'hidden' : 'none';
-
           return h('div', [h('div', {
             style: {
               width,
               overflow,
               'text-overflow': 'ellipsis',
               'white-space': 'nowrap',
-              'text-align': cellData.type === 'NUMBER' ? 'right' : 'center',
+              'text-align': cellData.tdAlign,
             },
             attrs: {
               title: params.row[cellData.colname]
@@ -2045,11 +2053,12 @@
           return h('div', [
             h(tag, {
               style: {
-                width: '100px'
+                width: '100px',
               },
               class: {
-                'input-align-right': cellData.type === 'NUMBER',
-                'input-align-center': cellData.type !== 'NUMBER'
+                'input-align-right': cellData.tdAlign === 'right',
+                'input-align-center': cellData.tdAlign === 'center',
+                'input-align-left': cellData.tdAlign === 'left'
               },
               domProps: {
                 id: `ag-${params.index}-${params.column._index - 1}`,

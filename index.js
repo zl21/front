@@ -57,7 +57,7 @@ import panelForm from './src/__component__/FormComponents/PanelForm/panelForm'
 
 Vue.component('panelForm',panelForm)
 
-import listsForm from './src/__component__/FormComponents/listsForm.vue'
+import listsForm from './src/__component__/FormComponents/list/listsForm.vue'
 // import jflowPlugin from './jflowPlugin/js/index';
 // import './src/__utils__/encryptingParameter';
 

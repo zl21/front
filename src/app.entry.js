@@ -31,7 +31,7 @@ import './assets/css/custom-ext.less';
 import { createWatermark } from './__utils__/waterMark';
 import R3Dialog from './__globalComponentModule__/dialog';
 import panelForm from './__component__/FormComponents/PanelForm/panelForm.vue'
-import listsForm from './__component__/FormComponents/listsForm.vue'
+import listsForm from './__component__/FormComponents/list/listsForm.vue'
 import './__utils__/getChildComponent'
 
 import draggable from 'vuedraggable';

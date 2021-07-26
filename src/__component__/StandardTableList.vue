@@ -61,6 +61,7 @@
         :id="$route.params.tableName"
         :form-item-lists="formItems.defaultFormItemsLists"
         :default-spread="changeSearchFoldnum.switchValue"
+        :search="true"
         :default-column="Number(4)"
         :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
         @onHandleEnter="searchClickData"
@@ -74,6 +75,8 @@
       <AgTable
         ref="agTableElement"
         :columnRenderer="columnRendererHandler"
+        :agProcessColumns="agProcessColumns"
+        :processAgOptions="processAgOptions"
         :moduleComponentName='moduleComponentName'
         :style="agTableElementStyles"
         :page-attribute="pageAttribute"
@@ -96,6 +99,7 @@
         :buttons-data=" buttons.dataArray.waListButtonsConfig.waListButtons"
         :do-table-search="searchClickData"
         @CommonTableCustomizedDialog="commonTableCustomizedDialog"
+        @grid-ready="gridReady"
       />
     </div>
 
@@ -200,7 +204,7 @@
   import { addSearch, querySearch } from '../__utils__/indexedDB';
   import { getPinnedColumns } from '../__utils__/tableMethods'
   import tabBar from './tabBar.vue';
-  import listsForm from './FormComponents/listsForm';
+  import listsForm from './FormComponents/list/listsForm';
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -400,12 +404,34 @@
             }
           }
         }, 0);
-      }
+      },
     },
     methods: {
+      // 表格渲染完毕回调
+      gridReady(e) {
+        if(this.R3_agReady) {
+          this.R3_agReady(e)
+        }
+      },
+
+      // 定制表格选项
+      processAgOptions(options) {
+        if(this.R3_processAgOptions) {
+          this.R3_processAgOptions(options)
+        }
+      },
+
+      // r3内部定制表格渲染列
       columnRendererHandler(cellData, render) {
         if(this.columnRenderer) {
           this.columnRenderer(cellData, render)
+        }
+      },
+
+      // 支持项目组定制表格列
+      agProcessColumns(columns) {
+        if(this.R3_processColumns) {
+          this.R3_processColumns(columns)
         }
       },
 
@@ -905,7 +931,7 @@
       },
 
       // 监听表格隐藏或显示列
-      onColumnVisibleChanged(hideCols, params) {
+      onColumnVisibleChanged(hideCols) {
         this.setColVisible(hideCols)
       },
       onCellSingleClick(colDef, rowData, target) {
@@ -1640,6 +1666,12 @@
           });
         } else { // 没有配置动作定义调动作定义逻辑
           promise.then((res, actionName) => {
+            if(res.isrefrsh && item.isrefrsh){
+              // 页面刷新兼容错误数据
+               this.getQueryListPromise(Object.assign({}, this.searchData, { merge:true }));
+               return;
+
+            }
             this.$R3loading.hide(this.loadingName);
             const message = this.buttons.ExeActionData;
             const data = {
@@ -1663,7 +1695,7 @@
             };
             this.$Modal.fcSuccess(data);
             if (item.isrefrsh) {
-              this.searchClickData();
+               this.searchClickData();
             }
           }, () => {
             this.$R3loading.hide(this.loadingName);

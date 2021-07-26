@@ -57,7 +57,7 @@
                   :auto-data="searchKeyList"
                   :page-size="pageSize"
                   :total-row-count="totalCount"
-                  :default-selected="temp.defaultSelected"
+                  :default-selected="defaultSelected[index][j]"
                   is-back-row-item
                   :columns-key="columnsKey"
                   placeholder="请输入表内名称"
@@ -105,6 +105,8 @@
                   :value="temp.contrast_value"
                   :type="temp.type && temp.type.toUpperCase() === 'DATETIME' ? 'datetimerange' : 'daterange'"
                   placeholder="请选择"
+                  :editable="false"
+                  transfer
                   :format="temp.type && temp.type.toUpperCase() === 'DATETIME' ? 'yyyy/MM/dd HH:mm:ss' : 'yyyy/MM/dd'"
                   @on-change="handleChangeDate(index, j , $event)"
                 />
@@ -116,21 +118,21 @@
               <button
                 v-if="item.tab_value.length - 1 === Number(j)"
                 class="operate-button"
-                @click="(event) => {item.tab_value = addColname(item.tab_value)}"
+                @click="addColname(item.tab_value, index)"
               >
                 <i class="iconfont">&#xec3f;</i>
               </button>
               <button
                 v-if="item.tab_value.length > 1"
                 class="operate-button"
-                @click="(event) => {item.tab_value = deleteColname(item.tab_value,j)}"
+                @click="deleteColname(item.tab_value,index,j)"
               >
                 <i class="iconfont">&#xed15;</i>
               </button>
             </div>
           </div>
 
-          <!-- 增加tab按钮 -->
+          <!-- 增加配置组按钮 -->
           <button
             v-if="sumTabs.length - 1 === index"
             class="operate-button ml-10 mb-10"
@@ -179,7 +181,7 @@ export default {
 
   name: 'MultiTab',
 
-  directives: {inputNumber},
+  directives: { inputNumber },
 
   inject: ['network'],
 
@@ -203,7 +205,10 @@ export default {
       totalCount: 0,
       pageSize: 10,
       columnsKey: ['DBNAME'],
-      tipStyle: ''
+      tipStyle: '',
+      defaultSelected: [
+        []
+      ]
     };
   },
 
@@ -213,7 +218,7 @@ export default {
         this.syncData();
       },
       deep: true
-    }
+    },
   },
 
   computed: {
@@ -223,6 +228,8 @@ export default {
   },
 
   async created() {
+    const { itemId } = this.$route.params;
+    this._table_id_ = itemId
     this.initData();
     this.setHover();
   },
@@ -263,17 +270,77 @@ export default {
     },
 
     // 初始化
-    initData() {
+    async initData() {
       const newData = JSON.parse(JSON.stringify(this.defaultData));
 
       if (this.defaultData && this.defaultData.length > 0) {
-        newData.forEach((tabObj) => {
-          tabObj.tab_value.forEach((keyObj) => {
-            if (keyObj.type && keyObj.type.toUpperCase().startsWith('DATE')) {
-              keyObj.contrast_value = keyObj.contrast_value.split('~');
+        // newData.forEach((tabObj) => {
+        //   tabObj.tab_value.forEach((keyObj) => {
+        // if (keyObj.type && keyObj.type.toUpperCase().startsWith('DATE')) {
+        //   keyObj.contrast_value = keyObj.contrast_value.split('~');
+        // }
+        //   });
+        // });
+
+        const nameList = []
+
+        // 取出所有id值
+        // 加 = 号可以精确查找
+        newData.forEach((group) => {
+          group.tab_value.forEach((row) => {
+            const name = `=${row.col_name}`
+            if (!nameList.includes(name)) {
+              nameList.push(name)
             }
-          });
-        });
+          })
+        })
+
+        // 找回字段信息
+        const searchdata = {
+          table: 'AD_COLUMN',
+          startindex: 0,
+          range: nameList.length,
+          fixedcolumns: {
+            ISACTIVE: ['=Y'],
+            DBNAME: nameList,
+            AD_TABLE_ID: [this._table_id_],
+          },
+          column_include_uicontroller: true,
+          isolr: false
+        }
+        if (!this._table_id_) {
+          delete searchdata.fixedcolumns.AD_TABLE_ID;
+        }
+
+        const result = (await this.requestKeysData(searchdata)).row || [];
+
+        // 回填默认值
+        const defaultList = [];
+        newData.forEach((group, groupIndex) => {
+          defaultList.push([])
+          group.tab_value.forEach((row, rowIndex) => {
+            // 设置下拉组件默认值
+            defaultList[groupIndex].push([])
+            const field = result.find(item => item.DBNAME.val === row.col_name)
+            defaultList[groupIndex][rowIndex] = [{
+              ID: field.ID.val,
+              Label: field.DBNAME.val
+            }]
+
+            // 记下字段类型
+            row.type = field.COLTYPE.val
+            // 记下操作符
+            const options = this.getSelectItems(row.type)
+            row.selectOptions = options
+
+            // 还原日期组件值
+            if (row.type && row.type.toUpperCase().startsWith('DATE')) {
+              row.contrast_value = row.contrast_value.split('~');
+            }
+          })
+        })
+
+        this.defaultSelected = defaultList
         this.sumTabs = newData;
       } else {
         this.sumTabs = [JSON.parse(JSON.stringify(TAB_CONSTRUCTOR))];
@@ -281,36 +348,29 @@ export default {
     },
 
     removeOption(keyArray) { // 清楚整个配置数据
-      this.currentTabIndex = 0;
-      this.currentKeyIndex = 0;
-      this.sumTabs = [JSON.parse(JSON.stringify(TAB_CONSTRUCTOR))];
+      Object.assign(this.$data, this.$options.data.call(this));
       this.$emit('removeOption', keyArray || []);
     },
     addButtonClick() { // 新增tab配置
       const tab = JSON.parse(JSON.stringify(TAB_CONSTRUCTOR));
       this.sumTabs.push(tab);
+      this.defaultSelected.push([[]])
     },
     removeButtonClick(index) {
       this.sumTabs.splice(index, 1);
+      this.defaultSelected.splice(index, 1);
     },
-    addColname(item) { // 新增字段配置
+    addColname(item, groupIndex) { // 新增字段配置
       item.push({
         col_name: '',
         operator: '',
         contrast_value: ''
       });
-      return item;
+      this.defaultSelected[groupIndex].push([])
     },
-    deleteColname(item, index) { // 删除字段配置
-      /*
-入参: 
-item:  //当前tab的字段配置数组  type:Array
-index:  //需要删除的配置下标 type:number
-出参:
-修改后的tab配置
-*/
-      item.splice(index, 1);
-      return item;
+    deleteColname(item, groupIndex, rowIndex) { // 删除字段配置
+      item.splice(rowIndex, 1);
+      this.defaultSelected[groupIndex].splice(rowIndex, 1)
     },
 
     // 查询key
@@ -464,7 +524,7 @@ index:  //需要删除的配置下标 type:number
           // 过滤不必要的字段
           delete keyRow.type;
           delete keyRow.selectOptions;
-          delete keyRow.defaultSelected;
+          delete keyRow.defaultSelected
           // 删除无效字段配置
           if (!keyRow.col_name || !keyRow.operator || !keyRow.contrast_value) {
             tabObj.tab_value.splice(j, 1);
@@ -483,11 +543,11 @@ index:  //需要删除的配置下标 type:number
     syncData() {
       const cacheData = JSON.parse(JSON.stringify(this.formatResult(this.sumTabs)));
 
-      const displayData = this.setDisplayData(this.sumTabs);
+      const displayData = this.setDisplayData(cacheData);
       if (displayData.length === 0) {
         this.$emit('dataChange', { key: this.option.key, value: '' });
       } else {
-        this.$emit('dataChange', { key: this.option.key, value: cacheData });
+        this.$emit('dataChange', { key: this.option.key, value: displayData });
       }
     },
 
@@ -499,7 +559,7 @@ index:  //需要删除的配置下标 type:number
       this.sumTabs[tabIndex].tab_value[keyIndex].operator = '';
       this.sumTabs[tabIndex].tab_value[keyIndex].contrast_value = '';
       this.sumTabs[tabIndex].tab_value[keyIndex].type = value[0].rowItem.COLTYPE.val || value[0].rowItem.COLTYPE;
-      this.sumTabs[tabIndex].tab_value[keyIndex].defaultSelected = [value[0]];
+      this.defaultSelected[tabIndex][keyIndex] = [value[0]]
     },
 
     // 清空下拉所选
@@ -513,6 +573,12 @@ index:  //需要删除的配置下标 type:number
     // 获取下拉选项
     handleSelectExpand(tabIndex, keyIndex) {
       const typeValue = this.sumTabs[tabIndex].tab_value[keyIndex].type || '';
+      const options = this.getSelectItems(typeValue)
+      this.$set(this.sumTabs[tabIndex].tab_value[keyIndex], 'selectOptions', options);
+    },
+
+    // 转换类型名称
+    formatType(typeValue) {
       let type;
       if (typeValue.toUpperCase().startsWith('NUMBER')) {
         type = 'NUMBER';
@@ -521,12 +587,13 @@ index:  //需要删除的配置下标 type:number
       } else if (typeValue.toUpperCase().startsWith('CHAR') || typeValue.toUpperCase().startsWith('VARCHAR')) {
         type = 'STRING';
       }
-
-      this.$set(this.sumTabs[tabIndex].tab_value[keyIndex], 'selectOptions', this.setSelectItems(type));
+      return type
     },
 
     // 设置下拉选项
-    setSelectItems(type) {
+    getSelectItems(typeValue) {
+      let type = this.formatType(typeValue)
+
       switch (type) {
         case 'STRING':
           return [

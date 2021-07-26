@@ -13,7 +13,7 @@
       @on-selection-change="tableSelectedChange"
       @on-sort-change="tableSortChange"
       @on-row-dblclick="tableRowDbclick"
-      @hook:mounted="getGridApi"
+      @grid-ready="tableGridReady"
     ></ag-grid-table>
   </div>
 </template>
@@ -44,7 +44,7 @@ export default {
     CustomerUrlComponent,
     SequenceComponent,
     AttachmentComponent,
-    FieldMergeComponent,
+    FieldMergeComponent
   },
 
   props: {
@@ -77,10 +77,6 @@ export default {
     // 是否加边框
     border: {
       type: Boolean
-    },
-    // r3定制表格列方法
-    r3ColumnRenderer: {
-      type: Function
     }
   },
 
@@ -124,7 +120,7 @@ export default {
 
     // 表格排序
     tableSortChange(e) {
-      if (this.mode === Common_Table_Mode) {
+      if(this.mode === Common_Table_Mode) {
         this.$emit('ag-sort-change', {
           key: e[0].colId,
           order: e[0].sort
@@ -136,21 +132,22 @@ export default {
 
     // 行双击事件
     tableRowDbclick(e) {
-      if (this.mode === Common_Table_Mode) {
+      if(this.mode === Common_Table_Mode) {
         this.$emit('ag-row-dblclick', e.data)
       } else {
         this.$emit('ag-row-dblclick', e)
       }
     },
 
-    // 获取表格api
-    getGridApi() {
+    // 表格渲染完毕
+    tableGridReady(e) {
       this.api = this.$refs.agGridTable.api
       this.columnApi = this.$refs.agGridTable.columnApi
+      this.$emit('grid-ready', e)
     },
 
     emptyAllFilters() {
-      this.api.setFilterModel(null);
+      this.api && this.api.setFilterModel(null);
       if (this.$refs.agGridTable) {
         this.$refs.agGridTable.$el.querySelectorAll('.ag-floating-filter-input').forEach(e => { e.value = '' })
       }
@@ -160,13 +157,9 @@ export default {
       this.$refs.agGridTable._fixAgRenderChoke()
     },
 
-    // 支持r3替换渲染组件
-
-
     // r3列表渲染逻辑
     listRender(cellData) {
       let renderObj = {
-        renderContainer: 'CellRender',
         renderComponent: TextComponent
       }
       if (cellData.display === 'doc') {
@@ -181,7 +174,7 @@ export default {
       if (cellData.isfk) {
         if (cellData.fkdisplay === 'mop') {
           renderObj.renderComponent = MopFkComponent
-        } else if (cellData.fkdisplay === 'drp' || cellData.fkdisplay === 'pop') {
+        } else if(cellData.fkdisplay === 'drp' || cellData.fkdisplay === 'pop') {
           renderObj.renderComponent = FkComponent
         }
       }
@@ -189,32 +182,8 @@ export default {
         renderObj.renderComponent = ImageComponent
       }
 
-      if (cellData.key_group && cellData.key_group.length > 0) {
+      if(cellData.key_group && cellData.key_group.length > 0){
         renderObj.renderComponent = FieldMergeComponent
-      }
-
-      // 最初版的定制列
-      if (cellData.webconf && cellData.webconf.customerurl && cellData.webconf.customerurl.objdistype === 'defined') {
-        const componentName = cellData.webconf.customerurl.cellcomponent
-        const renderer = window.ProjectConfig.standardTableCellRenderer && window.ProjectConfig.standardTableCellRenderer[componentName]
-        renderObj.renderContainer = 'CellRenderByFunction'; // 表示用render方式渲染
-        if (typeof renderer !== 'function') {
-          renderObj.renderComponent = (h) => h('span', {
-            domProps: {
-              innerHTML: '没有找到对应的组件'
-            }
-          });
-        } else {
-          renderObj.renderComponent = (h, params) => h('div', {
-            domProps: {
-              innerHTML: `${renderer(params)}`
-            }
-          });
-        }
-      }
-
-      if (this.r3ColumnRenderer) {
-        this.r3ColumnRenderer(cellData, renderObj)
       }
 
       return renderObj
@@ -222,6 +191,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss" scoped>
-</style>

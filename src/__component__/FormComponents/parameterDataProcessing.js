@@ -46,7 +46,7 @@ function get_default_date(formItem, isDetailPage) {
       return [start.defval || start.valuedata, end.defval || end.valuedata];
     }
     const value = formItem.valuedata || formItem.defval;
-    return value ? `${new Date().r3Format(new Date(value), 'yyyy/MM/dd hh:mm:ss')}`: '';
+    return value ? `${new Date().r3Format(new Date(value), 'yyyy-MM-dd hh:mm:ss')}`: '';
   } else {
     let timeRange = ''
     if (formItem.customDefault) {
