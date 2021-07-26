@@ -897,13 +897,6 @@
           if((currentValue === 0 && defaultValue === undefined) || (currentValue === '' && defaultValue === undefined) || (currentValue === '[]' && defaultValue === undefined) || isEqualString || isEqual) {
             delete form[field]
           }
-          // 如果日期组件默认值形如20210710，而且选的日期没变，例如2021-07-10也不删
-          if(typeof defaultValue === 'string' && typeof currentValue === 'string' && currentValue.includes('-')) {
-            const newVal = currentValue.replace(/-/g, '')
-            if(newVal === defaultValue) {
-              delete form[field]
-            }
-          }
         })
         return form
       },
