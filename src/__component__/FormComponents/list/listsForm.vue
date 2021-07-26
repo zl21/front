@@ -189,9 +189,11 @@ export default {
      
     },
     setSize(type,number){
-      console.log(number,'34343434');
        //this.indexButton = 0;
       let bottomdiv  = document.querySelector('.ListsForm-content');
+      if(!bottomdiv){
+          return false;
+      }
       if(document.querySelector('.ListsForm') && document.querySelector('.ListsForm').offsetWidth<550){
         if(type === false &&( number === 0 ||  number >1)){
            bottomdiv.style.marginBottom = '40px';
@@ -203,6 +205,12 @@ export default {
             }else{
               this.indexButton = 0;
             }
+          }else{
+             if(number === 0 ){
+              this.indexButton = 0;
+              bottomdiv.style.marginBottom = '40px';
+            }
+
           }
         }
       }else{
@@ -210,6 +218,7 @@ export default {
            bottomdiv.style.marginBottom = '40px';
         }
         if(type === true ){
+          
           if(!this.dowClass){
              if(number === 0 || number>1 ){
               this.indexButton = 1;
@@ -219,6 +228,15 @@ export default {
               bottomdiv.style.marginBottom = '40px';
 
             }
+          }else{
+             if(number === 0 ){
+              this.indexButton = 0;
+              bottomdiv.style.marginBottom = '40px';
+
+            }else{
+
+            }
+
           }
         }
       }    
