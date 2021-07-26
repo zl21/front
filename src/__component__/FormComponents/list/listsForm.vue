@@ -176,6 +176,7 @@ export default {
         return;
       }
       let width = document.querySelector('.StandardTableListRootDiv').offsetWidth;
+      console.log(width,'343434===');
       if(width>700){
         this.setdefaultColumn = 4;
         this.classesContent = `${classFix}ListsForm-content`;
@@ -206,17 +207,25 @@ export default {
             document.querySelector('.ListsForm-content').style.marginBottom = '30px';
 
           }
+        let _index = (index+1)%this.setdefaultColumn;
         if(document.querySelector('.ListsForm') && document.querySelector('.ListsForm').offsetWidth<560){
-          if(((index+1)%this.searchFoldnum) !==1 ){
-            document.querySelector('.ListsForm-content').style.marginBottom = '30px';
+          if(_index >1 || _index === 0 ){
+            document.querySelector('.ListsForm-content').style.marginBottom = '40px';
+          }
+        }else{
+          if(_index >2 || _index === 0 ){
+            document.querySelector('.ListsForm-content').style.marginBottom = '40px';
           }
         }
          
       
        itemArray.forEach((item,i)=>{
          if(index === i){
-            item.style.marginRight = '150px';
-            this.indexButton = 1;
+           if((index+1) !== itemArray.length){
+              item.style.marginRight = '150px';
+              this.indexButton = 1;
+           }
+           
          }else{
             item.style.marginRight = '0px';
          }
