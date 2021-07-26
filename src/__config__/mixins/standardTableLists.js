@@ -88,7 +88,6 @@ export default () => ({
         'resetTabParam',
         'filterButtonsForDisable',
         'resetButtonsStatus',
-        'updateFormAssignData',
         'filterButtonsForShow'
         
       ]),
