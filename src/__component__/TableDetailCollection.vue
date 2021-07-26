@@ -723,7 +723,7 @@
         // 过滤导出按钮数据
         if(this.$route.params.itemId ==='New'){
         let index = val.findIndex((x)=>{
-              return x.eName ==='actionEXPORT';
+              return x.eName ==='actionEXPORT' && x.name === "导出";
             });
            if(index !== '-1'){
                val.splice(index,1);

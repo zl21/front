@@ -828,14 +828,18 @@
       },
       verifyRequiredInformation() { // 验证表单必填项
         this.saveParameters();
-        const checkedInfo = this.currentParameter.checkedInfo;// 主表校验信息
-        if (checkedInfo) {
-          const messageTip = checkedInfo.messageTip;
-          if (messageTip && messageTip.length > 0) {
-            this.$Message.warning(messageTip[0]);
-            checkedInfo.validateForm.focus();
+        const checkedInfo = this.verifymiainForm();// 主表校验信息
+        if (checkedInfo.length>0) {
+           this.$Message.warning(checkedInfo[0].tip);
+            let dom = document.querySelector(`#${checkedInfo[0].colname}`);
+            if(dom){
+              let Input = dom.querySelector('input') || dom.querySelector('textarea');
+              if(Input){
+                  Input.focus();
+              }
+
+            }
             return false;
-          }
         }
         // if (this.objectType === 'vertical') { // 纵向结构
         if (this.childTableNames.length > 0) { // 存在子表时
@@ -862,6 +866,17 @@
         }
         // }
         return true;
+      },
+      verifymiainForm(){
+        // 获取主表校验
+        let panelForm_dom =  document.querySelector('.panelForm');
+        let panelForm = panelForm_dom._vue_;
+        let validate = [];
+        if(panelForm){
+           validate = panelForm.validate();
+        }
+        return validate;
+
       },
       saveParameters() {
         if (this.verifyForm) { // 有子表

@@ -61,6 +61,7 @@
         :id="$route.params.tableName"
         :form-item-lists="formItems.defaultFormItemsLists"
         :default-spread="changeSearchFoldnum.switchValue"
+        :search="true"
         :default-column="Number(4)"
         :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
         @onHandleEnter="searchClickData"
@@ -203,7 +204,7 @@
   import { addSearch, querySearch } from '../__utils__/indexedDB';
   import { getPinnedColumns } from '../__utils__/tableMethods'
   import tabBar from './tabBar.vue';
-  import listsForm from './FormComponents/listsForm';
+  import listsForm from './FormComponents/list/listsForm';
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -1665,6 +1666,12 @@
           });
         } else { // 没有配置动作定义调动作定义逻辑
           promise.then((res, actionName) => {
+            if(res.isrefrsh && item.isrefrsh){
+              // 页面刷新兼容错误数据
+               this.getQueryListPromise(Object.assign({}, this.searchData, { merge:true }));
+               return;
+
+            }
             this.$R3loading.hide(this.loadingName);
             const message = this.buttons.ExeActionData;
             const data = {
@@ -1688,7 +1695,7 @@
             };
             this.$Modal.fcSuccess(data);
             if (item.isrefrsh) {
-              this.searchClickData();
+               this.searchClickData();
             }
           }, () => {
             this.$R3loading.hide(this.loadingName);

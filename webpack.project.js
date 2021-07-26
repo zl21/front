@@ -128,7 +128,7 @@ module.exports = env => ({
     new HtmlWebpackPlugin({
       chunksSortMode: 'none',
       title: env && env.production ? projectConfig.projectsTitle : `Debug:${projectConfig.projectsTitle}`,
-      template: env && env.production ? './index.pro.html' : './index.html',
+      template: env && env.production ? './index.project.html' : './index.project.html',
       inject: true,
       favicon: projectConfig.projectIconPath,
     }),
