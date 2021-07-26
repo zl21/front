@@ -324,6 +324,7 @@ export default {
         } else if (sataTypeName === 'add') { // 子表新增
           const add = Object.assign({}, itemDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
           Object.assign(itemAdd[itemName], add);
+
           const itemTableAdd = Object.assign({}, itemAdd);
           itemTableAdd[itemName].ID = -1;
           itemTableAdd[itemName] = [

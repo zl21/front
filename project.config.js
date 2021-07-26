@@ -94,10 +94,28 @@ module.exports = {
   customizeMixins: { // 获取所有外部接入的mixins对象
     setPanel: null,
     // verticalTableDetailCustomize: require('./src/demo/horizontalTableDetailCustomize.js').default,
-    standardTableListsCustomize: null,
+    // standardTableListsCustomize: {
+    //   methods: {
+    //     R3_processColumns(columns) {
+    //       console.log('定制', columns)
+    //       columns.forEach(item => {
+    //         item.tdAlign = 'center'
+    //       })
+    //     }
+    //   }
+    // },
     // horizontalTableDetailCustomize: require('./src/demo/horizontalTableDetailCustomize.js').default,
     taskList: null,
-    // tableDetailCollectionMixin:require('./src/demo/mixin').default
+    // tableDetailCollectionMixin: {
+    //   methods: {
+    //     R3_processColumns(columns) {
+    //       console.log('定制1', columns)
+    //       columns.forEach(item => {
+    //         item.tdAlign = 'left'
+    //       })
+    //     }
+    //   }
+    // }
   },
   imgProgressController: false, // 是否显示图片上传进度
   ossRealtimeSave: false,

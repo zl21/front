@@ -49,11 +49,9 @@
         :r3ColumnRenderer="columnRenderer"
         :columns="columns"
         :data="rows"
-        :options="{
-          ...options,
-          ...agGridOptions,
-        }"
+        :options="agOptions"
         height="100%"
+        @grid-ready="gridReady"
       ></CommonTableByAgGrid>
 
     <!-- 普通表格 -->
@@ -142,6 +140,16 @@
           }
         ];
       },
+      agOptions() {
+        let options ={
+          ...this.options,
+          ...this.agGridOptions
+        }
+        if(this.processAgOptions) {
+          this.processAgOptions(options)
+        }
+        return options
+      }
     },
     props: {
       doTableSearch: {
@@ -285,6 +293,14 @@
       // 定制表格列组件
       columnRenderer: {
         type: Function
+      },
+      // 定制表格列
+      agProcessColumns: {
+        type: Function
+      },
+      // 定制表格选项
+      processAgOptions: {
+        type: Function
       }
     },
     watch: {
@@ -305,6 +321,9 @@
       },
     },
     methods: {
+      gridReady(e) {
+        this.$emit('grid-ready', e)
+      },
       btnclick(obj) {
         this.$emit('btnclick', obj);
       },
@@ -356,7 +375,10 @@
           }
           item.tdAlign = item.type === 'NUMBER' ? 'right' : 'left'
           return item
-        })
+        }) 
+
+        // 允许项目组定制列数据
+        this.agProcessColumns(columns)
         return columns
       },
 

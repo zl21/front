@@ -74,6 +74,8 @@
       <AgTable
         ref="agTableElement"
         :columnRenderer="columnRendererHandler"
+        :agProcessColumns="agProcessColumns"
+        :processAgOptions="processAgOptions"
         :moduleComponentName='moduleComponentName'
         :style="agTableElementStyles"
         :page-attribute="pageAttribute"
@@ -96,6 +98,7 @@
         :buttons-data=" buttons.dataArray.waListButtonsConfig.waListButtons"
         :do-table-search="searchClickData"
         @CommonTableCustomizedDialog="commonTableCustomizedDialog"
+        @grid-ready="gridReady"
       />
     </div>
 
@@ -400,12 +403,34 @@
             }
           }
         }, 0);
-      }
+      },
     },
     methods: {
+      // 表格渲染完毕回调
+      gridReady(e) {
+        if(this.R3_agReady) {
+          this.R3_agReady(e)
+        }
+      },
+
+      // 定制表格选项
+      processAgOptions(options) {
+        if(this.R3_processAgOptions) {
+          this.R3_processAgOptions(options)
+        }
+      },
+
+      // r3内部定制表格渲染列
       columnRendererHandler(cellData, render) {
         if(this.columnRenderer) {
           this.columnRenderer(cellData, render)
+        }
+      },
+
+      // 支持项目组定制表格列
+      agProcessColumns(columns) {
+        if(this.R3_processColumns) {
+          this.R3_processColumns(columns)
         }
       },
 
@@ -905,7 +930,7 @@
       },
 
       // 监听表格隐藏或显示列
-      onColumnVisibleChanged(hideCols, params) {
+      onColumnVisibleChanged(hideCols) {
         this.setColVisible(hideCols)
       },
       onCellSingleClick(colDef, rowData, target) {

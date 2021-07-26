@@ -5,6 +5,7 @@
     ref="tableContainer"
   >
     <ag-grid-vue
+      v-if="columns.length > 0"
       ref="table"
       class="ag-grid-table ag-theme-balham"
       :gridOptions="gridOptions"
@@ -114,6 +115,7 @@ export default {
         onRowDataChanged: this.onRowDataChanged,
         onBodyScroll: this.onBodyScroll,
         onFilterChanged: this.onFilterChanged,
+        onColumnResized: this.onColumnResized,
         getRowClass: this.getRowClass,
       }
       const defaultColDef = this.options.defaultColDef || {}
@@ -161,6 +163,9 @@ export default {
   methods: {
     // 网格准备完成
     onGridReady(params) {
+      this.api = params.api
+      this.columnApi = params.columnApi
+
       this._gridReady = true
       const { columnApi } = params;
       const agGridDiv = this.$refs.table.$el
@@ -182,8 +187,7 @@ export default {
           })
         }
       }
-
-      this.$emit('grid-ready')
+      this.$emit('grid-ready', params)
     },
 
     // 设置行数据
@@ -534,6 +538,7 @@ export default {
       //     this._autoSizeColumns()
       //   }, 100)
       // }
+      this.$emit('on-body-scroll', e)
     },
 
     // 处理行级样式
@@ -555,6 +560,7 @@ export default {
 
     // 表格列过滤回调
     onFilterChanged(params) {
+      this.$emit('on-filter-changed', params)
       const { api, columnApi } = params;
       const datas = this.options.datas
       if (!datas) {
@@ -578,22 +584,6 @@ export default {
         })
       }
 
-      // // 总计是根据合计得到结果，所以算总计前要算下合计
-      // // 总计可以根据 原始合计与现在合计的差值算出
-      // if (isFullRangeSubTotalEnabled) {
-      //   Object.keys(fullRangeSubTotalRow).forEach(fieldName => {
-      //     const originSubTotal = subtotalRow[fieldName].replace(/,/, '')
-      //     const currentSubTotal = this.subtotalRowData[fieldName].val.replace(/,/, '')
-      //     const diffValue = Number(originSubTotal) - Number(currentSubTotal) // 获取合计的差值
-      //     const originTotal = fullRangeSubTotalRow[fieldName].val.replace(/,/, '')
-      //     const currentTotal = Number(originTotal) - Number(diffValue) // 获取总计
-      //     const currentColumn = columnApi.getAllColumns().find(d => d.colId === fieldName)
-      //     const scale = currentColumn.colDef.scale || 0 // 获取计算精度
-      //     const value = currentTotal.toFixed(scale)
-      //     this.fullRangeSubTotalRowData[fieldName].val = toThousands(value)
-      //   })
-      // }
-
       // 设置底部数据
       const pinnedBottom = []
       if (isSubTotalEnabled) {
@@ -605,6 +595,11 @@ export default {
       if (pinnedBottom.length > 0) {
         api.setPinnedBottomRowData(pinnedBottom)
       }
+    },
+
+    // 表格列宽变化
+    onColumnResized(params) {
+      this.$emit('on-column-resized', params)
     },
 
     /**
@@ -1024,8 +1019,6 @@ export default {
   },
 
   mounted() {
-    this.api = this.gridOptions.api
-    this.columnApi = this.gridOptions.columnApi
     this._listenOnSize()
   },
 
