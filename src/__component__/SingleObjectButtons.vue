@@ -3235,8 +3235,11 @@
                   flag = true;
                 }
               } else if (this.itemTableCheckFunc()) { // 未配置暂存按钮，子表必须校验,1:m
-                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
-                flag = true;
+                if(this.verifyRequiredmainInformation()){
+                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+                    flag = true;     
+                }
+               
               }
             }
             // const add = Object.assign({}, this.updateData[itemName].add[itemName], this.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
@@ -3334,7 +3337,33 @@
             }
         }
       },
+      verifyRequiredmainInformation(){
+        // 校验主表是否必填
+          if (this.temporaryStorage) { // 配置了暂存则不校验
+          this.temporaryStorage = false;
+          return true;
+        }
+        this.saveParameters();// 获取主子表参数
+        // 处理主表必填控制
+        let panelForm_dom =  document.querySelector('.panelForm');
+        let panelForm = panelForm_dom._vue_;
+        let validate = panelForm.validate();
+         if(validate.length > 0){
+            this.$Message.warning(validate[0].tip);
+            let dom = document.querySelector(`#${validate[0].colname}`);
+            if(dom){
+              let Input = dom.querySelector('input') || dom.querySelector('textarea');
+              if(Input){
+                  Input.focus();
+              }
 
+            }
+            return false;
+        }
+
+
+
+      },
       verifyRequiredInformation() { // 验证表单必填项
         if (this.temporaryStorage) { // 配置了暂存则不校验
           this.temporaryStorage = false;

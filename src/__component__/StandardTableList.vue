@@ -1641,8 +1641,7 @@
           });
         } else { // 没有配置动作定义调动作定义逻辑
           promise.then((res, actionName) => {
-            console.log(res,'===');
-            if(res.isrefrsh){
+            if(res.isrefrsh && item.isrefrsh){
               // 页面刷新兼容错误数据
                this.getQueryListPromise(Object.assign({}, this.searchData, { merge:true }));
                return;
