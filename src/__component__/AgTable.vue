@@ -49,10 +49,7 @@
         :r3ColumnRenderer="columnRenderer"
         :columns="columns"
         :data="rows"
-        :options="{
-          ...options,
-          ...agGridOptions,
-        }"
+        :options="agOptions"
         height="100%"
         @grid-ready="gridReady"
       ></CommonTableByAgGrid>
@@ -143,6 +140,16 @@
           }
         ];
       },
+      agOptions() {
+        let options ={
+          ...this.options,
+          ...this.agGridOptions
+        }
+        if(this.processAgOptions) {
+          this.processAgOptions(options)
+        }
+        return options
+      }
     },
     props: {
       doTableSearch: {
@@ -289,6 +296,10 @@
       },
       // 定制表格列
       agProcessColumns: {
+        type: Function
+      },
+      // 定制表格选项
+      processAgOptions: {
         type: Function
       }
     },
