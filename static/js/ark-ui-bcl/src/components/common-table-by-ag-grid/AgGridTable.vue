@@ -167,12 +167,16 @@ export default {
       this.columnApi = params.columnApi
 
       this._gridReady = true
-      const { columnApi } = params;
       const agGridDiv = this.$refs.table.$el
       const agGridTableContainer = this.$refs.tableContainer
-      // 自适应所有列
-      this._horizontalScrollTo(agGridDiv.querySelector('.ag-body-viewport'), agGridTableContainer.getAttribute('data-scroll-left')); // 处理表体的横向滚动问题。
-      this._autoSizeColumns()
+      
+      setTimeout(() => {
+        // 自适应所有列
+        this._horizontalScrollTo(agGridDiv.querySelector('.ag-body-viewport'), agGridTableContainer.getAttribute('data-scroll-left')); // 处理表体的横向滚动问题。
+        // 自适应列宽
+        this._autoSizeColumns()
+      }, 20)
+      // 添加提示组件
       agGridDiv.appendChild(tooltipBox);
       document.body.appendChild(tooltipTopBox);
       // 移除ag-tool-panel
@@ -963,11 +967,13 @@ export default {
     // 规则：1.所有列大于表格宽度时，此时用autoSizeAllColumns  2.所有列小于表格宽度时，此时用sizeColumnsToFit
     _autoSizeColumns() {
       const tableDom = this.$refs.table.$el
-      const viewport = tableDom.querySelector('.ag-body-viewport') // 表格可视区,不含固定列
-      const container = tableDom.querySelector('.ag-body-container') // 表格所有列的容器
-
+      // const viewport = tableDom.querySelector('.ag-body-viewport') // 表格可视区,不含固定列
+      // const container = tableDom.querySelector('.ag-body-container') // 表格所有列的容器
+      const viewport = tableDom.querySelector('.ag-header-viewport') // 表格可视区,不含固定列
+      const container = tableDom.querySelector('.ag-header-container>.ag-header-row') // 表格所有列的容器
       const viewportWidth = viewport.offsetWidth
       const containerWidth = container.offsetWidth
+
       if (containerWidth === 0 && viewportWidth === 0) {
         return
       }
