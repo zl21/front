@@ -374,6 +374,7 @@
             }
           }
           item.tdAlign = item.type === 'NUMBER' ? 'right' : 'left'
+          item.thAlign = 'center'
           return item
         }) 
 

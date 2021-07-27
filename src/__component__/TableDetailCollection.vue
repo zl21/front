@@ -786,8 +786,8 @@
               title: ele.name,
               key: ele.colname,
               field: ele.colname,
-              align: 'center',
-              tdAlign: ele.type === 'NUMBER' ? 'right' : 'center',
+              thAlign: 'center', // 表头对齐
+              tdAlign: ele.type === 'NUMBER' ? 'right' : 'center', // 表体对齐
               isagfilter: false, // 关闭过滤功能
               _index: index
             };

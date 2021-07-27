@@ -18,6 +18,7 @@
       class="ag-header-cell-label"
       role="presentation"
       :style="eLabelStyle"
+      :class="[params.column.colDef.thAlign? `flex-${params.column.colDef.thAlign}` : '']"
     >
       <span
         ref="eText"
@@ -170,6 +171,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import url('../../../assets/tailwindcss/index.css');
 .ag-syman-hover {
   cursor: pointer;
 }
