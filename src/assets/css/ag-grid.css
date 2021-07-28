@@ -250,14 +250,15 @@ ag-grid-aurelia {
   text-align: center;
   vertical-align: middle; }
 
-.ag-bl-overlay {
+.ag-grid-table .ag-bl-overlay {
   height: calc(100% - 40px);
   left: 0;
   pointer-events: none;
   position: absolute;
   top: 32px;
   bottom: 8px;
-  width: 100%; }
+  width: 100%; 
+}
 
 .ag-bl-full-height {
   height: 100%;
