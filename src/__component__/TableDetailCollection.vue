@@ -118,21 +118,15 @@
           :height="tableHeight? `${tableHeight}px` :'calc(100% - 10px)'"
           border
           mode="commonTable"
+          ref="agGridTableContainer"
           :columns="columns"
           :data="tabledata"
           :render-params="renderParams"
-          :options="{
-            suppressMovableColumns: true,
-            agColumnMoved,
-            ...agGridOptions,
-            datas: {
-              ...dataSource,
-              pinnedColumns: webConfSingle.pinnedColumns
-            }
-          }"
+          :options="agOptions"
           @ag-selection-change="tableSelectedChange"
           @ag-sort-change="tableSortChange"
           @ag-row-dblclick="tableRowDbclick"
+          @grid-ready="gridReady"
         ></CommonTableByAgGrid>
       </div>
       <div
@@ -584,6 +578,19 @@
       },
       pageItemId() {
         return router.currentRoute.params.itemId;
+      },
+
+      agOptions() {
+        const options = {
+          suppressMovableColumns: true,
+          agColumnMoved:this.agColumnMoved,
+          ...this.agGridOptions,
+          datas: {
+            ...this.dataSource,
+            pinnedColumns: this.webConfSingle.pinnedColumns
+          }
+        }
+        return options
       }
     },
     watch: {
@@ -669,6 +676,31 @@
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
       ...mapMutations('global', ['directionalRouter', 'updateCustomizeMessage', 'copyDataForSingleObject', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'updateExportedState']),
+      
+      // 表格准备完毕
+      gridReady(e) {
+        if(this.R3_agReady) {
+          this.R3_agReady(e)
+        }
+        this.handleAgColumnSize()
+      },
+
+       // 收起菜单时调整表格宽度
+      handleAgColumnSize() {
+        const handleAgColumnSize = () => {
+          setTimeout(() => {
+            if(this.$refs.agGridTableContainer) {
+              this.$refs.agGridTableContainer.$refs.agGridTable._resetColumnWidth()
+            }
+          }, 200)
+        }
+        window.addEventListener('resizeAgColumn', handleAgColumnSize)
+
+        this.$on('hook:beforeDestroy', () => {
+          window.removeEventListener('resizeAgColumn', handleAgColumnSize)
+        })
+      },
+      
       tableRowDbclick(row) {
         if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格走动态路由
           window.sessionStorage.setItem('dynamicRoutingForSinglePage', true);
@@ -716,9 +748,9 @@
       },
       filterButton(val){
         // 过滤导出按钮数据
-        if(this.activeTab.itemId ==='New'){
+        if(this.$route.params.itemId ==='New'){
         let index = val.findIndex((x)=>{
-              return x.eName ==='actionEXPORT';
+              return x.eName ==='actionEXPORT' && x.name === "导出";
             });
            if(index !== '-1'){
                val.splice(index,1);
@@ -758,6 +790,10 @@
         if (cellData.colname === EXCEPT_COLUMN_NAME) {
           componentInfo = null;
         }
+        if(this.columnRenderer) {
+          componentInfo = {}
+          this.columnRenderer(cellData, componentInfo)
+        }
 
         return componentInfo;
       },
@@ -777,8 +813,8 @@
               title: ele.name,
               key: ele.colname,
               field: ele.colname,
-              align: 'center',
-              tdAlign: ele.type === 'NUMBER' ? 'right' : 'center',
+              thAlign: 'center', // 表头对齐
+              tdAlign: ele.type === 'NUMBER' ? 'right' : 'center', // 表体对齐
               isagfilter: false, // 关闭过滤功能
               _index: index
             };
@@ -817,6 +853,10 @@
             return item;
           });
 
+        // 允许项目组定制列数据
+        if(this.R3_processColumns) {
+          this.R3_processColumns(newColumns)
+        }
         return newColumns;
       },
 
@@ -1976,14 +2016,13 @@
           }
           const innerHTML = content;
           const overflow = maxlength || cellData.width ? 'hidden' : 'none';
-
           return h('div', [h('div', {
             style: {
               width,
               overflow,
               'text-overflow': 'ellipsis',
               'white-space': 'nowrap',
-              'text-align': cellData.type === 'NUMBER' ? 'right' : 'center',
+              'text-align': cellData.tdAlign,
             },
             attrs: {
               title: params.row[cellData.colname]
@@ -2041,11 +2080,12 @@
           return h('div', [
             h(tag, {
               style: {
-                width: '100px'
+                width: '100px',
               },
               class: {
-                'input-align-right': cellData.type === 'NUMBER',
-                'input-align-center': cellData.type !== 'NUMBER'
+                'input-align-right': cellData.tdAlign === 'right',
+                'input-align-center': cellData.tdAlign === 'center',
+                'input-align-left': cellData.tdAlign === 'left'
               },
               domProps: {
                 id: `ag-${params.index}-${params.column._index - 1}`,
@@ -4773,6 +4813,9 @@
     },
     activated() {
       this.isRefreshClick = false;
+      if(this.buttonData.length>2){
+        this.buttonData = this.filterButton(this.buttonData);
+      }
     }
   };
 </script>

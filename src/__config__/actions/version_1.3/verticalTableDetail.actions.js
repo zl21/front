@@ -473,6 +473,7 @@ export default {
             itemTableAdd[itemName]
           ];
         }
+
         if (Object.values(modify[tableName]).length > 0) {
           const value = Object.assign({}, modify, labelregroupTableName);
           parames = {

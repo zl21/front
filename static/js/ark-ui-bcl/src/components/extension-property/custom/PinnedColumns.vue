@@ -70,7 +70,7 @@
           :key="index"
           :index="index"
         >
-
+          
         </SlickItem>
       </SlickList> -->
 
@@ -383,14 +383,14 @@ export default {
           this.$set(this.formData.leftPinnedColumns, leftIndex, columnObj.DBNAME.val)
           this.$set(this.defaultFields.leftPinnedColumns, leftIndex, [{
             Label: columnObj.DBNAME.val,
-            columnObj: columnObj.ID.val,
+            ID: columnObj.ID.val,
           }])
         } else {
           const rightIndex = rightColumns.findIndex(item => item === column)
           this.$set(this.formData.rightPinnedColumns, rightIndex, columnObj.DBNAME.val)
           this.$set(this.defaultFields.rightPinnedColumns, rightIndex, [{
             Label: columnObj.DBNAME.val,
-            columnObj: columnObj.ID.val,
+            ID: columnObj.ID.val,
           }])
         }
       })
@@ -403,3 +403,21 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.form-group {
+  border: 1px solid #d8d8d8;
+  border-radius: 4px;
+  padding: 10px 20px;
+  margin: 20px 5px;
+}
+</style>
+<style lang="scss" >
+// .r3-slick {
+//   z-index: 99999;
+//   box-shadow: 0px 2px 8px rgba(136, 136, 136, 0.4);
+//   .tw-mt-10 {
+//     margin-top: 0px;
+//   }
+// }
+</style>

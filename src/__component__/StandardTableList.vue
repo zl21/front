@@ -61,6 +61,7 @@
         :id="$route.params.tableName"
         :form-item-lists="formItems.defaultFormItemsLists"
         :default-spread="changeSearchFoldnum.switchValue"
+        :search="true"
         :default-column="Number(4)"
         :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
         @onHandleEnter="searchClickData"
@@ -73,6 +74,9 @@
 
       <AgTable
         ref="agTableElement"
+        :columnRenderer="columnRendererHandler"
+        :agProcessColumns="agProcessColumns"
+        :processAgOptions="processAgOptions"
         :moduleComponentName='moduleComponentName'
         :style="agTableElementStyles"
         :page-attribute="pageAttribute"
@@ -95,6 +99,7 @@
         :buttons-data=" buttons.dataArray.waListButtonsConfig.waListButtons"
         :do-table-search="searchClickData"
         @CommonTableCustomizedDialog="commonTableCustomizedDialog"
+        @grid-ready="gridReady"
       />
     </div>
 
@@ -199,7 +204,7 @@
   import { addSearch, querySearch } from '../__utils__/indexedDB';
   import { getPinnedColumns } from '../__utils__/tableMethods'
   import tabBar from './tabBar.vue';
-  import listsForm from './FormComponents/listsForm';
+  import listsForm from './FormComponents/list/listsForm';
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -399,9 +404,37 @@
             }
           }
         }, 0);
-      }
+      },
     },
     methods: {
+      // 表格渲染完毕回调
+      gridReady(e) {
+        if(this.R3_agReady) {
+          this.R3_agReady(e)
+        }
+      },
+
+      // 定制表格选项
+      processAgOptions(options) {
+        if(this.R3_processAgOptions) {
+          this.R3_processAgOptions(options)
+        }
+      },
+
+      // r3内部定制表格渲染列
+      columnRendererHandler(cellData, render) {
+        if(this.columnRenderer) {
+          this.columnRenderer(cellData, render)
+        }
+      },
+
+      // 支持项目组定制表格列
+      agProcessColumns(columns) {
+        if(this.R3_processColumns) {
+          this.R3_processColumns(columns)
+        }
+      },
+
       onPageSizeChangeForFilterTable(pageSize) {
         this.resetButtonsStatus();
         this.searchData.startIndex = 0;
@@ -456,6 +489,18 @@
           this.searchClickData();
         }
       },
+      filterTabColoname(data){
+        // 过滤tab 的字段小写
+          let tab_value = data.tab_value.reduce((arr,item)=>{
+              let key = (Object.keys(item)[0]).toLocaleLowerCase();
+              let option = {
+                [key]: item[Object.keys(item)[0]]
+              }
+              arr.push(option);
+              return arr;
+          },[]);
+          return  tab_value;
+      },
       async tabClick({ data, index,stopRequest }) {
         this.filterTableParam = {};
         if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].startIndex) {
@@ -480,7 +525,8 @@
           //   this.filterTableParam = item;
           // });
           const arrRes = [];
-          const tabValue = JSON.parse(JSON.stringify(data.tab_value));
+          
+          const tabValue = JSON.parse(JSON.stringify(this.filterTabColoname(data)));
           this.searchData.fixedcolumns = Object.values(tabValue).reduce((arr, obj) => {
             Object.keys(this.searchData.fixedcolumns).map((key) => {
               if (obj[key]) {
@@ -547,7 +593,10 @@
       ...mapMutations('global', ['updateCustomizeMessage', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter', 'updataSTDefaultQuery']),
 
       async menuTreeChange(treeName, currentId, flag, queryFilterData, searchData) {
-        this.searchData.fixedcolumns = await this.dataProcessing();
+        let fixedcolumns = await this.dataProcessing();
+        let filterTableParam = JSON.parse(JSON.stringify(this.filterTableParam));
+        let fixedcolumnsdata = JSON.parse(JSON.stringify(fixedcolumns));
+        this.searchData.fixedcolumns = Object.assign(filterTableParam,fixedcolumnsdata);
         if (Object.keys(queryFilterData) && Object.keys(queryFilterData).length > 0 && flag) {
           this.searchData.reffixedcolumns = queryFilterData;
         } else if (this.searchData && this.searchData.reffixedcolumns) {
@@ -882,7 +931,7 @@
       },
 
       // 监听表格隐藏或显示列
-      onColumnVisibleChanged(hideCols, params) {
+      onColumnVisibleChanged(hideCols) {
         this.setColVisible(hideCols)
       },
       onCellSingleClick(colDef, rowData, target) {
@@ -1617,6 +1666,12 @@
           });
         } else { // 没有配置动作定义调动作定义逻辑
           promise.then((res, actionName) => {
+            if(res.isrefrsh && item.isrefrsh){
+              // 页面刷新兼容错误数据
+               this.getQueryListPromise(Object.assign({}, this.searchData, { merge:true }));
+               return;
+
+            }
             this.$R3loading.hide(this.loadingName);
             const message = this.buttons.ExeActionData;
             const data = {
@@ -1640,7 +1695,7 @@
             };
             this.$Modal.fcSuccess(data);
             if (item.isrefrsh) {
-              this.searchClickData();
+               this.searchClickData();
             }
           }, () => {
             this.$R3loading.hide(this.loadingName);
@@ -2071,9 +2126,10 @@
           });
         });
         promise.then(() => {
-          if (this.buttons.exportdata) {     
+          if (this.buttons.exportdata) {
             if (Version() === '1.4') { // Version() === '1.4'
               this.$R3loading.hide(this.loadingName);
+
               // fileUrl字段不存在时就代表是异步导出。
               // 异步导出在[我的任务]查看
               if(window.ProjectConfig.messageSwitch) {

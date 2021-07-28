@@ -17,6 +17,7 @@
           @on-selection-change="tableSelectedChange"
           @on-sort-change="tableSortChange"
           @on-row-dblclick="tableRowDbclick"
+          @on-column-resized="handleEvent"
           @grid-ready="ready"
         ></commonTableByAgGrid>
       </div>
@@ -67,7 +68,8 @@ export default {
   data() {
     return {
       options: {
-        getRowClass: this.getRowClass
+        floatingFilter: true,
+        getRowClass: this.getRowClass,
       },
       columns: [],
       rows: [],
@@ -79,11 +81,15 @@ export default {
     // 自定义样式
     getRowClass(params) {
       const { rowIndex } = params;
-      if(rowIndex === 2) {
+      if (rowIndex === 2) {
         console.log('hgaol ')
         return 'highlight'
       }
       return ''
+    },
+
+    handleEvent(e) {
+      console.log('触发绑定事件', e);
     },
 
     tableSelectedChange() {
@@ -130,12 +136,14 @@ export default {
 
     ready() {
       console.log('准备huidaio ', this.$refs.agGrid)
+
       this.columns = [
-        { field: 'name', displayName: '标题', checkboxSelection: true, tdAlign: 'left' },
-        { field: 'age', displayName: '标222题', tdAlign: 'left' },
-        { field: 'sex', displayName: '标题4444', tdAlign: 'right' },
+        { field: 'name', displayName: '标题', checkboxSelection: true, tdAlign: 'left', filter: 'agTextColumnFilter', suppressFilter: false },
+        { field: 'age', displayName: '标222题', tdAlign: 'left', floatingFilter: true, filter: true, },
+        { field: 'sex', displayName: '标题4444', tdAlign: 'right', isagfilter:true },
         { field: 'phone', displayName: '地址', tdAlign: 'center', pinned: 'left' },
       ]
+
       this.rows = [
         {
           name: '测试cc',

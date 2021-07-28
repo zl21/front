@@ -2,23 +2,28 @@
   <div class="NaVertical"
   >
     <div class="NaVertical-icons">
-         这个是一个测试333
-        <slot name="icon-tag">操作按钮切换左边面板</slot> 
+      4353453
+        <slot name="icon-tag"></slot> 
     </div>
-    <div>
-        <slot name="nav-input">模糊查询</slot>
-        <slot name="icon-Collect">收藏<slot>icon</slot></slot>
-        <slot name="icon-Lately">最近点击</slot>
+    <div class="NaVertical-box">
+        <slot name="nav-input"></slot>
+        <slot name="icon-home"></slot>
+        <slot name="icon-Collect"></slot>
+        <slot name="icon-Lately"></slot>
+        <slot name="icon-Setting"></slot>
         <!-- 消息提示 -->
         <slot name="icon-message"></slot>
-        <slot name="icon-person">人员设置</slot>
+        <slot name="icon-person"></slot>
     </div>
   </div>
 </template>
 <script>
 
 export default {
-  name:'NaVerticalslot'
+  name:'NaVerticalslot',
+  mounted(){
+    console.log(this)
+  }
 }
 </script>
 <style lang="scss">

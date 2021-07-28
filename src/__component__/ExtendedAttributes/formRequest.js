@@ -8,7 +8,7 @@ import network from '../../__utils__/network';
 // 过滤value
 export const equalformRequest = function equalformRequest(params) {
     // 服务端赋值
-    network.post(params.url, params.searchObject, { serviceId: '' }).then((res) => {
+    network.post(params.url, params.searchObject,{serviceId:params.serviceId}).then((res) => {
       if (typeof params.success === 'function') {
         params.success(res.data);
       }
@@ -25,13 +25,17 @@ export const equalformRequest = function equalformRequest(params) {
             let value = filterVal(x);
             data[value.colname] = value.ID || '';
         });
-
+        let serviceId = null;
+        if($this.items.fkobj && $this.items.fkobj.serviceId){
+            serviceId = $this.items.fkobj.serviceId;
+        }
 
         equalformRequest({
             url: config.url,
             searchObject:{
                 ASSIGN:data
             },
+            serviceId:serviceId,
             success: (res) => {
                 if(Array.isArray(res) ){
                     let newValueObject = {};

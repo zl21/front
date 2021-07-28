@@ -74,8 +74,8 @@
         </div>
         <ComAutoComplete slot="nav-input" />
 
-        <Lately slot="icon-Lately"></Lately>
-        <Collect slot="icon-Collect"></Collect>
+        <Lately slot="icon-Lately"  v-if="enableHistoryAndFavoriteUI"></Lately>
+        <Collect slot="icon-Collect"  v-if="enableHistoryAndFavoriteUI"></Collect>
       </div>
       <div
         v-if="versionValue"
@@ -165,6 +165,7 @@
     classFix, STANDARD_TABLE_LIST_PREFIX, Version, enableGateWay, getGatewayValue, enableHistoryAndFavoriteUI, messageSwitch,dashboardConfig
   } from '../constants/global';
   import { updateSessionObject } from '../__utils__/sessionStorage';
+  import { DispatchEvent } from '../__utils__/dispatchEvent'
   import HistoryAndFavorite from './HistoryAndFavorite';
   import MessagePanelOlder from './messagePanelOlder.vue';
 
@@ -484,6 +485,9 @@
         setTimeout(()=>{
           let leftWidth = navigator.offsetWidth;
           navigatorMenu.style.left = leftWidth+'px';
+
+          // 调整ag列宽
+          DispatchEvent('resizeAgColumn')
         },500)
       },
       routerNext(name) {
@@ -508,6 +512,7 @@
       }else{
       this.slotName = NaVerticalslot;
       }
+            console.log(this.slotName, window.ProjectConfig);
       if (Version() === '1.3') {
         this.messageTimer = setInterval(() => {
           this.getMessageCount();

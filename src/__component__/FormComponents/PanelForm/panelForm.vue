@@ -2,9 +2,10 @@
   <div :class="classes" :id="id">
     <div v-for="(item,index) in Object.keys(formItemLists)"
          :key="index">
-      <Collapse :value="collapseValue">
+      <Collapse :value="collapseValue" :id="`Collapse_${item}`">
         <Panel title-type="center"
                :isTitleShow="formItemLists[item].parentdesc?true:false"
+               :index="item"
                :name="formItemLists[item].parentname">
           {{ formItemLists[item].parentdesc }}
           <div slot="content"

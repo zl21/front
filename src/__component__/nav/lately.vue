@@ -11,7 +11,7 @@
               class="iconfont iconmd-time"
             />
           </slot>
-        <DropdownMenu slot="list" trigger="click">
+        <DropdownMenu slot="list" trigger="click"   v-if="history.length>0" >
             <DropdownItem  
                v-for="(d, i) in history"
               :key="`history-${i}`"
@@ -22,6 +22,13 @@
                  {{ d.label }}
               </DropdownItem>
         </DropdownMenu>
+        <DropdownMenu  v-if="history.length===0"
+                  slot="list"
+                  >
+                  <DropdownItem>
+                    暂无历史记录
+                  </DropdownItem>  
+          </DropdownMenu>
        </Dropdown>
       </div>
 </template>

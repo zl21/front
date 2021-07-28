@@ -8,10 +8,15 @@ function deepClone(target) {
   // 如果是一个数组的话
     if (Array.isArray(target)) {
       result = []; // 将result赋值为一个数组，并且执行遍历
-      for (const i in target) {
-        // 递归克隆数组中的每一项
-        result.push(deepClone(target[i]));
+      if(target.length > 0){
+        for (const i in target) {
+          // 递归克隆数组中的每一项
+  
+          result.push(deepClone(target[i]));
+        }
+
       }
+      
       // 判断如果当前的值是null的话；直接赋值为null
     } else if (target === null) {
       result = null;

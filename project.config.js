@@ -39,9 +39,10 @@ module.exports = {
   // target: 'http://cs.yqdev.burgeononline.com/', // 云雀
   // target: 'http://47.102.164.111:27777', // 卡宾
   // target: 'http://dev.dev.lark-erp.cn/',
+  
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
-  enableGateWay: false, // 网关是否打开,
+  enableGateWay: true, // 网关是否打开,
   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用接口请求
   enableHistoryAndFavoriteUI: true, // 是否显示收藏与最近使用UI
   ignoreGateWayPattern: [/\/jflow\/*/g, /\/api\/*/g], // 框架默认禁用的网关逻辑的正则模式匹配
@@ -71,6 +72,7 @@ module.exports = {
   layoutDirectionSlot:{  // 模板渲染
     //NavigatorSubMenu:require('./src/demo/NavigatorSubMenu.vue').default,  // 模板渲染
     //NaVertical:require('./src/demo/NaVerticalslot.vue').default  // 模板渲染
+    //listFormButton:require('./demo/detailbuttons.vue').default,  // 定制列表button
   },
   backDashboardRoute: [], // 配置刷新浏览器回到Dashboard界面
   custommizedRequestURL: {
@@ -93,10 +95,28 @@ module.exports = {
   customizeMixins: { // 获取所有外部接入的mixins对象
     setPanel: null,
     // verticalTableDetailCustomize: require('./src/demo/horizontalTableDetailCustomize.js').default,
-    standardTableListsCustomize: null,
+    // standardTableListsCustomize: {
+    //   methods: {
+    //     R3_processColumns(columns) {
+    //       console.log('定制', columns)
+    //       columns.forEach(item => {
+    //         item.tdAlign = 'center'
+    //       })
+    //     }
+    //   }
+    // },
     // horizontalTableDetailCustomize: require('./src/demo/horizontalTableDetailCustomize.js').default,
     taskList: null,
-    // tableDetailCollectionMixin:require('./src/demo/mixin').default
+    // tableDetailCollectionMixin: {
+    //   methods: {
+    //     R3_processColumns(columns) {
+    //       console.log('定制1', columns)
+    //       columns.forEach(item => {
+    //         item.tdAlign = 'left'
+    //       })
+    //     }
+    //   }
+    // }
   },
   imgProgressController: false, // 是否显示图片上传进度
   ossRealtimeSave: false,
@@ -121,7 +141,7 @@ module.exports = {
   agGridOptions: { // ag表格的配置
     // rowHeight: 100
   },
-  messageSwitch: true, // 消息开关
+  messageSwitch: false, // 消息开关
   // useAgGrid: true, // 明细界面的表格全局用ag表格进行渲染
   // (data) => {
   //   if (data.router.params) {

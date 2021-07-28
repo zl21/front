@@ -5,6 +5,7 @@
     ref="tableContainer"
   >
     <ag-grid-vue
+      v-if="columns.length > 0"
       ref="table"
       class="ag-grid-table ag-theme-balham"
       :gridOptions="gridOptions"
@@ -28,6 +29,7 @@ import CellRender from './CellRender.vue'
 import CellRenderByFunction from './CellRenderByFunction.vue'
 import TextComponent from './renderComponents/TextComponent.vue'
 import { toThousands } from '../../utils/number'
+import { debounce } from '../../utils/common'
 
 LicenseManager.setLicenseKey(agGridEnterpriseLicenseKey);
 
@@ -70,11 +72,11 @@ export default {
     },
     // 行数据
     data: {
-      default: ()=>([])
+      default: () => ([])
     },
     // 列数据
     columns: {
-      default: ()=>([])
+      default: () => ([])
     },
     // 列自定义组件渲染参数
     renderParams: {
@@ -113,6 +115,7 @@ export default {
         onRowDataChanged: this.onRowDataChanged,
         onBodyScroll: this.onBodyScroll,
         onFilterChanged: this.onFilterChanged,
+        onColumnResized: this.onColumnResized,
         getRowClass: this.getRowClass,
       }
       const defaultColDef = this.options.defaultColDef || {}
@@ -160,13 +163,20 @@ export default {
   methods: {
     // 网格准备完成
     onGridReady(params) {
+      this.api = params.api
+      this.columnApi = params.columnApi
+
       this._gridReady = true
-      const { columnApi } = params;
       const agGridDiv = this.$refs.table.$el
       const agGridTableContainer = this.$refs.tableContainer
-      // 自适应所有列
-      this._horizontalScrollTo(agGridDiv.querySelector('.ag-body-viewport'), agGridTableContainer.getAttribute('data-scroll-left')); // 处理表体的横向滚动问题。
-      columnApi.autoSizeAllColumns();
+      
+      setTimeout(() => {
+        // 自适应所有列
+        this._horizontalScrollTo(agGridDiv.querySelector('.ag-body-viewport'), agGridTableContainer.getAttribute('data-scroll-left')); // 处理表体的横向滚动问题。
+        // 自适应列宽
+        this._autoSizeColumns()
+      }, 20)
+      // 添加提示组件
       agGridDiv.appendChild(tooltipBox);
       document.body.appendChild(tooltipTopBox);
       // 移除ag-tool-panel
@@ -181,8 +191,7 @@ export default {
           })
         }
       }
-
-      this.$emit('grid-ready')
+      this.$emit('grid-ready', params)
     },
 
     // 设置行数据
@@ -198,11 +207,12 @@ export default {
       }
       const { rowData, pinnedBottomRowData } = this._transformRowData(data);
       // 为每行增加序号值
+      const { start } = this.options.datas
       rowData.forEach((d, i) => {
-        d[AG_SEQUENCE_COLUMN_NAME] = { val: i + 1 };
+        d[AG_SEQUENCE_COLUMN_NAME] = { val: start + (i + 1) };
       });
-      console.log('设置行', rowData);
-      console.log('设置底部', pinnedBottomRowData)
+      // console.log('设置行', rowData);
+      // console.log('设置底部', pinnedBottomRowData)
       this._pinnedBottomRowData = pinnedBottomRowData;
       this.api.setRowData(rowData);
       this.api.setPinnedBottomRowData(pinnedBottomRowData);
@@ -242,9 +252,9 @@ export default {
       }
 
       this.api.setColumnDefs(this._transformColumnDefs(colData));
-      console.log('设置列', this._transformColumnDefs(colData));
+      // console.log('设置列', this._transformColumnDefs(colData));
       setTimeout(() => {
-        this.columnApi.autoSizeAllColumns(); // 自适应所有列宽
+        this._autoSizeColumns()
       }, 20)
       return agTable;
     },
@@ -298,7 +308,7 @@ export default {
         'separator',
         {
           name: '隐藏当前列',
-          action: ()=> {
+          action: () => {
             const { columnApi, column } = params
             columnApi.setColumnVisible(column.colId, false)
           }
@@ -322,10 +332,10 @@ export default {
               const allFixedColumns = params.columnApi.getDisplayedLeftColumns().map(d => d.colId).concat(params.columnApi.getDisplayedRightColumns().map(d => d.colId))
 
               allFixedColumns.forEach((colId) => {
-                  if (colId !== 'ID' && !pinnedLeftColumns.includes(colId) && !pinnedRightColumns.includes(colId)) {
-                    params.columnApi.setColumnPinned(colId, false);
-                  }
-                });
+                if (colId !== 'ID' && !pinnedLeftColumns.includes(colId) && !pinnedRightColumns.includes(colId)) {
+                  params.columnApi.setColumnPinned(colId, false);
+                }
+              });
               setTimeout(() => {
                 updateColumnPositionDelay && clearTimeout(updateColumnPositionDelay);
               }, 0);
@@ -444,7 +454,7 @@ export default {
           options.agColumnVisibleChanged(hideColumns.toString(), params);
         }
       }, 10);
-      this.$emit('on-column-visible',params)
+      this.$emit('on-column-visible', params)
     },
 
     // 列移动回调
@@ -468,7 +478,7 @@ export default {
           options.agColumnMoved(['ID'].concat(orderedColumns).toString());
         }
       }, 500);
-      this.$emit('on-column-moved',param)
+      this.$emit('on-column-moved', param)
     },
 
     // 列固定回调
@@ -522,16 +532,17 @@ export default {
 
     // 主体水平或垂直滚动​​
     onBodyScroll(e) {
-      // 水平滚动时，重新计算列宽
-      if (e.direction === 'horizontal') {
-        if (this.resizeColumnsTimer) {
-          clearTimeout(this.resizeColumnsTimer)
-          this.resizeColumnsTimer = null
-        }
-        this.resizeColumnsTimer = setTimeout(() => {
-          this.columnApi && this.columnApi.autoSizeAllColumns();
-        }, 100)
-      }
+      // // 水平滚动时，重新计算列宽
+      // if (e.direction === 'horizontal') {
+      //   if (this.resizeColumnsTimer) {
+      //     clearTimeout(this.resizeColumnsTimer)
+      //     this.resizeColumnsTimer = null
+      //   }
+      //   this.resizeColumnsTimer = setTimeout(() => {
+      //     this._autoSizeColumns()
+      //   }, 100)
+      // }
+      this.$emit('on-body-scroll', e)
     },
 
     // 处理行级样式
@@ -553,6 +564,7 @@ export default {
 
     // 表格列过滤回调
     onFilterChanged(params) {
+      this.$emit('on-filter-changed', params)
       const { api, columnApi } = params;
       const datas = this.options.datas
       if (!datas) {
@@ -576,22 +588,6 @@ export default {
         })
       }
 
-      // // 总计是根据合计得到结果，所以算总计前要算下合计
-      // // 总计可以根据 原始合计与现在合计的差值算出
-      // if (isFullRangeSubTotalEnabled) {
-      //   Object.keys(fullRangeSubTotalRow).forEach(fieldName => {
-      //     const originSubTotal = subtotalRow[fieldName].replace(/,/, '')
-      //     const currentSubTotal = this.subtotalRowData[fieldName].val.replace(/,/, '')
-      //     const diffValue = Number(originSubTotal) - Number(currentSubTotal) // 获取合计的差值
-      //     const originTotal = fullRangeSubTotalRow[fieldName].val.replace(/,/, '')
-      //     const currentTotal = Number(originTotal) - Number(diffValue) // 获取总计
-      //     const currentColumn = columnApi.getAllColumns().find(d => d.colId === fieldName)
-      //     const scale = currentColumn.colDef.scale || 0 // 获取计算精度
-      //     const value = currentTotal.toFixed(scale)
-      //     this.fullRangeSubTotalRowData[fieldName].val = toThousands(value)
-      //   })
-      // }
-
       // 设置底部数据
       const pinnedBottom = []
       if (isSubTotalEnabled) {
@@ -603,6 +599,11 @@ export default {
       if (pinnedBottom.length > 0) {
         api.setPinnedBottomRowData(pinnedBottom)
       }
+    },
+
+    // 表格列宽变化
+    onColumnResized(params) {
+      this.$emit('on-column-resized', params)
     },
 
     /**
@@ -621,7 +622,7 @@ export default {
           viewport.scrollTop = 0;
           viewport.scrollLeft = currentViewPortScrollLeft || 0;
           this._resetColumnWidth()
-        }, 50);
+        }, 100);
       }
       return agTable;
     },
@@ -651,7 +652,7 @@ export default {
       let leftPoint = 0 // 左指针
       let rightPoint = Math.max(visibleColumns.length - 1, 0) // 右指针
       visibleColumns.forEach((columnObj, index) => {
-        if(index > rightPoint) {
+        if (index > rightPoint) {
           return
         }
         if (pinnedLeftColumns.includes(columnObj.colname) || columnObj.colname === 'ID') {
@@ -952,7 +953,7 @@ export default {
     // 处理ag-body-viewport 横向滚动问题
     _horizontalScrollTo(element, scrollValue) {
       element.scrollLeft = parseFloat(scrollValue);
-      this.columnApi.autoSizeAllColumns();
+      this._autoSizeColumns()
     },
 
     // 重新表头位置。fix: 从别的界面返回表格界面时，表头会消失
@@ -962,16 +963,55 @@ export default {
       header.style.left = 0
     },
 
+    // 调整列宽
+    // 规则：1.所有列大于表格宽度时，此时用autoSizeAllColumns  2.所有列小于表格宽度时，此时用sizeColumnsToFit
+    _autoSizeColumns() {
+      const tableDom = this.$refs.table.$el
+      // const viewport = tableDom.querySelector('.ag-body-viewport') // 表格可视区,不含固定列
+      // const container = tableDom.querySelector('.ag-body-container') // 表格所有列的容器
+      const viewport = tableDom.querySelector('.ag-header-viewport') // 表格可视区,不含固定列
+      const container = tableDom.querySelector('.ag-header-container>.ag-header-row') // 表格所有列的容器
+      const viewportWidth = viewport.offsetWidth
+      const containerWidth = container.offsetWidth
+
+      if (containerWidth === 0 && viewportWidth === 0) {
+        return
+      }
+      if (containerWidth <= viewportWidth) {
+        this.api.sizeColumnsToFit()
+      } else {
+        this.columnApi.autoSizeAllColumns()
+      }
+    },
+
     // 重新分配列宽
     _resetColumnWidth(callback) {
       // fix: 页面激活后或者数据更新后,列宽没有自动分配
       // 注意，这里不掉两次autoSizeAllColumns的话依然不能把列宽自动分配
-      this.columnApi && this.columnApi.autoSizeAllColumns();
+      this._autoSizeColumns()
       setTimeout(() => {
-        this.columnApi && this.columnApi.autoSizeAllColumns();
+        this._autoSizeColumns()
         callback && callback()
-      }, 20)
+      }, 200)
     },
+
+    // 监听窗口缩放
+    _listenOnSize() {
+      const handleColumnWidth = debounce(() => {
+        // 这里需要执行两次_autoSizeColumns
+        // 因为窗口缩小时,大多数情况会是container比viewport。导致与实际展示效果不符(窗口放大时没这个问题)
+        // 所有需要在调整一次列后(第一次执行时，可以保证列少的情况下，使得container小于viewport)，再调整一次，此时，重新比较container和viewport得到正确的结果
+        this._autoSizeColumns()
+        setTimeout(() => {
+          this._autoSizeColumns()
+        }, 50)
+      })
+      window.addEventListener('resize', handleColumnWidth)
+
+      this.$on('hook:beforeDestroy', () => {
+        window.removeEventListener('resize', handleColumnWidth)
+      })
+    }
   },
 
   created() {
@@ -985,13 +1025,16 @@ export default {
   },
 
   mounted() {
-    this.api = this.gridOptions.api
-    this.columnApi = this.gridOptions.columnApi
+    this._listenOnSize()
   },
 
   activated() {
-    this._resetColumnWidth(this._resetHeaderPosition)
-  }
+    this.$nextTick(() => {
+      setTimeout(() => {
+        this._resetColumnWidth(this._resetHeaderPosition)
+      }, 500)
+    })
+  },
 }
 </script>
 
@@ -1027,7 +1070,7 @@ export default {
 }
 
 .ag-floating-filter-input {
-  pointer-events:none;
+  pointer-events: none;
 }
 
 .table-cell-left {

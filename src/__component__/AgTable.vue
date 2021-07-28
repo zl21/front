@@ -46,13 +46,12 @@
         mode="r3-list"
         class="detailTable"
         ref="agGridTableContainer"
+        :r3ColumnRenderer="columnRenderer"
         :columns="columns"
         :data="rows"
-        :options="{
-          ...options,
-          ...agGridOptions,
-        }"
+        :options="agOptions"
         height="100%"
+        @grid-ready="gridReady"
       ></CommonTableByAgGrid>
 
     <!-- 普通表格 -->
@@ -141,6 +140,16 @@
           }
         ];
       },
+      agOptions() {
+        let options ={
+          ...this.options,
+          ...this.agGridOptions
+        }
+        if(this.processAgOptions) {
+          this.processAgOptions(options)
+        }
+        return options
+      }
     },
     props: {
       doTableSearch: {
@@ -281,6 +290,18 @@
       moduleComponentName: {
         type: String,
       },
+      // 定制表格列组件
+      columnRenderer: {
+        type: Function
+      },
+      // 定制表格列
+      agProcessColumns: {
+        type: Function
+      },
+      // 定制表格选项
+      processAgOptions: {
+        type: Function
+      }
     },
     watch: {
       datas(val) {
@@ -300,6 +321,28 @@
       },
     },
     methods: {
+      // 表格准备完毕
+      gridReady(e) {
+        this.$emit('grid-ready', e)
+        this.handleAgColumnSize()
+      },
+
+       // 收起菜单时调整表格宽度
+      handleAgColumnSize() {
+        const handleAgColumnSize = () => {
+          setTimeout(() => {
+            if(this.$refs.agGridTableContainer) {
+              this.$refs.agGridTableContainer.$refs.agGridTable._resetColumnWidth()
+            }
+          }, 200)
+        }
+        window.addEventListener('resizeAgColumn', handleAgColumnSize)
+
+        this.$on('hook:beforeDestroy', () => {
+          window.removeEventListener('resizeAgColumn', handleAgColumnSize)
+        })
+      },
+
       btnclick(obj) {
         this.$emit('btnclick', obj);
       },
@@ -350,8 +393,12 @@
             }
           }
           item.tdAlign = item.type === 'NUMBER' ? 'right' : 'left'
+          item.thAlign = 'center'
           return item
-        })
+        }) 
+
+        // 允许项目组定制列数据
+        this.agProcessColumns(columns)
         return columns
       },
 

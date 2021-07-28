@@ -40,7 +40,7 @@ export default {
   methods: {
     mouseenter(e) {
       const {
-        agGridDiv, tooltipBox, options, value, failIds,
+        agGridDiv, tooltipBox, options, failIds, data
       } = this.params;
 
       const { target } = e;
@@ -51,7 +51,7 @@ export default {
       tooltipBox.style.left = `${offsetLeft + 22}px`;
       tooltipBox.style.top = `${offsetTop - (target.offsetHeight / 2)}px`;
       if (options && options.datas && options.datas.deleteFailInfo && Object.prototype.toString.call(options.datas.deleteFailInfo) === '[object Array]') {
-        tooltipBox.innerText = options.datas.deleteFailInfo[failIds.indexOf(value)].message;
+        tooltipBox.innerText = options.datas.deleteFailInfo[failIds.indexOf(data.ID.val)].message;
       }
       const offsetBottomCalibration = tooltipBox.offsetHeight - offsetBottom - 12;
       if (offsetBottomCalibration > 0) {
@@ -82,10 +82,9 @@ export default {
   mounted() {
     this.valueOfId = this.params.data && this.params.data.ID ? this.params.data.ID.val : '';
     const {
-      value, failIds,
+      failIds, data
     } = this.params;
-
-    if (failIds && failIds.indexOf(`${value}`) > -1) {
+    if (failIds && failIds.indexOf(`${data.ID.val}`) > -1) {
       const toolTipIcon = document.createElement('i');
       toolTipIcon.setAttribute('class', `iconfont iconbj_listwarning ${cssFeatures.hover}`);
       toolTipIcon.style.color = 'red';
