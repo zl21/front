@@ -80,6 +80,34 @@
     left: 60px;
   }
 
+  .divToggle{
+    position: absolute;
+    transform: rotate(45deg);
+    right: -55px;
+    top: -11px;
+    .sanjiao{
+      width: 0px;
+      height: 0px;
+      border-bottom: 50px solid #ffddd4;
+      border-left: 50px solid transparent;
+      border-right: 50px solid transparent;
+      position: relative;
+    }
+    .toggle{
+      cursor: pointer;
+      position: absolute;
+      top: 34px;
+      right: -9px;
+      transform: rotate(-45deg);
+    }
+    .phone{
+      width: 15px;
+    }
+    .home{
+      width: 20px;
+    }
+  }
+
   ::-webkit-input-placeholder { /* WebKit browsers */
     color: #dadada;
     font-size: 14px;
@@ -198,5 +226,48 @@
     margin-left: 300px;
     color: #fff;
     border-radius: 4px;
+  }
+
+  /* true手机验证模式下 */
+  .loginPro {
+    height: 330px;
+    .divCode{
+      position: absolute;
+      top: 190px;
+      left: 60px;
+      line-height: 38px;
+
+    }
+    .btn{
+      top: 252px;
+    }
+  }
+  .divErCode{
+    .divCode{
+      position: absolute;
+      top: 134px;
+      left: 60px;
+      line-height: 38px;
+    }
+    .erCodeBtn{
+      height: 38px;
+      margin-bottom: 3px;
+      margin-left: 12px;
+      border-radius: 4px;
+    }
+  }
+  .loginPro, .divErCode{
+    .code{
+      width: 220px;
+    }
+    .ercode{
+      width: 100px;
+      height: 38px;
+      border: 1px solid #ffddd4;
+      border-radius: 4px;
+      display: inline-block;
+      margin-left: 15px;
+      cursor: pointer;
+    }
   }
 }
