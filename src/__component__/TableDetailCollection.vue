@@ -581,7 +581,7 @@
       },
 
       agOptions() {
-        const options = {
+        let options = {
           suppressMovableColumns: true,
           agColumnMoved:this.agColumnMoved,
           ...this.agGridOptions,
@@ -589,6 +589,9 @@
             ...this.dataSource,
             pinnedColumns: this.webConfSingle.pinnedColumns
           }
+        }
+        if(this.R3_processAgOptions) {
+          options = this.R3_processAgOptions(options)
         }
         return options
       }
@@ -634,7 +637,11 @@
             } else {
               this.columns = this.filterAgColumns(this.dataSource.tabth)
             }
-            this.tabledata = this.filterData(this.dataSource.row); // 每列的数据
+            let rows = this.filterData(this.dataSource.row)
+            if(!(this.isCommonTable || !this.useAgGrid) && this.R3_processRows) {
+              rows = this.R3_processRows(rows)
+            }
+            this.tabledata = rows // 每行的数据
             this.totalDataNumber = this.totalData();
             this.$emit('setSearchValue') // 设置下拉的默认查询条件
           }, 50);
@@ -807,7 +814,7 @@
         const { pinnedLeftColumns, pinnedRightColumns } = getPinnedColumns(this.webConfSingle.pinnedColumns)
 
         // 整合表头数据
-        const newColumns = columns
+        let newColumns = columns
           .map((ele, index) => {
             const param = {
               title: ele.name,
@@ -855,7 +862,7 @@
 
         // 允许项目组定制列数据
         if(this.R3_processColumns) {
-          this.R3_processColumns(newColumns)
+          newColumns = this.R3_processColumns(newColumns)
         }
         return newColumns;
       },

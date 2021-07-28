@@ -146,7 +146,7 @@
           ...this.agGridOptions
         }
         if(this.processAgOptions) {
-          this.processAgOptions(options)
+          options = this.processAgOptions(options)        
         }
         return options
       }
@@ -298,6 +298,10 @@
       agProcessColumns: {
         type: Function
       },
+      // 定制表格行数据
+      agProcessRows: {
+        type: Function
+      },
       // 定制表格选项
       processAgOptions: {
         type: Function
@@ -398,7 +402,7 @@
         }) 
 
         // 允许项目组定制列数据
-        this.agProcessColumns(columns)
+        columns = this.agProcessColumns(columns)
         return columns
       },
 
@@ -447,7 +451,11 @@
         }
 
         if(datas.row && Array.isArray(datas.row)) {
-          this.rows = [...datas.row]
+          let rows = [...datas.row]
+          if(this.agProcessRows) {
+            rows = this.agProcessRows(rows)
+          }
+          this.rows = rows
         }
 
         this.options = {
