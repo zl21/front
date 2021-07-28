@@ -118,6 +118,7 @@
           :height="tableHeight? `${tableHeight}px` :'calc(100% - 10px)'"
           border
           mode="commonTable"
+          ref="agGridTableContainer"
           :columns="columns"
           :data="tabledata"
           :render-params="renderParams"
@@ -125,6 +126,7 @@
           @ag-selection-change="tableSelectedChange"
           @ag-sort-change="tableSortChange"
           @ag-row-dblclick="tableRowDbclick"
+          @grid-ready="gridReady"
         ></CommonTableByAgGrid>
       </div>
       <div
@@ -674,6 +676,31 @@
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
       ...mapMutations('global', ['directionalRouter', 'updateCustomizeMessage', 'copyDataForSingleObject', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'updateExportedState']),
+      
+      // 表格准备完毕
+      gridReady(e) {
+        if(this.R3_agReady) {
+          this.R3_agReady(e)
+        }
+        this.handleAgColumnSize()
+      },
+
+       // 收起菜单时调整表格宽度
+      handleAgColumnSize() {
+        const handleAgColumnSize = () => {
+          setTimeout(() => {
+            if(this.$refs.agGridTableContainer) {
+              this.$refs.agGridTableContainer.$refs.agGridTable._resetColumnWidth()
+            }
+          }, 200)
+        }
+        window.addEventListener('resizeAgColumn', handleAgColumnSize)
+
+        this.$on('hook:beforeDestroy', () => {
+          window.removeEventListener('resizeAgColumn', handleAgColumnSize)
+        })
+      },
+      
       tableRowDbclick(row) {
         if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格走动态路由
           window.sessionStorage.setItem('dynamicRoutingForSinglePage', true);

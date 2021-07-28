@@ -24,6 +24,7 @@
         ref="eText"
         class="ag-header-cell-text"
         role="columnheader"
+        :title="params.displayName"
       >
         {{params.displayName}}
         <i
