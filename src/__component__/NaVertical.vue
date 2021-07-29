@@ -19,7 +19,7 @@
           v-if="iconShow"
           class="iconfont iconbj-unfold"
         />
-      </div>  
+      </div>
       <!-- 最近操作 -->
        <div
       v-if="getDashboardConfig"
@@ -44,18 +44,18 @@
           >
           <slot name="collect">
             <HistoryAndFavorite />
-              
-             </slot>  
+
+             </slot>
           </DropdownMenu>
         </Dropdown>
         <!-- <div class="iconfont iconmd-time">
         </div> -->
-      
+
     </div>
       <!-- 最近操作navigatorSetting -->
       <div class="icon-setting right" slot="icon-Setting">
         <div
-          v-for="(item,index) in navigatorSetting" 
+          v-for="(item,index) in navigatorSetting"
           :key="index"
           class="tag right"
         >
@@ -110,7 +110,7 @@
             />
           </Drawer>
       </div>
-     
+
       <div
         class="tag right"
         slot="icon-person"
@@ -140,7 +140,7 @@
         />
 
       </div>
-      
+
    </component>
   </div>
 </template>
@@ -396,7 +396,7 @@
       changePwdBox() {
         this.show = false;
         this.$refs.dialogRef.open();
-        this.dialogConfig.title = '修改密码';
+        this.dialogConfig.title = '修改密码22';
         this.dialogConfig.footerHide = true;
         // Vue.component('ChangePassword', CustomizeModule.ChangePassword.component);
         this.dialogComponentName = 'ChangePassword';

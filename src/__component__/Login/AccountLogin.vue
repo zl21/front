@@ -12,8 +12,8 @@
     <div class="divCode" v-if="loginType">
       <img src="../../assets/image/code.png" class="icon">
       <input ref="code" value="" class="pwd code" placeholder="请输入验证码">
-      <div class="ercode" @click="getCode">&nbsp</div>
     </div>
+    <img v-if="loginType" src="../../../../../../pic/yanzhengma.png" @click="getCode" class="codeimg">
     <div class="divToggle" v-if="loginType">
       <span class="sanjiao" >
         <img src="../../assets/image/phone.png" class="toggle phone" @click="toggles">
@@ -38,19 +38,18 @@
         type: Number,
         default: 1
       },
-      codeSrc: {
-        type: String,
-        default: ''
-      },
     },
     data() {
       return {
         codeSrc: '',
         globalServiceId: window.localStorage.getItem('serviceId') || '',
+        key: ''
       }
     },
     mounted() {
-      this.getCode(this.globalServiceId)
+      if (window.ProjectConfig.enableLoginPro) {
+        this.getCode();
+      }
     },
     methods: {
       login() {
@@ -61,9 +60,9 @@
         this.$emit('toggle', 2)
       },
       // 获取验证码
-      getCode(globalServiceId) {
-        return new Promise(resolve => {
-          network.post(enableGateWay() ? `/${globalServiceId}/p/c/getcCode` : '/p/c/getcCode').then(res => resolve(res))
+      getCode() {
+        network.post(enableGateWay() ? `/${this.globalServiceId}/p/c/getcCode` : '/p/c/getcCode').then(res => {
+          console.log('getCode', res)
         })
       },
     }

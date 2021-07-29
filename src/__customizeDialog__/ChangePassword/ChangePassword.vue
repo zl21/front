@@ -138,13 +138,14 @@
         }
       },
       blur() { // 失焦时判断密码
+        const reg = new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,18}$/);
         if (this.newpaswd === '') {
           this.pawdgrade1 = true;
           this.errorpawdgrade1 = 'red';
           this.inconformity2 = true;
           this.newHint = '请输入新密码';
         } else if (this.newpaswd.length > 5) {
-          if (!/[A-Za-z]/.test(this.newpaswd) || !/[0-9]/.test(this.newpaswd)) {
+          if (!reg.test(this.newpaswd)) {
             this.newHint = '密码必须由6位以上数字、字母组成';
             this.errorpawdgrade1 = 'red';
             this.inconformity2 = true;

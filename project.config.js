@@ -172,5 +172,5 @@ module.exports = {
 
   autoGatewayUrl:false,  // 是否请求网关
   computeForSubtable: false,
-  enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
+  enableLoginPro: false, // 是否开启普通登录模式 false普通 true手机验证码
 };

@@ -49,7 +49,7 @@
         globalServiceId: window.localStorage.getItem('serviceId') || '',
         type: window.ProjectConfig.enableLoginPro,
         spinShow: false, // loading是否显示
-        typeToggle: 2, // 1用户 2验证码
+        typeToggle: 1, // 1用户 2验证码
       }
 
     },
@@ -140,7 +140,8 @@
               const param = {
                 username: this.$refs.AccountLogin.$refs.username.value,
                 password:this.$refs.AccountLogin.$refs.password.value,
-                code:this.$refs.AccountLogin.$refs.code.value
+                code:this.$refs.AccountLogin.$refs.code.value,
+                key:this.$refs.AccountLogin.key
               };
               this.codeLogin(globalServiceId, param)
             }
@@ -217,7 +218,9 @@
         const captcha = await this.getCaptcha(globalServiceId);
         const limit = Object.assign({}, param, {captcha: captcha.data.captcha});
         console.log('limit', limit)
-        network.post(enableGateWay() ? `/${globalServiceId}/p/c/code/login` : '/p/c/code/login', limit)
+        network.post(enableGateWay() ? `/${globalServiceId}/p/c/code/login` : '/p/c/code/login', urlSearchParams(limit)).then(r => {
+
+        }).catch(() => this.spinShow = false)
       },
 
       // 2手机登录
@@ -226,7 +229,12 @@
         const captcha = await this.getCaptcha(globalServiceId);
         const limit = Object.assign({}, param, {captcha: captcha.data.captcha});
         network.post(enableGateWay() ? `/${globalServiceId}/p/c/message/login` : '/p/c/message/login', limit)
+      },
+      // 登录中间层对接口返回进行处理-判断当前账号密码修改时间是否大于30天
+      checkPwdDays() {
+
       }
+
     }
   };
 </script>
