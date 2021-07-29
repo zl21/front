@@ -10,6 +10,7 @@
       :auot-data="propsData.AutoData"
       :default-selected="selected"
       :singleTurn="true"
+      @on-Outside="Outside"
       @on-show="attachFilterPopperShow"
       @input="attachFilterInput"
       @on-change="attachFilterChange"
@@ -385,6 +386,9 @@
             }
           });
         }
+      },
+      Outside(){
+         this.$emit('on-Outside',this)
       },
       attachFilterCancel($this) {
         this.filterDate = {};
