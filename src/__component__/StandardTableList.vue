@@ -332,7 +332,7 @@
           // }
         }
 
-        return [];
+        return async () => {return {}};
       },
       defaultColumn() { // 获取配置列表一行几列数据
         return listDefaultColumn();

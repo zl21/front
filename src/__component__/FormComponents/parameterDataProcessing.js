@@ -242,7 +242,7 @@ export default class ParameterDataProcessing {
       if(this.item.valuedata){
         return this.item.valuedata;
       }else if(this.item.default){
-        if(!isDetailPage){
+        if(!isDetailPage && typeof this.item.default === 'string'){
           return this.item.default.split(',');
         }
         return this.item.default;
