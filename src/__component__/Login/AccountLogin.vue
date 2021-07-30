@@ -13,7 +13,7 @@
       <img src="../../assets/image/code.png" class="icon">
       <input ref="code" value="" class="pwd code" placeholder="请输入验证码">
     </div>
-    <img v-if="loginType" src="../../../../../../pic/yanzhengma.png" @click="getCode" class="codeimg">
+    <img v-if="loginType" :src="imgSrc" @click="getCode" class="codeimg">
     <div class="divToggle" v-if="loginType">
       <span class="sanjiao" >
         <img src="../../assets/image/phone.png" class="toggle phone" @click="toggles">
@@ -43,6 +43,8 @@
       return {
         codeSrc: '',
         globalServiceId: window.localStorage.getItem('serviceId') || '',
+        host: window.ProjectConfig.target,
+        imgSrc: '',
         key: ''
       }
     },
@@ -62,7 +64,10 @@
       // 获取验证码
       getCode() {
         network.post(enableGateWay() ? `/${this.globalServiceId}/p/c/getcCode` : '/p/c/getcCode').then(res => {
-          console.log('getCode', res)
+          if (res && res.data) {
+            this.imgSrc = res.data.img;
+            this.key = res.data.key;
+          }
         })
       },
     }

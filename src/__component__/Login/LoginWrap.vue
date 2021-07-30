@@ -57,14 +57,9 @@
       document.onkeydown = (e) => {
         const key = e.keyCode;
         if (key === 13) {
-          // TODO
           this.login();
         }
       };
-      // pro模式下获取验证码
-      if (window.ProjectConfig.enableLoginPro) {
-        this.initPro();
-      }
     },
     mounted() {
       // this.$refs.pwd.open()
@@ -77,17 +72,12 @@
       },
     },
     methods: {
-      async initPro() {
-        // TODO
-
-      },
       login() {
         this.spinShow = true;
-        const type = window.ProjectConfig.enableLoginPro;
         const globalServiceId = window.localStorage.getItem('serviceId');
         const randomKey = btoa(`${Math.random() * 10000000000}`).substring(0, 5);
         let message = {};
-        if (!type) {
+        if (!this.type) {
           const {username, password} = this.$refs.AccountLogin.$refs;
           if (username.value === '') {
             message = {
@@ -112,7 +102,7 @@
               rememberMe: false,
               lang: 'zh_CN',
             };
-            this.loginNet(globalServiceId, param)
+            this.loginNet('/p/c/login', globalServiceId, param)
           }
         } else {
           if (this.typeToggle === 1) {
@@ -143,7 +133,7 @@
                 code:this.$refs.AccountLogin.$refs.code.value,
                 key:this.$refs.AccountLogin.key
               };
-              this.codeLogin(globalServiceId, param)
+              this.loginNet('/p/c/code/login', globalServiceId, param)
             }
           }
           if (this.typeToggle === 2) {
@@ -164,7 +154,7 @@
                 phone: this.$refs.PhoneLogin.$refs.phone.value,
                 code: this.$refs.PhoneLogin.$refs.sendcode.value
               };
-              this.phoneLogin(globalServiceId, param)
+              this.loginNet('/p/c/message/login', globalServiceId, param)
             }
           }
         }
@@ -173,68 +163,65 @@
         console.log('toggle-num', num)
         this.typeToggle = num;
       },
-      loginCheck() {
-        // 检验是否登录
-        // 达到30天未换密码
-      },
       getCaptcha(globalServiceId) {
         return new Promise(resolve => {
           network.post(enableGateWay() ? `/${globalServiceId}/p/c/getCaptcha` : '/p/c/getCaptcha').then(res => resolve(res))
         })
       },
-      async loginNet(globalServiceId, param) {
+
+      // 普通模式登录
+      async loginNet(url, globalServiceId, param) {
         this.spinShow = true;
         const captcha = await this.getCaptcha(globalServiceId);
         const limit = Object.assign({}, param, {captcha: captcha.data.captcha});
-        network.post(enableGateWay() ? `/${globalServiceId}/p/c/login` : '/p/c/login', urlSearchParams(limit)).then((r) => {
-          if (Version() === '1.3') {
-            if (r.status === 200 && r.data.code === 1) {
-              if (r.data && r.data.user && r.data.user.userenv) {
-                window.localStorage.setItem('userInfo', JSON.stringify(r.data.user.userenv));
-              }
-              window.sessionStorage.setItem('loginTime', `${Date.now()}`);
-              this.spinShow = false;
-              window.location.href = window.location.origin;
-            } else {
-              this.spinShow = false;
-            }
-          } else if (r.status === 200 && r.data.code === 0) {
-            this.spinShow = false;
-            window.sessionStorage.setItem('loginTime', `${Date.now()}`);
-            window.location.href = window.location.origin;
 
-            // window.location.reload();
+        const r = await this.loginCore(enableGateWay() ? `/${this.globalServiceId}${url}` : url, limit);
+        if (this.type) {
+          // TODO 30天校验
+          // const code = await this.checkPwdDays(true);
+        }
+        this.logined(r)
+      },
+      // 登录中间层对接口返回进行处理-判断当前账号密码修改时间是否大于30天
+      checkPwdDays(code) {
+        return new Promise(resolve => {
+          if (code) {
+            return this.$Modal.fcWarning({
+              title: '安全提示',
+              content: '当前密码1个月未修改，为保数据安全请立即修改',
+              mask: true,
+              onOk: () => resolve()
+            })
+          }
+        })
+      },
+
+      loginCore(url, limit) {
+        return new Promise(resolve => network.post(url, urlSearchParams(limit)).then(r => resolve(r)).catch(() => this.spinShow = false))
+      },
+
+      // 登录成功后的处理
+      logined(r) {
+        if (Version() === '1.3') {
+          if (r.status === 200 && r.data.code === 1) {
+            if (r.data && r.data.user && r.data.user.userenv) {
+              window.localStorage.setItem('userInfo', JSON.stringify(r.data.user.userenv));
+            }
+            window.sessionStorage.setItem('loginTime', `${Date.now()}`);
+            this.spinShow = false;
+            window.location.href = window.location.origin;
           } else {
             this.spinShow = false;
           }
-        }).catch(() => {
+        } else if (r.status === 200 && r.data.code === 0) {
           this.spinShow = false;
-        });
-      },
-
-      // 1验证码登录
-      async codeLogin(globalServiceId, param) {
-        this.spinShow = true;
-        const captcha = await this.getCaptcha(globalServiceId);
-        const limit = Object.assign({}, param, {captcha: captcha.data.captcha});
-        console.log('limit', limit)
-        network.post(enableGateWay() ? `/${globalServiceId}/p/c/code/login` : '/p/c/code/login', urlSearchParams(limit)).then(r => {
-
-        }).catch(() => this.spinShow = false)
-      },
-
-      // 2手机登录
-      async phoneLogin(globalServiceId, param) {
-        this.spinShow = true;
-        const captcha = await this.getCaptcha(globalServiceId);
-        const limit = Object.assign({}, param, {captcha: captcha.data.captcha});
-        network.post(enableGateWay() ? `/${globalServiceId}/p/c/message/login` : '/p/c/message/login', limit)
-      },
-      // 登录中间层对接口返回进行处理-判断当前账号密码修改时间是否大于30天
-      checkPwdDays() {
-
+          window.sessionStorage.setItem('loginTime', `${Date.now()}`);
+          window.location.href = window.location.origin;
+          // window.location.reload();
+        } else {
+          this.spinShow = false;
+        }
       }
-
     }
   };
 </script>

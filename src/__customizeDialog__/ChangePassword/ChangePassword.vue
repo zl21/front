@@ -95,7 +95,7 @@
         pawdgrade2: false,
         errorpawdgrade: 'red',
         errorpawdgrade1: '#818181',
-        newHint: '密码必须由6位以上数字、字母组成',
+        newHint: '密码必须由6-18个字符且数字、大小写字母同时存在',
         againpaswd: '',
         pop_dialog: false,
         activeColor: 'red', // 控制密码强度的时候，颜色
@@ -107,7 +107,8 @@
         inconformity1: false, // input错误border颜色class
         inconformity2: false, // input错误border颜色class
         inconformity3: false, // input错误border颜色class
-      };
+        reg: new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,18}$/)
+    };
     },
     computed: {
       classes() {
@@ -123,7 +124,7 @@
       changwd() { // 修改密码，显示密码强度
         this.pawdgrade = false;
         this.pawdgrade1 = true;
-        if (this.newpaswd.length > 0) {
+        if (this.newpaswd.length > 0 && this.reg.test(this.newpaswd)) {
           this.pawdgrade = true;
           if (/^(?:\d+|[a-zA-Z]+|[!@#$%^&*]+)$/.test(this.newpaswd)) {
             this.grade = '低';// 纯数字，纯字母，纯特殊字符
@@ -138,23 +139,22 @@
         }
       },
       blur() { // 失焦时判断密码
-        const reg = new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,18}$/);
         if (this.newpaswd === '') {
           this.pawdgrade1 = true;
           this.errorpawdgrade1 = 'red';
           this.inconformity2 = true;
           this.newHint = '请输入新密码';
-        } else if (this.newpaswd.length > 5) {
-          if (!reg.test(this.newpaswd)) {
-            this.newHint = '密码必须由6位以上数字、字母组成';
+        } else if (this.newpaswd.length > 6 && this.newpaswd.length < 18) {
+          if (!this.reg.test(this.newpaswd)) {
+            this.newHint = '密码必须由6-18个字符且数字、大小写字母同时存在';
             this.errorpawdgrade1 = 'red';
             this.inconformity2 = true;
             this.pawdgrade1 = true;
           }
           this.errorpawdgrade1 = '#818181';
-          this.newHint = '密码必须由6位以上数字、字母组成';
+          this.newHint = '密码必须由6-18个字符且数字、大小写字母同时存在';
         } else {
-          this.newHint = '密码必须由6位以上数字、字母组成';
+          this.newHint = '密码必须由6-18个字符且数字、大小写字母同时存在';
           this.errorpawdgrade1 = 'red';
           this.inconformity2 = true;
           this.pawdgrade1 = true;
@@ -164,7 +164,7 @@
         switch (num) {
         case 1: this.oldp = false; this.inconformity1 = false;
                 break;
-        case 2: this.pawdgrade = false; this.pawdgrade1 = true; this.inconformity2 = false; this.errorpawdgrade1 = '#818181'; this.newHint = '密码必须由6位以上数字、字母组成';
+        case 2: this.pawdgrade = false; this.pawdgrade1 = true; this.inconformity2 = false; this.errorpawdgrade1 = '#818181'; this.newHint = '密码必须由6-18个字符且数字、大小写字母同时存在';
                 break;
         default: this.inconformity3 = false;
         }
@@ -180,7 +180,13 @@
           this.errorpawdgrade1 = 'red';
           return false;
         }
-        if (this.newpaswd.length < 5) { // 密码长度小于6
+        if (this.newpaswd.length < 6) { // 密码长度小于6
+          this.pawdgrade = false;
+          this.errorpawdgrade1 = 'red';
+          this.pawdgrade1 = true;
+          return false;
+        }
+        if (this.newpaswd.length > 18) { // 密码长度大于18
           this.pawdgrade = false;
           this.errorpawdgrade1 = 'red';
           this.pawdgrade1 = true;
@@ -190,7 +196,7 @@
           this.inconformity3 = true;
           return false;
         }
-        if (!/[A-Za-z]/.test(this.newpaswd) || !/[0-9]/.test(this.newpaswd)) { // 只要有一位数字、一位字母，其他四位不管是啥
+        if (!this.reg.test(this.newpaswd)) { // 只要有一位数字、一位字母，其他四位不管是啥
           this.pawdgrade = false;
           this.errorpawdgrade1 = 'red';
           this.pawdgrade1 = true;

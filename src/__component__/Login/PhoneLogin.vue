@@ -52,7 +52,6 @@
         this.$parent.login()
       },
       toggles() {
-        console.log(this)
         this.$emit('toggle', 1)
       },
       async sendErCode() {
@@ -62,9 +61,9 @@
           content: '请输入正确的手机号'
         });
         const code = await this.getMessageCode(phoneNo);
-        if (!code || code.code !== 0) return this.$Message.error(code.message || '获取验证码失败');
+        if (!code.data || code.data.code !== 0) return this.$Message.error(code.data.message || '获取验证码失败');
         this.sended = true;
-        this.count = 10;
+        this.count = 59;
         this.setTimer();
         this.$Message.success('获取验证码成功');
       },
@@ -87,7 +86,7 @@
       getMessageCode(phoneNo) {
         const globalServiceId = this.$parent.globalServiceId;
         return new Promise(resolve => {
-          network.post(enableGateWay() ? `/${globalServiceId}/p/c/getMessageCode` : '/p/c/getMessageCode', { phone: phoneNo })
+          network.post(enableGateWay() ? `/${globalServiceId}/p/c/getMessageCode` : '/p/c/getMessageCode', { phone: phoneNo }).then(r => resolve(r))
         })
       },
     }
