@@ -160,7 +160,6 @@
         }
       },
       toggle(num) {
-        console.log('toggle-num', num)
         this.typeToggle = num;
       },
       getCaptcha(globalServiceId) {
