@@ -28,4 +28,5 @@ R3.launchApplication({
     listFormButton:require('./demo/detailbuttons.vue').default,  // 定制列表button
   },
   enableGateWay: true, // 网关是否打开,
+  enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
 });
