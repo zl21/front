@@ -12,3 +12,8 @@ export function debounce(func, delay = 200) {
   }
 }
 
+// 深拷贝
+export function deepClone(value) {
+  return JSON.parse(JSON.stringify(value))
+}
+

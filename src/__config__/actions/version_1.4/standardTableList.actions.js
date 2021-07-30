@@ -203,6 +203,10 @@ export default {
         if (res.data.data.length > 0) {
           const deleteFailInfo = res.data.data;
           commit('updateFailInfo', deleteFailInfo);
+          // 页面刷新
+          if(obj.ids.length >deleteFailInfo.length){
+            resolve({isrefrsh:true}, actionName);
+          }
         } else {
           commit('updateButtonExeActionData', res.data.message);
         }

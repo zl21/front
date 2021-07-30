@@ -228,6 +228,10 @@
       isChildTable: {
         // 是否是子表
         type: Boolean
+      },
+      // 单对象类型 vertical,horizontal
+      objectType: {
+        type: String
       }
     },
     // inject: [MODULE_COMPONENT_NAME],
@@ -313,6 +317,11 @@
       }
     },
     computed: {
+      // 是否在单对象界面
+      detailType() {
+        return this.objectType === 'vertical' || this.objectType === 'horizontal'
+      },
+
       path() {
         return this.paths[1] || '';
       },
@@ -788,7 +797,7 @@
           }
         }
 
-        this.$emit('formChange', this.formDataSave, this.formDataDef, this.labelFormSave, this.formData, this.defaultDataInt);
+        this.$emit('formChange', this.formDataSave, this.formDataDef, this.labelFormSave, this.formData, this.defaultDataInt, this.defaultFormData);
         this.getStateData();
 
 
@@ -1927,7 +1936,18 @@
           if (this.defaultSetValue[item.colname] !== undefined) {
             return this.defaultSetValue[item.colname];
           }
-          return item.valuedata || item.defval || '';
+          const value = item.valuedata || item.defval || '';
+          if(this.detailType && item.display === 'OBJ_DATE') {
+            return value ? `${new Date().r3Format(new Date(value), 'yyyy-MM-dd hh:mm:ss')}`: '';
+          }
+          // 处理 20201211 这种形式的默认值
+          if(this.detailType && item.display === 'OBJ_DATENUMBER' && /^\d{8}$/.test(value)) {
+            const year = value.substr(0, 4)
+            const month = value.substr(4, 2)
+            const day = value.substr(6, 2)
+            return `${year}-${month}-${day}`
+          }
+          return value;
         }
         if (item.display === 'OBJ_TIME') {
           // 保存change 之前的默认值

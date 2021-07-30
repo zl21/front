@@ -173,7 +173,7 @@
   import {
     classFix, getCustomizeWaterMark, KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, notificationOfMain
   } from '../constants/global';
-
+  import { deepClone } from '../__utils__/common'
 
   const customizeModules = {};
   Object.keys(CustomizeModule).forEach((key) => {
@@ -828,14 +828,18 @@
       },
       verifyRequiredInformation() { // 验证表单必填项
         this.saveParameters();
-        const checkedInfo = this.currentParameter.checkedInfo;// 主表校验信息
-        if (checkedInfo) {
-          const messageTip = checkedInfo.messageTip;
-          if (messageTip && messageTip.length > 0) {
-            this.$Message.warning(messageTip[0]);
-            checkedInfo.validateForm.focus();
+        const checkedInfo = this.verifymiainForm();// 主表校验信息
+        if (checkedInfo.length>0) {
+           this.$Message.warning(checkedInfo[0].tip);
+            let dom = document.querySelector(`#${checkedInfo[0].colname}`);
+            if(dom){
+              let Input = dom.querySelector('input') || dom.querySelector('textarea');
+              if(Input){
+                  Input.focus();
+              }
+
+            }
             return false;
-          }
         }
         // if (this.objectType === 'vertical') { // 纵向结构
         if (this.childTableNames.length > 0) { // 存在子表时
@@ -863,6 +867,17 @@
         // }
         return true;
       },
+      verifymiainForm(){
+        // 获取主表校验
+        let panelForm_dom =  document.querySelector('.panelForm');
+        let panelForm = panelForm_dom._vue_;
+        let validate = [];
+        if(panelForm){
+           validate = panelForm.validate();
+        }
+        return validate;
+
+      },
       saveParameters() {
         if (this.verifyForm) { // 有子表
           Object.keys(this.$store.state[this[MODULE_COMPONENT_NAME]].updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
@@ -880,13 +895,42 @@
           return obj;
         }, {});
       },
-      formChange(val, changeVal, labl, formData, defaultDataInt) {
+
+      // 判断数据是否修改过
+      getUpdatedValue(formData, defaultData) {
+        const form = deepClone(formData)
+        Object.keys(form).forEach(field => {
+          const defaultValue = defaultData[field]
+          const currentValue = form[field]
+          const isEqual = defaultValue && (defaultValue == currentValue) // 强转化是否相等。处理数字输入框的场景用
+          const isEqualString = defaultValue && (JSON.stringify(defaultValue) === JSON.stringify(currentValue)) // 引用型对象转字符串进行比较是否相等
+
+          // 条件1: 没初始值，且没有输入值
+          // 条件2: 有初始值，但是值跟之前对比没发生变化
+          // currentValue === 0是因为数子输入框输入再删除会把默认值变成0，而不是''
+          // currentValue === '[]'的出现的场景时文件上传表单
+          if((currentValue === 0 && defaultValue === undefined) || (currentValue === '' && defaultValue === undefined) || (currentValue === '[]' && defaultValue === undefined) || isEqualString || isEqual) {
+            delete form[field]
+          }
+        })
+        return form
+      },
+
+      // 表单数据变化
+      formChange(val, changeVal, label, formData, defaultDataInt, defaultFormData) {
         const { tableName } = this;
-        const obj = {};
         const { itemId } = this[INSTANCE_ROUTE_QUERY];
-        obj[tableName] = formData;
 
         if (itemId) {
+          const updatedValue = this.getUpdatedValue(formData, defaultFormData)
+          // 如果没变化，数据恢复原样
+          if(Object.keys(updatedValue).length === 0) {
+            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { tableName, value: {} });
+            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateAddData`, { tableName, value: {} });
+            return
+          }
+          const obj = {};
+          obj[tableName] = updatedValue;
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { tableName, value: defaultDataInt });
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateAddData`, { tableName, value: obj });
         }
@@ -914,6 +958,7 @@
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateCheckedInfoData`, { tableName, value: data });
         }
       },
+      
       formPanelChange(val, changeVal, valLabel) {
         if(notificationOfMain() && this.$route.params.tableName === this.tableName) {
           DispatchEvent('notificationOfMain', {

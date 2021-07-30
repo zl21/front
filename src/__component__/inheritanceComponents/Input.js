@@ -209,7 +209,6 @@ class CustomInput {
         }})?$`
       } else {
         string =`^[-\\+]?\\d{0,${length}}$`
-        console.log(111,this.item,string);
       }
     }
 

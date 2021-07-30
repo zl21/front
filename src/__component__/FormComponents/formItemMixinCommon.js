@@ -63,6 +63,7 @@ export default {
   mounted() {
     // 设置校验规则
     this.setRules();
+<<<<<<< HEAD
     let self = this;
     this.$parent.$parent.$parent.$nextTick(()=>{
       setTimeout(()=>{
@@ -71,5 +72,11 @@ export default {
       },100);
     })
    
+=======
+    setTimeout(()=>{
+      // 延时渲染完成,阻止页面初始化调用事件
+      this.actived = true;    
+    },500);
+>>>>>>> npm_dev_r3
   }  
 };

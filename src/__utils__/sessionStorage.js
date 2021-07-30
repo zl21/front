@@ -21,8 +21,11 @@ const removeSessionObject = (target) => {
 window.RupdateLocalStorage = (target,{ k, v })=>{
   // 更新本地
   let data = JSON.parse(window.localStorage.getItem(target));
-  data[k] = v;
-  window.localStorage.setItem(target, JSON.stringify(data));     
+  if(data){
+    data[k] = v;
+    window.localStorage.setItem(target, JSON.stringify(data)); 
+  }
+      
 }
 
 window.RgetItemLocalStorage = (target)=>{

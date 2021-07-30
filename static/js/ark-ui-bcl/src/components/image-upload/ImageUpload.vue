@@ -105,10 +105,10 @@ export default {
       // var percent = Math.round(data.loaded * 100 / data.total);
       // this.percent = percent;
       let self = this;
-      this.percent = Math.ceil(Math.random()*10);
-      // setTimeout(() => {
-      //   self.percent = 10;
-      // }, 30)
+      this.percent = 1;
+      setTimeout(() => {
+        self.percent = 10;
+      }, 30)
     },
     uploadFileChangeSuccess (data) {
       // 上传成功
@@ -116,8 +116,8 @@ export default {
       const resultData = data;
       const valuedata = this.defaultProps.valuedata;
       if (data.data) {
-        self.percent = 30;
         this.uploadProgress(data.data).then(() => {
+
           const fixedData = Array.isArray(valuedata) ? [...valuedata] : [];
           fixedData.push({
             NAME: resultData.data.Name,
@@ -143,9 +143,7 @@ export default {
         serviceId: this.serviceId,
         // eslint-disable-next-line consistent-return
         success: (res) => {
-          if(res.data.data>self.percent){
-            self.percent = res.data.data;
-          }
+          self.percent = res.data.data;
           if (res.data.data == 100) {
             self.percent = 0;
             resolve(res.data);
@@ -153,13 +151,12 @@ export default {
             if (self.cycleTimer && self.cycleTime === 4) {
               self.cycleTime = 0;
               self.cycleTimer = null;
-              self.percent = 0;
               return resolve();
             }
             self.cycleTimer = setTimeout(() => {
               self.cycleTime ++;
               self.fkQueuploadProgressry(data, resolve)
-            }, 300)
+            }, 200)
           }
         }
       });
