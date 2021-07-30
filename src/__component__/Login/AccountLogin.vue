@@ -58,7 +58,6 @@
         this.$parent.login()
       },
       toggles() {
-        console.log(this.TypeToggle)
         this.$emit('toggle', 2)
       },
       // 获取验证码
