@@ -41,9 +41,10 @@ export const FindInstance = ($this,name,tableName,maintable) => {
      //console.log(mainTableName,'34343',$this.$route.params,$this.activeTab.keepAliveModuleName);
 
     let panelFormParent = {};
-    if(document.querySelector('.ListsForm')){
+    if(document.querySelector('.ListsForm-box')){
+        panelFormParent = document.querySelector('.ListsForm-box')._vue_;
 
-        panelFormParent = $this.$_live_getChildComponent(window.vm, `${$this.activeTab.keepAliveModuleName}`);
+        return [$this.$_live_getChildComponent(panelFormParent, mainTableName+name)]
     }else{
         panelFormParent =  document.querySelector(`#${mainTableName}`)._vue_;
     }
