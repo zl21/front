@@ -50,6 +50,7 @@
         type: enableLoginPro,
         spinShow: false, // loading是否显示
         typeToggle: 1, // 1用户 2验证码
+        flag: 1,
       }
 
     },
@@ -131,7 +132,8 @@
                 username: this.$refs.AccountLogin.$refs.username.value,
                 password:this.$refs.AccountLogin.$refs.password.value,
                 code:this.$refs.AccountLogin.$refs.code.value,
-                key:this.$refs.AccountLogin.key
+                key:this.$refs.AccountLogin.key,
+                flag: this.flag
               };
               this.loginNet('/p/c/code/login', globalServiceId, param)
             }
@@ -152,7 +154,8 @@
             } else {
               const param = {
                 phone: this.$refs.PhoneLogin.$refs.phone.value,
-                code: this.$refs.PhoneLogin.$refs.sendcode.value
+                code: this.$refs.PhoneLogin.$refs.sendcode.value,
+                // flag: this.flag
               };
               this.loginNet('/p/c/message/login', globalServiceId, param)
             }
@@ -175,11 +178,31 @@
         const limit = Object.assign({}, param, {captcha: captcha.data.captcha});
 
         const r = await this.loginCore(enableGateWay() ? `/${this.globalServiceId}${url}` : url, limit);
+        // console.log('r', r)
         if (this.type) {
           // TODO 30天校验
-          // const code = await this.checkPwdDays(true);
+          if (r.data.code === 100) {
+            const code = await this.checkLogined(r.data);
+            // console.log('code', code)
+            if (code === 1001) {
+              this.flag = 2;
+              return this.login()
+            }
+          }
         }
         this.logined(r)
+      },
+      checkLogined(data) {
+        return new Promise((resolve, reject) => {
+          return this.$Modal.fcWarning({
+            title: '安全提示',
+            content: '当前账号登录中，是否继续登录？',
+            mask: true,
+            showCancel: true,
+            onOk: () => resolve(1001),
+            onCancel: () => resolve(1002)
+          })
+        })
       },
       // 登录中间层对接口返回进行处理-判断当前账号密码修改时间是否大于30天
       checkPwdDays(code) {
