@@ -1230,8 +1230,13 @@
             'on-popper-hide': () => {
               delete current.fixedcolumns;
             },
+            Outside: () => {
+
+
+            },
             blur: (event, $this, item) => {
               // 失去光标 单对象 外键 value 清除
+              return;
               let Fitem = [];
               if (current.formIndex !== 'inpubobj') {
                 Fitem = this.$refs[`FormComponent_${current.formIndex}`][0]
