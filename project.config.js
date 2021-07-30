@@ -39,13 +39,8 @@ module.exports = {
   // target: 'http://cs.yqdev.burgeononline.com/', // 云雀
   // target: 'http://47.102.164.111:27777', // 卡宾
   // target: 'http://dev.dev.lark-erp.cn/',
-<<<<<<< HEAD
 
   Version: '1.4', // 版本号
-=======
-  target:'http://cmsdev.lining.com/',
-  Version: '1.3', // 版本号
->>>>>>> ll_closed_list
   interlocks: true, // 是否打开三级联动装置
   enableGateWay: true, // 网关是否打开,
   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用接口请求
