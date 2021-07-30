@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span class="titleTOP">账号登录</span>
+    <span class="titleTOP">账号登录1</span>
     <div class="divAccount">
       <img src="../../assets/image/account.png" class="icon">
       <input ref="username" type="text" value="" class="username" placeholder="请输入用户名">
