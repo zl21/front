@@ -26,7 +26,7 @@
 
 <script>
   import network, {urlSearchParams} from '../../__utils__/network';
-  import {enableGateWay, Version, encryptedPassword, classFix} from '../../constants/global';
+  import {enableGateWay, enableLoginPro, encryptedPassword, classFix} from '../../constants/global';
   export default {
     name: 'AccountLogin',
     props: {
@@ -43,13 +43,12 @@
       return {
         codeSrc: '',
         globalServiceId: window.localStorage.getItem('serviceId') || '',
-        host: window.ProjectConfig.target,
         imgSrc: '',
         key: ''
       }
     },
     mounted() {
-      if (window.ProjectConfig.enableLoginPro) {
+      if (enableLoginPro) {
         this.getCode();
       }
     },

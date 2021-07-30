@@ -37,7 +37,7 @@
 <script>
   import AccountLogin from './AccountLogin';
   import PhoneLogin from './PhoneLogin';
-  import {enableGateWay, Version, encryptedPassword, classFix} from '../../constants/global';
+  import {enableGateWay, Version, encryptedPassword, classFix, enableLoginPro} from '../../constants/global';
   import network, {urlSearchParams} from '../../__utils__/network';
   import ModalPwd from './ModalPwd';
 
@@ -47,7 +47,7 @@
     data() {
       return {
         globalServiceId: window.localStorage.getItem('serviceId') || '',
-        type: window.ProjectConfig.enableLoginPro,
+        type: enableLoginPro,
         spinShow: false, // loading是否显示
         typeToggle: 1, // 1用户 2验证码
       }
