@@ -155,7 +155,7 @@
               const param = {
                 phone: this.$refs.PhoneLogin.$refs.phone.value,
                 code: this.$refs.PhoneLogin.$refs.sendcode.value,
-                // flag: this.flag
+                flag: this.flag
               };
               this.loginNet('/p/c/message/login', globalServiceId, param)
             }
