@@ -1665,6 +1665,10 @@
         if (data && data.requestUrlPath) {
           this.saveButtonPath = data.requestUrlPath;
         }
+        // 兼容sp 配置走标准配置
+        if (this.saveButtonPath.includes('sp|')) {
+              this.saveButtonPath = null;
+        } 
         const dom = document.getElementById('actionMODIFY');
         if (dom) {
           if (data) {
