@@ -3577,8 +3577,8 @@
             style: {
               width: cellData.width,
               overflow: 'hidden',
-              'text-overflow': cellData.width ? 'ellipsis' : '',
-              'white-space': cellData.width ? 'nowrap' : '',
+              'text-overflow': 'ellipsis',
+              'white-space': 'nowrap',
             },
             attrs: {
               title: params.row[cellData.colname] || ''
@@ -3627,8 +3627,8 @@
             'text-decoration': 'underline',
             cursor: 'pointer',
             overflow: 'hidden',
-            'text-overflow': cellData.width ? 'ellipsis' : '',
-            'white-space': cellData.width ? 'nowrap' : '',
+            'text-overflow': 'ellipsis',
+            'white-space': 'nowrap',
           },
           attrs: {
             title: params.row[cellData.colname]
@@ -3755,7 +3755,8 @@
           if (!params.row[cellData.colname]) {
             return null;
           }
-          return h('div', {
+          return h('div', 
+          {
             on: {
               dblclick: () => {
                 const item = {
@@ -3763,6 +3764,9 @@
                 };
                 createModal(JSON.parse(params.row[cellData.colname]), item);
               }
+            },
+            style: {
+              overflow: 'hidden'
             }
           }, [
             h(tag, {

@@ -1,20 +1,22 @@
 <template>
-  <div :title="params.value || ''" class="ag-text-component">
-    <template v-if="params.colDef.type && params.colDef.type.toLocaleLowerCase() === 'string' && params.value && params.value.length > 1000">
+  <component :title="params.value || ''" class="ag-text-component" :is="tag">
+    <!-- <template v-if="params.colDef.type && params.colDef.type.toLocaleLowerCase() === 'string' && params.value && params.value.length > 1000">
       <span class="ag-text-component-content">{{params.value.substring(0, 50)}}...</span>
-    </template>
-    <template v-else>
-      <div
+    </template> -->
+    <template>
+      <component
         v-if="width"
         class="one-line-flow ag-text-component-content"
         :style="`width:${width}`"
-      ><span :title="`${params.value || ''}`">{{params.value || ''}}</span></div>
-      <span
+        :is="tag"
+      ><span :title="`${params.value || ''}`">{{params.value || ''}}</span></component>
+      <component
         v-else
-        class="ag-text-component-content"
-      ><span :title="`${params.value || ''}`">{{params.value || ''}}</span></span>
+        class="one-line-flow ag-text-component-content"
+        :is="tag"
+      ><span :title="`${params.value || ''}`">{{params.value || ''}}</span></component>
     </template>
-  </div>
+  </component>
 </template>
 
 <script type="text/ecmascript-6">
@@ -33,6 +35,12 @@ export default {
     }
   },
 
+  computed: {
+    tag() {
+      return this.params.colDef.colname === 'ID' ? 'span' : 'div'
+    }
+  },
+
   methods: {
 
   },
@@ -48,5 +56,8 @@ export default {
 <style lang="scss" scoped>
 .ag-text-component {
   overflow: hidden;
+}
+.ag-text-component-content {
+  width: 100%;
 }
 </style>
