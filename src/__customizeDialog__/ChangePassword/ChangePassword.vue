@@ -107,7 +107,7 @@
         inconformity1: false, // input错误border颜色class
         inconformity2: false, // input错误border颜色class
         inconformity3: false, // input错误border颜色class
-        reg: new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,18}$/)
+        reg: new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]{6,18}$/)
     };
     },
     computed: {
@@ -124,19 +124,19 @@
       changwd() { // 修改密码，显示密码强度
         this.pawdgrade = false;
         this.pawdgrade1 = true;
-        if (this.newpaswd.length > 0 && this.reg.test(this.newpaswd)) {
-          this.pawdgrade = true;
-          if (/^(?:\d+|[a-zA-Z]+|[!@#$%^&*]+)$/.test(this.newpaswd)) {
-            this.grade = '低';// 纯数字，纯字母，纯特殊字符
-            this.activeColor = '#e80000';
-          } else if (/^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*]+$)[a-zA-Z\d!@#$%^&*]+$/.test(this.newpaswd)) {
-            this.grade = '中';// 字母+数字，字母+特殊字符，数字+特殊字符
-            this.activeColor = '#09a155';
-          } else if (/[-\da-zA-Z=\\;',./~!@#$%^&*()_+|{}:<>?]*((\d+[a-zA-Z]+[-=\;',./~!@#$%^&*()_+|{}:<>?]+)|(\d+[-=\\;',./~!@#$%^&*()_+|{}:<>?]+[a-zA-Z]+)|([a-zA-Z]+\d+[-=\;',./~!@#$%^&*()_+|{}:<>?]+)|([a-zA-Z]+[-=\\;',./~!@#$%^&*()_+|{}:<>?]+\d+)|([-=\;',./~!@#$%^&*()_+|{}:<>?]+\d+[a-zA-Z]+)|([-=\\;',./~!@#$%^&*()_+|{}:<>?]+[a-zA-Z]+\d+))[-\da-zA-Z=\;',./~!@#$%^&*()_+|{}:<>?]*/.test(this.newpaswd)) {
-            this.activeColor = '#09a155';
-            this.grade = '高'; // 字母+数字+特殊字符
-          }
-        }
+        // if (this.newpaswd.length > 0 && this.reg.test(this.newpaswd)) {
+        //   this.pawdgrade = true;
+        //   if (/^(?:\d+|[a-zA-Z]+)$/.test(this.newpaswd)) {
+        //     this.grade = '低';// 纯数字，纯字母，纯特殊字符
+        //     this.activeColor = '#e80000';
+        //   } else if (/^[a-z0-9]+$/.test(this.newpaswd)) {
+        //     this.grade = '中';// 字母+数字
+        //     this.activeColor = '#09a155';
+        //   } else if (this.reg.test(this.newpaswd)) {
+        //     this.activeColor = '#09a155';
+        //     this.grade = '高'; // 数字、大小写字母同时存在
+        //   }
+        // }
       },
       blur() { // 失焦时判断密码
         if (this.newpaswd === '') {
