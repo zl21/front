@@ -59,7 +59,9 @@ export default {
       handler(newVal) {
         if (newVal) {
           const option = this.options.combobox.find(option => option.limitval === newVal)
-          this.selectedValues = option.limitdesc
+          if(option) {
+            this.selectedValues = option.limitdesc
+          }
         }
       },
       immediate: true
