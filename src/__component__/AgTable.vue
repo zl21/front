@@ -146,7 +146,7 @@
           ...this.agGridOptions
         }
         if(this.processAgOptions) {
-          this.processAgOptions(options)
+          options = this.processAgOptions(options)        
         }
         return options
       }
@@ -298,6 +298,10 @@
       agProcessColumns: {
         type: Function
       },
+      // 定制表格行数据
+      agProcessRows: {
+        type: Function
+      },
       // 定制表格选项
       processAgOptions: {
         type: Function
@@ -321,9 +325,28 @@
       },
     },
     methods: {
+      // 表格准备完毕
       gridReady(e) {
         this.$emit('grid-ready', e)
+        this.handleAgColumnSize()
       },
+
+       // 收起菜单时调整表格宽度
+      handleAgColumnSize() {
+        const handleAgColumnSize = () => {
+          setTimeout(() => {
+            if(this.$refs.agGridTableContainer) {
+              this.$refs.agGridTableContainer.$refs.agGridTable._resetColumnWidth()
+            }
+          }, 200)
+        }
+        window.addEventListener('resizeAgColumn', handleAgColumnSize)
+
+        this.$on('hook:beforeDestroy', () => {
+          window.removeEventListener('resizeAgColumn', handleAgColumnSize)
+        })
+      },
+
       btnclick(obj) {
         this.$emit('btnclick', obj);
       },
@@ -374,11 +397,12 @@
             }
           }
           item.tdAlign = item.type === 'NUMBER' ? 'right' : 'left'
+          item.thAlign = 'center'
           return item
         }) 
 
         // 允许项目组定制列数据
-        this.agProcessColumns(columns)
+        columns = this.agProcessColumns(columns)
         return columns
       },
 
@@ -424,7 +448,11 @@
         }
 
         if(datas.row && Array.isArray(datas.row)) {
-          this.rows = [...datas.row]
+          let rows = [...datas.row]
+          if(this.agProcessRows) {
+            rows = this.agProcessRows(rows)
+          }
+          this.rows = rows
         }
 
         this.options = {

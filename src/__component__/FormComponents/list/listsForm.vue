@@ -463,6 +463,9 @@ export default {
        window.addEventListener('resize', this.setColumn)
     }
   },
+  mounted(){
+      this.$el._vue_ = this;
+  },
   watch: {
     formItemLists: {
       handler () {

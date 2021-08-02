@@ -18,11 +18,14 @@
       class="ag-header-cell-label"
       role="presentation"
       :style="eLabelStyle"
+      
     >
-      <span
+      <div class="one-line-flow ag-header-wrap" :class="[params.column.colDef.thAlign? `text-${params.column.colDef.thAlign}` : '']">
+        <span
         ref="eText"
         class="ag-header-cell-text"
         role="columnheader"
+        :title="params.displayName"
       >
         {{params.displayName}}
         <i
@@ -55,6 +58,7 @@
       >
         <span class="ag-icon ag-icon-none ${cssFeatures.hover} trigger-sorting"></span>
       </span>
+      </div>
     </div>
   </div>
 </template>
@@ -170,7 +174,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import url('../../../assets/tailwindcss/index.css');
 .ag-syman-hover {
   cursor: pointer;
+}
+
+.ag-theme-balham .ag-header-cell-label span {
+  height: 11px;
+  vertical-align: -1px;
+}
+.ag-header-wrap {
+  width: 100%;
 }
 </style>

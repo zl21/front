@@ -4,7 +4,7 @@ module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
   projectIconPath: '', // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
-  target: 'http://r3-8098.dev.syman.cn/', // 框架研发网关开启环境
+  // target: 'http://r3-8098.dev.syman.cn/', // 框架研发网关开启环境
   // target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 新版本jflow测试环境
   // target: 'http://r3dev.qiaodan.com:28888', // 乔丹开发环境
   // target: 'http://r3dev.qiaodan.com:26666', // 乔丹开发环境
@@ -39,7 +39,7 @@ module.exports = {
   // target: 'http://cs.yqdev.burgeononline.com/', // 云雀
   // target: 'http://47.102.164.111:27777', // 卡宾
   // target: 'http://dev.dev.lark-erp.cn/',
-  
+
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
   enableGateWay: true, // 网关是否打开,
@@ -98,10 +98,23 @@ module.exports = {
     // standardTableListsCustomize: {
     //   methods: {
     //     R3_processColumns(columns) {
-    //       console.log('定制', columns)
     //       columns.forEach(item => {
     //         item.tdAlign = 'center'
     //       })
+    //       return columns
+    //     },
+
+    //     R3_processAgOptions(options) {
+    //       options.rowSelection = 'single'
+    //       options.floatingFilter = false
+    //       return options
+    //     },
+
+    //     R3_processRows(rows) {
+    //       rows.forEach(item => {
+    //         item.NAME.val = `格式化-${item.NAME.val}`
+    //       })
+    //       return rows
     //     }
     //   }
     // },
@@ -110,10 +123,12 @@ module.exports = {
     // tableDetailCollectionMixin: {
     //   methods: {
     //     R3_processColumns(columns) {
-    //       console.log('定制1', columns)
+    //       console.log('列', columns)
     //       columns.forEach(item => {
     //         item.tdAlign = 'left'
+    //         delete item.webconf
     //       })
+    //       return columns
     //     }
     //   }
     // }
@@ -130,13 +145,13 @@ module.exports = {
   filterUrlForNetworkScript: () => true, // 框架默认true,
   listDefaultColumn: 4,
   setComponentsProps: (type, props) => {  // 框架自定义表单配置
-    // 列表支持联动查询
-    // if (type === 'OBJ_FK') {
-    //   if(props.PropsData && (props.PropsData.fkobj.searchmodel ==='mrp' || props.PropsData.fkobj.searchmodel ==='drp')){
-    //     props.PropsData.Query = true;
-    //   }
-    // }
-    // return props;
+    //列表支持联动查询
+    if (type === 'OBJ_FK') {
+      if(props.PropsData && (props.PropsData.fkobj.searchmodel ==='mrp' || props.PropsData.fkobj.searchmodel ==='drp')){
+        props.PropsData.Query = true;
+      }
+    }
+    return props;
   },
   agGridOptions: { // ag表格的配置
     // rowHeight: 100
@@ -171,5 +186,6 @@ module.exports = {
   // openTabNumber:2,
 
   autoGatewayUrl:false,  // 是否请求网关
-  computeForSubtable: false
+  computeForSubtable: false,
+  enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
 };

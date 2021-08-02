@@ -35,7 +35,8 @@
 |customizeComponentForConfigPage-new|联客分支(支持模块自定义布局)|
 
 
-
+#### 对外抛出函数，变量命名规则
+以R3_开头,拼接实际函数名,例如R3_exportData。这样可以避免与业务方命名冲突
       
 
 
