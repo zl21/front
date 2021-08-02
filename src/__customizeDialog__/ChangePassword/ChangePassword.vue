@@ -144,7 +144,7 @@
           this.errorpawdgrade1 = 'red';
           this.inconformity2 = true;
           this.newHint = '请输入新密码';
-        } else if (this.newpaswd.length > 6 && this.newpaswd.length < 18) {
+        } else if (this.newpaswd.length >= 6 && this.newpaswd.length <= 18) {
           if (!this.reg.test(this.newpaswd)) {
             this.newHint = '密码必须由6-18个字符且数字、大小写字母同时存在';
             this.errorpawdgrade1 = 'red';
