@@ -185,15 +185,21 @@
         const limit = Object.assign({}, param, {captcha: captcha.data.captcha});
 
         const r = await this.loginCore(enableGateWay() ? `/${this.globalServiceId}${url}` : url, limit);
-        // console.log('r', r)
+        console.log('r', r.data.data)
+        console.log('r', JSON.stringify(r.data.data))
         if (this.type) {
-          // TODO 30天校验
           if (r.data.code === 100) {
             const code = await this.checkLogined(r.data);
             // console.log('code', code)
             if (code === 1001) {
               this.flag = 2;
               return this.login()
+            }
+          }
+          if (r.data.code === 0) {
+            const exp = r.data.data.isPasswordExpire;
+            if (exp) {
+              const tips = await this.checkPwdDays();
             }
           }
         }
@@ -214,14 +220,12 @@
       // 登录中间层对接口返回进行处理-判断当前账号密码修改时间是否大于30天
       checkPwdDays(code) {
         return new Promise(resolve => {
-          if (code) {
-            return this.$Modal.fcWarning({
+          return this.$Modal.fcWarning({
               title: '安全提示',
               content: '当前密码1个月未修改，为保数据安全请立即修改',
               mask: true,
               onOk: () => resolve()
             })
-          }
         })
       },
 
