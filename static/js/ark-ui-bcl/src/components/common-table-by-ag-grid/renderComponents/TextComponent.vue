@@ -1,20 +1,22 @@
 <template>
-  <div :title="params.value || ''" class="ag-text-component">
+  <component :title="params.value || ''" class="ag-text-component" :is="tag">
     <!-- <template v-if="params.colDef.type && params.colDef.type.toLocaleLowerCase() === 'string' && params.value && params.value.length > 1000">
       <span class="ag-text-component-content">{{params.value.substring(0, 50)}}...</span>
     </template> -->
     <template>
-      <div
+      <component
         v-if="width"
         class="one-line-flow ag-text-component-content"
         :style="`width:${width}`"
-      ><span :title="`${params.value || ''}`">{{params.value || ''}}</span></div>
-      <div
+        :is="tag"
+      ><span :title="`${params.value || ''}`">{{params.value || ''}}</span></component>
+      <component
         v-else
         class="one-line-flow ag-text-component-content"
-      ><span :title="`${params.value || ''}`">{{params.value || ''}}</span></div>
+        :is="tag"
+      ><span :title="`${params.value || ''}`">{{params.value || ''}}</span></component>
     </template>
-  </div>
+  </component>
 </template>
 
 <script type="text/ecmascript-6">
@@ -30,6 +32,12 @@ export default {
   data() {
     return {
       width: 0
+    }
+  },
+
+  computed: {
+    tag() {
+      return this.params.colDef.colname === 'ID' ? 'span' : 'div'
     }
   },
 
