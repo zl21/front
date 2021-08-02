@@ -97,10 +97,23 @@ module.exports = {
     // standardTableListsCustomize: {
     //   methods: {
     //     R3_processColumns(columns) {
-    //       console.log('定制', columns)
     //       columns.forEach(item => {
     //         item.tdAlign = 'center'
     //       })
+    //       return columns
+    //     },
+
+    //     R3_processAgOptions(options) {
+    //       options.rowSelection = 'single'
+    //       options.floatingFilter = false
+    //       return options
+    //     },
+
+    //     R3_processRows(rows) {
+    //       rows.forEach(item => {
+    //         item.NAME.val = `格式化-${item.NAME.val}`
+    //       })
+    //       return rows
     //     }
     //   }
     // },
