@@ -83,14 +83,16 @@
           if (username.value === '') {
             message = {
               title: '错误',
-              content: '请输入用户名'
+              content: '请输入用户名',
+              mask: true,
             };
             this.spinShow = false;
             this.$Modal.fcError(message);
           } else if (password.value === '') {
             message = {
               title: '错误',
-              content: '请输入密码'
+              content: '请输入密码',
+              mask: true,
             };
             this.spinShow = false;
             this.$Modal.fcError(message);
@@ -110,14 +112,16 @@
             if (this.$refs.AccountLogin.$refs.username.value === '') {
               message = {
                 title: '错误',
-                content: '请输入用户名'
+                content: '请输入用户名',
+                mask: true,
               };
               this.spinShow = false;
               this.$Modal.fcError(message);
             } else if (this.$refs.AccountLogin.$refs.password.value === '') {
               message = {
                 title: '错误',
-                content: '请输入密码'
+                content: '请输入密码',
+                mask: true,
               };
               this.spinShow = false;
               this.$Modal.fcError(message);
@@ -125,7 +129,8 @@
               this.spinShow = false;
               this.$Modal.fcError({
                 title: '错误',
-                content: '请输入验证码'
+                content: '请输入验证码',
+                mask: true,
               });
             } else {
               const param = {
@@ -143,13 +148,15 @@
               this.spinShow = false;
               this.$Modal.fcError({
                 title: '错误',
-                content: '请输入手机号'
+                content: '请输入手机号',
+                mask: true,
               });
             } else if (!this.$refs.PhoneLogin.$refs.sendcode.value) {
               this.spinShow = false;
               this.$Modal.fcError({
                 title: '错误',
-                content: '请输入短信验证码'
+                content: '请输入短信验证码',
+                mask: true,
               });
             } else {
               const param = {
