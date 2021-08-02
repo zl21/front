@@ -61,7 +61,7 @@
           content: '请输入正确的手机号'
         });
         const code = await this.getMessageCode(phoneNo);
-        if (!code.data || code.data.code !== 0) return this.$Message.error(code.data.message || '获取验证码失败');
+        if (!code.data || code.data.code !== 0) return false;
         this.sended = true;
         this.count = 59;
         this.setTimer();
