@@ -39,7 +39,7 @@ module.exports = {
   // target: 'http://cs.yqdev.burgeononline.com/', // 云雀
   // target: 'http://47.102.164.111:27777', // 卡宾
   // target: 'http://dev.dev.lark-erp.cn/',
-  
+
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
   enableGateWay: true, // 网关是否打开,
@@ -186,5 +186,6 @@ module.exports = {
   // openTabNumber:2,
 
   autoGatewayUrl:false,  // 是否请求网关
-  computeForSubtable: false
+  computeForSubtable: false,
+  enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
 };
