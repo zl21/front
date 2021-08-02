@@ -1,18 +1,18 @@
 <template>
   <div :title="params.value || ''" class="ag-text-component">
-    <template v-if="params.colDef.type && params.colDef.type.toLocaleLowerCase() === 'string' && params.value && params.value.length > 1000">
+    <!-- <template v-if="params.colDef.type && params.colDef.type.toLocaleLowerCase() === 'string' && params.value && params.value.length > 1000">
       <span class="ag-text-component-content">{{params.value.substring(0, 50)}}...</span>
-    </template>
-    <template v-else>
+    </template> -->
+    <template>
       <div
         v-if="width"
         class="one-line-flow ag-text-component-content"
         :style="`width:${width}`"
       ><span :title="`${params.value || ''}`">{{params.value || ''}}</span></div>
-      <span
+      <div
         v-else
-        class="ag-text-component-content"
-      ><span :title="`${params.value || ''}`">{{params.value || ''}}</span></span>
+        class="one-line-flow ag-text-component-content"
+      ><span :title="`${params.value || ''}`">{{params.value || ''}}</span></div>
     </template>
   </div>
 </template>
@@ -48,5 +48,8 @@ export default {
 <style lang="scss" scoped>
 .ag-text-component {
   overflow: hidden;
+}
+.ag-text-component-content {
+  width: 100%;
 }
 </style>
