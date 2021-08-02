@@ -28,11 +28,7 @@ export default {
   computed: {
     propsDataCom() {
       // 属性值
-<<<<<<< HEAD
-      this.newPropsData = Object.assign(deepClone(this.newPropsData), deepClone(this.PropsData));
-=======
       this.newPropsData = Object.assign(deepClone(this.newPropsData),deepClone(this.PropsData));
->>>>>>> ll_closed_list
       if (this.newPropsData.pageSize) {
         this.pageSize = this.newPropsData.pageSize;
       }
