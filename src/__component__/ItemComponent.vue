@@ -205,6 +205,7 @@
           @on-input-value-change="inputValueChange"
           @on-focus="fkrpSelectedInputFocus"
           @on-blur="fkrpSelectedInputBlur"
+          @on-Outside="Outside"
           @on-keyup="fkrpSelectedInputKeyup"
           @on-keydown="fkrpSelectedInputKeydown"
           @on-popper-show="fkrpSelectedPopperShow"
@@ -216,6 +217,7 @@
           :ref="_items.field"
           :class-name="`R3_${_items.field}`"
           :data="_items.props.data"
+           @on-Outside="Outside"
           :singleTurn="true"
           :single="_items.props.single"
           :placeholder="!_items.props.disabled? _items.props.placeholder:''"
@@ -699,7 +701,6 @@
           serviceId
         });
       },
-
       valueChange() {
         // 值发生改变时触发  只要是item中的value改变就触发该方法，是为了让父组件数据同步
         this.$emit('inputChange', this._items.value, this._items, this.index);
@@ -793,6 +794,16 @@
         ) {
           this._items.event.click(event, $this);
         }
+      },
+       Outside(){
+        if(!Array.isArray(this._items.value)){
+            this._items.value = '';
+            this._items.props.defaultSelected = [{
+                        label: '',
+                        ID: ''
+            }];
+        }
+     
       },
       inputFocus(event, $this) {
         if (

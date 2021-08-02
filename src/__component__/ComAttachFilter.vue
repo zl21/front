@@ -15,7 +15,7 @@
       @on-change="attachFilterChange"
       @on-select="attachFilterSelected"
       @on-focus="attachFilterInputFocus"
-      @on-blur="attachFilterInputBlur"
+      @on-Outside="attachFilterInputBlur"
       @on-keyup="attachFilterInputKeyup"
       @on-keydown="attachFilterInputKeydown"
       @on-ok="attachFilterOk"
@@ -125,7 +125,16 @@
         } else if ((this.defaultSelected && this.defaultSelected.length > 0) && this.resultData && Object.keys(this.resultData).length > 0) {
           this.value = `已经选中${this.resultData.value.IN.length}条数据`;
         } else {
-          this.value = this.defaultSelected && this.defaultSelected.length > 0 ? Array.isArray(this.defaultSelected[0].ID) ? `已经选中${this.defaultSelected[0].ID.length}条数据` : `已经选中${this.defaultSelected.length}条数据` : '';
+           if(this.defaultSelected.length > 0 ){
+              if(Array.isArray(this.defaultSelected[0].ID)){
+                this.value = Array.isArray(this.defaultSelected[0].ID) ? `已经选中${this.defaultSelected[0].ID.length}条数据` : '';
+              }else{
+                this.value = this.defaultSelected[0].Label;
+              }
+          }else{
+            
+          }
+          //this.value = this.defaultSelected && this.defaultSelected.length > 0 ? Array.isArray(this.defaultSelected[0].ID) ? `已经选中${this.defaultSelected[0].ID.length}条数据` : `已经选中${this.defaultSelected.length}条数据` : '';
         }
 
 
@@ -385,6 +394,9 @@
             }
           });
         }
+      },
+      Outside(){
+         this.$emit('on-Outside',this)
       },
       attachFilterCancel($this) {
         this.filterDate = {};
