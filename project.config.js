@@ -110,10 +110,12 @@ module.exports = {
     // tableDetailCollectionMixin: {
     //   methods: {
     //     R3_processColumns(columns) {
-    //       console.log('定制1', columns)
+    //       console.log('列', columns)
     //       columns.forEach(item => {
     //         item.tdAlign = 'left'
+    //         delete item.webconf
     //       })
+    //       return columns
     //     }
     //   }
     // }

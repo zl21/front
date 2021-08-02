@@ -2022,11 +2022,12 @@
             width = `${cellData.width - paddingWidh}px`;
           }
           const innerHTML = content;
-          const overflow = maxlength || cellData.width ? 'hidden' : 'none';
-          return h('div', [h('div', {
+          // const overflow = maxlength || cellData.width ? 'hidden' : 'none';
+          return h('div', 
+          [h('div', {
             style: {
               width,
-              overflow,
+              overflow: 'hidden',
               'text-overflow': 'ellipsis',
               'white-space': 'nowrap',
               'text-align': cellData.tdAlign,
@@ -2084,7 +2085,13 @@
         let rowData = this.copyDataSource.row[params.index];
         let colnameData = this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname] : {};
 
-          return h('div', [
+          return h('div', 
+          {
+            style: {
+              overflow: 'hidden'
+            }
+          },
+          [
             h(tag, {
               style: {
                 width: '100px',
@@ -2184,7 +2191,13 @@
       checkboxRender(cellData, tag) {
         // 999
         // 复选框
-        return (h, params) => h('div', [
+        return (h, params) => h('div', 
+        {
+          style: {
+            overflow: 'hidden'
+          }
+        },
+        [
           h(tag, {
             style: {
               width: '40px'
@@ -2218,7 +2231,13 @@
       },
       selectRender(cellData, tag) {
         // 下拉框
-        return (h, params) => h('div', [
+        return (h, params) => h('div',
+        {
+          style: {
+            overflow: 'hidden'
+          }
+        },
+        [
           h(tag, {
               style: {
                 width: '100px'
@@ -2258,7 +2277,13 @@
           const rowData = this.dataSource.row[params.index]
           const oldArr = rowData[cellData.colname].val.split(',')
           const defaultValue = cellData.combobox.filter(option => oldArr.includes(option.limitdesc)).map(option => option.limitval)
-          return h('div', [
+          return h('div', 
+          {
+            style: {
+              overflow: 'hidden'
+            }
+          },
+          [
             h(tag, {
                 style: {
                   width: '100px'
@@ -2316,7 +2341,13 @@
         return true;
       }, // 下拉外键是否显示弹出框
       dropDownSelectFilterRender(cellData, tag) { // 外键关联下拉选择(drp mrp)Y
-        return (h, params) => h('div', [
+        return (h, params) => h('div', 
+        {
+          style: {
+            overflow: 'hidden'
+          }
+        },
+        [
           h(tag, {
             style: {
               width: '100px'
@@ -2689,7 +2720,13 @@
         ]);
       },
       dropMultiSelectFilterRender(cellData, tag) { // 外键关联下拉选择(drp mrp)
-        return (h, params) => h('div', [
+        return (h, params) => h('div', 
+        {
+          style: {
+            overflow: 'hidden'
+          }
+        },
+        [
           h(tag, {
             style: {
               width: '100px'
@@ -3048,7 +3085,13 @@
             ID:  /选中/.test(valueObj.val) ? valueObj.refobjid : valueObj.val,
             Label: /选中/.test(valueObj.val) ? valueObj.val : `已经选中${JSON.parse(valueObj.val).total}条数据`
           }] : []
-          return h('div', [
+          return h('div', 
+          {
+            style: {
+              overflow: 'hidden'
+            }
+          },
+          [
             h(tag, {
               style: {
                 width: '130px'
@@ -3136,7 +3179,13 @@
       },
       comAttachFilterpopRender(cellData, tag) {
         return (h, params) => {
-          return h('div', [
+          return h('div', 
+          {
+            style: {
+              overflow: 'hidden'
+            }
+          },
+          [
             h(tag, {
               style: {
                 width: '130px'
@@ -3218,7 +3267,13 @@
         };
       },
       attachFilterRender(cellData, tag) {
-        return (h, params) => h('div', [
+        return (h, params) => h('div', 
+        {
+          style: {
+            overflow: 'hidden'
+          }
+        },
+        [
           h(tag, {
             style: {
               width: '130px'
@@ -3392,7 +3447,13 @@
         ]);
       },
       datePickertRender(cellData, tag) { // 日期选择
-        return (h, params) => h('div', [
+        return (h, params) => h('div', 
+        {
+          style: {
+            overflow: 'hidden'
+          }
+        },
+        [
           h(tag, {
             style: {
               width: cellData.display === 'OBJ_DATENUMBER' ? '110px' : '160px'
@@ -3428,7 +3489,13 @@
         ]);
       },
       timePickerRender(cellData, tag) { // 时间选择
-        return (h, params) => h('div', [
+        return (h, params) => h('div', 
+        {
+          style: {
+            overflow: 'hidden'
+          }
+        },
+        [
           h(tag, {
             style: {
               width: '100px'
@@ -3509,7 +3576,7 @@
             },
             style: {
               width: cellData.width,
-              overflow: cellData.width ? 'hidden' : '',
+              overflow: 'hidden',
               'text-overflow': cellData.width ? 'ellipsis' : '',
               'white-space': cellData.width ? 'nowrap' : '',
             },
@@ -3553,12 +3620,13 @@
       },
       customerurlRender(cellData) {
         // 外键关联到icon
-        return (h, params) => h('div', {
+        return (h, params) => h('div', 
+        {
           style: {
             color: '#0f8ee9',
             'text-decoration': 'underline',
             cursor: 'pointer',
-            overflow: cellData.width ? 'hidden' : '',
+            overflow: 'hidden',
             'text-overflow': cellData.width ? 'ellipsis' : '',
             'white-space': cellData.width ? 'nowrap' : '',
           },
@@ -3757,6 +3825,7 @@
               display: 'flex',
               'justify-content':FLEX_ALIGN[align],
               'align-items': 'center',
+              overflow: 'hidden'
             },
           }, [
             h('div', {
@@ -3893,6 +3962,7 @@
               display: 'flex',
               'justify-content':FLEX_ALIGN[align],
               'align-items': 'center',
+              overflow: 'hidden'
             },
           }, [
             h('div', {
