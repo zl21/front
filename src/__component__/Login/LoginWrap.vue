@@ -185,13 +185,12 @@
         const limit = Object.assign({}, param, {captcha: captcha.data.captcha});
 
         const r = await this.loginCore(enableGateWay() ? `/${this.globalServiceId}${url}` : url, limit);
-        console.log('r', r.data.data)
-        console.log('r', JSON.stringify(r.data.data))
+        console.log('r', r)
         if (this.type) {
-          if (r.data.code === 100) {
-            const code = await this.checkLogined(r.data);
+          if (r.code === 100) {
+            const codes = await this.checkLogined();
             // console.log('code', code)
-            if (code === 1001) {
+            if (codes === 1001) {
               this.flag = 2;
               return this.login()
             }
@@ -205,7 +204,7 @@
         }
         this.logined(r)
       },
-      checkLogined(data) {
+      checkLogined() {
         return new Promise((resolve, reject) => {
           return this.$Modal.fcWarning({
             title: '安全提示',
@@ -230,7 +229,13 @@
       },
 
       loginCore(url, limit) {
-        return new Promise(resolve => network.post(url, urlSearchParams(limit)).then(r => resolve(r)).catch(() => this.spinShow = false))
+        return new Promise((resolve, reject) => network.post(url, urlSearchParams(limit)).then(r => resolve(r)).catch((err, er) => {
+          this.spinShow = false
+          console.log('err', err.response)
+          const res = err.response;
+          const { message } = res.data;
+          resolve(JSON.parse(message));
+        }))
       },
 
       // 登录成功后的处理
