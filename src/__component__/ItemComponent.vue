@@ -338,14 +338,14 @@
         @valueChange="enumerableValueChange"
       />
       <!--扩展属性  -->
-      <ExtentionInput
+      <!-- <ExtentionInput
         v-if="_items.type === 'ExtentionInput'"
         :ref="_items.field"
         :default-data="_items.value"
         :web-config="_items.props"
         @keydown="enumerKeydown"
         @valueChange="extentionValueChange"
-      />
+      /> -->
       <template v-if="_items.type === 'Wangeditor'">
         <component
           :is="_items.componentType"
@@ -456,7 +456,7 @@
   } from '../constants/global';
   import createModal from './PreviewPicture/index';
   import EnumerableInput from './EnumerableInput.vue';
-  import ExtentionInput from './ExtentionInput.vue';
+  // import ExtentionInput from './ExtentionInput.vue';
   import network, { urlSearchParams } from '../__utils__/network';
   import getComponentName from '../__utils__/getModuleName'
 
@@ -465,7 +465,7 @@
 
   export default {
     components: {
-      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile, RadioGroup, Defined, StringRender, CheckboxGroup
+      EnumerableInput, ComAttachFilter, Docfile, RadioGroup, Defined, StringRender, CheckboxGroup
     },
     props: {
       webConfSingle: {// 当前子表webConf
