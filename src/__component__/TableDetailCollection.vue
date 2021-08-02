@@ -3577,8 +3577,8 @@
             style: {
               width: cellData.width,
               overflow: 'hidden',
-              'text-overflow': cellData.width ? 'ellipsis' : '',
-              'white-space': cellData.width ? 'nowrap' : '',
+              'text-overflow': 'ellipsis',
+              'white-space': 'nowrap',
             },
             attrs: {
               title: params.row[cellData.colname] || ''
