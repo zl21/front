@@ -10,12 +10,12 @@
                   :auot-data="PropsNewData.AutoData"
                   :default-selected="selected"
                   :singleTurn="singleTurn"
+                  @on-Outside="attachFilterOutside"
                   @on-show="attachFilterPopperShow"
                   @input="attachFilterInput"
                   @on-change="attachFilterChange"
                   @on-select="attachFilterSelected"
                   @on-focus="attachFilterInputFocus"
-                  @on-blur="attachFilterInputBlur"
                   @on-keyup="attachFilterInputKeyup"
                   @on-keydown="attachFilterInputKeydown"
                   @on-ok="attachFilterOk"
@@ -45,7 +45,6 @@
            @on-change="attachFilterChange"
            @on-select="attachFilterSelected"
            @on-focus="attachFilterInputFocus"
-           @on-blur="attachFilterInputBlur"
            @on-keyup="attachFilterInputKeyup"
            @on-keydown="attachFilterInputKeydown"
            @on-ok="attachFilterOk"
@@ -257,7 +256,7 @@ export default {
     attachFilterInputFocus (event, $this) {
       this.$emit('on-focus', event, $this);
     },
-    attachFilterInputBlur (event, $this) {
+    attachFilterOutside (event, $this) {
       if (!this.selected[0] && this.PropsNewData.blurType !== false) {
         this.valueInput = '';
         this.selected = [

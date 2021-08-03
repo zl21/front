@@ -76,6 +76,7 @@
         ref="agTableElement"
         :columnRenderer="columnRendererHandler"
         :agProcessColumns="agProcessColumns"
+        :agProcessRows="agProcessRows"
         :processAgOptions="processAgOptions"
         :moduleComponentName='moduleComponentName'
         :style="agTableElementStyles"
@@ -331,7 +332,7 @@
           // }
         }
 
-        return [];
+        return async () => {return {}};
       },
       defaultColumn() { // 获取配置列表一行几列数据
         return listDefaultColumn();
@@ -414,11 +415,12 @@
         }
       },
 
-      // 定制表格选项
+      // 支持项目组定制表格选项
       processAgOptions(options) {
         if(this.R3_processAgOptions) {
-          this.R3_processAgOptions(options)
+          return this.R3_processAgOptions(options)
         }
+        return options
       },
 
       // r3内部定制表格渲染列
@@ -431,8 +433,17 @@
       // 支持项目组定制表格列
       agProcessColumns(columns) {
         if(this.R3_processColumns) {
-          this.R3_processColumns(columns)
+          return this.R3_processColumns(columns)
         }
+        return columns
+      },
+
+      // 支持项目组定制表格行数据
+      agProcessRows(rows) {
+        if(this.R3_processRows) {
+          return this.R3_processRows(rows)
+        }
+        return rows
       },
 
       onPageSizeChangeForFilterTable(pageSize) {

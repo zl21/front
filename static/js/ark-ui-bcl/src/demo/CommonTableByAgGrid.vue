@@ -1,7 +1,6 @@
 <template>
   <div>
     <h5>ag-grid实现的表格</h5>
-
     <!-- <Button @click="change">修改事件</Button> -->
 
     <div class="container">
@@ -70,6 +69,7 @@ export default {
       options: {
         floatingFilter: true,
         getRowClass: this.getRowClass,
+        datas: {}
       },
       columns: [],
       rows: [],
@@ -89,7 +89,7 @@ export default {
     },
 
     handleEvent(e) {
-      console.log('触发绑定事件', e);
+      // console.log('触发绑定事件', e);
     },
 
     tableSelectedChange() {
@@ -137,13 +137,6 @@ export default {
     ready() {
       console.log('准备huidaio ', this.$refs.agGrid)
 
-      this.columns = [
-        { field: 'name', displayName: '标题', checkboxSelection: true, tdAlign: 'left', filter: 'agTextColumnFilter', suppressFilter: false },
-        { field: 'age', displayName: '标222题', tdAlign: 'left', floatingFilter: true, filter: true, },
-        { field: 'sex', displayName: '标题4444', tdAlign: 'right', isagfilter:true },
-        { field: 'phone', displayName: '地址', tdAlign: 'center', pinned: 'left' },
-      ]
-
       this.rows = [
         {
           name: '测试cc',
@@ -164,7 +157,9 @@ export default {
           phone: 123123123
         },
       ]
-    }
+    },
+
+
   },
 
   beforeMount() {
@@ -234,6 +229,17 @@ export default {
     //   this.rows = data.row
     //   this.columns = data.tabth
     // })
+
+    this.columns = [
+      { field: 'name', displayName: '标题', checkboxSelection: true, tdAlign: 'left', filter: 'agTextColumnFilter', suppressFilter: false },
+      { field: 'age', displayName: '标222题', tdAlign: 'left', floatingFilter: true, filter: true, },
+      { field: 'sex', displayName: '标题44441csdcsdcsdcsdcsdcscscscscscscsdcsdc', tdAlign: 'right', isagfilter: true },
+      { field: 'phone', displayName: '地址', tdAlign: 'center' },
+      { field: 'phone1', displayName: '地址', tdAlign: 'center' },
+      { field: 'phone2', displayName: '地址', tdAlign: 'center' },
+      { field: 'phone3', displayName: '地址', tdAlign: 'center' },
+    ]
+
   }
 }
 </script>

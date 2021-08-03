@@ -118,6 +118,7 @@
           :height="tableHeight? `${tableHeight}px` :'calc(100% - 10px)'"
           border
           mode="commonTable"
+          ref="agGridTableContainer"
           :columns="columns"
           :data="tabledata"
           :render-params="renderParams"
@@ -125,6 +126,7 @@
           @ag-selection-change="tableSelectedChange"
           @ag-sort-change="tableSortChange"
           @ag-row-dblclick="tableRowDbclick"
+          @grid-ready="gridReady"
         ></CommonTableByAgGrid>
       </div>
       <div
@@ -579,7 +581,7 @@
       },
 
       agOptions() {
-        const options = {
+        let options = {
           suppressMovableColumns: true,
           agColumnMoved:this.agColumnMoved,
           ...this.agGridOptions,
@@ -587,6 +589,9 @@
             ...this.dataSource,
             pinnedColumns: this.webConfSingle.pinnedColumns
           }
+        }
+        if(this.R3_processAgOptions) {
+          options = this.R3_processAgOptions(options)
         }
         return options
       }
@@ -632,7 +637,11 @@
             } else {
               this.columns = this.filterAgColumns(this.dataSource.tabth)
             }
-            this.tabledata = this.filterData(this.dataSource.row); // 每列的数据
+            let rows = this.filterData(this.dataSource.row)
+            if(!(this.isCommonTable || !this.useAgGrid) && this.R3_processRows) {
+              rows = this.R3_processRows(rows)
+            }
+            this.tabledata = rows // 每行的数据
             this.totalDataNumber = this.totalData();
             this.$emit('setSearchValue') // 设置下拉的默认查询条件
           }, 50);
@@ -674,6 +683,31 @@
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
       ...mapMutations('global', ['directionalRouter', 'updateCustomizeMessage', 'copyDataForSingleObject', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'updateExportedState']),
+      
+      // 表格准备完毕
+      gridReady(e) {
+        if(this.R3_agReady) {
+          this.R3_agReady(e)
+        }
+        this.handleAgColumnSize()
+      },
+
+       // 收起菜单时调整表格宽度
+      handleAgColumnSize() {
+        const handleAgColumnSize = () => {
+          setTimeout(() => {
+            if(this.$refs.agGridTableContainer) {
+              this.$refs.agGridTableContainer.$refs.agGridTable._resetColumnWidth()
+            }
+          }, 200)
+        }
+        window.addEventListener('resizeAgColumn', handleAgColumnSize)
+
+        this.$on('hook:beforeDestroy', () => {
+          window.removeEventListener('resizeAgColumn', handleAgColumnSize)
+        })
+      },
+      
       tableRowDbclick(row) {
         if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格走动态路由
           window.sessionStorage.setItem('dynamicRoutingForSinglePage', true);
@@ -780,14 +814,14 @@
         const { pinnedLeftColumns, pinnedRightColumns } = getPinnedColumns(this.webConfSingle.pinnedColumns)
 
         // 整合表头数据
-        const newColumns = columns
+        let newColumns = columns
           .map((ele, index) => {
             const param = {
               title: ele.name,
               key: ele.colname,
               field: ele.colname,
-              align: 'center',
-              tdAlign: ele.type === 'NUMBER' ? 'right' : 'center',
+              thAlign: 'center', // 表头对齐
+              tdAlign: ele.type === 'NUMBER' ? 'right' : 'center', // 表体对齐
               isagfilter: false, // 关闭过滤功能
               _index: index
             };
@@ -828,7 +862,7 @@
 
         // 允许项目组定制列数据
         if(this.R3_processColumns) {
-          this.R3_processColumns(newColumns)
+          newColumns = this.R3_processColumns(newColumns)
         }
         return newColumns;
       },
@@ -1988,11 +2022,12 @@
             width = `${cellData.width - paddingWidh}px`;
           }
           const innerHTML = content;
-          const overflow = maxlength || cellData.width ? 'hidden' : 'none';
-          return h('div', [h('div', {
+          // const overflow = maxlength || cellData.width ? 'hidden' : 'none';
+          return h('div', 
+          [h('div', {
             style: {
               width,
-              overflow,
+              overflow: 'hidden',
               'text-overflow': 'ellipsis',
               'white-space': 'nowrap',
               'text-align': cellData.tdAlign,
@@ -2050,7 +2085,13 @@
         let rowData = this.copyDataSource.row[params.index];
         let colnameData = this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname] : {};
 
-          return h('div', [
+          return h('div', 
+          {
+            style: {
+              overflow: 'hidden'
+            }
+          },
+          [
             h(tag, {
               style: {
                 width: '100px',
@@ -2150,7 +2191,13 @@
       checkboxRender(cellData, tag) {
         // 999
         // 复选框
-        return (h, params) => h('div', [
+        return (h, params) => h('div', 
+        {
+          style: {
+            overflow: 'hidden'
+          }
+        },
+        [
           h(tag, {
             style: {
               width: '40px'
@@ -2184,7 +2231,13 @@
       },
       selectRender(cellData, tag) {
         // 下拉框
-        return (h, params) => h('div', [
+        return (h, params) => h('div',
+        {
+          style: {
+            overflow: 'hidden'
+          }
+        },
+        [
           h(tag, {
               style: {
                 width: '100px'
@@ -2224,7 +2277,13 @@
           const rowData = this.dataSource.row[params.index]
           const oldArr = rowData[cellData.colname].val.split(',')
           const defaultValue = cellData.combobox.filter(option => oldArr.includes(option.limitdesc)).map(option => option.limitval)
-          return h('div', [
+          return h('div', 
+          {
+            style: {
+              overflow: 'hidden'
+            }
+          },
+          [
             h(tag, {
                 style: {
                   width: '100px'
@@ -2282,7 +2341,13 @@
         return true;
       }, // 下拉外键是否显示弹出框
       dropDownSelectFilterRender(cellData, tag) { // 外键关联下拉选择(drp mrp)Y
-        return (h, params) => h('div', [
+        return (h, params) => h('div', 
+        {
+          style: {
+            overflow: 'hidden'
+          }
+        },
+        [
           h(tag, {
             style: {
               width: '100px'
@@ -2655,7 +2720,13 @@
         ]);
       },
       dropMultiSelectFilterRender(cellData, tag) { // 外键关联下拉选择(drp mrp)
-        return (h, params) => h('div', [
+        return (h, params) => h('div', 
+        {
+          style: {
+            overflow: 'hidden'
+          }
+        },
+        [
           h(tag, {
             style: {
               width: '100px'
@@ -3014,7 +3085,13 @@
             ID:  /选中/.test(valueObj.val) ? valueObj.refobjid : valueObj.val,
             Label: /选中/.test(valueObj.val) ? valueObj.val : `已经选中${JSON.parse(valueObj.val).total}条数据`
           }] : []
-          return h('div', [
+          return h('div', 
+          {
+            style: {
+              overflow: 'hidden'
+            }
+          },
+          [
             h(tag, {
               style: {
                 width: '130px'
@@ -3102,7 +3179,13 @@
       },
       comAttachFilterpopRender(cellData, tag) {
         return (h, params) => {
-          return h('div', [
+          return h('div', 
+          {
+            style: {
+              overflow: 'hidden'
+            }
+          },
+          [
             h(tag, {
               style: {
                 width: '130px'
@@ -3184,7 +3267,13 @@
         };
       },
       attachFilterRender(cellData, tag) {
-        return (h, params) => h('div', [
+        return (h, params) => h('div', 
+        {
+          style: {
+            overflow: 'hidden'
+          }
+        },
+        [
           h(tag, {
             style: {
               width: '130px'
@@ -3358,7 +3447,13 @@
         ]);
       },
       datePickertRender(cellData, tag) { // 日期选择
-        return (h, params) => h('div', [
+        return (h, params) => h('div', 
+        {
+          style: {
+            overflow: 'hidden'
+          }
+        },
+        [
           h(tag, {
             style: {
               width: cellData.display === 'OBJ_DATENUMBER' ? '110px' : '160px'
@@ -3394,7 +3489,13 @@
         ]);
       },
       timePickerRender(cellData, tag) { // 时间选择
-        return (h, params) => h('div', [
+        return (h, params) => h('div', 
+        {
+          style: {
+            overflow: 'hidden'
+          }
+        },
+        [
           h(tag, {
             style: {
               width: '100px'
@@ -3475,9 +3576,9 @@
             },
             style: {
               width: cellData.width,
-              overflow: cellData.width ? 'hidden' : '',
-              'text-overflow': cellData.width ? 'ellipsis' : '',
-              'white-space': cellData.width ? 'nowrap' : '',
+              overflow: 'hidden',
+              'text-overflow': 'ellipsis',
+              'white-space': 'nowrap',
             },
             attrs: {
               title: params.row[cellData.colname] || ''
@@ -3519,14 +3620,15 @@
       },
       customerurlRender(cellData) {
         // 外键关联到icon
-        return (h, params) => h('div', {
+        return (h, params) => h('div', 
+        {
           style: {
             color: '#0f8ee9',
             'text-decoration': 'underline',
             cursor: 'pointer',
-            overflow: cellData.width ? 'hidden' : '',
-            'text-overflow': cellData.width ? 'ellipsis' : '',
-            'white-space': cellData.width ? 'nowrap' : '',
+            overflow: 'hidden',
+            'text-overflow': 'ellipsis',
+            'white-space': 'nowrap',
           },
           attrs: {
             title: params.row[cellData.colname]
@@ -3653,7 +3755,8 @@
           if (!params.row[cellData.colname]) {
             return null;
           }
-          return h('div', {
+          return h('div', 
+          {
             on: {
               dblclick: () => {
                 const item = {
@@ -3661,6 +3764,9 @@
                 };
                 createModal(JSON.parse(params.row[cellData.colname]), item);
               }
+            },
+            style: {
+              overflow: 'hidden'
             }
           }, [
             h(tag, {
@@ -3723,6 +3829,7 @@
               display: 'flex',
               'justify-content':FLEX_ALIGN[align],
               'align-items': 'center',
+              overflow: 'hidden'
             },
           }, [
             h('div', {
@@ -3859,6 +3966,7 @@
               display: 'flex',
               'justify-content':FLEX_ALIGN[align],
               'align-items': 'center',
+              overflow: 'hidden'
             },
           }, [
             h('div', {

@@ -165,6 +165,7 @@
     classFix, STANDARD_TABLE_LIST_PREFIX, Version, enableGateWay, getGatewayValue, enableHistoryAndFavoriteUI, messageSwitch,dashboardConfig
   } from '../constants/global';
   import { updateSessionObject } from '../__utils__/sessionStorage';
+  import { DispatchEvent } from '../__utils__/dispatchEvent'
   import HistoryAndFavorite from './HistoryAndFavorite';
   import MessagePanelOlder from './messagePanelOlder.vue';
 
@@ -484,6 +485,9 @@
         setTimeout(()=>{
           let leftWidth = navigator.offsetWidth;
           navigatorMenu.style.left = leftWidth+'px';
+
+          // 调整ag列宽
+          DispatchEvent('resizeAgColumn')
         },500)
       },
       routerNext(name) {
