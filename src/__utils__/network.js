@@ -2,6 +2,7 @@ import axios from 'axios';
 import md5 from 'md5';
 import router from '../__config__/router.config';
 import store from '../__config__/store.config';
+import { matchedUrl } from "./utils";
 
 import {
   ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, getProjectQuietRoutes, REQUEST_PENDDING_EXPIRE, getTouristRoute, logoutTips, Version, filterUrlForNetworkScript, getFilterUrlForNetworkData,autoGatewayUrl
@@ -75,7 +76,7 @@ const dispatchR3Event = (data) => {
 };
 
 axios.interceptors.response.use(
-  
+
   (response) => {
     const { config } = response;
     const isJson = (config.headers['Content-Type'] || '').indexOf('application/json') > -1;
@@ -130,7 +131,7 @@ axios.interceptors.response.use(
     if (filterUrlForNetworkScript(filterUrlParams)) {
       if ((response.data.code === -1 || response.data.code === -2)) {
         let errorHTML = Array.isArray(response.data.error || response.data.data) && (response.data.error || response.data.data).reduce((arr, x) => {
-          arr.push(`<p>${x.objid ? `objid${x.objid}` : '修改失败'}:${x.message}</p>`); return arr; 
+          arr.push(`<p>${x.objid ? `objid${x.objid}` : '修改失败'}:${x.message}</p>`); return arr;
         }, []).join('') || '';
         // if (!config.url.includes('/p/cs/batchSave')) {
         //   errorHTML = '';
@@ -138,7 +139,7 @@ axios.interceptors.response.use(
         // 处理1.4版本的error明细报错
         if (response.data.data && Array.isArray(response.data.data.errors)) {
           errorHTML = response.data.data.errors.reduce((arr, x) => {
-            arr.push(`<p>${x.id ? `明细${x.id}` : '修改失败'}:${x.message}</p>`); return arr; 
+            arr.push(`<p>${x.id ? `明细${x.id}` : '修改失败'}:${x.message}</p>`); return arr;
           }, []).join('') || '';
         }
         let Modalflag = true;
@@ -166,7 +167,7 @@ axios.interceptors.response.use(
                   lineHeight: '16px'
                 }
               }, [
-              
+
                 h('i', {
                   props: {
                   },
@@ -203,12 +204,12 @@ axios.interceptors.response.use(
               ])
 
             ])
-         
+
           });
         }
       }
     }
-    
+
     dispatchR3Event({
       url: config.url,
       response: JSON.parse(JSON.stringify(response)),
@@ -227,7 +228,7 @@ axios.interceptors.response.use(
     }
     if (config.url.indexOf('/p/cs/getSubSystems') !== -1) {
       if (response.status === 200 && response.data.data && response.data.data.length > 0) {
-      
+
       } else {
         updateSessionObject('saveNetwork', { k: 'name', v: '/p/cs/getSubSystems' });
         // window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记
@@ -289,51 +290,44 @@ axios.interceptors.response.use(
       } else if (status === 500 || status === 404) {
       // 如果http状态码正常，则直接返回数据
         const emg = error.response.data.message || error.response.data.msg;
-        // let formatJsonEmg = null;
-        // try {
-        //   formatJsonEmg = JSON.stringify(JSON.parse(emg), null, 4);
-        // } catch (e) {
-        //   if (typeof emg === 'string') {
-        //     formatJsonEmg = emg.replace(/<br\/>/g, '\r\n');
-        //   }
-        // }
-        window.vm.$Modal.fcError({
-          mask: true,
-          titleAlign: 'center',
-          title: '错误',
-          // content: formatJsonEmg
-          render: h => h('div', {
-            style: {
-              padding: '10px 20px 0',
-              display: 'flex',
-              // alignItems: 'center',
-              lineHeight: '16px'
-            }
-          }, [
-            
-            h('i', {
-              props: {
-              },
+        if (!matchedUrl(config && config.url)) {
+          window.vm.$Modal.fcError({
+            mask: true,
+            titleAlign: 'center',
+            title: '错误',
+            // content: formatJsonEmg
+            render: h => h('div', {
               style: {
-                marginRight: '5px',
-                display: 'inline-block',
-                'font-size': '28px',
-                'margin-right': ' 10px',
-                'line-height': ' 1',
-                padding: ' 10px 0',
-                color: 'red'
-              },
-              class: 'iconfont iconbj_error fcError '
-            }),
-            h('div', {
-              attrs: {
-                // rows: 8,
-                // readonly: 'readonly',
-              },
-              domProps: {
-                innerHTML: emg,
-              },
-              style: `width: 80%;
+                padding: '10px 20px 0',
+                display: 'flex',
+                // alignItems: 'center',
+                lineHeight: '16px'
+              }
+            }, [
+
+              h('i', {
+                props: {
+                },
+                style: {
+                  marginRight: '5px',
+                  display: 'inline-block',
+                  'font-size': '28px',
+                  'margin-right': ' 10px',
+                  'line-height': ' 1',
+                  padding: ' 10px 0',
+                  color: 'red'
+                },
+                class: 'iconfont iconbj_error fcError '
+              }),
+              h('div', {
+                attrs: {
+                  // rows: 8,
+                  // readonly: 'readonly',
+                },
+                domProps: {
+                  innerHTML: emg,
+                },
+                style: `width: 80%;
                   margin: 1px;
                   margin-bottom: -8px;
                   box-sizing: border-box;
@@ -343,25 +337,34 @@ axios.interceptors.response.use(
                   max-width: 300px;
                   overflow: auto;
                   `
-            })
-          ])
-          // render: createElement => createElement('textarea', {
-          //   domProps: {
-          //     value: formatJsonEmg,
-          //     rows: 8,
-          //     style: `width: 99%;
-          //     margin: 1px;
-          //     margin-bottom: -8px;
-          //     box-sizing: border-box;
-          //     padding: 5px;
-          //     resize: none;
-          //     `
-          //   },
-          //   attrs: {
-          //     readonly: 'readonly',
-          //   }
-          // })
-        });
+              })
+            ])
+            // render: createElement => createElement('textarea', {
+            //   domProps: {
+            //     value: formatJsonEmg,
+            //     rows: 8,
+            //     style: `width: 99%;
+            //     margin: 1px;
+            //     margin-bottom: -8px;
+            //     box-sizing: border-box;
+            //     padding: 5px;
+            //     resize: none;
+            //     `
+            //   },
+            //   attrs: {
+            //     readonly: 'readonly',
+            //   }
+            // })
+          });
+        }
+        // let formatJsonEmg = null;
+        // try {
+        //   formatJsonEmg = JSON.stringify(JSON.parse(emg), null, 4);
+        // } catch (e) {
+        //   if (typeof emg === 'string') {
+        //     formatJsonEmg = emg.replace(/<br\/>/g, '\r\n');
+        //   }
+        // }
       }
       dispatchR3Event({
         url: config.url,
@@ -462,7 +465,7 @@ function NetworkConstructor() {
   // equals to axios.post(url, config)
   // 参数说明：
   //  url：Request URL
-  //  config：参数 
+  //  config：参数
   //  serviceconfig：{网关设置
   //    noServiceId:true,当前请求不拼接网关
   //    serviceId：'',当前请求配置的网关
@@ -481,15 +484,15 @@ function NetworkConstructor() {
       method: 'post',
     });
     const now = new Date();
-   
-    
+
+
     if (pendingRequestMap[requestMd5] && now.getTime() - pendingRequestMap[requestMd5].reqTime < REQUEST_PENDDING_EXPIRE()) {
       // return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
       if (router.currentRoute.params.tableName) {
         const loadingName = router.currentRoute.meta.moduleName.replace(/\./g, '-');
         window.vm.$R3loading.hide(loadingName);
       }
-      
+
       return new Promise(() => {});
     }
     // delete pendingRequestMap[requestMd5];
@@ -532,7 +535,7 @@ function NetworkConstructor() {
         window.cancle = c;
       }))
     });
-    
+
     return axios.post(matchedUrl, config, headers);
   };
 
