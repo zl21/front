@@ -46,7 +46,7 @@
   import LabelWithInput from './LabelWithInput';
   import LabelWithRadio from './LabelWithRadio';
   import LabelWithSelect from './LabelWithSelect';
-
+  
   export default {
     name: 'ObjectGroupItem',
     data() {
@@ -110,3 +110,6 @@
     }
   };
 </script>
+
+<style scoped>
+</style>

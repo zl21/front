@@ -70,3 +70,7 @@
     },
   };
 </script>
+
+<style scoped>
+
+</style>

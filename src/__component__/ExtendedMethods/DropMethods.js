@@ -40,6 +40,15 @@ export default class DropMethods {
     }
     
   }
+  Outside(){
+    console.log(this.instance);
+    this.instance.EventFun = {
+      'on-Outside':()=>{
+        console.log(1212);
+      }
+    }
+
+  }
 
   
 

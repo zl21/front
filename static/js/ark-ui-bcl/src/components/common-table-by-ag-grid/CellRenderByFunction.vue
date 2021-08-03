@@ -4,6 +4,7 @@ export default {
 
   render(h) {
     const params = {
+      ...this.params,
       row: this.params.data,
       index: this.params.rowIndex,
       column: this.params.colDef

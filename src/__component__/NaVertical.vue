@@ -19,7 +19,7 @@
           v-if="iconShow"
           class="iconfont iconbj-unfold"
         />
-      </div>  
+      </div>
       <!-- 最近操作 -->
        <div
       v-if="getDashboardConfig"
@@ -44,18 +44,18 @@
           >
           <slot name="collect">
             <HistoryAndFavorite />
-              
-             </slot>  
+
+             </slot>
           </DropdownMenu>
         </Dropdown>
         <!-- <div class="iconfont iconmd-time">
         </div> -->
-      
+
     </div>
       <!-- 最近操作navigatorSetting -->
       <div class="icon-setting right" slot="icon-Setting">
         <div
-          v-for="(item,index) in navigatorSetting" 
+          v-for="(item,index) in navigatorSetting"
           :key="index"
           class="tag right"
         >
@@ -110,7 +110,7 @@
             />
           </Drawer>
       </div>
-     
+
       <div
         class="tag right"
         slot="icon-person"
@@ -140,7 +140,7 @@
         />
 
       </div>
-      
+
    </component>
   </div>
 </template>
@@ -165,6 +165,7 @@
     classFix, STANDARD_TABLE_LIST_PREFIX, Version, enableGateWay, getGatewayValue, enableHistoryAndFavoriteUI, messageSwitch,dashboardConfig
   } from '../constants/global';
   import { updateSessionObject } from '../__utils__/sessionStorage';
+  import { DispatchEvent } from '../__utils__/dispatchEvent'
   import HistoryAndFavorite from './HistoryAndFavorite';
   import MessagePanelOlder from './messagePanelOlder.vue';
 
@@ -484,6 +485,9 @@
         setTimeout(()=>{
           let leftWidth = navigator.offsetWidth;
           navigatorMenu.style.left = leftWidth+'px';
+
+          // 调整ag列宽
+          DispatchEvent('resizeAgColumn')
         },500)
       },
       routerNext(name) {
