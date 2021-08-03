@@ -1,4 +1,4 @@
-import Login from '../__component__/Login';
+import Login from '../__component__/Login/LoginWrap';
 import Content from '../__component__/ContentTemplate.vue';
 import WelcomePage from '../__component__/WelcomePage';
 // import ComponentProtoType from '../__component__/ComponentPrototype';
@@ -57,7 +57,7 @@ const routes = [
         //   /* webpackMode: 'eager' */
         //   '../__component__/V.TableDetailKeepAlive'
         // ), // 上下结构的单对象界面
-        meta: { routePrefix: VERTICAL_TABLE_DETAIL_PREFIX } 
+        meta: { routePrefix: VERTICAL_TABLE_DETAIL_PREFIX }
       }, {
         path: `${CUSTOMIZED_MODULE_PREFIX}/:customizedModuleName/:customizedModuleId`,
         component: KeepAliveContainer,
@@ -99,6 +99,6 @@ const routes = [
     path: '/AutomaticPathGeneration',
     component: AutomaticPathGeneration
   }
-  
+
 ];
 export default routes;
