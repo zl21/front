@@ -195,7 +195,15 @@
               return this.login()
             }
           }
-          if (r.data.code === 0) {
+          if (r.code === -1) {
+            return this.$Modal.fcWarning({
+              title: '安全提示',
+              content: r.message,
+              mask: true,
+            })
+
+          }
+          if (r.data && r.data.code === 0) {
             const exp = r.data.data.isPasswordExpire;
             if (exp) {
               const tips = await this.checkPwdDays();
