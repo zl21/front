@@ -1804,6 +1804,15 @@
                 ID: this.itemId
               };
             }
+            //  sp 存储过程
+            if(tab.actiontype === 'sp' || (tab.action && tab.action.includes('sp|'))){
+                obj.ids = ids;
+                delete obj.ID
+            }
+
+
+
+
           } else if (this.subtables()) { // 有子表   左右结构
             if (this.itemName === this.tableName) { // 主表静默逻辑  走保存的逻辑
               obj[this.tableName] = {
