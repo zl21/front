@@ -29,8 +29,6 @@
         </div>
       </Spin>
     </div>
-    <!--修改密码弹窗-->
-    <ModalPwd ref="pwd"/>
   </div>
 </template>
 
@@ -39,11 +37,10 @@
   import PhoneLogin from './PhoneLogin';
   import {enableGateWay, Version, encryptedPassword, classFix, enableLoginPro} from '../../constants/global';
   import network, {urlSearchParams} from '../../__utils__/network';
-  import ModalPwd from './ModalPwd';
 
   export default {
     name: 'Login',
-    components: {AccountLogin, PhoneLogin, ModalPwd},
+    components: {AccountLogin, PhoneLogin},
     data() {
       return {
         globalServiceId: window.localStorage.getItem('serviceId') || '',
@@ -61,9 +58,6 @@
           this.login();
         }
       };
-    },
-    mounted() {
-      // this.$refs.pwd.open()
     },
     computed: {
       classes() {
