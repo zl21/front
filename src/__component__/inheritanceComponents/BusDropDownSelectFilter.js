@@ -73,8 +73,8 @@ class BusDropDownSelectFilter {
       },
       EventFun: {
         'on-Outside': ($this) => {
+          let value = $this.$parent.value;
           setTimeout(() => {
-            let value = $this.$parent.$parent.value;
             if (!Array.isArray(value)) {
               let icon = $this.$el.querySelector('.iconios-close-circle');
               if (icon) {
