@@ -1751,9 +1751,19 @@
         //   this.objTabActionSlientConfirm(tab);
         // }
       },
+      getIds(tab){
+        // 获取当前的ids  
+        if(this.tabCurrentIndex >0 && this.tabPanel){
+          return  [this.tabPanel[this.tabCurrentIndex].tableid];
+        }else{
+          return [this.itemId];
+        }
+
+      },
       // 动作定义静默执行
       objTabActionSlientConfirm(tab) {
         let params = {};
+        console.log(tab,'====34');
         const label = `${this.activeTab.label.replace('编辑', '')}`;
         let ids = [];// 子表勾选1.4ID格式
         let idsOld = [];// 1.3ID格式
@@ -1806,7 +1816,7 @@
             }
             //  sp 存储过程
             if(tab.actiontype === 'sp' || (tab.action && tab.action.includes('sp|'))){
-                obj.ids = ids;
+                obj.ids = this.getIds(tab);
                 delete obj.ID
             }
 
@@ -1821,7 +1831,7 @@
             } else if (this.getCurrentItemInfo().tabrelation === '1:1') { // 子表静默逻辑    // 没有表格
               obj = {
                 tableName: this.itemName, // 子表表名
-                ids
+                ids:this.getIds(tab)
               };
             } else { // 有表格
               obj = {
