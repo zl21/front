@@ -18,46 +18,49 @@
       class="ag-header-cell-label"
       role="presentation"
       :style="eLabelStyle"
-      
     >
-      <div class="one-line-flow ag-header-wrap" :class="[params.column.colDef.thAlign? `text-${params.column.colDef.thAlign}` : '']">
-        <span
-        ref="eText"
-        class="ag-header-cell-text"
-        role="columnheader"
-        :title="params.displayName"
+      <div
+        class="one-line-flow ag-header-wrap"
+        :class="[params.column.colDef.thAlign? `text-${params.column.colDef.thAlign}` : '']"
       >
-        {{params.displayName}}
-        <i
-          :class="['iconfont', 'comment', 'iconios-information-circle-outline', cssFeatures.hover]"
-          style="color: orangered"
-          v-if="params.column.colDef.comment"
-          @mouseenter="commentMouseenter"
-          @mouseleave="commentMouseleave"
-        ></i>
-      </span>
-      <span
+        <!-- displayName被ag废弃了，做下兼容 -->
+        <span
+          ref="eText"
+          class="ag-header-cell-text"
+          role="columnheader"
+          :title="params.headerName || params.displayName"
+        >
+          {{params.headerName || params.displayName}}
+          <i
+            :class="['iconfont', 'comment', 'iconios-information-circle-outline', cssFeatures.hover]"
+            style="color: orangered"
+            v-if="params.column.colDef.comment"
+            @mouseenter="commentMouseenter"
+            @mouseleave="commentMouseleave"
+          ></i>
+        </span>
+        <!-- <span
         ref="eSortOrder"
         class="ag-header-icon ag-sort-order"
-      ></span>
-      <span
-        ref="eSortAsc"
-        :class="['ag-header-icon' ,'ag-sort-ascending-icon' ,params.column.colDef.isorder && params.column.colDef.sort === 'asc' ? '' : 'ag-hidden']"
-      >
-        <span class="ag-icon ag-icon-asc ${cssFeatures.hover} trigger-sorting"></span>
-      </span>
-      <span
-        ref="eSortDesc"
-        :class="['ag-header-icon' ,'ag-sort-descending-icon', params.column.colDef.isorder && params.column.colDef.sort === 'desc' ? '' : 'ag-hidden']"
-      >
-        <span class="ag-icon ag-icon-desc ${cssFeatures.hover} trigger-sorting"></span>
-      </span>
-      <span
-        ref="eSortNone"
-        :class="['ag-header-icon', 'ag-sort-none-icon', !params.column.colDef.sort && params.column.colDef.isorder ? '' : 'ag-hidden']"
-      >
-        <span class="ag-icon ag-icon-none ${cssFeatures.hover} trigger-sorting"></span>
-      </span>
+      ></span> -->
+        <span
+          ref="eSortAsc"
+          :class="['ag-header-sort', 'ag-header-icon' ,'ag-sort-ascending-icon' ,params.column.colDef.isorder && params.column.colDef.sort === 'asc' ? '' : 'ag-hidden']"
+        >
+          <span class="ag-icon ag-icon-asc ${cssFeatures.hover} trigger-sorting"></span>
+        </span>
+        <span
+          ref="eSortDesc"
+          :class="['ag-header-sort', 'ag-header-icon' ,'ag-sort-descending-icon', params.column.colDef.isorder && params.column.colDef.sort === 'desc' ? '' : 'ag-hidden']"
+        >
+          <span class="ag-icon ag-icon-desc ${cssFeatures.hover} trigger-sorting"></span>
+        </span>
+        <span
+          ref="eSortNone"
+          :class="['ag-header-sort', 'ag-header-icon', 'ag-sort-none-icon', !params.column.colDef.sort && params.column.colDef.isorder ? '' : 'ag-hidden']"
+        >
+          <span class="ag-icon ag-icon-none ${cssFeatures.hover} trigger-sorting"></span>
+        </span>
       </div>
     </div>
   </div>
@@ -121,7 +124,7 @@ export default {
     },
 
     menuClick() {
-      if(this.params.enableMenu) {
+      if (this.params.enableMenu) {
         this.params.showColumnMenu(this.$refs.eMenu)
       }
     },
@@ -181,9 +184,35 @@ export default {
 
 .ag-theme-balham .ag-header-cell-label span {
   height: 11px;
-  vertical-align: -1px;
 }
+
 .ag-header-wrap {
   width: 100%;
+}
+
+.ag-header-cell-text .comment {
+  vertical-align: -2px;
+}
+
+.ag-header-sort {
+  vertical-align: -2px;
+}
+
+// 菜单居右对齐不占位置
+.ag-header-cell-menu-button {
+  position: absolute;
+  right: 3px;
+  z-index: 1;
+}
+
+.ag-theme-balham .ag-header-cell-label {
+  width: 100%;
+}
+</style>
+
+<style lang="scss">
+.ag-grid-table.ag-theme-balham .ag-header-cell, .ag-theme-balham .ag-header-group-cell {
+  padding-left: 16px;
+  padding-right: 16px;
 }
 </style>
