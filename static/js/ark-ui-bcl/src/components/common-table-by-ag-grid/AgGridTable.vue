@@ -117,6 +117,7 @@ export default {
         onFilterChanged: this.onFilterChanged,
         onColumnResized: this.onColumnResized,
         getRowClass: this.getRowClass,
+        onGridSizeChanged: this.onGridSizeChanged
       }
       const defaultColDef = this.options.defaultColDef || {}
       return Object.assign({}, defaultConfig, otherOptions, this.options, {
@@ -192,6 +193,14 @@ export default {
         }
       }
       this.$emit('grid-ready', params)
+    },
+
+    // 表格宽度变化
+    onGridSizeChanged(params) {
+      this.$emit('on-grid-size-changed', params)
+      setTimeout(() => {
+        this._resetColumnWidth()
+      }, 200)
     },
 
     // 设置行数据
@@ -526,8 +535,8 @@ export default {
     },
 
     // 使用api.setRowData()或通过更改rowDatabound属性将新数据设置到网格中
-    onRowDataChanged() {
-      this.$emit('row-data-changed')
+    onRowDataChanged(params) {
+      this.$emit('row-data-changed', params)
     },
 
     // 主体水平或垂直滚动​​
@@ -746,7 +755,7 @@ export default {
         }
         const item = JSON.parse(decodeURI(encodeURI(JSON.stringify(d))));
         item._index = d._index;
-        item.headerName = d.colname === 'ID' ? '序号' : d.name || '未定义';
+        item.headerName = d.colname === 'ID' ? '序号' : d.headerName || d.name;
         item.lockVisible = d.lockVisible || d.colname === 'ID'; // 锁定序号列的隐藏功能
         item.suppressToolPanel = d.suppressToolPanel || d.colname === 'ID'; // 锁定ID列工具栏操作能力
         // item.pinned = d.colname === 'ID' ? 'left' : this._getPinnedState(d.colname); // 将一列固定到一侧
@@ -966,11 +975,21 @@ export default {
     // 调整列宽
     // 规则：1.所有列大于表格宽度时，此时用autoSizeAllColumns  2.所有列小于表格宽度时，此时用sizeColumnsToFit
     _autoSizeColumns() {
+      if(!this.$refs.table) {
+        return
+      }
+      let viewport
+      let container
       const tableDom = this.$refs.table.$el
-      // const viewport = tableDom.querySelector('.ag-body-viewport') // 表格可视区,不含固定列
-      // const container = tableDom.querySelector('.ag-body-container') // 表格所有列的容器
-      const viewport = tableDom.querySelector('.ag-header-viewport') // 表格可视区,不含固定列
-      const container = tableDom.querySelector('.ag-header-container>.ag-header-row') // 表格所有列的容器
+      // oms项目组用标题容器判断有问题。所以改成无数据时用标头容器判断
+      if(this.data.length === 0) {
+        viewport = tableDom.querySelector('.ag-header-viewport') // 表格可视区,不含固定列
+        container = tableDom.querySelector('.ag-header-container>.ag-header-row') // 表格所有列的容器
+      } else {
+        viewport = tableDom.querySelector('.ag-body-viewport') // 表格可视区,不含固定列
+        container = tableDom.querySelector('.ag-body-container') // 表格所有列的容器
+      }
+      
       const viewportWidth = viewport.offsetWidth
       const containerWidth = container.offsetWidth
 

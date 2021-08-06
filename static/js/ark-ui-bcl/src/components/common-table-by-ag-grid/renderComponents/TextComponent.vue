@@ -37,7 +37,7 @@ export default {
 
   computed: {
     tag() {
-      return this.params.colDef.colname === 'ID' ? 'span' : 'div'
+      return this.params.colDef.checkboxSelection ? 'span' : 'div'
     }
   },
 
