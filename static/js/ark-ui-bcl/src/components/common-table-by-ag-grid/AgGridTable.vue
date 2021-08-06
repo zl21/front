@@ -117,6 +117,7 @@ export default {
         onFilterChanged: this.onFilterChanged,
         onColumnResized: this.onColumnResized,
         getRowClass: this.getRowClass,
+        onGridSizeChanged: this.onGridSizeChanged
       }
       const defaultColDef = this.options.defaultColDef || {}
       return Object.assign({}, defaultConfig, otherOptions, this.options, {
@@ -192,6 +193,14 @@ export default {
         }
       }
       this.$emit('grid-ready', params)
+    },
+
+    // 表格宽度变化
+    onGridSizeChanged(params) {
+      this.$emit('on-grid-size-changed', params)
+      setTimeout(() => {
+        this._resetColumnWidth()
+      }, 200)
     },
 
     // 设置行数据
@@ -526,8 +535,8 @@ export default {
     },
 
     // 使用api.setRowData()或通过更改rowDatabound属性将新数据设置到网格中
-    onRowDataChanged() {
-      this.$emit('row-data-changed')
+    onRowDataChanged(params) {
+      this.$emit('row-data-changed', params)
     },
 
     // 主体水平或垂直滚动​​

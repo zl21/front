@@ -19,8 +19,6 @@
         <img src="../../assets/image/home.png" class="toggle home" @click="toggles">
       </span>
     </div>
-
-    <div id="btn" class="btn" @click="login"/>
   </div>
 </template>
 

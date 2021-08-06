@@ -10,7 +10,8 @@
                 :TypeToggle="typeToggle"
                 @toggle="toggle"
                 ref="AccountLogin"
-        ></AccountLogin>
+        >
+        </AccountLogin>
       </template>
       <!--typeToggle!==1-->
       <template v-else>
@@ -21,6 +22,12 @@
                 ref="PhoneLogin"
         ></PhoneLogin>
       </template>
+      <div @click="login">
+        <template v-if="$slots.loginBtn">
+          <slot name="loginBtn"></slot>
+        </template>
+        <div v-else="!$slots.loginBtn" id="btn" class="btn"/>
+      </div>
       <Spin v-show="spinShow" fix>
         <div class="loader">
           <svg class="circular" viewBox="25 25 50 50">
