@@ -839,7 +839,11 @@
             }
 
             // 序号按行索引渲染
+            // 给序号列固定宽
             if (ele.colname === EXCEPT_COLUMN_NAME) {
+              param.webconf = {
+                standard_width: 90
+              }
               param.field = '__ag_sequence_column_name__.val';
             }
 
