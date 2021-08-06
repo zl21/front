@@ -396,6 +396,11 @@
               item.suppressMenu = true
             }
           }
+          if(item.colname === 'ID') {
+            item.webconf = {
+              standard_width: 90
+            }
+          }
           item.tdAlign = item.type === 'NUMBER' ? 'right' : 'left'
           item.thAlign = 'center'
           return item
