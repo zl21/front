@@ -3,7 +3,7 @@
         class="tag favorite"
       
       >
-      <Dropdown  @on-click="routeTo">
+      <Dropdown  @on-click="routeTo" :transfer="true">
         <slot>
           <i
             class="iconfont iconbj_col left-icon"
