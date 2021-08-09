@@ -142,10 +142,9 @@
       }, // 关闭当前tab
       emptyClick() {
         this.clickshow = false;
-        if(this.openedMenuLists.length>49){
+        if(this.openedMenuLists.length>50){
           router.push('/');
-          //window.location.reload();
-
+           window.location.reload();
         }else{
           this.emptyTabs();
         }
