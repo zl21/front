@@ -689,23 +689,6 @@
         if(this.R3_agReady) {
           this.R3_agReady(e)
         }
-        this.handleAgColumnSize()
-      },
-
-       // 收起菜单时调整表格宽度
-      handleAgColumnSize() {
-        const handleAgColumnSize = () => {
-          setTimeout(() => {
-            if(this.$refs.agGridTableContainer) {
-              this.$refs.agGridTableContainer.$refs.agGridTable._resetColumnWidth()
-            }
-          }, 200)
-        }
-        window.addEventListener('resizeAgColumn', handleAgColumnSize)
-
-        this.$on('hook:beforeDestroy', () => {
-          window.removeEventListener('resizeAgColumn', handleAgColumnSize)
-        })
       },
       
       tableRowDbclick(row) {

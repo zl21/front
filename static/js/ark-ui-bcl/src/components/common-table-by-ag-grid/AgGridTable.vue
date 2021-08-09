@@ -117,6 +117,7 @@ export default {
         onFilterChanged: this.onFilterChanged,
         onColumnResized: this.onColumnResized,
         getRowClass: this.getRowClass,
+        onGridSizeChanged: this.onGridSizeChanged
       }
       const defaultColDef = this.options.defaultColDef || {}
       return Object.assign({}, defaultConfig, otherOptions, this.options, {
@@ -192,6 +193,14 @@ export default {
         }
       }
       this.$emit('grid-ready', params)
+    },
+
+    // 表格宽度变化
+    onGridSizeChanged(params) {
+      this.$emit('on-grid-size-changed', params)
+      setTimeout(() => {
+        this._resetColumnWidth()
+      }, 200)
     },
 
     // 设置行数据
@@ -526,8 +535,8 @@ export default {
     },
 
     // 使用api.setRowData()或通过更改rowDatabound属性将新数据设置到网格中
-    onRowDataChanged() {
-      this.$emit('row-data-changed')
+    onRowDataChanged(params) {
+      this.$emit('row-data-changed', params)
     },
 
     // 主体水平或垂直滚动​​
@@ -1004,24 +1013,6 @@ export default {
         callback && callback()
       }, 200)
     },
-
-    // 监听窗口缩放
-    _listenOnSize() {
-      const handleColumnWidth = debounce(() => {
-        // 这里需要执行两次_autoSizeColumns
-        // 因为窗口缩小时,大多数情况会是container比viewport。导致与实际展示效果不符(窗口放大时没这个问题)
-        // 所有需要在调整一次列后(第一次执行时，可以保证列少的情况下，使得container小于viewport)，再调整一次，此时，重新比较container和viewport得到正确的结果
-        this._autoSizeColumns()
-        setTimeout(() => {
-          this._autoSizeColumns()
-        }, 50)
-      })
-      window.addEventListener('resize', handleColumnWidth)
-
-      this.$on('hook:beforeDestroy', () => {
-        window.removeEventListener('resize', handleColumnWidth)
-      })
-    }
   },
 
   created() {
@@ -1035,7 +1026,6 @@ export default {
   },
 
   mounted() {
-    this._listenOnSize()
   },
 
   activated() {
