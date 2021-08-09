@@ -3,6 +3,7 @@
     <div
       v-if="itemInfo.tabrelation==='1:1'&&watermarkimg"
       class="submit-img"
+      v-dom-portal="getTransferDom()"
     >
       <WaterMark
         :text="waterMarkText"
@@ -510,6 +511,19 @@
       ...mapMutations('global', ['decreasekeepAliveLists']),
 
       // ...mapActions(this[MODULE_COMPONENT_NAME], ['performMainTableSaveAction']),
+
+      // 转移水印
+      getTransferDom() {
+        let value = false // 默认不转移节点
+        if(window.ProjectConfig.domPortal && window.ProjectConfig.domPortal.waterMark) {
+          value = window.ProjectConfig.domPortal.waterMark({
+            fromComponent: 'SingleObjectTabComponent',
+            type: this.type
+          })
+        }
+        return value
+      },
+
       generateComponent() {
         const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
         const tableComponent = `${this[MODULE_COMPONENT_NAME]}.TableDetailCollection`;
