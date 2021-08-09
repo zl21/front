@@ -142,7 +142,12 @@
       }, // 关闭当前tab
       emptyClick() {
         this.clickshow = false;
-        this.emptyTabs();
+        if(this.openedMenuLists.length>50){
+          router.push('/');
+           window.location.reload();
+        }else{
+          this.emptyTabs();
+        }
       },
 
       prevClick() {

@@ -54,9 +54,10 @@ export default {
             // 过滤显示字段
            filtercolval(this,this.items.webconf.filtercolval)
          }
-
           //  清空字段refcolval
-          clearFormRefcolval(this);
+          if(this.actived){
+            clearFormRefcolval(this);
+          }
           
         }else if(this.items.Query){
           // 清除标准列表的数据
