@@ -1,7 +1,8 @@
 
 <template>
   <div :class="classesbox">
-    <div :class="classes" id="listForm">
+    <div :class="classes"
+         id="listForm">
       <div v-if="Object.keys(ItemLists).length > (setdefaultColumn*searchFoldnum - indexButton) && !hiddenIcon"
            :class="tagCloseCls"
            @click="toggle">
@@ -21,7 +22,9 @@
           </keep-alive>
         </div>
       </div>
-       <component v-if="ButtonHtml" :class="classButton" :is="ButtonHtml"></component>
+      <component v-if="ButtonHtml"
+                 :class="classButton"
+                 :is="ButtonHtml"></component>
     </div>
   </div>
 </template>
@@ -57,13 +60,13 @@ export default {
     //     `${classFix}ListsForm-content ${this.calssValue}`
     //   ];
     // },
-    classButton(){
-       return [
+    classButton () {
+      return [
         `${classFix}ListsForm-button`
       ];
 
     },
-    classesbox(){
+    classesbox () {
       return [
         `${classFix}ListsForm-box`
       ];
@@ -75,8 +78,8 @@ export default {
       this.$store = store
     }
   },
-  beforeDestroy(){
-        window.removeEventListener('resize', this.setColumn);
+  beforeDestroy () {
+    window.removeEventListener('resize', this.setColumn);
   },
   props: {
     id: {
@@ -87,9 +90,9 @@ export default {
       type: [Number, String],
       default: 4
     },
-    search:{
-      type:Boolean,
-      default:false
+    search: {
+      type: Boolean,
+      default: false
     },
     formItemLists: {
       type: Array,
@@ -115,12 +118,12 @@ export default {
       dowClass: true, // 默认全部展开  false为折叠状态
       ItemLists: {}, // 储存列表数据
       component: '', // 设置组件名称
-      setdefaultColumn:4,
-      ButtonHtml:'',
-      bottombutton:false, // 按钮是否下移
-      hiddenIcon:false,  // 默认不隐藏icon
-      indexButton:0,  // 渲染按钮+1
-      classesContent :`${classFix}ListsForm-content`,
+      setdefaultColumn: 4,
+      ButtonHtml: '',
+      bottombutton: false, // 按钮是否下移
+      hiddenIcon: false,  // 默认不隐藏icon
+      indexButton: 0,  // 渲染按钮+1
+      classesContent: `${classFix}ListsForm-content`,
       formArray: [], // 存储列表数据
     };
   },
@@ -166,152 +169,156 @@ export default {
         }
 
       }
-    
+
       if (this.$parent.updateFormAssignData) {
         this.$parent.updateFormAssignData(arrjson);
       }
     },
-    setColumn(){
+    setColumn () {
       // 设置列数
-      if(!document.querySelector('.StandardTableListRootDiv')){
+      if (!document.querySelector('.StandardTableListRootDiv')) {
         return;
       }
       let width = document.querySelector('.StandardTableListRootDiv').offsetWidth;
-      if(width>700){
+      if (width > 700) {
         this.setdefaultColumn = 4;
         this.classesContent = `${classFix}ListsForm-content`;
-      }else if(width<700){
+      } else if (width < 700) {
         this.setdefaultColumn = 3;
         this.classesContent = `${classFix}ListsForm-content ListsForm-small`;
       }
-     
+
       this.setButtonType(this.dowClass);
-     
+
     },
-    setSize(type,number){
-       //this.indexButton = 0;
-      let bottomdiv  = document.querySelector('.ListsForm-content');
-      if(!bottomdiv){
+    setSize (type, number) {
+      //this.indexButton = 0;
+      setTimeout(() => {
+        let bottomdiv = document.querySelector('.ListsForm-content');
+        if (!bottomdiv) {
           return false;
-      }
-      if(document.querySelector('.ListsForm') && document.querySelector('.ListsForm').offsetWidth<550){
-        if(type === false &&( number === 0 ||  number >1)){
-           bottomdiv.style.marginBottom = '40px';
         }
-        if(type === true ){
-          if(!this.dowClass){
-             if(number === 0 || number>1 ){
-              this.indexButton = 2;
-            }else{
-              this.indexButton = 0;
-            }
-          }else{
-             if(number === 0 ){
-              this.indexButton = 0;
-              bottomdiv.style.marginBottom = '40px';
-            }
+        if (document.querySelector('.ListsForm') && document.querySelector('.ListsForm').offsetWidth < 550) {
+          if (type === false && (number === 0 || number > 1)) {
+            bottomdiv.style.marginBottom = '40px';
+          }
+          if (type === true) {
+            if (!this.dowClass) {
+              if (number === 0 || number > 1) {
+                this.indexButton = 2;
+              } else {
+                this.indexButton = 0;
+              }
+            } else {
+              if (number === 0) {
+                this.indexButton = 0;
+                bottomdiv.style.marginBottom = '40px';
+              }
 
+            }
+          }
+        } else {
+          if (type === false && number === 0) {
+            bottomdiv.style.marginBottom = '40px';
+          }
+          if (type === true) {
+
+            if (!this.dowClass) {
+              if (number === 0 || number > 1) {
+                this.indexButton = 1;
+
+              } else {
+                this.indexButton = 0;
+                bottomdiv.style.marginBottom = '40px';
+
+              }
+            } else {
+              if (number === 0) {
+                this.indexButton = 0;
+                bottomdiv.style.marginBottom = '40px';
+
+              } else {
+
+              }
+
+            }
           }
         }
-      }else{
-        if(type === false && number === 0){
-           bottomdiv.style.marginBottom = '40px';
-        }
-        if(type === true ){
-          
-          if(!this.dowClass){
-             if(number === 0 || number>1 ){
-              this.indexButton = 1;
 
-            }else{
-              this.indexButton = 0;
-              bottomdiv.style.marginBottom = '40px';
+      }, 0)
 
-            }
-          }else{
-             if(number === 0 ){
-              this.indexButton = 0;
-              bottomdiv.style.marginBottom = '40px';
-
-            }else{
-
-            }
-
-          }
-        }
-      }    
 
     },
-    setButtonType(){
+    setButtonType () {
       // 渲染查询按钮
-      
-      if(window.ProjectConfig.layoutDirectionSlot && window.ProjectConfig.layoutDirectionSlot.listFormButton){
-        this.$nextTick(()=>{
-        // 动态
-        let itemArray =  document.querySelectorAll('#listForm .item');
-        let index = this.setdefaultColumn*this.searchFoldnum;
-        let itemArrayLength = itemArray.length;
-        document.querySelector('.ListsForm-content').style.marginBottom = '0px';
-       
-        let _index = index%this.setdefaultColumn;
-       
-         if(index> itemArray.length ){
+
+      if (window.ProjectConfig.layoutDirectionSlot && window.ProjectConfig.layoutDirectionSlot.listFormButton) {
+        this.$nextTick(() => {
+          // 动态
+          let itemArray = document.querySelectorAll('#listForm .item');
+          let index = this.setdefaultColumn * this.searchFoldnum;
+          let itemArrayLength = itemArray.length;
+          document.querySelector('.ListsForm-content').style.marginBottom = '0px';
+
+          let _index = index % this.setdefaultColumn;
+
+          if (index > itemArray.length) {
             //  大于总常数
 
-            let itemLength  = itemArray.length;
+            let itemLength = itemArray.length;
             this.indexButton = 0;
-            let itemLength_index = itemLength%this.setdefaultColumn;
-            this.setSize(false,itemLength_index);
-           
-          }else{
-            let itemLength  = itemArray.length;
-            let itemLength_index = itemLength%this.setdefaultColumn;
-            let _index = index%this.setdefaultColumn;
-            if(this.dowClass){
-              this.setSize(true,itemLength_index);
-            }else{
-              this.setSize(true,_index);
+            let itemLength_index = itemLength % this.setdefaultColumn;
+            this.setSize(false, itemLength_index);
+
+          } else {
+            let itemLength = itemArray.length;
+            let itemLength_index = itemLength % this.setdefaultColumn;
+            let _index = index % this.setdefaultColumn;
+            if (this.dowClass) {
+              this.setSize(true, itemLength_index);
+            } else {
+              this.setSize(true, _index);
             }
 
 
-            
+
           }
-        // if(document.querySelector('.ListsForm') && document.querySelector('.ListsForm').offsetWidth<550){
-        //   if(!this.dowClass){
-        //     this.indexButton = 2;
-        //   }
-          
-        //   if(_index >1 || this.indexButton === 0 ){
-        //     document.querySelector('.ListsForm-content').style.marginBottom = '40px';
-        //   }
-        // }else{ 
-        //   if(this.indexButton === 0 ){
-        //     document.querySelector('.ListsForm-content').style.marginBottom = '40px';
-        //   }
-        // }
-          
-      })
+          // if(document.querySelector('.ListsForm') && document.querySelector('.ListsForm').offsetWidth<550){
+          //   if(!this.dowClass){
+          //     this.indexButton = 2;
+          //   }
+
+          //   if(_index >1 || this.indexButton === 0 ){
+          //     document.querySelector('.ListsForm-content').style.marginBottom = '40px';
+          //   }
+          // }else{ 
+          //   if(this.indexButton === 0 ){
+          //     document.querySelector('.ListsForm-content').style.marginBottom = '40px';
+          //   }
+          // }
+
+        })
         this.ButtonHtml = window.ProjectConfig.layoutDirectionSlot.listFormButton;
         this.hiddenIcon = this.ButtonHtml.data().hiddenIcon || false;
         let hiddenButtons = this.ButtonHtml.data().hiddenButtons || [];
-        if(Array.isArray(hiddenButtons)){
+        if (Array.isArray(hiddenButtons)) {
           // 隐藏列表查询按钮
           let data = JSON.parse(JSON.stringify(this.$parent.buttons));
-          hiddenButtons.forEach((key)=>{
+          hiddenButtons.forEach((key) => {
             data.dataArray[key] = false;
           });
-          if(this.ButtonHtml.props.ButttonCallBack){
+          if (this.ButtonHtml.props.ButttonCallBack) {
             // 点击回调事件
             this.ButtonHtml.props.ButttonCallBack.default = this.$parent.buttonClick;
           }
-          if(this.ButtonHtml.props.IconCallBack){
+          if (this.ButtonHtml.props.IconCallBack) {
             // 收拉框回调
             this.ButtonHtml.props.IconCallBack.default = this.toggle;
           }
           this.$parent.filterButtonsForShow(data.dataArray);
         }
-        
-      }else{
+
+      } else {
         this.ButtonHtml = window.ProjectConfig.listFormButton;
       }
 
@@ -366,16 +373,16 @@ export default {
     },
     r3Format (val, item) {
       // 兼容1.3 数据格式传参
-      if(['OBJ_SELECT','RADIO_GROUP','CHECKBOX_GROUP'].includes(item.display) ){
-        console.log( val[item.colname],'323');
-        if(val[item.colname] && Array.isArray(val[item.colname])){
-          val[item.colname] = val[item.colname].reduce((arr,item)=>{
+      if (['OBJ_SELECT', 'RADIO_GROUP', 'CHECKBOX_GROUP'].includes(item.display)) {
+        console.log(val[item.colname], '323');
+        if (val[item.colname] && Array.isArray(val[item.colname])) {
+          val[item.colname] = val[item.colname].reduce((arr, item) => {
             arr.push(`=${item}`);
             return arr;
-          },[]);
-          
+          }, []);
+
         }
-        
+
       }
       if (Version() === '1.3') {
         if (['OBJ_DATE', 'OBJ_DATENUMBER', 'YearMonth', 'OBJ_DATETIME'].includes(item.display) && val[item.colname]) {
@@ -455,19 +462,19 @@ export default {
   created () {
     this.resetForm();
     // 处理折叠的默认值
-    
-    this.setdefaultColumn =  this.defaultColumn;
-    this.dowClass = !this.defaultSpread;
-    
-  },
-  mounted(){
-      this.$el._vue_ = this;
-      if(this.search){
-       setTimeout(()=>{
-          this.setColumn();
-          window.addEventListener('resize', this.setColumn)
 
-       },100)
+    this.setdefaultColumn = this.defaultColumn;
+    this.dowClass = !this.defaultSpread;
+
+  },
+  mounted () {
+    this.$el._vue_ = this;
+    if (this.search) {
+      setTimeout(() => {
+        this.setColumn();
+        window.addEventListener('resize', this.setColumn)
+
+      }, 100)
     }
   },
   watch: {
@@ -477,10 +484,10 @@ export default {
       },
       deep: true
     },
-    searchFoldnum:{
-       handler () {
-        if(this.search && this.searchFoldnum){
-            this.setColumn();
+    searchFoldnum: {
+      handler () {
+        if (this.search && this.searchFoldnum) {
+          this.setColumn();
         }
       },
       deep: true
