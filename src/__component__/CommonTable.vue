@@ -5,7 +5,6 @@
       :columns="columns"
       class="table"
       :height="true"
-      :multiple="true"
       :data="tableData"
       :row-class-name="rowClassName"
       :total-data="tableTotalData"
