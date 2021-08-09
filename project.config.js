@@ -39,6 +39,7 @@ module.exports = {
   // target: 'http://cs.yqdev.burgeononline.com/', // 云雀
   // target: 'http://47.102.164.111:27777', // 卡宾
   // target: 'http://dev.dev.lark-erp.cn/',
+  // target: 'http://139.224.134.69:58000', // OMS
 
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
@@ -188,5 +189,12 @@ module.exports = {
   autoGatewayUrl:false,  // 是否请求网关
   computeForSubtable: false,
   enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
-  filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g]
+  filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
+  // // 转义节点位置
+  // domPortal: {
+  //   // params对象属性,fromComponent用于区别哪个组件的水印,type区分布局结构
+  //   waterMark(params) {
+  //     return params.type === 'horizontal'? '.panelForm': '.verticalTableDetailContent'
+  //   }
+  // }
 };

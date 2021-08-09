@@ -1,6 +1,7 @@
 // import Vue from 'vue';
 import VueDND from 'awe-dnd';
 import Viewer from 'v-viewer';
+import DomPortal from 'vue-dom-portal'
 import { getGuid } from './src/__utils__/random';
 import router from './src/__config__/router.config';
 import store from './src/__config__/store.config';
@@ -64,6 +65,7 @@ import listsForm from './src/__component__/FormComponents/list/listsForm.vue'
 
 
 Vue.component('listsForm',listsForm)
+Vue.use(DomPortal)
 
 // Vue.use(jflowPlugin, {
 //   changePattern: true, // 控制待办列表转派的选择模式 true为单选,false为多选
