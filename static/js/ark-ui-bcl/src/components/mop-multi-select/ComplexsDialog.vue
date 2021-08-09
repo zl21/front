@@ -190,10 +190,7 @@ export default {
         arr.push(item.AKNAME);
         return arr;
       }, []);
-<<<<<<< HEAD
-=======
       console.log(data,'3434');
->>>>>>> ll_npm_dev
       this.treedata = data.data.map((obj, i) => {
         const option = {};
         option.title = obj.NAME;
