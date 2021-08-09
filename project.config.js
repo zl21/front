@@ -194,7 +194,10 @@ module.exports = {
   // domPortal: {
   //   // params对象属性,fromComponent用于区别哪个组件的水印,type区分布局结构
   //   waterMark(params) {
-  //     return params.type === 'horizontal'? '.panelForm': '.verticalTableDetailContent'
+  //     if(params.fromComponent === 'SingleObjectButtons') {
+  //       return params.type === 'horizontal'? '.panelForm': '.verticalTableDetailContent'
+  //     }
+  //     return false
   //   }
   // }
 };
