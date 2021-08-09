@@ -1,8 +1,8 @@
 <template>
   <div class="ag-image-component ">
     <img
-      v-if="url"
-      :src="url"
+      v-if="url.length > 0"
+      :src="url[0].URL"
       alt=""
       class="ag-syman-hover"
       @mouseenter="mouseenter"
@@ -10,7 +10,7 @@
       @dblclick="dblclick"
     >
     <pictureViewer
-      :images="url?[{URL:url}]: []"
+      :images="url"
       :show="showViewer"
       :mountedDom="mountedDom"
       @on-cancel="closePreview"
@@ -41,9 +41,13 @@ export default {
     url() {
       let url = '';
       try {
-        url = JSON.parse(this.params.value)[0].URL;
+        let imgList = JSON.parse(this.params.value)
+        if(!imgList) {
+          return []
+        }
+        url = imgList
       } catch (e) {
-        url = this.params.value;
+        url = this.params.value ? [{URL:this.params.value}]: [];
       }
       return url
     }
@@ -68,6 +72,11 @@ export default {
       if (!target) {
         return
       }
+      // 取数组的第一张图片
+      let url = ''
+      if(Array.isArray(this.url) && this.url.length > 0) {
+        url = this.url[0].URL
+      }
 
       this.imagePreviewBox = document.createElement('div');
       const imagePreviewBox = this.imagePreviewBox
@@ -76,7 +85,7 @@ export default {
       const config = this.config
       const offsetLeft = target.getBoundingClientRect().left - agGridDiv.getBoundingClientRect().left;
       const offsetTop = target.getBoundingClientRect().top - agGridDiv.getBoundingClientRect().top;
-      imagePreviewBox.childNodes[0].setAttribute('src', `${this.url}?x-oss-process=image/resize,w_${config.previewImageSize}`)
+      imagePreviewBox.childNodes[0].setAttribute('src', `${url}?x-oss-process=image/resize,w_${config.previewImageSize}`)
       imagePreviewBox.style.left = `${offsetLeft + (config.smallImageSize * 2)}px`
       imagePreviewBox.style.top = `${offsetTop - (config.previewImageSize - config.smallImageSize) / 2}px`
       agGridDiv.appendChild(imagePreviewBox)
