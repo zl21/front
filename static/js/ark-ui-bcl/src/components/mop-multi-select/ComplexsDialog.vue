@@ -190,7 +190,7 @@ export default {
         arr.push(item.AKNAME);
         return arr;
       }, []);
-
+      console.log(data,'3434');
       this.treedata = data.data.map((obj, i) => {
         const option = {};
         option.title = obj.NAME;
@@ -213,6 +213,7 @@ export default {
       this.treedataInt = JSON.parse(JSON.stringify(this.treedata));
     },
     clearTree () {
+      this.$refs.dialog.$refs.Tree.clearAll();
       const treedata = this.treedataInt.reduce((arr, item, i) => {
         item.expand = this.treedata[i].expand;
         arr.push(item);
@@ -237,6 +238,7 @@ export default {
     },
     dateRestructure (data, index, type, name) {
       // 表格数据的 重新组合
+      
       if (data.akname) {
         this.akname = data.akname || 'ECODE';
       }

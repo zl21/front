@@ -29,4 +29,5 @@ R3.launchApplication({
   },
   enableGateWay: true, // 网关是否打开,
   enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
+  filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g]
 });

@@ -15,7 +15,8 @@ import { SetPlaceholder } from './setProps';
 import {
   setisShowPopTip,
   postData,
-  postTableData
+  postTableData,
+  refcolvalMap
 } from '../ExtendedAttributes/refcolval.js'
 
 class BusDropDownSelectFilter {
@@ -73,8 +74,8 @@ class BusDropDownSelectFilter {
       },
       EventFun: {
         'on-Outside': ($this) => {
+          let value = $this.$parent.value;
           setTimeout(() => {
-            let value = $this.$parent.$parent.value;
             if (!Array.isArray(value)) {
               let icon = $this.$el.querySelector('.iconios-close-circle');
               if (icon) {
@@ -100,6 +101,14 @@ class BusDropDownSelectFilter {
       this.item = this.PropsData.item;
       this.item.Query = this.PropsData.Query;
       this.activeTab = this.$parent.$parent.activeTab;
+      if (this.item.refcolval) {
+        if (!this.item.webconf) {
+          this.item.webconf = {}
+        }
+        this.item.webconf.refcolval = this.item.refcolval
+      }
+      
+
       this.PropsData.isShowPopTip = () => {
         if (this.item.refcolval) {
           if (!this.item.webconf) {
@@ -109,6 +118,8 @@ class BusDropDownSelectFilter {
         }
         return setisShowPopTip(this, this.item.webconf, network)
       }
+     
+
       if (defaultrange()) {
         this.pageSize = defaultrange();
       }
@@ -134,6 +145,10 @@ class BusDropDownSelectFilter {
 
         //new DropMethods(this.item,this).Outside();
       }
+       // 默认数据
+       setTimeout(()=>{
+        setisShowPopTip(this, this.item.webconf, network,true);
+      },200);
 
     }
 
@@ -141,6 +156,7 @@ class BusDropDownSelectFilter {
       // 回车查询
       new DropMethods(this.item, this.Vm).keydown();
     }
+    
 
 
 

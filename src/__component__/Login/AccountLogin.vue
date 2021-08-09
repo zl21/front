@@ -20,7 +20,6 @@
       </span>
     </div>
 
-    <div id="btn" class="btn" @click="login"/>
   </div>
 </template>
 
@@ -51,6 +50,7 @@
       if (enableLoginPro) {
         this.getCode();
       }
+      console.log(this.$slots.loginBtn)
     },
     methods: {
       login() {

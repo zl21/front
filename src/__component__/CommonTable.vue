@@ -417,7 +417,7 @@
               data[curIndex]._checked = true;
             }
           });
-    
+
           this.spinShow = false;
           return data;
         }

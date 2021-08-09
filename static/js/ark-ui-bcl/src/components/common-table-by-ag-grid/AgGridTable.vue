@@ -117,6 +117,7 @@ export default {
         onFilterChanged: this.onFilterChanged,
         onColumnResized: this.onColumnResized,
         getRowClass: this.getRowClass,
+        onGridSizeChanged: this.onGridSizeChanged
       }
       const defaultColDef = this.options.defaultColDef || {}
       return Object.assign({}, defaultConfig, otherOptions, this.options, {
@@ -192,6 +193,14 @@ export default {
         }
       }
       this.$emit('grid-ready', params)
+    },
+
+    // 表格宽度变化
+    onGridSizeChanged(params) {
+      this.$emit('on-grid-size-changed', params)
+      setTimeout(() => {
+        this._resetColumnWidth()
+      }, 200)
     },
 
     // 设置行数据
@@ -526,8 +535,8 @@ export default {
     },
 
     // 使用api.setRowData()或通过更改rowDatabound属性将新数据设置到网格中
-    onRowDataChanged() {
-      this.$emit('row-data-changed')
+    onRowDataChanged(params) {
+      this.$emit('row-data-changed', params)
     },
 
     // 主体水平或垂直滚动​​
@@ -746,7 +755,7 @@ export default {
         }
         const item = JSON.parse(decodeURI(encodeURI(JSON.stringify(d))));
         item._index = d._index;
-        item.headerName = d.colname === 'ID' ? '序号' : d.name || '未定义';
+        item.headerName = d.colname === 'ID' ? '序号' : d.headerName || d.name;
         item.lockVisible = d.lockVisible || d.colname === 'ID'; // 锁定序号列的隐藏功能
         item.suppressToolPanel = d.suppressToolPanel || d.colname === 'ID'; // 锁定ID列工具栏操作能力
         // item.pinned = d.colname === 'ID' ? 'left' : this._getPinnedState(d.colname); // 将一列固定到一侧
@@ -966,11 +975,21 @@ export default {
     // 调整列宽
     // 规则：1.所有列大于表格宽度时，此时用autoSizeAllColumns  2.所有列小于表格宽度时，此时用sizeColumnsToFit
     _autoSizeColumns() {
+      if(!this.$refs.table) {
+        return
+      }
+      let viewport
+      let container
       const tableDom = this.$refs.table.$el
-      // const viewport = tableDom.querySelector('.ag-body-viewport') // 表格可视区,不含固定列
-      // const container = tableDom.querySelector('.ag-body-container') // 表格所有列的容器
-      const viewport = tableDom.querySelector('.ag-header-viewport') // 表格可视区,不含固定列
-      const container = tableDom.querySelector('.ag-header-container>.ag-header-row') // 表格所有列的容器
+      // oms项目组用标题容器判断有问题。所以改成无数据时用标头容器判断
+      if(this.data.length === 0) {
+        viewport = tableDom.querySelector('.ag-header-viewport') // 表格可视区,不含固定列
+        container = tableDom.querySelector('.ag-header-container>.ag-header-row') // 表格所有列的容器
+      } else {
+        viewport = tableDom.querySelector('.ag-body-viewport') // 表格可视区,不含固定列
+        container = tableDom.querySelector('.ag-body-container') // 表格所有列的容器
+      }
+      
       const viewportWidth = viewport.offsetWidth
       const containerWidth = container.offsetWidth
 
@@ -994,24 +1013,6 @@ export default {
         callback && callback()
       }, 200)
     },
-
-    // 监听窗口缩放
-    _listenOnSize() {
-      const handleColumnWidth = debounce(() => {
-        // 这里需要执行两次_autoSizeColumns
-        // 因为窗口缩小时,大多数情况会是container比viewport。导致与实际展示效果不符(窗口放大时没这个问题)
-        // 所有需要在调整一次列后(第一次执行时，可以保证列少的情况下，使得container小于viewport)，再调整一次，此时，重新比较container和viewport得到正确的结果
-        this._autoSizeColumns()
-        setTimeout(() => {
-          this._autoSizeColumns()
-        }, 50)
-      })
-      window.addEventListener('resize', handleColumnWidth)
-
-      this.$on('hook:beforeDestroy', () => {
-        window.removeEventListener('resize', handleColumnWidth)
-      })
-    }
   },
 
   created() {
@@ -1025,7 +1026,6 @@ export default {
   },
 
   mounted() {
-    this._listenOnSize()
   },
 
   activated() {

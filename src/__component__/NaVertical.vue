@@ -147,7 +147,6 @@
 
 <script>
   import { mapState, mapMutations, mapActions } from 'vuex';
-  import NavigatorPrimaryMenu from './NavigatorPrimaryMenu';
   import SetPanel from './SetPanel';
   import messagePanel from './messagePanel';
   import messagePanelOlder from './messagePanelOlder'; // 1.3
@@ -160,14 +159,11 @@
   import Dialog from './Dialog.vue';
   import { routeTo } from '../__config__/event.config';
   import network, { urlSearchParams } from '../__utils__/network';
-  import NavigatorSubMenu from './NavigatorSubMenu';
   import {
     classFix, STANDARD_TABLE_LIST_PREFIX, Version, enableGateWay, getGatewayValue, enableHistoryAndFavoriteUI, messageSwitch,dashboardConfig
   } from '../constants/global';
   import { updateSessionObject } from '../__utils__/sessionStorage';
-  import { DispatchEvent } from '../__utils__/dispatchEvent'
   import HistoryAndFavorite from './HistoryAndFavorite';
-  import MessagePanelOlder from './messagePanelOlder.vue';
 
   export default {
     name: 'Navigator',
@@ -485,9 +481,6 @@
         setTimeout(()=>{
           let leftWidth = navigator.offsetWidth;
           navigatorMenu.style.left = leftWidth+'px';
-
-          // 调整ag列宽
-          DispatchEvent('resizeAgColumn')
         },500)
       },
       routerNext(name) {

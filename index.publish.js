@@ -3,7 +3,7 @@ import network, { urlSearchParams } from './src/__utils__/network';
 import getModuleName from './src/__utils__/getModuleName';
 import getObjdisType from './src/__utils__/getObjdisType';
 import {
-  getSessionObject, updateSessionObject, deleteFromSessionObject, removeSessionObject 
+  getSessionObject, updateSessionObject, deleteFromSessionObject, removeSessionObject
 } from './src/__utils__/sessionStorage';
 import store from './src/__config__/store.config';
 import router from './src/__config__/router.config';
@@ -24,6 +24,7 @@ import SearchForm from './src/__component__/form/SearchForm.vue';//
 import FilterTree from './src/__component__/Tree/FilterTree.vue';
 import SelectTree from './src/__component__/Tree/SelectTree.vue';
 import DocFile from './src/__component__/docfile/DocFileComponent.vue';
+import Login from './src/__component__/Login/LoginWrap';
 import { menuClick } from './src/__config__/event.config';
 import { connector } from './src/constants/global';
 import './src/constants/dateApi';
@@ -40,12 +41,12 @@ const validateConfig = config => ({
 });
 const packageMessage = {
   version: packJson.version,
-  packageTime: new Date(), 
-  user: 'local',   
+  packageTime: new Date(),
+  user: 'local',
 };
 
 export default {
-  ...packageMessage,      
+  ...packageMessage,
   /**
    * @param projectConfig 项目配置
    * projectConfig: {
@@ -115,7 +116,7 @@ export default {
         return a;
       }, {});
     }
-    
+
     window.ProjectConfig = Object.assign({}, projectConfig, packageMessage);
     launchApp(projectConfig);
   },
@@ -150,6 +151,7 @@ export default {
     VerticalMenu,
     NavigatorVertical,
     NaVertical,
-    ComAutoComplete
+    ComAutoComplete,
+    Login,
   }
 };

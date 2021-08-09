@@ -689,23 +689,6 @@
         if(this.R3_agReady) {
           this.R3_agReady(e)
         }
-        this.handleAgColumnSize()
-      },
-
-       // 收起菜单时调整表格宽度
-      handleAgColumnSize() {
-        const handleAgColumnSize = () => {
-          setTimeout(() => {
-            if(this.$refs.agGridTableContainer) {
-              this.$refs.agGridTableContainer.$refs.agGridTable._resetColumnWidth()
-            }
-          }, 200)
-        }
-        window.addEventListener('resizeAgColumn', handleAgColumnSize)
-
-        this.$on('hook:beforeDestroy', () => {
-          window.removeEventListener('resizeAgColumn', handleAgColumnSize)
-        })
       },
       
       tableRowDbclick(row) {
@@ -839,7 +822,11 @@
             }
 
             // 序号按行索引渲染
+            // 给序号列固定宽
             if (ele.colname === EXCEPT_COLUMN_NAME) {
+              param.webconf = {
+                standard_width: 90
+              }
               param.field = '__ag_sequence_column_name__.val';
             }
 
@@ -2335,7 +2322,7 @@
               return false;
             }
           }
-        } else if (cellData.refcolval && this.copyDataSource.row[params.index][cellData.refcolval.srccol].val === '') {
+        } else if (cellData.refcolval && this.copyDataSource.row[params.index][cellData.refcolval.srccol] &&this.copyDataSource.row[params.index][cellData.refcolval.srccol].val === '') {
           return false;
         }
         return true;
@@ -4394,7 +4381,7 @@
               if (colname && mainTablePanelData.isfk) {
                 fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${mainTablePanelData.refobjid}`;
               }
-            } else if (this.copyDataSource.row[params.index][cellData.refcolval.srccol].val !== '') {
+            } else if (this.copyDataSource.row[params.index][cellData.refcolval.srccol] && this.copyDataSource.row[params.index][cellData.refcolval.srccol].val !== '') {
               // 左右结构取行内的colid
               const obj = this.afterSendData[this.tableName] ? this.afterSendData[this.tableName].find(item => item.ID === params.row.ID && item[cellData.refcolval.srccol]) : undefined;
               if (obj) {
@@ -4403,7 +4390,9 @@
               } else {
                 // ，没有修改过的取默认的
                 // this.$Message.info('请选择关联的表字段');
-                fixedcolumns[cellData.refcolval.fixcolumn] = express + this.dataSource.row[params.index][cellData.refcolval.srccol].refobjid;
+                if(this.dataSource.row[params.index][cellData.refcolval.srccol]) {
+                  fixedcolumns[cellData.refcolval.fixcolumn] = express + this.dataSource.row[params.index][cellData.refcolval.srccol].refobjid;
+                }
               }
             }
             // fixedcolumns[cellData.refcolval.fixcolumn] = row.colid;
@@ -4443,7 +4432,9 @@
               } else {
                 // ，没有修改过的取默认的
                 // this.$Message.info('请选择关联的表字段');
-                fixedcolumns[cellData.refcolval.fixcolumn] = express + this.dataSource.row[params.index][cellData.refcolval.srccol].refobjid;
+                if(this.dataSource.row[params.index][cellData.refcolval.srccol]) {
+                  fixedcolumns[cellData.refcolval.fixcolumn] = express + this.dataSource.row[params.index][cellData.refcolval.srccol].refobjid;
+                }
               }
             }
           }

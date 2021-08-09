@@ -10,7 +10,8 @@
                 :TypeToggle="typeToggle"
                 @toggle="toggle"
                 ref="AccountLogin"
-        ></AccountLogin>
+        >
+        </AccountLogin>
       </template>
       <!--typeToggle!==1-->
       <template v-else>
@@ -21,6 +22,12 @@
                 ref="PhoneLogin"
         ></PhoneLogin>
       </template>
+      <div @click="login">
+        <template v-if="$slots.loginBtn">
+          <slot name="loginBtn"></slot>
+        </template>
+        <div v-else="!$slots.loginBtn" id="btn" class="btn"/>
+      </div>
       <Spin v-show="spinShow" fix>
         <div class="loader">
           <svg class="circular" viewBox="25 25 50 50">
@@ -29,8 +36,6 @@
         </div>
       </Spin>
     </div>
-    <!--修改密码弹窗-->
-    <ModalPwd ref="pwd"/>
   </div>
 </template>
 
@@ -39,11 +44,10 @@
   import PhoneLogin from './PhoneLogin';
   import {enableGateWay, Version, encryptedPassword, classFix, enableLoginPro} from '../../constants/global';
   import network, {urlSearchParams} from '../../__utils__/network';
-  import ModalPwd from './ModalPwd';
 
   export default {
     name: 'Login',
-    components: {AccountLogin, PhoneLogin, ModalPwd},
+    components: {AccountLogin, PhoneLogin},
     data() {
       return {
         globalServiceId: window.localStorage.getItem('serviceId') || '',
@@ -61,9 +65,6 @@
           this.login();
         }
       };
-    },
-    mounted() {
-      // this.$refs.pwd.open()
     },
     computed: {
       classes() {
@@ -195,7 +196,15 @@
               return this.login()
             }
           }
-          if (r.data.code === 0) {
+          if (r.code === -1) {
+            return this.$Modal.fcWarning({
+              title: '安全提示',
+              content: r.message,
+              mask: true,
+            })
+
+          }
+          if (r.data && r.data.code === 0) {
             const exp = r.data.data.isPasswordExpire;
             if (exp) {
               const tips = await this.checkPwdDays();
