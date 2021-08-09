@@ -458,13 +458,17 @@ export default {
     
     this.setdefaultColumn =  this.defaultColumn;
     this.dowClass = !this.defaultSpread;
-    if(this.search){
-       this.setColumn();
-       window.addEventListener('resize', this.setColumn)
-    }
+    
   },
   mounted(){
       this.$el._vue_ = this;
+      if(this.search){
+       setTimeout(()=>{
+          this.setColumn();
+          window.addEventListener('resize', this.setColumn)
+
+       },100)
+    }
   },
   watch: {
     formItemLists: {
