@@ -55,8 +55,9 @@ export default {
            filtercolval(this,this.items.webconf.filtercolval)
          }
           //  清空字段refcolval
-          if(this.actived){
+          if(this.actived && !this.typesource){
             clearFormRefcolval(this);
+            this.typesource = '';
           }
           
         }else if(this.items.Query){
