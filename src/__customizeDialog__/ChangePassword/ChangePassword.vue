@@ -213,7 +213,7 @@
         }).then((res) => {
           if (res.data.code === 0) {
             const message = {
-              title: '成功',
+              title: this.$t('feedback.success'),
               content: res.data.message
             };
             this.$Modal.fcSuccess(message);

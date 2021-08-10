@@ -200,7 +200,7 @@
         iconShow: true,
         keyWord: '',
         dialogConfig: {
-          title: '提示',
+          title: this.$t('feedback.alert'),
           mask: true,
           footerHide: false,
           contentText: '',

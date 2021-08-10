@@ -7,6 +7,7 @@ import router from './__config__/router.config';
 import routerPrototype from './__config__/router.prototype';
 import store from './__config__/store.config';
 import App from './App';
+import i18n from './assets/js/i18n';
 import './constants/dateApi';
 import network from './__utils__/network';
 import { DispatchEvent } from './__utils__/dispatchEvent';
@@ -70,6 +71,7 @@ const init = () => {
   window.vm = new Vue({
     router,
     store,
+    i18n,
     render: createElement => createElement(App)
   }).$mount(rootDom);
   
@@ -151,7 +153,7 @@ const backTouristRoute = () => {
 
 const setMessage = (data) => {
   window.vm.$Modal.fcError({
-    title: '提示',
+    title: i18n.t('feedback.alert'),
     content: data.content,
     cancelType: true,
     titleAlign: 'left',
@@ -185,12 +187,12 @@ const getCategory = () => {
         DispatchEvent('gatewayReady');
       } else if (getLocalObject('loginStatus') === true) {
         // getSessionObject('loginStatus') === true
-        setMessage({ content: '当前用户无菜单权限,将为您跳转到登陆界面' });
+        setMessage({ content: i18n.t('messages.NoMenuPermission') });
       }
     }).catch(() => {
       // router.push({ path: getTouristRoute() });
       if (getSessionObject('loginStatus') === true) {
-        setMessage({ content: '当前用户无菜单权限,将为您跳转到登陆界面' });
+        setMessage({ content: i18n.t('messages.NoMenuPermission') });
       }
     });
   }

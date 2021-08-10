@@ -233,7 +233,7 @@
                   }
                 if (title === 'ID') {
                   arr.unshift({
-                    title: '序号',
+                    title: this.$t('table.index'),
                     key: `${item.colname}`,
                     render: (h, params) => h('div', {
                       domProps: {

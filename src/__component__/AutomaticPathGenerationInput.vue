@@ -37,7 +37,7 @@ export default {
         automaticPathGenerationValue: '',
         dialogComponentName: null,
         dialogConfig: {
-          title: '提示',
+          title: this.$t('feedback.alert'),
           mask: true,
           footerHide: false,
           contentText: '',

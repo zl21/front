@@ -292,7 +292,7 @@
                   'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
                 }
               }),
-              h('Span', '编辑')
+              h('Span', this.$t('buttons.edit'))
             ]),
           },
           {
@@ -325,7 +325,7 @@
                   'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
                 }
               }),
-              h('Span', '删除')
+              h('Span', this.$t('buttons.delete'))
             ]),
           },
           {
@@ -358,7 +358,7 @@
                   'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
                 }
               }),
-              h('Span', '作废')
+              h('Span', this.$t('buttons.invalid'))
             ]),
           },
           {
@@ -391,7 +391,7 @@
                   'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
                 }
               }),
-              h('Span', '提交')
+              h('Span', this.$t('buttons.submit'))
             ]),
           },
           {
@@ -457,7 +457,7 @@
                   'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
                 }
               }),
-              h('Span', '导出')
+              h('Span', this.$t('buttons.export'))
             ]),
           },
           {
@@ -490,7 +490,7 @@
                   'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
                 }
               }),
-              h('Span', '打印')
+              h('Span', this.$t('buttons.print'))
             ]),
           },
           {
@@ -602,7 +602,7 @@
         this.getSaveData();
         if (this.tableSaveData.length > 0) {
           this.$Modal.fcWarning({
-            title: '提示',
+            title: this.$t('feedback.alert'),
             mask: true,
             showCancel: true,
             content: '是否保存修改的数据！',
@@ -633,24 +633,12 @@
               this.buttonsData = res.data.data;
               if (Version() === '1.4') {
                 this.buttonsData.push({
-                  webdesc: '刷新'
+                  webdesc: this.$t('buttons.refresh')
                 });
               }
             }
           }
         });
-        // network.post('/p/cs/fetchActionsInCustomizePage', { AD_ACTION_NAME: 'functionPermission' })
-        //   .then((res) => {
-        //     if (res.data.code === 0) {
-        //       this.buttonsData = res.data.data;
-        //       this.buttonsData.push({
-        //         webdesc: '刷新'
-        //       });
-        //     }
-        //   })
-        //   .catch((err) => {
-        //     throw err;
-        //   });
       }, // 获取按钮数据
       menuClick(index, item) {
         this.menuHighlightIndex = index;
@@ -840,7 +828,7 @@
                 this.allTabthSelected();
               } else {
                 this.$Modal.fcWarning({
-                  title: '提示',
+                  title: this.$t('feedback.alert'),
                   mask: true,
                   content: res.data.message,
                 });
@@ -848,72 +836,6 @@
             }
           }
         });
-        // network.post('/p/cs/queryMenuPermission', obj)
-        //   .then((res) => {
-        //     this.spinShow = false;
-        //     if (res.data.code === 0) {
-        //       if (res.data.data) {
-        //         const resData = res.data.data;
-        //         this.tableData = resData.reduce((acc, cur) => {
-        //           const disabledArr = cur.mask.split('');
-        //           const valueArr = this.toBin(cur.permission).split('');
-        //           // 查看
-        //           cur.seeDisabled = disabledArr[0] === '0';
-        //           cur.seeValue = valueArr[0] === '1';
-        //
-        //           // 编辑
-        //           cur.editDisabled = disabledArr[1] === '0';
-        //           cur.editValue = valueArr[1] === '1';
-        //
-        //           // 删除
-        //           cur.deleteDisabled = disabledArr[2] === '0';
-        //           cur.deleteValue = valueArr[2] === '1';
-        //
-        //           // 作废
-        //           cur.toVoidDisabled = disabledArr[3] === '0';
-        //           cur.toVoidValue = valueArr[3] === '1';
-        //
-        //           // 提交
-        //           cur.commitDisabled = disabledArr[4] === '0';
-        //           cur.commitValue = valueArr[4] === '1';
-        //
-        //           // 反提交
-        //           cur.unCommitDisabled = disabledArr[5] === '0';
-        //           cur.unCommitValue = valueArr[5] === '1';
-        //
-        //           // 导出
-        //           cur.exportDisabled = disabledArr[6] === '0';
-        //           cur.exportValue = valueArr[6] === '1';
-        //
-        //           // 打印
-        //           cur.printDisabled = disabledArr[7] === '0';
-        //           cur.printValue = valueArr[7] === '1';
-        //
-        //           // 扩展
-        //           cur.extendDisabled = cur.actionList.length === 0;
-        //           cur.extendValue = cur.actionList.length > 0 ? this.getExtendValue(cur.actionList) : false;
-        //
-        //           acc.push(cur);
-        //           return acc;
-        //         }, []);
-        //         this.getExtendTableData(this.tableData[0], 0);
-        //         this.backupsTableData = JSON.parse(JSON.stringify(this.tableData));
-        //         this.tableDefaultSelectedRowIndex = 0;
-        //
-        //         this.allTabthSelected();
-        //       } else {
-        //         this.$Modal.fcWarning({
-        //           title: '提示',
-        //           mask: true,
-        //           content: res.data.message,
-        //         });
-        //       }
-        //     }
-        //   })
-        //   .catch((err) => {
-        //     this.spinShow = false;
-        //     throw err;
-        //   });
       }, // 获取表格数据
       getExtendValue(data) {
         const arr = data.reduce((acc, cur) => {
@@ -942,11 +864,11 @@
         }
       }, // 树选中改变触发
       btnClick(item) {
-        if (item.webdesc === '刷新') {
+        if (item.webdesc === this.$t('buttons.refresh')) {
           this.refreshButtonClick();
         } else if (item.webdesc === '复制权限') {
           this.copyPerm();
-        } else if (item.webdesc === '保存') {
+        } else if (item.webdesc === this.$t('buttons.save')) {
           this.savePermission();
         }
       }, // 点击按钮触发

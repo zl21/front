@@ -74,7 +74,7 @@
         Condition: 'list',
         changeType: 'Modify',
         objids: [],
-        poptitle: '批量修改',
+        poptitle: this.$t('buttons.batchEdit'),
         loading: false,
         type: false, // 判断是勾选 还是批量
         router: {},
@@ -141,15 +141,6 @@
               inpubobj: childs,
               objviewcol: val.objviewcol
             };
-            // this.newformList = {
-            //   addcolums: [{
-            //     hrdisplay: 'expand',
-            //     parentdesc: '批量修改',
-            //     parentname: val.addcolums[0].parentname,
-            //     childs
-            //   }],
-            //   objviewcol: val.objviewcol
-            // };
           }
         },
         deep: true

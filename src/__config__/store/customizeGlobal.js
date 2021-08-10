@@ -3,6 +3,7 @@ import store from '../store.config';
 import router from '../router.config';
 import { getKeepAliveModuleName } from '../router.navigation.guard';
 import jordanstore from './jordanStore';
+import i18n from '../../assets/js/i18n';
 
 
 export const globalStore = {// 1.3框架全局状态管理
@@ -171,7 +172,7 @@ export const globalStore = {// 1.3框架全局状态管理
       } else {
         state.errorDialog.type = 'error';
       }
-      state.errorDialog.title = data.type == 'warning' ? '警告' : '错误';
+      state.errorDialog.title = data.type == 'warning' ? i18n.t('feedback.warning') : '错误';
 
       if (data.title) {
         state.errorDialog.title = data.title;

@@ -400,7 +400,7 @@
                 type: 'index',
                 width: 60,
                 align: 'left',
-                title: '序号'
+                title: this.$t('table.index')
               }
             ];
             this.columns = defaultColumns.concat(res.data.data.tabth.reduce((acc, cur) => {
@@ -630,7 +630,7 @@
                       } else {
                         const data = {
                           mask: true,
-                          title: '提示',
+                          title: this.$t('feedback.alert'),
                           content: '该权限表已经设置数据权限，请重新选择！',
                           onOk: () => {
                             // params.row[params.column.colname] = '';
@@ -879,16 +879,10 @@
             this.selectTableKey = headerDataArr[0];
           }
           this.dataPermissionColumns = [{
-            title: '序号',
+            title: this.$t('table.index'),
             render: this.serialNumberRender()
           }].concat(Object.keys(headerData).reduce((acc, cur) => {
             const obj = {};
-            // if (cur === 'ID') {
-            //   // obj.title = '序号';
-            //   obj.title = headerData[cur];
-            // } else {
-            //   obj.title = headerData[cur];
-            // }
             if (cur !== 'ID') {
               obj.title = headerData[cur];
               obj.key = cur;
@@ -951,7 +945,7 @@
               promiseArr.push(index);
             });
             Promise.all(promiseArr).then(() => {
-              this.$Message.success('保存成功');
+              this.$Message.success(this.$t('feedback.saveSuccess'));
               this.tableSaveData = [];
               this.getTableData();
             });
@@ -1037,7 +1031,7 @@
         if (this.tableDeleteData.length > 0) {
           if (this.checkTableAllSaveData()) {
             this.$Modal.fcWarning({
-              title: '提示',
+              title: this.$t('feedback.alert'),
               mask: true,
               showCancel: true,
               content: '是否确定要删除选中的数据！',
@@ -1055,7 +1049,7 @@
             });
           } else {
             this.$Modal.fcWarning({
-              title: '提示',
+              title: this.$t('feedback.alert'),
               mask: true,
               content: '还有未保存的数据！',
               onOk: () => {
@@ -1064,7 +1058,7 @@
           }
         } else {
           this.$Modal.fcWarning({
-            title: '提示',
+            title: this.$t('feedback.alert'),
             mask: true,
             content: '请选择要删除的数据！',
             onOk: () => {

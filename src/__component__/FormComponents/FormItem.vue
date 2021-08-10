@@ -261,7 +261,7 @@ export default {
 
 
       const placeholder = this.items.props.webconf && this.items.props.webconf.placeholder ? this.items.props.webconf.placeholder : null;
-      item.props.placeholder = placeholder || `${(dataProp[item.type] && dataProp[item.type].props) ? dataProp[item.type].props.placeholder : '请输入'}${item.title}`;
+      item.props.placeholder = placeholder || `${(dataProp[item.type] && dataProp[item.type].props) ? dataProp[item.type].props.placeholder : this.$t('form.inputPlaceholder')}${item.title}`;
 
 
       if (item.type === 'docfile') {
@@ -291,7 +291,7 @@ export default {
 
           item.props.dialog.model['footer-hide'] = false;
           item.props.datalist.forEach((option, i) => {
-            if (option.value === '导入') {
+            if (option.value === this.$t('buttons.import')) {
               item.props.datalist[i].url = item.props.fkobj.url;
               item.props.datalist[i].sendData = {
                 table: item.props.fkobj.reftable
@@ -459,7 +459,7 @@ export default {
       } else {
         const data = {
           mask: true,
-          title: '警告',
+          title: this.$t('feedback.warning'),
           content: '请设置外键关联表的显示配置'
         };
         this.$Modal.fcWarning(data);

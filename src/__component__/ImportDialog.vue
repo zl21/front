@@ -342,7 +342,7 @@
       submitUpload() {
         if (this.files.length === 0) {
           this.$Modal.fcWarning({
-            title: '警告',
+            title: this.$t('feedback.warning'),
             mask: true,
             content: '请先选择要导入的文件！'
           });
@@ -403,7 +403,7 @@
             this.closeDialog();
             this.fileName = '';
             this.$Modal.fcSuccess({
-              title: '成功',
+              title: this.$t('feedback.success'),
               mask: true,
               content: response.message
             });
@@ -433,11 +433,6 @@
             ];
           }
           this.errorMsg.message = response.message;
-          // this.$Modal.fcWarning({
-          //   title: '警告',
-          //   mask: true,
-          //   content: response.message
-          // });
           this.clearFile();
           this.$emit('confirmImport');
         }
@@ -467,7 +462,7 @@
         window.vm.$Modal.fcError({
           mask: true,
           titleAlign: 'center',
-          title: '错误',
+          title: this.$t('feedback.error'),
           render: h => h('div', {
             style: {
               padding: '10px 20px 0',

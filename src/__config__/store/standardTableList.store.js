@@ -2,7 +2,7 @@
 // import actions from '../actions/standardTableList.actions';
 // import mutations from '../mutations/standardTableList.mutations';
 import { Version } from '../../constants/global';
-
+import i18n from '../../assets/js/i18n';
 
 // eslint-disable-next-line import/no-dynamic-require
 
@@ -133,7 +133,7 @@ export default () => ({
       importTemplate: {},
       mask: true,
       dialogConfig: {
-        title: '提示',
+        title: i18n.t('feedback.alert'),
         mask: true,
         footerHide: false,
         contentText: '',

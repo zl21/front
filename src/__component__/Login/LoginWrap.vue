@@ -83,7 +83,7 @@
           const {username, password} = this.$refs.AccountLogin.$refs;
           if (username.value === '') {
             message = {
-              title: '错误',
+              title: this.$t('feedback.error'),
               content: '请输入用户名',
               mask: true,
             };
@@ -91,7 +91,7 @@
             this.$Modal.fcError(message);
           } else if (password.value === '') {
             message = {
-              title: '错误',
+              title: this.$t('feedback.error'),
               content: '请输入密码',
               mask: true,
             };
@@ -112,7 +112,7 @@
           if (this.typeToggle === 1) {
             if (this.$refs.AccountLogin.$refs.username.value === '') {
               message = {
-                title: '错误',
+                title: this.$t('feedback.error'),
                 content: '请输入用户名',
                 mask: true,
               };
@@ -120,7 +120,7 @@
               this.$Modal.fcError(message);
             } else if (this.$refs.AccountLogin.$refs.password.value === '') {
               message = {
-                title: '错误',
+                title: this.$t('feedback.error'),
                 content: '请输入密码',
                 mask: true,
               };
@@ -129,7 +129,7 @@
             } else if (!this.$refs.AccountLogin.$refs.code.value) {
               this.spinShow = false;
               this.$Modal.fcError({
-                title: '错误',
+                title: this.$t('feedback.error'),
                 content: '请输入验证码',
                 mask: true,
               });
@@ -148,14 +148,14 @@
             if (!this.$refs.PhoneLogin.$refs.phone.value) {
               this.spinShow = false;
               this.$Modal.fcError({
-                title: '错误',
+                title: this.$t('feedback.error'),
                 content: '请输入手机号',
                 mask: true,
               });
             } else if (!this.$refs.PhoneLogin.$refs.sendcode.value) {
               this.spinShow = false;
               this.$Modal.fcError({
-                title: '错误',
+                title: this.$t('feedback.error'),
                 content: '请输入短信验证码',
                 mask: true,
               });

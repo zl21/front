@@ -1,4 +1,4 @@
-
+import i18n from './i18n';
 
 const buttonmap = {
   LOADING: '服务器处理中',
@@ -47,19 +47,19 @@ const buttonmap = {
     action: '',
   },
   CMD_GROUPMODIFY: {
-    name: '批量修改',
+    name: i18n.t('buttons.batchEdit'),
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_EXPORT: {
-    name: '导出',
+    name: i18n.t('buttons.export'),
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_ADD: {
-    name: '新增',
+    name: i18n.t('buttons.add'),
     icon: '',
     defbutton: 'S',
     action: '',
@@ -71,37 +71,37 @@ const buttonmap = {
   //   action: '',
   // },
   CMD_MODIFY: {
-    name: '保存',
+    name: i18n.t('buttons.save'),
     icon: '',
     defbutton: 'N',
     action: '',
   },
   CMD_DELETE: {
-    name: '删除',
+    name: i18n.t('buttons.delete'),
     icon: '',
     defbutton: 'X',
     action: '',
   },
   CMD_REF_DELETE: {
-    name: '删除明细',
+    name: i18n.t('buttons.deleteDetails'),
     icon: '',
     defbutton: 'X',
     action: '',
   },
   CMD_SUBMIT: {
-    name: '提交',
+    name: i18n.t('buttons.submit'),
     icon: '',
     defbutton: 'G',
     action: '',
   },
   CMD_UNSUBMIT: {
-    name: '取消提交',
+    name: i18n.t('buttons.cancelSubmission'),
     icon: '',
     defbutton: 'G',
     action: '',
   },
   CMD_REFRESH: {
-    name: '刷新',
+    name: i18n.t('buttons.refresh'),
     icon: '',
     defbutton: 'J',
     action: '',
@@ -114,13 +114,13 @@ const buttonmap = {
     action: '',
   },
   CMD_IMPORT: {
-    name: '导入',
+    name: i18n.t('buttons.import'),
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_CANCOPY: {
-    name: '复制',
+    name: i18n.t('buttons.copy'),
     icon: '',
     defbutton: null,
     action: '',
@@ -152,7 +152,7 @@ const buttonmap = {
   CMD_PRINT_LIST: '打印',
   CMD_PRINT_SELECT: '套打',
   CMD_EXPORT_LIST: {
-    name: '导出',
+    name: i18n.t('buttons.export'),
     icon: '',
     defbutton: null,
     action: '',
@@ -164,7 +164,7 @@ const buttonmap = {
     action: '',
   },
   CMD_BATCHMODIFY: {
-    name: '批量修改',
+    name: i18n.t('buttons.batchEdit'),
     icon: '',
     defbutton: null,
     action: '',
@@ -202,7 +202,7 @@ const buttonmap = {
   CONFIRM_MESSAGE: '共有$$条需要确认',
   ALL_NOTICES: '全部通告',
   CMD_VOID: {
-    name: '作废',
+    name: i18n.t('buttons.invalid'),
     icon: '',
     defbutton: null,
     action: '',

@@ -130,7 +130,7 @@
       resetForm() {
         // 列表查询重置
         this.$Modal.fcWarning({
-          title: '警告',
+          title: this.$t('feedback.warning'),
           content: '确定重置?',
           showCancel: true,
           onOk: () => {

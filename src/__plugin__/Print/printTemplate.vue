@@ -92,7 +92,7 @@
           .then((res) => {
             if (res.data.code !== 0) {
               const data = {
-                title: '错误',
+                title: this.$t('feedback.error'),
                 content: res.data
               };
               this.$Modal.fcError(data);
@@ -134,7 +134,7 @@
           .then((res) => {
             if (res.data.code !== 0) {
               const data = {
-                title: '错误',
+                title: this.$t('feedback.error'),
                 content: res.data
               };
               this.$Modal.fcError(data);

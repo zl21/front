@@ -277,7 +277,7 @@
           }
         } else {
           this.$Modal.fcError({
-            title: '错误',
+            title: this.$t('feedback.error'),
             content: res.message,
             mask: true
           });
@@ -301,7 +301,7 @@
         this.$Modal.fcWarning({
           mask: true,
           showCancel: true,
-          title: '提示',
+          title: this.$t('feedback.alert'),
           content: '此操作将永久删除该文件, 是否继续?',
           onOk: () => {
             this.docList.valuedata.splice(index, 1);

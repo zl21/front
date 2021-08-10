@@ -379,7 +379,7 @@
       attachFile(index, res, instance) {
         if (res.code !== 0) {
           this.$Modal.fcError({
-            title: '错误',
+            title: this.$t('feedback.error'),
             content: res.message,
             mask: true
           });

@@ -105,7 +105,7 @@
         versionNumber: '', // 版本号
         errorDialog: false, // errorDialog
         errorDialogClass: 'error', // 弹框类型
-        errorDialogTitle: '错误', // 弹框标题
+        errorDialogTitle: this.$t('feedback.error'), // 弹框标题
         errorData: [{ message: '' }], // 弹框内容
         errorDialogBack: false, // 是否有返回按钮
         chineseName: {}, // 名字集合
@@ -186,7 +186,7 @@
         if (!this.t_table_name.trim()) {
           const data = {
             mask: true,
-            title: '警告',
+            title: this.$t('feedback.warning'),
             content: '请输入目标表名'
           };
           this.$Modal.fcWarning(data);
@@ -195,7 +195,7 @@
         if (!this.s_table_name.trim()) {
           const data = {
             mask: true,
-            title: '警告',
+            title: this.$t('feedback.warning'),
             content: '请输入目标描述'
           };
           this.$Modal.fcWarning(data);
@@ -204,7 +204,7 @@
         if (!this.version.ID) {
           const data = {
             mask: true,
-            title: '警告',
+            title: this.$t('feedback.warning'),
             content: '请输入版本号'
           };
           this.$Modal.fcWarning(data);
@@ -235,7 +235,7 @@
             }
             const data = {
               mask: true,
-              title: '成功',
+              title: this.$t('feedback.success'),
               content: '克隆成功'
             };
             this.$R3loading.hide(this.loadingName);

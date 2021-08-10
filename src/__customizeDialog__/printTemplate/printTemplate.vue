@@ -94,7 +94,7 @@
         if (!printId) {
           const data = {
             mask: true,
-            title: '警告',
+            title: this.$t('feedback.warning'),
             content: '请选择一个模版'
           };
           this.$Modal.fcWarning(data);
@@ -111,7 +111,7 @@
               const message = res.data.message;
               const data = {
                 mask: true,
-                title: '成功',
+                title: this.$t('feedback.success'),
                 content: message
               };
               this.$Modal.fcSuccess(data);

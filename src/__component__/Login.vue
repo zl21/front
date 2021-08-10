@@ -94,14 +94,14 @@
         let message = {};
         if (this.$refs.username.value === '') {
           message = {
-            title: '错误',
+            title: this.$t('feedback.error'),
             content: '请输入用户名'
           };
           this.spinShow = false;
           this.$Modal.fcError(message);
         } else if (this.$refs.password.value === '') {
           message = {
-            title: '错误',
+            title: this.$t('feedback.error'),
             content: '请输入密码'
           };
           this.spinShow = false;

@@ -69,7 +69,7 @@
       return {
         leftTableColumns: [
           {
-            title: '序号',
+            title: this.$t('table.index'),
             type: 'index',
             width: 60,
             align: 'center'
@@ -89,7 +89,7 @@
 
         rightTableColumns: [
           {
-            title: '序号',
+            title: this.$t('table.index'),
             type: 'index',
             width: 60,
             align: 'center'

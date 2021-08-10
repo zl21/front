@@ -67,11 +67,15 @@
       }, // 是否显示底部
       okText: {
         type: String,
-        default: () => '确定'
+        default: function() {
+          return this.$t('buttons.confirm')
+        }
       },
       cancelText: {
         type: String,
-        default: () => '取消'
+        default: function() {
+          return this.$t('buttons.cancel')
+        }
       },
       cancelFun: {
         type: Function,

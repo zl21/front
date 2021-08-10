@@ -122,7 +122,7 @@
             },
             pageNum: 1,
             height: true,
-            searchName: '全局检索',
+            searchName: this.$t('actions.globalSearch'),
             checked: false
           },
           {
@@ -645,7 +645,6 @@
         if (JSON.stringify(this.listData.id) !== '' && JSON.stringify(this.listData.id) !== '[]') {
           this.listtdata('tip');
         }
-        // this.$Message.info('请选择');
       },
       listtdata() {
         if (this.checkbox) {

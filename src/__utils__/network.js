@@ -3,6 +3,7 @@ import md5 from 'md5';
 import router from '../__config__/router.config';
 import store from '../__config__/store.config';
 import { matchedUrl } from "./utils";
+import i18n from '../assets/js/i18n';
 
 import {
   ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, getProjectQuietRoutes, REQUEST_PENDDING_EXPIRE, getTouristRoute, logoutTips, Version, filterUrlForNetworkScript, getFilterUrlForNetworkData,autoGatewayUrl
@@ -131,7 +132,7 @@ axios.interceptors.response.use(
     if (filterUrlForNetworkScript(filterUrlParams)) {
       if ((response.data.code === -1 || response.data.code === -2)) {
         let errorHTML = Array.isArray(response.data.error || response.data.data) && (response.data.error || response.data.data).reduce((arr, x) => {
-          arr.push(`<p>${x.objid ? `objid${x.objid}` : '修改失败'}:${x.message}</p>`); return arr;
+          arr.push(`<p>${x.objid ? `objid${x.objid}` : i18n.t('feedback.modifyFail')}:${x.message}</p>`); return arr; 
         }, []).join('') || '';
         // if (!config.url.includes('/p/cs/batchSave')) {
         //   errorHTML = '';
@@ -139,7 +140,7 @@ axios.interceptors.response.use(
         // 处理1.4版本的error明细报错
         if (response.data.data && Array.isArray(response.data.data.errors)) {
           errorHTML = response.data.data.errors.reduce((arr, x) => {
-            arr.push(`<p>${x.id ? `明细${x.id}` : '修改失败'}:${x.message}</p>`); return arr;
+            arr.push(`<p>${x.id ? `${i18n.t('feedback.detail')}${x.id}` : i18n.t('feedback.modifyFail')}:${x.message}</p>`); return arr; 
           }, []).join('') || '';
         }
         let Modalflag = true;
@@ -156,7 +157,7 @@ axios.interceptors.response.use(
           window.vm.$Modal.fcError({
             mask: true,
             titleAlign: 'center',
-            title: '错误',
+            title: i18n.t('feedback.error'),
             // content: formatJsonEmg
             render: h => h('div', [
               h('div', {
@@ -249,8 +250,8 @@ axios.interceptors.response.use(
       if (status === 403) {
         if (logoutTips() && getProjectQuietRoutes().indexOf(router.currentRoute.path) === -1) {
           window.vm.$Modal.fcWarning({
-            title: '警告',
-            content: '您已失去会话，是否退出登录?',
+            title: i18n.t('feedback.warning'),
+            content: i18n.t('messages.lostSession'),
             mask: true,
             showCancel: true,
             onOk: () => {
@@ -294,7 +295,7 @@ axios.interceptors.response.use(
           window.vm.$Modal.fcError({
             mask: true,
             titleAlign: 'center',
-            title: '错误',
+            title: i18n.t('feedback.error'),
             // content: formatJsonEmg
             render: h => h('div', {
               style: {

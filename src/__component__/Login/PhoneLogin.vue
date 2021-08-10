@@ -55,7 +55,7 @@
       async sendErCode() {
         const phoneNo = this.$refs.phone.value;
         if (!(/^1[3456789]\d{9}$/.test(phoneNo))) return this.$Modal.fcError({
-          title: '错误',
+          title: this.$t('feedback.error'),
           content: '请输入正确的手机号'
         });
         const code = await this.getMessageCode(phoneNo);

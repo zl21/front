@@ -85,7 +85,7 @@
         if (!this.envValue) {
           const data = {
             mask: true,
-            title: '警告',
+            title: this.$t('feedback.warning'),
             content: '请选择环境'
           };
           this.$Modal.fcWarning(data);
@@ -99,7 +99,7 @@
         if (this.idArray.length === 0) {
           const data = {
             mask: true,
-            title: '警告',
+            title: this.$t('feedback.warning'),
             content: '当前的操作会执行全量覆盖！是否继续？',
             showCancel: true,
             onOk: () => {
@@ -133,7 +133,7 @@
               const message = res.data.message;
               const datas = {
                 mask: true,
-                title: '成功',
+                title: this.$t('feedback.success'),
                 content: message
               };
               this.$Modal.fcSuccess(datas);

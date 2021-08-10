@@ -263,22 +263,14 @@
       return {
         tabIndex: null,
         buttonGroup: [
-          { name: '保存', eName: 'save' },
-          { name: '刷新', eName: 'refresh' },
-          { name: '返回', eName: 'back' }
+          { name: this.$t('buttons.save'), eName: 'save' },
+          { name: this.$t('buttons.refresh'), eName: 'refresh' },
+          { name: this.$t('buttons.back'), eName: 'back' }
 
 
         ],
         saveParams: {},
         dialogShow: false,
-        // dialogConfig: {
-        //   title: '提示',
-        //   mask: true,
-        //   footerHide: false,
-        //   contentText: '',
-        //   confirm: () => {
-        //   }
-        // }, // 弹框配置信息
         objId: '',
         openCollapse: '1',
         video: '',
@@ -516,7 +508,7 @@
         network.post('/p/cs/objectSave', urlSearchParams(obj)).then((res) => {
           const message = res.data.message;
           const data = {
-            title: '成功',
+            title: this.$t('feedback.success'),
             content: `${message}`
           };
           this.$Message.success(data);
@@ -552,7 +544,7 @@
           const message = '上传图片只能是 JPG,PNG,GIF 格式!';
           const data = {
             mask: true,
-            title: '错误',
+            title: this.$t('feedback.error'),
             content: `${message}`
           };
           this.$Modal.fcError(data);
@@ -562,7 +554,7 @@
           const message = '上传图片大小不能超过 2MB!';
           const data = {
             mask: true,
-            title: '错误',
+            title: this.$t('feedback.error'),
             content: `${message}`
           };
           this.$Modal.fcError(data);
@@ -580,7 +572,7 @@
           const message = `最多上传${15 - this.proImg.length}张图片`;
           const data = {
             mask: true,
-            title: '错误',
+            title: this.$t('feedback.error'),
             content: `${message}`
           };
           this.$Modal.fcError(data);

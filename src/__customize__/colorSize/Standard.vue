@@ -226,7 +226,7 @@
               const result = res.data;
               const message = result.message;
               const data = {
-                title: '成功',
+                title: this.$t('feedback.success'),
                 content: `${message}`
               };
               this.$Message.success(data);
