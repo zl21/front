@@ -199,8 +199,9 @@
         slotTableTemplate:'', // 接入外部的渲染组件
         callbackFun:()=>{  // 回调函数
               
-        }
-       
+        },
+        currentItemId: '', 
+        currentTableId: ''
         // tableName: this[INSTANCE_ROUTE_QUERY].tableName
       };
     },
@@ -505,6 +506,9 @@
       this.$el._vue_=this;
     },
     created() {
+      const { tableId, itemId } = this[INSTANCE_ROUTE_QUERY];
+      this.currentTableId = tableId;
+      this.currentItemId = itemId;
       this.generateComponent();
     },
     methods: {
@@ -515,6 +519,11 @@
       // 转移水印
       getTransferDom() {
         let value = false // 默认不转移节点
+
+        if(this.currentItemId !== this.$route.params.itemId || this.currentTableId !== this.$route.params.tableId) {
+          return value
+        }
+        
         if(window.ProjectConfig.domPortal && window.ProjectConfig.domPortal.waterMark) {
           value = window.ProjectConfig.domPortal.waterMark({
             fromComponent: 'SingleObjectTabComponent',

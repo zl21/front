@@ -524,6 +524,9 @@
       // 转移水印
       getTransferDom() {
         let value = false // 默认不转移节点
+        if(this.itemId !== this.$route.params.itemId || this.tableId !== this.$route.params.tableId) {
+          return value
+        }
         if(window.ProjectConfig.domPortal && window.ProjectConfig.domPortal.waterMark) {
           value = window.ProjectConfig.domPortal.waterMark({
             fromComponent: 'SingleObjectButtons', // 用于区别哪个组件的水印
