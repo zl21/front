@@ -193,6 +193,7 @@ export const setNewlValue = ($this,name,tableName,value) => {
                         return arr;
                     }, []);
                     $vm.value =values;
+                    $vm.typesource = 'formRequest';
 
                 }
            }else if(value[$vm.items.colname].COLUMN_TYPE === 1){
