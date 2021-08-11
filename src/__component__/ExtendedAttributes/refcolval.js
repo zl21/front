@@ -144,7 +144,7 @@ export const setFixedcolumns = ($this, type) => {
               }
               let id = $this.activeTab.keepAliveModuleName.split('.');
               return {
-                ID:id[id.length-1]
+                [webconf.refcolval.fixcolumn]:id[id.length-1]
               }
         }
         if(!$this._srccolValue){
