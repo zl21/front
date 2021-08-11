@@ -1,7 +1,7 @@
 <template>
   <div :class="classes">
     <div
-      v-if="itemInfo.tabrelation==='1:1'&&watermarkimg"
+      v-if="type === 'vertical' && itemInfo.tabrelation==='1:1'&&watermarkimg"
       class="submit-img"
       v-dom-portal="getTransferDom()"
     >
