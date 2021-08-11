@@ -518,9 +518,12 @@
 
       // 转移水印
       getTransferDom() {
+        // fix: 切换tab会导致水印跑到其他tab里
+        if(!this.tabIndexCache) {
+          this.tabIndexCache = this.currentTabIndex
+        }
         let value = false // 默认不转移节点
-
-        if(this.currentItemId !== this.$route.params.itemId || this.currentTableId !== this.$route.params.tableId) {
+        if(this.currentItemId !== this.$route.params.itemId || this.currentTableId !== this.$route.params.tableId || this.currentTabIndex !== this.tabIndexCache) {
           return value
         }
         
