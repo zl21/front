@@ -523,10 +523,16 @@
       
       // 转移水印
       getTransferDom() {
+        // fix: 切换tab会导致水印跑到其他tab里
+        if(!this.tabIndexCache) {
+          this.tabIndexCache = this.tabCurrentIndex
+        }
         let value = false // 默认不转移节点
-        if(this.itemId !== this.$route.params.itemId || this.tableId !== this.$route.params.tableId) {
+
+        if(this.itemId !== this.$route.params.itemId || this.tableId !== this.$route.params.tableId || this.tabCurrentIndex !== this.tabIndexCache) {
           return value
         }
+
         if(window.ProjectConfig.domPortal && window.ProjectConfig.domPortal.waterMark) {
           value = window.ProjectConfig.domPortal.waterMark({
             fromComponent: 'SingleObjectButtons', // 用于区别哪个组件的水印
