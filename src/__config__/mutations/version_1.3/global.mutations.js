@@ -665,7 +665,7 @@ export default {
         }
       });
     }
-    if (enableOpenNewTab()) { // 打补丁处理同表tab新开，外键跳转到单对象，再由单对象列表重新打开此单对象时，动态路由维护的关系未清除，导致关闭当前界面，再重新打开此明细时，不显示返回按钮
+    //if (enableOpenNewTab()) { } // 打补丁处理同表tab新开，外键跳转到单对象，再由单对象列表重新打开此单对象时，动态路由维护的关系未清除，导致关闭当前界面，再重新打开此明细时，不显示返回按钮
       if (!isDynamicRouting) { // 非动态路由返回之前的关闭tab需清除routeMapRecord对应关系，动态路由返回的routeMapRecord对应关系在返回监听时刷新接口之后清除
         Object.keys(routeMapRecord).map((item) => {
           if (item === tab.keepAliveModuleName) {
@@ -673,7 +673,7 @@ export default {
           }
         });
       }
-    }
+   
     // 删除规则五： 如果来源为插件界面，关闭当前tab时，应清除dynamicRoutingIsBack标记，以及dynamicRoutingIsBackForDelete内存储的当前表的关系
     // Object.keys(routeMapRecord).map((item) => {
     //   const fromPath = routeMapRecord[item].substring(1, 7) === 'PLUGIN';
