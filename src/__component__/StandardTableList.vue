@@ -41,7 +41,8 @@
         class="iconfont iconbj_left"
       />
     </div>
-    <div class="StandardTableListRootDiv">
+    
+    <component :is="slotName">
       <!-- <Button
         id="hideRefresh"
         type="fcdefault"
@@ -50,6 +51,7 @@
         测试按钮
       </Button> -->
       <ButtonGroup
+        slot="list-buttons"
         ref="R3ButtonGroup"
         :data-array="buttons.dataArray"
         :id-array="idArray"
@@ -57,6 +59,7 @@
         @clearSelectIdArray="clearSelectIdArray"
       />
       <listsForm
+        slot="list-form"
         v-if="formItems.defaultFormItemsLists && formItems.defaultFormItemsLists.length > 0"
         :id="$route.params.tableName"
         :form-item-lists="formItems.defaultFormItemsLists"
@@ -67,6 +70,7 @@
         @onHandleEnter="searchClickData"
       />
       <tabBar
+        slot="list-tabBar"
         v-if="getFilterTable"
         :data="ag.tablequery"
         @tabClick="tabClick"
@@ -74,6 +78,7 @@
 
       <AgTable
         ref="agTableElement"
+        slot="list-table"
         :columnRenderer="columnRendererHandler"
         :agProcessColumns="agProcessColumns"
         :agProcessRows="agProcessRows"
@@ -102,7 +107,7 @@
         @CommonTableCustomizedDialog="commonTableCustomizedDialog"
         @grid-ready="gridReady"
       />
-    </div>
+    </component>
 
     <!-- <Modal/>//动作定义弹框，已将动作定义弹框和提示弹框整合，此弹框暂时弃用
       v-if="buttons.actionDialog.show"
@@ -179,6 +184,8 @@
   import ErrorModal from './ErrorModal.vue';
   import modifyDialog from './ModifyModal.vue';
   import tree from './tree.vue';
+  import slotTemplate  from './slot/standardTableList.vue';
+
   import regExp from '../constants/regExp';
   import getObjdisType from '../__utils__/getObjdisType';
   import {
@@ -258,6 +265,7 @@
         }, // 弹框配置信息
         currentTabValue: {},
         filterTableParam: {},
+        slotName:''  // 模板名称
 
       };
     },
@@ -2664,6 +2672,12 @@
       this.buttonMap = buttonmap;
       this.ChineseDictionary = ChineseDictionary;
       this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');
+      if(window.ProjectConfig.layoutDirectionSlot && window.ProjectConfig.layoutDirectionSlot.standardTableList){
+        this.slotName = window.ProjectConfig.layoutDirectionSlot.standardTableList;
+      }else{
+        this.slotName = slotTemplate;
+      }
+    
     },
     beforeDestroy() {
       window.removeEventListener('network', this.networkEventListener);
