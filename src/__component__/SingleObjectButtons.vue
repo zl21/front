@@ -8,14 +8,15 @@
     <div
       v-if="watermarkImg"
       class="submit-img"
-      v-dom-portal="getTransferDom()"
+      ref="watermark"
     >
       <WaterMark
         :text="waterMarkText"
         :color="waterMarkColor"
         :top="waterMarkTop"
         :left="waterMarkLeft"
-        :width="waterMarkWidth"
+        :width="waterMarkWidth" 
+        @hook:mounted="getTransferDom"
       />
     </div>
     <ButtonGroup
@@ -523,19 +524,20 @@
       
       // 转移水印
       getTransferDom() {
-        // fix: 切换tab会导致水印跑到其他tab里
-        let value = false // 默认不转移节点
-        if(!this.isActive) {
-          return value
-        }
-
+        let value = ''
         if(window.ProjectConfig.domPortal && window.ProjectConfig.domPortal.waterMark) {
           value = window.ProjectConfig.domPortal.waterMark({
             fromComponent: 'SingleObjectButtons', // 用于区别哪个组件的水印
             type: this.objectType
           })
         }
-        return value
+
+        if(value) {
+          const dom = document.querySelector(value)
+          if(dom) {
+            dom.appendChild(this.$refs.watermark)
+          }
+        }
       },
       
       updataCurrentTableDetailInfo() { // 更新当前单对象信息
@@ -4227,11 +4229,7 @@
       this.waListButtons(this.tabwebact);
     },
     activated() {
-      this.isActive = true // 记录激活状态
       this.updataCurrentTableDetailInfo();
-    },
-    deactivated() {
-      this.isActive = false
     },
     created() {
       this.ChineseDictionary = ChineseDictionary;
