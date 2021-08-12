@@ -524,12 +524,8 @@
       // 转移水印
       getTransferDom() {
         // fix: 切换tab会导致水印跑到其他tab里
-        if(!this.tabIndexCache) {
-          this.tabIndexCache = this.tabCurrentIndex
-        }
         let value = false // 默认不转移节点
-
-        if(this.itemId !== this.$route.params.itemId || this.tableId !== this.$route.params.tableId || this.tabCurrentIndex !== this.tabIndexCache) {
+        if(!this.isActive) {
           return value
         }
 
@@ -4216,7 +4212,11 @@
       this.waListButtons(this.tabwebact);
     },
     activated() {
+      this.isActive = true // 记录激活状态
       this.updataCurrentTableDetailInfo();
+    },
+    deactivated() {
+      this.isActive = false
     },
     created() {
       this.ChineseDictionary = ChineseDictionary;
