@@ -5,7 +5,7 @@
         @mouseenter="onMouseOverHistorySeen"
         @mouseleave="onMoueOuthHistorySeen"
       >
-        <Dropdown @on-click="routeTo">
+        <Dropdown @on-click="routeTo" :transfer="true">
           <slot>
             <i
               class="iconfont iconmd-time"

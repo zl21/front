@@ -26,7 +26,7 @@ const urlSearchParams = (data) => {
 
 
 // 映射关系
-export const refcolvalMap = ($this, config,key) => {
+export const refcolvalMap = ($this, config,key,type) => {
     let maintable = {
     };
     if(config.srccols){
@@ -45,6 +45,7 @@ export const refcolvalMap = ($this, config,key) => {
         config.srccol = srccol;
     }
     let targetVm = FindInstance($this,config.srccol,$this.item.tableName,maintable);
+
     let linkFormMap = {
         [key]: [`${$this.item.tableName}${$this.item.colname}`]
     };
@@ -61,7 +62,7 @@ export const refcolvalMap = ($this, config,key) => {
                     }
                 })
             }
-            if(checked.indexOf(false) === -1){
+            if(checked.indexOf(false) === -1 && !type){
                 checked.push(messageTip($this, target,key))
             }
             
@@ -71,12 +72,16 @@ export const refcolvalMap = ($this, config,key) => {
         }
         
     });
-    // 查看返回结果
-    if(checked.indexOf(false) === -1 || checked.length<1){
-        return true
-    }else{
-        return false
+    if(!type){
+         // 查看返回结果
+        if(checked.indexOf(false) === -1 || checked.length<1){
+            return true
+        }else{
+            return false
+        }
+
     }
+   
     
 }
 
@@ -182,7 +187,7 @@ network
 */
 
 // 点击是否出现下拉
-export const setisShowPopTip = ($this, config,network) => {
+export const setisShowPopTip = ($this, config,network,type) => {
     if(!$this.item.Query){
         // 不走关联字段查询
         return ()=>{
@@ -194,15 +199,15 @@ export const setisShowPopTip = ($this, config,network) => {
         if(config.refcolval.srccol === '$OBJID$'){
             return true;
         }
-       return refcolvalMap($this, config.refcolval,'refcolval');
+       return refcolvalMap($this, config.refcolval,'refcolval',type);
        
     }else if(config && config.refcolval_custom){
     // refcolval_custom
-        return  refcolvalCustomUrl ($this, config,network,'refcolval_custom')
+        return  refcolvalCustomUrl ($this, config,network,'refcolval_custom',type)
 
     }else if(config && config.refcolvalArray) {
         // refcolvalArray
-        return  refcolvalMap ($this, config.refcolvalArray,'refcolvalArray')
+        return  refcolvalMap ($this, config.refcolvalArray,'refcolvalArray',type)
 
     }else{
         return true;
@@ -298,3 +303,7 @@ export const postTableData = async function(self,url){
     });
   }
   
+//   初始化映射  init
+export const initWebConf=()=>{
+
+}
