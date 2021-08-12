@@ -3,7 +3,7 @@
     <div
       v-if="type === 'vertical' && itemInfo.tabrelation==='1:1'&&watermarkimg"
       class="submit-img"
-      v-dom-portal="getTransferDom()"
+      ref="watermark"
     >
       <WaterMark
         :text="waterMarkText"
@@ -11,6 +11,7 @@
         :top="waterMarkTop"
         :left="waterMarkLeft"
         :width="waterMarkWidth"
+        @hook:mounted="getTransferDom"
       />
     </div>
     <component
@@ -518,11 +519,7 @@
 
       // 转移水印
       getTransferDom() {
-        // fix: 切换tab会导致水印跑到其他tab里
-        let value = false // 默认不转移节点
-        if(!this.isActive) {
-          return value
-        }
+        let value = '' // 默认不转移节点
         
         if(window.ProjectConfig.domPortal && window.ProjectConfig.domPortal.waterMark) {
           value = window.ProjectConfig.domPortal.waterMark({
@@ -530,7 +527,13 @@
             type: this.type
           })
         }
-        return value
+        
+        if(value) {
+          const dom = document.querySelector(value)
+          if(dom) {
+            dom.appendChild(this.$refs.watermark)
+          }
+        }
       },
 
       generateComponent() {
@@ -1065,12 +1068,6 @@
         // const { tableName } = this;
         // this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateCheckedInfoData`, { tableName, value: data });
       }
-    },
-    activated() {
-      this.isActive = true // 记录激活状态
-    },
-    deactivated() {
-      this.isActive = false
     },
   };
 </script>
