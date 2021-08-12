@@ -117,6 +117,7 @@ export default {
         onFilterChanged: this.onFilterChanged,
         onColumnResized: this.onColumnResized,
         getRowClass: this.getRowClass,
+        getRowStyle: this.getRowStyle,
         onGridSizeChanged: this.onGridSizeChanged
       }
       const defaultColDef = this.options.defaultColDef || {}
@@ -170,7 +171,7 @@ export default {
       this._gridReady = true
       const agGridDiv = this.$refs.table.$el
       const agGridTableContainer = this.$refs.tableContainer
-      
+
       setTimeout(() => {
         // 自适应所有列
         this._horizontalScrollTo(agGridDiv.querySelector('.ag-body-viewport'), agGridTableContainer.getAttribute('data-scroll-left')); // 处理表体的横向滚动问题。
@@ -552,6 +553,17 @@ export default {
       //   }, 100)
       // }
       this.$emit('on-body-scroll', e)
+    },
+
+    //  处理行样式
+    getRowStyle(params) {
+      const { rowHeight } = this.gridOptions
+      if (rowHeight) {
+        return {
+          lineHeight: `${rowHeight}px`
+        }
+      }
+      return {lineHeight: '28px'}
     },
 
     // 处理行级样式
@@ -975,21 +987,21 @@ export default {
     // 调整列宽
     // 规则：1.所有列大于表格宽度时，此时用autoSizeAllColumns  2.所有列小于表格宽度时，此时用sizeColumnsToFit
     _autoSizeColumns() {
-      if(!this.$refs.table) {
+      if (!this.$refs.table || !this.api || !this.columnApi) {
         return
       }
       let viewport
       let container
       const tableDom = this.$refs.table.$el
       // oms项目组用标题容器判断有问题。所以改成无数据时用标头容器判断
-      if(this.data.length === 0) {
+      if (this.data.length === 0) {
         viewport = tableDom.querySelector('.ag-header-viewport') // 表格可视区,不含固定列
         container = tableDom.querySelector('.ag-header-container>.ag-header-row') // 表格所有列的容器
       } else {
         viewport = tableDom.querySelector('.ag-body-viewport') // 表格可视区,不含固定列
         container = tableDom.querySelector('.ag-body-container') // 表格所有列的容器
       }
-      
+
       const viewportWidth = viewport.offsetWidth
       const containerWidth = container.offsetWidth
 
@@ -1065,7 +1077,7 @@ export default {
 .ag-grid-table-wrap {
   .ag-theme-balham .ag-cell {
     height: 100%;
-    line-height: 28px;
+    line-height: inherit;
   }
 }
 
