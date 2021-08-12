@@ -208,7 +208,7 @@
           if (r.data && r.data.code === 0) {
             const exp = r.data.data.isPasswordExpire;
             if (exp) {
-              const tips = await this.checkPwdDays();
+              await this.checkPwdDays()
             }
           }
         }
