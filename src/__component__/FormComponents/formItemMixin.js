@@ -62,7 +62,7 @@ export default {
           
         }else if(this.items.Query){
           // 清除标准列表的数据
-          clearFormRefcolval(this)
+            clearFormRefcolval(this)
         }
       }
     }

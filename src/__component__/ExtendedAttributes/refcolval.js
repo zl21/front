@@ -47,7 +47,7 @@ export const refcolvalMap = ($this, config,key,type) => {
     let targetVm = FindInstance($this,config.srccol,$this.item.tableName,maintable);
 
     let linkFormMap = {
-        [key]: [`${$this.item.tableName}${$this.item.colname}`]
+        [key]: [`${$this.item.tableName || ''}${$this.item.colname}`]
     };
     //挂载映射关系到对方 
     let checked = [];

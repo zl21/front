@@ -132,8 +132,9 @@ export default {
       // 处理合并字段
       this.ItemLists = {}
       this.formArray = []
+      let tableName = this.activeTab.tableName;
       this.formItemLists.map((item, index) => {
-        item.tableName = this.activeTab.tableName;
+        item.tableName = tableName;
         item.show = true;
         if (item.webconf && item.webconf.display === 'YearMonth') {
           item.display = 'YearMonth';

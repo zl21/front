@@ -39,12 +39,14 @@ export const FindInstance = ($this,name,tableName,maintable) => {
     // let panelFormParent = $this.$_live_getChildComponent(window.vm, `${$this.activeTab.keepAliveModuleName}`);
     let mainTableName = $this.$route.params.tableName;
      //console.log(mainTableName,'34343',$this.$route.params,$this.activeTab.keepAliveModuleName);
-
     let panelFormParent = {};
     if(document.querySelector('.ListsForm-box')){
         panelFormParent = document.querySelector('.ListsForm-box')._vue_;
-
-        return [$this.$_live_getChildComponent(panelFormParent, mainTableName+name)]
+        if(!Array.isArray(name)){
+            return [panelFormParent.$_live_getChildComponent(panelFormParent, mainTableName+name)]
+        }else{
+        return [panelFormParent.$_live_getChildComponent(panelFormParent, name[0])]
+        }
     }else{
         panelFormParent =  document.querySelector(`#${mainTableName}`)._vue_;
     }
@@ -130,7 +132,10 @@ name  string  表明+字段名称
 
 // 清除字段
 export const ClearRefcolValue = ($this,name) => {
+    console.log('====11',$this,name);
     let $vm = FindInstance($this,String(name));
+    console.log('====11',$vm);
+
     if($vm && Array.isArray($vm)){
         $vm.forEach((item)=>{
             item.value = '';
