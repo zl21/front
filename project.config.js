@@ -72,7 +72,7 @@ module.exports = {
   layoutDirectionSlot:{  // 模板渲染
     //NavigatorSubMenu:require('./src/demo/NavigatorSubMenu.vue').default,  // 模板渲染
     //NaVertical:require('./src/demo/NaVerticalslot.vue').default  // 模板渲染
-    //listFormButton:require('./demo/detailbuttons.vue').default,  // 定制列表button
+    // listFormButton:require('./demo/detailbuttons.vue').default,  // 定制列表button
     //standardTableList:require('./demo/standardTableList.vue').default,  // 定制列表button
   },
   backDashboardRoute: [], // 配置刷新浏览器回到Dashboard界面

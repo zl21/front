@@ -806,6 +806,19 @@
                 return true;
                 console.log('新增时，主表或子表add=default,修改了默认值');
               }
+              if (defaultMainDataLength && Object.keys(defaultMainDataLength).length > 0) {
+                if (Object.keys(defaultMainDataLength).length < Object.keys(addMainDataLength).length) { // 主表add>default
+                  this.isValue = true;// 主表修改了值
+                  return true;
+                  console.log('新增时，主表add>default,修改了值');
+                } if (JSON.stringify(defaultMainDataLength) !== JSON.stringify(addMainDataLength)) {
+                  this.isValue = true;// 主表修改了值
+                  return true;
+                  console.log('新增时，主表add=default,修改了默认值');
+                } 
+              
+            }
+
             } else if (defaultMainDataLength && Object.keys(defaultMainDataLength).length > 0) {
               if (Object.keys(defaultMainDataLength).length < Object.keys(addMainDataLength).length) { // 主表add>default
                 this.isValue = true;// 主表修改了值
@@ -820,6 +833,7 @@
                 return true;
                 console.log('新增时，子表修改了值');
               }
+              
             } else if (addItemDataLength && Object.keys(addItemDataLength).length > 0) {
               this.isValue = true;// 子表修改了值
               return true;
@@ -829,6 +843,7 @@
               return true;
               console.log('新增时，主表修改了值');
             }
+
           }
         } else if (this.objectType === 'horizontal') { // 横向布局
           if (itemNames.includes(this.itemName)) { // 子表
