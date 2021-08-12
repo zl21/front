@@ -23,28 +23,28 @@
 </template>
 
 <script>
-  export default {
-    name: 'Description',
-    props: {
-      option: {
-        type: Object,
-        default: () => ({})
-      }
+export default {
+  name: 'Description',
+  props: {
+    option: {
+      type: Object,
+      default: () => ({})
+    }
+  },
+  methods: {
+    clearDomValue() {
+      const extentionProperty = document.querySelector('.extentionProperty .middle');
+      extentionProperty.querySelectorAll('input,select').forEach((e) => {
+        e.value = '';
+        if (e.type === 'radio' && e.value === '') {
+          e.checked = true;
+        } else {
+          e.checked = false;
+        }
+      });
     },
-    methods: {
-      clearDomValue() {
-        const extentionProperty = document.querySelector('.extentionProperty');
-        extentionProperty.querySelectorAll('input,select').forEach((e) => {
-          e.value = '';
-          if (e.type === 'radio' && e.value === '') {
-            e.checked = true;
-          } else {
-            e.checked = false;
-          }
-        });
-      },
-      removeOption() {
-        switch (this.option.type) {
+    removeOption() {
+      switch (this.option.type) {
         case 'input':
           this.$emit('removeOption', [this.option.key]);
           break;
@@ -64,13 +64,12 @@
         default:
           this.$emit('removeOption', [this.option.key]);
           break;
-        }
-        this.clearDomValue();
       }
-    },
-  };
+      this.clearDomValue();
+    }
+  },
+};
 </script>
 
 <style scoped>
-
 </style>

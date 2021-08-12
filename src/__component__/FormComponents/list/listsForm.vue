@@ -258,19 +258,26 @@ export default {
           let itemArray = document.querySelectorAll('#listForm .item');
           let index = this.setdefaultColumn * this.searchFoldnum;
           let itemArrayLength = itemArray.length;
-          document.querySelector('.ListsForm-content').style.marginBottom = '0px';
 
           let _index = index % this.setdefaultColumn;
-
+          console.log(index ,'==========', itemArray.length);
           if (index > itemArray.length) {
             //  大于总常数
-
+            document.querySelector('.ListsForm-content').style.marginBottom = '0px';
             let itemLength = itemArray.length;
             this.indexButton = 0;
             let itemLength_index = itemLength % this.setdefaultColumn;
             this.setSize(false, itemLength_index);
 
-          } else {
+          } else if(index === itemArray.length){
+               this.indexButton = 0;
+                setTimeout(() => {
+                    let bottomdiv = document.querySelector('.ListsForm-content');
+                    bottomdiv.style.marginBottom = '40px';
+                },100)
+
+          }else {
+            document.querySelector('.ListsForm-content').style.marginBottom = '0px';
             let itemLength = itemArray.length;
             let itemLength_index = itemLength % this.setdefaultColumn;
             let _index = index % this.setdefaultColumn;

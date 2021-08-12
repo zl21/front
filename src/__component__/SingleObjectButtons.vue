@@ -523,10 +523,12 @@
       
       // 转移水印
       getTransferDom() {
+        // fix: 切换tab会导致水印跑到其他tab里
         let value = false // 默认不转移节点
-        if(this.itemId !== this.$route.params.itemId || this.tableId !== this.$route.params.tableId) {
+        if(!this.isActive) {
           return value
         }
+
         if(window.ProjectConfig.domPortal && window.ProjectConfig.domPortal.waterMark) {
           value = window.ProjectConfig.domPortal.waterMark({
             fromComponent: 'SingleObjectButtons', // 用于区别哪个组件的水印
@@ -824,6 +826,19 @@
                 return true;
                 console.log('新增时，主表或子表add=default,修改了默认值');
               }
+              if (defaultMainDataLength && Object.keys(defaultMainDataLength).length > 0) {
+                if (Object.keys(defaultMainDataLength).length < Object.keys(addMainDataLength).length) { // 主表add>default
+                  this.isValue = true;// 主表修改了值
+                  return true;
+                  console.log('新增时，主表add>default,修改了值');
+                } if (JSON.stringify(defaultMainDataLength) !== JSON.stringify(addMainDataLength)) {
+                  this.isValue = true;// 主表修改了值
+                  return true;
+                  console.log('新增时，主表add=default,修改了默认值');
+                } 
+              
+            }
+
             } else if (defaultMainDataLength && Object.keys(defaultMainDataLength).length > 0) {
               if (Object.keys(defaultMainDataLength).length < Object.keys(addMainDataLength).length) { // 主表add>default
                 this.isValue = true;// 主表修改了值
@@ -838,6 +853,7 @@
                 return true;
                 console.log('新增时，子表修改了值');
               }
+              
             } else if (addItemDataLength && Object.keys(addItemDataLength).length > 0) {
               this.isValue = true;// 子表修改了值
               return true;
@@ -847,6 +863,7 @@
               return true;
               console.log('新增时，主表修改了值');
             }
+
           }
         } else if (this.objectType === 'horizontal') { // 横向布局
           if (itemNames.includes(this.itemName)) { // 子表
@@ -4210,7 +4227,11 @@
       this.waListButtons(this.tabwebact);
     },
     activated() {
+      this.isActive = true // 记录激活状态
       this.updataCurrentTableDetailInfo();
+    },
+    deactivated() {
+      this.isActive = false
     },
     created() {
       this.ChineseDictionary = ChineseDictionary;

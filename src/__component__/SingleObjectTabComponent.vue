@@ -518,9 +518,9 @@
 
       // 转移水印
       getTransferDom() {
+        // fix: 切换tab会导致水印跑到其他tab里
         let value = false // 默认不转移节点
-
-        if(this.currentItemId !== this.$route.params.itemId || this.currentTableId !== this.$route.params.tableId) {
+        if(!this.isActive) {
           return value
         }
         
@@ -1065,6 +1065,12 @@
         // const { tableName } = this;
         // this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateCheckedInfoData`, { tableName, value: data });
       }
-    }
+    },
+    activated() {
+      this.isActive = true // 记录激活状态
+    },
+    deactivated() {
+      this.isActive = false
+    },
   };
 </script>
