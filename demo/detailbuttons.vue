@@ -33,7 +33,7 @@
     data(){
       return {
         hiddenButtons:['reset','search'],
-        hiddenIcon:true, // 是否隐藏收拉icon
+        hiddenIcon:false, // 是否隐藏收拉icon
       }
     },
     methods:{
