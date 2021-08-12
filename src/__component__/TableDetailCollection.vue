@@ -2095,9 +2095,12 @@
                 alignItems: 'center'
               },
               class: {
-                'flex-right': cellData.tdAlign === 'right',
+                'flex-right': cellData.tdAlign === 'right', // 组件对齐
                 'flex-center': cellData.tdAlign === 'center',
-                'flex-left': cellData.tdAlign === 'left'
+                'flex-left': cellData.tdAlign === 'left',
+                'input-align-right': cellData.tdAlign === 'right', // 输入框文本对齐
+                'input-align-center': cellData.tdAlign === 'center',
+                'input-align-left': cellData.tdAlign === 'left'
               },
               domProps: {
                 id: `ag-${params.index}-${params.column._index - 1}`,
