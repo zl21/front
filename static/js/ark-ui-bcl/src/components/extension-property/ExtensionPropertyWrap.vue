@@ -35,7 +35,7 @@
       <template v-for="(item, index) in configList">
         <div
           v-if="index === currentIndex"
-          :key="index"
+          :key="item.name"
           class="item-render-area"
         >
           <ExtentionInput
