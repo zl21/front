@@ -221,8 +221,8 @@ export const setisShowPopTip = ($this, config,network,type) => {
 }
 
 // refcolval_custom 接口请求
-export  const refcolvalCustomUrl =  ($this, config,network) => {
-    let checkd = refcolvalMap($this, config.refcolval_custom,'refcolval_custom');
+export  const refcolvalCustomUrl =  ($this, config,network,type) => {
+    let checkd = refcolvalMap($this, config.refcolval_custom,'refcolval_custom',type);
     // async
     if(checkd){
          return postCustomUrl(network,config,$this)
