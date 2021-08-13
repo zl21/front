@@ -3,10 +3,13 @@ export class SetListProps {
       this.item = item;
       this.configuration = {
          // 列表查询条件需要展示的
-         webconf:['queryrule','placeholder','ispositive','required','refcolval','filtercolval']
+         webconf:['queryrule','placeholder','ispositive','required','refcolval']
       }
    }
    filterData(){
+      if(window.ProjectConfig.listFormWebconf){
+         this.configuration.webconf = this.configuration.webconf.concat(window.ProjectConfig.listFormWebconf);
+      }
       if(this.item.webconf){
        Object.keys(this.item.webconf).forEach((x)=>{
           let check = this.configuration.webconf.includes(x);
