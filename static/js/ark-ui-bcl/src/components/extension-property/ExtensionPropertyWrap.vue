@@ -314,6 +314,10 @@ export default {
         return;
       }
       this.configList = this.options.filter(item => item.name.includes(value));
+      // 查询后默认展示第一个
+      if(this.configList.length > 0) {
+        this.currentIndex = 0
+      }
     },
     scrollIntoView(item, index) {
       this.currentIndex = index;
