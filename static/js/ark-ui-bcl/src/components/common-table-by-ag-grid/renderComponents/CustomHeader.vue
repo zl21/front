@@ -73,6 +73,8 @@
 </template>
 
 <script type="text/ecmascript-6">
+import { debounce } from '../../../utils/common'
+
 const cssFeatures = {
   hover: 'ag-syman-hover',
   imagePreviewBox: 'image-preview-box',
@@ -142,30 +144,30 @@ export default {
     },
 
     // 给列添加排序监听
-    onSortChanged() {
+    onSortChanged: debounce(function () {
       const { column } = this.params;
       const { eSortAsc, eSortDesc, eSortNone } = this.$refs;
 
       const sortState = column.getSort();
       if (sortState === 'asc') {
-        eSortAsc.classList.remove('ag-hidden');
+        eSortAsc && eSortAsc.classList.remove('ag-hidden');
       } else {
-        eSortAsc.classList.add('ag-hidden');
+        eSortAsc && eSortAsc.classList.add('ag-hidden');
       }
 
       if (sortState === 'desc') {
-        eSortDesc.classList.remove('ag-hidden');
+        eSortDesc && eSortDesc.classList.remove('ag-hidden');
       } else {
-        eSortDesc.classList.add('ag-hidden');
+        eSortDesc && eSortDesc.classList.add('ag-hidden');
       }
 
       if (sortState === null && column.colDef.isorder) {
         // 只有当此列允许排序，并且当前排序模式为null时，则显示图标
-        eSortNone.classList.remove('ag-hidden');
+        eSortNone && eSortNone.classList.remove('ag-hidden');
       } else {
-        eSortNone.classList.add('ag-hidden');
+        eSortNone && eSortNone.classList.add('ag-hidden');
       }
-    }
+    })
   },
 
   mounted() {
