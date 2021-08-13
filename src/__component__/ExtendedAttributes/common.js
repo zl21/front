@@ -42,10 +42,11 @@ export const FindInstance = ($this,name,tableName,maintable) => {
     let panelFormParent = {};
     if(document.querySelector('.ListsForm-box')){
         panelFormParent = document.querySelector('.ListsForm-box')._vue_;
+        name = name.replace(new RegExp(mainTableName), "");
         if(!Array.isArray(name)){
             return [panelFormParent.$_live_getChildComponent(panelFormParent, mainTableName+name)]
         }else{
-        return [panelFormParent.$_live_getChildComponent(panelFormParent, name[0])]
+            return [panelFormParent.$_live_getChildComponent(panelFormParent, name[0])]
         }
     }else{
         panelFormParent =  document.querySelector(`#${mainTableName}`)._vue_;
@@ -129,13 +130,23 @@ export const FindInstanceAll = ($this,name) => {
 $this 目标实例
 name  string  表明+字段名称 
 */
-
+// list 实例获取延时问题
+export const delayedVm = async (mainTableName,name) => {
+    return new Promise(resolve => {
+        setTimeout(() => { // 用定时器模拟异步请求
+            let panelFormParent = document.querySelector('.ListsForm-box')._vue_;
+            if(!Array.isArray(name)){
+                resolve([panelFormParent.$_live_getChildComponent(panelFormParent, mainTableName+name)])
+            }else{
+                resolve([panelFormParent.$_live_getChildComponent(panelFormParent, name[0])])
+            }
+        },100)
+    });    
+  
+}
 // 清除字段
 export const ClearRefcolValue = ($this,name) => {
-    console.log('====11',$this,name);
     let $vm = FindInstance($this,String(name));
-    console.log('====11',$vm);
-
     if($vm && Array.isArray($vm)){
         $vm.forEach((item)=>{
             item.value = '';
