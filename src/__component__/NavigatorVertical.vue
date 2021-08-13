@@ -191,7 +191,7 @@
           type,
           tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
           tableId: Version() === '1.3' ? 24386 : 963,
-          label: '我的任务'
+          label: this.$t('tips.myTask')
         };
         this.tabOpen(tab);
       },
@@ -251,7 +251,7 @@
       changePwdBox() {
         this.show = false;
         this.$refs.dialogRef.open();
-        this.dialogConfig.title = '修改密码';
+        this.dialogConfig.title = this.$t('tips.changePassword');
         this.dialogConfig.footerHide = true;
         // Vue.component('ChangePassword', CustomizeModule.ChangePassword.component);
         this.dialogComponentName = 'ChangePassword';

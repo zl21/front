@@ -41,12 +41,12 @@
         :disabled="docList.readonly"
         :accept="accept"
         @change.stop="uploadFileChange($event)"
-      >上传附件</label>
+      >{{$t('tips.uploadAttachment')}}</label>
       <div
         v-if="percent"
         class="proInfo"
       >
-        文件正在导入中……
+        {{$t('message.importingFile')}}……
       </div>
       <Progress
         v-if="percent"
@@ -207,7 +207,7 @@
       },
       checkFile(files) {
         if ((this.docList.valuedata.length + files.length) > this.docList.filesLength && this.docList.filesLength) {
-          this.$Message.info(`只能上传${this.docList.filesLength}个文件`);
+          this.$Message.info(this.$t('messages.uploadFileLimit',{total:this.docList.filesLength}));
           return false;
         }
 
@@ -218,7 +218,7 @@
           const accept = this.itemWebconf && this.itemWebconf.UploadAccept ? this.itemWebconf.UploadAccept.toUpperCase() : this.accept.toUpperCase();
           const arr = accept.split(',');
           if (accept !== '*' && !arr.includes(ext)) {
-            this.$Message.info(`${files[i].name}不支持上传`);
+            this.$Message.info(`${files[i].name}${this.$t('messages.cannotUpload')}`);
             return false;
           }
         }
@@ -257,7 +257,6 @@
         const article = new Upload(aUploadParame);
       },
       success(res) {
-        console.log('结束');
         let uploadIds = [];
         let filelist = [];
         this.uploadProgress = 0;
@@ -302,7 +301,7 @@
           mask: true,
           showCancel: true,
           title: this.$t('feedback.alert'),
-          content: '此操作将永久删除该文件, 是否继续?',
+          content: this.$t('messages.continueDeleteFile'),
           onOk: () => {
             this.docList.valuedata.splice(index, 1);
             this.filechange();
@@ -319,11 +318,9 @@
       },
       progress(e) {
         // 上传进度
-        console.log('进度', e);
         this.uploadProgress = Math.floor(e.loaded / e.total * 100);
       },
       onloadstart() {
-        console.log('开始');
         this.percent = true;
       },
       onloadend() {

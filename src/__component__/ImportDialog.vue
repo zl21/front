@@ -17,11 +17,11 @@
         </div>
         <div class="import-panel">
           <div class="el-upload__tip">
-            有效数据起始行:<input
+            {{$t('messages.startLine')}}:<input
               :value="inpNum"
               class="inputValue"
               type="text"
-              placeholder="只能输入正整数"
+              :placeholder="$t('messages.onlyPositiveInteger')"
               @input="handleInput"
               @change="handleInput"
             >;
@@ -29,7 +29,7 @@
               v-model="singleValue"
               class="singleValue"
             />
-            AK重复是否更新已有记录;
+            {{$t('messages.ifUpdateRecord')}};
           </div>
           <!-- <div class="el-upload__tip">
 
@@ -48,7 +48,7 @@
               type="posdefault"
               :size="buttonSize"
             >
-              选择文件
+              {{$t('buttons.selectFile')}}
             </Button>
             <!-- name -->
             <input
@@ -59,7 +59,7 @@
               @change="fileChange($event)"
               @click="clearFile"
             >
-            <!-- <label for="选择文件上传" /> -->
+
             <div
               class="tip"
             >
@@ -70,7 +70,7 @@
             </div>
           </div>
           <transition name="fade">
-            <span v-if="loading">数据正在导入中，请稍候</span>
+            <span v-if="loading">{{$t('messages.waitForImport')}}</span>
           </transition>
         </div>
       </div>
@@ -106,7 +106,7 @@
                 v-if="errorMsg.errorUrl.length > 0"
                 class="link"
               >
-                <a :href="errorMsg.errorUrl">（下载报错信息）</a>
+                <a :href="errorMsg.errorUrl">（{{$t('messages.downloadErrorMessage')}}）</a>
               </p>
               <div class="content-message">
                 <p class="title">
@@ -116,7 +116,7 @@
                   v-for="(msg,index) in errorMsg.errorList"
                   :key="index"
                 >
-                  <span v-if="msg.rowIndex">第{{ msg.rowIndex }}条记录报错:</span>
+                  <span v-if="msg.rowIndex">{{$t('messages.recordError',{num:msg.rowIndex})}}}:</span>
                   <span v-html="msg.message"></span>
                 </p>
               </div>
@@ -224,7 +224,7 @@
       }),
       classes: () => `${classFix}importDialog`,
       completeTitle() {
-        return `${this.title}导入`;
+        return `${this.title}${this.$t('buttons.import')}`;
       },
       inpNum() {
         return this.inputValue;
@@ -344,7 +344,7 @@
           this.$Modal.fcWarning({
             title: this.$t('feedback.warning'),
             mask: true,
-            content: '请先选择要导入的文件！'
+            content: this.$t('messages.selectImportFile')
           });
           return;
         }

@@ -576,7 +576,7 @@
             // item.componentType = Dialog;
             if (!item.props.disabled) {
               item.props.fkobj.show = true;
-              if (!item.props.datalist[0] || item.props.datalist[0].value !== '更多筛选') {
+              if (!item.props.datalist[0] || item.props.datalist[0].value !== this.$t('messages.moreFilters')) {
                 item.props.datalist = dataProp[item.type].props.datalist.concat(
                   item.props.datalist
                 );
@@ -686,7 +686,7 @@
           const data = {
             mask: true,
             title: this.$t('feedback.warning'),
-            content: '请设置外键关联表的显示配置'
+            content: this.$t('messages.setAssociationTable')
           };
           this.$Modal.fcWarning(data);
           return;
@@ -1299,7 +1299,7 @@
             const savemessage = JSON.parse(JSON.stringify($this.savemessage()));
             const saveObjectmessage = $this.savObjemessage();
             this.resultData = savemessage;
-            const value = `已经选中${$this._data.IN.length}条数据`;
+            const value = this.$t('messages.selectedData',{total:$this._data.IN.length});
             const Select = [
               {
                 Label: value,
@@ -1345,7 +1345,7 @@
           mask: true,
           showCancel: true,
           title: this.$t('feedback.alert'),
-          content: '此操作将永久删除该图片, 是否继续?',
+          content: this.$t('messages.deleteImg'),
           onOk: () => {
             let HEADIMG = this._items.props.itemdata.valuedata.concat([]);
             HEADIMG.splice(index - 1, 1);
@@ -1543,7 +1543,7 @@
         // 图片进度接口
         const resultData = result;
         if (this.readonlyImage()) {
-          this.$Message.info(`只能上传${this._items.props.itemdata.ImageSize}张图片`);
+          this.$Message.info(this.$t('messages.uploadLimit',{total:this._items.props.itemdata.ImageSize}));
           return false;
         }
 

@@ -1490,7 +1490,7 @@
           const data = {
             mask: true,
             title: this.$t('feedback.warning'),
-            content: this.$t('messages.chooseDeleteRecord')
+            content: this.$t('messages.chooseDeleteData')
           };
           this.$Modal.fcWarning(data);
           return;
@@ -4191,7 +4191,6 @@
                 fixedcolumns[cellData.refcolval.fixcolumn] = express + obj[cellData.refcolval.srccol];
               } else {
                 // ，没有修改过的取默认的
-                // this.$Message.info('请选择关联的表字段');
                 if(this.dataSource.row[params.index][cellData.refcolval.srccol]) {
                   fixedcolumns[cellData.refcolval.fixcolumn] = express + this.dataSource.row[params.index][cellData.refcolval.srccol].refobjid;
                 }
@@ -4233,7 +4232,6 @@
                 fixedcolumns[cellData.refcolval.fixcolumn] = express + obj[cellData.refcolval.srccol];
               } else {
                 // ，没有修改过的取默认的
-                // this.$Message.info('请选择关联的表字段');
                 if(this.dataSource.row[params.index][cellData.refcolval.srccol]) {
                   fixedcolumns[cellData.refcolval.fixcolumn] = express + this.dataSource.row[params.index][cellData.refcolval.srccol].refobjid;
                 }

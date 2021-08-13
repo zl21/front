@@ -18,28 +18,28 @@
           name="1"
           title-type="center"
         >
-          商品/颜色主图
+          {{$t('messages.productColorMainImage')}}
           <div
             slot="content"
             class="item-area"
           >
             <div class="pro_img">
-              <div>主图视频:</div>
+              <div>{{$t('messages.mainVideo')}}}:</div>
               <div>
                 <input
                   v-model="video"
                   type="text"
-                  placeholder="视频VID"
+                  :placeholder="$t('messages.videoId')"
                 >
                 <span
                   class="span-tip"
                   @click="showPicture"
-                >视频上传教程</span>
+                >{{$t('messages.videoUploadTutorial')}}</span>
                 <span class="span-tip">
                   <a
                     :href="uploadImage"
                     target="_blank"
-                  >视频上传入口</a>
+                  >{{$t('messages.videoUploadEntrance')}}</a>
                 </span>
                 <ul style="display: none;">
                   <li>
@@ -49,7 +49,7 @@
               </div>
             </div>
             <div class="pro_img">
-              <div>商品主图:</div>
+              <div>{{$t('messages.productMainImage')}}:</div>
               <div class="imageContent">
                 <ul class="clearfix">
                   <li
@@ -108,7 +108,7 @@
                     @click="proImgChange"
                   >
                     <div :style="{height:'64px',border: '1px solid #c7c7c7'}">
-                      <span class="upload-span">+ 添加图片</span>
+                      <span class="upload-span">+ {{$t('tips.addPicture')}}</span>
                     </div>
                     <form
                       role="form"
@@ -129,12 +129,12 @@
                   </li>
                 </ul>
                 <p class="imageInstruction">
-                  建议尺寸：800*800像素，你可以拖拽图片调整顺序，最多上传15张
+                  {{$t('messages.suggestImageNumber')}}
                 </p>
               </div>
             </div>
             <div class="pro_color_img">
-              <div>颜色主图:</div>
+              <div>{{$t('messages.colorMainImage')}}}:</div>
               <div class="imageContent">
                 <ul class="clearfix">
                   <li
@@ -166,7 +166,7 @@
                           v-if="!item.URL"
                           class="upload-span"
                           @click="colImgChange(item,index)"
-                        >+ 添加图片
+                        >+ {{$t('tips.addPicture')}}
                           <form
                             role="form"
                             method="POST"
@@ -198,7 +198,7 @@
                   </li>
                 </ul>
                 <p class="imageInstruction">
-                  建议尺寸：800*800像素，颜色项维护请在“颜色尺寸”栏。
+                  {{$t('messages.suggestImageMaintain')}}
                 </p>
               </div>
             </div>
@@ -208,7 +208,7 @@
     </div>
     <Modal
       v-model="dialogShow"
-      title="视频上传教程"
+      :title="$t('messages.videoUploadTutorial')"
       :width="1100"
       :height="560"
       :footer-hide="true"
@@ -374,14 +374,6 @@
                   });
                 }
               }
-
-
-              // else if (!this.modify) {
-              //   this.proImg.push({
-              //     NAME: '默认图片',
-              //     URL: '/src/assets/image/open@2x.png'
-              //   });
-              // }
             }
           }
 
@@ -541,7 +533,7 @@
         const isLt2M = file.size / 1024 / 1024 < 2;
 
         if (!isJPG && !isGIF && !isPNG) {
-          const message = '上传图片只能是 JPG,PNG,GIF 格式!';
+          const message = this.$t('messages.pictureUploadFormat');
           const data = {
             mask: true,
             title: this.$t('feedback.error'),
@@ -551,7 +543,7 @@
           document.querySelector(`#proImg${this.objId}`).value = '';
           document.querySelector(`#colImg${this.objId}`).value = '';
         } else if (!isLt2M) {
-          const message = '上传图片大小不能超过 2MB!';
+          const message = this.$t('messages.pictureUploadSize');
           const data = {
             mask: true,
             title: this.$t('feedback.error'),
@@ -569,7 +561,7 @@
         const list = [...dom.files];
         // const values = dom.files[0];
         if (this.proImg.length + list.length > 15) {
-          const message = `最多上传${15 - this.proImg.length}张图片`;
+          const message = this.$t('messages.imagesNumberTip',{num:15 - this.proImg.length});
           const data = {
             mask: true,
             title: this.$t('feedback.error'),
@@ -681,13 +673,6 @@
       },
       showPicture() {
         this.dialogShow = true;
-        // this.$refs.dialogRef.open();
-        // const title = '视频上传教程';
-        // this.dialogConfig = {
-        //   title,
-        //   footerHide: true,
-        //   titleAlign: 'center'
-        // };
       },
 
     },

@@ -9,7 +9,7 @@
         alt="logo"
         class="logo"
       >
-      <span class="titleTOP">用户登录</span>
+      <span class="titleTOP">{{$t('tips.userLogin')}}</span>
       <div class="divAccount">
         <img
           src="../assets/image/account.png"
@@ -20,7 +20,7 @@
           type="text"
           value=""
           class="username"
-          placeholder="请输入用户名"
+          :placeholder="$t('messages.enterUserName')"
         >
       </div>
       <div class="divMima">
@@ -33,7 +33,7 @@
           type="password"
           value=""
           class="pwd"
-          placeholder="请输入密码"
+          :placeholder="$t('messages.enterPassword')"
         >
       </div>
 
@@ -95,14 +95,14 @@
         if (this.$refs.username.value === '') {
           message = {
             title: this.$t('feedback.error'),
-            content: '请输入用户名'
+            content: this.$t('messages.enterUserName')
           };
           this.spinShow = false;
           this.$Modal.fcError(message);
         } else if (this.$refs.password.value === '') {
           message = {
             title: this.$t('feedback.error'),
-            content: '请输入密码'
+            content: this.$t('messages.enterPassword')
           };
           this.spinShow = false;
           this.$Modal.fcError(message);

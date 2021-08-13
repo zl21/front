@@ -33,7 +33,7 @@
       // }, // 是否可以滚动
       title: {
         type: String,
-        default: () => '标题'
+        default: function() {return this.$t('tips.title')}
       }, // 设置标题title
       titleAlign: {
         type: String,
@@ -97,7 +97,9 @@
       },
       contentText: {
         type: String,
-        default: () => '暂无提示'
+        default: function() {
+          return this.$t('tips.noPrompt')
+        }
       },
     },
     data() {

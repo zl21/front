@@ -691,7 +691,7 @@
                   const messageData = {
                     mask: true,
                     title: this.$t('feedback.warning'),
-                    content: '请设置外键关联表的显示配置'
+                    content: this.$t('messages.setAssociationTable')
                   };
                   this.$Modal.fcWarning(messageData);
                 }
@@ -1009,7 +1009,7 @@
             display: 'dialog',
             component: 'commonTable/componentName',
             disabled: false,
-            dialogTitle: '弹出框'
+            dialogTitle: this.$t('tips.popUp')
           },
           {
             label: this.$t('buttons.delete'),
@@ -1019,7 +1019,7 @@
 
           },
           {
-            label: '跳转',
+            label: this.$t('buttons.jump'),
             type: 'fcdefault',
             display: 'url',
             url: '',

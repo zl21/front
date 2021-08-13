@@ -11,22 +11,6 @@
       @on-enter="search"
     />
     <p class="orange" v-if="showTip && inputValue.length>0">"{{inputValue}}"{{Notice}}</p>
-    <!-- <p>
-      关键字：<input
-        id="key"
-        type="text"
-        value=""
-        class="empty"
-        placeholder="请输入关键字"
-      ><br>
-    </p>
-    <Button
-
-      type="posdefault"
-      @click="search"
-    >
-      查询
-    </Button> -->
     <div class="zTreeDemoBackground left">
       <ul
         :id="tableName"
@@ -112,11 +96,11 @@
       // },
       placeholder: {// 设置查询框placeholder
         type: String,
-        default: () => '请输入角色'
+        default: function(){return this.$t('messages.enterRole')}
       },
       Notice:{
         type: String,
-        default: () => '匹配失败，请重新输入'
+        default: function(){return this.$t('messages.matchFail')}
       },
       treeDatas: {
         type: Function,
@@ -128,36 +112,6 @@
       },
     },
     methods: {
-
-      // this.$emit('clickTreeNode', arr, treeNode.ID, true);
-      // arr:当前点击的节点以及全部子节点
-      // treeNode.ID:当前点击节点ID
-      // 第三个参数为true:需查询当前点击节点以及全部子节点，为false:查空值
-
-
-      // setFontCss(treeId, treeNode) {
-      //   return { color: 'red' };
-      // },
-      // hasClass(element, cls) { // 判断当前节点是否包含需要添加的class
-      //   return (` ${element.className} `).indexOf(` ${cls} `) > -1;
-      // },
-      // beforeClick(treeId, treeNode, clickFlag) {
-      //   if (this.treeId === treeNode.tId) {
-      //     const treeObj = $.fn.zTree.getZTreeObj('treeDemo');
-      //     const nodes = treeObj.getNodes();
-      //     if (nodes.length > 0) {
-      //       nodes[0].name = '夏';
-      //       nodes[0].isHover = false;
-
-      //       console.log(111, nodes[0].name, nodes[0].isHover);
-
-      //       treeObj.updateNode(nodes[0]);
-      //     }
-      //   }
-      //   this.treeId = treeNode.tId;
-
-      //   return true;
-      // },
       checkNode() {
         // 选中
         const treeObj = $.fn.zTree.getZTreeObj(`${this.tableName}`);

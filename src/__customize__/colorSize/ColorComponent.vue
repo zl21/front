@@ -10,7 +10,7 @@
           type="fcdefault"
           @click="listAllColor"
         >
-          列出所有颜色
+          {{$t('messages.listAllColor')}}
         </Button>
       </div>
       <div
@@ -57,7 +57,7 @@
       <div class="right_input">
         <Input
           v-model="addColorInputValue"
-          placeholder="请输入颜色编码/颜色名称"
+          :placeholder="$t('messages.enterColorInfo')"
           icon="ios-add-circle-outline"
           @on-change="addColorInputChange"
           @on-click="addIconClick"
@@ -67,7 +67,7 @@
           slot="prepend"
           @click="addColor"
         >
-          手动新增颜色
+          {{$t('messages.addColor')}}
         </Button>
         </Input>
       </div>
@@ -103,11 +103,11 @@
             align: 'center'
           },
           {
-            title: '颜色编码',
+            title: this.$t('tips.colorCode'),
             key: 'ECODE'
           },
           {
-            title: '颜色名称',
+            title: this.$t('tips.colorName'),
             key: 'ENAME'
           }
         ], // 左边表格的表头
@@ -123,23 +123,23 @@
             align: 'center'
           },
           {
-            title: '颜色编码',
+            title: this.$t('tips.colorCode'),
             key: 'ECODE'
           },
           {
-            title: '颜色名称',
+            title: this.$t('tips.colorName'),
             key: 'ENAME'
           },
           {
-            title: '主副色',
+            title: this.$t('messages.primaryAndSecondaryColor'),
             render: this.mainColorRender()
           },
           {
-            title: '布料颜色',
+            title: this.$t('messages.fabricColor'),
             render: this.fabColorRender()
           },
           {
-            title: '颜色图片',
+            title: this.$t('messages.colorPicture'),
             render: this.mainImageRender()
             // key: 'image'
           },
@@ -279,7 +279,7 @@
           ecodes = [];
         }
         if (this.addColorInputValue === '') {
-          this.$Message.warning('输入框内容不能为空');
+          this.$Message.warning(this.$t('messages.contentIsRequired'));
           return;
         }
         // const params = {
@@ -390,7 +390,7 @@
         }, this.selectOptionRender(h));
       }, // 右边表格主副色render
       selectOptionRender(h) {
-        const colorType = [{ name: '主色', code: 1 }, { name: '副色', code: 2 }, { name: '配卖', code: 3 }];
+        const colorType = [{ name: this.$t('tips.mainColor'), code: 1 }, { name: this.$t('tips.secondaryColor'), code: 2 }, { name: this.$t('messages.distribution'), code: 3 }];
         return colorType.map(item => h('Option', {
           props: {
             value: item.code,

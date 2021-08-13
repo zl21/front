@@ -29,12 +29,12 @@
       <div class="contentLeft">
         <Input
                 v-if="false"
-          placeholder="请输入角色"
+          :placeholder="$t('messages.enterUserName')"
           clearable
           icon="ios-search"
           @on-change="searchInputChange"
             >
-        <span slot="prepend">检索</span>
+        <span slot="prepend">{{$t('buttons.find')}}</span>
         </Input>
         <div class="menuContainer">
           <tree
@@ -82,7 +82,7 @@
                         class="functionColumnClass"
                         :style="{'min-width': `${functionColumnWidth}px`}"
                       >
-                        功能
+                        {{$t('tips.function')}}
                       </th>
                       <th
                         v-for="(item, index) in columns"
@@ -103,7 +103,7 @@
                 v-show="tableData.length === 0"
                 class="upper-table-tabtd-empty"
               >
-                暂无数据
+                {{$t('tips.noData')}}
               </div>
               <div
                 v-show="tableData.length > 0"
@@ -155,8 +155,8 @@
                 <table>
                   <thead>
                     <tr>
-                      <th>扩展功能</th>
-                      <th>功能</th>
+                      <th>{{$t('messages.extensions')}}</th>
+                      <th>{{$t('tips.function')}}</th>
                     </tr>
                   </thead>
                 </table>
@@ -165,7 +165,7 @@
                 v-show="extendTableData.length === 0"
                 class="bottom-table-tbody-empty"
               >
-                暂无数据
+                {{$t('tips.noData')}}
               </div>
               <div
                 v-show="extendTableData.length > 0"
@@ -207,7 +207,7 @@
       :width="420"
       mask
       footer-hide
-      title="复制权限"
+      :title="$t('tips.copyPermission')"
     >
       <div class="modalContent">
         <div class="itemContent">
@@ -215,7 +215,7 @@
             <div class="labelTip">
               *
             </div>
-            <div>原角色:</div>
+            <div>{{$t('messages.originalRole')}}:</div>
           </div>
           <DropDownSelectFilter
             class="itemCom"
@@ -238,7 +238,7 @@
             <div class="labelTip">
               *
             </div>
-            <div>目的角色:</div>
+            <div>{{$t('messages.targetRole')}}:</div>
           </div>
           <DropDownSelectFilter
             :single="false"
@@ -262,18 +262,18 @@
             <div class="labelTip">
               *
             </div>
-            <div>复制方式:</div>
+            <div>{{$t('messages.copyMethod')}}:</div>
           </div>
           <Select
             v-model="copyType"
             class="itemCom"
-            placeholder="请选择复制方式"
+            :placeholder="$t('messages.selectCopyMethod')"
           >
             <Option value="cover">
-              覆盖原有权限
+              {{$t('messages.overwritePermission')}}
             </Option>
             <Option value="copy">
-              保留原有权限
+              {{$t('messages.keepPermission')}}
             </Option>
           </Select>
         </div>
@@ -283,14 +283,14 @@
             class="Button"
             @click="modalConfirm"
           >
-            确定
+            {{$t('buttons.confirm')}}
           </Button>
           <Button
             type="fcdefault"
             class="Button"
             @click="modalCancel"
           >
-            取消
+            {{$t('buttons.cancel')}}
           </Button>
         </div>
       </div>
@@ -405,7 +405,7 @@
         extendTableData: [], // 扩展功能表格数据
         columnsBottom: [
           {
-            title: '扩展功能',
+            title: this.$t('messages.extensions'),
             key: 'extendFunction',
             width: 200,
             render: (h, params) => h('div', [
@@ -421,7 +421,7 @@
             ]),
           },
           {
-            title: '功能',
+            title: this.$t('tips.function'),
             key: 'function',
             render: (h, params) => h('div', [
               h(params.row.children.length > 0 ? 'Checkbox' : '', {
@@ -439,7 +439,7 @@
 
         columns: [
           {
-            title: '查看',
+            title: this.$t('buttons.view'),
             key: 'see',
             seeValue: false,
             tbodyWidth: '62px'
@@ -469,7 +469,7 @@
             tbodyWidth: '62px'
           },
           {
-            title: '反提交',
+            title: this.$t('buttons.antiSubmit'),
             key: 'unCommit',
             unCommitValue: false,
             tbodyWidth: '74px'
@@ -487,7 +487,7 @@
             tbodyWidth: '62px'
           },
           {
-            title: '扩展',
+            title: this.$t('tips.expand'),
             key: 'extend',
             extendValue: false,
             tbodyWidth: '62px'
@@ -612,7 +612,7 @@
             title: this.$t('feedback.alert'),
             mask: true,
             showCancel: true,
-            content: '是否保存修改的数据！',
+            content: this.$t('messages.ifSave'),
             onOk: () => {
               this.savePermission(type);
             },
@@ -648,7 +648,7 @@
                 });
               }
               const saveObj = buttonsData.find(item => item.webdesc === this.$t('buttons.save'));
-              const copyObj = buttonsData.find(item => item.webdesc === '复制权限');
+              const copyObj = buttonsData.find(item => item.webdesc === this.$t('tips.copyPermission'));
               const refreshObj = buttonsData.find(item => item.webdesc === this.$t('buttons.refresh'));
               if (saveObj) {
                 this.buttonsData.push(saveObj);
@@ -864,7 +864,7 @@
           this.$Modal.fcWarning({
             mask: true,
             title: this.$t('feedback.warning'),
-            content: '无分组信息'
+            content: this.$t('messages.noGroupInfo')
           });
           return false;
         }
@@ -1001,7 +1001,7 @@
       btnClick(item) {
         if (item.webdesc === this.$t('buttons.refresh')) {
           this.refreshButtonClick();
-        } else if (item.webdesc === '复制权限') {
+        } else if (item.webdesc === this.$t('tips.copyPermission')) {
           this.copyPerm();
         } else if (item.webdesc === this.$t('buttons.save')) {
           this.savePermission();
@@ -1019,32 +1019,6 @@
           }
         };
         store.commit('global/tabCloseAppoint', params);
-
-        // const { fullPath } = this.$route;// 获取当前路由fullPath
-        // const { keepAliveModuleName, tableName } = this.$store.state.global.activeTab;// 获取当前缓存模块名称，自定义标识
-        // const params = {
-        //   routeFullPath: fullPath, // 当前路由fullPath
-        //   keepAliveModuleName, // 当前模块名称
-        //   tableName, // 当前自定义表标识
-        //   event: () => {
-        //     // alert(177);
-        //   }
-        // };
-        // store.commit('global/tabCloseAppoint', params);
-
-        // // return;
-        // const param = {
-        //   url: '/CUSTOMIZED/FUNCTIONPERMISSION/2096',
-        //   type: 'C',
-        //   label: '基础档案',
-        // };
-        // store.commit('global/tabOpen', param);
-        // const param = {
-        //   url: 'CUSTOMIZED/PERMISSIONS/2997?type=sensitive&name=2',
-        //   isMenu: true,
-        //   id: 111
-        // };
-        // store.commit('global/directionalRouter', param);
       },
       customize1() {
          this.$store.commit('global/tabOpen', {
@@ -1055,13 +1029,6 @@
           back: true
         });
 
-        // const param = {
-        //   url: '/CUSTOMIZED/FUNCTIONPERMISSION/2099',
-        //   type: 'C',
-        //   label: '基础档案',
-        //   dynamicRoutingForCustomizePage: true
-        // };
-        // store.commit('global/tabOpen', param);
       },
       copyPerm() {
         this.copyPermission = true;
@@ -1104,25 +1071,25 @@
       modalConfirm() {
         if (this.singlePermissionId === null) {
           this.$Message.warning({
-            content: '请选择原角色！'
+            content: this.$t('messages.selectOriginRole')
           });
           return;
         }
         if (this.multiplePermissionId === null) {
           this.$Message.warning({
-            content: '请选择目的角色！'
+            content: this.$t('messages.selectTargetRole')
           });
           return;
         }
         if (this.multiplePermissionId.indexOf(this.singlePermissionId.toString()) !== -1) {
           this.$Message.warning({
-            content: '目的角色不能包含原角色，请重新选择！'
+            content: this.$t('messages.notContainRole')
           });
           return;
         }
         if (this.copyType === '') {
           this.$Message.warning({
-            content: '请选择复制方式！'
+            content: this.$t('messages.selectCopyMethod')
           });
           return;
         }
@@ -1611,7 +1578,7 @@
         this.getSaveData();
         if (this.tableSaveData.length === 0) {
           this.$Message.info({
-            content: '没有更改'
+            content: this.$t('messages.noChange')
           });
         } else {
           this.spinShow = true;
@@ -1743,7 +1710,7 @@
           },
           {
             colname: 'NAME',
-            name: '角色',
+            name: this.$t('tips.role'),
             isak: true
           }
         ];
@@ -1776,7 +1743,7 @@
           },
           {
             colname: 'NAME',
-            name: '角色',
+            name: this.$t('tips.role'),
             isak: true
           }
         ];

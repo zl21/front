@@ -99,7 +99,7 @@ export default {
     }, // 设置组件
     title: {
       type: String,
-      default: () => '标题'
+      default: function() { return this.$t('tips.title')}
     }, // 设置标题title
     titleAlign: {
       type: String,

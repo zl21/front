@@ -5,7 +5,7 @@
         <div class="pop-input">
           <ul style="list-style:none;">
             <li>
-              <span>输入密码：</span>
+              <span>{{$t('messages.fillPassword')}}：</span>
               <input
                       id="newPwd"
                       v-model="newpaswd"
@@ -16,23 +16,23 @@
                       @focus="focus($event,2)">
               <input type="password" name="password1" style="display:none">
               <p v-show="pawdgrade1" :style="{ color: errorpawdgrade1}">{{ this.newHint }}</p>
-              <p v-show="pawdgrade">密码安全程度：<b :style="{ color: activeColor}">{{ grade }}</b></p>
+              <p v-show="pawdgrade">{{$t('messages.passwordSecurity')}}：<b :style="{ color: activeColor}">{{ grade }}</b></p>
             </li>
             <li>
-              <span>确认密码：</span>
+              <span>{{$t('messages.confirmPassword')}}：</span>
               <input
                       v-model="againpaswd"
                       :class="{'borderactive':inconformity3}"
                       type="password"
                       @focus="focus($event,3)">
               <input type="password" name="password1" style="display:none">
-              <p v-show="inconformity3" :style="{ color: error}">两次输入的密码不一致</p>
+              <p v-show="inconformity3" :style="{ color: error}">{{$t('messages.passwordInconsistent')}}</p>
             </li>
           </ul>
         </div>
         <div class="pop-btn">
-          <span class="sav-btn" @click="save()">确认</span>
-          <span class="cancel-btn" @click="()=>{this.$emit('closeActionDialog',false)}">取消</span>
+          <span class="sav-btn" @click="save()">{{$t('buttons.confirm')}}</span>
+          <span class="cancel-btn" @click="()=>{this.$emit('closeActionDialog',false)}">{{$t('buttons.cancel')}}</span>
         </div>
       </div>
     </div>
@@ -47,17 +47,17 @@
     name: 'batchChangePassword',
     data() {
       return {
-        title: '用户修改密码', // 标题
+        title: this.$t('tips.changePassword'), // 标题
         newpaswd: '',
         pawdgrade2: false,
         errorpawdgrade: 'red',
         errorpawdgrade1: '#818181',
-        newHint: '密码必须由6位以上数字、字母组成',
+        newHint: this.$t('messages.passwordRule'),
         againpaswd: '',
         pop_dialog: false,
         activeColor: 'red', // 控制密码强度的时候，颜色
         error: 'red',
-        grade: '低', // 密码等级
+        grade: this.$t('tips.low'), // 密码等级
         pawdgrade: false, // 显示密码等级
         pawdgrade1: true, // 密码长度
         inconformity1: false, // input错误border颜色class
@@ -92,14 +92,14 @@
         if (this.newpaswd.length > 0) {
           this.pawdgrade = true;
           if (/^(?:\d+|[a-zA-Z]+|[!@#$%^&*]+)$/.test(this.newpaswd)) {
-            this.grade = '低';// 纯数字，纯字母，纯特殊字符
+            this.grade = this.$t('tips.low');// 纯数字，纯字母，纯特殊字符
             this.activeColor = '#e80000';
           } else if (/^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*]+$)[a-zA-Z\d!@#$%^&*]+$/.test(this.newpaswd)) {
-            this.grade = '中';// 字母+数字，字母+特殊字符，数字+特殊字符
+            this.grade = this.$t('tips.medium');// 字母+数字，字母+特殊字符，数字+特殊字符
             this.activeColor = '#09a155';
           } else if (/[-\da-zA-Z=\\;',./~!@#$%^&*()_+|{}:<>?]*((\d+[a-zA-Z]+[-=\;',./~!@#$%^&*()_+|{}:<>?]+)|(\d+[-=\\;',./~!@#$%^&*()_+|{}:<>?]+[a-zA-Z]+)|([a-zA-Z]+\d+[-=\;',./~!@#$%^&*()_+|{}:<>?]+)|([a-zA-Z]+[-=\\;',./~!@#$%^&*()_+|{}:<>?]+\d+)|([-=\;',./~!@#$%^&*()_+|{}:<>?]+\d+[a-zA-Z]+)|([-=\\;',./~!@#$%^&*()_+|{}:<>?]+[a-zA-Z]+\d+))[-\da-zA-Z=\;',./~!@#$%^&*()_+|{}:<>?]*/.test(this.newpaswd)) {
             this.activeColor = '#09a155';
-            this.grade = '高'; // 字母+数字+特殊字符
+            this.grade = this.$t('tips.high'); // 字母+数字+特殊字符
           }
         }
       },
@@ -108,18 +108,18 @@
           this.pawdgrade1 = true;
           this.errorpawdgrade1 = 'red';
           this.inconformity2 = true;
-          this.newHint = '请输入新密码';
+          this.newHint = this.$t('messages.enterNewPassword');
         } else if (this.newpaswd.length > 5) {
           if (!/[A-Za-z]/.test(this.newpaswd) || !/[0-9]/.test(this.newpaswd)) {
-            this.newHint = '密码必须由6位以上数字、字母组成';
+            this.newHint = this.$t('messages.passwordRule');
             this.errorpawdgrade1 = 'red';
             this.inconformity2 = true;
             this.pawdgrade1 = true;
           }
           this.errorpawdgrade1 = '#818181';
-          this.newHint = '密码必须由6位以上数字、字母组成';
+          this.newHint = this.$t('messages.passwordRule');
         } else {
-          this.newHint = '密码必须由6位以上数字、字母组成';
+          this.newHint = this.$t('messages.passwordRule');
           this.errorpawdgrade1 = 'red';
           this.inconformity2 = true;
           this.pawdgrade1 = true;
@@ -132,7 +132,7 @@
             this.pawdgrade1 = true;
             this.inconformity2 = false;
             this.errorpawdgrade1 = '#818181';
-            this.newHint = '密码必须由6位以上数字、字母组成';
+            this.newHint = this.$t('messages.passwordRule');
             break;
           default:
             this.inconformity3 = false;
@@ -177,7 +177,7 @@
         if (this.idArray && this.idArray.length > 0) {
           param.user_ids = this.idArray
         } else {
-          return this.$Message.info('请勾选需要重置的用户')
+          return this.$Message.info(this.$t('messages.selectResetUser'))
         }
         network.post('/p/cs/modifyPwd', param).then((res) => {
           if (res.data.code === 0) {

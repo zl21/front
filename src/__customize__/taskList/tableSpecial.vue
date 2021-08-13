@@ -402,7 +402,7 @@
                     }
                   }
                 }
-              }, '查看明细');
+              }, this.$t('buttons.viewDetails'));
             }
             if (cur.key !== 'OBJDISTYPE') {
               arr.push(cur);
@@ -609,7 +609,7 @@
                   const messageData = {
                     mask: true,
                     title: this.$t('feedback.warning'),
-                    content: '请设置外键关联表的显示配置'
+                    content: this.$t('messages.setAssociationTable')
                   };
                   this.$Modal.fcWarning(messageData);
                 }
@@ -765,7 +765,7 @@
                                 h('i-switch', {
                                   on: {
                                     'on-change': (status) => {
-                                      this.$Message.info(`开关状态：${status === true ? '开' : '关'}`);
+                                      this.$Message.info(`${this.$t('messages.switchStatus')}：${status === true ? this.$t('tips.open') : this.$t('tips.close')}`);
                                     }
                                   },
 
@@ -797,7 +797,7 @@
             display: 'dialog',
             component: 'commonTable/componentName',
             disabled: false,
-            dialogTitle: '弹出框'
+            dialogTitle: this.$t('tips.popUp')
           },
           {
             label: this.$t('buttons.delete'),
@@ -807,7 +807,7 @@
 
           },
           {
-            label: '跳转',
+            label: this.$t('buttons.jump'),
             type: 'fcdefault',
             display: 'url',
             url: '',

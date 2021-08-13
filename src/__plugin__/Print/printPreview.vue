@@ -31,7 +31,6 @@
           // } else { // 外部调用传入的参数
           window.addEventListener('message', (event) => {
             // if (event.origin !== 'http://0.0.0.0:8090') return;
-            // console.log('接收到:', event.data.print);
             if (event.data.print) {
               this.tableName = event.data.print.tableName;// 主表表名
               this.userId = event.data.print.userId;// 用户ID

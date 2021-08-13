@@ -39,7 +39,7 @@
         if (this.placeholder) {
           return this.placeholder;
         }
-        return `请输入${this.currentLabel}`;
+        return `${this.$t('form.inputPlaceholder')}${this.currentLabel}`;
       }
     },
     created() {

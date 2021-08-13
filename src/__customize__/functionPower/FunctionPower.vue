@@ -15,12 +15,12 @@
     <div class="content">
       <div class="contentLeft">
         <Input
-                placeholder="请输入用户名"
+                :placeholder="$t('messages.enterUserName')"
                 clearable
                 @on-change="searchInputChange"
                 icon="ios-search"
         >
-        <span slot="prepend">检索</span>
+        <span slot="prepend">{{$t('buttons.find')}}</span>
         </Input>
         <div class="menuContainer">
           <Tree
@@ -84,13 +84,13 @@
             :width="420"
             mask
             footer-hide
-            title="复制权限"
+            :title="$t('tips.copyPermission')"
     >
       <div class="modalContent">
         <div class="itemContent">
           <div class="labelContent">
             <div class="labelTip">*</div>
-            <div>原角色:</div>
+            <div>{{$t('messages.originalRole')}}:</div>
           </div>
           <DropDownSelectFilter class="itemCom"
                                 :totalRowCount="totalRowCount"
@@ -110,7 +110,7 @@
         <div class="itemContent">
           <div class="labelContent">
             <div class="labelTip">*</div>
-            <div>目的角色:</div>
+            <div>{{$t('messages.targetRole')}}:</div>
           </div>
           <DropDownSelectFilter :single="false"
                                 class="itemCom"
@@ -131,11 +131,11 @@
         <div class="itemContent">
           <div class="labelContent">
             <div class="labelTip">*</div>
-            <div>复制方式:</div>
+            <div>{{$t('messages.copyMethod')}}:</div>
           </div>
-          <Select v-model="copyType" class="itemCom" placeholder="请选择复制方式">
-            <Option value="cover">覆盖原有权限</Option>
-            <Option value="copy">保留原有权限</Option>
+          <Select v-model="copyType" class="itemCom" :placeholder="$t('messages.selectCopyMethod')">
+            <Option value="cover">{{$t('messages.overwritePermission')}}</Option>
+            <Option value="copy">{{$t('messages.keepPermission')}}</Option>
           </Select>
         </div>
         <div class="modalButton">
@@ -144,14 +144,14 @@
                   class="Button"
                   @click="modalConfirm"
           >
-            确定
+            {{$t('buttons.confirm')}}
           </Button>
           <Button
                   type="fcdefault"
                   class="Button"
                   @click="modalCancel"
           >
-            取消
+            {{$t('buttons.cancel')}}
           </Button>
         </div>
       </div>
@@ -218,7 +218,7 @@
         tableSaveData: [], // 表格修改后要保存的数据
         columns: [
           {
-            title: '功能',
+            title: this.$t('tips.function'),
             key: 'description'
           },
           {
@@ -258,7 +258,7 @@
                     'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
                   }
                 }),
-                h('Span', '查看')
+                h('Span', this.$t('buttons.view'))
               ]);
             },
           },
@@ -424,7 +424,7 @@
                   'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
                 }
               }),
-              h('Span', '反提交')
+              h('Span', this.$t('buttons.antiSubmit'))
             ]),
           },
           {
@@ -522,14 +522,14 @@
                   'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
                 }
               }),
-              h('Span', '扩展')
+              h('Span', this.$t('tips.expand'))
             ]),
           }
         ], // 表格头部,
         extendTableData: [], // 扩展功能表格数据
         columnsBottom: [
           {
-            title: '扩展功能',
+            title: this.$t('messages.extensions'),
             key: 'extendFunction',
             width: 200,
             render: (h, params) => h('div', [
@@ -545,7 +545,7 @@
             ]),
           },
           {
-            title: '功能',
+            title: this.$t('tips.function'),
             key: 'function',
             render: (h, params) => h('div', [
               h(params.row.children.length > 0 ? 'Checkbox' : '', {
@@ -605,7 +605,7 @@
             title: this.$t('feedback.alert'),
             mask: true,
             showCancel: true,
-            content: '是否保存修改的数据！',
+            content: this.$t('messages.ifSave'),
             onOk: () => {
               this.savePermission(type);
             },
@@ -866,7 +866,7 @@
       btnClick(item) {
         if (item.webdesc === this.$t('buttons.refresh')) {
           this.refreshButtonClick();
-        } else if (item.webdesc === '复制权限') {
+        } else if (item.webdesc === this.$t('tips.copyPermission')) {
           this.copyPerm();
         } else if (item.webdesc === this.$t('buttons.save')) {
           this.savePermission();
@@ -913,25 +913,25 @@
       modalConfirm() {
         if (this.singlePermissionId === null) {
           this.$Message.warning({
-            content: '请选择原角色！'
+            content: this.$t('messages.selectOriginRole')
           });
           return;
         }
         if (this.multiplePermissionId === null) {
           this.$Message.warning({
-            content: '请选择目的角色！'
+            content: this.$t('messages.selectTargetRole')
           });
           return;
         }
         if (this.multiplePermissionId.indexOf(this.singlePermissionId.toString()) !== -1) {
           this.$Message.warning({
-            content: '目的角色不能包含源角色，请重新选择！'
+            content: this.$t('messages.notContainRole')
           });
           return;
         }
         if (this.copyType === '') {
           this.$Message.warning({
-            content: '请选择复制方式！'
+            content: this.$t('messages.selectCopyMethod')
           });
           return;
         }
@@ -1403,7 +1403,7 @@
         this.getSaveData();
         if (this.tableSaveData.length === 0) {
           this.$Message.info({
-            content: '没有更改'
+            content: this.$t('messages.noChange')
           });
         } else {
           const obj = {
@@ -1519,7 +1519,7 @@
           },
           {
             colname: 'NAME',
-            name: '角色',
+            name: this.$t('tips.role'),
             isak: true
           }
         ];
@@ -1552,7 +1552,7 @@
           },
           {
             colname: 'NAME',
-            name: '角色',
+            name: this.$t('tips.role'),
             isak: true
           }
         ];

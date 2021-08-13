@@ -84,7 +84,7 @@
           if (username.value === '') {
             message = {
               title: this.$t('feedback.error'),
-              content: '请输入用户名',
+              content: this.$t('messages.enterUserName'),
               mask: true,
             };
             this.spinShow = false;
@@ -92,7 +92,7 @@
           } else if (password.value === '') {
             message = {
               title: this.$t('feedback.error'),
-              content: '请输入密码',
+              content: this.$t('messages.enterPassword'),
               mask: true,
             };
             this.spinShow = false;
@@ -113,7 +113,7 @@
             if (this.$refs.AccountLogin.$refs.username.value === '') {
               message = {
                 title: this.$t('feedback.error'),
-                content: '请输入用户名',
+                content: this.$t('messages.enterUserName'),
                 mask: true,
               };
               this.spinShow = false;
@@ -121,7 +121,7 @@
             } else if (this.$refs.AccountLogin.$refs.password.value === '') {
               message = {
                 title: this.$t('feedback.error'),
-                content: '请输入密码',
+                content: this.$t('messages.enterPassword'),
                 mask: true,
               };
               this.spinShow = false;
@@ -130,7 +130,7 @@
               this.spinShow = false;
               this.$Modal.fcError({
                 title: this.$t('feedback.error'),
-                content: '请输入验证码',
+                content: this.$t('messages.enterCode'),
                 mask: true,
               });
             } else {
@@ -149,14 +149,14 @@
               this.spinShow = false;
               this.$Modal.fcError({
                 title: this.$t('feedback.error'),
-                content: '请输入手机号',
+                content: this.$t('messages.enterPhone'),
                 mask: true,
               });
             } else if (!this.$refs.PhoneLogin.$refs.sendcode.value) {
               this.spinShow = false;
               this.$Modal.fcError({
                 title: this.$t('feedback.error'),
-                content: '请输入短信验证码',
+                content: this.$t('messages.enterSMS'),
                 mask: true,
               });
             } else {
@@ -198,7 +198,7 @@
           }
           if (r.code === -1) {
             return this.$Modal.fcWarning({
-              title: '安全提示',
+              title: this.$t('feedback.safeWarning'),
               content: r.message,
               mask: true,
             })
@@ -216,8 +216,8 @@
       checkLogined() {
         return new Promise((resolve, reject) => {
           return this.$Modal.fcWarning({
-            title: '安全提示',
-            content: '当前账号登录中，是否继续登录？',
+            title: this.$t('feedback.safeWarning'),
+            content: this.$t('messages.continueLogin'),
             mask: true,
             showCancel: true,
             onOk: () => resolve(1001),
@@ -229,8 +229,8 @@
       checkPwdDays(code) {
         return new Promise(resolve => {
           return this.$Modal.fcWarning({
-              title: '安全提示',
-              content: '当前密码1个月未修改，为保数据安全请立即修改',
+              title: this.$t('feedback.safeWarning'),
+              content: this.$t('messages.changePasswordTip'),
               mask: true,
               onOk: () => resolve()
             })

@@ -7,7 +7,7 @@
 <!-- 操作按钮切换左边面板 -->
       <div
         class="tag"
-        title="折叠"
+        :title="$t('buttons.fold')"
         slot="icon-tag"
         @click="toggle"
       >
@@ -28,7 +28,7 @@
     >
       <i
         :class="getDashboardConfig"
-        title="回到首页"
+        :title="$t('tips.backHome')"
 
       />
     </div>
@@ -118,7 +118,7 @@
       >
           <i
             class="iconfont iconmd-person"
-            title="设置"
+            :title="$t('buttons.setting')"
           />
           <Drawer
             v-model="show"
@@ -322,7 +322,7 @@
           type,
           tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
           tableId: Version() === '1.3' ? 24386 : 963,
-          label: '我的任务'
+          label: this.$t('tips.myTask')
         };
         this.tabOpen(tab);
       },
@@ -393,7 +393,7 @@
       changePwdBox() {
         this.show = false;
         this.$refs.dialogRef.open();
-        this.dialogConfig.title = '修改密码';
+        this.dialogConfig.title = this.$t('tips.changePassword');
         this.dialogConfig.footerHide = true;
         // Vue.component('ChangePassword', CustomizeModule.ChangePassword.component);
         this.dialogComponentName = 'ChangePassword';

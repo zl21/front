@@ -75,11 +75,11 @@
             align: 'center'
           },
           {
-            title: '尺寸编码',
+            title: this.$t('tips.sizeCode'),
             key: 'ECODE'
           },
           {
-            title: '尺寸名称',
+            title: this.$t('tips.sizeName'),
             key: 'ENAME'
           }
         ], // 左边表格的表头
@@ -95,11 +95,11 @@
             align: 'center'
           },
           {
-            title: '尺寸编码',
+            title: this.$t('tips.sizeCode'),
             key: 'ECODE'
           },
           {
-            title: '尺寸名称',
+            title: this.$t('tips.sizeName'),
             key: 'ENAME'
           }
         ], // 右边表格的表头

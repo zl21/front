@@ -7,14 +7,14 @@
         type="posdefault"
         @click="btnclick('search')"
       >
-        查找
+        {{$t('buttons.search')}}
       </Button>
       <Button
         type="fcdefault"
         p
         @click="btnclick('reset')"
       >
-        重置
+        {{$t('buttons.reset')}}
       </Button>
     </div>
     <!-- <div class="form-area"> -->
@@ -131,7 +131,7 @@
         // 列表查询重置
         this.$Modal.fcWarning({
           title: this.$t('feedback.warning'),
-          content: '确定重置?',
+          content: this.$t('messages.confirmReset'),
           showCancel: true,
           onOk: () => {
             this.formItemsLists = this.formItemsLists.map((item) => {
@@ -707,11 +707,6 @@
 
         network.post(URL || '/p/cs/taskrecord/read', { ID }).then((res) => {
           if (res.data.code === 0) {
-          // this.$Modal.fcSuccess({
-          //   mask: true,
-          //   title: "成功",
-          //   content: res.data.message
-          // });
           }
         });
       },
@@ -728,7 +723,6 @@
           type,
           tableName: row.AD_TABLE_ID.val,
           tableId: row.AD_TABLE_ID.refobjid,
-          // label: "任务记录编辑",
           id: row.OBJ_ID.val
         };
       // this.editTaskStatus(row.ID.val);

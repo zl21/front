@@ -8,7 +8,7 @@
         v-model="keyWord"
         class="nav-search"
         icon="ios-search"
-        placeholder="请输入要查询的功能名"
+        :placeholder="$t('messages.enterFunctionName')"
         @on-click="searchBtn = true"
         @on-keydown="enter"
         @on-change="searchData"
@@ -32,7 +32,7 @@
           v-if="searchList.length<1 && keyWord && keyWord.length>0 && !loading"
           class="none-search"
         >
-          抱歉，没有此功能!
+          {{$t('messages.noFeature')}}
         </div>
         <Option
           v-for="(item,index) in searchList"
@@ -52,7 +52,7 @@
       @click="searchBtn = false"
     >
       <i
-        title="查询功能名"
+        :title="$t('messages.queryFunctionName')"
         class="iconfont iconmd-search"
       />
     </span>

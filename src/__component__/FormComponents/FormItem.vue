@@ -281,7 +281,7 @@ export default {
           // item.componentType = Dialog;
           if (!item.props.disabled) {
             item.props.fkobj.show = true;
-            if (!item.props.datalist[0] || item.props.datalist[0].value !== '更多筛选') {
+            if (!item.props.datalist[0] || item.props.datalist[0].value !== this.$t('messages.moreFilters')) {
               item.props.datalist = dataProp[item.type].props.datalist.concat(
                 item.props.datalist
               );
@@ -460,7 +460,7 @@ export default {
         const data = {
           mask: true,
           title: this.$t('feedback.warning'),
-          content: '请设置外键关联表的显示配置'
+          content: this.$t('messages.setAssociationTable')
         };
         this.$Modal.fcWarning(data);
         return;
