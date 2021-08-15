@@ -816,6 +816,7 @@
             const addItemDataLength = itemNames.includes(this.itemName) && this.updateData[this.itemName].add[this.itemName];
             const defaultMainDataLength = this.updateData[this.tableName].default[this.tableName];
             const addMainDataLength = this.updateData[this.tableName].add[this.tableName];
+          
             if (defaultItemDataLength && Object.keys(defaultItemDataLength).length > 0) {
               if (Object.keys(defaultItemDataLength).length
                 < Object.keys(addItemDataLength).length// 子表add>default
@@ -828,7 +829,7 @@
                 return true;
                 console.log('新增时，主表或子表add=default,修改了默认值');
               }
-              if (defaultMainDataLength && Object.keys(defaultMainDataLength).length > 0) {
+              if (addMainDataLength && Object.keys(addMainDataLength).length > 0) {
                 if (Object.keys(defaultMainDataLength).length < Object.keys(addMainDataLength).length) { // 主表add>default
                   this.isValue = true;// 主表修改了值
                   return true;
@@ -839,7 +840,8 @@
                   console.log('新增时，主表add=default,修改了默认值');
                 } 
               
-            }
+              }
+
 
             } else if (defaultMainDataLength && Object.keys(defaultMainDataLength).length > 0) {
               if (Object.keys(defaultMainDataLength).length < Object.keys(addMainDataLength).length) { // 主表add>default
