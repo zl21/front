@@ -73,7 +73,7 @@ module.exports = {
   layoutDirectionSlot:{  // 模板渲染
     //NavigatorSubMenu:require('./src/demo/NavigatorSubMenu.vue').default,  // 模板渲染
     //NaVertical:require('./src/demo/NaVerticalslot.vue').default  // 模板渲染
-    //listFormButton:require('./demo/detailbuttons.vue').default,  // 定制列表button
+    // listFormButton:require('./demo/detailbuttons.vue').default,  // 定制列表button
     //standardTableList:require('./demo/standardTableList.vue').default,  // 定制列表button
   },
   backDashboardRoute: [], // 配置刷新浏览器回到Dashboard界面
@@ -189,16 +189,7 @@ module.exports = {
 
   autoGatewayUrl:false,  // 是否请求网关
   computeForSubtable: false,
-  enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
+  enableLoginPro: false, // 是否开启普通登录模式 false普通 true手机验证码
   filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
-  // // 转义节点位置
-  // domPortal: {
-  //   // params对象属性,fromComponent用于区别哪个组件的水印,type区分布局结构
-  //   waterMark(params) {
-  //     if(params.fromComponent === 'SingleObjectButtons') {
-  //       return params.type === 'horizontal'? '.panelForm': '.verticalTableDetailContent'
-  //     }
-  //     return false
-  //   }
-  // }
+  listFormWebconf:['filtercolval'] // 列表是否支持webcof 字段
 };

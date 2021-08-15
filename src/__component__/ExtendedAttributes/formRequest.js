@@ -18,6 +18,10 @@ export const equalformRequest = function equalformRequest(params) {
 
   export const formRequestInit = function formRequestInit($this,config) {
     // 初始化
+    if($this.clearFormurl){
+        delete $this.clearFormurl;
+        return false;
+    }
     if(Array.isArray($this.value) || isEmpty($this.value)){
         let data = {};
         let targetVm = FindInstance($this,config.refcolumn,$this.items.tableName);
@@ -45,7 +49,10 @@ export const equalformRequest = function equalformRequest(params) {
                         return arr;
                     },[]);
                     setNewlValue($this,name,$this.items.tableName,newValueObject);
-
+                }
+                if(res.code === -1){
+                    $this.value = [];
+                    $this.clearFormurl = true;
                 }
             }
         });

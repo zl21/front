@@ -816,6 +816,7 @@
             const addItemDataLength = itemNames.includes(this.itemName) && this.updateData[this.itemName].add[this.itemName];
             const defaultMainDataLength = this.updateData[this.tableName].default[this.tableName];
             const addMainDataLength = this.updateData[this.tableName].add[this.tableName];
+          
             if (defaultItemDataLength && Object.keys(defaultItemDataLength).length > 0) {
               if (Object.keys(defaultItemDataLength).length
                 < Object.keys(addItemDataLength).length// 子表add>default
@@ -828,6 +829,20 @@
                 return true;
                 console.log('新增时，主表或子表add=default,修改了默认值');
               }
+              if (addMainDataLength && Object.keys(addMainDataLength).length > 0) {
+                if (Object.keys(defaultMainDataLength).length < Object.keys(addMainDataLength).length) { // 主表add>default
+                  this.isValue = true;// 主表修改了值
+                  return true;
+                  console.log('新增时，主表add>default,修改了值');
+                } if (JSON.stringify(defaultMainDataLength) !== JSON.stringify(addMainDataLength)) {
+                  this.isValue = true;// 主表修改了值
+                  return true;
+                  console.log('新增时，主表add=default,修改了默认值');
+                } 
+              
+              }
+
+
             } else if (defaultMainDataLength && Object.keys(defaultMainDataLength).length > 0) {
               if (Object.keys(defaultMainDataLength).length < Object.keys(addMainDataLength).length) { // 主表add>default
                 this.isValue = true;// 主表修改了值
@@ -842,6 +857,7 @@
                 return true;
                 console.log('新增时，子表修改了值');
               }
+              
             } else if (addItemDataLength && Object.keys(addItemDataLength).length > 0) {
               this.isValue = true;// 子表修改了值
               return true;
@@ -851,6 +867,7 @@
               return true;
               console.log('新增时，主表修改了值');
             }
+
           }
         } else if (this.objectType === 'horizontal') { // 横向布局
           if (itemNames.includes(this.itemName)) { // 子表
