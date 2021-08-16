@@ -74,17 +74,19 @@ class BusDropDownSelectFilter {
       },
       EventFun: {
         'on-Outside': ($this) => {
-          let value = $this.$parent.value;
+          //let value = $this.$parent.value;
           setTimeout(() => {
+            let value = JSON.parse(JSON.stringify($this.$parent.value));
             if (!Array.isArray(value)) {
               let icon = $this.$el.querySelector('.iconios-close-circle');
               if (icon) {
                 icon.click();
+              }else{
+                $this.$parent.value = '';
+
               }
-            } else {
-              $this.$parent.$parent.value = '';
             }
-          }, 100);
+          }, 200);
 
 
         }

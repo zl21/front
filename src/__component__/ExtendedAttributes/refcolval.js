@@ -127,6 +127,12 @@ type  是否是模糊查询还是外键查询
 // 接口拼接 fixcolumn
 export const setFixedcolumns = ($this, type) => {
     let webconf = $this.item.webconf;  
+   //  
+    if($this.item.precolnameslist){
+        return {
+            precolnameslist:$this.item.precolnameslist
+        }
+    }
     if(!$this.item.Query){
         // 不走关联字段查询
         return {};
@@ -138,7 +144,7 @@ export const setFixedcolumns = ($this, type) => {
               }
               let id = $this.activeTab.keepAliveModuleName.split('.');
               return {
-                ID:id[id.length-1]
+                [webconf.refcolval.fixcolumn]:id[id.length-1]
               }
         }
         if(!$this._srccolValue){
@@ -215,8 +221,8 @@ export const setisShowPopTip = ($this, config,network,type) => {
 }
 
 // refcolval_custom 接口请求
-export  const refcolvalCustomUrl =  ($this, config,network) => {
-    let checkd = refcolvalMap($this, config.refcolval_custom,'refcolval_custom');
+export  const refcolvalCustomUrl =  ($this, config,network,type) => {
+    let checkd = refcolvalMap($this, config.refcolval_custom,'refcolval_custom',type);
     // async
     if(checkd){
          return postCustomUrl(network,config,$this)
@@ -251,11 +257,18 @@ self 当前实例
 export const postTableData = async function(self,url){
 
     let Fixedcolumns = setFixedcolumns(self,'TableRequest');
-      if (JSON.stringify(Fixedcolumns) !== '{}') {
-        this.searchdata.fixedcolumns = Fixedcolumns;
-      } else {
-        delete this.searchdata.fixedcolumns
-      }
+    if(Fixedcolumns.precolnameslist){
+        this.searchdata.precolnameslist = Fixedcolumns.precolnameslist;
+
+    }else{
+        if (JSON.stringify(Fixedcolumns) !== '{}') {
+            this.searchdata.fixedcolumns = Fixedcolumns;
+          } else {
+            delete this.searchdata.fixedcolumns
+        }
+
+    }
+     
       return new Promise((resolve) => {
         this.post(url, urlSearchParams({
           searchdata: this.searchdata
@@ -268,8 +281,11 @@ export const postTableData = async function(self,url){
  // 字段联动 模糊查询
  export  function postData(self,url){
     let Fixedcolumns = setFixedcolumns(self,'AutoRequest');
+    if(Fixedcolumns.precolnameslist){
+        this.searchdata.precolnameslist = Fixedcolumns.precolnameslist;
+    }
+   
     let selfChildren = this.$children[0];
-    console.log(selfChildren.isShowPopTip);
     if(typeof selfChildren.isShowPopTip === 'function'){
         if(!selfChildren.isShowPopTip()){
             this.$el.querySelector('input').value ='';
@@ -290,9 +306,16 @@ export const postTableData = async function(self,url){
 
  const newpostData = (Fixedcolumns,$this,url)=>{
     if (JSON.stringify(Fixedcolumns) !== '{}') {
-      $this.sendMessage.fixedcolumns = {
-        "whereKeys":Fixedcolumns
-      };
+        if(Fixedcolumns.precolnameslist){
+            $this.sendMessage.fixedcolumns = {
+                precolnameslist:Fixedcolumns.precolnameslist
+            };
+        }else{
+            $this.sendMessage.fixedcolumns = {
+                "whereKeys":Fixedcolumns
+              };
+        }
+      
     }
     return new Promise((resolve) => {
       $this.post(url,  urlSearchParams(
