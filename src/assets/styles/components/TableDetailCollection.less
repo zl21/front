@@ -67,13 +67,28 @@
       height: calc(100% - 57px);
       .table-in {
           flex: 1;
+          // 处理垂直居中产生的样式问题
+          .ark-select-selection {
+            width: 100%;
+          }
+          .ark-fkrp-poptip {
+            height: 100%;
+          }
+          .ark-select-single .ark-select-selection .ark-select-placeholder, .ark-select-single .ark-select-selection .ark-select-selected-value {
+            line-height: 22px;
+          }
+          .ark-select-selection-head {
+            line-height: 22px;
+          }
+          .ark-date-picker-rel {
+            width: 100%;
+          }
+          .ark-input-icon {
+            line-height: 22px;
+          }
+          // 针对ag表格调整垂直居中
           .ag-grid-table {
-            // 处理垂直居中产生的样式问题
-            .ark-select-selection {
-              width: 100%;
-            }
             .ark-fkrp-poptip {
-              height: 100%;
               input {
                 margin-top: -1px;
               }
@@ -89,20 +104,8 @@
             .ark-fkrp-select-icon > i {
               margin-top: -4px;
             }
-            .ark-select-single .ark-select-selection .ark-select-placeholder, .ark-select-single .ark-select-selection .ark-select-selected-value {
-              line-height: 22px;
-            }
             .ark-select-arrow {
               margin-top: -5px;
-            }
-            .ark-select-selection-head {
-              line-height: 22px;
-            }
-            .ark-date-picker-rel {
-              width: 100%;
-            }
-            .ark-input-icon {
-              line-height: 22px;
             }
           }
       }

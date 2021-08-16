@@ -562,7 +562,7 @@ export default {
           lineHeight: `${rowHeight}px`
         }
       }
-      return {lineHeight: '28px'}
+      return { lineHeight: '28px' }
     },
 
     // 处理行级样式
@@ -1097,5 +1097,12 @@ export default {
 .table-cell-right {
   text-align: right;
   vertical-align: middle;
+}
+
+// fix: 表格底部被挡住
+.ag-grid-table {
+  .ag-layout-normal .ag-floating-bottom {
+    z-index: 10;
+  }
 }
 </style>
