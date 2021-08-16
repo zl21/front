@@ -7,6 +7,9 @@ export class SetListProps {
       }
    }
    filterData(){
+      if(window.ProjectConfig.listFormWebconf){
+         this.configuration.webconf = this.configuration.webconf.concat(window.ProjectConfig.listFormWebconf);
+      }
       if(this.item.webconf){
        Object.keys(this.item.webconf).forEach((x)=>{
           let check = this.configuration.webconf.includes(x);
