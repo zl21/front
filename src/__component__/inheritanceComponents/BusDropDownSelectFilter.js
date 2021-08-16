@@ -76,7 +76,7 @@ class BusDropDownSelectFilter {
         'on-Outside': ($this) => {
           //let value = $this.$parent.value;
           setTimeout(() => {
-            let value = JSON.parse(JSON.stringify($this.$parent.value));
+            let value = JSON.parse(JSON.stringify($this.$parent.value || []));
             if (!Array.isArray(value)) {
               let icon = $this.$el.querySelector('.iconios-close-circle');
               if (icon) {

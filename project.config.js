@@ -191,6 +191,7 @@ module.exports = {
   computeForSubtable: false,
   enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
   filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
+  listFormWebconf:['filtercolval'] // 列表是否支持webcof 字段
   // // 转义节点位置
   // domPortal: {
   //   // params对象属性,fromComponent用于区别哪个组件的水印,type区分布局结构

@@ -8,14 +8,15 @@
     <div
       v-if="watermarkImg"
       class="submit-img"
-      v-dom-portal="getTransferDom()"
+      ref="watermark"
     >
       <WaterMark
         :text="waterMarkText"
         :color="waterMarkColor"
         :top="waterMarkTop"
         :left="waterMarkLeft"
-        :width="waterMarkWidth"
+        :width="waterMarkWidth" 
+        @hook:mounted="getTransferDom"
       />
     </div>
     <ButtonGroup
@@ -523,19 +524,20 @@
       
       // 转移水印
       getTransferDom() {
-        // fix: 切换tab会导致水印跑到其他tab里
-        let value = false // 默认不转移节点
-        if(!this.isActive) {
-          return value
-        }
-
+        let value = ''
         if(window.ProjectConfig.domPortal && window.ProjectConfig.domPortal.waterMark) {
           value = window.ProjectConfig.domPortal.waterMark({
             fromComponent: 'SingleObjectButtons', // 用于区别哪个组件的水印
             type: this.objectType
           })
         }
-        return value
+
+        if(value) {
+          const dom = document.querySelector(value)
+          if(dom) {
+            dom.appendChild(this.$refs.watermark)
+          }
+        }
       },
       
       updataCurrentTableDetailInfo() { // 更新当前单对象信息
@@ -814,6 +816,7 @@
             const addItemDataLength = itemNames.includes(this.itemName) && this.updateData[this.itemName].add[this.itemName];
             const defaultMainDataLength = this.updateData[this.tableName].default[this.tableName];
             const addMainDataLength = this.updateData[this.tableName].add[this.tableName];
+          
             if (defaultItemDataLength && Object.keys(defaultItemDataLength).length > 0) {
               if (Object.keys(defaultItemDataLength).length
                 < Object.keys(addItemDataLength).length// 子表add>default
@@ -826,7 +829,7 @@
                 return true;
                 console.log('新增时，主表或子表add=default,修改了默认值');
               }
-              if (defaultMainDataLength && Object.keys(defaultMainDataLength).length > 0) {
+              if (addMainDataLength && Object.keys(addMainDataLength).length > 0) {
                 if (Object.keys(defaultMainDataLength).length < Object.keys(addMainDataLength).length) { // 主表add>default
                   this.isValue = true;// 主表修改了值
                   return true;
@@ -837,7 +840,8 @@
                   console.log('新增时，主表add=default,修改了默认值');
                 } 
               
-            }
+              }
+
 
             } else if (defaultMainDataLength && Object.keys(defaultMainDataLength).length > 0) {
               if (Object.keys(defaultMainDataLength).length < Object.keys(addMainDataLength).length) { // 主表add>default
@@ -4227,11 +4231,7 @@
       this.waListButtons(this.tabwebact);
     },
     activated() {
-      this.isActive = true // 记录激活状态
       this.updataCurrentTableDetailInfo();
-    },
-    deactivated() {
-      this.isActive = false
     },
     created() {
       this.ChineseDictionary = ChineseDictionary;

@@ -2,7 +2,6 @@
 // import VueRouter from 'vue-router';
 import VueDND from 'awe-dnd';
 import Viewer from 'v-viewer';
-import DomPortal from 'vue-dom-portal'
 import { getGuid } from './__utils__/random';
 import router from './__config__/router.config';
 import routerPrototype from './__config__/router.prototype';
@@ -47,7 +46,6 @@ Vue.component('listsForm',listsForm)
 Vue.use(R3Dialog); // 注册全局api调用组件
 Vue.use(Viewer);
 Vue.use(VueDND);
-Vue.use(DomPortal)
 
 // const createRouter = routes => new VueRouter({
 //   routes,
