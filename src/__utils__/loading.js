@@ -18,7 +18,6 @@ Loading.install = (Vue) => {
 
     const doms = document.querySelector(`#${moduleName}-loading`);
     if (doms) return;
-    // console.log('注册loading', moduleName);
 
     // 1、创建构造器，定义loading模板
     const LoadingTip = Vue.extend({

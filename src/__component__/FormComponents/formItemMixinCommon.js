@@ -22,11 +22,6 @@ export default {
         }).then((res) => {
           if (res.data.code === 1) {
             resolve(res.data.message);
-            // this.$Modal.fcError({
-            //   title: '错误',
-            //   content: res.data.message,
-            //   mask: true
-            // });
           }else{
             resolve('');
           }

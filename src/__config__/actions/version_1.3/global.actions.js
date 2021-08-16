@@ -4,6 +4,7 @@ import {
 } from '../../../constants/global'; 
 import { removeSessionObject } from '../../../__utils__/sessionStorage';
 import router from '../../router.config';
+import i18n from '../../../assets/js/i18n';
 
 export default {
   getHistoryAndFavorite({ commit }) {
@@ -53,7 +54,7 @@ export default {
             // resolve();
             if (data.code === 0) { 
               // 筛选信息验证导出是否成功
-              data.data.addcolums.filter(item => item.parentdesc === '基本信息')[0].childs.forEach((b) => {
+              data.data.addcolums.filter(item => item.parentdesc === i18n.t('tips.basicInfo'))[0].childs.forEach((b) => {
                 if (b.colname === 'TASKSTATE') {
                   if (b.valuedata === '2') {
                     exportTask.exportedState = true;
@@ -114,7 +115,7 @@ export default {
                           window.vm.$Modal.fcError({
                             mask: true,
                             titleAlign: 'center',
-                            title: '错误',
+                            title: i18n.t('feedback.error'),
                             render: h => h('div', {
                               style: {
                                 padding: '10px 20px 0',
@@ -160,7 +161,7 @@ export default {
                         if (exportTask.resultMsg.data !== undefined && exportTask.resultMsg.data.length > 0) {
                           for (const msg of exportTask.resultMsg.data) {
                             if (msg.hasOwnProperty('rowIndex')) {
-                              errorList.push({ message: `第${msg.rowIndex}条记录报错：${msg.message}` });
+                              errorList.push({ message: `${i18n.t('messages.recordError',{num:msg.rowIndex})}：${msg.message}` });
                             } else {
                               errorList.push({ message: msg.message });
                             }
@@ -169,7 +170,7 @@ export default {
                         window.vm.$Modal.fcError({
                           mask: true,
                           titleAlign: 'center',
-                          title: '错误',
+                          title: i18n.t('feedback.error'),
                           render: h => h('div', {
                             style: {
                               padding: '10px 20px 0',

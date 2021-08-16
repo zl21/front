@@ -9,6 +9,7 @@
  import ComAttachFilter from '../ComAttachFilternew.vue';
  import { SetPlaceholder ,SetDisable} from './setProps';
  import DropMethods from '../ExtendedMethods/DropMethods';
+ import i18n from '../../assets/js/i18n';
 
  class CustomAttachFilter {
   constructor(item) {
@@ -54,14 +55,14 @@
          singleTurn:true,
          datalist: this.item.fkobj.searchmodel === 'mop' ? [{
            lable: 0,
-           value: '更多筛选'
+           value: i18n.t('messages.moreFilters')
          }, {
            lable: 2,
            sendData: {
              table: this.item.fkobj.reftable
            },
            url: '/p/cs/menuimport',
-           value: '导入'
+           value: i18n.t('buttons.import')
          }] : [],
          dialog: {
            model: {
@@ -72,7 +73,7 @@
              maskClosable: false,
              scrollable: true,
              width: 920,
-             title:'弹窗单选'
+             title: i18n.t('tip.popRadio')
            }
          },
          display: this.item.display,

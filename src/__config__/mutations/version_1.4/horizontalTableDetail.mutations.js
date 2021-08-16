@@ -1,4 +1,5 @@
 import router from '../../router.config';
+import i18n from '../../../assets/js/i18n';
 
 export default {
   updataSinglePageButtonsConfigForMainTable(state, data) {
@@ -19,7 +20,7 @@ export default {
   updateTabPanelsData(state, data) {
     const { tableName, tableId } = router.currentRoute.params;
     const arr = [{
-      label: '标签',
+      label: i18n.t('tips.label'),
       tablename: tableName,
       id: tableId,
       componentAttribute: {
@@ -453,7 +454,7 @@ export default {
               } else if (c.fkdisplay === 'mop') {
                 try {
                   const number = JSON.parse(b.valuedata).lists.result.length;
-                  copySaveDataForParam[c.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
+                  copySaveDataForParam[c.colname] = [{ ID: b.valuedata, Label: i18n.t('messages.selectedData',{total:number}) }];
                 } catch (e) {
                   copySaveDataForParam[c.colname] = c.valuedata;
                 }

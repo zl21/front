@@ -1,7 +1,7 @@
 import store from './store.config';
 import router from './router.config';
 import { getUrl } from '../__utils__/url';
-
+import i18n from '../assets/js/i18n';
 
 import {
   STANDARD_TABLE_LIST_PREFIX,
@@ -83,7 +83,7 @@ export const routeTo = ({ type, info }, cb) => {
       break;
   }
   if (router.currentRoute.fullPath !== path) {
-    router.push({ path, query }).catch((e) => { console.error('当前单据已打开'); });
+    router.push({ path, query }).catch((e) => { console.error(i18n.t('messages.billOpened')); });
   }
 };
 

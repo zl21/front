@@ -16,7 +16,7 @@ export const globalStore = {// 1.3框架全局状态管理
     errorDialog: {
       show: false,
       type: 'error',
-      title: '错误',
+      title: i18n.t('feedback.error'),
       errorList: [],
       hiddenButton: true
     },
@@ -172,7 +172,7 @@ export const globalStore = {// 1.3框架全局状态管理
       } else {
         state.errorDialog.type = 'error';
       }
-      state.errorDialog.title = data.type == 'warning' ? i18n.t('feedback.warning') : '错误';
+      state.errorDialog.title = data.type == 'warning' ? i18n.t('feedback.warning') : i18n.t('feedback.error');
 
       if (data.title) {
         state.errorDialog.title = data.title;

@@ -22,7 +22,7 @@ import { getLabel } from '../../../__utils__/url';
 import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 import getUserenv from '../../../__utils__/getUserenv';
 import store from '../../store.config';
-
+import i18n from '../../../assets/js/i18n';
 
 export default {
  
@@ -861,9 +861,9 @@ export default {
         let flag = true;
         queryData.values.some((item) => {
           if (item.display === 'OBJ_FK' && !item.refobjid) {
-            const message = `设置默认值为外键类型，请配置默认值为${item.defaultValue}字段的refobjid值`;
+            const message = i18n.t('messages.setDefaultForeignKey',{value:item.defaultValue});
             window.R3message({
-              title: '错误',
+              title: i18n.t('feedback.error'),
               content: message,
               mask: true
             });

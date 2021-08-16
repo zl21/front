@@ -12,6 +12,7 @@ import {
   custommizedRequestUrl
 } from '../../constants/global';
 import { SetPlaceholder ,SetDisable} from './setProps';
+import i18n from '../../assets/js/i18n';
 class CustomImageUpload {
   constructor(item) {
     this.item = item;
@@ -43,7 +44,7 @@ class CustomImageUpload {
           column: this.item.colname,
           tableName: this.item.tableName
         },
-        name: '上传',
+        name: i18n.t('buttons.upload'),
         length: (this.item.webconf && this.item.webconf.ImageSize)?this.item.webconf.ImageSize:null,
         width: 120,
         height:120
