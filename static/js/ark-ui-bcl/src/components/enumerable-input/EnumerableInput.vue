@@ -281,7 +281,7 @@ ul {
   max-width: 300px;
   border: 1px solid #d8d8d8;
   background-color: #fff;
-  z-index: 10;
+  z-index: 11;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;

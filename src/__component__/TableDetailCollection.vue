@@ -2075,16 +2075,30 @@
           return h('div', 
           {
             style: {
-              overflow: 'hidden'
-            }
+              overflow: 'hidden',
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center'
+            },
+            class: {
+              'flex-right': cellData.tdAlign === 'right',
+              'flex-center': cellData.tdAlign === 'center',
+              'flex-left': cellData.tdAlign === 'left'
+            },
           },
           [
             h(tag, {
               style: {
                 width: '100px',
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center'
               },
               class: {
-                'input-align-right': cellData.tdAlign === 'right',
+                'flex-right': cellData.tdAlign === 'right', // 组件对齐
+                'flex-center': cellData.tdAlign === 'center',
+                'flex-left': cellData.tdAlign === 'left',
+                'input-align-right': cellData.tdAlign === 'right', // 输入框文本对齐
                 'input-align-center': cellData.tdAlign === 'center',
                 'input-align-left': cellData.tdAlign === 'left'
               },
@@ -2221,13 +2235,23 @@
         return (h, params) => h('div',
         {
           style: {
-            overflow: 'hidden'
-          }
+            overflow: 'hidden',
+            height: '100%',
+            display: 'flex',
+          },
+          class: {
+            'flex-right': cellData.tdAlign === 'right',
+            'flex-center': cellData.tdAlign === 'center',
+            'flex-left': cellData.tdAlign === 'left'
+          },
         },
         [
           h(tag, {
               style: {
-                width: '100px'
+                width: '100px',
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
               },
               props: {
                 transfer: true,
@@ -2267,13 +2291,23 @@
           return h('div', 
           {
             style: {
-              overflow: 'hidden'
-            }
+              overflow: 'hidden',
+              height: '100%',
+              display: 'flex',
+            },
+            class: {
+              'flex-right': cellData.tdAlign === 'right',
+              'flex-center': cellData.tdAlign === 'center',
+              'flex-left': cellData.tdAlign === 'left'
+            },
           },
           [
             h(tag, {
                 style: {
-                  width: '100px'
+                  width: '100px',
+                  height: '100%',
+                  display: 'flex',
+                  alignItems: 'center'
                 },
                 props: {
                   transfer: true,
@@ -2331,8 +2365,14 @@
         return (h, params) => h('div', 
         {
           style: {
-            overflow: 'hidden'
-          }
+            overflow: 'hidden',
+            display: 'flex',
+          },
+          class: {
+            'flex-right': cellData.tdAlign === 'right',
+            'flex-center': cellData.tdAlign === 'center',
+            'flex-left': cellData.tdAlign === 'left'
+          },
         },
         [
           h(tag, {
@@ -2710,8 +2750,14 @@
         return (h, params) => h('div', 
         {
           style: {
-            overflow: 'hidden'
-          }
+            overflow: 'hidden',
+            display: 'flex',
+          },
+          class: {
+            'flex-right': cellData.tdAlign === 'right',
+            'flex-center': cellData.tdAlign === 'center',
+            'flex-left': cellData.tdAlign === 'left'
+          },
         },
         [
           h(tag, {
@@ -3075,8 +3121,14 @@
           return h('div', 
           {
             style: {
-              overflow: 'hidden'
-            }
+              overflow: 'hidden',
+              display: 'flex',
+            },
+            class: {
+              'flex-right': cellData.tdAlign === 'right',
+              'flex-center': cellData.tdAlign === 'center',
+              'flex-left': cellData.tdAlign === 'left'
+            },
           },
           [
             h(tag, {
@@ -3169,8 +3221,14 @@
           return h('div', 
           {
             style: {
-              overflow: 'hidden'
-            }
+              overflow: 'hidden',
+              display: 'flex',
+            },
+            class: {
+              'flex-right': cellData.tdAlign === 'right',
+              'flex-center': cellData.tdAlign === 'center',
+              'flex-left': cellData.tdAlign === 'left'
+            },
           },
           [
             h(tag, {
@@ -3437,13 +3495,22 @@
         return (h, params) => h('div', 
         {
           style: {
-            overflow: 'hidden'
-          }
+            overflow: 'hidden',
+            height: '100%',
+            display: 'flex',
+          },
+          class: {
+            'flex-right': cellData.tdAlign === 'right',
+            'flex-center': cellData.tdAlign === 'center',
+            'flex-left': cellData.tdAlign === 'left'
+          },
         },
         [
           h(tag, {
             style: {
-              width: cellData.display === 'OBJ_DATENUMBER' ? '110px' : '160px'
+              display: 'flex',
+              alignItems: 'center',
+              width: cellData.display === 'OBJ_DATENUMBER' ? '110px' : '160px',
             },
             props: {
               value: params.row[cellData.colname],
@@ -3479,13 +3546,22 @@
         return (h, params) => h('div', 
         {
           style: {
-            overflow: 'hidden'
-          }
+            overflow: 'hidden',
+            height: '100%',
+            display: 'flex',
+          },
+          class: {
+            'flex-right': cellData.tdAlign === 'right',
+            'flex-center': cellData.tdAlign === 'center',
+            'flex-left': cellData.tdAlign === 'left'
+          },
         },
         [
           h(tag, {
             style: {
-              width: '100px'
+              width: '100px',
+              display: 'flex',
+              alignItems: 'center',
             },
             props: {
               value: params.row[cellData.colname],

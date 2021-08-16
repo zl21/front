@@ -39,12 +39,15 @@ export const FindInstance = ($this,name,tableName,maintable) => {
     // let panelFormParent = $this.$_live_getChildComponent(window.vm, `${$this.activeTab.keepAliveModuleName}`);
     let mainTableName = $this.$route.params.tableName;
      //console.log(mainTableName,'34343',$this.$route.params,$this.activeTab.keepAliveModuleName);
-
     let panelFormParent = {};
     if(document.querySelector('.ListsForm-box')){
         panelFormParent = document.querySelector('.ListsForm-box')._vue_;
-
-        return [$this.$_live_getChildComponent(panelFormParent, mainTableName+name)]
+        name = name.replace(new RegExp(mainTableName), "");
+        if(!Array.isArray(name)){
+            return [panelFormParent.$_live_getChildComponent(panelFormParent, mainTableName+name)]
+        }else{
+            return [panelFormParent.$_live_getChildComponent(panelFormParent, name[0])]
+        }
     }else{
         panelFormParent =  document.querySelector(`#${mainTableName}`)._vue_;
     }
@@ -127,7 +130,20 @@ export const FindInstanceAll = ($this,name) => {
 $this 目标实例
 name  string  表明+字段名称 
 */
-
+// list 实例获取延时问题
+export const delayedVm = async (mainTableName,name) => {
+    return new Promise(resolve => {
+        setTimeout(() => { // 用定时器模拟异步请求
+            let panelFormParent = document.querySelector('.ListsForm-box')._vue_;
+            if(!Array.isArray(name)){
+                resolve([panelFormParent.$_live_getChildComponent(panelFormParent, mainTableName+name)])
+            }else{
+                resolve([panelFormParent.$_live_getChildComponent(panelFormParent, name[0])])
+            }
+        },100)
+    });    
+  
+}
 // 清除字段
 export const ClearRefcolValue = ($this,name) => {
     let $vm = FindInstance($this,String(name));
