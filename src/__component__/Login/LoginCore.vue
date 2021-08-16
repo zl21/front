@@ -190,7 +190,6 @@
         if (this.type) {
           if (r.code === 100) {
             const codes = await this.checkLogined();
-            // console.log('code', code)
             if (codes === 1001) {
               this.flag = 2;
               return this.login()
@@ -198,12 +197,15 @@
           }
           if (r.code === -1) {
             this.$refs['AccountLogin'].getCode();
+            this.flag = 1;
             return this.$Modal.fcWarning({
               title: '安全提示',
               content: r.message,
               mask: true,
             })
-
+          }
+          if (r.data && r.data.code === -1) {
+            this.flag = 1;
           }
           if (r.data && r.data.code === 0) {
             const exp = r.data.data.isPasswordExpire;
@@ -222,7 +224,10 @@
             mask: true,
             showCancel: true,
             onOk: () => resolve(1001),
-            onCancel: () => resolve(1002)
+            onCancel: () => {
+              this.flag = 1;
+              resolve(1002)
+            }
           })
         })
       },
