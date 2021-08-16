@@ -111,6 +111,11 @@ export default {
       default () {
         return true;
       }
+    },
+    treeShow:{
+      type: Boolean,
+      default: false
+
     }
   },
   data () {
@@ -261,6 +266,7 @@ export default {
           let itemArrayLength = itemArray.length;
 
           let _index = index % this.setdefaultColumn;
+          console.log(index,'===',itemArray.length);
           if (index > itemArray.length) {
             //  大于总常数
             document.querySelector('.ListsForm-content').style.marginBottom = '0px';
@@ -484,12 +490,38 @@ export default {
       }, 100)
     }
   },
+  activated(){
+    // 激活
+    // console.log('2323================');
+    if (this.search) {
+      this.setColumn();
+    }
+
+  },
   watch: {
     formItemLists: {
       handler () {
         this.resetForm()
       },
       deep: true
+    },
+    defaultSpread:{
+       handler () {
+        if (this.search && this.searchFoldnum) {
+          this.setColumn();
+        }
+      },
+      deep: true
+
+    },
+    treeShow:{
+       handler () {
+        if (this.search && this.searchFoldnum) {
+          this.setColumn();
+        }
+      },
+      deep: true
+
     },
     searchFoldnum: {
       handler () {
