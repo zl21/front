@@ -52,6 +52,7 @@
                  :form-item-lists="formItems.defaultFormItemsLists"
                  :default-spread="changeSearchFoldnum.switchValue"
                  :search="true"
+                 :treeShow="treeShow"
                  :default-column="Number(4)"
                  :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
                  @onHandleEnter="searchClickData" />
