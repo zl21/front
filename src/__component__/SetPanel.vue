@@ -178,11 +178,14 @@
           .post('/p/cs/setUserParam', urlSearchParams(param))
           .then((res) => {
             if (res.data.code === 0) {
-              if (moduleName()) {
-                if (moduleName() && moduleName().indexOf('S', 0) === 0) {
-                  this.$store.commit('global/updateModifySearchFoldnum', { queryDisNumber: Number(this.num7), switchValue: this.switchValue });
-                }
-              }
+              // console.log(moduleName(),'0000');
+              // if (moduleName()) {
+              //   if (moduleName() && moduleName().indexOf('S', 0) === 0) {
+              //     this.$store.commit('global/updateModifySearchFoldnum', { queryDisNumber: Number(this.num7), switchValue: this.switchValue });
+              //   }
+              // }
+              this.$store.commit('global/updateModifySearchFoldnum', { queryDisNumber: Number(this.num7), switchValue: this.switchValue });
+
             }
           });
       },

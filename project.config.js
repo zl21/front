@@ -39,6 +39,7 @@ module.exports = {
   // target: 'http://cs.yqdev.burgeononline.com/', // 云雀
   // target: 'http://47.102.164.111:27777', // 卡宾
   // target: 'http://dev.dev.lark-erp.cn/',
+  // target: 'http://139.224.134.69:58000', // OMS
 
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
@@ -72,8 +73,10 @@ module.exports = {
   layoutDirectionSlot:{  // 模板渲染
     //NavigatorSubMenu:require('./src/demo/NavigatorSubMenu.vue').default,  // 模板渲染
     //NaVertical:require('./src/demo/NaVerticalslot.vue').default  // 模板渲染
-    //listFormButton:require('./demo/detailbuttons.vue').default,  // 定制列表button
-    //standardTableList:require('./demo/standardTableList.vue').default,  // 定制列表button
+    // listFormButton:require('./demo/detailbuttons.vue').default,  // 定制列表button
+    // standardTableList:{
+    //   defined:require('./demo/standardTableListdefind.vue').default,
+    // }  // 定制列表button
   },
   backDashboardRoute: [], // 配置刷新浏览器回到Dashboard界面
   custommizedRequestURL: {
@@ -189,5 +192,6 @@ module.exports = {
   autoGatewayUrl:false,  // 是否请求网关
   computeForSubtable: false,
   enableLoginPro: false, // 是否开启普通登录模式 false普通 true手机验证码
-  filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g]
+  filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
+  listFormWebconf:['filtercolval'] // 列表是否支持webcof 字段
 };

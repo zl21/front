@@ -190,7 +190,6 @@ export default {
         arr.push(item.AKNAME);
         return arr;
       }, []);
-      console.log(data,'3434');
       this.treedata = data.data.map((obj, i) => {
         const option = {};
         option.title = obj.NAME;
