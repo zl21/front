@@ -3,7 +3,7 @@
   <div :class="classesbox">
     <div :class="classes"
          id="listForm">
-      <div v-if="Object.keys(ItemLists).length > (setdefaultColumn*searchFoldnum - indexButton) && !hiddenIcon"
+      <div v-if="Object.keys(ItemLists).length > (setdefaultColumn*searchFoldnum - indexButton) && !hiddenIcon && defaultSpread"
            :class="tagCloseCls"
            @click="toggle">
         <Icon :class="className" />
@@ -12,7 +12,7 @@
         <div v-for="(item,index) in Object.keys(ItemLists)"
              :key="ItemLists[item]._index"
              :index="index"
-             :class="['item',ItemLists[item].colname,(index > (setdefaultColumn*searchFoldnum - 1 - indexButton) && !dowClass)?'long':'']">
+             :class="['item',ItemLists[item].colname,(defaultSpread ? (index > (setdefaultColumn*searchFoldnum - 1 - indexButton) && !dowClass):defaultSpread) ?'long':'']">
 
           <keep-alive>
             <component :is="ItemLists[item].component"
@@ -261,7 +261,6 @@ export default {
           let itemArrayLength = itemArray.length;
 
           let _index = index % this.setdefaultColumn;
-          console.log(index ,'==========', itemArray.length);
           if (index > itemArray.length) {
             //  大于总常数
             document.querySelector('.ListsForm-content').style.marginBottom = '0px';
