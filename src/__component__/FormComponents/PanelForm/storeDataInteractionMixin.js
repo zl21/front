@@ -40,6 +40,10 @@ export default {
               
             }  
           }
+          // 转大写
+          if(this.items.isuppercase){
+            current_value = current_value.toLocaleUpperCase();
+          }
           
           if(this.items.fkobj && (this.items.fkobj.searchmodel === 'pop' || this.items.fkobj.searchmodel === 'drp')){
            

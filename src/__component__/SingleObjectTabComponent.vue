@@ -1,8 +1,9 @@
 <template>
   <div :class="classes">
     <div
-      v-if="itemInfo.tabrelation==='1:1'&&watermarkimg"
+      v-if="type === 'vertical' && itemInfo.tabrelation==='1:1'&&watermarkimg"
       class="submit-img"
+      ref="watermark"
     >
       <WaterMark
         :text="waterMarkText"
@@ -10,6 +11,7 @@
         :top="waterMarkTop"
         :left="waterMarkLeft"
         :width="waterMarkWidth"
+        @hook:mounted="getTransferDom"
       />
     </div>
     <component
@@ -198,8 +200,9 @@
         slotTableTemplate:'', // 接入外部的渲染组件
         callbackFun:()=>{  // 回调函数
               
-        }
-       
+        },
+        currentItemId: '', 
+        currentTableId: ''
         // tableName: this[INSTANCE_ROUTE_QUERY].tableName
       };
     },
@@ -504,12 +507,35 @@
       this.$el._vue_=this;
     },
     created() {
+      const { tableId, itemId } = this[INSTANCE_ROUTE_QUERY];
+      this.currentTableId = tableId;
+      this.currentItemId = itemId;
       this.generateComponent();
     },
     methods: {
       ...mapMutations('global', ['decreasekeepAliveLists']),
 
       // ...mapActions(this[MODULE_COMPONENT_NAME], ['performMainTableSaveAction']),
+
+      // 转移水印
+      getTransferDom() {
+        let value = '' // 默认不转移节点
+        
+        if(window.ProjectConfig.domPortal && window.ProjectConfig.domPortal.waterMark) {
+          value = window.ProjectConfig.domPortal.waterMark({
+            fromComponent: 'SingleObjectTabComponent',
+            type: this.type
+          })
+        }
+        
+        if(value) {
+          const dom = document.querySelector(value)
+          if(dom) {
+            dom.appendChild(this.$refs.watermark)
+          }
+        }
+      },
+
       generateComponent() {
         const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
         const tableComponent = `${this[MODULE_COMPONENT_NAME]}.TableDetailCollection`;
@@ -1034,6 +1060,6 @@
         // const { tableName } = this;
         // this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateCheckedInfoData`, { tableName, value: data });
       }
-    }
+    },
   };
 </script>

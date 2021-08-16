@@ -362,7 +362,10 @@
     },
     methods: {
       choseWaListButton(data) {
-        this.btnclick('custom', data);
+        if(!data.disabled){
+          // 激活状态下
+          this.btnclick('custom', data);
+        }
       },
       childTableClickSaveFile() { // 手动触发保存
         const dom = document.getElementById('actionMODIFY');

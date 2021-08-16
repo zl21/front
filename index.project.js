@@ -29,5 +29,14 @@ R3.launchApplication({
   },
   enableGateWay: true, // 网关是否打开,
   enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
-  filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g]
+  filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
+  domPortal: {
+    // params对象属性,fromComponent用于区别哪个组件的水印,type区分布局结构
+    waterMark(params) {
+      if(params.fromComponent === 'SingleObjectButtons') {
+        return params.type === 'horizontal'? '.panelForm': '.verticalTableDetailContent'
+      }
+      return false
+    }
+  }
 });

@@ -47,7 +47,7 @@ export const refcolvalMap = ($this, config,key,type) => {
     let targetVm = FindInstance($this,config.srccol,$this.item.tableName,maintable);
 
     let linkFormMap = {
-        [key]: [`${$this.item.tableName}${$this.item.colname}`]
+        [key]: [`${$this.item.tableName || ''}${$this.item.colname}`]
     };
     //挂载映射关系到对方 
     let checked = [];
@@ -144,7 +144,7 @@ export const setFixedcolumns = ($this, type) => {
               }
               let id = $this.activeTab.keepAliveModuleName.split('.');
               return {
-                ID:id[id.length-1]
+                [webconf.refcolval.fixcolumn]:id[id.length-1]
               }
         }
         if(!$this._srccolValue){
@@ -221,8 +221,8 @@ export const setisShowPopTip = ($this, config,network,type) => {
 }
 
 // refcolval_custom 接口请求
-export  const refcolvalCustomUrl =  ($this, config,network) => {
-    let checkd = refcolvalMap($this, config.refcolval_custom,'refcolval_custom');
+export  const refcolvalCustomUrl =  ($this, config,network,value,type) => {
+    let checkd = refcolvalMap($this, config.refcolval_custom,'refcolval_custom',type);
     // async
     if(checkd){
          return postCustomUrl(network,config,$this)

@@ -8,13 +8,15 @@
     <div
       v-if="watermarkImg"
       class="submit-img"
+      ref="watermark"
     >
       <WaterMark
         :text="waterMarkText"
         :color="waterMarkColor"
         :top="waterMarkTop"
         :left="waterMarkLeft"
-        :width="waterMarkWidth"
+        :width="waterMarkWidth" 
+        @hook:mounted="getTransferDom"
       />
     </div>
     <ButtonGroup
@@ -93,6 +95,7 @@
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import { getSessionObject, updateSessionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
   import {FindInstance ,FindInstanceAll} from './ExtendedAttributes/common.js'
+
   export default {
     data() {
       return {
@@ -518,6 +521,25 @@
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
       ...mapMutations('global', ['directionalRouter', 'updateCustomizeMessage', 'deleteLoading', 'tabCloseAppoint', 'decreasekeepAliveLists', 'copyDataForSingleObject', 'tabOpen', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
+      
+      // 转移水印
+      getTransferDom() {
+        let value = ''
+        if(window.ProjectConfig.domPortal && window.ProjectConfig.domPortal.waterMark) {
+          value = window.ProjectConfig.domPortal.waterMark({
+            fromComponent: 'SingleObjectButtons', // 用于区别哪个组件的水印
+            type: this.objectType
+          })
+        }
+
+        if(value) {
+          const dom = document.querySelector(value)
+          if(dom) {
+            dom.appendChild(this.$refs.watermark)
+          }
+        }
+      },
+      
       updataCurrentTableDetailInfo() { // 更新当前单对象信息
         if (this[INSTANCE_ROUTE_QUERY].tableName === this.$route.params.tableName && this.$route.meta.routePrefix.includes('/SYSTEM/TABLE_DETAIL/')) { // 当前路由包含单对象标记
           // 将当前单对象方法挂在到window
@@ -794,6 +816,7 @@
             const addItemDataLength = itemNames.includes(this.itemName) && this.updateData[this.itemName].add[this.itemName];
             const defaultMainDataLength = this.updateData[this.tableName].default[this.tableName];
             const addMainDataLength = this.updateData[this.tableName].add[this.tableName];
+          
             if (defaultItemDataLength && Object.keys(defaultItemDataLength).length > 0) {
               if (Object.keys(defaultItemDataLength).length
                 < Object.keys(addItemDataLength).length// 子表add>default
@@ -804,6 +827,20 @@
                 this.isValue = true;// 左右结构，主表或子表修改了值。新增时，主表或子表add=default,修改了默认值
                 return true;
               }
+              if (addMainDataLength && Object.keys(addMainDataLength).length > 0) {
+                if (Object.keys(defaultMainDataLength).length < Object.keys(addMainDataLength).length) { // 主表add>default
+                  this.isValue = true;// 主表修改了值
+                  return true;
+                  console.log('新增时，主表add>default,修改了值');
+                } if (JSON.stringify(defaultMainDataLength) !== JSON.stringify(addMainDataLength)) {
+                  this.isValue = true;// 主表修改了值
+                  return true;
+                  console.log('新增时，主表add=default,修改了默认值');
+                } 
+              
+              }
+
+
             } else if (defaultMainDataLength && Object.keys(defaultMainDataLength).length > 0) {
               if (Object.keys(defaultMainDataLength).length < Object.keys(addMainDataLength).length) { // 主表add>default
                 this.isValue = true;// 主表修改了值。新增时，主表add>default,修改了值
@@ -815,6 +852,7 @@
                 this.isValue = true;// 主表修改了值。新增时，子表修改了值
                 return true;
               }
+              
             } else if (addItemDataLength && Object.keys(addItemDataLength).length > 0) {
               this.isValue = true;// 新增时，子表修改了值
               return true;
@@ -822,6 +860,7 @@
               this.isValue = true;// 新增时，主表修改了值
               return true;
             }
+
           }
         } else if (this.objectType === 'horizontal') { // 横向布局
           if (itemNames.includes(this.itemName)) { // 子表

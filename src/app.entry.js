@@ -47,6 +47,7 @@ Vue.component('listsForm',listsForm)
 Vue.use(R3Dialog); // 注册全局api调用组件
 Vue.use(Viewer);
 Vue.use(VueDND);
+
 // const createRouter = routes => new VueRouter({
 //   routes,
 //   mode: mock() ? 'hash' : 'history'

@@ -20,7 +20,7 @@ const proxyListsForPalmZx = ['/zhixiao-app'];
 const proxyListForShangFei = ['/user-center', '/shangfei', '/tr-center'];
 const proxyListForWuliu = ['/wuliu-admin'];
 const proxyListForKABIN = ['/r3/cabben/pt'];
-const proxyListForOMS = ['/p/c', '/p/cs', '/api', '/ad-app', '/r3-ps', '/r3-cp', '/r3-st', '/r3-oc-oms', '/r3-vip', '/r3-ipcs', '/asynctask/p/c', '/r3-pm', '/r3-ac']
+const proxyListForOMS = ['/p/c', '/p/cs', '/api', '/ad-app', '/r3-ps', '/r3-cp', '/r3-st', '/r3-oc-oms', '/r3-vip', '/r3-ipcs', '/asynctask/p/c', '/r3-pm', '/r3-ac', '/r3-sg']
 
 
 const indexProHtml = path.posix.join('/', 'index.pro.html');
