@@ -46,7 +46,7 @@
   import network, {urlSearchParams} from '../../__utils__/network';
 
   export default {
-    name: 'Login',
+    name: 'LoginCore',
     components: {AccountLogin, PhoneLogin},
     data() {
       return {
