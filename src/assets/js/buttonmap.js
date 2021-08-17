@@ -1,21 +1,51 @@
-import i18n from './i18n';
+import i18n from './i18n'
 
 const buttonmap = {
-  LOADING: i18n.t('tips.serverProcessing'),
-  CATEGORY_GUIDE: i18n.t('tips.categoryNavigation'),
-  MAINTAIN_BY_SYS: i18n.t('tips.systemMaintenance'),
-  TIME_OUT: i18n.t('tips.operationTimeout'),
-  NO_DATA_TO_PROCESS: i18n.t('messages.noDataProcess'),
-  DO_YOU_CONFIRM_DELETE: i18n.t('messages.confirmDelete'),
-  DO_YOU_CONFIRM_SUBMIT: i18n.t('messages.confirmSubmit'),
-  DO_YOU_CONFIRM_GROUPSUBMIT: i18n.t('messages.mergeSubmit'),
-  NO_PERMISSION: i18n.t('tips.noPermission'),
-  EXCEPTION: i18n.t('tips.abnormal'),
-  PLEASE_SWITCH_TO_MODIFY_VIEW: i18n.t('messages.switchEditInterfaceFirst'),
-  MODIFY_VIEW: i18n.t('messages.switchEditInterface'),
-  READ_ONLY_VIEW: i18n.t('messages.switchReadOnlyInterface'),
-  PLEASE_SELECT_LINES_LESS_THAN: i18n.t('messages.selectLessData'),
-  MORE_COMMANDS: i18n.t('tips.more'),
+  LOADING: () => {
+    return i18n.t('tips.serverProcessing')
+  },
+  CATEGORY_GUIDE: () => {
+    return i18n.t('tips.categoryNavigation')
+  },
+  MAINTAIN_BY_SYS: () => {
+    return i18n.t('tips.systemMaintenance')
+  },
+  TIME_OUT: () => {
+    return i18n.t('tips.operationTimeout')
+  },
+  NO_DATA_TO_PROCESS: () => {
+    return i18n.t('messages.noDataProcess')
+  },
+  DO_YOU_CONFIRM_DELETE: () => {
+    return i18n.t('messages.confirmDelete')
+  },
+  DO_YOU_CONFIRM_SUBMIT: () => {
+    return i18n.t('messages.confirmSubmit')
+  },
+  DO_YOU_CONFIRM_GROUPSUBMIT: () => {
+    return i18n.t('messages.mergeSubmit')
+  },
+  NO_PERMISSION: () => {
+    return i18n.t('tips.noPermission')
+  },
+  EXCEPTION: () => {
+    return i18n.t('tips.abnormal')
+  },
+  PLEASE_SWITCH_TO_MODIFY_VIEW: () => {
+    return i18n.t('messages.switchEditInterfaceFirst')
+  },
+  MODIFY_VIEW: () => {
+    return i18n.t('messages.switchEditInterface')
+  },
+  READ_ONLY_VIEW: () => {
+    return i18n.t('messages.switchReadOnlyInterface')
+  },
+  PLEASE_SELECT_LINES_LESS_THAN: () => {
+    return i18n.t('messages.selectLessData')
+  },
+  MORE_COMMANDS: () => {
+    return i18n.t('tips.more')
+  },
   // CMD_PRINT_SELECT: {
   //   name: '选中打印',
   //   icon: '',
@@ -23,43 +53,57 @@ const buttonmap = {
   //   action: '',
   // },
   CMD_PRINT: {
-	  name: i18n.t('buttons.print'),
+    name: () => {
+      return i18n.t('buttons.print')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_REPORT: {
-    name: i18n.t('tips.report'),
+    name: () => {
+      return i18n.t('tips.report')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_BACK: {
-    name: i18n.t('buttons.back'),
+    name: () => {
+      return i18n.t('buttons.back')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_GROUPSUBMIT: {
-    name: i18n.t('buttons.bulkSubmission'),
+    name: () => {
+      return i18n.t('buttons.bulkSubmission')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_GROUPMODIFY: {
-    name: i18n.t('buttons.batchEdit'),
+    name: () => {
+      return i18n.t('buttons.batchEdit')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_EXPORT: {
-    name: i18n.t('buttons.export'),
+    name: () => {
+      return i18n.t('buttons.export')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_ADD: {
-    name: i18n.t('buttons.add'),
+    name: () => {
+      return i18n.t('buttons.add')
+    },
     icon: '',
     defbutton: 'S',
     action: '',
@@ -71,150 +115,280 @@ const buttonmap = {
   //   action: '',
   // },
   CMD_MODIFY: {
-    name: i18n.t('buttons.save'),
+    name: () => {
+      return i18n.t('buttons.save')
+    },
     icon: '',
     defbutton: 'N',
     action: '',
   },
   CMD_DELETE: {
-    name: i18n.t('buttons.delete'),
+    name: () => {
+      return i18n.t('buttons.delete')
+    },
     icon: '',
     defbutton: 'X',
     action: '',
   },
   CMD_REF_DELETE: {
-    name: i18n.t('buttons.deleteDetails'),
+    name: () => {
+      return i18n.t('buttons.deleteDetails')
+    },
     icon: '',
     defbutton: 'X',
     action: '',
   },
   CMD_SUBMIT: {
-    name: i18n.t('buttons.submit'),
+    name: () => {
+      return i18n.t('buttons.submit')
+    },
     icon: '',
     defbutton: 'G',
     action: '',
   },
   CMD_UNSUBMIT: {
-    name: i18n.t('buttons.cancelSubmission'),
+    name: () => {
+      return i18n.t('buttons.cancelSubmission')
+    },
     icon: '',
     defbutton: 'G',
     action: '',
   },
   CMD_REFRESH: {
-    name: i18n.t('buttons.refresh'),
+    name: () => {
+      return i18n.t('buttons.refresh')
+    },
     icon: '',
     defbutton: 'J',
     action: '',
   },
-  CMD_CXTAB: i18n.t('tips.statistics'),
+  CMD_CXTAB: () => {
+    return i18n.t('tips.statistics')
+  },
   CMD_LISTADD: {
-    name: i18n.t('buttons.batchAdd'),
+    name: () => {
+      return i18n.t('buttons.batchAdd')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_IMPORT: {
-    name: i18n.t('buttons.import'),
+    name: () => {
+      return i18n.t('buttons.import')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_CANCOPY: {
-    name: i18n.t('buttons.copy'),
+    name: () => {
+      return i18n.t('buttons.copy')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_COPY_PER: {
-    name: i18n.t('tips.copyPermission'),
+    name: () => {
+      return i18n.t('tips.copyPermission')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_UPDATE_SELECTION: {
-    name: i18n.t('messages.modifySelectRow'),
+    name: () => {
+      return i18n.t('messages.modifySelectRow')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_UPDATE_RESULTSET: {
-    name: i18n.t('messages.modifyResult'),
+    name: () => {
+      return i18n.t('messages.modifyResult')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_CopyBill: {
-    name: i18n.t('messages.copyBill'),
+    name: () => {
+      return i18n.t('messages.copyBill')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
-  CMD_PRINT_LIST: i18n.t('buttons.print'),
-  CMD_PRINT_SELECT: i18n.t('tips.printWithTemplate'),
+  CMD_PRINT_LIST: () => {
+    return i18n.t('buttons.print')
+  },
+  CMD_PRINT_SELECT: () => {
+    return i18n.t('tips.printWithTemplate')
+  },
   CMD_EXPORT_LIST: {
-    name: i18n.t('buttons.export'),
+    name: () => {
+      return i18n.t('buttons.export')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_SMS_LIST: {
-    name: i18n.t('tips.shortMessage'),
+    name: () => {
+      return i18n.t('tips.shortMessage')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_BATCHMODIFY: {
-    name: i18n.t('buttons.batchEdit'),
+    name: () => {
+      return i18n.t('buttons.batchEdit')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
-  IFRAME_TITLE: i18n.t('tips.dialog'),
-  PLS_SELECT_CXTAB: i18n.t('messages.selectSummaryTemplate'),
-  NO_CXTAB: i18n.t('messages.notDefineSummaryTemplate'),
-  CAN_NOT_BE_NULL: i18n.t('tips.notEmpty'),
-  MUST_BE_DATE_TYPE: i18n.t('messages.mustDataType'),
-  MUST_BE_NUMBER_TYPE: i18n.t('messages.mustDigital'),
-  PLEASE_SELECT: i18n.t('form.selectPlaceholder'),
-  PLEASE_SETUP_ASSIGNEE: i18n.t('messages.setAgent'),
-  SEARCH: i18n.t('buttons.find'),
-  CONTAINS: i18n.t('tips.contain'),
-  NOTCONTAINS: i18n.t('actions.exclude'),
-  CLEAR_CONDITION: i18n.t('messages.clickClearSetting'),
-  PLEASE_CHECK_SELECTED_LINES: i18n.t('messages.tickToConfirm'),
-  PLEASE_REFRESH_CXTAB_PAGE: i18n.t('messages.reenterReport'),
-  NO_DATA: i18n.t('tips.noData'),
-  CLOSE_DIALOG: i18n.t('buttons.close'),
-  EXCLUDE_CHOOSED_ROWS: i18n.t('buttons.excludeSelectedRows'),
-  EXCLUDE_ALL: i18n.t('buttons.excludeAll'),
-  ADD_CHOOSE_ROWS: i18n.t('buttons.addSelectedRow'),
-  ADD_ALL: i18n.t('buttons.addAll'),
-  ALREADY_CHOOSED: i18n.t('tips.hasBeenSelected'),
-  ALREADY_EXCLUDE: i18n.t('tips.hasBeenExcluded'),
-  SET_ALREADY_CHOOSED: i18n.t('messages.collectionSelected'),
-  SET_ALREADY_EXCLUDE: i18n.t('messages.collectionExcluded'),
-  NOTICE: i18n.t('tips.notify'),
-  PRIORITY: i18n.t('tips.priority'),
-  RELEASETIME: i18n.t('tips.sendTime'),
-  SERIALNO: i18n.t('tips.serialNumber'),
-  TITLE: i18n.t('tips.title'),
-  URGENT_MESSAGE: '你有$$条紧急消息必需马上处理',
-  CONFIRM_MESSAGE: '共有$$条需要确认',
-  ALL_NOTICES: i18n.t('tips.allNotifications'),
+  IFRAME_TITLE: () => {
+    return i18n.t('tips.dialog')
+  },
+  PLS_SELECT_CXTAB: () => {
+    return i18n.t('messages.selectSummaryTemplate')
+  },
+  NO_CXTAB: () => {
+    return i18n.t('messages.notDefineSummaryTemplate')
+  },
+  CAN_NOT_BE_NULL: () => {
+    return i18n.t('tips.notEmpty')
+  },
+  MUST_BE_DATE_TYPE: () => {
+    return i18n.t('messages.mustDataType')
+  },
+  MUST_BE_NUMBER_TYPE: () => {
+    return i18n.t('messages.mustDigital')
+  },
+  PLEASE_SELECT: () => {
+    return i18n.t('form.selectPlaceholder')
+  },
+  PLEASE_SETUP_ASSIGNEE: () => {
+    return i18n.t('messages.setAgent')
+  },
+  SEARCH: () => {
+    return i18n.t('buttons.find')
+  },
+  CONTAINS: () => {
+    return i18n.t('tips.contain')
+  },
+  NOTCONTAINS: () => {
+    return i18n.t('actions.exclude')
+  },
+  CLEAR_CONDITION: () => {
+    return i18n.t('messages.clickClearSetting')
+  },
+  PLEASE_CHECK_SELECTED_LINES: () => {
+    return i18n.t('messages.tickToConfirm')
+  },
+  PLEASE_REFRESH_CXTAB_PAGE: () => {
+    return i18n.t('messages.reenterReport')
+  },
+  NO_DATA: () => {
+    return i18n.t('tips.noData')
+  },
+  CLOSE_DIALOG: () => {
+    return i18n.t('buttons.close')
+  },
+  EXCLUDE_CHOOSED_ROWS: () => {
+    return i18n.t('buttons.excludeSelectedRows')
+  },
+  EXCLUDE_ALL: () => {
+    return i18n.t('buttons.excludeAll')
+  },
+  ADD_CHOOSE_ROWS: () => {
+    return i18n.t('buttons.addSelectedRow')
+  },
+  ADD_ALL: () => {
+    return i18n.t('buttons.addAll')
+  },
+  ALREADY_CHOOSED: () => {
+    return i18n.t('tips.hasBeenSelected')
+  },
+  ALREADY_EXCLUDE: () => {
+    return i18n.t('tips.hasBeenExcluded')
+  },
+  SET_ALREADY_CHOOSED: () => {
+    return i18n.t('messages.collectionSelected')
+  },
+  SET_ALREADY_EXCLUDE: () => {
+    return i18n.t('messages.collectionExcluded')
+  },
+  NOTICE: () => {
+    return i18n.t('tips.notify')
+  },
+  PRIORITY: () => {
+    return i18n.t('tips.priority')
+  },
+  RELEASETIME: () => {
+    return i18n.t('tips.sendTime')
+  },
+  SERIALNO: () => {
+    return i18n.t('tips.serialNumber')
+  },
+  TITLE: () => {
+    return i18n.t('tips.title')
+  },
+  URGENT_MESSAGE: () => {
+    return '你有$$条紧急消息必需马上处理'
+  },
+  CONFIRM_MESSAGE: ()=> {
+    return '共有$$条需要确认'
+  },
+  ALL_NOTICES: () => {
+    return i18n.t('tips.allNotifications')
+  },
   CMD_VOID: {
-    name: i18n.t('buttons.invalid'),
+    name: () => {
+      return i18n.t('buttons.invalid')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_UNVOID: {
-    name: i18n.t('tips.cancelVoid'),
+    name: () => {
+      return i18n.t('tips.cancelVoid')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
-  DO_YOU_CONFIRM_VOID: i18n.t('messages.confirmVoidBill'),
-  DO_YOU_CONFIRM_UNVOID: i18n.t('messages.confirmCancelVoidBill'),
-};
+  DO_YOU_CONFIRM_VOID: () => {
+    return i18n.t('messages.confirmVoidBill')
+  },
+  DO_YOU_CONFIRM_UNVOID: () => {
+    return i18n.t('messages.confirmCancelVoidBill')
+  },
+}
 
-export default buttonmap;
+// 为了保证切换语言包后拿到正确值，此处直接通过劫持属性获取函数返回值。避免再去引用文件中修改变量的使用方法
+const buttonmapProxy = {}
+Object.keys(buttonmap).forEach((key) => {
+  if (typeof buttonmap[key] !== 'object') {
+    buttonmapProxy[key] = buttonmap[key]
+    Object.defineProperty(buttonmapProxy, key, {
+      get() {
+        return buttonmap[key]
+      },
+    })
+  } else {
+    buttonmapProxy[key] = { ...buttonmap[key] }
+    Object.defineProperty(buttonmapProxy[key], 'name', {
+      get() {
+        return buttonmap[key].name()
+      },
+    })
+  }
+})
+
+export default buttonmapProxy
