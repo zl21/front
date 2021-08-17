@@ -75,6 +75,11 @@ const init = () => {
     i18n,
     render: createElement => createElement(App)
   }).$mount(rootDom);
+
+  // 切换r3语言
+  if(window.ProjectConfig.lang){
+    i18n.locale = window.ProjectConfig.lang
+  }
   
   window.R3message = (data) => {
     window.vm.$Modal.fcError({
