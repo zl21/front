@@ -454,6 +454,10 @@ export default {
     state.openedMenuLists[index].isActive = true;
   },
   forceUpdateOpenedMenuLists(state, { openedMenuInfo, index }) {
+    openedMenuInfo.label = openedMenuInfo.label.replace(/undefined/g,'');
+    if(openedMenuInfo.label ===''){
+      openedMenuInfo.label = state.openedMenuLists[index].label;
+    }
     state.openedMenuLists.forEach((d) => { d.isActive = false; });
     state.openedMenuLists[index] = openedMenuInfo;
     state.openedMenuLists = state.openedMenuLists.concat([]);
