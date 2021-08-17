@@ -3,7 +3,7 @@
   <div :class="classesbox">
     <div :class="classes"
          id="listForm">
-      <div v-if="Object.keys(ItemLists).length > (setdefaultColumn*searchFoldnum - indexButton) && !hiddenIcon"
+      <div v-if="Object.keys(ItemLists).length > (setdefaultColumn*searchFoldnum - indexButton) && !hiddenIcon && defaultSpread"
            :class="tagCloseCls"
            @click="toggle">
         <Icon :class="className" />
@@ -12,7 +12,7 @@
         <div v-for="(item,index) in Object.keys(ItemLists)"
              :key="ItemLists[item]._index"
              :index="index"
-             :class="['item',ItemLists[item].colname,(index > (setdefaultColumn*searchFoldnum - 1 - indexButton) && !dowClass)?'long':'']">
+             :class="['item',ItemLists[item].colname,(defaultSpread ? (index > (setdefaultColumn*searchFoldnum - 1 - indexButton) && !dowClass):defaultSpread) ?'long':'']">
 
           <keep-alive>
             <component :is="ItemLists[item].component"
@@ -111,6 +111,11 @@ export default {
       default () {
         return true;
       }
+    },
+    treeShow:{
+      type: Boolean,
+      default: false
+
     }
   },
   data () {
@@ -258,10 +263,13 @@ export default {
           // 动态
           let itemArray = document.querySelectorAll('#listForm .item');
           let index = this.setdefaultColumn * this.searchFoldnum;
+         
           let itemArrayLength = itemArray.length;
-
+           if(!this.defaultSpread){
+              index = itemArrayLength;
+            }
           let _index = index % this.setdefaultColumn;
-          console.log(index ,'==========', itemArray.length);
+         
           if (index > itemArray.length) {
             //  大于总常数
             document.querySelector('.ListsForm-content').style.marginBottom = '0px';
@@ -270,11 +278,13 @@ export default {
             let itemLength_index = itemLength % this.setdefaultColumn;
             this.setSize(false, itemLength_index);
 
-          } else if(index === itemArray.length){
+          } else if(index === itemArray.length && (index % this.setdefaultColumn) === 0){
                this.indexButton = 0;
                 setTimeout(() => {
                     let bottomdiv = document.querySelector('.ListsForm-content');
-                    bottomdiv.style.marginBottom = '40px';
+                    if(bottomdiv.style.marginBottom!=='40px' ){
+                     bottomdiv.style.marginBottom = '40px';
+                    }
                 },100)
 
           }else {
@@ -329,7 +339,6 @@ export default {
       } else {
         this.ButtonHtml = window.ProjectConfig.listFormButton;
       }
-
     },
     initComponent (item) { // init组件
       const Render = new RenderComponent(item, this.id);
@@ -485,12 +494,38 @@ export default {
       }, 100)
     }
   },
+  activated(){
+    // 激活
+    // console.log('2323================');
+    if (this.search) {
+      this.setColumn();
+    }
+
+  },
   watch: {
     formItemLists: {
       handler () {
         this.resetForm()
       },
       deep: true
+    },
+    defaultSpread:{
+       handler () {
+        if (this.search && this.searchFoldnum) {
+          this.setColumn();
+        }
+      },
+      deep: true
+
+    },
+    treeShow:{
+       handler () {
+        if (this.search && this.searchFoldnum) {
+          this.setColumn();
+        }
+      },
+      deep: true
+
     },
     searchFoldnum: {
       handler () {

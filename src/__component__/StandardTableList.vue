@@ -52,9 +52,11 @@
                  :form-item-lists="formItems.defaultFormItemsLists"
                  :default-spread="changeSearchFoldnum.switchValue"
                  :search="true"
+                 :treeShow="treeShow"
                  :default-column="Number(4)"
                  :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
                  @onHandleEnter="searchClickData" />
+      <component :is="defined"></component>           
       <tabBar slot="list-tabBar"
               v-if="getFilterTable"
               :data="ag.tablequery"
@@ -239,6 +241,7 @@ export default {
       }, // 弹框配置信息
       currentTabValue: {},
       filterTableParam: {},
+      defined:'', // 插入的组件
       slotName: ''  // 模板名称
 
     };
@@ -2642,10 +2645,17 @@ export default {
     this.buttonMap = buttonmap;
     this.ChineseDictionary = ChineseDictionary;
     this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');
-    if (window.ProjectConfig.layoutDirectionSlot && window.ProjectConfig.layoutDirectionSlot.standardTableList) {
-      this.slotName = window.ProjectConfig.layoutDirectionSlot.standardTableList;
+    // if (window.ProjectConfig.layoutDirectionSlot && window.ProjectConfig.layoutDirectionSlot.standardTableList) {
+    //   this.slotName = window.ProjectConfig.layoutDirectionSlot.standardTableList;
+    // } else {
+    //   this.slotName = slotTemplate;
+    // }
+     if (window.ProjectConfig.layoutDirectionSlot && window.ProjectConfig.layoutDirectionSlot.standardTableList) {
+       if( window.ProjectConfig.layoutDirectionSlot.standardTableList.defined){
+          this.defined = window.ProjectConfig.layoutDirectionSlot.standardTableList.defined;
+       }
     } else {
-      this.slotName = slotTemplate;
+      this.defined = '';
     }
 
   },
