@@ -13,7 +13,7 @@
   import {classFix} from '../../constants/global';
 
   export default {
-    name: 'LoginWrap',
+    name: 'Login',
     components: {LoginCore},
     computed: {
       classes() {
