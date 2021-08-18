@@ -74,6 +74,20 @@ const dispatchR3Event = (data) => {
     }));
   }, 10);
 };
+//http request 拦截器
+axios.interceptors.request.use(
+  config => {
+       console.log(config,'configconfig');
+      if(window.ProjectConfig.enciphered){
+        config.headers['SSSSS-A'] = new Date().getTime();
+        config.headers['SSSSS-B'] = md5('qwertburgeon'+new Date().getTime());
+      } 
+      return config
+  },
+  err => {
+     
+  }
+)
 
 axios.interceptors.response.use(
 
