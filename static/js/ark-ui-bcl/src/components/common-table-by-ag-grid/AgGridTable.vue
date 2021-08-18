@@ -1104,5 +1104,9 @@ export default {
   .ag-layout-normal .ag-floating-bottom {
     z-index: 10;
   }
+
+  .ag-theme-balham .ag-menu {
+    z-index: 20;
+  }
 }
 </style>
