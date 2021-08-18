@@ -603,6 +603,7 @@
                     tableId: data.reftableid,
                     label: data.reftabdesc,
                     id: data.refobjid,
+                    original:'outclick',
                     serviceId: data.serviceId
                   });
                 } else {

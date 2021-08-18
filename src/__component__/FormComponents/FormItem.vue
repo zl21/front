@@ -443,7 +443,6 @@ export default {
       // xhj修改，改为使用tabOpen方法，以下存serviceId逻辑已弃用
 
       let value = this.value;
-      console.log(this.value,props);
       let id = 0;
       if (!props.readonly) {
         id = value[0].ID;
@@ -472,6 +471,7 @@ export default {
         tableId,
         id,
         label,
+        original:'outclick',
         serviceId
       });
     },
