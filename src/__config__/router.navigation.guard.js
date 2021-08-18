@@ -127,7 +127,7 @@ const getDynamicModuleTag = (to) => {
 
 const getOriginModuleName = (to) => {
   const {
-    tableName, tableId, customizedModuleName, customizedModuleId, linkModuleName, linkModuleId
+    tableName, tableId, customizedModuleName, customizedModuleId, linkModuleName, linkModuleId,pluginModuleName
   } = to.params;
   const { routePrefix } = to.meta;
   let originModuleName = '';
@@ -143,7 +143,10 @@ const getOriginModuleName = (to) => {
     case STANDARD_COMMONTABLE_LIST_PREFIX:
       originModuleName = `${STANDARD_COMMONTABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
       break;
-
+      // Condition Five: 路由到插件界面
+    case PLUGIN_MODULE_PREFIX:
+      originModuleName = `${PLUGIN_MODULE_COMPONENT_PREFIX}.${pluginModuleName}`;
+        break; 
     default:
       originModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
   }
