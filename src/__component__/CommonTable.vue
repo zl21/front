@@ -684,6 +684,7 @@
                     tableName: data.reftablename,
                     tableId: data.reftableid,
                     label: data.reftabdesc,
+                    original:'outclick',
                     id: data.refobjid,
                     serviceId: data.serviceId
                   });
