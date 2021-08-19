@@ -58,6 +58,11 @@
       }
 
     },
+    props: {
+      loginSucCbk: {
+        type: Function
+      }
+    },
     created() {
       document.onkeydown = (e) => {
         const key = e.keyCode;
@@ -208,6 +213,7 @@
             this.flag = 1;
           }
           if (r.data && r.data.code === 0) {
+            this.flag = 1;
             const exp = r.data.data.isPasswordExpire;
             if (exp) {
               await this.checkPwdDays()
@@ -262,18 +268,25 @@
             }
             window.sessionStorage.setItem('loginTime', `${Date.now()}`);
             this.spinShow = false;
-            window.location.href = window.location.origin;
+            this.goto()
           } else {
             this.spinShow = false;
           }
         } else if (r.status === 200 && r.data.code === 0) {
           this.spinShow = false;
           window.sessionStorage.setItem('loginTime', `${Date.now()}`);
-          window.location.href = window.location.origin;
-          // window.location.reload();
+          this.goto()
         } else {
           this.spinShow = false;
         }
+      },
+      // 跳转前的回掉处理
+      async goto() {
+        if (!this.loginSucCbk) return window.location.href = window.location.origin;
+        if (typeof this.loginSucCbk !== 'function') throw new Error('loginSucCbk must be a function');
+        const res = await this.loginSucCbk();
+        if (!res) return;
+        window.location.href = window.location.origin;
       }
     }
   };
