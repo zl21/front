@@ -7,11 +7,12 @@
 
 
  import { defaultrange } from '../../constants/global';
- import { DropMultiSelectFilter } from '@syman/ark-ui-bcl';
+//  import { DropMultiSelectFilter } from '@syman/ark-ui-bcl';
  import DropMethods from '../ExtendedMethods/DropMethods';
  import network from '../../__utils__/network';
  import { SetPlaceholder } from './setProps';
- 
+ let  DropMultiSelectFilter = $Bcl.default.arkDropMultiSelectFilter;
+
  import {
   setisShowPopTip,
   postData,

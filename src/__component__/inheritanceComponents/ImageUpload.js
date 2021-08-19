@@ -5,9 +5,11 @@
  * ImageUpload组件自定义
  */
 
-import { ImageUpload } from '@syman/ark-ui-bcl';
+// import { ImageUpload } from '@syman/ark-ui-bcl';
 // import ImageUpload from 'arkui_BCL/ImageUpload';
 import network ,{ getGateway }from '../../__utils__/network';
+let  ImageUpload = $Bcl.default.ImageUpload;
+
 import {
   custommizedRequestUrl
 } from '../../constants/global';
