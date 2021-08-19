@@ -34,7 +34,7 @@
               class="label-tip">*</span>
         <template v-if="getVersion() === '1.4' && items.fkobj && items.fkobj.fkdisplay === 'pop' && items.detailType">
           <!-- 路由跳转 -->
-          <template v-if="value">
+          <template v-if="value && value[0]">
             <i class="iconfont iconbj_link"
                data-target-tag="fkIcon"
                style="color: #0f8ee9; cursor: pointer; font-size: 12px"
@@ -44,7 +44,7 @@
         </template>
         <template v-if="getVersion() === '1.4' && items.fkobj && items.fkobj.fkdisplay === 'drp' && items.detailType">
           <!-- 路由跳转 -->
-          <template v-if="value">
+          <template v-if="value && value[0]">
             <i class="iconfont iconbj_link"
                data-target-tag="fkIcon"
                style="color: #0f8ee9; cursor: pointer; font-size: 12px"
