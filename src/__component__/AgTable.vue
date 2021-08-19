@@ -109,8 +109,9 @@
   // import agTable from '../assets/js/ag-grid-table-pure';
   import CommonTable from './CommonTable.vue';
   import { floatingFilter, classFix } from '../constants/global';
-  import { CommonTableByAgGrid } from '@syman/ark-ui-bcl';
+  // import { CommonTableByAgGrid } from '@syman/ark-ui-bcl';
   import { getPinnedColumns } from '../__utils__/tableMethods'
+  let CommonTableByAgGrid = $Bcl.default.arkCommonTableByAgGrid;
 
   export default {
     name: 'AgTable',
