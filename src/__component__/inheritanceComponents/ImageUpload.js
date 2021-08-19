@@ -8,7 +8,7 @@
 // import { ImageUpload } from '@syman/ark-ui-bcl';
 // import ImageUpload from 'arkui_BCL/ImageUpload';
 import network ,{ getGateway }from '../../__utils__/network';
-let  ImageUpload = $Bcl.default.ImageUpload;
+let  ImageUpload = $Bcl.default.arkImageUpload;
 
 import {
   custommizedRequestUrl
