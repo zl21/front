@@ -29,6 +29,7 @@
         :key="index"
         :row-index="index"
         :row-count="formData.leftPinnedColumns.length"
+        :error-tip="fieldValidateTip.leftPinnedColumns[index]"
         row-label="字段"
         show-operation-button
         @addRow="addRow('leftPinnedColumns')"
@@ -79,6 +80,7 @@
         :key="index"
         :row-index="index"
         :row-count="formData.rightPinnedColumns.length"
+        :error-tip="fieldValidateTip.rightPinnedColumns[index]"
         row-label="字段"
         show-operation-button
         @addRow="addRow('rightPinnedColumns')"
@@ -157,6 +159,10 @@ export default {
         leftPinnedColumns: [],
         rightPinnedColumns: []
       }, // 用类数组存默认值
+      fieldValidateTip: {
+        leftPinnedColumns: [''],
+        rightPinnedColumns: ['']
+      }
     }
   },
 
@@ -191,11 +197,13 @@ export default {
     // 添加行
     addRow(field) {
       this.formData[field].push('');
+      this.fieldValidateTip[field].push('')
     },
 
     // 删除行
     removeRow(field, rowIndex) {
       this.formData[field].splice(rowIndex, 1);
+      this.fieldValidateTip[field].splice(rowIndex, 1)
     },
 
     // 查询字段
@@ -323,12 +331,37 @@ export default {
 
     // 选择模糊查询的数据
     selectValue(data, field, rowIndex) {
-      this.$set(this.formData[field], rowIndex, data[0].Label)
+      if (this.validateForm(data[0].Label, field, rowIndex)) {
+        this.$set(this.formData[field], rowIndex, data[0].Label)
+      }
     },
 
     // 清除选择的表名
     clearValue(field, rowIndex) {
+      this.$set(this.fieldValidateTip[field], rowIndex, '')
       this.$set(this.formData[field], rowIndex, '')
+    },
+
+    // 校验字段是否重复
+    validateForm(fieldLabel, positionField, rowIndex) {
+      let isValid = true
+      this.$set(this.fieldValidateTip[positionField], rowIndex, '')
+
+      // 对比左侧
+      this.formData.leftPinnedColumns.forEach((field) => {
+        if (fieldLabel === field) {
+          isValid = false
+          this.$set(this.fieldValidateTip[positionField], rowIndex, `已存在相同字段名称${field},请重新选择`)
+        }
+      })
+      // 对比右侧
+      this.formData.rightPinnedColumns.forEach((field) => {
+        if (fieldLabel === field) {
+          isValid = false
+          this.$set(this.fieldValidateTip[positionField], rowIndex, `已存在相同字段名称${field},请重新选择`)
+        }
+      })
+      return isValid
     },
 
     // sortEnd(e, field) {

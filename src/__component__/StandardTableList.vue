@@ -1805,26 +1805,29 @@ export default {
             currentParame.isolr = this.buttons.isSolr;
 
             if (enableKAQueryDataForUser() || this.webConf.enableKAQueryDataForUser) {
-            
-                this.$_live_getChildComponent(this, 'listsForm').getFormDataLabel().then(async search => {
-                  this.formItems.defaultFormItemsLists.map((temp) => {
-                    // 存储查询条件时过滤掉弹窗多选类型
-                    if (temp.display === 'OBJ_FK' && temp.fkobj.searchmodel === 'mop') {
-                      delete search[temp.colname];
-                    }
-                    // 过滤外键字符串
-                    if (temp.display === 'OBJ_FK') {
-                      if (!Array.isArray(search[temp.colname])) {
-                        delete search[temp.colname];
-                      }
-                    }
-                  });
-                  search.R3UserId = `${this.userInfo.id}_${this.searchData.table}`;
-                  addSearch(search);
+                if(this.$_live_getChildComponent(this, 'listsForm')){
+                  this.$_live_getChildComponent(this, 'listsForm').getFormDataLabel().then(async search => {
+                      this.formItems.defaultFormItemsLists.map((temp) => {
+                        // 存储查询条件时过滤掉弹窗多选类型
+                        if (temp.display === 'OBJ_FK' && temp.fkobj.searchmodel === 'mop') {
+                          delete search[temp.colname];
+                        }
+                        // 过滤外键字符串
+                        if (temp.display === 'OBJ_FK') {
+                          if (!Array.isArray(search[temp.colname])) {
+                            delete search[temp.colname];
+                          }
+                        }
+                      });
+                      search.R3UserId = `${this.userInfo.id}_${this.searchData.table}`;
+                      addSearch(search);
 
-                  // this.updateSearchDBdata({});
-                  this.updateFormData(await this.dataProcessing());
-                })
+                      // this.updateSearchDBdata({});
+                      this.updateFormData(await this.dataProcessing());
+                    })
+
+                }  
+                
               
             }
             this.getQueryListForAg(currentParame);
@@ -1844,7 +1847,7 @@ export default {
         }, () => { // 状态为rejected时执行
           this.$R3loading.hide(this.loadingName);
         });
-      }, 100);
+      }, 150);
     },
     paramePreEvent (data, searchDataRes) {
       //data：全局参数

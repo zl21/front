@@ -8,13 +8,15 @@
     <div
       v-if="watermarkImg"
       class="submit-img"
+      ref="watermark"
     >
       <WaterMark
         :text="waterMarkText"
         :color="waterMarkColor"
         :top="waterMarkTop"
         :left="waterMarkLeft"
-        :width="waterMarkWidth"
+        :width="waterMarkWidth" 
+        @hook:mounted="getTransferDom"
       />
     </div>
     <ButtonGroup
@@ -93,6 +95,7 @@
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import { getSessionObject, updateSessionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
   import {FindInstance ,FindInstanceAll} from './ExtendedAttributes/common.js'
+
   export default {
     data() {
       return {
@@ -518,6 +521,25 @@
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
       ...mapMutations('global', ['directionalRouter', 'updateCustomizeMessage', 'deleteLoading', 'tabCloseAppoint', 'decreasekeepAliveLists', 'copyDataForSingleObject', 'tabOpen', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
+      
+      // 转移水印
+      getTransferDom() {
+        let value = ''
+        if(window.ProjectConfig.domPortal && window.ProjectConfig.domPortal.waterMark) {
+          value = window.ProjectConfig.domPortal.waterMark({
+            fromComponent: 'SingleObjectButtons', // 用于区别哪个组件的水印
+            type: this.objectType
+          })
+        }
+
+        if(value) {
+          const dom = document.querySelector(value)
+          if(dom) {
+            dom.appendChild(this.$refs.watermark)
+          }
+        }
+      },
+      
       updataCurrentTableDetailInfo() { // 更新当前单对象信息
         if (this[INSTANCE_ROUTE_QUERY].tableName === this.$route.params.tableName && this.$route.meta.routePrefix.includes('/SYSTEM/TABLE_DETAIL/')) { // 当前路由包含单对象标记
           // 将当前单对象方法挂在到window
