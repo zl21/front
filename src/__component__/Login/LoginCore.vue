@@ -203,8 +203,10 @@
             }
           }
           if (r.code === -1) {
-            this.$refs['AccountLogin'].getCode();
-            this.flag = 1;
+            if (this.typeToggle === 1) {
+              this.$refs['AccountLogin'].getCode();
+              this.flag = 1;
+            }
             return this.$Modal.fcWarning({
               title: '安全提示',
               content: r.message,
