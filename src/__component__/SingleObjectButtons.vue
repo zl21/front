@@ -4014,6 +4014,7 @@
         this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
       },
       hideBackButton() {
+         this.dataArray.back = true;
         const clickMenuAddSingleObjectData = getSessionObject('clickMenuAddSingleObject');
         const currentRoute = this.$router.currentRoute.path;
         if (this.itemId === 'New') {
@@ -4207,6 +4208,8 @@
       this.waListButtons(this.tabwebact);
     },
     activated() {
+        // 处理按钮返回逻辑
+      this.hideBackButton();
       this.updataCurrentTableDetailInfo();
     },
     created() {

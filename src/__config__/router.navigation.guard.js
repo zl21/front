@@ -127,7 +127,7 @@ const getDynamicModuleTag = (to) => {
 
 const getOriginModuleName = (to) => {
   const {
-    tableName, tableId, customizedModuleName, customizedModuleId, linkModuleName, linkModuleId
+    tableName, tableId, customizedModuleName, customizedModuleId, linkModuleName, linkModuleId,pluginModuleName
   } = to.params;
   const { routePrefix } = to.meta;
   let originModuleName = '';
@@ -143,7 +143,10 @@ const getOriginModuleName = (to) => {
     case STANDARD_COMMONTABLE_LIST_PREFIX:
       originModuleName = `${STANDARD_COMMONTABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
       break;
-
+      // Condition Five: 路由到插件界面
+    case PLUGIN_MODULE_PREFIX:
+      originModuleName = `${PLUGIN_MODULE_COMPONENT_PREFIX}.${pluginModuleName}`;
+        break; 
     default:
       originModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
   }
@@ -166,6 +169,7 @@ export default (router) => {
     // 注入模块名
     to.meta.moduleName = getModuleName({ route: to });
 
+
     const loginText = '/login'.toUpperCase();
     if (to.path && getLocalObject('loginStatus') !== true && (to.path.indexOf(loginText) !== -1) && to.path !== '/') {
       const data = {
@@ -178,8 +182,29 @@ export default (router) => {
       window.location.href = window.location.origin;
       return;
     }
+  
+
     if (router.getMatchedComponents(to.path).length === 0) {
       next('/');
+    }
+     //  过滤跳转路由
+     if (window.ProjectConfig.routerFilter) {
+      let keepAliveLabelMaps = getSessionObject('keepAliveLabelMapsAll');
+      let filterName = to.meta.moduleName || to.meta.customizedModuleName || to.meta.pluginModuleName || to.meta.linkModuleName || '';
+      // filterName 不存在或则是不是xx.xx.xx 则不过滤
+      if (keepAliveLabelMaps&& filterName && filterName.split('.').length>2) {
+        let stringLeng = filterName.split('.').length>3 ? filterName.lastIndexOf('.') :filterName.length;
+        let menuName = filterName.substring(filterName.indexOf('.'),stringLeng);
+        // 根据路由规则匹配
+        let existIndex = ['S', 'SC', 'H', 'V', 'C', 'P', 'L'].findIndex((key) => {
+          let name = key + menuName;
+          return keepAliveLabelMaps[name];
+        });
+        if(existIndex === -1){
+          next('/')
+          return false
+        }
+      }
     }
 
     const { commit } = store;

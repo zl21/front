@@ -274,7 +274,9 @@ export default {
                 } else if ((c.fkdisplay === 'drp' || c.fkdisplay === 'mrp' || c.fkdisplay === 'pop') && Array.isArray(copyDatas[item])) {
                   c.refobjid = copyDatas[item].map(item => item.ID).join(',');
                   c.valuedata = copyDatas[item].map(item => item.Label).join(',');
-                  copySaveDataForParam[c.colname] = [{ ID: copyDatas[item][0].ID, Label: copyDatas[item][0].Label }];
+                  if(copyDatas[item][0]){
+                    copySaveDataForParam[c.colname] = [{ ID: copyDatas[item][0].ID, Label: copyDatas[item][0].Label }];
+                  }
                 }else if (c.display === 'OBJ_DATENUMBER') {
                   c.valuedata = copyDatas[item];
                   // c.default = -1;
@@ -330,7 +332,9 @@ export default {
               } else if (c.fkdisplay === 'drp' || c.fkdisplay === 'mrp' || c.fkdisplay === 'pop') {
                 c.refobjid = copyDatas[item].map(item => item.ID).join(',');
                 c.default = copyDatas[item].map(item => item.Label).join(',');
-                copySaveDataForParam[c.colname] = [{ ID: copyDatas[item][0].ID, Label: copyDatas[item][0].Label }];
+                if(copyDatas[item][0]){
+                  copySaveDataForParam[c.colname] = [{ ID: copyDatas[item][0].ID, Label: copyDatas[item][0].Label }];
+                }
               } else if (c.fkdisplay === 'mop') {
                 try {
                   const number = JSON.parse(b.valuedata).lists.result.length;
