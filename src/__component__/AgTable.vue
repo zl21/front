@@ -111,7 +111,7 @@
   import { floatingFilter, classFix } from '../constants/global';
   // import { CommonTableByAgGrid } from '@syman/ark-ui-bcl';
   import { getPinnedColumns } from '../__utils__/tableMethods'
-  let CommonTableByAgGrid = $Bcl.default.arkCommonTableByAgGrid;
+  let CommonTableByAgGrid = $Bcl.arkCommonTableByAgGrid;
 
   export default {
     name: 'AgTable',

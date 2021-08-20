@@ -10,7 +10,7 @@
 import network from '../../__utils__/network';
 import { SetPlaceholder ,SetDisable} from './setProps';
 
-let  Wangeditor = $Bcl.default.arkWangeditor;
+let  Wangeditor = $Bcl.arkWangeditor;
 
 class CustomWangeditor {
   constructor(item) {

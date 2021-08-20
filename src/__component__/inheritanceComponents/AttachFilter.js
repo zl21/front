@@ -14,7 +14,7 @@
  import network from '../../__utils__/network';
  import { SetPlaceholder } from './setProps';
  import DropMethods from '../ExtendedMethods/DropMethods';
- let  MopMultiSelect = $Bcl.default.arkMopMultiSelect;
+ let  MopMultiSelect = $Bcl.arkMopMultiSelect;
 
  class CustomAttachFilter {
    constructor(item) {

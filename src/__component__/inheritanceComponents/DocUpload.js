@@ -11,7 +11,7 @@
 //  import Docfile from 'arkui_BCL/Docfile';
 
 import { SetPlaceholder ,SetDisable} from './setProps';
-let  Docfile = $Bcl.default.arkDocfile;
+let  Docfile = $Bcl.arkDocfile;
 
  
  class CustomDocUpload {
