@@ -73,7 +73,7 @@
              maskClosable: false,
              scrollable: true,
              width: 920,
-             title: i18n.t('tip.popRadio')
+             title: i18n.t('tips.popRadio')
            }
          },
          display: this.item.display,

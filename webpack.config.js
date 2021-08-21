@@ -40,6 +40,7 @@ module.exports = env => ({
     'ark-ui': 'Ark',
     // jquery: '$',
     ztree: 'ztree',
+    // 'vue-i18n': 'VueI18n'
   },
   devServer: {
     compress: true,

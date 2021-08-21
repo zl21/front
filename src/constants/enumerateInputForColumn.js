@@ -79,7 +79,11 @@ list.enumerableLists.forEach((item, index) => {
   proxyList.enumerableLists.push({...item})
   Object.defineProperty(proxyList.enumerableLists[index], 'text', {
     get() {
-      return proxyList.enumerableLists[index].text()
+      if (typeof list.enumerableLists[index].text === 'string') {
+        return list.enumerableLists[index].text
+      } else {
+        return list.enumerableLists[index].text()
+      }
     },
   })
 })
