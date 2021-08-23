@@ -10,8 +10,6 @@
       >
         {{ item.webdesc }}
       </Button>
-      {{groupId}}
-      {{isSaveError}}
       <!-- <Button
         type="fcdefault"
         class="Button"
@@ -596,11 +594,13 @@
         this.treePromise = new Promise((resolve, reject) => this.getTreeData(resolve, reject));
         Promise.all([this.menuPromise, this.treePromise]).then(() => {
           this.groupId && this.getTableData();
+          this.isSaveError = false;
         });
 
       }, // 刷新数据
       refreshButtonClick() {
         this.$refs.ztree.refresh();
+        this.isSaveError = true;
         if (this.checkNoSaveData('refresh')) {
         } else {
           // this.refresh('nochange');
@@ -802,7 +802,7 @@
         })
       },
       selectFirstOnce() {
-        console.log('selectFirstOnce')
+        // console.log('selectFirstOnce')
         var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
         // console.log('this.groupId', this.groupId)
         // console.log('this.pageInit', this.pageInit)
