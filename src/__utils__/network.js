@@ -77,12 +77,15 @@ const dispatchR3Event = (data) => {
 //http request 拦截器
 axios.interceptors.request.use(
   config => {
+      // if(window.ProjectConfig.enciphered){} 
+        let number = Math.floor(Math.random() * 10000);
         config.headers['SSSSS-A'] = new Date().getTime();
-        config.headers['SSSSS-B'] = md5('qwertburgeon'+new Date().getTime());
+        config.headers['SSSSS-B'] = md5('qwertburgeon'+new Date().getTime()+number);
+        config.headers['SSSSS-C'] = number;
+
       return config
   }
 )
-
 axios.interceptors.response.use(
 
   (response) => {
