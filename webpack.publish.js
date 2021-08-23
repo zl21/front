@@ -7,7 +7,9 @@ const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const copyWebpackPlugin = require('copy-webpack-plugin');
-const {ModuleFederationPlugin} = require('webpack').container;
+const {
+  ModuleFederationPlugin
+} = require('webpack').container;
 
 const config = {
   entry: {
@@ -69,14 +71,11 @@ const config = {
   },
   module: {
     exprContextCritical: false,
-    rules: [
-      {
+    rules: [{
         test: /\.vue$/,
-        use: [
-          {
-            loader: 'vue-loader',
-          },
-        ],
+        use: [{
+          loader: 'vue-loader',
+        }, ],
       },
       {
         test: /\.m?js$/,
@@ -100,32 +99,30 @@ const config = {
           loader: 'css-loader',
         }, {
           loader: 'less-loader',
-          options: {javascriptEnabled: true}
+          options: {
+            javascriptEnabled: true
+          }
         }],
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: 1000000,
-              name: '[path][name].[ext]'
-            }
+        use: [{
+          loader: 'url-loader',
+          options: {
+            limit: 1000000,
+            name: '[path][name].[ext]'
           }
-        ]
+        }]
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: '[path][name].[ext]',
-              context: 'src',
-            },
+        use: [{
+          loader: 'file-loader',
+          options: {
+            name: '[path][name].[ext]',
+            context: 'src',
           },
-        ],
+        }, ],
       },
     ],
   },
@@ -135,8 +132,7 @@ const config = {
     }),
     new CleanWebpackPlugin(['r3.publish']),
     new VueLoaderPlugin(),
-    new copyWebpackPlugin([
-      {
+    new copyWebpackPlugin([{
         from: path.resolve(__dirname, "./src/assets"),
         to: path.resolve(__dirname, "./r3.publish/src/assets")
       },
@@ -191,7 +187,7 @@ const config = {
   },
 }
 
-if(process.env.BUILD_ENV === 'jenkins') {
+if (process.env.BUILD_ENV === 'jenkins') {
   config.resolve.alias = {
     '@syman/ark-ui-bcl': path.resolve('static/js/ark-ui-bcl') // 本地调试业务组件
   }
