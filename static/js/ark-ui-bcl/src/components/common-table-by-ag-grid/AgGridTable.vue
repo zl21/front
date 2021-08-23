@@ -196,7 +196,7 @@ export default {
     },
 
     // 表格宽度变化
-    onGridSizeChanged(params) {
+    onGridSizeChanged: debounce(function (params) {
       this.$emit('on-grid-size-changed', params)
       setTimeout(() => {
         const { clientWidth } = params;
@@ -206,7 +206,7 @@ export default {
         this._tableWidthCache = clientWidth
         this._resetColumnWidth()
       }, 200)
-    },
+    }),
 
     // 设置行数据
     setRows(data) {
