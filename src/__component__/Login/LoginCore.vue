@@ -3,25 +3,27 @@
     <div ref="container"
          :class="['container', {'loginPro': type && typeToggle === 1}, {'divErCode': type && typeToggle === 2}]">
       <slot name="logo"></slot>
-      <!--typeToggle===1-->
-      <template v-if="!type || typeToggle === 1">
-        <AccountLogin
-                :loginType="type"
-                :TypeToggle="typeToggle"
-                @toggle="toggle"
-                ref="AccountLogin"
-        >
-        </AccountLogin>
-      </template>
-      <!--typeToggle!==1-->
-      <template v-else>
-        <PhoneLogin
-                :loginType="type"
-                :TypeToggle="typeToggle"
-                @toggle="toggle"
-                ref="PhoneLogin"
-        ></PhoneLogin>
-      </template>
+      <keep-alive>
+        <!--typeToggle===1-->
+        <template v-if="!type || typeToggle === 1">
+          <AccountLogin
+                  :loginType="type"
+                  :TypeToggle="typeToggle"
+                  @toggle="toggle"
+                  ref="AccountLogin"
+          >
+          </AccountLogin>
+        </template>
+        <!--typeToggle!==1-->
+        <template v-else>
+          <PhoneLogin
+                  :loginType="type"
+                  :TypeToggle="typeToggle"
+                  @toggle="toggle"
+                  ref="PhoneLogin"
+          ></PhoneLogin>
+        </template>
+      </keep-alive>
       <div @click="login">
         <template v-if="$slots.loginBtn">
           <slot name="loginBtn"></slot>
@@ -57,6 +59,11 @@
         flag: 1,
       }
 
+    },
+    props: {
+      loginSucCbk: {
+        type: Function
+      }
     },
     created() {
       document.onkeydown = (e) => {
@@ -196,8 +203,10 @@
             }
           }
           if (r.code === -1) {
-            this.$refs['AccountLogin'].getCode();
-            this.flag = 1;
+            if (this.typeToggle === 1) {
+              this.$refs['AccountLogin'].getCode();
+              this.flag = 1;
+            }
             return this.$Modal.fcWarning({
               title: '安全提示',
               content: r.message,
@@ -208,6 +217,7 @@
             this.flag = 1;
           }
           if (r.data && r.data.code === 0) {
+            this.flag = 1;
             const exp = r.data.data.isPasswordExpire;
             if (exp) {
               await this.checkPwdDays()
@@ -262,18 +272,25 @@
             }
             window.sessionStorage.setItem('loginTime', `${Date.now()}`);
             this.spinShow = false;
-            window.location.href = window.location.origin;
+            this.goto()
           } else {
             this.spinShow = false;
           }
         } else if (r.status === 200 && r.data.code === 0) {
           this.spinShow = false;
           window.sessionStorage.setItem('loginTime', `${Date.now()}`);
-          window.location.href = window.location.origin;
-          // window.location.reload();
+          this.goto()
         } else {
           this.spinShow = false;
         }
+      },
+      // 跳转前的回掉处理
+      async goto() {
+        if (!this.loginSucCbk) return window.location.href = window.location.origin;
+        if (typeof this.loginSucCbk !== 'function') throw new Error('loginSucCbk must be a function');
+        const res = await this.loginSucCbk();
+        if (!res) return;
+        window.location.href = window.location.origin;
       }
     }
   };
