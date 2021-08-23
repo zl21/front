@@ -1,6 +1,6 @@
 <template>
   <div :class="classes">
-    <div class="clonePopUp">
+    <div class="clonePopUp" style="height: 140px">
       <div class="pop-title">
         <div class="pop-input">
           <ul style="list-style:none;">
@@ -16,7 +16,7 @@
                       @focus="focus($event,2)">
               <input type="password" name="password1" style="display:none">
               <p v-show="pawdgrade1" :style="{ color: errorpawdgrade1}">{{ this.newHint }}</p>
-              <p v-show="pawdgrade">密码安全程度：<b :style="{ color: activeColor}">{{ grade }}</b></p>
+              <!--<p v-show="pawdgrade">密码安全程度：<b :style="{ color: activeColor}">{{ grade }}</b></p>-->
             </li>
             <li>
               <span>确认密码：</span>
@@ -52,7 +52,7 @@
         pawdgrade2: false,
         errorpawdgrade: 'red',
         errorpawdgrade1: '#818181',
-        newHint: '密码必须由6位以上数字、字母组成',
+        newHint: '密码必须由6-18个字符且数字、大小写字母同时存在',
         againpaswd: '',
         pop_dialog: false,
         activeColor: 'red', // 控制密码强度的时候，颜色
@@ -63,6 +63,7 @@
         inconformity1: false, // input错误border颜色class
         inconformity2: false, // input错误border颜色class
         inconformity3: false, // input错误border颜色class
+        reg: new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]{6,18}$/)
       };
     },
     props: {
@@ -89,19 +90,19 @@
       changwd() { // 修改密码，显示密码强度
         this.pawdgrade = false;
         this.pawdgrade1 = true;
-        if (this.newpaswd.length > 0) {
-          this.pawdgrade = true;
-          if (/^(?:\d+|[a-zA-Z]+|[!@#$%^&*]+)$/.test(this.newpaswd)) {
-            this.grade = '低';// 纯数字，纯字母，纯特殊字符
-            this.activeColor = '#e80000';
-          } else if (/^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*]+$)[a-zA-Z\d!@#$%^&*]+$/.test(this.newpaswd)) {
-            this.grade = '中';// 字母+数字，字母+特殊字符，数字+特殊字符
-            this.activeColor = '#09a155';
-          } else if (/[-\da-zA-Z=\\;',./~!@#$%^&*()_+|{}:<>?]*((\d+[a-zA-Z]+[-=\;',./~!@#$%^&*()_+|{}:<>?]+)|(\d+[-=\\;',./~!@#$%^&*()_+|{}:<>?]+[a-zA-Z]+)|([a-zA-Z]+\d+[-=\;',./~!@#$%^&*()_+|{}:<>?]+)|([a-zA-Z]+[-=\\;',./~!@#$%^&*()_+|{}:<>?]+\d+)|([-=\;',./~!@#$%^&*()_+|{}:<>?]+\d+[a-zA-Z]+)|([-=\\;',./~!@#$%^&*()_+|{}:<>?]+[a-zA-Z]+\d+))[-\da-zA-Z=\;',./~!@#$%^&*()_+|{}:<>?]*/.test(this.newpaswd)) {
-            this.activeColor = '#09a155';
-            this.grade = '高'; // 字母+数字+特殊字符
-          }
-        }
+        // if (this.newpaswd.length > 0) {
+        //   this.pawdgrade = true;
+        //   if (/^(?:\d+|[a-zA-Z]+|[!@#$%^&*]+)$/.test(this.newpaswd)) {
+        //     this.grade = '低';// 纯数字，纯字母，纯特殊字符
+        //     this.activeColor = '#e80000';
+        //   } else if (/^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*]+$)[a-zA-Z\d!@#$%^&*]+$/.test(this.newpaswd)) {
+        //     this.grade = '中';// 字母+数字，字母+特殊字符，数字+特殊字符
+        //     this.activeColor = '#09a155';
+        //   } else if (/[-\da-zA-Z=\\;',./~!@#$%^&*()_+|{}:<>?]*((\d+[a-zA-Z]+[-=\;',./~!@#$%^&*()_+|{}:<>?]+)|(\d+[-=\\;',./~!@#$%^&*()_+|{}:<>?]+[a-zA-Z]+)|([a-zA-Z]+\d+[-=\;',./~!@#$%^&*()_+|{}:<>?]+)|([a-zA-Z]+[-=\\;',./~!@#$%^&*()_+|{}:<>?]+\d+)|([-=\;',./~!@#$%^&*()_+|{}:<>?]+\d+[a-zA-Z]+)|([-=\\;',./~!@#$%^&*()_+|{}:<>?]+[a-zA-Z]+\d+))[-\da-zA-Z=\;',./~!@#$%^&*()_+|{}:<>?]*/.test(this.newpaswd)) {
+        //     this.activeColor = '#09a155';
+        //     this.grade = '高'; // 字母+数字+特殊字符
+        //   }
+        // }
       },
       blur() { // 失焦时判断密码
         if (this.newpaswd === '') {
@@ -109,17 +110,17 @@
           this.errorpawdgrade1 = 'red';
           this.inconformity2 = true;
           this.newHint = '请输入新密码';
-        } else if (this.newpaswd.length > 5) {
-          if (!/[A-Za-z]/.test(this.newpaswd) || !/[0-9]/.test(this.newpaswd)) {
-            this.newHint = '密码必须由6位以上数字、字母组成';
+        } else if (this.newpaswd.length >= 6 && this.newpaswd.length <= 18) {
+          if (!this.reg.test(this.newpaswd)) {
+            this.newHint = '密码必须由6-18个字符且数字、大小写字母同时存在';
             this.errorpawdgrade1 = 'red';
             this.inconformity2 = true;
             this.pawdgrade1 = true;
           }
           this.errorpawdgrade1 = '#818181';
-          this.newHint = '密码必须由6位以上数字、字母组成';
+          this.newHint = '密码必须由6-18个字符且数字、大小写字母同时存在';
         } else {
-          this.newHint = '密码必须由6位以上数字、字母组成';
+          this.newHint = '密码必须由6-18个字符且数字、大小写字母同时存在';
           this.errorpawdgrade1 = 'red';
           this.inconformity2 = true;
           this.pawdgrade1 = true;
@@ -144,7 +145,13 @@
           this.errorpawdgrade1 = 'red';
           return false;
         }
-        if (this.newpaswd.length <= 5) { // 密码长度小于6
+        if (this.newpaswd.length < 6) { // 密码长度小于6
+          this.pawdgrade = false;
+          this.errorpawdgrade1 = 'red';
+          this.pawdgrade1 = true;
+          return false;
+        }
+        if (this.newpaswd.length > 18) { // 密码长度大于18
           this.pawdgrade = false;
           this.errorpawdgrade1 = 'red';
           this.pawdgrade1 = true;
@@ -154,13 +161,7 @@
           this.inconformity3 = true;
           return false;
         }
-        if (!/[A-Za-z]/.test(this.newpaswd) || !/[0-9]/.test(this.newpaswd)) { // 只要有一位数字、一位字母，其他四位不管是啥
-          this.pawdgrade = false;
-          this.errorpawdgrade1 = 'red';
-          this.pawdgrade1 = true;
-          return false;
-        }
-        if (!/^[A-Za-z0-9]+$/.test(this.newpaswd)) { // 不能包含中文和特殊字符
+        if (!this.reg.test(this.newpaswd)) { // 只要有一位数字、一位字母，其他四位不管是啥
           this.pawdgrade = false;
           this.errorpawdgrade1 = 'red';
           this.pawdgrade1 = true;
