@@ -158,6 +158,7 @@
 
       //   return true;
       // },
+
       checkNode() {
         // 选中
         const treeObj = $.fn.zTree.getZTreeObj(`${this.tableName}`);
@@ -234,7 +235,7 @@
       },
       clearInputVal() {
         this.inputValue = '';
-      }
+      },
       // freshArea() {
       //   $.fn.zTree.init($('#treeDemo'), this.setting, this.zNodes);
       // }

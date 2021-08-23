@@ -137,7 +137,8 @@
         this.$refs.zTree.callMethod();
       },
       clearInputVal() {
-        this.$refs.zTree.clearInputVal();
+          this.$refs.zTree.clearInputVal();
+        // this.$refs.zTree.init();
       },
       callBackFunction(tdata, resData, key, value) {
         // key:要筛选的字段

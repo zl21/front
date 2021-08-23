@@ -13,7 +13,8 @@
       <img src="../../assets/image/code.png" class="icon">
       <input ref="code" value="" class="pwd code" placeholder="请输入验证码">
     </div>
-    <img v-if="loginType" :src="imgSrc" @click="getCode" class="codeimg">
+    <img v-if="loginType && !codeLoading" :src="imgSrc" @click="getCode" class="codeimg">
+    <div v-if="loginType && codeLoading" class="codeimg" style="line-height: inherit"><Spin fix></Spin></div>
     <div class="divToggle" v-if="loginType">
       <span class="sanjiao" >
         <img src="../../assets/image/phone.png" class="toggle phone" @click="toggles">
@@ -43,14 +44,14 @@
         codeSrc: '',
         globalServiceId: window.localStorage.getItem('serviceId') || '',
         imgSrc: '',
-        key: ''
+        key: '',
+        codeLoading: false
       }
     },
     mounted() {
       if (enableLoginPro) {
         this.getCode();
       }
-      console.log(this.$slots.loginBtn)
     },
     methods: {
       login() {
@@ -61,8 +62,10 @@
       },
       // 获取验证码
       getCode() {
+        this.codeLoading = true;
         network.post(enableGateWay() ? `/${this.globalServiceId}/p/c/getcCode` : '/p/c/getcCode').then(res => {
           if (res && res.data) {
+            this.codeLoading = false;
             this.imgSrc = res.data.img;
             this.key = res.data.key;
           }
