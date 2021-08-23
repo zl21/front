@@ -136,8 +136,8 @@
       callMethod() {
         this.$refs.zTree.callMethod();
       },
-      refresh() {
-        this.$refs.zTree.clearInputVal();
+      clearInputVal() {
+          this.$refs.zTree.clearInputVal();
         // this.$refs.zTree.init();
       },
       callBackFunction(tdata, resData, key, value) {
