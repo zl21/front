@@ -41,9 +41,9 @@ module.exports = {
   // target: 'http://dev.dev.lark-erp.cn/',
   // target: 'http://139.224.134.69:58000', // OMS
 
-  Version: '1.4', // 版本号
+  Version: '1.3', // 版本号
   interlocks: true, // 是否打开三级联动装置
-  enableGateWay: true, // 网关是否打开,
+  enableGateWay: false, // 网关是否打开,
   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用接口请求
   enableHistoryAndFavoriteUI: true, // 是否显示收藏与最近使用UI
   ignoreGateWayPattern: [/\/jflow\/*/g, /\/api\/*/g], // 框架默认禁用的网关逻辑的正则模式匹配
@@ -193,7 +193,7 @@ module.exports = {
   computeForSubtable: false,
   routerFilter:false, // 跳转是否过滤
   setXss:false, // 是否xss 攻击过滤
-  enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
+  enableLoginPro: false, // 是否开启普通登录模式 false普通 true手机验证码
   //filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
   //listFormWebconf:['filtercolval'] // 列表是否支持webcof 字段
 };
