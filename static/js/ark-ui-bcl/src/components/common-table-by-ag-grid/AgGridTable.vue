@@ -22,7 +22,7 @@ import { LicenseManager } from "ag-grid-enterprise/main";
 import { agGridEnterpriseLicenseKey, defaultConfig, cssFeatures, AG_SEQUENCE_COLUMN_NAME } from './ag-config'
 import deepClone from '../../utils/deepClone'
 import { isArray } from '../../utils/array'
-import { isFunction } from '../../utils/common'
+import { isFunction, debounce } from '../../utils/common'
 
 import CustomHeader from './renderComponents/CustomHeader.vue'
 import CellRender from './CellRender.vue'
@@ -199,6 +199,11 @@ export default {
     onGridSizeChanged(params) {
       this.$emit('on-grid-size-changed', params)
       setTimeout(() => {
+        const { clientWidth } = params;
+        if (clientWidth === this._tableWidthCache) {
+          return
+        }
+        this._tableWidthCache = clientWidth
         this._resetColumnWidth()
       }, 200)
     },
@@ -985,7 +990,7 @@ export default {
 
     // 调整列宽
     // 规则：1.所有列大于表格宽度时，此时用autoSizeAllColumns  2.所有列小于表格宽度时，此时用sizeColumnsToFit
-    _autoSizeColumns() {
+    _autoSizeColumns: debounce(function () {
       if (!this.$refs.table || !this.api || !this.columnApi) {
         return
       }
@@ -1001,8 +1006,8 @@ export default {
         container = tableDom.querySelector('.ag-body-container') // 表格所有列的容器
       }
 
-      const viewportWidth = viewport.offsetWidth
-      const containerWidth = container.offsetWidth
+      const viewportWidth = viewport.clientWidth
+      const containerWidth = container.clientWidth
 
       if (containerWidth === 0 && viewportWidth === 0) {
         return
@@ -1012,7 +1017,7 @@ export default {
       } else {
         this.columnApi.autoSizeAllColumns()
       }
-    },
+    }, 190),
 
     // 重新分配列宽
     _resetColumnWidth(callback) {
@@ -1034,6 +1039,7 @@ export default {
     this._isResetAllColumn = false // 是否重置所有列位置信息
     this._pinnedBottomRowData = null
     this._gridReady = false // 表格是否渲染完毕
+    this._tableWidthCache = 0 // 记录表格宽度
   },
 
   mounted() {
@@ -1042,7 +1048,9 @@ export default {
   activated() {
     this.$nextTick(() => {
       setTimeout(() => {
-        this._resetColumnWidth(this._resetHeaderPosition)
+        if (isArray(this.data) && this.data.length > 0) {
+          this._resetColumnWidth(this._resetHeaderPosition)
+        }
       }, 500)
     })
   },

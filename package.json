@@ -15,7 +15,8 @@
         "build:test": "cross-env BUILD_ENV=test webpack --color --progress --config webpack.test.js --env.NODE_ENV=development",
         "build:publish": "cross-env BUILD_ENV=publish webpack --color --progress --config webpack.publish.js  --env.NODE_ENV=production",
         "zip": "node doZip.js",
-        "deploy": "npm publish && node dingtalk.js"
+        "deploy": "npm publish && node dingtalk.js",
+        "test:bcl": "npm link @syman/ark-ui-bcl && npm run build:test && npm link"
     },
     "repository": {
         "type": "git",
