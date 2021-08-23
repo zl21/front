@@ -14,7 +14,7 @@
       <input ref="code" value="" class="pwd code" placeholder="请输入验证码">
     </div>
     <img v-if="loginType && !codeLoading" :src="imgSrc" @click="getCode" class="codeimg">
-    <div v-else class="codeimg" style="line-height: inherit"><Spin fix></Spin></div>
+    <div v-if="loginType && codeLoading" class="codeimg" style="line-height: inherit"><Spin fix></Spin></div>
     <div class="divToggle" v-if="loginType">
       <span class="sanjiao" >
         <img src="../../assets/image/phone.png" class="toggle phone" @click="toggles">
