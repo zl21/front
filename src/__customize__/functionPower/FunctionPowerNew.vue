@@ -10,6 +10,8 @@
       >
         {{ item.webdesc }}
       </Button>
+      {{groupId}}
+      {{isSaveError}}
       <!-- <Button
         type="fcdefault"
         class="Button"
@@ -587,22 +589,29 @@
           });
         }
       }, // 计算表格的列宽
-      refresh() {
+      refresh(ty) {
+        // console.log('refresh', ty)
         this.spinShow = true;
         this.menuPromise = new Promise((resolve, reject) => this.getMenuData(resolve, reject));
         this.treePromise = new Promise((resolve, reject) => this.getTreeData(resolve, reject));
         Promise.all([this.menuPromise, this.treePromise]).then(() => {
           this.groupId && this.getTableData();
         });
+
       }, // 刷新数据
       refreshButtonClick() {
-        this.$refs.ztree.clearInputVal();
+        this.$refs.ztree.refresh();
         if (this.checkNoSaveData('refresh')) {
         } else {
-          this.refresh();
-          this.selectFirstOnce();
+          // this.refresh('nochange');
+          // this.selectFirstOnce();
+          this.refreshing()
         }
       }, // 刷新按钮
+      refreshing() {
+        this.selectFirstOnce();
+        this.refresh();
+      },
       checkNoSaveData(type) {
         // console.log(type)
         // console.log('checkNoSaveData', this.groupId)
@@ -619,10 +628,9 @@
             onCancel: () => {
               if (type === 'refresh') {
                 this.tableSaveData = [];
-                this.pageInit = false;
-                this.refresh();
-                setTimeout(() => this.selectFirstOnce(), 1000);
-
+                this.spinShow = false;
+                this.refreshing();
+                // this.refresh('checkNoSaveData');
               } else {
                 this.groupId = this.newGroupId;
                 this.adSubsystemId = this.newAdSubsystemId;
@@ -794,21 +802,19 @@
         })
       },
       selectFirstOnce() {
+        console.log('selectFirstOnce')
         var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
         // console.log('this.groupId', this.groupId)
         // console.log('this.pageInit', this.pageInit)
+        // console.log('nodes', nodes)
         var nodes = treeObj.getNodes();
         if (this.pageInit && nodes.length > 0 && nodes[0].ID === this.groupId) return false;
-        // console.log('not return')
         if (nodes.length > 0) {
           treeObj.selectNode(nodes[0]);
           treeObj.setting.callback.onClick('','treeDemo',nodes[0]);//手动触发onClick事件
           // treeObj.checkNode(nodes[0], true, true, true);
           this.pageInit = true;
         }
-      },
-      resetTree() {
-        this.selectFirstOnce()
       },
       treeSearch(e, flag) {
         if (!e) {
