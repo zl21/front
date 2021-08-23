@@ -73,7 +73,7 @@
     "dependencies": {
         "@babel/polyfill": "^7.10.4",
         "@syman/ark-ui": "^1.1.47",
-        "@syman/ark-ui-bcl": "0.3.9",
+        "@syman/ark-ui-bcl": "0.3.10",
         "awe-dnd": "^0.3.4",
         "axios": "^0.21.1",
         "compressing": "^1.5.1",
