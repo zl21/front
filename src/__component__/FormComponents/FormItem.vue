@@ -34,7 +34,7 @@
               class="label-tip">*</span>
         <template v-if="getVersion() === '1.4' && items.fkobj && items.fkobj.fkdisplay === 'pop' && items.detailType">
           <!-- 路由跳转 -->
-          <template v-if="value">
+          <template v-if="value && value[0]">
             <i class="iconfont iconbj_link"
                data-target-tag="fkIcon"
                style="color: #0f8ee9; cursor: pointer; font-size: 12px"
@@ -44,7 +44,7 @@
         </template>
         <template v-if="getVersion() === '1.4' && items.fkobj && items.fkobj.fkdisplay === 'drp' && items.detailType">
           <!-- 路由跳转 -->
-          <template v-if="value">
+          <template v-if="value && value[0]">
             <i class="iconfont iconbj_link"
                data-target-tag="fkIcon"
                style="color: #0f8ee9; cursor: pointer; font-size: 12px"
@@ -443,7 +443,6 @@ export default {
       // xhj修改，改为使用tabOpen方法，以下存serviceId逻辑已弃用
 
       let value = this.value;
-      console.log(this.value,props);
       let id = 0;
       if (!props.readonly) {
         id = value[0].ID;
@@ -472,6 +471,7 @@ export default {
         tableId,
         id,
         label,
+        original:'outclick',
         serviceId
       });
     },
