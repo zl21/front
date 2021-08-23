@@ -357,6 +357,7 @@ export default {
       state.keepAliveLabelMaps[name] = `${tableDetailUrlMessage.linkLabel}`;
     }
     state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSessionObject('keepAliveLabelMaps'));
+    
     state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSessionObject('serviceIdMap'));
     const path = getSessionObject('savePath').path;
     if (path && path !== router.currentRoute.path) {
@@ -365,6 +366,7 @@ export default {
       // window.location.reload();
       removeSessionObject('savePath');
     }
+    window.sessionStorage.setItem('keepAliveLabelMapsAll',JSON.stringify(state.keepAliveLabelMaps || {}));
   },
   increaseLinkUrl(state, { linkModuleName, linkUrl }) {
     const linkType = {};

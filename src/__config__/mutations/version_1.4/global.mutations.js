@@ -357,6 +357,8 @@ export default {
       // window.location.reload();
       removeSessionObject('savePath');
     }
+    window.sessionStorage.setItem('keepAliveLabelMapsAll',JSON.stringify(state.keepAliveLabelMaps || {}));
+
   },
   modifycurrentLabel(state,data){
     let extindex = -1;
