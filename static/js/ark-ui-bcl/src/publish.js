@@ -1,29 +1,31 @@
 
 
 
-import  DropDownSelectFilter from './components/drop-down-select-filter/DropDownSelectFilter.vue';
-import  MopMultiSelect from './components/mop-multi-select/MopMultiSelect.vue';
-import  DropMultiSelectFilter from './components/drop-multi-select-filter/DropMultiSelectFilter.vue';
-import  Wangeditor from './components/wangeditor/Wangeditor.vue';
-import  Docfile from './components/docfile/Docfile.vue';
-import  ImageUpload from './components/image-upload/ImageUpload.vue';
-import  PreviewPicture from './components/preview-picture/PreviewPicture.vue';
-import  EnumerableInput from './components/enumerable-input/EnumerableInput.vue';
-import  ExtensionProperty from './components/extension-property/ExtensionProperty.vue';
-import  CommonTableByAgGrid from './components/common-table-by-ag-grid/CommonTableByAgGrid.vue';
+import packJson from '../package.json';
+import arkBclConfig from '../config/nameConfig.js';
+import  arkDropDownSelectFilter from './components/drop-down-select-filter/index.js';
+import  arkMopMultiSelect from './components/mop-multi-select/index.js';
+import  arkDropMultiSelectFilter from './components/drop-multi-select-filter/index.js';
+import  arkWangeditor from './components/wangeditor/index.js';
+import  arkDocfile from './components/docfile/index.js';
+import  arkImageUpload from './components/image-upload/index.js';
+import  arkPreviewPicture from './components/preview-picture/index.js';
+import  arkEnumerableInput from './components/enumerable-input/index.js';
+import  arkExtensionProperty from './components/extension-property/index.js';
+import  arkCommonTableByAgGrid from './components/common-table-by-ag-grid/index.js';
 
-    
+
 const arkBclCompontent = {
-    DropDownSelectFilter,
-    DropMultiSelectFilter,
-    MopMultiSelect,
-    Wangeditor,
-    Docfile,
-    ImageUpload,
-    PreviewPicture,
-    EnumerableInput,
-    ExtensionProperty,
-    CommonTableByAgGrid
+    arkDropDownSelectFilter,
+    arkDropMultiSelectFilter,
+    arkMopMultiSelect,
+    arkWangeditor,
+    arkDocfile,
+    arkImageUpload,
+    arkPreviewPicture,
+    arkEnumerableInput,
+    arkExtensionProperty,
+    arkCommonTableByAgGrid
 
 }
 const install = function(Vue, opts = {}) {
@@ -39,8 +41,9 @@ const install = function(Vue, opts = {}) {
 
 
 };
-const API = {
+export default {
+    name:'ark-bcl',
+    version: packJson.version,
     install,
     ...arkBclCompontent
-};
-module.exports.default = module.exports = API;
+}
