@@ -173,16 +173,16 @@
           });
       },
       save() {
-        let data  = [
-          {TMCODE: "1212", ID: -1},
-          {TMCODE: "2222", ID: -1},
-          {TMCODE: "3333", ID: -1}];
-          this.saveDialog(data,data).then((res)=>{
-            if(res.data.code ===0){
-               this.$emit('closeActionDialog', true); // 关闭弹框
-            }
-          });
-           
+        if (!this.version.ID) {
+          const data = {
+            mask: true,
+            title: '警告',
+            content: '请输入版本号'
+          };
+          this.$Modal.fcWarning(data);
+          return;
+        }
+
         if (!this.t_table_name.trim()) {
           const data = {
             mask: true,
@@ -201,14 +201,8 @@
           this.$Modal.fcWarning(data);
           return;
         }
-        if (!this.version.ID) {
-          const data = {
-            mask: true,
-            title: '警告',
-            content: '请输入版本号'
-          };
-          this.$Modal.fcWarning(data);
-        }
+       
+        
         this.$R3loading.show(this.loadingName);
         const searchdata = {
           srctable: this.o_table_name, // 源表表名

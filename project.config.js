@@ -69,7 +69,7 @@ module.exports = {
   isCommonTable: false, // 是否开启普通表格，默认关闭
   functionPowerRequestURL: '', // 功能权限获取检索项数据接口名称
   cbs: undefined, // 框架回调，形如 { loginCb: function() {} }
-  layoutDirection: true, // 默认是false ,水平排版 ，true 是垂直排版
+  layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
   layoutDirectionSlot:{  // 模板渲染
     //NavigatorSubMenu:require('./src/demo/NavigatorSubMenu.vue').default,  // 模板渲染
     //NaVertical:require('./src/demo/NaVerticalslot.vue').default  // 模板渲染
@@ -150,12 +150,12 @@ module.exports = {
   listDefaultColumn: 4,
   setComponentsProps: (type, props) => {  // 框架自定义表单配置
     //列表支持联动查询
-    if (type === 'OBJ_FK') {
-      if(props.PropsData && (props.PropsData.fkobj.searchmodel ==='mrp' || props.PropsData.fkobj.searchmodel ==='drp')){
-        props.PropsData.Query = true;
-      }
-    }
-    return props;
+    // if (type === 'OBJ_FK') {
+    //   if(props.PropsData && (props.PropsData.fkobj.searchmodel ==='mrp' || props.PropsData.fkobj.searchmodel ==='drp')){
+    //     props.PropsData.Query = true;
+    //   }
+    // }
+    // return props;
   },
   agGridOptions: { // ag表格的配置
     // rowHeight: 100
@@ -191,7 +191,8 @@ module.exports = {
 
   autoGatewayUrl:false,  // 是否请求网关
   computeForSubtable: false,
+  routerFilter:false, // 跳转是否过滤
   enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
-  // filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
-  listFormWebconf:['filtercolval'] // 列表是否支持webcof 字段
+  //filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
+  //listFormWebconf:['filtercolval'] // 列表是否支持webcof 字段
 };

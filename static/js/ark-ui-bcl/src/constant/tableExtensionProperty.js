@@ -311,12 +311,6 @@ export default [
     description: '控制单对象界面是否可编辑（只检查写权限）'
   },
   {
-    name: '列表查询前置操作',
-    key: 'querypretrigger',
-    type: 'input',
-    description: '支持表扩展属性查询条件前配置。目前可填入的字段有：text',
-  },
-  {
     name: '设置成普通列表',
     key: 'commonTable',
     type: 'radio',
