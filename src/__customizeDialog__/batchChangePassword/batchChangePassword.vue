@@ -133,7 +133,7 @@
             this.pawdgrade1 = true;
             this.inconformity2 = false;
             this.errorpawdgrade1 = '#818181';
-            this.newHint = '密码必须由6位以上数字、字母组成';
+            this.newHint = '密码必须由6-18个字符且数字、大小写字母同时存在';
             break;
           default:
             this.inconformity3 = false;
