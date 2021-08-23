@@ -576,13 +576,10 @@ export default {
           }, 25)
         }
       }, 20);
-    }
-  },
-  beforeCreate() {
-    this.lockSelected = false // 防止回调勾选时触发回调事件用的
-  },
-  activated() {
-    this._resetClock = setTimeout(() => {
+    },
+
+    // 重设表格
+    resetTable() {
       if (!this.isCommonTable && !this.isBig) {
         const { agGridTableContainer } = this.$refs;
         if (agGridTableContainer) {
@@ -590,11 +587,23 @@ export default {
           this.setTableSelected();
         }
       }
-    }, 500)
+    }
+  },
+  beforeCreate() {
+    this.lockSelected = false // 防止回调勾选时触发回调事件用的
+  },
+  activated() {
+    if (this.rows.length === 0) {
+      this._resetClock = setTimeout(() => {
+        this.resetTable()
+      }, 500)
+    } else {
+      this.resetTable()
+    }
   },
 
   deactivated() {
-    if(this._resetClock) {
+    if (this._resetClock) {
       clearTimeout(this._resetClock)
       this._resetClock = null
     }
