@@ -173,6 +173,16 @@
           });
       },
       save() {
+        if (!this.version.ID) {
+          const data = {
+            mask: true,
+            title: '警告',
+            content: '请输入版本号'
+          };
+          this.$Modal.fcWarning(data);
+          return;
+        }
+
         if (!this.t_table_name.trim()) {
           const data = {
             mask: true,
@@ -191,14 +201,8 @@
           this.$Modal.fcWarning(data);
           return;
         }
-        if (!this.version.ID) {
-          const data = {
-            mask: true,
-            title: '警告',
-            content: '请输入版本号'
-          };
-          this.$Modal.fcWarning(data);
-        }
+       
+        
         this.$R3loading.show(this.loadingName);
         const searchdata = {
           srctable: this.o_table_name, // 源表表名
