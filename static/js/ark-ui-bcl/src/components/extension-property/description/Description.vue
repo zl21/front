@@ -13,7 +13,7 @@
       @click="removeOption"
     >
       <Button
-        title="双击移除此配置项"
+        :title="$t('extensionProperty.clearConfig')"
         icon="iconbj_delete"
         type="primary"
         shape="circle"
@@ -23,6 +23,8 @@
 </template>
 
 <script>
+import i18n from '../../../utils/i18n'
+
 export default {
   name: 'Description',
   props: {
@@ -67,6 +69,10 @@ export default {
       }
       this.clearDomValue();
     }
+  },
+
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
   },
 };
 </script>

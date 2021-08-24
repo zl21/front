@@ -26,7 +26,7 @@
 </template>
 
 <script>
-
+import i18n from '../../utils/i18n'
 const multipleComple = () => require(`../../request/compleHttpRequest.js`).default;
 
 export default {
@@ -76,7 +76,7 @@ export default {
       tableLoading: false, // 中间的 的loading
       componentData: [
         {
-          tab: '筛选结果',
+          tab: this.$t('mopMultiSelect.filterResults'),
           columns: [],
           list: [],
           search: '',
@@ -118,11 +118,11 @@ export default {
           },
           pageNum: 1,
           height: true,
-          searchName: '全局检索',
+          searchName: this.$t('mopMultiSelect.globalSearch'),
           checked: false
         },
         {
-          tab: '查看选中结果',
+          tab: this.$t('mopMultiSelect.viewSelectedResults'),
           columns: [],
           list: [],
           pageSize: 50,
@@ -134,7 +134,7 @@ export default {
           height: true,
           pageOptions: [10, 20, 50, 100],
           search: '',
-          searchName: '查询结果'
+          searchName: this.$t('mopMultiSelect.searchResult')
         }
       ],
       CONDITIONList: [], // 组织树 选中值
@@ -280,7 +280,7 @@ export default {
         if (option.toUpperCase() === 'ID') {
           item.unshift({
             key: 'ID',
-            title: '编号',
+            title: this.$t('mopMultiSelect.serialNumber'),
             render: (h, params) => h('div',
               {
                 domProps: {
@@ -293,30 +293,6 @@ export default {
             key: option,
             title: columns[option]
           });
-          // if (index === 1 && (Object.keys(columns).length - 2) === key) {
-          //   item.push({
-          //     title: '操作',
-          //     key: 'action',
-          //     render: h => h('div', {
-          //       domProps: {
-          //         innerHTML: '<span class ="span_action" ><i class="iconfont icon-bj_delete2"></i></span>'
-          //       },
-          //       on: {
-          //         click: () => {
-          //           const row = this.componentData[1].list[key - 1];
-          //           this.NOTIN.push(row.ID);
-          //           this.text.result.push({
-          //             exclude: true, // 排除
-          //             id_list: [row.ID],
-          //             screen: row.ID,
-          //             screen_string: this.toStringName(row, this.akname)
-          //           });
-          //           this.deleteLi(key - 1, row, 'td');
-          //         }
-          //       }
-          //     })
-          //   });
-          // }
         }
         return item;
       }, []);
@@ -544,7 +520,7 @@ export default {
         return true;
       }
       if (type === 'tip') {
-        this.$Message.info('该记录已在已选中列表中');
+        this.$Message.info(this.$t('mopMultiSelect.recordInList'));
       }
       return false;
     },
@@ -645,7 +621,6 @@ export default {
       if (JSON.stringify(this.listData.id) !== '' && JSON.stringify(this.listData.id) !== '[]') {
         this.listtdata('tip');
       }
-      // this.$Message.info('请选择');
     },
     listtdata () {
       if (this.checkbox) {
@@ -802,7 +777,7 @@ export default {
     // eslint-disable-next-line consistent-return
     saveBtn (value) {
       if (value.length < 1) {
-        this.$Message.info('模板名称不能为空');
+        this.$Message.info(this.$t('mopMultiSelect.requiredTemplateName'));
         return false;
       }
 
@@ -838,7 +813,7 @@ export default {
         serviceId: this.fkobj.serviceId,
         success: (res) => {
           if (res.data.code === 0) {
-            this.$Message.success('模板保存成功');
+            this.$Message.success(this.$t('mopMultiSelect.templateSaved'));
           }
         }
       });
@@ -1005,7 +980,7 @@ export default {
       this.resultData.total = this.default.length;
 
       const lastItem = arr[arr.length - 1];
-      if (lastItem.screen_string.indexOf('已经选中') >= 0) {
+      if (lastItem.screen_string.indexOf(this.$t('mopMultiSelect.beSelected')) >= 0) {
         arr.pop();
         this.text.result.pop();
         this.IN.pop();
@@ -1015,9 +990,11 @@ export default {
       // 获取选中结果
       //this.multipleScreenResultCheck(this.sendMessage, 1, 'init');
     }
-  }
+  },
 
-
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
+  },
 };
 </script>
 <style lang="less">

@@ -31,50 +31,55 @@
         @change="radioValueChange('')"
       >
       <span>
-        清除此配置项
+        {{$t('extensionProperty.clearConfig')}}
       </span>
     </label>
   </div>
 </template>
 
 <script>
-  const getGuid = () => Math.round(Math.random() * 10000000000);
-  export default {
-    name: 'EnumerateRadioItem',
-    data() {
-      return {
-        guid: getGuid()
-      };
-    },
-    methods: {
-      radioValueChange(value) {
-        this.$emit('radioValueChange', { key: this.option.key, value });
-      }
-    },
-    props: {
-      option: {
-        type: Object,
-        default: () => ({})
-      },
-      breakLine: {
-        type: Boolean,
-        default: true
-      },
-      defaultData: {
-        type: [Boolean, String],
-        default: '__empty__'
-      }
-    },
-    mounted() {
-      this.$refs.radioItemWrapper.querySelectorAll('input[type=radio]').forEach((e) => {
-        if (`${e.value}` === `${this.defaultData}`) {
-          e.checked = true;
-        }
-      });
+import i18n from '../../utils/i18n'
+
+const getGuid = () => Math.round(Math.random() * 10000000000);
+export default {
+  name: 'EnumerateRadioItem',
+  data() {
+    return {
+      guid: getGuid()
+    };
+  },
+  methods: {
+    radioValueChange(value) {
+      this.$emit('radioValueChange', { key: this.option.key, value });
     }
-  };
+  },
+  props: {
+    option: {
+      type: Object,
+      default: () => ({})
+    },
+    breakLine: {
+      type: Boolean,
+      default: true
+    },
+    defaultData: {
+      type: [Boolean, String],
+      default: '__empty__'
+    }
+  },
+  mounted() {
+    this.$refs.radioItemWrapper.querySelectorAll('input[type=radio]').forEach((e) => {
+      if (`${e.value}` === `${this.defaultData}`) {
+        e.checked = true;
+      }
+    });
+  },
+
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
+  },
+};
 </script>
 
 <style scoped>
-
 </style>

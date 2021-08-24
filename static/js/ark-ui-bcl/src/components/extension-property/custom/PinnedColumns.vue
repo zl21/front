@@ -6,7 +6,7 @@
     />
 
     <div class="form-group">
-      <h4>表格左侧固定列</h4>
+      <h4>{{$t('extensionProperty.leftColumnTable')}}</h4>
 
       <!-- <SlickList
         v-model="formData.leftPinnedColumns"
@@ -30,7 +30,7 @@
         :row-index="index"
         :row-count="formData.leftPinnedColumns.length"
         :error-tip="fieldValidateTip.leftPinnedColumns[index]"
-        row-label="字段"
+        :row-label="$t('extensionProperty.field')"
         show-operation-button
         @addRow="addRow('leftPinnedColumns')"
         @removeRow="removeRow('leftPinnedColumns', index)"
@@ -45,7 +45,7 @@
             :columns-key="columnsKey"
             :hidecolumns="hidecolumns"
             :default-selected="defaultFields.leftPinnedColumns[index]"
-            placeholder="请选择固定在左侧的字段"
+            :placeholder="$t('extensionProperty.selectLeftColumn')"
             @on-popper-show="getSearchData"
             @on-page-change="getSearchData"
             @on-input-value-change="inputSearchData"
@@ -57,7 +57,7 @@
     </div>
 
     <div class="form-group">
-      <h4>表格右侧固定列</h4>
+      <h4>{{$t('extensionProperty.rightColumnTable')}}</h4>
       <!-- <SlickList
         v-model="formData.rightPinnedColumns"
         axis="y"
@@ -81,7 +81,7 @@
         :row-index="index"
         :row-count="formData.rightPinnedColumns.length"
         :error-tip="fieldValidateTip.rightPinnedColumns[index]"
-        row-label="字段"
+        :row-label="$t('extensionProperty.field')"
         show-operation-button
         @addRow="addRow('rightPinnedColumns')"
         @removeRow="removeRow('rightPinnedColumns', index)"
@@ -96,7 +96,7 @@
             :columns-key="columnsKey"
             :hidecolumns="hidecolumns"
             :default-selected="defaultFields.rightPinnedColumns[index]"
-            placeholder="请选择固定在右侧的字段"
+            :placeholder="$t('extensionProperty.selectRightColumn')"
             @on-popper-show="getSearchData"
             @on-page-change="getSearchData"
             @on-input-value-change="inputSearchData"
@@ -111,6 +111,7 @@
 
 <script type="text/ecmascript-6">
 // import { SlickList, SlickItem } from 'vue-slicksort';
+import i18n from '../../../utils/i18n'
 import Description from '../description';
 import ExtentionRowItem from '../extension-row-item';
 import { urlSearchParams } from '../../../utils/http';
@@ -351,14 +352,14 @@ export default {
       this.formData.leftPinnedColumns.forEach((field) => {
         if (fieldLabel === field) {
           isValid = false
-          this.$set(this.fieldValidateTip[positionField], rowIndex, `已存在相同字段名称${field},请重新选择`)
+          this.$set(this.fieldValidateTip[positionField], rowIndex, this.$t('extensionProperty.selectOtherField'))
         }
       })
       // 对比右侧
       this.formData.rightPinnedColumns.forEach((field) => {
         if (fieldLabel === field) {
           isValid = false
-          this.$set(this.fieldValidateTip[positionField], rowIndex, `已存在相同字段名称${field},请重新选择`)
+          this.$set(this.fieldValidateTip[positionField], rowIndex, this.$t('extensionProperty.selectOtherField'))
         }
       })
       return isValid
@@ -433,7 +434,11 @@ export default {
   async created() {
     this._table_id_ = this.$route.params.itemId === 'New' ? null : this.$route.params.itemId;
     this.init();
-  }
+  },
+
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
+  },
 }
 </script>
 

@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import i18n from '../../utils/i18n'
 const fkHttpRequest = () => require(`../../request/fkHttpRequest`);
 import PreviewPicture from '../preview-picture/PreviewPicture.vue';
 import Config from '../../../config/nameConfig';
@@ -91,8 +92,8 @@ export default {
       this.$Modal.fcWarning({
         mask: true,
         showCancel: true,
-        title: '提示',
-        content: '此操作将永久删除该图片, 是否继续?',
+        title: this.$t('tips.alert'),
+        content: this.$t('imageUpload.deleteImg'),
         onOk: () => {
           self.defaultProps.valuedata.splice(index - 1, 1);
           self.$emit('on-delete', index, this);
@@ -171,7 +172,7 @@ export default {
         this.defaultIndex = index;
         this.show = true;
       }else{
-        this.$Message.info('暂无图片预览');
+        this.$Message.info(this.$t('imageUpload.noPicturePreview'));
       }
 
 
@@ -191,6 +192,10 @@ export default {
       cycleTime: 0,
       cycleTimer: null
     };
+  },
+
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
   },
 }
 </script>

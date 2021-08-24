@@ -28,11 +28,11 @@
                :disabled="docList.readonly"
                :accept="accept"
                @change.stop="uploadFileChange($event)">
-        上传附件
+        {{$t('tips.uploadAttachment')}}
       </label>
       <span v-if="percent"
             class="proInfo">
-        文件正在导入中……
+        {{$t('docFile.importingFile')}}……
       </span>
       <Progress
         v-if="percent"
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-
+import i18n from '../../utils/i18n'
 import Config from '../../../config/nameConfig';
 import Upload from './upload';
 const prefixCls = `${Config.prefixCls}docfile`;
@@ -239,7 +239,7 @@ export default {
     checkFile (files) {
 
       if ((this.docList.valuedata.length + files.length) > this.docList.filesLength && this.docList.filesLength) {
-        this.$Message.info(`只能上传${this.docList.filesLength}个文件`);
+        this.$Message.info(this.$t('docFile.uploadFileLimit',{total:this.docList.filesLength}));
         return false;
       }
       for (let i = 0; i < files.length; i++) {
@@ -248,7 +248,7 @@ export default {
         const accept = this.itemWebconf && this.itemWebconf.UploadAccept ? this.itemWebconf.UploadAccept.toUpperCase() : this.accept.toUpperCase();
         const arr = accept.split(',');
         if (accept !== '*' && !arr.includes(ext)) {
-          this.$Message.info(`${files[i].name}不支持上传`);
+          this.$Message.info(this.$t('docFile.fileCanNotUpload',{file: files[i].name}));
           return false;
         }
       }
@@ -305,7 +305,7 @@ export default {
         }
       } else {
         this.$Modal.fcError({
-          title: '错误',
+          title: this.$t('tips.error'),
           content: res.message,
           mask: true
         });
@@ -326,8 +326,8 @@ export default {
       this.$Modal.fcWarning({
         mask: true,
         showCancel: true,
-        title: '提示',
-        content: '此操作将永久删除该文件, 是否继续?',
+        title: this.$t('tips.alert'),
+        content: this.$t('docFile.continueDeleteFile'),
         onOk: () => {
           this.docList.valuedata.splice(index, 1);
           this.filechange();
@@ -342,7 +342,6 @@ export default {
     },
     progress (e, press) {
       // 上传进度
-      console.log('进度', e);
       this.uploadProgress = Math.floor(e.loaded / e.total * 100);
     },
     onload (e) {
@@ -360,6 +359,11 @@ export default {
     }
 
   },
+
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
+  },
+
   created () {
     setTimeout(()=>{
     this.setvaluedata();

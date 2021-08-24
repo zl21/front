@@ -5,7 +5,7 @@
       <input
         ref="input"
         class="input"
-        :placeholder="`请输入[${item.name}]${item.outputValueType === 'Array' ? '，以英文逗号(,)间隔' : ''}`"
+        :placeholder="`${$t('extensionProperty.pleaseEnter')}[${item.name}]${item.outputValueType === 'Array' ? `，${$t('extensionProperty.separatedByCommas')}` : ''}`"
         :type="item.inputType === 'Number' ? 'number' : 'text'"
         @input="inputChange"
         @blur="inputBlur"
@@ -21,6 +21,7 @@
 </template>
 
 <script>
+  import i18n from '../../utils/i18n'
   import LabelForInput from './LabelForInput.vue';
   
   export default {
@@ -38,7 +39,7 @@
             value = JSON.parse(e.target.value);
             this.logInfo = '';
           } catch (exception) {
-            this.logInfo = `JSON格式错误：${exception}`;
+            this.logInfo = `${this.$t('extensionProperty.JSONFormatError')}：${exception}`;
             return;
           }
         } else if (this.item.inputType === 'Number') {
@@ -60,7 +61,7 @@
             value = JSON.parse(e.target.value);
             this.logInfo = '';
           } catch (exception) {
-            this.logInfo = `JSON格式错误：${exception}`;
+            this.logInfo = `${this.$t('extensionProperty.JSONFormatError')}：${exception}`;
             return;
           }
         } else if (this.item.inputType === 'Number') {
@@ -89,6 +90,11 @@
         default: ''
       }
     },
+
+    beforeCreate() {
+      this.$t = i18n.t.bind(i18n)
+    },
+
     mounted() {
       if (this.item.outputValueType === 'JSON' && this.defaultData !== '') {
         this.$refs.input.value = JSON.stringify(this.defaultData);

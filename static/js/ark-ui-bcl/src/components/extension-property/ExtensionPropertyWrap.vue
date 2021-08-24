@@ -5,8 +5,8 @@
         <Input
           v-model="configName"
           search
-          enter-button="查询"
-          placeholder="输入配置项"
+          :enter-button="$t('tips.find')"
+          :placeholder="$t('extensionProperty.enterConfig')"
           @on-change="filterConfig"
         />
       </div>
@@ -27,7 +27,7 @@
           v-if="configList.length === 0"
           style="justify-content:center;"
         >
-          暂无可配置项
+          {{$t('extensionProperty.noConfiguration')}}
         </li>
       </ul>
     </div>
@@ -127,6 +127,7 @@
 </template>
 
 <script>
+import i18n from '../../utils/i18n'
 import ExtentionInput from './ExtentionInput.vue';
 import ExtentionRadio from './ExtentionRadio.vue';
 import ExtentionSelect from './LabelWithSelect.vue';
@@ -136,8 +137,8 @@ import ExtensionObjectValue from './ExtensionObjectValue.vue'
 import ExtentionOptions from './ExtentionOptions.vue';
 import KeyValueItem from './key-value-item';
 import deepClone from '../../utils/deepClone';
-import fieldExtensionProperty from '../../constant/fieldExtensionProperty'
-import tableExtensionProperty from '../../constant/tableExtensionProperty'
+import getFieldConfig from '../../constant/fieldExtensionProperty'
+import getTableConfig from '../../constant/tableExtensionProperty'
 import { isEmptyObject } from '../../utils/object';
 import '../../assets/tailwindcss/index.css'
 
@@ -206,7 +207,7 @@ export default {
     options() {
       const tableName = this.tableName;
       const keyForm = this.keyForm
-      const keyConfigs = fieldExtensionProperty;
+      const keyConfigs = getFieldConfig();
 
       let configOptions = [];
       if (isEmptyObject(keyForm)) {
@@ -234,7 +235,7 @@ export default {
         const blackList = ['display', 'targetField'];
         configOptions = configOptions.filter(d => !blackList.includes(d.key));
         if (keyForm.DESCRIPTION === '扩展属性') {
-          const option = keyConfigs.find(d => d.name === '扩展属性显示控件'); // 因为key有相同的，所以用name进行查找
+          const option = keyConfigs.find(d => d.name === this.$t('extensionProperty.displayControl')); // 因为key有相同的，所以用name进行查找
           configOptions.push(option);
         }
         if (keyForm.DESCRIPTION === '扩展属性' && keyForm.AD_TABLE_ID_LABEL === 'AD_COLUMN') {
@@ -242,11 +243,11 @@ export default {
           configOptions.push(option);
         }
         if (keyForm.DESCRIPTION === '读写规则' || keyForm.DESCRIPTION === '读写打印规则') {
-          const option = keyConfigs.find(d => d.name === '读写规则显示控件');
+          const option = keyConfigs.find(d => d.name === this.$t('extensionProperty.readWriteDisplay'));
           configOptions.push(option);
         }
         
-        const option = deepClone(keyConfigs.find(d => d.name === '扩展组件'));
+        const option = deepClone(keyConfigs.find(d => d.name === this.$t('extensionProperty.expansionComponent')));
         if (this.supportType === 'byPage' && keyForm.DISPLAYTYPE && (keyForm.DISPLAYTYPE.startsWith('textarea') || keyForm.DISPLAYTYPE.startsWith('text')) && keyForm.DESCRIPTION !== '扩展属性' && keyForm.DESCRIPTION !== '读写规则') {
           option.components[0].selectOptions.push({ label: 'YearMonth', value: 'YearMonth' })
         }
@@ -254,12 +255,12 @@ export default {
 
       } else if (tableName === 'AD_TABLE') {
         const blackList = ['hiddenSubtable'];
-        const tableConfigs = tableExtensionProperty.filter(d => !blackList.includes(d.key));
+        const tableConfigs = getTableConfig().filter(d => !blackList.includes(d.key));
 
         // 特殊处理针对指定字段的配置
         // 这些配置只有指定条件下才显示
         if(this.$route.params.itemId !== 'New') {
-          const option = tableExtensionProperty.find(d => d.key === 'hiddenSubtable');
+          const option = getTableConfig().find(d => d.key === 'hiddenSubtable');
           tableConfigs.push(option);
         }
 
@@ -356,6 +357,10 @@ export default {
 
       return value;
     }
+  },
+
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
   },
 
   created() {

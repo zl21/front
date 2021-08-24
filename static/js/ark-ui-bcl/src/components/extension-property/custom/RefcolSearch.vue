@@ -14,7 +14,7 @@
       <ExtentionRowItem
         :row-index="index"
         :row-count="formData.length"
-        :row-label="`条件${index+1}`"
+        :row-label="`${$t('extensionProperty.condition')}${index+1}`"
         show-operation-button
         row-label-class="rowLabel"
         is-required
@@ -25,7 +25,7 @@
         <div class="col">
           <div class="row ">
             <div class="col">
-              <span class="label">已知条件字段是否在主表上：</span>
+              <span class="label">{{$t('extensionProperty.ifFieldOnMainTable')}}：</span>
               <R3Radio
                 :options="row.radioConfig"
                 @change="getRadioValue($event, index)"
@@ -37,7 +37,7 @@
             <div class="col">
               <Input
                 v-model="row.srccol"
-                placeholder="已知条件字段"
+                :placeholder="$t('extensionProperty.knownConditionField')"
                 @on-blur="validateForm"
               />
             </div>
@@ -47,7 +47,7 @@
             <div class="col">
               <Input
                 v-model="row.fixcolumn"
-                placeholder="外键关联表中需要筛选的字段"
+                :placeholder="$t('extensionProperty.filteredFieldInForeignKey')"
                 @on-blur="validateForm"
               />
             </div>
@@ -59,23 +59,23 @@
 </template>
 
 <script type="text/ecmascript-6">
+import i18n from '../../../utils/i18n'
 import Description from '../description';
 import deepClone from '../../../utils/deepClone';
 import R3Radio from '../../radio';
 import ExtentionRowItem from '../extension-row-item';
-import { isEmptyArray } from '../../../utils/array';
 
 const RADIO_CONFIG = {
-  defaultValue: '否',
-  label: '来源字段是否在主表上',
+  defaultValue: i18n.t('tips.no'),
+  label: i18n.t('extensionProperty.ifSourceOnMainTable'),
   selectOptions: [
     {
       value: true,
-      label: '是'
+      label: i18n.t('tips.yes')
     },
     {
       value: false,
-      label: '否'
+      label: i18n.t('tips.no')
     },
   ]
 }
@@ -180,7 +180,7 @@ export default {
 
       this.formData.forEach((item) => {
         if (item.srccol === '' || item.fixcolumn === '') {
-          result.push('请确认是否填写条件字段和筛选字段');
+          result.push(this.$t('extensionProperty.confirmConditionAndFilter'));
         } else {
           result.push('');
         }
@@ -216,7 +216,7 @@ export default {
       if (Object.keys(defaultData).length > 0) {
         defaultData.forEach((item) => {
           item.radioConfig = deepClone(RADIO_CONFIG)
-          item.radioConfig.defaultValue =  item.maintable ? '是' : '否'
+          item.radioConfig.defaultValue =  item.maintable ? this.$t('tips.yes') : this.$t('tips.no')
           // 兼容老数据缺失maintable字段
           if(item.maintable === undefined) {
             item.maintable = false
@@ -229,7 +229,11 @@ export default {
 
   created() {
     this.init();
-  }
+  },
+
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
+  },
 };
 </script>
 

@@ -1,3 +1,5 @@
+import i18n from '../../utils/i18n'
+
 class Upload {
   constructor(obj) { // 新建父类
     this.FileList = obj.target;
@@ -17,7 +19,7 @@ class Upload {
     if (this.multiple) {
       if (this.length > 0) {
         if (Object.keys(this.FileList).length > this.length) {
-          this.event.onerror(`最多选择${this.length}个文件`);
+          this.event.onerror(i18n.t('docFile.selectUpToFile',{total:this.length}));
         }
       }  
       Object.keys(this.FileList).forEach((i) => {
@@ -40,19 +42,15 @@ class Upload {
     if (file.size > this.imgSize) {
       if (Object.prototype.hasOwnProperty.call(this.event, 'onerror')) {
         this.checkimgSize = false;
-        this.event.onerror('文件内容过大', index);
+        this.event.onerror(i18n.t('docFile.fileTooLarge'), index);
       }
     }
     if (this.type === 'Image') {
       if (!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(file.name)) {
         this.checkimgSize = false;
-        this.event.onerror('图片类型必须是.gif,jpeg,jpg,png中的一种', index);
+        this.event.onerror(i18n.t('docFile.pictureTypeLimit'), index);
       }
     }
-    //  else if (/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(file.name)) {
-    //   this.checkimgSize = false;
-    //   this.event.onerror('允许上传的类型是文件类型', index);
-    // }
   }
 
   init() {

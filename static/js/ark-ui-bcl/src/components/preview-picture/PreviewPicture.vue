@@ -26,7 +26,7 @@
   </div>
 </template>
 <script>
-
+import i18n from '../../utils/i18n'
 const sourceImages = [];
 const base = parseInt((Math.random() * 60), 10) + 10;
 for (let i = 0; i < 10; i++) {
@@ -63,7 +63,7 @@ export default {
           width: 500,
           height: 300,
           draggable: true,
-          title: '图片预览',
+          title: this.$t('previewPicture.picturePreview'),
           'z-index': 10001,
           'footer-hide': true
         }
@@ -129,7 +129,11 @@ export default {
   },
   mounted(){
     // console.log('images', this.images)
-  }
+  },
+
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
+  },
 };
 </script>
 <style lang="less" >

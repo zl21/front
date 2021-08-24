@@ -4,6 +4,7 @@
       : (global.wangEditor = factory());
 }(this, (() => {
  
+ const i18n = require('../../utils/i18n').default
 
   /*
     poly-fill
@@ -563,7 +564,7 @@
     // 表情
     emotions: [{
       // tab 的标题
-      title: '默认',
+      title: i18n.t('tips.default'),
       // type -> 'emoji' / 'image'
       type: 'image',
       // content -> 数组
@@ -663,7 +664,7 @@
       }]
     }, {
       // tab 的标题
-      title: '新浪',
+      title: i18n.t('tips.sina'),
       // type -> 'emoji' / 'image'
       type: 'image',
       // content -> 数组
@@ -1411,7 +1412,7 @@
         // panel 中可包含多个 tab
         tabs: [{
           // tab 的标题
-          title: '链接',
+          title: i18n.t('tips.link'),
           // 模板
           tpl: `<div>\n                            <input id="${  inputTextId  }" type="text" class="block" value="${  text  }" placeholder="\u94FE\u63A5\u6587\u5B57"/></td>\n                            <input id="${  inputLinkId  }" type="text" class="block" value="${  link  }" placeholder="http://..."/></td>\n                            <div class="w-e-button-container">\n                                <button id="${  btnOkId  }" class="right">\u63D2\u5165</button>\n                                <button id="${  btnDelId  }" class="gray right" style="display:${  delBtnDisplay  }">\u5220\u9664\u94FE\u63A5</button>\n                            </div>\n                        </div>`,
           // 事件绑定
@@ -2055,7 +2056,7 @@
         // 一个 Panel 包含多个 tab
         tabs: [{
           // 标题
-          title: '插入代码',
+          title: i18n.t('tips.insertCode'),
           // 模板
           tpl: `<div>\n                        <textarea id="${  textId  }" style="height:145px;;">${  value  }</textarea>\n                        <div class="w-e-button-container">\n                            <button id="${  btnId  }" class="right">\u63D2\u5165</button>\n                        </div>\n                    <div>`,
           // 事件绑定
@@ -2275,7 +2276,7 @@
         // panel 包含多个 tab
         tabs: [{
           // 标题
-          title: '插入表格',
+          title: i18n.t('tips.insertTable'),
           // 模板
           tpl: `<div>\n                        <p style="text-align:left; padding:5px 0;">\n                            \u521B\u5EFA\n                            <input id="${  textRowNum  }" type="text" value="5" style="width:40px;text-align:center;"/>\n                            \u884C\n                            <input id="${  textColNum  }" type="text" value="5" style="width:40px;text-align:center;"/>\n                            \u5217\u7684\u8868\u683C\n                        </p>\n                        <div class="w-e-button-container">\n                            <button id="${  btnInsertId  }" class="right">\u63D2\u5165</button>\n                        </div>\n                    </div>`,
           // 事件绑定
@@ -2354,7 +2355,7 @@
         // panel 包含多个 tab
         tabs: [{
           // 标题
-          title: '编辑表格',
+          title: i18n.t('tips.editTable'),
           // 模板
           tpl: `<div>\n                        <div class="w-e-button-container" style="border-bottom:1px solid #f1f1f1;padding-bottom:5px;margin-bottom:5px;">\n                            <button id="${  addRowBtnId  }" class="left">\u589E\u52A0\u884C</button>\n                            <button id="${  delRowBtnId  }" class="red left">\u5220\u9664\u884C</button>\n                            <button id="${  addColBtnId  }" class="left">\u589E\u52A0\u5217</button>\n                            <button id="${  delColBtnId  }" class="red left">\u5220\u9664\u5217</button>\n                        </div>\n                        <div class="w-e-button-container">\n                            <button id="${  delTableBtnId  }" class="gray left">\u5220\u9664\u8868\u683C</button>\n                        </dv>\n                    </div>`,
           // 事件绑定
@@ -2613,9 +2614,9 @@
         // 一个 panel 多个 tab
         tabs: [{
           // 标题
-          title: '插入视频',
+          title: i18n.t('tips.insertVideo'),
           // 模板
-          tpl: `<div>\n                        <input id="${  textValId  }" type="text" class="block" placeholder="请输入视频地址"/>\n                        <div class="w-e-button-container">\n                            <button id="${  btnId  }" class="right">\u63D2\u5165</button>\n                        </div>\n                    </div>`,
+          tpl: `<div>\n                        <input id="${  textValId  }" type="text" class="block" placeholder="${i18n.t('wangEditor.enterVideoAddress')}"/>\n                        <div class="w-e-button-container">\n                            <button id="${  btnId  }" class="right">\u63D2\u5165</button>\n                        </div>\n                    </div>`,
           // 事件绑定
           events: [{
             selector: `#${  btnId}`,
@@ -2707,7 +2708,7 @@
 
       // tab 配置
       let tabsConfig = [{
-        title: '编辑图片',
+        title: i18n.t('tips.editPicture'),
         tpl: `<div>\n                    <div class="w-e-button-container" style="border-bottom:1px solid #f1f1f1;padding-bottom:5px;margin-bottom:5px;">\n                        <span style="float:left;font-size:14px;margin:4px 5px 0 5px;color:#333;">\u6700\u5927\u5BBD\u5EA6\uFF1A</span>\n                        <button id="${  width30  }" class="left">30%</button>\n                        <button id="${  width50  }" class="left">50%</button>\n                        <button id="${  width100  }" class="left">100%</button>\n                    </div>\n                    <div class="w-e-button-container">\n                        <button id="${  delBtn  }" class="gray left">\u5220\u9664\u56FE\u7247</button>\n                    </dv>\n                </div>`,
         events: [{
           selector: `#${  width30}`,
@@ -2780,7 +2781,7 @@
 
       // tabs 的配置
       let tabsConfig = [{
-        title: '上传图片',
+        title: i18n.t('tips.uploadImage'),
         tpl: `<div class="w-e-up-img-container">\n                    <div id="${  upTriggerId  }" class="w-e-up-btn">\n                        <i class="w-e-icon-upload2"></i>\n                    </div>\n                    <div style="display:none;">\n                        <input id="${  upFileId  }" type="file" multiple="multiple" accept="image/jpg,image/jpeg,image/png,image/gif,image/bmp"/>\n                    </div>\n                </div>`,
         events: [{
           // 触发选择图片
@@ -2820,7 +2821,7 @@
         }]
       }, // first tab end
       {
-        title: '网络图片',
+        title: i18n.t('tips.webImage'),
         tpl: `<div>\n                    <input id="${  linkUrlId  }" type="text" class="block" placeholder="\u56FE\u7247\u94FE\u63A5"/></td>\n                    <div class="w-e-button-container">\n                        <button id="${  linkBtnId  }" class="right">\u63D2\u5165</button>\n                    </div>\n                </div>`,
         events: [{
           selector: `#${  linkBtnId}`,
@@ -4056,7 +4057,7 @@
       img.onerror = function () {
             img = null;
             // 无法成功下载图片
-            _this2._alert('插入图片错误', 'wangEditor: \u63D2\u5165\u56FE\u7247\u51FA\u9519\uFF0C\u56FE\u7247\u94FE\u63A5\u662F "' + link + '"\uFF0C\u4E0B\u8F7D\u8BE5\u94FE\u63A5\u5931\u8D25');
+            _this2._alert(i18n.t('wangEditor.insertPictureError'), 'wangEditor: \u63D2\u5165\u56FE\u7247\u51FA\u9519\uFF0C\u56FE\u7247\u94FE\u63A5\u662F "' + link + '"\uFF0C\u4E0B\u8F7D\u8BE5\u94FE\u63A5\u5931\u8D25');
             
         };
       img.onabort = function () {
@@ -4129,11 +4130,11 @@
         });
       // 抛出验证信息
       if (errInfo.length) {
-        this._alert(`图片验证未通过: \n${  errInfo.join('\n')}`);
+        this._alert(`${i18n.t('wangEditor.imageVerificationFailed')}: \n${  errInfo.join('\n')}`);
         return;
       }
       if (resultFiles.length > maxLength) {
-        this._alert(`一次最多上传${  maxLength  }张图片`);
+        this._alert(i18n.t('wangEditor.uploadLimitAtATime',{total: maxLength}));
         return;
       }
 
@@ -4190,7 +4191,7 @@
             hooks.timeout(xhr, editor);
           }
 
-          _this3._alert('上传图片超时');
+          _this3._alert(i18n.t('wangEditor.uploadPictureTimeOut'));
         };
 
         // 监控 progress
@@ -4217,7 +4218,7 @@
               }
 
               // xhr 返回状态错误
-              _this3._alert('上传图片发生错误', `\u4E0A\u4F20\u56FE\u7247\u53D1\u751F\u9519\u8BEF\uFF0C\u670D\u52A1\u5668\u8FD4\u56DE\u72B6\u6001\u662F ${  xhr.status}`);
+              _this3._alert(i18n.t('wangEditor.uploadImageError'), `\u4E0A\u4F20\u56FE\u7247\u53D1\u751F\u9519\u8BEF\uFF0C\u670D\u52A1\u5668\u8FD4\u56DE\u72B6\u6001\u662F ${  xhr.status}`);
               return;
             }
 
@@ -4231,7 +4232,7 @@
                   hooks.fail(xhr, editor, result);
                 }
 
-                _this3._alert('上传图片失败', `上传图片返回结果错误，返回结果是: ${  result}`);
+                _this3._alert(i18n.t('wangEditor.uploadPictureFailed'), `${i18n.t('wangEditor.uploadErrorMsg')}: ${  result}`);
                 return;
               }
             }
@@ -4242,7 +4243,7 @@
               }
 
               // 数据错误
-              _this3._alert('上传图片失败', `上传图片返回结果错误，返回结果 errno=${  result.errno}`);
+              _this3._alert(i18n.t('wangEditor.uploadPictureFailed'), `${i18n.t('wangEditor.uploadErrorMsg')} errno=${  result.errno}`);
             } else {
               if (hooks.customInsert && typeof hooks.customInsert === 'function') {
                 // 使用者自定义插入方法
@@ -4315,7 +4316,7 @@
   function Editor(toolbarSelector, textSelector) {
     if (toolbarSelector == null) {
       // 没有传入任何参数，报错
-      throw new Error('错误：初始化编辑器时候未传入任何参数，请查阅文档');
+      throw new Error(i18n.t('wangEditor.initParamsError'));
     }
     // id，用以区分单个页面不同的编辑器对象
     this.id = `wangEditor-${  editorId++}`;
@@ -4613,7 +4614,7 @@
   try {
     document;
   } catch (ex) {
-    throw new Error('请在浏览器环境下运行');
+    throw new Error(i18n.t('wangEditor.runInBrowser'));
   }
 
   // polyfill

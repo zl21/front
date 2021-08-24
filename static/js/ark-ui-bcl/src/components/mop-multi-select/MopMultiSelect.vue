@@ -57,7 +57,7 @@
 
 <script>
 // 弹窗多选面板
-// import { setTimeout } from 'timers';
+import i18n from '../../utils/i18n'
 import Dialog from './ComplexsDialog';
 // 弹窗单选
 
@@ -125,7 +125,7 @@ export default {
         hideColumnsKey: ["id"],
         dialog: {
           model: {
-            title: "弹窗多选",
+            title: this.$t('mopMultiSelect.multiplePop'),
             mask: true,
             draggable: true,
             closable: true,
@@ -161,9 +161,9 @@ export default {
       // 将设置的props和默认props进行assign
       // const item = this.items;
       if ((this.value && this.value.length > 0) && this.resultData && Object.keys(this.resultData).length > 0) {
-        this.valueInput = `已经选中${this.resultData.value.IN.length}条数据`;
+        this.valueInput = this.$t('mopMultiSelect.selectedData',{total:this.resultData.value.IN.length});
       } else {
-        this.valueInput = this.value && this.value.length > 0 ? Array.isArray(this.value[0].ID) ? `已经选中${this.value[0].ID.length}条数据` : `已经选中${this.value.length}条数据` : '';
+        this.valueInput = this.value && this.value.length > 0 ? Array.isArray(this.value[0].ID) ? this.$t('mopMultiSelect.selectedData',{total:this.value[0].ID.length}) : this.$t('mopMultiSelect.selectedData',{total:this.value.length}) : '';
       }
 
 
@@ -175,7 +175,7 @@ export default {
 
       this.PropsNewData.dialog = {
          model: {
-            title: "弹窗多选",
+            title: this.$t('mopMultiSelect.multiplePop'),
             mask: true,
             draggable: true,
             closable: true,
@@ -237,7 +237,7 @@ export default {
     attachFilterChange (value) {
       this.valueInput = value;
       // 谢世华  为了处理标准列表界面字段数据消失问题
-      if (value.indexOf('已经选中') >= 0) {
+      if (value.indexOf(this.$t('mopMultiSelect.beSelected')) >= 0) {
         this.valueChange('change');
       }
     },
@@ -378,7 +378,7 @@ export default {
     attachFile (index, res, instance) {
       if (res.code !== 0) {
         this.$Modal.fcError({
-          title: '错误',
+          title: this.$t('tips.error'),
           content: res.message,
           mask: true
         });
@@ -421,7 +421,7 @@ export default {
         const saveType = JSON.parse(this.$refs.complex.savObjemessage()).lists.result.length;
         this.resultData = savemessage;
         if (saveType > 0) {
-          const value = `已经选中${this.$refs.complex.resultData.total}条数据`;
+          const value = this.$t('mopMultiSelect.selectedData',{total:this.$refs.complex.resultData.total});
 
 
           if (!this.PropsData.fkobj.saveType) {
@@ -469,10 +469,10 @@ export default {
       clearTimeout(this.timer);
       this.timer = setTimeout(()=>{
          this.PropsNewData = Object.assign(this.PropsNewData, JSON.parse(JSON.stringify(this.PropsData)));
-        this.PropsNewData.datalist = [{ "value": "更多筛选", "lable": 0 }];
+        this.PropsNewData.datalist = [{ "value": this.$t('mopMultiSelect.moreFilters'), "lable": 0 }];
         this.PropsNewData.datalist.push({
           url: this.PropsData.fkobj && this.PropsData.fkobj.url,
-          value: '导入',
+          value: this.$t('mopMultiSelect.import'),
           lable: 2,
           sendData: {
             table: this.PropsData.fkobj && this.PropsData.fkobj.reftable
@@ -528,6 +528,10 @@ export default {
     this.PropsNewData.componentType = Dialog;
     this.PropsData.show = true;
     this.initresult();
-  }
+  },
+
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
+  },
 };
 </script>

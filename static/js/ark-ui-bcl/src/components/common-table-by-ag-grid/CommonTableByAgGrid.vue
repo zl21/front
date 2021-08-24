@@ -28,6 +28,7 @@ import CustomerUrlComponent from './renderComponents/CustomerUrlComponent.vue'
 import SequenceComponent from './renderComponents/SequenceComponent.vue'
 import AttachmentComponent from './renderComponents/AttachmentComponent.vue'
 import FieldMergeComponent from './renderComponents/FieldMergeComponent.vue'
+import i18n from '../../utils/i18n'
 
 const Common_Table_Mode = 'commonTable'
 
@@ -199,7 +200,7 @@ export default {
         if (typeof renderer !== 'function') {
           renderObj.renderComponent = (h) => h('span', {
             domProps: {
-              innerHTML: '没有找到对应的组件'
+              innerHTML: this.$t('messages.noComponent')
             }
           });
         } else {
@@ -217,6 +218,10 @@ export default {
 
       return renderObj
     }
+  },
+
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
   },
 }
 </script>

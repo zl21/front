@@ -11,14 +11,14 @@
         v-for="(table, tableName) in formData"
         :key="table.tableId"
       >
-        <h4>子表-{{tableName}}</h4>
+        <h4>{{$t('extensionProperty.subtable')}}-{{tableName}}</h4>
 
         <ExtentionRowItem
           v-for="(condition, rowIndex) in table"
           :key="rowIndex"
           :row-index="rowIndex"
           :row-count="table.length"
-          :row-label="`条件${rowIndex}`"
+          :row-label="`${$t('extensionProperty.condition')}${rowIndex}`"
           show-operation-button
           @addRow="addRow(table, ROW_ITEM)"
           @removeRow="removeRow(table, rowIndex)"
@@ -33,7 +33,7 @@
               :columns-key="columnsKey"
               :hidecolumns="hidecolumns"
               :default-selected="defaultFields[tableName] ? defaultFields[tableName][rowIndex]:undefined"
-              placeholder="请选择固定在左侧的字段"
+              :placeholder="$t('extensionProperty.selectField')"
               @on-popper-show="getSearchData"
               @on-page-change="getSearchData"
               @on-input-value-change="inputSearchData"
@@ -44,19 +44,20 @@
           <div class="col">
             <Input
               v-model="condition.value"
-              placeholder="请输入字段值"
+              :placeholder="$t('extensionProperty.enterValue')"
             />
           </div>
         </ExtentionRowItem>
       </div>
     </template>
     <template v-else>
-      <h2 class="text-center">暂无子表可配，请先关联子表</h2>
+      <h2 class="text-center">{{$t('extensionProperty.associateSubtable')}}</h2>
     </template>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+import i18n from '../../../utils/i18n'
 import { urlSearchParams } from '../../../utils/http';
 import commonExtension from '../mixins/common-extension'
 import deepClone from '../../../utils/deepClone';
@@ -301,7 +302,11 @@ export default {
     if (this._table_name_) {
       this.init();
     }
-  }
+  },
+
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
+  },
 }
 </script>
 

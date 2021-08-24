@@ -4,91 +4,95 @@
  */
 
 import loadingSVG from '../../assets/images/loading.svg'
+import i18n from '../../utils/i18n'
 
 const agGridEnterpriseLicenseKey =
   'COGITO_SOFTWARE_Co_Ltd_on_behalf_of_FAST_FISH_(CHINA)_APPAREL_LTD._,CO_MultiApp_1Devs2_July_2019__MTU2MjAyMjAwMDAwMA==73f4b2d33a7f2bf6aca17a21940fd8ed'
 
 const AG_SEQUENCE_COLUMN_NAME = '__ag_sequence_column_name__'
 
-const localeText = {
-  // filterPanel
-  page: '页',
-  more: '更多',
-  to: '到',
-  of: '共',
-  next: 'Next',
-  previous: 'Previous',
-  loadingOoo: '加 载 中 ...',
-  // setFilter
-  selectAll: '全选',
-  searchOoo: '搜索...',
-  blanks: '空值',
-  // numberFilterAndTextFilter
-  filterOoo: '搜索...',
-  applyFilter: '开始搜索',
-  // numberFilter
-  equals: '等于',
-  notEqual: '不等于',
-  notContains: '不包含',
-  lessThanOrEqual: '小于等于',
-  greaterThanOrEqual: '大于等于',
-  inRange: '在...范围内',
-  lessThan: '小于',
-  greaterThan: '大于',
-  // textFilter
-  contains: '包含',
-  startsWith: '以...开始',
-  endsWith: '以...结尾',
-  // headerOfDefaultGroupColumn
-  group: '当前分组',
-  // toolPanel
-  columns: '所有列',
-  rowGroupColumns: '透视列',
-  rowGroupColumnsEmptyMessage: '将需要分组查询的“列”拖拽至此处',
-  valueColumns: '聚合列',
-  pivotMode: '透视模式',
-  groups: '分组详情',
-  values: '聚合分析值',
-  pivots: '透视列',
-  valueColumnsEmptyMessage: '将需要聚合分析的‘列’拖拽到此处',
-  pivotColumnsEmptyMessage: '将需要透视分析的‘列’拖拽至此处',
-  // other
-  noRowsToShow: '暂无数据',
-  // enterPriseMenu
-  pinColumn: '固定“列”',
-  valueAggregation: '聚合值',
-  autosizeThiscolumn: '自适应当前列',
-  autosizeAllColumns: '自适应所有列',
-  groupBy: '分组',
-  ungroupBy: '取消分组',
-  resetColumns: '重置所有列位置信息',
-  destroyColumnComps: '重置所有列位置信息',
-  expandAll: '展开所有',
-  collapseAll: '收缩所有',
-  toolPanel: '工具栏',
-  export: '导出',
-  csvExport: '导出CSV',
-  excelExport: '导出Excel',
-  // enterPriseMenuPinning
-  pinLeft: '向左固定',
-  pinRight: '向右固定',
-  noPin: '取消固定',
-  // enterPriseAggregationAndStatusPanel
-  sum: '求和',
-  min: '最小值',
-  max: '最大值',
-  first: '首值',
-  last: '末值',
-  none: 'None',
-  count: '计数',
-  avg: '平均',
-  average: '平均值',
-  // standardMenu
-  copyWithHeaders: '复制（含表头）',
-  copy: '复制',
-  ctrlC: 'ctrl+C',
-  paste: '粘贴',
-  ctrlV: 'ctrl+V',
+const getLocalText = function() {
+  const localeText = {
+    // filterPanel
+    page: i18n.t('tips.page'),
+    more: i18n.t('tips.more'),
+    to: i18n.t('tips.to'),
+    of: i18n.t('tips.total'),
+    next: i18n.t('tips.next'),
+    previous: i18n.t('tips.previous'),
+    loadingOoo: `${i18n.t('tips.loading')}...`,
+    // setFilter
+    selectAll: i18n.t('tips.selectAll'),
+    searchOoo: `${i18n.t('tips.search')}...`,
+    blanks: i18n.t('tips.null'),
+    // numberFilterAndTextFilter
+    filterOoo: `${i18n.t('tips.search')}...`,
+    applyFilter: i18n.t('tips.search'),
+    // numberFilter
+    equals: i18n.t('tips.equal'),
+    notEqual: i18n.t('tips.notEqual'),
+    notContains: i18n.t('tips.exclude'),
+    lessThanOrEqual: i18n.t('tips.lessThanOrEqual'),
+    greaterThanOrEqual: i18n.t('tips.greaterOrEqual'),
+    inRange: i18n.t('tips.inRange'),
+    lessThan: i18n.t('tips.lessThan'),
+    greaterThan: i18n.t('tips.greater'),
+    // textFilter
+    contains: i18n.t('tips.contain'),
+    startsWith: i18n.t('tips.startWith'),
+    endsWith: i18n.t('tips.endWith'),
+    // headerOfDefaultGroupColumn
+    group: i18n.t('table.currentGroup'),
+    // toolPanel
+    columns: i18n.t('table.allColumns'),
+    rowGroupColumns: i18n.t('table.perspectiveColumn'),
+    rowGroupColumnsEmptyMessage: i18n.t('table.dropGroupColumnHere'),
+    valueColumns: i18n.t('table.aggregateColumn'),
+    pivotMode: i18n.t('table.perspectiveMode'),
+    groups: i18n.t('table.groupDetails'),
+    values: i18n.t('table.aggregateAnalysisValue'),
+    pivots: i18n.t('table.perspectiveColumn'),
+    valueColumnsEmptyMessage: i18n.t('table.dropAggregatedGroupColumnHere'),
+    pivotColumnsEmptyMessage: i18n.t('table.dropPerspectiveGroupColumnHere'),
+    // other
+    noRowsToShow: i18n.t('tips.noData'),
+    // enterPriseMenu
+    pinColumn: i18n.t('table.pinnedColumn'),
+    valueAggregation: i18n.t('table.aggregateValue'),
+    autosizeThiscolumn: i18n.t('table.autosizeThiscolumn'),
+    autosizeAllColumns: i18n.t('table.autosizeAllColumns'),
+    groupBy: i18n.t('tips.groupBy'),
+    ungroupBy: i18n.t('tips.ungroupBy'),
+    resetColumns: i18n.t('table.resetColumns'),
+    destroyColumnComps: i18n.t('table.resetColumns'),
+    expandAll: i18n.t('tips.expandAll'),
+    collapseAll: i18n.t('tips.collapseAll'),
+    toolPanel: i18n.t('tips.toolPanel'),
+    export: i18n.t('tips.export'),
+    csvExport: i18n.t('tips.csvExport'),
+    excelExport: i18n.t('tips.excelExport'),
+    // enterPriseMenuPinning
+    pinLeft: i18n.t('tips.pinLeft'),
+    pinRight: i18n.t('tips.pinRight'),
+    noPin: i18n.t('tips.unpin'),
+    // enterPriseAggregationAndStatusPanel
+    sum: i18n.t('tips.sum'),
+    min: i18n.t('tips.minimum'),
+    max: i18n.t('tips.max'),
+    first: i18n.t('table.firstValue'),
+    last: i18n.t('table.lastValue'),
+    none: i18n.t('tips.noData'),
+    count: i18n.t('table.count'),
+    avg: i18n.t('tips.avg'),
+    average: i18n.t('tips.average'),
+    // standardMenu
+    copyWithHeaders: i18n.t('table.copyWithHeaders'),
+    copy: i18n.t('tips.copy'),
+    ctrlC: 'ctrl+C',
+    paste: i18n.t('tips.paste'),
+    ctrlV: 'ctrl+V',
+  }
+  return localeText
 }
 
 const cssFeatures = {
@@ -139,7 +143,7 @@ const defaultConfig = {
   rowHeight: 32, // 行高
   enterMovesDownAfterEdit: true,
   enterMovesDown: true,
-  localeText,
+  localeText: getLocalText(),
   groupDefaultExpanded: 1,
   domLayout: null,
   groupMultiAutoColumn: true, // 分组时，显示分组原字段
@@ -159,6 +163,12 @@ const defaultConfig = {
   },
   overlayLoadingTemplate: `<img src="${loadingSVG}" />`,
 }
+
+Object.defineProperty(defaultConfig, 'localeText', {
+  get() {
+    return getLocalText()
+  }
+})
 
 export {
   agGridEnterpriseLicenseKey,

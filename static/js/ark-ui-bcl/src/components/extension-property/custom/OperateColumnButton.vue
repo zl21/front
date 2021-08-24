@@ -12,7 +12,7 @@
         :key="index"
         :row-index="index"
         :row-count="listConfig.length"
-        :row-label="`按钮${index+1}`"
+        :row-label="`${$t('tips.button')}${index+1}`"
         is-required
         row-label-class="rowLabel"
         show-operation-button
@@ -24,7 +24,7 @@
           <div class="row">
             <Input
               v-model="group.input"
-              placeholder="请输入按钮字段名"
+              :placeholder="$t('extensionProperty.buttonField')"
               @on-blur="validateKey(index)"
             />
           </div>
@@ -48,14 +48,14 @@
             <div class="col">
               <Input
                 v-model="group.value"
-                placeholder="对应类型的值"
+                :placeholder="$t('extensionProperty.correspondingValue')"
                 @on-blur="validateKey(index)"
               />
             </div>
             <div class="col">
               <Input
                 v-model="group.desc"
-                placeholder="选填。提示信息"
+                :placeholder="$t('extensionProperty.optionalPrompt')"
               />
             </div>
           </div>
@@ -66,192 +66,197 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import R3Select from '../../select';
-  import Description from '../description';
-  import ExtentionRowItem from '../extension-row-item';
-  import deepClone from '../../../utils/deepClone';
-  import { isEmptyObject } from '../../../utils/object';
+import i18n from '../../../utils/i18n'
+import R3Select from '../../select';
+import Description from '../description';
+import ExtentionRowItem from '../extension-row-item';
+import deepClone from '../../../utils/deepClone';
+import { isEmptyObject } from '../../../utils/object';
 
-  const SELECT_OPTIONS = [
-    {
-      label: '弹框',
-      value: 'modal'
+const SELECT_OPTIONS = [
+  {
+    label: i18n.t('tips.modal'),
+    value: 'modal'
+  },
+  {
+    label: i18n.t('tips.request'),
+    value: 'request'
+  },
+  {
+    label: i18n.t('tips.route'),
+    value: 'route'
+  }
+];
+
+const ITEM_CONSTRUCTOR = {
+  input: '',
+  selectConfig: {
+    placeholder: i18n.t('extensionProperty.triggerType'),
+    defaultValue: '',
+    selectOptions: deepClone(SELECT_OPTIONS)
+  },
+  value: '',
+  desc: ''
+};
+
+export default {
+  name: 'OperateColumnButton',
+
+  props: {
+    option: {
+      type: Object,
+      default: () => ({})
     },
-    {
-      label: '请求',
-      value: 'request'
+    defaultData: {
+      type: Object,
+      default: () => ({})
     },
-    {
-      label: '路由',
-      value: 'route'
+    showDescription: {
+      type: Boolean,
+      default: true
+    },
+  },
+
+  components: {
+    Description,
+    R3Select,
+    ExtentionRowItem
+  },
+
+  watch: {
+    listConfig: {
+      handler(newValue) {
+        const newFormData = this.filterForm(newValue);
+        if (Object.keys(newFormData).length === 0) {
+          this.$emit('dataChange', { key: this.option.key, value: '' });
+        } else {
+          this.$emit('dataChange', { key: this.option.key, value: newFormData });
+        }
+      },
+      deep: true
+    },
+
+    // 清除配置
+    defaultData: {
+      handler(newData) {
+        if (isEmptyObject(newData)) {
+          Object.assign(this.$data, this.$options.data.call(this));
+        }
+      },
+      deep: true
     }
-  ];
+  },
 
-  const ITEM_CONSTRUCTOR = {
-    input: '',
-    selectConfig: {
-      placeholder: '触发事件类型',
-      defaultValue: '',
-      selectOptions: deepClone(SELECT_OPTIONS)
-    },
-    value: '',
-    desc: ''
-  };
+  data() {
+    return {
+      listConfig: [
+        deepClone(ITEM_CONSTRUCTOR)
+      ],
+      inputValidateTips: [],
+      rowValidateTips: []
+    };
+  },
 
-  export default {
-    name: 'OperateColumnButton',
-
-    props: {
-      option: {
-        type: Object,
-        default: () => ({})
-      },
-      defaultData: {
-        type: Object,
-        default: () => ({})
-      },
-      showDescription: {
-        type: Boolean,
-        default: true
-      },
-    },
-
-    components: {
-      Description,
-      R3Select,
-      ExtentionRowItem
-    },
-
-    watch: {
-      listConfig: {
-        handler(newValue) {
-          const newFormData = this.filterForm(newValue);
-          if (Object.keys(newFormData).length === 0) {
-            this.$emit('dataChange', { key: this.option.key, value: '' });
-          } else {
-            this.$emit('dataChange', { key: this.option.key, value: newFormData });
-          }
-        },
-        deep: true
-      },
-
-      // 清除配置
-      defaultData: {
-        handler(newData) {
-          if (isEmptyObject(newData)) {
-            Object.assign(this.$data, this.$options.data.call(this));
-          }
-        },
-        deep: true
+  methods: {
+    // 过滤表单
+    filterForm(data) {
+      const list = deepClone(data);
+      if (data.length === 0) {
+        return {};
       }
+
+      const formData = {};
+
+      list.forEach((group) => {
+        if (group.input && group.selectConfig.defaultValue && group.value) {
+          formData[group.input] = {
+            type: group.selectConfig.defaultValue,
+            value: group.value,
+            desc: group.desc
+          };
+        }
+      });
+
+      return formData;
     },
 
-    data() {
-      return {
-        listConfig: [
-          deepClone(ITEM_CONSTRUCTOR)
-        ],
-        inputValidateTips: [],
-        rowValidateTips: []
-      };
+    // 清除整个配置数据
+    removeOption(keyArray) {
+      this.$emit('removeOption', keyArray || []);
     },
 
-    methods: {
-      // 过滤表单
-      filterForm(data) {
-        const list = deepClone(data);
-        if (data.length === 0) {
-          return {};
+    // 添加行
+    addRow() {
+      this.listConfig.push(deepClone(ITEM_CONSTRUCTOR));
+    },
+
+    // 删除行
+    removeRow(rowIndex) {
+      this.listConfig.splice(rowIndex, 1);
+    },
+
+    // 获取下拉值
+    getSelect(e, rowIndex) {
+      this.listConfig[rowIndex].selectConfig.defaultValue = e;
+      this.validateKey(rowIndex);
+    },
+
+    // 校验按钮的key
+    validateKey() {
+      const validateResults = [];
+      const rowValidateResults = [];
+      this.listConfig.forEach((row) => {
+        // 按钮字段名校验
+        if (row.input === '') {
+          validateResults.push(this.$t('extensionProperty.buttonField'));
+        } else {
+          validateResults.push('');
         }
 
-        const formData = {};
-
-        list.forEach((group) => {
-          if (group.input && group.selectConfig.defaultValue && group.value) {
-            formData[group.input] = {
-              type: group.selectConfig.defaultValue,
-              value: group.value,
-              desc: group.desc
-            };
-          }
-        });
-
-        return formData;
-      },
-
-      // 清除整个配置数据
-      removeOption(keyArray) {
-        this.$emit('removeOption', keyArray || []);
-      },
-
-      // 添加行
-      addRow() {
-        this.listConfig.push(deepClone(ITEM_CONSTRUCTOR));
-      },
-
-      // 删除行
-      removeRow(rowIndex) {
-        this.listConfig.splice(rowIndex, 1);
-      },
-
-      // 获取下拉值
-      getSelect(e, rowIndex) {
-        this.listConfig[rowIndex].selectConfig.defaultValue = e;
-        this.validateKey(rowIndex);
-      },
-
-      // 校验按钮的key
-      validateKey() {
-        const validateResults = [];
-        const rowValidateResults = [];
-        this.listConfig.forEach((row) => {
-          // 按钮字段名校验
-          if (row.input === '') {
-            validateResults.push('请输入按钮字段名');
-          } else {
-            validateResults.push('');
-          }
-
-          // 按钮配置项校验
-          if (row.input && (row.value === '' || !row.selectConfig.defaultValue)) {
-            rowValidateResults.push('请确认是否填写触发事件类型和对应类型的值');
-          } else {
-            rowValidateResults.push('');
-          }
-        });
-
-        this.inputValidateTips = validateResults;
-        this.rowValidateTips = rowValidateResults;
-      },
-
-      init() {
-        const defaultData = deepClone(this.defaultData);
-        if (Object.keys(defaultData).length === 0) {
-          return;
+        // 按钮配置项校验
+        if (row.input && (row.value === '' || !row.selectConfig.defaultValue)) {
+          rowValidateResults.push(this.$t('extensionProperty.confirmEventAndValue'));
+        } else {
+          rowValidateResults.push('');
         }
+      });
 
-        const list = [];
-        Object.keys(defaultData).forEach((key) => {
-          const item = defaultData[key];
-          list.push({
-            input: key,
-            selectConfig: {
-              placeholder: '触发事件类型',
-              defaultValue: item.type,
-              selectOptions: deepClone(SELECT_OPTIONS)
-            },
-            value: item.value,
-            desc: item.desc
-          });
-        });
-        this.listConfig = list;
-      }
+      this.inputValidateTips = validateResults;
+      this.rowValidateTips = rowValidateResults;
     },
 
-    created() {
-      this.init();
+    init() {
+      const defaultData = deepClone(this.defaultData);
+      if (Object.keys(defaultData).length === 0) {
+        return;
+      }
+
+      const list = [];
+      Object.keys(defaultData).forEach((key) => {
+        const item = defaultData[key];
+        list.push({
+          input: key,
+          selectConfig: {
+            placeholder: this.$t('extensionProperty.triggerType'),
+            defaultValue: item.type,
+            selectOptions: deepClone(SELECT_OPTIONS)
+          },
+          value: item.value,
+          desc: item.desc
+        });
+      });
+      this.listConfig = list;
     }
-  };
+  },
+
+  created() {
+    this.init();
+  },
+
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
+  },
+};
 </script>
 
 <style lang="scss" scoped>

@@ -12,7 +12,7 @@
     >
       <div class="row border-b pt-10">
         <div class="name required-item">
-          按钮名称：
+          {{$t('extensionProperty.buttonName')}}：
         </div>
         <div
           class="item"
@@ -27,7 +27,7 @@
             is-back-row-item
             :columns-key="actionColumnsKey"
             :default-selected="defaultSelected[i].action_id"
-            placeholder="请输入按钮名称"
+            :placeholder="$t('extensionProperty.enterButtonName')"
             @on-popper-show="getKeys($event, {
               key: 'action_id'
             })"
@@ -47,10 +47,10 @@
       </div>
       <div class="header">
         <p class="title">
-          <span>字段</span>
+          <span>{{$t('extensionProperty.field')}}</span>
         </p>
         <p class="title">
-          <span>匹配值</span>
+          <span>{{$t('extensionProperty.value')}}</span>
         </p>
       </div>
       <div
@@ -59,7 +59,7 @@
         class="row"
       >
         <div class="name">
-          条件{{ j+1 }}：
+          {{$t('extensionProperty.condition')}}{{ j+1 }}：
         </div>
         <div class="item">
           <DropDownSelectFilter
@@ -71,7 +71,7 @@
             is-back-row-item
             :columns-key="columnsKey"
             :default-selected="defaultSelected[i].filter[j]"
-            placeholder="请输入表内名称"
+            :placeholder="$t('extensionProperty.enterNameInTable')"
             @on-popper-show="getKeys($event, {
               key: 'filter'
             })"
@@ -92,7 +92,7 @@
         <div class="item">
           <Input
             v-model="row.match_value"
-            placeholder="请输入匹配值（多个值时，请用逗号分隔）"
+            :placeholder="$t('extensionProperty.enterValueWithComma')"
           />
         </div>
 
@@ -137,6 +137,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+import i18n from '../../../utils/i18n'
 import Description from '../description';
 import { urlSearchParams } from '../../../utils/http';
 
@@ -443,7 +444,7 @@ export default {
               for (let i = Math.max(tabth.length - 1, 0); i >= 0; i--) {
                 const item = tabth[i];
                 // 让输入框显示 表内名称 字段
-                const displayName = dataKey === 'action_id' ? '显示名称' : '表内名称';
+                const displayName = dataKey === 'action_id' ? this.$t('extensionProperty.displayName') : this.$t('extensionProperty.nameInTable');
                 if (item.name === displayName) {
                   item.isak = true;
                 } else {
@@ -531,7 +532,11 @@ export default {
         this.$emit('dataChange', { key: this.option.key, value: displayData });
       }
     },
-  }
+  },
+
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
+  },
 };
 </script>
 

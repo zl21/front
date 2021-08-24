@@ -12,7 +12,7 @@
     >
       <div class="label-input">
         <div class="required-item ml-5">
-          展示区域字段：
+          {{$t('extensionProperty.displayAreaField')}}：
         </div>
       </div>
       <div class="target-key mb-10 ml-10">
@@ -23,7 +23,7 @@
           :page-size="pageSize"
           :total-row-count="totalCount"
           :default-selected="defaultSelected[index].target"
-          placeholder="请输入表内名称"
+          :placeholder="$t('extensionProperty.enterNameInTable')"
           :columns-key="targetColumnsKey"
           @on-popper-show="getKeys($event, 'target',{
             tableName:'AD_COLUMN'
@@ -62,7 +62,7 @@
           >
             <div class="colname">
               <p class="required-item ml-5">
-                来源字段:
+                {{$t('extensionProperty.sourceField')}}:
               </p>
               <DropDownSelectFilter
                 single
@@ -73,7 +73,7 @@
                 :total-row-count="totalCount"
                 :default-selected="defaultSelected[index].source[j][0]"
                 :columns-key="targetColumnsKey"
-                placeholder="请输入表内名称"
+                :placeholder="$t('extensionProperty.enterNameInTable')"
                 @on-popper-show="getKeys($event, 'source',{
                   tableName:'AD_COLUMN'
                 })"
@@ -91,7 +91,7 @@
             </div>
             <div class="colname">
               <p class="required-item ml-5">
-                来源字段选项组:
+                {{$t('extensionProperty.sourceFieldOptionGroup')}}:
               </p>
               <DropDownSelectFilter
                 single
@@ -102,7 +102,7 @@
                 :total-row-count="totalCount"
                 :default-selected="defaultSelected[index].source[j][1]"
                 :columns-key="sourceColumnsKey"
-                placeholder="请输入名称"
+                :placeholder="$t('extensionProperty.enterName')"
                 @on-popper-show="getKeys($event, 'source',{
                   tableName:'AD_LIMITVALUE_GROUP',
                   deleteTableId: true
@@ -164,6 +164,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+import i18n from '../../../utils/i18n'
 import { SlickList, SlickItem } from 'vue-slicksort';
 import Description from '../description';
 import { urlSearchParams } from '../../../utils/http';
@@ -325,7 +326,7 @@ export default {
       // 通过hook监听组件销毁钩子函数，并取消监听事件
       this.dom = document.createElement('div');
       this.dom.setAttribute('id', 'drag-tip');
-      this.dom.innerText = '长按可拖拽排序';
+      this.dom.innerText = this.$t('extensionProperty.dragSort');
       document.body.appendChild(this.dom);
 
       window.addEventListener('mousemove', this.setPos);
@@ -494,7 +495,7 @@ export default {
               for (let i = Math.max(tabth.length - 1, 0); i >= 0; i--) {
                 const item = tabth[i];
                 // 让输入框显示 表内名称 字段
-                if (item.name === '表内名称') {
+                if (item.name === this.$t('extensionProperty.nameInTable')) {
                   item.isak = true;
                 } else {
                   item.isak = false;
@@ -608,7 +609,11 @@ export default {
         this.resultList[groupIndex][key][rowIndex].label = '';
       }
     },
-  }
+  },
+
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
+  },
 };
 </script>
 

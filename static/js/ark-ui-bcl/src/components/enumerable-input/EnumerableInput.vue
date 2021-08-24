@@ -22,13 +22,14 @@
       <li class="pickedAll"
           :class="{ disabled: isDefault }"
           @click="pickAll">
-        {{ pickedAll ? '清空' : '全选' }}
+        {{ pickedAll ? $t('tips.clear') : $t('tips.selectAll') }}
       </li>
     </ul>
   </div>
 </template>
 
 <script>
+import i18n from '../../utils/i18n'
 import enumerableForColumn from './enumerateInputForColumn';
 import enumerableForTable from './enumerateInputForTable';
 import Config from '../../../config/nameConfig';
@@ -207,6 +208,11 @@ export default {
       return false;
     }
   },
+
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
+  },
+
   created () {
     if (this.tableName === 'AD_COLUMN') {
       this.enumerableLists = enumerableForColumn.enumerableLists;

@@ -1,6 +1,6 @@
 <template>
   <span ref="sequence">
-    <template v-if="valueOfId === '合计' || valueOfId === '总计'">{{valueOfId}}</template>
+    <template v-if="valueOfId === $t('tips.summation') || valueOfId === $t('tips.total')">{{valueOfId}}</template>
     <span
       v-else
       style="color: #0f8ee9"
@@ -10,6 +10,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+import i18n from '../../../utils/i18n'
 const AG_SEQUENCE_COLUMN_NAME = '__ag_sequence_column_name__';
 
 const cssFeatures = {
@@ -92,7 +93,11 @@ export default {
       toolTipIcon.onmouseleave = this.mouseleave;
       this.$refs.sequence.appendChild(toolTipIcon);
     }
-  }
+  },
+
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
+  },
 }
 </script>
 

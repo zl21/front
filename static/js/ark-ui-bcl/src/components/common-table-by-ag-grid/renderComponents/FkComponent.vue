@@ -2,7 +2,7 @@
   <span :title="params.value || ''">
     <span
       :title="params.value || ''"
-      v-if="params.value &&(params.data && params.data.ID.val === '合计' || params.data.ID.val === '总计')"
+      v-if="params.value &&(params.data && params.data.ID.val === $t('tips.summation') || params.data.ID.val === $t('tips.total'))"
     >{{params.value || ''}}</span>
     <template v-else>
       <i
@@ -17,6 +17,8 @@
 </template>
 
 <script type="text/ecmascript-6">
+import i18n from '../../../utils/i18n'
+
 const cssFeatures = {
   hover: 'ag-syman-hover',
   imagePreviewBox: 'image-preview-box',
@@ -47,7 +49,11 @@ export default {
 
   mounted() {
 
-  }
+  },
+
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
+  },
 }
 </script>
 

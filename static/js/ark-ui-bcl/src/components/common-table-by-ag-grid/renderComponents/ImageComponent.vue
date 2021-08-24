@@ -112,10 +112,6 @@ export default {
       this.showViewer = false
     }
   },
-
-  mounted() {
-    // console.log('组件--',this.params);
-  }
 }
 </script>
 

@@ -9,7 +9,7 @@
     <div class="form-group">
       <ExtentionRowItem
         is-required
-        row-label="对其它字段进行赋值[formRequest]"
+        :row-label="$t('extensionProperty.assignValues')"
         :error-tip="fieldValidateTip"
       >
         <div class="col">
@@ -21,7 +21,7 @@
             :total-row-count="totalCount"
             :columns-key="columnsKey"
             :hidecolumns="hidecolumns"
-            placeholder="请选择已知条件字段"
+            :placeholder="$t('extensionProperty.selectKnownField')"
             :default-selected="defaultFields"
             @on-popper-show="getSearchData"
             @on-page-change="getSearchData"
@@ -33,7 +33,7 @@
         <div class="col">
           <Input
             v-model="formData.url"
-            placeholder="请输入定制接口，例如/p/c/test"
+            :placeholder="$t('extensionProperty.enterApi')"
             @on-blur="validateField"
           />
         </div>
@@ -43,6 +43,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+import i18n from '../../../utils/i18n'
 import Description from '../description';
 import ExtentionRowItem from '../extension-row-item';
 import deepClone from '../../../utils/deepClone';
@@ -154,7 +155,7 @@ export default {
       const formData = deepClone(this.formData);
 
       if (formData.refcolumn === '' || formData.url === '') {
-        this.fieldValidateTip = '请确认来源字段和接口地址是否填写';
+        this.fieldValidateTip = this.$t('extensionProperty.confirmFieldAndAAddress');
       } else {
         this.fieldValidateTip = '';
       }
@@ -336,7 +337,11 @@ export default {
 
     this.init();
     this.getFieldDefaultValue();
-  }
+  },
+
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
+  },
 };
 </script>
 

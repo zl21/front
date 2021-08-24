@@ -31,7 +31,7 @@
         :closable="true"
         :mask="true"
         :mask-closable="false"
-        :title="'扩展属性配置'"
+        :title="$t('extensionProperty.extendAttrConfig')"
         :width="80"
         @on-ok="onOk"
         @on-cancel="onCancel"
@@ -52,9 +52,10 @@
 </template>
 
 <script>
+import i18n from '../../utils/i18n'
 import ExtensionPropertyWrap from './ExtensionPropertyWrap';
-import fieldExtensionProperty from '../../constant/fieldExtensionProperty'
-import tableExtensionProperty from '../../constant/tableExtensionProperty'
+import getFieldConfig from '../../constant/fieldExtensionProperty'
+import getTableConfig from '../../constant/tableExtensionProperty'
 import { isEmptyObject } from '../../utils/object';
 import deepClone from '../../utils/deepClone';
 import Config from '../../../config/nameConfig';
@@ -275,7 +276,7 @@ export default {
           let supportTypeMap = {};
           const currentTableName = this.tableName;
           if (currentTableName === 'AD_COLUMN') {
-            supportTypeMap = fieldExtensionProperty.reduce((a, c) => {
+            supportTypeMap = getFieldConfig().reduce((a, c) => {
               // 需要兼容type: 'keyValue'的配置项
               if (c.components) {
                 // 获取子配置项的key
@@ -289,7 +290,7 @@ export default {
             }, {});
             supportTypeMap['password_type'] = ["byPage"] // 【是否加密】配置项里的password_type字段是被强行加上去的，字段配置文件里没有这个相关配置，所以手动兼容一下
           } else if (currentTableName === 'AD_TABLE') {
-            supportTypeMap = tableExtensionProperty.reduce((a, c) => {
+            supportTypeMap = getTableConfig().reduce((a, c) => {
               if (c.key !== '__root__') {
                 a[c.key] = c.supportType || 'ALL';
               } else if (c.key === '__root__') {
@@ -323,7 +324,7 @@ export default {
             this.transformedData = {}
             this.$emit('valueChange', '');
             this.setFormatedValue();
-            dom.placeholder = `不被支持的扩展属性：[${unMappedKey.toString()}]，请核实后再操作。`;
+            dom.placeholder = this.$t('extensionProperty.notSupportedAttr',{attr:unMappedKey.toString()});
             return
           }
 
@@ -343,8 +344,8 @@ export default {
           this.$Modal.fcWarning({
             mask: true,
             showCancel: false,
-            title: '提示',
-            content: '请输入json 形式的字符串',
+            title: this.$t('tips.alert'),
+            content: this.$t('extensionProperty.enterJSONForm'),
           });
         }
       }
@@ -406,6 +407,7 @@ export default {
     // }
   },
   beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
     this.defaultDataCache = '' // 缓存默认值。用于比对数据是否修改过了。为了兼容老的webconf加的
   },
   mounted() {

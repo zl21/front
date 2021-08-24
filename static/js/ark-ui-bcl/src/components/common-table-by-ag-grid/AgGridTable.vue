@@ -29,6 +29,7 @@ import CellRender from './CellRender.vue'
 import CellRenderByFunction from './CellRenderByFunction.vue'
 import TextComponent from './renderComponents/TextComponent.vue'
 import { toThousands } from '../../utils/number'
+import i18n from '../../utils/i18n'
 
 LicenseManager.setLicenseKey(agGridEnterpriseLicenseKey);
 
@@ -99,13 +100,13 @@ export default {
       // defaultConfig只含属性配置不含事件配置和组件配置
       const otherOptions = {
         onGridReady: this.onGridReady,
-        getContextMenuItems: this.getContextMenuItems,
-        getMainMenuItems: this.getMainMenuItems,
+        getContextMenuItems: this.getContextMenuItems.bind(this),
+        getMainMenuItems: this.getMainMenuItems.bind(this),
         onCellClicked: this.onCellClicked,
         onCellDoubleClicked: this.onCellDoubleClicked,
         onRowClicked: this.onRowClicked,
         onRowDoubleClicked: this.onRowDoubleClicked,
-        onSelectionChanged: this.onSelectionChanged,
+        onSelectionChanged: this.onSelectionChanged.bind(this),
         onSortChanged: this.onSortChanged,
         onVirtualColumnsChanged: this.onVirtualColumnsChanged,
         onColumnVisible: this.onColumnVisible,
@@ -196,7 +197,7 @@ export default {
     },
 
     // 表格宽度变化
-    onGridSizeChanged(params) {
+    onGridSizeChanged: debounce(function (params) {
       this.$emit('on-grid-size-changed', params)
       setTimeout(() => {
         const { clientWidth } = params;
@@ -206,7 +207,7 @@ export default {
         this._tableWidthCache = clientWidth
         this._resetColumnWidth()
       }, 200)
-    },
+    }),
 
     // 设置行数据
     setRows(data) {
@@ -281,7 +282,7 @@ export default {
         'paste',
         // 'export',
         {
-          name: '显示所有列',
+          name: this.$t('table.showAllColumns'),
           action: () => {
             const options = this.options; // 此处必须是指外部传入的参数
             if (isFunction(options.agColumnVisibleChanged)) {
@@ -321,14 +322,14 @@ export default {
         'autoSizeAll',
         'separator',
         {
-          name: '隐藏当前列',
+          name: this.$t('table.hideCurrentColumn'),
           action: () => {
             const { columnApi, column } = params
             columnApi.setColumnVisible(column.colId, false)
           }
         },
         {
-          name: '重置所有列位置信息',
+          name: this.$t('table.resetColumns'),
           action: () => {
             this._isResetAllColumn = true;
             const options = this.options;
@@ -418,7 +419,7 @@ export default {
       const rows = [];
       params.api.getSelectedRows().forEach((d) => {
         const { val } = d.ID;
-        if (val !== '合计' && val !== '总计') {
+        if (val !== this.$t('tips.summation') && val !== this.$t('tips.total')) {
           ids.push(val);
           rows.push(d);
         }
@@ -732,6 +733,7 @@ export default {
     _transformColumnDefs(data) {
       const agTable = this.$refs.table
       const options = this.gridOptions;
+      const componentVM = this
       let hideColumn = [];
       if (options && options.datas && options.datas.hideColumn) {
         hideColumn = deepClone(options.datas.hideColumn.split(','))
@@ -764,14 +766,14 @@ export default {
 
       const newData = data.map((d) => {
         if (d.colname === 'headerName') {
-          alert('headerName : 列名冲突');
+          alert(`headerName : ${this.$t('table.columnNameConflict')}`);
         }
         if (d.colname === 'field') {
-          alert('field : 列名冲突');
+          alert(`field : ${this.$t('table.columnNameConflict')}`);
         }
         const item = JSON.parse(decodeURI(encodeURI(JSON.stringify(d))));
         item._index = d._index;
-        item.headerName = d.colname === 'ID' ? '序号' : d.headerName || d.name;
+        item.headerName = d.colname === 'ID' ? this.$t('tips.index') : d.headerName || d.name;
         item.lockVisible = d.lockVisible || d.colname === 'ID'; // 锁定序号列的隐藏功能
         item.suppressToolPanel = d.suppressToolPanel || d.colname === 'ID'; // 锁定ID列工具栏操作能力
         // item.pinned = d.colname === 'ID' ? 'left' : this._getPinnedState(d.colname); // 将一列固定到一侧
@@ -815,6 +817,7 @@ export default {
           tooltipTopBox,
           failIds: this._getFailIds(),
           mode: this.mode,
+          $t: this.$t,
           ...params
         };
 
@@ -832,7 +835,7 @@ export default {
           item.filter = 'agTextColumnFilter';
         }
         item.checkboxSelection = d.colname === 'ID' ? function (params) {
-          return params.columnApi.getRowGroupColumns().length === 0 && (params.data.ID && params.data.ID.val !== '合计' && params.data.ID.val !== '总计');
+          return params.columnApi.getRowGroupColumns().length === 0 && (params.data.ID && params.data.ID.val !== componentVM.$t('tips.summation') && params.data.ID.val !== componentVM.$t('tips.total'));
         } : d.checkboxSelection;
         item.headerCheckboxSelection = d.colname === 'ID' ? function (params) {
           return params.columnApi.getRowGroupColumns().length === 0;
@@ -918,13 +921,13 @@ export default {
       const fullRangeSubTotalRowData = {};
       this.columnApi.getAllColumns().forEach((d) => {
         const { colname } = d.colDef;
-        fullRangeSubTotalRowData[colname] = { val: colname === 'ID' ? '总计' : fullRangeSubTotalRow[colname] ? fullRangeSubTotalRow[colname].val : '' };
+        fullRangeSubTotalRowData[colname] = { val: colname === 'ID' ? this.$t('tips.total') : fullRangeSubTotalRow[colname] ? fullRangeSubTotalRow[colname].val : '' };
       });
       if (JSON.stringify(fullRangeSubTotalRow) !== '{}') {
         fullRangeSubTotalRowData.__ag_is_statistic_row__ = true;
       }
       fullRangeSubTotalRowData[AG_SEQUENCE_COLUMN_NAME] = {}
-      fullRangeSubTotalRowData[AG_SEQUENCE_COLUMN_NAME].val = '总计'
+      fullRangeSubTotalRowData[AG_SEQUENCE_COLUMN_NAME].val = this.$t('tips.total')
       return fullRangeSubTotalRowData;
     },
 
@@ -953,11 +956,11 @@ export default {
       // 前端计算合计值
       this.columnApi.getAllColumns().forEach((d) => {
         const { colname } = d.colDef;
-        subtotalRowData[colname] = { val: colname === 'ID' ? '合计' : (subtotalRow[colname] || '') };
+        subtotalRowData[colname] = { val: colname === 'ID' ? this.$t('tips.summation') : (subtotalRow[colname] || '') };
       });
       subtotalRowData.__ag_is_statistic_row__ = true;
       subtotalRowData[AG_SEQUENCE_COLUMN_NAME] = {}
-      subtotalRowData[AG_SEQUENCE_COLUMN_NAME].val = '合计'
+      subtotalRowData[AG_SEQUENCE_COLUMN_NAME].val = this.$t('tips.summation')
       return subtotalRowData
     },
 
@@ -984,15 +987,13 @@ export default {
     // 重新表头位置。fix: 从别的界面返回表格界面时，表头会消失
     _resetHeaderPosition() {
       const agGridTableContainer = this.$refs.tableContainer
-      if (agGridTableContainer) {
-        const header = agGridTableContainer.querySelector('.ag-header-container')
-        header.style.left = 0
-      }
+      const header = agGridTableContainer.querySelector('.ag-header-container')
+      header.style.left = 0
     },
 
     // 调整列宽
     // 规则：1.所有列大于表格宽度时，此时用autoSizeAllColumns  2.所有列小于表格宽度时，此时用sizeColumnsToFit
-    _autoSizeColumns() {
+    _autoSizeColumns: debounce(function () {
       if (!this.$refs.table || !this.api || !this.columnApi) {
         return
       }
@@ -1008,25 +1009,18 @@ export default {
         container = tableDom.querySelector('.ag-body-container') // 表格所有列的容器
       }
 
-      let viewportWidth = viewport.clientWidth
-      let containerWidth = container.clientWidth
-      if (containerWidth === 0 && viewportWidth === 0) {
-        if (this._viewportWidth === 0 && this._containerWidth === 0) {
-          return
-        } else {
-          viewportWidth = this._viewportWidth
-          containerWidth = this._containerWidth
-        }
-      }
-      this._viewportWidth = viewportWidth // 缓存视口宽度
-      this._containerWidth = containerWidth // 缓存容器宽度
+      const viewportWidth = viewport.clientWidth
+      const containerWidth = container.clientWidth
 
+      if (containerWidth === 0 && viewportWidth === 0) {
+        return
+      }
       if (containerWidth <= viewportWidth) {
         this.api.sizeColumnsToFit()
       } else {
         this.columnApi.autoSizeAllColumns()
       }
-    },
+    }, 190),
 
     // 重新分配列宽
     _resetColumnWidth(callback) {
@@ -1040,6 +1034,10 @@ export default {
     },
   },
 
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
+  },
+
   created() {
     this._zhColumnNameMap = {}; // 每列的中文字段名映射，形如{ '中文字段名': 'english_name' }
     this._colPosition = '' // 记录列的位置,用于排序
@@ -1049,8 +1047,6 @@ export default {
     this._pinnedBottomRowData = null
     this._gridReady = false // 表格是否渲染完毕
     this._tableWidthCache = 0 // 记录表格宽度
-    this._viewportWidth = 0 // 缓存视口宽度
-    this._containerWidth = 0 // 缓存容器宽度
   },
 
   mounted() {

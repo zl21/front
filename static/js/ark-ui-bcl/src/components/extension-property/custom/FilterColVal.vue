@@ -9,7 +9,7 @@
     <div class="form-group">
       <!-- 来源字段 -->
       <ExtentionRowItem
-        row-label="来源字段"
+        :row-label="$t('extensionProperty.sourceField')"
         is-required
         row-label-class="rowLabel"
         :error-tip="fieldValidateTips"
@@ -25,7 +25,7 @@
               :total-row-count="totalCount"
               :columns-key="columnsKey"
               :hidecolumns="hidecolumns"
-              placeholder="请选择来源字段"
+              :placeholder="$t('extensionProperty.selectSourceField')"
               :default-selected="defaultFields"
               @on-popper-show="getSearchData"
               @on-page-change="getSearchData"
@@ -39,7 +39,7 @@
 
       <!-- 条件配置 -->
       <ExtentionRowItem
-        row-label="对应关系"
+        :row-label="$t('extensionProperty.correspondence')"
         is-required
         row-label-class="rowLabel"
       >
@@ -52,14 +52,14 @@
             <div class="col">
               <Input
                 v-model="row.key"
-                placeholder="输入选项的键"
+                :placeholder="$t('extensionProperty.enterOptionKey')"
                 @on-blur="validCondition"
               />
             </div>
             <div class="col">
               <Input
                 v-model="row.value"
-                placeholder="输入选项的值"
+                :placeholder="$t('extensionProperty.enterOptionValue')"
                 @on-blur="validCondition"
               />
             </div>
@@ -96,6 +96,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+import i18n from '../../../utils/i18n'
 import Description from '../description';
 import ExtentionRowItem from '../extension-row-item';
 import deepClone from '../../../utils/deepClone';
@@ -225,7 +226,7 @@ export default {
       if (this.formData.col) {
         this.fieldValidateTips = ''
       } else {
-        this.fieldValidateTips = '请输入来源字段'
+        this.fieldValidateTips = this.$t('extensionProperty.enterSourceField')
       }
     },
 
@@ -234,7 +235,7 @@ export default {
       const isValid = this.formData.list.some((item) => {
         return item.key && item.value
       })
-      this.conditionValidateTips = isValid ? '' : '请至少填写一条对应关系'
+      this.conditionValidateTips = isValid ? '' : this.$t('extensionProperty.correspondenceIsRequired')
     },
 
     commonApi(api, searchdata, options) {
@@ -425,7 +426,11 @@ export default {
   created() {
     this._table_id_ = this.keyForm.AD_TABLE_ID;
     this.init();
-  }
+  },
+
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
+  },
 };
 </script>
 

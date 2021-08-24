@@ -41,23 +41,8 @@
     },
 
     methods: {
-      // 检查空值
-      checkVoid() {
-        if (this.data === null || this.data === undefined || this.data === '') {
-          return {
-            isPass: false,
-            msg: '请填入具体值'
-          };
-        }
-        return {
-          isPass: true,
-          msg: ''
-        };
-      },
-
       validateValue() {
         this.ruleList = [];
-        // this.ruleList.push(this.checkVoid);
         if (this.validateFunction && typeof this.validateFunction === 'function') {
           this.ruleList.push(this.validateFunction);
         }

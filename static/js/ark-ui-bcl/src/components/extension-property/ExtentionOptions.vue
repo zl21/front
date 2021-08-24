@@ -33,6 +33,7 @@
   </div>
 </template>
 <script>
+  import i18n from '../../utils/i18n'
   import Description from './description';
   import LabelWithInput from './LabelWithInput';
 
@@ -62,10 +63,10 @@
     data() {
       return {
         clonameOptions: { // 条件字段配置
-          name: '条件字段',
+          name: this.$t('extensionProperty.conditionField'),
           key: 'colnames',
           type: 'input',
-          description: '控制列表操作列按钮的字段',
+          description: this.$t('extensionProperty.controlColumnField'),
         },
         clonameChange: false, // 判断条件字段是否改变，失去焦点时候需要
       };
@@ -87,8 +88,8 @@
       inputBlur() { // 条件字段失去焦点
         if (this.clonameChange) {
           this.$Modal.warning({
-            title: '警告',
-            content: '更改条件字段后，已配置的规则配置表内容将会被清空，是否继续该操作？',
+            title: this.$t('tips.warning'),
+            content: this.$t('extensionProperty.continueChange'),
             mask: true,
             onOk: () => {
               const key = 'rules';
@@ -124,7 +125,11 @@
           this.$emit('dataChange', { key: this.option.key, value: cloneRootData });
         }
       }
-    }
+    },
+
+    beforeCreate() {
+      this.$t = i18n.t.bind(i18n)
+    },
   };
 </script>
 <style lang="less" scoped>

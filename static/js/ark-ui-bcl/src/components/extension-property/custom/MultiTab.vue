@@ -25,7 +25,7 @@
         >
           <p class="label-input">
             <validate :data="item.tab_name">
-              <span class="required-item ml-5">标签名：</span>
+              <span class="required-item ml-5">{{$t('tips.label')}}：</span>
               <Input
                 v-model="item.tab_name"
                 class="tab-label-name"
@@ -45,7 +45,7 @@
           >
             <div class="colname">
               <p class="required-item ml-5">
-                关联字段:
+                {{$t('extensionProperty.associateField')}}:
               </p>
               <validate
                 :data="temp.col_name"
@@ -60,7 +60,7 @@
                   :default-selected="defaultSelected[index][j]"
                   is-back-row-item
                   :columns-key="columnsKey"
-                  placeholder="请输入表内名称"
+                  :placeholder="$t('extensionProperty.enterNameInTable')"
                   @on-popper-show="getKeys"
                   @on-page-change="getKeys"
                   @on-input-value-change="getSearchKeys(index, j, $event)"
@@ -71,7 +71,7 @@
             </div>
             <div class="operator">
               <p class="required-item ml-5">
-                运算符:
+                {{$t('tips.operator')}}:
               </p>
               <validate :data="temp.operator">
                 <Select
@@ -91,7 +91,7 @@
             </div>
             <div class="contrastValue">
               <p class="required-item ml-5">
-                对比值:
+                {{$t('extensionProperty.contrastValue')}}:
               </p>
               <validate :data="temp.contrast_value">
                 <Input
@@ -104,7 +104,7 @@
                   style="width: 100%;"
                   :value="temp.contrast_value"
                   :type="temp.type && temp.type.toUpperCase() === 'DATETIME' ? 'datetimerange' : 'daterange'"
-                  placeholder="请选择"
+                  :placeholder="$t('tips.pleaseSelect')"
                   :editable="false"
                   transfer
                   :format="temp.type && temp.type.toUpperCase() === 'DATETIME' ? 'yyyy/MM/dd HH:mm:ss' : 'yyyy/MM/dd'"
@@ -153,6 +153,7 @@
   </div>
 </template>
 <script>
+import i18n from '../../../utils/i18n'
 import { SlickList, SlickItem } from 'vue-slicksort';
 import Description from '../description';
 import Validate from '../validate/Validate';
@@ -234,13 +235,17 @@ export default {
     this.setHover();
   },
 
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
+  },
+
   methods: {
     // 设置悬浮
     setHover() {
       // 通过hook监听组件销毁钩子函数，并取消监听事件
       this.dom = document.createElement('div');
       this.dom.setAttribute('id', 'drag-tip');
-      this.dom.innerText = '长按可拖拽排序';
+      this.dom.innerText = this.$t('extensionProperty.dragSort');
       document.body.appendChild(this.dom);
 
       window.addEventListener('mousemove', this.setPos);
@@ -668,7 +673,7 @@ export default {
       if (result.length > 1) {
         return {
           isPass: false,
-          msg: '已存在相同字段，请修改'
+          msg: this.$t('extensionProperty.selectOtherField')
         };
       }
       return {
