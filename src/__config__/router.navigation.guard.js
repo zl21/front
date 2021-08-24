@@ -193,17 +193,28 @@ export default (router) => {
       let filterName = to.meta.moduleName || to.meta.customizedModuleName || to.meta.pluginModuleName || to.meta.linkModuleName || '';
       // filterName 不存在或则是不是xx.xx.xx 则不过滤
       if (keepAliveLabelMaps&& filterName && filterName.split('.').length>2) {
-        let stringLeng = filterName.split('.').length>3 ? filterName.lastIndexOf('.') :filterName.length;
-        let menuName = filterName.substring(filterName.indexOf('.'),stringLeng);
-        // 根据路由规则匹配
-        let existIndex = ['S', 'SC', 'H', 'V', 'C', 'P', 'L'].findIndex((key) => {
-          let name = key + menuName;
-          return keepAliveLabelMaps[name];
-        });
-        if(existIndex === -1){
-          next('/')
-          return false
+        if(!to.params.customizedModuleName){
+          let stringLeng = filterName.split('.').length>3 ? filterName.lastIndexOf('.') :filterName.length;
+          let menuName = filterName.substring(filterName.indexOf('.'),stringLeng);
+          // 根据路由规则匹配
+          let existIndex = ['S', 'SC', 'H', 'V', 'C', 'P', 'L'].findIndex((key) => {
+            let name = key + menuName;
+            return keepAliveLabelMaps[name];
+          });
+          if(existIndex === -1){
+            next('/')
+            return false
+          }
+        }else{
+          var reg = RegExp(`C.${to.params.customizedModuleName}`);
+          if(reg.test(JSON.stringify(keepAliveLabelMaps)) === false){
+            // 包含定制界面      
+            next('/')
+            return false  
+          }
+
         }
+        
       }
     }
 
