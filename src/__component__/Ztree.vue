@@ -88,7 +88,7 @@
     },
     watch: {
       zNodes: {
-        handler() {
+        handler(val) {
           $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
         },
         deep: true
@@ -158,6 +158,13 @@
 
       //   return true;
       // },
+
+      init() {
+        // $.fn.zTree.destroy($(`#${this.tableName}`));
+        this.inputValue = '';
+        $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
+      },
+
       checkNode() {
         // 选中
         const treeObj = $.fn.zTree.getZTreeObj(`${this.tableName}`);
@@ -233,8 +240,9 @@
         this.search();
       },
       clearInputVal() {
+        fuzzySearch(`${this.tableName}`, this.inputValue, false, true)
         this.inputValue = '';
-      }
+      },
       // freshArea() {
       //   $.fn.zTree.init($('#treeDemo'), this.setting, this.zNodes);
       // }
@@ -243,9 +251,7 @@
       this.tableName = this.$route.params.tableName ? `${this.$route.params.tableName}treeDemo` : 'treeDemo';
     },
     mounted() {
-      this.$nextTick(() => {
-        $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
-      });
+      this.$nextTick(() => this.init());
 
       // $(document).ready(() => {
       //   $.fn.zTree.init($('#treeDemo'), this.setting, this.zNodes);
