@@ -452,7 +452,7 @@ export default {
     beSelected: 'already selected',
     selectedData: '{total} pieces of data have been selected',
     multiplePop: 'multiple selection in pop-up window',
-    moreFilters: 'moreFilters',
+    moreFilters: 'more filters',
     import: 'import', 
   }
 }
