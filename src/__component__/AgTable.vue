@@ -81,7 +81,7 @@
         class="legend"
       >
         <span style="font-weight: bold;">
-          图例:
+          {{$t('tips.legend')}}:
         </span>
         <p
           v-for="(item, index) in legend"

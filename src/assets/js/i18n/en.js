@@ -306,7 +306,8 @@ export default {
     cancelVoid: 'cancel void',
     versionNumber: 'version number',
     loading: 'loading',
-    name: 'name'
+    name: 'name', 
+    legend: 'legend'
   },
   // 反馈类型的文案(比如进行某个操作，返回操作结果的提示)
   feedback: {

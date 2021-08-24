@@ -17,16 +17,16 @@ const i18n = new VueI18n({
 })
 
 window.R3I18n = function (language) {
-  // network.post('/p/cs/langswitcher', urlSearchParams({language: lang})).then(res => {
-  //   if (res.data.code === 0) {
-  //     i18n.locale = language
-  //     locale(language) // 设置业务组件库语言
-  //     localStorage.setItem('r3-lang', language)
-  //   }
-  // })
-  i18n.locale = language
-  locale(language) // 设置业务组件库语言
-  localStorage.setItem('r3-lang', language)
+  network.post('/p/cs/langswitcher', urlSearchParams({language: lang})).then(res => {
+    if (res.data.code === 0) {
+      i18n.locale = language
+      locale(language) // 设置业务组件库语言
+      localStorage.setItem('r3-lang', language)
+    }
+  })
+  // i18n.locale = language
+  // locale(language) // 设置业务组件库语言
+  // localStorage.setItem('r3-lang', language)
 }
 
 

@@ -648,8 +648,8 @@
                   webdesc: this.$t('buttons.refresh')
                 });
               }
-              const saveObj = buttonsData.find(item => item.webdesc === this.$t('buttons.save'));
-              const copyObj = buttonsData.find(item => item.webdesc === this.$t('tips.copyPermission'));
+              const saveObj = buttonsData.find(item => item.webname === 'CmenuPermissionSaveCmd');
+              const copyObj = buttonsData.find(item => item.webname === 'copyPermissionCmd');
               const refreshObj = buttonsData.find(item => item.webdesc === this.$t('buttons.refresh'));
               if (saveObj) {
                 this.buttonsData.push(saveObj);
@@ -1000,9 +1000,9 @@
       btnClick(item) {
         if (item.webdesc === this.$t('buttons.refresh')) {
           this.refreshButtonClick();
-        } else if (item.webdesc === this.$t('tips.copyPermission')) {
+        } else if (item.webname === 'copyPermissionCmd') {
           this.copyPerm();
-        } else if (item.webdesc === this.$t('buttons.save')) {
+        } else if (item.webname === 'CmenuPermissionSaveCmd') {
           this.savePermission();
         }
       }, // 点击按钮触发
