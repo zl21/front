@@ -8,10 +8,14 @@ import {
   ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, getProjectQuietRoutes, REQUEST_PENDDING_EXPIRE, getTouristRoute, logoutTips, Version, filterUrlForNetworkScript, getFilterUrlForNetworkData,autoGatewayUrl
 } from '../constants/global';
 import { addNetwork } from './indexedDB';
+
 // import FilterUrlForNetwork from '../launchApplicationConfig/filterUrlForNetwork';
 import {
   updateSessionObject, removeSessionObject, getSessionObject
 } from './sessionStorage';
+
+import { R3getCookie  } from './common';
+
 
 const CancelToken = axios.CancelToken;
 window.cancle = null;
@@ -78,11 +82,13 @@ const dispatchR3Event = (data) => {
 axios.interceptors.request.use(
   config => {
       // if(window.ProjectConfig.enciphered){}
+     
+    
         let number = Math.floor(Math.random() * 10000);
         config.headers['SSSSS-A'] = new Date().getTime();
-        config.headers['SSSSS-B'] = md5('qwertburgeon'+new Date().getTime()+number);
+        config.headers['SSSSS-B'] = md5('qwertburgeon'+new Date().getTime()+number+(R3getCookie('sessionCookie')|| ''));
         config.headers['SSSSS-C'] = number;
-
+        
       return config
   }
 )
