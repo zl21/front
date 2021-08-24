@@ -14,7 +14,7 @@ import {
   updateSessionObject, removeSessionObject, getSessionObject
 } from './sessionStorage';
 
-import { R3getCookie  } from './common';
+
 
 
 const CancelToken = axios.CancelToken;
@@ -85,8 +85,12 @@ axios.interceptors.request.use(
      
     
         let number = Math.floor(Math.random() * 10000);
+        let sessionCookie = window.localStorage.getItem('sessionCookie');
         config.headers['SSSSS-A'] = new Date().getTime();
-        config.headers['SSSSS-B'] = md5('qwertburgeon'+new Date().getTime()+number+(R3getCookie('sessionCookie')|| ''));
+        if(sessionCookie === 'undefined'){
+          sessionCookie = '';
+        }
+        config.headers['SSSSS-B'] = md5('qwertburgeon'+new Date().getTime()+number+sessionCookie);
         config.headers['SSSSS-C'] = number;
         
       return config
@@ -274,7 +278,7 @@ axios.interceptors.response.use(
               // 清楚对应登陆用户信息
               window.sessionStorage.setItem('loginStatus', false);
               window.localStorage.setItem('loginStatus', false);
-
+              window.localStorage.setItem('sessionCookie', '');
               store.commit('global/updataUserInfoMessage', {
                 userInfo: {}
               });
@@ -292,6 +296,7 @@ axios.interceptors.response.use(
           // 清楚对应登陆用户信息
           window.sessionStorage.setItem('loginStatus', false);
           window.localStorage.setItem('loginStatus', false);
+          window.localStorage.setItem('sessionCookie', '');
 
           store.commit('global/updataUserInfoMessage', {
             userInfo: {}
