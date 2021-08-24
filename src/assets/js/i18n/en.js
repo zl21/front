@@ -187,7 +187,10 @@ export default {
     tickToConfirm: 'Please tick the first line to confirm!',
     reenterReport: 'The current operation interface is not a report interface layout, please click the report center tab to re-enter the report module and try again',
     collectionSelected: 'The collection has been selected',
-    collectionExcluded: 'The collection has been excluded'
+    collectionExcluded: 'The collection has been excluded',
+    enterVersionNumber: 'please enter the version number',
+    enterTargetTable: 'please enter the target table name',
+    enterTargetDesc: 'please enter a description of the goal',
   },
   // 具有通用性的文案
   tips: {
@@ -300,7 +303,10 @@ export default {
     priority: 'priority',
     sendTime: 'send time',
     allNotifications: 'all notifications',
-    cancelVoid: 'cancel void'
+    cancelVoid: 'cancel void',
+    versionNumber: 'version number',
+    loading: 'loading',
+    name: 'name'
   },
   // 反馈类型的文案(比如进行某个操作，返回操作结果的提示)
   feedback: {
@@ -317,7 +323,8 @@ export default {
     collectionSuccess: 'collection success',
     collectionFailed: 'collection failed',
     unfavoriteSuccessfully: 'unfavorite successfully',
-    failedToUnfavorite: 'failed to unfavorite'
+    failedToUnfavorite: 'failed to unfavorite',
+    cloneSuccess: 'successfully clone'
   },
   // 动作行为(不含按钮里的)
   actions: {

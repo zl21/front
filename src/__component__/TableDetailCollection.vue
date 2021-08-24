@@ -732,6 +732,7 @@
             tableName: row._TABLENAME,
             tableId: row._TABLEID,
             id: row._OBJID,
+            original:'outclick',
             serviceId: row._SERVICEID
           });
         }
@@ -3486,6 +3487,7 @@
                     tableId: data.reftableid,
                     id: data.refobjid,
                     serviceId: data.serviceId,
+                    original:'outclick',
                     label: data.reftabdesc
                   });
                 }

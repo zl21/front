@@ -2,8 +2,8 @@ import axios from 'axios';
 import md5 from 'md5';
 import router from '../__config__/router.config';
 import store from '../__config__/store.config';
-import { matchedUrl } from "./utils";
 import i18n from '../assets/js/i18n';
+import { filterUrl } from "./utils";
 
 import {
   ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, getProjectQuietRoutes, REQUEST_PENDDING_EXPIRE, getTouristRoute, logoutTips, Version, filterUrlForNetworkScript, getFilterUrlForNetworkData,autoGatewayUrl
@@ -75,7 +75,18 @@ const dispatchR3Event = (data) => {
     }));
   }, 10);
 };
+//http request 拦截器
+axios.interceptors.request.use(
+  config => {
+      // if(window.ProjectConfig.enciphered){}
+        let number = Math.floor(Math.random() * 10000);
+        config.headers['SSSSS-A'] = new Date().getTime();
+        config.headers['SSSSS-B'] = md5('qwertburgeon'+new Date().getTime()+number);
+        config.headers['SSSSS-C'] = number;
 
+      return config
+  }
+)
 axios.interceptors.response.use(
 
   (response) => {
@@ -291,7 +302,7 @@ axios.interceptors.response.use(
       } else if (status === 500 || status === 404) {
       // 如果http状态码正常，则直接返回数据
         const emg = error.response.data.message || error.response.data.msg;
-        if (!matchedUrl(config && config.url)) {
+        if (!filterUrl(config && config.url)) {
           window.vm.$Modal.fcError({
             mask: true,
             titleAlign: 'center',

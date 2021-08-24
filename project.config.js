@@ -191,7 +191,9 @@ module.exports = {
 
   autoGatewayUrl:false,  // 是否请求网关
   computeForSubtable: false,
-  enableLoginPro: false, // 是否开启普通登录模式 false普通 true手机验证码
+  routerFilter:false, // 跳转是否过滤
+  setXss:false, // 是否xss 攻击过滤
+  enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
   //filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
   //listFormWebconf:['filtercolval'] // 列表是否支持webcof 字段
 };

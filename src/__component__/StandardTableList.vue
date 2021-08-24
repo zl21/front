@@ -777,6 +777,7 @@ export default {
           tableName: row._TABLENAME.val,
           tableId: row._TABLEID.val,
           id: row._OBJID.val,
+          original:'outclick',
           serviceId: row._SERVICEID ? row._SERVICEID.val : null
         });
       } else {
@@ -952,12 +953,14 @@ export default {
           this.$Modal.fcWarning(data);
           return;
         }
+        console.log(222444);
         window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
         this.tabOpen({
           id: refobjid,
           tableName: reftablename,
           tableId: reftableid,
           type,
+          original:'outclick',
           label: reftabdesc,
           serviceId
         });

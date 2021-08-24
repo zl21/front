@@ -187,7 +187,10 @@ export default {
     tickToConfirm: '请在要选择的行首打勾确认!',
     reenterReport: '当前操作界面非报表界面布局，请点击报表中心标签页重新进入报表模块后再试',
     collectionSelected: '该集合已被选择',
-    collectionExcluded: '该集合已被排除'
+    collectionExcluded: '该集合已被排除',
+    enterVersionNumber: '请输入版本号',
+    enterTargetTable: '请输入目标表名',
+    enterTargetDesc: '请输入目标描述',
   },
   // 具有通用性的文案
   tips: {
@@ -300,7 +303,10 @@ export default {
     priority: '优先级',
     sendTime: '发送时间',
     allNotifications: '全部通告',
-    cancelVoid: '取消作废'
+    cancelVoid: '取消作废',
+    versionNumber: '版本号',
+    loading: '加载中',
+    name: '名称'
   },
   // 反馈类型的文案(比如进行某个操作，返回操作结果的提示)
   feedback: {
@@ -317,7 +323,8 @@ export default {
     collectionSuccess: '收藏成功',
     collectionFailed: '收藏失败',
     unfavoriteSuccessfully: '取消收藏成功',
-    failedToUnfavorite: '取消收藏失败'
+    failedToUnfavorite: '取消收藏失败',
+    cloneSuccess: '克隆成功'
   },
   // 动作行为(不含按钮里的，比如勾选，输入之类)
   actions: {

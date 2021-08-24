@@ -83,6 +83,7 @@
         :maxlength="_items.props.maxlength"
         :icon="_items.props.icon"
         :regx="_items.props.regx"
+        :htmlExp="_items.props.htmlExp"
         :encrypt="_items.props.ispassword"
         on-click="inputClick"
         @on-blur="inputBlur"
@@ -558,7 +559,9 @@
         const placeholder = this.items.props.webconf && this.items.props.webconf.placeholder ? this.items.props.webconf.placeholder : null;
         item.props.placeholder = placeholder || `${(dataProp[item.type] && dataProp[item.type].props) ? dataProp[item.type].props.placeholder : this.$t('form.inputPlaceholder')}${item.title}`;
 
-
+        if(item.type === "input" && window.ProjectConfig.setXss){
+            item.props.htmlExp = true;
+        }
         if (item.type === 'docfile') {
           if (!Array.isArray(item.props.itemdata.valuedata)) {
             item.props.itemdata.valuedata = [];

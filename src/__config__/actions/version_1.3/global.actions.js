@@ -291,6 +291,8 @@ export default {
         removeSessionObject('routeMapRecordForCustomizePages');
 
         commit('updateTreeTableListData', []);
+        removeSessionObject('keepAliveLabelMapsAll');
+
       })
       .catch(() => {
         window.sessionStorage.setItem('loginStatus', false);
@@ -306,7 +308,7 @@ export default {
         // 清空updataTreeId
         removeSessionObject('TreeId');
         removeSessionObject('routeMapRecordForCustomizePages');
-
+        removeSessionObject('keepAliveLabelMapsAll');
         commit('updateTreeTableListData', []);
       });
   },

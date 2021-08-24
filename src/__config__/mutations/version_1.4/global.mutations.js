@@ -21,6 +21,7 @@ import {
 import { getLabel } from '../../../__utils__/url';
 import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 import getUserenv from '../../../__utils__/getUserenv';
+import { verifyRouter } from '../../../__component__/common/verify.js';
 import store from '../../store.config';
 import i18n from '../../../assets/js/i18n';
 
@@ -356,6 +357,8 @@ export default {
       // window.location.reload();
       removeSessionObject('savePath');
     }
+    window.sessionStorage.setItem('keepAliveLabelMapsAll',JSON.stringify(state.keepAliveLabelMaps || {}));
+
   },
   modifycurrentLabel(state,data){
     let extindex = -1;
@@ -374,6 +377,10 @@ export default {
     const linkType = {};
     linkType[linkModuleName] = linkUrl;
     state.LinkUrl.push(linkType);
+  },
+  delectkeepAliveLists(state, { i}){
+    // 清除缓存
+    state.keepAliveLists.splice(i, 1);
   },
   increaseKeepAliveLists(state, data) {
     let keepAliveModuleNameRes = '';
@@ -454,6 +461,10 @@ export default {
     state.openedMenuLists[index].isActive = true;
   },
   forceUpdateOpenedMenuLists(state, { openedMenuInfo, index }) {
+    openedMenuInfo.label = openedMenuInfo.label.replace(/undefined/g,'');
+    if(openedMenuInfo.label ===''){
+      openedMenuInfo.label = state.openedMenuLists[index].label;
+    }
     state.openedMenuLists.forEach((d) => { d.isActive = false; });
     state.openedMenuLists[index] = openedMenuInfo;
     state.openedMenuLists = state.openedMenuLists.concat([]);
@@ -837,7 +848,7 @@ export default {
   },
   tabOpen(state, {// 打开一个新tab添加路由
     back, type, tableName, tableId, id, customizedModuleName, customizedModuleId, linkName,
-    linkId, url, label, serviceId, dynamicRoutingForCustomizePage, isSetQuery, queryData, NToUpperCase,
+    linkId, url, label, serviceId, dynamicRoutingForCustomizePage, isSetQuery, queryData, NToUpperCase,original
   }) {
     // back:返回标志,
     // type:跳转类型,
@@ -856,6 +867,16 @@ export default {
     // isSetQuery:可设置目标界面为标准列表界面的表单默认值
     // queryData：设置目标界面表单默认值数据,
     // NToUpperCase:url不转大写,
+    // if(original){
+    //   // 外链跳转字段 校验是否刷新界面
+    //   let totableName = tableName ||customizedModuleName || linkName;
+    //   let toMainId = tableId ||customizedModuleId || linkId;
+    //   let toId = id;
+    //   let checked = verifyRouter(totableName,toMainId,toId,state.openedMenuLists,arguments,this,state);
+    //   if(checked){
+    //     return true;
+    //   }
+    // }
     if ((type === 'S' || type === 'STANDARD_TABLE_LIST_PREFIX') && isSetQuery && queryData) {
       if (queryData.values && queryData.values.length > 0) {
         let flag = true;

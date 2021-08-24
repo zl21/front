@@ -44,6 +44,25 @@ const packageMessage = {
   packageTime: new Date(),
   user: 'local',
 };
+const setXss = ()=>{
+  // 安全攻击
+  let htmlEncodeByRegExp = (str) => {
+    let s = str;
+    if (str.length === 0) { return ''; }
+    s = s.replace(/</g, '&lt;');
+    s = s.replace(/>/g, '&gt;');
+    s = s.replace(/ /g, '&nbsp;');
+    s = s.replace(/\'/g, '&#39;'); //eslint-disable-line
+    s = s.replace(/\"/g, '&quot;'); //eslint-disable-line
+    return s;
+  }
+  document.body.addEventListener('input', function (e) {
+    const tagName = e.target.tagName.toLowerCase();
+    if (tagName === 'input' || tagName === 'textarea') {
+      e.target.value = htmlEncodeByRegExp(e.target.value)
+    }
+  });
+}
 
 export default {
   ...packageMessage,
@@ -133,6 +152,7 @@ export default {
   getKeepAliveModuleName,
   connector: connector(), // 1.3框架公共模块包使用
   store,
+  setXss:setXss,
   config: {
     extentionForColumn,
     extentionForTable,

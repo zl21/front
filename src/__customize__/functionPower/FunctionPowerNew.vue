@@ -594,9 +594,11 @@
         Promise.all([this.menuPromise, this.treePromise]).then(() => {
           this.groupId && this.getTableData();
         });
+
       }, // 刷新数据
       refreshButtonClick() {
         this.$refs.ztree.clearInputVal();
+        this.isSaveError = true;
         if (this.checkNoSaveData('refresh')) {
         } else {
           this.refresh();
@@ -622,7 +624,6 @@
                 this.pageInit = false;
                 this.refresh();
                 setTimeout(() => this.selectFirstOnce(), 1000);
-
               } else {
                 this.groupId = this.newGroupId;
                 this.adSubsystemId = this.newAdSubsystemId;
@@ -782,21 +783,19 @@
         })
       },
       selectFirstOnce() {
+        // console.log('selectFirstOnce')
         var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
         // console.log('this.groupId', this.groupId)
         // console.log('this.pageInit', this.pageInit)
+        // console.log('nodes', nodes)
         var nodes = treeObj.getNodes();
         if (this.pageInit && nodes.length > 0 && nodes[0].ID === this.groupId) return false;
-        // console.log('not return')
         if (nodes.length > 0) {
           treeObj.selectNode(nodes[0]);
           treeObj.setting.callback.onClick('','treeDemo',nodes[0]);//手动触发onClick事件
           // treeObj.checkNode(nodes[0], true, true, true);
           this.pageInit = true;
         }
-      },
-      resetTree() {
-        this.selectFirstOnce()
       },
       treeSearch(e, flag) {
         if (!e) {

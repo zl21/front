@@ -303,6 +303,7 @@ export default {
         removeSessionObject('TreeId');
         removeSessionObject('routeMapRecordForCustomizePages');
         commit('updateTreeTableListData', []);
+        removeSessionObject('keepAliveLabelMapsAll');
         router.push({ path: getTouristRoute() });
       })
       .catch(() => {
@@ -319,6 +320,7 @@ export default {
         removeSessionObject('TreeId');
         commit('updateTreeTableListData', []);
         removeSessionObject('routeMapRecordForCustomizePages');
+        removeSessionObject('keepAliveLabelMapsAll');
         router.push({ path: getTouristRoute() });
       });
   }

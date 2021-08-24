@@ -133,7 +133,12 @@ class CustomInput {
       disabled,
       clearable: true
     }
-
+    // 是否开启过滤xss攻击
+    if(window.ProjectConfig.setXss && this.item.detailType){
+      this.props.htmlExp = true;
+    }else{
+      this.props.htmlExp = false;
+    }
     if(disabled) {
       this.props.clearable = false
     }

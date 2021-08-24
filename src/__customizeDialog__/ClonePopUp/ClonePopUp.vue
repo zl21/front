@@ -8,7 +8,7 @@
             {{ o_table_name }}
           </li>
           <li class="resTop">
-            <span><sub> *</sub>版本号：</span>
+            <span><sub> *</sub>{{$t('tips.versionNumber')}}：</span>
             <span class="version">
               <DropDownSelectFilter
                 :single="true"
@@ -114,7 +114,7 @@
           totalRowCount: 39,
           pageSize: 10,
           AutoData: [],
-          dataEmptyMessage: '数据加载中...', // 无数据的提示
+          dataEmptyMessage: `${this.$t('tips.loading')}...`, // 无数据的提示
           columns: ['name', 'value'] // 展现的组
         }
       };
@@ -173,21 +173,21 @@
           });
       },
       save() {
-        let data  = [
-          {TMCODE: "1212", ID: -1},
-          {TMCODE: "2222", ID: -1},
-          {TMCODE: "3333", ID: -1}];
-          this.saveDialog(data,data).then((res)=>{
-            if(res.data.code ===0){
-               this.$emit('closeActionDialog', true); // 关闭弹框
-            }
-          });
-           
+        if (!this.version.ID) {
+          const data = {
+            mask: true,
+            title: this.$t('feedback.warning'),
+            content: this.$t('messages.enterVersionNumber')
+          };
+          this.$Modal.fcWarning(data);
+          return;
+        }
+
         if (!this.t_table_name.trim()) {
           const data = {
             mask: true,
             title: this.$t('feedback.warning'),
-            content: '请输入目标表名'
+            content: this.$t('messages.enterTargetTable')
           };
           this.$Modal.fcWarning(data);
           return;
@@ -196,19 +196,13 @@
           const data = {
             mask: true,
             title: this.$t('feedback.warning'),
-            content: '请输入目标描述'
+            content: this.$t('messages.enterTargetDesc')
           };
           this.$Modal.fcWarning(data);
           return;
         }
-        if (!this.version.ID) {
-          const data = {
-            mask: true,
-            title: this.$t('feedback.warning'),
-            content: '请输入版本号'
-          };
-          this.$Modal.fcWarning(data);
-        }
+       
+        
         this.$R3loading.show(this.loadingName);
         const searchdata = {
           srctable: this.o_table_name, // 源表表名
@@ -236,7 +230,7 @@
             const data = {
               mask: true,
               title: this.$t('feedback.success'),
-              content: '克隆成功'
+              content: this.$t('feedback.cloneSuccess')
             };
             this.$R3loading.hide(this.loadingName);
             this.$Modal.fcSuccess(data);
@@ -265,7 +259,7 @@
     },
     mounted() {
       console.log('popwinMessage', this);
-      this.o_table_name = this.findName(this.objList, '基本信息', '名称');
+      this.o_table_name = this.findName(this.objList, this.$t('tips.basicInfo'), this.$t('tips.name'));
     },
     destroyed() {
       const dom = document.getElementById('dropDownSelectPopper');
