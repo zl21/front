@@ -42,13 +42,13 @@
           style="margin:0 20px;"
           @click="searchForm"
         >
-          查询
+          {{$t('buttons.search')}}
         </Button>
         <Button
           type="fcdefault"
           @click="cancelDialog"
         >
-          取消
+          {{$t('buttons.cancel')}}
         </Button>
       </div>
     </div>
