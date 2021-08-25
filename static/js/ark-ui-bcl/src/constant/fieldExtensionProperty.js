@@ -653,9 +653,9 @@ const getFieldConfig = function() {
         },
         {
           key: 'styleForString',
-          name: '组件style样式',
+          name: i18n.t('extensionProperty.componentStyle'),
           type: 'input',
-          placeholder: '例如color:red;',
+          placeholder: i18n.t('extensionProperty.stylePlaceholder'),
           isShow: function(formData) {
             return formData.display === 'String'
           }, // 决定组件是否显示
