@@ -170,6 +170,7 @@ import {
 import createModal from '../PreviewPicture/index';
 import EnumerableInput from '../EnumerableInput.vue';
 import getComponentName from '../../__utils__/getModuleName'
+import i18n from '../../assets/js/i18n'
 
 // const fkHttpRequest = () => require(`../../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -639,6 +640,7 @@ export default {
     window.removeEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
   },
   created () {
+    this.$t = i18n.t.bind(i18n)
     this[MODULE_COMPONENT_NAME] = getComponentName()
     this.componentsName = this.inheritanceComponents();
   },

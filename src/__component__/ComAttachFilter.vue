@@ -71,6 +71,7 @@
   import dataProp from '../__config__/props.config';
   import { Version } from '../constants/global';
   import Upload from '../__utils__/upload';
+  import i18n from '../assets/js/i18n'
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -460,6 +461,7 @@
       }
     },
     created() {
+      this.$t = i18n.t.bind(i18n)
       // 如果存在cellRendererParams说明是用ag表格渲染的commonTable，需要删除用不到的字段，不然json转化会报错
       if (this.propstype.cellRendererParams) {
         delete this.propstype.cellRendererParams;
