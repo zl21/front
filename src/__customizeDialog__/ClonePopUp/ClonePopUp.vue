@@ -241,10 +241,11 @@
         this.$emit('closeActionDialog', false); // 关闭弹框
       }, // 取消
       findName(data, name, val) {
+        // 取'基本信息'pannel里面的名称字段值
         for (const i of data) {
-          if (i.parentdesc === name) {
+          if (i.parentname === name) {
             for (const m of i.childs) {
-              if (m.name === val) {
+              if (m.colname === val) {
                 return m.valuedata;
               }
             }
@@ -258,8 +259,8 @@
       this.chineseName = ChineseDictionary;
     },
     mounted() {
-      console.log('popwinMessage', this);
-      this.o_table_name = this.findName(this.objList, this.$t('tips.basicInfo'), this.$t('tips.name'));
+      console.log('popwinMessage', this.objList);
+      this.o_table_name = this.findName(this.objList, '(AD_TABLE.ID+10)', 'NAME');
     },
     destroyed() {
       const dom = document.getElementById('dropDownSelectPopper');
