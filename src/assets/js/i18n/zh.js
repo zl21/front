@@ -191,6 +191,9 @@ export default {
     enterVersionNumber: '请输入版本号',
     enterTargetTable: '请输入目标表名',
     enterTargetDesc: '请输入目标描述',
+    expandFavorite: '是否展开收藏夹',
+    collapseQuery: '折叠查询条件',
+    queryDefaultRows: '查询条件默认显示行数'
   },
   // 具有通用性的文案
   tips: {
@@ -307,7 +310,8 @@ export default {
     versionNumber: '版本号',
     loading: '加载中',
     name: '名称',
-    legend: '图例'
+    legend: '图例',
+    welcome: '欢迎'
   },
   // 反馈类型的文案(比如进行某个操作，返回操作结果的提示)
   feedback: {

@@ -191,6 +191,9 @@ export default {
     enterVersionNumber: 'please enter the version number',
     enterTargetTable: 'please enter the target table name',
     enterTargetDesc: 'please enter a description of the goal',
+    expandFavorite: 'whether to expand favorites',
+    collapseQuery: 'collapse query conditions',
+    queryDefaultRows: 'default number of rows for query conditions'
   },
   // 具有通用性的文案
   tips: {
@@ -307,7 +310,8 @@ export default {
     versionNumber: 'version number',
     loading: 'loading',
     name: 'name', 
-    legend: 'legend'
+    legend: 'legend',
+    welcome: 'welcome'
   },
   // 反馈类型的文案(比如进行某个操作，返回操作结果的提示)
   feedback: {
