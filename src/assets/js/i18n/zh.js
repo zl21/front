@@ -313,7 +313,16 @@ export default {
     loading: '加载中',
     name: '名称',
     legend: '图例',
-    welcome: '欢迎'
+    welcome: '欢迎',
+    sina: '新浪',
+    link: '链接',
+    insertCode: '插入代码',
+    insertTable: '插入表格',
+    editTable: '编辑表格',
+    insertVideo: '插入视频',
+    editPicture: '编辑图片',
+    uploadImage: '上传图片',
+    webImage: '网络图片',
   },
   // 反馈类型的文案(比如进行某个操作，返回操作结果的提示)
   feedback: {
@@ -344,7 +353,7 @@ export default {
   // 按钮
   buttons: {
     print: '打印', 
-    search: '查找',
+    search: '查询',
     reset: '重置',
     refresh: '刷新',
     back: '返回',
@@ -398,5 +407,22 @@ export default {
     index: '序号',
     summation: '合计',
     total: '总计'
+  },
+  // 富文本
+  wangEditor: {
+    enterVideoAddress: '请输入视频地址',
+    insertPictureError: '插入图片错误',
+    imageVerificationFailed: '图片验证未通过',
+    uploadLimitAtATime: '一次最多上传{total}张图片',
+    uploadPictureTimeOut: '上传图片超时',
+    uploadImageError: '上传图片发生错误',
+    uploadPictureFailed: '上传图片失败',
+    uploadErrorMsg: '上传图片返回结果错误，返回结果是',
+    initParamsError: '错误：初始化编辑器时候未传入任何参数，请查阅文档',
+    runInBrowser: '请在浏览器环境下运行',
+    setTitle: '设置标题',
+    textColor: '文字颜色',
+    backgroundColor: '背景色',
+    alignment: '对齐方式'
   },
 }

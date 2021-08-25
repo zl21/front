@@ -140,7 +140,7 @@
           wangEditoMenu.style.display = 'inline-flex';
 
           wangEditoMenu.innerHTML = `<div class="w-e-menu" id="_wangEditor_btn_fullscreen">
-                                    <a class="_wangEditor_btn_fullscreen" href="###">全屏</a></div>
+                                    <a class="_wangEditor_btn_fullscreen" href="###">${this.$t('buttons.fullscreen')}</a></div>
                                     <div class="w-e-menu" id="_wangEditor_btn_html">
                                     <a class="_wangEditor_btn_html" href="###">html</a></div>`;
 

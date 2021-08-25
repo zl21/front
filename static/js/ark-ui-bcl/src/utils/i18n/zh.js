@@ -145,7 +145,10 @@ export default {
     uploadErrorMsg: '上传图片返回结果错误，返回结果是',
     initParamsError: '错误：初始化编辑器时候未传入任何参数，请查阅文档',
     runInBrowser: '请在浏览器环境下运行',
-    setTitle: '设置标题'
+    setTitle: '设置标题',
+    textColor: '文字颜色',
+    backgroundColor: '背景色',
+    alignment: '对齐方式'
   },
   // 扩展属性
   extensionProperty: {

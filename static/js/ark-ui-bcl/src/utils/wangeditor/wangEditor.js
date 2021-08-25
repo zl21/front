@@ -4,8 +4,8 @@
       : (global.wangEditor = factory());
 }(this, (() => {
  
- const i18n = require('../../utils/i18n').default
-
+ const i18n = require('../i18n').default
+ const lang = localStorage.getItem('ark-ui-bcl-lang') || 'zh'
   /*
     poly-fill
 */
@@ -551,15 +551,24 @@
 
     colors: ['#000000', '#eeece0', '#1c487f', '#4d80bf', '#c24f4a', '#8baa4a', '#7b5ba1', '#46acc8', '#f9963b', '#ffffff'],
 
-    // // 语言配置
-    // lang: {
-    //     '设置标题': 'title',
-    //     '正文': 'p',
-    //     '链接文字': 'link text',
-    //     '链接': 'link',
-    //     '插入': 'insert',
-    //     '创建': 'init'
-    // },
+    // 语言配置
+    lang: {
+        // '设置标题': 'title',
+        '正文': lang === 'zh'? '正文': 'text',
+        '链接文字': lang === 'zh'? '链接文字': 'link text',
+        // '链接': 'link',
+        '插入': lang === 'zh'? '插入' : 'insert',
+        // '创建': 'init',
+        '靠左': lang === 'zh'? '靠左' : 'left',
+        '居中': lang === 'zh'? '居中' : 'center',
+        '靠右': lang === 'zh'? '靠右' : 'right',
+        '图片链接': lang === 'zh'? '图片链接' : 'image link',
+        '行': lang === 'zh'? '行' : 'rows',
+        '列': lang === 'zh'? '列' : 'columns',
+        '的': lang === 'zh'? '的' : ' of ',
+        '表格': lang === 'zh'? '表格' : 'table',
+        '创建': lang === 'zh'? '创建' : 'create',
+    },
 
     // 表情
     emotions: [{
@@ -1816,7 +1825,7 @@
     // 初始化 droplist
     this.droplist = new DropList(this, {
       width: 100,
-      $title: $('<p>对齐方式</p>'),
+      $title: $(`<p>${i18n.t('wangEditor.alignment')}</p>`),
       type: 'list', // droplist 以列表形式展示
       list: [{ $elem: $('<span><i class="w-e-icon-paragraph-left"></i> 靠左</span>'), value: 'justifyLeft' }, { $elem: $('<span><i class="w-e-icon-paragraph-center"></i> 居中</span>'), value: 'justifyCenter' }, { $elem: $('<span><i class="w-e-icon-paragraph-right"></i> 靠右</span>'), value: 'justifyRight' }],
       onClick: function onClick(value) {
@@ -1858,7 +1867,7 @@
     // 初始化 droplist
     this.droplist = new DropList(this, {
       width: 120,
-      $title: $('<p>文字颜色</p>'),
+      $title: $(`<p>${i18n.t('wangEditor.textColor')}</p>`),
       type: 'inline-block', // droplist 内容以 block 形式展示
       list: colors.map((color) => {
             return { $elem: $('<i style="color:' + color + ';" class="w-e-icon-pencil2"></i>'), value: color };
@@ -1902,7 +1911,7 @@
     // 初始化 droplist
     this.droplist = new DropList(this, {
       width: 120,
-      $title: $('<p>背景色</p>'),
+      $title: $(`<p>${i18n.t('wangEditor.backgroundColor')}</p>`),
       type: 'inline-block', // droplist 内容以 block 形式展示
       list: colors.map((color) => {
             return { $elem: $('<i style="color:' + color + ';" class="w-e-icon-paint-brush"></i>'), value: color };

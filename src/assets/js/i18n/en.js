@@ -313,7 +313,16 @@ export default {
     loading: 'loading',
     name: 'name', 
     legend: 'legend',
-    welcome: 'welcome'
+    welcome: 'welcome',
+    sina: 'sina',
+    link: 'link',
+    insertCode: 'insert code',
+    insertTable: 'insert table',
+    editTable: 'edit table',
+    insertVideo: 'insert video',
+    editPicture: 'edit picture',
+    uploadImage: 'upload image',
+    webImage: 'web image',
   },
   // 反馈类型的文案(比如进行某个操作，返回操作结果的提示)
   feedback: {
@@ -398,5 +407,22 @@ export default {
     index: 'index',
     summation: 'summation',
     total: 'total'
+  },
+  // 富文本
+  wangEditor: {
+    enterVideoAddress: 'Please enter the video address',
+    insertPictureError: 'insert picture error',
+    imageVerificationFailed: 'image verification failed',
+    uploadLimitAtATime: 'Upload up to {total} pictures at a time',
+    uploadPictureTimeOut: 'upload picture time out',
+    uploadImageError: 'upload image error',
+    uploadPictureFailed: 'upload picture failed',
+    uploadErrorMsg: 'Uploaded picture returns wrong result, return result is ',
+    initParamsError: 'Error: No parameters were passed in when initializing the editor, please refer to the documentation',
+    runInBrowser: 'Please run in a browser environment',
+    setTitle: 'set title',
+    textColor: 'text color',
+    backgroundColor: 'background color',
+    alignment: 'alignment'
   },
 }

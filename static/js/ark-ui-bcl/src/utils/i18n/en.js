@@ -145,7 +145,10 @@ export default {
     uploadErrorMsg: 'Uploaded picture returns wrong result, return result is ',
     initParamsError: 'Error: No parameters were passed in when initializing the editor, please refer to the documentation',
     runInBrowser: 'Please run in a browser environment',
-    setTitle: 'set title'
+    setTitle: 'set title',
+    textColor: 'text color',
+    backgroundColor: 'background color',
+    alignment: 'alignment'
   },
   // 扩展属性
   extensionProperty: {
