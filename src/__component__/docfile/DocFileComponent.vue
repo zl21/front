@@ -60,7 +60,7 @@
 <script>
   import Upload from '../../__utils__/upload';
   import { encodeControl, classFix } from '../../constants/global';
-
+  import i18n from '../../assets/js/i18n'
 
   export default {
     name: 'Docfile',
@@ -339,6 +339,7 @@
 
     },
     created() {
+      this.$t = i18n.t.bind(i18n)
       this.setvaluedata();
     }
   };
