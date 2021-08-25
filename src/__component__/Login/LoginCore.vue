@@ -28,7 +28,8 @@
         <template v-if="$slots.loginBtn">
           <slot name="loginBtn"></slot>
         </template>
-        <div v-else="!$slots.loginBtn" id="btn" class="btn"/>
+        <!-- <div  id="btn" class="btn"/> -->
+        <Button v-else="!$slots.loginBtn" type="text" id="btn" class="btn">{{$t('buttons.login')}}</Button>
       </div>
       <Spin v-show="spinShow" fix>
         <div class="loader">
@@ -90,16 +91,16 @@
           const {username, password} = this.$refs.AccountLogin.$refs;
           if (username.value === '') {
             message = {
-              title: '错误',
-              content: '请输入用户名',
+              title: this.$t('feedback.error'),
+              content: this.$t('messages.enterUserName'),
               mask: true,
             };
             this.spinShow = false;
             this.$Modal.fcError(message);
           } else if (password.value === '') {
             message = {
-              title: '错误',
-              content: '请输入密码',
+              title: this.$t('feedback.error'),
+              content: this.$t('messages.enterPassword'),
               mask: true,
             };
             this.spinShow = false;
@@ -119,16 +120,16 @@
           if (this.typeToggle === 1) {
             if (this.$refs.AccountLogin.$refs.username.value === '') {
               message = {
-                title: '错误',
-                content: '请输入用户名',
+                title: this.$t('feedback.error'),
+                content: this.$t('messages.enterUserName'),
                 mask: true,
               };
               this.spinShow = false;
               this.$Modal.fcError(message);
             } else if (this.$refs.AccountLogin.$refs.password.value === '') {
               message = {
-                title: '错误',
-                content: '请输入密码',
+                title: this.$t('feedback.error'),
+                content: this.$t('messages.enterPassword'),
                 mask: true,
               };
               this.spinShow = false;
@@ -136,8 +137,8 @@
             } else if (!this.$refs.AccountLogin.$refs.code.value) {
               this.spinShow = false;
               this.$Modal.fcError({
-                title: '错误',
-                content: '请输入验证码',
+                title: this.$t('feedback.error'),
+                content: this.$t('messages.enterCode'),
                 mask: true,
               });
             } else {
@@ -155,15 +156,15 @@
             if (!this.$refs.PhoneLogin.$refs.phone.value) {
               this.spinShow = false;
               this.$Modal.fcError({
-                title: '错误',
-                content: '请输入手机号',
+                title: this.$t('feedback.error'),
+                content: this.$t('messages.enterPhone'),
                 mask: true,
               });
             } else if (!this.$refs.PhoneLogin.$refs.sendcode.value) {
               this.spinShow = false;
               this.$Modal.fcError({
-                title: '错误',
-                content: '请输入短信验证码',
+                title: this.$t('feedback.error'),
+                content: this.$t('messages.enterSMS'),
                 mask: true,
               });
             } else {
@@ -208,7 +209,7 @@
               this.flag = 1;
             }
             return this.$Modal.fcWarning({
-              title: '安全提示',
+              title: this.$t('feedback.safeWarning'),
               content: r.message,
               mask: true,
             })
@@ -229,8 +230,8 @@
       checkLogined() {
         return new Promise((resolve, reject) => {
           return this.$Modal.fcWarning({
-            title: '安全提示',
-            content: '当前账号登录中，是否继续登录？',
+            title: this.$t('feedback.safeWarning'),
+            content: this.$t('messages.continueLogin'),
             mask: true,
             showCancel: true,
             onOk: () => resolve(1001),
@@ -245,8 +246,8 @@
       checkPwdDays(code) {
         return new Promise(resolve => {
           return this.$Modal.fcWarning({
-            title: '安全提示',
-            content: '当前密码1个月未修改，为保数据安全请立即修改',
+            title: this.$t('feedback.safeWarning'),
+            content: this.$t('messages.changePasswordTip'),
             mask: true,
             onOk: () => resolve()
           })

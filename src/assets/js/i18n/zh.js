@@ -383,7 +383,8 @@ export default {
     excludeSelectedRows: '排除选中行',
     excludeAll: '排除全部',
     addSelectedRow: '添加选中行',
-    addAll: '添加全部'
+    addAll: '添加全部',
+    login: '登 录'
   },
   // 表单(具有通用性的文案)
   form: {
