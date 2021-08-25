@@ -144,7 +144,8 @@ export default {
     uploadPictureFailed: 'upload picture failed',
     uploadErrorMsg: 'Uploaded picture returns wrong result, return result is ',
     initParamsError: 'Error: No parameters were passed in when initializing the editor, please refer to the documentation',
-    runInBrowser: 'Please run in a browser environment'
+    runInBrowser: 'Please run in a browser environment',
+    setTitle: 'set title'
   },
   // 扩展属性
   extensionProperty: {
