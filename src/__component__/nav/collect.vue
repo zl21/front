@@ -24,7 +24,7 @@
                   slot="list"
                   >
                   <DropdownItem>
-                    暂无收藏记录
+                    {{$t('messages.noCollection')}}
                   </DropdownItem>  
           </DropdownMenu>
        </Dropdown>

@@ -193,7 +193,9 @@ export default {
     enterTargetDesc: '请输入目标描述',
     expandFavorite: '是否展开收藏夹',
     collapseQuery: '折叠查询条件',
-    queryDefaultRows: '查询条件默认显示行数'
+    queryDefaultRows: '查询条件默认显示行数',
+    noHistory: '暂无历史记录',
+    noCollection: '暂无收藏记录'
   },
   // 具有通用性的文案
   tips: {

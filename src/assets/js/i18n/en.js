@@ -193,7 +193,9 @@ export default {
     enterTargetDesc: 'please enter a description of the goal',
     expandFavorite: 'whether to expand favorites',
     collapseQuery: 'collapse query conditions',
-    queryDefaultRows: 'default number of rows for query conditions'
+    queryDefaultRows: 'default number of rows for query conditions',
+    noHistory: 'no history',
+    noCollection: 'no collection'
   },
   // 具有通用性的文案
   tips: {
