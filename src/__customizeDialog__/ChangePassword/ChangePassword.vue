@@ -20,7 +20,7 @@
                 v-show="oldp"
                 :style="{ color: errorpawdgrade}"
               >
-                {{t('messages.enterOldPassword')}}
+                {{$t('messages.enterOldPassword')}}
               </p>
             </li>
             <li>
