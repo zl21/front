@@ -19,9 +19,8 @@
           @click="scrollIntoView
             (item, index)"
         >
-          {{ item.name }}
-          <br>
-          {{ item.key === '__root__' ? '' : item.key }}
+          <span class="config-title">{{ item.name }}</span>
+          <div class="extentionProperty-key">{{ item.key === '__root__' ? '' : item.key }}</div>
         </li>
         <li
           v-if="configList.length === 0"
@@ -441,9 +440,11 @@ export default {
       li {
         flex: 1;
         display: flex;
-        align-items: center;
-        padding: 4px 10px;
-        min-height: 35px;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 10px 10px;
+        min-height: 40px;
+        flex-direction: column;
       }
       li:hover {
         opacity: 0.8;
@@ -593,6 +594,13 @@ export default {
       font-size: 12px;
       font-family: Consolas, 'Microsoft YaHei', serif;
     }
+  }
+
+  .config-title {
+    font-weight: bold;
+  }
+  .extentionProperty-key {
+    margin-top: 4px;
   }
 }
 </style>
