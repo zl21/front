@@ -425,4 +425,8 @@ export default {
     backgroundColor: 'background color',
     alignment: 'alignment'
   },
+  // 图片预览
+  previewPicture: {
+    picturePreview: 'picture preview'
+  },
 }
