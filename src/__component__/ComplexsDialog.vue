@@ -30,6 +30,7 @@
 <script>
   import { Version } from '../constants/global';
   import { classFix } from '../constants/global';
+  import i18n from '../assets/js/i18n'
 
   const multipleComple = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/compleHttpRequest.js`).default;
 
@@ -951,6 +952,9 @@
     mounted() {
       this.$refs.dialog.$refs.Table[0].$el.focus();
       /**/
+    },
+    beforeCreate() {
+      this.$t = i18n.t.bind(i18n)
     },
     created() {
       this.loading = true;
