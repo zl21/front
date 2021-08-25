@@ -726,9 +726,9 @@
             on: {
               'on-change': (val) => {
                 if (val) {
-                  this.tableData[params.index][params.column.colname] = this.$t('tips.yes');
+                  this.tableData[params.index][params.column.colname] = '是';
                 } else {
-                  this.tableData[params.index][params.column.colname] = this.$t('tips.no');
+                  this.tableData[params.index][params.column.colname] = '否';
                 }
                 this.tableDeleteData = [];
                 const tableRowData = this.tableData[params.index];
@@ -1020,7 +1020,7 @@
             GROUPS_ID: this.groupName,
             AD_TABLE_ID: '',
             COLUMNNAME: '',
-            ISACTIVE: this.$t('tips.yes'),
+            ISACTIVE: '是',
             SQLFILTER: '',
             isEditPermissionTable: true
           };
@@ -1383,7 +1383,7 @@
       getEditData(obj) {
         const saveObj = JSON.parse(JSON.stringify(obj));
         delete saveObj.isEditPermissionTable;
-        if (saveObj.ISACTIVE === this.$t('tips.yes')) {
+        if (saveObj.ISACTIVE === '是') {
           saveObj.ISACTIVE = 'Y';
         } else {
           saveObj.ISACTIVE = 'N';
