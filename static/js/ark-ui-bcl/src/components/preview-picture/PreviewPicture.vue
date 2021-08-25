@@ -57,7 +57,7 @@ export default {
     },
     ModalProps: {  // 弹窗属性
       type: Object,
-      default: () => {
+      default: function() {
         return {
           closable: true,
           width: 500,
@@ -67,7 +67,6 @@ export default {
           'z-index': 10001,
           'footer-hide': true
         }
-
       }
     },
     mountedDom: {
