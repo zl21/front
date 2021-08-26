@@ -25,6 +25,11 @@ export default {
     }
   },
   updateAccessHistory({ commit, state }, { type, id }) {
+    // 过滤表的配置
+    let name = router.currentRoute.params.tableName || router.currentRoute.params.customizedModuleName || router.currentRoute.params.pluginModuleName || router.currentRoute.params.linkModuleName;
+      if(window.ProjectConfig && window.ProjectConfig.filterHistory.includes(name)){
+        return;
+      }
     if (enableHistoryAndFavorite()) {
       if (id === 'New') {
         id = '-1';
