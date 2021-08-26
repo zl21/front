@@ -16,7 +16,7 @@ const {
 Vue.prototype.$network = network;
 Vue.prototype.$urlSearchParams = urlSearchParams;
 R3.launchApplication({
-  layoutDirection: true,
+  layoutDirection: false,
   externalTreeDatas: externalTreeDatasConfig,
   // appLayout: require('./src/config/appLayout.js').default,
   ignoreGateWayPattern: [/\/jflow\/*/g, /\/api\/*/g], // 框架默认禁用的网关逻辑的正则模式匹配
@@ -27,7 +27,7 @@ R3.launchApplication({
     //NaVertical:require('./src/demo/NaVerticalslot.vue').default  // 模板渲染
     listFormButton:require('./demo/detailbuttons.vue').default,  // 定制列表button
   },
-  enableGateWay: false, // 网关是否打开,
+  enableGateWay: true, // 网关是否打开,
   enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
   filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
   routerFilter:true, // 跳转是否过滤
