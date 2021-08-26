@@ -1,17 +1,21 @@
 // 国际化
 import VueI18n from 'vue-i18n'
-import { locale } from '@syman/ark-ui-bcl/src/utils/i18n'
+import { locale } from '../../../../static/js/ark-ui-bcl/src/utils/i18n/index'
 import { locale as arkLocale } from '@syman/ark-ui';
-import en from '@syman/ark-ui/dist/locale/en-US';
-import zh from '@syman/ark-ui/dist/locale/zh-CN';
+// import en from '@syman/ark-ui/dist/locale/en-US';
+// import zh from '@syman/ark-ui/dist/locale/zh-CN';
+
+import en from '../../../../static/js/ark/locale/en-US';
+import zh from '../../../../static/js/ark/locale/zh-CN';
+
 import network, { urlSearchParams } from '../../../__utils__/network';
 
 Vue.use(VueI18n) ;
 
-const lang = localStorage.getItem('r3-lang') || 'zh'
+const lang = localStorage.getItem('r3-lang') || 'en'
 
 const i18n = new VueI18n({
-    locale: lang,    // 语言标识, 通过切换locale的值来实现语言切换,this.$i18n.locale 
+    locale: lang,    // 语言标识, 通过切换locale的值来实现语言切换,this.$i18n.locale
     messages: {
       'zh': require('./zh').default,   // 中文语言包
       'en': require('./en').default    // 英文语言包
