@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/dist/locale/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 26);
+/******/ 	return __webpack_require__(__webpack_require__.s = 12);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -115,7 +115,7 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
 
 /***/ }),
 
-/***/ 26:
+/***/ 12:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -133,31 +133,26 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var lang = {
     i: {
-        locale: 'zh-CN',
+        locale: 'ja-JP',
         select: {
-            placeholder: '请选择',
-            noMatch: '无匹配数据',
-            loading: '加载中',
-            all: '全部',
-            clear: '清除'
-        },
-        input: {
-            inputPlaceholder: '请输入'
+            placeholder: '選んでください',
+            noMatch: 'マッチするデータなし',
+            loading: 'ロード中'
         },
         table: {
-            noDataText: '暂无数据',
-            noFilteredDataText: '暂无筛选结果',
-            confirmFilter: '筛选',
-            resetFilter: '重置',
+            noDataText: 'データなし',
+            noFilteredDataText: 'スクリーニングしたデータなし',
+            confirmFilter: 'スクリーニング',
+            resetFilter: 'リセット',
             clearFilter: '全部'
         },
         datepicker: {
-            selectDate: '选择日期',
-            selectTime: '选择时间',
-            startTime: '开始时间',
-            endTime: '结束时间',
-            clear: '清空',
-            ok: '确定',
+            selectDate: '日時を選んでください',
+            selectTime: '時間を選んでください',
+            startTime: 'スタート時間',
+            endTime: '終了時間',
+            clear: 'クリーア',
+            ok: '確定',
             datePanelLabel: '[yyyy年] [m月]',
             month: '月',
             month1: '1 月',
@@ -176,12 +171,12 @@ var lang = {
             weekStartDay: '0',
             weeks: {
                 sun: '日',
-                mon: '一',
-                tue: '二',
-                wed: '三',
-                thu: '四',
-                fri: '五',
-                sat: '六'
+                mon: '月',
+                tue: '火',
+                wed: '水',
+                thu: '木',
+                fri: '金',
+                sat: '土'
             },
             months: {
                 m1: '1月',
@@ -200,80 +195,47 @@ var lang = {
         },
         transfer: {
             titles: {
-                source: '源列表',
-                target: '目的列表'
+                source: 'ソースリスト',
+                target: 'ターゲットリスト'
             },
-            filterPlaceholder: '请输入搜索内容',
-            notFoundText: '列表为空'
+            filterPlaceholder: '検索内容を入力ください',
+            notFoundText: '内容が見つかってなかった'
         },
         modal: {
-            title: '标题弹窗',
-            okText: '确定',
-            cancelText: '取消'
+            okText: '確定',
+            cancelText: 'キャンセル'
         },
         poptip: {
-            okText: '确定',
-            cancelText: '取消'
+            okText: '確定',
+            cancelText: 'キャンセル'
         },
         page: {
-            prev: '上一页',
-            next: '下一页',
-            total: '共',
-            item: '条',
-            items: '条',
-            prev5: '向前 5 页',
-            next5: '向后 5 页',
-            page: '条/页',
-            goto: '第',
-            p: '页'
+            prev: '前へ',
+            next: '次へ',
+            total: '全部',
+            item: '件',
+            items: '件',
+            prev5: '前の５ページへ',
+            next5: '次の５ページへ',
+            page: '件/ページ',
+            goto: '',
+            p: 'ページ目へ'
         },
         rate: {
-            star: '星',
-            stars: '星'
+            star: '点',
+            stars: '点'
         },
         time: {
             before: '前',
-            after: '后',
-            just: '刚刚',
+            after: '後',
+            just: 'たった今',
             seconds: '秒',
-            minutes: '分钟',
-            hours: '小时',
-            days: '天'
+            minutes: '分',
+            hours: '時間',
+            days: '日'
         },
         tree: {
-            emptyText: '暂无数据'
-        },
-        fkrpSelect: {
-            idText: '序号',
-            inputPlaceholder: '请输入',
-            loading: '加载中',
-            noData: '暂无数据',
-            inputkeys: '请输入模糊搜索关键词'
-        },
-        timing: {
-            clear: '清空',
-            ok: '确定'
-        },
-        upload: {
-            upload: '上传',
-            picOnly: '只能上传',
-            pic: '张图片',
-            uploadPic: '上传图片',
-            uploading: '正在上传图片',
-            choosePic: '请选择图片'
-        },
-        search: {
-            searchItem: '检索项',
-            selFirst: '请先选择字段再输入'
-        },
-        complex: {
-            filter: '筛选条件',
-            filterRes: '筛选结果',
-            globalSearch: '全局检索',
-            exclude: '排除',
-            checked: '已选中',
-            saveAstemp: '保存为模板',
-            enterTempName: '请输入模板名称'
+            emptyText: 'データなし'
         }
     }
 };
@@ -286,4 +248,4 @@ exports.default = lang;
 
 /******/ });
 });
-//# sourceMappingURL=zh-CN.js.map
+//# sourceMappingURL=ja-JP.js.map

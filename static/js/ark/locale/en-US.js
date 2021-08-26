@@ -207,6 +207,7 @@ var lang = {
             notFoundText: 'Not Found'
         },
         modal: {
+            title: 'Title',
             okText: 'OK',
             cancelText: 'Cancel'
         },

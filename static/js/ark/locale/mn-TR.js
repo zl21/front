@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/dist/locale/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 26);
+/******/ 	return __webpack_require__(__webpack_require__.s = 15);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -115,7 +115,7 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
 
 /***/ }),
 
-/***/ 26:
+/***/ 15:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -133,147 +133,100 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var lang = {
     i: {
-        locale: 'zh-CN',
+        locale: 'mn-TR',
         select: {
-            placeholder: '请选择',
-            noMatch: '无匹配数据',
-            loading: '加载中',
-            all: '全部',
-            clear: '清除'
-        },
-        input: {
-            inputPlaceholder: '请输入'
+            placeholder: 'ᠰᠣᠩᠭᠣᠬᠤ',
+            noMatch: 'ᠣᠯᠳᠠᠭᠰᠠᠨ ᠦᠭᠡᠢ',
+            loading: 'ᠠᠴᠢᠶᠠᠯᠠᠵᠤ ᠪᠠᠶᠢᠨ᠎ᠠ'
         },
         table: {
-            noDataText: '暂无数据',
-            noFilteredDataText: '暂无筛选结果',
-            confirmFilter: '筛选',
-            resetFilter: '重置',
-            clearFilter: '全部'
+            noDataText: 'ᠲᠣᠭ᠎ᠠ ᠪᠠᠷᠢᠮᠲᠠ ᠦᠭᠡᠶ',
+            noFilteredDataText: 'ᠨᠦᠬᠦᠴᠡᠯ ᠳᠦ ᠨᠡᠶᠢᠴᠡᠭᠰᠡᠨ ᠲᠣᠭ᠎ᠠ ᠪᠠᠷᠢᠮᠲᠠ ᠣᠯᠳᠠᠭᠰᠠᠨ ᠦᠭᠡᠢ',
+            confirmFilter: 'ᠰᠢᠯᠢᠬᠦ',
+            resetFilter: 'ᠪᠣᠴᠠᠭᠠᠬᠤ',
+            clearFilter: 'ᠪᠦᠬᠦ'
         },
         datepicker: {
-            selectDate: '选择日期',
-            selectTime: '选择时间',
-            startTime: '开始时间',
-            endTime: '结束时间',
-            clear: '清空',
-            ok: '确定',
-            datePanelLabel: '[yyyy年] [m月]',
-            month: '月',
-            month1: '1 月',
-            month2: '2 月',
-            month3: '3 月',
-            month4: '4 月',
-            month5: '5 月',
-            month6: '6 月',
-            month7: '7 月',
-            month8: '8 月',
-            month9: '9 月',
-            month10: '10 月',
-            month11: '11 月',
-            month12: '12 月',
-            year: '年',
+            selectDate: 'ᠡᠳᠦᠷ ᠰᠠᠷ᠎ᠠ ᠰᠣᠩᠭᠣᠬᠤ',
+            selectTime: 'ᠴᠠᠭ ᠢ ᠰᠣᠩᠭᠣᠬᠤ',
+            startTime: 'ᠡᠬᠢᠯᠡᠬᠦ ᠴᠠᠭ',
+            endTime: 'ᠲᠡᠭᠦᠰᠬᠦ ᠴᠠᠭ',
+            clear: 'ᠬᠣᠭᠤᠰᠤᠯᠠᠬᠤ',
+            ok: 'ᠲᠡᠭᠡᠶ᠎ᠡ',
+            datePanelLabel: '[yyyy ᠣᠨ] [m ᠰᠠᠷ᠎ᠠ]',
+            month: 'ᠰᠠᠷ᠎ᠠ',
+            month1: '1 ᠰᠠᠷ᠎ᠠ',
+            month2: '2 ᠰᠠᠷ᠎ᠠ',
+            month3: '3 ᠰᠠᠷ᠎ᠠ',
+            month4: '4 ᠰᠠᠷ᠎ᠠ',
+            month5: '5 ᠰᠠᠷ᠎ᠠ',
+            month6: '6 ᠰᠠᠷ᠎ᠠ',
+            month7: '7 ᠰᠠᠷ᠎ᠠ',
+            month8: '8 ᠰᠠᠷ᠎ᠠ',
+            month9: '9 ᠰᠠᠷ᠎ᠠ',
+            month10: '10 ᠰᠠᠷ᠎ᠠ',
+            month11: '11 ᠰᠠᠷ᠎ᠠ',
+            month12: '12 ᠰᠠᠷ᠎ᠠ',
+            year: 'ᠵᠢᠯ',
             weekStartDay: '0',
             weeks: {
-                sun: '日',
-                mon: '一',
-                tue: '二',
-                wed: '三',
-                thu: '四',
-                fri: '五',
-                sat: '六'
+                sun: 'ᠡᠳᠦᠷ',
+                mon: 'ᠨᠢᠭᠡ',
+                tue: 'ᠬᠣᠶᠠᠷ',
+                wed: 'ᠭᠤᠷᠪᠠ',
+                thu: 'ᠳᠦᠷᠪᠡ',
+                fri: 'ᠲᠠᠪᠤ',
+                sat: 'ᠵᠢᠷᠭᠤᠭ᠎ᠠ'
             },
             months: {
-                m1: '1月',
-                m2: '2月',
-                m3: '3月',
-                m4: '4月',
-                m5: '5月',
-                m6: '6月',
-                m7: '7月',
-                m8: '8月',
-                m9: '9月',
-                m10: '10月',
-                m11: '11月',
-                m12: '12月'
+                m1: '1 ᠰᠠᠷ᠎ᠠ',
+                m2: '2 ᠰᠠᠷ᠎ᠠ',
+                m3: '3 ᠰᠠᠷ᠎ᠠ',
+                m4: '4 ᠰᠠᠷ᠎ᠠ',
+                m5: '5 ᠰᠠᠷ᠎ᠠ',
+                m6: '6 ᠰᠠᠷ᠎ᠠ',
+                m7: '7 ᠰᠠᠷ᠎ᠠ',
+                m8: '8 ᠰᠠᠷ᠎ᠠ',
+                m9: '9 ᠰᠠᠷ᠎ᠠ',
+                m10: '10 ᠰᠠᠷ᠎ᠠ',
+                m11: '11 ᠰᠠᠷ᠎ᠠ',
+                m12: '12 ᠰᠠᠷ᠎ᠠ'
             }
         },
         transfer: {
             titles: {
-                source: '源列表',
-                target: '目的列表'
+                source: 'ᠡᠬᠢ ᠬᠦᠰᠦᠨᠦᠭ ',
+                target: 'ᠵᠣᠷᠢᠯᠭ᠎ᠠ ᠬᠦᠰᠦᠨᠦᠭ'
             },
-            filterPlaceholder: '请输入搜索内容',
-            notFoundText: '列表为空'
+            filterPlaceholder: 'ᠬᠠᠶᠢᠬᠤ ᠠᠭᠤᠯᠭ᠎ᠠ ᠪᠠᠨ ᠣᠷᠤᠭᠤᠯ',
+            notFoundText: 'ᠬᠦᠰᠦᠨᠦᠭ ᠬᠣᠭᠣᠰᠣᠨ'
         },
         modal: {
-            title: '标题弹窗',
-            okText: '确定',
-            cancelText: '取消'
+            okText: 'ᠲᠡᠭᠡᠶ᠎ᠡ',
+            cancelText: 'ᠦᠭᠡᠶᠢᠰᠭᠡᠬᠦ'
         },
         poptip: {
-            okText: '确定',
-            cancelText: '取消'
+            okText: 'ᠲᠡᠭᠡᠶ᠎ᠡ',
+            cancelText: 'ᠦᠭᠡᠶᠢᠰᠭᠡᠬᠦ'
         },
         page: {
-            prev: '上一页',
-            next: '下一页',
-            total: '共',
-            item: '条',
-            items: '条',
-            prev5: '向前 5 页',
-            next5: '向后 5 页',
-            page: '条/页',
-            goto: '第',
-            p: '页'
+            prev: 'ᠡᠮᠤᠨ᠎ᠠ ᠨᠢᠭᠤᠷ',
+            next: 'ᠳᠠᠷᠠᠭ᠎ᠠ ᠨᠢᠭᠤᠷ',
+            total: 'ᠨᠡᠶᠢᠲᠡ',
+            item: 'ᠵᠣᠷᠪᠤᠰ',
+            items: 'ᠵᠣᠷᠪᠤᠰ',
+            prev5: 'ᠡᠮᠦᠨᠡᠬᠢ 5 ᠨᠢᠭᠤᠷ',
+            next5: 'ᠬᠣᠶᠢᠨᠠᠬᠢ 5 ᠨᠢᠭᠤᠷ',
+            page: 'ᠵᠣᠷᠪᠤᠰ/ᠨᠢᠭᠤᠷ',
+            goto: 'ᠬᠦᠷᠬᠦ',
+            p: 'ᠨᠢᠭᠤᠷ'
         },
         rate: {
-            star: '星',
-            stars: '星'
-        },
-        time: {
-            before: '前',
-            after: '后',
-            just: '刚刚',
-            seconds: '秒',
-            minutes: '分钟',
-            hours: '小时',
-            days: '天'
+            star: 'ᠣᠳᠤ',
+            stars: 'ᠣᠳᠤ'
         },
         tree: {
-            emptyText: '暂无数据'
-        },
-        fkrpSelect: {
-            idText: '序号',
-            inputPlaceholder: '请输入',
-            loading: '加载中',
-            noData: '暂无数据',
-            inputkeys: '请输入模糊搜索关键词'
-        },
-        timing: {
-            clear: '清空',
-            ok: '确定'
-        },
-        upload: {
-            upload: '上传',
-            picOnly: '只能上传',
-            pic: '张图片',
-            uploadPic: '上传图片',
-            uploading: '正在上传图片',
-            choosePic: '请选择图片'
-        },
-        search: {
-            searchItem: '检索项',
-            selFirst: '请先选择字段再输入'
-        },
-        complex: {
-            filter: '筛选条件',
-            filterRes: '筛选结果',
-            globalSearch: '全局检索',
-            exclude: '排除',
-            checked: '已选中',
-            saveAstemp: '保存为模板',
-            enterTempName: '请输入模板名称'
+            emptyText: 'ᠲᠣᠭ᠎ᠠ ᠪᠠᠷᠢᠮᠲᠠ ᠦᠭᠡᠶ'
         }
     }
 };
@@ -286,4 +239,4 @@ exports.default = lang;
 
 /******/ });
 });
-//# sourceMappingURL=zh-CN.js.map
+//# sourceMappingURL=mn-TR.js.map

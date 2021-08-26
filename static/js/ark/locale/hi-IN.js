@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/dist/locale/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 26);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -115,7 +115,7 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
 
 /***/ }),
 
-/***/ 26:
+/***/ 9:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -133,147 +133,100 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var lang = {
     i: {
-        locale: 'zh-CN',
+        locale: 'hi-IN',
         select: {
-            placeholder: '请选择',
-            noMatch: '无匹配数据',
-            loading: '加载中',
-            all: '全部',
-            clear: '清除'
-        },
-        input: {
-            inputPlaceholder: '请输入'
+            placeholder: 'कृपया चुने|',
+            noMatch: 'कोई आकड़ा उपलब्ध नहीं है|',
+            loading: 'लोड हो रहा है'
         },
         table: {
-            noDataText: '暂无数据',
-            noFilteredDataText: '暂无筛选结果',
-            confirmFilter: '筛选',
-            resetFilter: '重置',
-            clearFilter: '全部'
+            noDataText: 'कोई आकड़ा उपलब्ध नहीं है',
+            noFilteredDataText: 'कोई आकड़ा उपलब्ध नहीं है',
+            confirmFilter: 'पुष्टि करें',
+            resetFilter: 'पुनः तैयार करना',
+            clearFilter: 'सब कुछ'
         },
         datepicker: {
-            selectDate: '选择日期',
-            selectTime: '选择时间',
-            startTime: '开始时间',
-            endTime: '结束时间',
-            clear: '清空',
-            ok: '确定',
-            datePanelLabel: '[yyyy年] [m月]',
-            month: '月',
-            month1: '1 月',
-            month2: '2 月',
-            month3: '3 月',
-            month4: '4 月',
-            month5: '5 月',
-            month6: '6 月',
-            month7: '7 月',
-            month8: '8 月',
-            month9: '9 月',
-            month10: '10 月',
-            month11: '11 月',
-            month12: '12 月',
-            year: '年',
+            selectDate: 'दिनांक चुनें',
+            selectTime: 'समय चुनें',
+            startTime: 'प्रारंभ समय',
+            endTime: 'समाप्ति समय',
+            clear: 'साफ़ करें',
+            ok: 'ठीक',
+            datePanelLabel: '[mmmm] [yyyy]',
+            month: 'महीना',
+            month1: 'जनवरी',
+            month2: 'फरवरी',
+            month3: 'मार्च',
+            month4: 'अप्रैल',
+            month5: 'मई',
+            month6: 'जून',
+            month7: 'जुलाई',
+            month8: 'अगस्त',
+            month9: 'सितंबर',
+            month10: 'अक्टूबर',
+            month11: 'नवंबर',
+            month12: 'दिसंबर',
+            year: 'साल',
             weekStartDay: '0',
             weeks: {
-                sun: '日',
-                mon: '一',
-                tue: '二',
-                wed: '三',
-                thu: '四',
-                fri: '五',
-                sat: '六'
+                sun: 'रविवार',
+                mon: 'सोमवार',
+                tue: 'मंगलवार',
+                wed: 'बुधवार',
+                thu: 'गुरुवार',
+                fri: 'शुक्रवार',
+                sat: 'शनिवार'
             },
             months: {
-                m1: '1月',
-                m2: '2月',
-                m3: '3月',
-                m4: '4月',
-                m5: '5月',
-                m6: '6月',
-                m7: '7月',
-                m8: '8月',
-                m9: '9月',
-                m10: '10月',
-                m11: '11月',
-                m12: '12月'
+                m1: 'जनवरी',
+                m2: 'फरवरी',
+                m3: 'मार्च',
+                m4: 'अप्रैल',
+                m5: 'मई',
+                m6: 'जून',
+                m7: 'जुलाई',
+                m8: 'अगस्त',
+                m9: 'सितंबर',
+                m10: 'अक्टूबर',
+                m11: 'नवंबर',
+                m12: 'दिसंबर'
             }
         },
         transfer: {
             titles: {
-                source: '源列表',
-                target: '目的列表'
+                source: 'स्रोत',
+                target: 'लक्ष्य'
             },
-            filterPlaceholder: '请输入搜索内容',
-            notFoundText: '列表为空'
+            filterPlaceholder: 'यहां खोजें',
+            notFoundText: 'कोई आकड़ा उपलब्ध नहीं है'
         },
         modal: {
-            title: '标题弹窗',
-            okText: '确定',
-            cancelText: '取消'
+            okText: 'ठीक',
+            cancelText: 'निरस्त करना'
         },
         poptip: {
-            okText: '确定',
-            cancelText: '取消'
+            okText: 'ठीक',
+            cancelText: 'निरस्त करना'
         },
         page: {
-            prev: '上一页',
-            next: '下一页',
-            total: '共',
-            item: '条',
-            items: '条',
-            prev5: '向前 5 页',
-            next5: '向后 5 页',
-            page: '条/页',
-            goto: '第',
-            p: '页'
+            prev: 'पिछला पेज',
+            next: 'अगला पेज',
+            total: 'समस्त',
+            item: 'एक चीज',
+            items: 'अनेक चीज',
+            prev5: 'पिछला 5 पेज',
+            next5: 'अगला 5 पेज',
+            page: '/page',
+            goto: 'जाओ',
+            p: ''
         },
         rate: {
-            star: '星',
-            stars: '星'
-        },
-        time: {
-            before: '前',
-            after: '后',
-            just: '刚刚',
-            seconds: '秒',
-            minutes: '分钟',
-            hours: '小时',
-            days: '天'
+            star: 'प्रसिद्ध',
+            stars: 'प्रसिद्ध'
         },
         tree: {
-            emptyText: '暂无数据'
-        },
-        fkrpSelect: {
-            idText: '序号',
-            inputPlaceholder: '请输入',
-            loading: '加载中',
-            noData: '暂无数据',
-            inputkeys: '请输入模糊搜索关键词'
-        },
-        timing: {
-            clear: '清空',
-            ok: '确定'
-        },
-        upload: {
-            upload: '上传',
-            picOnly: '只能上传',
-            pic: '张图片',
-            uploadPic: '上传图片',
-            uploading: '正在上传图片',
-            choosePic: '请选择图片'
-        },
-        search: {
-            searchItem: '检索项',
-            selFirst: '请先选择字段再输入'
-        },
-        complex: {
-            filter: '筛选条件',
-            filterRes: '筛选结果',
-            globalSearch: '全局检索',
-            exclude: '排除',
-            checked: '已选中',
-            saveAstemp: '保存为模板',
-            enterTempName: '请输入模板名称'
+            emptyText: 'कोई आकड़ा उपलब्ध नहीं है'
         }
     }
 };
@@ -286,4 +239,4 @@ exports.default = lang;
 
 /******/ });
 });
-//# sourceMappingURL=zh-CN.js.map
+//# sourceMappingURL=hi-IN.js.map

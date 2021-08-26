@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/dist/locale/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 26);
+/******/ 	return __webpack_require__(__webpack_require__.s = 21);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -115,7 +115,7 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
 
 /***/ }),
 
-/***/ 26:
+/***/ 21:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -133,147 +133,100 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var lang = {
     i: {
-        locale: 'zh-CN',
+        locale: 'sv-SE',
         select: {
-            placeholder: '请选择',
-            noMatch: '无匹配数据',
-            loading: '加载中',
-            all: '全部',
-            clear: '清除'
-        },
-        input: {
-            inputPlaceholder: '请输入'
+            placeholder: 'Välj',
+            noMatch: 'Ingen träff',
+            loading: 'Laddar'
         },
         table: {
-            noDataText: '暂无数据',
-            noFilteredDataText: '暂无筛选结果',
-            confirmFilter: '筛选',
-            resetFilter: '重置',
-            clearFilter: '全部'
+            noDataText: 'Ingen data',
+            noFilteredDataText: 'Ingen filter data',
+            confirmFilter: 'Bekräfta',
+            resetFilter: 'Återställ filter',
+            clearFilter: 'Rensa filter'
         },
         datepicker: {
-            selectDate: '选择日期',
-            selectTime: '选择时间',
-            startTime: '开始时间',
-            endTime: '结束时间',
-            clear: '清空',
-            ok: '确定',
-            datePanelLabel: '[yyyy年] [m月]',
-            month: '月',
-            month1: '1 月',
-            month2: '2 月',
-            month3: '3 月',
-            month4: '4 月',
-            month5: '5 月',
-            month6: '6 月',
-            month7: '7 月',
-            month8: '8 月',
-            month9: '9 月',
-            month10: '10 月',
-            month11: '11 月',
-            month12: '12 月',
-            year: '年',
-            weekStartDay: '0',
+            selectDate: 'Välj datum',
+            selectTime: 'Välj tidpunkt',
+            startTime: 'Start tid',
+            endTime: 'Slut tid',
+            clear: 'Rensa',
+            ok: 'Ok',
+            datePanelLabel: '[mmmm] [yyyy]',
+            month: 'Månad',
+            month1: 'Januari',
+            month2: 'Februari',
+            month3: 'Mars',
+            month4: 'April',
+            month5: 'Maj',
+            month6: 'Juni',
+            month7: 'Juli',
+            month8: 'Augusti',
+            month9: 'September',
+            month10: 'Oktober',
+            month11: 'November',
+            month12: 'December',
+            year: 'År',
+            weekStartDay: '1',
             weeks: {
-                sun: '日',
-                mon: '一',
-                tue: '二',
-                wed: '三',
-                thu: '四',
-                fri: '五',
-                sat: '六'
+                sun: 'Sön',
+                mon: 'Mån',
+                tue: 'Tis',
+                wed: 'Ons',
+                thu: 'Tor',
+                fri: 'Fre',
+                sat: 'Lör'
             },
             months: {
-                m1: '1月',
-                m2: '2月',
-                m3: '3月',
-                m4: '4月',
-                m5: '5月',
-                m6: '6月',
-                m7: '7月',
-                m8: '8月',
-                m9: '9月',
-                m10: '10月',
-                m11: '11月',
-                m12: '12月'
+                m1: 'Jan',
+                m2: 'Feb',
+                m3: 'Mar',
+                m4: 'Apr',
+                m5: 'Maj',
+                m6: 'Jun',
+                m7: 'Jul',
+                m8: 'Aug',
+                m9: 'Sep',
+                m10: 'Okt',
+                m11: 'Nov',
+                m12: 'Dec'
             }
         },
         transfer: {
             titles: {
-                source: '源列表',
-                target: '目的列表'
+                source: 'Källa',
+                target: 'Mål'
             },
-            filterPlaceholder: '请输入搜索内容',
-            notFoundText: '列表为空'
+            filterPlaceholder: 'Sök här',
+            notFoundText: 'Hittade inte'
         },
         modal: {
-            title: '标题弹窗',
-            okText: '确定',
-            cancelText: '取消'
+            okText: 'Ok',
+            cancelText: 'Avbryt'
         },
         poptip: {
-            okText: '确定',
-            cancelText: '取消'
+            okText: 'Ok',
+            cancelText: 'Avbryt'
         },
         page: {
-            prev: '上一页',
-            next: '下一页',
-            total: '共',
-            item: '条',
-            items: '条',
-            prev5: '向前 5 页',
-            next5: '向后 5 页',
-            page: '条/页',
-            goto: '第',
-            p: '页'
+            prev: 'Föregående sida',
+            next: 'Nästa sida',
+            total: 'Totalt',
+            item: 'objekt',
+            items: 'objekt',
+            prev5: 'Föregående 5 sidor',
+            next5: 'Nästa 5 sidor',
+            page: '/page',
+            goto: 'Gå till',
+            p: ''
         },
         rate: {
-            star: '星',
-            stars: '星'
-        },
-        time: {
-            before: '前',
-            after: '后',
-            just: '刚刚',
-            seconds: '秒',
-            minutes: '分钟',
-            hours: '小时',
-            days: '天'
+            star: 'Stjärna',
+            stars: 'Stjärnor'
         },
         tree: {
-            emptyText: '暂无数据'
-        },
-        fkrpSelect: {
-            idText: '序号',
-            inputPlaceholder: '请输入',
-            loading: '加载中',
-            noData: '暂无数据',
-            inputkeys: '请输入模糊搜索关键词'
-        },
-        timing: {
-            clear: '清空',
-            ok: '确定'
-        },
-        upload: {
-            upload: '上传',
-            picOnly: '只能上传',
-            pic: '张图片',
-            uploadPic: '上传图片',
-            uploading: '正在上传图片',
-            choosePic: '请选择图片'
-        },
-        search: {
-            searchItem: '检索项',
-            selFirst: '请先选择字段再输入'
-        },
-        complex: {
-            filter: '筛选条件',
-            filterRes: '筛选结果',
-            globalSearch: '全局检索',
-            exclude: '排除',
-            checked: '已选中',
-            saveAstemp: '保存为模板',
-            enterTempName: '请输入模板名称'
+            emptyText: 'Ingen data'
         }
     }
 };
@@ -286,4 +239,4 @@ exports.default = lang;
 
 /******/ });
 });
-//# sourceMappingURL=zh-CN.js.map
+//# sourceMappingURL=sv-SE.js.map

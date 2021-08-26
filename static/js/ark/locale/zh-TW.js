@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/dist/locale/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 26);
+/******/ 	return __webpack_require__(__webpack_require__.s = 27);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -115,7 +115,7 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
 
 /***/ }),
 
-/***/ 26:
+/***/ 27:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -133,31 +133,28 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var lang = {
     i: {
-        locale: 'zh-CN',
+        locale: 'zh-TW',
         select: {
-            placeholder: '请选择',
-            noMatch: '无匹配数据',
-            loading: '加载中',
+            placeholder: '請選擇',
+            noMatch: '無匹配資料',
+            loading: '加載中',
             all: '全部',
             clear: '清除'
         },
-        input: {
-            inputPlaceholder: '请输入'
-        },
         table: {
-            noDataText: '暂无数据',
-            noFilteredDataText: '暂无筛选结果',
-            confirmFilter: '筛选',
+            noDataText: '暫無資料',
+            noFilteredDataText: '暫無篩選結果',
+            confirmFilter: '篩選',
             resetFilter: '重置',
             clearFilter: '全部'
         },
         datepicker: {
-            selectDate: '选择日期',
-            selectTime: '选择时间',
-            startTime: '开始时间',
-            endTime: '结束时间',
+            selectDate: '選擇日期',
+            selectTime: '選擇時間',
+            startTime: '開始時間',
+            endTime: '結束時間',
             clear: '清空',
-            ok: '确定',
+            ok: '確定',
             datePanelLabel: '[yyyy年] [m月]',
             month: '月',
             month1: '1 月',
@@ -200,80 +197,38 @@ var lang = {
         },
         transfer: {
             titles: {
-                source: '源列表',
-                target: '目的列表'
+                source: '來源列表',
+                target: '目標列表'
             },
-            filterPlaceholder: '请输入搜索内容',
-            notFoundText: '列表为空'
+            filterPlaceholder: '請輸入搜尋內容',
+            notFoundText: '列表爲空'
         },
         modal: {
-            title: '标题弹窗',
-            okText: '确定',
+            okText: '確定',
             cancelText: '取消'
         },
         poptip: {
-            okText: '确定',
+            okText: '確定',
             cancelText: '取消'
         },
         page: {
-            prev: '上一页',
-            next: '下一页',
+            prev: '上一頁',
+            next: '下一頁',
             total: '共',
-            item: '条',
-            items: '条',
-            prev5: '向前 5 页',
-            next5: '向后 5 页',
-            page: '条/页',
-            goto: '第',
-            p: '页'
+            item: '條',
+            items: '條',
+            prev5: '向前 5 頁',
+            next5: '向後 5 頁',
+            page: '條/頁',
+            goto: '跳至',
+            p: '頁'
         },
         rate: {
             star: '星',
             stars: '星'
         },
-        time: {
-            before: '前',
-            after: '后',
-            just: '刚刚',
-            seconds: '秒',
-            minutes: '分钟',
-            hours: '小时',
-            days: '天'
-        },
         tree: {
-            emptyText: '暂无数据'
-        },
-        fkrpSelect: {
-            idText: '序号',
-            inputPlaceholder: '请输入',
-            loading: '加载中',
-            noData: '暂无数据',
-            inputkeys: '请输入模糊搜索关键词'
-        },
-        timing: {
-            clear: '清空',
-            ok: '确定'
-        },
-        upload: {
-            upload: '上传',
-            picOnly: '只能上传',
-            pic: '张图片',
-            uploadPic: '上传图片',
-            uploading: '正在上传图片',
-            choosePic: '请选择图片'
-        },
-        search: {
-            searchItem: '检索项',
-            selFirst: '请先选择字段再输入'
-        },
-        complex: {
-            filter: '筛选条件',
-            filterRes: '筛选结果',
-            globalSearch: '全局检索',
-            exclude: '排除',
-            checked: '已选中',
-            saveAstemp: '保存为模板',
-            enterTempName: '请输入模板名称'
+            emptyText: '暫無資料'
         }
     }
 };
@@ -286,4 +241,4 @@ exports.default = lang;
 
 /******/ });
 });
-//# sourceMappingURL=zh-CN.js.map
+//# sourceMappingURL=zh-TW.js.map
