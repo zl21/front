@@ -8,7 +8,7 @@
       v-if="columns.length > 0"
       ref="table"
       class="ag-grid-table ag-theme-balham"
-      :gridOptions="gridOptions"
+      :gridOptions="realAgOptions"
     >
     </ag-grid-vue>
   </div>
@@ -127,6 +127,24 @@ export default {
           ...defaultColDef
         }
       })
+    },
+
+    // 给ag组件的配置。避免出现警告用的
+    realAgOptions() {
+      const obj = Object.assign({},this.gridOptions)
+      delete obj.cssStatus
+      delete obj.defaultSort
+      delete obj.datas
+      delete obj.agCellSingleClick
+      delete obj.agCellDoubleClick
+      delete obj.agRowClick
+      delete obj.agRowDoubleClick
+      delete obj.agSortChanged
+      delete obj.agColumnVisibleChanged
+      delete obj.agSelectionChanged
+      delete obj.agColumnMoved
+      delete obj.agColumnPinned
+      return obj
     }
   },
 
