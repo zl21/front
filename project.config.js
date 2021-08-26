@@ -191,9 +191,18 @@ module.exports = {
 
   autoGatewayUrl:false,  // 是否请求网关
   computeForSubtable: false,
-  routerFilter:false, // 跳转是否过滤
-  setXss:false, // 是否xss 攻击过滤
-  enableLoginPro: false, // 是否开启普通登录模式 false普通 true手机验证码
-  //filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
-  //listFormWebconf:['filtercolval'] // 列表是否支持webcof 字段
+  routerFilter:true, // 跳转是否过滤
+  enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
+  filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
+  listFormWebconf:['filtercolval'], // 列表是否支持webcof 字段
+  // // 转义节点位置
+  // domPortal: {
+  //   // params对象属性,fromComponent用于区别哪个组件的水印,type区分布局结构
+  //   waterMark(params) {
+  //     if(params.fromComponent === 'SingleObjectButtons') {
+  //       return params.type === 'horizontal'? '.panelForm': '.verticalTableDetailContent'
+  //     }
+  //     return false
+  //   }
+  // }
 };
