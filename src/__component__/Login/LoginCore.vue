@@ -194,7 +194,6 @@
         const limit = Object.assign({}, param, {captcha: captcha.data.captcha});
 
         const r = await this.loginCore(enableGateWay() ? `/${this.globalServiceId}${url}` : url, limit);
-        console.log('r', r)
         if (this.type) {
           if (r.code === 100) {
             const codes = await this.checkLogined();
@@ -222,6 +221,11 @@
             const exp = r.data.data.isPasswordExpire;
             if (exp) {
               await this.checkPwdDays()
+            }
+            // 设置语言包
+            const locale = r.data.data.locale
+            if(r.data.data.locale) {
+              window.R3I18n(locale)
             }
           }
         }
