@@ -260,9 +260,9 @@ module.exports = env => ({
       worker_threads:false,
       child_process:false
     },
-    // alias: {
-    //   '@syman/ark-ui-bcl': path.resolve('static/js/ark-ui-bcl')
-    // }
+    alias: {
+      '@syman/ark-ui-bcl': path.resolve('static/js/ark-ui-bcl')
+    }
   },
   optimization: {
     minimizer: [new TerserJSPlugin({
