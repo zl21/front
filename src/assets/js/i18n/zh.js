@@ -323,6 +323,8 @@ export default {
     editPicture: '编辑图片',
     uploadImage: '上传图片',
     webImage: '网络图片',
+    favorites: '收藏夹',
+    recentlyUsed: '最近使用'
   },
   // 反馈类型的文案(比如进行某个操作，返回操作结果的提示)
   feedback: {
