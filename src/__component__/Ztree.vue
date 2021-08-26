@@ -88,7 +88,7 @@
     },
     watch: {
       zNodes: {
-        handler(val) {
+        handler() {
           $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
         },
         deep: true
@@ -158,12 +158,6 @@
 
       //   return true;
       // },
-
-      init() {
-        // $.fn.zTree.destroy($(`#${this.tableName}`));
-        this.inputValue = '';
-        $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
-      },
 
       checkNode() {
         // 选中
@@ -240,7 +234,6 @@
         this.search();
       },
       clearInputVal() {
-        fuzzySearch(`${this.tableName}`, this.inputValue, false, true)
         this.inputValue = '';
       },
       // freshArea() {
@@ -251,7 +244,9 @@
       this.tableName = this.$route.params.tableName ? `${this.$route.params.tableName}treeDemo` : 'treeDemo';
     },
     mounted() {
-      this.$nextTick(() => this.init());
+      this.$nextTick(() => {
+        $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
+      });
 
       // $(document).ready(() => {
       //   $.fn.zTree.init($('#treeDemo'), this.setting, this.zNodes);

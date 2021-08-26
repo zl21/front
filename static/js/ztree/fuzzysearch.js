@@ -46,27 +46,26 @@ export const  fuzzySearch = async (zTreeId, searchField, isHighLight, isExpand) 
       }
       // transform node name and keywords to lowercase
       if (node[nameKey] && node[nameKey].toLowerCase().indexOf(_keywords.toLowerCase()) != -1) {
-        // if (isHighLight) { // highlight process
-        // a new variable 'newKeywords' created to store the keywords information
-        // keep the parameter '_keywords' as initial and it will be used in next node
-        // process the meta characters in _keywords thus the RegExp can be correctly used in str.replace
-        const newKeywords = _keywords.replace(rexMeta, matchStr =>
-        // add escape character before meta characters
-           `\\${matchStr}`);
-        node.oldname = node[nameKey]; // store the old name
-        const rexGlobal = new RegExp(newKeywords, 'gi');// 'g' for global,'i' for ignore case
-        // use replace(RegExp,replacement) since replace(/substr/g,replacement) cannot be used here
-        node[nameKey] = node.oldname.replace(rexGlobal, (originalText) => {
-          // highlight the matching words in node name
-          const highLightText = isHighLight ? `<span style="color: whitesmoke;background-color: #e80707;">${originalText}</span>` : `${originalText}`;
-          return highLightText;
-        });
-        zTreeObjRes.updateNode(node); // update node for modifications take effect
-        setTimeout(()=>{
-          $(`#${node.tId}_a`).attr('title',node.oldname);
-        },100)
-
-        // }
+        if (isHighLight) { // highlight process
+          // a new variable 'newKeywords' created to store the keywords information
+          // keep the parameter '_keywords' as initial and it will be used in next node
+          // process the meta characters in _keywords thus the RegExp can be correctly used in str.replace
+          const newKeywords = _keywords.replace(rexMeta, matchStr =>
+            // add escape character before meta characters
+            `\\${matchStr}`);
+          node.oldname = node[nameKey]; // store the old name
+          const rexGlobal = new RegExp(newKeywords, 'gi');// 'g' for global,'i' for ignore case
+          // use replace(RegExp,replacement) since replace(/substr/g,replacement) cannot be used here
+          node[nameKey] = node.oldname.replace(rexGlobal, (originalText) => {
+            // highlight the matching words in node name
+            const highLightText = `<span style="color: whitesmoke;background-color: #e80707;">${originalText}</span>`;
+            return highLightText;
+          });
+          zTreeObjRes.updateNode(node); // update node for modifications take effect
+          setTimeout(()=>{
+            $(`#${node.tId}_a`).attr('title',node.oldname);
+          },100)
+        }
         zTreeObjRes.showNode(node);// show node with matching keywords
         return true; // return true and show this node
       }
@@ -135,7 +134,7 @@ export const  fuzzySearch = async (zTreeId, searchField, isHighLight, isExpand) 
           }, 500);
       });
   }
-  if (searchField || !isHighLight) { // 检测到搜索的字符，调用以下逻辑
+  if (searchField) { // 检测到搜索的字符，调用以下逻辑
     let node = await searchNodeLazy(searchField);
     return node;
 
