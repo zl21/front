@@ -587,31 +587,24 @@
           });
         }
       }, // 计算表格的列宽
-      refresh(ty) {
-        // console.log('refresh', ty)
+      refresh() {
         this.spinShow = true;
         this.menuPromise = new Promise((resolve, reject) => this.getMenuData(resolve, reject));
         this.treePromise = new Promise((resolve, reject) => this.getTreeData(resolve, reject));
         Promise.all([this.menuPromise, this.treePromise]).then(() => {
           this.groupId && this.getTableData();
-          this.isSaveError = false;
         });
 
       }, // 刷新数据
       refreshButtonClick() {
-        this.$refs.ztree.refresh();
+        this.$refs.ztree.clearInputVal();
         this.isSaveError = true;
         if (this.checkNoSaveData('refresh')) {
         } else {
-          // this.refresh('nochange');
-          // this.selectFirstOnce();
-          this.refreshing()
+          this.refresh();
+          this.selectFirstOnce();
         }
       }, // 刷新按钮
-      refreshing() {
-        this.selectFirstOnce();
-        this.refresh();
-      },
       checkNoSaveData(type) {
         // console.log(type)
         // console.log('checkNoSaveData', this.groupId)
@@ -628,9 +621,9 @@
             onCancel: () => {
               if (type === 'refresh') {
                 this.tableSaveData = [];
-                this.spinShow = false;
-                this.refreshing();
-                // this.refresh('checkNoSaveData');
+                this.pageInit = false;
+                this.refresh();
+                setTimeout(() => this.selectFirstOnce(), 1000);
               } else {
                 this.groupId = this.newGroupId;
                 this.adSubsystemId = this.newAdSubsystemId;

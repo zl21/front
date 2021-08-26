@@ -285,6 +285,8 @@ export default {
         GetTableName('');
         commit('updataUserInfoMessage', {});
         window.localStorage.removeItem('userInfo');
+        window.localStorage.removeItem('sessionCookie');
+
         // 清空updataTreeId
         removeSessionObject('TreeId');
         removeSessionObject('routeMapRecordForCustomizePages');

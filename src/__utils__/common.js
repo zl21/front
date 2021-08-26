@@ -17,3 +17,21 @@ export function deepClone(value) {
   return JSON.parse(JSON.stringify(value))
 }
 
+// 获取getCookie
+export function R3getCookie(name) {
+  var prefix = name + "="
+  var start = document.cookie.indexOf(prefix);
+  console.log('============',document.cookie);
+
+  if (start == -1) {
+      return null;
+  }
+
+  var end = document.cookie.indexOf(";", start + prefix.length)
+  if (end == -1) {
+      end = document.cookie.length;
+  }
+
+  var value = document.cookie.substring(start + prefix.length, end)
+  return unescape(value);
+}

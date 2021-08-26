@@ -46,7 +46,9 @@ const input = {
     // 原生的 wrap 属性，可选值为 hard 和 soft，仅在 textarea 下生效
     wrap: 'soft',
     // 正则表达式
-    regx: null
+    regx: null,
+    htmlExp:false
+
   },
   event: {
     // 按下回车键时触发
