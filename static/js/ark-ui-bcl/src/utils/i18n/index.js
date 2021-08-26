@@ -1,14 +1,7 @@
 // 国际化
 import VueI18n from 'vue-i18n'
-// import en from '@syman/ark-ui/dist/locale/en-US';
-// import zh from '@syman/ark-ui/dist/locale/zh-CN';
-
-
-import en from '../../../../../js/ark/locale/en-US';
-import zh from '../../../../../js/ark/locale/zh-CN';
 
 const lang = localStorage.getItem('ark-ui-bcl-lang') || 'en'
-Vue.use(Ark, { locale: lang === 'en' ? en : zh })  // 设置ark-ui语言
 
 const i18n = new VueI18n({
     locale: lang,    // 语言标识, 通过切换locale的值来实现语言切换,this.$i18n.locale
@@ -21,7 +14,6 @@ const i18n = new VueI18n({
 // 挂全局方便测试用
 window.ArkUiBclI18n = function (language) {
   i18n.locale = language
-  Vue.use(Ark, { locale: language === 'en' ? en : zh }) // 设置ark-ui语言
   localStorage.setItem('ark-ui-bcl-lang', language)
 }
 
