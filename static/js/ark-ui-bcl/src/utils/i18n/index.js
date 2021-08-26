@@ -1,6 +1,5 @@
 // 国际化
 import VueI18n from 'vue-i18n'
-import { locale as arkLocale } from '@syman/ark-ui';
 // import en from '@syman/ark-ui/dist/locale/en-US';
 // import zh from '@syman/ark-ui/dist/locale/zh-CN';
 
