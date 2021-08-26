@@ -181,7 +181,9 @@
 
   import { mapState, mapMutations, mapActions } from 'vuex';
   // import { setTimeout } from 'timers';
-  import { CommonTableByAgGrid } from '@syman/ark-ui-bcl';
+  // import { CommonTableByAgGrid } from '@syman/ark-ui-bcl';
+  let CommonTableByAgGrid = $Bcl.arkCommonTableByAgGrid;
+
   import regExp from '../constants/regExp';
   import {
     Version, LINK_MODULE_COMPONENT_PREFIX, INSTANCE_ROUTE_QUERY, enableActivateSameCustomizePage, ossRealtimeSave, classFix

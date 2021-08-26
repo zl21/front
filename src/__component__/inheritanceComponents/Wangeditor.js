@@ -5,11 +5,12 @@
  * ImageUpload组件自定义
  */
 
-import { Wangeditor } from '@syman/ark-ui-bcl';
+// import { Wangeditor } from '@syman/ark-ui-bcl';
 // import Wangeditor from 'arkui_BCL/Wangeditor';
 import network from '../../__utils__/network';
 import { SetPlaceholder ,SetDisable} from './setProps';
 
+let  Wangeditor = $Bcl.arkWangeditor;
 
 class CustomWangeditor {
   constructor(item) {

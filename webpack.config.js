@@ -38,6 +38,7 @@ module.exports = env => ({
     axios: 'axios',
     // 'ag-grid': 'agGrid',
     'ark-ui': 'Ark',
+    'ark-bcl': '$Bcl',
     // jquery: '$',
     ztree: 'ztree',
     // 'vue-i18n': 'VueI18n'
