@@ -27,7 +27,7 @@ R3.launchApplication({
     //NaVertical:require('./src/demo/NaVerticalslot.vue').default  // 模板渲染
     listFormButton:require('./demo/detailbuttons.vue').default,  // 定制列表button
   },
-  enableGateWay: true, // 网关是否打开,
+  enableGateWay: false, // 网关是否打开,
   enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
   filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
   routerFilter:true, // 跳转是否过滤
