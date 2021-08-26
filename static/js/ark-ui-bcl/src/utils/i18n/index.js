@@ -8,7 +8,7 @@ import { locale as arkLocale } from '@syman/ark-ui';
 import en from '../../../../../js/ark/locale/en-US';
 import zh from '../../../../../js/ark/locale/zh-CN';
 
-const lang = localStorage.getItem('ark-ui-bcl-lang') || 'zh'
+const lang = localStorage.getItem('ark-ui-bcl-lang') || 'en'
 Vue.use(Ark, { locale: lang === 'en' ? en : zh })  // 设置ark-ui语言
 
 const i18n = new VueI18n({
