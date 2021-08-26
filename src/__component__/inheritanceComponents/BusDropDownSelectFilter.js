@@ -7,10 +7,11 @@
 
 
 import { defaultrange } from '../../constants/global';
-import { DropDownSelectFilter } from '@syman/ark-ui-bcl';
+// import { DropDownSelectFilter } from '@syman/ark-ui-bcl';
 import DropMethods from '../ExtendedMethods/DropMethods';
 import network from '../../__utils__/network';
 import { SetPlaceholder } from './setProps';
+let  DropDownSelectFilter = $Bcl.arkDropDownSelectFilter;
 
 import {
   setisShowPopTip,
