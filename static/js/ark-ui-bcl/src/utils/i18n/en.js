@@ -435,7 +435,7 @@ export default {
     recordInList: 'The record is already in the selected list',
     requiredTemplateName: 'Template name cannot be empty',
     templateSaved: 'Template saved successfully',
-    beSelected: 'already selected',
+    beSelected: 'selected',
     selectedData: '{total} pieces of data have been selected',
   },
   // imageUpload
@@ -453,7 +453,7 @@ export default {
     recordInList: 'The record is already in the selected list',
     requiredTemplateName: 'Template name cannot be empty',
     templateSaved: 'Template saved successfully',
-    beSelected: 'already selected',
+    beSelected: 'selected',
     selectedData: '{total} pieces of data have been selected',
     multiplePop: 'multiple selection in pop-up window',
     moreFilters: 'more filters',

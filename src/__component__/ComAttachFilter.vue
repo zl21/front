@@ -158,7 +158,7 @@
           this.propsData.componentType = myPopDialog;
         } else {
           this.propsData.componentType = Dialog;
-          if (this.defaultSelected[0] && this.defaultSelected[0].ID && /选中/.test(this.value)) {
+          if (this.defaultSelected[0] && this.defaultSelected[0].ID && this.value.includes(this.$t('tips.beSelected'))) {
             // const data = this.defaultSelected[0].ID;
             // console.log(this.defaultSelected[0]);
             const data = Array.isArray(this.defaultSelected[0].ID) ? this.defaultSelected[0].ID : JSON.parse(this.defaultSelected[0].ID);
@@ -393,7 +393,7 @@
       attachFilterCancel($this) {
         this.filterDate = {};
         if ($this) {
-          if (/选中/.test(this.value)) {
+          if (this.value.includes(this.$t('tips.beSelected'))) {
             this.filterDate = this.resultData;
           }
           $this.complexs = false;
@@ -496,8 +496,7 @@
           // this.propsData.disabled = true;
         }
       }
-
-      if (this.defaultSelected[0] && this.defaultSelected[0].ID && /选中/.test(this.defaultSelected[0].Label)) {
+      if (this.defaultSelected[0] && this.defaultSelected[0].ID && this.defaultSelected[0].Label.includes(this.$t('tips.beSelected'))) {
         let data = this.defaultSelected[0].ID;
         // const data = this.defaultSelected[0].ID;
         if(typeof data ==='string' && (/\{/).test(data)){

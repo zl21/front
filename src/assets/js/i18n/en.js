@@ -235,7 +235,7 @@ export default {
     popUp: 'pop-up windows',
     searchResult: 'search result',
     serialNumber: 'serial number',
-    beSelected: 'already selected',
+    beSelected: 'selected',
     title: 'title',
     noPrompt: 'no prompt',
     userLogin: 'user login',

@@ -1,13 +1,15 @@
 // 国际化
 import VueI18n from 'vue-i18n'
+const zh = require('./zh').default
+const en = require('./en').default 
 
-const lang = localStorage.getItem('ark-ui-bcl-lang') || 'en'
+const lang = localStorage.getItem('ark-ui-bcl-lang') || 'zh'
 
 const i18n = new VueI18n({
-    locale: lang,    // 语言标识, 通过切换locale的值来实现语言切换,this.$i18n.locale
+    locale: lang,    // 语言标识, 通过切换locale的值来实现语言切换,this.$i18n.locale 
     messages: {
-      'zh': require('./zh').default,   // 中文语言包
-      'en': require('./en').default    // 英文语言包
+      zh,   // 中文语言包
+      en    // 英文语言包
     }
 })
 

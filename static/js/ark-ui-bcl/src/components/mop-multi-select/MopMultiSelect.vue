@@ -237,7 +237,7 @@ export default {
     attachFilterChange (value) {
       this.valueInput = value;
       // 谢世华  为了处理标准列表界面字段数据消失问题
-      if (value.indexOf(this.$t('mopMultiSelect.beSelected')) >= 0) {
+      if (value.includes(this.$t('mopMultiSelect.beSelected'))) {
         this.valueChange('change');
       }
     },
@@ -397,7 +397,7 @@ export default {
     attachFilterCancel ($this) {
       this.filterDate = {};
       if ($this) {
-        if (/选中/.test(this.valueInput)) {
+        if (this.valueInput.indexOf(this.$t('mopMultiSelect.beSelected')) > -1) {
           this.filterDate = this.resultData;
         }
         $this.complexs = false;
@@ -479,7 +479,7 @@ export default {
           }
         });
         this.PropsNewData.originalDatalist = [...this.PropsNewData.datalist];
-          if (this.value && this.value[0] && this.value[0].ID && /选中/.test(this.value[0].Label)) {
+          if (this.value && this.value[0] && this.value[0].ID && this.value[0].Label.includes(this.$t('mopMultiSelect.beSelected'))) {
             const data = Array.isArray(this.value[0].ID) ? this.value[0].ID : JSON.parse(this.value[0].ID);
             // 谢世华  修改处理默认值逻辑
             if (data.value) {
