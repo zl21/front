@@ -6,6 +6,7 @@ import openedImg from '../../assets/image/open@2x.png';
 import bigDataImg from '../../assets/image/isBig.png';
 import logoImg from '../../assets/image/logo.png';
 import bannerImg from '../../assets/image/banner.png';
+import bannerEnImg from '../../assets/image/logo2en.png';
 
 const mutations = () => require(`../mutations/version_${Version()}/global.mutations`).default;
 const actions = () => require(`../actions/version_${Version()}/global.actions`).default;
@@ -50,7 +51,7 @@ export default () => ({
 
     imgSrc: {
       logoImg,
-      bannerImg,
+      bannerImg: localStorage.getItem('r3-lang') === 'zh' ? bannerImg : bannerEnImg,
       closedImg,
       openedImg,
       bigDataImg
