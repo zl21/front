@@ -6,7 +6,7 @@ import openedImg from '../../assets/image/open@2x.png';
 import bigDataImg from '../../assets/image/isBig.png';
 import logoImg from '../../assets/image/logo.png';
 import bannerImg from '../../assets/image/banner.png';
-import bannerEnImg from '../../assets/image/logo2en.png';
+import bannerEnImg from '../../assets/image/logoen2.png';
 
 const mutations = () => require(`../mutations/version_${Version()}/global.mutations`).default;
 const actions = () => require(`../actions/version_${Version()}/global.actions`).default;
