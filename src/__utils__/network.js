@@ -2,7 +2,6 @@ import axios from 'axios';
 import md5 from 'md5';
 import router from '../__config__/router.config';
 import store from '../__config__/store.config';
-import i18n from '../assets/js/i18n';
 import { filterUrl, isJSON } from "./utils";
 
 import {
@@ -82,21 +81,21 @@ const dispatchR3Event = (data) => {
 //http request 拦截器
 axios.interceptors.request.use(
   config => {
-      // if(window.ProjectConfig.enciphered){}
-     
-    
-        let number = Math.floor(Math.random() * 10000);
-        let sessionCookie = window.localStorage.getItem('sessionCookie');
-        config.headers['SSSSS-A'] = new Date().getTime();
-        if(sessionCookie === 'undefined'){
-          config.headers['SSSSS-B'] = md5('qwertburgeon'+new Date().getTime()+number);
-        }else{
-          config.headers['SSSSS-B'] = md5('qwertburgeon'+new Date().getTime()+number+sessionCookie);
-        }
-        
-        config.headers['SSSSS-C'] = number;
-        
-      return config
+    // if(window.ProjectConfig.enciphered){}
+
+
+    let number = Math.floor(Math.random() * 10000);
+    let sessionCookie = window.localStorage.getItem('sessionCookie');
+    config.headers['SSSSS-A'] = new Date().getTime();
+    if(sessionCookie === 'undefined'){
+      config.headers['SSSSS-B'] = md5('qwertburgeon'+new Date().getTime()+number);
+    }else{
+      config.headers['SSSSS-B'] = md5('qwertburgeon'+new Date().getTime()+number+sessionCookie);
+    }
+
+    config.headers['SSSSS-C'] = number;
+
+    return config
   }
 )
 axios.interceptors.response.use(
@@ -155,7 +154,7 @@ axios.interceptors.response.use(
     if (filterUrlForNetworkScript(filterUrlParams)) {
       if ((response.data.code === -1 || response.data.code === -2)) {
         let errorHTML = Array.isArray(response.data.error || response.data.data) && (response.data.error || response.data.data).reduce((arr, x) => {
-          arr.push(`<p>${x.objid ? `objid${x.objid}` : i18n.t('feedback.modifyFail')}:${x.message}</p>`); return arr;
+          arr.push(`<p>${x.objid ? `objid${x.objid}` : '修改失败'}:${x.message}</p>`); return arr;
         }, []).join('') || '';
         // if (!config.url.includes('/p/cs/batchSave')) {
         //   errorHTML = '';
@@ -163,7 +162,7 @@ axios.interceptors.response.use(
         // 处理1.4版本的error明细报错
         if (response.data.data && Array.isArray(response.data.data.errors)) {
           errorHTML = response.data.data.errors.reduce((arr, x) => {
-            arr.push(`<p>${x.id ? `${i18n.t('feedback.detail')}${x.id}` : i18n.t('feedback.modifyFail')}:${x.message}</p>`); return arr;
+            arr.push(`<p>${x.id ? `明细${x.id}` : '修改失败'}:${x.message}</p>`); return arr;
           }, []).join('') || '';
         }
         let Modalflag = true;
@@ -180,7 +179,7 @@ axios.interceptors.response.use(
           window.vm.$Modal.fcError({
             mask: true,
             titleAlign: 'center',
-            title: i18n.t('feedback.error'),
+            title: '错误',
             // content: formatJsonEmg
             render: h => h('div', [
               h('div', {
@@ -208,8 +207,8 @@ axios.interceptors.response.use(
                 }),
                 h('div', {
                   attrs: {
-                  // rows: 8,
-                  // readonly: 'readonly',
+                    // rows: 8,
+                    // readonly: 'readonly',
                   },
                   domProps: {
                     innerHTML,
@@ -273,8 +272,8 @@ axios.interceptors.response.use(
       if (status === 403) {
         if (logoutTips() && getProjectQuietRoutes().indexOf(router.currentRoute.path) === -1) {
           window.vm.$Modal.fcWarning({
-            title: i18n.t('feedback.warning'),
-            content: i18n.t('messages.lostSession'),
+            title: '警告',
+            content: '您已失去会话，是否退出登录?',
             mask: true,
             showCancel: true,
             onOk: () => {
@@ -313,13 +312,13 @@ axios.interceptors.response.use(
           }
         }
       } else if (status === 500 || status === 404) {
-      // 如果http状态码正常，则直接返回数据
+        // 如果http状态码正常，则直接返回数据
         const emg = error.response.data.message || error.response.data.msg;
         if (!filterUrl(config && config.url) || !isJSON(emg)) {
           window.vm.$Modal.fcError({
             mask: true,
             titleAlign: 'center',
-            title: i18n.t('feedback.error'),
+            title: '错误',
             // content: formatJsonEmg
             render: h => h('div', {
               style: {
