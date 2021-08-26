@@ -7,13 +7,14 @@
 
 
  import Vue from 'vue';
- import { MopMultiSelect } from '@syman/ark-ui-bcl';
+//  import { MopMultiSelect } from '@syman/ark-ui-bcl';
  // import MopMultiSelect from 'arkui_BCL/MopMultiSelect';
  import dataProp from '../../__config__/props.config';
  import regExp from '../../constants/regExp';
  import network from '../../__utils__/network';
  import { SetPlaceholder } from './setProps';
  import DropMethods from '../ExtendedMethods/DropMethods';
+ let  MopMultiSelect = $Bcl.arkMopMultiSelect;
 
  class CustomAttachFilter {
    constructor(item) {

@@ -41,7 +41,7 @@
           }"
       ></CommonTableByAgGrid>
     </div> -->
-    <CommonTableByAgGrid
+    <arkCommonTableByAgGrid
       v-if="!isCommonTable && !isBig && options"
       mode="r3-list"
       class="detailTable"
@@ -52,7 +52,7 @@
       :options="agOptions"
       height="100%"
       @grid-ready="gridReady"
-    ></CommonTableByAgGrid>
+    ></arkCommonTableByAgGrid>
 
     <!-- 普通表格 -->
     <div
@@ -109,7 +109,6 @@ import { mapState } from 'vuex';
 // import agTable from '../assets/js/ag-grid-table-pure';
 import CommonTable from './CommonTable.vue';
 import { floatingFilter, classFix } from '../constants/global';
-import { CommonTableByAgGrid } from '@syman/ark-ui-bcl';
 import { getPinnedColumns } from '../__utils__/tableMethods'
 
 export default {
@@ -126,7 +125,6 @@ export default {
   },
   components: {
     CommonTable,
-    CommonTableByAgGrid
   },
   computed: {
     ...mapState('global', {
