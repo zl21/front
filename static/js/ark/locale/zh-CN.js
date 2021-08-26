@@ -258,11 +258,21 @@ var lang = {
             picOnly: '只能上传',
             pic: '张图片',
             uploadPic: '上传图片',
-            uploading: '正在上传图片'
+            uploading: '正在上传图片',
+            choosePic: '请选择图片'
         },
         search: {
             searchItem: '检索项',
             selFirst: '请先选择字段再输入'
+        },
+        complex: {
+            filter: '筛选条件',
+            filterRes: '筛选结果',
+            globalSearch: '全局检索',
+            exclude: '排除',
+            checked: '已选中',
+            saveAstemp: '保存为模板',
+            enterTempName: '请输入模板名称'
         }
     }
 };

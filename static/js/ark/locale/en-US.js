@@ -258,11 +258,21 @@ var lang = {
             picOnly: 'Can only upload',
             pic: 'picture',
             uploadPic: 'upload pictures',
-            uploading: 'Uploading images'
+            uploading: 'Uploading images',
+            choosePic: 'please choose a picture'
         },
         search: {
             searchItem: 'Search Item',
             selFirst: 'Please select the fields before enter'
+        },
+        complex: {
+            filter: 'filter',
+            filterRes: 'screening results',
+            globalSearch: 'global search',
+            exclude: 'exclude',
+            checked: 'checked',
+            saveAstemp: 'Save as a template',
+            enterTempName: 'please enter template name'
         }
     }
 };
