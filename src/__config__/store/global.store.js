@@ -7,6 +7,7 @@ import bigDataImg from '../../assets/image/isBig.png';
 import logoImg from '../../assets/image/logo.png';
 import bannerImg from '../../assets/image/banner.png';
 import bannerEnImg from '../../assets/image/logoen2.png';
+import bigDataEnImg from '../../assets/image/nodata-en.png';
 
 const mutations = () => require(`../mutations/version_${Version()}/global.mutations`).default;
 const actions = () => require(`../actions/version_${Version()}/global.actions`).default;
@@ -54,7 +55,7 @@ export default () => ({
       bannerImg: localStorage.getItem('r3-lang') === 'zh' ? bannerImg : bannerEnImg,
       closedImg,
       openedImg,
-      bigDataImg
+      bigDataImg: localStorage.getItem('r3-lang') === 'zh' ? bigDataImg : bigDataEnImg,
     },
     isShowDashboardPage: false,
     previewPictureInstance: [], // 记录图片预览实例
