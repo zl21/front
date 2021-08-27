@@ -1,4 +1,4 @@
-import { filterURL } from '../constants/global';
+import { filterURL, REQUEST_PENDDING_EXPIRE } from '../constants/global';
 
 const urls = filterURL ? [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g].concat(filterURL) : [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g];
 
@@ -18,3 +18,5 @@ export const isJSON = (str) => {
   }
   return false;
 };
+
+export const checkTime = (lastTime) => new Date().getTime() - lastTime < REQUEST_PENDDING_EXPIRE()
