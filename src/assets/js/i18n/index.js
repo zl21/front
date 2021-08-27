@@ -1,6 +1,6 @@
 // 国际化
 import VueI18n from 'vue-i18n'
-import { locale } from '@syman/ark-ui-bcl/src/utils/i18n'
+const locale = $Bcl.locale;
 // import { locale } from '../../../../static/js/ark-ui-bcl/src/utils/i18n/index'
 // import en from '@syman/ark-ui/dist/locale/en-US';
 // import zh from '@syman/ark-ui/dist/locale/zh-CN';
@@ -38,7 +38,7 @@ window.R3I18n = function (language = 'zh') {
     }
   })
   // i18n.locale = language
-  // locale(language) // 设置业务组件库语言
+    //locale(language) // 设置业务组件库语言
   // localStorage.setItem('r3-lang', language)
 }
 
