@@ -30,7 +30,7 @@ export default {
     exportAllTip: 'The current operation will perform a full export, and the export time may be slower! Do you want to continue exporting?',
     selectModifiedData: 'Please select the data to be modified in bulk!',
     updateSearchResult: 'If records are not checked, all query results will be updated in batches (total {total} rows). Are you sure to continue?',
-    execExportAll: 'The operation will perform a full export',
+    execExportAll: 'operation will perform a full export',
     checkID: 'Please check ID',
     checkSingleID: 'Only check a single ID',
     requiredPersonalInfo: 'Personal information cannot be empty!',
