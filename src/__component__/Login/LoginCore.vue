@@ -225,7 +225,7 @@
             // 设置语言包
             const locale = r.data.data.locale
             if(r.data.data.locale) {
-              window.R3I18n(locale)
+              await window.R3I18n(locale)
             }
           }
         }

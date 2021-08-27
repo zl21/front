@@ -23,13 +23,14 @@ const i18n = new VueI18n({
     // silentTranslationWarn: true // 去掉警告
 })
 
+locale(lang) // 设置业务组件库语言
 Vue.use(Ark, { locale: lang === 'en' ? en : zh })  // 设置ark-ui语言
 
 window.R3I18n = function (language = 'zh') {
   console.log('设置语言环境', language)
   const serviceId = window.localStorage.getItem('serviceId')
   const url = serviceId ? `/${serviceId}/p/cs/langswitcher`: '/p/cs/langswitcher'
-  network.post(url, urlSearchParams({language}),{noServiceId: true}).then(res => {
+  return network.post(url, urlSearchParams({language}),{noServiceId: true}).then(res => {
     if (res.data.code === 0) {
       i18n.locale = language
       locale(language) // 设置业务组件库语言
@@ -37,9 +38,6 @@ window.R3I18n = function (language = 'zh') {
       localStorage.setItem('r3-lang', language)
     }
   })
-  // i18n.locale = language
-  // locale(language) // 设置业务组件库语言
-  // localStorage.setItem('r3-lang', language)
 }
 
 
