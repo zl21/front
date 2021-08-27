@@ -25,6 +25,11 @@ export default {
     }
   },
   updateAccessHistory({ commit, state }, { type, id }) {
+    // 过滤表的配置
+    let name = router.currentRoute.params.tableName || router.currentRoute.params.customizedModuleName || router.currentRoute.params.pluginModuleName || router.currentRoute.params.linkModuleName;
+      if(window.ProjectConfig.filterHistory && window.ProjectConfig.filterHistory.includes(name)){
+        return;
+      }
     if (enableHistoryAndFavorite()) {
       if (id === 'New') {
         id = '-1';
@@ -279,7 +284,7 @@ export default {
     if (!messageSwitch()) {
       return;
     }
-    network.post(Version() === '1.3' ? '/p/c/getMsgCnt' : '/p/c/u_note/getMsgCnt', urlSearchParams({ userId }), {
+    network.post(Version() === '1.3' ? '/p/c/getMsgCnt' : '/p/cs/u_note/getMsgCnt', urlSearchParams({ userId }), {
       serviceId: enableGateWay() ? 'asynctask' : ''
     }).then((res) => {
       if (res.data.code === 0) {
@@ -299,6 +304,7 @@ export default {
         GetTableName('');
         commit('updataUserInfoMessage', {});
         window.localStorage.removeItem('userInfo');
+        window.localStorage.removeItem('sessionCookie');
         // 清空updataTreeId
         removeSessionObject('TreeId');
         removeSessionObject('routeMapRecordForCustomizePages');
