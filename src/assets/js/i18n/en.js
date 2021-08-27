@@ -193,7 +193,7 @@ export default {
     enterTargetDesc: 'please enter a description of the goal',
     expandFavorite: 'whether to expand favorites',
     collapseQuery: 'collapse query conditions',
-    queryDefaultRows: 'default number of rows for query conditions',
+    queryDefaultRows: 'number of query area rows',
     noHistory: 'no history',
     noCollection: 'no collection'
   },
