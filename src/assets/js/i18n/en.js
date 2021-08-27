@@ -137,7 +137,7 @@ export default {
     passwordRule: 'The password must consist of more than 6 numbers and letters',
     enterNewPassword: 'please enter a new password',
     selectResetUser: 'Please tick the user who needs to be reset',
-    enterOldPassword: 'please enter a old password',
+    enterOldPassword: 'please enter an old password',
     passwordNewRule: 'The password must contain 6-18 characters and both numbers, uppercase and lowercase letters',
     selectTemplate: 'Please select a template',
     searchIsRequired: 'The query condition [{desc}] cannot be empty',
