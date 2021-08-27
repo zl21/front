@@ -284,7 +284,7 @@ export default {
     if (!messageSwitch()) {
       return;
     }
-    network.post(Version() === '1.3' ? '/p/c/getMsgCnt' : '/p/cs/u_note/getMsgCnt', urlSearchParams({ userId }), {
+    network.post(Version() === '1.3' ? '/p/c/getMsgCnt' : '/p/c/u_note/getMsgCnt', urlSearchParams({ userId }), {
       serviceId: enableGateWay() ? 'asynctask' : ''
     }).then((res) => {
       if (res.data.code === 0) {
