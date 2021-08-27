@@ -8,17 +8,16 @@
     >
       <div id="navBrandImg">
         <img
-          v-if="!collapseHistoryAndFavorite"
           class="banner"
           alt=""
           :src="imgSrc.bannerImg"
         >
-        <img
+        <!-- <img
           v-if="collapseHistoryAndFavorite"
           class="logo"
           alt=""
           :src="imgSrc.logoImg"
-        >
+        > -->
       </div>
     </div>
 
