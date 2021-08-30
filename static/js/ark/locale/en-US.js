@@ -244,7 +244,7 @@ var lang = {
             emptyText: 'No Data'
         },
         fkrpSelect: {
-            idText: 'NUMBER',
+            idText: 'index',
             inputPlaceholder: 'Please input!',
             loading: 'loading',
             noData: 'No Data',
