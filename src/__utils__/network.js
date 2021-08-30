@@ -83,8 +83,9 @@ const dispatchR3Event = (data) => {
 axios.interceptors.request.use(
   config => {
       // if(window.ProjectConfig.enciphered){}
-     
-    
+
+        config.headers['locale'] = window.localStorage.getItem('locale') || 'zh';
+
         let number = Math.floor(Math.random() * 10000);
         let sessionCookie = window.localStorage.getItem('sessionCookie');
         config.headers['SSSSS-A'] = new Date().getTime();
@@ -93,9 +94,9 @@ axios.interceptors.request.use(
         }else{
           config.headers['SSSSS-B'] = md5('qwertburgeon'+new Date().getTime()+number+sessionCookie);
         }
-        
+
         config.headers['SSSSS-C'] = number;
-        
+
       return config
   }
 )
@@ -155,7 +156,7 @@ axios.interceptors.response.use(
     if (filterUrlForNetworkScript(filterUrlParams)) {
       if ((response.data.code === -1 || response.data.code === -2)) {
         let errorHTML = Array.isArray(response.data.error || response.data.data) && (response.data.error || response.data.data).reduce((arr, x) => {
-          arr.push(`<p>${x.objid ? `objid${x.objid}` : i18n.t('feedback.modifyFail')}:${x.message}</p>`); return arr; 
+          arr.push(`<p>${x.objid ? `objid${x.objid}` : i18n.t('feedback.modifyFail')}:${x.message}</p>`); return arr;
         }, []).join('') || '';
         // if (!config.url.includes('/p/cs/batchSave')) {
         //   errorHTML = '';
@@ -163,7 +164,7 @@ axios.interceptors.response.use(
         // 处理1.4版本的error明细报错
         if (response.data.data && Array.isArray(response.data.data.errors)) {
           errorHTML = response.data.data.errors.reduce((arr, x) => {
-            arr.push(`<p>${x.id ? `${i18n.t('feedback.detail')}${x.id}` : i18n.t('feedback.modifyFail')}:${x.message}</p>`); return arr; 
+            arr.push(`<p>${x.id ? `${i18n.t('feedback.detail')}${x.id}` : i18n.t('feedback.modifyFail')}:${x.message}</p>`); return arr;
           }, []).join('') || '';
         }
         let Modalflag = true;
