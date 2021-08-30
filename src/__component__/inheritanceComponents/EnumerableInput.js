@@ -5,8 +5,9 @@
  * EnumerableInput读写规则组件自定义
  */
 
-import { EnumerableInput } from '@syman/ark-ui-bcl';
+// import { EnumerableInput } from '@syman/ark-ui-bcl';
 import { SetPlaceholder ,SetDisable} from './setProps';
+let  EnumerableInput = $Bcl.arkEnumerableInput;
 
 
 class CustomEnumerableInput{

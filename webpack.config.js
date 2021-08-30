@@ -262,7 +262,7 @@ module.exports = env => ({
       child_process:false
     },
     alias: {
-      '@syman/ark-ui-bcl': path.resolve('static/js/ark-ui-bcl')
+     // '@syman/ark-ui-bcl': path.resolve('static/js/ark-ui-bcl')
     }
   },
   optimization: {
