@@ -110,7 +110,6 @@ import { mapState } from 'vuex';
 import CommonTable from './CommonTable.vue';
 import { floatingFilter, classFix } from '../constants/global';
 import { getPinnedColumns } from '../__utils__/tableMethods'
-let arkCommonTableByAgGrid = $Bcl.arkCommonTableByAgGrid;
 
 export default {
   name: 'AgTable',
@@ -126,7 +125,6 @@ export default {
   },
   components: {
     CommonTable,
-    arkCommonTableByAgGrid
   },
   computed: {
     ...mapState('global', {
