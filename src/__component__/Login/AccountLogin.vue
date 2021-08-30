@@ -25,8 +25,9 @@
 </template>
 
 <script>
-  import network, {urlSearchParams} from '../../__utils__/network';
-  import {enableGateWay, enableLoginPro, encryptedPassword, classFix} from '../../constants/global';
+  import network from '../../__utils__/network';
+  import { checkTime } from "../../__utils__/utils";
+  import {enableGateWay, enableLoginPro} from '../../constants/global';
   export default {
     name: 'AccountLogin',
     props: {
@@ -45,7 +46,8 @@
         globalServiceId: window.localStorage.getItem('serviceId') || '',
         imgSrc: '',
         key: '',
-        codeLoading: false
+        codeLoading: false,
+        lastTime: '',
       }
     },
     mounted() {
@@ -62,6 +64,11 @@
       },
       // 获取验证码
       getCode() {
+        if (this.lastTime && checkTime(this.lastTime)) {
+          this.codeLoading = false;
+          return false
+        }
+        this.lastTime = new Date().getTime();
         this.codeLoading = true;
         network.post(enableGateWay() ? `/${this.globalServiceId}/p/c/getcCode` : '/p/c/getcCode').then(res => {
           if (res && res.data) {
