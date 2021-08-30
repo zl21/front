@@ -222,11 +222,6 @@
             if (exp) {
               await this.checkPwdDays()
             }
-            // 设置语言包
-            const locale = r.data.data.locale
-            if(r.data.data.locale) {
-              await window.R3I18n(locale)
-            }
           }
         }
         this.logined(r)
