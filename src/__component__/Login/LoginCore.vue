@@ -65,7 +65,7 @@
       loginSucCbk: {
         type: Function
       },
-      local: {
+      locale: {
         type: String,
         default: 'zh'
       }
@@ -86,7 +86,7 @@
       },
     },
     watch: {
-      local:{
+      locale:{
         handler(val){
           window.localStorage.setItem('locale', val)
         },
