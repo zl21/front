@@ -199,3 +199,8 @@
     color: fade(@primary-color, 60%);
   }
 }
+
+// 忽略input的placeholder大小写问题
+::-webkit-input-placeholder {
+  text-transform: lowercase;
+}
