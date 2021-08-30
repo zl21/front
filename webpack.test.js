@@ -1,13 +1,9 @@
 /* eslint-disable */
 const path = require('path');
-// const { VueLoaderPlugin } = require('vue-loader');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const copyWebpackPlugin = require('copy-webpack-plugin');
-const { ModuleFederationPlugin } = require('webpack').container;
 
 // 打包给模板项目测试用
 module.exports = () => ({
@@ -167,14 +163,4 @@ module.exports = () => ({
       child_process:false
     },
   },
-  // optimization: {
-  //   minimizer: [new TerserJSPlugin({
-  //     sourceMap: true,
-  //     terserOptions: {
-  //       compress: {
-  //         pure_funcs: ['console.log']
-  //       }
-  //     }
-  //   }), new OptimizeCSSAssetsPlugin({})],
-  // },
 });
