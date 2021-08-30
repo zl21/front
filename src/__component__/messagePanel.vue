@@ -36,7 +36,7 @@
           <div class="item-time">
             <i
               class="circle green"
-              :class="item.TASK_STATE.val.indexOf('完成')>=0?'green':'red'"
+              :class="item.TASK_STATE.refobjval === 2?'green':'red'"
             />
 
             <span>{{ calcdateDiff(item.MODIFIEDDATE.val) || item.MODIFIEDDATE.val }}</span>

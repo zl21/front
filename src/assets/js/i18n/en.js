@@ -324,7 +324,8 @@ export default {
     uploadImage: 'upload image',
     webImage: 'web image',
     favorites: 'favorites',
-    recentlyUsed: 'recently used'
+    recentlyUsed: 'recently used',
+    complete: 'complete'
   },
   // 反馈类型的文案(比如进行某个操作，返回操作结果的提示)
   feedback: {
