@@ -205,14 +205,6 @@ export default (router) => {
             next('/')
             return false
           }
-        }else{
-          var reg = RegExp(`C.${to.params.customizedModuleName}`);
-          if(reg.test(JSON.stringify(keepAliveLabelMaps)) === false){
-            // 包含定制界面      
-            next('/')
-            return false  
-          }
-
         }
         
       }
