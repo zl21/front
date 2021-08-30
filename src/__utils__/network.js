@@ -2,6 +2,7 @@ import axios from 'axios';
 import md5 from 'md5';
 import router from '../__config__/router.config';
 import store from '../__config__/store.config';
+import i18n from '../assets/js/i18n';
 import { filterUrl, isJSON } from "./utils";
 
 import {
