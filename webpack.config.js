@@ -38,8 +38,10 @@ module.exports = env => ({
     axios: 'axios',
     // 'ag-grid': 'agGrid',
     'ark-ui': 'Ark',
+    'ark-bcl': '$Bcl',
     // jquery: '$',
     ztree: 'ztree',
+    // 'vue-i18n': 'VueI18n'
   },
   devServer: {
     compress: true,
@@ -259,9 +261,6 @@ module.exports = env => ({
       worker_threads:false,
       child_process:false
     },
-    // alias: {
-    //   '@syman/ark-ui-bcl': path.resolve('static/js/ark-ui-bcl')
-    // }
   },
   optimization: {
     minimizer: [new TerserJSPlugin({

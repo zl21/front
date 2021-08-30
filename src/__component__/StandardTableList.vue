@@ -232,7 +232,7 @@ export default {
       ztreetimer: null, // 树刷新时间判断
       mountedChecked: false, // 页面是否渲染完成
       dialogComponentNameConfig: {
-        title: '提示',
+        title: this.$t('feedback.alert'),
         mask: true,
         footerHide: false,
         contentText: '',
@@ -635,8 +635,8 @@ export default {
             if (this.exportTasks.dialog) {
               const message = {
                 mask: true,
-                title: '提醒',
-                content: ' 本次操作已后台处理，是否至[我的任务]查看',
+                title: this.$t('feedback.alert'),
+                content: this.$t('messages.asyncImportSuccess'),
                 showCancel: true,
                 onOk: () => {
                   const type = 'tableDetailVertical';
@@ -655,21 +655,13 @@ export default {
             if (this.exportTasks.successMsg) {
               const data = {
                 mask: true,
-                title: '成功',
+                title: this.$t('feedback.success'),
                 content: `${this.exportTasks.resultMsg}`
               };
               this.$Modal.fcSuccess(data);
             }
             this.searchClickData();
           }, () => {
-            // if (this.exportTasks.warningMsg) {
-            //   const data = {
-            //     mask: true,
-            //     title: '错误',
-            //     content: `${this.exportTasks.resultMsg}`
-            //   };
-            //   this.$Modal.fcError(data);
-            // }
             this.$R3loading.hide(this.loadingName);
             this.setImportDialogTitle(false);
           });
@@ -752,8 +744,8 @@ export default {
         if (!row._TABLENAME || !row._TABLENAME.val || !row._TABLEID || !row._TABLEID.val || !row._OBJID || !row._OBJID.val) {
           const data = {
             mask: true,
-            title: '警告',
-            content: '请维护表名或OBJID'
+            title: this.$t('feedback.warning'),
+            content: this.$t('messages.maintainTableName')
           };
           this.$Modal.fcWarning(data);
         } else if (row._OBJURL && row._OBJURL.val) {
@@ -775,8 +767,8 @@ export default {
         } else {
           const data = {
             mask: true,
-            title: '警告',
-            content: '请设置外键关联表的显示配置'
+            title: this.$t('feedback.warning'),
+            content: this.$t('messages.setAssociationTable')
           };
           this.$Modal.fcWarning(data);
         }
@@ -955,8 +947,8 @@ export default {
         } else {
           const data = {
             mask: true,
-            title: '警告',
-            content: '请设置外键关联表的显示配置'
+            title: this.$t('feedback.warning'),
+            content: this.$t('messages.setAssociationTable')
           };
           this.$Modal.fcWarning(data);
           return;
@@ -1317,14 +1309,14 @@ export default {
           if (this.webConf.disableExport === false) {
             const buttonConfigInfo = {
               eName: 'actionEXPORT',
-              name: '导出'
+              name: this.$t('buttons.export')
             };
             buttonGroupShow.push(buttonConfigInfo);
           }
           if (this.webConf.disableImport === false) {
             const buttonConfigInfo = {
               eName: 'actionIMPORT',
-              name: '导入'
+              name: this.$t('buttons.import')
             };
             buttonGroupShow.push(buttonConfigInfo);
           }
@@ -1638,7 +1630,7 @@ export default {
             const message = this.buttons.ExeActionData;
             const data = {
               mask: true,
-              title: '成功',
+              title: this.$t('feedback.success'),
               content: `${message}`
             };
             this.$Modal.fcSuccess(data);
@@ -1675,7 +1667,7 @@ export default {
           const message = this.buttons.ExeActionData;
           const data = {
             mask: true,
-            title: '成功',
+            title: this.$t('feedback.success'),
             content: `${message}`,
             onOk: () => {
               DispatchEvent('exeActionSuccessForR3', {
@@ -1783,8 +1775,8 @@ export default {
           const value = data.fixedcolumns[item.colname]
           if (item.webconf && item.webconf.required && !value) {
             this.$Modal.fcError({
-              title: '错误',
-              content: `查询条件[${item.coldesc}]不能为空!`,
+              title: this.$t('feedback.error'),
+              content: this.$t('messages.searchIsRequired',{desc:item.coldesc}),
               mask: true
             });
             this.$R3loading.hide(this.loadingName);
@@ -1970,14 +1962,14 @@ export default {
       if (obj.name === this.buttonMap.CMD_DELETE.name) {
         // 删除动作  对用网络请求
         if (this.buttons.selectIdArr.length > 0) {
-          const title = '警告';
-          const contentText = `确认执行${obj.name}?`;
+          const title = this.$t('feedback.warning');
+          const contentText = this.$t('messages.confirmAction',{action:obj.name});
           this.dialogMessage(title, contentText, obj);
         } else {
           const data = {
             mask: true,
-            title: '警告',
-            content: `请先选择需要${obj.name}的记录！`
+            title: this.$t('feedback.warning'),
+            content: this.$t('messages.chooseRecord',{action:obj.name})
           };
           this.$Modal.fcWarning(data);
         }
@@ -1988,14 +1980,14 @@ export default {
         // 批量提交
         this.buttons.dynamicRequestUrl.submit = obj.requestUrlPath;
         if (this.buttons.selectIdArr.length > 0) {
-          const title = '警告';
-          const contentText = `确认执行${obj.name}?`;
+          const title = this.$t('feedback.warning');
+          const contentText = this.$t('messages.confirmAction',{action:obj.name});
           this.dialogMessage(title, contentText, obj);
         } else {
           const data = {
             mask: true,
-            title: '警告',
-            content: `请先选择需要${obj.name}的记录！`
+            title: this.$t('feedback.warning'),
+            content: this.$t('messages.chooseRecord',{action:obj.name})
           };
           this.$Modal.fcWarning(data);
         }
@@ -2005,14 +1997,14 @@ export default {
       if (obj.name === this.buttonMap.CMD_VOID.name) {
         // 批量作废
         if (this.buttons.selectIdArr.length > 0) {
-          const title = '警告';
-          const contentText = `确认执行${obj.name}?`;
+          const title = this.$t('feedback.warning');
+          const contentText = this.$t('messages.confirmAction',{action:obj.name});
           this.dialogMessage(title, contentText, obj);
         } else {
           const data = {
             mask: true,
-            title: '警告',
-            content: `请先选择需要${obj.name}的记录！`
+            title: this.$t('feedback.warning'),
+            content: this.$t('messages.chooseRecord',{action:obj.name})
           };
           this.$Modal.fcWarning(data);
         }
@@ -2022,14 +2014,14 @@ export default {
       if (obj.name === this.buttonMap.CMD_UNSUBMIT.name) {
         // 批量反提交
         if (this.buttons.selectIdArr.length > 0) {
-          const title = '警告';
-          const contentText = `确认执行${obj.name}?`;
+          const title = this.$t('feedback.warning');
+          const contentText = this.$t('messages.confirmAction',{action:obj.name});
           this.dialogMessage(title, contentText, obj);
         } else {
           const data = {
             mask: true,
-            title: '警告',
-            content: `请先选择需要${obj.name}的记录！`
+            title: this.$t('feedback.warning'),
+            content: this.$t('messages.chooseRecord',{action:obj.name})
           };
           this.$Modal.fcWarning(data);
         }
@@ -2039,8 +2031,8 @@ export default {
       if (obj.name === this.buttonMap.CMD_EXPORT.name) {
         // 导出
         if (this.buttons.selectIdArr.length === 0) {
-          const title = '警告';
-          const contentText = '当前的操作会执行全量导出，导出时间可能会比较慢！是否继续导出？';
+          const title = this.$t('feedback.warning');
+          const contentText = this.$t('messages.exportAllTip')
           this.dialogMessage(title, contentText, obj);
           return;
         }
@@ -2072,16 +2064,15 @@ export default {
           if (blockFullOperation()) { // 控制批量修改在未选择数据时，不做处理
             this.$Modal.fcWarning({
               mask: true,
-              title: '警告',
-              content: '请选择批量修改数据!'
+              title: this.$t('feedback.warning'),
+              content: this.$t('messages.selectModifiedData')
             });
             return;
           }
           this.$Modal.fcWarning({
             mask: true,
-            title: '警告',
-            content: `未勾选记录,将批量更新所有查询结果(共计${this.ag.datas.totalRowCount
-              }行),是否确定继续操作?`,
+            title: this.$t('feedback.warning'),
+            content: this.$t('messages.updateSearchResult',{total:this.ag.datas.totalRowCount}),
             showCancel: true,
             onOk: () => {
               this.modifyDialogshow = true;
@@ -2138,7 +2129,7 @@ export default {
             // 异步导出在[我的任务]查看
             if (window.ProjectConfig.messageSwitch) {
               this.$Modal.fcSuccess({
-                title: '成功',
+                title: this.$t('feedback.success'),
                 mask: true,
                 content: this.buttons.exportdata.message
               });
@@ -2163,8 +2154,8 @@ export default {
               if (this.exportTasks.dialog) {
                 const message = {
                   mask: true,
-                  title: '提醒',
-                  content: ' 本次操作已后台处理，是否至[我的任务]查看',
+                  title: this.$t('feedback.alert'),
+                  content: this.$t('messages.asyncImportSuccess'),
                   showCancel: true,
                   onOk: () => {
                     const type = 'tableDetailVertical';
@@ -2183,7 +2174,7 @@ export default {
               if (this.exportTasks.successMsg) {
                 const data = {
                   mask: true,
-                  title: '成功',
+                  title: this.$t('feedback.success'),
                   content: this.exportTasks.resultMsg
                 };
                 this.$Modal.fcSuccess(data);
@@ -2194,7 +2185,7 @@ export default {
                 this.$R3loading.hide(this.loadingName);
                 const data = {
                   mask: true,
-                  title: '错误',
+                  title: this.$t('feedback.error'),
                   content: `${this.exportTasks.resultMsg}`
                 };
                 this.$Modal.fcError(data);
@@ -2221,7 +2212,7 @@ export default {
         const message = this.buttons.batchDeleteData.message;
         const datas = {
           mask: true,
-          title: '成功',
+          title: this.$t('feedback.success'),
           content: `${message}`
         };
         this.$Modal.fcSuccess(datas);
@@ -2239,7 +2230,7 @@ export default {
         const message = this.buttons.batchVoidForButtonsData.message;
         const data = {
           mask: true,
-          title: '成功',
+          title: this.$t('feedback.success'),
           content: `${message}`
         };
         this.$Modal.fcSuccess(data);
@@ -2259,7 +2250,7 @@ export default {
         const message = this.buttons.batchSubmitData.message;
         const data = {
           mask: true,
-          title: '成功',
+          title: this.$t('feedback.success'),
           content: `${message}`
         };
         this.$Modal.fcSuccess(data);
@@ -2281,7 +2272,7 @@ export default {
         if (message) {
           const data = {
             mask: true,
-            title: '成功',
+            title: this.$t('feedback.success'),
             content: `${message}`
           };
           this.$Modal.fcSuccess(data);
@@ -2389,7 +2380,7 @@ export default {
             this.objTabActionDialog(this.buttons.activeTabAction);
           }
         }
-        if (this.buttons.dialogConfig.contentText.indexOf('批量更新') >= 0) {
+        if (this.buttons.dialogConfig.contentText.indexOf(this.$t('buttons.batchUpdate')) >= 0) {
           this.dataConShow.dataConShow = true;
           this.dataConShow.title = this.$store.state.activeTab.label;
           this.dataConShow.tabConfig = {
@@ -2400,7 +2391,7 @@ export default {
             objid: this.buttons.selectIdArr
           };
         } else if (
-          this.buttons.dialogConfig.contentText.indexOf('操作会执行全量导出') >= 0
+          this.buttons.dialogConfig.contentText.indexOf(this.$t('messages.execExportAll')) >= 0
         ) {
           // this.batchExport(obj);
           // 是否需要进行二次校验
@@ -2434,10 +2425,10 @@ export default {
         if (actionType === 'SYSTEM') {
           if (singleEditType === ':itemId') {
             if (this.buttons.selectIdArr.length === 0) {
-              this.$Message.warning('请勾选ID');
+              this.$Message.warning(this.$t('messages.checkID'));
               return;
             } if (this.buttons.selectIdArr.length > 1) {
-              this.$Message.warning('只能勾选单个ID');
+              this.$Message.warning(this.$t('messages.checkSingleID'));
               return;
             }
             const itemId = this.buttons.selectIdArr.filter(item => item);
@@ -2455,10 +2446,10 @@ export default {
           let linkUrl = '';
           if (tabAction.indexOf(':itemId') !== -1) {
             if (this.buttons.selectIdArr.length === 0) {
-              this.$Message.warning('请勾选ID');
+              this.$Message.warning(this.$t('messages.checkID'));
               return;
             } if (this.buttons.selectIdArr.length > 1) {
-              this.$Message.warning('只能勾选单个ID');
+              this.$Message.warning(this.$t('messages.checkSingleID'));
               return;
             }
             linkUrl = `${tabAction.replace(':itemId', '')}?id=${this.buttons.selectIdArr.toString()}`;
@@ -2515,10 +2506,10 @@ export default {
 
           if (singleEditType === ':itemId') {
             if (this.buttons.selectIdArr.length === 0) {
-              this.$Message.warning('请勾选ID');
+              this.$Message.warning(this.$t('messages.checkID'));
               return;
             } if (this.buttons.selectIdArr.length > 1) {
-              this.$Message.warning('只能勾选单个ID');
+              this.$Message.warning(this.$t('messages.checkSingleID'));
               return;
             }
             const path = `${tabAction.replace(/:itemId/, itemId)}`;

@@ -6,19 +6,19 @@
         class="Button"
         @click="leftRefreshClick"
       >
-        刷新
+        {{$t('buttons.refresh')}}
       </Button>
     </div>
     <div class="content">
       <div class="contentLeft">
         <Input
-          placeholder="请输入角色名"
+          :placeholder="$t('messages.enterRole')"
           clearable
           icon="ios-search"
           @on-clear="searchInputClear"
           @on-change="searchInputChange"
         >
-        <span slot="prepend">检索</span>
+        <span slot="prepend">{{$t('buttons.find')}}</span>
         </Input>
         <div class="menuContainer">
           <Tree
@@ -36,28 +36,28 @@
             class="Button"
             @click="saveClick"
           >
-            保存
+            {{$t('buttons.save')}}
           </Button>
           <Button
             type="fcdefault"
             class="Button"
             @click="rightRefreshClick"
           >
-            刷新
+            {{$t('buttons.refresh')}}
           </Button>
           <Button
             type="fcdefault"
             class="Button"
             @click="addClick"
           >
-            新增
+            {{$t('buttons.add')}}
           </Button>
           <Button
             type="fcdefault"
             class="Button"
             @click="deleteClick"
           >
-            删除
+            {{$t('buttons.delete')}}
           </Button>
         </div>
         <div class="rightTable">
@@ -78,7 +78,7 @@
       mask
       :width="880"
       class="dataPermissionDialog"
-      title="数据过滤设置"
+      :title="$t('messages.dataFilterSetting')"
       @on-ok="dataPermissionModalConfirm"
       @on-cancel="dataPermissionModalCancel"
     >
@@ -93,21 +93,21 @@
               class="Button"
               @click="dataPermissionSearch"
             >
-              查找
+              {{$t('buttons.search')}}
             </Button>
             <Button
               type="fcdefault"
               class="Button"
               @click="screenCondition"
             >
-              选择筛选条件
+              {{$t('messages.chooseFilterCriteria')}}
             </Button>
             <Button
               type="fcdefault"
               class="Button"
               @click="screenResult"
             >
-              选择筛选结果
+              {{$t('messages.chooseFilterResults')}}
             </Button>
           </div>
           <div
@@ -211,7 +211,7 @@
         </div>
         <div class="dataPermissionContainerRight">
           <div class="selectedContainerTitle">
-            <div>已选中（<span style="color: #F34141; font-weight: bold">{{ selectedNum }}</span>）条</div>
+            <div>{{$t('feedback.selected')}}（<span style="color: #F34141; font-weight: bold">{{ selectedNum }}</span>）{{$t('tips.piece')}}</div>
             <i
               class="iconfont iconbj_delete selectedDataDeleteAllIcon"
               @click="selectedDataDeleteAll()"
@@ -240,13 +240,13 @@
       mask
       :width="320"
       class="environmentVariableDialog"
-      title="环境变量设置"
+      :title="$t('messages.envVariableSetting')"
       @on-ok="environmentVariableConfirm"
       @on-cancel="environmentVariableCancel"
     >
       <div class="environmentVariableContainer">
         <div class="environmentVariableLabel">
-          环境变量：
+          {{$t('tips.envVariable')}}：
         </div>
         <Input
           v-model="environmentVariableValue"
@@ -350,7 +350,7 @@
     created() {
       if (this.Version === '1.3') {
         setTimeout(() => {
-          this.$el.innerHTML = '暂未支持此功能';
+          this.$el.innerHTML = this.$t('feedback.notSupportedFeature');
         }, 50);
       } else {
         this.leftRefreshClick();
@@ -400,7 +400,7 @@
                 type: 'index',
                 width: 60,
                 align: 'left',
-                title: '序号'
+                title: this.$t('table.index')
               }
             ];
             this.columns = defaultColumns.concat(res.data.data.tabth.reduce((acc, cur) => {
@@ -630,8 +630,8 @@
                       } else {
                         const data = {
                           mask: true,
-                          title: '提示',
-                          content: '该权限表已经设置数据权限，请重新选择！',
+                          title: this.$t('feedback.alert'),
+                          content: this.$t('messages.permissionHasSet'),
                           onOk: () => {
                             // params.row[params.column.colname] = '';
                             instance.attachFilterClear();
@@ -713,7 +713,7 @@
           }
           this.dataPermissionModal = true;
         } else {
-          this.$Message.warning('请选择权限表');
+          this.$Message.warning(this.$t('messages.selectPermission'));
         }
       }, // 数据权限icon点击
       availableRender() {
@@ -879,16 +879,10 @@
             this.selectTableKey = headerDataArr[0];
           }
           this.dataPermissionColumns = [{
-            title: '序号',
+            title: this.$t('table.index'),
             render: this.serialNumberRender()
           }].concat(Object.keys(headerData).reduce((acc, cur) => {
             const obj = {};
-            // if (cur === 'ID') {
-            //   // obj.title = '序号';
-            //   obj.title = headerData[cur];
-            // } else {
-            //   obj.title = headerData[cur];
-            // }
             if (cur !== 'ID') {
               obj.title = headerData[cur];
               obj.key = cur;
@@ -951,12 +945,12 @@
               promiseArr.push(index);
             });
             Promise.all(promiseArr).then(() => {
-              this.$Message.success('保存成功');
+              this.$Message.success(this.$t('feedback.saveSuccess'));
               this.tableSaveData = [];
               this.getTableData();
             });
           } else {
-            this.$Message.warning('没有需要保存的数据');
+            this.$Message.warning(this.$t('messages.noDataSave'));
           }
         }
       }, // 保存按钮点击触发
@@ -1006,11 +1000,11 @@
         return this.tableData.every((item, index) => {
           if (item.isEditPermissionTable) {
             if (item.AD_TABLE_ID === '') {
-              this.$Message.warning(`请选择第${index + 1}行的权限表`);
+              this.$Message.warning(this.$t('messages.selectPermissionTable', {num:index + 1}));
               return false;
             }
             if (item.SQLFILTER === '') {
-              this.$Message.warning(`请给第${index + 1}行设置数据权限`);
+              this.$Message.warning(this.$t('messages.setDataPermissions', {num:index + 1}));
               return false;
             }
             return true;
@@ -1037,10 +1031,10 @@
         if (this.tableDeleteData.length > 0) {
           if (this.checkTableAllSaveData()) {
             this.$Modal.fcWarning({
-              title: '提示',
+              title: this.$t('feedback.alert'),
               mask: true,
               showCancel: true,
-              content: '是否确定要删除选中的数据！',
+              content: this.$t('messages.confirmDelete'),
               onOk: () => {
                 network.post('/p/cs/batchDelete', {
                   tableName: 'AD_DATA_PERMISSION', // 主表表名
@@ -1055,18 +1049,18 @@
             });
           } else {
             this.$Modal.fcWarning({
-              title: '提示',
+              title: this.$t('feedback.alert'),
               mask: true,
-              content: '还有未保存的数据！',
+              content: this.$t('messages.unsavedData'),
               onOk: () => {
               }
             });
           }
         } else {
           this.$Modal.fcWarning({
-            title: '提示',
+            title: this.$t('feedback.alert'),
             mask: true,
-            content: '请选择要删除的数据！',
+            content: this.$t('messages.chooseDeleteData'),
             onOk: () => {
             }
           });
@@ -1105,12 +1099,12 @@
             if (this.multipleDropSelectedData[item.AKNAME] && Object.keys(this.multipleDropSelectedData[item.AKNAME].length > 0)) {
               labelIndex += 1;
               if (labelIndex > 1) {
-                labelStr += ' 并且 ';
+                labelStr += ` ${this.$t('tips.and')} `;
               }
               if (this.multipleDropSelectedData[item.AKNAME].copyValue) {
                 copyValue = this.multipleDropSelectedData[item.AKNAME].copyValue;
               }
-              labelStr += `${item.NAME}包含（${this.multipleDropSelectedData[item.AKNAME].label}）`;
+              labelStr += `${item.NAME}${this.$t('tips.contain')}（${this.multipleDropSelectedData[item.AKNAME].label}）`;
               idValue[item.AKNAME] = this.multipleDropSelectedData[item.AKNAME].value;
             }
           });
@@ -1131,7 +1125,7 @@
           this.searchCondition = {};
           this.getSearchResultTableData();
         } else {
-          this.$Message.warning('请选择筛选条件');
+          this.$Message.warning(this.$t('messages.selectFilterCriteria'));
         }
       }, // 数据权限弹窗的筛选条件按钮
       screenResult() {
@@ -1139,7 +1133,7 @@
           this.toShowTableSelectedData();
           this.getScreenResultCheckData();
         } else {
-          this.$Message.warning('请选中筛选结果');
+          this.$Message.warning(this.$t('messages.selectFilterResults'));
         }
       }, // 数据权限弹窗的筛选结果按钮
       multipleDropSelected(val, instance, index) {
@@ -1266,7 +1260,7 @@
       toShowTableSelectedData() {
         if (Object.keys(this.selectTableObj).length > 0) {
           if (this.selectedDataList.find(item => item.value === this.selectTableObj.value)) {
-            this.$Message.error('该记录已在选中列表中');
+            this.$Message.error(this.$t('messages.recordInList'));
           } else {
             this.selectedDataList.push(this.selectTableObj);
           }

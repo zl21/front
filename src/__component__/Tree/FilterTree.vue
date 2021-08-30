@@ -64,7 +64,7 @@
       placeholder: {
         type: String,
         default() {
-          return '请输入';
+          return this.$t('form.inputPlaceholder');
         }
       } // 搜索输入框的placeholder
     },

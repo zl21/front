@@ -7,8 +7,9 @@ import {filtercolval } from './filtercolval.js';
 
   
 export default {
-  mounted() {
-    if(this.items.webconf && this.items.webconf.filtercolval){
+  methods:{
+    setMapFiltercolval(){
+      if(this.items.webconf && this.items.webconf.filtercolval){
 
         // 过滤显示字段
         this.$nextTick(()=>{
@@ -17,6 +18,7 @@ export default {
           if(!targetVm[0]){
             return;
           }
+
           if(targetVm[0].items.webconf){
               targetVm[0].items.webconf.filtercolval = colfiltercolval;
           }else{
@@ -25,10 +27,26 @@ export default {
           }
           targetVm[0].items.webconf.filtercolval.col =this.items.colname;
           // 兼容初始化渲染过滤
-          filtercolval(targetVm[0],this.items.webconf.filtercolval)
-          delete this.items.webconf.filtercolval;
+          filtercolval(targetVm[0],this.items.webconf.filtercolval);         
+           delete this.items.webconf.filtercolval;
+        
         })
        
      }
+
+    }
+
+  },
+  mounted() {
+    if(this.items.detailType){
+      this.setMapFiltercolval()
+
+    }else{
+      setTimeout(()=>{
+        this.setMapFiltercolval()
+      },110)
+
+    }
+   
   }  
 };

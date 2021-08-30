@@ -11,6 +11,7 @@
  */
 
  import { Version } from '../../constants/global'
+ import i18n from '../../assets/js/i18n'
 
 function get_default_datenumber(formItem, isDetailPage) {
   // 单对象界面
@@ -259,7 +260,7 @@ export default class ParameterDataProcessing {
 
         return [
           {
-            Label: `已经选中${valuedata.total}条` || '',
+            Label: i18n.t('messages.selectedItem',{total:valuedata.total}) || '',
             ID: this.item.valuedata
           }
         ]

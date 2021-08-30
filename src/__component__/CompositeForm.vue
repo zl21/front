@@ -1463,7 +1463,7 @@
           const premLinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
           const premLinkageFormInput = premLinkageForm[this.tableGetName + current.refcolprem.srccol];
           if (premLinkageFormInput && premLinkageFormInput.item.show && !premValue) {
-            this.$Message.info(`请先选择${premLinkageFormInput.item.name}`);
+            this.$Message.info(`${this.$t('form.selectPlaceholder')}${premLinkageFormInput.item.name}`);
           }
           if (!premValue) {
             let pretableName = document.querySelector('.compositeAllform');
@@ -1558,9 +1558,9 @@
           if (!refcolval) {
             if (LinkageFormInput && LinkageFormInput.item.show) {
               if (current.refcolval.maintable || current.refcolval.mainsrccol) {
-                this.$Message.info(`请先选择主表${LinkageFormInput.item.name}`);
+                this.$Message.info(`${this.$t('messages.selectMainTable')}${LinkageFormInput.item.name}`);
               } else {
-                this.$Message.info(`请先选择${LinkageFormInput.item.name}`);
+                this.$Message.info(`${this.$t('form.selectPlaceholder')}${LinkageFormInput.item.name}`);
               }
 
               if (this.tableGetName) {
@@ -2063,7 +2063,7 @@
         if (checkIsReadonly && item.fkdisplay === 'mop') {
           if (item.valuedata && /total/.test(item.valuedata)) {
             const valuedata = JSON.parse(item.valuedata);
-            return `已经选中${valuedata.total}条` || '';
+            return this.$t('messages.selectedItem',{total:valuedata.total}) || '';
           }
           return this.defaultSetValue[item.colname] || item.valuedata || item.default || item.defval || '';
         }
@@ -2112,8 +2112,8 @@
             arr[0].ID = item.valuedata || item.defval || '';
             if (item.valuedata && /total/.test(item.valuedata)) {
               const valuedata = JSON.parse(item.valuedata);
-              arr[0].Label = `已经选中${valuedata.total}条` || '';
-              arr.push(`已经选中${valuedata.total}条` || '');
+              arr[0].Label = this.$t('messages.selectedItem',{total:valuedata.total}) || '';
+              arr.push(this.$t('messages.selectedItem',{total:valuedata.total}) || '');
             }
           } else if (item.fkdisplay === 'pop') {
             arr.push((fkdisplayValue && fkdisplayValue.label) || '');
@@ -2461,7 +2461,7 @@
                 closable: true,
                 scrollable: true,
                 maskClosable: false,
-                title: '弹窗多选',
+                title: this.$t('messages.multiplePop'),
                 'footer-hide': false
               }
             };
@@ -2516,7 +2516,7 @@
             height: 120,
             readonly,
             ImageSize,
-            name: '上传',
+            name: this.$t('buttons.upload'),
             masterName: this.masterName,
             objId: this.masterId,
             sendData: {
@@ -2681,7 +2681,7 @@
           // }
           const labelForm = Object.assign(JSON.parse(JSON.stringify(this.r3Form)), this.labelForm);
           if (labelForm[item.key] === undefined || labelForm[item.key] === '' || labelForm[item.key] === null) {
-            const label = `请输入${item.label}`;
+            const label = `${this.$t('form.inputPlaceholder')}${item.label}`;
             VerificationMessage.messageTip.push(label);
             if (VerificationMessage.messageTip.length < 2) {
               VerificationMessage.validateForm = item.onfousInput;

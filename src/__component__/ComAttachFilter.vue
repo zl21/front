@@ -71,6 +71,7 @@
   import dataProp from '../__config__/props.config';
   import { Version } from '../constants/global';
   import Upload from '../__utils__/upload';
+  import i18n from '../assets/js/i18n'
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -119,30 +120,24 @@
     watch: {
       propstype() {
         // 将设置的props和默认props进行assign
-        // const item = this.items;
         if (this.propstype.fkdisplay === 'pop') {
           this.value = this.defaultSelected && this.defaultSelected.length > 0 ? this.defaultSelected[0].Label : '';
         } else if ((this.defaultSelected && this.defaultSelected.length > 0) && this.resultData && Object.keys(this.resultData).length > 0) {
-          this.value = `已经选中${this.resultData.value.IN.length}条数据`;
+          this.value = this.$t('messages.selectedData',{total:this.resultData.value.IN.length});
         } else {
            if(this.defaultSelected.length > 0 ){
               if(Array.isArray(this.defaultSelected[0].ID)){
-                this.value = Array.isArray(this.defaultSelected[0].ID) ? `已经选中${this.defaultSelected[0].ID.length}条数据` : '';
+                this.value = Array.isArray(this.defaultSelected[0].ID) ? this.$t('messages.selectedData',{total:this.defaultSelected[0].ID.length}) : '';
               }else{
                 this.value = this.defaultSelected[0].Label;
               }
           }else{
             
           }
-          //this.value = this.defaultSelected && this.defaultSelected.length > 0 ? Array.isArray(this.defaultSelected[0].ID) ? `已经选中${this.defaultSelected[0].ID.length}条数据` : `已经选中${this.defaultSelected.length}条数据` : '';
         }
 
 
         this.selected = this.defaultSelected;
-        // if (this.selected[0].Label && /total/.test(this.selected[0].Label)) {
-        //   const valuedata = JSON.parse(this.selected[0].Label);
-        //   this.selected[0].Label = `已经选中${valuedata.total}条` || '';
-        // }
         
         // 如果存在cellRendererParams说明是用ag表格渲染的commonTable，需要删除用不到的字段，不然json转化会报错
         if (this.propstype.cellRendererParams) {
@@ -163,7 +158,7 @@
           this.propsData.componentType = myPopDialog;
         } else {
           this.propsData.componentType = Dialog;
-          if (this.defaultSelected[0] && this.defaultSelected[0].ID && /选中/.test(this.value)) {
+          if (this.defaultSelected[0] && this.defaultSelected[0].ID && this.value.includes(this.$t('tips.beSelected'))) {
             // const data = this.defaultSelected[0].ID;
             // console.log(this.defaultSelected[0]);
             const data = Array.isArray(this.defaultSelected[0].ID) ? this.defaultSelected[0].ID : JSON.parse(this.defaultSelected[0].ID);
@@ -230,9 +225,6 @@
       attachFilterChange(value) {
         this.value = value;
         // 谢世华  为了处理标准列表界面字段数据消失问题
-        // if (value.indexOf('已经选中') >= 0) {
-        //   this.valueChange('change');
-        // }
         this.valueChange('change');
 
       },
@@ -379,7 +371,7 @@
       attachFile(index, res, instance) {
         if (res.code !== 0) {
           this.$Modal.fcError({
-            title: '错误',
+            title: this.$t('feedback.error'),
             content: res.message,
             mask: true
           });
@@ -401,7 +393,7 @@
       attachFilterCancel($this) {
         this.filterDate = {};
         if ($this) {
-          if (/选中/.test(this.value)) {
+          if (this.value.includes(this.$t('tips.beSelected'))) {
             this.filterDate = this.resultData;
           }
           $this.complexs = false;
@@ -424,7 +416,7 @@
           const saveType = JSON.parse(this.$refs.complex.savObjemessage()).lists.result.length;
           this.resultData = savemessage;
           if (saveType > 0) {
-            const value = `已经选中${this.$refs.complex.resultData.total}条数据`;
+            const value = this.$t('messages.selectedData',{total:this.$refs.complex.resultData.total});
 
 
             if (!this.propsData.fkobj.saveType) {
@@ -469,6 +461,7 @@
       }
     },
     created() {
+      this.$t = i18n.t.bind(i18n)
       // 如果存在cellRendererParams说明是用ag表格渲染的commonTable，需要删除用不到的字段，不然json转化会报错
       if (this.propstype.cellRendererParams) {
         delete this.propstype.cellRendererParams;
@@ -503,8 +496,7 @@
           // this.propsData.disabled = true;
         }
       }
-
-      if (this.defaultSelected[0] && this.defaultSelected[0].ID && /选中/.test(this.defaultSelected[0].Label)) {
+      if (this.defaultSelected[0] && this.defaultSelected[0].ID && this.defaultSelected[0].Label.includes(this.$t('tips.beSelected'))) {
         let data = this.defaultSelected[0].ID;
         // const data = this.defaultSelected[0].ID;
         if(typeof data ==='string' && (/\{/).test(data)){

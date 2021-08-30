@@ -1,17 +1,17 @@
 <template>
   <div>
-    <span class="titleTOP">账号登录</span>
+    <span class="titleTOP">{{$t('tips.accountLogin')}}</span>
     <div class="divAccount">
       <img src="../../assets/image/account.png" class="icon">
-      <input ref="username" type="text" value="" class="username" placeholder="请输入用户名">
+      <input ref="username" type="text" value="" class="username" :placeholder="$t('messages.enterUserName')">
     </div>
     <div class="divMima">
       <img src="../../assets/image/password.png" class="icon">
-      <input ref="password" type="password" value="" class="pwd" placeholder="请输入密码">
+      <input ref="password" type="password" value="" class="pwd" :placeholder="$t('messages.enterPassword')">
     </div>
     <div class="divCode" v-if="loginType">
       <img src="../../assets/image/code.png" class="icon">
-      <input ref="code" value="" class="pwd code" placeholder="请输入验证码">
+      <input ref="code" value="" class="pwd code" :placeholder="$t('messages.enterCode')">
     </div>
     <img v-if="loginType && !codeLoading" :src="imgSrc" @click="getCode" class="codeimg">
     <div v-if="loginType && codeLoading" class="codeimg" style="line-height: inherit"><Spin fix></Spin></div>
@@ -25,8 +25,9 @@
 </template>
 
 <script>
-  import network, {urlSearchParams} from '../../__utils__/network';
-  import {enableGateWay, enableLoginPro, encryptedPassword, classFix} from '../../constants/global';
+  import network from '../../__utils__/network';
+  import { checkTime } from "../../__utils__/utils";
+  import {enableGateWay, enableLoginPro} from '../../constants/global';
   export default {
     name: 'AccountLogin',
     props: {
@@ -45,7 +46,8 @@
         globalServiceId: window.localStorage.getItem('serviceId') || '',
         imgSrc: '',
         key: '',
-        codeLoading: false
+        codeLoading: false,
+        lastTime: '',
       }
     },
     mounted() {
@@ -62,6 +64,11 @@
       },
       // 获取验证码
       getCode() {
+        if (this.lastTime && checkTime(this.lastTime)) {
+          this.codeLoading = false;
+          return false
+        }
+        this.lastTime = new Date().getTime();
         this.codeLoading = true;
         network.post(enableGateWay() ? `/${this.globalServiceId}/p/c/getcCode` : '/p/c/getcCode').then(res => {
           if (res && res.data) {

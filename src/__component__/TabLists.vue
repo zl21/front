@@ -22,7 +22,7 @@
         >
           <i
             class="iconfont iconbj_delete "
-            title="关闭所有已打开的单据"
+            :title="$t('messages.closeBills')"
           />
           <!-- <img
             src="../assets/image/delete.png"

@@ -386,26 +386,26 @@
       waterMarkText() {
         const customizeWaterMark = getCustomizeWaterMark();
         const textMap = Object.assign({
-          accepet: '已验收',
-          back: '已退回',
-          box: '已装箱',
-          boxing: '装箱中',
-          charge: '已记账',
-          check: '已收银',
-          completed: '已完成',
-          confirm: '已确认',
-          execute: '已执行',
-          executing: '执行中',
-          extremely: '异常终止',
-          Inventory: '已盈亏',
-          send: '已发出',
-          submit: '已提交',
-          system: '系统',
-          terminate: '已终止',
-          examine: '审批中',
-          void: '已作废',
-          agreement: '已同意',
-          reject: '已驳回',
+          accepet: this.$t('tips.accepted'),
+          back: this.$t('tips.returned'),
+          box: this.$t('tips.boxed'),
+          boxing: this.$t('tips.boxing'),
+          charge: this.$t('tips.charged'),
+          check: this.$t('tips.cashed'),
+          completed: this.$t('tips.completed'),
+          confirm: this.$t('tips.confirmed'),
+          execute: this.$t('tips.executed'),
+          executing: this.$t('tips.executing'),
+          extremely: this.$t('tips.abnormalTermination'),
+          Inventory: this.$t('tips.profitable'),
+          send: this.$t('tips.sent'),
+          submit: this.$t('tips.submitted'),
+          system: this.$t('tips.system'),
+          terminate: this.$t('tips.terminated'),
+          examine: this.$t('tips.approving'),
+          void: this.$t('tips.invalid'),
+          agreement: this.$t('tips.approved'),
+          reject: this.$t('tips.rejected'),
         }, Object.keys(customizeWaterMark).reduce((a, c) => {
           a[c] = customizeWaterMark[c].text;
           return a;
@@ -660,22 +660,18 @@
           const itemName = this.tableName;// 子表表名
           const itemCurrentParameter = this.itemCurrentParameter;
           if (itemId === 'New') { // 主表新增保存和编辑新增保存
-            // console.log('主表新增保存和编辑新增保存');
             const type = 'add';
             const path = savePath;
             const objId = -1;
 
             if (!this.subtables()) { // 为0的情况下是没有子表
-              // console.log('没有子表');
               if (path) { // 配置path
-                // console.log(' 主表新增保存,配置path的', this.dynamic.requestUrlPath);
                 this.savaNewTable(type, path, objId);
               } else { // 没有配置path
                 this.savaNewTable(type, path, objId);
               }
             }
             if (this.subtables()) { // 大于0 的情况下是存在子表
-              // console.log('有子表');
               if (path) { // 配置path
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               } else { // 没有配置path
@@ -683,17 +679,13 @@
               }
             }
           } else if (itemId !== '-1') { // 主表编辑保存
-            // console.log('主表编辑保存');
             const path = savePath;
             const type = 'modify';
             if (!this.subtables()) { // 为0的情况下是没有子表
-              // console.log('没有子表',);
 
               if (savePath) { // 配置path
-                // console.log('主表编辑保存,配置path的逻辑', obj.requestUrlPath);
                 this.savaNewTable(type, path, this.itemId);
               } else { // 没有配置path
-                // console.log('主表编辑保存,没有配置path的逻辑');
                 const objId = itemId;
                 this.savaNewTable(type, path, objId);
               }
@@ -789,7 +781,7 @@
             } else {
               types = 'tableDetailVertical';
             }
-            const label = `${this.$store.state.global.activeTab.label.replace('新增', '编辑')}`;
+            const label = `${this.$store.state.global.activeTab.label.replace(this.$t('buttons.add'), this.$t('buttons.edit'))}`;
             const tab = {
               type: types,
               tableName,
@@ -883,7 +875,7 @@
               if (this.itemId === 'New') {
                 const addInfo = this.$store.state[this[MODULE_COMPONENT_NAME]].updateData[this.tableName].itemCurrentParameter.add[this.itemName];
                 if (Object.values(addInfo).length < 1) {
-                  this.$Message.warning('个人信息不能为空!');
+                  this.$Message.warning(this.$t('messages.requiredPersonalInfo'));
                   return false;
                 }
               }
@@ -934,7 +926,7 @@
           // 条件1: 没初始值，且没有输入值
           // 条件2: 有初始值，但是值跟之前对比没发生变化
           // currentValue === 0是因为数子输入框输入再删除会把默认值变成0，而不是''
-          // currentValue === '[]'的出现的场景时文件上传表单
+          // currentValue === '[]' 的出现的场景时文件上传表单
           if((currentValue === 0 && defaultValue === undefined) || (currentValue === '' && defaultValue === undefined) || (currentValue === '[]' && defaultValue === undefined) || isEqualString || isEqual) {
             delete form[field]
           }

@@ -7,10 +7,11 @@
 
 
 import { defaultrange } from '../../constants/global';
-import { DropDownSelectFilter } from '@syman/ark-ui-bcl';
+// import { DropDownSelectFilter } from '@syman/ark-ui-bcl';
 import DropMethods from '../ExtendedMethods/DropMethods';
 import network from '../../__utils__/network';
 import { SetPlaceholder } from './setProps';
+let  DropDownSelectFilter = $Bcl.arkDropDownSelectFilter;
 
 import {
   setisShowPopTip,
@@ -22,7 +23,7 @@ import {
 class BusDropDownSelectFilter {
   constructor(item) {
     this.item = item;
-    this.Vm = Object.create(DropDownSelectFilter);
+    this.Vm = DropDownSelectFilter;
     this.mergeProps();
     this.mergeMethods();
   }
@@ -100,6 +101,7 @@ class BusDropDownSelectFilter {
   // 合并methods
   mergeMethods() {
     this.Vm.created = function () {
+      console.log(232323,'================');
       this.item = this.PropsData.item;
       this.item.Query = this.PropsData.Query;
       this.activeTab = this.$parent.$parent.activeTab;
@@ -112,6 +114,7 @@ class BusDropDownSelectFilter {
       
 
       this.PropsData.isShowPopTip = () => {
+        console.log(121212,'===')
         if (this.item.refcolval) {
           if (!this.item.webconf) {
             this.item.webconf = {}

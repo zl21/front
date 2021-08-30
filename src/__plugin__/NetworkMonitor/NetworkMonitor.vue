@@ -50,7 +50,7 @@
         columns: [
           {
             key: 'serialId',
-            title: '序号',
+            title: this.$t('table.index'),
             render: (createElement, data) => createElement('span', data.index + 1 + (this.page - 1) * this.pageSize)
           },
           { key: 'timecost', title: 'TimeCost' },

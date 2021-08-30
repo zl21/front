@@ -28,7 +28,7 @@ import {
 } from '../__utils__/localStorage';
 import setCustomeLabel from '../__utils__/setCustomeLabel';
 import getModuleName from '../__utils__/getModuleName';
-
+import i18n from '../assets/js/i18n';
 
 let pluginModules = {};
 
@@ -205,14 +205,6 @@ export default (router) => {
             next('/')
             return false
           }
-        }else{
-          var reg = RegExp(`C.${to.params.customizedModuleName}`);
-          if(reg.test(JSON.stringify(keepAliveLabelMaps)) === false){
-            // 包含定制界面      
-            next('/')
-            return false  
-          }
-
         }
         
       }
@@ -238,8 +230,8 @@ export default (router) => {
       [LINK_MODULE_COMPONENT_PREFIX]: '',
       [STANDARD_TABLE_COMPONENT_PREFIX]: '',
       [STANDARD_COMMONTABLE_COMPONENT_PREFIX]: '',
-      [VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX]: itemId === 'New' ? '新增' : '编辑',
-      [HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX]: itemId === 'New' ? '新增' : '编辑',
+      [VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX]: itemId === 'New' ? i18n.t('buttons.add') : i18n.t('buttons.edit'),
+      [HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX]: itemId === 'New' ? i18n.t('buttons.add') : i18n.t('buttons.edit'),
     };
     const paramItemId = String(itemId) === '-1' ? 'New' : `${itemId}`;
     const paramTableId = tableId;
@@ -392,7 +384,6 @@ export default (router) => {
         activateSameCustomizePageFlag = true;
       }
     }
-    // console.log('新开',keepAliveModuleName,activateSameCustomizePageFlag);
     if (dynamicModuleTag !== '' && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName).length === 0 && !activateSameCustomizePageFlag) {
       // 新开tab
       // 目标路由所对应的[功能模块]没有存在于openedMenuLists中，则将目标路由应该对应的模块信息写入openedMenuLists

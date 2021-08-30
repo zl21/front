@@ -8,7 +8,9 @@
   export default {
     name: 'WelcomePage',
     computed: {
-      classes: () => `${classFix}welcomepage`
+      classes() {
+        return this.$i18n.locale === 'zh' ? `${classFix}welcomepage`: `${classFix}welcomepage welcomepage-en-bg`
+      }
     }
   };
 </script>
