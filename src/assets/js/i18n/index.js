@@ -6,7 +6,7 @@ import network, { urlSearchParams } from '../../../__utils__/network'
 Vue.use(VueI18n)
 
 const locale = $Bcl.locale
-const lang = localStorage.getItem('r3-lang') || 'en' // 获取本地缓存语言。用于刷新界面后保持语言不变
+const lang = localStorage.getItem('r3-lang') || 'zh' // 获取本地缓存语言。用于刷新界面后保持语言不变
 
 
 const i18n = new VueI18n({
