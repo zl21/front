@@ -31,7 +31,7 @@ R3.launchApplication({
   enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
   filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
   routerFilter:true, // 跳转是否过滤
-  listFormWebconf: ['filtercolval'],
+  listFormWebconf: [],
   domPortal: {
     // params对象属性,fromComponent用于区别哪个组件的水印,type区分布局结构
     waterMark(params) {
