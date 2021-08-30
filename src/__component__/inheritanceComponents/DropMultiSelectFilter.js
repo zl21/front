@@ -22,7 +22,7 @@
  class CustomDropMultiSelectFilter {
    constructor(item) {
      this.item = item;
-     this.Vm = Object.create(DropMultiSelectFilter);
+     this.Vm = DropMultiSelectFilter;
      this.mergeProps();   
      this.mergeMethods(); 
    }

@@ -7,9 +7,9 @@ import {filtercolval } from './filtercolval.js';
 
   
 export default {
-  mounted() {
-    setTimeout(()=>{
-    if(this.items.webconf && this.items.webconf.filtercolval){
+  methods:{
+    setMapFiltercolval(){
+      if(this.items.webconf && this.items.webconf.filtercolval){
 
         // 过滤显示字段
         this.$nextTick(()=>{
@@ -33,6 +33,20 @@ export default {
         })
        
      }
-    },110)
+
+    }
+
+  },
+  mounted() {
+    if(this.items.detailType){
+      this.setMapFiltercolval()
+
+    }else{
+      setTimeout(()=>{
+        this.setMapFiltercolval()
+      },110)
+
+    }
+   
   }  
 };

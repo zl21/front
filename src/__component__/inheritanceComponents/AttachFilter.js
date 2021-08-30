@@ -19,7 +19,7 @@
  class CustomAttachFilter {
    constructor(item) {
      this.item = item;
-     this.Vm = Object.create(MopMultiSelect);
+     this.Vm = MopMultiSelect;
      this.mergeProps();
      this.mergeMethods();
    }
