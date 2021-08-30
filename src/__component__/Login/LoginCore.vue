@@ -64,10 +64,6 @@
     props: {
       loginSucCbk: {
         type: Function
-      },
-      locale: {
-        type: String,
-        default: 'zh'
       }
     },
     created() {
@@ -84,14 +80,6 @@
           `${classFix}loginCore`,
         ];
       },
-    },
-    watch: {
-      locale:{
-        handler(val){
-          window.localStorage.setItem('locale', val)
-        },
-        immediate:true
-      }
     },
     methods: {
       login() {

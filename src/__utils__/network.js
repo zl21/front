@@ -84,7 +84,7 @@ axios.interceptors.request.use(
   config => {
       // if(window.ProjectConfig.enciphered){}
 
-        config.headers['locale'] = window.localStorage.getItem('locale') || 'zh';
+        config.headers['locale'] = window.localStorage.getItem('r3-lang') || 'zh';
 
         let number = Math.floor(Math.random() * 10000);
         let sessionCookie = window.localStorage.getItem('sessionCookie');
