@@ -3,6 +3,7 @@ import network, { urlSearchParams } from '../../../__utils__/network';
 import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 import { querySearch } from '../../../__utils__/indexedDB';
 import { enableKAQueryDataForUser } from '../../../constants/global';
+import i18n from '../../../assets/js/i18n';
 
 export default {
   setColHide(store, data) {
@@ -141,7 +142,7 @@ export default {
             multi_tab: queryData.datas.multi_tab
           };
           if (queryData.datas.tablequery && queryData.datas.tablequery.multi_tab && queryData.datas.tablequery.multi_tab.length > 0) {
-            queryData.datas.tablequery.multi_tab.unshift({ tab_name: '全部' });
+            queryData.datas.tablequery.multi_tab.unshift({ tab_name: i18n.t('tips.all') });
             queryData.datas.tablequery.open = true;
           }
           commit('updateFilterButtons', queryData.datas.listbutton_filter_conf);

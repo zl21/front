@@ -3,6 +3,7 @@ import { stringify } from 'querystring';
 // import { ComponentResolver } from 'ag-grid/dist/lib/components/framework/componentResolver';
 import router from '../../router.config';
 import { enableOpenNewTab } from '../../../constants/global';
+import i18n from '../../../assets/js/i18n';
 
 export default {
   updataClickSave(state, func) {
@@ -338,7 +339,7 @@ export default {
               } else if (c.fkdisplay === 'mop') {
                 try {
                   const number = JSON.parse(b.valuedata).lists.result.length;
-                  copySaveDataForParam[c.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
+                  copySaveDataForParam[c.colname] = [{ ID: b.valuedata, Label: i18n.t('messages.selectedData',{total:number}) }];
                 } catch (e) {
                   copySaveDataForParam[c.colname] = c.valuedata;
                 }

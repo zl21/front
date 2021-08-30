@@ -34,7 +34,7 @@
         :class="{ disabled: isDefault }"
         @click="pickAll"
       >
-        {{ pickedAll ? '清空' : '全选' }}
+        {{ pickedAll ? $t('actions.clear') : $t('actions.selectAll') }}
       </li>
     </ul>
   </div>

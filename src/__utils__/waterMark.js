@@ -1,7 +1,8 @@
+import i18n from '../assets/js/i18n';
 
 export const createWatermark = (object) => {
   const defaultSettings = {
-    textContent: ['请设置水印显示文字'], // 每行显示的文本内容
+    textContent: [i18n.t('messages.setWatermarkText')], // 每行显示的文本内容
     watermark_intervalWidth: 100, //  间隔宽度
     watermark_intervalheight: 100, // 间隔高度
     style: {

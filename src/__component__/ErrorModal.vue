@@ -30,7 +30,7 @@
       // }, // 是否可以滚动
       title: {
         type: String,
-        default: () => '标题'
+        default: function() {return this.$t('tips.title')}
       }, // 设置标题title
       titleAlign: {
         type: String,
@@ -67,11 +67,15 @@
       }, // 是否显示底部
       okText: {
         type: String,
-        default: () => '确定'
+        default: function() {
+          return this.$t('buttons.confirm')
+        }
       },
       cancelText: {
         type: String,
-        default: () => '取消'
+        default: function() {
+          return this.$t('buttons.cancel')
+        }
       },
       cancelFun: {
         type: Function,
@@ -83,7 +87,7 @@
       },
       contentText: {
         type: String,
-        default: () => '暂无提示'
+        default: function() { return this.$t('tips.noPrompt')}
       },
     },
     data() {

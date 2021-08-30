@@ -19,7 +19,7 @@ module.exports = {
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop网关开启环境
   // target: 'http://r3.burgeon.cn:19999/', // 'http://106.15.154.165:19999/', // Cube
   // target: 'http://cmsqas.lining.com', // 卡宾
- // target: 'http://r3.burgeon.cn:28888/', // 李宁
+//  target: 'http://r3.burgeon.cn:28888/', // 李宁
   // target: 'http://jflow-shangfei-r3.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://ark-share-dev.dev.burgeononline.com', // ArkShare环境
   // target: 'http://r3.burgeon.cn:28888/', // lining环境
@@ -160,8 +160,8 @@ module.exports = {
   agGridOptions: { // ag表格的配置
     // rowHeight: 100
   },
-  messageSwitch: false, // 消息开关
-  // useAgGrid: true, // 明细界面的表格全局用ag表格进行渲染
+  messageSwitch: true, // 消息开关
+  useAgGrid: true, // 明细界面的表格全局用ag表格进行渲染
   // (data) => {
   //   if (data.router.params) {
   //     if (data.router.params.tableName && data.config().configPage[data.router.params.tableName].filter(u => u === data.url).length > 0) { // 筛选出配置界面不需要根据框架code报错提示框的接口
@@ -193,6 +193,7 @@ module.exports = {
   computeForSubtable: false,
   routerFilter:false, // 跳转是否过滤
   setXss:false, // 是否xss 攻击过滤
+  filterHistory:[], // 过滤不需要历史记录的表
   enableLoginPro: false, // 是否开启普通登录模式 false普通 true手机验证码
   //filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
   //listFormWebconf:['filtercolval'] // 列表是否支持webcof 字段

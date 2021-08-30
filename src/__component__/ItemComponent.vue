@@ -557,7 +557,7 @@
 
 
         const placeholder = this.items.props.webconf && this.items.props.webconf.placeholder ? this.items.props.webconf.placeholder : null;
-        item.props.placeholder = placeholder || `${(dataProp[item.type] && dataProp[item.type].props) ? dataProp[item.type].props.placeholder : '请输入'}${item.title}`;
+        item.props.placeholder = placeholder || `${(dataProp[item.type] && dataProp[item.type].props) ? dataProp[item.type].props.placeholder : this.$t('form.inputPlaceholder')}${item.title}`;
 
         if(item.type === "input" && window.ProjectConfig.setXss){
             item.props.htmlExp = true;
@@ -579,7 +579,7 @@
             // item.componentType = Dialog;
             if (!item.props.disabled) {
               item.props.fkobj.show = true;
-              if (!item.props.datalist[0] || item.props.datalist[0].value !== '更多筛选') {
+              if (!item.props.datalist[0] || item.props.datalist[0].value !== this.$t('messages.moreFilters')) {
                 item.props.datalist = dataProp[item.type].props.datalist.concat(
                   item.props.datalist
                 );
@@ -589,7 +589,7 @@
 
             item.props.dialog.model['footer-hide'] = false;
             item.props.datalist.forEach((option, i) => {
-              if (option.value === '导入') {
+              if (option.value === this.$t('buttons.import')) {
                 item.props.datalist[i].url = item.props.fkobj.url;
                 item.props.datalist[i].sendData = {
                   table: item.props.fkobj.reftable
@@ -688,8 +688,8 @@
         } else {
           const data = {
             mask: true,
-            title: '警告',
-            content: '请设置外键关联表的显示配置'
+            title: this.$t('feedback.warning'),
+            content: this.$t('messages.setAssociationTable')
           };
           this.$Modal.fcWarning(data);
           return;
@@ -841,7 +841,7 @@
             console.log(res);
             if (res.data.code === 1) {
               this.$Modal.fcError({
-                title: '错误',
+                title: this.$t('feedback.error'),
                 content: res.data.message,
                 mask: true
               });
@@ -1302,7 +1302,7 @@
             const savemessage = JSON.parse(JSON.stringify($this.savemessage()));
             const saveObjectmessage = $this.savObjemessage();
             this.resultData = savemessage;
-            const value = `已经选中${$this._data.IN.length}条数据`;
+            const value = this.$t('messages.selectedData',{total:$this._data.IN.length});
             const Select = [
               {
                 Label: value,
@@ -1347,8 +1347,8 @@
         this.$Modal.fcWarning({
           mask: true,
           showCancel: true,
-          title: '提示',
-          content: '此操作将永久删除该图片, 是否继续?',
+          title: this.$t('feedback.alert'),
+          content: this.$t('messages.deleteImg'),
           onOk: () => {
             let HEADIMG = this._items.props.itemdata.valuedata.concat([]);
             HEADIMG.splice(index - 1, 1);
@@ -1546,7 +1546,7 @@
         // 图片进度接口
         const resultData = result;
         if (this.readonlyImage()) {
-          this.$Message.info(`只能上传${this._items.props.itemdata.ImageSize}张图片`);
+          this.$Message.info(this.$t('messages.uploadLimit',{total:this._items.props.itemdata.ImageSize}));
           return false;
         }
 

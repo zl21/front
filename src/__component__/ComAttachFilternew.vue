@@ -200,9 +200,6 @@
         // this.InputValue = value;
 
         // // 谢世华  为了处理标准列表界面字段数据消失问题
-        // // if (value.indexOf('已经选中') >= 0) {
-        // //   this.InputValueChange('change');
-        // // }
 
         // this.valueChange('change');
 
@@ -320,7 +317,7 @@
       attachFile(index, res, instance) {
         if (res.code !== 0) {
           this.$Modal.fcError({
-            title: '错误',
+            title: this.$t('feedback.error'),
             content: res.message,
             mask: true
           });

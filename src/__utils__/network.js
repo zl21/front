@@ -81,21 +81,22 @@ const dispatchR3Event = (data) => {
 //http request 拦截器
 axios.interceptors.request.use(
   config => {
-    // if(window.ProjectConfig.enciphered){}
+      // if(window.ProjectConfig.enciphered){}
 
+        config.headers['locale'] = window.localStorage.getItem('r3-lang') || 'zh';
 
-    let number = Math.floor(Math.random() * 10000);
-    let sessionCookie = window.localStorage.getItem('sessionCookie');
-    config.headers['SSSSS-A'] = new Date().getTime();
-    if(sessionCookie === 'undefined'){
-      config.headers['SSSSS-B'] = md5('qwertburgeon'+new Date().getTime()+number);
-    }else{
-      config.headers['SSSSS-B'] = md5('qwertburgeon'+new Date().getTime()+number+sessionCookie);
-    }
+        let number = Math.floor(Math.random() * 10000);
+        let sessionCookie = window.localStorage.getItem('sessionCookie');
+        config.headers['SSSSS-A'] = new Date().getTime();
+        if(sessionCookie === 'undefined'){
+          config.headers['SSSSS-B'] = md5('qwertburgeon'+new Date().getTime()+number);
+        }else{
+          config.headers['SSSSS-B'] = md5('qwertburgeon'+new Date().getTime()+number+sessionCookie);
+        }
 
-    config.headers['SSSSS-C'] = number;
+        config.headers['SSSSS-C'] = number;
 
-    return config
+      return config
   }
 )
 axios.interceptors.response.use(
@@ -154,7 +155,7 @@ axios.interceptors.response.use(
     if (filterUrlForNetworkScript(filterUrlParams)) {
       if ((response.data.code === -1 || response.data.code === -2)) {
         let errorHTML = Array.isArray(response.data.error || response.data.data) && (response.data.error || response.data.data).reduce((arr, x) => {
-          arr.push(`<p>${x.objid ? `objid${x.objid}` : '修改失败'}:${x.message}</p>`); return arr;
+          arr.push(`<p>${x.objid ? `objid${x.objid}` : i18n.t('feedback.modifyFail')}:${x.message}</p>`); return arr;
         }, []).join('') || '';
         // if (!config.url.includes('/p/cs/batchSave')) {
         //   errorHTML = '';
@@ -162,7 +163,7 @@ axios.interceptors.response.use(
         // 处理1.4版本的error明细报错
         if (response.data.data && Array.isArray(response.data.data.errors)) {
           errorHTML = response.data.data.errors.reduce((arr, x) => {
-            arr.push(`<p>${x.id ? `明细${x.id}` : '修改失败'}:${x.message}</p>`); return arr;
+            arr.push(`<p>${x.id ? `${i18n.t('feedback.detail')}${x.id}` : i18n.t('feedback.modifyFail')}:${x.message}</p>`); return arr;
           }, []).join('') || '';
         }
         let Modalflag = true;
@@ -179,7 +180,7 @@ axios.interceptors.response.use(
           window.vm.$Modal.fcError({
             mask: true,
             titleAlign: 'center',
-            title: '错误',
+            title: i18n.t('feedback.error'),
             // content: formatJsonEmg
             render: h => h('div', [
               h('div', {
@@ -272,8 +273,8 @@ axios.interceptors.response.use(
       if (status === 403) {
         if (logoutTips() && getProjectQuietRoutes().indexOf(router.currentRoute.path) === -1) {
           window.vm.$Modal.fcWarning({
-            title: '警告',
-            content: '您已失去会话，是否退出登录?',
+            title: i18n.t('feedback.warning'),
+            content: i18n.t('messages.lostSession'),
             mask: true,
             showCancel: true,
             onOk: () => {
@@ -318,7 +319,7 @@ axios.interceptors.response.use(
           window.vm.$Modal.fcError({
             mask: true,
             titleAlign: 'center',
-            title: '错误',
+            title: i18n.t('feedback.error'),
             // content: formatJsonEmg
             render: h => h('div', {
               style: {

@@ -11,22 +11,6 @@
       @on-enter="search"
     />
     <p class="orange" v-if="showTip && inputValue.length>0">"{{inputValue}}"{{Notice}}</p>
-    <!-- <p>
-      关键字：<input
-        id="key"
-        type="text"
-        value=""
-        class="empty"
-        placeholder="请输入关键字"
-      ><br>
-    </p>
-    <Button
-
-      type="posdefault"
-      @click="search"
-    >
-      查询
-    </Button> -->
     <div class="zTreeDemoBackground left">
       <ul
         :id="tableName"
@@ -112,11 +96,11 @@
       // },
       placeholder: {// 设置查询框placeholder
         type: String,
-        default: () => '请输入角色'
+        default: function(){return this.$t('messages.enterRole')}
       },
       Notice:{
         type: String,
-        default: () => '匹配失败，请重新输入'
+        default: function(){return this.$t('messages.matchFail')}
       },
       treeDatas: {
         type: Function,

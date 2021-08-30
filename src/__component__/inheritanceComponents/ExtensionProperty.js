@@ -1,11 +1,13 @@
 /**
  * 扩展属性组件的自定义逻辑处理
  */
-import { ExtensionProperty } from '@syman/ark-ui-bcl'
+// import { ExtensionProperty } from '@syman/ark-ui-bcl'
 // import ExtensionProperty from 'arkui_BCL/ExtensionProperty'
 import network from '../../__utils__/network'
 import { SetDisable } from './setProps'
 import getModuleName from '../../__utils__/getModuleName';
+// import { ExtensionProperty } from '@syman/ark-ui-bcl'
+let  ExtensionProperty = $Bcl.arkExtensionProperty;
 class CustomExtensionProperty {
   constructor(item) {
     this.item = item

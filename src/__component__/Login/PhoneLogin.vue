@@ -1,13 +1,13 @@
 <template>
   <div>
-    <span class="titleTOP">手机登录</span>
+    <span class="titleTOP">{{$t('tips.phoneLogin')}}</span>
     <div class="divAccount">
       <img src="../../assets/image/account.png" class="icon">
-      <input ref="phone" type="text" value="" class="username" placeholder="请输入手机号">
+      <input ref="phone" type="text" value="" class="username" :placeholder="$t('messages.enterPhone')">
     </div>
     <div class="divCode">
       <img src="../../assets/image/password.png" class="icon">
-      <input ref="sendcode" value="" class="pwd code" placeholder="请输入短信验证码">
+      <input ref="sendcode" value="" class="pwd code" :placeholder="$t('messages.enterSMS')">
       <Button
               class="erCodeBtn"
               :disabled="sended"
@@ -39,7 +39,7 @@
     },
     data() {
       return {
-        btnTips: '获取验证码',
+        btnTips: this.$t('tips.getVerificationCode'),
         sended: false,
         timer: null,
         count: 0,
@@ -55,15 +55,15 @@
       async sendErCode() {
         const phoneNo = this.$refs.phone.value;
         if (!(/^1[3456789]\d{9}$/.test(phoneNo))) return this.$Modal.fcError({
-          title: '错误',
-          content: '请输入正确的手机号'
+          title: this.$t('feedback.error'),
+          content: this.$t('messages.enterValidPhone')
         });
         const code = await this.getMessageCode(phoneNo);
         if (!code.data || code.data.code !== 0) return false;
         this.sended = true;
         this.count = 59;
         this.setTimer();
-        this.$Message.success('获取验证码成功');
+        this.$Message.success(this.$t('messages.getCodeSuccess'));
       },
       setTimer() {
         this.timer = setTimeout(() => {
@@ -71,10 +71,10 @@
           if (this.count === 0) {
             this.timer && clearTimeout(this.timer);
             this.timer = null;
-            this.btnTips = '获取验证码';
+            this.btnTips = this.$t('tips.getVerificationCode');
             this.sended = false;
           } else {
-            this.btnTips = `重新获取${this.count}s`;
+            this.btnTips = `${this.$t('messages.reacquire')}${this.count}s`;
             this.setTimer();
           }
         }, 1000);

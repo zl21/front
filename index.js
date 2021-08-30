@@ -5,6 +5,7 @@ import { getGuid } from './src/__utils__/random';
 import router from './src/__config__/router.config';
 import store from './src/__config__/store.config';
 import App from './src/App.vue';
+import i18n from './src/assets/js/i18n';
 import './src/constants/dateApi';
 import network from './src/__utils__/network';
 import {
@@ -71,8 +72,6 @@ Vue.component('listsForm',listsForm)
 //   roleSwitch: false
 // });
 
-
-
 Vue.use(VueDND);
 Vue.use(R3Dialog); // 注册全局api调用组件
 Vue.use(Viewer);
@@ -116,7 +115,7 @@ const backTouristRoute = () => {
 
 const setMessage = (data) => {
   window.vm.$Modal.fcError({
-    title: '提示',
+    title: i18n.t('feedback.alert'),
     content: data.content,
     cancelType: true,
     titleAlign: 'left',
@@ -143,6 +142,7 @@ const init = () => {
   window.vm = new Vue({
     router,
     store,
+    i18n,
     render: createElement => createElement(App)
   }).$mount(rootDom);
   if (backDashboardRoute().filter(path => path === router.currentRoute.fullPath).length > 0) {
@@ -202,13 +202,6 @@ const init = () => {
 
 
   window.getObjdisType = getObjdisType;
-
-  // const param = {
-  //   url: '/CUSTOMIZED/FUNCTIONPERMISSION/2096',
-  //   type: 'C',
-  //   label: '基础档案',
-  // };
-  // store.commit('global/tabOpen', param);
 };
 const getCategory = () => {
   if (enableInitializationRequest()) {
@@ -245,14 +238,9 @@ const getCategory = () => {
         window.localStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMapRes));
       } else if (getLocalObject('loginStatus') === true) {
         // getSessionObject('loginStatus') === true
-        setMessage({ content: '当前用户无菜单权限,将为您跳转到登陆界面' });
+        setMessage({ content: i18n.t('messages.NoMenuPermission') });
       }
     });
-    // .catch(() => { // 处理返回数据为空值情况，当返回数据为空时，避免直接跳转框架表单路由
-    //   if (getSessionObject('loginStatus') === true) {
-    //     setMessage({ content: '当前用户无菜单权限,将为您跳转到登陆界面' });
-    //   }
-    // });
   }
 };
 

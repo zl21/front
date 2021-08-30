@@ -5,17 +5,20 @@
  * ImageUpload组件自定义
  */
 
-import { ImageUpload } from '@syman/ark-ui-bcl';
+// import { ImageUpload } from '@syman/ark-ui-bcl';
 // import ImageUpload from 'arkui_BCL/ImageUpload';
 import network ,{ getGateway }from '../../__utils__/network';
+let  ImageUpload = $Bcl.arkImageUpload;
+
 import {
   custommizedRequestUrl
 } from '../../constants/global';
 import { SetPlaceholder ,SetDisable} from './setProps';
+import i18n from '../../assets/js/i18n';
 class CustomImageUpload {
   constructor(item) {
     this.item = item;
-    this.Vm = Object.create(ImageUpload);
+    this.Vm = ImageUpload;
     this.mergeProps();   
     this.mergeMethods(); 
   }
@@ -43,7 +46,7 @@ class CustomImageUpload {
           column: this.item.colname,
           tableName: this.item.tableName
         },
-        name: '上传',
+        name: i18n.t('buttons.upload'),
         length: (this.item.webconf && this.item.webconf.ImageSize)?this.item.webconf.ImageSize:null,
         width: 120,
         height:120

@@ -1,4 +1,4 @@
-
+import i18n from '../../assets/js/i18n';
 /**
    *处理Placeholder
    */
@@ -8,7 +8,7 @@ export class SetPlaceholder {
     }
     init(){
         const placeholder = this.item.webconf && this.item.webconf.placeholder ? this.item.webconf.placeholder : null;
-        return  placeholder || `请输入${this.item.coldesc}`;
+        return  placeholder || `${i18n.t('form.inputPlaceholder')}${this.item.coldesc}`;
     }
 
 }

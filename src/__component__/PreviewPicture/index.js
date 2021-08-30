@@ -4,6 +4,7 @@ import router from '../../__config__/router.config';
 import store from '../../__config__/store.config';
 // 图片预览
 import PreviewPicture from './index.vue';
+import i18n from '../../assets/js/i18n'
 
 export default (array = [], items = {}, index) => {
   const { tableName } = router.currentRoute.params;
@@ -31,7 +32,7 @@ export default (array = [], items = {}, index) => {
           value: true,
           'class-name': `${tableName}_${items.field}`,
           draggable: true,
-          title: '图片预览',
+          title: i18n.t('previewPicture.picturePreview'),
           'z-index': 10001,
           'footer-hide': true,
           closable: true
@@ -53,7 +54,7 @@ export default (array = [], items = {}, index) => {
             'align-items': 'center',
             'justify-content': 'center'
           }
-        }, '图片预览'),
+        }, i18n.t('previewPicture.picturePreview')),
         h(PreviewPicture, {
           props: {
             images: array,

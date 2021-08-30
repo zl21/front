@@ -1,6 +1,8 @@
+import i18n from '../assets/js/i18n';
+
 export default {
   NetworkMonitor: {
-    name: '网络监控', // 菜单Tab显示的label
+    name: i18n.t('tips.networkMonitor'), // 菜单Tab显示的label
     component: () => import(
       /* webpackChunkName: 'NetworkMonitor' */
       /* webpackMode: 'eager' */
@@ -8,7 +10,7 @@ export default {
     )
   },
   PRINTTEMPLATE: { 
-    name: '设置模版', // 菜单Tab显示的label
+    name: i18n.t('messages.setTemplate'), // 菜单Tab显示的label
     component: () => import(
       /* webpackChunkName: 'NetworkMonitor' */
       /* webpackMode: 'eager' */
@@ -16,7 +18,7 @@ export default {
     )
   },
   PRINTPREVIEW: { 
-    name: '打印预览', // 菜单Tab显示的label
+    name: i18n.t('messages.PrintPreview'), // 菜单Tab显示的label
     component: () => import(
       /* webpackChunkName: 'NetworkMonitor' */
       /* webpackMode: 'eager' */
@@ -24,7 +26,7 @@ export default {
     )
   },
   INSTANCEMANAGEMENTLIST: {
-    name: '待办列表', // 菜单Tab显示的label
+    name: i18n.t('tips.todoList'), // 菜单Tab显示的label
     component: () => import(
       /* webpackChunkName: 'NetworkMonitor' */
       /* webpackMode: 'eager' */

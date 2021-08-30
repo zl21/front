@@ -112,7 +112,7 @@
         },
         dialogComponentName: null, // 弹框内引入的组件名称
         dialogConfig: {// 自定义弹框配置
-          title: '提示',
+          title: this.$t('feedback.alert'),
           mask: true,
           footerHide: false,
           contentText: '',
@@ -144,7 +144,7 @@
         itemCurrentParameter: {}, // 当前子表用于保存的参数
         buttonShowType: '', // 判断按钮显示条件
         dynamic: {// 暂存按钮渲染信息
-          name: '保存',
+          name: this.$t('buttons.save'),
           icon: '',
           defbutton: 'N',
           action: '',
@@ -344,26 +344,26 @@
       waterMarkText() {
         const customizeWaterMark = getCustomizeWaterMark();
         const textMap = Object.assign({
-          accepet: '已验收',
-          back: '已退回',
-          box: '已装箱',
-          boxing: '装箱中',
-          charge: '已记账',
-          check: '已收银',
-          completed: '已完成',
-          confirm: '已确认',
-          execute: '已执行',
-          executing: '执行中',
-          extremely: '异常终止',
-          Inventory: '已盈亏',
-          send: '已发出',
-          submit: '已提交',
-          system: '系统',
-          terminate: '已终止',
-          examine: '审批中',
-          void: '已作废',
-          agreement: '已同意',
-          reject: '已驳回',
+          accepet: this.$t('tips.accepted'),
+          back: this.$t('tips.returned'),
+          box: this.$t('tips.boxed'),
+          boxing: this.$t('tips.boxing'),
+          charge: this.$t('tips.charged'),
+          check: this.$t('tips.cashed'),
+          completed: this.$t('tips.completed'),
+          confirm: this.$t('tips.confirmed'),
+          execute: this.$t('tips.executed'),
+          executing: this.$t('tips.executing'),
+          extremely: this.$t('tips.abnormalTermination'),
+          Inventory: this.$t('tips.profitable'),
+          send: this.$t('tips.sent'),
+          submit: this.$t('tips.submitted'),
+          system: this.$t('tips.system'),
+          terminate: this.$t('tips.terminated'),
+          examine: this.$t('tips.approving'),
+          void: this.$t('tips.invalid'),
+          agreement: this.$t('tips.approved'),
+          reject: this.$t('tips.rejected'),
         }, Object.keys(customizeWaterMark).reduce((a, c) => {
           a[c] = customizeWaterMark[c].text;
           return a;
@@ -566,8 +566,8 @@
               if (this.exportTasks.dialog) {// 开启我的任务弹框
                 const message = {
                   mask: true,
-                  title: '提醒',
-                  content: ' 本次操作已后台处理，是否至[我的任务]查看',
+                  title: this.$t('feedback.alert'),
+                  content: this.$t('messages.asyncImportSuccess'),
                   showCancel: true,
                   onOk: () => {
                     // 导入后会进入异步任务，会弹出提示框，点击确定后进入我的任务表，同时更新任务图标上的数字
@@ -587,7 +587,7 @@
               if (this.exportTasks.successMsg) {
                 const data = {
                   mask: true,
-                  title: '成功',
+                  title: this.$t('feedback.success'),
                   content: this.exportTasks.resultMsg
                 };
                 this.$Modal.fcSuccess(data);
@@ -686,8 +686,8 @@
           } else {
             const data = {
               mask: true,
-              title: '警告',
-              content: '请设置暂存path配置'
+              title: this.$t('feedback.warning'),
+              content: this.$t('messages.setPathConfig')
             };
             this.$Modal.fcWarning(data);
           }
@@ -739,12 +739,12 @@
         if (obj && obj.jflowType && obj.jflowType === 'jflowLaunch') {
           eventName = 'jflowLaunch';
         }  
-        if(obj.name === '提交'){
+        if(obj.name === this.$t('buttons.submit')){
             const data = {
             mask: true,
-            title: '警告',
+            title: this.$t('feedback.warning'),
             showCancel:true,
-            content: '确认执行提交？',
+            content: this.$t('messages.confirmSubmit'),
              onOk: () => {
                DispatchEvent(eventName, {
                 detail: {
@@ -821,13 +821,11 @@
               if (Object.keys(defaultItemDataLength).length
                 < Object.keys(addItemDataLength).length// 子表add>default
               ) {
-                this.isValue = true;// 子表修改了值
+                this.isValue = true;// 新增时，子表add>default,修改了值
                 return true;
-                console.log('新增时，子表add>default,修改了值');
               } if (JSON.stringify(defaultItemDataLength) !== JSON.stringify(addItemDataLength)) {
-                this.isValue = true;// 左右结构，主表或子表修改了值
+                this.isValue = true;// 左右结构，主表或子表修改了值。新增时，主表或子表add=default,修改了默认值
                 return true;
-                console.log('新增时，主表或子表add=default,修改了默认值');
               }
               if (addMainDataLength && Object.keys(addMainDataLength).length > 0) {
                 if (Object.keys(defaultMainDataLength).length < Object.keys(addMainDataLength).length) { // 主表add>default
@@ -845,27 +843,22 @@
 
             } else if (defaultMainDataLength && Object.keys(defaultMainDataLength).length > 0) {
               if (Object.keys(defaultMainDataLength).length < Object.keys(addMainDataLength).length) { // 主表add>default
-                this.isValue = true;// 主表修改了值
+                this.isValue = true;// 主表修改了值。新增时，主表add>default,修改了值
                 return true;
-                console.log('新增时，主表add>default,修改了值');
               } if (JSON.stringify(defaultMainDataLength) !== JSON.stringify(addMainDataLength)) {
-                this.isValue = true;// 主表修改了值
+                this.isValue = true;// 主表修改了值。新增时，主表add=default,修改了默认值
                 return true;
-                console.log('新增时，主表add=default,修改了默认值');
               } if (addItemDataLength && Object.keys(addItemDataLength).length > 0) {
-                this.isValue = true;// 主表修改了值
+                this.isValue = true;// 主表修改了值。新增时，子表修改了值
                 return true;
-                console.log('新增时，子表修改了值');
               }
               
             } else if (addItemDataLength && Object.keys(addItemDataLength).length > 0) {
-              this.isValue = true;// 子表修改了值
+              this.isValue = true;// 新增时，子表修改了值
               return true;
-              console.log('新增时，子表修改了值');
             } else if (addMainDataLength && Object.keys(addMainDataLength).length > 0) {
-              this.isValue = true;// 主表修改了值
+              this.isValue = true;// 新增时，主表修改了值
               return true;
-              console.log('新增时，主表修改了值');
             }
 
           }
@@ -874,14 +867,12 @@
             if ((this.updateData[this.itemName] && this.updateData[this.itemName].modify[this.itemName] && Object.keys(this.updateData[this.itemName].modify[this.itemName]).length > 0)
               || (this.updateData[this.itemName].add[this.itemName] && Object.keys(this.updateData[this.itemName].add[this.itemName]).length > 0)) { // 子表新增及修改
               this.isValue = true;// 子表修改了值
-              console.log(' 子表修改了值');
               return true;
             }
           } else if (this.updateData[this.tableName].modify[this.tableName] && Object.keys(this.updateData[this.tableName].modify[this.tableName]).length > 0
             || this.updateData[this.tableName].add[this.tableName] && Object.keys(this.updateData[this.tableName].add[this.tableName]).length > 0
           ) {
-            this.isValue = true;// 主表修改了值
-            console.log(' 左右主表修改了值');
+            this.isValue = true;// 左右主表修改了值
             return true;
           }
         } else if ((this.updateData[this.tableName]
@@ -894,9 +885,7 @@
           || (this.updateData[this.itemName] && this.updateData[this.itemName].add[this.itemName]
           && Object.keys(this.updateData[this.itemName].add[this.itemName]).length > 0)
         ) { // 子表新增及修改
-          this.isValue = true;// 主表修改了值
-          console.log('编辑时，修改时上下主或子表修改了值');
-
+          this.isValue = true;// 主表修改了值。编辑时，修改时上下主或子表修改了值
           return true;
         }
         return false;
@@ -908,7 +897,7 @@
         }
         this.testUpdata();
         if (this.isValue) {
-          this.Warning('修改的数据未保存,确定刷新？', () => {
+          this.Warning(this.$t('messages.confirmRefresh'), () => {
             this.refresh(type);
           });
         } else {
@@ -919,7 +908,7 @@
 
       Warning(content, callback) {
         const data = {
-          title: '警告',
+          title: this.$t('feedback.warning'),
           mask: true,
           content,
           showCancel: true,
@@ -944,13 +933,13 @@
             this.clearEditData();// 刷新后将该表状态内存储的数据删除
           } else {
             this.clearEditData();
-            const message = '刷新成功';
+            const message = this.$t('feedback.refreshSuccess');
             this.clearItemEditData();// 刷新后将该表的子表状态内存储的数据删除
             this.upData(`${message}`);
           }
         } else {
           this.clearEditData();
-          const message = '刷新成功';
+          const message = this.$t('feedback.refreshSuccess');
           this.clearItemEditData();
           this.upData(`${message}`);
         }
@@ -1057,31 +1046,6 @@
             table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex
           });
 
-          // if (this.itemInfo.tabrelation === '1:1') {
-          //   // enableRequestItemTable:因此方法是主子表同时请求，加此标记为不请求子表相关接口
-          //   // if (this.itemInfo.vuedisplay !== 'TabItem') {
-          //   //   this.getItemObjForChildTableForm({// 获取1:1面板
-          //   //     table: tablename, objid: this.itemId, refcolid, tabIndex
-          //   //   });
-          //   // }
-          //   this.getObjectTabForMainTable({// 获取主表按钮信息
-          //     table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], enableRequestItemTable: 'N'
-          //   });
-          //   // const { itemId } = this.$route.params;
-          //   // const refTab = this.tabPanel;
-          //   // let index = null;
-          //   // refTab.forEach((item, i) => {
-          //   //   if (item.tablename === tablename) {
-          //   //     index = i;
-          //   //   }
-          //   // });
-          //   // const getButtonDataPromise = new Promise((rec, rej) => {
-          //   //   this.getObjectTabForRefTable({
-          //   //     table: tablename, objid: itemId, tabIndex: index, rec, rej
-          //   //   });
-          //   // });
-          //   // 获取子表表单
-          // } else {
           new Promise((resolve, reject) => {
             this.getObjectTabForMainTable({
               itemInfo: this.itemInfo, table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], resolve, reject
@@ -1091,27 +1055,12 @@
               this.$Message.success(message);
             }
           });
-
-          // }
         }
-        // this.closeCurrentLoading();//刷新后无需手动关闭loading，触发form后会收到监听
-        // setTimeout(() => {
-        //   if (message) {
-        //     this.$Message.success(message);
-        //   }
-        // }, 500);
+
       },
       objectTabAction(obj) { // 按钮执行事件判断逻辑
         switch (obj.eName) {
         case 'actionADD': // 新增
-          // if (this.isValue) {
-          //   this.Warning('修改的数据未保存,确定新增？', () => {
-          //     this.objectAdd(obj);
-          //   });
-          // } else {
-          //   this.objectAdd(obj);
-          //   this.isValue = null;
-          // }
           this.objectAdd(obj);
           break;
         case 'actionMODIFY': // 保存
@@ -1136,7 +1085,6 @@
           break;
 
         case 'actionEXPORT': // 导出
-          console.log('单对象导出');
           if (this.R3_openedApi_export && typeof this.R3_openedApi_export === 'function') {
             this.R3_openedApi_export();
           } else {
@@ -1223,10 +1171,10 @@
         // this.itemTableValidation = true;// 提交逻辑不需要验证子表必填项
         if (this.verifyRequiredInformation()) { // 验证表单必填项
           const data = {
-            title: '警告',
+            title: this.$t('feedback.warning'),
             mask: true,
             showCancel: true,
-            content: '确认执行提交?',
+            content: this.$t('messages.confirmSubmit'),
             onOk: () => {
               // this.saveButtonPath = obj.requestUrlPath;
               // const dom = document.getElementById('actionMODIFY');
@@ -1241,9 +1189,9 @@
       },
       objectTryUnSubmit(obj) { // 按钮取消提交操作
         const data = {
-          title: '警告',
+          title: this.$t('feedback.warning'),
           mask: true,
-          content: '确认执行取消提交?',
+          content: this.$t('messages.confirmCancelSubmission'),
           showCancel: true,
           onOk: () => {
             this.saveButtonPath = obj.requestUrlPath;// 保存按钮元数据配置的path
@@ -1266,10 +1214,10 @@
         // this.itemTableValidation = true;// 提交逻辑不需要验证子表必填项
         // if (this.verifyRequiredInformation()) { // 验证表单必填项
         const data = {
-          title: '警告',
+          title: this.$t('feedback.warning'),
           mask: true,
           showCancel: true,
-          content: '确认执行作废?',
+          content: this.$t('messages.confirmVoid'),
           onOk: () => {
             // this.saveButtonPath = obj.requestUrlPath;
             // const dom = document.getElementById('actionMODIFY');
@@ -1478,7 +1426,7 @@
       objTabActionEdit(tab) {
         const editTableId = tab.action.lastIndexOf('/');
         const editTableName = tab.action.substring(0, editTableId);
-        const label = `${this.activeTab.label.substring(2, '编辑')}虚表`;
+        const label = `${this.activeTab.label.substring(2, this.$t('buttons.edit'))}${this.$t('tips.virtualTable')}`;
         const name = `S.${editTableName}.${editTableId}`;
         this.addKeepAliveLabelMaps({ name, label });
         const gateWay = this.serviceIdMap[this.tableName];
@@ -1541,10 +1489,10 @@
                 this.routingHop(tab, id);// 主表使用明细ID
               } else {
                 if (id.length === 0) {
-                  this.$Message.warning('请勾选ID');
+                  this.$Message.warning(this.$t('messages.checkID'));
                   return;
                 } if (id.length > 1) {
-                  this.$Message.warning('只能勾选单个ID');
+                  this.$Message.warning(this.$t('messages.checkSingleID'));
                   return;
                 }
                 this.routingHop(tab, id);// 主表使用明细ID
@@ -1561,10 +1509,10 @@
           id = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
         }
         if (id.length === 0) {
-          this.$Message.warning('请勾选ID');
+          this.$Message.warning(this.$t('messages.checkID'));
           return false;
         } if (id.length > 1) {
-          this.$Message.warning('只能勾选单个ID');
+          this.$Message.warning(this.$t('messages.checkSingleID'));
           return false;
         }
         return id;
@@ -1644,7 +1592,7 @@
             }
           } else {
             if (singleEditType === ':itemId') {
-              alert('当前跳转路径不可配置动态id，无可勾选的明细');
+              alert(this.$t('messages.noDetail'));
               return;
             }
             path = getUrl({ url: path, id: tab.webid, type: 'customized' });
@@ -1725,7 +1673,7 @@
             this.saveEventAfter = data.type;
           }
           const obj = {
-            name: '保存',
+            name: this.$t('buttons.save'),
             eName: this.saveInfo.name,
             requestUrlPath: this.saveInfo.paths
           };
@@ -1734,62 +1682,11 @@
       },
       objTabActionSlient(tab) { // 动作定义静默
         this.objTabActionSlientConfirm(tab);
-        // 判断当前tab是否为空,特殊处理提示信息后调用静默前保存
-        // if (tab.confirm) {
-        //   if (!(tab.confirm.indexOf('{') >= 0)) { // 静默执行提示弹框
-        //     const data = {
-        //       title: '警告',
-        //       mask: true,
-        //       content: tab.confirm,
-        //       onOk: () => {
-        //         this.objTabActionSlientConfirm(tab);
-        //       }
-        //     };
-        //     this.$Modal.fcWarning(data);
-        //   } else if (JSON.parse(tab.confirm).desc) {
-        //     //            确定后执行下一步操作
-        //     //            判断是否先执行保存
-        //     if (JSON.parse(tab.confirm).isSave) {
-        //       console.log('暂时未处理配置isSave的相关逻辑');
-        //       // self.confirmAction = 'beforeObjectSubmit(this.objTabActionSlientConfirm)';
-        //     } else {
-        //       const data = {
-        //         title: '警告',
-        //         mask: true,
-        //         showCancel: true,
-        //         content: JSON.parse(tab.confirm).desc,
-        //         onOk: () => {
-        //           this.objTabActionSlientConfirm(tab);
-        //         }
-        //       };
-        //       this.$Modal.fcWarning(data);
-        //     }
-        //     // self.confirmTips({
-        //     //   action: 'confirm',
-        //     //   title: tab.webdesc,
-        //     //   type: 'warning',
-        //     //   list: [],
-        //     //   isAction: true,
-        //     //   desc: JSON.parse(tab.confirm).desc,
-        //     // });
-        //     // 清除提示信息
-        //   } else if (JSON.parse(tab.confirm).isSave) { // 静默执行保存
-        //     this.beforeObjectSubmit(() => {
-        //       const type = 'objTabActionSlient';
-        //       this.clickSave(type);
-        //       this.objTabActionSlientConfirm(tab);
-        //     });
-        //   } else { // 静默直接执行
-        //     this.objTabActionSlientConfirm(tab);
-        //   }
-        // } else {
-        //   this.objTabActionSlientConfirm(tab);
-        // }
       },
       // 动作定义静默执行
       objTabActionSlientConfirm(tab) {
         let params = {};
-        const label = `${this.activeTab.label.replace('编辑', '')}`;
+        const label = `${this.activeTab.label.replace(this.$t('buttons.edit'), '')}`;
         let ids = [];// 子表勾选1.4ID格式
         let idsOld = [];// 1.3ID格式
         let idsOldTypeNumber = [];// 1.3ID格式,number类型
@@ -1825,7 +1722,7 @@
             }
             params = obj;
           } else {
-            //  console.log('请检查静默类型按钮action配置，例如:action:com.jackrain.nea.oc.oms.api.OcbOrderMergeMenuCmd:1.0:oms-fi);
+            //  console.log(请检查静默类型按钮action配置，例如:action:com.jackrain.nea.oc.oms.api.OcbOrderMergeMenuCmd:1.0:oms-fi);
           }
         } else if (Version() === '1.4') { // 1.4上下结构
           let obj = {};
@@ -1899,7 +1796,7 @@
               const message = this.ExeActionData;
               const data = {
                 mask: true,
-                title: '成功',
+                title: this.$t('feedback.success'),
                 content: `${message}`
               };
               this.$Modal.fcSuccess(data);
@@ -1928,7 +1825,7 @@
             const message = this.objTabActionSlientConfirmData.message;
             const data = {
               mask: true,
-              title: '成功',
+              title: this.$t('feedback.success'),
               content: `${message}`,
               onOk: () => {
                 DispatchEvent('exeActionSuccessForR3', {
@@ -2060,7 +1957,7 @@
               // 异步导出在[我的任务]查看
               if(window.ProjectConfig.messageSwitch) {
                 this.$Modal.fcSuccess({
-                  title: '成功',
+                  title: this.$t('feedback.success'),
                   mask: true,
                   content: this.buttonsData.exportdata.message
                 });
@@ -2085,8 +1982,8 @@
                 if (this.exportTasks.dialog) {
                   const message = {
                     mask: true,
-                    title: '提醒',
-                    content: ' 本次操作已后台处理，是否至[我的任务]查看',
+                    title: this.$t('feedback.alert'),
+                    content: this.$t('messages.asyncImportSuccess'),
                     showCancel: true,
                     onOk: () => {
                       const type = 'tableDetailVertical';
@@ -2105,7 +2002,7 @@
                 if (this.exportTasks.successMsg) {
                   const data = {
                     mask: true,
-                    title: '成功',
+                    title: this.$t('feedback.success'),
                     content: this.exportTasks.resultMsg
                   };
                   this.$Modal.fcSuccess(data);
@@ -2115,7 +2012,7 @@
                 if (this.exportTasks.warningMsg) {
                   this.$Modal.fcError({
                     mask: true,
-                    title: '错误',
+                    title: this.$t('feedback.error'),
                     content: `${this.exportTasks.resultMsg}`
                   });
                 }
@@ -2148,36 +2045,10 @@
           this.$R3loading.hide(this.loadingName);
         });
       },
-      // enableOpenNewTab_objectCopy() {
-      //   const id = 'New';// 修改路由,复制操作时路由为新增
-      //   const label = `${this.activeTab.label.replace('编辑', '新增')}`;
-      //   if (this.objectType === 'horizontal') { // 横向布局
-      //     if (this.currentTabIndex === 0) { // 主表
-      //       const type = 'tableDetailHorizontal';
-      //       const url = `/SYSTEM/TABLE_DETAIL/H/${this.tableName}/${this.tableId}/${id}?iscopy=true&copyItemId=${this.itemId}`;
-      //       this.tabOpen({// 跳转路由，复制是新增逻辑
-      //         back: true,
-      //         type,
-      //         NToUpperCase: true,
-      //         url,
-      //         id
-      //       });
-      //     }
-      //   } else { // 纵向布局
-      //     const type = 'tableDetailVertical';
-      //     const url = `/SYSTEM/TABLE_DETAIL/V/${this.tableName}/${this.tableId}/${id}?iscopy=true&copyItemId=${this.itemId}`;
-      //     this.tabOpen({
-      //       url,
-      //       type,
-      //       label,
-      //       back: true,
-      //       NToUpperCase: true,
-      //     });
-      //   }
-      // },
+
       objectCopy() { // 按钮复制功能
         const id = 'New';// 修改路由,复制操作时路由为新增
-        const label = `${this.activeTab.label.replace('编辑', '新增')}`;
+        const label = `${this.activeTab.label.replace(this.$t('buttons.edit'), this.$t('buttons.add'))}`;
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.currentTabIndex === 0) { // 主表
             let formData = {};
@@ -2242,7 +2113,7 @@
         } else {
           this.testUpdata();
           if (this.isValue) {
-            this.Warning('修改的数据未保存,确定返回？', () => {
+            this.Warning(this.$t('messages.confirmBack'), () => {
               this.back({ stop, type, obj });
             });
           } else {
@@ -2702,7 +2573,7 @@
         //   startIndex: 0,
         //   range: 10
         // };
-        const buttonInfo = this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === '删除')[0];
+        const buttonInfo = this.dataArray.buttonGroupShowConfig.buttonGroupShow.filter(d => d.name === this.$t('buttons.delete'))[0];
         let page = {};
         if (this.objectType === 'horizontal') { // 横向布局
           this.tabPanel.every((item) => {
@@ -2728,9 +2599,9 @@
               if (obj.requestUrlPath) { // 有path
                 this.saveParameters();// 调用获取参数方法
                 const data = {
-                  title: '警告',
+                  title: this.$t('feedback.warning'),
                   mask: true,
-                  content: '确认执行删除?',
+                  content: this.$t('messages.confirmDelete'),
                   showCancel: true,
                   onOk: () => {
                     const promise = new Promise((resolve, reject) => {
@@ -2770,9 +2641,9 @@
               } else { // 没有path
                 // 没有path
                 const data = {
-                  title: '警告',
+                  title: this.$t('feedback.warning'),
                   mask: true,
-                  content: '确认执行删除?',
+                  content: this.$t('messages.confirmDelete'),
                   showCancel: true,
                   onOk: () => {
                     const promise = new Promise((resolve, reject) => {
@@ -2801,9 +2672,9 @@
               if (obj.requestUrlPath) { // 有path
                 this.saveParameters();// 调用获取参数方法
                 const data = {
-                  title: '警告',
+                  title: this.$t('feedback.warning'),
                   mask: true,
-                  content: '确认执行删除?',
+                  content: this.$t('messages.confirmDelete'),
                   showCancel: true,
                   onOk: () => {
                     const promise = new Promise((resolve, reject) => {
@@ -2860,9 +2731,9 @@
               } else { // 没有path
                 // 没有path
                 const data = {
-                  title: '警告',
+                  title: this.$t('feedback.warning'),
                   mask: true,
-                  content: '确认执行删除?',
+                  content: this.$t('messages.confirmDelete'),
                   showCancel: true,
                   onOk: () => {
                     const promise = new Promise((resolve, reject) => {
@@ -2921,8 +2792,8 @@
             } else {
               const data = {
                 mask: true,
-                title: '警告',
-                content: `请先选择需要${obj.name}的记录！`
+                title: this.$t('feedback.warning'),
+                content: this.$t('messages.chooseRecord',{action:obj.name})
               };
               this.$Modal.fcWarning(data);
             }
@@ -2930,9 +2801,9 @@
             if (obj.requestUrlPath) { // 有path
               this.saveParameters();// 调用获取参数方法
               const data = {
-                title: '警告',
+                title: this.$t('feedback.warning'),
                 mask: true,
-                content: '确认执行删除?',
+                content: this.$t('messages.confirmDelete'),
                 showCancel: true,
                 onOk: () => {
                   const promise = new Promise((resolve, reject) => {
@@ -2969,9 +2840,9 @@
             } else { // 没有path
               // 没有path
               const data = {
-                title: '警告',
+                title: this.$t('feedback.warning'),
                 mask: true,
-                content: '确认执行删除?',
+                content: this.$t('messages.confirmDelete'),
                 showCancel: true,
                 onOk: () => {
                   const promise = new Promise((resolve, reject) => {
@@ -2999,9 +2870,9 @@
           }
         } else if (obj.requestUrlPath) { // 有path，没有子表
           const data = {
-            title: '警告',
+            title: this.$t('feedback.warning'),
             mask: true,
-            content: '确认执行删除?',
+            content: this.$t('messages.confirmDelete'),
             showCancel: true,
             onOk: () => {
               const promise = new Promise((resolve, reject) => {
@@ -3028,9 +2899,9 @@
         } else {
           // 没有path
           const data = {
-            title: '警告',
+            title: this.$t('feedback.warning'),
             mask: true,
-            content: '确认执行删除?',
+            content: this.$t('messages.confirmDelete'),
             showCancel: true,
             onOk: () => {
               const promise = new Promise((resolve, reject) => {
@@ -3086,7 +2957,7 @@
       objectAdd() { // 新增
         this.testUpdata();
         if (this.isValue) {
-          this.Warning('修改的数据未保存,确定新增？', () => {
+          this.Warning(this.$t('messages.confirmAdd'), () => {
             this.clickAdd();
           });
         } else {
@@ -3158,12 +3029,10 @@
         this.saveParameters();// 调用获取参数方法
         const itemName = this.itemName;// 子表表名
         const itemCurrentParameter = this.itemCurrentParameter;// 当前子表保存所需参数
-        // console.log('新增保存');
         const type = 'add';
         const path = this.dynamic.requestUrlPath;
         const objId = -1;
         if (!this.subtables()) { // 为false的情况下是没有子表
-          // console.log('没有子表');
           if (this.dynamic.requestUrlPath) { // 配置path
             // console.log(' 主表新增保存,配置path的', this.dynamic.requestUrlPath);
             this.savaNewTable(type, path, objId);
@@ -3172,7 +3041,6 @@
           }
         }
         if (this.subtables()) { // 存在子表
-          // console.log('有子表');
           if (this.dynamic.requestUrlPath) { // 配置path
             this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
           } else { // 没有配置path
@@ -3181,7 +3049,6 @@
         }
       },
       mainTableEditorSave(obj) { // 主表编辑保存
-        // console.log('主表编辑保存');
         this.saveParameters();// 调用获取参数方法
         const path = obj.requestUrlPath;
         const type = 'modify';
@@ -3197,13 +3064,10 @@
             const tag = 'jflow';
             mainModify.push(tag);
           }
-          // console.log('没有子表',);
           if ((this.verifyRequiredInformation() && mainModify.length > 0) || this.noClickSave()) {
-            if (obj.requestUrlPath) { // 配置path
-              // console.log('主表编辑保存,配置path的逻辑', obj.requestUrlPath);
+            if (obj.requestUrlPath) { // 配置path。主表编辑保存,配置path的逻辑', obj.requestUrlPath
               this.savaNewTable(type, path, this.itemId);
-            } else { // 没有配置path
-              // console.log('主表编辑保存,没有配置path的逻辑');
+            } else { // 没有配置path。主表编辑保存,没有配置path的逻辑
               const objId = this.itemId;
               this.savaNewTable(type, path, objId);
             }
@@ -3490,7 +3354,7 @@
                             return false;
                           }
                         } if (Object.values(addInfo).length < 1) {
-                          this.$Message.warning('个人信息不能为空!');
+                          this.$Message.warning(this.$t('messages.requiredPersonalInfo'));
 
                           return false;
                         }
@@ -3690,7 +3554,7 @@
             } else {
               types = 'tableDetailVertical';
             }
-            const label = `${this.activeTab.label.replace('新增', '编辑')}`;
+            const label = `${this.activeTab.label.replace(this.$t('buttons.add'), this.$t('buttons.edit'))}`;
 
             // 处理新增时候执行回调但是不跳转界面
             if (typeof (this.saveCallBack) === 'function') {
@@ -3718,7 +3582,7 @@
           }
           const message = this.buttonsData.message;
           const data = {
-            title: '成功',
+            title: this.$t('feedback.success'),
             content: `${message}`
           };
           if (message) {
@@ -3889,7 +3753,7 @@
             } else if (removeMessage) {
               this.upData();
             } else {
-              this.upData('保存成功');
+              this.upData(this.$t('feedback.saveSuccess'));
             }
           }
         } else {

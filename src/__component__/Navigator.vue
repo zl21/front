@@ -10,7 +10,7 @@
       <img
         v-if="!collapseHistoryAndFavorite&&enableHistoryAndFavoriteUI"
         class="trigger"
-        title="收起收藏夹与最近使用"
+        :title="$t('messages.collapseFavorites')"
         alt=""
         :src="imgSrc.closedImg"
         @click="doCollapseHistoryAndFavorite"
@@ -19,7 +19,7 @@
         v-if="collapseHistoryAndFavorite&&enableHistoryAndFavoriteUI"
         class="trigger"
         alt=""
-        title="展开收藏夹与最近使用"
+        :title="$t('messages.expandFavorites')"
         :src="imgSrc.openedImg"
         @click="doCollapseHistoryAndFavorite"
       >
@@ -80,48 +80,12 @@
     >
       <i
         :class="getDashboardConfig"
-        title="回到首页"
+        :title="$t('tips.backHome')"
 
       />
     </div>
 
     <ComAutoComplete />
-    <!-- <div
-      :class="searchBtn ? 'tag right' :'tag tag-search right' "
-    >
-      <template v-if="searchBtn === false">
-        <AutoComplete
-          ref="AutoComplete"
-          v-model="keyWord"
-          class="nav-search"
-          icon="ios-search"
-          placeholder="请输入要查询的功能名"
-          @on-click="searchBtn = true"
-          @on-keydown="enter"
-          @on-change="searchData"
-        >
-          <Option
-            v-for="(item,index) in searchList"
-            :key="index"
-            :value="index"
-            :lable="item.desc"
-            @on-select-selected="routerNext"
-          >
-            {{ item.desc }}
-          </Option>
-        </AutoComplete>
-      </template>
-
-      <span
-        v-if="searchBtn === true"
-        class="buttonIcon"
-        @click="searchBtn = false"
-      >
-        <i
-          class="iconfont iconbj_search"
-        />
-      </span>
-    </div> -->
     <div
       v-if="versionValue"
       class="tag right"
@@ -160,7 +124,7 @@
     >
       <i
         class="iconfont iconmd-person"
-        title="设置"
+        :title="$t('buttons.setting')"
       />
     </div>
     <Drawer
@@ -233,7 +197,7 @@
         },
         keyWord: '',
         dialogConfig: {
-          title: '提示',
+          title: this.$t('feedback.alert'),
           mask: true,
           footerHide: false,
           contentText: '',
@@ -361,7 +325,7 @@
           type,
           tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
           tableId: Version() === '1.3' ? 24386 : 963,
-          label: '我的任务'
+          label: this.$t('tips.myTask')
         };
         this.tabOpen(tab);
       },
@@ -433,7 +397,7 @@
       changePwdBox() {
         this.show = false;
         this.$refs.dialogRef.open();
-        this.dialogConfig.title = '修改密码';
+        this.dialogConfig.title = this.$t('tips.changePassword');
         this.dialogConfig.footerHide = true;
         // Vue.component('ChangePassword', CustomizeModule.ChangePassword.component);
         this.dialogComponentName = 'ChangePassword';
