@@ -18,7 +18,7 @@ import i18n from '../../assets/js/i18n';
 class CustomImageUpload {
   constructor(item) {
     this.item = item;
-    this.Vm = Object.create(ImageUpload);
+    this.Vm = ImageUpload;
     this.mergeProps();   
     this.mergeMethods(); 
   }

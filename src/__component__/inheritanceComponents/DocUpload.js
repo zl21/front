@@ -17,7 +17,7 @@ let  Docfile = $Bcl.arkDocfile;
  class CustomDocUpload {
   constructor(item) {
     this.item = item;
-    this.Vm = Object.create(Docfile);
+    this.Vm = Docfile;
     this.mergeProps();   
   }
 
