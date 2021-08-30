@@ -8,6 +8,7 @@ import {filtercolval } from './filtercolval.js';
   
 export default {
   mounted() {
+    setTimeout(()=>{
     if(this.items.webconf && this.items.webconf.filtercolval){
 
         // 过滤显示字段
@@ -26,13 +27,12 @@ export default {
           }
           targetVm[0].items.webconf.filtercolval.col =this.items.colname;
           // 兼容初始化渲染过滤
-          filtercolval(targetVm[0],this.items.webconf.filtercolval);
-          console.log(targetVm[0],this.items);
-          setTimeout(()=>{
+          filtercolval(targetVm[0],this.items.webconf.filtercolval);         
            delete this.items.webconf.filtercolval;
-          },10)
+        
         })
        
      }
+    },110)
   }  
 };
