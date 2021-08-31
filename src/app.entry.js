@@ -24,7 +24,6 @@ import getObjdisType from './__utils__/getObjdisType';
 
 import { addSearch } from './__utils__/indexedDB';
 // css import
-import '../node_modules/ag-grid/dist/styles/ag-grid.css';
 import '../node_modules/viewerjs/dist/viewer.css';
 import './assets/css/ag-theme-balham.less';
 import './assets/css/loading.css';
