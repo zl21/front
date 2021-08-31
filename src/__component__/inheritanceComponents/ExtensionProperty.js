@@ -7,7 +7,7 @@ import network from '../../__utils__/network'
 import { SetDisable } from './setProps'
 import getModuleName from '../../__utils__/getModuleName';
 // import { ExtensionProperty } from '@syman/ark-ui-bcl'
-let  ExtensionProperty = $Bcl.default.arkExtensionProperty;
+let  ExtensionProperty = $Bcl.arkExtensionProperty;
 class CustomExtensionProperty {
   constructor(item) {
     this.item = item

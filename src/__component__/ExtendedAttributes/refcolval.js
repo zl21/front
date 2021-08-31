@@ -7,6 +7,7 @@ import {
     filterVal,FindInstance
 } from './common.js';
 import network from '../../__utils__/network';
+import i18n from '../../assets/js/i18n'
 
 // 处理url
 
@@ -105,7 +106,7 @@ export const messageTip = ($this, target,key) => {
         return true;
     }
     if (!value.ID) {
-        $this.$Message.info(`请先选择${target.items.name || target.items.coldesc}`);
+        $this.$Message.info(`${i18n.t('form.selectPlaceholder')}${target.items.name || target.items.coldesc}`);
         setTimeout(() => {
             if(target.$el.querySelector('input')){
                 target.$el.querySelector('input').focus();

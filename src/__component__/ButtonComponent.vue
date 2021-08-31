@@ -153,7 +153,7 @@
         @on-click="print"
       >
         <Button type="fcdefault">
-          打印
+          {{$t('buttons.print')}}
           <Icon type="ios-arrow-down" />
         </Button>
         <DropdownMenu slot="list">
@@ -272,18 +272,18 @@
         model4: '',
         dialogComponentName: null,
         dialogConfig: {
-          title: '提示',
+          title: this.$t('feedback.alert'),
           mask: true,
           footerHide: false,
           contentText: '',
           confirm: () => {
           }
         }, // 弹框配置信息
-        search: '查找',
-        refresh: '刷新',
-        back: '返回',
-        temporaryStorage: '暂存',
-        reset: '重置',
+        search: this.$t('buttons.search'),
+        refresh: this.$t('buttons.refresh'),
+        back: this.$t('buttons.back'),
+        temporaryStorage: this.$t('buttons.temporaryStorage'),
+        reset: this.$t('buttons.reset'),
         errorDialog: false, // 消息弹框
         dialogVisible: false, // 消息提示框
         dialogMessage: '', // 消息提示框显示数据
@@ -301,11 +301,10 @@
           // 打印列表
           {
             vuedisplay: 'dialog',
-            /* "confirm":"{\"isselect\":true,\"nodesc\":\"请先选择需要打印的记录！\"}", */
             actiontype: 'url',
             isrefrsh: false,
             webid: 2527,
-            webdesc: '直接打印',
+            webdesc: this.$t('messages.PrintImmediately'),
             webname: 'OutPrint',
             webicon: null,
             action: 'custompage/redirect?print',
@@ -314,11 +313,11 @@
           },
           {
             vuedisplay: 'dialog',
-            confirm: '{"isselect":true,"nodesc":"请先选择需要打印预览的记录！"}',
+            confirm: `{"isselect":true,"nodesc":"${this.$t('messages.PrintPreviewTip')}"}`,
             actiontype: 'url',
             isrefrsh: false,
             webid: 2530,
-            webdesc: '打印预览',
+            webdesc: this.$t('messages.PrintPreview'),
             webname: 'OutPreview',
             webicon: null,
             action: 'custompage/redirect?preview',
@@ -331,7 +330,7 @@
             actiontype: 'url',
             isrefrsh: false,
             webid: 2533,
-            webdesc: '设置模板',
+            webdesc: this.$t('messages.setTemplate'),
             webname: 'OutSetTemplate',
             webicon: null,
             action: 'custompage/Konad',
@@ -405,16 +404,16 @@
           if (printIdArray.length === 0 && id === 2530) { // 没有勾选且为打印预览
             const data = {
               mask: true,
-              title: '警告',
-              content: '请先选择需要打印预览的记录！'
+              title: this.$t('feedback.warning'),
+              content: this.$t('messages.PrintPreviewTip')
             };
             this.$Modal.fcWarning(data);
             return;
           } if (printIdArray.length === 0 && id === 2527) { // 直接打印
             const data = {
               mask: true,
-              title: '警告',
-              content: '请先选择需要直接打印的记录！'
+              title: this.$t('feedback.warning'),
+              content: this.$t('messages.PrintImmediatelyTip')
             };
             this.$Modal.fcWarning(data);
             return;

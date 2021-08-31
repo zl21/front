@@ -81,14 +81,6 @@
                 obj.componentAttribute.componentType = webactType;// 自定义组件类型ALL/HALF
                 obj.componentAttribute.itemInfo = item;
               }
-              // else {
-              //   const data = {
-              //     mask: true,
-              //     title: '警告',
-              //     content: '当前子表webact信息配置错误，请检查元数据配置'
-              //   };
-              //   this.$Modal.fcWarning(data);
-              // }
             } else {
               if (Vue.component(`tapComponent.${item.tablename}`) === undefined) {
                 Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
@@ -120,30 +112,6 @@
       }
     },
     methods: {
-
-      // ...mapMutations('global', ['isRequestUpdata', 'emptyTestData']),
-      // aa() {
-      //   this.a = !this.a;
-      // },
-      // bb() {
-      //   if (window.updataVerifyRequiredInformation() && window.testUpdataValue()) {
-      //     window.updataClickSave(() => {
-      //       alert('保存成功');
-      //       this.cc();
-      //     });
-      //   } else {
-      //     // this.cc();
-      //   }
-      // },
-      // cc() {
-      //   DispatchEvent('jflowClick', {
-      //     detail: {
-      //       type: 'refresh',
-      //       tableId: 23969
-      //     }
-      //   });
-      //   console.log(1);
-      // },
       tabClick(index) {
         let flag = false;
         if (this.isRequest.length > 0 && this.isRequest[index] === true) {

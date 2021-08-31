@@ -42,13 +42,13 @@
           style="margin:0 20px;"
           @click="searchForm"
         >
-          查询
+          {{$t('buttons.search')}}
         </Button>
         <Button
           type="fcdefault"
           @click="cancelDialog"
         >
-          取消
+          {{$t('buttons.cancel')}}
         </Button>
       </div>
     </div>
@@ -70,6 +70,7 @@
 <script>
   import { Version, defaultrange, classFix } from '../constants/global';
   import { getTableName } from '../__utils__/urlParse'
+  import i18n from '../assets/js/i18n'
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
   // import listsForm from '../__component__/FormComponents/listsForm.vue';
@@ -135,6 +136,7 @@
       },
     },
     created() {
+      this.$t = i18n.t.bind(i18n)
       // fix: 表格里的表单，无法从$route里拿到表名，需要自己从url地址去取出
       this.tableName = getTableName()
 
@@ -233,7 +235,7 @@
                   }
                 if (title === 'ID') {
                   arr.unshift({
-                    title: '序号',
+                    title: this.$t('table.index'),
                     key: `${item.colname}`,
                     render: (h, params) => h('div', {
                       domProps: {

@@ -187,10 +187,4 @@ const config = {
   },
 }
 
-if (process.env.BUILD_ENV === 'jenkins') {
-  config.resolve.alias = {
-    '@syman/ark-ui-bcl': path.resolve('static/js/ark-ui-bcl') // 本地调试业务组件
-  }
-}
-
 module.exports = () => config;

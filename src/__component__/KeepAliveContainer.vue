@@ -159,7 +159,7 @@
           const mixinsCustomize = customizeMixins().taskList ? customizeMixins().taskList : {};
           
           if (query.type === 'rpt') { // rpt类型特殊处理 
-            // 元数据当前表type配置为rpt时，按照自定义界面逻辑执行路由逻辑，与自定义界面区别是，不再按照url内配置的"CUSTOMIZE/"后的自定义标示来加载自定义界面配置文件中的对应字段，
+            // 元数据当前表type配置为rpt时，按照自定义界面逻辑执行路由逻辑，与自定义界面区别是，不再按照url内配置的 CUSTOMIZE/ 后的自定义标示来加载自定义界面配置文件中的对应字段，
             // 而是根据路由的参数判断为rpt类型，则加载固定前端配置文件内的字段customizeReport字段对应的组件
             target = externalModules.CUSTOMIZEREPORT || customizeModules.CUSTOMIZEREPORT;
           } else {
@@ -237,10 +237,8 @@
         const hideList = this.$store.state.global.currentLoading;
         const loadingName = this.$route.meta.moduleName.replace(/\./g, '-');
         const tpl = document.querySelector(`#${loadingName}-loading`);
-        // console.log('激活拦截', hideList, loadingName);
         // loadingName可能是空字符串
         if (hideList.includes(loadingName) && loadingName && tpl) {
-          // console.log('存在未关闭loading-----');
           tpl.remove();
           this.$store.commit('global/deleteLoading', loadingName);
         }

@@ -170,6 +170,7 @@ import {
 import createModal from '../PreviewPicture/index';
 import EnumerableInput from '../EnumerableInput.vue';
 import getComponentName from '../../__utils__/getModuleName'
+import i18n from '../../assets/js/i18n'
 
 // const fkHttpRequest = () => require(`../../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -261,7 +262,7 @@ export default {
 
 
       const placeholder = this.items.props.webconf && this.items.props.webconf.placeholder ? this.items.props.webconf.placeholder : null;
-      item.props.placeholder = placeholder || `${(dataProp[item.type] && dataProp[item.type].props) ? dataProp[item.type].props.placeholder : '请输入'}${item.title}`;
+      item.props.placeholder = placeholder || `${(dataProp[item.type] && dataProp[item.type].props) ? dataProp[item.type].props.placeholder : this.$t('form.inputPlaceholder')}${item.title}`;
 
 
       if (item.type === 'docfile') {
@@ -281,7 +282,7 @@ export default {
           // item.componentType = Dialog;
           if (!item.props.disabled) {
             item.props.fkobj.show = true;
-            if (!item.props.datalist[0] || item.props.datalist[0].value !== '更多筛选') {
+            if (!item.props.datalist[0] || item.props.datalist[0].value !== this.$t('messages.moreFilters')) {
               item.props.datalist = dataProp[item.type].props.datalist.concat(
                 item.props.datalist
               );
@@ -291,7 +292,7 @@ export default {
 
           item.props.dialog.model['footer-hide'] = false;
           item.props.datalist.forEach((option, i) => {
-            if (option.value === '导入') {
+            if (option.value === this.$t('buttons.import')) {
               item.props.datalist[i].url = item.props.fkobj.url;
               item.props.datalist[i].sendData = {
                 table: item.props.fkobj.reftable
@@ -458,8 +459,8 @@ export default {
       } else {
         const data = {
           mask: true,
-          title: '警告',
-          content: '请设置外键关联表的显示配置'
+          title: this.$t('feedback.warning'),
+          content: this.$t('messages.setAssociationTable')
         };
         this.$Modal.fcWarning(data);
         return;
@@ -639,6 +640,7 @@ export default {
     window.removeEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
   },
   created () {
+    this.$t = i18n.t.bind(i18n)
     this[MODULE_COMPONENT_NAME] = getComponentName()
     this.componentsName = this.inheritanceComponents();
   },

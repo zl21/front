@@ -47,7 +47,7 @@
       tabPanels() {
         const tabPanel = [
           {
-            label: '颜色', // tab标签名字
+            label: this.$t('tips.color'), // tab标签名字
             component: ColorComponent, // tab标签里的组件
             ref: 'color', // tab标签里的组件的ref
             componentAttribute: {
@@ -61,7 +61,7 @@
             }
           },
           {
-            label: '尺寸', // tab标签名字
+            label: this.$t('tips.size'), // tab标签名字
             component: SizeComponent, // tab标签里的组件
             ref: 'size', // tab标签里的组件的ref
             componentAttribute: {
@@ -226,7 +226,7 @@
               const result = res.data;
               const message = result.message;
               const data = {
-                title: '成功',
+                title: this.$t('feedback.success'),
                 content: `${message}`
               };
               this.$Message.success(data);

@@ -5,7 +5,7 @@
         <div class="pop-input">
           <ul style="list-style:none;">
             <li>
-              <span>输入密码：</span>
+              <span>{{$t('messages.fillPassword')}}：</span>
               <input
                     id="newPwd"
                     v-model="newpaswd"
@@ -19,20 +19,20 @@
               <!--<p v-show="pawdgrade">密码安全程度：<b :style="{ color: activeColor}">{{ grade }}</b></p>-->
             </li>
             <li>
-              <span>确认密码：</span>
+              <span>{{$t('messages.confirmPassword')}}：</span>
               <input
                     v-model="againpaswd"
                     :class="{'borderactive':inconformity3}"
                     type="password"
                     @focus="focus($event,3)">
               <input type="password" name="password1" style="display:none">
-              <p v-show="inconformity3" :style="{ color: error}">两次输入的密码不一致</p>
+              <p v-show="inconformity3" :style="{ color: error}">{{$t('messages.passwordInconsistent')}}</p>
             </li>
           </ul>
         </div>
         <div class="pop-btn">
-          <span class="sav-btn" @click="save()">确认</span>
-          <span class="cancel-btn" @click="()=>{this.$emit('closeActionDialog',false)}">取消</span>
+          <span class="sav-btn" @click="save()">{{$t('buttons.confirm')}}</span>
+          <span class="cancel-btn" @click="()=>{this.$emit('closeActionDialog',false)}">{{$t('buttons.cancel')}}</span>
         </div>
       </div>
     </div>
@@ -47,17 +47,17 @@
     name: 'batchChangePassword',
     data() {
       return {
-        title: '用户修改密码', // 标题
+        title: this.$t('tips.changePassword'), // 标题
         newpaswd: '',
         pawdgrade2: false,
         errorpawdgrade: 'red',
         errorpawdgrade1: '#818181',
-        newHint: '密码必须由6-18个字符且数字、大小写字母同时存在',
+        newHint: this.$t('messages.passwordNewRule'),
         againpaswd: '',
         pop_dialog: false,
         activeColor: 'red', // 控制密码强度的时候，颜色
         error: 'red',
-        grade: '低', // 密码等级
+        grade: this.$t('tips.low'), // 密码等级
         pawdgrade: false, // 显示密码等级
         pawdgrade1: true, // 密码长度
         inconformity1: false, // input错误border颜色class
@@ -109,18 +109,18 @@
           this.pawdgrade1 = true;
           this.errorpawdgrade1 = 'red';
           this.inconformity2 = true;
-          this.newHint = '请输入新密码';
+          this.newHint = this.$t('messages.enterNewPassword');
         } else if (this.newpaswd.length >= 6 && this.newpaswd.length <= 18) {
           if (!this.reg.test(this.newpaswd)) {
-            this.newHint = '密码必须由6-18个字符且数字、大小写字母同时存在';
+            this.newHint = this.$t('messages.passwordNewRule');
             this.errorpawdgrade1 = 'red';
             this.inconformity2 = true;
             this.pawdgrade1 = true;
           }
           this.errorpawdgrade1 = '#818181';
-          this.newHint = '密码必须由6-18个字符且数字、大小写字母同时存在';
+          this.newHint = this.$t('messages.passwordNewRule');
         } else {
-          this.newHint = '密码必须由6-18个字符且数字、大小写字母同时存在';
+          this.newHint = this.$t('messages.passwordNewRule');
           this.errorpawdgrade1 = 'red';
           this.inconformity2 = true;
           this.pawdgrade1 = true;
@@ -133,7 +133,7 @@
             this.pawdgrade1 = true;
             this.inconformity2 = false;
             this.errorpawdgrade1 = '#818181';
-            this.newHint = '密码必须由6-18个字符且数字、大小写字母同时存在';
+            this.newHint = this.$t('messages.passwordNewRule');
             break;
           default:
             this.inconformity3 = false;
@@ -178,14 +178,13 @@
         if (this.idArray && this.idArray.length > 0) {
           param.user_ids = this.idArray
         } else {
-          return this.$Message.info('请勾选需要重置的用户')
+          return this.$Message.info(this.$t('messages.selectResetUser'))
         }
         network.post('/p/cs/modifyPwd', param).then((res) => {
           if (res.data.code === 0) {
             const message = {
-              title: '成功',
-              content: res.data.message,
-              mask: true,
+              title: this.$t('feedback.success'),
+              content: res.data.message
             };
             this.$Modal.fcSuccess(message);
             this.newpaswd = '';

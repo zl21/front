@@ -178,7 +178,7 @@
             }
           },
           (err) => {
-            console.error(`请求过滤条件出错： ${err.response.data.message}`);
+            console.error(`${this.$t('messages.filterError')}： ${err.response.data.message}`);
           }
         );
       },
@@ -284,13 +284,9 @@
         const { selects } = this;
         const tmp = [
           {
-            description: '全部',
+            description: this.$t('tips.all'),
             value: '-99999'
           },
-        // {
-        //   "description": "未定义",
-        //   "value": "-991"
-        // },
         ];
         (tmp.concat(selects[key] || [])).forEach((item) => {
           const obj = {

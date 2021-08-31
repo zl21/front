@@ -11,7 +11,7 @@
  import DropMethods from '../ExtendedMethods/DropMethods';
  import network from '../../__utils__/network';
  import { SetPlaceholder } from './setProps';
- let  DropMultiSelectFilter = $Bcl.default.arkDropMultiSelectFilter;
+ let  DropMultiSelectFilter = $Bcl.arkDropMultiSelectFilter;
 
  import {
   setisShowPopTip,
@@ -22,7 +22,7 @@
  class CustomDropMultiSelectFilter {
    constructor(item) {
      this.item = item;
-     this.Vm = Object.create(DropMultiSelectFilter);
+     this.Vm = DropMultiSelectFilter;
      this.mergeProps();   
      this.mergeMethods(); 
    }

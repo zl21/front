@@ -26,7 +26,7 @@
                   slot="list"
                   >
                   <DropdownItem>
-                    暂无历史记录
+                    {{$t('messages.noHistory')}}
                   </DropdownItem>  
           </DropdownMenu>
        </Dropdown>

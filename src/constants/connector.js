@@ -1,3 +1,5 @@
+import i18n from '../assets/js/i18n';
+
 // 老框架公共组件使用文件
 const port = {
   stock: '/p/cs/stock/200000244070', // 获取库存在用的公共接口
@@ -15,7 +17,9 @@ const port = {
     isDeleteBtn: true, // 是否有删除明细按钮
     hasStock: false, // 不获取库存接口
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY_BILL',
       defnum: 1
     }], // 配的数量字段名集合
@@ -33,7 +37,9 @@ const port = {
     isDeleteBtn: true, // 是否有删除明细按钮
     hasStock: false, // 不获取库存接口
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY_BILL',
       defnum: 1
     }], // 配的数量字段名集合
@@ -52,7 +58,9 @@ const port = {
     isDeleteBtn: true, // 是否有删除明细按钮
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY_BILL',
       defnum: 1
     }], // 配的数量字段名集合
@@ -70,12 +78,16 @@ const port = {
     matchData: {
       data: [
         {
-          label: '发货店仓',
+          label: () => {
+            return i18n.t('messages.shippingWarehouse')
+          },
           value: 'qty_stock_able',
           port: 1, // 表示第一个接口
         },
         {
-          label: '收货店仓',
+          label: () => {
+            return i18n.t('messages.receivingWarehouse')
+          },
           value: 'qty_stock_able',
           port: 2, // 表示第二个接口
         },
@@ -86,7 +98,9 @@ const port = {
     isStock: false, // 配置默认显示在库的还是可用的
     isDeleteBtn: true, // 是否有删除明细按钮
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY_BILL',
       defnum: 1
     }], // 配的数量字段名集合
@@ -104,12 +118,16 @@ const port = {
     matchData: {
       data: [
         {
-          label: '发货店仓',
+          label: () => {
+            return i18n.t('messages.shippingWarehouse')
+          },
           value: 'qty_stock_able',
           port: 1, // 表示第一个接口
         },
         {
-          label: '收货店仓',
+          label: () => {
+            return i18n.t('messages.receivingWarehouse')
+          },
           value: 'qty_stock_able',
           port: 2, // 表示第二个接口
         },
@@ -121,7 +139,9 @@ const port = {
     isStock: false, // 配置默认显示在库的还是可用的
     isDeleteBtn: true, // 是否有删除明细按钮
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY_BILL',
       defnum: 1
     }], // 配的数量字段名集合
@@ -139,7 +159,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY_BILL',
       defnum: 1
     }], // 配的数量字段名集合
@@ -155,12 +177,16 @@ const port = {
     matchData: {
       data: [
         {
-          label: '在库库存',
+          label: () => {
+            return i18n.t('messages.inventory')
+          },
           value: 'qty_stock', // 字段名
           port: 1, // 表示第一个接口
         },
         {
-          label: '可用库存',
+          label: () => {
+            return i18n.t('messages.availableInventory')
+          },
           value: 'qty_stock_able', // 字段名
           port: 1, // 表示第一个接口
         },
@@ -171,7 +197,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY_BILL',
       defnum: 1
     }], // 配的数量字段名集合
@@ -189,7 +217,9 @@ const port = {
     matchData: {},
     hasStock: false, // 获取库存接口
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY_BILL',
       defnum: 1
     }], // 配的数量字段名集合
@@ -208,7 +238,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY_BILL',
       defnum: 1
     }], // 配的数量字段名集合
@@ -227,7 +259,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY_BILL',
       defnum: 1
     }], // 配的数量字段名集合
@@ -246,7 +280,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY_BILL',
       defnum: 1
     }], // 配的数量字段名集合
@@ -265,7 +301,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY_BILL',
       defnum: 1
     }], // 配的数量字段名集合
@@ -281,12 +319,16 @@ const port = {
     matchData: {
       data: [
         {
-          label: '退货店仓可用',
+          label: () => {
+            return i18n.t('messages.availableReturnWarehouse')
+          },
           value: 'qty_stock_able',
           port: 1, // 表示第一个接口
         },
         {
-          label: '退货店仓在库',
+          label: () => {
+            return i18n.t('messages.returnWarehouseInStock')
+          },
           value: 'qty_stock',
           port: 1, // 表示第一个接口
         },
@@ -297,7 +339,9 @@ const port = {
     isStock: false, // 配置默认显示在库的还是可用的
     isDeleteBtn: true, // 是否有删除明细按钮
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY_BILL',
       defnum: 1
     }], // 配的数量字段名集合
@@ -317,7 +361,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        i18n.t('tips.quantity')
+      },
       colname: 'QTY_BILL',
       defnum: 1
     }], // 配的数量字段名集合
@@ -334,12 +380,16 @@ const port = {
     matchData: {
       data: [
         {
-          label: '在库库存',
+          label: () => {
+            return i18n.t('messages.inventory')
+          },
           value: 'qty_stock', // 字段名
           port: 1, // 表示第一个接口
         },
         {
-          label: '可用库存',
+          label: () => {
+            return i18n.t('messages.availableInventory')
+          },
           value: 'qty_stock_able', // 字段名
           port: 1, // 表示第一个接口
         },
@@ -349,7 +399,9 @@ const port = {
     isStock: true, // 配置默认显示在库的还是可用的
     isDeleteBtn: true, // 是否有删除明细按钮
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY_BILL',
       defnum: 1
     }], // 配的数量字段名集合
@@ -368,7 +420,9 @@ const port = {
     hasStock: true, // 不获取库存接口
     isStock: false, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY_EXEC_PLAN',
       defnum: 1
     }], // 配的数量字段名集合
@@ -387,7 +441,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY_BILL',
       defnum: 1
     }], // 配的数量字段名集合
@@ -406,7 +462,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY_BILL',
       defnum: 1
     }], // 配的数量字段名集合
@@ -425,7 +483,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY_BILL',
       defnum: 1
     }], // 配的数量字段名集合
@@ -446,7 +506,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: false, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY',
       defnum: 1
     }], // 配的数量字段名集合
@@ -468,7 +530,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY',
       defnum: 1
     }], // 配的数量字段名集合
@@ -489,7 +553,9 @@ const port = {
     noZeroShwoFlag: true, // 不展示0
     isStock: false, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY',
       defnum: 1
     }], // 配的数量字段名集合
@@ -511,7 +577,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY',
       defnum: 1
     }], // 配的数量字段名集合
@@ -531,7 +599,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY',
       defnum: 1
     }], // 配的数量字段名集合
@@ -551,7 +621,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY',
       defnum: 1
     }], // 配的数量字段名集合
@@ -573,7 +645,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY',
       defnum: 1
     }], // 配的数量字段名集合
@@ -593,7 +667,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY',
       defnum: 1
     }], // 配的数量字段名集合
@@ -614,7 +690,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY',
       defnum: 1
     }], // 配的数量字段名集合
@@ -636,7 +714,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY',
       defnum: 1
     }], // 配的数量字段名集合
@@ -656,7 +736,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY',
       defnum: 1
     }], // 配的数量字段名集合
@@ -677,7 +759,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY',
       defnum: 1
     }], // 配的数量字段名集合
@@ -697,7 +781,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY',
       defnum: 1
     }], // 配的数量字段名集合
@@ -717,7 +803,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY',
       defnum: 1
     }], // 配的数量字段名集合
@@ -737,7 +825,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY',
       defnum: 1
     }], // 配的数量字段名集合
@@ -763,7 +853,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY',
       defnum: 1
     }], // 配的数量字段名集合
@@ -783,7 +875,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY',
       defnum: 1
     }], // 配的数量字段名集合
@@ -803,7 +897,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY',
       defnum: 1
     }], // 配的数量字段名集合
@@ -823,7 +919,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        return i18n.t('tips.quantity')
+      },
       colname: 'QTY',
       defnum: 1
     }], // 配的数量字段名集合
@@ -843,7 +941,9 @@ const port = {
     hasStock: true, // 获取库存接口
     isStock: true, // 配置默认显示在库的还是可用的
     inputList: [{
-      name: '数量',
+      name: () => {
+        i18n.t('tips.quantity')
+      },
       colname: 'QTY',
       defnum: 1
     }], // 配的数量字段名集合
@@ -851,4 +951,39 @@ const port = {
     hasReceiving: false
   }, //  经销商调货单
 };
-export default port;
+
+// 为了保证切换语言包后拿到正确值，此处直接通过劫持属性获取函数返回值。避免再去引用文件中修改变量的使用方法
+const portProxy = {}
+Object.keys(port).forEach(key => {
+  portProxy[key] = {...port[key]}
+  if(port[key].inputList) {
+    port[key].inputList.forEach((item, i) => {
+      portProxy[key].inputList[i] = {
+        ...item,
+        name: ''
+      }
+      Object.defineProperty(portProxy[key].inputList[i], 'name', {
+        get() {
+          return ortProxy[key].inputList[i].name()
+        },
+      })
+    })
+  }
+  if(port[key].matchData && port[key].matchData.data) {
+    const list = port[key].matchData.data
+    portProxy[key].matchData = {data: []}
+    list.forEach((item, i) => {
+      portProxy[key].matchData.data[i] = {
+        ...item,
+        label: ''
+      }
+      Object.defineProperty(portProxy[key].matchData.data[i], 'label', {
+        get() {
+          return portProxy[key].matchData.data[i].label()
+        },
+      })
+    })
+  }
+})
+
+export default portProxy;

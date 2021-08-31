@@ -1,3 +1,5 @@
+import i18n from '../assets/js/i18n';
+
 // 输入框
 const input = {
   // item 类型
@@ -28,7 +30,7 @@ const input = {
     // 原生的自动完成功能，可选值为 off 和 on
     autocomplete: 'off',
     // 占位文本
-    placeholder: '请输入',
+    placeholder: i18n.t('form.inputPlaceholder'),
     // 输入框尺寸，可选值为large、small、default或者不设置
     size: 'default',
     // 最大输入长度
@@ -101,9 +103,9 @@ const select = {
     // 选择框大小，可选值为large、small、default或者不填
     size: 'default',
     // 选择框默认文字
-    placeholder: '请选择',
+    placeholder: i18n.t('form.selectPlaceholder'),
     // 当下拉列表为空时显示的内容
-    'not-found-text': '无匹配数据',
+    'not-found-text': i18n.t('tips.noMatchingData'),
     // 在返回选项时，是否将 label 和 value 一并返回，默认只返回 value
     'label-in-value': false,
     // 弹窗的展开方向，可选值为 bottom 和 top
@@ -176,7 +178,7 @@ const checkbox = {
 const DatePicker = {
   type: 'DatePicker', // 必填!
   field: '', // 必填!
-  title: '活动日期', // 必填!
+  title: i18n.t('tips.activityDate'), // 必填!
   // input值, type为daterange,datetimerange value为数组 [start_value,end_value]
   value: ['2018-02-20', new Date()],
   props: {
@@ -187,7 +189,7 @@ const DatePicker = {
     // 日期选择器出现的位置，可选值为toptop-starttop-endbottombottom-startbottom-endleftleft-startleft-endrightright-startright-end
     placement: 'bottom-start',
     // 占位文本
-    placeholder: '请选择',
+    placeholder: i18n.t('form.selectPlaceholder'),
     // 选择器额外配置，比如不可选日期与快捷选项
     options: {},
     // 手动控制日期选择器的显示状态，true 为显示，false 为收起。使用该属性后，选择器不会主动关闭。建议配合 slot 及 confirm 和相关事件一起使用
@@ -213,7 +215,7 @@ const DatePicker = {
 const TimePicker = {
   type: 'TimePicker', // 必填!
   field: 'section_time', // 必填!
-  title: '活动时间', // 必填!
+  title: i18n.t('tips.activityDate'), // 必填!
   // input值, type为timerange value为数组 [start_value,end_value]
   value: [],
   props: {
@@ -226,7 +228,7 @@ const TimePicker = {
     // 时间选择器出现的位置，可选值为toptop-starttop-endbottombottom-startbottom-endleftleft-startleft-endrightright-startright-end
     placement: 'bottom-start',
     // 占位文本
-    placeholder: '请选择',
+    placeholder: i18n.t('form.selectPlaceholder'),
     // 是否显示底部控制栏，开启后，选择完日期，选择器不会主动关闭，需用户确认后才可关闭
     confirm: false,
     // 尺寸，可选值为large、small、default或者不设置
@@ -265,14 +267,14 @@ const DropDownSelectFilter = {
     // 模糊搜索要显示的列
     columns: [],
     // 无数据的时候提示
-    dataEmptyMessage: '暂无数据',
+    dataEmptyMessage: i18n.t('tips.noData'),
     // 下拉多选 默认选中数据
     defaultSelected: [],
     // 是否将弹层放置于 body 内
     transfer: true,
     // 是否开启回车默认选中第一条
     enterType: false,
-    placeholder: '请选择'
+    placeholder: i18n.t('form.selectPlaceholder')
   }
 };
 // 下拉框
@@ -298,14 +300,14 @@ const DropMultiSelectFilter = {
     // 模糊搜索要显示的列
     columns: [],
     // 无数据的时候提示
-    dataEmptyMessage: '暂无数据',
+    dataEmptyMessage: i18n.t('tips.noData'),
     // 下拉多选 默认选中数据
     defaultSelected: [],
     // 是否将弹层放置于 body 内
     transfer: true,
     // 是否开启回车默认选中第一条
     enterType: false,
-    placeholder: '请选择',
+    placeholder: i18n.t('form.selectPlaceholder'),
   }
 };
 
@@ -324,7 +326,7 @@ const AttachFilter = {
     // 是否显示筛选提示弹窗 true、false
     filterTip: true,
     // 是否选中后禁止编辑 true、false
-    placeholder: '请选择',
+    placeholder: i18n.t('form.selectPlaceholder'),
     // 模糊查询的文字信息，支持多列              item.props.AutoData = [];
     AutoData: [],
     // 定义选中展示的文字的key
@@ -337,7 +339,7 @@ const AttachFilter = {
     // 配置弹窗的配置项 model
     dialog: {
       model: {
-        title: '弹窗多选',
+        title: i18n.t('messages.multiplePop'),
         mask: true,
         draggable: true,
         closable: true,
@@ -348,11 +350,11 @@ const AttachFilter = {
     },
     datalist: [
       {
-        value: '更多筛选',
+        value: i18n.t('messages.moreFilters'),
         lable: 0
       },
       {
-        value: '导入',
+        value: i18n.t('buttons.import'),
         lable: 2
       }
     ]
@@ -374,7 +376,7 @@ const ImageUpload = {
       readonly: false,
       valuedata: [],
     },
-    placeholder: '请选择',
+    placeholder: i18n.t('form.selectPlaceholder'),
   }
 };
 
@@ -386,7 +388,7 @@ const Wangeditor = {
   value: '',
   props: {
     height: 200,
-    placeholder: '请选择',
+    placeholder: i18n.t('form.selectPlaceholder'),
   }
 };
 // 读写规则
@@ -397,7 +399,7 @@ const EnumerableInput = {
   value: '',
   props: {
     height: 200,
-    placeholder: '请选择',
+    placeholder: i18n.t('form.selectPlaceholder'),
   }
 };
 
@@ -409,7 +411,7 @@ const ExtentionInput = {
   value: '',
   props: {
     height: 200,
-    placeholder: '请选择',
+    placeholder: i18n.t('form.selectPlaceholder'),
   }
 };
 

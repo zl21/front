@@ -22,7 +22,7 @@
           />
         </Spin>
         <div class="modify-tip">
-          已选中批量修改记录数：{{ ids }}行
+          {{$t('messages.selectedModifiedRecord',{total:ids})}}
         </div>
         <component
           :is="'CompositeFormpop'"
@@ -37,14 +37,14 @@
             type="fcdefault"
             @click="oncancle"
           >
-            取消
+            {{$t('buttons.cancel')}}
           </Button>
           <Button
             type="primary"
             style="margin:0 0 0 10px;"
             @click="confirm"
           >
-            确认
+            {{$t('buttons.confirm')}}
           </Button>
         </div>
       </div>
@@ -74,7 +74,7 @@
         Condition: 'list',
         changeType: 'Modify',
         objids: [],
-        poptitle: '批量修改',
+        poptitle: this.$t('buttons.batchEdit'),
         loading: false,
         type: false, // 判断是勾选 还是批量
         router: {},
@@ -85,7 +85,7 @@
       title: {
         type: String,
         default() {
-          return '标题';
+          return this.$t('tips.title');
         }
       },
       reffixedcolumns: {
@@ -141,15 +141,6 @@
               inpubobj: childs,
               objviewcol: val.objviewcol
             };
-            // this.newformList = {
-            //   addcolums: [{
-            //     hrdisplay: 'expand',
-            //     parentdesc: '批量修改',
-            //     parentname: val.addcolums[0].parentname,
-            //     childs
-            //   }],
-            //   objviewcol: val.objviewcol
-            // };
           }
         },
         deep: true
@@ -273,8 +264,8 @@
         if (!checkTip) {
           const message = {
             mask: true,
-            title: '提醒',
-            content: '没有数据更新，请确认！',
+            title: this.$t('feedback.alert'),
+            content: this.$t('messages.noUpdatedData'),
           };
           this.$Modal.fcWarning(message);
           return false;
