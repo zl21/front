@@ -3,6 +3,7 @@ import network, { urlSearchParams } from '../../../__utils__/network';
 import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 import { querySearch } from '../../../__utils__/indexedDB';
 import { enableKAQueryDataForUser } from '../../../constants/global';
+import i18n from '../../../assets/js/i18n';
 
 export default {
   setColHide(store, data) {
@@ -88,7 +89,7 @@ export default {
             multi_tab: queryData.datas.multi_tab
           };
           if (queryData.datas.tablequery && queryData.datas.tablequery.multi_tab && queryData.datas.tablequery.multi_tab.length > 0) {
-            queryData.datas.tablequery.multi_tab.unshift({ tab_name: '全部' });
+            queryData.datas.tablequery.multi_tab.unshift({ tab_name: i18n.t('tips.all') });
             queryData.datas.tablequery.open = true;
           }
           commit('updateFilterTableData', queryData.datas.tablequery);
@@ -125,8 +126,11 @@ export default {
     )).then((res) => {
       if (res.data.code === 0) {
         resolve();
-        const datas = res.data.data;
-        commit('updateButtonsExport', datas);
+        const data = res.data.data;
+        commit('updateButtonsExport', {
+          fileUrl: data,
+          message: res.data.message
+        });
       } else {
         reject();
       }
@@ -200,6 +204,10 @@ export default {
         if (res.data.data.length > 0) {
           const deleteFailInfo = res.data.data;
           commit('updateFailInfo', deleteFailInfo);
+          // 页面刷新
+          if(obj.ids.length >deleteFailInfo.length){
+            resolve({isrefrsh:true}, actionName);
+          }
         } else {
           commit('updateButtonExeActionData', res.data.message);
         }

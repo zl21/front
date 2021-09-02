@@ -21,8 +21,9 @@ import {
 import { getLabel } from '../../../__utils__/url';
 import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 import getUserenv from '../../../__utils__/getUserenv';
+import { verifyRouter } from '../../../__component__/common/verify.js';
 import store from '../../store.config';
-
+import i18n from '../../../assets/js/i18n';
 
 export default {
  
@@ -356,6 +357,8 @@ export default {
       // window.location.reload();
       removeSessionObject('savePath');
     }
+    window.sessionStorage.setItem('keepAliveLabelMapsAll',JSON.stringify(state.keepAliveLabelMaps || {}));
+
   },
   modifycurrentLabel(state,data){
     let extindex = -1;
@@ -374,6 +377,10 @@ export default {
     const linkType = {};
     linkType[linkModuleName] = linkUrl;
     state.LinkUrl.push(linkType);
+  },
+  delectkeepAliveLists(state, { i}){
+    // 清除缓存
+    state.keepAliveLists.splice(i, 1);
   },
   increaseKeepAliveLists(state, data) {
     let keepAliveModuleNameRes = '';
@@ -454,6 +461,10 @@ export default {
     state.openedMenuLists[index].isActive = true;
   },
   forceUpdateOpenedMenuLists(state, { openedMenuInfo, index }) {
+    openedMenuInfo.label = openedMenuInfo.label.replace(/undefined/g,'');
+    if(openedMenuInfo.label ===''){
+      openedMenuInfo.label = state.openedMenuLists[index].label;
+    }
     state.openedMenuLists.forEach((d) => { d.isActive = false; });
     state.openedMenuLists[index] = openedMenuInfo;
     state.openedMenuLists = state.openedMenuLists.concat([]);
@@ -646,7 +657,7 @@ export default {
         }
       });
     }
-    if (enableOpenNewTab()) { // 打补丁处理同表tab新开，外键跳转到单对象，再由单对象列表重新打开此单对象时，动态路由维护的关系未清除，导致关闭当前界面，再重新打开此明细时，不显示返回按钮
+    //if (enableOpenNewTab()) {} // 打补丁处理同表tab新开，外键跳转到单对象，再由单对象列表重新打开此单对象时，动态路由维护的关系未清除，导致关闭当前界面，再重新打开此明细时，不显示返回按钮
       if (!isDynamicRouting) { // 非动态路由返回之前的关闭tab需清除routeMapRecord对应关系，动态路由返回的routeMapRecord对应关系在返回监听时刷新接口之后清除
         Object.keys(routeMapRecord).map((item) => {
           if (item === tab.keepAliveModuleName) {
@@ -654,7 +665,7 @@ export default {
           }
         });
       }
-    }
+    
     // 删除规则五： 如果来源为插件界面，关闭当前tab时，应清除dynamicRoutingIsBack标记，以及dynamicRoutingIsBackForDelete内存储的当前表的关系
     // Object.keys(routeMapRecord).map((item) => {
     //   const fromPath = routeMapRecord[item].substring(1, 7) === 'PLUGIN';
@@ -837,7 +848,7 @@ export default {
   },
   tabOpen(state, {// 打开一个新tab添加路由
     back, type, tableName, tableId, id, customizedModuleName, customizedModuleId, linkName,
-    linkId, url, label, serviceId, dynamicRoutingForCustomizePage, isSetQuery, queryData, NToUpperCase,
+    linkId, url, label, serviceId, dynamicRoutingForCustomizePage, isSetQuery, queryData, NToUpperCase,original
   }) {
     // back:返回标志,
     // type:跳转类型,
@@ -856,14 +867,24 @@ export default {
     // isSetQuery:可设置目标界面为标准列表界面的表单默认值
     // queryData：设置目标界面表单默认值数据,
     // NToUpperCase:url不转大写,
+    // if(original){
+    //   // 外链跳转字段 校验是否刷新界面
+    //   let totableName = tableName ||customizedModuleName || linkName;
+    //   let toMainId = tableId ||customizedModuleId || linkId;
+    //   let toId = id;
+    //   let checked = verifyRouter(totableName,toMainId,toId,state.openedMenuLists,arguments,this,state);
+    //   if(checked){
+    //     return true;
+    //   }
+    // }
     if ((type === 'S' || type === 'STANDARD_TABLE_LIST_PREFIX') && isSetQuery && queryData) {
       if (queryData.values && queryData.values.length > 0) {
         let flag = true;
         queryData.values.some((item) => {
           if (item.display === 'OBJ_FK' && !item.refobjid) {
-            const message = `设置默认值为外键类型，请配置默认值为${item.defaultValue}字段的refobjid值`;
+            const message = i18n.t('messages.setDefaultForeignKey',{value:item.defaultValue});
             window.R3message({
-              title: '错误',
+              title: i18n.t('feedback.error'),
               content: message,
               mask: true
             });

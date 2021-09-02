@@ -3,6 +3,7 @@ import { stringify } from 'querystring';
 // import { ComponentResolver } from 'ag-grid/dist/lib/components/framework/componentResolver';
 import router from '../../router.config';
 import { enableOpenNewTab } from '../../../constants/global';
+import i18n from '../../../assets/js/i18n';
 
 export default {
   updataClickSave(state, func) {
@@ -125,6 +126,9 @@ export default {
     }
   },
   updateRefButtonsData(state, data) { // 更新子表按钮数据
+    if(state.tabPanels.length<1){
+      return
+    }
     const { componentAttribute } = state.tabPanels[data.tabIndex];
     if (data.tabwebact.jflowbutton && data.tabwebact.jflowbutton.length > 0) {
       componentAttribute.buttonsData.isShow = true;
@@ -138,6 +142,9 @@ export default {
     }
   },
   updateFormDataForRefTable(state, data) { // 更新子表表单数据
+    if(state.tabPanels.length<1){
+      return;
+    }
     const { componentAttribute } = state.tabPanels[data.tabIndex];
     componentAttribute.formData.isShow = data.inpubobj && data.inpubobj.length > 0;
     componentAttribute.formData.data = data || [];
@@ -268,7 +275,9 @@ export default {
                 } else if ((c.fkdisplay === 'drp' || c.fkdisplay === 'mrp' || c.fkdisplay === 'pop') && Array.isArray(copyDatas[item])) {
                   c.refobjid = copyDatas[item].map(item => item.ID).join(',');
                   c.valuedata = copyDatas[item].map(item => item.Label).join(',');
-                  copySaveDataForParam[c.colname] = [{ ID: copyDatas[item][0].ID, Label: copyDatas[item][0].Label }];
+                  if(copyDatas[item][0]){
+                    copySaveDataForParam[c.colname] = [{ ID: copyDatas[item][0].ID, Label: copyDatas[item][0].Label }];
+                  }
                 }else if (c.display === 'OBJ_DATENUMBER') {
                   c.valuedata = copyDatas[item];
                   // c.default = -1;
@@ -324,11 +333,13 @@ export default {
               } else if (c.fkdisplay === 'drp' || c.fkdisplay === 'mrp' || c.fkdisplay === 'pop') {
                 c.refobjid = copyDatas[item].map(item => item.ID).join(',');
                 c.default = copyDatas[item].map(item => item.Label).join(',');
-                copySaveDataForParam[c.colname] = [{ ID: copyDatas[item][0].ID, Label: copyDatas[item][0].Label }];
+                if(copyDatas[item][0]){
+                  copySaveDataForParam[c.colname] = [{ ID: copyDatas[item][0].ID, Label: copyDatas[item][0].Label }];
+                }
               } else if (c.fkdisplay === 'mop') {
                 try {
                   const number = JSON.parse(b.valuedata).lists.result.length;
-                  copySaveDataForParam[c.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
+                  copySaveDataForParam[c.colname] = [{ ID: b.valuedata, Label: i18n.t('messages.selectedData',{total:number}) }];
                 } catch (e) {
                   copySaveDataForParam[c.colname] = c.valuedata;
                 }
@@ -508,6 +519,57 @@ export default {
   //     });
   //   });
   // }
+  updateChildTabPanels(state, data){
+    let tabPanels =state.tabPanels.reduce((arr,item,index)=>{
+      // 隐藏子表  
+      if(data.value[item.tablename]){
+        if(state.tabCurrentIndex === index){
+          state.tabCurrentIndex += 1;
+          
+          
+        }
+        item.hide = true;
+      }else{
+        item.hide = false;
+      }
+      
+      arr.push(item);
+       return arr;
+    },[]);
+    //state.isRequest = isRequest;
+    state.tabPanels = tabPanels;
+    let index = state.tabPanels.findIndex((x)=>{
+      return !x.hide;
+    });
+    if(state.tabPanels.length<state.tabCurrentIndex+1){
+      state.tabCurrentIndex = index;
+
+    }
+    
+    if(state.tabCurrentIndex === -1){
+      state.tabCurrentIndex = 0;
+    }
+    if(index === -1){
+      state.mainFormInfo.buttonsData.data.isreftabs = false;
+    }else{
+      state.mainFormInfo.buttonsData.data.isreftabs = true;
+    }
+
+    console.log(state.tabPanels.length,state.tabCurrentIndex);
+    // if(tabPanels.length<1){
+    //   state.mainFormInfo.buttonsData.data.isreftabs = false;
+    // }else{
+    //   state.mainFormInfo.buttonsData.data.isreftabs = true;
+    // }
+    // let tabCurrentIndex = tabPanels.findIndex((x)=>{
+    //     return x.tablename === data.getItemName
+    // });
+    // if(tabCurrentIndex>0){
+    //   state.tabCurrentIndex = tabCurrentIndex;
+    // }else{
+    //   state.tabCurrentIndex = 0;
+    // }
+  },
   updateRefreshButton(state, value) { // 控制刷新按钮开关
     state.refreshButton = value;
   },
@@ -560,6 +622,8 @@ export default {
       arr[0] = true;
     }
     arr[index] = true;
+
+
     const oldRequestData = state.isRequest;
     if (oldRequestData.length > 0) {
       arr.forEach((a, i) => {
@@ -568,11 +632,17 @@ export default {
         }
       }); 
     }
+    if(tabPanel[index]){
+      state.isRequestTable[tabPanel[index].tablename] = true;
+    }
+   
+    //state.isRequestTable = isRequestTable;
     state.isRequest = arr;
   },
   
   emptyTestData(state) { // 清空TestData
     state.isRequest = [];
+    state.isRequestTable = {};
   },
   updateScrollPosition(state, scrollPositionValue) { // 更新当前单对象滚动位置
     state.scrollPosition = scrollPositionValue;

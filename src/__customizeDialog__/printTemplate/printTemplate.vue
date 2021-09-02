@@ -8,10 +8,10 @@
       >
         <tr class="th">
           <td>
-            默认
+            {{$t('tips.default')}}
           </td>
           <td>
-            模版名称
+            {{$t('tips.templateName')}}
           </td>
         </tr>
         <tr
@@ -34,7 +34,7 @@
             v-if="printTemplateData.length<1"
             colspan="2"
           >
-            暂无数据
+            {{$t('tips.noData')}}
           </td>
         </tr>
       </table>
@@ -46,13 +46,13 @@
         class="sav-btn"
         @click="save"
       >
-        <span>确定</span>
+        <span>{{$t('buttons.confirm')}}</span>
       </button>
       <button
         class="cancel-btn"
         @click="cancel"
       >
-        <span>取消</span>
+        <span>{{$t('buttons.cancel')}}</span>
       </button>
     </div>
   </div>
@@ -94,8 +94,8 @@
         if (!printId) {
           const data = {
             mask: true,
-            title: '警告',
-            content: '请选择一个模版'
+            title: this.$t('feedback.warning'),
+            content: this.$t('messages.selectTemplate')
           };
           this.$Modal.fcWarning(data);
           return;
@@ -111,7 +111,7 @@
               const message = res.data.message;
               const data = {
                 mask: true,
-                title: '成功',
+                title: this.$t('feedback.success'),
                 content: message
               };
               this.$Modal.fcSuccess(data);

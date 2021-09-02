@@ -49,19 +49,27 @@ export default {
               dynamicforcompute(this,this.items.webconf.dynamicforcompute)
             }
           }
-          if(this.items.webconf && this.items.webconf.filtercolval){
+        //   if(this.items.webconf && this.items.webconf.filtercolval){
 
-            // 过滤显示字段
-           filtercolval(this,this.items.webconf.filtercolval)
-         }
-
+        //     // 过滤显示字段
+        //    filtercolval(this,this.items.webconf.filtercolval)
+        //  }
           //  清空字段refcolval
-          clearFormRefcolval(this);
+          if(this.actived && !this.typesource){
+            clearFormRefcolval(this);
+            this.typesource = '';
+          }
           
         }else if(this.items.Query){
           // 清除标准列表的数据
-          clearFormRefcolval(this)
+            clearFormRefcolval(this)
         }
+        // 列表和单对象都存在
+        if(this.items.webconf && this.items.webconf.filtercolval){
+          // 过滤显示字段
+         filtercolval(this,this.items.webconf.filtercolval);
+
+       }
       }
     }
   },

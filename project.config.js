@@ -19,7 +19,7 @@ module.exports = {
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop网关开启环境
   // target: 'http://r3.burgeon.cn:19999/', // 'http://106.15.154.165:19999/', // Cube
   // target: 'http://cmsqas.lining.com', // 卡宾
- // target: 'http://r3.burgeon.cn:28888/', // 李宁
+//  target: 'http://r3.burgeon.cn:28888/', // 李宁
   // target: 'http://jflow-shangfei-r3.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://ark-share-dev.dev.burgeononline.com', // ArkShare环境
   // target: 'http://r3.burgeon.cn:28888/', // lining环境
@@ -39,7 +39,8 @@ module.exports = {
   // target: 'http://cs.yqdev.burgeononline.com/', // 云雀
   // target: 'http://47.102.164.111:27777', // 卡宾
   // target: 'http://dev.dev.lark-erp.cn/',
-  
+  // target: 'http://139.224.134.69:58000', // OMS
+
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
   enableGateWay: true, // 网关是否打开,
@@ -70,7 +71,12 @@ module.exports = {
   cbs: undefined, // 框架回调，形如 { loginCb: function() {} }
   layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
   layoutDirectionSlot:{  // 模板渲染
-    // NavigatorSubMenu:require('./src/demo/NavigatorSubMenu.vue').default  // 模板渲染
+    //NavigatorSubMenu:require('./src/demo/NavigatorSubMenu.vue').default,  // 模板渲染
+    //NaVertical:require('./src/demo/NaVerticalslot.vue').default  // 模板渲染
+    // listFormButton:require('./demo/detailbuttons.vue').default,  // 定制列表button
+    // standardTableList:{
+    //   defined:require('./demo/standardTableListdefind.vue').default,
+    // }  // 定制列表button
   },
   backDashboardRoute: [], // 配置刷新浏览器回到Dashboard界面
   custommizedRequestURL: {
@@ -88,15 +94,48 @@ module.exports = {
   logoutTips: false, // 失去会话是否需要登出提示 默认false直接登出
   enableKAQueryDataForUser: false, // 是否开启存储全表查询条件
   dateStorageTime: 1, // 查询条件存储时间，默认1天,建议不要设置太大影响性能
-  enableOpenNewTab: true, // 列表界面打开 同表 单对象是否新开tab,默认为false
+  enableOpenNewTab: false, // 列表界面打开 同表 单对象是否新开tab,默认为false
   blockFullOperation: false, // 禁止不选数据时的批量修改操作,
   customizeMixins: { // 获取所有外部接入的mixins对象
     setPanel: null,
     // verticalTableDetailCustomize: require('./src/demo/horizontalTableDetailCustomize.js').default,
-    standardTableListsCustomize: null,
+    // standardTableListsCustomize: {
+    //   methods: {
+    //     R3_processColumns(columns) {
+    //       columns.forEach(item => {
+    //         item.tdAlign = 'center'
+    //       })
+    //       return columns
+    //     },
+
+    //     R3_processAgOptions(options) {
+    //       options.rowSelection = 'single'
+    //       options.floatingFilter = false
+    //       return options
+    //     },
+
+    //     R3_processRows(rows) {
+    //       rows.forEach(item => {
+    //         item.NAME.val = `格式化-${item.NAME.val}`
+    //       })
+    //       return rows
+    //     }
+    //   }
+    // },
     // horizontalTableDetailCustomize: require('./src/demo/horizontalTableDetailCustomize.js').default,
     taskList: null,
-    // tableDetailCollectionMixin:require('./src/demo/mixin').default
+    // tableDetailCollectionMixin: {
+    //   methods: {
+    //     R3_processColumns(columns) {
+    //       console.log('列', columns)
+    //       columns.forEach(item => {
+    //         item.tdAlign = 'left'
+    //         delete item.webconf
+    //       })
+    //       return columns
+    //     }
+    //   }
+    // }
   },
   imgProgressController: false, // 是否显示图片上传进度
   ossRealtimeSave: false,
@@ -110,7 +149,7 @@ module.exports = {
   filterUrlForNetworkScript: () => true, // 框架默认true,
   listDefaultColumn: 4,
   setComponentsProps: (type, props) => {  // 框架自定义表单配置
-    // 列表支持联动查询
+    //列表支持联动查询
     // if (type === 'OBJ_FK') {
     //   if(props.PropsData && (props.PropsData.fkobj.searchmodel ==='mrp' || props.PropsData.fkobj.searchmodel ==='drp')){
     //     props.PropsData.Query = true;
@@ -121,8 +160,8 @@ module.exports = {
   agGridOptions: { // ag表格的配置
     // rowHeight: 100
   },
-  // messageSwitch: true, // 消息开关
-  // useAgGrid: true, // 明细界面的表格全局用ag表格进行渲染
+  messageSwitch: true, // 消息开关
+  useAgGrid: true, // 明细界面的表格全局用ag表格进行渲染
   // (data) => {
   //   if (data.router.params) {
   //     if (data.router.params.tableName && data.config().configPage[data.router.params.tableName].filter(u => u === data.url).length > 0) { // 筛选出配置界面不需要根据框架code报错提示框的接口
@@ -148,6 +187,14 @@ module.exports = {
   // }
   // classFix: 'r3-', // 样式前缀
   classFix: '', // 样式前缀
+  // openTabNumber:2,
+
   autoGatewayUrl:false,  // 是否请求网关
-  computeForSubtable: false
+  computeForSubtable: false,
+  routerFilter:false, // 跳转是否过滤
+  setXss:false, // 是否xss 攻击过滤
+  filterHistory:[], // 过滤不需要历史记录的表
+  enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
+  //filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
+  listFormWebconf:['filtercolval'] // 列表是否支持webcof 字段
 };

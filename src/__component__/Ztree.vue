@@ -11,22 +11,6 @@
       @on-enter="search"
     />
     <p class="orange" v-if="showTip && inputValue.length>0">"{{inputValue}}"{{Notice}}</p>
-    <!-- <p>
-      关键字：<input
-        id="key"
-        type="text"
-        value=""
-        class="empty"
-        placeholder="请输入关键字"
-      ><br>
-    </p>
-    <Button
-
-      type="posdefault"
-      @click="search"
-    >
-      查询
-    </Button> -->
     <div class="zTreeDemoBackground left">
       <ul
         :id="tableName"
@@ -80,7 +64,8 @@
           },
         },
         isClick: false,
-        treeId: ''
+        treeId: '',
+        searchNoData: false
 
 
       };
@@ -111,11 +96,11 @@
       // },
       placeholder: {// 设置查询框placeholder
         type: String,
-        default: () => '请输入角色'
+        default: function(){return this.$t('messages.enterRole')}
       },
       Notice:{
         type: String,
-        default: () => '匹配失败，请重新输入'
+        default: function(){return this.$t('messages.matchFail')}
       },
       treeDatas: {
         type: Function,
@@ -157,6 +142,7 @@
 
       //   return true;
       // },
+
       checkNode() {
         // 选中
         const treeObj = $.fn.zTree.getZTreeObj(`${this.tableName}`);
@@ -206,16 +192,19 @@
           checkoutZtree.then((res)=>{
             if(res.length>0){
               this.showTip = false;
+              this.searchNoData = false;
             }else{
               this.showTip = true;
+              this.searchNoData = true;
               this.expandAll();
             }
+            this.$emit('treeSearch', this.inputValue, this.searchNoData)
           })
         } else {
           this.showTip = false;
           this.expandAll();
+          this.$emit('treeSearch', this.inputValue, this.searchNoData)
         }
-        this.$emit('treeSearch', this.inputValue)
       },
       expandAll() {
         // fuzzySearch('treeDemo','', null, false); // 初始化模糊搜索方法
@@ -227,7 +216,10 @@
       callMethod() { // 重置
         this.inputValue = '';
         this.search();
-      }
+      },
+      clearInputVal() {
+        this.inputValue = '';
+      },
       // freshArea() {
       //   $.fn.zTree.init($('#treeDemo'), this.setting, this.zNodes);
       // }

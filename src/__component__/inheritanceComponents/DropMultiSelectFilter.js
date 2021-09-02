@@ -7,11 +7,12 @@
 
 
  import { defaultrange } from '../../constants/global';
- import { DropMultiSelectFilter } from '@syman/ark-ui-bcl';
+//  import { DropMultiSelectFilter } from '@syman/ark-ui-bcl';
  import DropMethods from '../ExtendedMethods/DropMethods';
  import network from '../../__utils__/network';
  import { SetPlaceholder } from './setProps';
- 
+ let  DropMultiSelectFilter = $Bcl.arkDropMultiSelectFilter;
+
  import {
   setisShowPopTip,
   postData,
@@ -21,7 +22,7 @@
  class CustomDropMultiSelectFilter {
    constructor(item) {
      this.item = item;
-     this.Vm = Object.create(DropMultiSelectFilter);
+     this.Vm = DropMultiSelectFilter;
      this.mergeProps();   
      this.mergeMethods(); 
    }
@@ -86,6 +87,12 @@
       this.item = this.PropsData.item;
       this.item.Query = this.PropsData.Query;
       this.activeTab = this.$parent.$parent.activeTab;
+      if(this.item.refcolval){
+        if(!this.item.webconf){
+          this.item.webconf = {}
+        }
+        this.item.webconf.refcolval = this.item.refcolval
+      }
       this.PropsData.isShowPopTip=()=>{
         if(this.item.refcolval){
           if(!this.item.webconf){
@@ -115,6 +122,10 @@
           });
          })   
       };
+       // 默认数据
+       setTimeout(()=>{
+        setisShowPopTip(this, this.item.webconf, network,true);
+      },200);
 
 
     }

@@ -1,8 +1,9 @@
 <template>
   <div :class="classes">
     <div
-      v-if="itemInfo.tabrelation==='1:1'&&watermarkimg"
+      v-if="type === 'vertical' && itemInfo.tabrelation==='1:1'&&watermarkimg"
       class="submit-img"
+      ref="watermark"
     >
       <WaterMark
         :text="waterMarkText"
@@ -10,6 +11,7 @@
         :top="waterMarkTop"
         :left="waterMarkLeft"
         :width="waterMarkWidth"
+        @hook:mounted="getTransferDom"
       />
     </div>
     <component
@@ -188,7 +190,7 @@
   import {
     classFix, getCustomizeWaterMark, KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, notificationOfMain
   } from '../constants/global';
-
+  import { deepClone } from '../__utils__/common'
 
   const customizeModules = {};
   Object.keys(CustomizeModule).forEach((key) => {
@@ -213,8 +215,9 @@
         slotTableTemplate:'', // 接入外部的渲染组件
         callbackFun:()=>{  // 回调函数
               
-        }
-       
+        },
+        currentItemId: '', 
+        currentTableId: ''
         // tableName: this[INSTANCE_ROUTE_QUERY].tableName
       };
     },
@@ -399,26 +402,26 @@
       waterMarkText() {
         const customizeWaterMark = getCustomizeWaterMark();
         const textMap = Object.assign({
-          accepet: '已验收',
-          back: '已退回',
-          box: '已装箱',
-          boxing: '装箱中',
-          charge: '已记账',
-          check: '已收银',
-          completed: '已完成',
-          confirm: '已确认',
-          execute: '已执行',
-          executing: '执行中',
-          extremely: '异常终止',
-          Inventory: '已盈亏',
-          send: '已发出',
-          submit: '已提交',
-          system: '系统',
-          terminate: '已终止',
-          examine: '审批中',
-          void: '已作废',
-          agreement: '已同意',
-          reject: '已驳回',
+          accepet: this.$t('tips.accepted'),
+          back: this.$t('tips.returned'),
+          box: this.$t('tips.boxed'),
+          boxing: this.$t('tips.boxing'),
+          charge: this.$t('tips.charged'),
+          check: this.$t('tips.cashed'),
+          completed: this.$t('tips.completed'),
+          confirm: this.$t('tips.confirmed'),
+          execute: this.$t('tips.executed'),
+          executing: this.$t('tips.executing'),
+          extremely: this.$t('tips.abnormalTermination'),
+          Inventory: this.$t('tips.profitable'),
+          send: this.$t('tips.sent'),
+          submit: this.$t('tips.submitted'),
+          system: this.$t('tips.system'),
+          terminate: this.$t('tips.terminated'),
+          examine: this.$t('tips.approving'),
+          void: this.$t('tips.invalid'),
+          agreement: this.$t('tips.approved'),
+          reject: this.$t('tips.rejected'),
         }, Object.keys(customizeWaterMark).reduce((a, c) => {
           a[c] = customizeWaterMark[c].text;
           return a;
@@ -520,12 +523,35 @@
       this.$el._vue_=this;
     },
     created() {
+      const { tableId, itemId } = this[INSTANCE_ROUTE_QUERY];
+      this.currentTableId = tableId;
+      this.currentItemId = itemId;
       this.generateComponent();
     },
     methods: {
       ...mapMutations('global', ['decreasekeepAliveLists']),
 
       // ...mapActions(this[MODULE_COMPONENT_NAME], ['performMainTableSaveAction']),
+
+      // 转移水印
+      getTransferDom() {
+        let value = '' // 默认不转移节点
+        
+        if(window.ProjectConfig.domPortal && window.ProjectConfig.domPortal.waterMark) {
+          value = window.ProjectConfig.domPortal.waterMark({
+            fromComponent: 'SingleObjectTabComponent',
+            type: this.type
+          })
+        }
+        
+        if(value) {
+          const dom = document.querySelector(value)
+          if(dom) {
+            dom.appendChild(this.$refs.watermark)
+          }
+        }
+      },
+
       generateComponent() {
         const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
         const tableComponent = `${this[MODULE_COMPONENT_NAME]}.TableDetailCollection`;
@@ -650,22 +676,18 @@
           const itemName = this.tableName;// 子表表名
           const itemCurrentParameter = this.itemCurrentParameter;
           if (itemId === 'New') { // 主表新增保存和编辑新增保存
-            // console.log('主表新增保存和编辑新增保存');
             const type = 'add';
             const path = savePath;
             const objId = -1;
 
             if (!this.subtables()) { // 为0的情况下是没有子表
-              // console.log('没有子表');
               if (path) { // 配置path
-                // console.log(' 主表新增保存,配置path的', this.dynamic.requestUrlPath);
                 this.savaNewTable(type, path, objId);
               } else { // 没有配置path
                 this.savaNewTable(type, path, objId);
               }
             }
             if (this.subtables()) { // 大于0 的情况下是存在子表
-              // console.log('有子表');
               if (path) { // 配置path
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               } else { // 没有配置path
@@ -673,17 +695,13 @@
               }
             }
           } else if (itemId !== '-1') { // 主表编辑保存
-            // console.log('主表编辑保存');
             const path = savePath;
             const type = 'modify';
             if (!this.subtables()) { // 为0的情况下是没有子表
-              // console.log('没有子表',);
 
               if (savePath) { // 配置path
-                // console.log('主表编辑保存,配置path的逻辑', obj.requestUrlPath);
                 this.savaNewTable(type, path, this.itemId);
               } else { // 没有配置path
-                // console.log('主表编辑保存,没有配置path的逻辑');
                 const objId = itemId;
                 this.savaNewTable(type, path, objId);
               }
@@ -779,7 +797,7 @@
             } else {
               types = 'tableDetailVertical';
             }
-            const label = `${this.$store.state.global.activeTab.label.replace('新增', '编辑')}`;
+            const label = `${this.$store.state.global.activeTab.label.replace(this.$t('buttons.add'), this.$t('buttons.edit'))}`;
             const tab = {
               type: types,
               tableName,
@@ -844,14 +862,18 @@
       },
       verifyRequiredInformation() { // 验证表单必填项
         this.saveParameters();
-        const checkedInfo = this.currentParameter.checkedInfo;// 主表校验信息
-        if (checkedInfo) {
-          const messageTip = checkedInfo.messageTip;
-          if (messageTip && messageTip.length > 0) {
-            this.$Message.warning(messageTip[0]);
-            checkedInfo.validateForm.focus();
+        const checkedInfo = this.verifymiainForm();// 主表校验信息
+        if (checkedInfo.length>0) {
+           this.$Message.warning(checkedInfo[0].tip);
+            let dom = document.querySelector(`#${checkedInfo[0].colname}`);
+            if(dom){
+              let Input = dom.querySelector('input') || dom.querySelector('textarea');
+              if(Input){
+                  Input.focus();
+              }
+
+            }
             return false;
-          }
         }
         // if (this.objectType === 'vertical') { // 纵向结构
         if (this.childTableNames.length > 0) { // 存在子表时
@@ -869,7 +891,7 @@
               if (this.itemId === 'New') {
                 const addInfo = this.$store.state[this[MODULE_COMPONENT_NAME]].updateData[this.tableName].itemCurrentParameter.add[this.itemName];
                 if (Object.values(addInfo).length < 1) {
-                  this.$Message.warning('个人信息不能为空!');
+                  this.$Message.warning(this.$t('messages.requiredPersonalInfo'));
                   return false;
                 }
               }
@@ -878,6 +900,17 @@
         }
         // }
         return true;
+      },
+      verifymiainForm(){
+        // 获取主表校验
+        let panelForm_dom =  document.querySelector('.panelForm');
+        let panelForm = panelForm_dom._vue_;
+        let validate = [];
+        if(panelForm){
+           validate = panelForm.validate();
+        }
+        return validate;
+
       },
       saveParameters() {
         if (this.verifyForm) { // 有子表
@@ -896,13 +929,42 @@
           return obj;
         }, {});
       },
-      formChange(val, changeVal, labl, formData, defaultDataInt) {
+
+      // 判断数据是否修改过
+      getUpdatedValue(formData, defaultData) {
+        const form = deepClone(formData)
+        Object.keys(form).forEach(field => {
+          const defaultValue = defaultData[field]
+          const currentValue = form[field]
+          const isEqual = defaultValue && (defaultValue == currentValue) // 强转化是否相等。处理数字输入框的场景用
+          const isEqualString = defaultValue && (JSON.stringify(defaultValue) === JSON.stringify(currentValue)) // 引用型对象转字符串进行比较是否相等
+
+          // 条件1: 没初始值，且没有输入值
+          // 条件2: 有初始值，但是值跟之前对比没发生变化
+          // currentValue === 0是因为数子输入框输入再删除会把默认值变成0，而不是''
+          // currentValue === '[]' 的出现的场景时文件上传表单
+          if((currentValue === 0 && defaultValue === undefined) || (currentValue === '' && defaultValue === undefined) || (currentValue === '[]' && defaultValue === undefined) || isEqualString || isEqual) {
+            delete form[field]
+          }
+        })
+        return form
+      },
+
+      // 表单数据变化
+      formChange(val, changeVal, label, formData, defaultDataInt, defaultFormData) {
         const { tableName } = this;
-        const obj = {};
         const { itemId } = this[INSTANCE_ROUTE_QUERY];
-        obj[tableName] = formData;
 
         if (itemId) {
+          const updatedValue = this.getUpdatedValue(formData, defaultFormData)
+          // 如果没变化，数据恢复原样
+          if(Object.keys(updatedValue).length === 0) {
+            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { tableName, value: {} });
+            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateAddData`, { tableName, value: {} });
+            return
+          }
+          const obj = {};
+          obj[tableName] = updatedValue;
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { tableName, value: defaultDataInt });
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateAddData`, { tableName, value: obj });
         }
@@ -930,6 +992,7 @@
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateCheckedInfoData`, { tableName, value: data });
         }
       },
+      
       formPanelChange(val, changeVal, valLabel) {
         if(notificationOfMain() && this.$route.params.tableName === this.tableName) {
           DispatchEvent('notificationOfMain', {
@@ -1013,6 +1076,6 @@
         // const { tableName } = this;
         // this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateCheckedInfoData`, { tableName, value: data });
       }
-    }
+    },
   };
 </script>

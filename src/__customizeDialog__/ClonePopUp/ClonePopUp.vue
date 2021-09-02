@@ -8,7 +8,7 @@
             {{ o_table_name }}
           </li>
           <li class="resTop">
-            <span><sub> *</sub>版本号：</span>
+            <span><sub> *</sub>{{$t('tips.versionNumber')}}：</span>
             <span class="version">
               <DropDownSelectFilter
                 :single="true"
@@ -105,7 +105,7 @@
         versionNumber: '', // 版本号
         errorDialog: false, // errorDialog
         errorDialogClass: 'error', // 弹框类型
-        errorDialogTitle: '错误', // 弹框标题
+        errorDialogTitle: this.$t('feedback.error'), // 弹框标题
         errorData: [{ message: '' }], // 弹框内容
         errorDialogBack: false, // 是否有返回按钮
         chineseName: {}, // 名字集合
@@ -114,7 +114,7 @@
           totalRowCount: 39,
           pageSize: 10,
           AutoData: [],
-          dataEmptyMessage: '数据加载中...', // 无数据的提示
+          dataEmptyMessage: `${this.$t('tips.loading')}...`, // 无数据的提示
           columns: ['name', 'value'] // 展现的组
         }
       };
@@ -124,6 +124,9 @@
         return [
           `${classFix}clonePopUp`,
         ];
+      },
+      allFormData() {
+        return this.$store.state[`S.${this.$route.params.tableName}.${this.$route.params.tableId}`].formItems.data;
       },
     },
     components: {},
@@ -170,22 +173,21 @@
           });
       },
       save() {
-        let data  = [
-          {TMCODE: "1212", ID: -1},
-          {TMCODE: "2222", ID: -1},
-          {TMCODE: "3333", ID: -1}];
-          this.saveDialog(data,data).then((res)=>{
-            if(res.data.code ===0){
-               this.$emit('closeActionDialog', true); // 关闭弹框
-            }
-          });
-           
-        return;
+        if (!this.version.ID) {
+          const data = {
+            mask: true,
+            title: this.$t('feedback.warning'),
+            content: this.$t('messages.enterVersionNumber')
+          };
+          this.$Modal.fcWarning(data);
+          return;
+        }
+
         if (!this.t_table_name.trim()) {
           const data = {
             mask: true,
-            title: '警告',
-            content: '请输入目标表名'
+            title: this.$t('feedback.warning'),
+            content: this.$t('messages.enterTargetTable')
           };
           this.$Modal.fcWarning(data);
           return;
@@ -193,20 +195,14 @@
         if (!this.s_table_name.trim()) {
           const data = {
             mask: true,
-            title: '警告',
-            content: '请输入目标描述'
+            title: this.$t('feedback.warning'),
+            content: this.$t('messages.enterTargetDesc')
           };
           this.$Modal.fcWarning(data);
           return;
         }
-        if (!this.version.ID) {
-          const data = {
-            mask: true,
-            title: '警告',
-            content: '请输入版本号'
-          };
-          this.$Modal.fcWarning(data);
-        }
+       
+        
         this.$R3loading.show(this.loadingName);
         const searchdata = {
           srctable: this.o_table_name, // 源表表名
@@ -233,8 +229,8 @@
             }
             const data = {
               mask: true,
-              title: '成功',
-              content: '克隆成功'
+              title: this.$t('feedback.success'),
+              content: this.$t('feedback.cloneSuccess')
             };
             this.$R3loading.hide(this.loadingName);
             this.$Modal.fcSuccess(data);
@@ -245,10 +241,11 @@
         this.$emit('closeActionDialog', false); // 关闭弹框
       }, // 取消
       findName(data, name, val) {
+        // 取'基本信息'pannel里面的名称字段值
         for (const i of data) {
-          if (i.parentdesc === name) {
+          if (i.parentname === name) {
             for (const m of i.childs) {
-              if (m.name === val) {
+              if (m.colname === val) {
                 return m.valuedata;
               }
             }
@@ -262,8 +259,8 @@
       this.chineseName = ChineseDictionary;
     },
     mounted() {
-      console.log('popwinMessage', this);
-      this.o_table_name = this.findName(this.objList, '基本信息', '名称');
+      console.log('popwinMessage', this.objList);
+      this.o_table_name = this.findName(this.objList, '(AD_TABLE.ID+10)', 'NAME');
     },
     destroyed() {
       const dom = document.getElementById('dropDownSelectPopper');

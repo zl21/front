@@ -6,7 +6,7 @@ import {
   MODULE_COMPONENT_NAME, INSTANCE_ROUTE, HAS_BEEN_DESTROYED_MODULE, INSTANCE_ROUTE_QUERY 
 } from '../../constants/global';
 import { updateSessionObject } from '../../__utils__/sessionStorage';
-
+import minx from '../../__component__/tableDetailjs/mixin';
 export default (modulename) => {
   const componentName = modulename;
   return ({
@@ -21,7 +21,7 @@ export default (modulename) => {
       return {
       };
     },
-  
+    mixins:[minx],
     created() {
       if (!this[MODULE_COMPONENT_NAME]) {
         this[MODULE_COMPONENT_NAME] = componentName;
@@ -37,6 +37,9 @@ export default (modulename) => {
      
     },
     computed: {
+      ...mapState('global', {
+        activeTab: ({ activeTab }) => activeTab,// 当前表基本数据，包含路由信息，表名，ID等
+      }),
       ...mapState(componentName, {
         childReadonly: ({ childTableReadonly }) => childTableReadonly,
         buttonsData: ({ buttonsData }) => buttonsData,
@@ -62,8 +65,7 @@ export default (modulename) => {
         isHideTempStorage: ({ isHideTempStorage }) => isHideTempStorage,
         saveInfo: ({ saveInfo }) => saveInfo,
         isRequest: ({ isRequest }) => isRequest,
-  
-        
+        WebConf:({WebConf}) => WebConf,
         childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
           if (idx > 0) {
             acc.push({ tableName: cur.tablename });
@@ -120,7 +122,9 @@ export default (modulename) => {
           'updataVerifyRequiredInformation',
           'isRequestUpdata',
           'emptyTestData',
-          'updateLabelData'
+          'updateLabelData',
+          'updateChildTabPanels'
+
         ]),
     },
     beforeDestroy() {

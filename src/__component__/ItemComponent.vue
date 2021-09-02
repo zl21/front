@@ -83,6 +83,7 @@
         :maxlength="_items.props.maxlength"
         :icon="_items.props.icon"
         :regx="_items.props.regx"
+        :htmlExp="_items.props.htmlExp"
         :encrypt="_items.props.ispassword"
         on-click="inputClick"
         @on-blur="inputBlur"
@@ -205,6 +206,7 @@
           @on-input-value-change="inputValueChange"
           @on-focus="fkrpSelectedInputFocus"
           @on-blur="fkrpSelectedInputBlur"
+          @on-Outside="Outside"
           @on-keyup="fkrpSelectedInputKeyup"
           @on-keydown="fkrpSelectedInputKeydown"
           @on-popper-show="fkrpSelectedPopperShow"
@@ -216,6 +218,7 @@
           :ref="_items.field"
           :class-name="`R3_${_items.field}`"
           :data="_items.props.data"
+           @on-Outside="Outside"
           :singleTurn="true"
           :single="_items.props.single"
           :placeholder="!_items.props.disabled? _items.props.placeholder:''"
@@ -338,14 +341,14 @@
         @valueChange="enumerableValueChange"
       />
       <!--扩展属性  -->
-      <ExtentionInput
+      <!-- <ExtentionInput
         v-if="_items.type === 'ExtentionInput'"
         :ref="_items.field"
         :default-data="_items.value"
         :web-config="_items.props"
         @keydown="enumerKeydown"
         @valueChange="extentionValueChange"
-      />
+      /> -->
       <template v-if="_items.type === 'Wangeditor'">
         <component
           :is="_items.componentType"
@@ -456,7 +459,7 @@
   } from '../constants/global';
   import createModal from './PreviewPicture/index';
   import EnumerableInput from './EnumerableInput.vue';
-  import ExtentionInput from './ExtentionInput.vue';
+  // import ExtentionInput from './ExtentionInput.vue';
   import network, { urlSearchParams } from '../__utils__/network';
   import getComponentName from '../__utils__/getModuleName'
 
@@ -465,7 +468,7 @@
 
   export default {
     components: {
-      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile, RadioGroup, Defined, StringRender, CheckboxGroup
+      EnumerableInput, ComAttachFilter, Docfile, RadioGroup, Defined, StringRender, CheckboxGroup
     },
     props: {
       webConfSingle: {// 当前子表webConf
@@ -554,9 +557,11 @@
 
 
         const placeholder = this.items.props.webconf && this.items.props.webconf.placeholder ? this.items.props.webconf.placeholder : null;
-        item.props.placeholder = placeholder || `${(dataProp[item.type] && dataProp[item.type].props) ? dataProp[item.type].props.placeholder : '请输入'}${item.title}`;
+        item.props.placeholder = placeholder || `${(dataProp[item.type] && dataProp[item.type].props) ? dataProp[item.type].props.placeholder : this.$t('form.inputPlaceholder')}${item.title}`;
 
-
+        if(item.type === "input" && window.ProjectConfig.setXss){
+            item.props.htmlExp = true;
+        }
         if (item.type === 'docfile') {
           if (!Array.isArray(item.props.itemdata.valuedata)) {
             item.props.itemdata.valuedata = [];
@@ -574,7 +579,7 @@
             // item.componentType = Dialog;
             if (!item.props.disabled) {
               item.props.fkobj.show = true;
-              if (!item.props.datalist[0] || item.props.datalist[0].value !== '更多筛选') {
+              if (!item.props.datalist[0] || item.props.datalist[0].value !== this.$t('messages.moreFilters')) {
                 item.props.datalist = dataProp[item.type].props.datalist.concat(
                   item.props.datalist
                 );
@@ -584,7 +589,7 @@
 
             item.props.dialog.model['footer-hide'] = false;
             item.props.datalist.forEach((option, i) => {
-              if (option.value === '导入') {
+              if (option.value === this.$t('buttons.import')) {
                 item.props.datalist[i].url = item.props.fkobj.url;
                 item.props.datalist[i].sendData = {
                   table: item.props.fkobj.reftable
@@ -683,8 +688,8 @@
         } else {
           const data = {
             mask: true,
-            title: '警告',
-            content: '请设置外键关联表的显示配置'
+            title: this.$t('feedback.warning'),
+            content: this.$t('messages.setAssociationTable')
           };
           this.$Modal.fcWarning(data);
           return;
@@ -699,7 +704,6 @@
           serviceId
         });
       },
-
       valueChange() {
         // 值发生改变时触发  只要是item中的value改变就触发该方法，是为了让父组件数据同步
         this.$emit('inputChange', this._items.value, this._items, this.index);
@@ -724,31 +728,48 @@
 
         let valLength = this._items.props.length;
         if (valLength) {
-          if (this._items.value.split('.').length > 1) {
-            valLength = this._items.props.length + 1;
-          } else if (this._items.value.split('-').length > 1) {
-            valLength = this._items.props.length + 1;
+          // if (this._items.value.split('.').length > 1) {
+          //   valLength = this._items.props.length + 1;
+          // } else if (this._items.value.split('-').length > 1) {
+          //   valLength = this._items.props.length + 1;
+          // }
+          // if (this._items.value.split('.').length > 1 && this._items.value.split('-').length > 1) {
+          //   valLength = this._items.props.length + 2;
+          // }
+
+          const value = this._items.value
+          const isNegativeDecimal = value.split('.').length > 1 && value.split('-').length > 1 // 是否是负小数
+          const isDecimal = value.split('.').length > 1 && value.split('+').length > 1 // 是否是正小数
+          if (isNegativeDecimal || isDecimal) {
+            // 正负小数 
+            valLength = valLength + 2
+          } else if (value.split('.').length > 1) {
+            // 小数
+            valLength = valLength + 1
+          } else if (value.split('-').length > 1 || value.split('+').length > 1) {
+            // 负整数
+            valLength = valLength + 1
           }
-          if (this._items.value.split('.').length > 1 && this._items.value.split('-').length > 1) {
-            valLength = this._items.props.length + 2;
-          }
-          let string = '';
-          let regxString = '';
-          if (this._items.props.webconf && this._items.props.webconf.ispositive) {
-            regxString = '';
-          } else {
-            regxString = '(-|\\+)?';
-          }
-          if (this._items.props.scale > 0) {
-            string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9]{0,${
-              this._items.props.scale
-            }})?$`;
-          } else {
-            string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9])?$`;
-          }
+
+          // let string = '';
+          // let regxString = '';
+          // if (this._items.props.webconf && this._items.props.webconf.ispositive) {
+          //   regxString = '';
+          // } else {
+          //   regxString = '(-|\\+)?';
+          // }
+          // if (this._items.props.scale > 0) {
+          //   string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9]{0,${
+          //     this._items.props.scale
+          //   }})?$`;
+          // } else {
+          //   string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9])?$`;
+          // }
+          
+          this._items.props.maxlength = valLength; // fix: 输入含符号的数字时，长度不对
           if (this._items.props.number) {
-            const typeRegExp = new RegExp(string);
-            this._items.props.regx = typeRegExp;
+            // const typeRegExp = new RegExp(string);
+            // this._items.props.regx = typeRegExp;
             this._items.props.maxlength = valLength;
           }
         }
@@ -776,6 +797,16 @@
         ) {
           this._items.event.click(event, $this);
         }
+      },
+       Outside(){
+        if(!Array.isArray(this._items.value)){
+            this._items.value = '';
+            this._items.props.defaultSelected = [{
+                        label: '',
+                        ID: ''
+            }];
+        }
+     
       },
       inputFocus(event, $this) {
         if (
@@ -810,7 +841,7 @@
             console.log(res);
             if (res.data.code === 1) {
               this.$Modal.fcError({
-                title: '错误',
+                title: this.$t('feedback.error'),
                 content: res.data.message,
                 mask: true
               });
@@ -1271,7 +1302,7 @@
             const savemessage = JSON.parse(JSON.stringify($this.savemessage()));
             const saveObjectmessage = $this.savObjemessage();
             this.resultData = savemessage;
-            const value = `已经选中${$this._data.IN.length}条数据`;
+            const value = this.$t('messages.selectedData',{total:$this._data.IN.length});
             const Select = [
               {
                 Label: value,
@@ -1316,8 +1347,8 @@
         this.$Modal.fcWarning({
           mask: true,
           showCancel: true,
-          title: '提示',
-          content: '此操作将永久删除该图片, 是否继续?',
+          title: this.$t('feedback.alert'),
+          content: this.$t('messages.deleteImg'),
           onOk: () => {
             let HEADIMG = this._items.props.itemdata.valuedata.concat([]);
             HEADIMG.splice(index - 1, 1);
@@ -1515,7 +1546,7 @@
         // 图片进度接口
         const resultData = result;
         if (this.readonlyImage()) {
-          this.$Message.info(`只能上传${this._items.props.itemdata.ImageSize}张图片`);
+          this.$Message.info(this.$t('messages.uploadLimit',{total:this._items.props.itemdata.ImageSize}));
           return false;
         }
 

@@ -3,7 +3,7 @@ import network, { urlSearchParams } from './src/__utils__/network';
 import getModuleName from './src/__utils__/getModuleName';
 import getObjdisType from './src/__utils__/getObjdisType';
 import {
-  getSessionObject, updateSessionObject, deleteFromSessionObject, removeSessionObject 
+  getSessionObject, updateSessionObject, deleteFromSessionObject, removeSessionObject
 } from './src/__utils__/sessionStorage';
 import store from './src/__config__/store.config';
 import router from './src/__config__/router.config';
@@ -24,6 +24,7 @@ import SearchForm from './src/__component__/form/SearchForm.vue';//
 import FilterTree from './src/__component__/Tree/FilterTree.vue';
 import SelectTree from './src/__component__/Tree/SelectTree.vue';
 import DocFile from './src/__component__/docfile/DocFileComponent.vue';
+import Login from './src/__component__/Login/LoginCore';
 import { menuClick } from './src/__config__/event.config';
 import { connector } from './src/constants/global';
 import './src/constants/dateApi';
@@ -31,6 +32,7 @@ import './src/constants/dateApi';
 import { getKeepAliveModuleName } from './src/__config__/router.navigation.guard';
 import './src/constants/dateApi';
 import packJson from './package.json';
+import './src/index.less';
 
 
 const validateConfig = config => ({
@@ -39,12 +41,31 @@ const validateConfig = config => ({
 });
 const packageMessage = {
   version: packJson.version,
-  packageTime: new Date(), 
-  user: 'local',   
+  packageTime: new Date(),
+  user: 'local',
 };
+const setXss = ()=>{
+  // 安全攻击
+  let htmlEncodeByRegExp = (str) => {
+    let s = str;
+    if (str.length === 0) { return ''; }
+    s = s.replace(/</g, '&lt;');
+    s = s.replace(/>/g, '&gt;');
+    s = s.replace(/ /g, '&nbsp;');
+    s = s.replace(/\'/g, '&#39;'); //eslint-disable-line
+    s = s.replace(/\"/g, '&quot;'); //eslint-disable-line
+    return s;
+  }
+  document.body.addEventListener('input', function (e) {
+    const tagName = e.target.tagName.toLowerCase();
+    if (tagName === 'input' || tagName === 'textarea') {
+      e.target.value = htmlEncodeByRegExp(e.target.value)
+    }
+  });
+}
 
 export default {
-  ...packageMessage,      
+  ...packageMessage,
   /**
    * @param projectConfig 项目配置
    * projectConfig: {
@@ -114,7 +135,7 @@ export default {
         return a;
       }, {});
     }
-    
+
     window.ProjectConfig = Object.assign({}, projectConfig, packageMessage);
     launchApp(projectConfig);
   },
@@ -131,6 +152,7 @@ export default {
   getKeepAliveModuleName,
   connector: connector(), // 1.3框架公共模块包使用
   store,
+  setXss:setXss,
   config: {
     extentionForColumn,
     extentionForTable,
@@ -149,6 +171,7 @@ export default {
     VerticalMenu,
     NavigatorVertical,
     NaVertical,
-    ComAutoComplete
+    ComAutoComplete,
+    Login,
   }
 };

@@ -7,6 +7,7 @@ import {
     filterVal,FindInstance
 } from './common.js';
 import network from '../../__utils__/network';
+import i18n from '../../assets/js/i18n'
 
 // 处理url
 
@@ -26,7 +27,7 @@ const urlSearchParams = (data) => {
 
 
 // 映射关系
-export const refcolvalMap = ($this, config,key) => {
+export const refcolvalMap = ($this, config,key,type) => {
     let maintable = {
     };
     if(config.srccols){
@@ -45,8 +46,9 @@ export const refcolvalMap = ($this, config,key) => {
         config.srccol = srccol;
     }
     let targetVm = FindInstance($this,config.srccol,$this.item.tableName,maintable);
+
     let linkFormMap = {
-        [key]: [`${$this.item.tableName}${$this.item.colname}`]
+        [key]: [`${$this.item.tableName || ''}${$this.item.colname}`]
     };
     //挂载映射关系到对方 
     let checked = [];
@@ -61,7 +63,7 @@ export const refcolvalMap = ($this, config,key) => {
                     }
                 })
             }
-            if(checked.indexOf(false) === -1){
+            if(checked.indexOf(false) === -1 && !type){
                 checked.push(messageTip($this, target,key))
             }
             
@@ -71,12 +73,16 @@ export const refcolvalMap = ($this, config,key) => {
         }
         
     });
-    // 查看返回结果
-    if(checked.indexOf(false) === -1 || checked.length<1){
-        return true
-    }else{
-        return false
+    if(!type){
+         // 查看返回结果
+        if(checked.indexOf(false) === -1 || checked.length<1){
+            return true
+        }else{
+            return false
+        }
+
     }
+   
     
 }
 
@@ -100,7 +106,7 @@ export const messageTip = ($this, target,key) => {
         return true;
     }
     if (!value.ID) {
-        $this.$Message.info(`请先选择${target.items.name || target.items.coldesc}`);
+        $this.$Message.info(`${i18n.t('form.selectPlaceholder')}${target.items.name || target.items.coldesc}`);
         setTimeout(() => {
             if(target.$el.querySelector('input')){
                 target.$el.querySelector('input').focus();
@@ -122,6 +128,12 @@ type  是否是模糊查询还是外键查询
 // 接口拼接 fixcolumn
 export const setFixedcolumns = ($this, type) => {
     let webconf = $this.item.webconf;  
+   //  
+    if($this.item.precolnameslist){
+        return {
+            precolnameslist:$this.item.precolnameslist
+        }
+    }
     if(!$this.item.Query){
         // 不走关联字段查询
         return {};
@@ -133,7 +145,7 @@ export const setFixedcolumns = ($this, type) => {
               }
               let id = $this.activeTab.keepAliveModuleName.split('.');
               return {
-                ID:id[id.length-1]
+                [webconf.refcolval.fixcolumn]:id[id.length-1]
               }
         }
         if(!$this._srccolValue){
@@ -182,7 +194,7 @@ network
 */
 
 // 点击是否出现下拉
-export const setisShowPopTip = ($this, config,network) => {
+export const setisShowPopTip = ($this, config,network,type) => {
     if(!$this.item.Query){
         // 不走关联字段查询
         return ()=>{
@@ -194,15 +206,15 @@ export const setisShowPopTip = ($this, config,network) => {
         if(config.refcolval.srccol === '$OBJID$'){
             return true;
         }
-       return refcolvalMap($this, config.refcolval,'refcolval');
+       return refcolvalMap($this, config.refcolval,'refcolval',type);
        
     }else if(config && config.refcolval_custom){
     // refcolval_custom
-        return  refcolvalCustomUrl ($this, config,network,'refcolval_custom')
+        return  refcolvalCustomUrl ($this, config,network,'refcolval_custom',type)
 
     }else if(config && config.refcolvalArray) {
         // refcolvalArray
-        return  refcolvalMap ($this, config.refcolvalArray,'refcolvalArray')
+        return  refcolvalMap ($this, config.refcolvalArray,'refcolvalArray',type)
 
     }else{
         return true;
@@ -210,8 +222,8 @@ export const setisShowPopTip = ($this, config,network) => {
 }
 
 // refcolval_custom 接口请求
-export  const refcolvalCustomUrl =  ($this, config,network) => {
-    let checkd = refcolvalMap($this, config.refcolval_custom,'refcolval_custom');
+export  const refcolvalCustomUrl =  ($this, config,network,value,type) => {
+    let checkd = refcolvalMap($this, config.refcolval_custom,'refcolval_custom',type);
     // async
     if(checkd){
          return postCustomUrl(network,config,$this)
@@ -246,11 +258,18 @@ self 当前实例
 export const postTableData = async function(self,url){
 
     let Fixedcolumns = setFixedcolumns(self,'TableRequest');
-      if (JSON.stringify(Fixedcolumns) !== '{}') {
-        this.searchdata.fixedcolumns = Fixedcolumns;
-      } else {
-        delete this.searchdata.fixedcolumns
-      }
+    if(Fixedcolumns.precolnameslist){
+        this.searchdata.precolnameslist = Fixedcolumns.precolnameslist;
+
+    }else{
+        if (JSON.stringify(Fixedcolumns) !== '{}') {
+            this.searchdata.fixedcolumns = Fixedcolumns;
+          } else {
+            delete this.searchdata.fixedcolumns
+        }
+
+    }
+     
       return new Promise((resolve) => {
         this.post(url, urlSearchParams({
           searchdata: this.searchdata
@@ -263,8 +282,11 @@ export const postTableData = async function(self,url){
  // 字段联动 模糊查询
  export  function postData(self,url){
     let Fixedcolumns = setFixedcolumns(self,'AutoRequest');
+    if(Fixedcolumns.precolnameslist){
+        this.searchdata.precolnameslist = Fixedcolumns.precolnameslist;
+    }
+   
     let selfChildren = this.$children[0];
-    console.log(selfChildren.isShowPopTip);
     if(typeof selfChildren.isShowPopTip === 'function'){
         if(!selfChildren.isShowPopTip()){
             this.$el.querySelector('input').value ='';
@@ -285,9 +307,16 @@ export const postTableData = async function(self,url){
 
  const newpostData = (Fixedcolumns,$this,url)=>{
     if (JSON.stringify(Fixedcolumns) !== '{}') {
-      $this.sendMessage.fixedcolumns = {
-        "whereKeys":Fixedcolumns
-      };
+        if(Fixedcolumns.precolnameslist){
+            $this.sendMessage.fixedcolumns = {
+                precolnameslist:Fixedcolumns.precolnameslist
+            };
+        }else{
+            $this.sendMessage.fixedcolumns = {
+                "whereKeys":Fixedcolumns
+              };
+        }
+      
     }
     return new Promise((resolve) => {
       $this.post(url,  urlSearchParams(
@@ -298,3 +327,7 @@ export const postTableData = async function(self,url){
     });
   }
   
+//   初始化映射  init
+export const initWebConf=()=>{
+
+}

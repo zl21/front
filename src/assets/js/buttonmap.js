@@ -1,21 +1,51 @@
-
+import i18n from './i18n'
 
 const buttonmap = {
-  LOADING: '服务器处理中',
-  CATEGORY_GUIDE: '分类导航',
-  MAINTAIN_BY_SYS: '系统维护',
-  TIME_OUT: '操作超时',
-  NO_DATA_TO_PROCESS: '没有需要处理的数据',
-  DO_YOU_CONFIRM_DELETE: '你确认要执行删除？',
-  DO_YOU_CONFIRM_SUBMIT: '你确认要执行提交动作吗?',
-  DO_YOU_CONFIRM_GROUPSUBMIT: '当前类型对象的多行同时提交将产生数据“合并”的特殊功能。\\n\\n您确认要执行此特殊功能?\\n\\n（选择“取消”如果您尚不了解所谓“合并”的意义，并查看有关帮助以明确）',
-  NO_PERMISSION: '没有权限',
-  EXCEPTION: '异常',
-  PLEASE_SWITCH_TO_MODIFY_VIEW: '请先切换到修改界面',
-  MODIFY_VIEW: '切换到修改界面',
-  READ_ONLY_VIEW: '切换到只读界面',
-  PLEASE_SELECT_LINES_LESS_THAN: '请选择少于20行的数据，以保证客户端响应速度！',
-  MORE_COMMANDS: '更多',
+  LOADING: () => {
+    return i18n.t('tips.serverProcessing')
+  },
+  CATEGORY_GUIDE: () => {
+    return i18n.t('tips.categoryNavigation')
+  },
+  MAINTAIN_BY_SYS: () => {
+    return i18n.t('tips.systemMaintenance')
+  },
+  TIME_OUT: () => {
+    return i18n.t('tips.operationTimeout')
+  },
+  NO_DATA_TO_PROCESS: () => {
+    return i18n.t('messages.noDataProcess')
+  },
+  DO_YOU_CONFIRM_DELETE: () => {
+    return i18n.t('messages.confirmDelete')
+  },
+  DO_YOU_CONFIRM_SUBMIT: () => {
+    return i18n.t('messages.confirmSubmit')
+  },
+  DO_YOU_CONFIRM_GROUPSUBMIT: () => {
+    return i18n.t('messages.mergeSubmit')
+  },
+  NO_PERMISSION: () => {
+    return i18n.t('tips.noPermission')
+  },
+  EXCEPTION: () => {
+    return i18n.t('tips.abnormal')
+  },
+  PLEASE_SWITCH_TO_MODIFY_VIEW: () => {
+    return i18n.t('messages.switchEditInterfaceFirst')
+  },
+  MODIFY_VIEW: () => {
+    return i18n.t('messages.switchEditInterface')
+  },
+  READ_ONLY_VIEW: () => {
+    return i18n.t('messages.switchReadOnlyInterface')
+  },
+  PLEASE_SELECT_LINES_LESS_THAN: () => {
+    return i18n.t('messages.selectLessData')
+  },
+  MORE_COMMANDS: () => {
+    return i18n.t('tips.more')
+  },
   // CMD_PRINT_SELECT: {
   //   name: '选中打印',
   //   icon: '',
@@ -23,43 +53,57 @@ const buttonmap = {
   //   action: '',
   // },
   CMD_PRINT: {
-	  name: '打印',
+    name: () => {
+      return i18n.t('buttons.print')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_REPORT: {
-    name: '报表',
+    name: () => {
+      return i18n.t('tips.report')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_BACK: {
-    name: '返回',
+    name: () => {
+      return i18n.t('buttons.back')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_GROUPSUBMIT: {
-    name: '批量提交',
+    name: () => {
+      return i18n.t('buttons.bulkSubmission')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_GROUPMODIFY: {
-    name: '批量修改',
+    name: () => {
+      return i18n.t('buttons.batchEdit')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_EXPORT: {
-    name: '导出',
+    name: () => {
+      return i18n.t('buttons.export')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_ADD: {
-    name: '新增',
+    name: () => {
+      return i18n.t('buttons.add')
+    },
     icon: '',
     defbutton: 'S',
     action: '',
@@ -71,150 +115,280 @@ const buttonmap = {
   //   action: '',
   // },
   CMD_MODIFY: {
-    name: '保存',
+    name: () => {
+      return i18n.t('buttons.save')
+    },
     icon: '',
     defbutton: 'N',
     action: '',
   },
   CMD_DELETE: {
-    name: '删除',
+    name: () => {
+      return i18n.t('buttons.delete')
+    },
     icon: '',
     defbutton: 'X',
     action: '',
   },
   CMD_REF_DELETE: {
-    name: '删除明细',
+    name: () => {
+      return i18n.t('buttons.deleteDetails')
+    },
     icon: '',
     defbutton: 'X',
     action: '',
   },
   CMD_SUBMIT: {
-    name: '提交',
+    name: () => {
+      return i18n.t('buttons.submit')
+    },
     icon: '',
     defbutton: 'G',
     action: '',
   },
   CMD_UNSUBMIT: {
-    name: '取消提交',
+    name: () => {
+      return i18n.t('buttons.cancelSubmission')
+    },
     icon: '',
     defbutton: 'G',
     action: '',
   },
   CMD_REFRESH: {
-    name: '刷新',
+    name: () => {
+      return i18n.t('buttons.refresh')
+    },
     icon: '',
     defbutton: 'J',
     action: '',
   },
-  CMD_CXTAB: '统计',
+  CMD_CXTAB: () => {
+    return i18n.t('tips.statistics')
+  },
   CMD_LISTADD: {
-    name: '批量添加',
+    name: () => {
+      return i18n.t('buttons.batchAdd')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_IMPORT: {
-    name: '导入',
+    name: () => {
+      return i18n.t('buttons.import')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_CANCOPY: {
-    name: '复制',
+    name: () => {
+      return i18n.t('buttons.copy')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_COPY_PER: {
-    name: '复制权限',
+    name: () => {
+      return i18n.t('tips.copyPermission')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_UPDATE_SELECTION: {
-    name: '修改选中行',
+    name: () => {
+      return i18n.t('messages.modifySelectRow')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_UPDATE_RESULTSET: {
-    name: '修改结果集',
+    name: () => {
+      return i18n.t('messages.modifyResult')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_CopyBill: {
-    name: '复制单据',
+    name: () => {
+      return i18n.t('messages.copyBill')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
-  CMD_PRINT_LIST: '打印',
-  CMD_PRINT_SELECT: '套打',
+  CMD_PRINT_LIST: () => {
+    return i18n.t('buttons.print')
+  },
+  CMD_PRINT_SELECT: () => {
+    return i18n.t('tips.printWithTemplate')
+  },
   CMD_EXPORT_LIST: {
-    name: '导出',
+    name: () => {
+      return i18n.t('buttons.export')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_SMS_LIST: {
-    name: '短信',
+    name: () => {
+      return i18n.t('tips.shortMessage')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_BATCHMODIFY: {
-    name: '批量修改',
+    name: () => {
+      return i18n.t('buttons.batchEdit')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
-  IFRAME_TITLE: '对话框',
-  PLS_SELECT_CXTAB: '请在查询栏选择汇总表模板',
-  NO_CXTAB: '当前表没有定义汇总表模板',
-  CAN_NOT_BE_NULL: '不能为空',
-  MUST_BE_DATE_TYPE: '必须是日期型',
-  MUST_BE_NUMBER_TYPE: '必须是数字型',
-  PLEASE_SELECT: '请选择',
-  PLEASE_SETUP_ASSIGNEE: '请设置代办人',
-  SEARCH: '查找',
-  CONTAINS: '包含',
-  NOTCONTAINS: '不包含',
-  CLEAR_CONDITION: '点击清除当前条件设置',
-  PLEASE_CHECK_SELECTED_LINES: '请在要选择的行首打勾确认！',
-  PLEASE_REFRESH_CXTAB_PAGE: '当前操作界面非报表界面布局，请点击报表中心标签页重新进入报表模块后再试',
-  NO_DATA: '没有数据',
-  CLOSE_DIALOG: '关闭',
-  EXCLUDE_CHOOSED_ROWS: '排除选中行',
-  EXCLUDE_ALL: '排除全部',
-  ADD_CHOOSE_ROWS: '添加选中行',
-  ADD_ALL: '添加全部',
-  ALREADY_CHOOSED: '已被选择',
-  ALREADY_EXCLUDE: '已被排除',
-  SET_ALREADY_CHOOSED: '该集合已被选择',
-  SET_ALREADY_EXCLUDE: '该集合已被排除',
-  NOTICE: '通知',
-  PRIORITY: '优先级',
-  RELEASETIME: '发送时间',
-  SERIALNO: '编号',
-  TITLE: '标题',
-  URGENT_MESSAGE: '你有$$条紧急消息必需马上处理',
-  CONFIRM_MESSAGE: '共有$$条需要确认',
-  ALL_NOTICES: '全部通告',
+  IFRAME_TITLE: () => {
+    return i18n.t('tips.dialog')
+  },
+  PLS_SELECT_CXTAB: () => {
+    return i18n.t('messages.selectSummaryTemplate')
+  },
+  NO_CXTAB: () => {
+    return i18n.t('messages.notDefineSummaryTemplate')
+  },
+  CAN_NOT_BE_NULL: () => {
+    return i18n.t('tips.notEmpty')
+  },
+  MUST_BE_DATE_TYPE: () => {
+    return i18n.t('messages.mustDataType')
+  },
+  MUST_BE_NUMBER_TYPE: () => {
+    return i18n.t('messages.mustDigital')
+  },
+  PLEASE_SELECT: () => {
+    return i18n.t('form.selectPlaceholder')
+  },
+  PLEASE_SETUP_ASSIGNEE: () => {
+    return i18n.t('messages.setAgent')
+  },
+  SEARCH: () => {
+    return i18n.t('buttons.find')
+  },
+  CONTAINS: () => {
+    return i18n.t('tips.contain')
+  },
+  NOTCONTAINS: () => {
+    return i18n.t('actions.exclude')
+  },
+  CLEAR_CONDITION: () => {
+    return i18n.t('messages.clickClearSetting')
+  },
+  PLEASE_CHECK_SELECTED_LINES: () => {
+    return i18n.t('messages.tickToConfirm')
+  },
+  PLEASE_REFRESH_CXTAB_PAGE: () => {
+    return i18n.t('messages.reenterReport')
+  },
+  NO_DATA: () => {
+    return i18n.t('tips.noData')
+  },
+  CLOSE_DIALOG: () => {
+    return i18n.t('buttons.close')
+  },
+  EXCLUDE_CHOOSED_ROWS: () => {
+    return i18n.t('buttons.excludeSelectedRows')
+  },
+  EXCLUDE_ALL: () => {
+    return i18n.t('buttons.excludeAll')
+  },
+  ADD_CHOOSE_ROWS: () => {
+    return i18n.t('buttons.addSelectedRow')
+  },
+  ADD_ALL: () => {
+    return i18n.t('buttons.addAll')
+  },
+  ALREADY_CHOOSED: () => {
+    return i18n.t('tips.hasBeenSelected')
+  },
+  ALREADY_EXCLUDE: () => {
+    return i18n.t('tips.hasBeenExcluded')
+  },
+  SET_ALREADY_CHOOSED: () => {
+    return i18n.t('messages.collectionSelected')
+  },
+  SET_ALREADY_EXCLUDE: () => {
+    return i18n.t('messages.collectionExcluded')
+  },
+  NOTICE: () => {
+    return i18n.t('tips.notify')
+  },
+  PRIORITY: () => {
+    return i18n.t('tips.priority')
+  },
+  RELEASETIME: () => {
+    return i18n.t('tips.sendTime')
+  },
+  SERIALNO: () => {
+    return i18n.t('tips.serialNumber')
+  },
+  TITLE: () => {
+    return i18n.t('tips.title')
+  },
+  URGENT_MESSAGE: () => {
+    return '你有$$条紧急消息必需马上处理'
+  },
+  CONFIRM_MESSAGE: ()=> {
+    return '共有$$条需要确认'
+  },
+  ALL_NOTICES: () => {
+    return i18n.t('tips.allNotifications')
+  },
   CMD_VOID: {
-    name: '作废',
+    name: () => {
+      return i18n.t('buttons.invalid')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
   CMD_UNVOID: {
-    name: '取消作废',
+    name: () => {
+      return i18n.t('tips.cancelVoid')
+    },
     icon: '',
     defbutton: null,
     action: '',
   },
-  DO_YOU_CONFIRM_VOID: '你确认要作废所选单据吗？',
-  DO_YOU_CONFIRM_UNVOID: '你确认要取消作废所选单据吗？',
-};
+  DO_YOU_CONFIRM_VOID: () => {
+    return i18n.t('messages.confirmVoidBill')
+  },
+  DO_YOU_CONFIRM_UNVOID: () => {
+    return i18n.t('messages.confirmCancelVoidBill')
+  },
+}
 
-export default buttonmap;
+// 为了保证切换语言包后拿到正确值，此处直接通过劫持属性获取函数返回值。避免再去引用文件中修改变量的使用方法
+const buttonmapProxy = {}
+Object.keys(buttonmap).forEach((key) => {
+  if (typeof buttonmap[key] !== 'object') {
+    buttonmapProxy[key] = buttonmap[key]
+    Object.defineProperty(buttonmapProxy, key, {
+      get() {
+        return buttonmap[key]
+      },
+    })
+  } else {
+    buttonmapProxy[key] = { ...buttonmap[key] }
+    Object.defineProperty(buttonmapProxy[key], 'name', {
+      get() {
+        return buttonmap[key].name()
+      },
+    })
+  }
+})
+
+export default buttonmapProxy

@@ -1,11 +1,13 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
+// import Vue from 'vue';
+// import VueRouter from 'vue-router';
+import VueDND from 'awe-dnd';
 import Viewer from 'v-viewer';
 import { getGuid } from './__utils__/random';
 import router from './__config__/router.config';
 import routerPrototype from './__config__/router.prototype';
 import store from './__config__/store.config';
 import App from './App';
+import i18n from './assets/js/i18n';
 import './constants/dateApi';
 import network from './__utils__/network';
 import { DispatchEvent } from './__utils__/dispatchEvent';
@@ -30,23 +32,22 @@ import './assets/css/custom-ext.less';
 import { createWatermark } from './__utils__/waterMark';
 import R3Dialog from './__globalComponentModule__/dialog';
 import panelForm from './__component__/FormComponents/PanelForm/panelForm.vue'
-import listsForm from './__component__/FormComponents/listsForm.vue'
+import listsForm from './__component__/FormComponents/list/listsForm.vue'
 import './__utils__/getChildComponent'
 
-// 全局指令
-import inputNumber from './directive/inputNumber';
 import draggable from 'vuedraggable';
 
-Vue.use(inputNumber);
+
 
 Vue.prototype.$createWatermark = createWatermark;// 挂在水印
 
 Vue.component('CompositeFormpop', CompositeForm);
 Vue.component('panelForm',panelForm)
 Vue.component('listsForm',listsForm)
-Vue.use(Loading);
 Vue.use(R3Dialog); // 注册全局api调用组件
 Vue.use(Viewer);
+Vue.use(VueDND);
+
 // const createRouter = routes => new VueRouter({
 //   routes,
 //   mode: mock() ? 'hash' : 'history'
@@ -57,7 +58,6 @@ const createRouter = routes => new VueRouter({
   routes,
   mode
 });
-
 
 const createDOM = () => {
   const div = document.createElement('div');
@@ -72,9 +72,9 @@ const init = () => {
   window.vm = new Vue({
     router,
     store,
+    i18n,
     render: createElement => createElement(App)
   }).$mount(rootDom);
-  
   
   window.R3message = (data) => {
     window.vm.$Modal.fcError({
@@ -154,7 +154,7 @@ const backTouristRoute = () => {
 
 const setMessage = (data) => {
   window.vm.$Modal.fcError({
-    title: '提示',
+    title: i18n.t('feedback.alert'),
     content: data.content,
     cancelType: true,
     titleAlign: 'left',
@@ -188,12 +188,12 @@ const getCategory = () => {
         DispatchEvent('gatewayReady');
       } else if (getLocalObject('loginStatus') === true) {
         // getSessionObject('loginStatus') === true
-        setMessage({ content: '当前用户无菜单权限,将为您跳转到登陆界面' });
+        setMessage({ content: i18n.t('messages.NoMenuPermission') });
       }
     }).catch(() => {
       // router.push({ path: getTouristRoute() });
       if (getSessionObject('loginStatus') === true) {
-        setMessage({ content: '当前用户无菜单权限,将为您跳转到登陆界面' });
+        setMessage({ content: i18n.t('messages.NoMenuPermission') });
       }
     });
   }
@@ -257,6 +257,9 @@ export default (projectConfig = {
   } else {
     router.matcher = createRouter(routerPrototype).matcher;
   }
+
+  // 等路由挂载完毕再注册，避免丢失路由
+  Vue.use(Loading);
 
   // 注册自定义全局弹框（模态框）组件
   const modalConfig = Object.assign({}, customizedModalConfig, externalModals);

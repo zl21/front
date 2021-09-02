@@ -9,11 +9,11 @@
     />
     <div class="panel-main">
       <div class="panel-title">
-        <label class="left">消息</label>
+        <label class="left">{{$t('tips.message')}}</label>
         <span
           class="right"
           @click="ignoreMsg"
-        >忽略</span>
+        >{{$t('buttons.ignore')}}</span>
       </div>
       <div
         ref="messageBox"
@@ -25,7 +25,7 @@
           class="no-message"
         >
           <!-- <span v-if="!panel.loaded">加载中...</span> -->
-          <span>目前没有未读消息</span>
+          <span>{{$t('messages.noMessage')}}</span>
         </div>
         <div
           v-for="(item, index) in messagePanel.list"
@@ -36,13 +36,13 @@
           <div class="item-time">
             <i
               class="circle green"
-              :class="item.TASKSTATE.val.indexOf('完成')>=0?'green':'red'"
+              :class="item.TASKSTATE.refobjval === 2?'green':'red'"
             />
             <span>{{ calcdateDiff(item.ENDTIME.val) || item.ENDTIME.val }}</span>
           </div>
           <div class="item-inner">
             <div class="item-title">
-              <span><b>[异步任务]</b>任务: {{ item.MENU.val }}{{ item.TASKTYPE.val }}{{ item.TASKSTATE.val }}</span>
+              <span><b>[{{$t('tips.asyncTask')}}]</b>{{$t('tips.task')}}: {{ item.MENU.val }}{{ item.TASKTYPE.val }}{{ item.TASKSTATE.val }}</span>
             </div>
             <div class="item-content">
               <p style="-webkit-box-orient:vertical;">
@@ -56,7 +56,7 @@
         <span
           class="right"
           @click="jumpTask"
-        >全部任务</span>
+        >{{$t('tips.allTasks')}}</span>
       </div>
     </div>
   </div>

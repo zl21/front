@@ -19,7 +19,7 @@
             class="iconfont iconbj_col left-icon"
           />
           <span v-if="!collapseHistoryAndFavorite">
-            收藏夹
+            {{$t('tips.favorites')}}
             <i
               v-if="!collapseFavorite"
               class="iconfont iconios-arrow-up arrow-icon"
@@ -60,7 +60,7 @@
             class="iconfont iconbj_record left-icon"
           />
           <span v-if="!collapseHistoryAndFavorite">
-            最近使用
+            {{$t('tips.recentlyUsed')}}
 
             <i
               v-if="!collapseHistory"

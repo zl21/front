@@ -12,7 +12,7 @@ const { ModuleFederationPlugin } = require('webpack').container;
 const projectConfig = require('./project.config');
 
 const target = projectConfig.target; // 框架研发网关开启环境
-const proxyLists = ['/p/c', '/frr-center', '/eplan-center', '/ad-app', '/r3/qiaochu', '/retailcloud-crm2', '/retailcloud-official', '/ishop-synchronize', '/asynctask'];
+const proxyLists = ['/p/c','/r3-cp','/r3-oc-oms', '/p/cs','/frr-center', '/eplan-center', '/ad-app', '/r3/qiaochu', '/retailcloud-crm2', '/retailcloud-official', '/ishop-synchronize', '/asynctask'];
 const proxyListsForGateway = ['/ad-app/p/c', '/asynctask/p/cs'];
 const proxyListsForIShop = ['/ishopad-app', '/ishopplatform/p/c', '/ishopbill/p/c', '/ishopbase/p/c', '/ishopcrm/p/cs/'];
 const proxyListsForPalmCloud = ['/mboscloud-app'];
@@ -20,6 +20,7 @@ const proxyListsForPalmZx = ['/zhixiao-app'];
 const proxyListForShangFei = ['/user-center', '/shangfei', '/tr-center'];
 const proxyListForWuliu = ['/wuliu-admin'];
 const proxyListForKABIN = ['/r3/cabben/pt'];
+const proxyListForOMS = ['/p/c', '/p/cs', '/api', '/ad-app', '/r3-ps', '/r3-cp', '/r3-st', '/r3-oc-oms', '/r3-vip', '/r3-ipcs', '/asynctask/p/c', '/r3-pm', '/r3-ac', '/r3-sg']
 
 
 const indexProHtml = path.posix.join('/', 'index.pro.html');
@@ -37,8 +38,10 @@ module.exports = env => ({
     axios: 'axios',
     // 'ag-grid': 'agGrid',
     'ark-ui': 'Ark',
+    'ark-bcl': '$Bcl',
     // jquery: '$',
     ztree: 'ztree',
+    // 'vue-i18n': 'VueI18n'
   },
   devServer: {
     compress: true,
@@ -90,6 +93,11 @@ module.exports = env => ({
       },
       {
         context: proxyListForKABIN,
+        target,
+        changeOrigin: true
+      },
+      {
+        context: proxyListForOMS,
         target,
         changeOrigin: true
       },
@@ -256,6 +264,7 @@ module.exports = env => ({
   },
   optimization: {
     minimizer: [new TerserJSPlugin({
+      parallel: true,
       sourceMap: true,
       terserOptions: {
         compress: {

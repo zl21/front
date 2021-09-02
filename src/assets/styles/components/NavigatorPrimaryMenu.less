@@ -1,25 +1,30 @@
 @nav-primary-menu-prefix-cls: ~"@{css-prefix}navigator-primary-menu";
 
 .@{nav-primary-menu-prefix-cls} {
+
   user-select: none;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 76px;
-  color: #fff;
+  color: @body-background;
   font-size: 13px;
+  div{
+    display: flex;
+  }
   &:hover{
     background-color: #2e373c;
     cursor: pointer;
   }
 }
 .active{
-  background-color: #fff;
-  color: #575757;
+  background-color: @txt-active-bgcolor;
+  color: @txt-active-color;
   &:hover{
-    background-color: #fff;
-    color: #575757;
+    background-color: @txt-active-bgcolor;
+    color: @txt-active-color;
+    cursor: pointer;
   }
 }
 

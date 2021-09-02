@@ -4,7 +4,6 @@
  */
 import InputMethod from '../ExtendedMethods/Input'
 import { SetPlaceholder, SetDisable } from './setProps'
-import Ark from '@syman/ark-ui'
 
 let Input = Ark.Input
 
@@ -63,38 +62,46 @@ const mixin = {
       if (!this.item || this.item.type !== 'NUMBER') {
         return
       }
-      const value = event.target.value
+      const value = event.target.value || ''
       const { webconf, scale, length } = this.item
       let valLength = length || 100
-      let string = ''
-      let regxString = ''
+      // let string = ''
+      // let regxString = ''
 
       if (valLength) {
-        if (value.split('.').length > 1) {
-          valLength = valLength + 1
-        } else if (value.split('-').length > 1) {
-          valLength = valLength + 1
-        }
-        if (value.split('.').length > 1 && value.split('-').length > 1) {
+        const isNegativeDecimal = value.split('.').length > 1 && value.split('-').length > 1 // 是否是负小数
+        const isDecimal = value.split('.').length > 1 && value.split('+').length > 1 // 是否是正小数
+        if (isNegativeDecimal || isDecimal) {
+          // 正负小数 
           valLength = valLength + 2
+        } else if (value.split('.').length > 1) {
+          // 小数
+          valLength = valLength + 1
+        } else if (value.split('-').length > 1 || value.split('+').length > 1) {
+          // 正负整数
+          valLength = valLength + 1
         }
 
-        if (webconf && webconf.ispositive) {
-          regxString = ''
-        } else {
-          regxString = '(-|\\+)?'
-        }
-        if (scale > 0) {
-          string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9]{0,${scale}})?$`
-        } else {
-          string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9])?$`
-        }
+      //   if (webconf && webconf.ispositive) {
+      //     regxString = ''
+      //   } else {
+      //     regxString = '(-|\\+)?'
+      //   }
+
+      //   // 小数
+      //   if (scale > 0) {
+      //     string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9]{0,${scale}})?$`
+      //   } else {
+      //     // string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9])?$`
+      //     // 整数
+      //     string = `^${regxString}\\d{0,${valLength}}$`
+      //   }
       }
-
+      
       const itemComponent = this.$parent.$parent
-      const typeRegExp = new RegExp(string)
-      itemComponent.propsMessage.regx = typeRegExp
-      itemComponent.propsMessage.maxlength = valLength
+      // const typeRegExp = new RegExp(string)
+      // itemComponent.propsMessage.regx = typeRegExp
+      itemComponent.propsMessage.maxlength = valLength // 最大长度不包含符号
     })
   },
 }
@@ -126,7 +133,12 @@ class CustomInput {
       disabled,
       clearable: true
     }
-
+    // 是否开启过滤xss攻击
+    if(window.ProjectConfig.setXss && this.item.detailType){
+      this.props.htmlExp = true;
+    }else{
+      this.props.htmlExp = false;
+    }
     if(disabled) {
       this.props.clearable = false
     }
@@ -147,9 +159,9 @@ class CustomInput {
         this.props.encrypt = true
       }
 
-      this.props.autosize = {
-        minRows: this.item.row + 1,
-      }
+      // this.props.autosize = {
+      //   minRows: this.item.row + 1,
+      // }
     } else {
       // 处理ispassword属性
 
@@ -184,14 +196,25 @@ class CustomInput {
     // 数字类型输入控制
     // 只能输入 正整数
     let string = ''
-    const length = this.item.length || 100
+    const length = this.item.length || 500
     if (this.item.webconf && this.item.webconf.ispositive) {
-      string = `^\\d{0,${length}}(\\\.[0-9]{0,${this.item.scale}})?$`
+      if(this.item.scale) {
+        string = `^\\d{0,${length}}(\\\.[0-9]{0,${this.item.scale}})?$`
+      } else {
+        string =`^[\\+]?\\d{0,${length}}$`
+      }
     } else {
-      string = `^(-|\\+)?\\d{0,${length -
-        this.item.scale}}(\\\.[0-9]{${this.item.scale - 1},${
-        this.item.scale
-      }})?$`
+      // string = `^(-|\\+)?\\d{0,${length -
+      //   this.item.scale}}(\\\.[0-9]{${this.item.scale - 1},${
+      //   this.item.scale
+      // }})?$`
+      if(this.item.scale) {
+        string = `^(-|\\+)?\\d{0,${length}}(\\\.[0-9]{0,${
+          this.item.scale
+        }})?$`
+      } else {
+        string =`^[-\\+]?\\d{0,${length}}$`
+      }
     }
 
     const typeRegExp = new RegExp(string)
@@ -210,11 +233,11 @@ class CustomInput {
     const keyDownFn = this.instance.methods.handleKeydown
     const isDetailPage = this.item.detailType
     this.instance.methods.handleKeydown = function(e) {
-      // 禁止输入单引号 '
-      if (e.key==='\'') {
-        e.stopPropagation()
-        e.preventDefault()
-      }
+      // // 禁止输入单引号 '
+      // if (e.key==='\'') {
+      //   e.stopPropagation()
+      //   e.preventDefault()
+      // }
 
       // 明细界面的input，按下回车后，光标自动移到下一个Input框里
       if (isDetailPage && e.keyCode === 13) {

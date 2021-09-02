@@ -1,10 +1,11 @@
-import Vue from 'vue';
+// import Vue from 'vue';
 import VueDND from 'awe-dnd';
 import Viewer from 'v-viewer';
 import { getGuid } from './src/__utils__/random';
 import router from './src/__config__/router.config';
 import store from './src/__config__/store.config';
 import App from './src/App.vue';
+import i18n from './src/assets/js/i18n';
 import './src/constants/dateApi';
 import network from './src/__utils__/network';
 import {
@@ -21,7 +22,13 @@ import getObjdisType from './src/__utils__/getObjdisType';
 import projectConfig from './project.config';
 import { addSearch } from './src/__utils__/indexedDB';
 import { createWatermark } from './src/__utils__/waterMark';
-
+const packageMessage = {
+  version: '1.8.7',
+  packageTime: '2021.06.25', 
+  user: 'AD',   
+};
+projectConfig.packageMessage = packageMessage;
+window.ProjectConfig = projectConfig;
 import './src/__utils__/getChildComponent';
 // import '@syman/ark-ui/dist/styles/ark-ui.css';
 
@@ -42,10 +49,6 @@ import './src/assets/theme/custom.less';
 //   gateway: null  //jflow网关配置
 // });
 
-// 全局指令
-import inputNumber from './src/directive/inputNumber';
-
-Vue.use(inputNumber);
 
 import panelForm from './src/__component__/FormComponents/PanelForm/panelForm'
 // import jflowPlugin from './jflowPlugin/js/index';
@@ -55,7 +58,7 @@ import panelForm from './src/__component__/FormComponents/PanelForm/panelForm'
 
 Vue.component('panelForm',panelForm)
 
-import listsForm from './src/__component__/FormComponents/listsForm.vue'
+import listsForm from './src/__component__/FormComponents/list/listsForm.vue'
 // import jflowPlugin from './jflowPlugin/js/index';
 // import './src/__utils__/encryptingParameter';
 
@@ -68,8 +71,6 @@ Vue.component('listsForm',listsForm)
 //   gateway: '',
 //   roleSwitch: false
 // });
-
-
 
 Vue.use(VueDND);
 Vue.use(R3Dialog); // 注册全局api调用组件
@@ -114,7 +115,7 @@ const backTouristRoute = () => {
 
 const setMessage = (data) => {
   window.vm.$Modal.fcError({
-    title: '提示',
+    title: i18n.t('feedback.alert'),
     content: data.content,
     cancelType: true,
     titleAlign: 'left',
@@ -141,6 +142,7 @@ const init = () => {
   window.vm = new Vue({
     router,
     store,
+    i18n,
     render: createElement => createElement(App)
   }).$mount(rootDom);
   if (backDashboardRoute().filter(path => path === router.currentRoute.fullPath).length > 0) {
@@ -200,13 +202,6 @@ const init = () => {
 
 
   window.getObjdisType = getObjdisType;
-
-  // const param = {
-  //   url: '/CUSTOMIZED/FUNCTIONPERMISSION/2096',
-  //   type: 'C',
-  //   label: '基础档案',
-  // };
-  // store.commit('global/tabOpen', param);
 };
 const getCategory = () => {
   if (enableInitializationRequest()) {
@@ -243,14 +238,9 @@ const getCategory = () => {
         window.localStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMapRes));
       } else if (getLocalObject('loginStatus') === true) {
         // getSessionObject('loginStatus') === true
-        setMessage({ content: '当前用户无菜单权限,将为您跳转到登陆界面' });
+        setMessage({ content: i18n.t('messages.NoMenuPermission') });
       }
     });
-    // .catch(() => { // 处理返回数据为空值情况，当返回数据为空时，避免直接跳转框架表单路由
-    //   if (getSessionObject('loginStatus') === true) {
-    //     setMessage({ content: '当前用户无菜单权限,将为您跳转到登陆界面' });
-    //   }
-    // });
   }
 };
 
@@ -296,10 +286,17 @@ if (enableGateWay()) {
 }
 
 
-const packageMessage = {
-  version: '1.8.7',
-  packageTime: '2021.06.25', 
-  user: 'AD',   
-};
-projectConfig.packageMessage = packageMessage;
-window.ProjectConfig = projectConfig;
+// modify by hy@2020/07/17
+// 增加前端层面的js-xss拦截逻辑
+document.body.addEventListener('input', function (e) {
+  const tagName = e.target.tagName.toLowerCase();
+  if (tagName === 'input' || tagName === 'textarea') {
+    setTimeout(() => {
+      e.target.value = filterXSS(e.target.value, {
+        whiteList: [],
+        stripIgnoreTag: true,
+      });
+    }, 10);
+  }
+});
+

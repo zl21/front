@@ -11,6 +11,7 @@
  */
 
  import { Version } from '../../constants/global'
+ import i18n from '../../assets/js/i18n'
 
 function get_default_datenumber(formItem, isDetailPage) {
   // 单对象界面
@@ -46,7 +47,7 @@ function get_default_date(formItem, isDetailPage) {
       return [start.defval || start.valuedata, end.defval || end.valuedata];
     }
     const value = formItem.valuedata || formItem.defval;
-    return value ? `${new Date().r3Format(new Date(value), 'yyyy/MM/dd hh:mm:ss')}`: '';
+    return value ? `${new Date().r3Format(new Date(value), 'yyyy-MM-dd hh:mm:ss')}`: '';
   } else {
     let timeRange = ''
     if (formItem.customDefault) {
@@ -242,7 +243,7 @@ export default class ParameterDataProcessing {
       if(this.item.valuedata){
         return this.item.valuedata;
       }else if(this.item.default){
-        if(!isDetailPage){
+        if(!isDetailPage && typeof this.item.default === 'string'){
           return this.item.default.split(',');
         }
         return this.item.default;
@@ -259,7 +260,7 @@ export default class ParameterDataProcessing {
 
         return [
           {
-            Label: `已经选中${valuedata.total}条` || '',
+            Label: i18n.t('messages.selectedItem',{total:valuedata.total}) || '',
             ID: this.item.valuedata
           }
         ]

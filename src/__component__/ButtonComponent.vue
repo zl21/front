@@ -35,8 +35,8 @@
       <!-- 定制按钮 -->
       <template v-for="item in dataArray.waListButtonsConfig.waListButtons">
         <template v-if="item.confirm && item.confirm.includes('supPrompt')">
-          <Poptip 
-            trigger="hover" 
+          <Poptip
+            trigger="hover"
             transfer
             :key="item.webid"
             word-wrap
@@ -48,7 +48,7 @@
               :disabled="item.disabled"
               type="fcdefault"
               @click="btnclick('custom', item)"
-              v-text="item.webdesc"> 
+              v-text="item.webdesc">
             </Button>
           </Poptip>
         </template>
@@ -61,10 +61,10 @@
           type="fcdefault"
           @click="btnclick('custom', item)"
           v-text="item.webdesc"
-          > 
+          >
         </Button>
       </template>
-      
+
       <Dropdown
         v-for="(group,i) in dataArray.waListButtonsConfig.waListButtonsGroup"
         :key="group.webid"
@@ -76,8 +76,8 @@
       >
         <!-- 按钮有气泡提示 -->
         <template v-if="group.confirm && group.confirm.includes('supPrompt')">
-          <Poptip 
-            trigger="hover" 
+          <Poptip
+            trigger="hover"
             transfer
             :key="group.webid"
             word-wrap
@@ -99,13 +99,13 @@
             <Icon type="ios-arrow-down" />
           </Button>
         </template>
-        
+
         <DropdownMenu slot="list" class="btn-menu">
           <!-- 按钮菜单有气泡提示 -->
           <template v-for="(item,index) in group.childrens ">
-            <Poptip 
+            <Poptip
                 v-if="item.confirm && item.confirm.includes('supPrompt')"
-                trigger="hover" 
+                trigger="hover"
                 transfer
                 :key="item.webid"
                 word-wrap
@@ -131,7 +131,7 @@
           </template>
         </DropdownMenu>
       </Dropdown>
-      
+
       <!-- jflow配置按钮-->
       <Button
         v-for="(item) in dataArray.jflowButton"
@@ -153,7 +153,7 @@
         @on-click="print"
       >
         <Button type="fcdefault">
-          打印
+          {{$t('buttons.print')}}
           <Icon type="ios-arrow-down" />
         </Button>
         <DropdownMenu slot="list">
@@ -190,7 +190,7 @@
         @click="btnclick('refresh')"
         v-text="refresh"
       />
-     
+
       <Button
         v-if="dataArray.temporaryStorage"
         id="temporaryStorage"
@@ -272,18 +272,18 @@
         model4: '',
         dialogComponentName: null,
         dialogConfig: {
-          title: '提示',
+          title: this.$t('feedback.alert'),
           mask: true,
           footerHide: false,
           contentText: '',
           confirm: () => {
           }
         }, // 弹框配置信息
-        search: '查找',
-        refresh: '刷新',
-        back: '返回',
-        temporaryStorage: '暂存',
-        reset: '重置',
+        search: this.$t('buttons.search'),
+        refresh: this.$t('buttons.refresh'),
+        back: this.$t('buttons.back'),
+        temporaryStorage: this.$t('buttons.temporaryStorage'),
+        reset: this.$t('buttons.reset'),
         errorDialog: false, // 消息弹框
         dialogVisible: false, // 消息提示框
         dialogMessage: '', // 消息提示框显示数据
@@ -301,11 +301,10 @@
           // 打印列表
           {
             vuedisplay: 'dialog',
-            /* "confirm":"{\"isselect\":true,\"nodesc\":\"请先选择需要打印的记录！\"}", */
             actiontype: 'url',
             isrefrsh: false,
             webid: 2527,
-            webdesc: '直接打印',
+            webdesc: this.$t('messages.PrintImmediately'),
             webname: 'OutPrint',
             webicon: null,
             action: 'custompage/redirect?print',
@@ -314,11 +313,11 @@
           },
           {
             vuedisplay: 'dialog',
-            confirm: '{"isselect":true,"nodesc":"请先选择需要打印预览的记录！"}',
+            confirm: `{"isselect":true,"nodesc":"${this.$t('messages.PrintPreviewTip')}"}`,
             actiontype: 'url',
             isrefrsh: false,
             webid: 2530,
-            webdesc: '打印预览',
+            webdesc: this.$t('messages.PrintPreview'),
             webname: 'OutPreview',
             webicon: null,
             action: 'custompage/redirect?preview',
@@ -331,7 +330,7 @@
             actiontype: 'url',
             isrefrsh: false,
             webid: 2533,
-            webdesc: '设置模板',
+            webdesc: this.$t('messages.setTemplate'),
             webname: 'OutSetTemplate',
             webicon: null,
             action: 'custompage/Konad',
@@ -363,7 +362,10 @@
     },
     methods: {
       choseWaListButton(data) {
-        this.btnclick('custom', data);
+        if(!data.disabled){
+          // 激活状态下
+          this.btnclick('custom', data);
+        }
       },
       childTableClickSaveFile() { // 手动触发保存
         const dom = document.getElementById('actionMODIFY');
@@ -402,16 +404,16 @@
           if (printIdArray.length === 0 && id === 2530) { // 没有勾选且为打印预览
             const data = {
               mask: true,
-              title: '警告',
-              content: '请先选择需要打印预览的记录！'
+              title: this.$t('feedback.warning'),
+              content: this.$t('messages.PrintPreviewTip')
             };
             this.$Modal.fcWarning(data);
             return;
           } if (printIdArray.length === 0 && id === 2527) { // 直接打印
             const data = {
               mask: true,
-              title: '警告',
-              content: '请先选择需要直接打印的记录！'
+              title: this.$t('feedback.warning'),
+              content: this.$t('messages.PrintImmediatelyTip')
             };
             this.$Modal.fcWarning(data);
             return;
@@ -509,77 +511,3 @@
 
   };
 </script>
-
-<style lang="less" scope>
-.R3-buttonList {
-  padding: 8px 0px;
-  
-  > div {
-    display: inline-block;
-  }
-  }
-  .R3-button-group {
-    display: flex;
-    justify-content: flex-start;
-    overflow: hidden;
-    flex-wrap: wrap;
-    .hide{
-      display:none;
-    }
-    .ark-select-dropdown {
-      .ark-dropdown-menu {
-        min-width: 58px;
-        .ark-dropdown-item {
-          padding: 5px 6px;
-        }
-      }
-    }
-    .ff--el-dropdown {
-      float: left;
-    }
-    button {
-      height: 22px;
-      line-height: 18px;
-      margin-right: 8px;
-      margin-left: 0px;
-      padding: 0 8px;
-      margin-bottom: 4px;
-    }
-    > button:last-child {
-      margin-right: 0px;
-    }
-    .hiddenDropdown {
-      height: 24px;
-      button {
-        margin-top: -1px;
-      }
-    }
-    .iconfont{
-      font-size: 12px;
-    }
-    .collection,.ark-btn-fcdefault{
-      min-width: auto !important;
-    }
-//     .ark-dropdown-item {
-//     border: 1px solid #fd6442;
-//     border-radius: 4px;
-//     margin: 4px;
-//    color: #fd6442;
-
-// }
-//    .ark-dropdown-item:hover {
-//    color: #feb2a1;
-//     background-color: #fff;
-//     border-color: #feb2a1;
-// }
-
-  
-  }
-
-.btn-menu {
-  .ark-poptip,
-  .ark-poptip-rel {
-    display: block;
-  }
-}
-</style>

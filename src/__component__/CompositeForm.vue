@@ -228,6 +228,10 @@
       isChildTable: {
         // 是否是子表
         type: Boolean
+      },
+      // 单对象类型 vertical,horizontal
+      objectType: {
+        type: String
       }
     },
     // inject: [MODULE_COMPONENT_NAME],
@@ -313,6 +317,11 @@
       }
     },
     computed: {
+      // 是否在单对象界面
+      detailType() {
+        return this.objectType === 'vertical' || this.objectType === 'horizontal'
+      },
+
       path() {
         return this.paths[1] || '';
       },
@@ -788,7 +797,7 @@
           }
         }
 
-        this.$emit('formChange', this.formDataSave, this.formDataDef, this.labelFormSave, this.formData, this.defaultDataInt);
+        this.$emit('formChange', this.formDataSave, this.formDataDef, this.labelFormSave, this.formData, this.defaultDataInt, this.defaultFormData);
         this.getStateData();
 
 
@@ -1221,8 +1230,13 @@
             'on-popper-hide': () => {
               delete current.fixedcolumns;
             },
+            Outside: () => {
+
+
+            },
             blur: (event, $this, item) => {
               // 失去光标 单对象 外键 value 清除
+              return;
               let Fitem = [];
               if (current.formIndex !== 'inpubobj') {
                 Fitem = this.$refs[`FormComponent_${current.formIndex}`][0]
@@ -1449,7 +1463,7 @@
           const premLinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
           const premLinkageFormInput = premLinkageForm[this.tableGetName + current.refcolprem.srccol];
           if (premLinkageFormInput && premLinkageFormInput.item.show && !premValue) {
-            this.$Message.info(`请先选择${premLinkageFormInput.item.name}`);
+            this.$Message.info(`${this.$t('form.selectPlaceholder')}${premLinkageFormInput.item.name}`);
           }
           if (!premValue) {
             let pretableName = document.querySelector('.compositeAllform');
@@ -1544,9 +1558,9 @@
           if (!refcolval) {
             if (LinkageFormInput && LinkageFormInput.item.show) {
               if (current.refcolval.maintable || current.refcolval.mainsrccol) {
-                this.$Message.info(`请先选择主表${LinkageFormInput.item.name}`);
+                this.$Message.info(`${this.$t('messages.selectMainTable')}${LinkageFormInput.item.name}`);
               } else {
-                this.$Message.info(`请先选择${LinkageFormInput.item.name}`);
+                this.$Message.info(`${this.$t('form.selectPlaceholder')}${LinkageFormInput.item.name}`);
               }
 
               if (this.tableGetName) {
@@ -1922,7 +1936,18 @@
           if (this.defaultSetValue[item.colname] !== undefined) {
             return this.defaultSetValue[item.colname];
           }
-          return item.valuedata || item.defval || '';
+          const value = item.valuedata || item.defval || '';
+          if(this.detailType && item.display === 'OBJ_DATE') {
+            return value ? `${new Date().r3Format(new Date(value), 'yyyy-MM-dd hh:mm:ss')}`: '';
+          }
+          // 处理 20201211 这种形式的默认值
+          if(this.detailType && item.display === 'OBJ_DATENUMBER' && /^\d{8}$/.test(value)) {
+            const year = value.substr(0, 4)
+            const month = value.substr(4, 2)
+            const day = value.substr(6, 2)
+            return `${year}-${month}-${day}`
+          }
+          return value;
         }
         if (item.display === 'OBJ_TIME') {
           // 保存change 之前的默认值
@@ -2038,7 +2063,7 @@
         if (checkIsReadonly && item.fkdisplay === 'mop') {
           if (item.valuedata && /total/.test(item.valuedata)) {
             const valuedata = JSON.parse(item.valuedata);
-            return `已经选中${valuedata.total}条` || '';
+            return this.$t('messages.selectedItem',{total:valuedata.total}) || '';
           }
           return this.defaultSetValue[item.colname] || item.valuedata || item.default || item.defval || '';
         }
@@ -2087,8 +2112,8 @@
             arr[0].ID = item.valuedata || item.defval || '';
             if (item.valuedata && /total/.test(item.valuedata)) {
               const valuedata = JSON.parse(item.valuedata);
-              arr[0].Label = `已经选中${valuedata.total}条` || '';
-              arr.push(`已经选中${valuedata.total}条` || '');
+              arr[0].Label = this.$t('messages.selectedItem',{total:valuedata.total}) || '';
+              arr.push(this.$t('messages.selectedItem',{total:valuedata.total}) || '');
             }
           } else if (item.fkdisplay === 'pop') {
             arr.push((fkdisplayValue && fkdisplayValue.label) || '');
@@ -2193,13 +2218,25 @@
             let string = '';
 
             if (current.webconf && current.webconf.ispositive) {
-              string = `^\\d{0,${current.length}}(\\\.[0-9]{0,${
-                current.scale
-              }})?$`;
+              if(current.scale) {
+                string = `^[\\+]?\\d{0,${current.length}}(\\\.[0-9]{0,${
+                  current.scale
+                }})?$`;
+              } else {
+                string = `^[\\+]?\\d{0,${current.length}}$`
+              }
             } else {
-              string = `^(-|\\+)?\\d{0,${current.length - current.scale}}(\\\.[0-9]{0,${
-                current.scale
-              }})?$`;
+              // string = `^(-|\\+)?\\d{0,${current.length - current.scale}}(\\\.[0-9]{0,${
+              //   current.scale
+              // }})?$`;
+
+              if(current.scale) {
+                string = `^(-|\\+)?\\d{0,${current.length}}(\\\.[0-9]{0,${
+                  current.scale
+                }})?$`;
+              } else {
+                string = `^[-\\+]?\\d{0,${current.length}}$`
+              }
             }
 
             const typeRegExp = new RegExp(string);
@@ -2424,7 +2461,7 @@
                 closable: true,
                 scrollable: true,
                 maskClosable: false,
-                title: '弹窗多选',
+                title: this.$t('messages.multiplePop'),
                 'footer-hide': false
               }
             };
@@ -2479,7 +2516,7 @@
             height: 120,
             readonly,
             ImageSize,
-            name: '上传',
+            name: this.$t('buttons.upload'),
             masterName: this.masterName,
             objId: this.masterId,
             sendData: {
@@ -2644,7 +2681,7 @@
           // }
           const labelForm = Object.assign(JSON.parse(JSON.stringify(this.r3Form)), this.labelForm);
           if (labelForm[item.key] === undefined || labelForm[item.key] === '' || labelForm[item.key] === null) {
-            const label = `请输入${item.label}`;
+            const label = `${this.$t('form.inputPlaceholder')}${item.label}`;
             VerificationMessage.messageTip.push(label);
             if (VerificationMessage.messageTip.length < 2) {
               VerificationMessage.validateForm = item.onfousInput;

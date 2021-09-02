@@ -7,9 +7,11 @@ const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const copyWebpackPlugin = require('copy-webpack-plugin');
-const {ModuleFederationPlugin} = require('webpack').container;
+const {
+  ModuleFederationPlugin
+} = require('webpack').container;
 
-module.exports = () => ({
+const config = {
   entry: {
     index: './index.publish.js'
   },
@@ -19,7 +21,8 @@ module.exports = () => ({
     globalObject: 'this',
     library: 'R3',
     libraryTarget: 'umd',
-    umdNamedDefine: true
+    umdNamedDefine: true,
+    publicPath: './'
   },
   devtool: 'source-map',
   externals: {
@@ -68,14 +71,11 @@ module.exports = () => ({
   },
   module: {
     exprContextCritical: false,
-    rules: [
-      {
+    rules: [{
         test: /\.vue$/,
-        use: [
-          {
-            loader: 'vue-loader',
-          },
-        ],
+        use: [{
+          loader: 'vue-loader',
+        }, ],
       },
       {
         test: /\.m?js$/,
@@ -94,49 +94,45 @@ module.exports = () => ({
       {
         test: /\.(sa|sc|le)ss$/,
         use: [{
-          // loader: env && env.production ? MiniCssExtractPlugin.loader : 'style-loader',
-          loader: 'style-loader',
+          loader: MiniCssExtractPlugin.loader,
         }, {
           loader: 'css-loader',
         }, {
           loader: 'less-loader',
-          options: {javascriptEnabled: true}
+          options: {
+            javascriptEnabled: true
+          }
         }],
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: 1000000,
-              name: '[path][name].[ext]'
-            }
+        use: [{
+          loader: 'url-loader',
+          options: {
+            limit: 1000000,
+            name: '[path][name].[ext]'
           }
-        ]
+        }]
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: '[path][name].[ext]',
-              context: 'src',
-            },
+        use: [{
+          loader: 'file-loader',
+          options: {
+            name: '[path][name].[ext]',
+            context: 'src',
           },
-        ],
+        }, ],
       },
     ],
   },
   plugins: [
-    // new MiniCssExtractPlugin({
-    //   filename: 'r3.min.css',
-    // }),
+    new MiniCssExtractPlugin({
+      filename: 'r3.min.css',
+    }),
     new CleanWebpackPlugin(['r3.publish']),
     new VueLoaderPlugin(),
-    new copyWebpackPlugin([
-      {
+    new copyWebpackPlugin([{
         from: path.resolve(__dirname, "./src/assets"),
         to: path.resolve(__dirname, "./r3.publish/src/assets")
       },
@@ -180,6 +176,7 @@ module.exports = () => ({
   },
   optimization: {
     minimizer: [new TerserJSPlugin({
+      parallel: true,
       sourceMap: true,
       terserOptions: {
         compress: {
@@ -188,4 +185,6 @@ module.exports = () => ({
       }
     }), new OptimizeCSSAssetsPlugin({})],
   },
-});
+}
+
+module.exports = () => config;

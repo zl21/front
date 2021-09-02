@@ -136,6 +136,10 @@
       callMethod() {
         this.$refs.zTree.callMethod();
       },
+      clearInputVal() {
+          this.$refs.zTree.clearInputVal();
+        // this.$refs.zTree.init();
+      },
       callBackFunction(tdata, resData, key, value) {
         // key:要筛选的字段
         // value:当前参数
@@ -191,8 +195,8 @@
         // treeNodeID：当前点击节点ID
         // flag:true:查询选中的节点，false:查询空
       }, // 左侧树点击
-      treeSearch(e) {
-        this.$emit('treeSearch', e)
+      treeSearch(e, flag) {
+        this.$emit('treeSearch', e, flag)
       },
     }
   };

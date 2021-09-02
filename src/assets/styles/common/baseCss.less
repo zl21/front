@@ -31,7 +31,7 @@
   background:transparent !important;
 }
 .orange{
-  color:#fd6442;
+  color:@primary-color;
   line-height: 30px;
 }
 
@@ -51,14 +51,12 @@
   }
 }
 
-
 .R3tree{
-  width:300px;
   height:100%;
   padding:10px;
   border-right:1px solid #d2d2d2;
-  overflow-x: scroll;
-  overflow-y: scroll;
+  overflow-x: auto;
+  overflow-y: auto;
 }
 
 .ztree li span{
@@ -73,13 +71,13 @@
 .validate-msg {
   margin-top: 4px;
   margin-bottom: 10px;
-  color: red;
+  color: @error-color;
   font-size: 12px;
 }
 
 .tree{
   .ark-tree-title-selected{
-    background:red !important;
+    background:@error-color !important;
   }
   .treeContent{
     overflow: scroll;
@@ -191,17 +189,21 @@
     margin-left: 0px;
     padding: 0 8px;
     background: #fff;
-    color: #fd6442;
-    border: 1px solid #fd6442;
+    color: @primary-color;
+    border: 1px solid @primary-color;
     border-radius: 2px;
     font-size: 12px;
   }
   .button-group button:hover {
-    border-color: rgba(253, 100, 66, 0.6);
-    color: rgba(253, 100, 66, 0.6);
+    border-color: fade(@primary-color, 60%);
+    color: fade(@primary-color, 60%);
   }
 }
 
-#printframe{
-  border:0;
+// 忽略input的placeholder大小写问题
+:-ms-input-placeholder {
+  text-transform: lowercase;
+}
+::-webkit-input-placeholder {
+  text-transform: lowercase;
 }

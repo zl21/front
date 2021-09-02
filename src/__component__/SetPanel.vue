@@ -4,12 +4,12 @@
       <div class="panel-item">
         <p :title="getEname">
           <i class="iconfont iconmd-contact explanatory" />
-          欢迎: {{ getEname }}
+          {{$t('tips.welcome')}}: {{ getEname }}
         </p>
       </div>
       <div class="panel-item">
         <p @click="changePwd">
-          <i class="iconfont iconmd-key explanatory" />修改密码
+          <i class="iconfont iconmd-key explanatory" />{{$t('tips.changePassword')}}
         </p>
       </div>
       <component :is="customizeComponent" />
@@ -19,7 +19,7 @@
       >
         <p>
           <i class="iconfont iconmd-book explanatory" />
-          是否展开收藏夹
+          {{$t('messages.expandFavorite')}}
           <i-switch
             v-model="showFavorites"
             class="switch"
@@ -30,7 +30,7 @@
       <div class="panel-item">
         <p>
           <i class="iconfont iconmd-apps explanatory" />
-          折叠查询条件
+          {{$t('messages.collapseQuery')}}
           <i-switch
             v-model="switchValue"
             class="switch"
@@ -44,7 +44,7 @@
       >
         <p>
           <i class="iconfont iconmd-list explanatory" />
-          查询条件默认显示行数
+          {{$t('messages.queryDefaultRows')}}
           <InputNumber
             v-model="num7"
             :max="10"
@@ -56,7 +56,7 @@
       <div class="panel-item">
         <p @click="clickSignout">
           <i class="iconfont iconmd-exit explanatory" />
-          退出
+          {{$t('buttons.exit')}}
         </p>
       </div>
     </div>
@@ -178,11 +178,14 @@
           .post('/p/cs/setUserParam', urlSearchParams(param))
           .then((res) => {
             if (res.data.code === 0) {
-              if (moduleName()) {
-                if (moduleName() && moduleName().indexOf('S', 0) === 0) {
-                  this.$store.commit('global/updateModifySearchFoldnum', { queryDisNumber: Number(this.num7), switchValue: this.switchValue });
-                }
-              }
+              // console.log(moduleName(),'0000');
+              // if (moduleName()) {
+              //   if (moduleName() && moduleName().indexOf('S', 0) === 0) {
+              //     this.$store.commit('global/updateModifySearchFoldnum', { queryDisNumber: Number(this.num7), switchValue: this.switchValue });
+              //   }
+              // }
+              this.$store.commit('global/updateModifySearchFoldnum', { queryDisNumber: Number(this.num7), switchValue: this.switchValue });
+
             }
           });
       },

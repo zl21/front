@@ -51,7 +51,7 @@
         spinShow: false,
         dialogComponentName: null,
         dialogConfig: {
-          title: '提示',
+          title: this.$t('feedback.alert'),
           mask: true,
           footerHide: false,
           contentText: '',
@@ -128,7 +128,7 @@
             if (cur.comment) {
               if (cur.name === 'ID') {
                 acc.push(Object.assign({
-                  title: '序号',
+                  title: this.$t('table.index'),
                   align: 'left',
                   fixed: 'left',
                   key: 'ID',
@@ -221,7 +221,7 @@
             } else {
               if (cur.name === 'ID') {
                 acc.push(Object.assign({
-                  title: '序号',
+                  title: this.$t('table.index'),
                   align: 'left',
                   fixed: 'left',
                   key: 'ID',
@@ -402,7 +402,7 @@
                     }
                   }
                 }
-              }, '查看明细');
+              }, this.$t('buttons.viewDetails'));
             }
             if (cur.key !== 'OBJDISTYPE') {
               arr.push(cur);
@@ -433,7 +433,7 @@
         const total = [];
         if (this.datas.isSubTotalEnabled) {
           const cell = {
-            ID: '合计'
+            ID: this.$t('table.summation')
           };
           const needSubtotalList = this.columns.filter(ele => ele.issubtotal);
           needSubtotalList.map((ele) => {
@@ -452,7 +452,7 @@
         if (this.datas.isFullRangeSubTotalEnabled) {
           // 总计
           const cell = {
-            ID: '总计',
+            ID: this.$t('table.total'),
           };
           if (this.datas.fullRangeSubTotalRow) {
             for (const key in this.datas.fullRangeSubTotalRow) {
@@ -603,13 +603,14 @@
                     tableId: data.reftableid,
                     label: data.reftabdesc,
                     id: data.refobjid,
+                    original:'outclick',
                     serviceId: data.serviceId
                   });
                 } else {
                   const messageData = {
                     mask: true,
-                    title: '警告',
-                    content: '请设置外键关联表的显示配置'
+                    title: this.$t('feedback.warning'),
+                    content: this.$t('messages.setAssociationTable')
                   };
                   this.$Modal.fcWarning(messageData);
                 }
@@ -765,7 +766,7 @@
                                 h('i-switch', {
                                   on: {
                                     'on-change': (status) => {
-                                      this.$Message.info(`开关状态：${status === true ? '开' : '关'}`);
+                                      this.$Message.info(`${this.$t('messages.switchStatus')}：${status === true ? this.$t('tips.open') : this.$t('tips.close')}`);
                                     }
                                   },
 
@@ -792,22 +793,22 @@
       commandRender(data) {
         const params = [
           {
-            label: '编辑',
+            label: this.$t('buttons.edit'),
             type: 'fcdefault',
             display: 'dialog',
             component: 'commonTable/componentName',
             disabled: false,
-            dialogTitle: '弹出框'
+            dialogTitle: this.$t('tips.popUp')
           },
           {
-            label: '删除',
+            label: this.$t('buttons.delete'),
             type: 'fcdefault',
             display: 'delete',
             disabled: false
 
           },
           {
-            label: '跳转',
+            label: this.$t('buttons.jump'),
             type: 'fcdefault',
             display: 'url',
             url: '',

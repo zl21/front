@@ -98,6 +98,11 @@ export default {
   }, data) {
     formItems.data = data;
   },
+  updateFormAssignData({
+    formItems
+  }, data) {
+    formItems.data = Object.assign(formItems.data,data);
+  },
   updateDefaultSearchFoldnum({ formItems }, data) {
     formItems.searchFoldnum = data;
   },
@@ -431,6 +436,11 @@ export default {
         return arr;
       }, []);
     }
+  },
+  filterButtonsForShow(state,data){
+    // 过滤按钮是否展示
+    state.buttons.dataArray = data;
+
   }
   
 };

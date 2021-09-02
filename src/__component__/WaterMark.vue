@@ -34,7 +34,7 @@
       },
       text: {
         type: String,
-        default: '文字'
+        default: function() { return this.$t('tips.text')}
       },
       width: {
         type: String,

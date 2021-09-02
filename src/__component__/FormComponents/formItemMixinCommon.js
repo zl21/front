@@ -1,4 +1,5 @@
 import network from '../../__utils__/network.js';
+import i18n from '../../assets/js/i18n'
 
 export default {
   data() {
@@ -22,11 +23,6 @@ export default {
         }).then((res) => {
           if (res.data.code === 1) {
             resolve(res.data.message);
-            // this.$Modal.fcError({
-            //   title: '错误',
-            //   content: res.data.message,
-            //   mask: true
-            // });
           }else{
             resolve('');
           }
@@ -44,7 +40,7 @@ export default {
       this.rules = {
         required: {
           type:required,
-          message: `${this.items.name}不能为空!`, 
+          message: `${this.items.name}${i18n.t('tips.notEmpty')}!`, 
           trigger: 'blur'
         }, 
         trigger:{
@@ -63,9 +59,13 @@ export default {
   mounted() {
     // 设置校验规则
     this.setRules();
-    setTimeout(()=>{
-      // 延时渲染完成,阻止页面初始化调用事件
-      this.actived = true;    
-    },400);
+    let self = this;
+    this.$parent.$parent.$parent.$nextTick(()=>{
+      setTimeout(()=>{
+        // 延时渲染完成,阻止页面初始化调用事件
+        self.actived = true;    
+      },100);
+    })
+   
   }  
 };

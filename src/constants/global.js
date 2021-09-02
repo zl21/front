@@ -170,3 +170,9 @@ export const getGatewayValue = (key) => {
 
 // 获取全局class前缀
 export const classFix = window.ProjectConfig && window.ProjectConfig.classFix ? window.ProjectConfig.classFix : project.classFix;
+
+// 获取登录pro
+export const enableLoginPro = window.ProjectConfig && window.ProjectConfig.enableLoginPro ? window.ProjectConfig.enableLoginPro : project.enableLoginPro;
+
+// 获取需要过滤的URL
+export const filterURL = window.ProjectConfig && window.ProjectConfig.filterURL ? window.ProjectConfig.filterURL : project.filterURL;

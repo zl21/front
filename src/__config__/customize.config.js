@@ -17,12 +17,13 @@ import metricsDefinition from '../__customize__/metricsDefinition/metricsDefinit
 import customizeReport from '../__component__/CustomizeReport.vue';
 
 import dataPermission from '../__customize__/DataPermission/DataPermission.vue';
+import i18n from '../assets/js/i18n';
 
 export default {
   // 列表配置双击跳转定制界面，需在文档里维护对应的labelName属性
   functionPermission: {
     component: functionPermission,
-    labelName: '功能权限',
+    labelName: i18n.t('tips.functionPermission'),
     label: 'functionPermission'
   },
   pro_desc: {
@@ -41,7 +42,7 @@ export default {
   },
   taskList: {
     component: taskList,
-    labelName: '任务记录',
+    labelName: i18n.t('messages.taskRecord'),
     label: 'taskList'
 
   },
@@ -51,7 +52,7 @@ export default {
   },
   dataPermission: {
     component: dataPermission,
-    label: '数据权限'
+    label: i18n.t('tips.dataPermission')
   },
 
 };

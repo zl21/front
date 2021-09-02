@@ -140,7 +140,7 @@
           wangEditoMenu.style.display = 'inline-flex';
 
           wangEditoMenu.innerHTML = `<div class="w-e-menu" id="_wangEditor_btn_fullscreen">
-                                    <a class="_wangEditor_btn_fullscreen" href="###">全屏</a></div>
+                                    <a class="_wangEditor_btn_fullscreen" href="###">${this.$t('buttons.fullscreen')}</a></div>
                                     <div class="w-e-menu" id="_wangEditor_btn_html">
                                     <a class="_wangEditor_btn_html" href="###">html</a></div>`;
 
@@ -155,17 +155,17 @@
         });
       },
       toggleFullscreen(editorSelector) {
-        if (editorSelector.querySelector('._wangEditor_btn_fullscreen').innerText === '全屏') {
-          editorSelector.querySelector('._wangEditor_btn_fullscreen').innerText = '退出全屏';
+        if (editorSelector.querySelector('._wangEditor_btn_fullscreen').innerText === this.$t('buttons.fullscreen')) {
+          editorSelector.querySelector('._wangEditor_btn_fullscreen').innerText = this.$t('buttons.exitFullscreen');
           editorSelector.className = 'editor fullscreen-editor';
         } else {
-          editorSelector.querySelector('._wangEditor_btn_fullscreen').innerText = '全屏';
+          editorSelector.querySelector('._wangEditor_btn_fullscreen').innerText = this.$t('buttons.fullscreen');
           editorSelector.className = 'editor';
         }
       },
       toggleHtml(editorSelector) {
         if (editorSelector.querySelector('._wangEditor_btn_html').innerText === 'html') {
-          editorSelector.querySelector('._wangEditor_btn_html').innerText = '退出';
+          editorSelector.querySelector('._wangEditor_btn_html').innerText = this.$t('buttons.exit');
 
           document.getElementById('editor_layer').style.display = 'block';
           editorSelector.querySelector('#textarea').style.display = 'block';

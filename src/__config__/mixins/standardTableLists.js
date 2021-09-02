@@ -63,6 +63,7 @@ export default () => ({
         'updateFailInfo',
         'updateAgConfig',
         'updateFormData',
+        'updateFormAssignData',
         'updateFormLists',
         'updateDefaultButtonGroupData',
         'deleteTableData',
@@ -86,7 +87,8 @@ export default () => ({
         'updateTabParam',
         'resetTabParam',
         'filterButtonsForDisable',
-        'resetButtonsStatus'
+        'resetButtonsStatus',
+        'filterButtonsForShow'
         
       ]),
   },

@@ -3,10 +3,12 @@
     v-if="showModule.Navigator"
     :class="classes"
   >
-    <div class="NaVertical-icons">
+   <component :is="slotName">
+<!-- 操作按钮切换左边面板 -->
       <div
         class="tag"
-        title="折叠"
+        :title="$t('buttons.fold')"
+        slot="icon-tag"
         @click="toggle"
       >
         <i
@@ -18,49 +20,67 @@
           class="iconfont iconbj-unfold"
         />
       </div>
+      <!-- 最近操作 -->
+       <div
+      v-if="getDashboardConfig"
+      @click="dashboardClick" slot="icon-home"
+      class="tag right"
+    >
+      <i
+        :class="getDashboardConfig"
+        :title="$t('tips.backHome')"
+
+      />
+    </div>
       <div
         v-if="enableHistoryAndFavoriteUI"
         class="HistoryAndFavorite-time"
+        slot="icon-time"
       >
         <Dropdown ref="Dropdown" trigger="click"  class="HistoryAndFavorite-Dropdown" placement="bottom-start">
             <Icon type="iconmd-time"></Icon>
           <DropdownMenu
             slot="list"
           >
+          <slot name="collect">
             <HistoryAndFavorite />
+
+             </slot>
           </DropdownMenu>
         </Dropdown>
         <!-- <div class="iconfont iconmd-time">
         </div> -->
-      </div>
+
     </div>
-
-
-    <div>
-      <div
-        v-for="(item,index) in navigatorSetting"
-        :key="index"
-        class="tag right"
-      >
-        <Badge
-
-          style="width:40px;height:40px"
-          :offset="['6px','-8px']"
-          :count="item.count"
-          @click.native="item.callback"
+      <!-- 最近操作navigatorSetting -->
+      <div class="icon-setting right" slot="icon-Setting">
+        <div
+          v-for="(item,index) in navigatorSetting"
+          :key="index"
+          class="tag right"
         >
-          <i
-            class="iconfont"
-            :class="item.icon"
-          />
-        </Badge>
+          <Badge
+
+            style="width:40px;height:40px"
+            :offset="['6px','-8px']"
+            :count="item.count"
+            @click.native="item.callback"
+          >
+            <i
+              class="iconfont"
+              :class="item.icon"
+            />
+          </Badge>
+        </div>
+        <ComAutoComplete slot="nav-input" />
+
+        <Lately slot="icon-Lately"  v-if="enableHistoryAndFavoriteUI"></Lately>
+        <Collect slot="icon-Collect"  v-if="enableHistoryAndFavoriteUI"></Collect>
       </div>
-      <ComAutoComplete />
-
-
       <div
         v-if="versionValue"
         class="tag right"
+        slot="icon-message"
         @click.prevent="messageSlide"
       >
         <Badge :count="taskMessageCount">
@@ -68,77 +88,82 @@
             class="iconfont iconbj_message badge"
           />
         </Badge>
+        <Drawer
+            v-model="messagePanel.show"
+            :closable="false"
+          >
+            <messagePanel
+              v-if="Version==='1.4'"
+              :panel="messagePanel"
+              @markRead="markReadNote"
+              @ignoreMsg="ignoreMsg"
+              @jumpTask="jumpTask"
+              @nextPage="nextPage"
+            />
+            <message-panel-older
+              v-if="Version==='1.3'"
+              :panel="messagePanel"
+              @markRead="markReadNote"
+              @ignoreMsg="ignoreMsg"
+              @jumpTask="jumpTask"
+              @nextPage="nextPage"
+            />
+          </Drawer>
       </div>
-      <Drawer
-        v-model="messagePanel.show"
-        :closable="false"
-      >
-        <messagePanel
-          v-if="Version==='1.4'"
-          :panel="messagePanel"
-          @markRead="markReadNote"
-          @ignoreMsg="ignoreMsg"
-          @jumpTask="jumpTask"
-          @nextPage="nextPage"
-        />
-        <message-panel-older
-          v-if="Version==='1.3'"
-          :panel="messagePanel"
-          @markRead="markReadNote"
-          @ignoreMsg="ignoreMsg"
-          @jumpTask="jumpTask"
-          @nextPage="nextPage"
-        />
-      </Drawer>
+
       <div
         class="tag right"
+        slot="icon-person"
         @click="show = true"
       >
-        <i
-          class="iconfont iconmd-person"
-          title="设置"
-        />
-      </div>
-      <Drawer
-        v-model="show"
-        :closable="false"
-      >
-        <SetPanel
-          :panel="setPanel"
-          @changePwdBox="changePwdBox"
-        />
+          <i
+            class="iconfont iconmd-person"
+            :title="$t('buttons.setting')"
+          />
+          <Drawer
+            v-model="show"
+            :closable="false"
+          >
+            <SetPanel
+              :panel="setPanel"
+              @changePwdBox="changePwdBox"
+            />
       </Drawer>
-      <Dialog
-        ref="dialogRef"
-        :title="dialogConfig.title"
-        :mask="dialogConfig.mask"
-        :content-text="dialogConfig.contentText"
-        :footer-hide="dialogConfig.footerHide"
-        :confirm="dialogConfig.confirm"
-        :dialog-component-name="dialogComponentName"
-      />
-    </div>
+        <Dialog
+          ref="dialogRef"
+          :title="dialogConfig.title"
+          :mask="dialogConfig.mask"
+          :content-text="dialogConfig.contentText"
+          :footer-hide="dialogConfig.footerHide"
+          :confirm="dialogConfig.confirm"
+          :dialog-component-name="dialogComponentName"
+        />
+
+      </div>
+
+   </component>
   </div>
 </template>
 
 <script>
   import { mapState, mapMutations, mapActions } from 'vuex';
-  import NavigatorPrimaryMenu from './NavigatorPrimaryMenu';
   import SetPanel from './SetPanel';
   import messagePanel from './messagePanel';
   import messagePanelOlder from './messagePanelOlder'; // 1.3
+  import Collect from './nav/collect.vue';
+  import Lately from './nav/lately.vue';
+  import NaVerticalslot from './nav/NaVerticalslot.vue';
+
 
   import ComAutoComplete from './ComAutoComplete';
   import Dialog from './Dialog.vue';
   import { routeTo } from '../__config__/event.config';
   import network, { urlSearchParams } from '../__utils__/network';
-  import NavigatorSubMenu from './NavigatorSubMenu';
   import {
-    classFix, STANDARD_TABLE_LIST_PREFIX, Version, enableGateWay, getGatewayValue, enableHistoryAndFavoriteUI, messageSwitch
+    classFix, STANDARD_TABLE_LIST_PREFIX, Version, enableGateWay, getGatewayValue, enableHistoryAndFavoriteUI, messageSwitch,dashboardConfig
   } from '../constants/global';
   import { updateSessionObject } from '../__utils__/sessionStorage';
   import HistoryAndFavorite from './HistoryAndFavorite';
-  import MessagePanelOlder from './messagePanelOlder.vue';
 
   export default {
     name: 'Navigator',
@@ -148,12 +173,15 @@
       messagePanel,
       ComAutoComplete,
       HistoryAndFavorite,
-      messagePanelOlder
+      messagePanelOlder,
+      Collect,
+      Lately
     },
 
     data() {
       return {
         // primaryMenuShow: false,
+        slotName:'',
         messagePanel: {
           show: false,
           list: [],
@@ -172,7 +200,7 @@
         iconShow: true,
         keyWord: '',
         dialogConfig: {
-          title: '提示',
+          title: this.$t('feedback.alert'),
           mask: true,
           footerHide: false,
           contentText: '',
@@ -194,6 +222,12 @@
         userInfo: ({ userInfo }) => userInfo,
         primaryMenuIndex: state => state.primaryMenuIndex,
         taskMessageCount: state => state.taskMessageCount,
+        getDashboardConfig() {
+            if (dashboardConfig() && dashboardConfig().iconClass) {
+              return dashboardConfig().iconClass;
+            }
+            return false;
+        },
         imgSrc: state => state.imgSrc
       }),
       versionValue() {
@@ -208,7 +242,7 @@
       taskMessageCounts() {
         return this.userInfo.id;
       },
-      classes: () => `${classFix}NaVertical`
+      classes: () => `${classFix}NaVertical-bar`
 
     },
     watch: {
@@ -241,13 +275,18 @@
     },
     methods: {
       ...mapActions('global', ['getTaskMessageCount', 'updataTaskMessageCount']),
-      ...mapMutations('global', ['updateTaskMessageCount', 'doCollapseHistoryAndFavorite', 'changeSelectedPrimaryMenu', 'hideMenu', 'tabOpen', 'directionalRouter']),
+      ...mapMutations('global', ['updateDashboardPageValue','updateTaskMessageCount', 'doCollapseHistoryAndFavorite', 'changeSelectedPrimaryMenu', 'hideMenu', 'tabOpen', 'directionalRouter']),
       togglePrimaryMenu(data, index) {
         this.togglePrimaryMenuData = data;
         if (index === this.primaryMenuIndex) {
           this.hideMenu();
         } else {
           this.changeSelectedPrimaryMenu(index);
+        }
+      },
+      dashboardClick() {
+        if (this.$router.currentRoute.path !== '/') {
+          this.updateDashboardPageValue();
         }
       },
       mouseover(){
@@ -283,7 +322,7 @@
           type,
           tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
           tableId: Version() === '1.3' ? 24386 : 963,
-          label: '我的任务'
+          label: this.$t('tips.myTask')
         };
         this.tabOpen(tab);
       },
@@ -354,7 +393,7 @@
       changePwdBox() {
         this.show = false;
         this.$refs.dialogRef.open();
-        this.dialogConfig.title = '修改密码';
+        this.dialogConfig.title = this.$t('tips.changePassword');
         this.dialogConfig.footerHide = true;
         // Vue.component('ChangePassword', CustomizeModule.ChangePassword.component);
         this.dialogComponentName = 'ChangePassword';
@@ -431,7 +470,7 @@
       },
       toggle() {
         const navigator = document.querySelector('.NavigatorVertical');
-        const navigatorMenu = document.querySelector('.navigator-sub-menu');
+        const navigatorMenu = document.querySelector('.NavigatorSubMenu');
         if (this.iconShow) {
           navigator.className = 'NavigatorVertical transferRight';
           this.iconShow = false;
@@ -461,6 +500,12 @@
     },
     mounted() {
       this.$el._vue_=this;
+      if(window.ProjectConfig.layoutDirectionSlot && window.ProjectConfig.layoutDirectionSlot.NaVertical){
+      this.slotName = window.ProjectConfig.layoutDirectionSlot.NaVertical;
+      }else{
+      this.slotName = NaVerticalslot;
+      }
+            console.log(this.slotName, window.ProjectConfig);
       if (Version() === '1.3') {
         this.messageTimer = setInterval(() => {
           this.getMessageCount();

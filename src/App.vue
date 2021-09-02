@@ -32,7 +32,9 @@
       getUserInfo() {
         if (enableInitializationRequest()) {
           network.get('/p/cs/hello').then((res) => {
+          
             // 此方法用于向外界（JFlow）提供用户信息。供外部处理自己的需要逻辑。
+            
             DispatchEvent('userReady', {
               detail: {
                 userInfo: JSON.parse(JSON.stringify(res.data))
@@ -43,6 +45,7 @@
                 userInfo: res.data
               });
               window.localStorage.setItem('userInfo', JSON.stringify(res.data));
+              window.localStorage.setItem('sessionCookie',res.data.sessionCookie);
             }
           });
         }
@@ -50,7 +53,3 @@
     },
   };
 </script>
-
-<style lang="less" scoped>
-  @import "./index";
-</style>

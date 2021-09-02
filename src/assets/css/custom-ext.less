@@ -304,6 +304,22 @@ tbody tr.ark-table-row-hover td{
   text-align: right;
 }
 
+.text-left {
+  text-align: left;
+}
+
+.flex-right {
+  justify-content: flex-end
+}
+
+.flex-center {
+  justify-content: center
+}
+
+.flex-left {
+  justify-content: flex-start
+}
+
 .one-line-flow {
   overflow: hidden;
   white-space: nowrap; 
@@ -354,6 +370,20 @@ tbody tr.ark-table-row-hover td{
 }
 
 // fix:表格里的表单图标会挡住固定列
-.ark-table-fixed {
-  z-index: 20;
+.ark-table {
+  .ark-table-fixed {
+    z-index: 20;
+  }
+}
+
+// fix:ag表格查询控件展示不全
+.ag-theme-balham .ag-menu {
+  overflow-y: auto;
+  .ag-menu-column-select-wrapper,
+  .ag-column-select-panel,
+  .ag-column-container {
+    overflow: hidden;
+    display: block;
+    height: auto;
+  }
 }

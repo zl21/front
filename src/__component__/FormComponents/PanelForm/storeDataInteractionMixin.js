@@ -40,6 +40,10 @@ export default {
               
             }  
           }
+          // 转大写
+          if(this.items.isuppercase){
+            current_value = current_value.toLocaleUpperCase();
+          }
           
           if(this.items.fkobj && (this.items.fkobj.searchmodel === 'pop' || this.items.fkobj.searchmodel === 'drp')){
            
@@ -92,19 +96,20 @@ export default {
           }else{
             ParentForm.formDataLabel[this.items.colname] = val;
           }
-          ParentForm.formLabel[this.items.colname] = val;         
+          ParentForm.formLabel[this.items.colname] = val; 
+          let id = (ParentForm.defaultData.id || '').toString();  
           let keepAliveModuleName = this.activeTab.keepAliveModuleName && (this.activeTab.keepAliveModuleName).toLocaleUpperCase();
             // 初始化的状态
             if (!this.actived) {
-              if (/NEW/.test(keepAliveModuleName)) {
-                // 删除空值
-                if (isEmpty(val)) {
-                  delete ParentForm.formData[this.items.colname]
-                  delete ParentForm.defaulDataLabel[this.items.colname]
-                }
-              }
-              ParentForm.defaulData = JSON.parse(JSON.stringify(ParentForm.formData));
+              // 删除空值
+              ParentForm.defaulDataValue = JSON.parse(JSON.stringify(ParentForm.formData));
               ParentForm.defaulDataLabel = Object.assign(JSON.parse(JSON.stringify(ParentForm.defaulDataLabel)),R3Label);
+              if (isEmpty(val)) {
+                delete ParentForm.formData[this.items.colname]
+                delete ParentForm.defaulDataValue[this.items.colname]
+                delete ParentForm.defaulDataLabel[this.items.colname]
+              }
+
               this.InitializationForm(ParentForm);
               return;
             } else {
@@ -120,7 +125,7 @@ export default {
                 }
               }
 
-              if (/NEW/.test(keepAliveModuleName)) {
+              if (/NEW/.test(keepAliveModuleName) || id ==='-1') {
                 // 新增  删除空值,且没有默认值     
                 ParentForm.formChangeData = Object.assign({}, ParentForm.formChangeData, current_data)
                  // 虚拟区间不用传值
@@ -142,7 +147,7 @@ export default {
                   ParentForm.deleteFormData(data)
                 }
                 // 默认值
-                ParentForm.defaulData = JSON.parse(JSON.stringify(ParentForm.formData));
+                ParentForm.defaulDataValue = JSON.parse(JSON.stringify(ParentForm.formData));
                 ParentForm.defaulDataLabel = Object.assign(JSON.parse(JSON.stringify(ParentForm.defaulDataLabel)),R3Label);
                 // this.InitializationForm(ParentForm)
                 this.changeForm(ParentForm);
@@ -203,6 +208,10 @@ export default {
 
 
 
+        }else{
+          if (this.actived) {
+            this.$emit('on-change',this.items,val )
+          }
         }
 
       }
@@ -219,6 +228,10 @@ export default {
         ParentForm.$parent.formPanelChange(ParentForm.formChangeData, ParentForm.formDataLabel,ParentForm.formChangeDataLabel)
       }else{
         ParentForm.$parent.formChange(ParentForm.formChangeData, ParentForm.formDataLabel,ParentForm.formChangeDataLabel)
+      }
+      let tabPanelsDom = document.querySelector(`#${this.activeTab.tableName}`);
+      if(tabPanelsDom){
+        tabPanelsDom._vue_.setTabPanels();
       }
     }
   },

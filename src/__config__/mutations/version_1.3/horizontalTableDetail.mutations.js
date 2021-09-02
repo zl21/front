@@ -1,4 +1,5 @@
 import router from '../../router.config';
+import i18n from '../../../assets/js/i18n';
 
 export default {
   updataSinglePageButtonsConfigForMainTable(state, data) {
@@ -17,10 +18,30 @@ export default {
   updataHideTempStorage(state, value) { // 控制单对象界面暂存按钮
     state.isHideTempStorage = value;
   },
+  updateChildTabPanels(state, data){
+    let tabPanels =state.tabPanels.reduce((arr,item)=>{
+      // 隐藏子表  
+      if(data.value[item.tablename]){
+        item.hide = true;
+      }else{
+        item.hide = false;
+      }
+      arr.push(item);
+     
+       return arr;
+    },[]);
+    // if(tabPanels.length>0){
+    //   state.tabCurrentIndex = data.index;
+    // }else{
+    //   state.tabCurrentIndex = -1;
+    // }
+    // state.isRequest = [];
+    state.tabPanels = tabPanels;
+  },
   updateTabPanelsData(state, data) {
     const { tableName, tableId } = router.currentRoute.params;
     const arr = [{
-      label: '标签',
+      label: i18n.t('tips.label'),
       tablename: tableName,
       id: tableId,
       componentAttribute: {
@@ -396,7 +417,9 @@ export default {
                 } else if (c.fkdisplay === 'drp' || c.fkdisplay === 'mrp' || c.fkdisplay === 'pop') {
                   c.refobjid = (copyDatas[item]).map(item => item.ID).join(',');
                   c.valuedata = copyDatas[item].map(item => item.Label).join(',');
-                  copySaveDataForParam[c.colname] = [{ ID: copyDatas[item][0].ID, Label: copyDatas[item][0].Label }];
+                  if(copyDatas[item][0]){
+                    copySaveDataForParam[c.colname] = [{ ID: copyDatas[item][0].ID, Label: copyDatas[item][0].Label }];
+                  }
                 } else if (c.display === 'OBJ_DATENUMBER') {
                   c.valuedata = copyDatas[item];
                   // c.valuedata = -1;
@@ -426,7 +449,7 @@ export default {
           if(c.webconf&& c.webconf.formRequest){
             c.webconf.formRequest.copy = true;
           }
-          if (item === c.name) {
+          if (item === c.name || item === c.colname) {
             // b.readonly = c.readonly;
             if (c.readonly === true) {
               if (c.defval) { // 处理复制时有不可编辑，且有默认值情况
@@ -451,11 +474,13 @@ export default {
               } else if (c.fkdisplay === 'drp' || c.fkdisplay === 'mrp' || c.fkdisplay === 'pop') {
                 c.refobjid = copyDatas[item].map(item => item.ID).join(',');
                 c.valuedata = copyDatas[item].map(item => item.Label).join(',');
-                copySaveDataForParam[c.colname] = [{ ID: copyDatas[item][0].ID, Label: copyDatas[item][0].Label }];
+                if(copyDatas[item][0]){
+                  copySaveDataForParam[c.colname] = [{ ID: copyDatas[item][0].ID, Label: copyDatas[item][0].Label }];
+                }
               } else if (c.fkdisplay === 'mop') {
                 try {
                   const number = JSON.parse(b.valuedata).lists.result.length;
-                  copySaveDataForParam[c.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
+                  copySaveDataForParam[c.colname] = [{ ID: b.valuedata, Label: i18n.t('messages.selectedData',{total:number}) }];
                 } catch (e) {
                   copySaveDataForParam[c.colname] = c.valuedata;
                 }

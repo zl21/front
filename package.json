@@ -1,24 +1,22 @@
 {
     "name": "@syman/burgeon-r3",
-    "version": "1.5.1",
+    "version": "2.1.33",
     "description": "A Project for R3 Erp.",
     "main": "r3.publish/r3.min.js",
     "files": [
-        "r3.publish/r3.min.js",
-        "r3.publish/r3.min.js.map",
-        "r3.publish/r3.min.css",
-        "r3.publish/src/assets/image",
-        "r3.publish/src/assets/theme",
-        "r3.publish/src/assets/styles"
+        "r3.publish"
     ],
     "scripts": {
         "start": " webpack-dev-server --progress --env.develop",
+        "start:project": "cross-env BUILD_ENV=jenkins webpack --color --progress --config webpack.publish.js  --env.NODE_ENV=production  &&  webpack-dev-server --config webpack.project.js",
+        "build:project": "cross-env BUILD_ENV=jenkins webpack --color --progress --config webpack.publish.js  --env.NODE_ENV=production  && webpack --color --progress --config webpack.project.js --env.production",
         "build": "webpack --color --progress --config webpack.config.js --env.production",
         "build:style": "gulp --gulpfile build-style.js",
         "build:test": "cross-env BUILD_ENV=test webpack --color --progress --config webpack.test.js --env.NODE_ENV=development",
-        "build:publish": "cross-env BUILD_ENV=publish webpack --color --progress --config webpack.publish.js  --env.NODE_ENV=production",
+        "build:publish": "npm i && cross-env BUILD_ENV=publish webpack --color --progress --config webpack.publish.js  --env.NODE_ENV=production",
         "zip": "node doZip.js",
-        "deploy": "npm publish && node dingtalk.js"
+        "deploy": "npm publish && node dingtalk.js",
+        "test:bcl": "npm link @syman/ark-ui-bcl && npm run build:test && npm link"
     },
     "repository": {
         "type": "git",
@@ -74,9 +72,7 @@
     },
     "dependencies": {
         "@babel/polyfill": "^7.10.4",
-        "@syman/ark-ui": "^1.1.36",
-        "@syman/ark-ui-bcl": "0.1.15",
-        "@syman/jflow-plugin": "^1.1.9",
+        "@syman/ark-ui": "^1.1.47",
         "ag-grid": "^17.1.1",
         "ag-grid-enterprise": "^17.1.1",
         "awe-dnd": "^0.3.4",
@@ -86,6 +82,7 @@
         "md5": "^2.3.0",
         "v-viewer": "^1.5.1",
         "vue": "^2.6.12",
+        "vue-i18n": "^8.25.0",
         "vue-router": "^3.4.3",
         "vue-slicksort": "^1.1.3",
         "vuedraggable": "^2.24.1",

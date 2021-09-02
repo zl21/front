@@ -28,7 +28,7 @@ import {
 } from '../__utils__/localStorage';
 import setCustomeLabel from '../__utils__/setCustomeLabel';
 import getModuleName from '../__utils__/getModuleName';
-
+import i18n from '../assets/js/i18n';
 
 let pluginModules = {};
 
@@ -127,7 +127,7 @@ const getDynamicModuleTag = (to) => {
 
 const getOriginModuleName = (to) => {
   const {
-    tableName, tableId, customizedModuleName, customizedModuleId, linkModuleName, linkModuleId
+    tableName, tableId, customizedModuleName, customizedModuleId, linkModuleName, linkModuleId,pluginModuleName
   } = to.params;
   const { routePrefix } = to.meta;
   let originModuleName = '';
@@ -143,7 +143,10 @@ const getOriginModuleName = (to) => {
     case STANDARD_COMMONTABLE_LIST_PREFIX:
       originModuleName = `${STANDARD_COMMONTABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
       break;
-
+      // Condition Five: 路由到插件界面
+    case PLUGIN_MODULE_PREFIX:
+      originModuleName = `${PLUGIN_MODULE_COMPONENT_PREFIX}.${pluginModuleName}`;
+        break; 
     default:
       originModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
   }
@@ -166,6 +169,7 @@ export default (router) => {
     // 注入模块名
     to.meta.moduleName = getModuleName({ route: to });
 
+
     const loginText = '/login'.toUpperCase();
     if (to.path && getLocalObject('loginStatus') !== true && (to.path.indexOf(loginText) !== -1) && to.path !== '/') {
       const data = {
@@ -178,8 +182,32 @@ export default (router) => {
       window.location.href = window.location.origin;
       return;
     }
+  
+
     if (router.getMatchedComponents(to.path).length === 0) {
       next('/');
+    }
+     //  过滤跳转路由
+     if (window.ProjectConfig.routerFilter) {
+      let keepAliveLabelMaps = getSessionObject('keepAliveLabelMapsAll');
+      let filterName = to.meta.moduleName || to.meta.customizedModuleName || to.meta.pluginModuleName || to.meta.linkModuleName || '';
+      // filterName 不存在或则是不是xx.xx.xx 则不过滤
+      if (keepAliveLabelMaps&& filterName && filterName.split('.').length>2) {
+        if(!to.params.customizedModuleName){
+          let stringLeng = filterName.split('.').length>3 ? filterName.lastIndexOf('.') :filterName.length;
+          let menuName = filterName.substring(filterName.indexOf('.'),stringLeng);
+          // 根据路由规则匹配
+          let existIndex = ['S', 'SC', 'H', 'V', 'C', 'P', 'L'].findIndex((key) => {
+            let name = key + menuName;
+            return keepAliveLabelMaps[name];
+          });
+          if(existIndex === -1){
+            next('/')
+            return false
+          }
+        }
+        
+      }
     }
 
     const { commit } = store;
@@ -202,8 +230,8 @@ export default (router) => {
       [LINK_MODULE_COMPONENT_PREFIX]: '',
       [STANDARD_TABLE_COMPONENT_PREFIX]: '',
       [STANDARD_COMMONTABLE_COMPONENT_PREFIX]: '',
-      [VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX]: itemId === 'New' ? '新增' : '编辑',
-      [HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX]: itemId === 'New' ? '新增' : '编辑',
+      [VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX]: itemId === 'New' ? i18n.t('buttons.add') : i18n.t('buttons.edit'),
+      [HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX]: itemId === 'New' ? i18n.t('buttons.add') : i18n.t('buttons.edit'),
     };
     const paramItemId = String(itemId) === '-1' ? 'New' : `${itemId}`;
     const paramTableId = tableId;
@@ -356,7 +384,6 @@ export default (router) => {
         activateSameCustomizePageFlag = true;
       }
     }
-    // console.log('新开',keepAliveModuleName,activateSameCustomizePageFlag);
     if (dynamicModuleTag !== '' && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName).length === 0 && !activateSameCustomizePageFlag) {
       // 新开tab
       // 目标路由所对应的[功能模块]没有存在于openedMenuLists中，则将目标路由应该对应的模块信息写入openedMenuLists

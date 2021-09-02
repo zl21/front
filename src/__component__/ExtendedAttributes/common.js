@@ -36,8 +36,25 @@ maintable 主子映射
 */
 export const FindInstance = ($this,name,tableName,maintable) => {
     let target = [];
-    let panelFormParent = $this.$_live_getChildComponent(window.vm, `${$this.activeTab.keepAliveModuleName}`);
-    let panelForm = $this.$_live_getChildComponent(panelFormParent, 'panelForm');
+    // let panelFormParent = $this.$_live_getChildComponent(window.vm, `${$this.activeTab.keepAliveModuleName}`);
+    let mainTableName = $this.$route.params.tableName;
+     //console.log(mainTableName,'34343',$this.$route.params,$this.activeTab.keepAliveModuleName);
+    let panelFormParent = {};
+    if(document.querySelector('.ListsForm-box')){
+        panelFormParent = document.querySelector('.ListsForm-box')._vue_;
+        name = name.replace(new RegExp(mainTableName), "");
+        if(!Array.isArray(name)){
+            return [panelFormParent.$_live_getChildComponent(panelFormParent, mainTableName+name)]
+        }else{
+            return [panelFormParent.$_live_getChildComponent(panelFormParent, name[0])]
+        }
+    }else{
+        panelFormParent =  document.querySelector(`#${mainTableName}`)._vue_;
+    }
+    if(name === 'panelForm'){
+        let panelForm = $this.$_live_getChildComponent(panelFormParent, 'panelForm');
+        return [panelForm];
+    }
     if(!name){
         return [];
     }
@@ -70,6 +87,34 @@ export const FindInstance = ($this,name,tableName,maintable) => {
     // 获取来源值的实例
     return target;
 }
+export const findComponentDownward = (context, componentName) =>{
+    const childrens = context.$children;
+    let children = null;
+  
+    if (childrens.length) {
+      for (const child of childrens) {
+        const name = child.$options.name;
+  
+        if (name === componentName) {
+          children = child;
+          break;
+        } else {
+          children = findComponentDownward(child, componentName);
+          if (children) break;
+        }
+      }
+    }
+    return children;
+  }
+// 由一个组件，向下找到所有指定的组件
+// export const findComponentsDownward = (context, componentName) => {
+//     return context.$children.reduce((components, child) => {
+//       if (child.$options.name === componentName) components.push(child);
+//       const foundChilds = findComponentsDownward(child, componentName);
+//       return components.concat(foundChilds);
+//     }, []);
+//   }
+/*
 /*
 $this 目标实例
 name  string  实例名称 
@@ -85,7 +130,20 @@ export const FindInstanceAll = ($this,name) => {
 $this 目标实例
 name  string  表明+字段名称 
 */
-
+// list 实例获取延时问题
+export const delayedVm = async (mainTableName,name) => {
+    return new Promise(resolve => {
+        setTimeout(() => { // 用定时器模拟异步请求
+            let panelFormParent = document.querySelector('.ListsForm-box')._vue_;
+            if(!Array.isArray(name)){
+                resolve([panelFormParent.$_live_getChildComponent(panelFormParent, mainTableName+name)])
+            }else{
+                resolve([panelFormParent.$_live_getChildComponent(panelFormParent, name[0])])
+            }
+        },100)
+    });    
+  
+}
 // 清除字段
 export const ClearRefcolValue = ($this,name) => {
     let $vm = FindInstance($this,String(name));
@@ -151,6 +209,7 @@ export const setNewlValue = ($this,name,tableName,value) => {
                         return arr;
                     }, []);
                     $vm.value =values;
+                    $vm.typesource = 'formRequest';
 
                 }
            }else if(value[$vm.items.colname].COLUMN_TYPE === 1){
@@ -167,11 +226,12 @@ obj
 */
 // 判空处理
 export const isEmpty = (obj)=>{
-
     if(typeof obj ==='object'){
-        obj = JSON.stringify(obj);
+        obj = JSON.stringify(obj || {}).replace(/null|,/g,'');
+
     }
-    if(obj == undefined || obj == "null" || obj == "" || obj == "[]" || obj == "{}"){
+
+    if(obj === undefined || obj === "null" || obj === "" || obj === "[]" || obj === "{}"){
         return true;
     }else{
         return false;
