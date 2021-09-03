@@ -567,7 +567,10 @@
             item.props.itemdata.valuedata = [];
           }
         }
-
+    
+        if(item.props.disabled || item.props.readonly){
+          item.props.clearable = false;
+        }
         if (item.type === 'AttachFilter') {
           // 大弹窗卡槽页面
           if (item.props.fkdisplay === 'pop') {
