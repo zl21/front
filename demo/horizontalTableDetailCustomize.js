@@ -15,5 +15,10 @@
 
     },
     mounted () {
+      this.tabBeforeLeave = function(){
+        // alert('121212')
+        // return false;
+      }
+      
     }
 }

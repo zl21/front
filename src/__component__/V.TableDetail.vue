@@ -78,6 +78,7 @@
           :tab-margin-left="20"
           is-keep-alive
           :exclude="exclude"
+          :beforeLeave="tabBeforeLeave"
           :type="'singleCard'"
           :tab-panels="tabPanels"
         />
@@ -98,7 +99,6 @@
   // import getComponentName from '../__utils__/getModuleName';
   import tabComponent from './SingleObjectTabComponent.vue';
   import AutomaticPathGenerationInput from './AutomaticPathGenerationInput.vue';
-
   import {
     MODULE_COMPONENT_NAME, notificationOfMain, classFix
   } from '../constants/global';
@@ -108,6 +108,7 @@
   import singleObjectButtons from './SingleObjectButtons.vue';
   import compositeForm from './CompositeForm.vue';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
+
 
 
   export default {
@@ -211,8 +212,9 @@
     },
     mounted() {
       const singleButtonComponentName = `${this[MODULE_COMPONENT_NAME]}.SingleObjectButtons`;
+        let singleObjectButtonGroupMixins = window.ProjectConfig && window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.singleObjectButtonGroup || {};
       if (Vue.component(singleButtonComponentName) === undefined) {
-        Vue.component(singleButtonComponentName, Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
+        Vue.component(singleButtonComponentName, Vue.extend(Object.assign({ mixins: [verticalMixins(),singleObjectButtonGroupMixins] }, singleObjectButtons)));
       }
       this.currentSingleButtonComponentName = singleButtonComponentName;
 
@@ -249,7 +251,12 @@
     },
     methods: {
       // ...mapMutations('global', ['isRequestUpdata', 'emptyTestData']),
-
+      tabBeforeLeave(){
+        
+      //  return new Promise((resolve, reject) => {
+      //     resolve()
+      //  })
+      },
       itemTableCheckFunc() {
         if (this.$refs.tabPanel) {
           const index = this.$refs.tabPanel.$children.findIndex(item => item.tableName === this.tabPanel[this.tabCurrentIndex].tablename);

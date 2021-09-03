@@ -96,6 +96,7 @@
   import { getSessionObject, updateSessionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
   import {FindInstance ,FindInstanceAll} from './ExtendedAttributes/common.js'
 
+
   export default {
     data() {
       return {
@@ -165,7 +166,6 @@
       ImportDialog, // 导入弹框
       WaterMark, // 水印组件
     },
-
     watch: {
       // $route() {
       //   console.log(3333, this.$route.params.itemId === 'New' , this.sameNewPage , !this._inactive);
