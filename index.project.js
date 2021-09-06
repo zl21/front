@@ -41,5 +41,6 @@ R3.launchApplication({
       return false
     }
   },
-  lang: 'en'
+  lang: 'zh',
+  useAgGrid: true,
 });
