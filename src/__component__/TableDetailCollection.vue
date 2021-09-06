@@ -124,7 +124,6 @@
           :render-params="renderParams"
           :options="agOptions"
           @ag-selection-change="tableSelectedChange"
-          @ag-sort-change="tableSortChange"
           @ag-row-dblclick="tableRowDbclick"
           @grid-ready="gridReady"
         ></arkCommonTableByAgGrid>
@@ -586,6 +585,7 @@
         let options = {
           suppressMovableColumns: true,
           agColumnMoved:this.agColumnMoved,
+          agSortChanged:this.tableSortChange,
           ...this.agGridOptions,
           datas: {
             ...this.dataSource,
@@ -4457,7 +4457,11 @@
         return this.verifyTipObj;
       }, // 表格里的表单验证 true为校验通过，false为校验不通过
 
-      tableSortChange(value) {
+      tableSortChange(e) {
+        const value = {
+          key: e[0].colId,
+          order: e[0].sort
+        }
         const tableName = this.tableName;
         let flag = this.currentOrderList.some((ele) => {
           if (`${tableName}.${value.key}` === ele.column) {
@@ -4470,10 +4474,7 @@
           flag = true;
         }
         if (!flag) {
-          // this.currentOrderList.push({
-          //   column: `${tableName}.${value.key}`,
-          //   asc: value.order === 'asc'
-          // });
+
           this.currentOrderList = this.currentOrderList.concat([{
             column: `${tableName}.${value.key}`,
             asc: value.order === 'asc'
@@ -4485,13 +4486,7 @@
           fixedcolumns[this.searchCondition] = this.searchInfo;
         }
         const { itemId } = this.$route.params;
-        // table, objid, refcolid, startindex, range, fixedcolumns
-        // let tabIndex = null;
-        // if (this.WebConf && this.WebConf.isCustomizeTab && this.type === 'horizontal') {
-        //   tabIndex = this.tabCurrentIndex + 1;
-        // } else {
-        //   tabIndex = this.tabCurrentIndex;
-        // }
+
         const params = {
           table: this.tableName,
           objid: itemId,
