@@ -112,7 +112,7 @@
           @on-sort-change="tableSortChange"
           @on-row-dblclick="tableRowDbclick"
         />
-        <CommonTableByAgGrid
+        <arkCommonTableByAgGrid
           v-else
           class="table-in"
           :height="tableHeight? `${tableHeight}px` :'calc(100% - 10px)'"
@@ -127,7 +127,7 @@
           @ag-sort-change="tableSortChange"
           @ag-row-dblclick="tableRowDbclick"
           @grid-ready="gridReady"
-        ></CommonTableByAgGrid>
+        ></arkCommonTableByAgGrid>
       </div>
       <div
         v-if="isHorizontal"
@@ -182,7 +182,6 @@
   import { mapState, mapMutations, mapActions } from 'vuex';
   // import { setTimeout } from 'timers';
   // import { CommonTableByAgGrid } from '@syman/ark-ui-bcl';
-  let CommonTableByAgGrid = $Bcl.arkCommonTableByAgGrid;
 
   import regExp from '../constants/regExp';
   import {
@@ -204,6 +203,7 @@
   import createModal from './PreviewPicture/index';
   import TableTemplate from './TableDetailCollectionslot';
   import { getPinnedColumns } from '../__utils__/tableMethods'
+  // import { commonTableByAgGrid as arkCommonTableByAgGrid } from '@syman/ark-ui-bcl'
 
   Vue.component('ComAttachFilter', ComAttachFilter);
   Vue.component('TableDocFile', Docfile);
@@ -233,7 +233,7 @@
     components: {
       Dialog,
       ImportDialog, // 导入弹框
-      CommonTableByAgGrid,
+      // arkCommonTableByAgGrid 
       // TableTemplate // slot 的模板
     },
     data() {
@@ -759,6 +759,11 @@
 
       // ag表格重置列位置的回调
       agColumnMoved(cols) {
+        if(cols === this._colPositionCache) {
+          return
+        }
+        this._colPositionCache = cols
+
         const { tableId } = this[INSTANCE_ROUTE_QUERY];
         this.setColPosition({
           tableid: tableId,
@@ -4736,6 +4741,7 @@
 
     },
     mounted() {
+      this._colPositionCache = '' // 缓存表格列位置，如果相同不再请求接口
       this.buttonData = this.filterButton(this.buttonGroups);
       window.addEventListener('tabRefreshClick', () => {
         if (!this._inactive) {
