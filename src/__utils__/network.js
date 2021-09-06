@@ -209,8 +209,8 @@ axios.interceptors.response.use(
                 }),
                 h('div', {
                   attrs: {
-                    // rows: 8,
-                    // readonly: 'readonly',
+                  // rows: 8,
+                  // readonly: 'readonly',
                   },
                   domProps: {
                     innerHTML,
