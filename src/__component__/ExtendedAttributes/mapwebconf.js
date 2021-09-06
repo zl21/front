@@ -12,7 +12,7 @@ export default {
       if(this.items.webconf && this.items.webconf.filtercolval){
 
         // 过滤显示字段
-        this.$nextTick(()=>{
+        //this.$nextTick(()=>{  })
           let colfiltercolval = this.items.webconf.filtercolval;
           let targetVm = FindInstance(this,colfiltercolval.col,this.items.tableName);
           if(!targetVm[0]){
@@ -30,7 +30,7 @@ export default {
           filtercolval(targetVm[0],this.items.webconf.filtercolval);         
            delete this.items.webconf.filtercolval;
         
-        })
+      
        
      }
 
