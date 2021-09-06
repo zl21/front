@@ -870,6 +870,10 @@ export default {
       }
     },
     onColumnMoved (cols) {
+      if(cols === this._colPositionCache) {
+        return
+      }
+      this._colPositionCache = cols
       const { tableId } = this[INSTANCE_ROUTE_QUERY];
       this.setColPosition({
         tableid: tableId,
@@ -910,18 +914,19 @@ export default {
     },
 
     // 设置隐藏
-    setColVisible (hideCols) {
+    setColVisible (hideCols, callback) {
       const { tableId } = this[INSTANCE_ROUTE_QUERY];
       this.setColHide({
         tableid: tableId,
         hidecolumns: hideCols
       });
       this.updateAgConfig({ key: 'hideColumn', value: hideCols });
+      typeof callback === 'function' && callback()
     },
 
     // 监听表格隐藏或显示列
-    onColumnVisibleChanged (hideCols) {
-      this.setColVisible(hideCols)
+    onColumnVisibleChanged (hideCols,callback) {
+      this.setColVisible(hideCols,callback)
     },
     onCellSingleClick (colDef, rowData, target) {
       // 单元格无内容时禁止跳转
@@ -2645,6 +2650,7 @@ export default {
     this.updateAccessHistory({ type: 'table', id: tableId });
   },
   created () {
+    this._colPositionCache = '' // 缓存表格列位置，如果相同不再请求接口
     this.buttonMap = buttonmap;
     this.ChineseDictionary = ChineseDictionary;
     this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');

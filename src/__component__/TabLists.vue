@@ -79,7 +79,6 @@
               return x.keepAliveModuleName === val.keepAliveModuleName;
           });
           this.tagIndex = this.tagIndex.toString();
-          console.log(this.tagIndex,'2323')
         }
       }
       // menuLists: {

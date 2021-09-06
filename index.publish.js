@@ -64,6 +64,26 @@ const setXss = ()=>{
   });
 }
 
+const requestHello = async function () {
+  const serviceId = window.localStorage.getItem('serviceId')
+  const url = serviceId ? `/${serviceId}/p/cs/hello`: '/p/cs/hello'
+  await network.get(url,undefined,{noServiceId: true}).then((res) => {
+    // 此方法用于向外界（JFlow）提供用户信息。供外部处理自己的需要逻辑。
+    DispatchEvent('userReady', {
+      detail: {
+        userInfo: JSON.parse(JSON.stringify(res.data))
+      }
+    });
+    if (res.status === 200 && res.data.code === 0) {
+      store.commit('global/updataUserInfoMessage', {
+        userInfo: res.data
+      });
+      window.localStorage.setItem('userInfo', JSON.stringify(res.data));
+      window.localStorage.setItem('sessionCookie',res.data.sessionCookie);
+    }
+  });
+}
+
 export default {
   ...packageMessage,
   /**
@@ -153,6 +173,7 @@ export default {
   connector: connector(), // 1.3框架公共模块包使用
   store,
   setXss:setXss,
+  requestHello,
   config: {
     extentionForColumn,
     extentionForTable,

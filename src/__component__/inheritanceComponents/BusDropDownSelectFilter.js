@@ -101,7 +101,6 @@ class BusDropDownSelectFilter {
   // 合并methods
   mergeMethods() {
     this.Vm.created = function () {
-      console.log(232323,'================');
       this.item = this.PropsData.item;
       this.item.Query = this.PropsData.Query;
       this.activeTab = this.$parent.$parent.activeTab;
