@@ -11,7 +11,6 @@ import bigDataEnImg from '../../assets/image/nodata-en.png';
 import loginImg from '../../assets/image/logo.1.png'
 import loginEnImg from '../../assets/image/logoen1.png'
 import i18n from '../../assets/js/i18n';
-console.log("🚀 ~ file: global.store.js ~ line 14 ~ i18n", i18n.locale)
 
 const mutations = () => require(`../mutations/version_${Version()}/global.mutations`).default;
 const actions = () => require(`../actions/version_${Version()}/global.actions`).default;
@@ -103,7 +102,6 @@ export default () => ({
       const imgs = {
         ...imgsObj
       }
-      console.log('图片资源', imgs)
       return imgs
     }
   },
