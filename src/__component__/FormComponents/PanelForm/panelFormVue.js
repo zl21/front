@@ -45,7 +45,7 @@ export default {
       defaulDataValue:{}, // 表单默认值
       formItemLists:{}, // 表单数据重绘制
       objviewcol: 4, // 表单默认展示几列
-      LinkageForm: [],// 联动状态
+      //LinkageForm: [],// 联动状态
       id:'', // id 名称
       timerCollapse:'', // hr 隐藏时间
       formChangeDataLabel: {},  //表单修改过的数据--显示值
@@ -182,16 +182,16 @@ export default {
               option.row = 4;
             }
           }
-            const srccol = option.validate && option.validate.refcolval && option.validate.refcolval.srccol;
-            const prmsrccol = option.validate && option.refcolprem && option.refcolprem.srccol;
-            this.LinkageForm.push({
-              key: `${this.tableName}${option.colname}`,
-              name: option.name,
-              show: option.show,
-              srccol: `${this.tableName}${srccol || prmsrccol}`,
-              maintable: true,
-              tableName: this.tableName
-            });
+            // const srccol = option.validate && option.validate.refcolval && option.validate.refcolval.srccol;
+            // const prmsrccol = option.validate && option.refcolprem && option.refcolprem.srccol;
+            // this.LinkageForm.push({
+            //   key: `${this.tableName}${option.colname}`,
+            //   name: option.name,
+            //   show: option.show,
+            //   srccol: `${this.tableName}${srccol || prmsrccol}`,
+            //   maintable: true,
+            //   tableName: this.tableName
+            // });
           return option;
         })
         // _childs = _childs.filter(child => child.display !== 'none')
@@ -209,6 +209,7 @@ export default {
           item.childs[temp].component = this.initComponent(item.childs[temp], index);
           item.childs[temp].isMainTable = this.isMainTable;
           item.childs[temp].moduleComponentName = this.moduleComponentName;
+          
           item.childs[temp].formName = this.tableName +'-'+ ((this.moduleComponentName.split('.').splice(2,2)).join('-'));
           item.childs[temp] = new RenderComponent(JSON.parse(JSON.stringify(item.childs[temp]))).itemConversion();
           return temp
@@ -235,7 +236,7 @@ export default {
           }
         }, 50)
        // 兼容子表
-        this.linkFormSet();
+      //this.linkFormSet();
        this.formItemLists = { ...data.addcolums }
 
       // 调整排版
@@ -290,11 +291,15 @@ export default {
             let checked =  Object.keys(this.formItemLists[index].childs).some((i)=>{
                 return this.formItemLists[index].childs[i].show === true;
             });
-            if(!checked){
-              this.$el.querySelector(`#Collapse_${index}`).style.display = 'none';
-            }else{
-              this.$el.querySelector(`#Collapse_${index}`).style.display = 'block';
+            if(this.$el.querySelector(`#Collapse_${index}`)){
+              if(!checked){
+                this.$el.querySelector(`#Collapse_${index}`).style.display = 'none';
+              }else{
+                this.$el.querySelector(`#Collapse_${index}`).style.display = 'block';
+              }
+
             }
+            
          });
       },200);
 
@@ -423,14 +428,14 @@ export default {
     },
     linkFormSet(LinkageForm){
        // 兼容子表传参
-       let updateLinkageForm = this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]
-       if(updateLinkageForm){
-         const data = {
-          formList: LinkageForm ? LinkageForm : this.LinkageForm,
-          formIndex: 7
-        };
-        this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
-       }
+      //  let updateLinkageForm = this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]
+      //  if(updateLinkageForm){
+      //    const data = {
+      //     formList: LinkageForm ? LinkageForm : this.LinkageForm,
+      //     formIndex: 7
+      //   };
+      //   this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
+      //  }
 
     }
   },

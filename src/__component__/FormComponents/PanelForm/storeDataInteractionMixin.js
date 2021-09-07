@@ -144,7 +144,7 @@ export default {
                     itemName: this.activeTab.tableName
                   };
                   // 删除新增有值后变空
-                  ParentForm.deleteFormData(data)
+                  // ParentForm.deleteFormData(data)
                 }
                 // 默认值
                 ParentForm.defaulDataValue = JSON.parse(JSON.stringify(ParentForm.formData));

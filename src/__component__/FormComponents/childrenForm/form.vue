@@ -4,6 +4,7 @@
       v-bind="$attrs"
       ref="panelForm"
       :CollapseName="CollapseName"
+      :tableName="tableName"
        @on-keydown="enterForm"
       :defaultData="formList"
     ></panelForm>
@@ -30,6 +31,9 @@ export default {
           defaultData: {  //表单数据
             type: [Array, Object]
           },
+          tableName:{
+             type:String, 
+          }
       },
       watch:{
         defaultData: {

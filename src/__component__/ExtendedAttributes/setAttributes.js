@@ -51,6 +51,9 @@ function HiddenFields(tableName){
       if(!target || !target.items){
         return;
       }
+      if(!document.querySelector(`#${target.items.formName}`)){
+        return;
+      }
       let panelForm = document.querySelector(`#${target.items.formName}`)._vue_;
       if(!target.items.original){
         target.items.original = {};
