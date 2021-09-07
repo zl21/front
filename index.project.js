@@ -42,6 +42,7 @@ R3.launchApplication({
   },
   enableGateWay: true, // 网关是否打开,
   enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
+  enableChangeLang: false, // 是否开启切换语言 false关闭 true开启
   filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
   routerFilter:true, // 跳转是否过滤
   listFormWebconf: [],

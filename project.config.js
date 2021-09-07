@@ -205,6 +205,8 @@ module.exports = {
   //     return false
   //   }
   // }
+  enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
+  enableChangeLang: true, // 是否开启切换语言 false关闭 true开启
   //filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
   listFormWebconf:['filtercolval'], // 列表是否支持webcof 字段
   // imageAssets: {

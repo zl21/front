@@ -40,13 +40,18 @@
         </div>
       </Spin>
     </div>
+
+    <Select v-if="showChangeLang" v-model="lang" @on-change="changeLang" class="changeLang" placeholder="请选择语言">
+      <Option value="zh" key="zh">中文</Option>
+      <Option value="en" key="en">English</Option>
+    </Select>
   </div>
 </template>
 
 <script>
   import AccountLogin from './AccountLogin';
   import PhoneLogin from './PhoneLogin';
-  import {enableGateWay, Version, encryptedPassword, classFix, enableLoginPro} from '../../constants/global';
+  import {enableGateWay, Version, encryptedPassword, classFix, enableLoginPro, enableChangeLang} from '../../constants/global';
   import network, {urlSearchParams} from '../../__utils__/network';
 
   export default {
@@ -59,6 +64,8 @@
         spinShow: false, // loading是否显示
         typeToggle: 1, // 1用户 2验证码
         flag: 1,
+        lang: 'zh',
+        showChangeLang: enableChangeLang || false,
       }
 
     },
@@ -79,6 +86,10 @@
           this.login();
         }
       };
+      const localLang = localStorage.getItem('r3-lang');
+      if (localLang) {
+        this.lang = localLang;
+      }
     },
     computed: {
       classes() {
@@ -299,11 +310,17 @@
       },
       // 跳转前的回掉处理
       async goto() {
+        this.showChangeLang && R3I18n(this.lang,{enableApi: true});
         if (!this.loginSucCbk) return window.location.href = window.location.origin;
         if (typeof this.loginSucCbk !== 'function') throw new Error('loginSucCbk must be a function');
         const res = await this.loginSucCbk();
         if (!res) return;
         window.location.href = window.location.origin;
+      },
+
+      changeLang(val) {
+        if (!val) return false;
+        R3I18n && R3I18n(val);
       }
     }
   };
