@@ -195,7 +195,6 @@ module.exports = {
   enableChangeLang: true, // 是否开启切换语言 false关闭 true开启
   filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
   filterHistory:[], // 过滤不需要历史记录的表
-  enableLoginPro: false, // 是否开启普通登录模式 false普通 true手机验证码
   // // 转义节点位置
   // domPortal: {
   //   // params对象属性,fromComponent用于区别哪个组件的水印,type区分布局结构
