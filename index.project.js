@@ -13,6 +13,16 @@ const {
   urlSearchParams
 } = R3;
 
+const keyList = ['login','banner','welcome','bigData']
+const zhImg = {}
+const enImg = {}
+keyList.forEach(key => {
+  zhImg[key] = require('./src/assets/image/delete.png')
+})
+keyList.forEach(key => {
+  enImg[key] = require('./src/assets/image/home.png')
+})
+
 Vue.prototype.$network = network;
 Vue.prototype.$urlSearchParams = urlSearchParams;
 R3.launchApplication({
@@ -45,13 +55,11 @@ R3.launchApplication({
   imageAssets: {
     // 与projectConfig.image区别在于这个图片是含有文字的,用于国际化场景
     // 格式必须是 （变量+语言）方便解析
-    'login-zh': require('./src/assets/image/delete.png'), // 中文登录logo
-    'login-en': require('./src/assets/image/home.png'),// 英文登录logo,
-    'banner-zh': require('./src/assets/image/delete.png'), // 中文导航栏logo
-    'banner-en': require('./src/assets/image/home.png'), // 英文导航栏logo
-    'welcome-zh': require('./src/assets/image/delete.png'), // 中文欢迎页背景
-    'welcome-en': require('./src/assets/image/home.png'), // 英文欢迎页背景
-    'bigData-zh': require('./src/assets/image/delete.png'), // 中文海量数据提示
-    'bigData-en': require('./src/assets/image/home.png'), // 英文海量数据提示
+    zh: {
+      ...zhImg
+    },
+    en: {
+      ...enImg
+    }
   }
 });
