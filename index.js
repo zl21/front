@@ -289,17 +289,5 @@ if (enableGateWay()) {
 }
 
 
-// modify by hy@2020/07/17
-// 增加前端层面的js-xss拦截逻辑
-document.body.addEventListener('input', function (e) {
-  const tagName = e.target.tagName.toLowerCase();
-  if (tagName === 'input' || tagName === 'textarea') {
-    setTimeout(() => {
-      e.target.value = filterXSS(e.target.value, {
-        whiteList: [],
-        stripIgnoreTag: true,
-      });
-    }, 10);
-  }
-});
+
 
