@@ -52,14 +52,14 @@ R3.launchApplication({
     }
   },
   lang: 'en',
-  imageAssets: {
-    // 与projectConfig.image区别在于这个图片是含有文字的,用于国际化场景
-    // 格式必须是 （变量+语言）方便解析
-    zh: {
-      ...zhImg
-    },
-    en: {
-      ...enImg
-    }
-  }
+  // imageAssets: {
+  //   // 与projectConfig.image区别在于这个图片是含有文字的,用于国际化场景
+  //   // 格式必须是 （变量+语言）方便解析
+  //   zh: {
+  //     ...zhImg
+  //   },
+  //   en: {
+  //     ...enImg
+  //   }
+  // }
 });
