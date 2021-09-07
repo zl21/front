@@ -310,7 +310,7 @@
       },
       // 跳转前的回掉处理
       async goto() {
-        this.showChangeLang && R3I18n(this.lang,{enableApi: true});
+        this.showChangeLang && await R3I18n(this.lang,{enableApi: true});
         if (!this.loginSucCbk) return window.location.href = window.location.origin;
         if (typeof this.loginSucCbk !== 'function') throw new Error('loginSucCbk must be a function');
         const res = await this.loginSucCbk();
