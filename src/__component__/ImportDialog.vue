@@ -323,14 +323,15 @@
           iframe.src = url;
           downloadFile.iframe = iframe;
           document.body.appendChild(downloadFile.iframe);
-          setTimeout(() => {
-            iframe.src = '';
-          }, 1000);
+         
         }
       },
       // 判断iframe的src
       iframeLoad(iframe) {
         const src = (iframe.src) ? iframe.src : iframe.contentWindow.locatiion.href;
+         setTimeout(() => {
+            iframe.src = '';
+          }, 1000);
         console.log('src::', src);
       },
       // 调用方法时绑定iframe的load事件
