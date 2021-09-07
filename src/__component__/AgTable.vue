@@ -18,7 +18,7 @@
       v-if="isBig"
       class="isBig"
     >
-      <img :src="bigBackground">
+      <img :src="imgAssets.bigData || bigBackground">
     </div>
 
     <!-- <div
@@ -105,7 +105,7 @@
 <script>
 /* eslint-disable no-lonely-if */
 
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 // import agTable from '../assets/js/ag-grid-table-pure';
 import CommonTable from './CommonTable.vue';
 import { floatingFilter, classFix } from '../constants/global';
@@ -132,6 +132,7 @@ export default {
     ...mapState('global', {
       bigBackground: ({ imgSrc }) => imgSrc.bigDataImg,
     }),
+    ...mapGetters('global', ['imgAssets']),
     classes() {
       return [
         `${classFix}standardTable`,

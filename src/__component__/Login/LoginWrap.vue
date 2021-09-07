@@ -2,14 +2,14 @@
   <div :class="classes">
     <LoginCore>
       <template slot="logo">
-        <img v-if="$i18n.locale === 'zh'" src="../../assets/image/logo.1.png" alt="logo" class="logo">
-        <img v-if="$i18n.locale === 'en'" src="../../assets/image/logoen1.png" alt="logo" class="logo">
+        <img :src="logo" alt="logo" class="logo">
       </template>
     </LoginCore>
   </div>
 </template>
 
 <script>
+  import { mapGetters } from 'vuex';
   import LoginCore from './LoginCore';
   import {classFix} from '../../constants/global';
 
@@ -22,6 +22,10 @@
           `${classFix}login`,
         ];
       },
+      ...mapGetters('global', ['imgAssets']),
+      logo() {
+        return this.imgAssets.login
+      }
     },
   };
 </script>

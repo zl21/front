@@ -1,5 +1,3 @@
-
-
 module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
   projectIconPath: '', // 项目icon,
@@ -69,7 +67,7 @@ module.exports = {
   isCommonTable: false, // 是否开启普通表格，默认关闭
   functionPowerRequestURL: '', // 功能权限获取检索项数据接口名称
   cbs: undefined, // 框架回调，形如 { loginCb: function() {} }
-  layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
+  layoutDirection: true, // 默认是false ,水平排版 ，true 是垂直排版
   layoutDirectionSlot:{  // 模板渲染
     //NavigatorSubMenu:require('./src/demo/NavigatorSubMenu.vue').default,  // 模板渲染
     //NaVertical:require('./src/demo/NaVerticalslot.vue').default  // 模板渲染
@@ -196,7 +194,7 @@ module.exports = {
   enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
   filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
   filterHistory:[], // 过滤不需要历史记录的表
-  listFormWebconf:['filtercolval'], // 列表是否支持webcof 字段
+  enableLoginPro: false, // 是否开启普通登录模式 false普通 true手机验证码
   // // 转义节点位置
   // domPortal: {
   //   // params对象属性,fromComponent用于区别哪个组件的水印,type区分布局结构
@@ -205,6 +203,24 @@ module.exports = {
   //       return params.type === 'horizontal'? '.panelForm': '.verticalTableDetailContent'
   //     }
   //     return false
+  //   }
+  // }
+  //filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
+  listFormWebconf:['filtercolval'], // 列表是否支持webcof 字段
+  // imageAssets: {
+  //   // 与projectConfig.image区别在于这个图片是含有文字的,用于国际化场景
+  //   // 格式必须是 （变量+语言）方便解析
+  //   zh: {
+  //     login: require('./src/assets/image/delete.png'), // 登录logo
+  //     banner: require('./src/assets/image/delete.png'),// 导航栏logo
+  //     welcome: require('./src/assets/image/delete.png'),// 欢迎页背景
+  //     bigData: require('./src/assets/image/delete.png'),// 海量数据提示
+  //   },
+  //   en: {
+  //     login: require('./src/assets/image/home.png'),
+  //     banner: require('./src/assets/image/home.png'),
+  //     welcome: require('./src/assets/image/home.png'),
+  //     bigData: require('./src/assets/image/home.png'),
   //   }
   // }
 };
