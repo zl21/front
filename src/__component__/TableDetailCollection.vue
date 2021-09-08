@@ -3341,7 +3341,8 @@
             props: {
               value: params.row[cellData.colname],
               type: cellData.display === 'OBJ_DATENUMBER' ? 'date' : 'datetime',
-              transfer: true
+              transfer: true,
+              editable: false
             },
             nativeOn: {
               // click: (e) => {
@@ -3393,7 +3394,8 @@
               value: params.row[cellData.colname],
               type: 'time',
               // value: new Date(Date.parse(`${new Date().getFullYear()} - ${params.row[cellData.colname]}`.replace(/-/g, '/'))),
-              transfer: true
+              transfer: true,
+              editable: false
             },
             nativeOn: {
               // click: (e) => {
@@ -4740,7 +4742,7 @@
 
     },
     mounted() {
-      this._colPositionCache = '' // 缓存表格列位置，如果相同不再请求接口
+      this._colPositionCache = undefined // 缓存表格列位置，如果相同不再请求接口
       this.buttonData = this.filterButton(this.buttonGroups);
       window.addEventListener('tabRefreshClick', () => {
         if (!this._inactive) {
