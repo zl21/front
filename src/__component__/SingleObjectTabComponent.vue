@@ -84,6 +84,7 @@
         :item-info="itemInfo"
       />
       <!-- 自定义组件 -->
+      34343434
       <compositeForm
         v-if="panelData.isShow"
         :is-main-table="isMainTable"
@@ -954,9 +955,10 @@
       formChange(val, changeVal, label, formData, defaultDataInt, defaultFormData) {
         const { tableName } = this;
         const { itemId } = this[INSTANCE_ROUTE_QUERY];
-
+        console.log( formData, defaultDataInt, defaultFormData,'=======formChange');
         if (itemId) {
           const updatedValue = this.getUpdatedValue(formData, defaultFormData)
+          console.log(updatedValue,'====updatedValue');
           // 如果没变化，数据恢复原样
           if(Object.keys(updatedValue).length === 0) {
             this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { tableName, value: {} });
@@ -994,6 +996,7 @@
       },
       
       formPanelChange(val, changeVal, valLabel) {
+        console.log(val, changeVal, valLabel,'==val, changeVal, valLabel');
         if(notificationOfMain() && this.$route.params.tableName === this.tableName) {
           DispatchEvent('notificationOfMain', {
             detail: val
