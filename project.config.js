@@ -98,7 +98,8 @@ module.exports = {
   blockFullOperation: false, // 禁止不选数据时的批量修改操作,
   customizeMixins: { // 获取所有外部接入的mixins对象
     setPanel: null,
-    // verticalTableDetailCustomize: require('./src/demo/horizontalTableDetailCustomize.js').default,
+    //singleObjectButtonGroup: require('./demo/singleObjectButtonGroup.js').default,
+    //verticalTableDetailCustomize: require('./demo/horizontalTableDetailCustomize.js').default,
     // standardTableListsCustomize: {
     //   methods: {
     //     R3_processColumns(columns) {
@@ -194,7 +195,7 @@ module.exports = {
   routerFilter:false, // 跳转是否过滤
   setXss:false, // 是否xss 攻击过滤
   filterHistory:[], // 过滤不需要历史记录的表
-  enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
+  enableLoginPro: false, // 是否开启普通登录模式 false普通 true手机验证码
   //filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
   listFormWebconf:['filtercolval'] // 列表是否支持webcof 字段
 };

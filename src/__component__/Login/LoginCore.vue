@@ -17,6 +17,7 @@
         <!--typeToggle!==1-->
         <template v-else>
           <PhoneLogin
+                  :phoneExp="phoneExp"
                   :loginType="type"
                   :TypeToggle="typeToggle"
                   @toggle="toggle"
@@ -64,7 +65,12 @@
     props: {
       loginSucCbk: {
         type: Function
-      }
+      },
+      phoneExp: {
+        type: RegExp,
+        default: () => /^\d{11,11}$/
+      },
+
     },
     created() {
       document.onkeydown = (e) => {
@@ -160,7 +166,14 @@
                 content: this.$t('messages.enterPhone'),
                 mask: true,
               });
-            } else if (!this.$refs.PhoneLogin.$refs.sendcode.value) {
+            } else if (!(this.phoneExp.test(this.$refs.PhoneLogin.$refs.phone.value))) {
+              this.spinShow = false;
+              this.$Modal.fcError({
+                title: this.$t('feedback.error'),
+                content: this.$t('messages.enterValidPhone'),
+                mask: true,
+              })
+            }else if (!this.$refs.PhoneLogin.$refs.sendcode.value) {
               this.spinShow = false;
               this.$Modal.fcError({
                 title: this.$t('feedback.error'),
