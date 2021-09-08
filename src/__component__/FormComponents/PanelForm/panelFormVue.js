@@ -395,9 +395,14 @@ export default {
           if (width < 400) {
             this.objviewcol = 1;
           } else if (width < 600 && width > 400) {
-            this.objviewcol = 2;
+            if( this.defaultData.objviewcol>2){
+              this.objviewcol = 2;
+            }
+              
           } else if (width < 800 && width > 600) {
-            this.objviewcol = 3;
+            if( this.defaultData.objviewcol>3){
+              this.objviewcol = 3;
+            }
           } else if (width > 800) {
             this.objviewcol = this.defaultData.objviewcol;
           }
@@ -453,6 +458,7 @@ export default {
     // 通过dom 查找实例
     this.$el._vue_ = this;
     this.id = this.tableName +'-'+ ((this.moduleComponentName.split('.').splice(2,2)).join('-'));
+    this.setResize();
     // 监听大小
     window.addEventListener('resize', this.setResize);
   },

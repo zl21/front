@@ -58,13 +58,13 @@ export default {
             formPanelChange(){
                 if (this.$parent.formPanelChange) {
                     let $child = this.$refs.panelForm;
-                    this.$parent.formPanelChange($child.formChangeData, $child.formDataLabel, $child.formChangeDataLabel);
+                    this.$parent.formPanelChange([$child.formChangeData], [$child.formDataLabel], [$child.formChangeDataLabel]);
                 }
 
             },
             formChange(){
                 if (this.$parent.formChange) {
-                    this.$parent.formChange($child.formChangeData, $child.formDataLabel, $child.formChangeDataLabel);
+                    this.$parent.formChange([$child.formChangeData], [$child.formDataLabel], [$child.formChangeDataLabel]);
                 }
             },
             enterForm(e){
@@ -78,8 +78,12 @@ export default {
                         errorTip.messageTip = message.map((item)=>{
                             return item.tip
                         });
-                        errorTip.validateForm = document.querySelector(`#${message[0].colname}`);
-                        this.$parent.verifyForm(errorTip);
+                        if(errorTip.messageTip.length>0){
+                             errorTip.validateForm = document.querySelector(`#${message[0].colname}`);
+                            this.$parent.verifyForm(errorTip);
+
+                        }
+                       
                         this.$parent.enterClick();
                     }
                 }
