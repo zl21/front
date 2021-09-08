@@ -3286,13 +3286,20 @@
             return arr;
         },[]);
         let validate = [];
+
         if(panelForm && panelForm[0]){
            validate = panelForm.reduce((arr,item,index)=>{
               if(index === 0){
                 // 默认第一个主表
                 arr.push(...item.validate())
               }else if(this.itemName ===item.tableName){
-                arr.push(...item.validate())
+                if(isItemTableNewValidation()){
+                    if(Object.keys(item.formChangeData).length>0){
+                      arr.push(...item.validate())
+                    }
+                }else {
+                      arr.push(...item.validate())
+                }
               }
 
               return arr;

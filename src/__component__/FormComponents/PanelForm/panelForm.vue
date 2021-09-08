@@ -5,6 +5,7 @@
       <component :is="CollapseComponent"  
         :value="collapseValue"
         :isTitleShow="formItemLists[item].parentdesc?true:false"
+        :parentdesc="formItemLists[item].parentdesc"
         :name="formItemLists[item].parentname"
       >   
       <!-- <Collapse :value="collapseValue">
