@@ -5,6 +5,7 @@ import RenderComponent from '../RenderComponent';
 import ParameterDataProcessing from '../parameterDataProcessing';
 import LinkageRelationships from '../../ExtendedAttributes/LinkageRelationships';
 import { validateForm } from './Validate';
+import CollapseComponent from './CollapseComponent.vue';
 import {
      MODULE_COMPONENT_NAME, classFix
   } from '../../../constants/global';
@@ -25,6 +26,9 @@ export default {
     readonly: {  //表单是否整体禁用
       type: Boolean,
       default: false
+    },
+    CollapseName:{   // 表单的面板
+      type: [Object]
     }
   },
   components: { DownComponent, FormItem },
@@ -41,10 +45,11 @@ export default {
       defaulDataValue:{}, // 表单默认值
       formItemLists:{}, // 表单数据重绘制
       objviewcol: 4, // 表单默认展示几列
-      LinkageForm: [],// 联动状态
+      //LinkageForm: [],// 联动状态
       id:'', // id 名称
       timerCollapse:'', // hr 隐藏时间
       formChangeDataLabel: {},  //表单修改过的数据--显示值
+      CollapseComponent:'', // Collapse 组件名称
       timer: null,
 
     }
@@ -177,16 +182,16 @@ export default {
               option.row = 4;
             }
           }
-            const srccol = option.validate && option.validate.refcolval && option.validate.refcolval.srccol;
-            const prmsrccol = option.validate && option.refcolprem && option.refcolprem.srccol;
-            this.LinkageForm.push({
-              key: `${this.tableName}${option.colname}`,
-              name: option.name,
-              show: option.show,
-              srccol: `${this.tableName}${srccol || prmsrccol}`,
-              maintable: true,
-              tableName: this.tableName
-            });
+            // const srccol = option.validate && option.validate.refcolval && option.validate.refcolval.srccol;
+            // const prmsrccol = option.validate && option.refcolprem && option.refcolprem.srccol;
+            // this.LinkageForm.push({
+            //   key: `${this.tableName}${option.colname}`,
+            //   name: option.name,
+            //   show: option.show,
+            //   srccol: `${this.tableName}${srccol || prmsrccol}`,
+            //   maintable: true,
+            //   tableName: this.tableName
+            // });
           return option;
         })
         // _childs = _childs.filter(child => child.display !== 'none')
@@ -204,6 +209,7 @@ export default {
           item.childs[temp].component = this.initComponent(item.childs[temp], index);
           item.childs[temp].isMainTable = this.isMainTable;
           item.childs[temp].moduleComponentName = this.moduleComponentName;
+          
           item.childs[temp].formName = this.tableName +'-'+ ((this.moduleComponentName.split('.').splice(2,2)).join('-'));
           item.childs[temp] = new RenderComponent(JSON.parse(JSON.stringify(item.childs[temp]))).itemConversion();
           return temp
@@ -211,17 +217,26 @@ export default {
         return item;
       })
             // 处理表单关闭
-      this.loading = setInterval(() => {
-        let index = Object.keys(data.addcolums.reverse()[0].childs).length - 1
-        let lastItem = data.addcolums[0].childs[index]
-        let com = this.$_live_getChildComponent(this, `${this.tableName}${lastItem.colname}`);
-        if (com) {
-          this.$R3loading.hide(this.loadingName)
-          clearInterval(this.loading)
-        }
-      }, 50)
+        this.loading = setInterval(() => {
+          let index = Object.keys(data.addcolums.reverse()[0].childs).length - 1
+          let lastItem = data.addcolums[0].childs[index];
+
+          console.log(this.loadingName,'===========',lastItem);
+         
+          if(lastItem){
+             let com = this.$_live_getChildComponent(this, `${this.tableName}${lastItem.colname}`);
+              if (com) {
+                this.$R3loading.hide(this.loadingName)
+                clearInterval(this.loading)
+              }
+
+          }else{
+            this.$R3loading.hide(this.loadingName)
+            clearInterval(this.loading)
+          }
+        }, 50)
        // 兼容子表
-        this.linkFormSet();
+      //this.linkFormSet();
        this.formItemLists = { ...data.addcolums }
 
       // 调整排版
@@ -276,11 +291,15 @@ export default {
             let checked =  Object.keys(this.formItemLists[index].childs).some((i)=>{
                 return this.formItemLists[index].childs[i].show === true;
             });
-            if(!checked){
-              this.$el.querySelector(`#Collapse_${index}`).style.display = 'none';
-            }else{
-              this.$el.querySelector(`#Collapse_${index}`).style.display = 'block';
+            if(this.$el.querySelector(`#Collapse_${index}`)){
+              if(!checked){
+                this.$el.querySelector(`#Collapse_${index}`).style.display = 'none';
+              }else{
+                this.$el.querySelector(`#Collapse_${index}`).style.display = 'block';
+              }
+
             }
+            
          });
       },200);
 
@@ -409,14 +428,14 @@ export default {
     },
     linkFormSet(LinkageForm){
        // 兼容子表传参
-       let updateLinkageForm = this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]
-       if(updateLinkageForm){
-         const data = {
-          formList: LinkageForm ? LinkageForm : this.LinkageForm,
-          formIndex: 7
-        };
-        this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
-       }
+      //  let updateLinkageForm = this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]
+      //  if(updateLinkageForm){
+      //    const data = {
+      //     formList: LinkageForm ? LinkageForm : this.LinkageForm,
+      //     formIndex: 7
+      //   };
+      //   this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
+      //  }
 
     }
   },
@@ -425,6 +444,12 @@ export default {
   },
   mounted () {
     this.setFormlist();
+    this.CollapseComponent = CollapseComponent;
+    if(this.CollapseName === undefined){
+      this.CollapseComponent = CollapseComponent;
+    }else{
+      this.CollapseComponent = this.CollapseName;
+    }
     // 通过dom 查找实例
     this.$el._vue_ = this;
     this.id = this.tableName +'-'+ ((this.moduleComponentName.split('.').splice(2,2)).join('-'));

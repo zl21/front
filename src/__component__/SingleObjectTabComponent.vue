@@ -37,7 +37,20 @@
       :web-conf-single="webConfSingle"
     />
     <!-- 子表表格新增区域form -->
-    <compositeForm
+    <childrenForm
+      v-if="formData.isShow&&itemInfo.tabrelation!=='1:1'"
+      v-show="status === 1 && !objreadonly"
+      :tableName="tableName"
+      :objreadonly="objreadonly"
+      :default-data="formData.data"
+      :readonly="formReadonly"
+      :master-name="currentPageRoute.tableName"
+      :master-id="currentPageRoute.itemId"
+      :module-form-type="type"
+      :is-main-table="isMainTable"
+    ></childrenForm>
+
+    <!-- <compositeForm  
       v-if="formData.isShow&&itemInfo.tabrelation!=='1:1'"
       v-show="status === 1 && !objreadonly"
       :object-type="type"
@@ -60,7 +73,7 @@
       @formChange="formChange"
       @InitializationForm="initForm"
       @VerifyMessage="verifyForm"
-    />
+    /> -->
     <div
       v-if="componentName"
       style="overflow-y: auto;flex:1;"
@@ -100,6 +113,7 @@
       :is-main-table="isMainTable"
       :defaultData="panelData.data"
     ></panelForm>
+    
     <!-- <compositeForm
       v-if="panelData.isShow&&!componentName"
       :is-main-table="isMainTable"
@@ -166,6 +180,7 @@
   import tableDetailCollection from './TableDetailCollection.vue';
   import singleObjectButtons from './SingleObjectButtons.vue';
   import compositeForm from './CompositeForm.vue';
+  import childrenForm from '../__component__/FormComponents/childrenForm/form.vue'
   import horizontalMixins from '../__config__/mixins/horizontalTableDetail';
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
   import CompontentNotFound from './CompontentNotFound.vue';
@@ -208,7 +223,8 @@
     },
     components: {
       compositeForm,
-      WaterMark
+      WaterMark,
+      childrenForm
     },
     props: {
       tabPanel: {

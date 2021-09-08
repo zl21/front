@@ -54,7 +54,10 @@ function HiddenFields(tableName){
       if(!target){
         return
       }
-      let panelForm = target.$parent.$parent.$parent;
+      if(!document.querySelector(`#${target.items.formName}`)){
+        return;
+      }
+      let panelForm = document.querySelector(`#${target.items.formName}`)._vue_;
       let panelIndex = target.items && target.items._index && target.items._index.split('_')[0];
       let itemIndex = target.items && target.items._index && target.items._index.split('_')[1]
 

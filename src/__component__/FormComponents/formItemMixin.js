@@ -75,7 +75,10 @@ export default {
   },
   methods:{
     findParentForm(){
-      return this.$parent.$parent.$parent
+      let formItem = document.querySelector(`#${this.items.formName}`);
+      if(formItem){
+          return formItem._vue_;
+      }
     }
   },
   mounted () {
