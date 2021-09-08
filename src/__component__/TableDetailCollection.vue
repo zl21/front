@@ -586,6 +586,7 @@
           suppressMovableColumns: true,
           agColumnMoved:this.agColumnMoved,
           agSortChanged:this.tableSortChange,
+          agColumnPinned: () => {}, // 这里传个空函数。目的是(跟列表表格保持行为一致)触发取消固定列后，该列排到第一列
           ...this.agGridOptions,
           datas: {
             ...this.dataSource,
