@@ -944,14 +944,14 @@
         if (findIndex !== this.editElementId.length - 1) {
           elementIndex = findIndex + 1;
         }
-        const focusDom = document.getElementById(this.editElementId[elementIndex]);
+        const id = this.editElementId[elementIndex]
+        const focusDom = document.getElementById(id);
         if (focusDom && !focusDom.getElementsByTagName('input')[0].disabled) {
           focusDom.getElementsByTagName('input')[0].focus();
           focusDom.getElementsByTagName('input')[0].select();
         } else {
           this.tableCellFocusByEnter(this.editElementId[elementIndex]);
         }
-        // document.getElementById(this.editElementId[elementIndex]).querySelectorAll('input')[0].focus();
       }, // 回车的时候聚焦下一个可编辑的输入框
       tableCellFocusByUpOrDown(elementId, currentColumn, type) {
         if(!this.columnEditElementId[currentColumn]) {
@@ -1989,7 +1989,7 @@
                 'input-align-left': cellData.tdAlign === 'left'
               },
               domProps: {
-                id: `ag-${params.index}-${params.column._index - 1}`,
+                id: `${params.index}-${params.column._index - 1}`,
                 title: colnameData ? colnameData.val : '',
               },
               props: {
