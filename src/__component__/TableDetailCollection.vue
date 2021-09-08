@@ -954,6 +954,9 @@
         // document.getElementById(this.editElementId[elementIndex]).querySelectorAll('input')[0].focus();
       }, // 回车的时候聚焦下一个可编辑的输入框
       tableCellFocusByUpOrDown(elementId, currentColumn, type) {
+        if(!this.columnEditElementId[currentColumn]) {
+          return
+        }
         const findIndex = this.columnEditElementId[currentColumn].findIndex(item => item === elementId);
         let elementIndex = 0;
         if (type === 'up') {
