@@ -36,6 +36,22 @@ class CustomDatePicker {
     }
     let _that = this;
 
+    // shortcuts
+    if (this.item && this.item.webconf && this.item.webconf.dateShortcut) {
+      const { dateShortcut } = this.item.webconf;
+      this.props.options = {
+        shortcuts: dateShortcut.map(v => ({
+          text: v.key,
+          value () {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * Number(v.value));
+            return [start, end];
+          }
+        }))
+      }
+    }
+
     // 处理单对象界面options
     if(this.item.detailType){
       this.props.options =  {disabledDate(date){
