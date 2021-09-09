@@ -6,7 +6,6 @@
     :labelWidth="labelWidth"
     :items="propsMessage"
     :colname="items.colname"
-   v-on="$listeners"
     :value="value">
   <div :class="_items.props.fkdisplay === 'pop' ? 'ItemComponentRoot AttachFilter-pop':'ItemComponentRoot'">
 
@@ -96,7 +95,6 @@
         <component :is="componentsName"
                    :ref="items.colname"
                     v-bind="propsMessage"
-                    v-on="$listeners"
                     v-model="value">
           <slot v-if="items.display === 'OBJ_SELECT'">
             <Option v-for="item in items.props.options"
@@ -113,6 +111,7 @@
                    v-if="_items.type === 'customization'"
                    :ref="items.colname"
                    v-model="value"
+                    v-on="$listeners"
                     v-bind="propsMessage"
                    :options="{
           ..._items,
