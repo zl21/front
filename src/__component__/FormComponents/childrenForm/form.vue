@@ -5,6 +5,7 @@
       ref="panelForm"
       :CollapseName="CollapseName"
       :tableName="tableName"
+      :showPlace="name"
        @on-keydown="enterForm"
       :defaultData="formList"
     ></panelForm>
@@ -18,6 +19,7 @@ export default {
       data(){
           return {
                 CollapseName:CollapseName,
+                name:'childrenForm',
                 formList: {
                     addcolums:[{
                        childs:[]
@@ -99,7 +101,6 @@ export default {
             }
       },
       mounted(){
-          console.log(this,'343434');
           this.setFormList();
       }
 

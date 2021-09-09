@@ -29,6 +29,10 @@ export default {
     },
     CollapseName:{   // 表单的面板
       type: [Object]
+    },
+    showPlace:{  // 展示区域
+      type: String,
+      default: ''  // childrenForm 子表
     }
   },
   components: { DownComponent, FormItem },
@@ -181,6 +185,10 @@ export default {
             if(option.row === 1){
               option.row = 4;
             }
+          }
+          if(this.showPlace === 'childrenForm'){
+            // 子表兼容
+            option.showPlace = 'childrenForm';
           }
             // const srccol = option.validate && option.validate.refcolval && option.validate.refcolval.srccol;
             // const prmsrccol = option.validate && option.refcolprem && option.refcolprem.srccol;
