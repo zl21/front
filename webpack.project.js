@@ -32,6 +32,7 @@ module.exports = env => ({
     R3: '@syman/burgeon-r3',
     jflowPlugin: '@syman/jflow-plugin',
     ztree: 'ztree',
+    'vue-i18n': 'VueI18n'
   },
   devServer: {
     compress: true,
