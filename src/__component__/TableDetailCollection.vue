@@ -179,9 +179,6 @@
   import Vue from 'vue';
 
   import { mapState, mapMutations, mapActions } from 'vuex';
-  // import { setTimeout } from 'timers';
-  // import { CommonTableByAgGrid } from '@syman/ark-ui-bcl';
-
   import regExp from '../constants/regExp';
   import {
     Version, LINK_MODULE_COMPONENT_PREFIX, INSTANCE_ROUTE_QUERY, enableActivateSameCustomizePage, ossRealtimeSave, classFix
@@ -329,6 +326,7 @@
         routerParams: {},
         agGridOptions: window.ProjectConfig.agGridOptions || {},
         useAgGrid: window.ProjectConfig.useAgGrid,
+        deleteFailInfo: undefined // ag报错提示
       };
     },
     props: {
@@ -590,7 +588,8 @@
           ...this.agGridOptions,
           datas: {
             ...this.dataSource,
-            pinnedColumns: this.webConfSingle.pinnedColumns
+            pinnedColumns: this.webConfSingle.pinnedColumns,
+            deleteFailInfo: this.deleteFailInfo
           }
         }
         if(this.R3_processAgOptions) {
@@ -4460,8 +4459,33 @@
         if (Object.keys(this.verifyTipObj) > 0) {
           this.isTableRender = !this.isTableRender;
         }
+
+        // 给ag表格也添加行校验提示
+        this.verifyAg()
+        
         return this.verifyTipObj;
       }, // 表格里的表单验证 true为校验通过，false为校验不通过
+
+      verifyAg() {
+        this.deleteFailInfo = []
+        Object.keys(this.verifyTipObj).forEach(id => {
+          this.deleteFailInfo.push({
+            objid: id,
+            message: this.verifyTipObj[id]
+          })
+        })
+        const ag = this.$refs.agGridTableContainer
+        if(this.deleteFailInfo.length > 0 && ag) {
+          // 1.强制更新ag，不然显示不出来报错图标
+          // 2.定时器是为了让表格options先更新，再更新数据
+          // 3.为了不触发表格自适应，此处直接取底层数据进行更新
+          const agVue = ag.$refs.agGridTable
+          setTimeout(() => {
+            ag.api.setColumnDefs(agVue._transformColumnDefs(this.columns))
+            ag.api.setRowData(agVue.realRows)
+          }, 0)
+        }
+      },
 
       tableSortChange(e) {
         const value = {
