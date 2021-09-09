@@ -2905,9 +2905,10 @@
                   acc.push(cur.Label);
                   return acc;
                 }, []).sort().join(',');
-                const oldLabelValue = this.dataSource.row[params.index][cellData.colname].val.split(',').sort().join(',');
+                const currentCell = this.dataSource.row[params.index][cellData.colname]
+                const oldLabelValue = currentCell.val.split(',').sort().join(',');
                 const idValues = ids ? ids.split(',').sort((a, b) => a - b).join(',') : null;
-                const oldIdValues = this.dataSource.row[params.index][cellData.colname].refobjid === -1 ? null : this.dataSource.row[params.index][cellData.colname].refobjid.split(',').sort((a, b) => a - b).join(',');
+                const oldIdValues = currentCell.refobjid === -1 ? null : currentCell.refobjid.split(',').sort((a, b) => a - b).join(',');
                 this.putDataFromCell(idValues, oldIdValues, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
                 this.putLabelDataFromCell(labelValue, oldIdValues, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, oldLabelValue);
               },
