@@ -63,6 +63,7 @@ module.exports = () => ({
       amd: 'jquery',
       root: '$'
     },
+    'vue-i18n': 'VueI18n'
   },
   module: {
     exprContextCritical: false,
