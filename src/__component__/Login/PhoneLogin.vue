@@ -15,7 +15,7 @@
       >{{btnTips}}</Button>
     </div>
     <div class="divToggle" v-if="loginType">
-      <span class="sanjiao" >
+      <span class="sanjiao">
         <img src="../../assets/image/home.png" class="toggle home" @click="toggles">
       </span>
     </div>
@@ -23,8 +23,8 @@
 </template>
 
 <script>
-  import network, {urlSearchParams} from '../../__utils__/network';
-  import {enableGateWay, Version, encryptedPassword, classFix} from '../../constants/global';
+  import network from '../../__utils__/network';
+  import {enableGateWay} from '../../constants/global';
   export default {
     name: 'PhoneLogin',
     props: {
@@ -35,6 +35,9 @@
       TypeToggle: {
         type: Number,
         default: 1
+      },
+      phoneExp: {
+        type: RegExp
       },
     },
     data() {
@@ -54,7 +57,7 @@
       },
       async sendErCode() {
         const phoneNo = this.$refs.phone.value;
-        if (!(/^1[3456789]\d{9}$/.test(phoneNo))) return this.$Modal.fcError({
+        if (!(this.phoneExp.test(phoneNo))) return this.$Modal.fcError({
           title: this.$t('feedback.error'),
           content: this.$t('messages.enterValidPhone')
         });
