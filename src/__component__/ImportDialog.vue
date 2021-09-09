@@ -332,7 +332,7 @@
          setTimeout(() => {
             iframe.src = '';
           }, 1000);
-        console.log('src::', src);
+ 
       },
       // 调用方法时绑定iframe的load事件
       addEvent(eventName, element, fn) {
