@@ -3763,6 +3763,7 @@
                 content: () => h('TableDocFile', {
                   props: {
                     dataitem: {
+                      filesSize: cellData.webconf && cellData.webconf.filesize,
                       filesLength: Number(params.column.webconf && params.column.webconf.filesLength),
                       sendData: {
                         path: `${that.$route.params.tableName}/${that.$route.params.itemId}/`

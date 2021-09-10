@@ -211,6 +211,12 @@
           return false;
         }
 
+        // 检查文件大小
+        if(files[0] && this.dataitem.filesSize && files[0].size > this.dataitem.filesSize * 1024 * 1024) {
+          this.$Message.info(`${this.$t('messages.fileSizeTip')}${this.dataitem.filesSize}M`);
+          return false
+        }
+
 
         for (let i = 0; i < files.length; i++) {
           const idx = files[i].name.lastIndexOf('.');
