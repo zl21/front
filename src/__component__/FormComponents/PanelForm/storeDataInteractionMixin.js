@@ -186,7 +186,7 @@ export default {
               }
               
               // 去除图片上传成功后的保存
-              if (!ossRealtimeSave() && JSON.stringify(val) !== JSON.stringify(this.defaultVale)) {
+              if (this.items.showPlace !== 'childrenForm'&& !ossRealtimeSave() && JSON.stringify(val) !== JSON.stringify(this.defaultVale)) {
                 if (this.items.display === 'image' || this.items.display === 'OBJ_DOC') {
                   // 主子表的子表修改（1:1）的情况下
                   setTimeout(() => {

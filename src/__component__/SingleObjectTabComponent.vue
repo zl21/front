@@ -50,7 +50,7 @@
       :is-main-table="isMainTable"
     ></childrenForm>
 
-    <!-- <compositeForm  
+     <!-- <compositeForm  
       v-if="formData.isShow&&itemInfo.tabrelation!=='1:1'"
       v-show="status === 1 && !objreadonly"
       :object-type="type"
@@ -955,10 +955,9 @@
       formChange(val, changeVal, label, formData, defaultDataInt, defaultFormData) {
         const { tableName } = this;
         const { itemId } = this[INSTANCE_ROUTE_QUERY];
-        console.log( formData, defaultDataInt, defaultFormData,'=======formChange');
         if (itemId) {
-          const updatedValue = this.getUpdatedValue(formData, defaultFormData)
-          console.log(updatedValue,'====updatedValue');
+          const updatedValue = this.getUpdatedValue(formData, defaultFormData);
+
           // 如果没变化，数据恢复原样
           if(Object.keys(updatedValue).length === 0) {
             this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { tableName, value: {} });
@@ -967,6 +966,8 @@
           }
           const obj = {};
           obj[tableName] = updatedValue;
+          console.log(itemId,'====12',defaultDataInt,obj);
+
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { tableName, value: defaultDataInt });
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateAddData`, { tableName, value: obj });
         }
