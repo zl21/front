@@ -944,7 +944,7 @@
         if (findIndex !== this.editElementId.length - 1) {
           elementIndex = findIndex + 1;
         }
-        const id = this.editElementId[elementIndex]
+        const id = `ag-${this.editElementId[elementIndex]}`
         const focusDom = document.getElementById(id);
         if (focusDom && !focusDom.getElementsByTagName('input')[0].disabled) {
           focusDom.getElementsByTagName('input')[0].focus();
@@ -1989,7 +1989,7 @@
                 'input-align-left': cellData.tdAlign === 'left'
               },
               domProps: {
-                id: `${params.index}-${params.column._index - 1}`,
+                id: `ag-${params.index}-${params.column._index - 1}`,
                 title: colnameData ? colnameData.val : '',
               },
               props: {
@@ -3763,6 +3763,7 @@
                 content: () => h('TableDocFile', {
                   props: {
                     dataitem: {
+                      filesSize: cellData.webconf && cellData.webconf.filesize,
                       filesLength: Number(params.column.webconf && params.column.webconf.filesLength),
                       sendData: {
                         path: `${that.$route.params.tableName}/${that.$route.params.itemId}/`
