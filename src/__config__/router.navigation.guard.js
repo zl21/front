@@ -189,7 +189,7 @@ export default (router) => {
     }
      //  过滤跳转路由
      if (window.ProjectConfig.routerFilter) {
-      let keepAliveLabelMaps = getSessionObject('keepAliveLabelMapsAll');
+      let keepAliveLabelMaps =  JSON.parse(window.localStorage.getItem('keepAliveLabelMapsAll'))
       let filterName = to.meta.moduleName || to.meta.customizedModuleName || to.meta.pluginModuleName || to.meta.linkModuleName || '';
       // filterName 不存在或则是不是xx.xx.xx 则不过滤
       if (keepAliveLabelMaps&& filterName && filterName.split('.').length>2) {
