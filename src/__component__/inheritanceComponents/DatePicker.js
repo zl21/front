@@ -43,10 +43,12 @@ class CustomDatePicker {
         shortcuts: dateShortcut.map(v => ({
           text: v.key,
           value () {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * Number(v.value));
-            return [start, end];
+            const now = new Date();
+            const range = {
+              start: new Date(new Date().r3Format(new Date(now.getTime() - 3600 * 1000 * 24 * Number(v.value)), 'yyyy-MM-dd 00:00:00')),
+              end: new Date(new Date().r3Format(new Date(now.getTime()), 'yyyy-MM-dd 23:59:59'))
+            };
+            return [range.start, range.end];
           }
         }))
       }
