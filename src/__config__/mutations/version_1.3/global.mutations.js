@@ -366,7 +366,7 @@ export default {
       // window.location.reload();
       removeSessionObject('savePath');
     }
-    window.sessionStorage.setItem('keepAliveLabelMapsAll',JSON.stringify(state.keepAliveLabelMaps || {}));
+    window.localStorage.setItem('keepAliveLabelMapsAll',JSON.stringify(state.keepAliveLabelMaps || {}));
   },
   increaseLinkUrl(state, { linkModuleName, linkUrl }) {
     const linkType = {};
