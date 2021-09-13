@@ -26,6 +26,9 @@ R3.launchApplication({
     //NavigatorSubMenu:require('./src/demo/NavigatorSubMenu.vue').default,  // 模板渲染
     //NaVertical:require('./src/demo/NaVerticalslot.vue').default  // 模板渲染
     listFormButton:require('./demo/detailbuttons.vue').default,  // 定制列表button
+    standardTableList:{
+      defined:require('./demo/standardTableListdefind.vue').default,
+    }  // 定制列表button
   },
   enableGateWay: true, // 网关是否打开,
   enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
