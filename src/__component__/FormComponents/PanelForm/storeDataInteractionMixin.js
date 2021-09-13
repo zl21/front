@@ -124,8 +124,8 @@ export default {
                   ParentForm.formChangeData[this.items.rangecolumn.lowerlimit.colname] = '';
                 }
               }
-
-              if (/NEW/.test(keepAliveModuleName) || id ==='-1') {
+              let IsModuleName = keepAliveModuleName.substr(keepAliveModuleName.lastIndexOf('.')+1);
+              if (/.NEW/.test(IsModuleName) || id ==='-1') {
                 // 新增  删除空值,且没有默认值     
                 ParentForm.formChangeData = Object.assign({}, ParentForm.formChangeData, current_data)
                  // 虚拟区间不用传值
