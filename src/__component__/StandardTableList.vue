@@ -958,7 +958,6 @@ export default {
           this.$Modal.fcWarning(data);
           return;
         }
-        console.log(222444);
         window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
         this.tabOpen({
           id: refobjid,
@@ -2650,7 +2649,7 @@ export default {
     this.updateAccessHistory({ type: 'table', id: tableId });
   },
   created () {
-    this._colPositionCache = '' // 缓存表格列位置，如果相同不再请求接口
+    this._colPositionCache = undefined // 缓存表格列位置，如果相同不再请求接口
     this.buttonMap = buttonmap;
     this.ChineseDictionary = ChineseDictionary;
     this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');
