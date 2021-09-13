@@ -28,7 +28,7 @@
           v-if="!collapseHistoryAndFavorite"
           class="banner"
           alt=""
-          :src="imgSrc.bannerImg"
+          :src="imgAssets.banner"
         >
         <img
           v-if="collapseHistoryAndFavorite"
@@ -149,7 +149,7 @@
 </template>
 
 <script>
-  import { mapState, mapMutations, mapActions } from 'vuex';
+  import { mapState, mapMutations, mapActions, mapGetters } from 'vuex';
   import NavigatorPrimaryMenu from './NavigatorPrimaryMenu';
   import SetPanel from './SetPanel';
   import messagePanel from './messagePanel';
@@ -221,9 +221,8 @@
         taskMessageCount: state => state.taskMessageCount,
         imgSrc: state => state.imgSrc,
         isShowDashboardPage: state => state.isShowDashboardPage,
-
-
       }),
+      ...mapGetters('global', ['imgAssets']),
       getDashboardConfig() {
         if (dashboardConfig() && dashboardConfig().iconClass) {
           return dashboardConfig().iconClass;

@@ -1,7 +1,9 @@
 // 全局共享css
 
 // ExtentionInput
-
+.ark-modal-content.fcWarning,.ark-modal-content.fcError{
+  margin-top: 35vh!important;
+}
 .ExtentionInput {
   position: relative;
   textarea {
@@ -98,6 +100,7 @@
 }
 
 #content {
+ 
   .submit-img { //no-active
     position: absolute;
     top: 30px;
@@ -123,6 +126,8 @@
   .form {
     padding: 0 10px 8px 0;
     background-color: #F8F8F8;
+    max-height: 300px;
+    overflow-y: auto;
   }
   .formPanel {
     flex: 1;
