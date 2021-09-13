@@ -28,7 +28,6 @@ import '../node_modules/viewerjs/dist/viewer.css';
 // import './assets/css/ag-theme-balham.less';
 import './assets/css/loading.css';
 import './assets/css/custom-ext.less';
-import '../static/js/ark-ui-bcl/publish/ark.bcl.min.css'
 import { createWatermark } from './__utils__/waterMark';
 import R3Dialog from './__globalComponentModule__/dialog';
 import panelForm from './__component__/FormComponents/PanelForm/panelForm.vue'
