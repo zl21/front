@@ -36,6 +36,24 @@ class CustomDatePicker {
     }
     let _that = this;
 
+    // shortcuts
+    if (this.item && this.item.webconf && this.item.webconf.dateShortcut) {
+      const { dateShortcut } = this.item.webconf;
+      this.props.options = {
+        shortcuts: dateShortcut.map(v => ({
+          text: v.key,
+          value () {
+            const now = new Date();
+            const range = {
+              start: new Date(new Date().r3Format(new Date(now.getTime() - 3600 * 1000 * 24 * Number(v.value)), 'yyyy-MM-dd 00:00:00')),
+              end: new Date(new Date().r3Format(new Date(now.getTime()), 'yyyy-MM-dd 23:59:59'))
+            };
+            return [range.start, range.end];
+          }
+        }))
+      }
+    }
+
     // 处理单对象界面options
     if(this.item.detailType){
       this.props.options =  {disabledDate(date){

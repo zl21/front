@@ -63,6 +63,24 @@ const setXss = ()=>{
     }
   });
 }
+// install 
+const install = (Vue, R3 = {})=>{
+  // 加载
+  if (install.installed) {
+        return;
+  }
+  if (window.R3 && window.R3.default) {
+      window.R3 = R3;
+  }else if(!window.R3){
+      window.R3 = R3;
+  }
+ 
+  Vue.prototype.$network = R3.network;
+  Vue.prototype.$urlSearchParams = R3.urlSearchParams; 
+  Vue.prototype.$store = R3.store; 
+  
+}
+
 
 const requestHello = async function () {
   const serviceId = window.localStorage.getItem('serviceId')
@@ -170,6 +188,7 @@ export default {
   deleteFromSessionObject, // 删除sessionStorage存储数据deleteFromSessionObject('name','需要删除的key')
   removeSessionObject, // 删除sessionStorage存储数据removeSessionObject('name')
   getKeepAliveModuleName,
+  install, // 添加框架挂载
   connector: connector(), // 1.3框架公共模块包使用
   store,
   setXss:setXss,
