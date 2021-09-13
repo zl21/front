@@ -1,5 +1,3 @@
-
-
 module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
   projectIconPath: '', // 项目icon,
@@ -206,5 +204,21 @@ module.exports = {
   enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
   enableChangeLang: true, // 是否开启切换语言 false关闭 true开启
   //filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
-  listFormWebconf:['filtercolval'] // 列表是否支持webcof 字段
+  listFormWebconf:['filtercolval'], // 列表是否支持webcof 字段
+  // imageAssets: {
+  //   // 与projectConfig.image区别在于这个图片是含有文字的,用于国际化场景
+  //   // 格式必须是 （变量+语言）方便解析
+  //   zh: {
+  //     login: require('./src/assets/image/delete.png'), // 登录logo
+  //     banner: require('./src/assets/image/delete.png'),// 导航栏logo
+  //     welcome: require('./src/assets/image/delete.png'),// 欢迎页背景
+  //     bigData: require('./src/assets/image/delete.png'),// 海量数据提示
+  //   },
+  //   en: {
+  //     login: require('./src/assets/image/home.png'),
+  //     banner: require('./src/assets/image/home.png'),
+  //     welcome: require('./src/assets/image/home.png'),
+  //     bigData: require('./src/assets/image/home.png'),
+  //   }
+  // }
 };

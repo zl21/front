@@ -10,7 +10,7 @@
         <img
           class="banner"
           alt=""
-          :src="imgSrc.bannerImg"
+          :src="imgAssets.banner"
         >
         <!-- <img
           v-if="collapseHistoryAndFavorite"
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-  import { mapState, mapMutations, mapActions } from 'vuex';
+  import { mapState, mapMutations, mapActions, mapGetters } from 'vuex';
 
   import { routeTo } from '../__config__/event.config';
   import network, { urlSearchParams } from '../__utils__/network';
@@ -109,6 +109,7 @@
         taskMessageCount: state => state.taskMessageCount,
         imgSrc: state => state.imgSrc
       }),
+      ...mapGetters('global', ['imgAssets']),
       classes: () => `${classFix}NavigatorVertical`,
       versionValue() {
         if (Version() === '1.4') {
