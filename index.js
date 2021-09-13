@@ -37,9 +37,6 @@ import './src/__utils__/getChildComponent';
 import './src/index.less';
 import './src/assets/theme/custom.less';
 
-import './static/js/ark-ui-bcl/publish/ark.bcl.min.css'
-
-
 // // 自定义
 // import './src/assets/styles/xc.less';
 // import './src/assets/styles/xc1.less';
