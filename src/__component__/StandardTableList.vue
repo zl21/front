@@ -481,7 +481,7 @@ export default {
           tabValue: this.ag.tablequery.multi_tab[0]
         };
         this.currentTabValue = obj;
-      } else if (!this.buttons.isBig) {
+      } else if (!this.buttons.isBig || this.resetType === true) {
         this.searchClickData();
       }
     },
@@ -958,7 +958,6 @@ export default {
           this.$Modal.fcWarning(data);
           return;
         }
-        console.log(222444);
         window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
         this.tabOpen({
           id: refobjid,
@@ -2599,7 +2598,7 @@ export default {
       if (detail.url === '/p/cs/getTableQuery' && (Version() === '1.4' ? detail.response.data.data.tabcmd : detail.response.data.tabcmd)) {
         this.updateFormData(await this.dataProcessing());
         const enableKAQueryDataForUserFlag = Version() === '1.4' ? !!(detail.response.data.data.datas.webconf && detail.response.data.data.datas.webconf.enableKAQueryDataForUser) : !!(detail.response.data.datas.webconf && detail.response.data.datas.webconf.enableKAQueryDataForUser);
-        if (!this.buttons.isBig) {
+        if (!this.buttons.isBig || this.resetType === true) {
           // 初始化调用时，ie环境下增加500ms延时调用
           if (this.isIE()) {
             setTimeout(() => {
@@ -2650,7 +2649,7 @@ export default {
     this.updateAccessHistory({ type: 'table', id: tableId });
   },
   created () {
-    this._colPositionCache = '' // 缓存表格列位置，如果相同不再请求接口
+    this._colPositionCache = undefined // 缓存表格列位置，如果相同不再请求接口
     this.buttonMap = buttonmap;
     this.ChineseDictionary = ChineseDictionary;
     this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');

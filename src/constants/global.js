@@ -146,7 +146,7 @@ export const defaultrange = () => (window.ProjectConfig && window.ProjectConfig.
 
 
 export const dashboardConfig = () => (window.ProjectConfig && window.ProjectConfig.DashboardComponent ? window.ProjectConfig.DashboardComponent : null); // 根路由界面
-export const floatingFilter = () => (window.ProjectConfig && typeof window.ProjectConfig.floatingFilter === 'boolean' ? window.ProjectConfig.floatingFilter : true);
+export const floatingFilter = () => (window.ProjectConfig && window.ProjectConfig.floatingFilter || undefined);
 
 
 export const globalGateWay = () => {
@@ -173,6 +173,8 @@ export const classFix = window.ProjectConfig && window.ProjectConfig.classFix ? 
 
 // 获取登录pro
 export const enableLoginPro = window.ProjectConfig && window.ProjectConfig.enableLoginPro ? window.ProjectConfig.enableLoginPro : project.enableLoginPro;
+// 获取是否开启语言切换
+export const enableChangeLang = window.ProjectConfig && window.ProjectConfig.enableChangeLang ? window.ProjectConfig.enableChangeLang : project.enableChangeLang;
 
 // 获取需要过滤的URL
 export const filterURL = window.ProjectConfig && window.ProjectConfig.filterURL ? window.ProjectConfig.filterURL : project.filterURL;

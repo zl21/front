@@ -2740,7 +2740,7 @@
                         buttonInfo,
                         path: obj.requestUrlPath,
                         table: this.tableName,
-                        objId: this.tableId,
+                        objId: this.itemId,
                         currentParameter: this.currentParameter,
                         itemName: this.itemName,
                         isreftabs: this.subtables(),

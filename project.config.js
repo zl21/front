@@ -1,10 +1,8 @@
-
-
 module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
   projectIconPath: '', // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
-  target: 'http://r3-8098.dev.syman.cn/', // 框架研发网关开启环境
+  target: 'http://r3-java.dev.burgeononline.com/', // 框架研发网关开启环境
   // target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 新版本jflow测试环境
   // target: 'http://r3dev.qiaodan.com:28888', // 乔丹开发环境
   // target: 'http://r3dev.qiaodan.com:26666', // 乔丹开发环境
@@ -19,7 +17,7 @@ module.exports = {
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop网关开启环境
   // target: 'http://r3.burgeon.cn:19999/', // 'http://106.15.154.165:19999/', // Cube
   // target: 'http://cmsqas.lining.com', // 卡宾
-//  target: 'http://r3.burgeon.cn:28888/', // 李宁
+   //target: 'http://r3.burgeon.cn:28888/', // 李宁
   // target: 'http://jflow-shangfei-r3.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://ark-share-dev.dev.burgeononline.com', // ArkShare环境
   // target: 'http://r3.burgeon.cn:28888/', // lining环境
@@ -40,6 +38,9 @@ module.exports = {
   // target: 'http://47.102.164.111:27777', // 卡宾
   // target: 'http://dev.dev.lark-erp.cn/',
   // target: 'http://139.224.134.69:58000', // OMS
+  // target: 'http://47.113.103.201:26666', // 斯凯奇
+
+  
 
   Version: '1.3', // 版本号
   interlocks: true, // 是否打开三级联动装置
@@ -68,7 +69,12 @@ module.exports = {
   isItemTableNewValidation: true, // 是否允许子表新增有必填项时，输入值才触发子表必填项校验，不输入值则只校验主表
   isCommonTable: false, // 是否开启普通表格，默认关闭
   functionPowerRequestURL: '', // 功能权限获取检索项数据接口名称
-  cbs: undefined, // 框架回调，形如 { loginCb: function() {} }
+  cbs: {
+    // customizeReportCb:function(data,userInfo,POSNAME){
+    //   // `${data.url}&session_id=${data.sessionid}&userid=${userInfo.name ? userInfo.name : POSNAME}`
+    //   return `${data.url}&session_id=${data.sessionid}&userid=${userInfo.name ? userInfo.id : POSNAME}`
+    // } 
+  }, // 框架回调，形如 { loginCb: function() {} }
   layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
   layoutDirectionSlot:{  // 模板渲染
     //NavigatorSubMenu:require('./src/demo/NavigatorSubMenu.vue').default,  // 模板渲染
@@ -195,7 +201,8 @@ module.exports = {
   routerFilter:false, // 跳转是否过滤
   setXss:false, // 是否xss 攻击过滤
   filterHistory:[], // 过滤不需要历史记录的表
-  enableLoginPro: false, // 是否开启普通登录模式 false普通 true手机验证码
+  enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
+  enableChangeLang: true, // 是否开启切换语言 false关闭 true开启
   //filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
   listFormWebconf:[] // 列表是否支持webcof 字段
 };

@@ -8,6 +8,9 @@ import logoImg from '../../assets/image/logo.png';
 import bannerImg from '../../assets/image/banner.png';
 import bannerEnImg from '../../assets/image/logoen2.png';
 import bigDataEnImg from '../../assets/image/nodata-en.png';
+import loginImg from '../../assets/image/logo.1.png'
+import loginEnImg from '../../assets/image/logoen1.png'
+import i18n from '../../assets/js/i18n';
 
 const mutations = () => require(`../mutations/version_${Version()}/global.mutations`).default;
 const actions = () => require(`../actions/version_${Version()}/global.actions`).default;
@@ -52,15 +55,55 @@ export default () => ({
 
     imgSrc: {
       logoImg,
-      bannerImg: localStorage.getItem('r3-lang') === 'zh' ? bannerImg : bannerEnImg,
       closedImg,
       openedImg,
-      bigDataImg: localStorage.getItem('r3-lang') === 'zh' ? bigDataImg : bigDataEnImg,
+      bannerImg: i18n.locale === 'zh' ? bannerImg : bannerEnImg,
+      bigDataImg: i18n.locale === 'zh' ? bigDataImg : bigDataEnImg,
+      loginImg: i18n.locale === 'zh'? loginImg : loginEnImg,
     },
     isShowDashboardPage: false,
     previewPictureInstance: [], // 记录图片预览实例
     sameNewPage: false,
     switchTag: false
+  },
+  getters: {
+    // 目前含有文字的图片有四处：banner、登录logo、欢迎页、海量数据
+    imgAssets(state) { 
+      const imageAssets = window.ProjectConfig.imageAssets
+      const language = i18n.locale
+      const defaultBanner = language === 'zh' ? bannerImg : bannerEnImg
+      const defaultBigData = language === 'zh' ? bigDataImg : bigDataEnImg
+      const defaultLogin = language === 'zh' ? loginImg : loginEnImg
+      // 没传imageAssets时，需要有个默认值
+      let imgsObj = {
+        banner: defaultBanner,
+        bigData: defaultBigData,
+        login: defaultLogin,
+        welcome: undefined, // 欢迎页是css实现的，这里写法要区别下
+      }
+
+      // 默认图片映射
+      // 目前有banner和海量数据图
+      const defaultImg = {
+        banner: defaultBanner,
+        bigData: defaultBigData,
+        login: defaultLogin,
+        welcome: undefined,
+      }
+
+      if(imageAssets) {
+        // 这样写方便以后新增语言时，可以不改逻辑就支持扩展不同语言图片
+        Object.keys(defaultImg).forEach(key => {
+          const newKey = key.split('-')[0] // 例如'login-zh' 取login作为key
+          imgsObj[newKey] = (imageAssets[language] && imageAssets[language][newKey]) || defaultImg[newKey]
+        })
+      }
+      // 优先用项目组传入的定制图片
+      const imgs = {
+        ...imgsObj
+      }
+      return imgs
+    }
   },
   mutations: mutations(),
   actions: actions(),
