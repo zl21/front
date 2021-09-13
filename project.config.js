@@ -42,9 +42,9 @@ module.exports = {
 
   
 
-  Version: '1.4', // 版本号
+  Version: '1.3', // 版本号
   interlocks: true, // 是否打开三级联动装置
-  enableGateWay: true, // 网关是否打开,
+  enableGateWay: false, // 网关是否打开,
   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用接口请求
   enableHistoryAndFavoriteUI: true, // 是否显示收藏与最近使用UI
   ignoreGateWayPattern: [/\/jflow\/*/g, /\/api\/*/g], // 框架默认禁用的网关逻辑的正则模式匹配
@@ -167,7 +167,7 @@ module.exports = {
   agGridOptions: { // ag表格的配置
     // rowHeight: 100
   },
-  messageSwitch: true, // 消息开关
+  messageSwitch: false, // 消息开关
   useAgGrid: false, // 明细界面的表格全局用ag表格进行渲染
   // (data) => {
   //   if (data.router.params) {
@@ -204,7 +204,7 @@ module.exports = {
   enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
   enableChangeLang: true, // 是否开启切换语言 false关闭 true开启
   //filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
-  listFormWebconf:['filtercolval'], // 列表是否支持webcof 字段
+  listFormWebconf:[], // 列表是否支持webcof 字段
   // imageAssets: {
   //   // 与projectConfig.image区别在于这个图片是含有文字的,用于国际化场景
   //   // 格式必须是 （变量+语言）方便解析
