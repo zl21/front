@@ -4,8 +4,8 @@ import R3 from './r3.publish/r3.min';
 import './src/assets/theme/custom.less';
  import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
  import './r3.publish/r3.min.css';
-//  import './r3.publish/src/assets/css/ag-grid.css'
-//  import './r3.publish/src/assets/css/ag-theme-balham.less'
+ import './r3.publish/src/assets/css/ag-grid.css'
+ import './r3.publish/src/assets/css/ag-theme-balham.less'
  import externalTreeDatasConfig from './demo/treeData/treeData.config.js';//
 
 // const R3 = window.R3.default
