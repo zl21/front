@@ -111,6 +111,9 @@ export default {
     }
   },
   methods: {
+    enterForm(val){
+      this.$emit('on-keydown',val)
+    },
     initializationForm () {
       // 初始化
       clearTimeout(this.timer);
