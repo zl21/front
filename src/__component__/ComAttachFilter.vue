@@ -140,7 +140,7 @@
         this.selected = this.defaultSelected;
         
         // 如果存在cellRendererParams说明是用ag表格渲染的commonTable，需要删除用不到的字段，不然json转化会报错
-        if (this.propstype.cellRendererSelector) {
+        if (this.propstype.cellRendererParams || this.propstype.cellRendererSelector) {
           delete this.propstype.cellRendererSelector
           delete this.propstype.cellRendererParams;
           delete this.propstype.headerComponentParams;
@@ -464,7 +464,7 @@
     created() {
       this.$t = i18n.t.bind(i18n)
       // 如果存在cellRendererParams说明是用ag表格渲染的commonTable，需要删除用不到的字段，不然json转化会报错
-      if (this.propstype.cellRendererSelector) {
+      if (this.propstype.cellRendererParams || this.propstype.cellRendererSelector) {
         delete this.propstype.cellRendererSelector
         delete this.propstype.cellRendererParams;
         delete this.propstype.headerComponentParams;
