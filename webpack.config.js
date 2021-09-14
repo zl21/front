@@ -41,7 +41,6 @@ module.exports = env => ({
     'ark-bcl': '$Bcl',
     // jquery: '$',
     ztree: 'ztree',
-    'vue-i18n': 'VueI18n'
   },
   devServer: {
     compress: true,
