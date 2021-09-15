@@ -42,7 +42,7 @@ module.exports = {
 
   
 
-  Version: '1.3', // 版本号
+  Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
   enableGateWay: false, // 网关是否打开,
   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用接口请求
@@ -201,8 +201,8 @@ module.exports = {
   routerFilter:false, // 跳转是否过滤
   setXss:false, // 是否xss 攻击过滤
   filterHistory:[], // 过滤不需要历史记录的表
-  enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
-  enableChangeLang: true, // 是否开启切换语言 false关闭 true开启
+  enableLoginPro: false, // 是否开启普通登录模式 false普通 true手机验证码
+  enableChangeLang: false, // 是否开启切换语言 false关闭 true开启
   //filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
   listFormWebconf:[] // 列表是否支持webcof 字段
 };
