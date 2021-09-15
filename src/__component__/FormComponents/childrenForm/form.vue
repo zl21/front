@@ -88,9 +88,9 @@ export default {
                         if(errorTip.messageTip.length>0){
                              errorTip.validateForm = document.querySelector(`#${message[0].colname}`);
                             this.$parent.verifyForm(errorTip);
-                        }else{
-                            this.$parent.enterClick();
                         }
+                        this.$parent.enterClick();
+
                        
                         
                     }

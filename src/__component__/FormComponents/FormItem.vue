@@ -434,7 +434,6 @@ export default {
     },
     onkeydown(e){
       // 回车
-      console.log('43434');
       this.$emit('on-keydown',e);
 
     },
