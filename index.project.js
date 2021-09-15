@@ -28,7 +28,7 @@ keyList.forEach(key => {
 Vue.prototype.$network = network;
 Vue.prototype.$urlSearchParams = urlSearchParams;
 R3.launchApplication({
-  layoutDirection: true,
+  layoutDirection: false,
   externalTreeDatas: externalTreeDatasConfig,
   // appLayout: require('./src/config/appLayout.js').default,
   ignoreGateWayPattern: [/\/jflow\/*/g, /\/api\/*/g], // 框架默认禁用的网关逻辑的正则模式匹配
