@@ -49,7 +49,7 @@
   import PhoneLogin from './PhoneLogin';
   import {enableGateWay, Version, encryptedPassword, classFix, enableLoginPro, enableChangeLang} from '../../constants/global';
   import network, {urlSearchParams} from '../../__utils__/network';
-  import ChangeLang from './ChangeLang';
+  import ChangeLang from './components/ChangeLang';
 
   export default {
     name: 'LoginCore',
@@ -220,7 +220,7 @@
           }
           if (r.code === -1) {
             if (this.typeToggle === 1) {
-              this.$refs['AccountLogin'].getCode();
+              this.$refs['AccountLogin'].$refs['ercode'].getCode();
               this.flag = 1;
             }
             return this.$Modal.fcWarning({

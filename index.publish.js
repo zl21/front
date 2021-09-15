@@ -25,9 +25,10 @@ import FilterTree from './src/__component__/Tree/FilterTree.vue';
 import SelectTree from './src/__component__/Tree/SelectTree.vue';
 import DocFile from './src/__component__/docfile/DocFileComponent.vue';
 import Login from './src/__component__/Login/LoginCore'; // 登录核心功能
+import ErCode from './src/__component__/Login/components/ErCode'; // 验证码
 import Collect from './src/__component__/nav/collect'; // 收藏
 import Lately from './src/__component__/nav/lately'; // 最近访问
-import ChangeLang from './src/__component__/Login/ChangeLang'; // 语言切换
+import ChangeLang from './src/__component__/Login/components/ChangeLang'; // 语言切换
 import HistoryAndFavorite from './src/__component__/HistoryAndFavorite'; // 水平排版下的收藏和最近访问
 import { menuClick } from './src/__config__/event.config';
 import { connector } from './src/constants/global';
@@ -217,6 +218,7 @@ export default {
     NaVertical,
     ComAutoComplete,
     Login,
+    ErCode,
     Collect,
     Lately,
     ChangeLang,

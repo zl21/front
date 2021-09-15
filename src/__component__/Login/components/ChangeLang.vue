@@ -12,7 +12,7 @@
 
 <script>
 
-import {enableChangeLang} from "../../constants/global";
+import {enableChangeLang} from "../../../constants/global";
 
 export default {
   name: 'ChangeLang',
