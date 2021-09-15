@@ -3,6 +3,7 @@
       class="tag history"
       @mouseenter="onMouseOverHistorySeen"
       @mouseleave="onMoueOuthHistorySeen"
+      :style="{width: autoWidth ? '100%' : '' }"
   >
     <Dropdown @on-click="routeTo" :transfer="true">
       <slot><i class="iconfont iconmd-time"/></slot>
@@ -58,6 +59,9 @@ export default {
       return [
         `${classFix}history-and-favorite tag`,
       ];
+    },
+    autoWidth() {
+      return this.$slots.default && this.$slots.default.length > 0
     }
   },
   methods: {

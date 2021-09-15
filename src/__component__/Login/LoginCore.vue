@@ -40,11 +40,7 @@
         </div>
       </Spin>
     </div>
-
-    <Select v-if="showChangeLang" v-model="lang" @on-change="changeLang" class="changeLang" placeholder="请选择语言">
-      <Option value="zh" key="zh">中文</Option>
-      <Option value="en" key="en">English</Option>
-    </Select>
+    <ChangeLang />
   </div>
 </template>
 
@@ -53,10 +49,11 @@
   import PhoneLogin from './PhoneLogin';
   import {enableGateWay, Version, encryptedPassword, classFix, enableLoginPro, enableChangeLang} from '../../constants/global';
   import network, {urlSearchParams} from '../../__utils__/network';
+  import ChangeLang from './ChangeLang';
 
   export default {
     name: 'LoginCore',
-    components: {AccountLogin, PhoneLogin},
+    components: {AccountLogin, PhoneLogin, ChangeLang},
     data() {
       return {
         globalServiceId: window.localStorage.getItem('serviceId') || '',
@@ -77,7 +74,6 @@
         type: RegExp,
         default: () => /^\d{11,11}$/
       },
-
     },
     created() {
       document.onkeydown = (e) => {
@@ -86,10 +82,6 @@
           this.login();
         }
       };
-      const localLang = localStorage.getItem('r3-lang');
-      if (localLang) {
-        this.lang = localLang;
-      }
     },
     computed: {
       classes() {
@@ -316,12 +308,8 @@
         const res = await this.loginSucCbk();
         if (!res) return;
         window.location.href = window.location.origin;
-      },
-
-      changeLang(val) {
-        if (!val) return false;
-        R3I18n && R3I18n(val);
       }
+
     }
   };
 </script>

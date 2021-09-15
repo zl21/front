@@ -1,5 +1,5 @@
 <template>
-  <div class="tag favorite">
+  <div class="tag favorite" :style="{width: autoWidth ? '100%' : '' }">
     <Dropdown @on-click="routeTo" :transfer="true">
       <slot><i class="iconfont iconbj_col left-icon"/></slot>
       <DropdownMenu slot="list" trigger="click" v-if="favorite.length>0">
@@ -53,6 +53,9 @@ export default {
       return [
         `${classFix}history-and-favorite`,
       ];
+    },
+    autoWidth() {
+      return this.$slots.default && this.$slots.default.length > 0
     }
   },
   methods: {
