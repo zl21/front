@@ -3,13 +3,17 @@
 <template>
   <div
     class="hh"
-    style="height:500px"
+    style="height:100px"
   >
     <!-- <div>测试新增语言---{{$t('newlang.test')}}</div> -->
     <div>哈哈哈，这个是测试啦啦啦</div>
+    <button @click="toggleSetting">显示设置</button>
+    <button @click="toggleMessages">显示消息</button>
     <!-- <div>测试已有语言扩展----{{$t('extend.test')}}</div> -->
 
-    <pannel @changePwdBox="changePwdBox"></pannel>
+    <Setting v-model="showSetting"></Setting>
+
+    <MessageList v-model="showMessages"></MessageList>
 
     <RadioGroup
       v-model="radioValue"
@@ -29,15 +33,10 @@ export default {
   inheritAttrs: false,
 
   components: {
-    pannel: R3.components.setPanel,
+    Setting: R3.components.Setting,
     RadioGroup: R3.components.RadioGroup,
-    CheckboxGroup: R3.components.CheckboxGroup
-  },
-
-  watch: {
-    radioValue() {
-      console.log(this.radioValue);
-    }
+    CheckboxGroup: R3.components.CheckboxGroup,
+    MessageList: R3.components.MessageList
   },
 
   data() {
@@ -76,13 +75,18 @@ export default {
           }
         ],
       },
+      showSetting: false,
+      showMessages: false
     }
   },
 
   methods: {
-    changePwdBox() {
-      console.log(this);
-      alert(12)
+    toggleSetting() {
+      this.showSetting =!this.showSetting
+    },
+
+    toggleMessages() {
+      this.showMessages = !this.showMessages
     }
   }
 }

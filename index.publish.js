@@ -27,7 +27,8 @@ import DocFile from './src/__component__/docfile/DocFileComponent.vue';
 import Login from './src/__component__/Login/LoginCore';
 import CheckboxGroup from './src/__component__/form/CheckboxGroup.vue';
 import RadioGroup from './src/__component__/form/RadioGroup.vue';
-import setPanel from './src/__component__/SetPanel.vue'
+import Setting from './src/__component__/nav/Setting.vue'
+import MessageList from './src/__component__/nav/MessageList.vue'
 
 import { menuClick } from './src/__config__/event.config';
 import { connector } from './src/constants/global';
@@ -219,6 +220,7 @@ export default {
     Login,
     CheckboxGroup,
     RadioGroup,
-    setPanel
+    Setting,
+    MessageList
   }
 };
