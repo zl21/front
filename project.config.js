@@ -40,7 +40,7 @@ module.exports = {
   // target: 'http://139.224.134.69:58000', // OMS
   // target: 'http://47.113.103.201:26666', // 斯凯奇
 
-  
+
 
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
@@ -73,9 +73,9 @@ module.exports = {
     // customizeReportCb:function(data,userInfo,POSNAME){
     //   // `${data.url}&session_id=${data.sessionid}&userid=${userInfo.name ? userInfo.name : POSNAME}`
     //   return `${data.url}&session_id=${data.sessionid}&userid=${userInfo.name ? userInfo.id : POSNAME}`
-    // } 
+    // }
   }, // 框架回调，形如 { loginCb: function() {} }
-  layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
+  layoutDirection: true, // 默认是false ,水平排版 ，true 是垂直排版
   layoutDirectionSlot:{  // 模板渲染
     //NavigatorSubMenu:require('./src/demo/NavigatorSubMenu.vue').default,  // 模板渲染
     //NaVertical:require('./src/demo/NaVerticalslot.vue').default  // 模板渲染
