@@ -38,11 +38,12 @@ module.exports = env => ({
     port: 8190,
     host: '0.0.0.0',
     open: true,
-    historyApiFallback: {
-      rewrites: [
-        { from: /.*/, to: env && env.production ? indexProHtml : indexHtml },
-      ],
-    },
+    // historyApiFallback: {
+    //   rewrites: [
+    //     { from: /.*/, to: env && env.production ? indexProHtml : indexHtml },
+    //   ],
+    // },
+    historyApiFallback: true,
     publicPath: '/',
     proxy: [
      

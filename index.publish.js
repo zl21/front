@@ -25,6 +25,11 @@ import FilterTree from './src/__component__/Tree/FilterTree.vue';
 import SelectTree from './src/__component__/Tree/SelectTree.vue';
 import DocFile from './src/__component__/docfile/DocFileComponent.vue';
 import Login from './src/__component__/Login/LoginCore';
+import CheckboxGroup from './src/__component__/form/CheckboxGroup.vue';
+import RadioGroup from './src/__component__/form/RadioGroup.vue';
+import Setting from './src/__component__/nav/Setting.vue'
+import MessageList from './src/__component__/nav/MessageList.vue'
+
 import { menuClick } from './src/__config__/event.config';
 import { connector } from './src/constants/global';
 import './src/constants/dateApi';
@@ -213,5 +218,9 @@ export default {
     NaVertical,
     ComAutoComplete,
     Login,
+    CheckboxGroup,
+    RadioGroup,
+    Setting,
+    MessageList
   }
 };
