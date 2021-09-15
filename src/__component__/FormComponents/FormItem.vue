@@ -95,7 +95,6 @@
         <component :is="componentsName"
                    :ref="items.colname"
                     v-bind="propsMessage"
-                     @on-keydown="onkeydown"
                     v-model="value">
           <slot v-if="items.display === 'OBJ_SELECT'">
             <Option v-for="item in items.props.options"
@@ -112,7 +111,6 @@
                    v-if="_items.type === 'customization'"
                    :ref="items.colname"
                    v-model="value"
-                    v-on="$listeners"
                     v-bind="propsMessage"
                    :options="{
           ..._items,
@@ -434,7 +432,7 @@ export default {
     },
     onkeydown(e){
       // 回车
-      this.$emit('on-keydown',e);
+      // this.$emit('on-keydown',e);
 
     },
     routerNext () {
