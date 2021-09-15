@@ -158,14 +158,14 @@
         const { value, id, url } = data;
         this.updateDashboardPageValue(false);
         routeTo({ type, info: { tableName: value, tableId: id, url } });
-        
+
         if(document.querySelector('.NaVertical')){
            if(this.$parent && this.$parent.$parent){
             this.$parent.$parent.$parent.currentVisible = false;
             this.$parent.$parent.$parent.$forceUpdate();
           }
         }
-        
+
       },
     },
     mounted() {
