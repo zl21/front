@@ -76,20 +76,25 @@ export default {
             },
             enterForm(e){
                 if(e.keyCode === 13){
-                    let message = this.$refs.panelForm.validate();
+                    // let message = this.$refs.panelForm.validate();
                     if(this.$parent){
-                        let errorTip = {
-                            messageTip:[],
-                            validateForm:{}
+                        // let errorTip = {
+                        //     messageTip:[],
+                        //     validateForm:{}
+                        // }
+                        // errorTip.messageTip = message.map((item)=>{
+                        //     return item.tip
+                        // });
+                        // if(errorTip.messageTip.length>0){
+                        //     errorTip.validateForm = document.querySelector(`#${message[0].colname} input`);
+                        // }
+                        //this.$parent.verifyForm(errorTip);
+                        let checked =  document.querySelector('.singleObjectButton').__vue__.verifyRequiredInformation();
+
+                        if(checked){
+                            this.$parent.enterClick();
                         }
-                        errorTip.messageTip = message.map((item)=>{
-                            return item.tip
-                        });
-                        if(errorTip.messageTip.length>0){
-                            errorTip.validateForm = document.querySelector(`#${message[0].colname} input`);
-                            this.$parent.verifyForm(errorTip);
-                        }
-                        this.$parent.enterClick();
+
                     }
                 }
             }

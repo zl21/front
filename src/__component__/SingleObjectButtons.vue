@@ -3282,6 +3282,7 @@ export default {
         }
       }
       let validate = [];
+      console.log(panelForm,'====');
 
       if (panelForm && panelForm[0]) {
         validate = panelForm.reduce((arr, item, index) => {
@@ -3289,7 +3290,6 @@ export default {
             // 默认第一个主表
             arr.push(...item.validate())
           } else if (this.itemName === item.tableName) {
-            console.log('wewe');
             if (isItemTableNewValidation()) {
               if (Object.keys(item.formChangeData).length > 0) {
                 arr.push(...item.validate())
@@ -3329,6 +3329,12 @@ export default {
       //     }
       //   }
       // }
+      if (window[this.tableName] && window[this.tableName].emitChangeAndContinue) {
+        window[this.tableName].emitChangeAndContinue();
+      }
+
+      return true;
+      
       if (this.subtables()) { // 存在子表时
         let tabinlinemode = '';
         this.tabPanel.forEach((item) => {
@@ -3428,11 +3434,7 @@ export default {
         }
       }
 
-      if (window[this.tableName] && window[this.tableName].emitChangeAndContinue) {
-        window[this.tableName].emitChangeAndContinue();
-      }
-
-      return true;
+    
     },
     /**
      * 主表保存参数说明
