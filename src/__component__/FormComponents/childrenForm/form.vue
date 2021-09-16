@@ -86,20 +86,17 @@ export default {
                             return item.tip
                         });
                         if(errorTip.messageTip.length>0){
-                             errorTip.validateForm = document.querySelector(`#${message[0].colname}`);
+                            errorTip.validateForm = document.querySelector(`#${message[0].colname} input`);
                             this.$parent.verifyForm(errorTip);
                         }
                         this.$parent.enterClick();
-
-                       
-                        
                     }
                 }
             }
-      },
-      mounted(){
-          this.setFormList();
-      }
+    },
+    mounted(){
+        this.setFormList();
+    }
 
 };
 

@@ -95,7 +95,8 @@
         <component :is="componentsName"
                    :ref="items.colname"
                     v-bind="propsMessage"
-                    v-model="value">
+                    v-model="value"
+                    @on-keydown="enterForm">
           <slot v-if="items.display === 'OBJ_SELECT'">
             <Option v-for="item in items.props.options"
                     :key="item.value"
@@ -330,6 +331,11 @@ export default {
   },
   methods: {
     ...mapMutations('global', ['tabOpen', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
+
+    enterForm(val){
+      this.$emit('on-keydown',val)
+    },
+    
     inheritanceComponents () {
       let component = null;
       // 兼容webcof
