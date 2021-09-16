@@ -40,11 +40,11 @@ module.exports = {
   // target: 'http://139.224.134.69:58000', // OMS
   // target: 'http://47.113.103.201:26666', // 斯凯奇
 
+  
 
-
-  Version: '1.4', // 版本号
+  Version: '1.3', // 版本号
   interlocks: true, // 是否打开三级联动装置
-  enableGateWay: true, // 网关是否打开,
+  enableGateWay: false, // 网关是否打开,
   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用接口请求
   enableHistoryAndFavoriteUI: true, // 是否显示收藏与最近使用UI
   ignoreGateWayPattern: [/\/jflow\/*/g, /\/api\/*/g], // 框架默认禁用的网关逻辑的正则模式匹配
@@ -73,7 +73,7 @@ module.exports = {
     // customizeReportCb:function(data,userInfo,POSNAME){
     //   // `${data.url}&session_id=${data.sessionid}&userid=${userInfo.name ? userInfo.name : POSNAME}`
     //   return `${data.url}&session_id=${data.sessionid}&userid=${userInfo.name ? userInfo.id : POSNAME}`
-    // }
+    // } 
   }, // 框架回调，形如 { loginCb: function() {} }
   layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
   layoutDirectionSlot:{  // 模板渲染
@@ -167,7 +167,7 @@ module.exports = {
   agGridOptions: { // ag表格的配置
     // rowHeight: 100
   },
-  messageSwitch: true, // 消息开关
+  messageSwitch: false, // 消息开关
   useAgGrid: false, // 明细界面的表格全局用ag表格进行渲染
   // (data) => {
   //   if (data.router.params) {
@@ -198,21 +198,11 @@ module.exports = {
 
   autoGatewayUrl:false,  // 是否请求网关
   computeForSubtable: false,
-  routerFilter:true, // 跳转是否过滤
-  enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
-  enableChangeLang: true, // 是否开启切换语言 false关闭 true开启
-  filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
+  routerFilter:false, // 跳转是否过滤
+  setXss:false, // 是否xss 攻击过滤
   filterHistory:[], // 过滤不需要历史记录的表
-  // // 转义节点位置
-  // domPortal: {
-  //   // params对象属性,fromComponent用于区别哪个组件的水印,type区分布局结构
-  //   waterMark(params) {
-  //     if(params.fromComponent === 'SingleObjectButtons') {
-  //       return params.type === 'horizontal'? '.panelForm': '.verticalTableDetailContent'
-  //     }
-  //     return false
-  //   }
-  // }
+  enableLoginPro: false, // 是否开启普通登录模式 false普通 true手机验证码
+  enableChangeLang: false, // 是否开启切换语言 false关闭 true开启
   //filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
   listFormWebconf:[], // 列表是否支持webcof 字段
   // imageAssets: {
