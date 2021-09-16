@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { target } from '../../project.config';
+import { target } from '../../projectConfig/project.config';
 import { DispatchEvent } from '../__utils__/dispatchEvent';
 
 export default {
