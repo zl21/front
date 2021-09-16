@@ -7,7 +7,7 @@ const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const projectConfig = require('./project.config');
+const projectConfig = require('./projectConfig/project.config');
 
 const target = projectConfig.target; // 框架研发网关开启环境
 const proxyLists = ['/p/c', '/ad-app', '/jflow'];
