@@ -2,14 +2,14 @@ const path = require('path');
 // const { VueLoaderPlugin } = require('vue-loader');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const webpack = require('webpack');
+const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { ModuleFederationPlugin } = require('webpack').container;
-const projectConfig = require('./project.config');
+const projectConfig = require('./projectConfig/project.config');
 
 const target = projectConfig.target; // 框架研发网关开启环境
 const proxyLists = ['/p/c','/r3-cp','/r3-oc-oms', '/p/cs','/frr-center', '/eplan-center', '/ad-app', '/r3/qiaochu', '/retailcloud-crm2', '/retailcloud-official', '/ishop-synchronize', '/asynctask'];
@@ -21,7 +21,6 @@ const proxyListForShangFei = ['/user-center', '/shangfei', '/tr-center'];
 const proxyListForWuliu = ['/wuliu-admin'];
 const proxyListForKABIN = ['/r3/cabben/pt'];
 const proxyListForOMS = ['/p/c', '/p/cs', '/api', '/ad-app', '/r3-ps', '/r3-cp', '/r3-st', '/r3-oc-oms', '/r3-vip', '/r3-ipcs', '/asynctask/p/c', '/r3-pm', '/r3-ac', '/r3-sg']
-
 
 const indexProHtml = path.posix.join('/', 'index.pro.html');
 const indexHtml = path.posix.join('/', 'index.html');
@@ -199,6 +198,9 @@ module.exports = env => ({
     ],
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env.BUILD_ENV': JSON.stringify(process.env.BUILD_ENV)
+    }),
     new MiniCssExtractPlugin({
       filename: 'r3.css',
     }),
@@ -211,6 +213,7 @@ module.exports = env => ({
       inject: true,
       favicon: projectConfig.projectIconPath,
     }),
+   
     new CopyWebpackPlugin([
       {
         from: path.resolve(__dirname, './static'),
@@ -218,6 +221,7 @@ module.exports = env => ({
         ignore: ['.*'],
       },
     ]),
+  
     // new webpack.DefinePlugin({
     //   'process.env.BUILD_ENV': JSON.stringify(process.env.BUILD_ENV)
     // }),
