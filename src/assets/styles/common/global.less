@@ -1,7 +1,9 @@
 // 全局共享css
 
 // ExtentionInput
-
+.ark-modal-content.fcWarning,.ark-modal-content.fcError{
+  margin-top: 35vh!important;
+}
 .ExtentionInput {
   position: relative;
   textarea {
@@ -98,6 +100,7 @@
 }
 
 #content {
+ 
   .submit-img { //no-active
     position: absolute;
     top: 30px;
@@ -123,6 +126,8 @@
   .form {
     padding: 0 10px 8px 0;
     background-color: #F8F8F8;
+    max-height: 300px;
+    overflow-y: auto;
   }
   .formPanel {
     flex: 1;
@@ -693,7 +698,7 @@
 
   .detailTable,
   .isBig {
-    border: 1px solid #d8d8d8;
+    // border: 1px solid #d8d8d8;
     margin-top: 10px;
     height: calc(100% - 65px);
     width: 100%;

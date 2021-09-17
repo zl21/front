@@ -18,7 +18,7 @@
       v-if="isBig"
       class="isBig"
     >
-      <img :src="bigBackground">
+      <img :src="imgAssets.bigData || bigBackground">
     </div>
 
     <!-- <div
@@ -105,7 +105,7 @@
 <script>
 /* eslint-disable no-lonely-if */
 
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 // import agTable from '../assets/js/ag-grid-table-pure';
 import CommonTable from './CommonTable.vue';
 import { floatingFilter, classFix } from '../constants/global';
@@ -132,6 +132,7 @@ export default {
     ...mapState('global', {
       bigBackground: ({ imgSrc }) => imgSrc.bigDataImg,
     }),
+    ...mapGetters('global', ['imgAssets']),
     classes() {
       return [
         `${classFix}standardTable`,
@@ -342,8 +343,16 @@ export default {
       }
 
       for (let i = 0; i < data.length; i++) {
-        if (data[i].isagfilter) {
-          result = true;
+        // if (data[i].isagfilter) {
+        //   result = true;
+        // }
+        data[i].floatingFilter = data[i].isagfilter
+        data[i].filter = data[i].isagfilter
+        const isAllCloseFilter = floatingFilter()
+        // 如果设置了浮动开关以全局开关为准
+        if(isAllCloseFilter !== undefined) {
+          data[i].floatingFilter = isAllCloseFilter
+          data[i].filter = isAllCloseFilter
         }
       }
       return result;
@@ -416,16 +425,19 @@ export default {
       datas.pinnedPosition = self.userConfigForAgTable.fixedColumn; // 固定列
 
       // 如果每一列的都关过滤则在表格配置里关闭过滤，避免展示一个空白的过滤条
-      let isOpenfloatingFilter = true;
-      const isAllCloseFilter = !this.existFilter(th);
-
-      if (isAllCloseFilter) {
-        isOpenfloatingFilter = false;
-      }
       // 全局关闭过滤优先级更高
-      if (!floatingFilter()) {
-        isOpenfloatingFilter = false;
-      }
+      this.existFilter(th)
+
+      // let isOpenfloatingFilter = true;
+      // const isAllCloseFilter = !this.existFilter(th);
+
+      // if (isAllCloseFilter) {
+      //   isOpenfloatingFilter = false;
+      // }
+      // // 全局关闭过滤优先级更高
+      // if (!floatingFilter()) {
+      //   isOpenfloatingFilter = false;
+      // }
 
       // 处理列数据
       if (datas.tabth && Array.isArray(datas.tabth)) {
@@ -447,7 +459,7 @@ export default {
         cssStatus: self.legend, // 颜色配置信息
         defaultSort: arr, // 默认排序
         datas, //  所有返回数据
-        floatingFilter: isOpenfloatingFilter,
+        // floatingFilter: isOpenfloatingFilter,
         agCellSingleClick: (colDef, rowData, target) => {
           // 参数说明
           // colDef：包含表头信息的对象

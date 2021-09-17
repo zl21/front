@@ -12,7 +12,7 @@
               class="erCodeBtn"
               :disabled="sended"
               @click="sendErCode"
-      >{{btnTips}}</Button>
+      >{{ btnTips === 1 ? $t('tips.getVerificationCode') : `${this.$t('messages.reacquire')}${this.count}s`}}</Button>
     </div>
     <div class="divToggle" v-if="loginType">
       <span class="sanjiao">
@@ -42,7 +42,7 @@
     },
     data() {
       return {
-        btnTips: this.$t('tips.getVerificationCode'),
+        btnTips: 1,
         sended: false,
         timer: null,
         count: 0,
@@ -74,10 +74,10 @@
           if (this.count === 0) {
             this.timer && clearTimeout(this.timer);
             this.timer = null;
-            this.btnTips = this.$t('tips.getVerificationCode');
+            this.btnTips = 1;
             this.sended = false;
           } else {
-            this.btnTips = `${this.$t('messages.reacquire')}${this.count}s`;
+            this.btnTips = 2;
             this.setTimer();
           }
         }, 1000);

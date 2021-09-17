@@ -4,6 +4,8 @@ import R3 from './r3.publish/r3.min';
 import './src/assets/theme/custom.less';
  import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
  import './r3.publish/r3.min.css';
+ import './r3.publish/src/assets/css/ag-grid.css'
+ import './r3.publish/src/assets/css/ag-theme-balham.less'
  import externalTreeDatasConfig from './demo/treeData/treeData.config.js';//
 
 // const R3 = window.R3.default
@@ -12,6 +14,16 @@ const {
   network,
   urlSearchParams
 } = R3;
+
+const keyList = ['login','banner','welcome','bigData']
+const zhImg = {}
+const enImg = {}
+keyList.forEach(key => {
+  zhImg[key] = require('./src/assets/image/delete.png')
+})
+keyList.forEach(key => {
+  enImg[key] = require('./src/assets/image/home.png')
+})
 
 Vue.prototype.$network = network;
 Vue.prototype.$urlSearchParams = urlSearchParams;
@@ -26,9 +38,13 @@ R3.launchApplication({
     //NavigatorSubMenu:require('./src/demo/NavigatorSubMenu.vue').default,  // 模板渲染
     //NaVertical:require('./src/demo/NaVerticalslot.vue').default  // 模板渲染
     listFormButton:require('./demo/detailbuttons.vue').default,  // 定制列表button
+    standardTableList:{
+      defined:require('./demo/standardTableListdefind.vue').default,
+    }  // 定制列表button
   },
   enableGateWay: true, // 网关是否打开,
   enableLoginPro: true, // 是否开启普通登录模式 false普通 true手机验证码
+  enableChangeLang: false, // 是否开启切换语言 false关闭 true开启
   filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
   routerFilter:true, // 跳转是否过滤
   listFormWebconf: [],
@@ -41,5 +57,16 @@ R3.launchApplication({
       return false
     }
   },
-  lang: 'en'
+  lang: 'en',
+  useAgGrid: true,
+  // imageAssets: {
+  //   // 与projectConfig.image区别在于这个图片是含有文字的,用于国际化场景
+  //   // 格式必须是 （变量+语言）方便解析
+  //   zh: {
+  //     ...zhImg
+  //   },
+  //   en: {
+  //     ...enImg
+  //   }
+  // }
 });

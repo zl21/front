@@ -124,7 +124,6 @@
           :render-params="renderParams"
           :options="agOptions"
           @ag-selection-change="tableSelectedChange"
-          @ag-sort-change="tableSortChange"
           @ag-row-dblclick="tableRowDbclick"
           @grid-ready="gridReady"
         ></arkCommonTableByAgGrid>
@@ -180,9 +179,6 @@
   import Vue from 'vue';
 
   import { mapState, mapMutations, mapActions } from 'vuex';
-  // import { setTimeout } from 'timers';
-  // import { CommonTableByAgGrid } from '@syman/ark-ui-bcl';
-
   import regExp from '../constants/regExp';
   import {
     Version, LINK_MODULE_COMPONENT_PREFIX, INSTANCE_ROUTE_QUERY, enableActivateSameCustomizePage, ossRealtimeSave, classFix
@@ -330,6 +326,7 @@
         routerParams: {},
         agGridOptions: window.ProjectConfig.agGridOptions || {},
         useAgGrid: window.ProjectConfig.useAgGrid,
+        deleteFailInfo: undefined // ag报错提示
       };
     },
     props: {
@@ -586,10 +583,13 @@
         let options = {
           suppressMovableColumns: true,
           agColumnMoved:this.agColumnMoved,
+          agSortChanged:this.tableSortChange,
+          agColumnPinned: () => {}, // 这里传个空函数。目的是(跟列表表格保持行为一致)触发取消固定列后，该列排到第一列
           ...this.agGridOptions,
           datas: {
             ...this.dataSource,
-            pinnedColumns: this.webConfSingle.pinnedColumns
+            pinnedColumns: this.webConfSingle.pinnedColumns,
+            deleteFailInfo: this.deleteFailInfo
           }
         }
         if(this.R3_processAgOptions) {
@@ -944,16 +944,19 @@
         if (findIndex !== this.editElementId.length - 1) {
           elementIndex = findIndex + 1;
         }
-        const focusDom = document.getElementById(this.editElementId[elementIndex]);
+        const id = `ag-${this.editElementId[elementIndex]}`
+        const focusDom = document.getElementById(id);
         if (focusDom && !focusDom.getElementsByTagName('input')[0].disabled) {
           focusDom.getElementsByTagName('input')[0].focus();
           focusDom.getElementsByTagName('input')[0].select();
         } else {
           this.tableCellFocusByEnter(this.editElementId[elementIndex]);
         }
-        // document.getElementById(this.editElementId[elementIndex]).querySelectorAll('input')[0].focus();
       }, // 回车的时候聚焦下一个可编辑的输入框
       tableCellFocusByUpOrDown(elementId, currentColumn, type) {
+        if(!this.columnEditElementId[currentColumn]) {
+          return
+        }
         const findIndex = this.columnEditElementId[currentColumn].findIndex(item => item === elementId);
         let elementIndex = 0;
         if (type === 'up') {
@@ -2902,9 +2905,10 @@
                   acc.push(cur.Label);
                   return acc;
                 }, []).sort().join(',');
-                const oldLabelValue = this.dataSource.row[params.index][cellData.colname].val.split(',').sort().join(',');
+                const currentCell = this.dataSource.row[params.index][cellData.colname]
+                const oldLabelValue = currentCell.val.split(',').sort().join(',');
                 const idValues = ids ? ids.split(',').sort((a, b) => a - b).join(',') : null;
-                const oldIdValues = this.dataSource.row[params.index][cellData.colname].refobjid === -1 ? null : this.dataSource.row[params.index][cellData.colname].refobjid.split(',').sort((a, b) => a - b).join(',');
+                const oldIdValues = currentCell.refobjid === -1 ? null : currentCell.refobjid.split(',').sort((a, b) => a - b).join(',');
                 this.putDataFromCell(idValues, oldIdValues, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
                 this.putLabelDataFromCell(labelValue, oldIdValues, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, oldLabelValue);
               },
@@ -3337,7 +3341,8 @@
             props: {
               value: params.row[cellData.colname],
               type: cellData.display === 'OBJ_DATENUMBER' ? 'date' : 'datetime',
-              transfer: true
+              transfer: true,
+              editable: false
             },
             nativeOn: {
               // click: (e) => {
@@ -3389,7 +3394,8 @@
               value: params.row[cellData.colname],
               type: 'time',
               // value: new Date(Date.parse(`${new Date().getFullYear()} - ${params.row[cellData.colname]}`.replace(/-/g, '/'))),
-              transfer: true
+              transfer: true,
+              editable: false
             },
             nativeOn: {
               // click: (e) => {
@@ -3757,6 +3763,7 @@
                 content: () => h('TableDocFile', {
                   props: {
                     dataitem: {
+                      filesSize: cellData.webconf && cellData.webconf.filesize,
                       filesLength: Number(params.column.webconf && params.column.webconf.filesLength),
                       sendData: {
                         path: `${that.$route.params.tableName}/${that.$route.params.itemId}/`
@@ -4454,10 +4461,39 @@
         if (Object.keys(this.verifyTipObj) > 0) {
           this.isTableRender = !this.isTableRender;
         }
+
+        // 给ag表格也添加行校验提示
+        this.verifyAg()
+        
         return this.verifyTipObj;
       }, // 表格里的表单验证 true为校验通过，false为校验不通过
 
-      tableSortChange(value) {
+      verifyAg() {
+        this.deleteFailInfo = []
+        Object.keys(this.verifyTipObj).forEach(id => {
+          this.deleteFailInfo.push({
+            objid: id,
+            message: this.verifyTipObj[id]
+          })
+        })
+        const ag = this.$refs.agGridTableContainer
+        if(this.deleteFailInfo.length > 0 && ag) {
+          // 1.强制更新ag，不然显示不出来报错图标
+          // 2.定时器是为了让表格options先更新，再更新数据
+          // 3.为了不触发表格自适应，此处直接取底层数据进行更新
+          const agVue = ag.$refs.agGridTable
+          setTimeout(() => {
+            ag.api.setColumnDefs(agVue._transformColumnDefs(this.columns))
+            ag.api.setRowData(agVue.realRows)
+          }, 0)
+        }
+      },
+
+      tableSortChange(e) {
+        const value = {
+          key: e[0].colId,
+          order: e[0].sort
+        }
         const tableName = this.tableName;
         let flag = this.currentOrderList.some((ele) => {
           if (`${tableName}.${value.key}` === ele.column) {
@@ -4470,10 +4506,7 @@
           flag = true;
         }
         if (!flag) {
-          // this.currentOrderList.push({
-          //   column: `${tableName}.${value.key}`,
-          //   asc: value.order === 'asc'
-          // });
+
           this.currentOrderList = this.currentOrderList.concat([{
             column: `${tableName}.${value.key}`,
             asc: value.order === 'asc'
@@ -4485,13 +4518,7 @@
           fixedcolumns[this.searchCondition] = this.searchInfo;
         }
         const { itemId } = this.$route.params;
-        // table, objid, refcolid, startindex, range, fixedcolumns
-        // let tabIndex = null;
-        // if (this.WebConf && this.WebConf.isCustomizeTab && this.type === 'horizontal') {
-        //   tabIndex = this.tabCurrentIndex + 1;
-        // } else {
-        //   tabIndex = this.tabCurrentIndex;
-        // }
+
         const params = {
           table: this.tableName,
           objid: itemId,
@@ -4741,7 +4768,7 @@
 
     },
     mounted() {
-      this._colPositionCache = '' // 缓存表格列位置，如果相同不再请求接口
+      this._colPositionCache = undefined // 缓存表格列位置，如果相同不再请求接口
       this.buttonData = this.filterButton(this.buttonGroups);
       window.addEventListener('tabRefreshClick', () => {
         if (!this._inactive) {

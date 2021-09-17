@@ -254,8 +254,12 @@
         network.post(`${urlPath}/preview`, params, config).then(
           (res) => {
             const { data } = res.data;
-
-            self.reportUrl = `${data.url}&session_id=${data.sessionid}&userid=${this.userInfo.name ? this.userInfo.name : self.POSNAME}`;
+             if(window.ProjectConfig.cbs && window.ProjectConfig.cbs.customizeReportCb){
+              //  支持外部回调报表路径传参
+              self.reportUrl = window.ProjectConfig.cbs.customizeReportCb(data,this.userInfo,self.POSNAME);
+             }else{
+              self.reportUrl = `${data.url}&session_id=${data.sessionid}&userid=${this.userInfo.name ? this.userInfo.name : self.POSNAME}`;
+             }
             const shadowFrame = document.getElementById(`${this.iframeId}-shadow`);
             if (shadowFrame) {
               shadowFrame.setAttribute('src', self.reportUrl);

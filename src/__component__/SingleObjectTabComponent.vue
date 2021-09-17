@@ -905,11 +905,15 @@
       verifymiainForm(){
         // 获取主表校验
         let panelForm_dom =  document.querySelector('.panelForm');
-        let panelForm = panelForm_dom._vue_;
         let validate = [];
-        if(panelForm){
-           validate = panelForm.validate();
+        if(panelForm_dom){
+          let panelForm = panelForm_dom._vue_;
+        
+          if(panelForm){
+            validate = panelForm.validate();
+          }
         }
+        
         return validate;
 
       },
