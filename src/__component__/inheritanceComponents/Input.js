@@ -238,9 +238,8 @@ class CustomInput {
       //   e.stopPropagation()
       //   e.preventDefault()
       // }
-
-      // 明细界面的input，按下回车后，光标自动移到下一个Input框里
-      if (isDetailPage && e.keyCode === 13) {
+      // 明细界面的input，按下回车后，光标自动移到下一个Input框里  注释：childrenForm  是子表表单也不需要改事件
+      if (isDetailPage && e.keyCode === 13 && this.item.showPlace !== "childrenForm") {
         const currentWrapDom = this.$parent.$parent.$el.parentNode // 当前组件的容器节点
         this.nextInputFocus(currentWrapDom)
       }

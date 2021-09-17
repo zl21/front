@@ -3300,45 +3300,55 @@
 
         this.saveParameters();// 获取主子表参数
         // 处理主表必填控制
-        let panelForm_dom =  document.querySelectorAll('.panelForm');
-        let panelForm = [].reduce.call(panelForm_dom, function(arr,div) {
-          if(div._vue_){
+         // 处理主表必填控制
+      console.log(this.tableName, this.objectType, '===checkedInfo');
+      let panelForm_dom = document.querySelectorAll('.panelForm');
+      let panelForm = [].reduce.call(panelForm_dom, function (arr, div) {
+          if (div._vue_) {
             arr.push(div._vue_);
           }
-            return arr;
-        },[]);
-        let validate = [];
+          return arr;
+        }, []);
+      if (this.objectType === 'horizontal') {        
+        let panelFormParent = FindInstance(this,`tapComponent.${this.tableName}`)[0];
+        let panelFormVue = this.$_live_getChildComponent(panelFormParent, 'panelForm');
+        if(panelForm[0] && panelForm[0].tableName !==this.tableName){
+            panelForm.unshift(panelFormVue);
+        }
+      }
+      let validate = [];
+      console.log(panelForm,'====');
 
-        if(panelForm && panelForm[0]){
-           validate = panelForm.reduce((arr,item,index)=>{
-              if(index === 0){
-                // 默认第一个主表
+      if (panelForm && panelForm[0]) {
+        validate = panelForm.reduce((arr, item, index) => {
+          if (index === 0) {
+            // 默认第一个主表
+            arr.push(...item.validate())
+          } else if (this.itemName === item.tableName) {
+            if (isItemTableNewValidation()) {
+              if (Object.keys(item.formChangeData).length > 0) {
                 arr.push(...item.validate())
-              }else if(this.itemName ===item.tableName){
-                if(isItemTableNewValidation()){
-                    if(Object.keys(item.formChangeData).length>0){
-                      arr.push(...item.validate())
-                    }
-                }else {
-                      arr.push(...item.validate())
-                }
               }
-
-              return arr;
-          },[])
-        }
-        if(validate.length > 0){
-            this.$Message.warning(validate[0].tip);
-            let dom = document.querySelector(`#${validate[0].colname}`);
-            if(dom){
-              let Input = dom.querySelector('input') || dom.querySelector('textarea');
-              if(Input){
-                  Input.focus();
-              }
-
+            } else {
+              arr.push(...item.validate())
             }
-            return false;
+          }
+
+          return arr;
+        }, [])
+      }
+      if (validate.length > 0) {
+        this.$Message.warning(validate[0].tip);
+        let dom = document.querySelector(`#${validate[0].colname}`);
+        if (dom) {
+          let Input = dom.querySelector('input') || dom.querySelector('textarea');
+          if (Input) {
+            Input.focus();
+          }
+
         }
+        return false;
+      }
 
         // const checkedInfo = this.currentParameter.checkedInfo;// 主表校验信息
         // if (checkedInfo || validate) {
@@ -3354,105 +3364,105 @@
         //     }
         //   }
         // }
-        if (this.subtables()) { // 存在子表时
-          let tabinlinemode = '';
-          this.tabPanel.forEach((item) => {
-            if (item.tablename === this.itemName) {
-              tabinlinemode = item.tabinlinemode;
-            }
-          });
-          console.log( this.tabPanel,' this.tabPanel');
-          if (tabinlinemode === 'Y') { // 当子表中存在form时
-            if (!this.itemTableValidation) {
-              const itemCheckedInfo = this.itemCurrentParameter.checkedInfo;// 子表校验信息
-              this.saveParameters();
-              if (this.objectType === 'vertical') {
-                if (this.itemId === 'New') {
-                  if (this.itemNameGroup.length > 0) { // 有子表
-                    if (KEEP_SAVE_ITEM_TABLE_MANDATORY) {
-                       // 为true时，子表没有必填项也必须要输入值才能保存
-                      const addInfo = this.itemCurrentParameter.add[this.itemName];
-                      if (itemCheckedInfo) {
-                        const itemMessageTip = itemCheckedInfo.messageTip;
-                        if (itemMessageTip) {
-                          if (itemMessageTip.length > 0) {
-                            this.$Message.warning(itemMessageTip[0]);
-                            if (itemCheckedInfo && itemCheckedInfo.validateForm) {
-                              itemCheckedInfo.validateForm.focus();
-                            }
-                            return false;
-                          }
-                        } if (Object.values(addInfo).length < 1) {
-                          this.$Message.warning(this.$t('messages.requiredPersonalInfo'));
+        // if (this.subtables()) { // 存在子表时
+        //   let tabinlinemode = '';
+        //   this.tabPanel.forEach((item) => {
+        //     if (item.tablename === this.itemName) {
+        //       tabinlinemode = item.tabinlinemode;
+        //     }
+        //   });
+        //   console.log( this.tabPanel,' this.tabPanel');
+        //   if (tabinlinemode === 'Y') { // 当子表中存在form时
+        //     if (!this.itemTableValidation) {
+        //       const itemCheckedInfo = this.itemCurrentParameter.checkedInfo;// 子表校验信息
+        //       this.saveParameters();
+        //       if (this.objectType === 'vertical') {
+        //         if (this.itemId === 'New') {
+        //           if (this.itemNameGroup.length > 0) { // 有子表
+        //             if (KEEP_SAVE_ITEM_TABLE_MANDATORY) {
+        //                // 为true时，子表没有必填项也必须要输入值才能保存
+        //               const addInfo = this.itemCurrentParameter.add[this.itemName];
+        //               if (itemCheckedInfo) {
+        //                 const itemMessageTip = itemCheckedInfo.messageTip;
+        //                 if (itemMessageTip) {
+        //                   if (itemMessageTip.length > 0) {
+        //                     this.$Message.warning(itemMessageTip[0]);
+        //                     if (itemCheckedInfo && itemCheckedInfo.validateForm) {
+        //                       itemCheckedInfo.validateForm.focus();
+        //                     }
+        //                     return false;
+        //                   }
+        //                 } if (Object.values(addInfo).length < 1) {
+        //                   this.$Message.warning(this.$t('messages.requiredPersonalInfo'));
 
-                          return false;
-                        }
-                      }
-                    } else if (itemCheckedInfo) {
-                      const itemMessageTip = itemCheckedInfo.messageTip;
-                      if (itemMessageTip) {
-                        if (isItemTableNewValidation() && itemMessageTip.length > 0) {
-                          this.$Message.warning(itemMessageTip[0]);
-                          if (itemCheckedInfo && itemCheckedInfo.validateForm) {
-                            itemCheckedInfo.validateForm.focus();
-                          }
-                          return false;
-                        } if (!isItemTableNewValidation()) {
-                          const itemName = this.itemName;// 子表表名
-                          let itemAdd = [];
-                          if (this.updateData[itemName] && this.updateData[itemName].add[itemName]) {
-                            itemAdd = Object.values(this.updateData[itemName].add[itemName]);// 子表新增的值
-                          }
+        //                   return false;
+        //                 }
+        //               }
+        //             } else if (itemCheckedInfo) {
+        //               const itemMessageTip = itemCheckedInfo.messageTip;
+        //               if (itemMessageTip) {
+        //                 if (isItemTableNewValidation() && itemMessageTip.length > 0) {
+        //                   this.$Message.warning(itemMessageTip[0]);
+        //                   if (itemCheckedInfo && itemCheckedInfo.validateForm) {
+        //                     itemCheckedInfo.validateForm.focus();
+        //                   }
+        //                   return false;
+        //                 } if (!isItemTableNewValidation()) {
+        //                   const itemName = this.itemName;// 子表表名
+        //                   let itemAdd = [];
+        //                   if (this.updateData[itemName] && this.updateData[itemName].add[itemName]) {
+        //                     itemAdd = Object.values(this.updateData[itemName].add[itemName]);// 子表新增的值
+        //                   }
 
-                          if (itemAdd.length > 0 && itemMessageTip.length > 0) {
-                            this.$Message.warning(itemMessageTip[0]);
-                            if (itemCheckedInfo && itemCheckedInfo.validateForm) {
-                              itemCheckedInfo.validateForm.focus();
-                            }
-                            return false;
-                          }
-                        }
-                      }
-                    }
-                  }
-                } else if (this.getCurrentItemInfo().tabrelation === '1:1') {
-                  const itemMessageTip = itemCheckedInfo.messageTip;
-                  if (itemMessageTip) {
-                    if (itemMessageTip.length > 0) {
-                      this.$Message.warning(itemMessageTip[0]);
-                      if (itemCheckedInfo && itemCheckedInfo.validateForm) {
-                        itemCheckedInfo.validateForm.focus();
-                      }
-                      return false;
-                    }
-                  }
-                } else if (Object.values(this.itemCurrentParameter.add[this.itemName]).length > 0) { // 处理当子表填入一个必填项值时，其余必填项必须填写
-                  const itemMessageTip = itemCheckedInfo.messageTip;
-                  if (itemMessageTip) {
-                    if (itemMessageTip.length > 0) {
-                      this.$Message.warning(itemMessageTip[0]);
-                      if (itemCheckedInfo && itemCheckedInfo.validateForm) {
-                        itemCheckedInfo.validateForm.focus();
-                      }
-                      return false;
-                    }
-                  }
-                }
-              } else if (itemCheckedInfo) {
-                const itemMessageTip = itemCheckedInfo.messageTip;
-                if (itemMessageTip) {
-                  if (itemMessageTip.length > 0) {
-                    this.$Message.warning(itemMessageTip[0]);
-                    if (itemCheckedInfo && itemCheckedInfo.validateForm) {
-                      itemCheckedInfo.validateForm.focus();
-                    }
-                    return false;
-                  }
-                }
-              }
-            }
-          }
-        }
+        //                   if (itemAdd.length > 0 && itemMessageTip.length > 0) {
+        //                     this.$Message.warning(itemMessageTip[0]);
+        //                     if (itemCheckedInfo && itemCheckedInfo.validateForm) {
+        //                       itemCheckedInfo.validateForm.focus();
+        //                     }
+        //                     return false;
+        //                   }
+        //                 }
+        //               }
+        //             }
+        //           }
+        //         } else if (this.getCurrentItemInfo().tabrelation === '1:1') {
+        //           const itemMessageTip = itemCheckedInfo.messageTip;
+        //           if (itemMessageTip) {
+        //             if (itemMessageTip.length > 0) {
+        //               this.$Message.warning(itemMessageTip[0]);
+        //               if (itemCheckedInfo && itemCheckedInfo.validateForm) {
+        //                 itemCheckedInfo.validateForm.focus();
+        //               }
+        //               return false;
+        //             }
+        //           }
+        //         } else if (Object.values(this.itemCurrentParameter.add[this.itemName]).length > 0) { // 处理当子表填入一个必填项值时，其余必填项必须填写
+        //           const itemMessageTip = itemCheckedInfo.messageTip;
+        //           if (itemMessageTip) {
+        //             if (itemMessageTip.length > 0) {
+        //               this.$Message.warning(itemMessageTip[0]);
+        //               if (itemCheckedInfo && itemCheckedInfo.validateForm) {
+        //                 itemCheckedInfo.validateForm.focus();
+        //               }
+        //               return false;
+        //             }
+        //           }
+        //         }
+        //       } else if (itemCheckedInfo) {
+        //         const itemMessageTip = itemCheckedInfo.messageTip;
+        //         if (itemMessageTip) {
+        //           if (itemMessageTip.length > 0) {
+        //             this.$Message.warning(itemMessageTip[0]);
+        //             if (itemCheckedInfo && itemCheckedInfo.validateForm) {
+        //               itemCheckedInfo.validateForm.focus();
+        //             }
+        //             return false;
+        //           }
+        //         }
+        //       }
+        //     }
+        //   }
+        // }
 
         if (window[this.tableName] && window[this.tableName].emitChangeAndContinue) {
           window[this.tableName].emitChangeAndContinue();

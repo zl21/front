@@ -95,8 +95,8 @@
         <component :is="componentsName"
                    :ref="items.colname"
                     v-bind="propsMessage"
-                     @on-keydown="onkeydown"
-                    v-model="value">
+                    v-model="value"
+                    @on-keydown="enterForm">
           <slot v-if="items.display === 'OBJ_SELECT'">
             <Option v-for="item in items.props.options"
                     :key="item.value"
@@ -112,7 +112,6 @@
                    v-if="_items.type === 'customization'"
                    :ref="items.colname"
                    v-model="value"
-                    v-on="$listeners"
                     v-bind="propsMessage"
                    :options="{
           ..._items,
@@ -332,6 +331,11 @@ export default {
   },
   methods: {
     ...mapMutations('global', ['tabOpen', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
+
+    enterForm(val){
+      this.$emit('on-keydown',val)
+    },
+    
     inheritanceComponents () {
       let component = null;
       // 兼容webcof
@@ -434,8 +438,7 @@ export default {
     },
     onkeydown(e){
       // 回车
-      console.log('43434');
-      this.$emit('on-keydown',e);
+      // this.$emit('on-keydown',e);
 
     },
     routerNext () {
