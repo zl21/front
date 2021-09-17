@@ -307,7 +307,8 @@ export default {
           if(c.webconf&& c.webconf.formRequest){
             c.webconf.formRequest.copy = true;
           }
-          if (item === c.name) {
+
+          if (item === c.name || item === c.colname) {
             // b.readonly = c.readonly;
             if (c.readonly === true) {
               if (c.defval) { // 处理复制时有不可编辑，且有默认值情况
