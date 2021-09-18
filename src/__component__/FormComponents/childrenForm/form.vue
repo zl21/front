@@ -57,9 +57,6 @@ export default {
             InitializationForm(val){
                 return this.$parent.initFormPanel(val)
             },
-            initFormPanel(val){
-                return this.$parent.initForm(val)
-            },
             formPanelChange(){
                  if (this.$parent.formChange) {
                      let $child = this.$refs.panelForm;
@@ -89,6 +86,7 @@ export default {
                         //     errorTip.validateForm = document.querySelector(`#${message[0].colname} input`);
                         // }
                         //this.$parent.verifyForm(errorTip);
+                         this.$refs.panelForm.checkedChildForm = true;
                         let checked =  document.querySelector('.singleObjectButton').__vue__.verifyRequiredInformation();
 
                         if(checked){

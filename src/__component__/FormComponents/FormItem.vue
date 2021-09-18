@@ -332,8 +332,12 @@ export default {
   methods: {
     ...mapMutations('global', ['tabOpen', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
 
-    enterForm(val){
-      this.$emit('on-keydown',val)
+    enterForm(e){
+      const tagName = e.target.tagName.toLowerCase();
+      if (tagName === 'input') {
+        this.$emit('on-keydown',e)
+      }
+      
     },
     
     inheritanceComponents () {

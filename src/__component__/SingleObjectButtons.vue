@@ -3317,7 +3317,6 @@
         }
       }
       let validate = [];
-      console.log(panelForm,'====');
 
       if (panelForm && panelForm[0]) {
         validate = panelForm.reduce((arr, item, index) => {
@@ -3325,8 +3324,9 @@
             // 默认第一个主表
             arr.push(...item.validate())
           } else if (this.itemName === item.tableName) {
-            if (isItemTableNewValidation()) {
-              if (Object.keys(item.formChangeData).length > 0) {
+            console.log(!isItemTableNewValidation(),'!isItemTableNewValidation()');
+            if (!isItemTableNewValidation()) {
+              if (Object.keys(item.formChangeData).length > 0 || item.checkedChildForm) {
                 arr.push(...item.validate())
               }
             } else {
