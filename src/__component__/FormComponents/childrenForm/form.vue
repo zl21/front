@@ -51,11 +51,11 @@ export default {
             setFormList(){
                 this.formList.addcolums[0].childs = this.defaultData.inpubobj.concat([])
             },
-            initFormPanel(val){
-                return this.$parent.initFormPanel(val)
+            initFormPanel(val,change,valLabel){
+                return this.$parent.initForm(val,change,valLabel)
             },
-            InitializationForm(val){
-                return this.$parent.initFormPanel(val)
+            InitializationForm(val,change,valLabel){
+                return this.$parent.initFormPanel(val,change,valLabel)
             },
             formPanelChange(){
                  if (this.$parent.formChange) {
