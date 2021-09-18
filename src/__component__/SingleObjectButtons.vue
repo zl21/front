@@ -132,6 +132,7 @@
           buttonGroupShowConfig: {// 标准按钮
             buttonGroupShow: []
           },
+          saveMainType:true, // 是否只保存主表
           jflowButton: [], // jflow配置按钮
           btnclick: (type, item) => {
             const self = this;
@@ -3292,6 +3293,8 @@
 
       },
       verifyRequiredInformation() { // 验证表单必填项
+      // 默认主表必须校验
+        this.saveMainType = true;
         if (this.temporaryStorage) { // 配置了暂存则不校验
           this.temporaryStorage = false;
           return true;
@@ -3301,7 +3304,6 @@
         this.saveParameters();// 获取主子表参数
         // 处理主表必填控制
          // 处理主表必填控制
-      console.log(this.tableName, this.objectType, '===checkedInfo');
       let panelForm_dom = document.querySelectorAll('.panelForm');
       let panelForm = [].reduce.call(panelForm_dom, function (arr, div) {
           if (div._vue_) {
@@ -3324,13 +3326,22 @@
             // 默认第一个主表
             arr.push(...item.validate())
           } else if (this.itemName === item.tableName) {
-            console.log(!isItemTableNewValidation(),'!isItemTableNewValidation()');
             if (!isItemTableNewValidation()) {
               if (Object.keys(item.formChangeData).length > 0 || item.checkedChildForm) {
-                arr.push(...item.validate())
+                let message = item.validate()
+                arr.push(...message);
+                if(message.length>0){
+                  // 子表有校验
+                  this.saveMainType = false;
+                }
               }
             } else {
-              arr.push(...item.validate())
+              let message = item.validate()
+                arr.push(...message);
+                if(message.length>0){
+                  // 子表有校验
+                  this.saveMainType = false;
+                }
             }
           }
 
@@ -3482,12 +3493,17 @@
       savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType) { // 主表新增保存方法
         const tableName = this.tableName;
         const objectType = this.objectType;
-        const isreftabs = this.subtables();
+        let isreftabs = this.subtables();
         const itemNameGroup = this.itemNameGroup;
         let tabrelation = false;
         if (this.getCurrentItemInfo().tabrelation === '1:1') {
           tabrelation = true;
         }
+        if(this.saveMainType && this.itemId === 'New'){
+          //只校验主表的时候不传子表
+            isreftabs = false;
+        }
+        console.log(itemCurrentParameter,'====itemCurrentParameter');
         const parame = {
           ...this.currentParameter, // 主表信息
           itemCurrentParameter, // 子表信息
@@ -3504,7 +3520,7 @@
           temporaryStoragePath: this.temporaryStoragePath, // 暂存path
           tabrelation, // 子表1:1标记
           // buttonInfo,
-          jflowPath: this.saveInfo.jflowPath
+          jflowPath: this.saveInfo.jflowPath,
         };
         const promise = new Promise((resolve, reject) => {
           if (this.itemId === 'New') {
