@@ -3330,18 +3330,17 @@
               if (Object.keys(item.formChangeData).length > 0 || item.checkedChildForm) {
                 let message = item.validate()
                 arr.push(...message);
-                if(message.length>0){
-                  // 子表有校验
-                  this.saveMainType = false;
-                }
+                this.saveMainType = false;
+                // if(message.length>0){
+                //   // 子表有校验
+                //   this.saveMainType = false;
+                // }
               }
             } else {
               let message = item.validate()
                 arr.push(...message);
-                if(message.length>0){
-                  // 子表有校验
-                  this.saveMainType = false;
-                }
+                // 子表有校验
+                this.saveMainType = false;
             }
           }
 
@@ -3503,7 +3502,6 @@
           //只校验主表的时候不传子表
             isreftabs = false;
         }
-        console.log(itemCurrentParameter,'====itemCurrentParameter');
         const parame = {
           ...this.currentParameter, // 主表信息
           itemCurrentParameter, // 子表信息
