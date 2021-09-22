@@ -89,8 +89,21 @@ const install = (Vue, R3 = {})=>{
   Vue.prototype.$store = R3.store;
 
 }
+// 
 
-
+const setAjaxSettings = ($)=>{
+  $.ajaxSettings.beforeSend = function (xhr, settings) {
+    let sessionCookie = window.localStorage.getItem('sessionCookie')
+    let number = Math.floor(Math.random() * 10000);
+    xhr.setRequestHeader("SSSSS-A", new Date().getTime());
+    if(sessionCookie === 'undefined'){
+      xhr.setRequestHeader("SSSSS-B", md5('qwertburgeon'+new Date().getTime()+number));
+    }else {
+      xhr.setRequestHeader("SSSSS-B", md5('qwertburgeon'+new Date().getTime()+number+sessionCookie));
+    }
+    xhr.setRequestHeader("SSSSS-C", number);
+  }
+}
 const requestHello = async function () {
   const serviceId = window.localStorage.getItem('serviceId')
   const url = serviceId ? `/${serviceId}/p/cs/hello`: '/p/cs/hello'
@@ -201,6 +214,7 @@ export default {
   connector: connector(), // 1.3框架公共模块包使用
   store,
   setXss:setXss,
+  setAjaxSettings,
   requestHello,
   config: {
     extentionForColumn,
