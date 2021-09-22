@@ -86,7 +86,7 @@ export default {
                         //     errorTip.validateForm = document.querySelector(`#${message[0].colname} input`);
                         // }
                         //this.$parent.verifyForm(errorTip);
-                         this.$refs.panelForm.checkedChildForm = true;
+                        this.$refs.panelForm.checkedChildForm = true;
                         let checked =  document.querySelector('.singleObjectButton').__vue__.verifyRequiredInformation();
 
                         if(checked){
