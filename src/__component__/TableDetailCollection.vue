@@ -944,12 +944,20 @@
         if (findIndex !== this.editElementId.length - 1) {
           elementIndex = findIndex + 1;
         }
+        // 遍历到最后一个节点后停止
+        if(elementIndex === this.editElementId.length - 1) {
+          this._stopFindDom = true
+        }
         const id = `ag-${this.editElementId[elementIndex]}`
         const focusDom = document.getElementById(id);
         if (focusDom && !focusDom.getElementsByTagName('input')[0].disabled) {
           focusDom.getElementsByTagName('input')[0].focus();
           focusDom.getElementsByTagName('input')[0].select();
         } else {
+          if(this._stopFindDom) {
+            this._stopFindDom = false
+            return
+          }
           this.tableCellFocusByEnter(this.editElementId[elementIndex]);
         }
       }, // 回车的时候聚焦下一个可编辑的输入框
