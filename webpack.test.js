@@ -4,6 +4,7 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const copyWebpackPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack');
 
 // 打包给模板项目测试用
 module.exports = () => ({
@@ -129,6 +130,9 @@ module.exports = () => ({
     ],
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env.BUILD_ENV': JSON.stringify(process.env.BUILD_ENV)
+    }),
     new MiniCssExtractPlugin({
       filename: 'r3.min.css',
     }),
