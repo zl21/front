@@ -85,17 +85,16 @@ axios.interceptors.request.use(
       // if(window.ProjectConfig.enciphered){}
 
         config.headers['locale'] = window.localStorage.getItem('r3-lang') || 'zh';
+        // let number = Math.floor(Math.random() * 10000);
+        // let sessionCookie = window.localStorage.getItem('sessionCookie');
+        // config.headers['SSSSS-A'] = new Date().getTime();
+        // if(sessionCookie === 'undefined'){
+        //   config.headers['SSSSS-B'] = md5('qwertburgeon'+new Date().getTime()+number);
+        // }else{
+        //   config.headers['SSSSS-B'] = md5('qwertburgeon'+new Date().getTime()+number+sessionCookie);
+        // }
 
-        let number = Math.floor(Math.random() * 10000);
-        let sessionCookie = window.localStorage.getItem('sessionCookie');
-        config.headers['SSSSS-A'] = new Date().getTime();
-        if(sessionCookie === 'undefined'){
-          config.headers['SSSSS-B'] = md5('qwertburgeon'+new Date().getTime()+number);
-        }else{
-          config.headers['SSSSS-B'] = md5('qwertburgeon'+new Date().getTime()+number+sessionCookie);
-        }
-
-        config.headers['SSSSS-C'] = number;
+        // config.headers['SSSSS-C'] = number;
 
       return config
   }
