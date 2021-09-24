@@ -9,31 +9,33 @@ import store from './src/__config__/store.config';
 import router from './src/__config__/router.config';
 import extentionForColumn from './src/constants/extentionPropertyForColumn';
 import extentionForTable from './src/constants/extentionPropertyForTable';
-import PopDialog from './src/__component__/PopDialog.vue';
-import ContentDisplayArea from './src/__component__/ContentDisplayArea.vue';
-import ComAttachFilter from './src/__component__/ComAttachFilter.vue';
-import DownComponent from './src/__component__/DownComponent.vue';
-import WaterMark from './src/__component__/WaterMark.vue';
-import VerticalMenu from './src/__component__/VerticalMenu.vue';
-import NavigatorVertical from './src/__component__/NavigatorVertical.vue';
-import NaVertical from './src/__component__/NaVertical.vue';
-import ComAutoComplete from './src/__component__/ComAutoComplete.vue';
+// import PopDialog from './src/__component__/PopDialog.vue';
+// import ContentDisplayArea from './src/__component__/ContentDisplayArea.vue';
+// import ComAttachFilter from './src/__component__/ComAttachFilter.vue';
+// import DownComponent from './src/__component__/DownComponent.vue';
+// import WaterMark from './src/__component__/WaterMark.vue';
+// import VerticalMenu from './src/__component__/VerticalMenu.vue';
+// import NavigatorVertical from './src/__component__/NavigatorVertical.vue';
+// import NaVertical from './src/__component__/NaVertical.vue';
+// import ComAutoComplete from './src/__component__/ComAutoComplete.vue';
 
-import ImportDialog from './src/__component__/ImportDialog.vue';
-import SearchForm from './src/__component__/form/SearchForm.vue';//
-import FilterTree from './src/__component__/Tree/FilterTree.vue';
-import SelectTree from './src/__component__/Tree/SelectTree.vue';
-import DocFile from './src/__component__/docfile/DocFileComponent.vue';
-import CheckboxGroup from './src/__component__/form/CheckboxGroup.vue';
-import RadioGroup from './src/__component__/form/RadioGroup.vue';
-import Setting from './src/__component__/nav/Setting.vue'
-import MessageList from './src/__component__/nav/MessageList.vue'
-import Login from './src/__component__/Login/LoginCore'; // 登录核心功能
+// import ImportDialog from './src/__component__/ImportDialog.vue';
+// import SearchForm from './src/__component__/form/SearchForm.vue';//
+// import FilterTree from './src/__component__/Tree/FilterTree.vue';
+// import SelectTree from './src/__component__/Tree/SelectTree.vue';
+// import DocFile from './src/__component__/docfile/DocFileComponent.vue';
+// import Login from './src/__component__/Login/LoginCore';
+// import CheckboxGroup from './src/__component__/form/CheckboxGroup.vue';
+// import RadioGroup from './src/__component__/form/RadioGroup.vue';
+// import Setting from './src/__component__/nav/Setting.vue'
+// import MessageList from './src/__component__/nav/MessageList.vue'
 import ErCode from './src/__component__/Login/components/ErCode'; // 验证码
 import Collect from './src/__component__/nav/collect'; // 收藏
 import Lately from './src/__component__/nav/lately'; // 最近访问
 import ChangeLang from './src/__component__/Login/components/ChangeLang'; // 语言切换
 import HistoryAndFavorite from './src/__component__/HistoryAndFavorite'; // 水平排版下的收藏和最近访问
+import externalComponents from './src/__config__/externalComponents'
+
 import { menuClick } from './src/__config__/event.config';
 import { connector } from './src/constants/global';
 import './src/constants/dateApi';
@@ -225,25 +227,26 @@ export default {
     extentionForTable,
   },
   components: {
-    ContentDisplayArea,
-    PopDialog,
-    ComAttachFilter,
-    DownComponent,
-    WaterMark,
-    SearchForm,
-    FilterTree,
-    SelectTree,
-    DocFile,
-    ImportDialog,
-    VerticalMenu,
-    NavigatorVertical,
-    NaVertical,
-    ComAutoComplete,
-    Login,
-    CheckboxGroup,
-    RadioGroup,
-    Setting,
-    MessageList,
+    ...externalComponents,
+    // ContentDisplayArea,
+    // PopDialog,
+    // ComAttachFilter,
+    // DownComponent,
+    // WaterMark,
+    // SearchForm,
+    // FilterTree,
+    // SelectTree,
+    // DocFile,
+    // ImportDialog,
+    // VerticalMenu,
+    // NavigatorVertical,
+    // NaVertical,
+    // ComAutoComplete,
+    // Login,
+    // CheckboxGroup,
+    // RadioGroup,
+    // Setting,
+    // MessageList,
     ErCode,
     Collect,
     Lately,
