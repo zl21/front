@@ -30,7 +30,49 @@
         inputValue: '',
         tableName: 'treeDemo',
         showTip:false,
-        setting: {
+        // setting: {
+        //   check: {
+        //     enable: false// checkbox
+        //   },
+        //   view: {
+        //     selectedMulti: false,
+        //     showIcon: false,
+        //     nameIsHTML: true,
+        //     dblClickExpand: false,
+        //     // showLine: false,
+        //     // fontCss: this.setFontCss
+        //   },
+        //   callback: {
+        //     beforeClick: this.beforeClick,
+        //     onClick: this.onClick
+        //   },
+        //   edit: {
+        //     enable: false,
+        //     editNameSelectAll: false
+        //   },
+        //   data: {
+        //     key: {
+        //       children: 'CHILDREN',
+        //       name: 'NAME',
+        //     },
+        //     simpleData: {
+        //       enable: true,
+        //       idKey: 'ID', // 树节点ID名称
+        //       pIdKey: 'PARENT_ID', // 父节点ID名称
+        //     // rootPId: -1,//根节点ID
+        //     }
+        //   },
+        // },
+        isClick: false,
+        treeId: '',
+        searchNoData: false,
+        zTreeObj: undefined,
+      };
+    },
+
+    computed: {
+      setting() {
+        const defalutSetting=  {
           check: {
             enable: false// checkbox
           },
@@ -62,18 +104,16 @@
             // rootPId: -1,//根节点ID
             }
           },
-        },
-        isClick: false,
-        treeId: '',
-        searchNoData: false
-
-
-      };
+        }
+        const result = Object.assign(defalutSetting, this.treeSetting)
+        return result
+      }
     },
+
     watch: {
       zNodes: {
         handler() {
-          $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
+          this.zTreeObj = $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
         },
         deep: true
       },
@@ -110,6 +150,11 @@
         type: Array,
         default: () => []
       },
+      // 树配置
+      treeSetting: {
+        type: Object,
+        default: () => ({})
+      }
     },
     methods: {
 
@@ -208,7 +253,7 @@
       },
       expandAll() {
         // fuzzySearch('treeDemo','', null, false); // 初始化模糊搜索方法
-        $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
+        this.zTreeObj = $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
         this.treeId = '';
         // const treeObj = $.fn.zTree.getZTreeObj('treeDemo');
         // treeObj.refresh();// 取消选中
@@ -229,7 +274,7 @@
     },
     mounted() {
       this.$nextTick(() => {
-        $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
+        this.zTreeObj = $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
       });
 
       // $(document).ready(() => {

@@ -1,0 +1,141 @@
+.R3-api-permission {
+  .ark-btn {
+    border-radius: 4px;
+  }
+  .view-title {
+    margin: 28px 0;
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  .content-area {
+    display: flex;
+  }
+
+  .account-list {
+    flex: 0 0 600px;
+    margin-right: 40px;
+  }
+
+  // 账号item
+  .R3-accout-item {
+    border-radius: 8px;
+    border: 1px solid #eee;
+    height: 80px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    box-sizing: border-box;
+    padding: 16px 10px;
+
+    .accout-item-l {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      .key {
+        margin-right: 40px;
+      }
+
+      .serect {
+        margin-right: 10px;
+      }
+
+      .value {
+        font-weight: bold;
+      }
+
+      .refresh {
+        height: 14px;
+        width: 14px;
+        display: inline-block;
+        img {
+          width: 100%;
+          vertical-align: middle;
+        }
+      }
+    }
+
+    .accout-item-r {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      .ark-btn-error {
+        background-color: #999;
+        border-color: #999;
+        &:hover {
+          background-color: #ed4014;
+          border-color: #ed4014;
+        }
+      }
+    }
+  }
+
+  // 添加账号
+  .R3-add-acount {
+    border-radius: 8px;
+    border: 1px solid #eee;
+    height: 60px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 10px;
+
+    .add-account-l {
+      display: flex;
+      align-items: center;
+      .label {
+        width: 90px;
+      }
+    }
+
+    .add-account-r {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 160px;
+      .ark-btn-info {
+        background-color: #999;
+        border-color: #999;
+        &:hover {
+          opacity: 0.9;
+        }
+      }
+    }
+  }
+
+  // 接口权限
+  .api-pannel {
+    flex: 1;
+    min-width: 400px;
+    min-height: 500px;
+
+    .api-header {
+      height: 40px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: bold;
+      border-bottom: 1px solid #eee;
+    }
+  }
+
+  .all-pannel {
+    padding: 10px 0 10px 20px;
+  }
+
+  .api-pannel {
+    padding: 0px 10px 10px 10px;
+    .ark-input-wrapper {
+      width: 200px;
+    }
+  }
+
+  .api-tree {
+    border-radius: 8px;
+    border: 1px solid #eee;
+    min-height: 100%;
+  }
+}

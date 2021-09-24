@@ -195,7 +195,15 @@ export default {
     collapseQuery: '折叠查询条件',
     queryDefaultRows: '查询条件默认显示行数',
     noHistory: '暂无历史记录',
-    noCollection: '暂无收藏记录'
+    noCollection: '暂无收藏记录',
+    devAccount: '开发者账号',
+    accountList: '账号列表',
+    accountName: '账号名称',
+    addAccount: '新增账号',
+    deleteAccount: '删除账号',
+    managementAuthority: '权限管理',
+    interfacePermissions: '接口权限',
+    pleaseEnterContent: '请输入内容',
   },
   // 具有通用性的文案
   tips: {

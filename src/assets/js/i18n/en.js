@@ -195,7 +195,15 @@ export default {
     collapseQuery: 'collapse query conditions',
     queryDefaultRows: 'number of query area rows',
     noHistory: 'no history',
-    noCollection: 'no collection'
+    noCollection: 'no collection',
+    devAccount: 'developer account',
+    accountList: 'account list',
+    accountName: 'account name',
+    addAccount: 'add account',
+    deleteAccount: 'delete account',
+    managementAuthority: 'authority management',
+    interfacePermissions: 'interface permissions',
+    pleaseEnterContent: 'enter content'
   },
   // 具有通用性的文案
   tips: {
