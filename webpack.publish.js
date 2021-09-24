@@ -7,6 +7,8 @@ const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const copyWebpackPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack');
+
 const {
   ModuleFederationPlugin
 } = require('webpack').container;
@@ -128,6 +130,9 @@ const config = {
     ],
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env.BUILD_ENV': JSON.stringify(process.env.BUILD_ENV)
+    }),
     new MiniCssExtractPlugin({
       filename: 'r3.min.css',
     }),
