@@ -13,7 +13,7 @@
         "build:oss": "cross-env BUILD_ENV=oss webpack --color --progress --config webpack.config.js --env.production && npm run server",
         "build:oss_no": "cross-env BUILD_ENV=oss_no webpack --color --progress --config webpack.config.js --env.production  && npm run server",
         "build:style": "gulp --gulpfile build-style.js",
-        "build:test": "cross-env BUILD_ENV=test webpack --color --progress --config webpack.test.js --env.NODE_ENV=development",
+        "build:test": "cross-env BUILD_ENV=dev webpack --color --progress --config webpack.test.js --env.NODE_ENV=development",
         "build:publish": "npm i && cross-env BUILD_ENV=publish webpack --color --progress --config webpack.publish.js  --env.NODE_ENV=publish",
         "zip": "node doZip.js",
         "deploy": "npm publish && node dingtalk.js",

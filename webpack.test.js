@@ -139,9 +139,14 @@ module.exports = () => ({
     new CleanWebpackPlugin(['r3.publish']),
     new VueLoaderPlugin(),
     new copyWebpackPlugin([{
-        from: path.resolve(__dirname, "./src/assets/theme/custom.less"),
-        to: path.resolve(__dirname, "./r3.publish/src/assets/theme")
-    }]),
+        from: path.resolve(__dirname, "./src/assets"),
+        to: path.resolve(__dirname, "./r3.publish/src/assets")
+      },
+      {
+        from: path.resolve(__dirname, "./src/index.less"),
+        to: path.resolve(__dirname, "./r3.publish/src")
+      },
+    ]),
   ],
   mode: 'development',
   resolve: {
