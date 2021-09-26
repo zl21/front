@@ -1,5 +1,5 @@
 <template>
-  <div class="api-tree">
+  <div class="api-tree"  :style="apiStyle">
     <div class="api-header">
       <p>【xxx】{{$t('messages.managementAuthority')}}</p>
       <Button
@@ -10,13 +10,13 @@
     </div>
 
     <div class="api-body">
-      <div class="all-pannel">
+      <div class="all-panel">
         <span>{{$t('messages.interfacePermissions')}}：</span>
         <Checkbox v-model="isSelectAll">{{$t('tips.all')}}</Checkbox>
         <span class="count">(38/38)</span>
       </div>
 
-      <div class="api-pannel">
+      <div class="api-panel">
         <Ztree
           ref="zTree"
           :placeholder="$t('messages.pleaseEnterContent')"
@@ -25,20 +25,8 @@
           @treeSearch="search"
         ></Ztree>
       </div>
-
-      <!-- <div class="search-pannel">
-        <Input
-          v-model="value"
-          :placeholder="$t('messages.pleaseEnterContent')"
-          suffix="ios-search"
-        ></Input>
-      </div>
-
-      <div class="api-pannel">
-
-      </div> -->
-
     </div>
+    <i class="iconfont arrow-r">&#xea18;</i>
   </div>
 </template>
 
@@ -50,6 +38,21 @@ export default {
 
   components: {
     Ztree
+  },
+
+  props: {
+    // 第几个权限的索引
+    permissionsIndex: {
+      type: Number,
+      default: 0
+    }
+  },
+
+  computed: {
+    // 计算组件偏移量
+    apiStyle() {
+      return `top: ${this.permissionsIndex * 100}px;`
+    }
   },
 
   data() {

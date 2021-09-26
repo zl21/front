@@ -12,7 +12,10 @@
       <div>
         <span class="label">appKey： </span><span class="value key">DCSDC</span>
         <span class="label">appSecret： </span><span class="value serect">3232jkjlj2323</span>
-        <span class="refresh">
+        <span
+          class="refresh"
+          @click="refresh"
+        >
           <img
             src="../../assets/image/refresh.png"
             class="refresh-icon"
@@ -34,6 +37,7 @@
       <Button
         type="info"
         size="small"
+        @click="manageAuthority"
       >{{$t('messages.managementAuthority')}}</Button>
     </div>
   </div>
@@ -42,6 +46,12 @@
 <script type="text/ecmascript-6">
 export default {
   name: 'R3AccoutItem',
+
+  props: {
+    index: {
+      type: Number
+    }
+  },
 
   data() {
     return {
@@ -62,15 +72,37 @@ export default {
 
     // 删除账号
     deleteAccount() {
-      this.$Modal.confirm({
+      this.$Modal.fcWarning({
         mask: true,
-        title: this.$t('feedback.error'),
-        content: `111`,
+        showCancel: true,
+        title: this.$t('feedback.alert'),
+        content: this.$t('messages.confirmDeleteAccount'),
         onOk: () => {
-          console.log('ok');
+          this.$emit('comfirmDelete')
         },
         onCancel: () => {
-          console.log('cancel')
+          this.$emit('cancelDelete')
+        }
+      });
+    },
+
+    // 管理权限
+    manageAuthority() {
+      this.$emit('manageAuthority', this.index)
+    },
+
+    // 更新密钥
+    refresh() {
+      this.$Modal.fcWarning({
+        mask: true,
+        showCancel: true,
+        title: this.$t('feedback.alert'),
+        content: this.$t('messages.confirmRefreshSecret'),
+        onOk: () => {
+          this.$emit('comfirmRefresh')
+        },
+        onCancel: () => {
+          this.$emit('cancelRefresh')
         }
       });
     }

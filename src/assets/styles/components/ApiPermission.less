@@ -75,12 +75,21 @@
   .R3-add-acount {
     border-radius: 8px;
     border: 1px solid #eee;
-    height: 60px;
+    min-height: 60px;
     margin-bottom: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     padding: 16px 10px;
+
+    .add-account-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .error-tip {
+      color: red;
+      margin-top: 8px;
+      margin-left: 64px;
+    }
 
     .add-account-l {
       display: flex;
@@ -106,10 +115,16 @@
   }
 
   // 接口权限
-  .api-pannel {
+  .api-panel {
     flex: 1;
     min-width: 400px;
     min-height: 500px;
+    padding: 0px 10px 10px 10px;
+    position: relative;
+
+    .ark-input-wrapper {
+      width: 200px;
+    }
 
     .api-header {
       height: 40px;
@@ -120,22 +135,22 @@
       font-weight: bold;
       border-bottom: 1px solid #eee;
     }
-  }
 
-  .all-pannel {
-    padding: 10px 0 10px 20px;
-  }
-
-  .api-pannel {
-    padding: 0px 10px 10px 10px;
-    .ark-input-wrapper {
-      width: 200px;
+    .all-panel {
+      padding: 10px 0 10px 20px;
     }
-  }
 
-  .api-tree {
-    border-radius: 8px;
-    border: 1px solid #eee;
-    min-height: 100%;
+    .api-tree {
+      border-radius: 8px;
+      border: 1px solid #eee;
+      min-height: 100%;
+      position: relative;
+
+      .arrow-r {
+        position: absolute;
+        left: -34px;
+        top: 32px;
+      }
+    }
   }
 }

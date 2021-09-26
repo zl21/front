@@ -204,6 +204,9 @@ export default {
     managementAuthority: '权限管理',
     interfacePermissions: '接口权限',
     pleaseEnterContent: '请输入内容',
+    confirmDeleteAccount: '删除操作不可恢复，如当前有开发者使用此账号，将无法访问接口，确认删除吗',
+    enterAccountName: '请输入账号名称',
+    confirmRefreshSecret: '点击确认后，会重置appSecret，重置后请通知下游开发者更换密钥信息'
   },
   // 具有通用性的文案
   tips: {
