@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import project from '../../project.config';
+import project from '../../projectConfig/project.config';
 import configForColumn from './extentionPropertyForColumn';
 import configForTable from './extentionPropertyForTable';
 import backDashboardRoutes from '../__config__/backDashboardRoute.config';

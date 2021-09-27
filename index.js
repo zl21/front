@@ -19,7 +19,7 @@ import R3Dialog from './src/__globalComponentModule__/dialog';
 import customizedModalConfig from './src/__config__/customizeDialog.config';
 import Loading from './src/__utils__/loading';
 import getObjdisType from './src/__utils__/getObjdisType';
-import projectConfig from './project.config';
+import projectConfig from './projectConfig/project.config';
 import { addSearch } from './src/__utils__/indexedDB';
 import { createWatermark } from './src/__utils__/waterMark';
 const packageMessage = {
