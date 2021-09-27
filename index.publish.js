@@ -124,7 +124,7 @@ const setHookAJAX = (callback)=>{
   XMLHttpRequest.prototype.nativeOpen = XMLHttpRequest.prototype.open;
   var customizeOpen = function (method, url, async, user, password) {
     this.nativeOpen(method, url, async, user, password);
-    callback().call(this);
+    callback(this);
   };
   XMLHttpRequest.prototype.open = customizeOpen;
 }
@@ -239,6 +239,7 @@ export default {
   store,
   setXss:setXss,
   hookAJAX,
+  setHookAJAX,
   requestHello,
   config: {
     extentionForColumn,

@@ -15,6 +15,10 @@ const {
   urlSearchParams
 } = R3;
 
+// R3.setHookAJAX(function($ajax){
+//   $ajax.setRequestHeader('SSSSS-Aq', new Date().getTime());
+// })
+
 const keyList = ['login','banner','welcome','bigData']
 const zhImg = {}
 const enImg = {}
