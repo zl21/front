@@ -85,8 +85,25 @@ const install = (Vue, R3 = {})=>{
   Vue.prototype.$store = R3.store;
 
 }
+// 
 
-
+const hookAJAX = ()=>{
+  // 接口加密拦截
+  XMLHttpRequest.prototype.nativeOpen = XMLHttpRequest.prototype.open;
+  var customizeOpen = function (method, url, async, user, password) {
+    this.nativeOpen(method, url, async, user, password);
+    let number = Math.floor(Math.random() * 10000);
+        let sessionCookie = window.localStorage.getItem('sessionCookie');
+        this.setRequestHeader('SSSSS-A', new Date().getTime());
+        if(sessionCookie === 'undefined'){
+          this.setRequestHeader('SSSSS-B', md5('qwertburgeon'+new Date().getTime()+number));
+        }else{
+          this.setRequestHeader('SSSSS-B', md5('qwertburgeon'+new Date().getTime()+number+sessionCookie));
+        }
+        this.setRequestHeader('SSSSS-C', number);
+  };
+  XMLHttpRequest.prototype.open = customizeOpen;
+}
 const requestHello = async function () {
   const serviceId = window.localStorage.getItem('serviceId')
   const url = serviceId ? `/${serviceId}/p/cs/hello`: '/p/cs/hello'
@@ -197,6 +214,7 @@ export default {
   connector: connector(), // 1.3框架公共模块包使用
   store,
   setXss:setXss,
+  hookAJAX,
   requestHello,
   config: {
     extentionForColumn,
