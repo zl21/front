@@ -5,23 +5,27 @@
     @mouseleave="mouseleave"
   >
     <div class='accout-item-l'>
-      <p>
+      <div class='accout-row'>
         <span class="label">{{$t('messages.accountName')}}：</span>
-        <span class="value">测试赛搜索</span>
-      </p>
-      <div>
-        <span class="label">appKey： </span><span class="value key">DCSDC</span>
-        <span class="label">appSecret： </span><span class="value serect">3232jkjlj2323</span>
-        <span
-          class="refresh"
-          @click="refresh"
-        >
-          <img
-            src="../../assets/image/refresh.png"
-            class="refresh-icon"
-            alt=""
+        <span class="value">{{itemInfo.name}}</span>
+      </div>
+      <div class='app-wrap'>
+        <div class="app-info key">
+          <span class="label">appKey：</span><span class="value ">{{itemInfo.credentialKey}}</span>
+        </div>
+        <div class="app-info">
+          <span class="label">appSecret：</span><span class="value serect">{{itemInfo.credentialSecret}}</span>
+          <span
+            class="refresh"
+            @click="refresh"
           >
-        </span>
+            <img
+              src="../../assets/image/refresh.png"
+              class="refresh-icon"
+              alt=""
+            >
+          </span>
+        </div>
       </div>
     </div>
 
@@ -50,12 +54,16 @@ export default {
   props: {
     index: {
       type: Number
+    },
+
+    itemInfo: {
+      type: Object
     }
   },
 
   data() {
     return {
-      showButtons: true
+      showButtons: false
     }
   },
 
@@ -78,7 +86,7 @@ export default {
         title: this.$t('feedback.alert'),
         content: this.$t('messages.confirmDeleteAccount'),
         onOk: () => {
-          this.$emit('comfirmDelete')
+          this.$emit('comfirmDelete', this.itemInfo)
         },
         onCancel: () => {
           this.$emit('cancelDelete')
@@ -88,7 +96,10 @@ export default {
 
     // 管理权限
     manageAuthority() {
-      this.$emit('manageAuthority', this.index)
+      this.$emit('manageAuthority', { 
+        index: this.index,
+        item: this.itemInfo
+      })
     },
 
     // 更新密钥
@@ -99,7 +110,7 @@ export default {
         title: this.$t('feedback.alert'),
         content: this.$t('messages.confirmRefreshSecret'),
         onOk: () => {
-          this.$emit('comfirmRefresh')
+          this.$emit('comfirmRefresh', this.itemInfo)
         },
         onCancel: () => {
           this.$emit('cancelRefresh')

@@ -354,7 +354,8 @@ export default {
     collectionFailed: '收藏失败',
     unfavoriteSuccessfully: '取消收藏成功',
     failedToUnfavorite: '取消收藏失败',
-    cloneSuccess: '克隆成功'
+    cloneSuccess: '克隆成功',
+    deleteSuccessfully: '删除成功'
   },
   // 动作行为(不含按钮里的，比如勾选，输入之类)
   actions: {

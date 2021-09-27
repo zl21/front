@@ -354,7 +354,8 @@ export default {
     collectionFailed: 'collection failed',
     unfavoriteSuccessfully: 'unfavorite successfully',
     failedToUnfavorite: 'failed to unfavorite',
-    cloneSuccess: 'successfully clone'
+    cloneSuccess: 'successfully clone',
+    deleteSuccessfully: 'delete successfully'
   },
   // 动作行为(不含按钮里的)
   actions: {

@@ -6,17 +6,15 @@
       <!-- 账号列表 -->
       <div class="account-list">
         <AccoutItem
+          v-for="(item, index) in accountList"
           @manageAuthority='manageAuthority'
           @comfirmDelete="comfirmDelete"
           @comfirmRefresh="comfirmRefresh"
-          :index='0'
+          :itemInfo="item"
+          :key="item.credentialKey"
+          :index='index'
         ></AccoutItem>
-        <AccoutItem
-          @manageAuthority='manageAuthority'
-          @comfirmDelete="comfirmDelete"
-          @comfirmRefresh="comfirmRefresh"
-          :index='1'
-        ></AccoutItem>
+
         <AddAccount
           v-if="showAddForm"
           @cancel="hideAdd"
@@ -33,7 +31,14 @@
         class="api-panel"
         v-if="showPermissions"
       >
-        <ApiTree :permissionsIndex='currentPermissionsIndex'></ApiTree>
+        <ApiTree
+          :permissionsIndex='currentPermissionsIndex'
+          :currentAccount="currentAccount"
+          :checkedTotal="checkedTotal"
+          :total="total"
+          :treeData="treeData"
+          @search="searchAuthority"
+        ></ApiTree>
       </div>
     </div>
   </div>
@@ -59,6 +64,11 @@ export default {
       showPermissions: false,
       showAddForm: false,
       currentPermissionsIndex: undefined,
+      accountList: [],
+      currentAccount: undefined,
+      checkedTotal: 0,
+      total: 0,
+      treeData: []
     }
   },
 
@@ -73,39 +83,114 @@ export default {
       this.showAddForm = false;
     },
 
-    // 新增账号
-    addAccount(account) {
-      this.hideAdd()
+    // 校验账号是否合法
+    validateAccount(name) {
+      return new Promise((resolve, reject) => {
+        network.post('/p/cs/developer/check_user_name', { name }).then(res => {
+          if (res.data.code === 0) {
+            resolve(true)
+          } else {
+            resolve(false)
+          }
+        }).catch(() => {
+          resolve(false)
+        })
+      })
     },
 
-    // 管理权限
-    manageAuthority(index) {
-      this.currentPermissionsIndex = index
-      this.showPermissions = true
+    // 新增账号
+    async addAccount(name) {
+      if (await this.validateAccount(name)) {
+        network.post('/p/cs/developer/save_user', { name }).then(res => {
+          if (res.data.code === 0) {
+            this.getAccountList()
+            this.hideAdd()
+          }
+        })
+      }
     },
 
     // 删除账号
-    comfirmDelete() {
-      
+    comfirmDelete({ id }) {
+      network.post('/p/cs/developer/delete_user', { id }).then(res => {
+        if (res.data.code === 0) {
+          this.getAccountList()
+          this.$Message.success(this.$t('feedback.deleteSuccessfully'));
+        }
+      })
     },
 
     // 更新密钥
-    comfirmRefresh() {
-
+    comfirmRefresh({ id }) {
+      network.post('/p/cs/developer/flush_secret', { id }).then(res => {
+        if (res.data.code === 0) {
+          this.getAccountList()
+          this.$Message.success(this.$t('feedback.refreshSuccess'));
+        }
+      })
     },
 
     // 获取账号列表
     getAccountList() {
-      // network.post('/p/cs/developer/find_user_list').then(res => {
-      //   console.log(res)
-      // })
+      // this.$R3loading.show(this.loadingName);
+      network.post('/p/cs/developer/find_user_list', {}).then(res => {
+        if (res.data.code === 0) {
+          this.accountList = res.data.data.list
+        }
+      }).finally(() => {
+        // this.$R3loading.hide(this.loadingName);
+      })
+    },
+
+    // 查询用户权限
+    manageAuthority(info) {
+      this.currentPermissionsIndex = info.index
+      this.currentAccount = info.item
+      this.showPermissions = true
+
+      network.post('/p/cs/developer/find_permission_list', { apiUserId: this.currentAccount.id }).then(res => {
+        if (res.data.code === 0) {
+          const data = res.data.data
+          this.checkedTotal = data.showTotal
+          this.total = data.total
+          this.treeData = this._formatTree(data.list)
+          console.log("🚀 ~ this.treeData", this.treeData)
+        }
+      })
+    },
+
+    // 模糊搜索权限
+    searchAuthority(params) {
+      network.post('/p/cs/developer/find_permission_list', { apiUserId: this.currentAccount.id, name: params.value }).then(res => {
+        if (res.data.code === 0) {
+          const data = res.data.data
+          this.checkedTotal = data.showTotal
+          this.total = data.total
+          this.treeData =  this._formatTree(data.list)
+        }
+      })
+    },
+
+    // 重组权限树的数据
+    _formatTree(data) {
+      data.forEach(parentObj => {
+        parentObj.desc = `${parentObj.apiTagDesc} (${parentObj.showTotal}/${parentObj.total})`
+        parentObj.apiPathVoList.forEach(childObj => {
+          childObj.desc = `${childObj.name}    ${childObj.path}`
+        })
+      })
+      return data
     }
   },
 
-  mounted() {
-    this.getAccountList()
+    // created() {
+    //     this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');
+    //   },
+
+    mounted() {
+      this.getAccountList()
+    }
   }
-}
 </script>
 
 <style lang="scss" scoped>
