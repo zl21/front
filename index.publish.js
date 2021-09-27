@@ -9,15 +9,27 @@ import store from './src/__config__/store.config';
 import router from './src/__config__/router.config';
 import extentionForColumn from './src/constants/extentionPropertyForColumn';
 import extentionForTable from './src/constants/extentionPropertyForTable';
-import PopDialog from './src/__component__/PopDialog.vue';
-import ContentDisplayArea from './src/__component__/ContentDisplayArea.vue';
-import ComAttachFilter from './src/__component__/ComAttachFilter.vue';
-import DownComponent from './src/__component__/DownComponent.vue';
-import WaterMark from './src/__component__/WaterMark.vue';
-import VerticalMenu from './src/__component__/VerticalMenu.vue';
-import NavigatorVertical from './src/__component__/NavigatorVertical.vue';
-import NaVertical from './src/__component__/NaVertical.vue';
-import ComAutoComplete from './src/__component__/ComAutoComplete.vue';
+// import PopDialog from './src/__component__/PopDialog.vue';
+// import ContentDisplayArea from './src/__component__/ContentDisplayArea.vue';
+// import ComAttachFilter from './src/__component__/ComAttachFilter.vue';
+// import DownComponent from './src/__component__/DownComponent.vue';
+// import WaterMark from './src/__component__/WaterMark.vue';
+// import VerticalMenu from './src/__component__/VerticalMenu.vue';
+// import NavigatorVertical from './src/__component__/NavigatorVertical.vue';
+// import NaVertical from './src/__component__/NaVertical.vue';
+// import ComAutoComplete from './src/__component__/ComAutoComplete.vue';
+
+// import ImportDialog from './src/__component__/ImportDialog.vue';
+// import SearchForm from './src/__component__/form/SearchForm.vue';//
+// import FilterTree from './src/__component__/Tree/FilterTree.vue';
+// import SelectTree from './src/__component__/Tree/SelectTree.vue';
+// import DocFile from './src/__component__/docfile/DocFileComponent.vue';
+// import Login from './src/__component__/Login/LoginCore';
+// import CheckboxGroup from './src/__component__/form/CheckboxGroup.vue';
+// import RadioGroup from './src/__component__/form/RadioGroup.vue';
+// import Setting from './src/__component__/nav/Setting.vue'
+// import MessageList from './src/__component__/nav/MessageList.vue'
+import externalComponents from './src/__config__/externalComponents'
 
 import ImportDialog from './src/__component__/ImportDialog.vue';
 import SearchForm from './src/__component__/form/SearchForm.vue';//

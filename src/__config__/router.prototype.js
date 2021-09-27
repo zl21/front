@@ -1,5 +1,5 @@
 import LoginWrap from '../__component__/Login/LoginWrap';
-import Content from '../__component__/ContentTemplate.vue';
+// import Content from '../__component__/ContentTemplate.vue';
 import WelcomePage from '../__component__/WelcomePage';
 // import ComponentProtoType from '../__component__/ComponentPrototype';
 import AutomaticPathGeneration from '../__component__/AutomaticPathGeneration';
@@ -17,7 +17,12 @@ import {
 const routes = [
   {
     path: '/',
-    component: Content,
+    // component: Content,
+    component: () => import(
+      /* webpackChunkName: 'ContentTemplate' */
+      /* webpackMode: 'eager' */
+      '../__component__/ContentTemplate.vue'
+    ),
     children: [
       {
         path: '/',
