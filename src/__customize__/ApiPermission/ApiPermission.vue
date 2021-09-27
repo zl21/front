@@ -38,6 +38,8 @@
           :total="total"
           :treeData="treeData"
           @search="searchAuthority"
+          @updateCheckedCount="updateCheckedCount"
+          @check="handlerNodeCheck"
         ></ApiTree>
       </div>
     </div>
@@ -160,15 +162,34 @@ export default {
     },
 
     // 模糊搜索权限
-    searchAuthority(params) {
-      network.post('/p/cs/developer/find_permission_list', { apiUserId: this.currentAccount.id, name: params.value }).then(res => {
+    searchAuthority({value, zTreeObj}) {
+      network.post('/p/cs/developer/find_permission_list', { apiUserId: this.currentAccount.id, name: value }).then(res => {
         if (res.data.code === 0) {
           const data = res.data.data
           this.checkedTotal = data.showTotal
           this.total = data.total
-          this.treeData =  this._formatTree(data.list)
+          this.treeData = this._formatTree(data.list)
+          setTimeout(() => {
+            zTreeObj.expandAll(true)
+          },100)
         }
       })
+    },
+
+    // 更新勾选节点数量
+    updateCheckedCount(num) {
+      this.checkedTotal = num
+    },
+
+    // 计算已勾选节点树(排除父节点)
+    _getCheckedCount(zTreeObj) {
+      const checkedNodes = zTreeObj.getCheckedNodes(true)
+      const realCheckedNodes = checkedNodes.filter(item => item.isParent === false)
+      this.checkedTotal = realCheckedNodes.length
+    },
+
+    handlerNodeCheck({ e, treeId, treeNode, zTreeObj }) {
+      this._getCheckedCount(zTreeObj)
     },
 
     // 重组权限树的数据
@@ -183,14 +204,14 @@ export default {
     }
   },
 
-    // created() {
-    //     this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');
-    //   },
+  // created() {
+  //     this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');
+  //   },
 
-    mounted() {
-      this.getAccountList()
-    }
+  mounted() {
+    this.getAccountList()
   }
+}
 </script>
 
 <style lang="scss" scoped>

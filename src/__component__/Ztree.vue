@@ -154,6 +154,10 @@
       treeSetting: {
         type: Object,
         default: () => ({})
+      },
+      // 搜索回调
+      customizedSearch: {
+        type: Function
       }
     },
     methods: {
@@ -231,6 +235,10 @@
           this.showTip = false;
       },
       search() {
+        if(this.customizedSearch) {
+          this.customizedSearch(this.inputValue, this.zTreeObj)
+          return
+        }
         const isNull = this.isNull(this.inputValue);
         if (!isNull) {
           let checkoutZtree = fuzzySearch(`${this.tableName}`, this.inputValue, null, true); // 初始化模糊搜索方法
