@@ -52,6 +52,7 @@ R3.launchApplication({
   filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
   routerFilter:true, // 跳转是否过滤
   listFormWebconf: [],
+  layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
   domPortal: {
     // params对象属性,fromComponent用于区别哪个组件的水印,type区分布局结构
     waterMark(params) {
