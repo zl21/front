@@ -31,12 +31,12 @@ import extentionForTable from './src/constants/extentionPropertyForTable';
 // import MessageList from './src/__component__/nav/MessageList.vue'
 import externalComponents from './src/__config__/externalComponents'
 
-import ImportDialog from './src/__component__/ImportDialog.vue';
-import SearchForm from './src/__component__/form/SearchForm.vue';//
-import FilterTree from './src/__component__/Tree/FilterTree.vue';
-import SelectTree from './src/__component__/Tree/SelectTree.vue';
-import DocFile from './src/__component__/docfile/DocFileComponent.vue';
-import Login from './src/__component__/Login/LoginCore'; // 登录核心功能
+// import ImportDialog from './src/__component__/ImportDialog.vue';
+// import SearchForm from './src/__component__/form/SearchForm.vue';//
+// import FilterTree from './src/__component__/Tree/FilterTree.vue';
+// import SelectTree from './src/__component__/Tree/SelectTree.vue';
+// import DocFile from './src/__component__/docfile/DocFileComponent.vue';
+// import Login from './src/__component__/Login/LoginCore'; // 登录核心功能
 import ErCode from './src/__component__/Login/components/ErCode'; // 验证码
 import Collect from './src/__component__/nav/collect'; // 收藏
 import Lately from './src/__component__/nav/lately'; // 最近访问
@@ -113,6 +113,18 @@ const hookAJAX = ()=>{
           this.setRequestHeader('SSSSS-B', md5('qwertburgeon'+new Date().getTime()+number+sessionCookie));
         }
         this.setRequestHeader('SSSSS-C', number);
+  };
+  XMLHttpRequest.prototype.open = customizeOpen;
+}
+
+
+
+const setHookAJAX = (callback)=>{
+  // 接口加密拦截
+  XMLHttpRequest.prototype.nativeOpen = XMLHttpRequest.prototype.open;
+  var customizeOpen = function (method, url, async, user, password) {
+    this.nativeOpen(method, url, async, user, password);
+    callback().call(this);
   };
   XMLHttpRequest.prototype.open = customizeOpen;
 }
@@ -233,21 +245,7 @@ export default {
     extentionForTable,
   },
   components: {
-    ContentDisplayArea,
-    PopDialog,
-    ComAttachFilter,
-    DownComponent,
-    WaterMark,
-    SearchForm,
-    FilterTree,
-    SelectTree,
-    DocFile,
-    ImportDialog,
-    VerticalMenu,
-    NavigatorVertical,
-    NaVertical,
-    ComAutoComplete,
-    Login,
+   ...externalComponents,
     ErCode,
     Collect,
     Lately,
