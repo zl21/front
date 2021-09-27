@@ -71,23 +71,21 @@ export default () => ({
     imgAssets(state) { 
       const imageAssets = window.ProjectConfig.imageAssets
       const language = i18n.locale
-      const defaultBanner = language === 'zh' ? bannerImg : bannerEnImg
-      const defaultBigData = language === 'zh' ? bigDataImg : bigDataEnImg
-      const defaultLogin = language === 'zh' ? loginImg : loginEnImg
+      
       // 没传imageAssets时，需要有个默认值
       let imgsObj = {
-        banner: defaultBanner,
-        bigData: defaultBigData,
-        login: defaultLogin,
+        banner: state.imgSrc.bannerImg,
+        bigData: state.imgSrc.bigDataImg,
+        login: state.imgSrc.loginImg,
         welcome: undefined, // 欢迎页是css实现的，这里写法要区别下
       }
 
       // 默认图片映射
       // 目前有banner和海量数据图
       const defaultImg = {
-        banner: defaultBanner,
-        bigData: defaultBigData,
-        login: defaultLogin,
+        banner: state.imgSrc.bannerImg,
+        bigData: state.imgSrc.bigDataImg,
+        login: state.imgSrc.loginImg,
         welcome: undefined,
       }
 

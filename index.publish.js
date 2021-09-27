@@ -24,7 +24,12 @@ import SearchForm from './src/__component__/form/SearchForm.vue';//
 import FilterTree from './src/__component__/Tree/FilterTree.vue';
 import SelectTree from './src/__component__/Tree/SelectTree.vue';
 import DocFile from './src/__component__/docfile/DocFileComponent.vue';
-import Login from './src/__component__/Login/LoginCore';
+import Login from './src/__component__/Login/LoginCore'; // 登录核心功能
+import ErCode from './src/__component__/Login/components/ErCode'; // 验证码
+import Collect from './src/__component__/nav/collect'; // 收藏
+import Lately from './src/__component__/nav/lately'; // 最近访问
+import ChangeLang from './src/__component__/Login/components/ChangeLang'; // 语言切换
+import HistoryAndFavorite from './src/__component__/HistoryAndFavorite'; // 水平排版下的收藏和最近访问
 import { menuClick } from './src/__config__/event.config';
 import { connector } from './src/constants/global';
 import './src/constants/dateApi';
@@ -63,7 +68,7 @@ const setXss = ()=>{
     }
   });
 }
-// install 
+// install
 const install = (Vue, R3 = {})=>{
   // 加载
   if (install.installed) {
@@ -74,14 +79,31 @@ const install = (Vue, R3 = {})=>{
   }else if(!window.R3){
       window.R3 = R3;
   }
- 
+
   Vue.prototype.$network = R3.network;
-  Vue.prototype.$urlSearchParams = R3.urlSearchParams; 
-  Vue.prototype.$store = R3.store; 
-  
+  Vue.prototype.$urlSearchParams = R3.urlSearchParams;
+  Vue.prototype.$store = R3.store;
+
 }
+// 
 
-
+const hookAJAX = ()=>{
+  // 接口加密拦截
+  XMLHttpRequest.prototype.nativeOpen = XMLHttpRequest.prototype.open;
+  var customizeOpen = function (method, url, async, user, password) {
+    this.nativeOpen(method, url, async, user, password);
+    let number = Math.floor(Math.random() * 10000);
+        let sessionCookie = window.localStorage.getItem('sessionCookie');
+        this.setRequestHeader('SSSSS-A', new Date().getTime());
+        if(sessionCookie === 'undefined'){
+          this.setRequestHeader('SSSSS-B', md5('qwertburgeon'+new Date().getTime()+number));
+        }else{
+          this.setRequestHeader('SSSSS-B', md5('qwertburgeon'+new Date().getTime()+number+sessionCookie));
+        }
+        this.setRequestHeader('SSSSS-C', number);
+  };
+  XMLHttpRequest.prototype.open = customizeOpen;
+}
 const requestHello = async function () {
   const serviceId = window.localStorage.getItem('serviceId')
   const url = serviceId ? `/${serviceId}/p/cs/hello`: '/p/cs/hello'
@@ -192,6 +214,7 @@ export default {
   connector: connector(), // 1.3框架公共模块包使用
   store,
   setXss:setXss,
+  hookAJAX,
   requestHello,
   config: {
     extentionForColumn,
@@ -213,5 +236,10 @@ export default {
     NaVertical,
     ComAutoComplete,
     Login,
+    ErCode,
+    Collect,
+    Lately,
+    ChangeLang,
+    HistoryAndFavorite,
   }
 };
