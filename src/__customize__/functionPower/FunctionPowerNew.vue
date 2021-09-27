@@ -22,7 +22,7 @@
         class="Button"
         @click="customize1"
       >
-        测试跳转到单对象界面1
+       返回
       </Button> -->
     </div>
     <div class="content">
@@ -1020,13 +1020,15 @@
         store.commit('global/tabCloseAppoint', params);
       },
       customize1() {
+         this.customize();
          this.$store.commit('global/tabOpen', {
-          // type: 'S',
-          // tableName:'T_V_OMSONLINEORDER',
-          // tableId:'10883',
-          url: '/SYSTEM/TABLE/FUNCTIONPERMISSION/24627',
+          type: 'S',
+          tableName:'V_ORDER_INFO',
+          tableId:'24503',
+          //url: '/SYSTEM/TABLE/FUNCTIONPERMISSION/24627',
           back: true
         });
+       
 
       },
       copyPerm() {

@@ -7,7 +7,7 @@ const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const projectConfig = require('./project.config');
+const projectConfig = require('./projectConfig/project.config');
 
 const target = projectConfig.target; // 框架研发网关开启环境
 const proxyLists = ['/p/c', '/ad-app', '/jflow'];
@@ -32,18 +32,18 @@ module.exports = env => ({
     R3: '@syman/burgeon-r3',
     jflowPlugin: '@syman/jflow-plugin',
     ztree: 'ztree',
-    VueI18n: 'VueI18n'
   },
   devServer: {
     compress: true,
     port: 8190,
     host: '0.0.0.0',
     open: true,
-    historyApiFallback: {
-      rewrites: [
-        { from: /.*/, to: env && env.production ? indexProHtml : indexHtml },
-      ],
-    },
+    // historyApiFallback: {
+    //   rewrites: [
+    //     { from: /.*/, to: env && env.production ? indexProHtml : indexHtml },
+    //   ],
+    // },
+    historyApiFallback: true,
     publicPath: '/',
     proxy: [
      
@@ -121,6 +121,9 @@ module.exports = env => ({
     ],
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env.BUILD_ENV': JSON.stringify(process.env.BUILD_ENV)
+    }),
     new MiniCssExtractPlugin({
       filename: 'r3.css',
     }),

@@ -13,8 +13,8 @@
       <img src="../../assets/image/code.png" class="icon">
       <input ref="code" value="" class="pwd code" :placeholder="$t('messages.enterCode')">
     </div>
-    <img v-if="loginType && !codeLoading" :src="imgSrc" @click="getCode" class="codeimg">
-    <div v-if="loginType && codeLoading" class="codeimg" style="line-height: inherit"><Spin fix></Spin></div>
+    <ErCode ref="ercode" :visible="loginType" @refresh="getNewCode" />
+
     <div class="divToggle" v-if="loginType">
       <span class="sanjiao" >
         <img src="../../assets/image/phone.png" class="toggle phone" @click="toggles">
@@ -26,10 +26,10 @@
 
 <script>
   import network from '../../__utils__/network';
-  import { checkTime } from "../../__utils__/utils";
-  import {enableGateWay, enableLoginPro} from '../../constants/global';
+  import ErCode from "./components/ErCode";
   export default {
     name: 'AccountLogin',
+    components: { ErCode },
     props: {
       loginType: {
         type: Boolean,
@@ -42,17 +42,7 @@
     },
     data() {
       return {
-        codeSrc: '',
-        globalServiceId: window.localStorage.getItem('serviceId') || '',
-        imgSrc: '',
-        key: '',
-        codeLoading: false,
-        lastTime: '',
-      }
-    },
-    mounted() {
-      if (enableLoginPro) {
-        this.getCode();
+        key: ''
       }
     },
     methods: {
@@ -62,22 +52,10 @@
       toggles() {
         this.$emit('toggle', 2)
       },
-      // 获取验证码
-      getCode() {
-        if (this.lastTime && checkTime(this.lastTime)) {
-          this.codeLoading = false;
-          return false
-        }
-        this.lastTime = new Date().getTime();
-        this.codeLoading = true;
-        network.post(enableGateWay() ? `/${this.globalServiceId}/p/c/getcCode` : '/p/c/getcCode').then(res => {
-          if (res && res.data) {
-            this.codeLoading = false;
-            this.imgSrc = res.data.img;
-            this.key = res.data.key;
-          }
-        })
-      },
+      getNewCode(obj) {
+        const { key } = obj;
+        this.key = key
+      }
     }
   }
 
