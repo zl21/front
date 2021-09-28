@@ -123,6 +123,7 @@ export default {
     comfirmDelete({ id }) {
       network.post('/p/cs/developer/delete_user', { id }).then(res => {
         if (res.data.code === 0) {
+          this.showPermissions = false
           this.getAccountList()
           this.$Message.success(this.$t('feedback.deleteSuccessfully'));
         }
