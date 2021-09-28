@@ -4,10 +4,20 @@
     :style="apiStyle"
   >
     <div class="api-header">
-      <p>【{{currentAccount.name}}】{{$t('messages.managementAuthority')}}</p>
+      <p>【{{currentAccount.name}}】{{$t('messages.managementAuthority')}} <span
+          class="refresh"
+          @click="refresh"
+        >
+          <img
+            src="../../assets/image/refresh.png"
+            class="refresh-icon"
+            alt=""
+          >
+        </span></p>
       <Button
         type="success"
         size="small"
+        :class="[isUpdated ? '': 'disabled']"
         @click="save"
       >{{$t('buttons.save')}}</Button>
     </div>
@@ -64,6 +74,10 @@ export default {
     // 树数据
     treeData: {
       type: Array
+    },
+    // 是否修改过数据
+    isUpdated: {
+      type: Boolean
     }
   },
 
@@ -89,20 +103,27 @@ export default {
 
     // 主动全选、反选
     isSelectAll(newVal) {
-      console.log("🚀 ~ file: ApiTree.vue ~ line 92 ~ isSelectAll ~ newVal", newVal)
+      const zTreeObj = this.$refs.zTree.zTreeObj
+
       // 主动点击全选
       if (newVal && this.checkedTotal !== this.total) {
         this.$emit('updateCheckedCount', this.total)
-        const zTreeObj = this.$refs.zTree.zTreeObj
         zTreeObj.checkAllNodes(true)
-        console.log('全选');
+
+        // 重命名父节点
+        this._updateNodeCount(zTreeObj)
+        // 检查是否更新数据
+        this._checkNode(zTreeObj)
       }
       // 主动点击反选
       if (!newVal && this.checkedTotal === this.total) {
         this.$emit('updateCheckedCount', 0)
-        const zTreeObj = this.$refs.zTree.zTreeObj
         zTreeObj.checkAllNodes(false)
-        console.log('反选');
+
+        // 重命名父节点
+        this._updateNodeCount(zTreeObj)
+        // 检查是否更新数据
+        this._checkNode(zTreeObj)
       }
     }
   },
@@ -116,7 +137,7 @@ export default {
           key: {
             children: 'apiPathVoList',
             name: 'desc',
-            check: 'show'
+            checked: 'show'
           },
           simpleData: {
             enable: true,
@@ -163,19 +184,18 @@ export default {
   methods: {
     // 查询节点
     search(value, zTreeObj) {
-      this.$emit('search', {value, zTreeObj})
+      this.$emit('search', { value, zTreeObj, isExpandAll: true })
     },
 
     save() {
-
+      if (this.isUpdated) {
+        this.$emit('save', this.$refs.zTree.zTreeObj)
+      }
     },
 
-    updateNode() {
-      const zTreeObj = this.$refs.zTree.zTreeObj
-      var nodes = zTreeObj.getNodes()
-      console.log("🚀 ~ file: ApiTree.vue ~ line 116 ~ save ~ nodes", nodes)
-      nodes[1].NAME = '中国商飞 （2-3）'
-      zTreeObj.updateNode(nodes[1]);
+    // 刷新权限
+    refresh() {
+      this.$emit('refresh')
     },
 
     // 点击树节点
@@ -184,6 +204,26 @@ export default {
       this.$emit('check', {
         e, treeId, treeNode, zTreeObj
       })
+    },
+
+    // 更新父节点统计数
+    _updateNodeCount(zTreeObj) {
+      const nodes = zTreeObj.getNodes()
+      nodes.forEach(node => {
+        const checkedNodes = node.apiPathVoList.filter(item => item.show)
+        node.desc = `${node.apiTagDesc} (${checkedNodes.length}/${node.apiPathVoList.length})`
+        zTreeObj.updateNode(node)
+      })
+    },
+
+    // 检查是否更新了数据
+    _checkNode(zTreeObj) {
+      let isUpdated = false // 判断是否修改过数据
+      const checkedNodes = zTreeObj.getChangeCheckedNodes()
+      if (checkedNodes.length > 0) {
+        isUpdated = true // 判断是否修改过数据
+      }
+      this.$emit('updateStatus', isUpdated)
     }
   }
 }
