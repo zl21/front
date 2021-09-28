@@ -15,6 +15,10 @@ const {
   urlSearchParams
 } = R3;
 
+// R3.setHookAJAX(function($ajax){
+//   $ajax.setRequestHeader('SSSSS-Aq', new Date().getTime());
+// })
+
 const keyList = ['login','banner','welcome','bigData']
 const zhImg = {}
 const enImg = {}
@@ -28,7 +32,6 @@ keyList.forEach(key => {
 Vue.prototype.$network = network;
 Vue.prototype.$urlSearchParams = urlSearchParams;
 R3.launchApplication({
-  layoutDirection: false,
   externalTreeDatas: externalTreeDatasConfig,
   // appLayout: require('./src/config/appLayout.js').default,
   ignoreGateWayPattern: [/\/jflow\/*/g, /\/api\/*/g], // 框架默认禁用的网关逻辑的正则模式匹配
@@ -51,6 +54,7 @@ R3.launchApplication({
   filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
   routerFilter:true, // 跳转是否过滤
   listFormWebconf: [],
+  layoutDirection: true, // 默认是false ,水平排版 ，true 是垂直排版
   domPortal: {
     // params对象属性,fromComponent用于区别哪个组件的水印,type区分布局结构
     waterMark(params) {
