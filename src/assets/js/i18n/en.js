@@ -195,7 +195,18 @@ export default {
     collapseQuery: 'collapse query conditions',
     queryDefaultRows: 'number of query area rows',
     noHistory: 'no history',
-    noCollection: 'no collection'
+    noCollection: 'no collection',
+    devAccount: 'developer account',
+    accountList: 'account list',
+    accountName: 'account name',
+    addAccount: 'add account',
+    deleteAccount: 'delete account',
+    managementAuthority: 'authority management',
+    interfacePermissions: 'interface permissions',
+    pleaseEnterContent: 'enter content',
+    confirmDeleteAccount: 'The delete operation cannot be restored. If a developer currently uses this account, he will not be able to access the interface. Are you sure you want to delete it',
+    enterAccountName: 'please enter the account name',
+    confirmRefreshSecret: 'After clicking confirm, the appSecret will be reset. After resetting, please notify the downstream developers to change the secret key information'
   },
   // 具有通用性的文案
   tips: {
@@ -343,7 +354,8 @@ export default {
     collectionFailed: 'collection failed',
     unfavoriteSuccessfully: 'unfavorite successfully',
     failedToUnfavorite: 'failed to unfavorite',
-    cloneSuccess: 'successfully clone'
+    cloneSuccess: 'successfully clone',
+    deleteSuccessfully: 'delete successfully'
   },
   // 动作行为(不含按钮里的)
   actions: {
