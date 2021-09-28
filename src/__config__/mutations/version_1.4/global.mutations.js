@@ -1058,7 +1058,14 @@ export default {
           path,
           query
         };
-        router.push(routeInfo);
+         // 如果当前路由等于跳转路由不跳转
+         let currentRouteFullPath = router.currentRoute.fullPath;
+         if(currentRouteFullPath.indexOf('?') > 0){
+           currentRouteFullPath = currentRouteFullPath.substr(0,currentRouteFullPath.indexOf('?'));
+         }
+         if(currentRouteFullPath!== path){
+           router.push(routeInfo);
+         }
       }
       return;
     }
