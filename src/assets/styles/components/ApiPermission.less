@@ -16,18 +16,26 @@
   .account-list {
     flex: 0 0 550px;
     margin-right: 40px;
+
+    .add-account-btn {
+      margin-top: 20px;
+    }
   }
 
   // 账号item
   .R3-accout-item {
-    border-radius: 8px;
-    border: 1px solid #eee;
+    border-radius: 4px;
+    border: 1px solid @border-color-base;
     height: 80px;
     margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
     box-sizing: border-box;
     padding: 16px 10px;
+
+    &.hight-light {
+      background-color: @normal-color;
+    }
 
     .accout-item-l {
       display: flex;
@@ -60,6 +68,7 @@
         height: 14px;
         width: 14px;
         display: inline-block;
+        cursor: pointer;
         img {
           width: 100%;
           vertical-align: middle;
@@ -71,21 +80,13 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      .ark-btn-error {
-        background-color: #999;
-        border-color: #999;
-        &:hover {
-          background-color: #ed4014;
-          border-color: #ed4014;
-        }
-      }
     }
   }
 
   // 添加账号
   .R3-add-acount {
     border-radius: 8px;
-    border: 1px solid #eee;
+    border: 1px solid @border-color-base;
     min-height: 60px;
     margin-bottom: 20px;
     padding: 16px 10px;
@@ -97,7 +98,7 @@
     }
 
     .error-tip {
-      color: red;
+      color: @error-color;
       margin-top: 8px;
       margin-left: 64px;
     }
@@ -133,10 +134,6 @@
     padding: 0px 10px 10px 10px;
     position: relative;
 
-    .ark-input-wrapper {
-      width: 200px;
-    }
-
     .api-header {
       height: 40px;
       padding: 0 20px;
@@ -144,7 +141,14 @@
       align-items: center;
       justify-content: space-between;
       font-weight: bold;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid @border-color-base;
+
+      .save {
+        height: 22px;
+        line-height: 18px;
+        border-radius: 2px;
+        padding: 0 8px;
+      }
     }
 
     .all-panel {
@@ -152,8 +156,8 @@
     }
 
     .api-tree {
-      border-radius: 8px;
-      border: 1px solid #eee;
+      border-radius: 4px;
+      border: 1px solid @border-color-base;
       min-height: 100%;
       position: relative;
 
@@ -163,10 +167,17 @@
         display: inline-block;
         vertical-align: middle;
         margin-left: 4px;
+        cursor: pointer;
         img {
           width: 100%;
           vertical-align: middle;
         }
+      }
+
+      .no-tree {
+        color: @text-color;
+        text-align: center;
+        margin-top: 20px;
       }
 
       .disabled {
