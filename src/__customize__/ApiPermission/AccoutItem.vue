@@ -1,6 +1,7 @@
 <template>
   <div
     class="R3-accout-item"
+    :class="[currentPermissionsIndex === index ? 'hight-light' : '']"
     @mouseenter="mouseenter"
     @mouseleave="mouseleave"
   >
@@ -34,12 +35,12 @@
       v-show="showButtons"
     >
       <Button
-        type="error"
+        type="fcdefault"
         size="small"
         @click="deleteAccount"
       >{{$t('messages.deleteAccount')}}</Button>
       <Button
-        type="info"
+        type="posdefault"
         size="small"
         @click="manageAuthority"
       >{{$t('messages.managementAuthority')}}</Button>
@@ -58,6 +59,10 @@ export default {
 
     itemInfo: {
       type: Object
+    },
+    // 激活的索引
+    currentPermissionsIndex: {
+      type: Number
     }
   },
 

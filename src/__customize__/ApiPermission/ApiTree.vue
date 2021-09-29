@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="api-tree"
-    :style="apiStyle"
-  >
+  <div class="api-tree">
     <div class="api-header">
       <p>【{{currentAccount.name}}】{{$t('messages.managementAuthority')}} <span
           class="refresh"
@@ -15,9 +12,9 @@
           >
         </span></p>
       <Button
-        type="success"
+        type="posdefault"
         size="small"
-        :class="[isUpdated ? '': 'disabled']"
+        :class="[isUpdated ? '': 'disabled', 'save']"
         @click="save"
       >{{$t('buttons.save')}}</Button>
     </div>
@@ -25,11 +22,25 @@
     <div class="api-body">
       <div class="all-panel">
         <span>{{$t('messages.interfacePermissions')}}：</span>
-        <Checkbox v-model="isSelectAll">{{$t('tips.all')}}</Checkbox>
+        <Checkbox
+          v-model="isSelectAll"
+          :disabled="treeData.length === 0"
+        >{{$t('tips.all')}}</Checkbox>
         <span class="count">({{checkedTotal}}/{{total}})</span>
       </div>
 
       <div class="api-panel">
+        <Spin
+          fix
+          v-show="isLoading"
+        >
+          <Icon
+            type="ios-loading"
+            size=18
+            class="demo-spin-icon-load"
+          ></Icon>
+          <div>Loading</div>
+        </Spin>
         <Ztree
           ref="zTree"
           :placeholder="$t('messages.pleaseEnterContent')"
@@ -37,9 +48,12 @@
           :treeSetting="treeSetting"
           :customizedSearch="search"
         ></Ztree>
+        <div
+          v-if="treeData.length === 0"
+          class="no-tree"
+        >{{$t('tips.noData')}}</div>
       </div>
     </div>
-    <i class="iconfont arrow-r">&#xea18;</i>
   </div>
 </template>
 
@@ -78,13 +92,10 @@ export default {
     // 是否修改过数据
     isUpdated: {
       type: Boolean
-    }
-  },
-
-  computed: {
-    // 计算组件偏移量
-    apiStyle() {
-      return `top: ${this.permissionsIndex * 100}px;`
+    },
+    // 是否加载中
+    isLoading: {
+      type: Boolean
     }
   },
 

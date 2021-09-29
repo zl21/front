@@ -13,11 +13,11 @@
 
       <div class="add-account-r">
         <Button
-          type="info"
+          type="fcdefault"
           @click="cancel"
         >{{$t('buttons.cancel')}}</Button>
         <Button
-          type="success"
+          type="posdefault"
           @click="save"
         >{{$t('buttons.save')}}</Button>
       </div>

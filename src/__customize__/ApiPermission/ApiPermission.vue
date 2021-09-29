@@ -5,15 +5,18 @@
     <div class="content-area">
       <!-- 账号列表 -->
       <div class="account-list">
-        <AccoutItem
-          v-for="(item, index) in accountList"
-          @manageAuthority='manageAuthority'
-          @comfirmDelete="comfirmDelete"
-          @comfirmRefresh="comfirmRefresh"
-          :itemInfo="item"
-          :key="item.credentialKey"
-          :index='index'
-        ></AccoutItem>
+        <Scroll :on-reach-bottom="handleReachBottom" height="510">
+          <AccoutItem
+            v-for="(item, index) in accountList"
+            @manageAuthority='manageAuthority'
+            @comfirmDelete="comfirmDelete"
+            @comfirmRefresh="comfirmRefresh"
+            :itemInfo="item"
+            :key="item.credentialKey"
+            :index='index'
+            :currentPermissionsIndex="currentPermissionsIndex"
+          ></AccoutItem>
+        </Scroll>
 
         <AddAccount
           v-if="showAddForm"
@@ -23,6 +26,7 @@
         <Button
           v-else
           @click="showAdd"
+          class="add-account-btn"
         >{{$t('messages.addAccount')}}+</Button>
       </div>
 
@@ -39,6 +43,7 @@
           :total="total"
           :treeData="treeData"
           :isUpdated="isUpdated"
+          :isLoading="isLoading"
           @search="searchAuthority"
           @updateCheckedCount="updateCheckedCount"
           @check="handlerNodeCheck"
@@ -56,6 +61,7 @@ import network, { urlSearchParams } from '../../__utils__/network';
 import AccoutItem from './AccoutItem'
 import AddAccount from './AddAccount'
 import ApiTree from './ApiTree'
+import { scrollTo } from '../../__utils__/dom'
 
 export default {
   name: 'R3ApiPermission',
@@ -70,14 +76,18 @@ export default {
     return {
       showPermissions: false,
       showAddForm: false,
-      currentPermissionsIndex: undefined,
+      currentPermissionsIndex: undefined,// 当前激活的账号索引
       accountList: [],
       currentAccount: undefined,
       checkedTotal: 0,
       total: 0,
       treeData: [],
       isUpdated: false, // 是否修改过数据
-      searchCache: '' // 缓存查询结果
+      searchCache: '', // 缓存查询结果
+      startIndex: 0, // 第几页数据
+      accountCount: undefined, // 账号总数
+      range: 10, // 每页10条数据
+      isLoading: false
     }
   },
 
@@ -110,9 +120,12 @@ export default {
     // 新增账号
     async addAccount(name) {
       if (await this.validateAccount(name)) {
-        network.post('/p/cs/developer/save_user', { name }).then(res => {
+        network.post('/p/cs/developer/save_user', { name }).then(async (res) => {
           if (res.data.code === 0) {
-            this.getAccountList()
+            await this.getAccountList(0, (this.startIndex + 2) * this.range, true)
+            const dom = document.querySelector('.account-list .ark-scroll-container')
+            scrollTo(dom, 4)
+
             this.hideAdd()
           }
         })
@@ -124,7 +137,7 @@ export default {
       network.post('/p/cs/developer/delete_user', { id }).then(res => {
         if (res.data.code === 0) {
           this.showPermissions = false
-          this.getAccountList()
+          this.getAccountList(0, (this.startIndex + 1) * this.range, true)
           this.$Message.success(this.$t('feedback.deleteSuccessfully'));
         }
       })
@@ -134,21 +147,26 @@ export default {
     comfirmRefresh({ id }) {
       network.post('/p/cs/developer/flush_secret', { id }).then(res => {
         if (res.data.code === 0) {
-          this.getAccountList()
+          this.getAccountList(0, (this.startIndex + 1) * this.range, true)
           this.$Message.success(this.$t('feedback.refreshSuccess'));
         }
       })
     },
 
     // 获取账号列表
-    getAccountList() {
-      // this.$R3loading.show(this.loadingName);
-      network.post('/p/cs/developer/find_user_list', {}).then(res => {
+    async getAccountList(startIndex,range, isReset) {
+      await network.post('/p/cs/developer/find_user_list', {
+        startindex: startIndex,
+        range: range || this.range
+      }).then(res => {
         if (res.data.code === 0) {
-          this.accountList = res.data.data.list
+          if(isReset) {
+            this.accountList = res.data.data.list
+          } else {
+            this.accountList = this.accountList.concat(res.data.data.list)
+          }
+          this.accountCount = res.data.data.total
         }
-      }).finally(() => {
-        // this.$R3loading.hide(this.loadingName);
       })
     },
 
@@ -158,11 +176,12 @@ export default {
       this.currentAccount = info.item
       this.showPermissions = true
       this._clearData()
-
+      this.isLoading = true
       network.post('/p/cs/developer/find_permission_list', { apiUserId: this.currentAccount.id }).then(res => {
         if (res.data.code === 0) {
           const data = res.data.data
           this.treeData = this._formatTree(data.list)
+          this.isLoading = false
 
           // 等树渲染完毕再传数量
           // 不然_checkNode函数检查更新会拿到旧数据
@@ -178,6 +197,7 @@ export default {
     // 模糊搜索权限
     searchAuthority({ value, zTreeObj, isExpandAll }) {
       this.searchCache = value
+      this.isLoading = true
       network.post('/p/cs/developer/find_permission_list', { apiUserId: this.currentAccount.id, name: value }).then(res => {
         if (res.data.code === 0) {
           const data = res.data.data
@@ -185,6 +205,7 @@ export default {
           this.total = data.total
           this.$refs.apiTree._updateSelectedAll(this.checkedTotal === this.total) // 更新全选状态。fix: 模糊搜索前勾选比例是5/7,搜索后是5/200时，此时没有触发全选判定的计算
           this.treeData = this._formatTree(data.list)
+          this.isLoading = false
           this.isUpdated = false
           if (isExpandAll) {
             setTimeout(() => {
@@ -358,6 +379,16 @@ export default {
       this.isUpdated = value
     },
 
+    // 滚动到底部
+    handleReachBottom() {
+      if(this.accountCount <= this.accountList.length) {
+        this.$Message.success(this.$t('messages.scrollBottom'))
+        return
+      }
+      this.startIndex = this.startIndex + 1
+      this.getAccountList(this.startIndex)
+    },
+
     // 计算已勾选节点树(排除父节点)
     _getCheckedCount(zTreeObj) {
       const checkedNodes = zTreeObj.getCheckedNodes(true)
@@ -411,12 +442,8 @@ export default {
     }
   },
 
-  // created() {
-  //     this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');
-  //   },
-
   mounted() {
-    this.getAccountList()
+    this.getAccountList(this.startIndex)
   }
 }
 </script>

@@ -17,11 +17,15 @@
         class="ztree"
       />
     </div>
+    <div v-if="zNodes.length === 0">
+      <img :src="imgSrc.treeImg" alt="" style="width:100%;">
+    </div>
   </div>
 </template>
 
 <script>
   import { fuzzySearch } from '../../static/js/ztree/fuzzysearch';
+  import { mapState } from 'vuex';
 
   export default {
     name: 'ZTree',
@@ -107,7 +111,11 @@
         }
         const result = Object.assign(defalutSetting, this.treeSetting)
         return result
-      }
+      },
+
+      ...mapState('global', {
+        imgSrc: state => state.imgSrc,
+      }),
     },
 
     watch: {
