@@ -103,28 +103,33 @@ export default {
 
     // 主动全选、反选
     isSelectAll(newVal) {
+      console.log("🚀 ~ file: ApiTree.vue ~ line 106 ~ isSelectAll ~ newVal", newVal)
       const zTreeObj = this.$refs.zTree.zTreeObj
 
       // 主动点击全选
       if (newVal && this.checkedTotal !== this.total) {
         this.$emit('updateCheckedCount', this.total)
         zTreeObj.checkAllNodes(true)
-
+        console.log('全选');
         // 重命名父节点
         this._updateNodeCount(zTreeObj)
-        // 检查是否更新数据
-        this._checkNode(zTreeObj)
       }
       // 主动点击反选
       if (!newVal && this.checkedTotal === this.total) {
         this.$emit('updateCheckedCount', 0)
         zTreeObj.checkAllNodes(false)
+        console.log('反选');
 
         // 重命名父节点
         this._updateNodeCount(zTreeObj)
-        // 检查是否更新数据
-        this._checkNode(zTreeObj)
       }
+      // 检查是否更新数据
+      this._checkNode(zTreeObj)
+    }, 
+
+    // 切换权限后，清理数据
+    permissionsIndex() {
+      this.$refs.zTree.inputValue = '' // 清空输入框的值
     }
   },
 
@@ -220,6 +225,7 @@ export default {
     _checkNode(zTreeObj) {
       let isUpdated = false // 判断是否修改过数据
       const checkedNodes = zTreeObj.getChangeCheckedNodes()
+      console.log("🚀 ~ file: ApiTree.vue ~ line 222 ~ _checkNode ~ checkedNodes", checkedNodes)
       if (checkedNodes.length > 0) {
         isUpdated = true // 判断是否修改过数据
       }
