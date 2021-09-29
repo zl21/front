@@ -3327,7 +3327,8 @@
       }
       if (validate.length > 0) {
         this.$Message.warning(validate[0].tip);
-        let dom = document.querySelector(`#${validate[0].colname}`);
+        
+        let dom = document.querySelector(`#${validate[0].parentId} #${validate[0].colname}`);
         if (dom) {
           let Input = dom.querySelector('input') || dom.querySelector('textarea');
           if (Input) {

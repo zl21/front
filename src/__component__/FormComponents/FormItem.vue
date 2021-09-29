@@ -4,7 +4,7 @@
  <ValidateCom
     :rules="rules"
     :labelWidth="labelWidth"
-    :items="propsMessage"
+    :items="items"
     :colname="items.colname"
     :value="value">
   <div :class="_items.props.fkdisplay === 'pop' ? 'ItemComponentRoot AttachFilter-pop':'ItemComponentRoot'">
