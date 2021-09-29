@@ -163,12 +163,14 @@ export default {
         if (res.data.code === 0) {
           const data = res.data.data
           this.treeData = this._formatTree(data.list)
+
           // 等树渲染完毕再传数量
           // 不然_checkNode函数检查更新会拿到旧数据
           setTimeout(() => {
             this.checkedTotal = data.showTotal
             this.total = data.total
-          },20)
+            this.$refs.apiTree._updateSelectedAll(this.checkedTotal === this.total) // 更新全选状态。fix: 模糊搜索前勾选比例是5/7,搜索后是5/200时，此时没有触发全选判定的计算
+          }, 20)
         }
       })
     },
@@ -181,6 +183,7 @@ export default {
           const data = res.data.data
           this.checkedTotal = data.showTotal
           this.total = data.total
+          this.$refs.apiTree._updateSelectedAll(this.checkedTotal === this.total) // 更新全选状态。fix: 模糊搜索前勾选比例是5/7,搜索后是5/200时，此时没有触发全选判定的计算
           this.treeData = this._formatTree(data.list)
           this.isUpdated = false
           if (isExpandAll) {
@@ -341,7 +344,6 @@ export default {
       this._clearData()
       network.post('/p/cs/developer/flush_permission').then(res => {
         if (res.data.code === 0) {
-
           this.manageAuthority({
             index: this.currentPermissionsIndex,
             item: this.currentAccount
