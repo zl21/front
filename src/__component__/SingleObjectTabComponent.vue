@@ -84,7 +84,6 @@
         :item-info="itemInfo"
       />
       <!-- 自定义组件 -->
-      34343434
       <compositeForm
         v-if="panelData.isShow"
         :is-main-table="isMainTable"
@@ -934,7 +933,13 @@
           return obj;
         }, {});
       },
-
+      deleteFormData(data){
+          //删除状态的key
+            let updateLinkageForm = this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/seleteAddData`]
+          if(updateLinkageForm){
+            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/seleteAddData`, data);
+          }
+      },
       // 判断数据是否修改过
       getUpdatedValue(formData, defaultData) {
         const form = deepClone(formData)
@@ -948,8 +953,15 @@
           // 条件2: 有初始值，但是值跟之前对比没发生变化
           // currentValue === 0是因为数子输入框输入再删除会把默认值变成0，而不是''
           // currentValue === '[]' 的出现的场景时文件上传表单
+         
           if((currentValue === 0 && defaultValue === undefined) || (currentValue === '' && defaultValue === undefined) || (currentValue === '[]' && defaultValue === undefined) || isEqualString || isEqual) {
-            delete form[field]
+            delete form[field];
+             const data = {
+              key: field,
+              itemName: this.itemInfo.tablename
+            };
+            this.deleteFormData(data);
+
           }
         })
         return form
@@ -961,7 +973,6 @@
         const { itemId } = this[INSTANCE_ROUTE_QUERY];
         if (itemId) {
           const updatedValue = this.getUpdatedValue(formData, defaultFormData);
-
           // 如果没变化，数据恢复原样
           if(Object.keys(updatedValue).length === 0) {
             this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { tableName, value: {} });
@@ -970,8 +981,6 @@
           }
           const obj = {};
           obj[tableName] = updatedValue;
-          console.log(itemId,'====12',defaultDataInt,obj);
-
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { tableName, value: defaultDataInt });
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateAddData`, { tableName, value: obj });
         }

@@ -86,6 +86,12 @@ export class Validate extends Vue {
                     return 0;
                 }
             },
+            items:{
+                type: [Object],
+                default: () => {
+                    return {};
+                }
+            },
             showTip:{  // 是否显示提示
                 type:Boolean,
                 default: () => {
@@ -303,6 +309,7 @@ export const validateForm = function(name){
             if(errorTip.replace(/(^[ \t\n\r]*)|([ \t\n\r]*$)/g, '').length>0){
                 message.push({
                     tip:errorTip,
+                    parentId:ValidateItem.items.formName,
                     colname:ValidateItem.colname
                 });
             }

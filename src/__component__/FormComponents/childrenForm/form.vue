@@ -24,6 +24,7 @@ export default {
                     addcolums:[{
                        childs:[]
                     }],
+                    id:-1,
                     objviewcol:4
                 },  //控制面板的展开数据
             }
