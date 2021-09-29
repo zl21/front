@@ -20,6 +20,22 @@
     .add-account-btn {
       margin-top: 20px;
     }
+
+    .none-wrap {
+      height: 500px;
+      border: 1px solid @border-color-base;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      img {
+        width: 300px;
+      }
+      .none-tip {
+        margin-top: 20px;
+        color: @text-color;
+      }
+    }
   }
 
   // 账号item
@@ -129,7 +145,7 @@
   // 接口权限
   .api-panel {
     flex: 1;
-    min-width: 400px;
+    min-width: 280px;
     min-height: 500px;
     padding: 0px 10px 10px 10px;
     position: relative;

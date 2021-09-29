@@ -5,7 +5,21 @@
     <div class="content-area">
       <!-- 账号列表 -->
       <div class="account-list">
-        <Scroll :on-reach-bottom="handleReachBottom" height="510">
+        <div
+          v-if="accountList.length === 0"
+          class="none-wrap"
+        >
+          <img
+            :src="imgSrc.treeImg"
+            alt=""
+          >
+          <div class="none-tip">{{$t('tips.noData')}}</div>
+        </div>
+        <Scroll
+          :on-reach-bottom="handleReachBottom"
+          height="510"
+          v-else
+        >
           <AccoutItem
             v-for="(item, index) in accountList"
             @manageAuthority='manageAuthority'
@@ -16,6 +30,7 @@
             :index='index'
             :currentPermissionsIndex="currentPermissionsIndex"
           ></AccoutItem>
+
         </Scroll>
 
         <AddAccount
@@ -57,7 +72,8 @@
 </template>
 
 <script type="text/ecmascript-6">
-import network, { urlSearchParams } from '../../__utils__/network';
+import { mapState } from 'vuex';
+import network from '../../__utils__/network';
 import AccoutItem from './AccoutItem'
 import AddAccount from './AddAccount'
 import ApiTree from './ApiTree'
@@ -89,6 +105,12 @@ export default {
       range: 10, // 每页10条数据
       isLoading: false
     }
+  },
+
+  computed: {
+    ...mapState('global', {
+      imgSrc: state => state.imgSrc,
+    }),
   },
 
   methods: {
@@ -137,6 +159,7 @@ export default {
       network.post('/p/cs/developer/delete_user', { id }).then(res => {
         if (res.data.code === 0) {
           this.showPermissions = false
+          this.currentPermissionsIndex = undefined
           this.getAccountList(0, (this.startIndex + 1) * this.range, true)
           this.$Message.success(this.$t('feedback.deleteSuccessfully'));
         }
@@ -154,13 +177,13 @@ export default {
     },
 
     // 获取账号列表
-    async getAccountList(startIndex,range, isReset) {
+    async getAccountList(startIndex, range, isReset) {
       await network.post('/p/cs/developer/find_user_list', {
         startindex: startIndex,
         range: range || this.range
       }).then(res => {
         if (res.data.code === 0) {
-          if(isReset) {
+          if (isReset) {
             this.accountList = res.data.data.list
           } else {
             this.accountList = this.accountList.concat(res.data.data.list)
@@ -381,7 +404,7 @@ export default {
 
     // 滚动到底部
     handleReachBottom() {
-      if(this.accountCount <= this.accountList.length) {
+      if (this.accountCount <= this.accountList.length) {
         this.$Message.success(this.$t('messages.scrollBottom'))
         return
       }
