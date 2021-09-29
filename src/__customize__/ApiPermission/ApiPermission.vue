@@ -157,13 +157,20 @@ export default {
       this.currentPermissionsIndex = info.index
       this.currentAccount = info.item
       this.showPermissions = true
+      this._clearData()
 
       network.post('/p/cs/developer/find_permission_list', { apiUserId: this.currentAccount.id }).then(res => {
         if (res.data.code === 0) {
           const data = res.data.data
-          this.checkedTotal = data.showTotal
-          this.total = data.total
           this.treeData = this._formatTree(data.list)
+
+          // 等树渲染完毕再传数量
+          // 不然_checkNode函数检查更新会拿到旧数据
+          setTimeout(() => {
+            this.checkedTotal = data.showTotal
+            this.total = data.total
+            this.$refs.apiTree._updateSelectedAll(this.checkedTotal === this.total) // 更新全选状态。fix: 模糊搜索前勾选比例是5/7,搜索后是5/200时，此时没有触发全选判定的计算
+          }, 20)
         }
       })
     },
@@ -176,6 +183,7 @@ export default {
           const data = res.data.data
           this.checkedTotal = data.showTotal
           this.total = data.total
+          this.$refs.apiTree._updateSelectedAll(this.checkedTotal === this.total) // 更新全选状态。fix: 模糊搜索前勾选比例是5/7,搜索后是5/200时，此时没有触发全选判定的计算
           this.treeData = this._formatTree(data.list)
           this.isUpdated = false
           if (isExpandAll) {
@@ -288,7 +296,7 @@ export default {
     async saveAuthority(zTreeObj) {
       // 场景: 存在已经勾选的节点，然后模糊搜索再进行勾选。此时应该取并集（注意去重）
       const realCheckedNodes = await this._getRealChecked(zTreeObj)
-      network.post('/p/cs/developer/update_permission', { apiUserId: this.currentAccount.id,list:realCheckedNodes}).then(res => {
+      network.post('/p/cs/developer/update_permission', { apiUserId: this.currentAccount.id, list: realCheckedNodes }).then(res => {
         if (res.data.code === 0) {
           this.isUpdated = false
           // 刷新数据。这样树才能检查新的节点变化
@@ -322,12 +330,20 @@ export default {
       })
     },
 
+    // 清空数据
+    _clearData() {
+      if (this.$refs.apiTree) {
+        this.$refs.apiTree.$refs.zTree.inputValue = '' // 清空输入框的值
+      }
+      this.searchCache = '' // 清空输入框的值
+      this.isUpdated = false // 重置数据变更状态
+    },
+
     // 刷新权限
     refreshAuthority() {
+      this._clearData()
       network.post('/p/cs/developer/flush_permission').then(res => {
         if (res.data.code === 0) {
-          this.$refs.apiTree.$refs.zTree.inputValue = '' // 清空输入框的值
-          this.searchCache = '' // 清空输入框的值
           this.manageAuthority({
             index: this.currentPermissionsIndex,
             item: this.currentAccount
