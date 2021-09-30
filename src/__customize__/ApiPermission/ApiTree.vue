@@ -57,6 +57,7 @@
           :z-nodes="treeData"
           :treeSetting="treeSetting"
           :customizedSearch="search"
+          :disabledSearch="!currentAccount"
         ></Ztree>
       </div>
     </div>
