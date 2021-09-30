@@ -23,7 +23,6 @@
             <span
               class="refresh"
               @click="refresh"
-              :title="$t('messages.refreshKey')"
             >
               <img
                 src="../../assets/image/refresh.png"
