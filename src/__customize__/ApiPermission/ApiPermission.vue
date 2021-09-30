@@ -15,61 +15,63 @@
       >{{$t('messages.addAccount')}}+</Button>
     </div>
 
-    <div class="view-title">{{$t('messages.accountList')}}</div>
-
-    <div class="content-area">
-      <!-- 账号列表 -->
-      <div class="account-list">
-        <div
-          v-if="accountList.length === 0"
-          class="none-wrap"
-        >
-          <div class="none-tip">{{$t('messages.addAccountFirst')}}</div>
-        </div>
-        <Scroll
-          :on-reach-bottom="handleReachBottom"
-          ref="scroll"
-          v-else
-        >
-          <AccoutItem
-            v-for="(item, index) in accountList"
-            @manageAuthority='manageAuthority'
-            @comfirmDelete="comfirmDelete"
-            @comfirmRefresh="comfirmRefresh"
-            :itemInfo="item"
-            :key="item.credentialKey"
-            :index='index'
-            ref="account"
-            :currentPermissionsIndex="currentPermissionsIndex"
-          ></AccoutItem>
-          <div
-            class="bottom-tip"
-            v-if="accountCount <= accountList.length"
-          >{{$t('tips.noMore')}}</div>
-        </Scroll>
-
-      </div>
-
-      <!-- 接口权限 -->
-      <div class="api-panel">
-        <ApiTree
-          ref="apiTree"
-          :permissionsIndex='currentPermissionsIndex'
-          :currentAccount="currentAccount"
-          :checkedTotal="checkedTotal"
-          :total="total"
-          :treeData="treeData"
-          :isUpdated="isUpdated"
-          :isLoading="isLoading"
-          @search="searchAuthority"
-          @updateCheckedCount="updateCheckedCount"
-          @check="handlerNodeCheck"
-          @save="saveAuthority"
-          @refresh="refreshAuthority"
-          @updateStatus="updateStatus"
-        ></ApiTree>
-      </div>
+    <div
+      class="no-account"
+      v-if="accountList.length === 0"
+    >
+      <img :src="imgSrc.treeImg" alt="">
+      <div class="none-tip">{{$t('messages.addAccountFirst')}}</div>
     </div>
+    <template v-else>
+      <div class="view-title">{{$t('messages.accountList')}}</div>
+
+      <div class="content-area">
+        <!-- 账号列表 -->
+        <div class="account-list">
+          <Scroll
+            :on-reach-bottom="handleReachBottom"
+            ref="scroll"
+          >
+            <AccoutItem
+              v-for="(item, index) in accountList"
+              @manageAuthority='manageAuthority'
+              @comfirmDelete="comfirmDelete"
+              @comfirmRefresh="comfirmRefresh"
+              :itemInfo="item"
+              :key="item.credentialKey"
+              :index='index'
+              ref="account"
+              :currentPermissionsIndex="currentPermissionsIndex"
+            ></AccoutItem>
+            <div
+              class="bottom-tip"
+              v-if="isNoMore"
+            >{{$t('tips.noMore')}}</div>
+          </Scroll>
+
+        </div>
+
+        <!-- 接口权限 -->
+        <div class="api-panel">
+          <ApiTree
+            ref="apiTree"
+            :permissionsIndex='currentPermissionsIndex'
+            :currentAccount="currentAccount"
+            :checkedTotal="checkedTotal"
+            :total="total"
+            :treeData="treeData"
+            :isUpdated="isUpdated"
+            :isLoading="isLoading"
+            @search="searchAuthority"
+            @updateCheckedCount="updateCheckedCount"
+            @check="handlerNodeCheck"
+            @save="saveAuthority"
+            @refresh="refreshAuthority"
+            @updateStatus="updateStatus"
+          ></ApiTree>
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -105,6 +107,7 @@ export default {
       accountCount: undefined, // 账号总数
       range: 20, // 每页n条数据
       isLoading: false,
+      isNoMore: false
     }
   },
 
@@ -415,11 +418,13 @@ export default {
     // 滚动到底部
     handleReachBottom() {
       if (this.accountCount <= this.accountList.length) {
+        this.isNoMore = true
         this.$refs.scroll.showBottomLoader = false
         this.$Message.success(this.$t('messages.scrollBottom'))
         this.getAccountList(0, (this.startIndex + 1) * this.range, true)
         return
       }
+      this.isNoMore = false
       this.$refs.scroll.showBottomLoader = true
       this.startIndex = this.startIndex + 1
       this.getAccountList(this.startIndex)
@@ -480,10 +485,6 @@ export default {
 
   async mounted() {
     await this.getAccountList(this.startIndex)
-    console.log(this.$refs.account);
-    if (this.$refs.account && this.$refs.account.length > 0) {
-      this.$refs.account[0].$el.click()
-    }
   }
 }
 </script>
