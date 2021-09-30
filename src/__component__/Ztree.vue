@@ -12,7 +12,7 @@
     />
     <p class="orange" v-if="showTip && inputValue.length>0">"{{inputValue}}"{{Notice}}</p>
     <div v-show="zNodes.length === 0" class="no-tree-wrap">
-      <img :src="imgSrc.treeImg" alt="" style="width:100%;margin-top: 20px;">
+      <img :src="imgSrc.treeImg" alt="">
       <div
           class="no-tree-tip"
           style="margin-top: 30px;text-align: center;"

@@ -201,14 +201,18 @@ export default {
     accountName: 'account name',
     addAccount: 'add account',
     deleteAccount: 'delete account',
-    managementAuthority: 'authority management',
+    managementAuthority: 'permission management',
     interfacePermissions: 'interface permissions',
     pleaseEnterContent: 'enter content',
     confirmDeleteAccount: 'The delete operation cannot be restored. If a developer currently uses this account, he will not be able to access the interface. Are you sure you want to delete it',
     enterAccountName: 'please enter the account name',
     confirmRefreshSecret: 'After clicking confirm, the appSecret will be reset. After resetting, please notify the downstream developers to change the secret key information',
     scrollBottom: 'scrolled to the bottom',
-    addAccountFirst: 'No data, please add an account first'
+    addAccountFirst: 'No data, please add an account first',
+    refreshKey: 'refresh key',
+    refreshPermission: 'refresh permissions',
+    selectAccountFirst: 'Please select an account first',
+    quickOperation: 'quick operation'
   },
   // 具有通用性的文案
   tips: {
@@ -338,7 +342,8 @@ export default {
     webImage: 'web image',
     favorites: 'favorites',
     recentlyUsed: 'recently used',
-    complete: 'complete'
+    complete: 'complete',
+    noMore: 'no more data'
   },
   // 反馈类型的文案(比如进行某个操作，返回操作结果的提示)
   feedback: {

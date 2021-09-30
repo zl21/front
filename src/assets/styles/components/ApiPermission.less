@@ -4,10 +4,14 @@
   .ark-btn {
     border-radius: 2px;
   }
+
+  .ark-tooltip-inner {
+    line-height: 18px;
+  }
+
   .view-title {
-    margin: 28px 0;
-    font-size: 20px;
-    font-weight: bold;
+    margin: 20px 0;
+    font-size: 12px;
     border-left: 3px solid @primary-color;
     padding-left: 10px;
   }
@@ -15,7 +19,7 @@
   .content-area {
     display: flex;
     padding-bottom: 20px;
-    height: calc(100% - 76px);
+    height: calc(100% - 122px);
   }
 
   .account-list {
@@ -28,10 +32,10 @@
     }
 
     .ark-scroll-wrapper {
-      height: calc(100% - 49px);
+      height: 100%;
     }
     .ark-scroll-container {
-      height: 100%!important;
+      height: 100% !important;
     }
 
     .none-wrap {
@@ -109,13 +113,21 @@
     }
   }
 
+  .bottom-tip {
+    color: @primary-color;
+    text-align: center;
+  }
+
   // 添加账号
+  .operation-wrap {
+    padding: 20px 0;
+    border-bottom: 1px solid @border-color-base;
+  }
   .R3-add-acount {
-    // border-radius: 8px;
-    // border: 1px solid @border-color-base;
-    min-height: 60px;
-    margin-bottom: 20px;
-    padding: 16px 10px;
+    width: 500px;
+    padding: 0px 10px;
+    display: inline-block;
+    position: relative;
 
     .add-account-wrap {
       display: flex;
@@ -125,8 +137,9 @@
 
     .error-tip {
       color: @error-color;
-      margin-top: 8px;
-      margin-left: 64px;
+      position: absolute;
+      left: 10px;
+      bottom: -20px;
     }
 
     .add-account-l {
@@ -160,7 +173,7 @@
     flex: 1;
     min-width: 280px;
     height: 100%;
-    padding: 0px 10px 10px 10px;
+    padding: 0px 10px;
     position: relative;
 
     .api-header {
@@ -224,10 +237,10 @@
         }
       }
 
-      .disabled {
-        background-color: #999;
-        border-color: #999;
-      }
+      // .disabled {
+      //   background-color: #999;
+      //   border-color: #999;
+      // }
 
       .arrow-r {
         position: absolute;

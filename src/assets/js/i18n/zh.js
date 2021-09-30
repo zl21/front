@@ -208,7 +208,11 @@ export default {
     enterAccountName: '请输入账号名称',
     confirmRefreshSecret: '点击确认后，会重置appSecret，重置后请通知下游开发者更换密钥信息',
     scrollBottom: '已滚动到底部',
-    addAccountFirst: '暂无数据，请先新增账号'
+    addAccountFirst: '暂无数据，请先新增账号',
+    refreshKey: '刷新密钥',
+    refreshPermission: '刷新权限',
+    selectAccountFirst: '请先选择账号',
+    quickOperation: '快捷操作'
   },
   // 具有通用性的文案
   tips: {
@@ -338,7 +342,8 @@ export default {
     webImage: '网络图片',
     favorites: '收藏夹',
     recentlyUsed: '最近使用',
-    complete: '完成'
+    complete: '完成',
+    noMore: '没有更多数据了'
   },
   // 反馈类型的文案(比如进行某个操作，返回操作结果的提示)
   feedback: {

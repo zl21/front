@@ -1,20 +1,28 @@
 <template>
   <div class="api-tree">
     <div class="api-header">
-      <p>【{{currentAccount.name}}】{{$t('messages.managementAuthority')}} <span
-          class="refresh"
-          @click="refresh"
+      <p><span v-if="currentAccount && currentAccount.name">【{{currentAccount.name}}】{{$t('messages.managementAuthority')}}</span>
+      <span v-else>{{$t('messages.selectAccountFirst')}}</span>
+        <Tooltip
+          :content="$t('messages.refreshPermission')"
+          placement="top"
         >
-          <img
-            src="../../assets/image/refresh.png"
-            class="refresh-icon"
-            alt=""
+          <span
+            class="refresh"
+            @click="refresh"
           >
-        </span></p>
+            <img
+              src="../../assets/image/refresh.png"
+              class="refresh-icon"
+              alt=""
+            >
+          </span>
+        </Tooltip>
+      </p>
       <Button
         type="posdefault"
         size="small"
-        :class="[isUpdated ? '': 'disabled', 'save']"
+        :disabled="!isUpdated"
         @click="save"
       >{{$t('buttons.save')}}</Button>
     </div>
