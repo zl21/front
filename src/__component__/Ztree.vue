@@ -9,6 +9,7 @@
       @on-click="search"
       @on-change="change"
       @on-enter="search"
+      :disabled="disabledSearch"
     />
     <p class="orange" v-if="showTip && inputValue.length>0">"{{inputValue}}"{{Notice}}</p>
     <div v-show="zNodes.length === 0" class="no-tree-wrap">
@@ -170,6 +171,10 @@
       // 搜索回调
       customizedSearch: {
         type: Function
+      },
+      // 禁用搜索
+      disabledSearch: {
+        type: Boolean
       }
     },
     methods: {

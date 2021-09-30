@@ -1,6 +1,7 @@
 .R3-api-permission {
   height: 100%;
-  overflow: hidden;
+  overflow-y: hidden;
+  overflow-x: auto;
   .ark-btn {
     border-radius: 2px;
   }
@@ -36,11 +37,12 @@
     }
     .ark-scroll-container {
       height: 100% !important;
+      padding-right: 10px;
     }
 
     .none-wrap {
-      height: calc(100% - 49px);
-      border: 1px solid @border-color-base;
+      height: 100%;
+      // border: 1px solid @border-color-base;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -64,7 +66,7 @@
     padding: 16px 10px;
 
     &.hight-light {
-      background-color: @normal-color;
+      background-color: #f7f8fa;
     }
 
     .accout-item-l {
@@ -91,7 +93,7 @@
       }
 
       .value {
-        font-weight: bold;
+        // font-weight: bold;
       }
 
       .refresh {
@@ -114,7 +116,7 @@
   }
 
   .bottom-tip {
-    color: @primary-color;
+    color: @title-color;
     text-align: center;
   }
 
@@ -158,13 +160,6 @@
       align-items: center;
       justify-content: space-between;
       width: 160px;
-      .ark-btn-info {
-        background-color: #999;
-        border-color: #999;
-        &:hover {
-          opacity: 0.9;
-        }
-      }
     }
   }
 
@@ -184,6 +179,12 @@
       justify-content: space-between;
       font-weight: bold;
       border-bottom: 1px solid @border-color-base;
+      background: #f7f8fa;
+
+      .api-header-l {
+        display: flex;
+        align-items: center;
+      }
 
       .save {
         height: 22px;

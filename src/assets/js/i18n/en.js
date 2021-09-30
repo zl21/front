@@ -209,7 +209,7 @@ export default {
     confirmRefreshSecret: 'After clicking confirm, the appSecret will be reset. After resetting, please notify the downstream developers to change the secret key information',
     scrollBottom: 'scrolled to the bottom',
     addAccountFirst: 'No data, please add an account first',
-    refreshKey: 'refresh key',
+    refreshKey: 'refresh appSecret',
     refreshPermission: 'refresh permissions',
     selectAccountFirst: 'Please select an account first',
     quickOperation: 'quick operation'

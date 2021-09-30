@@ -408,6 +408,7 @@ export default {
         this.getAccountList(0, (this.startIndex + 1) * this.range, true)
         return
       }
+      this.$refs.scroll.showBottomLoader = true
       this.startIndex = this.startIndex + 1
       this.getAccountList(this.startIndex)
     },
