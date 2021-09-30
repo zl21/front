@@ -8,6 +8,7 @@
           v-model="value"
           class='input-name'
           @on-focus="handlerFocus"
+          :maxlength="20"
           :placeholder="$t('messages.enterAccountName')"
         />
       </div>
@@ -25,7 +26,7 @@
     </div>
 
     <!-- 校验提示 -->
-    <div class="error-tip" v-show="showMessage">{{$t('messages.enterAccountName')}}</div>
+    <!-- <div class="error-tip" v-show="showMessage">{{$t('messages.enterAccountName')}}</div> -->
   </div>
 </template>
 
@@ -36,22 +37,23 @@ export default {
   data() {
     return {
       value: '',
-      showMessage: false
+      // showMessage: false
     }
   },
 
   methods: {
     save() {
       if (!this.value) {
-        this.showMessage = true
+        // this.showMessage = true
+        this.$Message.error(this.$t('messages.enterAccountName'))
         return
       }
-      this.showMessage = false
+      // this.showMessage = false
       this.$emit('save', this.value)
     },
 
     handlerFocus() {
-      this.showMessage = false
+      // this.showMessage = false
     },
 
     cancel() {
