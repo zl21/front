@@ -4,11 +4,12 @@
     :class="[currentPermissionsIndex === index ? 'hight-light' : '']"
     @mouseenter="mouseenter"
     @mouseleave="mouseleave"
+    @click="manageAuthority"
   >
     <div class='accout-item-l'>
       <div class='accout-row'>
         <span class="label">{{$t('messages.accountName')}}：</span>
-        <span class="value">{{itemInfo.name}}</span>
+        <span class="value one-line-flow">{{itemInfo.name}}</span>
       </div>
       <div class='app-wrap'>
         <div class="app-info key">
@@ -38,18 +39,20 @@
 
     <div
       class="accout-item-r"
-      v-show="showButtons"
+      v-show="showButtons || currentPermissionsIndex === index"
     >
-      <Button
+      <div class="delete-icon" @click="deleteAccount">
+        <i class="iconfont iconbj_delete"></i>
+      </div>
+      <!-- <Button
         type="fcdefault"
-        size="small"
         @click="deleteAccount"
-      >{{$t('messages.deleteAccount')}}</Button>
-      <Button
+      >{{$t('messages.deleteAccount')}}</Button> -->
+      <!-- <Button
         type="posdefault"
         size="small"
         @click="manageAuthority"
-      >{{$t('messages.managementAuthority')}}</Button>
+      >{{$t('messages.managementAuthority')}}</Button> -->
     </div>
   </div>
 </template>

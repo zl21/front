@@ -1,7 +1,7 @@
 <template>
   <div class="R3-api-permission">
     <div class="operation-wrap">
-      <span>{{$t('messages.quickOperation')}}：</span>
+      <span>{{showAddForm ? $t('messages.accountName') : $t('messages.quickOperation')}}：</span>
       <AddAccount
         v-if="showAddForm"
         @cancel="hideAdd"
@@ -39,6 +39,7 @@
             :itemInfo="item"
             :key="item.credentialKey"
             :index='index'
+            ref="account"
             :currentPermissionsIndex="currentPermissionsIndex"
           ></AccoutItem>
           <div
@@ -94,7 +95,7 @@ export default {
       showAddForm: false,
       currentPermissionsIndex: undefined,// 当前激活的账号索引
       accountList: [],
-      currentAccount: undefined,
+      currentAccount: undefined, // 当前账号信息
       checkedTotal: 0,
       total: 0,
       treeData: [],
@@ -147,6 +148,7 @@ export default {
             await this.getAccountList(0, (this.startIndex + 2) * this.range, true)
             const dom = document.querySelector('.account-list .ark-scroll-container')
             scrollTo(dom, 4)
+            this.$Message.success(this.$t('feedback.saveSuccess'));
 
             this.hideAdd()
           }
@@ -159,6 +161,9 @@ export default {
       network.post('/p/cs/developer/delete_user', { id }).then(res => {
         if (res.data.code === 0) {
           this.currentPermissionsIndex = undefined
+          this.currentAccount = undefined
+          this.treeData = []
+          this._clearData()
           this.getAccountList(0, (this.startIndex + 1) * this.range, true)
           this.$Message.success(this.$t('feedback.deleteSuccessfully'));
         }
@@ -188,6 +193,13 @@ export default {
             this.accountList = this.accountList.concat(res.data.data.list)
           }
           this.accountCount = res.data.data.total
+
+          // 重新查找激活索引
+          // fix: 新增账号后激活的item不对
+          if (this.currentAccount) {
+            const index = this.accountList.findIndex(item => this.currentAccount.name === item.name)
+            this.currentPermissionsIndex = index === -1 ? undefined : index
+          }
         }
       })
     },
@@ -466,8 +478,12 @@ export default {
     }
   },
 
-  mounted() {
-    this.getAccountList(this.startIndex)
+  async mounted() {
+    await this.getAccountList(this.startIndex)
+    console.log(this.$refs.account);
+    if (this.$refs.account && this.$refs.account.length > 0) {
+      this.$refs.account[0].$el.click()
+    }
   }
 }
 </script>

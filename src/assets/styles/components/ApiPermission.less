@@ -24,7 +24,7 @@
   }
 
   .account-list {
-    flex: 0 0 550px;
+    flex: 0 0 480px;
     margin-right: 40px;
     height: 100%;
 
@@ -59,11 +59,12 @@
     border-radius: 4px;
     border: 1px solid @border-color-base;
     height: 80px;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
     display: flex;
     justify-content: space-between;
     box-sizing: border-box;
     padding: 16px 10px;
+    cursor: pointer;
 
     &.hight-light {
       background-color: #f7f8fa;
@@ -93,7 +94,8 @@
       }
 
       .value {
-        // font-weight: bold;
+        width: 240px;
+        display: inline-block;
       }
 
       .refresh {
@@ -110,8 +112,17 @@
 
     .accout-item-r {
       display: flex;
-      flex-direction: column;
+      // flex-direction: column;
       justify-content: space-between;
+      align-items: center;
+      .delete-icon {
+        color: #fff;
+        background: @primary-color;
+        margin-right: 16px;
+        padding: 5px;
+        border-radius: 50%;
+        border: 1px solid @primary-color;
+      }
     }
   }
 
@@ -126,7 +137,7 @@
     border-bottom: 1px solid @border-color-base;
   }
   .R3-add-acount {
-    width: 500px;
+    width: 410px;
     padding: 0px 10px;
     display: inline-block;
     position: relative;
@@ -238,15 +249,11 @@
         }
       }
 
-      // .disabled {
-      //   background-color: #999;
-      //   border-color: #999;
-      // }
-
       .arrow-r {
         position: absolute;
         left: -34px;
-        top: 32px;
+        top: 50%;
+        transform: translateY(-50%);
       }
     }
   }
