@@ -1,11 +1,13 @@
 <template>
   <div class="api-tree">
     <div class="api-header">
-      <p><span v-if="currentAccount && currentAccount.name">【{{currentAccount.name}}】{{$t('messages.managementAuthority')}}</span>
-      <span v-else>{{$t('messages.selectAccountFirst')}}</span>
+      <p class="api-header-l">
+        <span v-if="currentAccount && currentAccount.name">【{{currentAccount.name}}】{{$t('messages.managementAuthority')}}</span>
+        <span v-else>{{$t('messages.selectAccountFirst')}}</span>
         <Tooltip
           :content="$t('messages.refreshPermission')"
           placement="top"
+          v-if="currentAccount && currentAccount.name"
         >
           <span
             class="refresh"

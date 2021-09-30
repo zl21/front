@@ -210,7 +210,7 @@ export default {
     scrollBottom: '已滚动到底部',
     addAccountFirst: '暂无数据，请先新增账号',
     refreshKey: '刷新密钥',
-    refreshPermission: '刷新权限',
+    refreshPermission: '刷新接口权限',
     selectAccountFirst: '请先选择账号',
     quickOperation: '快捷操作'
   },
