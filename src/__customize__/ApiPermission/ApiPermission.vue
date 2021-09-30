@@ -1,5 +1,20 @@
 <template>
   <div class="R3-api-permission">
+    <div class="operation-wrap">
+      <span>{{$t('messages.quickOperation')}}：</span>
+      <AddAccount
+        v-if="showAddForm"
+        @cancel="hideAdd"
+        @save="addAccount"
+      ></AddAccount>
+      <Button
+        v-else
+        @click="showAdd"
+        type="fcdefault"
+        class="add-account-btn"
+      >{{$t('messages.addAccount')}}+</Button>
+    </div>
+
     <div class="view-title">{{$t('messages.accountList')}}</div>
 
     <div class="content-area">
@@ -13,6 +28,7 @@
         </div>
         <Scroll
           :on-reach-bottom="handleReachBottom"
+          ref="scroll"
           v-else
         >
           <AccoutItem
@@ -25,26 +41,16 @@
             :index='index'
             :currentPermissionsIndex="currentPermissionsIndex"
           ></AccoutItem>
-
+          <div
+            class="bottom-tip"
+            v-if="accountCount <= accountList.length"
+          >{{$t('tips.noMore')}}</div>
         </Scroll>
 
-        <AddAccount
-          v-if="showAddForm"
-          @cancel="hideAdd"
-          @save="addAccount"
-        ></AddAccount>
-        <Button
-          v-else
-          @click="showAdd"
-          class="add-account-btn"
-        >{{$t('messages.addAccount')}}+</Button>
       </div>
 
       <!-- 接口权限 -->
-      <div
-        class="api-panel"
-        v-if="showPermissions"
-      >
+      <div class="api-panel">
         <ApiTree
           ref="apiTree"
           :permissionsIndex='currentPermissionsIndex'
@@ -85,7 +91,6 @@ export default {
 
   data() {
     return {
-      showPermissions: false,
       showAddForm: false,
       currentPermissionsIndex: undefined,// 当前激活的账号索引
       accountList: [],
@@ -97,8 +102,8 @@ export default {
       searchCache: '', // 缓存查询结果
       startIndex: 0, // 第几页数据
       accountCount: undefined, // 账号总数
-      range: 10, // 每页10条数据
-      isLoading: false
+      range: 20, // 每页n条数据
+      isLoading: false,
     }
   },
 
@@ -153,7 +158,6 @@ export default {
     comfirmDelete({ id }) {
       network.post('/p/cs/developer/delete_user', { id }).then(res => {
         if (res.data.code === 0) {
-          this.showPermissions = false
           this.currentPermissionsIndex = undefined
           this.getAccountList(0, (this.startIndex + 1) * this.range, true)
           this.$Message.success(this.$t('feedback.deleteSuccessfully'));
@@ -192,7 +196,6 @@ export default {
     manageAuthority(info) {
       this.currentPermissionsIndex = info.index
       this.currentAccount = info.item
-      this.showPermissions = true
       this._clearData()
       this.isLoading = true
       network.post('/p/cs/developer/find_permission_list', { apiUserId: this.currentAccount.id }).then(res => {
@@ -400,7 +403,9 @@ export default {
     // 滚动到底部
     handleReachBottom() {
       if (this.accountCount <= this.accountList.length) {
+        this.$refs.scroll.showBottomLoader = false
         this.$Message.success(this.$t('messages.scrollBottom'))
+        this.getAccountList(0, (this.startIndex + 1) * this.range, true)
         return
       }
       this.startIndex = this.startIndex + 1

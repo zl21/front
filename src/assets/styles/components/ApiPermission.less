@@ -1,13 +1,18 @@
 .R3-api-permission {
   height: 100%;
-  overflow: hidden;
+  overflow-y: hidden;
+  overflow-x: auto;
   .ark-btn {
     border-radius: 2px;
   }
+
+  .ark-tooltip-inner {
+    line-height: 18px;
+  }
+
   .view-title {
-    margin: 28px 0;
-    font-size: 20px;
-    font-weight: bold;
+    margin: 20px 0;
+    font-size: 12px;
     border-left: 3px solid @primary-color;
     padding-left: 10px;
   }
@@ -15,7 +20,7 @@
   .content-area {
     display: flex;
     padding-bottom: 20px;
-    height: calc(100% - 76px);
+    height: calc(100% - 122px);
   }
 
   .account-list {
@@ -28,15 +33,16 @@
     }
 
     .ark-scroll-wrapper {
-      height: calc(100% - 49px);
+      height: 100%;
     }
     .ark-scroll-container {
-      height: 100%!important;
+      height: 100% !important;
+      padding-right: 10px;
     }
 
     .none-wrap {
-      height: calc(100% - 49px);
-      border: 1px solid @border-color-base;
+      height: 100%;
+      // border: 1px solid @border-color-base;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -60,7 +66,7 @@
     padding: 16px 10px;
 
     &.hight-light {
-      background-color: @normal-color;
+      background-color: #f7f8fa;
     }
 
     .accout-item-l {
@@ -87,7 +93,7 @@
       }
 
       .value {
-        font-weight: bold;
+        // font-weight: bold;
       }
 
       .refresh {
@@ -109,13 +115,21 @@
     }
   }
 
+  .bottom-tip {
+    color: @title-color;
+    text-align: center;
+  }
+
   // 添加账号
+  .operation-wrap {
+    padding: 20px 0;
+    border-bottom: 1px solid @border-color-base;
+  }
   .R3-add-acount {
-    // border-radius: 8px;
-    // border: 1px solid @border-color-base;
-    min-height: 60px;
-    margin-bottom: 20px;
-    padding: 16px 10px;
+    width: 500px;
+    padding: 0px 10px;
+    display: inline-block;
+    position: relative;
 
     .add-account-wrap {
       display: flex;
@@ -125,8 +139,9 @@
 
     .error-tip {
       color: @error-color;
-      margin-top: 8px;
-      margin-left: 64px;
+      position: absolute;
+      left: 10px;
+      bottom: -20px;
     }
 
     .add-account-l {
@@ -145,13 +160,6 @@
       align-items: center;
       justify-content: space-between;
       width: 160px;
-      .ark-btn-info {
-        background-color: #999;
-        border-color: #999;
-        &:hover {
-          opacity: 0.9;
-        }
-      }
     }
   }
 
@@ -160,7 +168,7 @@
     flex: 1;
     min-width: 280px;
     height: 100%;
-    padding: 0px 10px 10px 10px;
+    padding: 0px 10px;
     position: relative;
 
     .api-header {
@@ -171,6 +179,12 @@
       justify-content: space-between;
       font-weight: bold;
       border-bottom: 1px solid @border-color-base;
+      background: #f7f8fa;
+
+      .api-header-l {
+        display: flex;
+        align-items: center;
+      }
 
       .save {
         height: 22px;
@@ -224,10 +238,10 @@
         }
       }
 
-      .disabled {
-        background-color: #999;
-        border-color: #999;
-      }
+      // .disabled {
+      //   background-color: #999;
+      //   border-color: #999;
+      // }
 
       .arrow-r {
         position: absolute;

@@ -16,16 +16,23 @@
         </div>
         <div class="app-info">
           <span class="label">appSecret：</span><span class="value serect">{{itemInfo.credentialSecret}}</span>
-          <span
-            class="refresh"
-            @click="refresh"
+          <Tooltip
+            :content="$t('messages.refreshKey')"
+            placement="top"
           >
-            <img
-              src="../../assets/image/refresh.png"
-              class="refresh-icon"
-              alt=""
+            <span
+              class="refresh"
+              @click="refresh"
+              :title="$t('messages.refreshKey')"
             >
-          </span>
+              <img
+                src="../../assets/image/refresh.png"
+                class="refresh-icon"
+                alt=""
+              >
+            </span>
+          </Tooltip>
+
         </div>
       </div>
     </div>
@@ -101,7 +108,7 @@ export default {
 
     // 管理权限
     manageAuthority() {
-      this.$emit('manageAuthority', { 
+      this.$emit('manageAuthority', {
         index: this.index,
         item: this.itemInfo
       })

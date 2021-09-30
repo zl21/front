@@ -3,11 +3,12 @@
     <div class="add-account-wrap">
 
       <div class="add-account-l">
-        <span class="label">{{$t('messages.accountName')}}：</span>
+        <!-- <span class="label">{{$t('messages.accountName')}}：</span> -->
         <Input
           v-model="value"
           class='input-name'
           @on-focus="handlerFocus"
+          :placeholder="$t('messages.enterAccountName')"
         />
       </div>
 
