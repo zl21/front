@@ -29,7 +29,7 @@
         <span class="count">({{checkedTotal}}/{{total}})</span>
       </div>
 
-      <div class="api-panel">
+      <div class="api-wrap">
         <Spin
           fix
           v-show="isLoading"
@@ -48,10 +48,6 @@
           :treeSetting="treeSetting"
           :customizedSearch="search"
         ></Ztree>
-        <div
-          v-if="treeData.length === 0"
-          class="no-tree"
-        >{{$t('tips.noData')}}</div>
       </div>
     </div>
   </div>
@@ -145,6 +141,7 @@ export default {
 
   data() {
     return {
+      // treeData: [],
       value: '',
       isSelectAll: false,
       treeSetting: {

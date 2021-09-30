@@ -208,6 +208,7 @@ export default {
     enterAccountName: '请输入账号名称',
     confirmRefreshSecret: '点击确认后，会重置appSecret，重置后请通知下游开发者更换密钥信息',
     scrollBottom: '已滚动到底部',
+    addAccountFirst: '暂无数据，请先新增账号'
   },
   // 具有通用性的文案
   tips: {

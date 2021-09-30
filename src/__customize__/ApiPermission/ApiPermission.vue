@@ -9,15 +9,10 @@
           v-if="accountList.length === 0"
           class="none-wrap"
         >
-          <img
-            :src="imgSrc.treeImg"
-            alt=""
-          >
-          <div class="none-tip">{{$t('tips.noData')}}</div>
+          <div class="none-tip">{{$t('messages.addAccountFirst')}}</div>
         </div>
         <Scroll
           :on-reach-bottom="handleReachBottom"
-          height="510"
           v-else
         >
           <AccoutItem
