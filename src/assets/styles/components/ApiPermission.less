@@ -10,6 +10,22 @@
     line-height: 18px;
   }
 
+  .no-account {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    img {
+      width: 100%;
+      max-width: 300px;
+    }
+    .none-tip {
+      margin-top: 20px;
+      color: @text-color;
+    }
+  }
+
   .view-title {
     margin: 20px 0;
     font-size: 12px;
@@ -38,19 +54,6 @@
     .ark-scroll-container {
       height: 100% !important;
       padding-right: 10px;
-    }
-
-    .none-wrap {
-      height: 100%;
-      // border: 1px solid @border-color-base;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      .none-tip {
-        margin-top: 20px;
-        color: @text-color;
-      }
     }
   }
 
@@ -112,7 +115,6 @@
 
     .accout-item-r {
       display: flex;
-      // flex-direction: column;
       justify-content: space-between;
       align-items: center;
       .delete-icon {
@@ -122,6 +124,10 @@
         padding: 5px;
         border-radius: 50%;
         border: 1px solid @primary-color;
+        opacity: 0.8;
+        &:hover {
+          opacity: 1;
+        }
       }
     }
   }
@@ -241,7 +247,7 @@
         width: 14px;
         display: inline-block;
         vertical-align: middle;
-        margin-left: 4px;
+        margin-left: 8px;
         cursor: pointer;
         img {
           width: 100%;

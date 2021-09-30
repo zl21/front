@@ -62,7 +62,7 @@
       </div>
     </div>
 
-    <i class="iconfont arrow-r">&#xea18;</i>
+    <!-- <i class="iconfont arrow-r">&#xea18;</i> -->
   </div>
 </template>
 
