@@ -209,7 +209,7 @@ export default {
     confirmRefreshSecret: '点击确认后，会重置appSecret，重置后请通知下游开发者更换密钥信息',
     scrollBottom: '已滚动到底部',
     addAccountFirst: '暂无数据，请先新增账号',
-    refreshKey: '刷新密钥',
+    refreshKey: '刷新appSecret',
     refreshPermission: '刷新接口权限',
     selectAccountFirst: '请先选择账号',
     quickOperation: '快捷操作'
