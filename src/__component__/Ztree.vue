@@ -11,14 +11,18 @@
       @on-enter="search"
     />
     <p class="orange" v-if="showTip && inputValue.length>0">"{{inputValue}}"{{Notice}}</p>
-    <div class="zTreeDemoBackground left">
+    <div v-show="zNodes.length === 0" class="no-tree-wrap">
+      <img :src="imgSrc.treeImg" alt="" style="width:100%;margin-top: 20px;">
+      <div
+          class="no-tree-tip"
+          style="margin-top: 30px;text-align: center;"
+        >{{$t('tips.noData')}}</div>
+    </div>
+    <div class="zTreeDemoBackground left" v-show="zNodes.length > 0">
       <ul
         :id="tableName"
         class="ztree"
       />
-    </div>
-    <div v-if="zNodes.length === 0">
-      <img :src="imgSrc.treeImg" alt="" style="width:100%;">
     </div>
   </div>
 </template>
