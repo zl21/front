@@ -351,6 +351,7 @@ export default {
 
     // 保存权限
     async saveAuthority(zTreeObj) {
+      this.isLoading = true
       // 场景: 存在已经勾选的节点，然后模糊搜索再进行勾选。此时应该取并集（注意去重）
       const realCheckedNodes = await this._getRealChecked(zTreeObj)
       network.post('/p/cs/developer/update_permission', { apiUserId: this.currentAccount.id, list: realCheckedNodes }).then(res => {
@@ -358,6 +359,7 @@ export default {
           this.isUpdated = false
           // 刷新数据。这样树才能检查新的节点变化
           this.updateAuthorityData(zTreeObj)
+          this.isLoading = false
 
           this.$Message.success(this.$t('feedback.saveSuccess'));
         }
