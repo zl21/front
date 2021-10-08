@@ -93,7 +93,32 @@ const components= {
     /* webpackChunkName: 'MessageList' */
     /* webpackMode: 'eager' */
     '../__component__/nav/MessageList.vue'
-  )
+  ),
+  ErCode:() => import(
+    /* webpackChunkName: 'ErCode' */
+    /* webpackMode: 'eager' */
+    '../__component__/Login/components/ErCode'
+  ),
+  Collect:() => import(
+    /* webpackChunkName: 'Collect' */
+    /* webpackMode: 'eager' */
+    '../__component__/nav/collect'
+  ),
+  Lately:() => import(
+    /* webpackChunkName: 'Lately' */
+    /* webpackMode: 'eager' */
+    '../__component__/nav/Lately'
+  ),
+  ChangeLang:() => import(
+    /* webpackChunkName: 'ChangeLang' */
+    /* webpackMode: 'eager' */
+    '../__component__/Login/components/ChangeLang'
+  ),
+  HistoryAndFavorite:() => import(
+    /* webpackChunkName: 'HistoryAndFavorite' */
+    /* webpackMode: 'eager' */
+    '../__component__/HistoryAndFavorite'
+  ),
 }
 
 export default components
