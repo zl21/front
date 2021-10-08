@@ -107,7 +107,7 @@ const components= {
   Lately:() => import(
     /* webpackChunkName: 'Lately' */
     /* webpackMode: 'eager' */
-    '../__component__/nav/Lately'
+    '../__component__/nav/lately'
   ),
   ChangeLang:() => import(
     /* webpackChunkName: 'ChangeLang' */
