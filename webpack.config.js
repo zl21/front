@@ -234,10 +234,10 @@ module.exports = env => ({
       new ModuleFederationPlugin({
       filename: 'remoteEntry.js',
       // 唯一ID，用于标记当前服务
-      name: '@syman/burgeon-r3',
+      name: 'burgeon_r3',
       library: {
         type: 'var',
-        name: 'Burgeon-r3',
+        name: 'burgeon_r3',
       },
       // 需要暴露的模块，使用时通过 `${name}/${expose}` 引入
       exposes: {
