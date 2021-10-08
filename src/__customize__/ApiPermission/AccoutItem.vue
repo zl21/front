@@ -23,7 +23,7 @@
           >
             <span
               class="refresh"
-              @click="refresh"
+              @click.stop="refresh"
             >
               <img
                 src="../../assets/image/refresh.png"
@@ -41,7 +41,7 @@
       class="accout-item-r"
       v-show="showButtons || currentPermissionsIndex === index"
     >
-      <div class="delete-icon" @click="deleteAccount">
+      <div class="delete-icon" @click.stop="deleteAccount">
         <i class="iconfont iconbj_delete"></i>
       </div>
       <!-- <Button
