@@ -6,10 +6,10 @@
           v-if="actionFlag.produceFlag"
           @click="produceCode"
         >
-          生成条码
+          {{$t('messages.generateBarcode')}}
         </button>
         <button @click="backMainTab">
-          返回
+          {{$t('buttons.back')}}
         </button>
       </div>
       <TabPanels

@@ -212,7 +212,8 @@ export default {
     refreshKey: '刷新appSecret',
     refreshPermission: '刷新接口权限',
     selectAccountFirst: '请先选择账号',
-    quickOperation: '快捷操作'
+    quickOperation: '快捷操作',
+    generateBarcode: '生成条码'
   },
   // 具有通用性的文案
   tips: {
@@ -343,7 +344,15 @@ export default {
     favorites: '收藏夹',
     recentlyUsed: '最近使用',
     complete: '完成',
-    noMore: '没有更多数据了'
+    noMore: '没有更多数据了',
+    description: '描述',
+    grandTotal: '累计',
+    average: '平均',
+    max: '最大',
+    min: '最小',
+    count: '计数',
+    integer: '整数',
+    environment: '环境'
   },
   // 反馈类型的文案(比如进行某个操作，返回操作结果的提示)
   feedback: {
@@ -451,4 +460,45 @@ export default {
   previewPicture: {
     picturePreview: '图片预览'
   },
+  // 定制界面metricsDefinition
+  metricsDefinition: {
+    saveDefinition: '保存交叉表定义',
+    saveDefinitionSeparately: '另保存交叉表定义',
+    factTable: '事实表',
+    reportTemplate: '报表模版',
+    availableField: '可用字段',
+    enterFieldName: '输入字段名',
+    ifSelectAll: '是否全选',
+    lessGroupingField: '越少的分组字段，Cube生成的时间越短，另外，执行快速导出时，仅行定义的分组字段会被使用',
+    editGroupField: '编辑分组字段',
+    editSummaryField: '编辑汇总字段',
+    fieldReference: '字段引用',
+    hideInReport: '在网页报表中隐藏',
+    summaryField: '汇总字段',
+    customColumn: '自定义计算列',
+    variableName: '变量名',
+    statisticalFunction: '统计函数',
+    displayFormat: '显示格式',
+    securityLevel: '安全级别',
+    pageDefinition:'页定义(仅透视分析中有效)',
+    groupFieldSetting: '分组字段设置',
+    columnDefinition: '列定义',
+    rowDefinition: '行定义',
+    summaryFieldSetting: '汇总字段设置',
+    noEmpty: '不可为空',
+    withPercentile: '含百分位',
+    withTenThousandths: '含万分位',
+    thousandsSeparated: '千位分隔',
+    thousandsAndPercent: '千位分隔和百分',
+    wholePercentage: '整百分比',
+    digitPercentage: '2位百分比',
+  },
+  // 定制界面customizeReport
+  customizeReport: {
+    errorRequest: '请求过滤条件出错'
+  },
+  // 定制弹框PublishPrintTemplate
+  publishPrintTemplate: {
+    continueCover: '当前的操作会执行全量覆盖！是否继续？'
+  }
 }
