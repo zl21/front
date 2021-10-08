@@ -5,7 +5,7 @@
       <div class="pop-input">
         <ul>
           <li class="resTop">
-            <span>环境:</span>
+            <span>{{$t('tips.environment')}}:</span>
             <Select
               v-model="envValue"
               style="width:228px"
@@ -87,7 +87,7 @@
           const data = {
             mask: true,
             title: this.$t('feedback.warning'),
-            content: '请选择环境'
+            content: `${this.$t('form.selectPlaceholder')}${this.$t('tips.environment')}`
           };
           this.$Modal.fcWarning(data);
           return;

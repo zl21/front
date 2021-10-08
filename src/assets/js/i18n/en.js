@@ -195,7 +195,8 @@ export default {
     collapseQuery: 'collapse query conditions',
     queryDefaultRows: 'number of query area rows',
     noHistory: 'no history',
-    noCollection: 'no collection'
+    noCollection: 'no collection',
+    generateBarcode: 'generate barcode'
   },
   // 具有通用性的文案
   tips: {
@@ -325,7 +326,15 @@ export default {
     webImage: 'web image',
     favorites: 'favorites',
     recentlyUsed: 'recently used',
-    complete: 'complete'
+    complete: 'complete',
+    description: 'description',
+    grandTotal: 'grand total',
+    average: 'average',
+    max: 'max',
+    min: 'min',
+    count: 'count',
+    integer: 'integer',
+    environment: 'environment'
   },
   // 反馈类型的文案(比如进行某个操作，返回操作结果的提示)
   feedback: {
@@ -432,4 +441,45 @@ export default {
   previewPicture: {
     picturePreview: 'picture preview'
   },
+  // 定制界面
+  metricsDefinition: {
+    saveDefinition: 'save the crosstab definition',
+    saveDefinitionSeparately: 'save the crosstab definition separately',
+    factTable: 'fact table',
+    reportTemplate: 'report template',
+    availableField: 'available field',
+    enterFieldName: 'enter field name',
+    ifSelectAll: 'whether to select all',
+    lessGroupingField: 'The fewer the grouping fields, the shorter the Cube generation time. In addition, when the quick export is performed, only the grouping fields defined in the row will be used',
+    editGroupField: 'edit group field',
+    editSummaryField: 'edit summary field',
+    fieldReference: 'field reference',
+    hideInReport: 'hide in web report',
+    summaryField: 'summary field',
+    customColumn: 'custom calculated column',
+    variableName: 'variable name',
+    statisticalFunction: 'statistical function',
+    displayFormat: 'display format',
+    securityLevel: 'security level',
+    pageDefinition: 'page definition (valid only in perspective analysis)',
+    groupFieldSetting: 'group field setting',
+    columnDefinition: 'column definition',
+    rowDefinition: 'row definition',
+    summaryFieldSetting: 'summary field setting',
+    noEmpty: 'cannot be empty',
+    withPercentile: 'with percentile',
+    withTenThousandths: 'with ten thousandths',
+    thousandsSeparated: 'thousands separated',
+    thousandsAndPercent: 'thousands and percent',
+    wholePercentage: 'whole percentage',
+    digitPercentage: '2-digit percentage',
+  },
+  // 定制界面customizeReport
+  customizeReport: {
+    errorRequest: 'error request filter'
+  },
+  // 定制弹框PublishPrintTemplate
+  publishPrintTemplate: {
+    continueCover: 'The current operation will perform full coverage! Whether to continue?'
+  }
 }
