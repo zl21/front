@@ -150,6 +150,11 @@ export default {
         options = this.processAgOptions(options)
       }
       return options
+    },
+
+    // 是否用了新版ag
+    isNewAg() {
+      return $Bcl && $Bcl.version === '1.1.0'
     }
   },
   props: {
@@ -337,15 +342,11 @@ export default {
 
     // 是否有列开起了过滤
     existFilter(data) {
-      let result = false;
       if (!data) {
-        return result;
+        return
       }
 
       for (let i = 0; i < data.length; i++) {
-        // if (data[i].isagfilter) {
-        //   result = true;
-        // }
         data[i].floatingFilter = data[i].isagfilter
         data[i].filter = data[i].isagfilter
         const isAllCloseFilter = floatingFilter()
@@ -355,7 +356,22 @@ export default {
           data[i].filter = isAllCloseFilter
         }
       }
-      return result;
+    },
+
+    // 旧版浮动过滤
+    isOpenFilter(columns) {
+      let isOpenfloatingFilter = true;
+      const isAllCloseFilter = columns.every(item => item.isagfilter === false);
+      console.log("🚀 ~ file: AgTable.vue ~ line 365 ~ isOpenFilter ~ isAllCloseFilter", isAllCloseFilter,columns,floatingFilter())
+
+      if (isAllCloseFilter) {
+        isOpenfloatingFilter = false;
+      }
+      // 全局关闭过滤优先级更高
+      if (floatingFilter() === false) {
+        isOpenfloatingFilter = false;
+      }
+      return isOpenfloatingFilter
     },
 
     // 处理列数据
@@ -426,7 +442,7 @@ export default {
 
       // 如果每一列的都关过滤则在表格配置里关闭过滤，避免展示一个空白的过滤条
       // 全局关闭过滤优先级更高
-      this.existFilter(th)
+      this.isNewAg && this.existFilter(th)
 
       // let isOpenfloatingFilter = true;
       // const isAllCloseFilter = !this.existFilter(th);
@@ -455,11 +471,10 @@ export default {
         this.rows = rows
       }
 
-      this.options = {
+      const options = {
         cssStatus: self.legend, // 颜色配置信息
         defaultSort: arr, // 默认排序
         datas, //  所有返回数据
-        // floatingFilter: isOpenfloatingFilter,
         agCellSingleClick: (colDef, rowData, target) => {
           // 参数说明
           // colDef：包含表头信息的对象
@@ -523,6 +538,13 @@ export default {
           }
         },
       }
+
+      // 旧版表格用开关控制浮动过滤
+      if(!this.isNewAg) {
+        options.floatingFilter = this.isOpenFilter(th)
+      }
+
+      this.options = options
     },
 
     // 清除勾选
