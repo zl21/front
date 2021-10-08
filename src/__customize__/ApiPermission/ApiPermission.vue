@@ -400,6 +400,7 @@ export default {
 
     // 刷新权限
     refreshAuthority() {
+      this.isLoading = true
       this._clearData()
       network.post('/p/cs/developer/flush_permission').then(res => {
         if (res.data.code === 0) {
