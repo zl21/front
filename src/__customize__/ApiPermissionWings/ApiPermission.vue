@@ -509,5 +509,11 @@ export default {
 @import url('../../assets/styles/common/index.less');
 @import url('../../assets/theme/custom.less');
 @import url('../../assets/styles/components/ApiPermission.less');
+@import url('../../assets/css/ztree/zTreeStyle.css');
 @import url('../../assets/css/ztree/setzTreeStyle.less');
+.R3-api-permission {
+  .ark-input {
+    margin-bottom: 0;
+  }
+}
 </style>
