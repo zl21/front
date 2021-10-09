@@ -1,8 +1,5 @@
 // 国际化
 import VueI18n from 'vue-i18n'
-import en from '../../../../static/js/ark/locale/en-US'
-import zh from '../../../../static/js/ark/locale/zh-CN'
-const locale = $Bcl.locale
 
 if (!('$i18n' in Vue.prototype)) {
   Vue.use(VueI18n)
@@ -26,8 +23,6 @@ const i18n = new VueI18n({
   // silentTranslationWarn: true // 去掉警告
 })
 
-// 初始化时设置语言
-locale(lang) // 设置业务组件库语言
-Vue.use(Ark, { locale: lang === 'en' ? en : zh }) // 设置ark-ui语言
+
 
 export default i18n

@@ -66,3 +66,8 @@ window.R3I18n = function(language = 'zh', options) {
     setLanguages(language, options)
   }
 }
+
+const lang = localStorage.getItem('r3-lang') || 'zh' // 获取本地缓存语言。用于刷新界面后保持语言不变
+// 初始化时设置语言
+locale(lang) // 设置业务组件库语言
+Vue.use(Ark, { locale: lang === 'en' ? en : zh }) // 设置ark-ui语言
