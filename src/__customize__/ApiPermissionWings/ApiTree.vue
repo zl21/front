@@ -1,0 +1,268 @@
+<template>
+  <div class="api-tree">
+    <div class="api-header">
+      <p class="api-header-l">
+        <span v-if="currentAccount && currentAccount.name">【{{currentAccount.name}}】{{$t('messages.managementAuthority')}}</span>
+        <span v-else>{{$t('messages.selectAccountFirst')}}</span>
+        <Tooltip
+          :content="$t('messages.refreshPermission')"
+          placement="top"
+          v-if="currentAccount && currentAccount.name"
+        >
+          <span
+            class="refresh"
+            @click="refresh"
+          >
+            <img
+              src="../../assets/image/refresh.png"
+              class="refresh-icon"
+              alt=""
+            >
+          </span>
+        </Tooltip>
+      </p>
+      <Button
+        type="posdefault"
+        size="small"
+        :disabled="!isUpdated"
+        @click="save"
+      >{{$t('buttons.save')}}</Button>
+    </div>
+
+    <div class="api-body">
+      <div class="all-panel">
+        <span>{{$t('messages.interfacePermissions')}}：</span>
+        <Checkbox
+          v-model="isSelectAll"
+          :disabled="treeData.length === 0"
+        >{{$t('tips.all')}}</Checkbox>
+        <span class="count">({{checkedTotal}}/{{total}})</span>
+      </div>
+
+      <div class="api-wrap">
+        <Spin
+          fix
+          v-show="isLoading"
+        >
+          <Icon
+            type="ios-loading"
+            size=18
+            class="demo-spin-icon-load"
+          ></Icon>
+          <div>Loading</div>
+        </Spin>
+        <Ztree
+          ref="zTree"
+          :placeholder="$t('messages.pleaseEnterContent')"
+          :z-nodes="treeData"
+          :treeSetting="treeSetting"
+          :customizedSearch="search"
+          :disabledSearch="!currentAccount"
+        ></Ztree>
+      </div>
+    </div>
+
+    <!-- <i class="iconfont arrow-r">&#xea18;</i> -->
+  </div>
+</template>
+
+<script type="text/ecmascript-6">
+import Ztree from './Ztree.vue'
+import i18n from '../../assets/js/i18n'
+
+export default {
+  name: 'R3ApiTree',
+
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
+  },
+
+  components: {
+    Ztree
+  },
+
+  props: {
+    // 第几个权限的索引
+    permissionsIndex: {
+      type: Number,
+      default: 0
+    },
+    // 当前账号信息
+    currentAccount: {
+      type: Object,
+    },
+    // 已勾选的权限总数
+    checkedTotal: {
+      type: Number,
+    },
+    // 权限总数
+    total: {
+      type: Number,
+    },
+    // 树数据
+    treeData: {
+      type: Array
+    },
+    // 是否修改过数据
+    isUpdated: {
+      type: Boolean
+    },
+    // 是否加载中
+    isLoading: {
+      type: Boolean
+    }
+  },
+
+  watch: {
+    // 根据勾选数量，计算【全部】checkbox是否要被勾选
+    checkedTotal: {
+      handler(checkedCount) {
+        if (checkedCount === this.total && this.total !== 0) {
+          this.isSelectAll = true
+        } else {
+          this.isSelectAll = false
+        }
+      },
+      immediate: true
+    },
+
+    // 主动全选、反选
+    isSelectAll(newVal) {
+      const zTreeObj = this.$refs.zTree.zTreeObj
+
+      // 主动点击全选
+      if (newVal && this.checkedTotal !== this.total) {
+        this.$emit('updateCheckedCount', this.total)
+        zTreeObj.checkAllNodes(true)
+        // console.log('全选');
+        // 重命名父节点
+        this._updateNodeCount(zTreeObj)
+      }
+      // 主动点击反选
+      if (!newVal && this.checkedTotal === this.total) {
+        this.$emit('updateCheckedCount', 0)
+        zTreeObj.checkAllNodes(false)
+        // console.log('反选');
+
+        // 重命名父节点
+        this._updateNodeCount(zTreeObj)
+      }
+      // 检查是否更新数据
+      this._checkNode(zTreeObj)
+    },
+
+    // 切换权限后，清理数据
+    permissionsIndex() {
+      this.$refs.zTree.inputValue = '' // 清空输入框的值
+    }
+  },
+
+  data() {
+    return {
+      // treeData: [],
+      value: '',
+      isSelectAll: false,
+      treeSetting: {
+        data: {
+          key: {
+            children: 'apiPathVoList',
+            name: 'desc',
+            checked: 'show'
+          },
+          simpleData: {
+            enable: true,
+            idKey: 'id', // 树节点ID名称
+            pIdKey: 'apiTagId', // 父节点ID名称
+          },
+        },
+        callback: {
+          onCheck: this.handleCheck
+        },
+        check: {
+          enable: true,
+        },
+        view: {
+          selectedMulti: false,
+          showIcon: false,
+          nameIsHTML: true,
+          dblClickExpand: true,
+        },
+      },
+      // treeData: [
+      //   {
+      //     "desc": "WSZZ01",
+      //     "apiTagId": null,
+      //   },
+      //   {
+      //     "apiPathVoList": [
+      //       {
+      //         "desc": "中国商用飞机有限责任公司",
+      //         "id": "1",
+      //       },
+      //       {
+      //         "desc": "公司领导",
+      //         "id": "10",
+      //       }
+      //     ],
+      //     "desc": "中国商飞",
+      //     "apiTagId": null,
+      //   },
+      // ]
+    }
+  },
+
+  methods: {
+    // 查询节点
+    search(value, zTreeObj) {
+      this.$emit('search', { value, zTreeObj, isExpandAll: true })
+    },
+
+    save() {
+      if (this.isUpdated) {
+        this.$emit('save', this.$refs.zTree.zTreeObj)
+      }
+    },
+
+    // 更新权限状态
+    _updateSelectedAll(status) {
+      this.isSelectAll = status
+    },
+
+    // 刷新权限
+    refresh() {
+      this.$emit('refresh')
+    },
+
+    // 点击树节点
+    handleCheck(e, treeId, treeNode) {
+      const zTreeObj = this.$refs.zTree.zTreeObj
+      this.$emit('check', {
+        e, treeId, treeNode, zTreeObj
+      })
+    },
+
+    // 更新父节点统计数
+    _updateNodeCount(zTreeObj) {
+      const nodes = zTreeObj.getNodes()
+      nodes.forEach(node => {
+        const checkedNodes = node.apiPathVoList.filter(item => item.show)
+        node.desc = `${node.apiTagDesc} (${checkedNodes.length}/${node.apiPathVoList.length})`
+        zTreeObj.updateNode(node)
+      })
+    },
+
+    // 检查是否更新了数据
+    _checkNode(zTreeObj) {
+      let isUpdated = false // 判断是否修改过数据
+      const checkedNodes = zTreeObj.getChangeCheckedNodes()
+      if (checkedNodes.length > 0) {
+        isUpdated = true // 判断是否修改过数据
+      }
+      this.$emit('updateStatus', isUpdated)
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+</style>

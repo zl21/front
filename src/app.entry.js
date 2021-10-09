@@ -8,6 +8,7 @@ import routerPrototype from './__config__/router.prototype';
 import store from './__config__/store.config';
 import App from './App';
 import i18n from './assets/js/i18n';
+import './__utils__/i18n' // 挂载i18n方法
 import './constants/dateApi';
 import network from './__utils__/network';
 import { DispatchEvent } from './__utils__/dispatchEvent';
