@@ -9,9 +9,17 @@
       @on-click="search"
       @on-change="change"
       @on-enter="search"
+      :disabled="disabledSearch"
     />
     <p class="orange" v-if="showTip && inputValue.length>0">"{{inputValue}}"{{Notice}}</p>
-    <div class="zTreeDemoBackground left">
+    <div v-show="zNodes.length === 0" class="no-tree-wrap">
+      <img :src="imgSrc.treeImg" alt="">
+      <div
+          class="no-tree-tip"
+          style="margin-top: 30px;text-align: center;"
+        >{{$t('tips.noData')}}</div>
+    </div>
+    <div class="zTreeDemoBackground left" v-show="zNodes.length > 0">
       <ul
         :id="tableName"
         class="ztree"
@@ -22,6 +30,7 @@
 
 <script>
   import { fuzzySearch } from '../../static/js/ztree/fuzzysearch';
+  import { mapState } from 'vuex';
 
   export default {
     name: 'ZTree',
@@ -107,7 +116,11 @@
         }
         const result = Object.assign(defalutSetting, this.treeSetting)
         return result
-      }
+      },
+
+      ...mapState('global', {
+        imgSrc: state => state.imgSrc,
+      }),
     },
 
     watch: {
@@ -158,6 +171,10 @@
       // 搜索回调
       customizedSearch: {
         type: Function
+      },
+      // 禁用搜索
+      disabledSearch: {
+        type: Boolean
       }
     },
     methods: {

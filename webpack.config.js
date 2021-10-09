@@ -231,7 +231,20 @@ module.exports = env => ({
     //   jquery: 'jquery',
     //   'window.jQuery': 'jquery'
     // })
-
+      new ModuleFederationPlugin({
+      filename: 'remoteEntry.js',
+      // 唯一ID，用于标记当前服务
+      name: 'burgeon_r3',
+      library: {
+        type: 'var',
+        name: 'burgeon_r3',
+      },
+      // 需要暴露的模块，使用时通过 `${name}/${expose}` 引入
+      exposes: {
+        './ApiPermission': './src/__customize__/ApiPermission/ApiPermission.vue',
+      },
+      shared: ['vue', 'vuex','vue-router', '@syman/ark-ui', 'axios'],
+    })
     // new ModuleFederationPlugin({
     //   name: '',
     //   remotes: {

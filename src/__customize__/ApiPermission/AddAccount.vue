@@ -3,28 +3,30 @@
     <div class="add-account-wrap">
 
       <div class="add-account-l">
-        <span class="label">{{$t('messages.accountName')}}：</span>
+        <!-- <span class="label">{{$t('messages.accountName')}}：</span> -->
         <Input
           v-model="value"
           class='input-name'
           @on-focus="handlerFocus"
+          :maxlength="20"
+          :placeholder="$t('messages.enterAccountName')"
         />
       </div>
 
       <div class="add-account-r">
         <Button
-          type="info"
+          type="fcdefault"
           @click="cancel"
         >{{$t('buttons.cancel')}}</Button>
         <Button
-          type="success"
+          type="posdefault"
           @click="save"
         >{{$t('buttons.save')}}</Button>
       </div>
     </div>
 
     <!-- 校验提示 -->
-    <div class="error-tip" v-show="showMessage">{{$t('messages.enterAccountName')}}</div>
+    <!-- <div class="error-tip" v-show="showMessage">{{$t('messages.enterAccountName')}}</div> -->
   </div>
 </template>
 
@@ -35,22 +37,23 @@ export default {
   data() {
     return {
       value: '',
-      showMessage: false
+      // showMessage: false
     }
   },
 
   methods: {
     save() {
       if (!this.value) {
-        this.showMessage = true
+        // this.showMessage = true
+        this.$Message.error(this.$t('messages.enterAccountName'))
         return
       }
-      this.showMessage = false
+      // this.showMessage = false
       this.$emit('save', this.value)
     },
 
     handlerFocus() {
-      this.showMessage = false
+      // this.showMessage = false
     },
 
     cancel() {

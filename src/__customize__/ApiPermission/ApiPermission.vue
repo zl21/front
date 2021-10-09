@@ -1,61 +1,87 @@
 <template>
   <div class="R3-api-permission">
-    <div class="view-title">{{$t('messages.accountList')}}</div>
-
-    <div class="content-area">
-      <!-- 账号列表 -->
-      <div class="account-list">
-        <AccoutItem
-          v-for="(item, index) in accountList"
-          @manageAuthority='manageAuthority'
-          @comfirmDelete="comfirmDelete"
-          @comfirmRefresh="comfirmRefresh"
-          :itemInfo="item"
-          :key="item.credentialKey"
-          :index='index'
-        ></AccoutItem>
-
-        <AddAccount
-          v-if="showAddForm"
-          @cancel="hideAdd"
-          @save="addAccount"
-        ></AddAccount>
-        <Button
-          v-else
-          @click="showAdd"
-        >{{$t('messages.addAccount')}}+</Button>
-      </div>
-
-      <!-- 接口权限 -->
-      <div
-        class="api-panel"
-        v-if="showPermissions"
-      >
-        <ApiTree
-          ref="apiTree"
-          :permissionsIndex='currentPermissionsIndex'
-          :currentAccount="currentAccount"
-          :checkedTotal="checkedTotal"
-          :total="total"
-          :treeData="treeData"
-          :isUpdated="isUpdated"
-          @search="searchAuthority"
-          @updateCheckedCount="updateCheckedCount"
-          @check="handlerNodeCheck"
-          @save="saveAuthority"
-          @refresh="refreshAuthority"
-          @updateStatus="updateStatus"
-        ></ApiTree>
-      </div>
+    <div class="operation-wrap">
+      <span>{{showAddForm ? $t('messages.accountName') : $t('messages.quickOperation')}}：</span>
+      <AddAccount
+        v-if="showAddForm"
+        @cancel="hideAdd"
+        @save="addAccount"
+      ></AddAccount>
+      <Button
+        v-else
+        @click="showAdd"
+        type="fcdefault"
+        class="add-account-btn"
+      >{{$t('messages.addAccount')}}+</Button>
     </div>
+
+    <div
+      class="no-account"
+      v-if="accountList.length === 0"
+    >
+      <img :src="imgSrc.treeImg" alt="">
+      <div class="none-tip">{{$t('messages.addAccountFirst')}}</div>
+    </div>
+    <template v-else>
+      <div class="view-title">{{$t('messages.accountList')}}</div>
+
+      <div class="content-area">
+        <!-- 账号列表 -->
+        <div class="account-list">
+          <Scroll
+            :on-reach-bottom="handleReachBottom"
+            ref="scroll"
+          >
+            <AccoutItem
+              v-for="(item, index) in accountList"
+              @manageAuthority='manageAuthority'
+              @comfirmDelete="comfirmDelete"
+              @comfirmRefresh="comfirmRefresh"
+              :itemInfo="item"
+              :key="item.credentialKey"
+              :index='index'
+              ref="account"
+              :currentPermissionsIndex="currentPermissionsIndex"
+            ></AccoutItem>
+            <div
+              class="bottom-tip"
+              v-if="isNoMore"
+            >{{$t('tips.noMore')}}</div>
+          </Scroll>
+
+        </div>
+
+        <!-- 接口权限 -->
+        <div class="api-panel">
+          <ApiTree
+            ref="apiTree"
+            :permissionsIndex='currentPermissionsIndex'
+            :currentAccount="currentAccount"
+            :checkedTotal="checkedTotal"
+            :total="total"
+            :treeData="treeData"
+            :isUpdated="isUpdated"
+            :isLoading="isLoading"
+            @search="searchAuthority"
+            @updateCheckedCount="updateCheckedCount"
+            @check="handlerNodeCheck"
+            @save="saveAuthority"
+            @refresh="refreshAuthority"
+            @updateStatus="updateStatus"
+          ></ApiTree>
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-import network, { urlSearchParams } from '../../__utils__/network';
+import { mapState } from 'vuex';
+import network from '../../__utils__/network';
 import AccoutItem from './AccoutItem'
 import AddAccount from './AddAccount'
 import ApiTree from './ApiTree'
+import { scrollTo } from '../../__utils__/dom'
 
 export default {
   name: 'R3ApiPermission',
@@ -68,17 +94,27 @@ export default {
 
   data() {
     return {
-      showPermissions: false,
       showAddForm: false,
-      currentPermissionsIndex: undefined,
+      currentPermissionsIndex: undefined,// 当前激活的账号索引
       accountList: [],
-      currentAccount: undefined,
+      currentAccount: undefined, // 当前账号信息
       checkedTotal: 0,
       total: 0,
       treeData: [],
       isUpdated: false, // 是否修改过数据
-      searchCache: '' // 缓存查询结果
+      searchCache: '', // 缓存查询结果
+      startIndex: 0, // 第几页数据
+      accountCount: undefined, // 账号总数
+      range: 20, // 每页n条数据
+      isLoading: false,
+      isNoMore: false
     }
+  },
+
+  computed: {
+    ...mapState('global', {
+      imgSrc: state => state.imgSrc,
+    }),
   },
 
   methods: {
@@ -110,9 +146,13 @@ export default {
     // 新增账号
     async addAccount(name) {
       if (await this.validateAccount(name)) {
-        network.post('/p/cs/developer/save_user', { name }).then(res => {
+        network.post('/p/cs/developer/save_user', { name }).then(async (res) => {
           if (res.data.code === 0) {
-            this.getAccountList()
+            await this.getAccountList(0, (this.startIndex + 2) * this.range, true)
+            const dom = document.querySelector('.account-list .ark-scroll-container')
+            scrollTo(dom, 4)
+            this.$Message.success(this.$t('feedback.saveSuccess'));
+
             this.hideAdd()
           }
         })
@@ -123,8 +163,11 @@ export default {
     comfirmDelete({ id }) {
       network.post('/p/cs/developer/delete_user', { id }).then(res => {
         if (res.data.code === 0) {
-          this.showPermissions = false
-          this.getAccountList()
+          this.currentPermissionsIndex = undefined
+          this.currentAccount = undefined
+          this.treeData = []
+          this._clearData()
+          this.getAccountList(0, (this.startIndex + 1) * this.range, true)
           this.$Message.success(this.$t('feedback.deleteSuccessfully'));
         }
       })
@@ -134,21 +177,33 @@ export default {
     comfirmRefresh({ id }) {
       network.post('/p/cs/developer/flush_secret', { id }).then(res => {
         if (res.data.code === 0) {
-          this.getAccountList()
+          this.getAccountList(0, (this.startIndex + 1) * this.range, true)
           this.$Message.success(this.$t('feedback.refreshSuccess'));
         }
       })
     },
 
     // 获取账号列表
-    getAccountList() {
-      // this.$R3loading.show(this.loadingName);
-      network.post('/p/cs/developer/find_user_list', {}).then(res => {
+    async getAccountList(startIndex, range, isReset) {
+      await network.post('/p/cs/developer/find_user_list', {
+        startindex: startIndex,
+        range: range || this.range
+      }).then(res => {
         if (res.data.code === 0) {
-          this.accountList = res.data.data.list
+          if (isReset) {
+            this.accountList = res.data.data.list
+          } else {
+            this.accountList = this.accountList.concat(res.data.data.list)
+          }
+          this.accountCount = res.data.data.total
+
+          // 重新查找激活索引
+          // fix: 新增账号后激活的item不对
+          if (this.currentAccount) {
+            const index = this.accountList.findIndex(item => this.currentAccount.name === item.name)
+            this.currentPermissionsIndex = index === -1 ? undefined : index
+          }
         }
-      }).finally(() => {
-        // this.$R3loading.hide(this.loadingName);
       })
     },
 
@@ -156,13 +211,13 @@ export default {
     manageAuthority(info) {
       this.currentPermissionsIndex = info.index
       this.currentAccount = info.item
-      this.showPermissions = true
       this._clearData()
-
+      this.isLoading = true
       network.post('/p/cs/developer/find_permission_list', { apiUserId: this.currentAccount.id }).then(res => {
         if (res.data.code === 0) {
           const data = res.data.data
           this.treeData = this._formatTree(data.list)
+          this.isLoading = false
 
           // 等树渲染完毕再传数量
           // 不然_checkNode函数检查更新会拿到旧数据
@@ -178,6 +233,7 @@ export default {
     // 模糊搜索权限
     searchAuthority({ value, zTreeObj, isExpandAll }) {
       this.searchCache = value
+      this.isLoading = true
       network.post('/p/cs/developer/find_permission_list', { apiUserId: this.currentAccount.id, name: value }).then(res => {
         if (res.data.code === 0) {
           const data = res.data.data
@@ -185,6 +241,7 @@ export default {
           this.total = data.total
           this.$refs.apiTree._updateSelectedAll(this.checkedTotal === this.total) // 更新全选状态。fix: 模糊搜索前勾选比例是5/7,搜索后是5/200时，此时没有触发全选判定的计算
           this.treeData = this._formatTree(data.list)
+          this.isLoading = false
           this.isUpdated = false
           if (isExpandAll) {
             setTimeout(() => {
@@ -294,6 +351,7 @@ export default {
 
     // 保存权限
     async saveAuthority(zTreeObj) {
+      this.isLoading = true
       // 场景: 存在已经勾选的节点，然后模糊搜索再进行勾选。此时应该取并集（注意去重）
       const realCheckedNodes = await this._getRealChecked(zTreeObj)
       network.post('/p/cs/developer/update_permission', { apiUserId: this.currentAccount.id, list: realCheckedNodes }).then(res => {
@@ -301,6 +359,7 @@ export default {
           this.isUpdated = false
           // 刷新数据。这样树才能检查新的节点变化
           this.updateAuthorityData(zTreeObj)
+          this.isLoading = false
 
           this.$Message.success(this.$t('feedback.saveSuccess'));
         }
@@ -341,6 +400,7 @@ export default {
 
     // 刷新权限
     refreshAuthority() {
+      this.isLoading = true
       this._clearData()
       network.post('/p/cs/developer/flush_permission').then(res => {
         if (res.data.code === 0) {
@@ -356,6 +416,21 @@ export default {
     // 全选/反选时,检查数据是否更新
     updateStatus(value) {
       this.isUpdated = value
+    },
+
+    // 滚动到底部
+    handleReachBottom() {
+      if (this.accountCount <= this.accountList.length) {
+        this.isNoMore = true
+        this.$refs.scroll.showBottomLoader = false
+        this.$Message.success(this.$t('messages.scrollBottom'))
+        this.getAccountList(0, (this.startIndex + 1) * this.range, true)
+        return
+      }
+      this.isNoMore = false
+      this.$refs.scroll.showBottomLoader = true
+      this.startIndex = this.startIndex + 1
+      this.getAccountList(this.startIndex)
     },
 
     // 计算已勾选节点树(排除父节点)
@@ -411,12 +486,8 @@ export default {
     }
   },
 
-  // created() {
-  //     this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');
-  //   },
-
-  mounted() {
-    this.getAccountList()
+  async mounted() {
+    await this.getAccountList(this.startIndex)
   }
 }
 </script>

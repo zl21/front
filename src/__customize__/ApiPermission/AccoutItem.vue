@@ -1,13 +1,15 @@
 <template>
   <div
     class="R3-accout-item"
+    :class="[currentPermissionsIndex === index ? 'hight-light' : '']"
     @mouseenter="mouseenter"
     @mouseleave="mouseleave"
+    @click="manageAuthority"
   >
     <div class='accout-item-l'>
       <div class='accout-row'>
         <span class="label">{{$t('messages.accountName')}}：</span>
-        <span class="value">{{itemInfo.name}}</span>
+        <span class="value one-line-flow">{{itemInfo.name}}</span>
       </div>
       <div class='app-wrap'>
         <div class="app-info key">
@@ -15,34 +17,42 @@
         </div>
         <div class="app-info">
           <span class="label">appSecret：</span><span class="value serect">{{itemInfo.credentialSecret}}</span>
-          <span
-            class="refresh"
-            @click="refresh"
+          <Tooltip
+            :content="$t('messages.refreshKey')"
+            placement="top"
           >
-            <img
-              src="../../assets/image/refresh.png"
-              class="refresh-icon"
-              alt=""
+            <span
+              class="refresh"
+              @click.stop="refresh"
             >
-          </span>
+              <img
+                src="../../assets/image/refresh.png"
+                class="refresh-icon"
+                alt=""
+              >
+            </span>
+          </Tooltip>
+
         </div>
       </div>
     </div>
 
     <div
       class="accout-item-r"
-      v-show="showButtons"
+      v-show="showButtons || currentPermissionsIndex === index"
     >
-      <Button
-        type="error"
-        size="small"
+      <div class="delete-icon" @click.stop="deleteAccount">
+        <i class="iconfont iconbj_delete"></i>
+      </div>
+      <!-- <Button
+        type="fcdefault"
         @click="deleteAccount"
-      >{{$t('messages.deleteAccount')}}</Button>
-      <Button
-        type="info"
+      >{{$t('messages.deleteAccount')}}</Button> -->
+      <!-- <Button
+        type="posdefault"
         size="small"
         @click="manageAuthority"
-      >{{$t('messages.managementAuthority')}}</Button>
+      >{{$t('messages.managementAuthority')}}</Button> -->
     </div>
   </div>
 </template>
@@ -58,6 +68,10 @@ export default {
 
     itemInfo: {
       type: Object
+    },
+    // 激活的索引
+    currentPermissionsIndex: {
+      type: Number
     }
   },
 
@@ -96,7 +110,7 @@ export default {
 
     // 管理权限
     manageAuthority() {
-      this.$emit('manageAuthority', { 
+      this.$emit('manageAuthority', {
         index: this.index,
         item: this.itemInfo
       })
