@@ -1,0 +1,324 @@
+<template>
+  <div class="content_wrap">
+    <Input
+      id="key"
+      v-model="inputValue"
+      :placeholder="placeholder"
+      class="input"
+      icon="ios-search"
+      @on-click="search"
+      @on-change="change"
+      @on-enter="search"
+      :disabled="disabledSearch"
+    />
+    <p
+      class="orange"
+      v-if="showTip && inputValue.length>0"
+    >"{{inputValue}}"{{Notice}}</p>
+    <div
+      v-show="zNodes.length === 0"
+      class="no-tree-wrap"
+    >
+      <img
+        src="../../assets/image/defalut-tree.jpg"
+        alt=""
+      >
+      <div
+        class="no-tree-tip"
+        style="margin-top: 30px;text-align: center;"
+      >{{$t('tips.noData')}}</div>
+    </div>
+    <div
+      class="zTreeDemoBackground left"
+      v-show="zNodes.length > 0"
+    >
+      <ul
+        :id="tableName"
+        class="ztree"
+      />
+    </div>
+  </div>
+</template>
+
+<script>
+import { fuzzySearch } from '../../../static/js/ztree/fuzzysearch';
+import i18n from '../../assets/js/i18n'
+
+export default {
+  name: 'ZTree',
+
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
+  },
+
+  data() {
+    return {
+      inputValue: '',
+      tableName: 'treeDemo',
+      showTip: false,
+      // setting: {
+      //   check: {
+      //     enable: false// checkbox
+      //   },
+      //   view: {
+      //     selectedMulti: false,
+      //     showIcon: false,
+      //     nameIsHTML: true,
+      //     dblClickExpand: false,
+      //     // showLine: false,
+      //     // fontCss: this.setFontCss
+      //   },
+      //   callback: {
+      //     beforeClick: this.beforeClick,
+      //     onClick: this.onClick
+      //   },
+      //   edit: {
+      //     enable: false,
+      //     editNameSelectAll: false
+      //   },
+      //   data: {
+      //     key: {
+      //       children: 'CHILDREN',
+      //       name: 'NAME',
+      //     },
+      //     simpleData: {
+      //       enable: true,
+      //       idKey: 'ID', // 树节点ID名称
+      //       pIdKey: 'PARENT_ID', // 父节点ID名称
+      //     // rootPId: -1,//根节点ID
+      //     }
+      //   },
+      // },
+      isClick: false,
+      treeId: '',
+      searchNoData: false,
+      zTreeObj: undefined,
+    };
+  },
+
+  computed: {
+    setting() {
+      const defalutSetting = {
+        check: {
+          enable: false// checkbox
+        },
+        view: {
+          selectedMulti: false,
+          showIcon: false,
+          nameIsHTML: true,
+          dblClickExpand: false,
+          // showLine: false,
+          // fontCss: this.setFontCss
+        },
+        callback: {
+          beforeClick: this.beforeClick,
+          onClick: this.onClick
+        },
+        edit: {
+          enable: false,
+          editNameSelectAll: false
+        },
+        data: {
+          key: {
+            children: 'CHILDREN',
+            name: 'NAME',
+          },
+          simpleData: {
+            enable: true,
+            idKey: 'ID', // 树节点ID名称
+            pIdKey: 'PARENT_ID', // 父节点ID名称
+            // rootPId: -1,//根节点ID
+          }
+        },
+      }
+      const result = Object.assign(defalutSetting, this.treeSetting)
+      return result
+    },
+  },
+
+  watch: {
+    zNodes: {
+      handler() {
+        this.zTreeObj = $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
+      },
+      deep: true
+    },
+    // isChangeTreeConfigData: {
+    //   handler(val) {
+    //     debugger;
+    //     if (val === 'Y') {
+    //       this.inputValue = '';
+    //       this.search();
+    //       // this.$emit('changeTreeConfigData', '');
+    //     }
+    //   }
+    // },
+  },
+
+  props: {
+    // isChangeTreeConfigData: {
+    //   type: String,
+    //   default: ''
+    // },
+    placeholder: {// 设置查询框placeholder
+      type: String,
+      default: function () { return this.$t('messages.enterRole') }
+    },
+    Notice: {
+      type: String,
+      default: function () { return this.$t('messages.matchFail') }
+    },
+    treeDatas: {
+      type: Function,
+      default: () => { }
+    },
+    zNodes: {
+      type: Array,
+      default: () => []
+    },
+    // 树配置
+    treeSetting: {
+      type: Object,
+      default: () => ({})
+    },
+    // 搜索回调
+    customizedSearch: {
+      type: Function
+    },
+    // 禁用搜索
+    disabledSearch: {
+      type: Boolean
+    }
+  },
+  methods: {
+
+    // this.$emit('clickTreeNode', arr, treeNode.ID, true);
+    // arr:当前点击的节点以及全部子节点
+    // treeNode.ID:当前点击节点ID
+    // 第三个参数为true:需查询当前点击节点以及全部子节点，为false:查空值
+
+
+    // setFontCss(treeId, treeNode) {
+    //   return { color: 'red' };
+    // },
+    // hasClass(element, cls) { // 判断当前节点是否包含需要添加的class
+    //   return (` ${element.className} `).indexOf(` ${cls} `) > -1;
+    // },
+    // beforeClick(treeId, treeNode, clickFlag) {
+    //   if (this.treeId === treeNode.tId) {
+    //     const treeObj = $.fn.zTree.getZTreeObj('treeDemo');
+    //     const nodes = treeObj.getNodes();
+    //     if (nodes.length > 0) {
+    //       nodes[0].name = '夏';
+    //       nodes[0].isHover = false;
+
+    //       console.log(111, nodes[0].name, nodes[0].isHover);
+
+    //       treeObj.updateNode(nodes[0]);
+    //     }
+    //   }
+    //   this.treeId = treeNode.tId;
+
+    //   return true;
+    // },
+
+    checkNode() {
+      // 选中
+      const treeObj = $.fn.zTree.getZTreeObj(`${this.tableName}`);
+      if (JSON.stringify(this.treeNode) !== '{}' && this.treeNode) {
+        const node = treeObj.getNodeByTId(this.treeNode.tId);
+        if (node) {
+          treeObj.selectNode(node);
+        }
+      } else if (treeObj) {
+        treeObj.refresh();
+      }
+    },
+    onClick(e, treeId, treeNode) {
+      const arr = [];
+      this.treeNode = treeNode;
+      if (this.treeId === treeNode.tId) {
+        this.isClick = !this.isClick;
+        if (this.isClick) { // 取消选中查空
+          const treeObj = $.fn.zTree.getZTreeObj(`${this.tableName}`);
+          treeObj.refresh();// 取消选中
+          this.treeNode = {};
+          this.$emit('clickTreeNode', arr, treeNode.ID, false);
+        } else {
+          arr.push(treeNode);
+          this.$emit('clickTreeNode', arr, treeNode.ID, true);
+        }
+      } else {
+        this.isClick = false;
+        arr.push(treeNode);
+        this.$emit('clickTreeNode', arr, treeNode.ID, true);
+      }
+      this.treeId = treeNode.tId;
+    },
+    isNull(str) {
+      if (str === '') return true;
+      const regu = '^[ ]+$';
+      const re = new RegExp(regu);
+      return re.test(str);
+    },
+    change() {
+      this.showTip = false;
+    },
+    search() {
+      if (this.customizedSearch) {
+        this.customizedSearch(this.inputValue, this.zTreeObj)
+        return
+      }
+      const isNull = this.isNull(this.inputValue);
+      if (!isNull) {
+        let checkoutZtree = fuzzySearch(`${this.tableName}`, this.inputValue, null, true); // 初始化模糊搜索方法
+        checkoutZtree.then((res) => {
+          if (res.length > 0) {
+            this.showTip = false;
+            this.searchNoData = false;
+          } else {
+            this.showTip = true;
+            this.searchNoData = true;
+            this.expandAll();
+          }
+          this.$emit('treeSearch', this.inputValue, this.searchNoData)
+        })
+      } else {
+        this.showTip = false;
+        this.expandAll();
+        this.$emit('treeSearch', this.inputValue, this.searchNoData)
+      }
+    },
+    expandAll() {
+      // fuzzySearch('treeDemo','', null, false); // 初始化模糊搜索方法
+      this.zTreeObj = $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
+      this.treeId = '';
+      // const treeObj = $.fn.zTree.getZTreeObj('treeDemo');
+      // treeObj.refresh();// 取消选中
+    },
+    callMethod() { // 重置
+      this.inputValue = '';
+      this.search();
+    },
+    clearInputVal() {
+      this.inputValue = '';
+    },
+    // freshArea() {
+    //   $.fn.zTree.init($('#treeDemo'), this.setting, this.zNodes);
+    // }
+  },
+  created() {
+    this.tableName = this.$route.params.tableName ? `${this.$route.params.tableName}treeDemo` : 'treeDemo';
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.zTreeObj = $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
+    });
+
+    // $(document).ready(() => {
+    //   $.fn.zTree.init($('#treeDemo'), this.setting, this.zNodes);
+    //   fuzzySearch('treeDemo', '#key', null, true); // 初始化模糊搜索方法
+    // });
+  }
+};
+</script>

@@ -1,0 +1,161 @@
+body .zTreeDemoBackground {
+    height: 100%;
+    padding-top: 10px;
+    position: relative
+}
+
+body .zTreeDemoBackground .ark-input-wrapper {
+    border: 1px solid #dbdde8;
+    border-radius: 5px;
+    bottom: auto;
+    color: #292f43;
+    height: 32px;
+    left: 0;
+    line-height: 30px;
+    overflow: hidden;
+    padding-right: 32px;
+    position: absolute;
+    right: auto;
+    top: 0;
+    transform: translate(0);
+    width: 100%
+}
+
+
+body .zTreeDemoBackground .ark-input-wrapper .ark-input {
+    border: none;
+    height: 30px
+}
+
+body .zTreeDemoBackground .ark-input-wrapper .ark-input-icon {
+    height: 32px;
+    line-height: 32px
+}
+
+body .zTreeDemoBackground .zTreeDemoBackground {
+    height: 100%;
+    overflow-y: scroll
+}
+
+body .zTreeDemoBackground .ztree {
+    padding: 0 8px 8px
+}
+
+body .zTreeDemoBackground .ztree ul.line {
+    background: none
+}
+
+body .zTreeDemoBackground .ztree li {
+    line-height: 32px;
+    position: relative
+}
+
+body .zTreeDemoBackground .ztree li a {
+    display: inline-block;
+    height: auto;
+    line-height: 32px;
+    vertical-align: middle
+}
+
+body .zTreeDemoBackground .ztree li a:hover {
+    text-decoration: none
+}
+
+body .zTreeDemoBackground .ztree li a.curSelectedNode {
+    // border: 1px solid @border-color-split
+}
+
+body .zTreeDemoBackground .ztree li a.curSelectedNode,body .zTreeDemoBackground .ztree li a:hover {
+    border-radius: 4px;
+    color:  @primary-color;
+}
+
+body .zTreeDemoBackground .ztree li span.button {
+    background: none
+}
+
+body .zTreeDemoBackground .ztree li span.button.bottom_open:before,body .zTreeDemoBackground .ztree li span.button.center_open:before,body .zTreeDemoBackground .ztree li span.button.root_open:before,body .zTreeDemoBackground .ztree li span.button.roots_open:before {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #fff;
+    color: #ccc;
+    content: "\E6CA";
+    font-family: iconfont!important;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400
+}
+
+body .zTreeDemoBackground .ztree li span.button.bottom_close:before,body .zTreeDemoBackground .ztree li span.button.center_close:before,body .zTreeDemoBackground .ztree li span.button.root_close:before,body .zTreeDemoBackground .ztree li span.button.roots_close:before {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #fff;
+    color: #ccc;
+    content: "\E6E4";
+    font-family: iconfont!important;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400
+}
+.zTreeDemoBackground .ztree li span.button.chk{
+	border: 1px solid #ddd;
+	border-radius: 2px;
+	height: 14px;
+	width: 14px;
+}
+.zTreeDemoBackground .ztree li span.button.chk.checkbox_true_full,.zTreeDemoBackground .ztree li span.button.chk.checkbox_true_full_focus{
+	background-color: @primary-color;
+	border: 1px solid @primary-color;
+	position: relative;
+
+}
+.zTreeDemoBackground .ztree li span.button.chk.checkbox_true_full:before,.zTreeDemoBackground .ztree li span.button.chk.checkbox_true_full_focus:before{
+	-webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #fff;
+    content: "\EC80";
+    font-family: iconfont!important;
+    font-size: 12px;
+    font-weight: bold;
+	position:absolute;
+    top: 6px;
+    left: 0px;
+}
+body .zTreeDemoBackground .ztree li span.button.switch {
+    height: 32px;
+    line-height: 32px;
+    padding-left: 12px;
+    position: relative;
+    width: 32px;
+    z-index: 1
+}
+
+body .zTreeDemoBackground .ztree li span.button.switch.bottom_docu,body .zTreeDemoBackground .ztree li span.button.switch.center_docu,body .zTreeDemoBackground .ztree li span.button.switch.root_docu,body .zTreeDemoBackground .ztree li span.button.switch.roots_docu {
+    margin-left: -16px
+}
+
+body .zTreeDemoBackground .ztree li li {
+    position: relative
+}
+
+body .zTreeDemoBackground .ztree li li:before {
+    height: 100%;
+    top: -16px;
+    width: 1px
+}
+
+body .zTreeDemoBackground .ztree li li:after,body .zTreeDemoBackground .ztree li li:before {
+    background: #ededed;
+    bottom: auto;
+    content: " ";
+    left: 0;
+    position: absolute;
+    right: auto;
+    transform: translate(0)
+}
+
+body .zTreeDemoBackground .ztree li li:after {
+    height: 1px;
+    top: 17px;
+    width: 12px
+}

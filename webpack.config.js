@@ -25,7 +25,6 @@ const proxyListForOMS = ['/p/c', '/p/cs', '/api', '/ad-app', '/r3-ps', '/r3-cp',
 const indexProHtml = path.posix.join('/', 'index.pro.html');
 const indexHtml = path.posix.join('/', 'index.html');
 
-
 module.exports = env => ({
   entry: {
     index: './main.js',
@@ -132,7 +131,7 @@ module.exports = env => ({
     filename: '[name].js',
     chunkFilename: '[name].js',
     path: path.join(__dirname, './dist'),
-    publicPath: '/',
+    publicPath: env && env.production ? '/' :'auto',
   },
   module: {
     exprContextCritical: false,
@@ -231,7 +230,20 @@ module.exports = env => ({
     //   jquery: 'jquery',
     //   'window.jQuery': 'jquery'
     // })
-
+      new ModuleFederationPlugin({
+      filename: 'remoteEntry.js',
+      // 唯一ID，用于标记当前服务
+      name: 'syman_burgeon_r3',
+      library: {
+        type: 'var',
+        name: 'syman_burgeon_r3',
+      },
+      // 需要暴露的模块，使用时通过 `${name}/${expose}` 引入
+      exposes: {
+        './ApiPermission': './src/__customize__/ApiPermissionWings/ApiPermission.vue',
+      },
+      shared: ['vue', 'vuex','vue-router', '@syman/ark-ui', 'axios'],
+    })
     // new ModuleFederationPlugin({
     //   name: '',
     //   remotes: {

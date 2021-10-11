@@ -5,22 +5,22 @@
         type="posdefault"
         @click="saveCubeReport()"
       >
-        保存交叉表定义
+        {{$t('metricsDefinition.saveDefinition')}}
       </Button>
       <Button
         type="fcdefault"
         @click="saveCubeReport()"
       >
-        另保存交叉表定义
+        {{$t('metricsDefinition.saveDefinitionSeparately')}}
       </Button>
     </div>
     <Row class="report-intro">
       <span>
-        事实表：
+        {{$t('metricsDefinition.factTable')}}：
         <em>{{ adTableInfo.NAME }}</em>
       </span>
       <span>
-        报表模版：
+        {{$t('metricsDefinition.reportTemplate')}}：
         <em>{{ adTableInfo.DESCRIPTION }}</em>
       </span>
     </Row>
@@ -29,11 +29,11 @@
         <div class="list">
           <div class="list-header">
             <!-- <Checkbox v-model="isParentAllChecked">可用字段</Checkbox> -->
-            可用字段
+            {{$t('metricsDefinition.availableField')}}
             <Input
               v-model="fieldName"
               style="width: 92px; height:20px;"
-              placeholder="输入字段名"
+              :placeholder="$t('metricsDefinition.enterFieldName')"
               :expand="false"
               @on-enter="fieldQuery()"
             >
@@ -127,7 +127,7 @@
               :value="item.checkBox"
               @click.prevent.native="checkBatchChange(idx)"
             >
-              是否全选
+              {{$t('metricsDefinition.ifSelectAll')}}
             </Checkbox>
           </div>
         </div>
@@ -135,13 +135,13 @@
     </main>
     <p class="tips">
       <Icon type="ios-alert-outline" />
-      越少的分组字段，Cube生成的时间越短，另外，执行快速导出时，仅行定义的分组字段会被使用。
+      {{$t('metricsDefinition.lessGroupingField')}}
     </p>
     <Modal
       v-model="isSetDialogShow"
       draggable
       scrollable
-      :title="currentIdx != 3 ? '编辑分组字段' : '编辑汇总字段'"
+      :title="currentIdx != 3 ? $t('metricsDefinition.editGroupField') : $t('metricsDefinition.editSummaryField')"
       @on-ok="saveSetModal()"
     >
       <div v-show="currentIdx != 3">
@@ -152,7 +152,7 @@
           :label-width="120"
         >
           <FormItem
-            label="字段引用："
+            :label="`${$t('metricsDefinition.fieldReference')}：`"
             prop="COLUMN_LINK"
           >
             <Input
@@ -162,7 +162,7 @@
             /></Input>
           </FormItem>
           <FormItem
-            label="描述："
+            :label="`${$t('tips.description')}：`"
             prop="DESCRIPTION"
           >
             <Input
@@ -170,7 +170,7 @@
               placeholder
             /></Input>
           </FormItem>
-          <FormItem label="在网页报表中隐藏：">
+          <FormItem :label="`${$t('metricsDefinition.hideInReport')}：`">
             <Checkbox v-model="groupForm.HIDE_HTML" />
           </FormItem>
         </Form>
@@ -182,27 +182,27 @@
           :rules="factListRule"
           :label-width="100"
         >
-          <FormItem label="汇总字段：">
+          <FormItem :label="`${$t('metricsDefinition.summaryField')}：`">
             <Input
               v-model="factListForm.COLUMN_LINK"
               disabled
               placeholder
             /></Input>
           </FormItem>
-          <FormItem label="自定义计算列：">
+          <FormItem :label="`${$t('metricsDefinition.customColumn')}：`">
             <Input
               v-model="factListForm.USER_FACT"
               placeholder
             /></Input>
           </FormItem>
-          <FormItem label="变量名：">
+          <FormItem :label="`${$t('metricsDefinition.variableName')}：`">
             <Input
               v-model="factListForm.VALUE_NAME"
               placeholder
             /></Input>
           </FormItem>
           <FormItem
-            label="统计函数："
+            :label="`${$t('metricsDefinition.statisticalFunction')}：`"
             prop="FUNCTION_NAME"
           >
             <Select
@@ -220,7 +220,7 @@
             </Select>
           </FormItem>
           <FormItem
-            label="描述："
+            :label="`${$t('tips.description')}：`"
             prop="DESCRIPTION"
           >
             <Input
@@ -229,7 +229,7 @@
             /></Input>
           </FormItem>
           <FormItem
-            label="显示格式："
+            :label="`${$t('metricsDefinition.displayFormat')}：`"
             prop="VALUE_FORMAT"
           >
             <Select
@@ -246,7 +246,7 @@
               </Option>
             </Select>
           </FormItem>
-          <FormItem label="安全级别：">
+          <FormItem :label="`${$t('metricsDefinition.securityLevel')}：`">
             <Input
               v-model="factListForm.SECURITY_GRADE"
               placeholder
@@ -286,47 +286,47 @@
         childBoxList: [
           {
             dataName: 'pageDimList',
-            name: '页定义(仅透视分析中有效)',
+            name: this.$t('metricsDefinition.pageDefinition'),
             isAllChecked: false,
             childList: [],
             isChildBtnDisabled: true,
             isSetDataDisabled: true,
             childCheckedArr: [],
             indeterminate: false,
-            setBtnTitle: '分组字段设置'
+            setBtnTitle: this.$t('metricsDefinition.groupFieldSetting')
           },
           {
             dataName: 'vertDimList',
-            name: '列定义',
+            name: this.$t('metricsDefinition.columnDefinition'),
             isAllChecked: false,
             childList: [],
             isChildBtnDisabled: true,
             isSetDataDisabled: true,
             childCheckedArr: [],
             indeterminate: false,
-            setBtnTitle: '分组字段设置'
+            setBtnTitle: this.$t('metricsDefinition.groupFieldSetting')
           },
           {
             dataName: 'horizDimList',
-            name: '行定义',
+            name: this.$t('metricsDefinition.rowDefinition'),
             isAllChecked: false,
             childList: [],
             isChildBtnDisabled: true,
             isSetDataDisabled: true,
             childCheckedArr: [],
             indeterminate: false,
-            setBtnTitle: '分组字段设置'
+            setBtnTitle: this.$t('metricsDefinition.groupFieldSetting')
           },
           {
             dataName: 'factList',
-            name: '汇总字段',
+            name: this.$t('metricsDefinition.summaryField'),
             isAllChecked: false,
             childList: [],
             isChildBtnDisabled: true,
             isSetDataDisabled: true,
             childCheckedArr: [],
             indeterminate: false,
-            setBtnTitle: '汇总字段设置'
+            setBtnTitle: this.$t('metricsDefinition.summaryFieldSetting')
           }
         ],
         currentIdx: 0,
@@ -340,14 +340,14 @@
           COLUMN_LINK: [
             {
               required: true,
-              message: '不可为空',
+              message: this.$t('metricsDefinition.noEmpty'),
               trigger: 'blur'
             }
           ],
           DESCRIPTION: [
             {
               required: true,
-              message: '不可为空',
+              message: this.$t('metricsDefinition.noEmpty'),
               trigger: 'blur'
             }
           ]
@@ -365,21 +365,21 @@
           FUNCTION_NAME: [
             {
               required: true,
-              message: '不可为空',
+              message: this.$t('metricsDefinition.noEmpty'),
               trigger: 'blur'
             }
           ],
           DESCRIPTION: [
             {
               required: true,
-              message: '不可为空',
+              message: this.$t('metricsDefinition.noEmpty'),
               trigger: 'blur'
             }
           ],
           VALUE_FORMAT: [
             {
               required: true,
-              message: '不可为空',
+              message: this.$t('metricsDefinition.noEmpty'),
               trigger: 'blur'
             }
           ]
@@ -387,65 +387,53 @@
         functionNameList: [
           {
             value: 'SUM',
-            label: '累计'
+            label: this.$t('tips.grandTotal')
           },
           {
             value: 'AVG',
-            label: '平均'
+            label: this.$t('tips.average')
           },
           {
             value: 'MAX',
-            label: '最大'
+            label: this.$t('tips.max')
           },
           {
             value: 'MIN',
-            label: '最小'
+            label: this.$t('tips.min')
           },
           {
             value: 'COUNT',
-            label: '计数'
+            label: this.$t('tips.count')
           }
-          // {// 待添加
-          //   value: "VAR",
-          //   label: "平均差"
-          // },
-          // {
-          //   value: "STDEV",
-          //   label: "均方差"
-          // },
-          // {
-          //   value: "MEDIAN",
-          //   label: "中间值"
-          // }
         ],
         valueFormatList: [
           {
             value: '#0',
-            label: '整数'
+            label: this.$t('tips.integer')
           },
           {
             value: '#0.00',
-            label: '含百分位'
+            label: this.$t('metricsDefinition.withPercentile')
           },
           {
             value: '#0.000',
-            label: '含万分位'
+            label: this.$t('metricsDefinition.withTenThousandths')
           },
           {
             value: '###,###,###',
-            label: '千位分隔'
+            label: this.$t('metricsDefinition.thousandsSeparated')
           },
           {
             value: '###,###,##0.00',
-            label: '千位分隔和百分'
+            label: this.$t('metricsDefinition.thousandsAndPercent')
           },
           {
             value: '0%',
-            label: '整百分比'
+            label: this.$t('metricsDefinition.wholePercentage')
           },
           {
             value: '0.00%',
-            label: '2位百分比'
+            label: this.$t('metricsDefinition.digitPercentage')
           }
         ]
       };
@@ -474,8 +462,6 @@
       datadragEnd(evt) {
         evt.preventDefault();
         this.childBoxList = JSON.parse(JSON.stringify(this.childBoxList));// 解决拖拽之后CheckBox状态不更新问题
-        console.log(`拖动前的索引 :${evt.oldIndex}`);
-        console.log(`拖动后的索引 :${evt.newIndex}`);
       },
       onCheckChange(obj) {
         console.log(obj);

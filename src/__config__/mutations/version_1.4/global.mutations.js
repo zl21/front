@@ -1058,7 +1058,14 @@ export default {
           path,
           query
         };
-        router.push(routeInfo);
+         // 如果当前路由等于跳转路由不跳转
+         let currentRouteFullPath = router.currentRoute.fullPath;
+         if(currentRouteFullPath.indexOf('?') > 0){
+           currentRouteFullPath = currentRouteFullPath.substr(0,currentRouteFullPath.indexOf('?'));
+         }
+         if(currentRouteFullPath!== path){
+           router.push(routeInfo);
+         }
       }
       return;
     }
@@ -1175,7 +1182,9 @@ export default {
         bannerImg: data.enterpriseBanner ? data.enterpriseBanner : state.imgSrc.bannerImg,
         closedImg: data.collapseImg ? data.collapseImg : state.imgSrc.closedImg,
         openedImg: data.expandImg ? data.expandImg : state.imgSrc.openedImg,
-        bigDataImg: data.bigDataImg ? data.bigDataImg : state.imgSrc.bigDataImg
+        bigDataImg: data.bigDataImg ? data.bigDataImg : state.imgSrc.bigDataImg,
+        loginImg: data.loginImg ? data.loginImg : state.imgSrc.loginImg,
+        treeImg: data.treeImg ? data.treeImg : state.imgSrc.treeImg,
       };
       state.imgSrc = Object.assign(state.imgSrc, images);
     }
