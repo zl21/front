@@ -10,3 +10,4 @@ dist/
 *.tgz
 burgeon-r3-*/
 *.log
+entry/
