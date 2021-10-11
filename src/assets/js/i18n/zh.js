@@ -196,7 +196,7 @@ export default {
     queryDefaultRows: '查询条件默认显示行数',
     noHistory: '暂无历史记录',
     noCollection: '暂无收藏记录',
-    generateBarcode: '生成条码'
+    generateBarcode: '生成条码',
     devAccount: '开发者账号',
     accountList: '账号列表',
     accountName: '账号名称',

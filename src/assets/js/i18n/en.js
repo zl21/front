@@ -196,7 +196,7 @@ export default {
     queryDefaultRows: 'number of query area rows',
     noHistory: 'no history',
     noCollection: 'no collection',
-    generateBarcode: 'generate barcode'
+    generateBarcode: 'generate barcode',
     devAccount: 'developer account',
     accountList: 'account list',
     accountName: 'account name',
