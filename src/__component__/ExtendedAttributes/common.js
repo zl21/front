@@ -193,11 +193,19 @@ value   value map
 // 字段赋值
 export const setNewlValue = ($this,name,tableName,value) => {
     let $vmArray = FindInstance($this,String(name),tableName);
+
     if($vmArray && Array.isArray($vmArray)){
         $vmArray.forEach(($vm)=>{
+
             if( value[$vm.items.colname].COLUMN_TYPE !==1){
-                if($vm.items.type === 'select'){
-                    $vm.value = value[$vm.items.colname].LABLE_VALUES[0].VALUE || ''; 
+
+                if($vm.items.display === 'OBJ_SELECT'){
+                    let index =  $vm.items.combobox.findIndex((x)=>{
+                        x.value ===value[$vm.items.colname].LABLE_VALUES[0].VALUE
+                    });
+                    if(index>0){
+                        $vm.value = value[$vm.items.colname].LABLE_VALUES[0].VALUE || ''; 
+                    }
                 }else{
                     let values = value[$vm.items.colname].LABLE_VALUES.reduce((arr, options) => {
                         if (options.VALUE) {
@@ -213,7 +221,16 @@ export const setNewlValue = ($this,name,tableName,value) => {
 
                 }
            }else if(value[$vm.items.colname].COLUMN_TYPE === 1){
-              $vm.value = value[$vm.items.colname].LABLE_VALUES[0].VALUE ||  $vm.items.props.falseValue || ''; 
+            if($vm.items.display === 'OBJ_SELECT'){
+                let index =  $vm.items.combobox.findIndex((x)=>{
+                    x.value === value[$vm.items.colname].LABLE_VALUES[0].VALUE
+                });
+                if(index>0){
+                    $vm.value = value[$vm.items.colname].LABLE_VALUES[0].VALUE || ''; 
+                }
+            }else{
+                $vm.value = value[$vm.items.colname].LABLE_VALUES[0].VALUE ||  $vm.items.props.falseValue || ''; 
+            }
            }             
         })
     }
