@@ -268,7 +268,7 @@
             self.$refs.reportIFrame.style.opacity = 0;
           },
           (err) => {
-            console.error(`请求过滤条件出错： ${err.response.data.message}`);
+            console.error(`${this.$t('customizeReport.errorRequest')}： ${err.response.data.message}`);
           }
         );
       },
