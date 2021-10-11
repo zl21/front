@@ -205,6 +205,8 @@ export const setNewlValue = ($this,name,tableName,value) => {
                     });
                     if(index>0){
                         $vm.value = value[$vm.items.colname].LABLE_VALUES[0].VALUE || ''; 
+                    }else if($vm.items.readonly){
+                        $vm.value = value[$vm.items.colname].LABLE_VALUES[0].VALUE || ''; 
                     }
                 }else{
                     let values = value[$vm.items.colname].LABLE_VALUES.reduce((arr, options) => {
@@ -225,7 +227,10 @@ export const setNewlValue = ($this,name,tableName,value) => {
                 let index =  $vm.items.combobox.findIndex((x)=>{
                     x.value === value[$vm.items.colname].LABLE_VALUES[0].VALUE
                 });
-                if(index>0){
+
+                if(index>0 ){
+                    $vm.value = value[$vm.items.colname].LABLE_VALUES[0].VALUE || ''; 
+                }else if($vm.items.readonly){
                     $vm.value = value[$vm.items.colname].LABLE_VALUES[0].VALUE || ''; 
                 }
             }else{
