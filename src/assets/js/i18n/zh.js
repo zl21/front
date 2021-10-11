@@ -195,7 +195,24 @@ export default {
     collapseQuery: '折叠查询条件',
     queryDefaultRows: '查询条件默认显示行数',
     noHistory: '暂无历史记录',
-    noCollection: '暂无收藏记录'
+    noCollection: '暂无收藏记录',
+    devAccount: '开发者账号',
+    accountList: '账号列表',
+    accountName: '账号名称',
+    addAccount: '新增账号',
+    deleteAccount: '删除账号',
+    managementAuthority: '权限管理',
+    interfacePermissions: '接口权限',
+    pleaseEnterContent: '请输入内容',
+    confirmDeleteAccount: '删除操作不可恢复，如当前有开发者使用此账号，将无法访问接口，确认删除吗',
+    enterAccountName: '请输入账号名称',
+    confirmRefreshSecret: '点击确认后，会重置appSecret，重置后请通知下游开发者更换密钥信息',
+    scrollBottom: '已滚动到底部',
+    addAccountFirst: '暂无数据，请先新增账号',
+    refreshKey: '刷新appSecret',
+    refreshPermission: '刷新接口权限',
+    selectAccountFirst: '请先选择账号',
+    quickOperation: '快捷操作'
   },
   // 具有通用性的文案
   tips: {
@@ -325,7 +342,8 @@ export default {
     webImage: '网络图片',
     favorites: '收藏夹',
     recentlyUsed: '最近使用',
-    complete: '完成'
+    complete: '完成',
+    noMore: '没有更多数据了'
   },
   // 反馈类型的文案(比如进行某个操作，返回操作结果的提示)
   feedback: {
@@ -343,7 +361,8 @@ export default {
     collectionFailed: '收藏失败',
     unfavoriteSuccessfully: '取消收藏成功',
     failedToUnfavorite: '取消收藏失败',
-    cloneSuccess: '克隆成功'
+    cloneSuccess: '克隆成功',
+    deleteSuccessfully: '删除成功'
   },
   // 动作行为(不含按钮里的，比如勾选，输入之类)
   actions: {

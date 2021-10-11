@@ -9,9 +9,17 @@
       @on-click="search"
       @on-change="change"
       @on-enter="search"
+      :disabled="disabledSearch"
     />
     <p class="orange" v-if="showTip && inputValue.length>0">"{{inputValue}}"{{Notice}}</p>
-    <div class="zTreeDemoBackground left">
+    <div v-show="zNodes.length === 0" class="no-tree-wrap">
+      <img :src="imgSrc.treeImg" alt="">
+      <div
+          class="no-tree-tip"
+          style="margin-top: 30px;text-align: center;"
+        >{{$t('tips.noData')}}</div>
+    </div>
+    <div class="zTreeDemoBackground left" v-show="zNodes.length > 0">
       <ul
         :id="tableName"
         class="ztree"
@@ -22,6 +30,7 @@
 
 <script>
   import { fuzzySearch } from '../../static/js/ztree/fuzzysearch';
+  import { mapState } from 'vuex';
 
   export default {
     name: 'ZTree',
@@ -30,7 +39,49 @@
         inputValue: '',
         tableName: 'treeDemo',
         showTip:false,
-        setting: {
+        // setting: {
+        //   check: {
+        //     enable: false// checkbox
+        //   },
+        //   view: {
+        //     selectedMulti: false,
+        //     showIcon: false,
+        //     nameIsHTML: true,
+        //     dblClickExpand: false,
+        //     // showLine: false,
+        //     // fontCss: this.setFontCss
+        //   },
+        //   callback: {
+        //     beforeClick: this.beforeClick,
+        //     onClick: this.onClick
+        //   },
+        //   edit: {
+        //     enable: false,
+        //     editNameSelectAll: false
+        //   },
+        //   data: {
+        //     key: {
+        //       children: 'CHILDREN',
+        //       name: 'NAME',
+        //     },
+        //     simpleData: {
+        //       enable: true,
+        //       idKey: 'ID', // 树节点ID名称
+        //       pIdKey: 'PARENT_ID', // 父节点ID名称
+        //     // rootPId: -1,//根节点ID
+        //     }
+        //   },
+        // },
+        isClick: false,
+        treeId: '',
+        searchNoData: false,
+        zTreeObj: undefined,
+      };
+    },
+
+    computed: {
+      setting() {
+        const defalutSetting=  {
           check: {
             enable: false// checkbox
           },
@@ -62,18 +113,20 @@
             // rootPId: -1,//根节点ID
             }
           },
-        },
-        isClick: false,
-        treeId: '',
-        searchNoData: false
+        }
+        const result = Object.assign(defalutSetting, this.treeSetting)
+        return result
+      },
 
-
-      };
+      ...mapState('global', {
+        imgSrc: state => state.imgSrc,
+      }),
     },
+
     watch: {
       zNodes: {
         handler() {
-          $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
+          this.zTreeObj = $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
         },
         deep: true
       },
@@ -110,6 +163,19 @@
         type: Array,
         default: () => []
       },
+      // 树配置
+      treeSetting: {
+        type: Object,
+        default: () => ({})
+      },
+      // 搜索回调
+      customizedSearch: {
+        type: Function
+      },
+      // 禁用搜索
+      disabledSearch: {
+        type: Boolean
+      }
     },
     methods: {
 
@@ -186,6 +252,10 @@
           this.showTip = false;
       },
       search() {
+        if(this.customizedSearch) {
+          this.customizedSearch(this.inputValue, this.zTreeObj)
+          return
+        }
         const isNull = this.isNull(this.inputValue);
         if (!isNull) {
           let checkoutZtree = fuzzySearch(`${this.tableName}`, this.inputValue, null, true); // 初始化模糊搜索方法
@@ -208,7 +278,7 @@
       },
       expandAll() {
         // fuzzySearch('treeDemo','', null, false); // 初始化模糊搜索方法
-        $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
+        this.zTreeObj = $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
         this.treeId = '';
         // const treeObj = $.fn.zTree.getZTreeObj('treeDemo');
         // treeObj.refresh();// 取消选中
@@ -229,7 +299,7 @@
     },
     mounted() {
       this.$nextTick(() => {
-        $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
+        this.zTreeObj = $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
       });
 
       // $(document).ready(() => {
