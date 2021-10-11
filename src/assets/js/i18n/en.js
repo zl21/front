@@ -197,6 +197,23 @@ export default {
     noHistory: 'no history',
     noCollection: 'no collection',
     generateBarcode: 'generate barcode'
+    devAccount: 'developer account',
+    accountList: 'account list',
+    accountName: 'account name',
+    addAccount: 'add account',
+    deleteAccount: 'delete account',
+    managementAuthority: 'permission management',
+    interfacePermissions: 'interface permissions',
+    pleaseEnterContent: 'enter content',
+    confirmDeleteAccount: 'The delete operation cannot be restored. If a developer currently uses this account, he will not be able to access the interface. Are you sure you want to delete it',
+    enterAccountName: 'please enter the account name',
+    confirmRefreshSecret: 'After clicking confirm, the appSecret will be reset. After resetting, please notify the downstream developers to change the secret key information',
+    scrollBottom: 'scrolled to the bottom',
+    addAccountFirst: 'No data, please add an account first',
+    refreshKey: 'refresh appSecret',
+    refreshPermission: 'refresh permissions',
+    selectAccountFirst: 'Please select an account first',
+    quickOperation: 'quick operation'
   },
   // 具有通用性的文案
   tips: {
@@ -334,7 +351,8 @@ export default {
     min: 'min',
     count: 'count',
     integer: 'integer',
-    environment: 'environment'
+    environment: 'environment',
+    noMore: 'no more data'
   },
   // 反馈类型的文案(比如进行某个操作，返回操作结果的提示)
   feedback: {
@@ -352,7 +370,8 @@ export default {
     collectionFailed: 'collection failed',
     unfavoriteSuccessfully: 'unfavorite successfully',
     failedToUnfavorite: 'failed to unfavorite',
-    cloneSuccess: 'successfully clone'
+    cloneSuccess: 'successfully clone',
+    deleteSuccessfully: 'delete successfully'
   },
   // 动作行为(不含按钮里的)
   actions: {
