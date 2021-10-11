@@ -1,10 +1,10 @@
 {
     "name": "@syman/burgeon-r3",
-    "version": "3.2.0",
+    "version": "3.3.0",
     "description": "A Project for R3 Erp.",
     "main": "r3.publish/r3.min.js",
     "files": [
-        "r3.publish"
+        "r3.publish","entry"
     ],
     "scripts": {
         "start": " cross-env BUILD_ENV=dev webpack-dev-server --progress --env.develop",
