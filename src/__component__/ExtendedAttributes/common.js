@@ -201,9 +201,9 @@ export const setNewlValue = ($this,name,tableName,value) => {
 
                 if($vm.items.display === 'OBJ_SELECT'){
                     let index =  $vm.items.combobox.findIndex((x)=>{
-                        x.value ===value[$vm.items.colname].LABLE_VALUES[0].VALUE
+                        return x.value ===value[$vm.items.colname].LABLE_VALUES[0].VALUE
                     });
-                    if(index>0){
+                    if(index>-1){
                         $vm.value = value[$vm.items.colname].LABLE_VALUES[0].VALUE || ''; 
                     }
                 }else{
@@ -223,9 +223,9 @@ export const setNewlValue = ($this,name,tableName,value) => {
            }else if(value[$vm.items.colname].COLUMN_TYPE === 1){
             if($vm.items.display === 'OBJ_SELECT'){
                 let index =  $vm.items.combobox.findIndex((x)=>{
-                    x.value === value[$vm.items.colname].LABLE_VALUES[0].VALUE
+                    return x.value === value[$vm.items.colname].LABLE_VALUES[0].VALUE;
                 });
-                if(index>0){
+                if(index>-1 ){
                     $vm.value = value[$vm.items.colname].LABLE_VALUES[0].VALUE || ''; 
                 }
             }else{

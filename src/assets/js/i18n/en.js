@@ -196,6 +196,7 @@ export default {
     queryDefaultRows: 'number of query area rows',
     noHistory: 'no history',
     noCollection: 'no collection',
+    generateBarcode: 'generate barcode',
     devAccount: 'developer account',
     accountList: 'account list',
     accountName: 'account name',
@@ -212,8 +213,7 @@ export default {
     refreshKey: 'refresh appSecret',
     refreshPermission: 'refresh permissions',
     selectAccountFirst: 'Please select an account first',
-    quickOperation: 'quick operation',
-    generateBarcode: 'generate barcode'
+    quickOperation: 'quick operation'
   },
   // 具有通用性的文案
   tips: {
@@ -344,7 +344,6 @@ export default {
     favorites: 'favorites',
     recentlyUsed: 'recently used',
     complete: 'complete',
-    noMore: 'no more data',
     description: 'description',
     grandTotal: 'grand total',
     average: 'average',
@@ -352,7 +351,8 @@ export default {
     min: 'min',
     count: 'count',
     integer: 'integer',
-    environment: 'environment'
+    environment: 'environment',
+    noMore: 'no more data'
   },
   // 反馈类型的文案(比如进行某个操作，返回操作结果的提示)
   feedback: {

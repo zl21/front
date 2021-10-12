@@ -196,6 +196,7 @@ export default {
     queryDefaultRows: '查询条件默认显示行数',
     noHistory: '暂无历史记录',
     noCollection: '暂无收藏记录',
+    generateBarcode: '生成条码',
     devAccount: '开发者账号',
     accountList: '账号列表',
     accountName: '账号名称',
@@ -212,8 +213,7 @@ export default {
     refreshKey: '刷新appSecret',
     refreshPermission: '刷新接口权限',
     selectAccountFirst: '请先选择账号',
-    quickOperation: '快捷操作',
-    generateBarcode: '生成条码'
+    quickOperation: '快捷操作'
   },
   // 具有通用性的文案
   tips: {
@@ -344,7 +344,6 @@ export default {
     favorites: '收藏夹',
     recentlyUsed: '最近使用',
     complete: '完成',
-    noMore: '没有更多数据了',
     description: '描述',
     grandTotal: '累计',
     average: '平均',
@@ -352,7 +351,8 @@ export default {
     min: '最小',
     count: '计数',
     integer: '整数',
-    environment: '环境'
+    environment: '环境',
+    noMore: '没有更多数据了'
   },
   // 反馈类型的文案(比如进行某个操作，返回操作结果的提示)
   feedback: {
