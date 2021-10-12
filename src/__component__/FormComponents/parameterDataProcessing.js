@@ -426,6 +426,10 @@ export default class ParameterDataProcessing {
 
    setSelectedValue(item) {
     let value = item.valuedata || item.default;
+    // let disabled = item.readonly  &&  (item.webconf ? !item.webconf.ignoreDisableWhenEdit : true);
+    // if(disabled){
+    //   return 1;
+    // }
     const optionIndex = this.item.combobox.findIndex(x => x.value === value);
     return optionIndex;
 
