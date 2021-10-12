@@ -19,6 +19,9 @@ export default {
         if (this.items.detailType) {
           let ParentForm = this.findParentForm();
           // 获取当前组件的值
+          if(!ParentForm){
+              return;
+          }
           let current_value = ParentForm.dealData(this.items, val)[this.items.colname] || '';
           let current_data = {};
           // 1.3 label

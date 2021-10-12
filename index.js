@@ -1,6 +1,7 @@
 // import Vue from 'vue';
 import VueDND from 'awe-dnd';
 import Viewer from 'v-viewer';
+import md5 from 'md5';
 import { getGuid } from './src/__utils__/random';
 import router from './src/__config__/router.config';
 import store from './src/__config__/store.config';
@@ -287,4 +288,22 @@ if (enableGateWay()) {
 
 
 
+function hookAJAX() {
+  XMLHttpRequest.prototype.nativeOpen = XMLHttpRequest.prototype.open;
+  var customizeOpen = function (method, url, async, user, password) {
+    this.nativeOpen(method, url, async, user, password);
+    let number = Math.floor(Math.random() * 10000);
+        let sessionCookie = window.localStorage.getItem('sessionCookie');
+        this.setRequestHeader('SSSSS-A', new Date().getTime());
+        if(sessionCookie === 'undefined'){
+          this.setRequestHeader('SSSSS-B', md5('qwertburgeon'+new Date().getTime()+number));
+        }else{
+          this.setRequestHeader('SSSSS-B', md5('qwertburgeon'+new Date().getTime()+number+sessionCookie));
+        }
+        this.setRequestHeader('SSSSS-C', number);
+  };
 
+  XMLHttpRequest.prototype.open = customizeOpen;
+}
+
+hookAJAX();

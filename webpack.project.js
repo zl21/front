@@ -32,18 +32,18 @@ module.exports = env => ({
     R3: '@syman/burgeon-r3',
     jflowPlugin: '@syman/jflow-plugin',
     ztree: 'ztree',
-    VueI18n: 'VueI18n'
   },
   devServer: {
     compress: true,
     port: 8190,
     host: '0.0.0.0',
     open: true,
-    historyApiFallback: {
-      rewrites: [
-        { from: /.*/, to: env && env.production ? indexProHtml : indexHtml },
-      ],
-    },
+    // historyApiFallback: {
+    //   rewrites: [
+    //     { from: /.*/, to: env && env.production ? indexProHtml : indexHtml },
+    //   ],
+    // },
+    historyApiFallback: true,
     publicPath: '/',
     proxy: [
      

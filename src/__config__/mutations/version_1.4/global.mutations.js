@@ -39,6 +39,7 @@ export default {
   //   state.treeIds.push(data);
   // },
   changeCurrentTabName(state, data) { // 修改当前表对应Tab名称
+    
     if (data.keepAliveModuleName && data.label) {
       const obj = {
         name: data.keepAliveModuleName,
@@ -46,13 +47,17 @@ export default {
       };
       this.commit('global/addKeepAliveLabelMaps', obj);
       state.activeTab.label = data.label;
+
       state.keepAliveLabelMaps[data.keepAliveModuleName] = data.label;
-      state.openedMenuLists.filter((TabData) => {
+      state.openedMenuLists.some((TabData) => {
         if (TabData.keepAliveModuleName === data.keepAliveModuleName) {
+         
           TabData.label = data.label;
+          return true;
         } else if (enableActivateSameCustomizePage() && TabData.keepAliveModuleName.includes(data.customizedModuleName) && TabData.keepAliveModuleName !== data.keepAliveModuleName) {
           TabData.label = data.label;
           TabData.keepAliveModuleName = data.keepAliveModuleName;
+          return true;
           // 如果开启自定义界面标识相同激活同一个定制界面，则该逻辑为检测打开的tab与目标界面的自定义界面标识相同，🆔不同时，已打开的自定义界面重新被激活时，可替换为来源界面设置的labelName
         }
       });
@@ -565,7 +570,7 @@ export default {
     routePrefix,
     routeFullPath
   }) {
-    state.openedMenuLists.forEach((d) => {
+    state.openedMenuLists.some((d) => {
       d.isActive = false;
       let keepAliveModuleNameRes = '';
       if (type === 'C') {
@@ -577,6 +582,7 @@ export default {
         if (d.keepAliveModuleName === keepAliveModuleName) {
           d.isActive = true;
           state.activeTab = d;
+          return true;
         } else if ((keepAliveModuleNameRes !== ''&& d.tableName === keepAliveModuleNameRes && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
           const obj = {
             keepAliveModuleName,
@@ -587,6 +593,7 @@ export default {
           d = Object.assign(d, obj);
           state.activeTab = Object.assign(state.activeTab, obj);
           this.commit('global/changeCurrentTabName', { keepAliveModuleName, label: label || state.keepAliveLabelMaps[keepAliveModuleName], customizedModuleName: keepAliveModuleNameRes });
+          return true;
         }
         // if (d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
         // d.isActive = true;
@@ -598,6 +605,7 @@ export default {
         d.isActive = true;
         d.routeFullPath = routeFullPath;
         state.activeTab = d;
+        return true;
       }
     });
   },
@@ -1050,7 +1058,14 @@ export default {
           path,
           query
         };
-        router.push(routeInfo);
+         // 如果当前路由等于跳转路由不跳转
+         let currentRouteFullPath = router.currentRoute.fullPath;
+         if(currentRouteFullPath.indexOf('?') > 0){
+           currentRouteFullPath = currentRouteFullPath.substr(0,currentRouteFullPath.indexOf('?'));
+         }
+         if(currentRouteFullPath!== path){
+           router.push(routeInfo);
+         }
       }
       return;
     }
@@ -1094,6 +1109,7 @@ export default {
   addKeepAliveLabelMaps(state, { name, label }) {
     // name：C.AAO_SR_TEST.2326模块名称
     // label：中文名
+    
     state.keepAliveLabelMaps[name] = `${label}`;
 
     const keepAliveLabelMapsObj = {
@@ -1105,7 +1121,6 @@ export default {
           item.label = label;
         }
     });
-
     updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
     state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSessionObject('keepAliveLabelMaps'));
   },

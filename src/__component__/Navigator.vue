@@ -97,7 +97,10 @@
         />
       </Badge>
     </div>
-    <Drawer
+
+    <!-- 消息队列 -->
+    <MessageList v-model="showMessages"></MessageList>
+    <!-- <Drawer
       v-model="messagePanel.show"
       :closable="false"
     >
@@ -117,7 +120,7 @@
         @jumpTask="jumpTask"
         @nextPage="nextPage"
       />
-    </Drawer>
+    </Drawer> -->
     <div
       class="tag right"
       @click="show = true"
@@ -127,7 +130,10 @@
         :title="$t('buttons.setting')"
       />
     </div>
-    <Drawer
+
+    <!-- 设置 -->
+    <Setting v-model="show"></Setting>
+    <!-- <Drawer
       v-model="show"
       :closable="false"
     >
@@ -144,19 +150,21 @@
       :footer-hide="dialogConfig.footerHide"
       :confirm="dialogConfig.confirm"
       :dialog-component-name="dialogComponentName"
-    />
+    /> -->
   </div>
 </template>
 
 <script>
   import { mapState, mapMutations, mapActions, mapGetters } from 'vuex';
   import NavigatorPrimaryMenu from './NavigatorPrimaryMenu';
-  import SetPanel from './SetPanel';
-  import messagePanel from './messagePanel';
-  import messagePanelOlder from './messagePanelOlder'; // 1.3
+  // import SetPanel from './SetPanel';
+  // import messagePanel from './messagePanel';
+  // import messagePanelOlder from './messagePanelOlder'; // 1.3
+  import Setting from './nav/Setting.vue'
+  import MessageList from './nav/MessageList.vue'
 
   import ComAutoComplete from './ComAutoComplete';
-  import Dialog from './Dialog.vue';
+  // import Dialog from './Dialog.vue';
   import { routeTo } from '../__config__/event.config';
   import network, { urlSearchParams } from '../__utils__/network';
   import NavigatorSubMenu from './NavigatorSubMenu';
@@ -170,44 +178,47 @@
     name: 'Navigator',
     components: {
       NavigatorPrimaryMenu,
-      SetPanel,
-      Dialog,
+      // SetPanel,
+      Setting,
+      MessageList,
+      // Dialog,
       NavigatorSubMenu,
-      messagePanel,
-      messagePanelOlder,
+      // messagePanel,
+      // messagePanelOlder,
       ComAutoComplete
     },
 
     data() {
       return {
         // primaryMenuShow: false,
-        messagePanel: {
-          show: false,
-          list: [],
-          loaded: true,
-          start: 0,
-          total: 0
-        },
+        // messagePanel: {
+        //   show: false,
+        //   list: [],
+        //   loaded: true,
+        //   start: 0,
+        //   total: 0
+        // },
         show: false,
         searchBtn: true,
         searchList: [],
-        setPanel: {
-          show: true,
-          list: [],
-        },
+        // setPanel: {
+        //   show: true,
+        //   list: [],
+        // },
         keyWord: '',
-        dialogConfig: {
-          title: this.$t('feedback.alert'),
-          mask: true,
-          footerHide: false,
-          contentText: '',
-          confirm: () => {
-          },
-        }, // 弹框配置信息
-        dialogComponentName: null,
+        // dialogConfig: {
+        //   title: this.$t('feedback.alert'),
+        //   mask: true,
+        //   footerHide: false,
+        //   contentText: '',
+        //   confirm: () => {
+        //   },
+        // }, // 弹框配置信息
+        // dialogComponentName: null,
         togglePrimaryMenuData: [],
-        Version: Version(),
-        messageTimer: null
+        // Version: Version(),
+        messageTimer: null,
+        showMessages: false
       };
     },
     computed: {
@@ -298,109 +309,113 @@
         }
       },
       messageSlide() {
-        this.messagePanel.show = !this.messagePanel.show;
-        if (this.messagePanel.show) {
-          this.getMessages(0);
-        }
+        this.showMessages = !this.showMessages
+        // this.messagePanel.show = !this.messagePanel.show;
+        // if (this.messagePanel.show) {
+        //   this.getMessages(0);
+        // }
         // this.searchShow = true;
         // this.cascaderShow = false;
         // this.cascaderOpen = false;
         // this.setPanel.show = false;
       },
-      ignoreMsg() { // 我的任务忽略功能
-        network.post(Version() === '1.3' ? '/p/cs/ignoreAllMsg' : '/p/cs/u_note/ignoreMsg', {}, {
-          serviceId: enableGateWay() ? 'asynctask' : ''
-        }).then((res) => {
-          if (res.data.code === 0) {
-            this.updateTaskMessageCount(0);
-            this.getMessages(0);
-          }
-        });
-      },
-      jumpTask() { // 跳转我的任务列表界面
-        this.messagePanel.show = false;
-        const type = STANDARD_TABLE_LIST_PREFIX;
-        const tab = {
-          type,
-          tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
-          tableId: Version() === '1.3' ? 24386 : 963,
-          label: this.$t('tips.myTask')
-        };
-        this.tabOpen(tab);
-      },
-      nextPage() {
-        if (this.messagePanel.start < this.messagePanel.total) {
-          this.getMessages();
-        }
-      },
-      getMessages(start) { // 请求我的任务数据
-        const self = this;
-        //        self.panel.list = [];
-        if (start !== undefined) {
-          self.messagePanel.start = start;
-          self.messagePanel.list = [];
-        }
-        let fixedcolumns = {};
-        if (Version() === '1.3') {
-          fixedcolumns = {
-            OPERATOR_ID: [this.userInfo.id],
-            READSTATE: ['=0'],
-            TASKSTATE: ['=2', '=3']
-          };
-        } else {
-          fixedcolumns = {
-            OPERATOR_ID: [this.userInfo.id],
-            READ_STATE: ['=0'],
-          };
-        }
-        const searchdata = {
-          table: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
-          column_include_uicontroller: true,
-          fixedcolumns,
-          multiple: [],
-          startindex: self.messagePanel.start,
-          range: 20,
-          orderby: [{ column: Version() === '1.3' ? 'CP_C_TASK.ID' : 'U_NOTE.ID', asc: false }]
-        };
-        network.post('/p/cs/QueryList', urlSearchParams({ searchdata }), {
-          serviceId: enableGateWay() ? getGatewayValue('U_NOTE') : ''
-        }).then((res) => {
-          const result = res.data;
-          if (!result.datas) {
-            result.datas = result.data;
-          }
+      // ignoreMsg() { // 我的任务忽略功能
+      //   network.post(Version() === '1.3' ? '/p/cs/ignoreAllMsg' : '/p/cs/u_note/ignoreMsg', {}, {
+      //     serviceId: enableGateWay() ? 'asynctask' : ''
+      //   }).then((res) => {
+      //     if (res.data.code === 0) {
+      //       this.updateTaskMessageCount(0);
+      //       this.getMessages(0);
+      //     }
+      //   });
+      // },
+      // jumpTask() { // 跳转我的任务列表界面
+      //   this.messagePanel.show = false;
+      //   const type = STANDARD_TABLE_LIST_PREFIX;
+      //   const tab = {
+      //     type,
+      //     tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
+      //     tableId: Version() === '1.3' ? 24386 : 963,
+      //     label: this.$t('tips.myTask')
+      //   };
+      //   this.tabOpen(tab);
+      // },
 
-          if (result.code === 0) {
-            self.messagePanel.list = self.messagePanel.list.concat(result.datas.row);
-            self.messagePanel.start = result.datas.start + result.datas.rowCount;
-            self.messagePanel.total = result.datas.totalRowCount;
-            // 更新消息
-            this.updateTaskMessageCount(self.messagePanel.total);
-          //            self.panel.start = result.start
-          }
-        });
-      },
+      // nextPage() {
+      //   if (this.messagePanel.start < this.messagePanel.total) {
+      //     this.getMessages();
+      //   }
+      // },
 
-      markReadNote(item) { // 我的任务单条跳转单对象界面
-        this.messagePanel.show = false;
-        this.updataTaskMessageCount({ id: item.ID.val });
-        const type = 'tableDetailVertical';
-        const tab = {
-          type,
-          tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
-          tableId: Version() === '1.3' ? 24386 : 963,
-          id: item.ID.val
-        };
-        this.tabOpen(tab);
-      },
-      changePwdBox() {
-        this.show = false;
-        this.$refs.dialogRef.open();
-        this.dialogConfig.title = this.$t('tips.changePassword');
-        this.dialogConfig.footerHide = true;
-        // Vue.component('ChangePassword', CustomizeModule.ChangePassword.component);
-        this.dialogComponentName = 'ChangePassword';
-      },
+      // getMessages(start) { // 请求我的任务数据
+      //   const self = this;
+      //   //        self.panel.list = [];
+      //   if (start !== undefined) {
+      //     self.messagePanel.start = start;
+      //     self.messagePanel.list = [];
+      //   }
+      //   let fixedcolumns = {};
+      //   if (Version() === '1.3') {
+      //     fixedcolumns = {
+      //       OPERATOR_ID: [this.userInfo.id],
+      //       READSTATE: ['=0'],
+      //       TASKSTATE: ['=2', '=3']
+      //     };
+      //   } else {
+      //     fixedcolumns = {
+      //       OPERATOR_ID: [this.userInfo.id],
+      //       READ_STATE: ['=0'],
+      //     };
+      //   }
+      //   const searchdata = {
+      //     table: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
+      //     column_include_uicontroller: true,
+      //     fixedcolumns,
+      //     multiple: [],
+      //     startindex: self.messagePanel.start,
+      //     range: 20,
+      //     orderby: [{ column: Version() === '1.3' ? 'CP_C_TASK.ID' : 'U_NOTE.ID', asc: false }]
+      //   };
+      //   network.post('/p/cs/QueryList', urlSearchParams({ searchdata }), {
+      //     serviceId: enableGateWay() ? getGatewayValue('U_NOTE') : ''
+      //   }).then((res) => {
+      //     const result = res.data;
+      //     if (!result.datas) {
+      //       result.datas = result.data;
+      //     }
+
+      //     if (result.code === 0) {
+      //       self.messagePanel.list = self.messagePanel.list.concat(result.datas.row);
+      //       self.messagePanel.start = result.datas.start + result.datas.rowCount;
+      //       self.messagePanel.total = result.datas.totalRowCount;
+      //       // 更新消息
+      //       this.updateTaskMessageCount(self.messagePanel.total);
+      //     //            self.panel.start = result.start
+      //     }
+      //   });
+      // },
+
+      // markReadNote(item) { // 我的任务单条跳转单对象界面
+      //   this.messagePanel.show = false;
+      //   this.updataTaskMessageCount({ id: item.ID.val });
+      //   const type = 'tableDetailVertical';
+      //   const tab = {
+      //     type,
+      //     tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
+      //     tableId: Version() === '1.3' ? 24386 : 963,
+      //     id: item.ID.val
+      //   };
+      //   this.tabOpen(tab);
+      // },
+
+      // changePwdBox() {
+      //   this.show = false;
+      //   this.$refs.dialogRef.open();
+      //   this.dialogConfig.title = this.$t('tips.changePassword');
+      //   this.dialogConfig.footerHide = true;
+      //   // Vue.component('ChangePassword', CustomizeModule.ChangePassword.component);
+      //   this.dialogComponentName = 'ChangePassword';
+      // },
       enter(event) {
         if (event.keyCode === 13) {
           let index = 0;

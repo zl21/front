@@ -22,7 +22,7 @@ export const equalformRequest = function equalformRequest(params) {
         delete $this.clearFormurl;
         return false;
     }
-    if(Array.isArray($this.value) || isEmpty($this.value)){
+    if(Array.isArray($this.value) || isEmpty($this.value) || $this.items.display === "text" || !$this.items.display){
         let data = {};
         let targetVm = FindInstance($this,config.refcolumn,$this.items.tableName);
         targetVm.forEach((x)=>{

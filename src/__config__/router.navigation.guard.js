@@ -310,10 +310,18 @@ export default (router) => {
       const existModule = openedMenuLists.filter((d, i) => {
         let currentName = tableName || customizedModuleName || pluginModuleName || linkModuleName;
         if (d.tableName === currentName) {
-          // 已存在打开的模块界面，但是并不是同一个界面
-          if(enableActivateSameCustomizePage()){
+         
+          if(customizedModuleName){
+             // 定制界面，在enableActivateSameCustomizePage 为false 的时候新开多个页面
+            if(enableActivateSameCustomizePage()){
               existModuleIndex = i;
             }
+          }else{
+             // 已存在打开的模块界面，但是并不是同一个界面
+            existModuleIndex = i;
+          }
+        
+          
           return true;
         }
         return false;

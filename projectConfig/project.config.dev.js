@@ -2,7 +2,7 @@ module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
   projectIconPath: '', // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
-  target: 'http://r3-8098.dev.syman.cn/', // 框架研发网关开启环境
+  // target: 'http://r3-8098.dev.syman.cn/', // 框架研发网关开启环境
   // target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 新版本jflow测试环境
   // target: 'http://r3dev.qiaodan.com:28888', // 乔丹开发环境
   // target: 'http://r3dev.qiaodan.com:26666', // 乔丹开发环境
@@ -16,7 +16,8 @@ module.exports = {
   // target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop网关开启环境
   // target: 'http://r3.burgeon.cn:19999/', // 'http://106.15.154.165:19999/', // Cube
-  // target: 'http://cmsqas.lining.com', // 卡宾
+  target: 'http://cmsqas.lining.com', // 卡宾
+  //target: 'http://cmsdev.lining.com/', // 卡宾
    //target: 'http://r3.burgeon.cn:28888/', // 李宁
   // target: 'http://jflow-shangfei-r3.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://ark-share-dev.dev.burgeononline.com', // ArkShare环境
@@ -42,9 +43,9 @@ module.exports = {
 
   
 
-  Version: '1.4', // 版本号
+  Version: '1.3', // 版本号
   interlocks: true, // 是否打开三级联动装置
-  enableGateWay: true, // 网关是否打开,
+  enableGateWay: false, // 网关是否打开,
   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用接口请求
   enableHistoryAndFavoriteUI: true, // 是否显示收藏与最近使用UI
   ignoreGateWayPattern: [/\/jflow\/*/g, /\/api\/*/g], // 框架默认禁用的网关逻辑的正则模式匹配
@@ -100,7 +101,7 @@ module.exports = {
   logoutTips: false, // 失去会话是否需要登出提示 默认false直接登出
   enableKAQueryDataForUser: false, // 是否开启存储全表查询条件
   dateStorageTime: 1, // 查询条件存储时间，默认1天,建议不要设置太大影响性能
-  enableOpenNewTab: false, // 列表界面打开 同表 单对象是否新开tab,默认为false
+  enableOpenNewTab: true, // 列表界面打开 同表 单对象是否新开tab,默认为false
   blockFullOperation: false, // 禁止不选数据时的批量修改操作,
   customizeMixins: { // 获取所有外部接入的mixins对象
     setPanel: null,
@@ -155,15 +156,15 @@ module.exports = {
   },
   filterUrlForNetworkScript: () => true, // 框架默认true,
   listDefaultColumn: 4,
-  setComponentsProps: (type, props) => {  // 框架自定义表单配置
-    //列表支持联动查询
-    // if (type === 'OBJ_FK') {
-    //   if(props.PropsData && (props.PropsData.fkobj.searchmodel ==='mrp' || props.PropsData.fkobj.searchmodel ==='drp')){
-    //     props.PropsData.Query = true;
-    //   }
-    // }
-    // return props;
-  },
+  // setComponentsProps: (type, props) => {  // 框架自定义表单配置
+  //   //列表支持联动查询
+  //   if (type === 'OBJ_FK') {
+  //     if(props.PropsData && (props.PropsData.fkobj.searchmodel ==='mrp' || props.PropsData.fkobj.searchmodel ==='drp')){
+  //       console.log(props);
+  //     }
+  //   }
+  //    return props;
+  // },
   agGridOptions: { // ag表格的配置
     // rowHeight: 100
   },
@@ -209,16 +210,16 @@ module.exports = {
   //   // 与projectConfig.image区别在于这个图片是含有文字的,用于国际化场景
   //   // 格式必须是 （变量+语言）方便解析
   //   zh: {
-  //     login: require('./src/assets/image/delete.png'), // 登录logo
-  //     banner: require('./src/assets/image/delete.png'),// 导航栏logo
-  //     welcome: require('./src/assets/image/delete.png'),// 欢迎页背景
-  //     bigData: require('./src/assets/image/delete.png'),// 海量数据提示
+  //     login: require('../src/assets/image/delete.png'), // 登录logo
+  //     banner: require('../src/assets/image/delete.png'),// 导航栏logo
+  //     welcome: require('../src/assets/image/delete.png'),// 欢迎页背景
+  //     bigData: require('../src/assets/image/delete.png'),// 海量数据提示
   //   },
   //   en: {
-  //     login: require('./src/assets/image/home.png'),
-  //     banner: require('./src/assets/image/home.png'),
-  //     welcome: require('./src/assets/image/home.png'),
-  //     bigData: require('./src/assets/image/home.png'),
+  //     login: require('../src/assets/image/home.png'),
+  //     banner: require('../src/assets/image/home.png'),
+  //     welcome: require('../src/assets/image/home.png'),
+  //     bigData: require('../src/assets/image/home.png'),
   //   }
   // }
 };

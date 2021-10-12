@@ -241,14 +241,30 @@ export default class ParameterDataProcessing {
       // detailType为真，说明是单对象
       // return this.item.default ? this.item.default.split(',') : this.item.defval;
       if(this.item.valuedata){
+        let index = this.setSelectedValue(this.item);
+        if(index<0 && isDetailPage){
+            return ''
+        }
         return this.item.valuedata;
       }else if(this.item.default){
         if(!isDetailPage && typeof this.item.default === 'string'){
           return this.item.default.split(',');
         }
+        let index = this.setSelectedValue(this.item);
+        if(index<0 && isDetailPage){
+            return ''
+        }
         return this.item.default;
       }
      
+    }
+    // 
+    if(this.item.display === 'OBJ_SELECT' && isDetailPage){
+      let index = this.setSelectedValue(this.item);
+      if(index<0){
+          return ''
+      }
+
     }
 
     // fk外健
@@ -355,7 +371,7 @@ export default class ParameterDataProcessing {
         return this.item.combobox.filter(item => !item.limitdis)[0].limitval
       }
     }
-
+    
     return this.item.valuedata || this.item.default ;
   }
 
@@ -400,4 +416,25 @@ export default class ParameterDataProcessing {
     }
 
   }
+
+   /**
+   *处理select
+   *
+   * @returns
+   * @memberof setSelectedValue
+   */
+
+   setSelectedValue(item) {
+    let value = item.valuedata || item.default;
+    // let disabled = item.readonly  &&  (item.webconf ? !item.webconf.ignoreDisableWhenEdit : true);
+    // if(disabled){
+    //   return 1;
+    // }
+    const optionIndex = this.item.combobox.findIndex(x => x.value === value);
+    return optionIndex;
+
+
+  }
 }
+
+ 
