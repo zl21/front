@@ -110,7 +110,7 @@ const mixin = {
       for (let i = 0; i < this._diffTasks.length; i++) {
         const item = this._diffTasks[i]
         const options = {
-          duration: 1.5,
+          duration: 2.5,
           position: 'bottom-right',
           contentComponent(h, closeFn) {
             return h('taskNotice', {

@@ -1,20 +1,23 @@
 import Notification from './notification.vue';
 import Vue from 'vue';
 
+const NotificationConstructor = Vue.extend(Notification);
+
 Notification.newInstance = properties => {
     const _props = properties || {};
     const { id, position='top-right' } = properties;
-    const Instance = new Vue({
-        render (h) {
-            return h(Notification, {
-                props: _props
-            });
-        }
+    const Instance = new NotificationConstructor({
+        propsData: _props
+        // render (h) {
+        //     return h(Notification, {
+        //         props: _props
+        //     });
+        // }
     });
     const component = Instance.$mount();
     document.body.appendChild(component.$el);
-    const notification = Instance.$children[0];
-
+    const notification = Instance;
+    console.log('this-Notification', this)
     return {
         id,
         position,

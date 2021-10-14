@@ -63,6 +63,9 @@ import Notice from './notice.vue';
             },
             verticalOffset: {
                 type: Number
+            },
+            onClose: {
+                type: Function
             }
         },
         data () {
@@ -100,7 +103,6 @@ import Notice from './notice.vue';
             }
         },
         created() {
-            console.log(this)
         },
         methods: {
             add (notice) {
@@ -119,8 +121,8 @@ import Notice from './notice.vue';
                 this.notices.push(_notice);
                 this.tIndex = this.handleGetIndex();
             },
-            close (name) {
-                console.log(this)
+            close (name, e) {
+                if (this.onClose) this.onClose();
                 // const notices = this.notices;
                 // for (let i = 0; i < notices.length; i++) {
                 //     if (notices[i].name === name) {
