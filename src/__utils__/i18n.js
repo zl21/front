@@ -1,6 +1,6 @@
 import i18n from "../assets/js/i18n";
-import en from '../../static/js/ark/locale/en-US'
-import zh from '../../static/js/ark/locale/zh-CN'
+import en from '../../static/js/ark-ui/dist/locale/en-US'
+import zh from '../../static/js/ark-ui/dist/locale/zh-CN'
 import network, { urlSearchParams } from '../__utils__/network'
 
 const locale = $Bcl.locale
