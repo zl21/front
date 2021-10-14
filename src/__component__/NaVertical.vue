@@ -528,9 +528,9 @@ export default {
         return;
       }
       this.getTaskMessageCount(this.userInfo.id);
-    }
+    },
   },
-  mounted() {
+  async mounted() {
     this.$el._vue_ = this;
     if (window.ProjectConfig.layoutDirectionSlot && window.ProjectConfig.layoutDirectionSlot.NaVertical) {
       this.slotName = window.ProjectConfig.layoutDirectionSlot.NaVertical;
@@ -542,6 +542,7 @@ export default {
     //     this.getMessageCount();
     //   }, 1000);
     // }
+
     this.messageTimer = setInterval(() => {
       this.getMessageCount();
     }, 1000);
