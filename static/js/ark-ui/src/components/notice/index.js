@@ -1,5 +1,9 @@
-import Notification from '../base/notification';
+import Vue from 'vue';
+
 import burgeonConfig from '../../assets/config';
+import NotificationCon from '../base/notification/notification.vue';
+
+const NotificationConstructor = Vue.extend(NotificationCon);
 
 const prefixCls = `${burgeonConfig.prefixCls}notice`;
 const iconPrefixCls = `${burgeonConfig.prefixCls}icon`;
@@ -8,6 +12,7 @@ const prefixKey = `${burgeonConfig.prefixCls}notice_key_`;
 let top = 24;
 let defaultDuration = 4.5;
 let noticeInstance;
+let instance;
 let instances = [];
 let name = 1;
 let seed = 1;
@@ -19,45 +24,51 @@ const iconTypes = {
     error: 'iconios-close-circle'
 };
 
-function getNoticeInstance (position) {
+const Notification = function(options) {
+    options = Object.assign({}, options);
+    const userOnClose = options.onClose;
     const id = `notification_${seed++}`;
-    let ids = [];
-    // console.log('====start===')
+    const position = options.position || 'top-right';
 
-    // 当右上角的内容存在后，再重新构建
-    // if (instances && instances.length > 0) {
-    //     ids = instances.map(v => v.position);
-    // }
-    // if (ids.indexOf(position) === -1) {
+    const onClose = function() {
+        Notification.close(id, userOnClose);
+    };
 
     let verticalOffset = 0;
-    instances.filter(item => item.component.$children.length > 0 && item.position === position).forEach(item => {
-        verticalOffset += item.component.$el.offsetHeight + 16;
+    instances.filter(item => item.position === position).forEach(item => {
+        verticalOffset += item.$el.offsetHeight + 16;
     });
 
     verticalOffset += 16;
-
-    noticeInstance = Notification.newInstance({
-        id,
-        position,
-        verticalOffset,
-        prefixCls: prefixCls,
+    instance = new NotificationConstructor({
+        propsData: {
+            id,
+            position,
+            verticalOffset,
+            onClose,
+            prefixCls: prefixCls
+        }
     });
 
-    // console.log('verticalOffset', verticalOffset)
-    // noticeInstance.component.styles = Object.assign({}, noticeInstance.component.styles, {
-    //     top: `${verticalOffset}px`,
-    //     right: 0
-    // });
-    instances.push(noticeInstance);
-    // }
-    // console.log('instances', instances);
-    // console.log('noticeInstance-end', noticeInstance);
+    instance.id = id;
+    instance.position = position;
+    instance.$mount();
+    document.body.appendChild(instance.$el);
+    instance.dom = instance.$el;
+    instance.notice = (noticeProps) => instance.add(noticeProps);
+    instance.remove = (name) => instance.close(name);
+    instance.destroy = (element) => {
+        instance.destroy();
+        setTimeout(function() {
+            document.body.removeChild(document.getElementsByClassName(element)[0]);
+        }, 500);
+    };
+    instances.push(instance);
+    // console.log('instance', instance)
+    // console.log('instances', instances)
 
-    // console.log('====end===')
-
-    return noticeInstance;
-}
+    return instance;
+};
 
 function notice (type, options) {
     const title = options.title || '';
@@ -72,7 +83,7 @@ function notice (type, options) {
 
     name++;
 
-    let instance = getNoticeInstance(position);
+    let instance = Notification(options);
 
     let content;
 
@@ -119,46 +130,51 @@ function notice (type, options) {
     });
 }
 
-export default {
-    open (options) {
-        return notice('normal', options);
-    },
-    info (options) {
-        return notice('info', options);
-    },
-    success (options) {
-        return notice('success', options);
-    },
-    warning (options) {
-        return notice('warning', options);
-    },
-    error (options) {
-        return notice('error', options);
-    },
-    config (options) {
-        if (options.top) {
-            top = options.top;
-        }
-        if (options.duration || options.duration === 0) {
-            defaultDuration = options.duration;
-        }
-    },
-    close (name) {
-        console.log('close')
 
-        if (name) {
-            name = name.toString();
-            if (noticeInstance) {
-                noticeInstance.remove(name);
-            }
-        } else {
-            return false;
+['open', 'success', 'warning', 'info', 'error'].forEach(type => {
+    Notification[type] = options => {
+        if (typeof options === 'string') {
+            options = {
+                message: options
+            };
         }
-    },
-    destroy () {
-        console.log('destroy')
-        let instance = getNoticeInstance();
-        noticeInstance = null;
-        instance.destroy(`${burgeonConfig.prefixCls}notice`);
+        options.type = type === 'open' ? 'normal' : type;
+        return notice(type, options);
+    };
+});
+
+Notification.close = function(id, userOnClose) {
+    let index = -1;
+    const len = instances.length;
+    const instance = instances.filter((instance, i) => {
+        if (instance.id === id) {
+            index = i;
+            return true;
+        }
+        return false;
+    })[0];
+    if (!instance) return;
+
+    if (typeof userOnClose === 'function') {
+        userOnClose(instance);
+    }
+    instances.splice(index, 1);
+
+    if (len <= 1) return;
+    const position = instance.position;
+    const removedHeight = instance.dom.offsetHeight;
+    for (let i = index; i < len - 1 ; i++) {
+        if (instances[i].position === position) {
+            instances[i].dom.style[instance.verticalProperty] =
+                parseInt(instances[i].dom.style[instance.verticalProperty], 10) - removedHeight - 16 + 'px';
+        }
     }
 };
+
+Notification.destroy = function() {
+    for (let i = instances.length - 1; i >= 0; i--) {
+        instances[i].close();
+    }
+};
+
+export default Notification;
