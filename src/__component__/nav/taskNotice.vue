@@ -17,7 +17,7 @@
       </div>
     </div>
 
-    <div class="notice-body">
+    <div class="notice-body" @click="handleClick">
       <div class="notice-body-l">
         <Icon
           type="ios-checkmark-circle-outline"
@@ -50,10 +50,15 @@ export default {
   props: {
     info: {
       type: Object,
+      required: true
     },
     close: {
       type: Function,
-      isrequired: true,
+      required: true,
+    },
+    jump: {
+      type: Function,
+      required: true,
     }
   },
 
@@ -68,7 +73,10 @@ export default {
   },
 
   methods: {
-
+    // 我的任务单条跳转单对象界面
+    handleClick() {
+      this.jump(this.info)
+    },
   },
 }
 </script>

@@ -56,14 +56,14 @@ const mixin = {
 
           if (result.code === 0) {
             this._newTasks = result.datas.row
-            console.log('🚀 ~ 新', this._newTasks)
+            // console.log('🚀 ~ 新', this._newTasks)
           }
         })
     },
 
     // 获取新增的任务
     _getDiffTask() {
-      console.log('旧的---', this._oldTasks)
+      // console.log('旧的---', this._oldTasks)
       // 第一次开启通知的用户可能没缓存队列，为了避免第一次登录就弹出很多弹框，此处特殊处理下
       if (localStorage.getItem('r3-oldTasks') === null) {
         this._oldTasks = this._newTasks
@@ -112,11 +112,12 @@ const mixin = {
         const options = {
           duration: 2.5,
           position: 'bottom-right',
-          contentComponent(h, closeFn) {
+          contentComponent: (h, closeFn) => {
             return h('taskNotice', {
               props: {
                 info: item,
                 close: closeFn,
+                jump: this.jump
               },
             })
           },
@@ -126,6 +127,19 @@ const mixin = {
           this.$Notice.info(options)
         }, 100)
       }
+    },
+
+    // 我的任务单条跳转单对象界面
+    jump(item) {
+      this.updataTaskMessageCount({ id: item.ID.val });
+      const type = 'tableDetailVertical';
+      const tab = {
+        type,
+        tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
+        tableId: Version() === '1.3' ? 24386 : 963,
+        id: item.ID.val
+      };
+      this.tabOpen(tab);
     },
   },
 
