@@ -79,7 +79,6 @@ const mixin = {
         localStorage.setItem('r3-oldTasks', JSON.stringify(this._oldTasks))
         return
       }
-
       const oldTask = this._oldTasks[0]
       // 找出旧任务在新任务队列的位置
       const oldTaskIndex = this._newTasks.findIndex(
@@ -117,7 +116,7 @@ const mixin = {
               props: {
                 info: item,
                 close: closeFn,
-                jump: this.jump
+                jump: this.jump,
               },
             })
           },
@@ -131,15 +130,23 @@ const mixin = {
 
     // 我的任务单条跳转单对象界面
     jump(item) {
-      this.updataTaskMessageCount({ id: item.ID.val });
-      const type = 'tableDetailVertical';
+      // 从旧队列删除已读任务
+      const readIndex = this._oldTasks.findIndex(
+        (task) => task.ID.val === item.ID.val
+      )
+      if(readIndex > -1) {
+        this._oldTasks.splice(readIndex, 1)
+      }
+
+      this.updataTaskMessageCount({ id: item.ID.val })
+      const type = 'tableDetailVertical'
       const tab = {
         type,
         tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
         tableId: Version() === '1.3' ? 24386 : 963,
-        id: item.ID.val
-      };
-      this.tabOpen(tab);
+        id: item.ID.val,
+      }
+      this.tabOpen(tab)
     },
   },
 
