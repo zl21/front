@@ -103,7 +103,7 @@ const mixin = {
   },
 
   created() {
-    const cache = localStorage.getItem('r3-oldTasks') // 防止浏览器刷新后，丢失已弹出的任务队列
+    const cache = localStorage.getItem('r3-oldTasks') || '[]' // 防止浏览器刷新后，丢失已弹出的任务队列
     this._oldTasks = cache !== 'undefined' ? JSON.parse(cache) : [] // 缓存旧的任务
     this._newTasks = [] // 最新的任务列表
     this._diffTasks = [] // 新增任务
