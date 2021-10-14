@@ -56,14 +56,14 @@ const mixin = {
 
           if (result.code === 0) {
             this._newTasks = result.datas.row
-            // console.log('🚀 ~ 新', this._newTasks)
+            console.log('🚀 ~ 新', this._newTasks)
           }
         })
     },
 
     // 获取新增的任务
     _getDiffTask() {
-      // console.log('旧的---', this._oldTasks)
+      console.log('旧的---', this._oldTasks)
       // 第一次开启通知的用户可能没缓存队列，为了避免第一次登录就弹出很多弹框，此处特殊处理下
       if (localStorage.getItem('r3-oldTasks') === null) {
         this._oldTasks = this._newTasks
@@ -97,10 +97,9 @@ const mixin = {
         )
         // 如果旧任务出现在新任务队列，就跳出循环
         if (oldTaskIndex > -1) {
-          return
+          break
         }
       }
-
       if (oldTaskIndex > -1) {
         this._diffTasks = this._newTasks.slice(0, oldTaskIndex)
       } else {
@@ -133,7 +132,10 @@ const mixin = {
               props: {
                 info: item,
                 close: closeFn,
-                jump: this.jump,
+                jump: (item) => {
+                  this.jump(item)
+                  closeFn()
+                },
               },
             })
           },
