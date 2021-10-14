@@ -70,9 +70,5 @@ export default {
   methods: {
 
   },
-
-  mounted() {
-    console.log(222, this.info)
-  }
 }
 </script>

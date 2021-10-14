@@ -7,7 +7,9 @@ const mixin = {
   methods: {
     // 获取通知
     async _getTaskNotice() {
-      console.log('获取消息')
+      if(!window.ProjectConfig.enableTaskNotice) {
+        return
+      }
       await this._getTaskList()
       this._getDiffTask()
       this._showNotice()
@@ -53,7 +55,6 @@ const mixin = {
           }
 
           if (result.code === 0) {
-            console.log('列表', result.datas)
             this._newTasks = result.datas.row
           }
         })
@@ -83,24 +84,27 @@ const mixin = {
 
     _showNotice() {
       this._diffTasks.forEach((item) => {
-        this.$Notice.info({
-          duration: 5,
-          contentComponent(h, closeFn) {
-            return h('taskNotice', {
-              props: {
-                info: item,
-                close: closeFn
-              }
-            })
-          }
-        })
+        setTimeout(() => {
+          this.$Notice.info({
+            duration: 1.5,
+            position: 'bottom-right',
+            contentComponent(h, closeFn) {
+              return h('taskNotice', {
+                props: {
+                  info: item,
+                  close: closeFn
+                }
+              })
+            }
+          })
+        },20)
       })
     },
   },
 
   created() {
     const cache = localStorage.getItem('r3-oldTasks') // 防止浏览器刷新后，丢失已弹出的任务队列
-    this._oldTasks = cache ? JSON.parse(cache) : [] // 缓存旧的任务
+    this._oldTasks = cache !== 'undefined' ? JSON.parse(cache) : [] // 缓存旧的任务
     this._newTasks = [] // 最新的任务列表
     this._diffTasks = [] // 新增任务
   },

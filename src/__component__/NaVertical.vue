@@ -537,11 +537,14 @@ export default {
     } else {
       this.slotName = NaVerticalslot;
     }
-    if (Version() === '1.3') {
-      this.messageTimer = setInterval(() => {
-        this.getMessageCount();
-      }, 1000);
-    }
+    // if (Version() === '1.3') {
+    //   this.messageTimer = setInterval(() => {
+    //     this.getMessageCount();
+    //   }, 1000);
+    // }
+    this.messageTimer = setInterval(() => {
+      this.getMessageCount();
+    }, 1000);
     if (document.querySelector('.NavigatorVertical')) {
       this.toggle();
     }
