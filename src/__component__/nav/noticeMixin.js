@@ -7,7 +7,7 @@ const mixin = {
   methods: {
     // 获取通知
     async _getTaskNotice() {
-      if(!window.ProjectConfig.enableTaskNotice) {
+      if (!window.ProjectConfig.enableTaskNotice) {
         return
       }
       await this._getTaskList()
@@ -56,14 +56,24 @@ const mixin = {
 
           if (result.code === 0) {
             this._newTasks = result.datas.row
+            console.log('🚀 ~ 新', this._newTasks)
           }
         })
     },
 
     // 获取新增的任务
     _getDiffTask() {
+      console.log('旧的---', this._oldTasks)
+      // 第一次开启通知的用户可能没缓存队列，为了避免第一次登录就弹出很多弹框，此处特殊处理下
+      if (localStorage.getItem('r3-oldTasks') === null) {
+        this._oldTasks = this._newTasks
+        this._diffTasks = []
+        localStorage.setItem('r3-oldTasks', JSON.stringify(this._oldTasks))
+        return
+      }
+
       // 如果旧任务为空，全量展示任务
-      if(this._oldTasks.length === 0) {
+      if (this._oldTasks.length === 0) {
         this._oldTasks = this._newTasks
         this._diffTasks = this._newTasks
         localStorage.setItem('r3-oldTasks', JSON.stringify(this._oldTasks))
@@ -72,8 +82,10 @@ const mixin = {
 
       const oldTask = this._oldTasks[0]
       // 找出旧任务在新任务队列的位置
-      const oldTaskIndex = this._newTasks.findIndex(task => task.ID.val === oldTask.ID.val )
-      if(oldTaskIndex > -1) {
+      const oldTaskIndex = this._newTasks.findIndex(
+        (task) => task.ID.val === oldTask.ID.val
+      )
+      if (oldTaskIndex > -1) {
         this._diffTasks = this._newTasks.slice(0, oldTaskIndex)
       } else {
         this._diffTasks = this._newTasks
@@ -82,29 +94,44 @@ const mixin = {
       localStorage.setItem('r3-oldTasks', JSON.stringify(this._oldTasks))
     },
 
-    _showNotice() {
-      this._diffTasks.forEach((item) => {
+    // 定时器
+    _sleep(callback, interval) {
+      return new Promise((resolve) => {
         setTimeout(() => {
-          this.$Notice.info({
-            duration: 1.5,
-            position: 'bottom-right',
-            contentComponent(h, closeFn) {
-              return h('taskNotice', {
-                props: {
-                  info: item,
-                  close: closeFn
-                }
-              })
-            }
-          })
-        },20)
+          callback()
+          resolve()
+        }, interval)
       })
+    },
+
+    // 弹出通知
+    async _showNotice() {
+      this._diffTasks = this._diffTasks.slice(0, 10) // 上限展示10条
+      for (let i = 0; i < this._diffTasks.length; i++) {
+        const item = this._diffTasks[i]
+        const options = {
+          duration: 1.5,
+          position: 'bottom-right',
+          contentComponent(h, closeFn) {
+            return h('taskNotice', {
+              props: {
+                info: item,
+                close: closeFn,
+              },
+            })
+          },
+        }
+        // 加个延迟，这样弹出时，不会同时出现 滑入的动画 效果
+        await this._sleep(() => {
+          this.$Notice.info(options)
+        }, 100)
+      }
     },
   },
 
-  created() {
+  async created() {
     const cache = localStorage.getItem('r3-oldTasks') || '[]' // 防止浏览器刷新后，丢失已弹出的任务队列
-    this._oldTasks = cache !== 'undefined' ? JSON.parse(cache) : [] // 缓存旧的任务
+    this._oldTasks = JSON.parse(cache) // 缓存旧的任务
     this._newTasks = [] // 最新的任务列表
     this._diffTasks = [] // 新增任务
   },

@@ -509,9 +509,10 @@
           return;
         }
         this.getTaskMessageCount(this.userInfo.id);
-      }
+      },
     },
-    mounted() {
+
+    async mounted() {
       // if (Version() === '1.3') {
       //   this.messageTimer = setInterval(() => {
       //     this.getMessageCount();
