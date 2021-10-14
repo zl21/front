@@ -79,11 +79,28 @@ const mixin = {
         localStorage.setItem('r3-oldTasks', JSON.stringify(this._oldTasks))
         return
       }
-      const oldTask = this._oldTasks[0]
-      // 找出旧任务在新任务队列的位置
-      const oldTaskIndex = this._newTasks.findIndex(
-        (task) => task.ID.val === oldTask.ID.val
-      )
+
+      // const oldTask = this._oldTasks[0]
+      // // 找出旧任务在新任务队列的位置(要考虑任务被读取的情况)
+      // const oldTaskIndex = this._newTasks.findIndex(
+      //   (task) => task.ID.val === oldTask.ID.val
+      // )
+
+      // 找出旧任务在新任务队列的位置(要考虑任务被读取的情况)
+      // 1.存在旧任务出现在新任务队列(例如没有已读或者部分已读)
+      // 2.没有一个旧任务出现在新任务队列(例如全部已读)
+      let oldTaskIndex = -1
+      for (let i = 0; i < this._oldTasks.length; i++) {
+        const oldTask = this._oldTasks[i]
+        oldTaskIndex = this._newTasks.findIndex(
+          (task) => task.ID.val === oldTask.ID.val
+        )
+        // 如果旧任务出现在新任务队列，就跳出循环
+        if (oldTaskIndex > -1) {
+          return
+        }
+      }
+
       if (oldTaskIndex > -1) {
         this._diffTasks = this._newTasks.slice(0, oldTaskIndex)
       } else {
@@ -130,13 +147,13 @@ const mixin = {
 
     // 我的任务单条跳转单对象界面
     jump(item) {
-      // 从旧队列删除已读任务
-      const readIndex = this._oldTasks.findIndex(
-        (task) => task.ID.val === item.ID.val
-      )
-      if(readIndex > -1) {
-        this._oldTasks.splice(readIndex, 1)
-      }
+      // // 从旧队列删除已读任务
+      // const readIndex = this._oldTasks.findIndex(
+      //   (task) => task.ID.val === item.ID.val
+      // )
+      // if(readIndex > -1) {
+      //   this._oldTasks.splice(readIndex, 1)
+      // }
 
       this.updataTaskMessageCount({ id: item.ID.val })
       const type = 'tableDetailVertical'
