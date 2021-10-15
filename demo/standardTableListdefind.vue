@@ -41,20 +41,20 @@ export default {
 
   data() {
     return {
-      radioValue: 2,
+      radioValue: '2',
       radioOptions: {
         combobox: [
           {
             limitdesc: 1,
-            limitval: 1
+            limitval: '1'
           },
           {
             limitdesc: 2,
-            limitval: 2
+            limitval: '2'
           },
           {
             limitdesc: 3,
-            limitval: 3
+            limitval: '3'
           }
         ],
       },

@@ -56,14 +56,14 @@ const mixin = {
 
           if (result.code === 0) {
             this._newTasks = result.datas.row
-            console.log('🚀 ~ 新', this._newTasks)
+            // console.log('🚀 ~ 新', this._newTasks)
           }
         })
     },
 
     // 获取新增的任务
     _getDiffTask() {
-      console.log('旧的---', this._oldTasks)
+      // console.log('旧的---', this._oldTasks)
       // 第一次开启通知的用户可能没缓存队列，为了避免第一次登录就弹出很多弹框，此处特殊处理下
       if (localStorage.getItem('r3-oldTasks') === null) {
         this._oldTasks = this._newTasks
@@ -122,10 +122,11 @@ const mixin = {
     // 弹出通知
     async _showNotice() {
       this._diffTasks = this._diffTasks.slice(0, 10) // 上限展示10条
+      // console.log("🚀 ~ file: noticeMixin.js ~ line 125 ~ _showNotice ~ this._diffTasks", this._diffTasks)
       for (let i = 0; i < this._diffTasks.length; i++) {
         const item = this._diffTasks[i]
         const options = {
-          duration: 2.5,
+          duration: 4,
           position: 'bottom-right',
           contentComponent: (h, closeFn) => {
             return h('taskNotice', {
