@@ -545,7 +545,7 @@ export default {
 
     this.messageTimer = setInterval(() => {
       this.getMessageCount();
-    }, 1000);
+    }, 3000);
     if (document.querySelector('.NavigatorVertical')) {
       this.toggle();
     }

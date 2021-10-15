@@ -520,7 +520,7 @@
       // }
       this.messageTimer = setInterval(() => {
         this.getMessageCount();
-      }, 1000);
+      }, 3000);
       if (this.showModule && !this.showModule.Navigator) {
         if (this.$el) {
           this.$el.parentElement.hidden = true;
