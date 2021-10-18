@@ -172,10 +172,13 @@
     STANDARD_TABLE_LIST_PREFIX, Version, enableHistoryAndFavoriteUI, enableGateWay, getGatewayValue,dashboardConfig,messageSwitch, classFix
   } from '../constants/global';
   import { updateSessionObject } from '../__utils__/sessionStorage';
-
+  import noticeMixin from './nav/noticeMixin'
 
   export default {
     name: 'Navigator',
+
+    mixins: [noticeMixin],
+
     components: {
       NavigatorPrimaryMenu,
       // SetPanel,
@@ -252,7 +255,7 @@
         }
         return true;
       },
-      taskMessageCounts() {
+      userId() {
         return this.userInfo.id;
       },
       classes() {
@@ -262,7 +265,7 @@
       },
     },
     watch: {
-      taskMessageCounts(val) {
+      userId(val) {
         // if (val && Version() === '1.3') {
         //   this.getTaskMessageCount(val);
         // }
@@ -270,6 +273,13 @@
           this.getTaskMessageCount(val);
         }
       },
+
+      taskMessageCount(newVal, oldVal) {
+        if(newVal > oldVal) {
+          this._getTaskNotice()
+        }
+      },
+
       showModule(val) {
         if (!val.Navigator) {
           if (this.$el) {
@@ -499,9 +509,10 @@
           return;
         }
         this.getTaskMessageCount(this.userInfo.id);
-      }
+      },
     },
-    mounted() {
+
+    async mounted() {
       // if (Version() === '1.3') {
       //   this.messageTimer = setInterval(() => {
       //     this.getMessageCount();
@@ -509,7 +520,7 @@
       // }
       this.messageTimer = setInterval(() => {
         this.getMessageCount();
-      }, 30000);
+      }, 3000);
       if (this.showModule && !this.showModule.Navigator) {
         if (this.$el) {
           this.$el.parentElement.hidden = true;

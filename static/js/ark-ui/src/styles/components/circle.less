@@ -1,0 +1,22 @@
+@circle-prefix-cls: ~"@{css-prefix}chart-circle";
+
+.@{circle-prefix-cls}{
+    position: relative;
+    display: inline-block;
+    svg {
+        transform: rotate(270deg);
+    }
+    &-front {
+        transition: stroke-dashoffset 0.32s ease 0s, stroke-dasharray 0.32s ease 0s, stroke 0.32s,
+        stroke-width 0.06s ease 0.32s;
+    }
+    &-inner {
+        width: 100%;
+        text-align: center;
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        line-height: 1;
+    }
+}

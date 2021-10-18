@@ -10,3 +10,5 @@ dist/
 *.tgz
 burgeon-r3-*/
 *.log
+# exclude
+!/static/js/ark-ui/dist

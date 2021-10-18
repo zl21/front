@@ -167,7 +167,6 @@ export default {
 
     // 跳转我的任务列表界面
     jumpTask() {
-      console.log(222);
       this.messagePanel.show = false;
       const type = STANDARD_TABLE_LIST_PREFIX;
       const tab = {
@@ -176,7 +175,6 @@ export default {
         tableId: Version() === '1.3' ? 24386 : 963,
         label: this.$t('tips.myTask')
       };
-      console.log('跳转', tab);
       this.tabOpen(tab);
     },
 
