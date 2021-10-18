@@ -10,4 +10,9 @@ dist/
 *.tgz
 burgeon-r3-*/
 *.log
+<<<<<<< HEAD
 entry/
+=======
+# exclude
+!/static/js/ark-ui/dist
+>>>>>>> npm_dev_r3

@@ -362,7 +362,6 @@ export default {
     isOpenFilter(columns) {
       let isOpenfloatingFilter = true;
       const isAllCloseFilter = columns.every(item => item.isagfilter === false);
-      console.log("🚀 ~ file: AgTable.vue ~ line 365 ~ isOpenFilter ~ isAllCloseFilter", isAllCloseFilter,columns,floatingFilter())
 
       if (isAllCloseFilter) {
         isOpenfloatingFilter = false;
