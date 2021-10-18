@@ -79,6 +79,10 @@ export default {
     }
   },
   mounted () {
-    
+    if(this.items.detailType){
+      if(this.items.linkage && this.items.linkage.hidecolumn){
+        hideColumn(this,this.items.linkage.hidecolumn)  
+      }
+    }
   }
 }
