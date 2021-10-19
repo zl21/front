@@ -163,7 +163,6 @@ export default {
     valueChange (item, val) {
       // 表单change
       let arrjson = this.dealData(item, val);
-
       if (item.fkobj && item.fkobj.searchmodel) {
         if (Version() === '1.3') {
           if (!Array.isArray(arrjson[item.colname])) {
@@ -175,9 +174,13 @@ export default {
         }
 
       }
+      
+      if (this.$parent.updateFormData) {
+        if(arrjson[item.colname] === undefined){
+          arrjson[item.colname] = '';
+        }
 
-      if (this.$parent.updateFormAssignData) {
-        this.$parent.updateFormAssignData(arrjson);
+        this.$parent.updateFormData(arrjson);
       }
     },
     setColumn () {
