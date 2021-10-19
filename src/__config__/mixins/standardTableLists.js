@@ -65,6 +65,7 @@ export default () => ({
         'updateFormData',
         'updateFormAssignData',
         'updateFormLists',
+        'delectFormData',
         'updateDefaultButtonGroupData',
         'deleteTableData',
         'onSelectionChangedAssignment',
