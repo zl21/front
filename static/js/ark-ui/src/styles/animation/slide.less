@@ -1,0 +1,142 @@
+.slide-motion(@className, @keyframeName) {
+    .make-motion(@className, @keyframeName);
+    .@{className}-enter-active, .@{className}-appear {
+        opacity: 0;
+        animation-timing-function: @ease-in-out;
+    }
+    .@{className}-leave-active {
+        animation-timing-function: @ease-in-out;
+    }
+}
+
+.slide-motion(transition-drop, arkTransitionDrop);
+.slide-motion(slide-up, arkSlideUp);
+.slide-motion(slide-down, arkSlideDown);
+.slide-motion(slide-left, arkSlideLeft);
+.slide-motion(slide-right, arkSlideRight);
+
+@keyframes arkTransitionDropIn {
+    0% {
+        opacity: 0;
+        transform: scaleY(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: scaleY(1);
+    }
+}
+
+@keyframes arkTransitionDropOut {
+    0% {
+        opacity: 1;
+        transform: scaleY(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scaleY(0.8);
+    }
+}
+
+@keyframes arkSlideUpIn {
+    0% {
+        opacity: 0;
+        transform-origin: 0% 0%;
+        transform: scaleY(.8);
+    }
+    100% {
+        opacity: 1;
+        transform-origin: 0% 0%;
+        transform: scaleY(1);
+    }
+}
+
+@keyframes arkSlideUpOut {
+    0% {
+        opacity: 1;
+        transform-origin: 0% 0%;
+        transform: scaleY(1);
+    }
+    100% {
+        opacity: 0;
+        transform-origin: 0% 0%;
+        transform: scaleY(.8);
+    }
+}
+
+@keyframes arkSlideDownIn {
+    0% {
+        opacity: 0;
+        transform-origin: 100% 100%;
+        transform: scaleY(.8);
+    }
+    100% {
+        opacity: 1;
+        transform-origin: 100% 100%;
+        transform: scaleY(1);
+    }
+}
+
+@keyframes arkSlideDownOut {
+    0% {
+        opacity: 1;
+        transform-origin: 100% 100%;
+        transform: scaleY(1);
+    }
+    100% {
+        opacity: 0;
+        transform-origin: 100% 100%;
+        transform: scaleY(.8);
+    }
+}
+
+@keyframes arkSlideLeftIn {
+    0% {
+        opacity: 0;
+        transform-origin: 0% 0%;
+        transform: scaleX(.8);
+    }
+    100% {
+        opacity: 1;
+        transform-origin: 0% 0%;
+        transform: scaleX(1);
+    }
+}
+
+@keyframes arkSlideLeftOut {
+    0% {
+        opacity: 1;
+        transform-origin: 0% 0%;
+        transform: scaleX(1);
+    }
+    100% {
+        opacity: 0;
+        transform-origin: 0% 0%;
+        transform: scaleX(.8);
+    }
+}
+
+@keyframes arkSlideRightIn {
+    0% {
+        opacity: 0;
+        transform-origin: 100% 0%;
+        transform: scaleX(.8);
+    }
+    100% {
+        opacity: 1;
+        transform-origin: 100% 0%;
+        transform: scaleX(1);
+    }
+}
+
+@keyframes arkSlideRightOut {
+    0% {
+        opacity: 1;
+        transform-origin: 100% 0%;
+        transform: scaleX(1);
+    }
+    100% {
+        opacity: 0;
+        transform-origin: 100% 0%;
+        transform: scaleX(.8);
+    }
+}

@@ -7,6 +7,7 @@ import router from './src/__config__/router.config';
 import store from './src/__config__/store.config';
 import App from './src/App.vue';
 import i18n from './src/assets/js/i18n';
+import './src/__utils__/i18n' // 挂载i18n方法
 import './src/constants/dateApi';
 import network from './src/__utils__/network';
 import {

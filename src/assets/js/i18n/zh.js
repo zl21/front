@@ -195,7 +195,25 @@ export default {
     collapseQuery: '折叠查询条件',
     queryDefaultRows: '查询条件默认显示行数',
     noHistory: '暂无历史记录',
-    noCollection: '暂无收藏记录'
+    noCollection: '暂无收藏记录',
+    generateBarcode: '生成条码',
+    devAccount: '开发者账号',
+    accountList: '账号列表',
+    accountName: '账号名称',
+    addAccount: '新增账号',
+    deleteAccount: '删除账号',
+    managementAuthority: '权限管理',
+    interfacePermissions: '接口权限',
+    pleaseEnterContent: '请输入内容',
+    confirmDeleteAccount: '删除操作不可恢复，如当前有开发者使用此账号，将无法访问接口，确认删除吗',
+    enterAccountName: '请输入账号名称',
+    confirmRefreshSecret: '点击确认后，会重置appSecret，重置后请通知下游开发者更换密钥信息',
+    scrollBottom: '已滚动到底部',
+    addAccountFirst: '暂无数据，请先新增账号',
+    refreshKey: '刷新appSecret',
+    refreshPermission: '刷新接口权限',
+    selectAccountFirst: '请先选择账号',
+    quickOperation: '快捷操作'
   },
   // 具有通用性的文案
   tips: {
@@ -325,7 +343,16 @@ export default {
     webImage: '网络图片',
     favorites: '收藏夹',
     recentlyUsed: '最近使用',
-    complete: '完成'
+    complete: '完成',
+    description: '描述',
+    grandTotal: '累计',
+    average: '平均',
+    max: '最大',
+    min: '最小',
+    count: '计数',
+    integer: '整数',
+    environment: '环境',
+    noMore: '没有更多数据了'
   },
   // 反馈类型的文案(比如进行某个操作，返回操作结果的提示)
   feedback: {
@@ -343,7 +370,8 @@ export default {
     collectionFailed: '收藏失败',
     unfavoriteSuccessfully: '取消收藏成功',
     failedToUnfavorite: '取消收藏失败',
-    cloneSuccess: '克隆成功'
+    cloneSuccess: '克隆成功',
+    deleteSuccessfully: '删除成功'
   },
   // 动作行为(不含按钮里的，比如勾选，输入之类)
   actions: {
@@ -432,4 +460,45 @@ export default {
   previewPicture: {
     picturePreview: '图片预览'
   },
+  // 定制界面metricsDefinition
+  metricsDefinition: {
+    saveDefinition: '保存交叉表定义',
+    saveDefinitionSeparately: '另保存交叉表定义',
+    factTable: '事实表',
+    reportTemplate: '报表模版',
+    availableField: '可用字段',
+    enterFieldName: '输入字段名',
+    ifSelectAll: '是否全选',
+    lessGroupingField: '越少的分组字段，Cube生成的时间越短，另外，执行快速导出时，仅行定义的分组字段会被使用',
+    editGroupField: '编辑分组字段',
+    editSummaryField: '编辑汇总字段',
+    fieldReference: '字段引用',
+    hideInReport: '在网页报表中隐藏',
+    summaryField: '汇总字段',
+    customColumn: '自定义计算列',
+    variableName: '变量名',
+    statisticalFunction: '统计函数',
+    displayFormat: '显示格式',
+    securityLevel: '安全级别',
+    pageDefinition:'页定义(仅透视分析中有效)',
+    groupFieldSetting: '分组字段设置',
+    columnDefinition: '列定义',
+    rowDefinition: '行定义',
+    summaryFieldSetting: '汇总字段设置',
+    noEmpty: '不可为空',
+    withPercentile: '含百分位',
+    withTenThousandths: '含万分位',
+    thousandsSeparated: '千位分隔',
+    thousandsAndPercent: '千位分隔和百分',
+    wholePercentage: '整百分比',
+    digitPercentage: '2位百分比',
+  },
+  // 定制界面customizeReport
+  customizeReport: {
+    errorRequest: '请求过滤条件出错'
+  },
+  // 定制弹框PublishPrintTemplate
+  publishPrintTemplate: {
+    continueCover: '当前的操作会执行全量覆盖！是否继续？'
+  }
 }

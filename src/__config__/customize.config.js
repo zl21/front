@@ -15,6 +15,7 @@ import standard from '../__customize__/colorSize/Standard.vue';
 import taskList from '../__customize__/taskList/taskList.vue';
 import metricsDefinition from '../__customize__/metricsDefinition/metricsDefinition.vue';
 import customizeReport from '../__component__/CustomizeReport.vue';
+import ApiPermission from '../__customize__/ApiPermission/ApiPermission.vue';
 
 import dataPermission from '../__customize__/DataPermission/DataPermission.vue';
 import i18n from '../assets/js/i18n';
@@ -44,7 +45,6 @@ export default {
     component: taskList,
     labelName: i18n.t('messages.taskRecord'),
     label: 'taskList'
-
   },
   customizeReport: {
     component: customizeReport,
@@ -54,5 +54,8 @@ export default {
     component: dataPermission,
     label: i18n.t('tips.dataPermission')
   },
-
+  apiPermission: {
+    component: ApiPermission,
+    label: i18n.t('messages.devAccount')
+  }
 };
