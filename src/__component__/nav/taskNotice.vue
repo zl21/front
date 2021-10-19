@@ -1,5 +1,5 @@
 <template>
-  <div class="r3-notice-content">
+  <div class="r3-notice-content" v-if="info">
     <div class="notice-header">
       <div class="notice-header-l">
         <span>{{$t('tips.message')}}</span>
@@ -23,7 +23,7 @@
           type="ios-checkmark-circle-outline"
           size="24"
           class="notice-success"
-          v-if="info.TASK_STATE.refobjval === 2"
+          v-if="(info.TASK_STATE && info.TASK_STATE.refobjval === 2) || (info.TASKSTATE && info.TASKSTATE.val === '已完成')"
         />
         <Icon
           type="ios-close-circle-outline"
@@ -35,7 +35,7 @@
       </div>
       <div class="notice-body-r">
         <div class="notice-task">[{{$t('tips.asyncTask')}}]{{$t('tips.task')}}：{{ info.MENU.val }}</div>
-        <div class="notice-status">{{info.MESSAGE.val}}！</div>
+        <div class="notice-status">{{info.MESSAGE && info.MESSAGE.val || (info.CONTENT && info.CONTENT.val)}}！</div>
       </div>
     </div>
   </div>
