@@ -175,13 +175,18 @@ export default {
 
       }
       
-      if (this.$parent.updateFormData) {
-        if(arrjson[item.colname] === undefined){
-          arrjson[item.colname] = '';
+     
+      
+        if(arrjson[item.colname] === undefined){          
+          if (this.$parent.delectFormData) {
+              this.$parent.delectFormData(item.colname);
+            }
+        }else{
+           if (this.$parent.updateFormData) {
+              this.$parent.updateFormData(arrjson);
+            }
         }
 
-        this.$parent.updateFormData(arrjson);
-      }
     },
     setColumn () {
       // 设置列数
