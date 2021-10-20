@@ -345,11 +345,6 @@ export default {
               };
             }
           } else if (Object.values(itemAdd[itemName]).length > 0) {
-            // const itemTableAdd = Object.assign({}, itemAdd);
-            // itemTableAdd[itemName].ID = objId;
-            // itemTableAdd[itemName] = [
-            //   itemTableAdd[itemName]
-            // ];
             // 子表的值有修改
             let itemTableAddValue = Object.assign({},addDefault[itemName], itemAdd[itemName]);
             itemTableAddValue.ID = objId;
