@@ -55,7 +55,6 @@ export default {
 
   async mounted() {
     this.preloader = $('.preloader');
-    await this.requestUpdate()
     this.checkProgress()
   },
   watch: {
@@ -72,7 +71,7 @@ export default {
 
   methods: {
     startLoading() {
-      this.loading = setInterval(this.load, 200);
+      this.loading = setInterval(this.load, 50);
     },
 
     load() {
@@ -95,50 +94,93 @@ export default {
       this.loader.fadeOut();
     },
 
+    // 设置假进度
+    setProgressTotal() {
+      this.progressTimer = setInterval(() => {
+        // 如果后端没升级完，最终就停在99
+        if (this.progressTotal < 100) {
+          const value = this.progressTotal + Math.floor(Math.random() * 5)
+          this.progressTotal = Math.min(value, 99)
+        } else {
+          this.progressTotal = 99
+        }
+      }, 1000)
+    },
+
     // 检查更新进度
     async checkProgress() {
       const res = await this.requestProgress()
-      this.startLoading();
-
-      // 没升级完成就循环请求
       if (res) {
-        this.progressTimer = setInterval(async () => {
-          const res = await this.requestProgress()
-          if (!res) {
-            clearInterval(this.progressTimer)
-            this.progressTimer = null
-            this.progressTotal = 100
-          } else {
-            // 如果后端没升级完，最终就停在99
-            if (this.progressTotal < 100) {
-              const value = this.progressTotal + Math.floor(Math.random() * 5)
-              this.progressTotal = Math.min(value, 99)
-            } else {
-              this.progressTotal = 99
-            }
-          }
-        }, 1000)
+        this.startLoading()
+        this.setProgressTotal()
+
+        if (await this.requestUpdate()) {
+          clearInterval(this.progressTimer)
+          this.progressTimer = null
+          this.progressTotal = 100
+        }
       } else {
-        this.progressTotal = 100
+        this.goto()
       }
+
+
+      // const res = await this.requestProgress()
+      // this.startLoading();
+
+      // // 没升级完成就循环请求
+      // if (res) {
+      //   this.progressTimer = setInterval(async () => {
+      //     const res = await this.requestProgress()
+      //     if (!res) {
+      //       clearInterval(this.progressTimer)
+      //       this.progressTimer = null
+      //       this.progressTotal = 100
+      //     } else {
+      //       // 如果后端没升级完，最终就停在99
+      //       if (this.progressTotal < 100) {
+      //         const value = this.progressTotal + Math.floor(Math.random() * 5)
+      //         this.progressTotal = Math.min(value, 99)
+      //       } else {
+      //         this.progressTotal = 99
+      //       }
+      //     }
+      //   }, 1000)
+      // } else {
+      //   this.progressTotal = 100
+      // }
     },
 
     // 请求进度接口
     async requestProgress() {
       // needUpdate为false直接进系统
+      // return new Promise((resolve) => {
+      //   // resolve(true)
+      //   network.post('/p/cs/retail/queryLiquibaseExeStatus').then(result => {
+      //     const res = result.data
+      //     if (res.code === 0) {
+      //       resolve(res.data.needUpdate)
+      //       // resolve(true)
+      //     } else {
+      //       resolve(true)
+      //       // this.$router.push({ path:'/Login'})
+      //     }
+      //   }).catch(() => {
+      //     resolve(true)
+      //     // this.$router.push({ path:'/Login'})
+      //   })
+      // })
+
       return new Promise((resolve) => {
-        network.post('/p/cs/retail/queryLiquibaseExeStatus').then(result => {
+        network.post(`/p/cs/retail/queryLiquibaseExeStatus?hash=${new Date().getTime()}`).then(result => {
           const res = result.data
-          console.log("🚀 ~ ", res, res.data)
           if (res.code === 0) {
             resolve(res.data.needUpdate)
+            // resolve(true)
           } else {
             resolve(true)
-            // this.$router.push({ path:'/Login'})
           }
         }).catch(() => {
-          resolve(true)
-          // this.$router.push({ path:'/Login'})
+          resolve(true);
         })
       })
     },
@@ -146,9 +188,15 @@ export default {
     // 请求更新
     async requestUpdate() {
       return new Promise((resolve) => {
-        network.post('/p/cs/retail/exeLiquibaseUpdate').then(() => {
+        network.post('/p/cs/retail/exeLiquibaseUpdate').then((result) => {
+          const res = result.data
+          if (res.code === 0) {
+            resolve(true)
+          } else {
+            resolve(false)
+          }
         }).finally(() => {
-          resolve()
+          resolve(false)
         })
       })
     },

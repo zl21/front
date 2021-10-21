@@ -58,7 +58,7 @@
 
       // 检查系统是否升级完毕
       checkUpdate() {
-        network.post('/p/cs/retail/queryLiquibaseExeStatus').then(result => {
+        network.post(`/p/cs/retail/queryLiquibaseExeStatus?hash=${new Date().getTime()}`).then(result => {
           const res = result.data
           if (res.code === 0 && res.data.needUpdate) {
             this.$router.push({ path:'/R3UpdateSystem'})

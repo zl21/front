@@ -322,7 +322,7 @@
       // 检查系统升级
       async checkUpdate() {
         return new Promise((resolve) => {
-          network.post('/p/cs/retail/queryLiquibaseExeStatus').then(result => {
+          network.post(`/p/cs/retail/queryLiquibaseExeStatus?hash=${new Date().getTime()}`).then(result => {
             const res = result.data
             if(res.code === 0) {
               resolve(res.data.needUpdate)
