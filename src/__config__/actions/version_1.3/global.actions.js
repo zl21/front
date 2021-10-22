@@ -89,6 +89,12 @@ export default {
                 }
               });
               if (exportTask.exportedState) { // 导出成功执行以下逻辑
+                // fix: 1.3环境，调用已读接口导致通知不展示
+                if(window.ProjectConfig.enableTaskNotice) {
+                  commit('updateExportedState', exportTask);
+                  resolve();
+                  return
+                }
                 network.post('/p/cs/ignoreMsg', urlSearchParams({ id })).then((r) => {
                   const datas = r.data;
                   if (datas.code === 0) { 
