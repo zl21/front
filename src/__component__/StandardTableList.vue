@@ -653,6 +653,10 @@ export default {
               this.$Modal.fcWarning(message);
             }
             if (this.exportTasks.successMsg) {
+              // fix: 1.3环境，调用已读接口导致通知不展示
+              if(window.ProjectConfig.enableTaskNotice) {
+                return
+              }
               const data = {
                 mask: true,
                 title: this.$t('feedback.success'),
