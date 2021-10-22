@@ -34,8 +34,8 @@
 
       </div>
       <div class="notice-body-r">
-        <div class="notice-task">[{{$t('tips.asyncTask')}}]{{$t('tips.task')}}：{{ info.MENU.val }}</div>
-        <div class="notice-status">{{info.MESSAGE && info.MESSAGE.val || (info.CONTENT && info.CONTENT.val)}}！</div>
+        <div class="notice-task one-line-flow" :title="info.MENU.val">[{{$t('tips.asyncTask')}}]{{$t('tips.task')}}：{{ info.MENU.val }}</div>
+        <div class="notice-status one-line-flow" :title="content">{{content}}！</div>
       </div>
     </div>
   </div>
@@ -69,6 +69,12 @@ export default {
   data() {
     return {
 
+    }
+  },
+
+  computed: {
+    content() {
+      return this.info.MESSAGE && this.info.MESSAGE.val || (this.info.CONTENT && this.info.CONTENT.val)
     }
   },
 
