@@ -54,7 +54,7 @@ export default {
         if (index > times) {
           clearInterval(timer);
         } else {
-          network.post('/p/cs/getObject', urlSearchParams({ table: 'CP_C_TASK', objid })).then((res) => {
+          network.post('/p/cs/getObject', urlSearchParams({ table: 'CP_C_TASK', objid })).then(async (res) => {
             const data = res.data;
             // resolve();
             if (data.code === 0) { 
@@ -89,13 +89,8 @@ export default {
                 }
               });
               if (exportTask.exportedState) { // 导出成功执行以下逻辑
-                // fix: 1.3环境，调用已读接口导致通知不展示
-                if(window.ProjectConfig.enableTaskNotice) {
-                  commit('updateExportedState', exportTask);
-                  resolve();
-                  return
-                }
-                network.post('/p/cs/ignoreMsg', urlSearchParams({ id })).then((r) => {
+                // 为了不展示通知(即使开启通知功能)。所以这里加await确保消息已读
+                await network.post('/p/cs/ignoreMsg', urlSearchParams({ id })).then((r) => {
                   const datas = r.data;
                   if (datas.code === 0) { 
                     if (exportTask.resultMsg.indexOf('{') >= 0) {
