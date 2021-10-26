@@ -653,6 +653,10 @@ export default {
               this.$Modal.fcWarning(message);
             }
             if (this.exportTasks.successMsg) {
+              // fix: 1.3环境，调用已读接口导致通知不展示
+              if(window.ProjectConfig.enableTaskNotice) {
+                return
+              }
               const data = {
                 mask: true,
                 title: this.$t('feedback.success'),
@@ -2148,6 +2152,19 @@ export default {
             eleLink.click();
             document.body.removeChild(eleLink);
           } else if (Version() === '1.3') { // Version() === '1.3'
+            // fileUrl字段不存在时就代表是异步导出。
+            // 异步导出在[我的任务]查看
+            if(!this.buttons.exportdata.fileUrl) {
+              this.$R3loading.hide(this.loadingName);
+              if (window.ProjectConfig.messageSwitch) {
+                this.$Modal.fcSuccess({
+                  title: this.$t('feedback.success'),
+                  mask: true,
+                  content: this.$t('messages.processingTask')
+                });
+              }
+              return
+            }
             const promises = new Promise((resolve, reject) => {
               this.getExportedState({
                 objid: this.buttons.exportdata, id: this.buttons.exportdata, resolve, reject
