@@ -9,6 +9,7 @@ import './src/assets/theme/custom.less';
  import externalTreeDatasConfig from './demo/treeData/treeData.config.js';//
 
 // const R3 = window.R3.default
+Window.R3 = R3;
 
 const {
   network,
