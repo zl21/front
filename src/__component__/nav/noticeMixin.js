@@ -44,8 +44,9 @@ const mixin = {
           },
         ],
       }
+      // hash防止短时间内重复请求被节流
       await network
-        .post('/p/cs/QueryList', urlSearchParams({ searchdata }), {
+        .post(`/p/cs/QueryList?hash=${new Date().getTime()}`, urlSearchParams({ searchdata }), {
           serviceId: enableGateWay() ? getGatewayValue('U_NOTE') : '',
         })
         .then((res) => {

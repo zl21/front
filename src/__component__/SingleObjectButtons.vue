@@ -1972,6 +1972,20 @@
               eleLink.click();
               document.body.removeChild(eleLink);
             } else {
+              // fileUrl字段不存在时就代表是异步导出。
+              // 异步导出在[我的任务]查看
+              if(!this.buttonsData.exportdata.fileUrl) {
+                this.$R3loading.hide(this.loadingName);
+                if (window.ProjectConfig.messageSwitch) {
+                  this.$Modal.fcSuccess({
+                    title: this.$t('feedback.success'),
+                    mask: true,
+                    content: this.$t('messages.processingTask')
+                  });
+                }
+                return
+              }
+
               const promises = new Promise((resolve, reject) => {
                 this.getExportedState({
                   objid: this.buttonsData.exportdata, id: this.buttonsData.exportdata, resolve, reject
