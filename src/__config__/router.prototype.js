@@ -90,7 +90,8 @@ const routes = [
         //   '../__component__/L.KeepAlive'
         // ), // 外链界面
         meta: { routePrefix: LINK_MODULE_PREFIX },
-      }]
+      },
+    ]
   },
   {
     path: '/Login',
@@ -103,7 +104,14 @@ const routes = [
   {
     path: '/AutomaticPathGeneration',
     component: AutomaticPathGeneration
+  },
+  {
+    path: '/R3UpdateSystem',
+    component: () => import(
+      /* webpackChunkName: 'UpdateSystem' */
+      /* webpackMode: 'eager' */
+      '../__customize__/UpdateSystem/UpdateSystem.vue'
+    ),
   }
-
 ];
 export default routes;

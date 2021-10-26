@@ -264,7 +264,7 @@ export default {
       return true;
     },
     userId() {
-      return this.userInfo.id;
+      return this.userInfo && this.userInfo.id;
     },
     classes: () => `${classFix}NaVertical-bar`
 
