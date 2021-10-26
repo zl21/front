@@ -94,6 +94,12 @@ export default {
   }, data) {
     formItems.data = Object.assign(formItems.data,data);
   },
+  delectFormData({
+    formItems
+  }, key) {
+    // 删除字段
+    delete  formItems.data[key];
+  },
   updateDefaultSearchFoldnum({ formItems }, data) {
     formItems.searchFoldnum = data;
   },
