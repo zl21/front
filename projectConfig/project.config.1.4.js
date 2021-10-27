@@ -224,5 +224,5 @@ module.exports = {
   //     bigData: require('../src/assets/image/home.png'),
   //   }
   // },
-  enableSystemUpdate: true, // 开启系统升级功能
+  enableSystemUpdate: false, // 开启系统升级功能
 };
