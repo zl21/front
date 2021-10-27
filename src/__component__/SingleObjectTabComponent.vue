@@ -1010,7 +1010,6 @@
       },
       
       formPanelChange(val, changeVal, valLabel) {
-        console.log(val, changeVal, valLabel,'==val, changeVal, valLabel');
         if(notificationOfMain() && this.$route.params.tableName === this.tableName) {
           DispatchEvent('notificationOfMain', {
             detail: val
