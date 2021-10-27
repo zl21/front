@@ -537,12 +537,11 @@
       }
     },
     updated() {
-      // this.$nextTick(() => {
-      //   if (!this.pageInit && !this.spinShow) {
-      //     console.log(2323);
-      //     this.selectFirstOnce();
-      //   }
-      // })
+      this.$nextTick(() => {
+        if (!this.pageInit && !this.spinShow) {
+          this.selectFirstOnce();
+        }
+      })
     },
     beforeDestroy() {
       window.removeEventListener('resize', this.fixTableColumnWidth);
@@ -589,13 +588,11 @@
         }
       }, // 计算表格的列宽
       refresh() {
-        this.spinShow = true;
+        // this.spinShow = true;
         this.menuPromise = new Promise((resolve, reject) => this.getMenuData(resolve, reject));
         this.treePromise = new Promise((resolve, reject) => this.getTreeData(resolve, reject));
         Promise.all([this.menuPromise, this.treePromise]).then(() => {
-          // this.groupId && this.getTableData();
-            this.groupId && this.selectFirstOnce();
-
+          this.groupId && this.getTableData();
         });
 
       }, // 刷新数据
@@ -798,8 +795,6 @@
           treeObj.setting.callback.onClick('','treeDemo',nodes[0]);//手动触发onClick事件
           // treeObj.checkNode(nodes[0], true, true, true);
           this.pageInit = true;
-        }else{
-          this.spinShow = false;
         }
       },
       treeSearch(e, flag) {
