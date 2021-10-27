@@ -2,7 +2,7 @@
   <div :class="classes" :id="id">
     <div v-for="(item,index) in Object.keys(formItemLists)"
          :key="index">
-      <component :is="CollapseComponent"  
+      <component :is="CollapseComponent" :id="`Collapse_${item}`"  
         :value="collapseValue"
         :isTitleShow="formItemLists[item].parentdesc?true:false"
         :parentdesc="formItemLists[item].parentdesc"
