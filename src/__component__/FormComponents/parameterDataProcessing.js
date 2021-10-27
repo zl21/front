@@ -370,6 +370,7 @@ export default class ParameterDataProcessing {
       if (!this.item.valuedata && !this.item.defval) {
         return this.item.combobox.filter(item => !item.limitdis)[0].limitval
       }
+      return this.item.falseValue;
     }
     
     return this.item.valuedata || this.item.default ;
