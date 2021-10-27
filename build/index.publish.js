@@ -18,17 +18,14 @@ import externalComponents from '../src/__config__/externalComponents'
 import { menuClick } from '../src/__config__/event.config'
 import { connector } from '../src/constants/global'
 import '../src/constants/dateApi'
+import { packageMessage, hookAJAX } from '../src/assets/js/entry.constant'
 
 import { getKeepAliveModuleName } from '../src/__config__/router.navigation.guard'
 import '../src/constants/dateApi'
-import packJson from '../package.json'
+// import packJson from '../package.json'
 import '../src/index.less'
 
-const packageMessage = {
-  version: packJson.version,
-  packageTime: new Date(),
-  user: 'local',
-}
+
 const setXss = () => {
   // 安全攻击
   let htmlEncodeByRegExp = (str) => {
@@ -65,31 +62,6 @@ const install = (Vue, R3 = {}) => {
   Vue.prototype.$network = R3.network
   Vue.prototype.$urlSearchParams = R3.urlSearchParams
   Vue.prototype.$store = R3.store
-}
-//
-
-const hookAJAX = () => {
-  // 接口加密拦截
-  XMLHttpRequest.prototype.nativeOpen = XMLHttpRequest.prototype.open
-  var customizeOpen = function(method, url, async, user, password) {
-    this.nativeOpen(method, url, async, user, password)
-    let number = Math.floor(Math.random() * 10000)
-    let sessionCookie = window.localStorage.getItem('sessionCookie')
-    this.setRequestHeader('SSSSS-A', new Date().getTime())
-    if (sessionCookie === 'undefined') {
-      this.setRequestHeader(
-        'SSSSS-B',
-        md5('qwertburgeon' + new Date().getTime() + number)
-      )
-    } else {
-      this.setRequestHeader(
-        'SSSSS-B',
-        md5('qwertburgeon' + new Date().getTime() + number + sessionCookie)
-      )
-    }
-    this.setRequestHeader('SSSSS-C', number)
-  }
-  XMLHttpRequest.prototype.open = customizeOpen
 }
 
 const setHookAJAX = (callback) => {
