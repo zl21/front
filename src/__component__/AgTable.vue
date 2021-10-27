@@ -154,7 +154,7 @@ export default {
 
     // 是否用了新版ag
     isNewAg() {
-      return $Bcl && $Bcl.version === '1.1.0'
+      return $Bcl && ($Bcl.version > '1.1.0')
     }
   },
   props: {

@@ -163,7 +163,6 @@ export default {
     valueChange (item, val) {
       // 表单change
       let arrjson = this.dealData(item, val);
-
       if (item.fkobj && item.fkobj.searchmodel) {
         if (Version() === '1.3') {
           if (!Array.isArray(arrjson[item.colname])) {
@@ -175,10 +174,19 @@ export default {
         }
 
       }
+      
+     
+      
+        if(arrjson[item.colname] === undefined){          
+          if (this.$parent.delectFormData) {
+              this.$parent.delectFormData(item.colname);
+            }
+        }else{
+           if (this.$parent.updateFormData) {
+              this.$parent.updateFormData(arrjson);
+            }
+        }
 
-      if (this.$parent.updateFormAssignData) {
-        this.$parent.updateFormAssignData(arrjson);
-      }
     },
     setColumn () {
       // 设置列数
