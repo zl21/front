@@ -15,7 +15,7 @@ const {
 
 const config = {
   entry: {
-    index: './index.publish.js'
+    index: './build/index.publish.js'
   },
   output: {
     filename: 'r3.min.js',

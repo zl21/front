@@ -83,7 +83,11 @@
 
 
   const version = Version();
-  const fkHttpRequest = () => require(`../../__config__/actions/version_${version}/formHttpRequest/fkHttpRequest.js`);
+  let fkHttpRequest = undefined
+  import(`../../__config__/actions/version_${version}/formHttpRequest/fkHttpRequest.js`).then(data => {
+    fkHttpRequest = data
+  })
+  // const fkHttpRequest = () => require(`../../__config__/actions/version_${version}/formHttpRequest/fkHttpRequest.js`);
   export default {
     components: { FormItemComponent, commonTable },
     data() {
