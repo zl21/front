@@ -18,6 +18,7 @@ server // 本地运行r3打包后的静态文件
 ## 代码规范
 1.抛出给项目组用的函数,以R3_开头，比如R3_Demo() {}
 2..vue文件文件名采用`大驼峰`的方式，例如TestDoc.vue
+3.入口文件(`index.js`,`app.entry.js`,`index.publish.js`)的公共依赖统一放`entry.common.js`中维护
 
 
 

@@ -1,14 +1,9 @@
-// import Vue from 'vue';
-import VueDND from 'awe-dnd';
-import Viewer from 'v-viewer';
 import md5 from 'md5';
 import { getGuid } from './src/__utils__/random';
 import router from './src/__config__/router.config';
 import store from './src/__config__/store.config';
 import App from './src/App.vue';
 import i18n from './src/assets/js/i18n';
-import './src/__utils__/i18n' // 挂载i18n方法
-import './src/constants/dateApi';
 import network from './src/__utils__/network';
 import {
   backDashboardRoute, enableGateWay, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE, specifiedGlobalGateWay
@@ -16,14 +11,12 @@ import {
 import { removeSessionObject, getSessionObject } from './src/__utils__/sessionStorage';
 import { getLocalObject } from './src/__utils__/localStorage';
 
-import CompositeForm from './src/__component__/CompositeForm.vue';
-import R3Dialog from './src/__globalComponentModule__/dialog';
 import customizedModalConfig from './src/__config__/customizeDialog.config';
 import Loading from './src/__utils__/loading';
 import getObjdisType from './src/__utils__/getObjdisType';
 import projectConfig from './projectConfig/project.config';
 import { addSearch } from './src/__utils__/indexedDB';
-import { createWatermark } from './src/__utils__/waterMark';
+import './src/assets/js/entry.common'
 const packageMessage = {
   version: '1.8.7',
   packageTime: '2021.06.25', 
@@ -31,17 +24,11 @@ const packageMessage = {
 };
 projectConfig.packageMessage = packageMessage;
 window.ProjectConfig = projectConfig;
-import './src/__utils__/getChildComponent';
-// import '@syman/ark-ui/dist/styles/ark-ui.css';
 
 // css import
 // 组件css汇总
 import './src/index.less';
 import './src/assets/theme/custom.less';
-
-// // 自定义
-// import './src/assets/styles/xc.less';
-// import './src/assets/styles/xc1.less';
 
 // import jflowPlugin,  { components } from '@syman/jflow-plugin';
 // import '@syman/jflow-plugin/dist/jflowPlugin.min.css'
@@ -52,21 +39,17 @@ import './src/assets/theme/custom.less';
 // });
 
 
-import panelForm from './src/__component__/FormComponents/PanelForm/panelForm'
 // import jflowPlugin from './jflowPlugin/js/index';
 // import './src/__utils__/encryptingParameter';
 
 
 
-Vue.component('panelForm',panelForm)
 
-import listsForm from './src/__component__/FormComponents/list/listsForm.vue'
 // import jflowPlugin from './jflowPlugin/js/index';
 // import './src/__utils__/encryptingParameter';
 
 
 
-Vue.component('listsForm',listsForm)
 
 // Vue.use(jflowPlugin, {
 //   changePattern: true, // 控制待办列表转派的选择模式 true为单选,false为多选
@@ -74,10 +57,6 @@ Vue.component('listsForm',listsForm)
 //   roleSwitch: false
 // });
 
-Vue.use(VueDND);
-Vue.use(R3Dialog); // 注册全局api调用组件
-Vue.use(Viewer);
-Vue.prototype.$createWatermark = createWatermark;
 
 
 // 注册自定义模态框组件
@@ -88,7 +67,6 @@ const registerCustomizedModal = () => {
 };
 registerCustomizedModal();
 
-Vue.component('CompositeFormpop', CompositeForm);
 Vue.use(Loading);
 
 const createDOM = () => {

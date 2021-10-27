@@ -24,10 +24,6 @@ import '../src/constants/dateApi'
 import packJson from '../package.json'
 import '../src/index.less'
 
-const validateConfig = (config) => ({
-  isQualified: true,
-  message: 'xxx',
-})
 const packageMessage = {
   version: packJson.version,
   packageTime: new Date(),
@@ -183,11 +179,6 @@ export default {
    * }
    */
   launchApplication(projectConfig) {
-    const validateInfo = validateConfig(projectConfig)
-    if (!validateInfo.isQualified) {
-      alert(validateInfo.message)
-      return
-    }
     if (projectConfig.externalModules) {
       const m = projectConfig.externalModules
       // 将外部自定义界面入口模块的标识key置为大写

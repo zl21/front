@@ -55,8 +55,11 @@
   import { Version, classFix } from '../constants/global';
   import ModalConfirm from './Dialog/Confirm.vue';
 
-
-  const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+  let fkHttpRequest = undefined
+  import(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`).then(data => {
+    fkHttpRequest = () => data
+  })
+  // const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
   export default {
     name: 'ModifyDialog',

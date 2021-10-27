@@ -1,15 +1,9 @@
-// import Vue from 'vue';
-// import VueRouter from 'vue-router';
-import VueDND from 'awe-dnd';
-import Viewer from 'v-viewer';
 import { getGuid } from './__utils__/random';
 import router from './__config__/router.config';
 import routerPrototype from './__config__/router.prototype';
 import store from './__config__/store.config';
 import App from './App';
 import i18n from './assets/js/i18n';
-import './__utils__/i18n' // 挂载i18n方法
-import './constants/dateApi';
 import network from './__utils__/network';
 import { DispatchEvent } from './__utils__/dispatchEvent';
 import {
@@ -17,35 +11,21 @@ import {
 } from './constants/global';
 import { removeSessionObject, getSessionObject } from './__utils__/sessionStorage';
 import customizedModalConfig from './__config__/customizeDialog.config';
-import CompositeForm from './__component__/CompositeForm.vue';
 import Loading from './__utils__/loading';
 import { getLocalObject } from './__utils__/localStorage';
 
 import getObjdisType from './__utils__/getObjdisType';
 
 import { addSearch } from './__utils__/indexedDB';
-// css import
-// import '../node_modules/ag-grid/dist/styles/ag-grid.css';
-import '../node_modules/viewerjs/dist/viewer.css';
-// import './assets/css/ag-theme-balham.less';
-import './assets/css/loading.css';
+import './assets/js/entry.common'
+
+
+// import './assets/css/loading.css';
 import './assets/css/custom-ext.less';
-import { createWatermark } from './__utils__/waterMark';
-import R3Dialog from './__globalComponentModule__/dialog';
-import panelForm from './__component__/FormComponents/PanelForm/panelForm.vue'
-import listsForm from './__component__/FormComponents/list/listsForm.vue'
-import './__utils__/getChildComponent'
 
-import draggable from 'vuedraggable';
 
-Vue.prototype.$createWatermark = createWatermark;// 挂在水印
 
-Vue.component('CompositeFormpop', CompositeForm);
-Vue.component('panelForm',panelForm)
-Vue.component('listsForm',listsForm)
-Vue.use(R3Dialog); // 注册全局api调用组件
-Vue.use(Viewer);
-Vue.use(VueDND);
+
 
 // const createRouter = routes => new VueRouter({
 //   routes,
