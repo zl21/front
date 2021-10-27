@@ -5,7 +5,13 @@ import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css'
 import '../r3.publish/r3.min.css'
 import externalTreeDatasConfig from '../demo/treeData/treeData.config.js' //
 
-const { network, urlSearchParams } = R3
+// const R3 = window.R3.default
+Window.R3 = R3;
+
+const {
+  network,
+  urlSearchParams
+} = R3;
 
 // R3.setHookAJAX(function($ajax){
 //   $ajax.setRequestHeader('SSSSS-Aq', new Date().getTime());

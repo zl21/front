@@ -213,7 +213,8 @@ export default {
     refreshKey: 'refresh appSecret',
     refreshPermission: 'refresh permissions',
     selectAccountFirst: 'Please select an account first',
-    quickOperation: 'quick operation'
+    quickOperation: 'quick operation',
+    processingTask: 'The task is being processed, please go to [My Tasks] to download the file later'
   },
   // 具有通用性的文案
   tips: {
