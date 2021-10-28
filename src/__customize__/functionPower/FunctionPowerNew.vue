@@ -500,7 +500,7 @@
         unCommitThMinWidth: '74px', // 反提交的宽度
         upperTableTbodyHighlightIndex: 0, // 上边表格高亮的下标
         bottomTableTbodyHighlightIndex: null, // 下边表格高亮的下标
-
+        pageOne: false,
         menuPromise: null,
         treePromise: null,
       };
@@ -588,7 +588,7 @@
         }
       }, // 计算表格的列宽
       refresh() {
-        // this.spinShow = true;
+        //  this.spinShow = true;
         this.menuPromise = new Promise((resolve, reject) => this.getMenuData(resolve, reject));
         this.treePromise = new Promise((resolve, reject) => this.getTreeData(resolve, reject));
         Promise.all([this.menuPromise, this.treePromise]).then(() => {
@@ -691,7 +691,8 @@
           if (this.checkNoSaveData('menuTree')) {
           } else {
             if (flag) {
-              this.spinShow = true;
+              // this.spinShow = true;
+              
               const treePromise = new Promise((resolve, reject) => {
                 this.getTreeData(resolve, reject);
               });
@@ -887,7 +888,12 @@
           };
         }
         if(!this.checkGroupID()) return false;
-        this.spinShow = true;
+        // this.spinShow = true;
+        if(this.pageOne){
+          this.spinShow = true;
+        }else{
+          this.pageOne = true;
+        }
         functionPowerActions().queryMenuPermission({
           params: obj,
           success: (res) => {
@@ -990,7 +996,7 @@
         if (!this.isSaveError) {
           if (this.checkNoSaveData('tree')) {
           } else {
-            this.spinShow = true;
+            // this.spinShow = true;
             this.adSubsystemId = obj.ad_subsystem_id;
             this.adTableCateId = obj.ad_tablecategory_id;
             this.getTableData();
@@ -1100,7 +1106,10 @@
           targetids: this.multiplePermissionId,
           type: this.copyType
         };
-        this.spinShow = true;
+        // 兼容功能权限刷了两次
+         this.spinShow = true;
+        
+        // 
         functionPowerActions().copyPermission({
           params: obj,
           success: (res) => {
