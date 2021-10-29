@@ -66,7 +66,15 @@
         // printIds = this.itemId;
       }
       this.src = `/api/rpt/preview?tableName=${tableName}&objIds=${printIds}&userId=${userId}`;
-
+      const dom = document.getElementById('printframe');
+       dom.onload = function(){
+         let html  = this.contentWindow.document.body.innerHTML;
+         if(!html){
+            this.$R3loading.hide();
+            this.$emit('closeActionDialog', false); // 关闭弹框
+            window.open(this.src);
+         }
+       }
       // const dom = document.getElementById('printframe');
       // if (dom.attachEvent) {
       //   dom.attachEvent('onload', () => { // IE
