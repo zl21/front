@@ -65,10 +65,10 @@
         printIds = itemId;
         // printIds = this.itemId;
       }
-      this.src = `/api/rpt/preview?tableName=${tableName}&objIds=${printIds}&userId=${userId}`;
+      this.src = `/api/rpt/preview?tableName=${tableName}&objIds=${printIds}&userId=${userId}&number=${Math.floor(Math.random() * 10000)}`;
       const dom = document.getElementById('printframe');
-       dom.onload = function(){
-         let html  = this.contentWindow.document.body.innerHTML;
+       dom.onload = ()=>{
+         let html  = dom.contentWindow.document.body.innerHTML;
          if(!html){
             this.$R3loading.hide();
             this.$emit('closeActionDialog', false); // 关闭弹框
