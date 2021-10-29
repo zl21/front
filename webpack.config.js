@@ -241,6 +241,7 @@ module.exports = env => ({
       // 需要暴露的模块，使用时通过 `${name}/${expose}` 引入
       exposes: {
         './ApiPermission': './src/__customize__/ApiPermissionWings/ApiPermission.vue',
+        'index':'./index.share.js'
       },
       shared: ['vue', 'vuex','vue-router', '@syman/ark-ui', 'axios'],
     })
