@@ -487,15 +487,20 @@ export default {
     },
     filterTabColoname (data) {
       // 过滤tab 的字段小写
-      let tab_value = data.tab_value.reduce((arr, item) => {
-        let key = (Object.keys(item)[0]).toLocaleLowerCase();
-        let option = {
-          [key]: item[Object.keys(item)[0]]
-        }
-        arr.push(option);
-        return arr;
-      }, []);
-      return tab_value;
+        if(!Array.isArray(data.tab_value)){
+            return false;
+          }
+          let tab_value = data.tab_value.reduce((arr,item)=>{
+            Object.keys(item).forEach((key)=>{
+              let key_k = key.toLocaleLowerCase();
+               let option = {
+                [key_k]: item[key]
+              }
+              arr.push(option)
+            });
+            return arr;
+          },[]);
+          return  tab_value;
     },
     async tabClick ({ data, index, stopRequest }) {
       this.filterTableParam = {};
