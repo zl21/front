@@ -95,8 +95,8 @@
 </template>
 
 <script>
+
   import Vue from 'vue';
-  // import { setTimeout } from 'timers';
   import FormItemComponent from './ComFormItemComponent.vue';
   import ComponentPlaceholder from './ComponentPlaceholder.vue';
   import {
@@ -109,9 +109,11 @@
   import ItemComponent from './ItemComponent.vue';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
   import store from '../__config__/store.config';
-
-
-  const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+  let fkHttpRequest = undefined
+  import(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`).then(data => {
+    fkHttpRequest = () => data
+  })
+  // const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
   export default {
     name: 'CompositeForm',

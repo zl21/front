@@ -19,7 +19,7 @@ const indexHtml = path.posix.join('/', 'index.project.html');
 
 module.exports = env => ({
   entry: {
-    index: './index.project.js',
+    index: './build/index.project.js',
   },
   externals: {
     vue: 'Vue',

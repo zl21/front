@@ -9,7 +9,7 @@ const webpack = require('webpack');
 // 打包给模板项目测试用
 module.exports = () => ({
   entry: {
-    index: './index.publish.js'
+    index: './build/index.publish.js'
   },
   output: {
     filename: 'r3.min.js',
