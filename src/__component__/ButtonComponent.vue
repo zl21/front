@@ -488,7 +488,7 @@
         }
         // 兼容pos 打印预览
         setTimeout(() => {
-        if (!dom.contentWindow.document.body.innerHTML) {
+        if (!dom.contentWindow.document.body.innerHTML && this.getChromeVersion()<70) {
           this.$R3loading.hide(this.loadingName);
           let newPrint = window.open(printSrc);
               newPrint.onload = () => {
@@ -508,6 +508,19 @@
               }
         } 
         }, 1000)
+      },
+      getChromeVersion() {
+            var arr = navigator.userAgent.split(' ');
+            var chromeVersion = '';
+            for(var i=0;i < arr.length;i++){
+                if(/chrome/i.test(arr[i]))
+                chromeVersion = arr[i]
+            }
+            if(chromeVersion){
+                return Number(chromeVersion.split('/')[1].split('.')[0]);
+            } else {
+                return false;
+            }
       },
       objTabActionDialog(tab) { // 动作定义弹出框
         this.$refs.dialogRef.open();
