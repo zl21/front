@@ -486,6 +486,28 @@
             this.$R3loading.hide(this.loadingName);
           };
         }
+        // 兼容pos 打印预览
+        setTimeout(() => {
+        if (!dom.contentWindow.document.body.innerHTML) {
+          this.$R3loading.hide(this.loadingName);
+          let newPrint = window.open(printSrc);
+              newPrint.onload = () => {
+                 newPrint.print();
+                  if (newPrint.matchMedia) {   //返回一个新的 MediaQueryList 对象，表示指定的媒体查询字符串解析后的结果。
+                   var script = newPrint.document.createElement("script");
+                    script.type = "text/javascript";
+                    script.appendChild(document.createTextNode(`
+                      let mediaList =  window.matchMedia('print');
+                      mediaList.addListener(function(){
+                        window.close();
+                        console.log('打印测试====window');
+                      }) 
+                    `));
+                    newPrint.document.body.appendChild(script);
+                  }
+              }
+        } 
+        }, 1000)
       },
       objTabActionDialog(tab) { // 动作定义弹出框
         this.$refs.dialogRef.open();
