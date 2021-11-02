@@ -72,7 +72,11 @@
   import { getTableName } from '../__utils__/urlParse'
   import i18n from '../assets/js/i18n'
 
-  const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+  let fkHttpRequest = undefined
+  import(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`).then(data => {
+    fkHttpRequest = () => data
+  })
+  // const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
   // import listsForm from '../__component__/FormComponents/listsForm.vue';
 
   export default {
