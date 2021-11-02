@@ -73,8 +73,12 @@
   import Upload from '../__utils__/upload';
   import i18n from '../assets/js/i18n'
 
-  const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
-
+  // const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+  let fkHttpRequest = undefined
+  import(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`).then(data => {
+    fkHttpRequest = () => data
+  })
+  
   export default {
     name: 'ComAttachFilter',
     props: {
