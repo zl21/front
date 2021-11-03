@@ -28,12 +28,12 @@
     <div class="content">
       <div class="contentLeft">
         <Input
-                v-if="false"
+          v-if="false"
           :placeholder="$t('messages.enterUserName')"
           clearable
           icon="ios-search"
           @on-change="searchInputChange"
-            >
+        >
         <span slot="prepend">{{$t('buttons.find')}}</span>
         </Input>
         <div class="menuContainer">
@@ -597,8 +597,9 @@
 
       }, // 刷新数据
       refreshButtonClick() {
+        console.log('refreshButtonClick')
         this.$refs.ztree.clearInputVal();
-        this.isSaveError = true;
+        this.isSaveError = false;
         if (this.checkNoSaveData('refresh')) {
         } else {
           this.refresh();
@@ -678,8 +679,6 @@
         this.menuTreeQuery = e.target.value;
       }, // 检索输入框值改变
       menuTreeChange(val, item, flag) {
-        // console.log('item-menuTreeChange', item)
-        // console.log('flag-menuTreeChange', flag)
         this.oldMenuTreeObj = JSON.parse(JSON.stringify(this.newMenuTreeObj));
         this.newMenuTreeObj = JSON.parse(JSON.stringify(item));
         // if (val.length === 0) {
@@ -1028,7 +1027,7 @@
           //url: '/SYSTEM/TABLE/FUNCTIONPERMISSION/24627',
           back: true
         });
-       
+
 
       },
       copyPerm() {
@@ -1591,13 +1590,12 @@
           functionPowerActions().savePermission({
             params: obj,
             success: (res) => {
-              console.log(res);
               this.spinShow = false;
               if (res.data.code === 0) {
                 this.isSaveError = false;
                 if (type === 'refresh') {
-                  this.refresh();
-                } else {
+                //   this.refresh();
+                // } else {
                   this.groupId = this.newGroupId;
                   this.adSubsystemId = this.newAdSubsystemId;
                   this.adTableCateId = this.newAdTableCateId;

@@ -110,10 +110,10 @@ class BusDropDownSelectFilter {
         }
         this.item.webconf.refcolval = this.item.refcolval
       }
-      
+
 
       this.PropsData.isShowPopTip = () => {
-        console.log(121212,'===')
+        // console.log(121212,'===')
         if (this.item.refcolval) {
           if (!this.item.webconf) {
             this.item.webconf = {}
@@ -122,7 +122,7 @@ class BusDropDownSelectFilter {
         }
         return setisShowPopTip(this, this.item.webconf, network)
       }
-     
+
 
       if (defaultrange()) {
         this.pageSize = defaultrange();
@@ -160,7 +160,7 @@ class BusDropDownSelectFilter {
       // 回车查询
       new DropMethods(this.item, this.Vm).keydown();
     }
-    
+
 
 
 
