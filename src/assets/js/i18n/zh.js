@@ -213,7 +213,8 @@ export default {
     refreshKey: '刷新appSecret',
     refreshPermission: '刷新接口权限',
     selectAccountFirst: '请先选择账号',
-    quickOperation: '快捷操作'
+    quickOperation: '快捷操作',
+    processingTask: '任务处理中，请稍后去【我的任务】中下载文件'
   },
   // 具有通用性的文案
   tips: {

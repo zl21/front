@@ -303,13 +303,38 @@
       // 跳转前的回掉处理
       async goto() {
         this.showChangeLang && await R3I18n(this.lang,{enableApi: true});
+
+        // 如果开启系统升级，且需要更新
+        const { enableSystemUpdate } = window.ProjectConfig
+        if(enableSystemUpdate && await this.checkUpdate()) {
+          window.ProjectConfig.loginCallback = this.loginSucCbk
+          this.$router.push({ path:'/R3UpdateSystem'})
+          return
+        }
+
         if (!this.loginSucCbk) return window.location.href = window.location.origin;
         if (typeof this.loginSucCbk !== 'function') throw new Error('loginSucCbk must be a function');
         const res = await this.loginSucCbk();
         if (!res) return;
         window.location.href = window.location.origin;
-      }
+      },
 
+      // 检查系统升级
+      async checkUpdate() {
+        return new Promise((resolve) => {
+          network.post(`/p/cs/retail/queryLiquibaseExeStatus?hash=${new Date().getTime()}`).then(result => {
+            const res = result.data
+            if(res.code === 0) {
+              resolve(res.data.needUpdate)
+              // resolve(true)
+            } else {
+              resolve(false)
+            }
+          }).catch(() => {
+            resolve(false);
+          })
+        })
+      },
     }
   };
 </script>

@@ -15,7 +15,7 @@ const {
 
 const config = {
   entry: {
-    index: './index.publish.js'
+    index: './build/index.publish.js'
   },
   output: {
     filename: 'r3.min.js',
@@ -23,6 +23,7 @@ const config = {
     globalObject: 'this',
     library: 'R3',
     libraryTarget: 'umd',
+    libraryExport: 'default',
     umdNamedDefine: true,
     publicPath: './'
   },

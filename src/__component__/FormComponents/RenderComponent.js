@@ -4,6 +4,7 @@
 import Vue from 'vue';
 import FormItem from './FormItem.vue';
 import {formItemMixins} from '../../constants/global.js';
+import mixins from './formItemMixin'
 
 // 处理列表逻辑
 import { SetListProps } from './list/props';
@@ -117,7 +118,7 @@ export default class RenderComponent {
   }
 
   Initialize() {
-    const mixins = require('./formItemMixin').default;
+    // const mixins = require('./formItemMixin').default;
     this.ObjectToMerge(FormItem.methods, mixins.methods);
     Object.assign(FormItem.methods, mixins.methods);
     let formExternalMixins = formItemMixins().default || {};
