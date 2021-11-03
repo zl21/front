@@ -3,8 +3,9 @@
 // import Vue from 'vue';
 import VueDND from 'awe-dnd';
 import Viewer from 'v-viewer';
+import axios from 'axios';
 import { getGuid } from './src/__utils__/random';
-import routerPrototype from './src/__config__/router.prototype';
+ import routerPrototype from './src/__config__/router.prototype';
 import store from './src/__config__/store.config';
 import i18n from './src/assets/js/i18n';
 import './src/__utils__/i18n' // 挂载i18n方法
@@ -232,6 +233,27 @@ const getSubSystems = () => {
 
 
 
+const getGateWayServiceId = () => {
+  if (enableInitializationRequest()) {
+    if (specifiedGlobalGateWay()) {
+      window.localStorage.setItem('serviceId', specifiedGlobalGateWay());
+      getCategory();
+      setTimeout(() => {
+        init();
+      }, 0);
+    } else {
+      network.get('/p/c/get_service_id').then((res) => {
+        if (res.data && res.data.data && res.data.data.serviceId) {
+          window.localStorage.setItem('serviceId', res.data.data.serviceId);
+        }
+        getCategory();
+        setTimeout(() => {
+          init();
+        }, 0);
+      });
+    }
+  }
+};
 
 
 if (enableGateWay()) {
@@ -252,16 +274,15 @@ if (!document.querySelector('#r3_app_content')) {
   div.setAttribute('id', 'r3_app_content');
   document.body.appendChild(div);
 }
-if (!('$router' in Vue.prototype) && window.VueRouter) {
-  Vue.use(VueRouter);
-}
-let router = new VueRouter({
-  mode: 'history',
-  routes: routerPrototype
-});
+// if (!('$router' in Vue.prototype) && window.VueRouter) {
+//   Vue.use(VueRouter);
+// }
+// let router = new VueRouter({
+//   mode: 'history',
+//   routes: routerPrototype
+// });
 let profile = new Vue({
-  router,
-  store,
+  // router,
   components: {
     ContentDisplayArea
   },

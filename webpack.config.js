@@ -131,7 +131,7 @@ module.exports = env => ({
     filename: '[name].js',
     chunkFilename: '[name].js',
     path: path.join(__dirname, './dist'),
-    publicPath: '/',
+    // publicPath: '/',
   },
   module: {
     exprContextCritical: false,
