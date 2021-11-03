@@ -45,7 +45,7 @@
 </template>
 
 <script>
-  import { mapActions } from 'vuex';
+  import { mapActions, mapMutations } from 'vuex';
   import AccountLogin from './AccountLogin';
   import PhoneLogin from './PhoneLogin';
   import {enableGateWay, Version, encryptedPassword, classFix, enableLoginPro, enableChangeLang, enableInitializationRequest, cbs, dateStorageTime} from '../../constants/global';
@@ -96,6 +96,8 @@
     },
     methods: {
       ...mapActions('global', ['getMenuLists']),
+
+      ...mapMutations('global', ['emptyTabsCache']),
 
       login() {
         this.spinShow = true;
@@ -322,7 +324,12 @@
         if (!this.loginSucCbk) {
           // return window.location.href = window.location.origin
           this.$router.push({ path:'/'})
-          this.afterLogin()
+          await this.afterLogin()
+          // fix: 在地址栏复制链接a进入框架界面，如果此时未登录，再重新登录，打开界面b,此时会同时存在a和b两个tab
+          //（bug是由router.navigation.guard.js文件里搜下'saveNetwork'，这个关键字代码所在的循环定时器里的逻辑导致的）
+          setTimeout(() => {
+            this.emptyTabsCache()
+          }, 200)
           return
         };
         if (typeof this.loginSucCbk !== 'function') throw new Error('loginSucCbk must be a function');
@@ -330,7 +337,10 @@
         if (!res) return;
         // window.location.href = window.location.origin;
         this.$router.push({ path:'/'})
-        this.afterLogin()
+        await this.afterLogin()
+        setTimeout(() => {
+          this.emptyTabsCache()
+        }, 200)
       },
 
       // 检查系统升级
@@ -351,8 +361,8 @@
       },
 
       // 登录后处理事件
-      afterLogin() {
-        this.getUserInfo()
+      async afterLogin() {
+        await this.getUserInfo()
 
         const loginTime = window.sessionStorage.getItem('loginTime');
         if (loginTime && ((Date.now() - parseInt(loginTime)) < 3000)) {
@@ -364,12 +374,12 @@
         launchNetworkMonitor();
         emptyRecord(Date.now() - Number(dateStorageTime() ? dateStorageTime() : 1) * 24 * 1000 * 60 * 60);
 
-        this.getMenuLists()
+        await this.getMenuLists()
       },
 
-      getUserInfo() {
+      async getUserInfo() {
         if (enableInitializationRequest()) {
-          network.get('/p/cs/hello').then((res) => {
+          await network.get('/p/cs/hello').then((res) => {
             // 此方法用于向外界（JFlow）提供用户信息。供外部处理自己的需要逻辑。
             
             DispatchEvent('userReady', {
