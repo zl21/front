@@ -187,7 +187,7 @@
   import ComplexsDialog from './ComplexsDialog.vue'; // emit 选中的行
   import Dialog from './Dialog.vue';
   import ImportDialog from './ImportDialog.vue';
-  import router from '../__config__/router.config';
+  // import router from '../__config__/router.config';
   import network, { getGateway, urlSearchParams } from '../__utils__/network';
   import ComAttachFilter from './ComAttachFilter.vue';
   import Docfile from './docfile/DocFileComponent.vue';
@@ -580,7 +580,7 @@
         return this.itemInfo.tablePageInfo;
       },
       pageItemId() {
-        return router.currentRoute.params.itemId;
+        return this.$router.currentRoute.params.itemId;
       },
 
       agOptions() {
@@ -1184,7 +1184,7 @@
       objTabActionSlientConfirm(tab) {
         let obj = {};
         let params = {};
-        const { tableName } = router.currentRoute.params;
+        const { tableName } = this.$router.currentRoute.params;
         if (Version() === '1.3') {
           const label = `${this.activeTab.label.replace(this.$t('buttons.edit'), '')}`;
           const ids = this.tableRowSelectedIds.map(item => item.ID);
@@ -1395,12 +1395,12 @@
               }
               const itemId = this.tableRowSelectedIds.map(item => item.ID).toString();
               const path = `/${tabAction.replace(/:itemId/, itemId)}`;
-              router.push(
+              this.$router.push(
                 path
               );
             } else {
               const path = `/${tabAction}`;
-              router.push(
+              this.$router.push(
                 path
               );
             }
@@ -1526,7 +1526,7 @@
           content: this.$t('messages.confirmDelete'),
           onOk: () => {
             let params = {};
-            const { tableName, tableId, itemId } = router.currentRoute.params;
+            const { tableName, tableId, itemId } = this.$router.currentRoute.params;
             const path = obj.path;
             const itemTable = this.updateData[this.tableName].delete;
             if (obj.path) {
@@ -1604,7 +1604,7 @@
         });
       },
       changePageForSeleteData() {
-        const { itemId } = router.currentRoute.params;
+        const { itemId } = this.$router.currentRoute.params;
         const { refcolid } = this.itemInfo;
 
         const {
@@ -4575,7 +4575,7 @@
         // this.getTabelList();
       },
       objectEXPORT() { // 导出
-        const { itemId } = router.currentRoute.params;
+        const { itemId } = this.$router.currentRoute.params;
         const tableRowSelectedIds = [];
         this.tableRowSelectedIds.map(ele => tableRowSelectedIds.push(ele.ID));
         const searchData = {
@@ -4701,7 +4701,7 @@
         });
       },
       objectIMPORT() { // 导入
-        const { itemId } = router.currentRoute.params;
+        const { itemId } = this.$router.currentRoute.params;
         if (itemId === 'New') {
           this.$Message.warning(this.$t('messages.saveMainTable'));
         } else {

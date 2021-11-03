@@ -3,7 +3,7 @@ import {
   enableHistoryAndFavorite, enableInitializationRequest, getTouristRoute, Version, enableGateWay 
 } from '../../../constants/global'; 
 import { removeSessionObject } from '../../../__utils__/sessionStorage';
-import router from '../../router.config';
+// import window.vm.$router.from '../../router.config';
 import i18n from '../../../assets/js/i18n';
 
 export default {
@@ -26,7 +26,7 @@ export default {
   },
   updateAccessHistory({ commit }, { type, id }) {
     // 过滤表的配置
-    let name = router.currentRoute.params.tableName || router.currentRoute.params.customizedModuleName || router.currentRoute.params.pluginModuleName || router.currentRoute.params.linkModuleName;
+    let name = window.vm.$router.currentRoute.params.tableName || window.vm.$router.currentRoute.params.customizedModuleName || window.vm.$router.currentRoute.params.pluginModuleName || window.vm.$router.currentRoute.params.linkModuleName;
     if(window.ProjectConfig.filterHistory && window.ProjectConfig.filterHistory.includes(name)){
       return;
     }
@@ -287,7 +287,7 @@ export default {
         window.localStorage.setItem('loginStatus', false);
 
         commit('emptyTabs');
-        router.push({ path: getTouristRoute() });
+        window.vm.$router.push({ path: getTouristRoute() });
         removeSessionObject('saveNetwork');
         GetTableName('');
         commit('updataUserInfoMessage', {});
@@ -308,7 +308,7 @@ export default {
 
         commit('emptyTabs');
         commit('updataUserInfoMessage', {});
-        router.push({ path: getTouristRoute() });
+        window.vm.$router.push({ path: getTouristRoute() });
         removeSessionObject('saveNetwork');
         GetTableName('');
         commit('updataUserInfoMessage', {});

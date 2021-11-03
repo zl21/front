@@ -60,7 +60,7 @@
 <script>
   import { mapState } from 'vuex';
   import network, { urlSearchParams } from '../../__utils__/network';
-  import router from '../../__config__/router.config';
+  // import window.vm.$router.from '../../__config__/router.config';
   import { classFix } from '../../constants/global';
 
   export default {
@@ -128,7 +128,7 @@
     created() {
     },
     mounted() {
-      const { tableId, itemId } = router.currentRoute.params;
+      const { tableId, itemId } = this.$router.currentRoute.params;
       const userId = this.userInfo.id;
       network.post('/api/rpt/print/query', urlSearchParams({ tableId, userId }))
         .then((res) => {

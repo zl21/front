@@ -1,4 +1,4 @@
-import store from '../__config__/store.config';
+// import store from '../__config__/store.config';
 
 const serilizeUrl = (url) => {
   const urlObject = {};
@@ -23,7 +23,7 @@ const getUserenv = (param) => {
   //   label：定义的自定义界面label
   // }
   const userInfoStorage = JSON.parse(window.localStorage.getItem('userInfo'));
-  const userInfoStore = store.state.global.userInfo;
+  const userInfoStore = window.vm.$store.state.global.userInfo;
   if ((userInfoStorage && userInfoStorage.userenv && Object.keys(userInfoStorage.userenv).length > 0) || (userInfoStore && userInfoStore.userenv && Object.keys(userInfoStore.userenv).length > 0)) {
     const userenv = userInfoStorage.userenv || userInfoStore.userenv;
     if (param.url && param.url.includes('?')) { // 如果当前url配置参数,将参数部分截取

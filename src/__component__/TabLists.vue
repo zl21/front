@@ -37,7 +37,7 @@
   import { mapState, mapMutations } from 'vuex';
   import { classFix } from '../constants/global';
 
-  import router from '../__config__/router.config';
+  // importwindow.vm.$router.from '../__config__/router.config';
 
   export default {
     name: 'TabLists',
@@ -128,9 +128,9 @@
       switchTab(index) {
   
         const tag = this.openedMenuLists[index];
-        if (router.currentRoute.fullPath !== tag.routeFullPath) {
+        if (this.$router.currentRoute.fullPath !== tag.routeFullPath) {
           this.updataSwitchTag(true);
-          router.push({ path: tag.routeFullPath });
+         window.vm.$router.push({ path: tag.routeFullPath });
           this.switchTabForActiveTab(tag);
           // this.updataSwitchTag(false);
         }
@@ -142,7 +142,7 @@
       emptyClick() {
         this.clickshow = false;
         if(this.openedMenuLists.length>50){
-          router.push('/');
+         window.vm.$router.push('/');
            window.location.reload();
         }else{
           this.emptyTabs();

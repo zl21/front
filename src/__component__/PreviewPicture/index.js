@@ -1,16 +1,16 @@
 
 import Vue from 'vue';
-import router from '../../__config__/router.config';
-import store from '../../__config__/store.config';
+// import window.vm.$router.from '../../__config__/router.config';
+// import window.vm.$store.from '../../__config__/store.config';
 // 图片预览
 import PreviewPicture from './index.vue';
 import i18n from '../../assets/js/i18n'
 
 export default (array = [], items = {}, index) => {
-  const { tableName } = router.currentRoute.params;
+  const { tableName } = window.vm.$router.currentRoute.params;
 
   // 判断是否已经存在对应的预览图片
-  if (store.state.global.previewPictureInstance.includes(`${tableName}_${items.field}`)) {
+  if ( window.vm.$store.state.global.previewPictureInstance.includes(`${tableName}_${items.field}`)) {
     document.getElementsByClassName(`${tableName}_${items.field}`)[0].getElementsByClassName('ark-modal-header')[0].click();
     return;
   }
@@ -39,9 +39,9 @@ export default (array = [], items = {}, index) => {
         },
         on: {
           'on-cancel': () => {
-            const arr = JSON.parse(JSON.stringify(store.state.global.previewPictureInstance));
+            const arr = JSON.parse(JSON.stringify(window.vm.$store.state.global.previewPictureInstance));
             arr.splice(arr.findIndex(item => item === `${tableName}_${items.field}`), 1);
-            store.commit('global/updatePreviewPicture', arr);
+            window.vm.$store.commit('global/updatePreviewPicture', arr);
           }
         }
       }, [
@@ -64,7 +64,7 @@ export default (array = [], items = {}, index) => {
       ]
     )
   }).$mount('#imgPreview');
-  const arr = JSON.parse(JSON.stringify(store.state.global.previewPictureInstance));
+  const arr = JSON.parse(JSON.stringify(window.vm.$store.state.global.previewPictureInstance));
   arr.push(`${tableName}_${items.field}`);
-  store.commit('global/updatePreviewPicture', arr);
+  window.vm.$store.commit('global/updatePreviewPicture', arr);
 };

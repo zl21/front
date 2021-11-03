@@ -1,28 +1,29 @@
 import { mapState, mapActions, mapMutations } from 'vuex';
-import router from '../router.config';
+// import router from '../window.vm.$router.config';
 import {
   isCommonTable, STANDARD_TABLE_COMPONENT_PREFIX, STANDARD_COMMONTABLE_COMPONENT_PREFIX, MODULE_COMPONENT_NAME, INSTANCE_ROUTE, INSTANCE_ROUTE_QUERY, customizeMixins
 } from '../../constants/global';
-import store from '../store.config';
+// import store from '../window.vm.$store.config';
+import Vue from 'vue';
 
 
 const getComponentName = () => {
-  const { tableName, tableId } = router.currentRoute.params;
-  if (router.currentRoute.meta.routePrefix === '/SYSTEM/COMMONTABLE') {
+  const { tableName, tableId } = window.vm.$router.currentRoute.params;
+  if (window.vm.$router.currentRoute.meta.routePrefix === '/SYSTEM/COMMONTABLE') {
     return `${STANDARD_COMMONTABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
-  } if (router.currentRoute.meta.routePrefix === '/SYSTEM/TABLE') {
+  } if (window.vm.$router.currentRoute.meta.routePrefix === '/SYSTEM/TABLE') {
     return `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
   }
   return null;
 };
 
-// const getFullPath = () => router.currentRoute.fullPath;
+// const getFullPath = () => window.vm.$router.currentRoute.fullPath;
 
 export default () => ({
   provide: {
     [MODULE_COMPONENT_NAME]: getComponentName(),
-    [INSTANCE_ROUTE]: router.currentRoute.fullPath,
-    [INSTANCE_ROUTE_QUERY]: router.currentRoute.params,
+    [INSTANCE_ROUTE]: window.vm.$router.currentRoute.fullPath,
+    [INSTANCE_ROUTE_QUERY]: window.vm.$router.currentRoute.params,
   },
   // mixins: [customizeMixins().standardTableListsCustomize ? customizeMixins().standardTableListsCustomize : false],
   data() {
@@ -31,8 +32,8 @@ export default () => ({
   },
   created() {
     this[MODULE_COMPONENT_NAME] = getComponentName();
-    this[INSTANCE_ROUTE] = router.currentRoute.fullPath;
-    this[INSTANCE_ROUTE_QUERY] = router.currentRoute.params;
+    this[INSTANCE_ROUTE] = window.vm.$router.currentRoute.fullPath;
+    this[INSTANCE_ROUTE_QUERY] = window.vm.$router.currentRoute.params;
   },
   mounted() {
     
@@ -148,7 +149,7 @@ export default () => ({
   beforeDestroy() {
     try {
       if (this.$options.isKeepAliveModel) {
-        store.unregisterModule(this.moduleComponentName);
+        window.vm.$store.unregisterModule(this.moduleComponentName);
       }
     } catch (e) {
       console.log(e);

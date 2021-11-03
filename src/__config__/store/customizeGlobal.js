@@ -1,6 +1,6 @@
 
-import store from '../store.config';
-import router from '../router.config';
+// import window.vm.$store.from '../store.config';
+// import window.vm.$router.from '../router.config';
 import { getKeepAliveModuleName } from '../router.navigation.guard';
 import jordanstore from './jordanStore';
 import i18n from '../../assets/js/i18n';
@@ -287,7 +287,7 @@ export const globalStore = {// 1.3框架全局状态管理
             customizedModuleName: tab.name,
             customizedModuleId: tab.id,
           };
-          store.commit('global/tabOpen', data);
+          window.vm.$store.commit('global/tabOpen', data);
         }
         const type = 'C';  
         const data = {
@@ -297,7 +297,7 @@ export const globalStore = {// 1.3框架全局状态管理
           customizedModuleName: tab.name,
           customizedModuleId: tab.id,
         };
-        store.commit('global/tabOpen', data);
+        window.vm.$store.commit('global/tabOpen', data);
       }
       // 在当前tab打开新界面
     },
@@ -334,7 +334,7 @@ export const globalStore = {// 1.3框架全局状态管理
             customizedModuleName: tab.name,
             customizedModuleId: tab.id,
           };
-          store.commit('global/tabOpen', data);
+          window.vm.$store.commit('global/tabOpen', data);
         }
         const type = 'C';  
         const data = {
@@ -344,7 +344,7 @@ export const globalStore = {// 1.3框架全局状态管理
           customizedModuleName: tab.name,
           customizedModuleId: tab.id,
         };
-        store.commit('global/tabOpen', data);
+        window.vm.$store.commit('global/tabOpen', data);
       }
     },
     /**
@@ -376,7 +376,7 @@ export const globalStore = {// 1.3框架全局状态管理
       // routeFullPath:当前path
       // keepAliveModuleName:模块名
       // tableName:表名
-      this.commit('global/tabCloseAppoint', { routeFullPath: currentRoute, keepAliveModuleName, tableName: router.currentRoute.params.customizedModuleName });
+      this.commit('global/tabCloseAppoint', { routeFullPath: currentRoute, keepAliveModuleName, tableName: window.vm.$router.currentRoute.params.customizedModuleName });
 
       const type = 'C';  
       const nextTabParame = {

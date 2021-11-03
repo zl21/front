@@ -1,7 +1,7 @@
 import network, { urlSearchParams } from '../../../__utils__/network';
 import getComponentName from '../../../__utils__/getModuleName';
 import { DispatchEvent } from '../../../__utils__/dispatchEvent';
-import router from '../../router.config';
+// import router from '../../router.config';
 
 
 export default {

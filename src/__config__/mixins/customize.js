@@ -1,30 +1,30 @@
 import { mapState, mapActions, mapMutations } from 'vuex';
-import router from '../router.config';
+// import router from '../window.vm.$router.config';
 import {
   CUSTOMIZED_MODULE_COMPONENT_PREFIX, MODULE_COMPONENT_NAME, INSTANCE_ROUTE, INSTANCE_ROUTE_QUERY 
 } from '../../constants/global';
-import store from '../store.config';
+// import store from '../window.vm.$store.config';
 
 const getComponentName = () => {
-  const { customizedModuleName, customizedModuleId } = router.currentRoute.params;
+  const { customizedModuleName, customizedModuleId } = window.vm.$router.currentRoute.params;
   return `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName}.${customizedModuleId}`;
 };
 
 export default () => ({
   provide: {
     [MODULE_COMPONENT_NAME]: getComponentName(),
-    [INSTANCE_ROUTE]: router.currentRoute.fullPath,
-    [INSTANCE_ROUTE_QUERY]: router.currentRoute.params,
+    [INSTANCE_ROUTE]: window.vm.$router.currentRoute.fullPath,
+    [INSTANCE_ROUTE_QUERY]: window.vm.$router.currentRoute.params,
   },
   created() {
     if (!this[MODULE_COMPONENT_NAME]) {
       this[MODULE_COMPONENT_NAME] = getComponentName();
     }
     if (!this[INSTANCE_ROUTE]) {
-      this[INSTANCE_ROUTE] = router.currentRoute.fullPath;
+      this[INSTANCE_ROUTE] = window.vm.$router.currentRoute.fullPath;
     }
     if (!this[INSTANCE_ROUTE_QUERY]) {
-      this[INSTANCE_ROUTE_QUERY] = router.currentRoute.params;
+      this[INSTANCE_ROUTE_QUERY] = window.vm.$router.currentRoute.params;
     }
   },
   mounted() {
@@ -50,7 +50,7 @@ export default () => ({
   beforeDestroy() {
     try {
       if (this.$options.isKeepAliveModel) {
-        store.unregisterModule(this.moduleComponentName);
+        window.vm.$store.unregisterModule(this.moduleComponentName);
       }
     } catch (e) {
       console.log(e);

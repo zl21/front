@@ -1,7 +1,7 @@
 import { stringify } from 'querystring';
 // import { cpus } from 'os';
 // import { ComponentResolver } from 'ag-grid/dist/lib/components/framework/componentResolver';
-import router from '../../router.config';
+// import window.vm.$router.from '../../router.config';
 import { enableOpenNewTab } from '../../../constants/global';
 import i18n from '../../../assets/js/i18n';
 
@@ -19,7 +19,7 @@ export default {
     state.isHideTempStorage = value;
   },
   updateObjectForMainTableForm(state, data) { // 更新主表面板数据
-    const { tableName, tableId } = router.currentRoute.params;
+    const { tableName, tableId } = window.vm.$router.currentRoute.params;
     state.mainFormInfo.tablename = tableName;
     state.mainFormInfo.tableid = tableId;
     state.mainFormInfo.formData.isShow = data && data.addcolums && data.addcolums.length > 0;
@@ -101,7 +101,7 @@ export default {
   },
   updateMainButtonsData(state, data) { // 更新主表按钮数据
     if (data && data.tabcmd && data.tabcmd.cmds) {
-      const { itemId } = router.currentRoute.params;
+      const { itemId } = window.vm.$router.currentRoute.params;
       data.tabcmd.cmds.some((b, i) => {
         if (b === 'actionMODIFY') {
           let index = '';
@@ -182,7 +182,7 @@ export default {
   seleteAddData(state, data) { // 删除状态里add的空值
     // key,需要删除的key
     // itemName;子表表名
-    const { tableName } = router.currentRoute.params;
+    const { tableName } = window.vm.$router.currentRoute.params;
     if (data.itemName) {
       delete state.updateData[data.itemName].add[data.itemName][data.key];
     } else if (state.updateData[tableName] && state.updateData[tableName].add && state.updateData[tableName].add[tableName]) {

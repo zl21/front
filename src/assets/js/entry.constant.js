@@ -12,6 +12,13 @@ import { removeSessionObject, getSessionObject } from '../../__utils__/sessionSt
 import getObjdisType from '../../__utils__/getObjdisType';
 import App from '../../App.vue';
 
+window.vm = {
+  
+}
+// 挂载router和store
+window.vm.$router = router;
+window.vm.$store = store;
+
 const packageMessage = {
   version: packJson.version,
   packageTime: new Date(),

@@ -1,17 +1,17 @@
 import axios from 'axios';
 
 import network, { urlSearchParams } from '../__utils__/network';
-import router from '../__config__/router.config';
+// import window.vm.$router.from '../__config__/router.config';
 
 export default async function data() {
   // ....
   let a = [];
   await 
   network.post('api', {
-    businessCode: router.currentRoute.params.itemId,
+    businessCode: window.vm.$router.currentRoute.params.itemId,
     userId: JSON.parse(window.localStorage.getItem('userInfo')).id,
-    businessType: router.currentRoute.params.tableId,
-    isApprover: router.currentRoute.query.isApprover
+    businessType: window.vm.$router.currentRoute.params.tableId,
+    isApprover: window.vm.$router.currentRoute.query.isApprover
   })
     .then((res) => {
       if (res.data.resultCode === 0) {
@@ -199,8 +199,8 @@ export default async function data() {
 //       network.post('/jflow/p/cs/task/buttons', {
 //         businessCode: id,
 //         userId: JSON.parse(window.localStorage.getItem('userInfo')).id,
-//         businessType: pid || router.currentRoute.params.tableId,
-//         isApprover: isApprover || router.currentRoute.query.isApprover
+//         businessType: pid || window.vm.$router.currentRoute.params.tableId,
+//         isApprover: isApprover || window.vm.$router.currentRoute.query.isApprover
 //       })
 //         .then((res) => {
 //           if (res.data.resultCode === 0) {

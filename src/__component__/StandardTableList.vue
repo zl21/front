@@ -180,7 +180,7 @@ import {
 } from '../constants/global';
 import { getGateway } from '../__utils__/network';
 import customize from '../__config__/customize.config';
-import router from '../__config__/router.config';
+// import router from '../__config__/router.config';
 import { getSessionObject, deleteFromSessionObject, updateSessionObject } from '../__utils__/sessionStorage';
 import { getUrl, getLabel } from '../__utils__/url';
 import { DispatchEvent } from '../__utils__/dispatchEvent';
@@ -275,7 +275,7 @@ export default {
       return isCommonTable();
     },
     commonTable () {
-      if (router.currentRoute.meta.routePrefix === '/SYSTEM/COMMONTABLE') {
+      if (this.$router.currentRoute.meta.routePrefix === '/SYSTEM/COMMONTABLE') {
         return true;
       }
       return this.isCommonTable || this.webconf.commonTable;
@@ -328,7 +328,7 @@ export default {
         // if (!this.mountedChecked) {
         //   return false;
         // }
-        const { tableName, customizedModuleName } = router.currentRoute.params;
+        const { tableName, customizedModuleName } = this.$router.currentRoute.params;
 
 
         clearTimeout(this.ztreetimer);
@@ -1905,19 +1905,19 @@ export default {
           if (actionType === 'SYSTEM') {
             if (singleEditType === ':itemId') {
               const path = `/${tableurl.replace(/:itemId/, 'New')}`;
-              router.push(
+              this.$router.push(
                 path
               );
             } else {
               const path = `/${tableurl}`;
-              router.push(
+              this.$router.push(
                 path
               );
             }
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
             const customizedModuleName = tableurl.substring(tableurl.indexOf('/') + 1, tableurl.lastIndexOf('/')).toLocaleUpperCase();
             const path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/New`;
-            router.push({
+            this.$router.push({
               path
             });
             const objs = {
@@ -2457,12 +2457,12 @@ export default {
             }
             const itemId = this.buttons.selectIdArr.filter(item => item);
             const path = `/${tabAction.replace(/:itemId/, itemId)}`;
-            router.push(
+            this.$router.push(
               path
             );
           } else {
             const path = `/${tabAction}`;
-            router.push(
+            this.$router.push(
               path
             );
           }
