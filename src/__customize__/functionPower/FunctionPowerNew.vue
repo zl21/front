@@ -681,6 +681,7 @@
       menuTreeChange(val, item, flag) {
         console.log('this.groupId', this.groupId)
         console.log('menuTreeChange', val, item, flag)
+        const onceFetch = this.groupId === item;
         this.oldMenuTreeObj = JSON.parse(JSON.stringify(this.newMenuTreeObj));
         this.newMenuTreeObj = JSON.parse(JSON.stringify(item));
         // if (val.length === 0) {
@@ -694,10 +695,11 @@
             if (flag) {
               this.spinShow = true;
               const treePromise = new Promise((resolve, reject) => {
-                this.getTreeData(resolve, reject);
+                this.spinShow = false;
+                !onceFetch && this.getTreeData(resolve, reject);
               });
               treePromise.then(() => {
-                if (this.groupId === item) {
+                if (onceFetch) {
                   this.spinShow = false;
                   return;
                 }
@@ -788,7 +790,7 @@
         })
       },
       selectFirstOnce() {
-        // console.log('selectFirstOnce')
+        console.log('selectFirstOnce')
         var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
         // console.log('this.groupId', this.groupId)
         // console.log('this.pageInit', this.pageInit)
