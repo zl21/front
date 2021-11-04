@@ -679,6 +679,8 @@
         this.menuTreeQuery = e.target.value;
       }, // 检索输入框值改变
       menuTreeChange(val, item, flag) {
+        console.log('this.groupId', this.groupId)
+        console.log('menuTreeChange', val, item, flag)
         this.oldMenuTreeObj = JSON.parse(JSON.stringify(this.newMenuTreeObj));
         this.newMenuTreeObj = JSON.parse(JSON.stringify(item));
         // if (val.length === 0) {
@@ -695,6 +697,10 @@
                 this.getTreeData(resolve, reject);
               });
               treePromise.then(() => {
+                if (this.groupId === item) {
+                  this.spinShow = false;
+                  return;
+                }
                 this.getTableData();
               });
             }
