@@ -3992,7 +3992,8 @@
         // 输入框正则
         if (cellData.webconf && cellData.webconf.ispositive) {
           if (cellData.type === 'NUMBER' && cellData.scale && cellData.scale > 0) {
-            return new RegExp(`^[\\+]?\\d+(\\.{0,${cellData.scale}})?$`);
+            // return new RegExp(`^[\\+]?\\d+(\\.{0,${cellData.scale}})?$`);
+            return new RegExp(`^\\d{0,${cellData.length}}(\\\.[0-9]{0,${cellData.scale}})?$`)
           }
           if (cellData.type === 'NUMBER' && !cellData.scale) {
             // return new RegExp('^[\\-\\+]?\\d+(\\.[0-9]{0,2)?$');
