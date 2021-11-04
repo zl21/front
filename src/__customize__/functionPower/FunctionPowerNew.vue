@@ -679,8 +679,6 @@
         this.menuTreeQuery = e.target.value;
       }, // 检索输入框值改变
       menuTreeChange(val, item, flag) {
-        console.log('this.groupId', this.groupId)
-        console.log('menuTreeChange', val, item, flag)
         const onceFetch = this.groupId === item;
         this.oldMenuTreeObj = JSON.parse(JSON.stringify(this.newMenuTreeObj));
         this.newMenuTreeObj = JSON.parse(JSON.stringify(item));
@@ -790,7 +788,6 @@
         })
       },
       selectFirstOnce() {
-        console.log('selectFirstOnce')
         var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
         // console.log('this.groupId', this.groupId)
         // console.log('this.pageInit', this.pageInit)
@@ -1583,6 +1580,7 @@
         this.tabthCheckboxSelected(this.columns[8], 'extend');
       }, // 下边表格功能列checkbox改变时触发
       savePermission(type) {
+        console.log('type', type)
         this.getSaveData();
         if (this.tableSaveData.length === 0) {
           this.$Message.info({
@@ -1607,8 +1605,8 @@
                   this.groupId = this.newGroupId;
                   this.adSubsystemId = this.newAdSubsystemId;
                   this.adTableCateId = this.newAdTableCateId;
-                  this.getTableData();
                 }
+                this.getTableData();
                 this.$Message.success({
                   content: res.data.message
                 });
