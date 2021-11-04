@@ -588,6 +588,7 @@
         }
       }, // 计算表格的列宽
       refresh() {
+        console.log('refresh-Promise')
         this.spinShow = true;
         this.menuPromise = new Promise((resolve, reject) => this.getMenuData(resolve, reject));
         this.treePromise = new Promise((resolve, reject) => this.getTreeData(resolve, reject));
@@ -607,8 +608,6 @@
         }
       }, // 刷新按钮
       checkNoSaveData(type) {
-        // console.log(type)
-        // console.log('checkNoSaveData', this.groupId)
         this.getSaveData();
         if (this.tableSaveData.length > 0) {
           this.$Modal.fcWarning({
@@ -620,6 +619,7 @@
               this.savePermission(type);
             },
             onCancel: () => {
+              console.log('type', type)
               if (type === 'refresh') {
                 this.tableSaveData = [];
                 this.pageInit = false;
@@ -680,6 +680,9 @@
       }, // 检索输入框值改变
       menuTreeChange(val, item, flag) {
         const onceFetch = this.groupId === item;
+        console.log('onceFetch', onceFetch)
+        console.log('this.groupId', this.groupId)
+        console.log('item', item)
         this.oldMenuTreeObj = JSON.parse(JSON.stringify(this.newMenuTreeObj));
         this.newMenuTreeObj = JSON.parse(JSON.stringify(item));
         // if (val.length === 0) {
@@ -796,6 +799,7 @@
         if (this.pageInit && nodes.length > 0 && nodes[0].ID === this.groupId) return false;
         if (nodes.length > 0) {
           treeObj.selectNode(nodes[0]);
+          this.groupId = nodes[0].ID;
           treeObj.setting.callback.onClick('','treeDemo',nodes[0]);//手动触发onClick事件
           // treeObj.checkNode(nodes[0], true, true, true);
           this.pageInit = true;
