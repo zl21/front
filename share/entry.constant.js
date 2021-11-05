@@ -10,8 +10,8 @@ import { DispatchEvent } from '../src/__utils__/dispatchEvent';
 import { getLocalObject } from '../src/__utils__/localStorage';
 import { removeSessionObject, getSessionObject } from '../src/__utils__/sessionStorage';
 import getObjdisType from '../src/__utils__/getObjdisType';
-// import App from '../../App.vue';
-import App from '../src/__component__/ContentDisplayArea.vue';
+import App from '../src/App';
+// import App from '../src/__component__/KeepAliveContainer';
 
 
 window.vm = {
@@ -51,10 +51,11 @@ function hookAJAX() {
   XMLHttpRequest.prototype.open = customizeOpen
 }
 
-const createDOM = () => {
+const createDOM = ($el) => {
   const div = document.createElement('div')
   div.setAttribute('id', getGuid())
-  document.body.appendChild(div)
+  console.log($el,'232323');
+  $el.appendChild(div)
   return div
 }
 
@@ -121,9 +122,10 @@ const getCategory = () => {
   }
 }
 
-const init = () => {
+const init = ($el) => {
+  console.log($el,'====')
   removeSessionObject(HAS_BEEN_DESTROYED_MODULE);
-  const rootDom = createDOM();
+  const rootDom = createDOM($el);
   window.vm = new Vue({
     router,
     store,
@@ -190,13 +192,13 @@ const init = () => {
   DispatchEvent('initReady');
 };
 
-const getGateWayServiceId = () => {
+const getGateWayServiceId = ($el) => {
   if (enableInitializationRequest()) {
     if (specifiedGlobalGateWay()) {
       window.localStorage.setItem('serviceId', specifiedGlobalGateWay());
       getCategory();
       setTimeout(() => {
-        init();
+        init($el);
       }, 0);
     } else {
       network.get('/p/c/get_service_id').then((res) => {
@@ -208,7 +210,7 @@ const getGateWayServiceId = () => {
               serviceId: res.data.data.serviceId
             }
           });
-          init();
+          init($el);
         }, 0);
       });
     }
