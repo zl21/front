@@ -619,9 +619,8 @@
               this.savePermission(type);
             },
             onCancel: () => {
-              console.log('type', type)
+              this.tableSaveData = [];
               if (type === 'refresh') {
-                this.tableSaveData = [];
                 this.pageInit = false;
                 this.refresh();
                 setTimeout(() => this.selectFirstOnce(), 1000);
