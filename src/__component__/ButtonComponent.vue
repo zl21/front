@@ -474,18 +474,68 @@
         iFrame.style.display = 'none';
         document.body.appendChild(iFrame);
         document.getElementById('iFrame').focus();
-        document.getElementById('iFrame').contentWindow.print();
         this.clearSelectIdArray();
         const dom = document.getElementById('iFrame');
         if (dom.attachEvent) {
           dom.attachEvent('onload', () => { // IE
             this.$R3loading.hide(this.loadingName);
+            document.getElementById('iFrame').contentWindow.print();
+
           });
         } else {
           dom.onload = () => { // 非IE
             this.$R3loading.hide(this.loadingName);
+            document.getElementById('iFrame').contentWindow.print();
           };
         }
+        // 兼容pos 打印预览
+        setTimeout(() => {
+        if (!dom.contentWindow.document.body.innerHTML && this.getChromeVersion()<70) {
+          this.$R3loading.hide(this.loadingName);
+          var pwindow2 = window.open();
+          let html = `
+          <body><iframe src="${printSrc}" id="iFrame" style="display:none" 
+            ></iframe></body> 
+          `;
+          pwindow2.document.write(html);  
+                     var script = document.createElement("script");
+                    script.type = "text/javascript";
+                    script.appendChild(document.createTextNode(`
+                      const dom = document.getElementById('iFrame');
+                        dom.onload = function () {
+                          printnumber = 0;
+                          dom.contentWindow.print();
+                          window.onfocus = function () {
+                            if (printnumber = 1) {
+                               setTimeout(()=>{
+                                  window.close()
+                               },500)
+                            }
+                          };
+                        }
+                        let print = dom.contentWindow.print;
+                        let printnumber = 0;
+                        dom.contentWindow.print = function () {
+                          printnumber = 1;
+                          print();
+                        }
+                    `));
+                    pwindow2.document.body.appendChild(script);
+         } 
+        }, 1500)
+      },
+      getChromeVersion() {
+            var arr = navigator.userAgent.split(' ');
+            var chromeVersion = '';
+            for(var i=0;i < arr.length;i++){
+                if(/chrome/i.test(arr[i]))
+                chromeVersion = arr[i]
+            }
+            if(chromeVersion){
+                return Number(chromeVersion.split('/')[1].split('.')[0]);
+            } else {
+                return false;
+            }
       },
       objTabActionDialog(tab) { // 动作定义弹出框
         this.$refs.dialogRef.open();
