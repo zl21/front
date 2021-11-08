@@ -1,6 +1,6 @@
 // const axios = require('axios');
 const https = require("https");
-const package = require('./package.json');
+const package = require('../../package.json');
 
 const queryParams = {
     msgtype: 'link',
