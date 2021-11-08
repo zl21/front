@@ -1,8 +1,5 @@
 <template>
-  <div
-    id="R3tree"
-    class="R3tree"
-  >
+  <div id="R3tree" class="R3tree">
     <Ztree
       ref="zTree"
       :z-nodes="treeData"

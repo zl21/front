@@ -588,7 +588,7 @@
         }
       }, // 计算表格的列宽
       refresh() {
-        console.log('refresh-Promise')
+        // console.log('refresh-Promise')
         this.spinShow = true;
         this.menuPromise = new Promise((resolve, reject) => this.getMenuData(resolve, reject));
         this.treePromise = new Promise((resolve, reject) => this.getTreeData(resolve, reject));
@@ -619,11 +619,12 @@
               this.savePermission(type);
             },
             onCancel: () => {
+              console.log('type', type)
               this.tableSaveData = [];
               if (type === 'refresh') {
                 this.pageInit = false;
                 this.refresh();
-                setTimeout(() => this.selectFirstOnce(), 1000);
+                setTimeout(() => this.selectFirstOnce(), 2000);
               } else {
                 this.groupId = this.newGroupId;
                 this.adSubsystemId = this.newAdSubsystemId;
@@ -679,9 +680,9 @@
       }, // 检索输入框值改变
       menuTreeChange(val, item, flag) {
         const onceFetch = this.groupId === item;
-        console.log('onceFetch', onceFetch)
-        console.log('this.groupId', this.groupId)
-        console.log('item', item)
+        // console.log('onceFetch', onceFetch)
+        // console.log('this.groupId', this.groupId)
+        // console.log('item', item)
         this.oldMenuTreeObj = JSON.parse(JSON.stringify(this.newMenuTreeObj));
         this.newMenuTreeObj = JSON.parse(JSON.stringify(item));
         // if (val.length === 0) {
@@ -1583,7 +1584,7 @@
         this.tabthCheckboxSelected(this.columns[8], 'extend');
       }, // 下边表格功能列checkbox改变时触发
       savePermission(type) {
-        console.log('type', type)
+        // console.log('type', type)
         this.getSaveData();
         if (this.tableSaveData.length === 0) {
           this.$Message.info({
