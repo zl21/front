@@ -1,6 +1,10 @@
 {
     "name": "@syman/burgeon-r3",
+<<<<<<< HEAD
     "version": "3.3.1",
+=======
+    "version": "3.3.1ls",
+>>>>>>> npm_dev_r3
     "description": "A Project for R3 Erp.",
     "main": "r3.publish/r3.min.js",
     "files": [
@@ -14,13 +18,21 @@
         "build:project": "cross-env BUILD_ENV=publish webpack --color --progress --config webpack.publish.js  --env.NODE_ENV=production  && webpack --color --progress --config webpack.project.js --env.production",
         "build:oss": "cross-env BUILD_ENV=oss webpack --color --progress --config webpack.config.js --env.production && npm run server",
         "build:oss_no": "cross-env BUILD_ENV=oss_no webpack --color --progress --config webpack.config.js --env.production  && npm run server",
-        "build:style": "gulp --gulpfile build-style.js",
+        "build:style": "gulp --gulpfile ./src/__utils__/build-style.js",
         "build:test": "cross-env BUILD_ENV=dev webpack --color --progress --config webpack.test.js --env.NODE_ENV=development",
+<<<<<<< HEAD
         "build:publish": "npm i &&  cross-env BUILD_ENV=publish webpack --color --progress --config webpack.publish.js  --env.NODE_ENV=publish",
         "zip": "node doZip.js",
         "deploy": "npm publish && node dingtalk.js",
         "test:bcl": "npm link @syman/ark-ui-bcl && npm run build:test && npm link",
         "server": "node server"
+=======
+        "build:publish": "npm i && cross-env BUILD_ENV=publish webpack --color --progress --config webpack.publish.js  --env.NODE_ENV=publish",
+        "zip": "node ./src/__utils__/doZip.js",
+        "deploy": "npm publish && node ./src/__utils__/dingtalk.js",
+        "server": "node ./build/server",
+        "git": "node ./src/__utils__/release.js"
+>>>>>>> npm_dev_r3
     },
     "repository": {
         "type": "git",
@@ -44,6 +56,8 @@
         "babel-plugin-transform-vue-jsx": "^3.7.0",
         "clean-webpack-plugin": "^1.0.1",
         "copy-webpack-plugin": "^5.1.2",
+        "compressing": "^1.5.1",
+        "cross-env": "^7.0.3",
         "css-loader": "^2.1.0",
         "eslint": "^5.12.1",
         "eslint-config-airbnb-base": "^13.1.0",
@@ -80,8 +94,6 @@
         "@syman/ark-ui": "^1.1.47",
         "awe-dnd": "^0.3.4",
         "axios": "^0.21.1",
-        "compressing": "^1.5.1",
-        "cross-env": "^7.0.3",
         "md5": "^2.3.0",
         "v-viewer": "^1.5.1",
         "vue": "^2.6.12",

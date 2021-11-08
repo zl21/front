@@ -28,12 +28,12 @@
     <div class="content">
       <div class="contentLeft">
         <Input
-                v-if="false"
+          v-if="false"
           :placeholder="$t('messages.enterUserName')"
           clearable
           icon="ios-search"
           @on-change="searchInputChange"
-            >
+        >
         <span slot="prepend">{{$t('buttons.find')}}</span>
         </Input>
         <div class="menuContainer">
@@ -588,6 +588,7 @@
         }
       }, // 计算表格的列宽
       refresh() {
+        // console.log('refresh-Promise')
         this.spinShow = true;
         this.menuPromise = new Promise((resolve, reject) => this.getMenuData(resolve, reject));
         this.treePromise = new Promise((resolve, reject) => this.getTreeData(resolve, reject));
@@ -597,8 +598,9 @@
 
       }, // 刷新数据
       refreshButtonClick() {
+        console.log('refreshButtonClick')
         this.$refs.ztree.clearInputVal();
-        this.isSaveError = true;
+        this.isSaveError = false;
         if (this.checkNoSaveData('refresh')) {
         } else {
           this.refresh();
@@ -606,8 +608,6 @@
         }
       }, // 刷新按钮
       checkNoSaveData(type) {
-        // console.log(type)
-        // console.log('checkNoSaveData', this.groupId)
         this.getSaveData();
         if (this.tableSaveData.length > 0) {
           this.$Modal.fcWarning({
@@ -619,11 +619,12 @@
               this.savePermission(type);
             },
             onCancel: () => {
+              console.log('type', type)
+              this.tableSaveData = [];
               if (type === 'refresh') {
-                this.tableSaveData = [];
                 this.pageInit = false;
                 this.refresh();
-                setTimeout(() => this.selectFirstOnce(), 1000);
+                setTimeout(() => this.selectFirstOnce(), 2000);
               } else {
                 this.groupId = this.newGroupId;
                 this.adSubsystemId = this.newAdSubsystemId;
@@ -678,8 +679,10 @@
         this.menuTreeQuery = e.target.value;
       }, // 检索输入框值改变
       menuTreeChange(val, item, flag) {
-        // console.log('item-menuTreeChange', item)
-        // console.log('flag-menuTreeChange', flag)
+        const onceFetch = this.groupId === item;
+        // console.log('onceFetch', onceFetch)
+        // console.log('this.groupId', this.groupId)
+        // console.log('item', item)
         this.oldMenuTreeObj = JSON.parse(JSON.stringify(this.newMenuTreeObj));
         this.newMenuTreeObj = JSON.parse(JSON.stringify(item));
         // if (val.length === 0) {
@@ -693,9 +696,14 @@
             if (flag) {
               this.spinShow = true;
               const treePromise = new Promise((resolve, reject) => {
-                this.getTreeData(resolve, reject);
+                this.spinShow = false;
+                !onceFetch && this.getTreeData(resolve, reject);
               });
               treePromise.then(() => {
+                if (onceFetch) {
+                  this.spinShow = false;
+                  return;
+                }
                 this.getTableData();
               });
             }
@@ -783,7 +791,6 @@
         })
       },
       selectFirstOnce() {
-        // console.log('selectFirstOnce')
         var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
         // console.log('this.groupId', this.groupId)
         // console.log('this.pageInit', this.pageInit)
@@ -792,6 +799,7 @@
         if (this.pageInit && nodes.length > 0 && nodes[0].ID === this.groupId) return false;
         if (nodes.length > 0) {
           treeObj.selectNode(nodes[0]);
+          this.groupId = nodes[0].ID;
           treeObj.setting.callback.onClick('','treeDemo',nodes[0]);//手动触发onClick事件
           // treeObj.checkNode(nodes[0], true, true, true);
           this.pageInit = true;
@@ -1028,7 +1036,7 @@
           //url: '/SYSTEM/TABLE/FUNCTIONPERMISSION/24627',
           back: true
         });
-       
+
 
       },
       copyPerm() {
@@ -1576,6 +1584,7 @@
         this.tabthCheckboxSelected(this.columns[8], 'extend');
       }, // 下边表格功能列checkbox改变时触发
       savePermission(type) {
+        // console.log('type', type)
         this.getSaveData();
         if (this.tableSaveData.length === 0) {
           this.$Message.info({
@@ -1591,18 +1600,17 @@
           functionPowerActions().savePermission({
             params: obj,
             success: (res) => {
-              console.log(res);
               this.spinShow = false;
               if (res.data.code === 0) {
                 this.isSaveError = false;
                 if (type === 'refresh') {
-                  this.refresh();
-                } else {
+                //   this.refresh();
+                // } else {
                   this.groupId = this.newGroupId;
                   this.adSubsystemId = this.newAdSubsystemId;
                   this.adTableCateId = this.newAdTableCateId;
-                  this.getTableData();
                 }
+                this.getTableData();
                 this.$Message.success({
                   content: res.data.message
                 });

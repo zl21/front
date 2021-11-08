@@ -17,9 +17,9 @@ export default {
       });
     }
   },
-  getMenuLists({ commit }) {
+  async getMenuLists({ commit }) {
     if (enableInitializationRequest()) {
-      network.post('/p/cs/getSubSystems').then((res) => {
+      await network.post('/p/cs/getSubSystems').then((res) => {
         commit('updateMenuLists', res.data.data);
       });
     }
@@ -54,7 +54,7 @@ export default {
         if (index > times) {
           clearInterval(timer);
         } else {
-          network.post('/p/cs/getObject', urlSearchParams({ table: 'CP_C_TASK', objid })).then((res) => {
+          network.post('/p/cs/getObject', urlSearchParams({ table: 'CP_C_TASK', objid })).then(async (res) => {
             const data = res.data;
             // resolve();
             if (data.code === 0) { 
@@ -89,7 +89,8 @@ export default {
                 }
               });
               if (exportTask.exportedState) { // 导出成功执行以下逻辑
-                network.post('/p/cs/ignoreMsg', urlSearchParams({ id })).then((r) => {
+                // 为了不展示通知(即使开启通知功能)。所以这里加await确保消息已读
+                await network.post('/p/cs/ignoreMsg', urlSearchParams({ id })).then((r) => {
                   const datas = r.data;
                   if (datas.code === 0) { 
                     if (exportTask.resultMsg.indexOf('{') >= 0) {

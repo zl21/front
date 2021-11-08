@@ -1,0 +1,285 @@
+.r3-update-progress {
+  .preloader {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    position: relative;
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+  .preloader__status {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  .preloader__status-text {
+    font-size: 32px;
+    font-family: 'Raleway', sans-serif;
+    margin-bottom: 20px;
+  }
+  .preloader__status-loader {
+    margin-top: 20px;
+    width: 100%;
+    height: 3px;
+  }
+  .preloader__status-bar {
+    background: white;
+    height: 100%;
+  }
+  .frontpage {
+    height: 100vh;
+    background: #34495e;
+  }
+  .frontpage__title {
+    color: white;
+  }
+
+  .per {
+    display: inline-block;
+    width: 50px;
+  }
+
+  @-webkit-keyframes gradient {
+    50% {
+      background-position: 100% 0;
+    }
+  }
+
+  @keyframes gradient {
+    50% {
+      background-position: 100% 0;
+    }
+  }
+
+  #loader-wrapper {
+    // background-image: linear-gradient(
+    //   45deg,
+    //   rgb(90, 54, 148) 0%,
+    //   rgb(19, 189, 206) 33%,
+    //   rgb(0, 148, 217) 66%,
+    //   rgb(111, 199, 181) 100%
+    // );
+    background-image: linear-gradient(
+      45deg,
+      #8363b7 0%,
+      #13bdce 33%,
+      #0094d9 66%,
+      #6fc7b5 100%
+    );
+    background-size: 400%;
+    background-position: 0% 100%;
+    -webkit-animation: gradient 7.5s ease-in-out infinite;
+    animation: gradient 7.5s ease-in-out infinite;
+  }
+
+  .r3-loading {
+    top: 76%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -mos-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    text-align: center;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: default;
+    width: 100%;
+    max-width: 990px;
+    overflow: visible;
+    z-index: 99;
+  }
+
+  .r3-loading,
+  .r3-loading div {
+    position: absolute;
+    height: 36px;
+  }
+
+  .r3-loading div {
+    width: 30px;
+    margin: 0 20px;
+    opacity: 0;
+    animation: move 2s linear infinite;
+    -o-animation: move 2s linear infinite;
+    -moz-animation: move 2s linear infinite;
+    -webkit-animation: move 2s linear infinite;
+    transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    color: #fff;
+    font-size: 2em;
+  }
+
+  .r3-loading div:nth-child(8):before {
+    background: #ffffff;
+  }
+
+  .r3-loading div:nth-child(8):before,
+  .r3-loading div:nth-child(9):before {
+    content: '';
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+  }
+
+  .r3-loading div:nth-child(9):before {
+    background: #f2f2f2;
+  }
+
+  .r3-loading div:nth-child(10):before {
+    bottom: -15px;
+    height: 10px;
+    background: #ffffff;
+  }
+
+  .r3-loading div:after,
+  .r3-loading div:nth-child(10):before {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 10px;
+    border-radius: 100%;
+  }
+
+  .r3-loading div:after {
+    bottom: -40px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .r3-loading div:nth-child(2) {
+    animation-delay: 0.2s;
+    -o-animation-delay: 0.2s;
+    -moz-animation-delay: 0.2s;
+    -webkit-animation-delay: 0.2s;
+  }
+
+  .r3-loading div:nth-child(3) {
+    animation-delay: 0.4s;
+    -o-animation-delay: 0.4s;
+    -webkit-animation-delay: 0.4s;
+  }
+
+  .r3-loading div:nth-child(4) {
+    animation-delay: 0.6s;
+    -o-animation-delay: 0.6s;
+    -moz-animation-delay: 0.6s;
+    -webkit-animation-delay: 0.6s;
+  }
+
+  .r3-loading div:nth-child(5) {
+    animation-delay: 0.8s;
+    -o-animation-delay: 0.8s;
+    -moz-animation-delay: 0.8s;
+    -webkit-animation-delay: 0.8s;
+  }
+
+  .r3-loading div:nth-child(6) {
+    animation-delay: 1s;
+    -o-animation-delay: 1s;
+    -moz-animation-delay: 1s;
+    -webkit-animation-delay: 1s;
+  }
+
+  .r3-loading div:nth-child(7) {
+    animation-delay: 1.2s;
+    -o-animation-delay: 1.2s;
+    -moz-animation-delay: 1.2s;
+    -webkit-animation-delay: 1.2s;
+  }
+
+  .r3-loading div:nth-child(8) {
+    animation-delay: 1.4s;
+    -o-animation-delay: 1.4s;
+    -moz-animation-delay: 1.4s;
+    -webkit-animation-delay: 1.4s;
+  }
+
+  .r3-loading div:nth-child(9) {
+    animation-delay: 1.6s;
+    -o-animation-delay: 1.6s;
+    -moz-animation-delay: 1.6s;
+    -webkit-animation-delay: 1.6s;
+  }
+
+  .r3-loading div:nth-child(10) {
+    animation-delay: 1.8s;
+    -o-animation-delay: 1.8s;
+    -moz-animation-delay: 1.8s;
+    -webkit-animation-delay: 1.8s;
+  }
+
+  @keyframes move {
+    0% {
+      right: 0;
+      opacity: 0;
+    }
+
+    35% {
+      right: 41%;
+    }
+
+    35%,
+    65% {
+      -webkit-transform: rotate(0);
+      transform: rotate(0);
+      opacity: 1;
+    }
+
+    65% {
+      right: 59%;
+    }
+
+    to {
+      right: 100%;
+      -webkit-transform: rotate(-180deg);
+      transform: rotate(-180deg);
+    }
+  }
+
+  @-webkit-keyframes move {
+    0%,
+    to {
+      opacity: 0;
+    }
+
+    0% {
+      right: 0;
+    }
+
+    35% {
+      right: 41%;
+    }
+
+    35%,
+    75% {
+      -webkit-transform: rotate(0);
+      transform: rotate(0);
+      opacity: 1;
+    }
+
+    75% {
+      right: 59%;
+    }
+
+    to {
+      right: 100%;
+      -webkit-transform: rotate(-180deg);
+      transform: rotate(-180deg);
+      opacity: 0;
+    }
+  }
+}
