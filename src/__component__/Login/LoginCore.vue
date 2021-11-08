@@ -45,11 +45,15 @@
 </template>
 
 <script>
+  import { mapActions, mapMutations } from 'vuex';
   import AccountLogin from './AccountLogin';
   import PhoneLogin from './PhoneLogin';
-  import {enableGateWay, Version, encryptedPassword, classFix, enableLoginPro, enableChangeLang} from '../../constants/global';
+  import {enableGateWay, Version, encryptedPassword, classFix, enableLoginPro, enableChangeLang, enableInitializationRequest, cbs, dateStorageTime} from '../../constants/global';
   import network, {urlSearchParams} from '../../__utils__/network';
   import ChangeLang from './components/ChangeLang';
+  import { emptyRecord } from '../../__utils__/indexedDB';
+  import DispatchEvent from '../../__utils__/dispatchEvent';
+  import { hideMenu, launchNetworkMonitor } from '../../__config__/event.config';
 
   export default {
     name: 'LoginCore',
@@ -91,6 +95,10 @@
       },
     },
     methods: {
+      ...mapActions('global', ['getMenuLists']),
+
+      ...mapMutations('global', ['emptyTabsCache']),
+
       login() {
         this.spinShow = true;
         const globalServiceId = window.localStorage.getItem('serviceId');
@@ -309,14 +317,30 @@
         if(enableSystemUpdate && await this.checkUpdate()) {
           window.ProjectConfig.loginCallback = this.loginSucCbk
           this.$router.push({ path:'/R3UpdateSystem'})
+          this.afterLogin()
           return
         }
 
-        if (!this.loginSucCbk) return window.location.href = window.location.origin;
+        if (!this.loginSucCbk) {
+          // return window.location.href = window.location.origin
+          this.$router.push({ path:'/'})
+          await this.afterLogin()
+          // fix: 在地址栏复制链接a进入框架界面，如果此时未登录，再重新登录，打开界面b,此时会同时存在a和b两个tab
+          //（bug是由router.navigation.guard.js文件里搜下'saveNetwork'，这个关键字代码所在的循环定时器里的逻辑导致的）
+          setTimeout(() => {
+            this.emptyTabsCache()
+          }, 200)
+          return
+        };
         if (typeof this.loginSucCbk !== 'function') throw new Error('loginSucCbk must be a function');
         const res = await this.loginSucCbk();
         if (!res) return;
-        window.location.href = window.location.origin;
+        // window.location.href = window.location.origin;
+        this.$router.push({ path:'/'})
+        await this.afterLogin()
+        setTimeout(() => {
+          this.emptyTabsCache()
+        }, 200)
       },
 
       // 检查系统升级
@@ -334,6 +358,44 @@
             resolve(false);
           })
         })
+      },
+
+      // 登录后处理事件
+      async afterLogin() {
+        await this.getUserInfo()
+
+        const loginTime = window.sessionStorage.getItem('loginTime');
+        if (loginTime && ((Date.now() - parseInt(loginTime)) < 3000)) {
+          if (cbs() && typeof (cbs().loginCb) === 'function') {
+            cbs().loginCb();
+          }
+        }
+        hideMenu();
+        launchNetworkMonitor();
+        emptyRecord(Date.now() - Number(dateStorageTime() ? dateStorageTime() : 1) * 24 * 1000 * 60 * 60);
+
+        await this.getMenuLists()
+      },
+
+      async getUserInfo() {
+        if (enableInitializationRequest()) {
+          await network.get('/p/cs/hello').then((res) => {
+            // 此方法用于向外界（JFlow）提供用户信息。供外部处理自己的需要逻辑。
+            
+            DispatchEvent('userReady', {
+              detail: {
+                userInfo: JSON.parse(JSON.stringify(res.data))
+              }
+            });
+            if (res.status === 200 && res.data.code === 0) {
+              this.$store.commit('global/updataUserInfoMessage', {
+                userInfo: res.data
+              });
+              window.localStorage.setItem('userInfo', JSON.stringify(res.data));
+              window.localStorage.setItem('sessionCookie',res.data.sessionCookie);
+            }
+          });
+        }
       },
     }
   };

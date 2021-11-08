@@ -27,13 +27,22 @@
     },
     created() {
       this.getUserInfo();
+    },
 
-      // 检查系统升级
-      const { enableSystemUpdate } = window.ProjectConfig
-      if(enableSystemUpdate) {
-        this.checkUpdate()
+    watch: {
+      '$route'(to, from) {
+        // 检查系统升级
+        const { enableSystemUpdate } = window.ProjectConfig
+        if(enableSystemUpdate) {
+          const isFromUpDate = from.path === 'R3UpdateSystem' && to.path === '/' // 从升级界面跳转到主界面
+          const isFromLogin = from.path === 'login' && to.path === '/' // 从升级界面跳转到主界面
+          if(!(isFromUpDate || isFromLogin)) {
+            this.checkUpdate()
+          }
+        }
       }
     },
+
     methods: {
       getUserInfo() {
         if (enableInitializationRequest()) {

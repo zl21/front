@@ -543,6 +543,12 @@ export default {
     // 清空updataTreeId
     removeSessionObject('TreeId');
   },
+
+  emptyTabsCache(state) {
+    state.openedMenuLists = [];
+    state.keepAliveLists = [];
+  },
+  
   againClickOpenedMenuLists(state, {
     label,
     keepAliveModuleName,

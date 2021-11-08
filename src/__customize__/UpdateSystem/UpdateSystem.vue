@@ -139,7 +139,8 @@ export default {
     async goto() {
       const { loginCallback } = window.ProjectConfig;
       if (!loginCallback) {
-        window.location.href = window.location.origin;
+        // window.location.href = window.location.origin;
+        this.$router.push({ path:'/'})
         return
       }
       if (typeof loginCallback !== 'function') {
@@ -148,7 +149,8 @@ export default {
       const res = await loginCallback();
       delete window.ProjectConfig.loginCallback
       if (res) {
-        window.location.href = window.location.origin;
+        // window.location.href = window.location.origin;
+        this.$router.push({ path:'/'})
       };
     }
   }
