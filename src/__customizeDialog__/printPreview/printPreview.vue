@@ -67,14 +67,14 @@
       }
       this.src = `/api/rpt/preview?tableName=${tableName}&objIds=${printIds}&userId=${userId}&number=${Math.floor(Math.random() * 10000)}`;
       const dom = document.getElementById('printframe');
-       dom.onload = ()=>{
+      setTimeout(()=>{
          let html  = dom.contentWindow.document.body.innerHTML;
          if(!html){
             this.$R3loading.hide();
             this.$emit('closeActionDialog', false); // 关闭弹框
             window.open(this.src);
          }
-       }
+       },1200)
       // const dom = document.getElementById('printframe');
       // if (dom.attachEvent) {
       //   dom.attachEvent('onload', () => { // IE
