@@ -349,6 +349,7 @@ export default {
       for (let i = 0; i < data.length; i++) {
         data[i].floatingFilter = data[i].isagfilter
         data[i].filter = data[i].isagfilter
+
         const isAllCloseFilter = floatingFilter()
         // 如果设置了浮动开关以全局开关为准
         if(isAllCloseFilter !== undefined) {
@@ -358,14 +359,15 @@ export default {
       }
     },
 
-    // 旧版浮动过滤
+    // 前端控制浮动过滤
     isOpenFilter(columns) {
       let isOpenfloatingFilter = true;
+      // 接口全是false时关闭过滤
       const isAllCloseFilter = columns.every(item => item.isagfilter === false);
-
       if (isAllCloseFilter) {
         isOpenfloatingFilter = false;
       }
+
       // 全局关闭过滤优先级更高
       if (floatingFilter() === false) {
         isOpenfloatingFilter = false;
@@ -439,9 +441,16 @@ export default {
       datas.colPosition = self.userConfigForAgTable.colPosition; // 移动列
       datas.pinnedPosition = self.userConfigForAgTable.fixedColumn; // 固定列
 
-      // 如果每一列的都关过滤则在表格配置里关闭过滤，避免展示一个空白的过滤条
-      // 全局关闭过滤优先级更高
-      this.isNewAg && this.existFilter(th)
+      // this.isNewAg && this.existFilter(th)
+
+      // const globalFloatingFilter = floatingFilter()
+      // if(this.isNewAg && (globalFloatingFilter !== false)) {
+      //   options.floatingFilter = true
+      // } else if(this.isNewAg && (globalFloatingFilter === false)) {
+      //   options.floatingFilter = false
+      // } else if(!this.isNewAg && globalFloatingFilter === true) {
+      //   options.floatingFilter = true
+      // }
 
       // let isOpenfloatingFilter = true;
       // const isAllCloseFilter = !this.existFilter(th);
@@ -468,6 +477,17 @@ export default {
           rows = this.agProcessRows(rows)
         }
         this.rows = rows
+      }
+
+      // 如果每一列的都关过滤则在表格配置里关闭过滤，避免展示一个空白的过滤条
+      // 全局关闭过滤优先级更高
+      // 新表格只考虑全局开关什么时候关闭
+      let globalFloatingFilter = floatingFilter()
+
+      if(this.isNewAg) {
+        this.existFilter(this.columns)
+      } else {
+        globalFloatingFilter = this.isOpenFilter(this.columns)
       }
 
       const options = {
@@ -538,11 +558,16 @@ export default {
         },
       }
 
-      // 旧版表格用开关控制浮动过滤
-      if(!this.isNewAg) {
-        options.floatingFilter = this.isOpenFilter(th)
-      }
+      // // 旧版表格用开关控制浮动过滤
+      // if(!this.isNewAg) {
+      //   options.floatingFilter = this.isOpenFilter(th)
+      // }
 
+      // floatingFilter只有在旧版表格上才生效
+      if(globalFloatingFilter !== undefined) {
+        options.floatingFilter = globalFloatingFilter
+      }
+      
       this.options = options
     },
 
