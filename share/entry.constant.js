@@ -10,8 +10,8 @@ import { DispatchEvent } from '../src/__utils__/dispatchEvent';
 import { getLocalObject } from '../src/__utils__/localStorage';
 import { removeSessionObject, getSessionObject } from '../src/__utils__/sessionStorage';
 import getObjdisType from '../src/__utils__/getObjdisType';
-import App from '../src/App';
-// import App from '../src/__component__/KeepAliveContainer';
+// import App from '../src/App';
+import App from '../src/__component__/KeepAliveContainer';
 
 
 window.vm = {

@@ -21,8 +21,9 @@ import {
 import applayout from './layout.config.js';
 // css import
 // 组件css汇总
-import '../src/index.less';
-import '../src/assets/theme/custom.less';
+
+// import '../src/index.less';
+// import '../src/assets/theme/custom.less';
 
 let R3_share_Init = ($el) => {
   projectConfig.packageMessage = packageMessage;
