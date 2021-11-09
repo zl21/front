@@ -355,6 +355,11 @@ export default {
         if(isAllCloseFilter !== undefined) {
           data[i].floatingFilter = isAllCloseFilter
           data[i].filter = isAllCloseFilter
+          // id列 不显示浮动
+          if(isAllCloseFilter && data[i].colname === 'ID') {
+            data[i].floatingFilter = false
+            data[i].filter = false
+          }
         }
       }
     },
