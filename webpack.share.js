@@ -8,7 +8,6 @@ const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const { ModuleFederationPlugin } = require('webpack').container;
 const projectConfig = require('./projectConfig/project.config');
 
 const target = projectConfig.target; // 框架研发网关开启环境
@@ -24,6 +23,7 @@ const proxyListForOMS = ['/p/c', '/p/cs', '/api', '/ad-app', '/r3-ps', '/r3-cp',
 
 const indexProHtml = path.posix.join('/', 'index.pro.html');
 const indexHtml = path.posix.join('/', 'index.html');
+const { ModuleFederationPlugin } = require('webpack').container;
 
 module.exports = env => ({
   entry: {
@@ -130,8 +130,8 @@ module.exports = env => ({
   output: {
     filename: '[name].js',
     chunkFilename: '[name].js',
-    path: path.join(__dirname, './dist'),
-    publicPath: '/',
+    path: path.join(__dirname, './entry'),
+    // publicPath: '',
   },
   module: {
     exprContextCritical: false,
@@ -203,7 +203,7 @@ module.exports = env => ({
     new MiniCssExtractPlugin({
       filename: 'r3.css',
     }),
-    new CleanWebpackPlugin([env && env.production ? 'dist' : 'devDist']),
+    new CleanWebpackPlugin([env && env.production ? 'entry' : 'entry']),
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
       chunksSortMode: 'none',
@@ -213,23 +213,13 @@ module.exports = env => ({
       favicon: projectConfig.projectIconPath,
     }),
    
-    new CopyWebpackPlugin([
-      {
-        from: path.resolve(__dirname, './static'),
-        to: 'static',
-        ignore: ['.*'],
-      },
-    ]),
-  
-    // new webpack.DefinePlugin({
-    //   'process.env.BUILD_ENV': JSON.stringify(process.env.BUILD_ENV)
-    // }),
-    // new webpack.ProvidePlugin({
-    //   $: 'jquery',
-    //   jQuery: 'jquery',
-    //   jquery: 'jquery',
-    //   'window.jQuery': 'jquery'
-    // })
+    // new CopyWebpackPlugin([
+    //   {
+    //     from: path.resolve(__dirname, './static'),
+    //     to: 'static',
+    //     ignore: ['.*'],
+    //   },
+    // ]),
       new ModuleFederationPlugin({
       filename: 'remoteEntry.js',
       // 唯一ID，用于标记当前服务
@@ -245,13 +235,8 @@ module.exports = env => ({
       },
       shared: ['vue', 'vuex','vue-router', '@syman/ark-ui', 'axios'],
     })
-    // new ModuleFederationPlugin({
-    //   name: '',
-    //   remotes: {
-    //     arkui_BCL: 'arkui_BCL@http://0.0.0.0:3800/remoteEntry.js',
-    //     shared: ['vue', '@syman/ark-ui', 'axios']
-    //   }
-    // })
+  
+   
   ],
   mode: env && env.production ? 'production' : 'development',
   resolve: {
