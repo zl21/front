@@ -163,7 +163,7 @@ axios.interceptors.response.use(
         // 处理1.4版本的error明细报错
         if (response.data.data && Array.isArray(response.data.data.errors)) {
           errorHTML = response.data.data.errors.reduce((arr, x) => {
-            arr.push(`<p>${x.id ? `${i18n.t('feedback.detail')}${x.id}` : i18n.t('feedback.modifyFail')}:${x.message}</p>`); return arr;
+            arr.push(`<p>${x.id ? `${i18n.t('tips.detail')}${x.id}` : i18n.t('feedback.modifyFail')}:${x.message}</p>`); return arr;
           }, []).join('') || '';
         }
         let Modalflag = true;
