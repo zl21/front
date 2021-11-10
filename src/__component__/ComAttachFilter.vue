@@ -72,6 +72,7 @@
   import { Version } from '../constants/global';
   import Upload from '../__utils__/upload';
   import i18n from '../assets/js/i18n'
+  import network from '../__utils__/network';
 
   // const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
   let fkHttpRequest = undefined
@@ -207,11 +208,27 @@
         // console.log('attachFilterInput');
         this.inputValueChange(value);
       },
+       searchDESCREPTION(ak){
+        // 查询外键
+        network.post('/p/cs/fuzzyQueryDataPermissionTable', {
+            DESCREPTION:ak,
+        }).then((res) => {
+          if(res.data.code === 0){
+            this.propsData.hidecolumns = ['id', 'value'];
+            this.propsData.AutoData = res.data.data;
+          }
+        });
+      },
       inputValueChange(value) {
         // 外键的模糊搜索
         if (!value) {
           return false;
         }
+        // 
+        if(this.propstype.fuzzyUrl){
+            this.searchDESCREPTION(value);
+            return false;
+        };
         fkHttpRequest().fkFuzzyquerybyak({
           searchObject: {
             ak: value,
