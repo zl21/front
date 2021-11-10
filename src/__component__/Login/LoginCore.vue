@@ -1,5 +1,5 @@
 <template>
-  <div :class="classes">
+  <div :class="classes" @keyup.enter="login">
     <div ref="container"
          :class="['container', {'loginPro': type && typeToggle === 1}, {'divErCode': type && typeToggle === 2}]">
       <slot name="logo"></slot>
@@ -78,14 +78,6 @@
         type: RegExp,
         default: () => /^\d{11,11}$/
       },
-    },
-    created() {
-      document.onkeydown = (e) => {
-        const key = e.keyCode;
-        if (key === 13) {
-          this.login();
-        }
-      };
     },
     computed: {
       classes() {
@@ -381,7 +373,7 @@
         if (enableInitializationRequest()) {
           await network.get('/p/cs/hello').then((res) => {
             // 此方法用于向外界（JFlow）提供用户信息。供外部处理自己的需要逻辑。
-            
+
             DispatchEvent('userReady', {
               detail: {
                 userInfo: JSON.parse(JSON.stringify(res.data))
