@@ -555,9 +555,11 @@
                   width: '150px',
                   'margin-right': '5px'
                 },
+                class:'datapermission-div',
                 props: {
                   defaultValue: params.row[params.column.colname],
                   propstype: {
+                    fuzzyUrl:'/p/cs/fuzzyQueryDataPermissionTabl',
                     AutoData: [],
                     ...params.column,
                     fkdisplay: 'pop',
@@ -1407,3 +1409,12 @@
     }
   };
 </script>
+<style lang="less">
+.datapermission-div{
+  .iconbj_tcduo{
+  display: none!important;
+}
+
+}
+
+</style>
