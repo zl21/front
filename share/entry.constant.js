@@ -10,15 +10,22 @@ import { DispatchEvent } from '../src/__utils__/dispatchEvent';
 import { getLocalObject } from '../src/__utils__/localStorage';
 import { removeSessionObject, getSessionObject } from '../src/__utils__/sessionStorage';
 import getObjdisType from '../src/__utils__/getObjdisType';
-// import App from '../src/App';
+//import App from '../src/App';
+// import App from '../src/__component__/Login/LoginCore.vue';
+
 import App from '../src/__component__/KeepAliveContainer';
 
-
-window.vm = {
+if(!window.vm){
+  window.vm = {
   
+  }
 }
+
 // 挂载router和store
-window.vm.$router = router;
+console.log(window.vm.$router,'====window.vm.$router');
+if(!window.vm.$router){
+  window.vm.$router = router;
+}
 window.vm.$store = store;
 
 const packageMessage = {
@@ -123,9 +130,10 @@ const getCategory = () => {
 }
 
 const init = ($el) => {
-  console.log($el,'====')
   removeSessionObject(HAS_BEEN_DESTROYED_MODULE);
   const rootDom = createDOM($el);
+  console.log(rootDom,'====')
+
   window.vm = new Vue({
     router,
     store,

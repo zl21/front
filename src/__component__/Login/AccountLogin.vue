@@ -25,6 +25,7 @@
 </template>
 
 <script>
+  import i18n from '../../assets/js/i18n'
   import network from '../../__utils__/network';
   import ErCode from "./components/ErCode";
   export default {
@@ -44,6 +45,9 @@
       return {
         key: ''
       }
+    },
+    beforeCreate() {
+      this.$t = i18n.t.bind(i18n)
     },
     methods: {
       login() {

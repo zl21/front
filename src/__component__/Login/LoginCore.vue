@@ -45,6 +45,8 @@
 </template>
 
 <script>
+  import i18n from '../../assets/js/i18n'
+
   import AccountLogin from './AccountLogin';
   import PhoneLogin from './PhoneLogin';
   import {enableGateWay, Version, encryptedPassword, classFix, enableLoginPro, enableChangeLang} from '../../constants/global';
@@ -54,6 +56,9 @@
   export default {
     name: 'LoginCore',
     components: {AccountLogin, PhoneLogin, ChangeLang},
+    beforeCreate() {
+      this.$t = i18n.t.bind(i18n)
+    },
     data() {
       return {
         globalServiceId: window.localStorage.getItem('serviceId') || '',
