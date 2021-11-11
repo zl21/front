@@ -1,5 +1,5 @@
 <template>
-  <div :class="classes" @keyup.enter="login">
+  <div :class="classes">
     <div ref="container"
          :class="['container', {'loginPro': type && typeToggle === 1}, {'divErCode': type && typeToggle === 2}]">
       <slot name="logo"></slot>
@@ -79,6 +79,13 @@
         default: () => /^\d{11,11}$/
       },
     },
+    created () {
+      window.addEventListener('keydown', this.enter)
+    },
+    destroyed () {
+      window.removeEventListener('keydown', this.enter)
+    },
+
     computed: {
       classes() {
         return [
@@ -90,6 +97,13 @@
       ...mapActions('global', ['getMenuLists']),
 
       ...mapMutations('global', ['emptyTabsCache']),
+
+      enter(e) {
+        const key = e.keyCode;
+        if (key === 13) {
+          this.login();
+        }
+      },
 
       login() {
         this.spinShow = true;
