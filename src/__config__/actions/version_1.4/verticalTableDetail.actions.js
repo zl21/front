@@ -275,7 +275,7 @@ export default {
     resolve,
     reject
   }) { // 主表保存
-    const {
+    let {
       tabrelation, itemObjId, tableName, temporaryStoragePath, objId, path, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup, jflowPath,dialogType
     } = parame;
     // dialogType 是否是子表弹窗导入
@@ -645,7 +645,6 @@ export default {
         parames.fixedData[itemName] = [...import_dialog]
       }
     }
-   
     network.post(temporaryStoragePath || jflowPath || path || '/p/cs/objectSave', parames).then((res) => {
       if (res.data.code === 0) {
         const data = res.data;

@@ -142,7 +142,9 @@ export default {
 
       let data = JSON.parse(JSON.stringify(this.defaultData))
       if (!data.addcolums) {
-        this.$R3loading.hide(this.loadingName)
+        setTimeout(()=>{
+          this.$R3loading.hide(this.loadingName)
+        },150)
         return []
       }
       data.addcolums = new LinkageRelationships(JSON.parse(JSON.stringify(this.defaultData)).addcolums,this).initializeData()
@@ -228,24 +230,17 @@ export default {
         return item;
       })
             // 处理表单关闭
-        this.loading = setInterval(() => {
-          let index = Object.keys(data.addcolums.reverse()[0].childs).length - 1
-          let lastItem = data.addcolums[0].childs[index];
-
-          console.log(this.loadingName,'===========',lastItem);
-         
-          if(lastItem){
-             let com = this.$_live_getChildComponent(this, `${this.tableName}${lastItem.colname}`);
-              if (com) {
-                this.$R3loading.hide(this.loadingName)
-                clearInterval(this.loading)
-              }
-
-          }else{
+      this.loading = setInterval(() => {
+        let index = Object.keys(data.addcolums.reverse()[0].childs).length - 1
+        let lastItem = data.addcolums[0].childs[index]
+        let com = this.$_live_getChildComponent(this, `${this.tableName}${lastItem.colname}`);
+        if (com) {
+          setTimeout(()=>{
             this.$R3loading.hide(this.loadingName)
-            clearInterval(this.loading)
-          }
-        }, 50)
+          },150)
+          clearInterval(this.loading)
+        }
+      }, 50)
        // 兼容子表
       //this.linkFormSet();
        this.formItemLists = { ...data.addcolums }
