@@ -2,6 +2,7 @@
 node_modules
 .idea
 .history
+entry
 .vscode
 # files
 __test_script__/

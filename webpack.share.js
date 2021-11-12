@@ -7,6 +7,8 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+// const OptimizeCSSAssetsPlugin = require('css-minimizer-webpack-plugin');
+
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const projectConfig = require('./projectConfig/project.config');
 
@@ -27,7 +29,7 @@ const { ModuleFederationPlugin } = require('webpack').container;
 
 module.exports = env => ({
   entry: {
-    index: './index.js',
+    // index: './index.js',
   },
   externals: {
     vue: 'Vue',
@@ -53,7 +55,6 @@ module.exports = env => ({
         { from: /.*/, to: env && env.production ? indexProHtml : indexHtml },
       ],
     },
-    publicPath: '/',
     proxy: [
       {
         context: proxyListsForIShop,
@@ -131,7 +132,6 @@ module.exports = env => ({
     filename: '[name].js',
     chunkFilename: '[name].js',
     path: path.join(__dirname, './entry'),
-    // publicPath: '',
   },
   module: {
     exprContextCritical: false,

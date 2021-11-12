@@ -26,9 +26,12 @@ import applayout from './layout.config.js';
 // import '../src/assets/theme/custom.less';
 
 let R3_share_Init = ($el) => {
-  console.log($el,'=====');
   projectConfig.packageMessage = packageMessage;
-  window.ProjectConfig = projectConfig;
+  if(window.ProjectConfig){
+    window.ProjectConfig = Object.assign(projectConfig,window.ProjectConfig);
+  }else{
+    window.ProjectConfig = projectConfig;
+  }
   if (!projectConfig.appLayout) {
     projectConfig.appLayout = applayout
   }
