@@ -854,7 +854,7 @@
           // serviceId: 'mboscloud-app'
           serviceId: this.screenServiceId
         }).then((res) => {
-          this.pageTotal = res.data.data.data.total;
+          this.pageTotal = Number(res.data.data.data.total||0);
           if (res.data.data.refakname && Object.keys(res.data.data.refakname).length > 0) {
             this.dataPermissionTableData = res.data.data.data.list.reduce((acc, cur) => {
               const obj = {};
