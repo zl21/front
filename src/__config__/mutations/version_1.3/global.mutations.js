@@ -209,16 +209,18 @@ export default {
   },
   doCollapseHistoryAndFavorite(state, { showFavorites }) {
     state.showFavoritesList = showFavorites;
-    if (showFavorites) {
-      state.collapseHistoryAndFavorite = showFavorites;
-    }
+    state.collapseHistoryAndFavorite = !showFavorites;
+    
+    // if (showFavorites) {
+    //   state.collapseHistoryAndFavorite = showFavorites;
+    // }
     // 增加兼容IE逻辑
     // if ('ActiveXObject' in window && state.collapseHistoryAndFavorite) {
     //   document.getElementById('ContentDisplayArea').style.marginLeft = '60px';
     // } else if ('ActiveXObject' in window && !state.collapseHistoryAndFavorite) {
     //   document.getElementById('ContentDisplayArea').style.marginLeft = '190px';
     // }
-    state.collapseHistoryAndFavorite = !state.collapseHistoryAndFavorite;
+    // state.collapseHistoryAndFavorite = !state.collapseHistoryAndFavorite;
     DispatchEvent('doCollapseHistoryAndFavorite');
   },
   updateHistoryAndFavorite(state, {
