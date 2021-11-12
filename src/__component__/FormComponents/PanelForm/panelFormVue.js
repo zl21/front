@@ -230,17 +230,17 @@ export default {
         return item;
       })
             // 处理表单关闭
-      this.loading = setInterval(() => {
-        let index = Object.keys(data.addcolums.reverse()[0].childs).length - 1
-        let lastItem = data.addcolums[0].childs[index]
-        let com = this.$_live_getChildComponent(this, `${this.tableName}${lastItem.colname}`);
-        if (com) {
-          setTimeout(()=>{
-            this.$R3loading.hide(this.loadingName)
-          },150)
-          clearInterval(this.loading)
-        }
-      }, 50)
+      // this.loading = setInterval(() => {
+      //   let index = Object.keys(data.addcolums.reverse()[0].childs).length - 1
+      //   let lastItem = data.addcolums[0].childs[index]
+      //   let com = this.$_live_getChildComponent(this, `${this.tableName}${lastItem.colname}`);
+      //   if (com) {
+      //     setTimeout(()=>{
+      //       this.$R3loading.hide(this.loadingName)
+      //     },150)
+      //     clearInterval(this.loading)
+      //   }
+      // }, 50)
        // 兼容子表
       //this.linkFormSet();
        this.formItemLists = { ...data.addcolums }
@@ -421,6 +421,9 @@ export default {
             this.panelRedraw(data.childs);
           })
         }
+          setTimeout(()=>{
+            this.$R3loading.hide(this.loadingName)
+          },150)
 
       }, 300)
 
