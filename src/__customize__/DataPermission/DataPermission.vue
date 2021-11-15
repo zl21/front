@@ -340,6 +340,7 @@
     },
     watch: {
       dataPermissionModal(val) {
+        this.currentPage = 1;
         if (!val) {
           this.searchCondition = {};
         }
