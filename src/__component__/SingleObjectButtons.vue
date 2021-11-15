@@ -1758,22 +1758,12 @@
                 ID: this.itemId
               };
             }
-<<<<<<< HEAD
-            //  sp 存储过程
-=======
              //  sp 存储过程
->>>>>>> ll_r3_dev
             if(tab.actiontype === 'sp' || (tab.action && tab.action.includes('sp|'))){
                 obj.ids = this.getIds(tab);
                 delete obj.ID
             }
 
-<<<<<<< HEAD
-
-
-
-=======
->>>>>>> ll_r3_dev
           } else if (this.subtables()) { // 有子表   左右结构
             if (this.itemName === this.tableName) { // 主表静默逻辑  走保存的逻辑
               obj[this.tableName] = {
