@@ -906,7 +906,7 @@
       }, // 数据权限弹窗表格序号render
       getScreenResultCheckData() {
         const inIdList = this.selectedDataList.reduce((acc, cur) => {
-          if (cur.value && typeof cur.value === 'number') {
+          if (cur.value && typeof cur.value === 'number' || 'string') {
             acc.push(cur.value);
           }
           return acc;
@@ -1334,7 +1334,7 @@
                 resultObj.ID = idListArr;
               }
             }
-            if (typeof item.value === 'number') {
+            if (typeof item.value === 'number' || 'string') {
               inArr.push(item.value);
 
               resultObj.id_list = [item.value];
