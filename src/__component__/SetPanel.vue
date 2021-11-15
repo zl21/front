@@ -94,6 +94,10 @@
       num7() {
         this.changeNum();
       },
+
+      collapseHistoryAndFavorite(val) {
+        this.showFavorites = !val
+      }
     },
     data() {
       return {
@@ -119,7 +123,7 @@
       const showFavorites = JSON.parse(window.localStorage.getItem('showFavorites'));
       if (showFavorites !== null) {
         this.showFavorites = showFavorites;
-        this.operationFavorites(showFavorites);
+        // this.operationFavorites(showFavorites);
       }
       this.setDefaultSearchFoldnum();
     },
