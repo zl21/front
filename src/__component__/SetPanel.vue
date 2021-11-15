@@ -94,6 +94,10 @@
       num7() {
         this.changeNum();
       },
+
+      collapseHistoryAndFavorite(val) {
+        this.showFavorites = !val
+      }
     },
     data() {
       return {
