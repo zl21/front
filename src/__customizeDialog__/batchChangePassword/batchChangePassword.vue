@@ -184,7 +184,8 @@
           if (res.data.code === 0) {
             const message = {
               title: this.$t('feedback.success'),
-              content: res.data.message
+              content: res.data.message,
+              mask: true,
             };
             this.$Modal.fcSuccess(message);
             this.newpaswd = '';
