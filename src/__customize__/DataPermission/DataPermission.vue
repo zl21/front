@@ -61,12 +61,13 @@
           </Button>
         </div>
         <div class="rightTable">
+          <!--  @on-select="tableSelect" -->
           <Table
             class="table"
             :height="true"
             :data="tableData"
             :columns="columns"
-            @on-select="tableSelect"
+            @on-selection-change="currentChange"
             @on-select-all="tableSelectAll"
             @on-select-all-cancel="tableSelectCancelAll"
           ></Table>
@@ -1076,6 +1077,14 @@
           return acc;
         }, []);
       }, // 多选模式下，表格选中某一项触发
+      currentChange(arr){
+         this.tableDeleteData = arr.reduce((acc, cur) => {
+          // if (cur.ID !== -1) {
+          acc.push(parseInt(cur.ID));
+          // }
+          return acc;
+        }, []);
+      },
       tableSelectAll(arr) {
         this.tableDeleteData = arr.reduce((acc, cur) => {
           // if (cur.ID !== -1) {
