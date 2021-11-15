@@ -12,11 +12,15 @@ import { removeSessionObject, getSessionObject } from '../../__utils__/sessionSt
 import getObjdisType from '../../__utils__/getObjdisType';
 import App from '../../App.vue';
 
-window.vm = {
+if(!window.vm){
+  window.vm = {
   
+  }
 }
 // 挂载router和store
-window.vm.$router = router;
+if(!window.vm.$router){
+  window.vm.$router = router;
+}
 window.vm.$store = store;
 
 const packageMessage = {
@@ -52,7 +56,11 @@ function hookAJAX() {
 const createDOM = () => {
   const div = document.createElement('div')
   div.setAttribute('id', getGuid())
-  document.body.appendChild(div)
+  if(window.ProjectConfig && window.ProjectConfig.$el){
+    window.ProjectConfig.$el.appendChild(div)
+  }else{
+    document.body.appendChild(div)
+  }
   return div
 }
 
@@ -119,7 +127,7 @@ const getCategory = () => {
   }
 }
 
-const init = () => {
+const init = ($el) => {
   removeSessionObject(HAS_BEEN_DESTROYED_MODULE);
   const rootDom = createDOM();
   window.vm = new Vue({
@@ -188,13 +196,13 @@ const init = () => {
   DispatchEvent('initReady');
 };
 
-const getGateWayServiceId = () => {
+const getGateWayServiceId = ($el) => {
   if (enableInitializationRequest()) {
     if (specifiedGlobalGateWay()) {
       window.localStorage.setItem('serviceId', specifiedGlobalGateWay());
       getCategory();
       setTimeout(() => {
-        init();
+        init($el);
       }, 0);
     } else {
       network.get('/p/c/get_service_id').then((res) => {
@@ -206,7 +214,7 @@ const getGateWayServiceId = () => {
               serviceId: res.data.data.serviceId
             }
           });
-          init();
+          init($el);
         }, 0);
       });
     }
