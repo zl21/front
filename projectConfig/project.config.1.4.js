@@ -2,7 +2,7 @@ module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
   projectIconPath: '', // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
-  target: 'http://r3-8098.dev.syman.cn/', // 框架研发网关开启环境
+   target: 'http://r3-8098.dev.syman.cn/', // 框架研发网关开启环境
   //target: 'http://r3-java.dev.burgeononline.com/', // 框架后端测试分支
   // target: 'http://retail-service-center.dev.burgeononline.com/',
   // target: 'http://r3-java.dev.burgeononline.com', // java环境

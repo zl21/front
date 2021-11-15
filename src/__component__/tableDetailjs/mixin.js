@@ -49,8 +49,10 @@ export default {
           if(hiddenSubtable[option.tablename]){
               checked_value = hiddenSubtable[option.tablename].some((item)=>{
                 let values = item.value.split(',');
-                //return formData[item.colName] !== item.value;
-                return !values.includes(formData[item.colName]);
+                let value_check = values.some((x)=>{ 
+                  return x==formData[item.colName]
+                })
+                return value_check;
               });
           }
           if(checked_value){

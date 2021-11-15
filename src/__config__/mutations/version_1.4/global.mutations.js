@@ -491,6 +491,12 @@ export default {
     label, keepAliveModuleName, tableName, routeFullPath, routePrefix, itemId, sameNewPage
   }) {
     const notExist = state.openedMenuLists.filter(d => d.label === label && d.keepAliveModuleName === keepAliveModuleName).length === 0;
+    if(/undefined/.test(label) && keepAliveModuleName && keepAliveModuleName.split('.').length>2){
+      // label 不存在的时候赋值
+      let keepAliveLabelMapsAll = JSON.parse(window.localStorage.getItem('keepAliveLabelMapsAll')|| '{}');
+      let keepAliveModuleLabel  = keepAliveModuleName.replace(/V.|H./,'S.').split('.').splice(0,3).join('.');
+      label = label.replace(/undefined/,keepAliveLabelMapsAll[keepAliveModuleLabel]);
+    }
     const currentTabInfo = {
       label,
       keepAliveModuleName,
@@ -501,7 +507,7 @@ export default {
       sameNewPage
     };
     // console.log('increaseOpenedMenuLists');
-
+     
     if (notExist) {
       if (state.openedMenuLists.length > openTabNumber() && enableOpenNewTab()) { // 新开tab限制为6个，超过6个后，替换最后一个
         state.activeTab = currentTabInfo;
