@@ -119,7 +119,7 @@
       const showFavorites = JSON.parse(window.localStorage.getItem('showFavorites'));
       if (showFavorites !== null) {
         this.showFavorites = showFavorites;
-        this.operationFavorites(showFavorites);
+        // this.operationFavorites(showFavorites);
       }
       this.setDefaultSearchFoldnum();
     },
