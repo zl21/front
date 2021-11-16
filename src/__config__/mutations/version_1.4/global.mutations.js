@@ -491,6 +491,12 @@ export default {
     label, keepAliveModuleName, tableName, routeFullPath, routePrefix, itemId, sameNewPage
   }) {
     const notExist = state.openedMenuLists.filter(d => d.label === label && d.keepAliveModuleName === keepAliveModuleName).length === 0;
+    if(/undefined/.test(label) && keepAliveModuleName && keepAliveModuleName.split('.').length>2){
+      // label 不存在的时候赋值
+      let keepAliveLabelMapsAll = JSON.parse(window.localStorage.getItem('keepAliveLabelMapsAll')|| '{}');
+      let keepAliveModuleLabel  = keepAliveModuleName.replace(/V.|H./,'S.').split('.').splice(0,3).join('.');
+      label = label.replace(/undefined/,keepAliveLabelMapsAll[keepAliveModuleLabel]);
+    }
     const currentTabInfo = {
       label,
       keepAliveModuleName,
@@ -501,7 +507,7 @@ export default {
       sameNewPage
     };
     // console.log('increaseOpenedMenuLists');
-
+     
     if (notExist) {
       if (state.openedMenuLists.length > openTabNumber() && enableOpenNewTab()) { // 新开tab限制为6个，超过6个后，替换最后一个
         state.activeTab = currentTabInfo;
@@ -657,7 +663,7 @@ export default {
       const routeFullPath = state.activeTab.routeFullPath;
       const index = routeFullPath.lastIndexOf('/');
       const routeFullPathRes = routeFullPath.substring(0, index + 1);
-      if (item.includes(routeFullPathRes)) { //
+      if (item.includes(routeFullPathRes) && routeFullPathRes.includes(tab.routeFullPath)) { //
         // 外键跳转与单对象跳转同一个单对象界面时，外键逻辑为不显示返回按钮，自定义跳转为返回到来源自定义界面，点击返回时，应清除对应的外键关系
         deleteFromSessionObject('routeMapRecordForHideBackButton', item);
         // window.sessionStorage.setItem('ignore', true);
