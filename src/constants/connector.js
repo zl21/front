@@ -964,7 +964,7 @@ Object.keys(port).forEach(key => {
       }
       Object.defineProperty(portProxy[key].inputList[i], 'name', {
         get() {
-          return portProxy[key].inputList[i].name()
+          return port[key].inputList[i].name()
         },
       })
     })
@@ -979,7 +979,7 @@ Object.keys(port).forEach(key => {
       }
       Object.defineProperty(portProxy[key].matchData.data[i], 'label', {
         get() {
-          return portProxy[key].matchData.data[i].label()
+          return port[key].matchData.data[i].label()
         },
       })
     })
