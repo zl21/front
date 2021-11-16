@@ -116,7 +116,7 @@
                   v-for="(msg,index) in errorMsg.errorList"
                   :key="index"
                 >
-                  <span v-if="msg.rowIndex">{{$t('messages.recordError',{num:msg.rowIndex})}}}:</span>
+                  <span v-if="msg.rowIndex">{{$t('messages.recordError',{num:msg.rowIndex})}}:</span>
                   <span v-html="msg.message"></span>
                 </p>
               </div>
