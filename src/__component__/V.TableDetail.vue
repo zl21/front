@@ -17,59 +17,14 @@
       :item-name="getItemName"
       :is-main-form="mainFormInfo"
     />
-    <div class="verticalTableDetailContent">
+    <div class="verticalTableDetailContent" ref="detailContent">
       <!-- 上下结构主表 form-->
-
-      <!-- <div>
-        <label>
-          自定义界面:
-        </label>
-        <Select
-          v-model="customizeValue"
-          style="width:200px"
-        >
-          <Option
-            v-for="(item,key) in customizeDataRes"
-            :key="key"
-            :value="key"
-          >
-            {{ item.label }}
-          </Option>
-        </Select>
-      </div>
-      <div style="margin-top:10px;">
-        <label style="float:left">
-          路由:
-        </label>
-        <AutomaticPathGenerationInput />
-      </div> -->
       <panelForm
         :tableName="$route.params.tableName"
         :readonly="mainFormInfo.buttonsData.data.objreadonly"
         :defaultData="Object.keys(defaultDataForCopy).length>0?defaultDataForCopy.data:mainFormInfo.formData.data"
       ></panelForm>
-      <!-- <composite-form
-        v-if="mainFormInfo.formData.isShow"
-        class="compositeAllform"
-        object-type="vertical"
-        :is-main-table="true"
-        :web-conf-single="mainFormInfo.buttonsData.data.webconf"
-        :objreadonly="mainFormInfo.buttonsData.data.objreadonly || mainFormInfo.formData.data.isdefault"
-        :readonly="mainFormInfo.buttonsData.data.objreadonly"
-        :default-set-value="updateData[this.$route.params.tableName]? updateData[this.$route.params.tableName].changeData:{}"
-        :master-name="$route.params.tableName"
-        :master-id="$route.params.itemId"
-        module-form-type="vertical"
-        :default-data="Object.keys(defaultDataForCopy).length>0?defaultDataForCopy.data:mainFormInfo.formData.data"
-        :paths="formPaths"
-        :isreftabs="mainFormInfo.buttonsData.data.isreftabs"
-        :child-table-name="getItemName"
-        :from="from"
-        type="PanelForm"
-        @formChange="formChange"
-        @InitializationForm="InitializationForm"
-        @VerifyMessage="verifyFormPanelMain"
-      /> -->
+
       <div class="verticalTabs">
         <TabPanels
           v-show="tabPanels.length > 0"
@@ -83,10 +38,6 @@
           :tab-panels="tabPanels"
         />
       </div>
-    <!-- <TableDetailCollection
-      :data-source="dataSource"
-      @tableSearch="getRefTableSearchList"
-    /> -->
     </div>
   </div>
 </template>
@@ -208,7 +159,7 @@
       AutomaticPathGenerationInput
     },
     created() {
-      // this.emptyTestData();
+      this._scrollTopCache = 0 // 缓存内容区滚出距离
     },
     mounted() {
       const singleButtonComponentName = `${this[MODULE_COMPONENT_NAME]}.SingleObjectButtons`;
@@ -248,14 +199,24 @@
       setTimeout(() => {
         clearInterval(interval);
       }, 10000);
+
+
+      this._resizeObserver = new ResizeObserver((entries) => {
+        setTimeout(() => {
+          this.$refs.detailContent.scrollTop = this._scrollTopCache
+        },0)
+      })
+      this._resizeObserver.observe(this.$refs.detailContent)
     },
+
+    beforeDestroy() {
+      this._resizeObserver.disconnect()
+    },
+
     methods: {
-      // ...mapMutations('global', ['isRequestUpdata', 'emptyTestData']),
       tabBeforeLeave(){
-        
-      //  return new Promise((resolve, reject) => {
-      //     resolve()
-      //  })
+        // 缓存滚出去的距离，避免第一次切换子表tab时回到顶部
+        this._scrollTopCache =  this.$refs.detailContent.scrollTop
       },
       itemTableCheckFunc() {
         if (this.$refs.tabPanel) {
