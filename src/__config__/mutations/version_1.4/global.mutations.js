@@ -227,6 +227,9 @@ export default {
     //   document.getElementById('ContentDisplayArea').style.marginLeft = '190px';
     // }
     state.collapseHistoryAndFavorite = !state.collapseHistoryAndFavorite;
+
+    const cache = !state.collapseHistoryAndFavorite;
+    window.localStorage.setItem('showFavorites', cache);
     DispatchEvent('doCollapseHistoryAndFavorite');
   },
   updateHistoryAndFavorite(state, {
