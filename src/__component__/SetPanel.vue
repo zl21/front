@@ -170,7 +170,6 @@
           });
       },
       operationFavorites(showFavorites) {
-        window.localStorage.setItem('showFavorites', showFavorites);
         this.doCollapseHistoryAndFavorite({ showFavorites });
       },
       changeNum() {
