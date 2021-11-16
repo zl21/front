@@ -2340,6 +2340,14 @@
             back: true,
           };
           this.tabOpen(param);
+        } else if (!enableOpenNewTab()) {
+          // enableOpenNewTab为false,即单对象不是多开tab的情况，删除单对象后要返回列表
+          const param = {
+            tableId,
+            tableName,
+            back: true,
+          };
+          this.tabOpen(param);
         }
       },
       currentMenuExists(data) { // 判断当前表是否配置在菜单内
