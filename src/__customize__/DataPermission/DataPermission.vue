@@ -1419,12 +1419,4 @@
     }
   };
 </script>
-<style lang="less">
-.datapermission-div{
-  .iconbj_tcduo{
-  display: none!important;
-}
 
-}
-
-</style>

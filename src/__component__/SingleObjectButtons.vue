@@ -3526,10 +3526,11 @@
         if (this.getCurrentItemInfo().tabrelation === '1:1') {
           tabrelation = true;
         }
-        if(this.saveMainType && this.itemId === 'New'){
+        if(this.saveMainType && this.itemId === 'New' && !path){
           //只校验主表的时候不传子表
             isreftabs = false;
         }
+        
         const parame = {
           ...this.currentParameter, // 主表信息
           itemCurrentParameter, // 子表信息
