@@ -31,6 +31,7 @@
                  :popwin-message="popwinMessage"
                  :saveDialog="saveDialog"
                  :obj-tab-action-dialog-config="objTabActionDialogConfig"
+                 :externalOptions="externalOptions"
                  @setTitle="setTitle"
                  @closeActionDialog="closeActionDialog"
                  @clearSelectIdArray="clearSelectIdArray"
@@ -47,9 +48,14 @@
 <script>
 import { target } from '../../projectConfig/project.config';
 import { DispatchEvent } from '../__utils__/dispatchEvent';
+import i18n from '../assets/js/i18n'
 
 export default {
   // name: 'DialogComponent',
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
+  },
+
   props: {
     idArray: {// 获取ID用于多选
       type: [Array, Object],
@@ -154,6 +160,11 @@ export default {
       type: String,
       default: () => ''
     },
+    // 给内容组件的所有参数
+    externalOptions: {
+      type: Object,
+      default: () => {}
+    }
   },
   data () {
     return {
