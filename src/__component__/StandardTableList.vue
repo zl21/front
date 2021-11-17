@@ -500,7 +500,7 @@ export default {
           },[]);
           return  tab_value;
     },
-    async tabClick ({ data, index, stopRequest }) {
+    async tabClick ({ data, index, stopRequest, isBackEventTriggger }) {
       this.filterTableParam = {};
       if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].startIndex) {
         if (this.$route.query.isBack || this.$route.query.ISBACK) {
@@ -509,15 +509,20 @@ export default {
           this.searchData.startIndex = 0;
         }
       } else {
-        // 注释下面代码fix:(#47888)有tab过滤的表格，从详情页返回时页码会重置到第一页
-        // this.searchData.startIndex = 0;
+        // fix:(#47888)有tab过滤的表格，从详情页返回时页码会重置到第一页
+        // 从详情返回列表界面时不需要重置页码，isBackEventTriggger就是用来作为返回事件的标记
+        if(!isBackEventTriggger) {
+          this.searchData.startIndex = 0;
+        }
       }
-      if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].range) {
-        this.searchData.range = data.range;
-      } else {
-        // 注释下面代码fix:(#47885)切换tab会重置显示条数
-        // delete this.searchData.range;
-      }
+
+      // 注释下面代码fix:(#47885)切换tab会重置显示条数
+      // if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].range) {
+      //   this.searchData.range = data.range;
+      // } else {
+      //   delete this.searchData.range;
+      // }
+      
       this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
       this.searchData.fixedcolumns = await this.dataProcessing();
       if (data.tab_value) {
@@ -1735,7 +1740,7 @@ export default {
       if (this.getFilterTable) {
         const el = this.$_live_getChildComponent(this, 'tabBar');
         const tabCurrentIndex = el.$refs.R3_Tabs.focusedKey;
-        el.tabClick(tabCurrentIndex);
+        el.tabClick(tabCurrentIndex, false, value.flag);
         return
       } else {
         this.searchData.fixedcolumns = fixedcolumns;
@@ -1750,15 +1755,15 @@ export default {
       this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
     },
 
-    getResSearchDataForFilterTable (data) {
-      //此方法用于整合当前查询的参数以及当前激活的tab所配置的参数，执行过此方法后，会将整合好的参数更新至this.searchData，需要用到表格过滤参数的逻辑，可直接调用该方法即可，调用过后拿到的this.searchData即为最新参数
-      if (this.getFilterTable) {
-        const el = this.$_live_getChildComponent(this, 'tabBar');
-        const tabCurrentIndex = el.$refs.R3_Tabs.focusedKey;
-        const { stopRequest } = data
-        el.tabClick(tabCurrentIndex, stopRequest);
-      }
-    },
+    // getResSearchDataForFilterTable (data) {
+    //   //此方法用于整合当前查询的参数以及当前激活的tab所配置的参数，执行过此方法后，会将整合好的参数更新至this.searchData，需要用到表格过滤参数的逻辑，可直接调用该方法即可，调用过后拿到的this.searchData即为最新参数
+    //   if (this.getFilterTable) {
+    //     const el = this.$_live_getChildComponent(this, 'tabBar');
+    //     const tabCurrentIndex = el.$refs.R3_Tabs.focusedKey;
+    //     const { stopRequest } = data
+    //     el.tabClick(tabCurrentIndex, stopRequest);
+    //   }
+    // },
     // searchClickData(value) {
     //       this.resetButtonsStatus();
     //       // 按钮查找 查询第一页数据
