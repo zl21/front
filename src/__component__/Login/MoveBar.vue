@@ -1,5 +1,5 @@
 <template>
-    <div class="movebox">
+    <div :class="`movebox ${className}`">
         <div class="movego"></div>
         <div class="txt" id="txt">{{$t('tips.loginVerification')}}</div>
         <div
@@ -18,15 +18,18 @@
       return {
         cancelMove: false, //满足条件时取消这个move事件
         verifyBar:false,
+        className:''
       }
     },
     directives: {
       move(el, binding) {
         // console.log(el)
+
         var self = "";
         if (typeof binding.value == "function") {
           self = binding.value();
         }
+        // self.className = '';
         document.onselectstart = function() {
           return false;
         };
@@ -64,6 +67,7 @@
               el.parentNode.children[0].style.width = width + 1 + "px";
               el.parentNode.children[1].innerHTML = self.$t('tips.loginVerificationsucceed');
               el.className = "move moveSuccess";
+              self.className = 'moveSuccessbar';
               el.onmousedown = null;
               self.verifyBar = true;
               // console.log(self)
