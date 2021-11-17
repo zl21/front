@@ -220,7 +220,7 @@ export default {
       searchData: {
         table: '',
         startIndex: 0,
-        // range: 10,
+        range: window.localStorage.getItem('r3-page-size') ? Number(window.localStorage.getItem('r3-page-size')) : 10,
         orderby: undefined
       },
       formItemsLists: [],

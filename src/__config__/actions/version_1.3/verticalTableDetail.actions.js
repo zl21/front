@@ -195,6 +195,10 @@ export default {
   }) {
     const id = objid === 'New' ? '-1' : objid;
     let mainTableName = this.state.global.activeTab && this.state.global.activeTab.tableName;
+
+    const pageSizeCache = window.localStorage.getItem('r3-page-size') ? Number(window.localStorage.getItem('r3-page-size')) : 10
+    searchdata.range = pageSizeCache || searchdata.range // 优先用本地缓存
+    
     network.post('/p/cs/objectTableItem', urlSearchParams({
       table,
       objid: id, // -1 代表新增
