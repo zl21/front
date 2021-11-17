@@ -30,7 +30,7 @@
           <slot name="loginBtn"></slot>
         </template>
         <!-- <div  id="btn" class="btn"/> -->
-        <Button v-else="!$slots.loginBtn" type="text" id="btn" class="btn">{{$t('buttons.login')}}</Button>
+        <Button v-if="!$slots.loginBtn" type="text" id="btn" class="btn">{{$t('buttons.login')}}</Button>
       </div>
       <Spin v-show="spinShow" fix>
         <div class="loader">
@@ -66,6 +66,7 @@
         typeToggle: 1, // 1用户 2验证码
         flag: 1,
         lang: 'zh',
+        moveClass:window.ProjectConfig &&  window.ProjectConfig.moveBar ? 'loginMove':'',
         showChangeLang: enableChangeLang || false,
       }
 
@@ -90,7 +91,7 @@
     computed: {
       classes() {
         return [
-          `${classFix}loginCore`,
+          `${classFix}loginCore ${this.moveClass}`,
         ];
       },
     },
@@ -105,7 +106,7 @@
         const randomKey = btoa(`${Math.random() * 10000000000}`).substring(0, 5);
         let message = {};
         if (!this.type) {
-          const {username, password} = this.$refs.AccountLogin.$refs;
+          const {username, password,movebar} = this.$refs.AccountLogin.$refs;
           if (username.value === '') {
             message = {
               title: this.$t('feedback.error'),
@@ -123,6 +124,16 @@
             this.spinShow = false;
             this.$Modal.fcError(message);
           } else {
+            if(window.ProjectConfig &&  window.ProjectConfig.moveBar && !movebar.verifyBar){
+                message = {
+                  title: this.$t('feedback.error'),
+                  content: this.$t('tips.loginVerification'),
+                  mask: true,
+                };
+                this.spinShow = false;
+                this.$Modal.fcError(message);
+            }
+            return;
             const param = {
               username: username.value,
               password: encryptedPassword() ? `${randomKey}${btoa(password.value)}` : password.value,
