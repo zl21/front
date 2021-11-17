@@ -19,10 +19,12 @@ export default {
     const {
       table, startIndex, range, fixedcolumns, column_include_uicontroller = true, orderby, merge = false, reffixedcolumns, isolr, resolve, reject, searchBeforeResolve, searchBeforeReject
     } = searchdatas;
+
+    const pageSizeCache = window.localStorage.getItem('r3-page-size') ? Number(window.localStorage.getItem('r3-page-size')) : 10
     let searchdata = {
       table,
       startindex: startIndex || 0,
-      range,
+      range: range ? range : pageSizeCache,
       fixedcolumns,
       reffixedcolumns,
       column_include_uicontroller,

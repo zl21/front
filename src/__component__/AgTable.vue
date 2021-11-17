@@ -6,6 +6,7 @@
       class="agPage"
       size="small"
       v-bind="pageAttribute"
+      :page-size="pageSize"
       @on-change="pageChange"
       @on-page-size-change="pageSizeChange"
     />
@@ -122,6 +123,7 @@ export default {
       columns: [],
       agGridOptions: window.ProjectConfig.agGridOptions || {},
       useAgGrid: window.ProjectConfig.useAgGrid,
+      pageSize: window.localStorage.getItem('r3-page-size') ? Number(window.localStorage.getItem('r3-page-size')) : 10
     };
   },
   components: {
@@ -592,6 +594,7 @@ export default {
       }
     }, // 页码改变
     pageSizeChange(pageSize) {
+      window.localStorage.setItem('r3-page-size',pageSize)
       this.clearChecked();
       const self = this;
       if (typeof self.onPageSizeChange === 'function') {
