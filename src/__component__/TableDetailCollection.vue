@@ -20,7 +20,6 @@
               :total="dataSource.totalRowCount"
               :page-size-opts="dataSource.selectrange"
               :current="currentPage"
-              :page-size="pageSize"
               class="table-page"
               size="small"
               show-elevator
@@ -331,8 +330,7 @@
         routerParams: {},
         agGridOptions: window.ProjectConfig.agGridOptions || {},
         useAgGrid: window.ProjectConfig.useAgGrid,
-        deleteFailInfo: undefined, // ag报错提示
-        pageSize: window.localStorage.getItem('r3-page-size') ? Number(window.localStorage.getItem('r3-page-size')) : 10
+        deleteFailInfo: undefined // ag报错提示
       };
     },
     props: {
@@ -4566,7 +4564,6 @@
         this.getTabelList(index);
       },
       pageSizeChangeEvent(index) {
-        window.localStorage.setItem('r3-page-size',index)
         // 分页 切换每页条数时的回调
         if (index === this.pageInfo.pageSize) {
           return;
