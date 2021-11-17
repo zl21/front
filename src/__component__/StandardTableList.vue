@@ -509,7 +509,8 @@ export default {
           this.searchData.startIndex = 0;
         }
       } else {
-        this.searchData.startIndex = 0;
+        // 注释下面代码fix:(#47888)有tab过滤的表格，从详情页返回时页码会重置到第一页
+        // this.searchData.startIndex = 0;
       }
       if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].range) {
         this.searchData.range = data.range;
