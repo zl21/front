@@ -132,8 +132,8 @@
                 };
                 this.spinShow = false;
                 this.$Modal.fcError(message);
+               return false; 
             }
-            return;
             const param = {
               username: username.value,
               password: encryptedPassword() ? `${randomKey}${btoa(password.value)}` : password.value,
