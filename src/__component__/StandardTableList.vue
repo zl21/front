@@ -220,7 +220,7 @@ export default {
       searchData: {
         table: '',
         startIndex: 0,
-        range: window.localStorage.getItem('r3-page-size') ? Number(window.localStorage.getItem('r3-page-size')) : 10,
+        // range: 10,
         orderby: undefined
       },
       formItemsLists: [],
@@ -514,7 +514,8 @@ export default {
       if (this.ag.tablequery.multi_tab[index] && this.ag.tablequery.multi_tab[index].range) {
         this.searchData.range = data.range;
       } else {
-        delete this.searchData.range;
+        // 注释下面代码fix:(#47885)切换tab会重置显示条数
+        // delete this.searchData.range;
       }
       this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
       this.searchData.fixedcolumns = await this.dataProcessing();
