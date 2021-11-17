@@ -399,7 +399,6 @@ export default {
     r3Format (val, item) {
       // 兼容1.3 数据格式传参
       if (['OBJ_SELECT', 'RADIO_GROUP', 'CHECKBOX_GROUP'].includes(item.display)) {
-        console.log(val[item.colname], '323');
         if (val[item.colname] && Array.isArray(val[item.colname])) {
           val[item.colname] = val[item.colname].reduce((arr, item) => {
             arr.push(`=${item}`);
