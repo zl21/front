@@ -46,13 +46,14 @@ export default {
           // 校验是否有不等的值
           let checked_value = true;
           if(hiddenSubtable[option.tablename]){
-              checked_value = hiddenSubtable[option.tablename].some((item)=>{
+              checked_value = hiddenSubtable[option.tablename].every((item)=>{
                 let values = item.value.split(',');
                 let value_check = values.some((x)=>{ 
                   return x==formData[item.colName]
                 })
                 return value_check;
               });
+
           }
           if(checked_value){
             // 被隐藏的子表名称
