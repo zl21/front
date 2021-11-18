@@ -54,6 +54,8 @@ export default {
                 return value_check;
               });
 
+          }else{
+            checked_value = false;
           }
           if(checked_value){
             // 被隐藏的子表名称
@@ -61,6 +63,7 @@ export default {
           }
           // 展示的组 true 代表组件不可显示
           arr[option.tablename] = checked_value;
+
           if(!checked_value){
             this.exclude.push('tapComponent.'+option.tablename);
           }

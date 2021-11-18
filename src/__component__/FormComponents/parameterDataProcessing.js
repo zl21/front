@@ -360,7 +360,12 @@ export default class ParameterDataProcessing {
 
     // 处理图片,文档默认值,转json
     if (this.item.valuedata && ['image', 'OBJ_DOC'].includes(this.item.display)) {
-      return JSON.parse(this.item.valuedata || this.item.defval)
+      let _value = this.item.valuedata || this.item.defval;
+      try {
+        return JSON.parse(_value)
+      } catch (error) {
+        return _value
+      }
     }
 
 
