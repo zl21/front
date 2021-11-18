@@ -3,12 +3,13 @@ node_modules
 .idea
 .history
 .vscode
+entry
 # files
 __test_script__/
 r3.publish/
-dist/
+dist
 *.tgz
 burgeon-r3-*/
 *.log
 # exclude
-!/static/js/ark-ui/dist
+!/static/js/ark/dist
