@@ -218,46 +218,47 @@
       }
     }
   }
-  .modalContent {
-    .itemContent {
+
+}
+
+.modalContent {
+  .itemContent {
+    display: flex;
+    margin-bottom: 10px;
+    overflow: hidden;
+    .labelContent {
+      margin-right: 4px;
+      width: 100px;
       display: flex;
-      margin-bottom: 10px;
-      overflow: hidden;
-      .labelContent {
+      align-items: center;
+      justify-content: flex-end;
+      .labelTip {
+        font-size: 16px;
+        height: 10px;
+        color: red;
         margin-right: 4px;
-        width: 100px;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        .labelTip {
-          font-size: 16px;
-          height: 10px;
-          color: red;
-          margin-right: 4px;
-        }
-      }
-      .itemCom {
-        width: 220px;
       }
     }
-    .modalButton {
-      width: 324px;
-      display: flex;
-      justify-content: flex-end;
-      .Button {
-        margin-left: 10px;
-        min-width: 0;
-        padding: 0 8px;
-        border-radius:2px;
-        font-size:12px;
-        font-weight:400;
-        box-sizing: border-box;
-        height: 22px;
-        span {
-          vertical-align: initial;
-        }
+    .itemCom {
+      width: 220px;
+    }
+  }
+  .modalButton {
+    width: 324px;
+    display: flex;
+    justify-content: flex-end;
+    .Button {
+      margin-left: 10px;
+      min-width: 0;
+      padding: 0 8px;
+      border-radius:2px;
+      font-size:12px;
+      font-weight:400;
+      box-sizing: border-box;
+      height: 22px;
+      span {
+        vertical-align: initial;
       }
     }
   }
-
 }
