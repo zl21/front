@@ -79,14 +79,13 @@ export default {
           document.body.click();
        }
         
-       
          setTimeout(()=>{
           //  更新子表
           this.updateChildTabPanels({
             value:checked
           });
 
-          if(showchecked.length>0 &&  this.$refs.tabPanel && this.tabPanel.length!== showchecked.length){
+          if( this.$refs.tabPanel && this.tabPanel.length!== showchecked.length){
             if(this.$refs.tabPanel.activeKey!== this.tabCurrentIndex){
               this.tabClick(this.tabCurrentIndex);
             }
@@ -95,10 +94,9 @@ export default {
               this.$refs.tabPanel.activeKey = this.tabCurrentIndex;
             }
 
-          }else{
+          }else if(showchecked.length === showchecked.length ){
             if(this.$refs.tabPanel){
               this.$refs.tabPanel.$el.style.display='none';
-
             }
           }
         },200)
