@@ -740,7 +740,9 @@ export default {
     // const index = state.keepAliveLists.indexOf(tab.tableName);
     // if()
   
-    state.keepAliveLists.map((k, i) => {
+    var i = state.keepAliveLists.length;
+    while(i--) {
+      let k = state.keepAliveLists[i];
       const typeKeepAlive = k.split('.')[0];
       let itemId = null;
       let tableName = null;
@@ -776,7 +778,7 @@ export default {
       } else if (kp === tab.tableName) {
         state.keepAliveLists.splice(i, 1);
       }
-    });
+    };
     // if (index > -1) {
     //   state.keepAliveLists.splice(index, 1);
     // }
