@@ -1740,7 +1740,7 @@ export default {
       if (this.getFilterTable) {
         const el = this.$_live_getChildComponent(this, 'tabBar');
         const tabCurrentIndex = el.$refs.R3_Tabs.focusedKey;
-        el.tabClick(tabCurrentIndex, false, value.flag);
+        el.tabClick(tabCurrentIndex, false, value && value.flag);
         return
       } else {
         this.searchData.fixedcolumns = fixedcolumns;
