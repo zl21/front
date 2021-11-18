@@ -413,7 +413,6 @@ export default {
           break;
         case 'MonthDay': 
           componentInstance = new CustomMonthDay(item).init();
-          console.log("🚀 ~ file: FormItem.vue ~ line 416 ~ inheritanceComponents ~ componentInstance", componentInstance)
           break;
         case 'String': 
           componentInstance = new CustomStringRender(item).init();
