@@ -61,12 +61,13 @@
           </Button>
         </div>
         <div class="rightTable">
+          <!--  @on-select="tableSelect" -->
           <Table
             class="table"
             :height="true"
             :data="tableData"
             :columns="columns"
-            @on-select="tableSelect"
+            @on-selection-change="currentChange"
             @on-select-all="tableSelectAll"
             @on-select-all-cancel="tableSelectCancelAll"
           ></Table>
@@ -339,6 +340,7 @@
     },
     watch: {
       dataPermissionModal(val) {
+        this.currentPage = 1;
         if (!val) {
           this.searchCondition = {};
         }
@@ -555,9 +557,11 @@
                   width: '150px',
                   'margin-right': '5px'
                 },
+                class:'datapermission-div',
                 props: {
                   defaultValue: params.row[params.column.colname],
                   propstype: {
+                    fuzzyUrl:'/p/cs/fuzzyQueryDataPermissionTabl',
                     AutoData: [],
                     ...params.column,
                     fkdisplay: 'pop',
@@ -852,7 +856,7 @@
           // serviceId: 'mboscloud-app'
           serviceId: this.screenServiceId
         }).then((res) => {
-          this.pageTotal = res.data.data.data.total;
+          this.pageTotal = Number(res.data.data.data.total||0);
           if (res.data.data.refakname && Object.keys(res.data.data.refakname).length > 0) {
             this.dataPermissionTableData = res.data.data.data.list.reduce((acc, cur) => {
               const obj = {};
@@ -904,7 +908,7 @@
       }, // 数据权限弹窗表格序号render
       getScreenResultCheckData() {
         const inIdList = this.selectedDataList.reduce((acc, cur) => {
-          if (cur.value && typeof cur.value === 'number') {
+          if (cur.value && (typeof cur.value === 'number' || typeof cur.value === 'string')) {
             acc.push(cur.value);
           }
           return acc;
@@ -1074,6 +1078,14 @@
           return acc;
         }, []);
       }, // 多选模式下，表格选中某一项触发
+      currentChange(arr){
+         this.tableDeleteData = arr.reduce((acc, cur) => {
+          // if (cur.ID !== -1) {
+          acc.push(parseInt(cur.ID));
+          // }
+          return acc;
+        }, []);
+      },
       tableSelectAll(arr) {
         this.tableDeleteData = arr.reduce((acc, cur) => {
           // if (cur.ID !== -1) {
@@ -1332,7 +1344,7 @@
                 resultObj.ID = idListArr;
               }
             }
-            if (typeof item.value === 'number') {
+            if (typeof item.value === 'number' || typeof item.value === 'string') {
               inArr.push(item.value);
 
               resultObj.id_list = [item.value];
@@ -1407,3 +1419,4 @@
     }
   };
 </script>
+
