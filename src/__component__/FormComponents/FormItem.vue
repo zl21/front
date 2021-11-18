@@ -155,6 +155,7 @@ import CustomRadioGroup from '../inheritanceComponents/RadioGroup'
 import CustomDefined from '../inheritanceComponents/Defined'
 import CustomStringRender from '../inheritanceComponents/StringRender'
 import CustomCheckboxGroup from '../inheritanceComponents/CheckboxGroup';
+import CustomMonthDay from '../inheritanceComponents/MonthDay';
 
 import ParameterDataProcessing from './parameterDataProcessing';
 import { Validate } from './PanelForm/Validate';
@@ -418,7 +419,11 @@ export default {
         case 'checkboxgroup':
           componentInstance = new CustomCheckboxGroup(item).init();
           break;
-        case 'String':
+        case 'MonthDay': 
+          componentInstance = new CustomMonthDay(item).init();
+          console.log("🚀 ~ file: FormItem.vue ~ line 416 ~ inheritanceComponents ~ componentInstance", componentInstance)
+          break;
+        case 'String': 
           componentInstance = new CustomStringRender(item).init();
           break;
         case 'defined':

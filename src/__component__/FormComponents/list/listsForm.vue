@@ -141,11 +141,17 @@ export default {
       this.formItemLists.map((item, index) => {
         item.tableName = tableName;
         item.show = true;
-        if (item.webconf && item.webconf.display === 'YearMonth') {
-          item.display = 'YearMonth';
-        }
-        if (item.webconf && item.webconf.display === 'String') {
-          item.display = 'String';
+        // if (item.webconf && item.webconf.display === 'YearMonth') {
+        //   item.display = 'YearMonth';
+        // }
+        // if (item.webconf && item.webconf.display === 'String') {
+        //   item.display = 'String';
+        // }
+        // if (item.webconf && item.webconf.display === 'MonthDay') {
+        //   item.display = 'MonthDay';
+        // }
+        if (item.webconf && item.webconf.display) {
+          item.display = item.webconf.display;
         }
         if (item.colname) {
           item._index = Math.random()
