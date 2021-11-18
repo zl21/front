@@ -79,14 +79,13 @@
         default: () => /^\d{11,11}$/
       },
     },
-    created() {
-      document.onkeydown = (e) => {
-        const key = e.keyCode;
-        if (key === 13) {
-          this.login();
-        }
-      };
+    created () {
+      window.addEventListener('keydown', this.enter)
     },
+    destroyed () {
+      window.removeEventListener('keydown', this.enter)
+    },
+
     computed: {
       classes() {
         return [
@@ -98,6 +97,13 @@
       ...mapActions('global', ['getMenuLists']),
 
       ...mapMutations('global', ['emptyTabsCache']),
+
+      enter(e) {
+        const key = e.keyCode;
+        if (key === 13) {
+          this.login();
+        }
+      },
 
       login() {
         this.spinShow = true;
@@ -381,7 +387,7 @@
         if (enableInitializationRequest()) {
           await network.get('/p/cs/hello').then((res) => {
             // 此方法用于向外界（JFlow）提供用户信息。供外部处理自己的需要逻辑。
-            
+
             DispatchEvent('userReady', {
               detail: {
                 userInfo: JSON.parse(JSON.stringify(res.data))
