@@ -596,11 +596,12 @@
 
       }, // 刷新数据
       refreshButtonClick() {
-        // console.log('refreshButtonClick')
-        this.$refs.ztree.clearInputVal();
+        console.log('refreshButtonClick')
         this.isSaveError = false;
         if (this.checkNoSaveData('refresh')) {
         } else {
+          this.$refs.ztree.clearInputVal();
+          this.$refs.ztree.search();
           this.refresh();
           this.selectFirstOnce();
         }
