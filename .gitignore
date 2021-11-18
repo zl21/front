@@ -12,4 +12,4 @@ dist
 burgeon-r3-*/
 *.log
 # exclude
-!/static/js/ark-ui/dist
+!/static/js/ark/dist
