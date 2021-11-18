@@ -297,7 +297,6 @@
                     return formatDate(publicVModelValue);
                 }
                 const res = Array.isArray(publicVModelValue) ? publicVModelValue.map(formatDate) : formatDate(publicVModelValue);
-                // console.log('res', res)
                 return res;
             },
             opened() {
@@ -750,7 +749,6 @@
                 }
             },
             onPick(dates, visible = false, type) {
-                // console.log('onPick--dates',dates)
                 if (this.multiple) {
                     const pickedTimeStamp = dates.getTime();
                     const indexOfPickedDate = this.internalValue.findIndex(date => date && date.getTime() === pickedTimeStamp);
@@ -806,6 +804,7 @@
                 if (this.isEmitOnChange) {
                     this.$emit('on-change', this.publicStringValue, this);
                 }
+                // console.log('val', val)
                 this.internalValue = this.parseDate(val);
             },
             open(val) {
@@ -818,6 +817,7 @@
                 const newValue = JSON.stringify(now);
                 const oldValue = JSON.stringify(before);
                 const shouldEmitInput = newValue !== oldValue || typeof now !== typeof before;
+
                 if (shouldEmitInput) {
                     // 21-04-14[xc9010][vModelFormat开启后，v-model会获取到format之后的值]
                     this.$emit('input', this.vModelFormat ? this.publicStringValue : now, this);

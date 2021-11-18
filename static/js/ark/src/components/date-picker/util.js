@@ -1,9 +1,9 @@
 import dateUtil from '../../utils/date';
 
-export const toDate = function(date) {
+export const toDate = function (date) {
     let _date = new Date(date);
     // IE patch start (#1422)
-    if (Number.isNaN(_date.getTime()) && typeof date === 'string'){
+    if (Number.isNaN(_date.getTime()) && typeof date === 'string') {
         _date = date.split('-').map(Number);
         _date[1] += 1;
         _date = new Date(..._date);
@@ -11,8 +11,8 @@ export const toDate = function(date) {
     // IE patch end
 
     if (Number.isNaN(_date.getTime())) {
- return null;
-}
+        return null;
+    }
     return _date;
 };
 
@@ -24,35 +24,40 @@ export const clearHours = function (time) {
 
 export const isInRange = (time, a, b) => {
     if (!a || !b) {
- return false;
-}
+        return false;
+    }
     const [start, end] = [a, b].sort();
     return time >= start && time <= end;
 };
 
-export const formatDate = function(date, format) {
+export const formatDate = function (date, format) {
     date = toDate(date);
     if (!date) {
- return '';
-}
+        return '';
+    }
     return dateUtil.format(date, format || 'yyyy-MM-dd');
 };
 
-export const parseDate = function(string, format) {
+export const parseDate = function (string, format) {
+    // console.log('string', string)
+    // console.log('format', format)
     return dateUtil.parse(string, format || 'yyyy-MM-dd');
 };
+export const parseMonthday = function (string, format) {
+    return dateUtil.parse(`2020-${string}`, 'yyyy-MM-dd');
+};
 
-export const getDayCountOfMonth = function(year, month) {
+export const getDayCountOfMonth = function (year, month) {
     return new Date(year, month + 1, 0).getDate();
 };
 
-export const getFirstDayOfMonth = function(date) {
+export const getFirstDayOfMonth = function (date) {
     const temp = new Date(date.getTime());
     temp.setDate(1);
     return temp.getDay();
 };
 
-export const siblingMonth = function(src, diff) {
+export const siblingMonth = function (src, diff) {
     const temp = new Date(src); // lets copy it so we don't change the original
     const newMonth = temp.getMonth() + diff;
     const newMonthDayCount = getDayCountOfMonth(temp.getFullYear(), newMonth);
@@ -64,23 +69,23 @@ export const siblingMonth = function(src, diff) {
     return temp;
 };
 
-export const prevMonth = function(src) {
+export const prevMonth = function (src) {
     return siblingMonth(src, -1);
 };
 
-export const nextMonth = function(src) {
+export const nextMonth = function (src) {
     return siblingMonth(src, 1);
 };
 
-export const initTimeDate = function() {
-    const date = new Date();
+export const initTimeDate = function () {
+    const date = new Date('2020');
     date.setHours(0);
     date.setMinutes(0);
     date.setSeconds(0);
     return date;
 };
 
-export const formatDateLabels = (function() {
+export const formatDateLabels = (function () {
     /*
       Formats:
       yyyy - 4 digit year
@@ -109,8 +114,8 @@ export const formatDateLabels = (function() {
             return (monthName[0].toUpperCase() + monthName.slice(1).toLowerCase()).slice(0, 3);
         },
         mmmm: (date, locale) => date.toLocaleDateString(locale, {
-                month: 'long'
-            }),
+            month: 'long'
+        }),
         Mmmm: (date, locale) => {
             const monthName = date.toLocaleDateString(locale, {
                 month: 'long'
@@ -120,7 +125,7 @@ export const formatDateLabels = (function() {
     };
     const formatRegex = new RegExp(['yyyy', 'Mmmm', 'mmmm', 'Mmm', 'mmm', 'mm', 'm'].join('|'), 'g');
 
-    return function(locale, format, date) {
+    return function (locale, format, date) {
         const componetsRegex = /(\[[^\]]+\])([^\[\]]+)(\[[^\]]+\])/;
         const components = format.match(componetsRegex).slice(1);
         const separator = components[1];
@@ -147,18 +152,22 @@ export const DEFAULT_FORMATS = {
     time: 'HH:mm:ss',
     timerange: 'HH:mm:ss',
     daterange: 'yyyy-MM-dd',
-    datetimerange: 'yyyy-MM-dd HH:mm:ss'
+    datetimerange: 'yyyy-MM-dd HH:mm:ss',
+    monthDay: 'MM-dd'
 };
 
 export const RANGE_SEPARATOR = ' - ';
 
-const DATE_FORMATTER = function(value, format) {
+const DATE_FORMATTER = function (value, format) {
     return formatDate(value, format);
 };
-const DATE_PARSER = function(text, format) {
+const DATE_PARSER = function (text, format) {
     return parseDate(text, format);
 };
-const RANGE_FORMATTER = function(value, format) {
+const MONTHDAY_PARSE = function (text, format) {
+    return parseMonthday(text, format);
+};
+const RANGE_FORMATTER = function (value, format) {
     if (Array.isArray(value) && value.length === 2) {
         const start = value[0];
         const end = value[1];
@@ -166,12 +175,12 @@ const RANGE_FORMATTER = function(value, format) {
         if (start && end) {
             return formatDate(start, format) + RANGE_SEPARATOR + formatDate(end, format);
         }
-    } else if (!Array.isArray(value) && value instanceof Date){
+    } else if (!Array.isArray(value) && value instanceof Date) {
         return formatDate(value, format);
     }
     return '';
 };
-const RANGE_PARSER = function(text, format) {
+const RANGE_PARSER = function (text, format) {
     const array = Array.isArray(text) ? text : text.split(RANGE_SEPARATOR);
     if (array.length === 2) {
         const range1 = array[0];
@@ -189,14 +198,14 @@ export const TYPE_VALUE_RESOLVER_MAP = {
     default: {
         formatter(value) {
             if (!value) {
- return '';
-}
+                return '';
+            }
             return `${value}`;
         },
         parser(text) {
             if (text === undefined || text === '') {
- return null;
-}
+                return null;
+            }
             return text;
         }
     },
@@ -207,6 +216,10 @@ export const TYPE_VALUE_RESOLVER_MAP = {
     datetime: {
         formatter: DATE_FORMATTER,
         parser: DATE_PARSER
+    },
+    monthDay: {
+        formatter: DATE_FORMATTER,
+        parser: MONTHDAY_PARSE
     },
     daterange: {
         formatter: RANGE_FORMATTER,
@@ -238,13 +251,13 @@ export const TYPE_VALUE_RESOLVER_MAP = {
             const values = typeof value === 'string' ? value.split(',') : value;
             return values.map(value => {
                 if (value instanceof Date) {
- return value;
-}
+                    return value;
+                }
                 if (typeof value === 'string') {
- value = value.trim();
-} else if (typeof value !== 'number' && !value) {
- value = '';
-}
+                    value = value.trim();
+                } else if (typeof value !== 'number' && !value) {
+                    value = '';
+                }
                 return parseDate(value, format);
             });
         }
@@ -252,8 +265,8 @@ export const TYPE_VALUE_RESOLVER_MAP = {
     number: {
         formatter(value) {
             if (!value) {
- return '';
-}
+                return '';
+            }
             return `${value}`;
         },
         parser(text) {

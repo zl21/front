@@ -1,14 +1,13 @@
 <template>
     <virtual-list
         ref="tree"
+        :height="height"
         :listData="localListData"
         :keygen="options.keygen"
         :childKey="options.childKey"
         :renderTitle="options.renderTitle"
-        :treeOpt="{
-            mode: mode,
-            checked: value
-        }"
+        :emptyText="emptyText"
+        :treeOpt="{ mode: mode, checked: localValue, showCheckbox }"
         @on-check-change="checkChange"
     ></virtual-list>
 </template>
@@ -23,6 +22,9 @@ export default {
     name: 'TreeV',
     components: {VirtualList},
     props: {
+        height: {
+            type: Number
+        },
         listData: {
             type: Array
         },
@@ -46,6 +48,14 @@ export default {
         value: {
             type: Array,
             default: () => []
+        },
+        showCheckbox: {
+            type: Boolean,
+            default: false
+        },
+        emptyText: {
+            type: String,
+            default: '暂无数据'
         }
     },
     computed: {
@@ -55,22 +65,31 @@ export default {
     },
     data() {
         return {
-            localListData: []
+            localListData: [],
+            localValue: []
         };
     },
     created() {
-        console.log('listData', this.listData)
+        // console.log('listData', this.listData)
     },
     watch: {
         listData: {
             handler (newV, oldV) {
-                this.localListData = newV;
+                this.localListData = JSON.parse(JSON.stringify(newV));
+            },
+            immediate: true,
+            deep:true
+        },
+        value: {
+            handler (newV, oldV) {
+                this.localValue = JSON.parse(JSON.stringify(newV));
             },
             immediate: true,
             deep:true
         }
     },
     mounted() {
+        // console.log('this.localListData', this.localListData)
     },
     updated() {
     },
@@ -82,13 +101,23 @@ export default {
             this.$refs.tree.collapseAll();
         },
         clearAll() {
+            console.log('clearAll-2');
+            this.localValue = [];
             this.$refs.tree.clearAll();
+        },
+        handleCheck() {
+            this.$refs.tree.handleCheck();
         },
         showAll(type) {
             this.$refs.tree.showAll(type);
         },
         checkChange(checked, node) {
             this.$emit('on-check-change', checked, node);
+        },
+        search(query) {
+            console.log('query-treeV', query)
+            this.$refs.tree.query(query);
+
         }
     }
 };

@@ -1,12 +1,12 @@
 <template>
     <div
         ref="scroller"
-        :style="{ height: '100%', overflowX: 'auto' }"
+        :style="wrapStyles"
         :class="containerCls"
         @scroll="handleScroll($event)"
     >
         <div ref="phantom" :class="phantomCls" :style="{ height: contentHeight }"></div>
-        <div ref="content" :class="contentCls" :style="{ width: option.width + 'px', transform: `translateY(${offset}px)` }">
+        <div v-if="visibleData && visibleData.length > 0" ref="content" :class="contentCls" :style="{ width: option.width + 'px', transform: `translateY(${offset}px)` }">
             <div
                 :class="itemCls"
                 ref="items"
@@ -21,7 +21,7 @@
                         <span :class="arrowClasses" @click="toggleExpand(item)">
                             <Icon v-if="item.children && item.children.length" :type="item.expand ? 'iconbj_off' : 'iconbj_on'" ></Icon>
                         </span>
-                        <label>
+                        <label v-if="treeOptions.showCheckbox">
                             <Checkbox
                                 :value="item.checked"
                                 :disabled="item.disabled"
@@ -29,13 +29,16 @@
                                 @click.native.prevent="handleCheck(item)"
                             ></Checkbox>
                         </label>
-                        <span :class="nodeCls" @click="handleCheck(item)">{{item[renderTitle] || ''}}</span>
+                        <span
+                            :class="nodeCls"
+                            :style="nodeSty(item)"
+                            @click="titleClick(item)"
+                        >{{item[renderTitle] || ''}} @ {{item.checked}} # {{item.expand}}</span>
                     </div>
-                    <div v-else>null</div>
                 </div>
-
             </div>
         </div>
+        <div v-else :class="emptyCls">{{emptyText}}</div>
     </div>
 </template>
 
@@ -46,7 +49,18 @@ import Icon from '../icon/icon.vue';
 const prefixCls = `${burgeonConfig.prefixCls}virtual-list`;
 let lastTime = 0;
 
-const flatten = function(list, childKey = 'children', level = 1, parent = null, defaultExpand = false, checked = false, indeterminate = false, defaultChecked, keygen, ) {
+const flatten = function(
+    list,
+    childKey = 'children',
+    level = 1,
+    parent = null,
+    defaultExpand = false,
+    checked = false,
+    indeterminate = false,
+    defaultChecked,
+    keygen,
+    query = false
+) {
     let arr = [];
     list.forEach(item => {
         item.level = level;
@@ -66,6 +80,7 @@ const flatten = function(list, childKey = 'children', level = 1, parent = null, 
             item.visible = false;
         }
         item.parent = parent;
+        item.query = false;
         item.children = item[childKey];
         arr.push(item);
         if (item[childKey]) {
@@ -77,7 +92,8 @@ const flatten = function(list, childKey = 'children', level = 1, parent = null, 
                     item,
                     defaultExpand,
                     checked,
-                    indeterminate
+                    indeterminate,
+                    query
                 )
             );
         }
@@ -90,6 +106,9 @@ export default {
     name: 'VirtualList',
     components: { Icon },
     props: {
+        height: {
+            type: [String, Number]
+        },
         //唯一键
         keygen: {
             type: String,
@@ -102,6 +121,10 @@ export default {
         renderTitle: {
             type: String,
             default: 'title'
+        },
+        emptyText: {
+            type: String,
+            default: '暂无数据'
         },
         //渲染
         renderItem: {
@@ -131,6 +154,7 @@ export default {
         treeOpt: {
             type: Object,
             default: () => ({
+                showCheckbox: false,
                 nodeInteraction: true,
                 mode: 0
             })
@@ -139,6 +163,9 @@ export default {
     computed: {
         classes() {
             return `${prefixCls}`;
+        },
+        wrapStyles() {
+            return Object.assign({}, { overflowX: 'auto' }, { height: `${this.height || 300}px` });
         },
         containerCls() {
             return `${prefixCls}-container`;
@@ -158,20 +185,13 @@ export default {
         nodeCls() {
             return `${prefixCls}-node`;
         },
+        emptyCls() {
+            return `${prefixCls}-empty`;
+        },
         arrowClasses () {
             return [
                 `${prefixCls}-arrow`,
             ];
-        },
-        flattenTree() {
-            const { keygen } = this;
-            const { checked: defaultChecked } = this.treeOptions;
-            return flatten(this.listData, this.childKey, 1, {
-                level: 0,
-                visible: true,
-                expand: true,
-                children: this.listData
-            }, false, false, false, defaultChecked, keygen);
         },
         visibleCount() {
             return Math.floor(this.option.height / this.option.itemHeight);
@@ -184,11 +204,11 @@ export default {
     //     this.localListData = JSON.parse(JSON.stringify(this.listData));
     // },
     mounted() {
-        console.log('listData', this.listData)
+        this.localListData = [...this.handleFlattenTree(this.treeOptions)];
         this.updateView();
     },
     watch: {
-        flattenTree: {
+        localListData: {
             handler (newV) {
                 this.updateView();
             },
@@ -202,12 +222,13 @@ export default {
             contentHeight: '0px',
             // 组件内部数据
             visibleData: [],
-            localListData: []
+            localListData: [],
+            findVal: ''
         };
     },
     methods: {
         getContentHeight() {
-            this.contentHeight = `${(this.flattenTree || []).filter(item => item.visible).length * this.option.itemHeight}px`;
+            this.contentHeight = `${(this.localListData || []).filter(item => item.visible).length * this.option.itemHeight}px`;
         },
         updateView(type) {
             this.getContentHeight();
@@ -227,11 +248,20 @@ export default {
             let start = Math.floor(scrollTop / this.option.itemHeight) - Math.floor(this.visibleCount / 2);
             start = start < 0 ? 0 : start;
             const end = start + this.visibleCount * 2;
-            this.localListData = [...this.flattenTree];
-            const allVisibleData = (this.localListData || []).filter(item => item.visible);
-            this.visibleData = allVisibleData.slice(start, end);
-            console.log('this.visibleData', this.visibleData)
+            this.visibleData = (this.localListData || []).filter(item => item.visible).slice(start, end);
+            // console.log('updateVisibleData--visibleData', this.visibleData)
             this.offset = start * this.option.itemHeight;
+        },
+        // 获取本地拍平数据
+        handleFlattenTree(treeOptions) {
+            const { keygen } = this;
+            const { checked: defaultChecked } = treeOptions;
+            return flatten(this.listData, this.childKey, 1, {
+                level: 0,
+                visible: true,
+                expand: true,
+                children: this.listData
+            }, false, false, false, defaultChecked, keygen);
         },
 
         renderNode(data) {
@@ -241,6 +271,18 @@ export default {
                 return render(data);
             }
             return false;
+        },
+        titleClick(item) {
+            if (this.treeOptions.showCheckbox) {
+                this.handleCheck(item);
+                return;
+            }
+            this.singleCheck(item);
+        },
+        nodeSty(item) {
+            const title = this.findVal && item.title.indexOf(this.findVal) > -1 ? {color: '#e80707'} : {};
+            const bgc = item.checked ? {backgroundColor: '#2d8cf04d'} : {};
+            return Object.assign({}, title, bgc);
         },
         // 节点点击
         toggleExpand(item) {
@@ -254,17 +296,21 @@ export default {
         },
         //展开节点
         expand(item) {
-            item.expand = true;
-            this.recursionVisible(item.children, true);
+            if (item.children) {
+                item.expand = true;
+                this.recursionVisible(item.children, true);
+            }
         },
         //折叠节点
         collapse(item) {
-            item.expand = false;
-            this.recursionVisible(item.children, false);
+            if (item.children) {
+                item.expand = false;
+                this.recursionVisible(item.children, false);
+            }
         },
         //折叠所有
         collapseAll(level = 1) {
-            this.flattenTree.forEach(item => {
+            this.localListData.forEach(item => {
                 item.expand = false;
                 if (item.level !== level) {
                     item.visible = false;
@@ -274,7 +320,7 @@ export default {
         },
         //展开所有
         expandAll() {
-            this.flattenTree.forEach(item => {
+            this.localListData.forEach(item => {
                 item.expand = true;
                 item.visible = true;
             });
@@ -289,7 +335,7 @@ export default {
                 visible: true,
                 expand: true,
                 children: this.listData
-            }, true, false, false, defaultChecked, keygen);
+            }, true, false, false, defaultChecked, keygen, false);
             this.updateVisibleData();
         },
         showAll(type) {
@@ -305,26 +351,48 @@ export default {
                 }
             });
         },
-        //勾选
-        handleCheck(item) {
-            console.log('item', item.checked)
+        // 单选
+        singleCheck(item) {
+            // 清除其他选项
+            this.localListData = [...this.handleFlattenTree(Object.assign({}, this.treeOptions, { checked: []}))]
+            // 选中当前点击
+            if (!item) {
+                this.updateView('collapseAll')
+                return;
+            }
             if (item.indeterminate) {
                 item.indeterminate = false;
             }
-            const check = !item.checked;
-            item.checked = check;
+            item.checked = !item.checked;
+            this.updateView();
+            // 抛出事件
+            let checkedList = this.localListData.filter(v => v.checked);
+            console.log('checkedList', checkedList);
+            this.onCheckChange(checkedList, item);
+        },
+        // 勾选
+        handleCheck(item) {
+            console.log('item', item)
+            if (!item) {
+                this.updateView('collapseAll')
+                return;
+            }
+            if (item.indeterminate) {
+                item.indeterminate = false;
+            }
+            item.checked = !item.checked;
             if (item.children) {
-                this.checkedChild(item.children, check);
+                this.checkedChild(item.children, item.checked);
             }
             if (this.treeOptions.nodeInteraction) {
                 // 父子节点向上联动
-                this.updateParent(item, check);
+                this.updateParent(item, item.checked);
             }
             this.updateView();
 
             let checked = [];
-            const checkedList = this.flattenTree.filter(v => v.checked);
-            console.log('checkedList', checkedList);
+            let checkedList = this.localListData.filter(v => v.checked);
+            // console.log('checkedList', checkedList);
             // mode 0: full  1: child only  ##2: parent only
             if (this.treeOptions.mode === 0) {
                 checked = checkedList;
@@ -377,6 +445,21 @@ export default {
         // emit-[on-check-change]
         onCheckChange(checked, node) {
             this.$emit('on-check-change', checked, node);
+        },
+
+        query(val) {
+            console.log('query-vl', val)
+            if(!val || !val.trim()) return;
+            this.expandAll();
+            this.findVal = val.trim();
+            // this.flattenTree
+            // this.localListData = this.localListData.map(v => ({
+            //     ...v,
+            //     expand: true,
+            //     query: v.title.indexOf(val) > -1
+            // }));
+            // console.log('this.localListData', this.localListData)
+            // this.updateView();
         }
     }
 };

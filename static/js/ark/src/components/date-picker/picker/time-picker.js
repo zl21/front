@@ -18,7 +18,7 @@ export default {
     },
     computed: {
         panel(){
-            const isRange =  this.type === 'timerange';
+            const isRange = this.type === 'timerange';
             return isRange ? 'RangeTimePickerPanel' : 'TimePickerPanel';
         },
         ownPickerProps(){

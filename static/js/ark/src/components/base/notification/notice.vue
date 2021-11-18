@@ -117,12 +117,12 @@
             classes () {
                 return [
                     this.baseClass,
-                    'move-notice-enter-active', 'move-notice-appear',
                     {
                         [`${this.className}`]: !!this.className,
                         [`${this.baseClass}-closable`]: this.closable,
-                        [`${this.baseClass}-with-desc`]: this.withDesc
-                    }
+                        [`${this.baseClass}-with-desc`]: this.withDesc,
+                        [`move-notice-enter-active move-notice-appear`]: this.type !== 'message'
+            }
                 ];
             },
             contentClasses () {

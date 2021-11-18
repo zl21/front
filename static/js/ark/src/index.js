@@ -73,6 +73,7 @@ import IntegrateSearchFilter from './FcComponents/integrate-search-filter';
 import ImageUpload from './FcComponents/ImageUpload';
 import UploadPhoto from './FcComponents/uploadPhoto';
 import TreeV from './FcComponents/treeV';
+import MonthDay from './FcComponents/monthDay';
 
 /* drag */
 import DragImg from './components/dragImg';
@@ -84,7 +85,6 @@ import Timing from './components/timing';
 import TimingDate from './components/timing-date';
 import TimingTime from './components/timing-time';
 import Upload from './components/upload';
-
 
 const components = {
     Affix,
@@ -177,7 +177,8 @@ const components = {
     Upload,
     UploadPhoto,
     DatePickerPanel,
-    TreeV
+    TreeV,
+    MonthDay,
 };
 
 const burGeon = {
@@ -198,17 +199,15 @@ const burGeon = {
     iTime: Time
 };
 
-
-const install = function (Vue, opts = {}) {
+const install = function (Vue, options = {}) {
+    let opts = options ? Object.assign({}, burgeonConfig, options) : burgeonConfig;
     if (install.installed) {
         return;
     }
     locale.use(opts.locale);
     locale.i18n(opts.i18n);
-    //opts.defaultZindex
     Object.keys(burGeon).forEach(key => {
-
-        Vue.component(`${burgeonConfig.componentsFix}${key}`, burGeon[key]);
+        Vue.component(`${opts.componentsFix}${key}`, burGeon[key]);
     });
 
     Vue.prototype.$IVIEW = {
@@ -273,7 +272,6 @@ const install = function (Vue, opts = {}) {
         theme: 'theme' in opts ? opts.theme : 'mclon'
     };
 
-
     //多主题  主题名就是主题class
     Vue.burgeonTheme = function (option) {
         document.querySelector('body').setAttribute('class', '');
@@ -281,7 +279,6 @@ const install = function (Vue, opts = {}) {
     };
 
     //Vue.burgeonTheme(Vue.prototype.$Burgeon.theme);
-
 
     //多语言
     Vue.burgeonLocal = function (option) {
@@ -298,9 +295,12 @@ const install = function (Vue, opts = {}) {
 
 // auto install
 if (typeof window !== 'undefined' && window.Vue) {
-    install(window.Vue);
+    if (window.arkOpt) {
+        install(window.Vue, arkOpt);
+    } else {
+        install(window.Vue)
+    }
 }
-
 
 const API = {
     version: process.env.VERSION, // eslint-disable-line no-undef

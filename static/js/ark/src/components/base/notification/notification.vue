@@ -86,15 +86,21 @@ import Notice from './notice.vue';
             wrapStyles () {
                 let styles = Object.assign({}, this.styles);
                 styles['z-index'] = Vue.prototype.$IVIEW.defaultZindex + this.tIndex;
-                styles[this.verticalProperty] = `${this.verticalOffset}px`;
-                styles[this.horizontalClass] = 0;
+                if (this.type !== 'message') {
+                    styles[this.verticalProperty] = `${this.verticalOffset}px`;
+                    styles[this.horizontalClass] = 0;
+                }
                 return styles;
             },
             horizontalClass() {
-                return this.position.indexOf('right') > -1 ? 'right' : 'left';
+                if (this.position) {
+                    return this.position.indexOf('right') > -1 ? 'right' : 'left';
+                }
             },
             verticalProperty() {
-                return /^top-/.test(this.position) ? 'top' : 'bottom';
+                if (this.position) {
+                    return /^top-/.test(this.position) ? 'top' : 'bottom';
+                }
             },
             positionStyle() {
                 return {
@@ -132,7 +138,7 @@ import Notice from './notice.vue';
                 // }
                 this.notices = [];
                 setTimeout(() => {
-                    this.$refs[this.id].remove();
+                    this.$refs[this.id] && this.$refs[this.id].remove();
                 }, 1000)
             },
             closeAll () {
