@@ -291,7 +291,7 @@
       },
       clearInputVal() {
         this.inputValue = '';
-        this.search();
+        // this.search();
       },
       // freshArea() {
       //   $.fn.zTree.init($('#treeDemo'), this.setting, this.zNodes);
