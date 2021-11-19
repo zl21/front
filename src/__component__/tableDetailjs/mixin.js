@@ -46,13 +46,16 @@ export default {
           // 校验是否有不等的值
           let checked_value = true;
           if(hiddenSubtable[option.tablename]){
-              checked_value = hiddenSubtable[option.tablename].some((item)=>{
+              checked_value = hiddenSubtable[option.tablename].every((item)=>{
                 let values = item.value.split(',');
                 let value_check = values.some((x)=>{ 
                   return x==formData[item.colName]
                 })
                 return value_check;
               });
+
+          }else{
+            checked_value = false;
           }
           if(checked_value){
             // 被隐藏的子表名称
@@ -60,6 +63,7 @@ export default {
           }
           // 展示的组 true 代表组件不可显示
           arr[option.tablename] = checked_value;
+
           if(!checked_value){
             this.exclude.push('tapComponent.'+option.tablename);
           }
@@ -78,14 +82,13 @@ export default {
           document.body.click();
        }
         
-       
          setTimeout(()=>{
           //  更新子表
           this.updateChildTabPanels({
             value:checked
           });
 
-          if(showchecked.length>0 &&  this.$refs.tabPanel && this.tabPanel.length!== showchecked.length){
+          if( this.$refs.tabPanel && this.tabPanel.length!== showchecked.length){
             if(this.$refs.tabPanel.activeKey!== this.tabCurrentIndex){
               this.tabClick(this.tabCurrentIndex);
             }
@@ -94,10 +97,9 @@ export default {
               this.$refs.tabPanel.activeKey = this.tabCurrentIndex;
             }
 
-          }else{
+          }else if(showchecked.length === showchecked.length ){
             if(this.$refs.tabPanel){
               this.$refs.tabPanel.$el.style.display='none';
-
             }
           }
         },200)

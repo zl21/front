@@ -663,9 +663,13 @@ export default {
       const routeFullPath = state.activeTab.routeFullPath;
       const index = routeFullPath.lastIndexOf('/');
       const routeFullPathRes = routeFullPath.substring(0, index + 1);
-      if (item.includes(routeFullPathRes) && routeFullPathRes.includes(tab.routeFullPath)) { //
+      if (item.includes(routeFullPathRes)) { //
         // 外键跳转与单对象跳转同一个单对象界面时，外键逻辑为不显示返回按钮，自定义跳转为返回到来源自定义界面，点击返回时，应清除对应的外键关系
-        deleteFromSessionObject('routeMapRecordForHideBackButton', item);
+        if(routeFullPathRes.includes(tab.routeFullPath) && enableOpenNewTab()){
+          deleteFromSessionObject('routeMapRecordForHideBackButton', item);
+        }else if(!enableOpenNewTab()){
+          deleteFromSessionObject('routeMapRecordForHideBackButton', item);
+        }
         // window.sessionStorage.setItem('ignore', true);
       }
     });
@@ -733,7 +737,9 @@ export default {
     // const index = state.keepAliveLists.indexOf(tab.tableName);
     // if()
   
-    state.keepAliveLists.map((k, i) => {
+     var i = state.keepAliveLists.length;
+     while(i--) {
+      let k = state.keepAliveLists[i];
       const typeKeepAlive = k.split('.')[0];
       let itemId = null;
       let tableName = null;
@@ -773,10 +779,8 @@ export default {
       } else if (kp === tab.tableName) {
         state.keepAliveLists.splice(i, 1);
       }
-    });
-    // if (index > -1) {
-    //   state.keepAliveLists.splice(index, 1);
-    // }
+    }
+    
     openedMenuLists.forEach((item, index) => {
       let samePath = false;
       if (enableOpenNewTab()) {

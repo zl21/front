@@ -32,7 +32,6 @@
           class="tabPanel"
           :tab-margin-left="20"
           is-keep-alive
-          :exclude="exclude"
           :beforeLeave="tabBeforeLeave"
           :type="'singleCard'"
           :tab-panels="tabPanels"

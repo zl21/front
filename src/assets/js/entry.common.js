@@ -36,13 +36,12 @@ window.indexedDBApi = {
 let parseIntNew = window.parseInt;
 // 兼容长度大于16位
 window.parseInt = function(value){
-    if(JSON.stringify(value).length>15){
-      if(typeof value !=='string'){
-        value = JSON.stringify(value);
-      }
-      return value.replace(/[^0-9]/ig,"");
+    if(typeof value !=='string'){
+      value = JSON.stringify(value);
+    }
+    if(value && value.match(/[0-9]+/) && value.match(/[0-9]+/)[0].length>15){
+      return value.match(/[0-9]+/)[0];
     }else{
       return parseIntNew(value);
-
     }
 }

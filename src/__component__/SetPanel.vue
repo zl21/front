@@ -77,6 +77,7 @@
       ...mapState('global', {
         userInfo: ({ userInfo }) => userInfo,
         collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
+        changeSearchFoldnum: ({ changeSearchFoldnum }) => changeSearchFoldnum,
       }),
       classes() {
         return [
@@ -94,9 +95,10 @@
       num7() {
         this.changeNum();
       },
-
-      collapseHistoryAndFavorite(val) {
-        this.showFavorites = !val
+      changeSearchFoldnum(val){
+        this.switchValue = val.switchValue;
+        this.num7 = val.queryDisNumber;
+        this.changeNum();
       }
     },
     data() {

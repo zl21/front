@@ -3,7 +3,7 @@
   <div :class="classesbox">
     <div :class="classes"
          id="listForm">
-      <div v-if="Object.keys(ItemLists).length > (setdefaultColumn*searchFoldnum - indexButton) && !hiddenIcon && defaultSpread"
+      <div v-if="Object.keys(ItemLists).length > (setdefaultColumn*searchFoldnum - indexButton) && !hiddenIcon " 
            :class="tagCloseCls"
            @click="toggle">
         <Icon :class="className" />
@@ -42,6 +42,7 @@ import {
 export default {
   computed: {
     ...mapState('global', {
+      changeSearchFoldnum: ({ changeSearchFoldnum }) => changeSearchFoldnum,
       activeTab: ({ activeTab }) => activeTab,
       // isRequest: ({ isRequest }) => isRequest,
 
@@ -355,6 +356,7 @@ export default {
     toggle () { // 折叠切换
       this.dowClass = !this.dowClass;
       this.setButtonType(this.dowClass);
+      this.$store.commit('global/updateModifySearchFoldnum', { queryDisNumber: Number(this.searchFoldnum), switchValue:  true });
       setTimeout(() => {
         const detailTable = document.querySelector('.detailTable');
         if (detailTable && detailTable.agTable) {
@@ -399,7 +401,6 @@ export default {
     r3Format (val, item) {
       // 兼容1.3 数据格式传参
       if (['OBJ_SELECT', 'RADIO_GROUP', 'CHECKBOX_GROUP'].includes(item.display)) {
-        console.log(val[item.colname], '323');
         if (val[item.colname] && Array.isArray(val[item.colname])) {
           val[item.colname] = val[item.colname].reduce((arr, item) => {
             arr.push(`=${item}`);
@@ -487,10 +488,8 @@ export default {
   created () {
     this.resetForm();
     // 处理折叠的默认值
-
     this.setdefaultColumn = this.defaultColumn;
     this.dowClass = !this.defaultSpread;
-
   },
   mounted () {
     this.$el._vue_ = this;
@@ -498,7 +497,6 @@ export default {
       setTimeout(() => {
         this.setColumn();
         window.addEventListener('resize', this.setColumn)
-
       }, 100)
     }
   },
@@ -518,13 +516,17 @@ export default {
       deep: true
     },
     defaultSpread:{
-       handler () {
+       handler (val) {
+          this.dowClass = !this.defaultSpread;
         if (this.search && this.searchFoldnum) {
           this.setColumn();
         }
       },
       deep: true
 
+    },
+    changeSearchFoldnum(val){
+      
     },
     treeShow:{
        handler () {
