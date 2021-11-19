@@ -96,9 +96,11 @@
         this.changeNum();
       },
       changeSearchFoldnum(val){
-        this.switchValue = val.switchValue;
         this.num7 = val.queryDisNumber;
-        this.changeNum();
+        if(this.switchValue !== val.switchValue){
+            this.switchValue = val.switchValue;
+            this.switchChange(this.switchValue);
+        }
       }
     },
     data() {
