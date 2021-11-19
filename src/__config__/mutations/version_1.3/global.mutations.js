@@ -672,10 +672,13 @@ export default {
       const routeFullPath = state.activeTab.routeFullPath;
       const index = routeFullPath.lastIndexOf('/');
       const routeFullPathRes = routeFullPath.substring(0, index + 1);
-      if (item.includes(routeFullPathRes) && routeFullPathRes.includes(tab.routeFullPath)) { //
+      if (item.includes(routeFullPathRes)) { //
         // 外键跳转与单对象跳转同一个单对象界面时，外键逻辑为不显示返回按钮，自定义跳转为返回到来源自定义界面，点击返回时，应清除对应的外键关系
-        deleteFromSessionObject('routeMapRecordForHideBackButton', item);
-        // window.sessionStorage.setItem('ignore', true);
+        if(routeFullPathRes.includes(tab.routeFullPath) && enableOpenNewTab()){
+          deleteFromSessionObject('routeMapRecordForHideBackButton', item);
+        }else if(!enableOpenNewTab()){
+          deleteFromSessionObject('routeMapRecordForHideBackButton', item);
+        }
       }
     });
     // 删除规则三：关闭页签时，清除动态路由跳转类型跳转的session中存储的对应关系。
