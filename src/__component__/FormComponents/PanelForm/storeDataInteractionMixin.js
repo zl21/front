@@ -17,6 +17,13 @@ export default {
     value: {
       handler(val, old) {
         if (this.items.detailType) {
+          let fkdisplay = this.items.fkobj && this.items.fkobj.fkdisplay;
+          if(fkdisplay === 'drp'){
+            // 在单对象界面中外键字段必须有值
+            if(!Array.isArray(val) && !isEmpty(val)){
+              return;
+            }
+          }
           let ParentForm = this.findParentForm();
           // 获取当前组件的值
           if(!ParentForm){
@@ -244,6 +251,7 @@ export default {
       }else{
         ParentForm.$parent.formChange(ParentForm.formChangeData, ParentForm.formDataLabel,ParentForm.formChangeDataLabel)
       }
+
       let tabPanelsDom = document.querySelector(`#${this.activeTab.tableName}`);
       if(tabPanelsDom){
         tabPanelsDom._vue_.setTabPanels();
