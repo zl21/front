@@ -867,8 +867,8 @@
       checkGroupID() {
         // console.log('this.groupId', this.groupId)
         this.spinShow = false;
-        this.saveLoading = false;
         if (!this.groupId) {
+          this.saveLoading = false;
           this.$Modal.fcWarning({
             mask: true,
             title: this.$t('feedback.warning'),
