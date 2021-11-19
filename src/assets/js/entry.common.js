@@ -39,7 +39,7 @@ window.parseInt = function(value){
     if(typeof value !=='string'){
       value = JSON.stringify(value);
     }
-    if(value.match(/[0-9]+/) && value.match(/[0-9]+/)[0].length>15){
+    if(value && value.match(/[0-9]+/) && value.match(/[0-9]+/)[0].length>15){
       return value.match(/[0-9]+/)[0];
     }else{
       return parseIntNew(value);
