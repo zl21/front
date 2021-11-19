@@ -807,6 +807,7 @@
       treeSearch(e, flag) {
         if (!e) {
           this.pageInit = false;
+          this.selectFirstOnce();
           // this.refreshButtonClick();
         }
         if (flag) {
@@ -866,6 +867,7 @@
       checkGroupID() {
         // console.log('this.groupId', this.groupId)
         this.spinShow = false;
+        this.saveLoading = false;
         if (!this.groupId) {
           this.$Modal.fcWarning({
             mask: true,
