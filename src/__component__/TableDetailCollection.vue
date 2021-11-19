@@ -293,7 +293,8 @@
           OBJ_DATE: { tag: 'DatePicker', event: this.datePickertRender },
           OBJ_TIME: { tag: 'TimePicker', event: this.timePickerRender },
           image: { tag: 'Poptip', event: this.imageRender },
-          doc: { tag: 'Poptip', event: this.docRender }
+          doc: { tag: 'Poptip', event: this.docRender },
+          MonthDay: { tag: 'MonthDay', event: this.monthDayRender }
         },
         _beforeSendData: {}, // 之前的数据
         get beforeSendData() {
@@ -1859,6 +1860,12 @@
           }
           return this.DISPLAY_ENUM[cellData.fkdisplay].event(cellData, this.DISPLAY_ENUM[cellData.fkdisplay].tag);
         }
+
+        if(cellData.webconf && cellData.webconf.display && this.DISPLAY_ENUM[cellData.webconf.display]) {
+          const type = cellData.webconf.display
+          return this.DISPLAY_ENUM[type].event(cellData, this.DISPLAY_ENUM[type].tag)
+        }
+
         if (!this.DISPLAY_ENUM[cellData.display]) {
           return null;
         }
@@ -1875,6 +1882,52 @@
         }
         return len;
       },
+
+      // 月日组件渲染
+      monthDayRender(cellData, tag) {
+        return (h, params) => {
+          const rowData = this.copyDataSource.row[params.index]
+          const value = rowData[cellData.colname].val
+
+          return h('div',
+          {
+            style: {
+              overflow: 'hidden',
+              height: '100%',
+              display: 'flex',
+            },
+            class: {
+              'flex-right': cellData.tdAlign === 'right',
+              'flex-center': cellData.tdAlign === 'center',
+              'flex-left': cellData.tdAlign === 'left'
+            },
+          },
+          [
+          h(tag, {
+              style: {
+                width: '100px',
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+              },
+              props: {
+                transfer: true,
+                clearable: true,
+                value
+              },
+              on: {
+                'on-change': (event) => {
+                  let value = event;
+                  let oldIdValue = this.dataSource.row[params.index][cellData.colname].val;
+                  this.putDataFromCell(value, oldIdValue, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                  this.putLabelDataFromCell(value, oldIdValue, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, oldIdValue);
+                },
+              }
+            })
+          ])
+        }
+      },
+
       textRender(cellData) {
         return (h, params) => {
           let maxlength = '';
