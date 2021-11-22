@@ -394,6 +394,16 @@
         :options="_items.props"
         @change="checkboxGroupValueChange"
       />
+
+      <!-- monthDay组件 -->
+      <MonthDay
+        v-if="_items.type === 'MonthDay'"
+        :ref="_items.field"
+        v-model="_items.value"
+        :placeholder="_items.props.placeholder"
+        :disabled="_items.props.disabled"
+        @on-change="monthDayValueChange"
+      />
       
       <!-- string组件 -->
       <string-render 
@@ -724,6 +734,10 @@
         this.valueChange();
       },
       checkboxGroupValueChange(value) {
+        this._items.value = value;
+        this.valueChange();
+      },
+      monthDayValueChange(value) {
         this._items.value = value;
         this.valueChange();
       },

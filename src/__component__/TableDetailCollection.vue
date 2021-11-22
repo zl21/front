@@ -1887,6 +1887,9 @@
       monthDayRender(cellData, tag) {
         return (h, params) => {
           const rowData = this.copyDataSource.row[params.index]
+          if(!rowData) {
+            return null
+          }
           const value = rowData[cellData.colname].val
 
           return h('div',
@@ -2237,6 +2240,9 @@
       mutiSelectRender(cellData, tag) {
         return (h, params) => {
           const rowData = this.dataSource.row[params.index]
+          if(!rowData) {
+            return null
+          }
           const oldArr = rowData[cellData.colname].val.split(',')
           const defaultValue = cellData.combobox.filter(option => oldArr.includes(option.limitdesc)).map(option => option.limitval)
           return h('div', 
