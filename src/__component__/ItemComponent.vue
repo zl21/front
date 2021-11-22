@@ -402,6 +402,8 @@
         v-model="_items.value"
         :placeholder="_items.props.placeholder"
         :disabled="_items.props.disabled"
+        :editable="false"
+        :transfer="true"
         @on-change="monthDayValueChange"
       />
       
