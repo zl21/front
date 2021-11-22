@@ -14,7 +14,6 @@
       @changeTreeConfigData="changeTreeConfigData"
     />
      -->
-
     <div v-if="isTreeList">
 
       <tree v-show="treeShow"
