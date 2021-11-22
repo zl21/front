@@ -40,13 +40,14 @@
       },
     },
     methods: {
-      tabClick(index,stopRequest) {
+      tabClick(index,stopRequest, isBackEventTriggger) {
         //stopRequest：只整合参数，不发送请求
         this.currentIndex = index;
         this.$emit('tabClick', {
           data: this.data.multi_tab[index],
           index,
-          stopRequest
+          stopRequest,
+          isBackEventTriggger // 用来处理，详情返回列表界面(列表组件会调用tabClick方法)，重置页码的情况
         });
       },
     },

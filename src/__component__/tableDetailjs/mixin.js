@@ -32,7 +32,6 @@ export default {
         // 排除换组组件名称
       if(formName){
         this.formName = formName;
-
       }   
       if(this.formName && this.WebConf && this.WebConf.hiddenSubtable ){
 
@@ -47,24 +46,27 @@ export default {
           // 校验是否有不等的值
           let checked_value = true;
           if(hiddenSubtable[option.tablename]){
-              checked_value = hiddenSubtable[option.tablename].some((item)=>{
+              checked_value = hiddenSubtable[option.tablename].every((item)=>{
                 let values = item.value.split(',');
-                //return formData[item.colName] !== item.value;
-                return !values.includes(formData[item.colName]);
+                let value_check = values.some((x)=>{ 
+                  return x==formData[item.colName]
+                })
+                return value_check;
               });
+
+          }else{
+            checked_value = false;
           }
           if(checked_value){
+            // 被隐藏的子表名称
             showchecked.push(option.tablename);
           }
-          arr[option.tablename] = !checked_value;
+          // 展示的组 true 代表组件不可显示
+          arr[option.tablename] = checked_value;
+
           if(!checked_value){
             this.exclude.push('tapComponent.'+option.tablename);
           }
-     
-          // 判断当前的tab 是否被隐藏
-          // if( !checked_value && index === tabCurrentIndex ){
-          //   tabCurrentIndex = '-1';
-          // }
           return arr;
 
         },{});
@@ -76,30 +78,28 @@ export default {
         },[]);
                
        if(this.exclude.length!==checkedValue.length){
+          //  兼容外键字段
           document.body.click();
        }
         
-       
-
          setTimeout(()=>{
+          //  更新子表
           this.updateChildTabPanels({
             value:checked
           });
 
-          if(showchecked.length>0 &&  this.$refs.tabPanel){
+          if( this.$refs.tabPanel && this.tabPanel.length!== showchecked.length){
             if(this.$refs.tabPanel.activeKey!== this.tabCurrentIndex){
               this.tabClick(this.tabCurrentIndex);
             }
             if(this.$refs.tabPanel){
               this.$refs.tabPanel.$el.style.display='block';
               this.$refs.tabPanel.activeKey = this.tabCurrentIndex;
-
             }
 
-          }else{
+          }else if(showchecked.length === showchecked.length ){
             if(this.$refs.tabPanel){
               this.$refs.tabPanel.$el.style.display='none';
-
             }
           }
         },200)

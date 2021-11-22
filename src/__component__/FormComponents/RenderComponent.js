@@ -25,7 +25,7 @@ String.prototype.TextFilter = function TextFilter() {
    * @memberof typeConversion
    */
   function typeConversion(item){
-    if(item.webconf && ['YearMonth', 'String'].includes(item.webconf.display)){
+    if(item.webconf && ['YearMonth', 'String', 'MonthDay'].includes(item.webconf.display)){
       item.display = item.webconf.display;
     }
     switch(item.display){

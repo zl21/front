@@ -77,6 +77,7 @@
       ...mapState('global', {
         userInfo: ({ userInfo }) => userInfo,
         collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
+        changeSearchFoldnum: ({ changeSearchFoldnum }) => changeSearchFoldnum,
       }),
       classes() {
         return [
@@ -94,6 +95,18 @@
       num7() {
         this.changeNum();
       },
+
+      collapseHistoryAndFavorite(val) {
+        this.showFavorites = !val
+      },
+      
+      changeSearchFoldnum(val){
+        this.num7 = val.queryDisNumber;
+        if(this.switchValue !== val.switchValue){
+            this.switchValue = val.switchValue;
+            this.switchChange(this.switchValue);
+        }
+      }
     },
     data() {
       return {
@@ -119,7 +132,7 @@
       const showFavorites = JSON.parse(window.localStorage.getItem('showFavorites'));
       if (showFavorites !== null) {
         this.showFavorites = showFavorites;
-        this.operationFavorites(showFavorites);
+        // this.operationFavorites(showFavorites);
       }
       this.setDefaultSearchFoldnum();
     },
@@ -166,7 +179,6 @@
           });
       },
       operationFavorites(showFavorites) {
-        window.localStorage.setItem('showFavorites', showFavorites);
         this.doCollapseHistoryAndFavorite({ showFavorites });
       },
       changeNum() {

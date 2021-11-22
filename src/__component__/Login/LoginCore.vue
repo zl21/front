@@ -30,7 +30,7 @@
           <slot name="loginBtn"></slot>
         </template>
         <!-- <div  id="btn" class="btn"/> -->
-        <Button v-else="!$slots.loginBtn" type="text" id="btn" class="btn">{{$t('buttons.login')}}</Button>
+        <Button v-if="!$slots.loginBtn" type="text" id="btn" class="btn">{{$t('buttons.login')}}</Button>
       </div>
       <Spin v-show="spinShow" fix>
         <div class="loader">
@@ -66,6 +66,7 @@
         typeToggle: 1, // 1用户 2验证码
         flag: 1,
         lang: 'zh',
+        moveClass:window.ProjectConfig &&  window.ProjectConfig.moveBar ? 'loginMove':'',
         showChangeLang: enableChangeLang || false,
       }
 
@@ -79,18 +80,17 @@
         default: () => /^\d{11,11}$/
       },
     },
-    created() {
-      document.onkeydown = (e) => {
-        const key = e.keyCode;
-        if (key === 13) {
-          this.login();
-        }
-      };
+    created () {
+      window.addEventListener('keydown', this.enter)
     },
+    destroyed () {
+      window.removeEventListener('keydown', this.enter)
+    },
+
     computed: {
       classes() {
         return [
-          `${classFix}loginCore`,
+          `${classFix}loginCore ${this.moveClass}`,
         ];
       },
     },
@@ -99,13 +99,20 @@
 
       ...mapMutations('global', ['emptyTabsCache']),
 
+      enter(e) {
+        const key = e.keyCode;
+        if (key === 13) {
+          this.login();
+        }
+      },
+
       login() {
         this.spinShow = true;
         const globalServiceId = window.localStorage.getItem('serviceId');
         const randomKey = btoa(`${Math.random() * 10000000000}`).substring(0, 5);
         let message = {};
         if (!this.type) {
-          const {username, password} = this.$refs.AccountLogin.$refs;
+          const {username, password,movebar} = this.$refs.AccountLogin.$refs;
           if (username.value === '') {
             message = {
               title: this.$t('feedback.error'),
@@ -123,6 +130,16 @@
             this.spinShow = false;
             this.$Modal.fcError(message);
           } else {
+            if(window.ProjectConfig &&  window.ProjectConfig.moveBar && !movebar.verifyBar){
+                message = {
+                  title: this.$t('feedback.error'),
+                  content: this.$t('tips.loginVerification'),
+                  mask: true,
+                };
+                this.spinShow = false;
+                this.$Modal.fcError(message);
+               return false; 
+            }
             const param = {
               username: username.value,
               password: encryptedPassword() ? `${randomKey}${btoa(password.value)}` : password.value,
@@ -381,7 +398,7 @@
         if (enableInitializationRequest()) {
           await network.get('/p/cs/hello').then((res) => {
             // 此方法用于向外界（JFlow）提供用户信息。供外部处理自己的需要逻辑。
-            
+
             DispatchEvent('userReady', {
               detail: {
                 userInfo: JSON.parse(JSON.stringify(res.data))

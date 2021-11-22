@@ -432,12 +432,12 @@ export default {
             if (c.readonly === true) {
               if (c.defval) { // 处理复制时有不可编辑，且有默认值情况
                 if (JSON.stringify(modifyData) !== '{}') { // 修改新增时不可编辑且有默认值，将修改后的值删除
-                  delete (modifyData[b.colname]);
+                  delete (modifyData[c.colname]);
                 }
                 if (c.display === 'select' || c.display === 'check') {
-                  copySaveDataForParam[b.colname] = c.defval;
+                  copySaveDataForParam[c.colname] = c.defval;
                 } else if (c.fkdisplay === 'drp' || c.fkdisplay === 'mrp' || c.fkdisplay === 'pop' || c.fkdisplay === 'mop') {
-                  copySaveDataForParam[b.colname] = [{ ID: c.refobjid, Label: c.defval }];
+                  copySaveDataForParam[c.colname] = [{ ID: c.refobjid, Label: c.defval }];
                 }
               } else {
                 c.valuedata = '';// 将配置为不可编辑的值置空
@@ -457,7 +457,7 @@ export default {
                 }
               } else if (c.fkdisplay === 'mop') {
                 try {
-                  const number = JSON.parse(b.valuedata).lists.result.length;
+                  const number = JSON.parse(c.valuedata).lists.result.length;
                   copySaveDataForParam[c.colname] = [{ ID: b.valuedata, Label: i18n.t('messages.selectedData',{total:number}) }];
                 } catch (e) {
                   copySaveDataForParam[c.colname] = c.valuedata;

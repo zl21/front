@@ -82,23 +82,23 @@ const getCategory = () => {
           backTouristRoute()
         } else if (res.data.data.length > 0) {
           store.commit('global/updateMenuLists', res.data.data)
-          const serviceIdMaps = res.data.data
-            .map((d) => d.children)
-            .reduce((a, c) => a.concat(c), [])
-            .map((d) => d.children)
-            .reduce((a, c) => a.concat(c), [])
-            .filter(
-              (d) =>
-                d.type === 'table' || d.type === 'action' || d.type === 'tree'
-            )
-            .reduce((a, c) => {
-              a[c.value.toUpperCase()] = c.serviceId
-              return a
-            }, {})
-          window.localStorage.setItem(
-            'serviceIdMap',
-            JSON.stringify(serviceIdMaps)
-          )
+          // const serviceIdMaps = res.data.data
+          //   .map((d) => d.children)
+          //   .reduce((a, c) => a.concat(c), [])
+          //   .map((d) => d.children)
+          //   .reduce((a, c) => a.concat(c), [])
+          //   .filter(
+          //     (d) =>
+          //       d.type === 'table' || d.type === 'action' || d.type === 'tree'
+          //   )
+          //   .reduce((a, c) => {
+          //     a[c.value.toUpperCase()] = c.serviceId
+          //     return a
+          //   }, {})
+          // window.localStorage.setItem(
+          //   'serviceIdMap',
+          //   JSON.stringify(serviceIdMaps)
+          // )
           DispatchEvent('gatewayReady')
         } else if (getLocalObject('loginStatus') === true) {
           setMessage({ content: i18n.t('messages.NoMenuPermission') })

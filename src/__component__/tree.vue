@@ -137,6 +137,10 @@
           this.$refs.zTree.clearInputVal();
         // this.$refs.zTree.init();
       },
+      search() {
+          this.$refs.zTree.search();
+        // this.$refs.zTree.init();
+      },
       callBackFunction(tdata, resData, key, value) {
         // key:要筛选的字段
         // value:当前参数

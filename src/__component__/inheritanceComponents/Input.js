@@ -173,6 +173,12 @@ class CustomInput {
       }
     }
 
+    // 如果不需要加密(isNeedEncrypt为false)，则不让前端加密生效，取后端返回值即可
+    if(this.item.webconf && this.item.webconf.isNeedEncrypt === false) {
+      this.props.type = this.item.display === 'OBJ_TEXTAREA' ? 'textarea' : 'text'
+      this.props.encrypt = false
+    }
+
     // disabled和readonly的值需要保持一致
     this.props.readonly = this.props.disabled
 

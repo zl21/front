@@ -394,6 +394,18 @@
         :options="_items.props"
         @change="checkboxGroupValueChange"
       />
+
+      <!-- monthDay组件 -->
+      <MonthDay
+        v-if="_items.type === 'MonthDay'"
+        :ref="_items.field"
+        v-model="_items.value"
+        :placeholder="_items.props.placeholder"
+        :disabled="_items.props.disabled"
+        :editable="false"
+        :transfer="true"
+        @on-change="monthDayValueChange"
+      />
       
       <!-- string组件 -->
       <string-render 
@@ -727,6 +739,10 @@
         this._items.value = value;
         this.valueChange();
       },
+      monthDayValueChange(value) {
+        this._items.value = value;
+        this.valueChange();
+      },
       // input event
       inputChange(event, $this) {
         this._items.value = event.target.value;
@@ -829,8 +845,9 @@
         ) {
           this._items.event.blur(event, $this, this._items);
         }
-
-        this.validateInput();
+       if(!this._items.props.tableGetName){
+          this.validateInput();
+       }
       },
 
       // 校验输入值
