@@ -208,7 +208,9 @@
 
       //   return true;
       // },
-
+      init() {
+        this.zTreeObj = $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
+      },
       checkNode() {
         // 选中
         const treeObj = $.fn.zTree.getZTreeObj(`${this.tableName}`);
@@ -289,6 +291,7 @@
       },
       clearInputVal() {
         this.inputValue = '';
+        // this.search();
       },
       // freshArea() {
       //   $.fn.zTree.init($('#treeDemo'), this.setting, this.zNodes);
@@ -299,7 +302,7 @@
     },
     mounted() {
       this.$nextTick(() => {
-        this.zTreeObj = $.fn.zTree.init($(`#${this.tableName}`), this.setting, this.zNodes);
+        this.init();
       });
 
       // $(document).ready(() => {

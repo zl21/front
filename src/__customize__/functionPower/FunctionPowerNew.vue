@@ -7,6 +7,7 @@
         type="fcdefault"
         class="Button"
         @click="btnClick(item)"
+        :loading="item.webname === 'CmenuPermissionSaveCmd' && saveLoading"
       >
         {{ item.webdesc }}
       </Button>
@@ -295,10 +296,7 @@
         </div>
       </div>
     </Modal>
-    <Spin
-      v-show="spinShow"
-      fix
-    >
+    <Spin v-show="spinShow" fix>
       <Icon
         type="ios-loading"
         size="48"
@@ -318,7 +316,6 @@
 
   const functionPowerActions = () => require(`../../__config__/actions/version_${Version()}/functionPower.actions.js`);
 
-
   export default {
     components: {tree},
     data() {
@@ -326,6 +323,7 @@
         pageInit: false,
         isSaveError: false, // 是否保存失败
         spinShow: false, // loading是否显示
+        saveLoading: false,
 
         copyPermission: false, // 复制权限弹框
         copyType: '', // 复制权限弹框  复制方式
@@ -599,10 +597,11 @@
       }, // 刷新数据
       refreshButtonClick() {
         console.log('refreshButtonClick')
-        this.$refs.ztree.clearInputVal();
         this.isSaveError = false;
         if (this.checkNoSaveData('refresh')) {
         } else {
+          this.$refs.ztree.clearInputVal();
+          this.$refs.ztree.search();
           this.refresh();
           this.selectFirstOnce();
         }
@@ -808,7 +807,8 @@
       treeSearch(e, flag) {
         if (!e) {
           this.pageInit = false;
-          this.refreshButtonClick();
+          this.selectFirstOnce();
+          // this.refreshButtonClick();
         }
         if (flag) {
           this.groupId = '';
@@ -868,6 +868,7 @@
         // console.log('this.groupId', this.groupId)
         this.spinShow = false;
         if (!this.groupId) {
+          this.saveLoading = false;
           this.$Modal.fcWarning({
             mask: true,
             title: this.$t('feedback.warning'),
@@ -1011,6 +1012,7 @@
         } else if (item.webname === 'copyPermissionCmd') {
           this.copyPerm();
         } else if (item.webname === 'CmenuPermissionSaveCmd') {
+          this.saveLoading = true;
           this.savePermission();
         }
       }, // 点击按钮触发
@@ -1584,14 +1586,13 @@
         this.tabthCheckboxSelected(this.columns[8], 'extend');
       }, // 下边表格功能列checkbox改变时触发
       savePermission(type) {
-        // console.log('type', type)
         this.getSaveData();
         if (this.tableSaveData.length === 0) {
           this.$Message.info({
             content: this.$t('messages.noChange')
           });
+          setTimeout(() => this.saveLoading = false, 1000)
         } else {
-          this.spinShow = true;
           const obj = {
             GROUPID: this.groupId,
             CP_C_GROUPPERM: this.tableSaveData
@@ -1600,7 +1601,7 @@
           functionPowerActions().savePermission({
             params: obj,
             success: (res) => {
-              this.spinShow = false;
+              setTimeout(() => this.saveLoading = false, 1000)
               if (res.data.code === 0) {
                 this.isSaveError = false;
                 if (type === 'refresh') {
