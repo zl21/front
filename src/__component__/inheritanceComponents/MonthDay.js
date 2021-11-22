@@ -26,6 +26,8 @@ class CustomMonthDay {
       format: 'MM-dd',
       disabled: new SetDisable(this.item).init(),
       placeholder:new SetPlaceholder(this.item).init(),
+      editable: false,
+      transfer: true,
     }
   }
 }
