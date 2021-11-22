@@ -148,6 +148,9 @@ export default {
         if (item.webconf && item.webconf.display === 'String') {
           item.display = 'String';
         }
+        if (item.webconf && item.webconf.display === 'MonthDay') {
+          item.display = 'MonthDay';
+        }
         if (item.colname) {
           item._index = Math.random()
           this.ItemLists[item.colname] = JSON.parse(JSON.stringify(item));
