@@ -132,6 +132,7 @@
           buttonGroupShowConfig: {// 标准按钮
             buttonGroupShow: []
           },
+          saveMainType:true, // 是否只保存主表
           jflowButton: [], // jflow配置按钮
           btnclick: (type, item) => {
             const self = this;
@@ -1517,6 +1518,14 @@
         }
         return id;
       },
+      getIds(tab){
+        // 获取当前的ids  
+        if(this.tabCurrentIndex >0 && this.tabPanel){
+          return  [this.tabPanel[this.tabCurrentIndex].tableid];
+        }else{
+          return [this.itemId];
+        }
+      },
       routingHop(tab, id) {
         // tab.action配置路径前不能加/
         // /:itemId?id=1&&name=2
@@ -1652,6 +1661,10 @@
         if (data && data.requestUrlPath) {
           this.saveButtonPath = data.requestUrlPath;
         }
+        // 兼容sp 配置走标准配置
+        // if (this.saveButtonPath.includes('sp|')) {
+        //       this.saveButtonPath = null;
+        // } 
         const dom = document.getElementById('actionMODIFY');
         if (dom) {
           if (data) {
@@ -1682,6 +1695,15 @@
       },
       objTabActionSlient(tab) { // 动作定义静默
         this.objTabActionSlientConfirm(tab);
+      },
+      getIds(tab){
+        // 获取当前的ids  
+        if(this.tabCurrentIndex >0 && this.tabPanel){
+          return  [this.tabPanel[this.tabCurrentIndex].tableid];
+        }else{
+          return [this.itemId];
+        }
+
       },
       // 动作定义静默执行
       objTabActionSlientConfirm(tab) {
@@ -1736,6 +1758,12 @@
                 ID: this.itemId
               };
             }
+             //  sp 存储过程
+            if(tab.actiontype === 'sp' || (tab.action && tab.action.includes('sp|'))){
+                obj.ids = this.getIds(tab);
+                delete obj.ID
+            }
+
           } else if (this.subtables()) { // 有子表   左右结构
             if (this.itemName === this.tableName) { // 主表静默逻辑  走保存的逻辑
               obj[this.tableName] = {
@@ -1744,7 +1772,7 @@
             } else if (this.getCurrentItemInfo().tabrelation === '1:1') { // 子表静默逻辑    // 没有表格
               obj = {
                 tableName: this.itemName, // 子表表名
-                ids
+                ids:this.getIds(tab)
               };
             } else { // 有表格
               obj = {
@@ -2334,6 +2362,14 @@
             this.tabCloseAppoint(closeParame);
           }
         } else if (type === 'back') {
+          const param = {
+            tableId,
+            tableName,
+            back: true,
+          };
+          this.tabOpen(param);
+        } else if (!enableOpenNewTab()) {
+          // enableOpenNewTab为false,即单对象不是多开tab的情况，删除单对象后要返回列表
           const param = {
             tableId,
             tableName,
@@ -3284,6 +3320,8 @@
 
       },
       verifyRequiredInformation() { // 验证表单必填项
+      // 默认主表必须校验
+        this.saveMainType = true;
         if (this.temporaryStorage) { // 配置了暂存则不校验
           this.temporaryStorage = false;
           return true;
@@ -3292,38 +3330,63 @@
 
         this.saveParameters();// 获取主子表参数
         // 处理主表必填控制
-        let panelForm_dom =  document.querySelectorAll('.panelForm');
-        let panelForm = [].reduce.call(panelForm_dom, function(arr,div) {
-          if(div._vue_){
+         // 处理主表必填控制
+      let panelForm_dom = document.querySelectorAll('.panelForm');
+      let panelForm = [].reduce.call(panelForm_dom, function (arr, div) {
+          if (div._vue_) {
             arr.push(div._vue_);
           }
-            return arr;
-        },[]);
-        let validate = [];
-        if(panelForm && panelForm[0]){
-           validate = panelForm.reduce((arr,item,index)=>{
-              if(index === 0){
-                // 默认第一个主表
-                arr.push(...item.validate())
-              }else if(this.itemName ===item.tableName){
-                arr.push(...item.validate())
-              }
-
-              return arr;
-          },[])
+          return arr;
+        }, []);
+      if (this.objectType === 'horizontal') {        
+        let panelFormParent = FindInstance(this,`tapComponent.${this.tableName}`)[0];
+        let panelFormVue = this.$_live_getChildComponent(panelFormParent, 'panelForm');
+        if(panelForm[0] && panelForm[0].tableName !==this.tableName){
+            panelForm.unshift(panelFormVue);
         }
-        if(validate.length > 0){
-            this.$Message.warning(validate[0].tip);
-            let dom = document.querySelector(`#${validate[0].colname}`);
-            if(dom){
-              let Input = dom.querySelector('input') || dom.querySelector('textarea');
-              if(Input){
-                  Input.focus();
-              }
+      }
+      let validate = [];
 
+      if (panelForm && panelForm[0]) {
+        validate = panelForm.reduce((arr, item, index) => {
+          if (index === 0) {
+            // 默认第一个主表
+            arr.push(...item.validate())
+          } else if (this.itemName === item.tableName) {
+            if (!isItemTableNewValidation()) {
+              if (Object.keys(item.formChangeData).length > 0 || item.checkedChildForm) {
+                let message = item.validate()
+                arr.push(...message);
+                this.saveMainType = false;
+                // if(message.length>0){
+                //   // 子表有校验
+                //   this.saveMainType = false;
+                // }
+              }
+            } else {
+              let message = item.validate()
+                arr.push(...message);
+                // 子表有校验
+                this.saveMainType = false;
             }
-            return false;
+          }
+
+          return arr;
+        }, [])
+      }
+      if (validate.length > 0) {
+        this.$Message.warning(validate[0].tip);
+        
+        let dom = document.querySelector(`#${validate[0].parentId} #${validate[0].colname}`);
+        if (dom) {
+          let Input = dom.querySelector('input') || dom.querySelector('textarea');
+          if (Input) {
+            Input.focus();
+          }
+
         }
+        return false;
+      }
 
         // const checkedInfo = this.currentParameter.checkedInfo;// 主表校验信息
         // if (checkedInfo || validate) {
@@ -3339,105 +3402,105 @@
         //     }
         //   }
         // }
-        if (this.subtables()) { // 存在子表时
-          let tabinlinemode = '';
-          this.tabPanel.forEach((item) => {
-            if (item.tablename === this.itemName) {
-              tabinlinemode = item.tabinlinemode;
-            }
-          });
-          console.log( this.tabPanel,' this.tabPanel');
-          if (tabinlinemode === 'Y') { // 当子表中存在form时
-            if (!this.itemTableValidation) {
-              const itemCheckedInfo = this.itemCurrentParameter.checkedInfo;// 子表校验信息
-              this.saveParameters();
-              if (this.objectType === 'vertical') {
-                if (this.itemId === 'New') {
-                  if (this.itemNameGroup.length > 0) { // 有子表
-                    if (KEEP_SAVE_ITEM_TABLE_MANDATORY) {
-                       // 为true时，子表没有必填项也必须要输入值才能保存
-                      const addInfo = this.itemCurrentParameter.add[this.itemName];
-                      if (itemCheckedInfo) {
-                        const itemMessageTip = itemCheckedInfo.messageTip;
-                        if (itemMessageTip) {
-                          if (itemMessageTip.length > 0) {
-                            this.$Message.warning(itemMessageTip[0]);
-                            if (itemCheckedInfo && itemCheckedInfo.validateForm) {
-                              itemCheckedInfo.validateForm.focus();
-                            }
-                            return false;
-                          }
-                        } if (Object.values(addInfo).length < 1) {
-                          this.$Message.warning(this.$t('messages.requiredPersonalInfo'));
+        // if (this.subtables()) { // 存在子表时
+        //   let tabinlinemode = '';
+        //   this.tabPanel.forEach((item) => {
+        //     if (item.tablename === this.itemName) {
+        //       tabinlinemode = item.tabinlinemode;
+        //     }
+        //   });
+        //   console.log( this.tabPanel,' this.tabPanel');
+        //   if (tabinlinemode === 'Y') { // 当子表中存在form时
+        //     if (!this.itemTableValidation) {
+        //       const itemCheckedInfo = this.itemCurrentParameter.checkedInfo;// 子表校验信息
+        //       this.saveParameters();
+        //       if (this.objectType === 'vertical') {
+        //         if (this.itemId === 'New') {
+        //           if (this.itemNameGroup.length > 0) { // 有子表
+        //             if (KEEP_SAVE_ITEM_TABLE_MANDATORY) {
+        //                // 为true时，子表没有必填项也必须要输入值才能保存
+        //               const addInfo = this.itemCurrentParameter.add[this.itemName];
+        //               if (itemCheckedInfo) {
+        //                 const itemMessageTip = itemCheckedInfo.messageTip;
+        //                 if (itemMessageTip) {
+        //                   if (itemMessageTip.length > 0) {
+        //                     this.$Message.warning(itemMessageTip[0]);
+        //                     if (itemCheckedInfo && itemCheckedInfo.validateForm) {
+        //                       itemCheckedInfo.validateForm.focus();
+        //                     }
+        //                     return false;
+        //                   }
+        //                 } if (Object.values(addInfo).length < 1) {
+        //                   this.$Message.warning(this.$t('messages.requiredPersonalInfo'));
 
-                          return false;
-                        }
-                      }
-                    } else if (itemCheckedInfo) {
-                      const itemMessageTip = itemCheckedInfo.messageTip;
-                      if (itemMessageTip) {
-                        if (isItemTableNewValidation() && itemMessageTip.length > 0) {
-                          this.$Message.warning(itemMessageTip[0]);
-                          if (itemCheckedInfo && itemCheckedInfo.validateForm) {
-                            itemCheckedInfo.validateForm.focus();
-                          }
-                          return false;
-                        } if (!isItemTableNewValidation()) {
-                          const itemName = this.itemName;// 子表表名
-                          let itemAdd = [];
-                          if (this.updateData[itemName] && this.updateData[itemName].add[itemName]) {
-                            itemAdd = Object.values(this.updateData[itemName].add[itemName]);// 子表新增的值
-                          }
+        //                   return false;
+        //                 }
+        //               }
+        //             } else if (itemCheckedInfo) {
+        //               const itemMessageTip = itemCheckedInfo.messageTip;
+        //               if (itemMessageTip) {
+        //                 if (isItemTableNewValidation() && itemMessageTip.length > 0) {
+        //                   this.$Message.warning(itemMessageTip[0]);
+        //                   if (itemCheckedInfo && itemCheckedInfo.validateForm) {
+        //                     itemCheckedInfo.validateForm.focus();
+        //                   }
+        //                   return false;
+        //                 } if (!isItemTableNewValidation()) {
+        //                   const itemName = this.itemName;// 子表表名
+        //                   let itemAdd = [];
+        //                   if (this.updateData[itemName] && this.updateData[itemName].add[itemName]) {
+        //                     itemAdd = Object.values(this.updateData[itemName].add[itemName]);// 子表新增的值
+        //                   }
 
-                          if (itemAdd.length > 0 && itemMessageTip.length > 0) {
-                            this.$Message.warning(itemMessageTip[0]);
-                            if (itemCheckedInfo && itemCheckedInfo.validateForm) {
-                              itemCheckedInfo.validateForm.focus();
-                            }
-                            return false;
-                          }
-                        }
-                      }
-                    }
-                  }
-                } else if (this.getCurrentItemInfo().tabrelation === '1:1') {
-                  const itemMessageTip = itemCheckedInfo.messageTip;
-                  if (itemMessageTip) {
-                    if (itemMessageTip.length > 0) {
-                      this.$Message.warning(itemMessageTip[0]);
-                      if (itemCheckedInfo && itemCheckedInfo.validateForm) {
-                        itemCheckedInfo.validateForm.focus();
-                      }
-                      return false;
-                    }
-                  }
-                } else if (Object.values(this.itemCurrentParameter.add[this.itemName]).length > 0) { // 处理当子表填入一个必填项值时，其余必填项必须填写
-                  const itemMessageTip = itemCheckedInfo.messageTip;
-                  if (itemMessageTip) {
-                    if (itemMessageTip.length > 0) {
-                      this.$Message.warning(itemMessageTip[0]);
-                      if (itemCheckedInfo && itemCheckedInfo.validateForm) {
-                        itemCheckedInfo.validateForm.focus();
-                      }
-                      return false;
-                    }
-                  }
-                }
-              } else if (itemCheckedInfo) {
-                const itemMessageTip = itemCheckedInfo.messageTip;
-                if (itemMessageTip) {
-                  if (itemMessageTip.length > 0) {
-                    this.$Message.warning(itemMessageTip[0]);
-                    if (itemCheckedInfo && itemCheckedInfo.validateForm) {
-                      itemCheckedInfo.validateForm.focus();
-                    }
-                    return false;
-                  }
-                }
-              }
-            }
-          }
-        }
+        //                   if (itemAdd.length > 0 && itemMessageTip.length > 0) {
+        //                     this.$Message.warning(itemMessageTip[0]);
+        //                     if (itemCheckedInfo && itemCheckedInfo.validateForm) {
+        //                       itemCheckedInfo.validateForm.focus();
+        //                     }
+        //                     return false;
+        //                   }
+        //                 }
+        //               }
+        //             }
+        //           }
+        //         } else if (this.getCurrentItemInfo().tabrelation === '1:1') {
+        //           const itemMessageTip = itemCheckedInfo.messageTip;
+        //           if (itemMessageTip) {
+        //             if (itemMessageTip.length > 0) {
+        //               this.$Message.warning(itemMessageTip[0]);
+        //               if (itemCheckedInfo && itemCheckedInfo.validateForm) {
+        //                 itemCheckedInfo.validateForm.focus();
+        //               }
+        //               return false;
+        //             }
+        //           }
+        //         } else if (Object.values(this.itemCurrentParameter.add[this.itemName]).length > 0) { // 处理当子表填入一个必填项值时，其余必填项必须填写
+        //           const itemMessageTip = itemCheckedInfo.messageTip;
+        //           if (itemMessageTip) {
+        //             if (itemMessageTip.length > 0) {
+        //               this.$Message.warning(itemMessageTip[0]);
+        //               if (itemCheckedInfo && itemCheckedInfo.validateForm) {
+        //                 itemCheckedInfo.validateForm.focus();
+        //               }
+        //               return false;
+        //             }
+        //           }
+        //         }
+        //       } else if (itemCheckedInfo) {
+        //         const itemMessageTip = itemCheckedInfo.messageTip;
+        //         if (itemMessageTip) {
+        //           if (itemMessageTip.length > 0) {
+        //             this.$Message.warning(itemMessageTip[0]);
+        //             if (itemCheckedInfo && itemCheckedInfo.validateForm) {
+        //               itemCheckedInfo.validateForm.focus();
+        //             }
+        //             return false;
+        //           }
+        //         }
+        //       }
+        //     }
+        //   }
+        // }
 
         if (window[this.tableName] && window[this.tableName].emitChangeAndContinue) {
           window[this.tableName].emitChangeAndContinue();
@@ -3457,12 +3520,17 @@
       savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType) { // 主表新增保存方法
         const tableName = this.tableName;
         const objectType = this.objectType;
-        const isreftabs = this.subtables();
+        let isreftabs = this.subtables();
         const itemNameGroup = this.itemNameGroup;
         let tabrelation = false;
         if (this.getCurrentItemInfo().tabrelation === '1:1') {
           tabrelation = true;
         }
+        if(this.saveMainType && this.itemId === 'New' && !path){
+          //只校验主表的时候不传子表
+            isreftabs = false;
+        }
+        
         const parame = {
           ...this.currentParameter, // 主表信息
           itemCurrentParameter, // 子表信息
@@ -3479,7 +3547,7 @@
           temporaryStoragePath: this.temporaryStoragePath, // 暂存path
           tabrelation, // 子表1:1标记
           // buttonInfo,
-          jflowPath: this.saveInfo.jflowPath
+          jflowPath: this.saveInfo.jflowPath,
         };
         const promise = new Promise((resolve, reject) => {
           if (this.itemId === 'New') {

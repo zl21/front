@@ -19,6 +19,7 @@ export default {
   },
   async getMenuLists({ commit }) {
     if (enableInitializationRequest()) {
+      console.log('测试');
       await network.post('/p/cs/getSubSystems').then((res) => {
         commit('updateMenuLists', res.data.data);
       });

@@ -14,6 +14,7 @@
       <input ref="code" value="" class="pwd code" :placeholder="$t('messages.enterCode')">
     </div>
     <ErCode ref="ercode" :visible="loginType" @refresh="getNewCode" />
+    <MoveBar ref="movebar"   v-if="moveBarshow" @on-change="moveChange"/>
 
     <div class="divToggle" v-if="loginType">
       <span class="sanjiao" >
@@ -27,9 +28,11 @@
 <script>
   import network from '../../__utils__/network';
   import ErCode from "./components/ErCode";
+  import MoveBar from "../Login/MoveBar.vue";
+
   export default {
     name: 'AccountLogin',
-    components: { ErCode },
+    components: { ErCode ,MoveBar},
     props: {
       loginType: {
         type: Boolean,
@@ -42,7 +45,9 @@
     },
     data() {
       return {
-        key: ''
+        key: '',
+        moveBarshow:window.ProjectConfig &&  window.ProjectConfig.moveBar,
+        verifyBar:false  // 滑动条
       }
     },
     methods: {
@@ -55,6 +60,10 @@
       getNewCode(obj) {
         const { key } = obj;
         this.key = key
+      },
+      moveChange(val){
+        // 滑动条
+        this.verifyBar = val
       }
     }
   }

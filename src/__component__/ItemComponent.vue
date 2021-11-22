@@ -829,8 +829,9 @@
         ) {
           this._items.event.blur(event, $this, this._items);
         }
-
-        this.validateInput();
+       if(!this._items.props.tableGetName){
+          this.validateInput();
+       }
       },
 
       // 校验输入值

@@ -227,6 +227,9 @@ export default {
     //   document.getElementById('ContentDisplayArea').style.marginLeft = '190px';
     // }
     state.collapseHistoryAndFavorite = !state.collapseHistoryAndFavorite;
+
+    const cache = !state.collapseHistoryAndFavorite;
+    window.localStorage.setItem('showFavorites', cache);
     DispatchEvent('doCollapseHistoryAndFavorite');
   },
   updateHistoryAndFavorite(state, {
@@ -488,6 +491,12 @@ export default {
     label, keepAliveModuleName, tableName, routeFullPath, routePrefix, itemId, sameNewPage
   }) {
     const notExist = state.openedMenuLists.filter(d => d.label === label && d.keepAliveModuleName === keepAliveModuleName).length === 0;
+    if(/undefined/.test(label) && keepAliveModuleName && keepAliveModuleName.split('.').length>2){
+      // label 不存在的时候赋值
+      let keepAliveLabelMapsAll = JSON.parse(window.localStorage.getItem('keepAliveLabelMapsAll')|| '{}');
+      let keepAliveModuleLabel  = keepAliveModuleName.replace(/V.|H./,'S.').split('.').splice(0,3).join('.');
+      label = label.replace(/undefined/,keepAliveLabelMapsAll[keepAliveModuleLabel]);
+    }
     const currentTabInfo = {
       label,
       keepAliveModuleName,
@@ -498,7 +507,7 @@ export default {
       sameNewPage
     };
     // console.log('increaseOpenedMenuLists');
-
+     
     if (notExist) {
       if (state.openedMenuLists.length > openTabNumber() && enableOpenNewTab()) { // 新开tab限制为6个，超过6个后，替换最后一个
         state.activeTab = currentTabInfo;
@@ -656,7 +665,11 @@ export default {
       const routeFullPathRes = routeFullPath.substring(0, index + 1);
       if (item.includes(routeFullPathRes)) { //
         // 外键跳转与单对象跳转同一个单对象界面时，外键逻辑为不显示返回按钮，自定义跳转为返回到来源自定义界面，点击返回时，应清除对应的外键关系
-        deleteFromSessionObject('routeMapRecordForHideBackButton', item);
+        if(routeFullPathRes.includes(tab.routeFullPath) && enableOpenNewTab()){
+          deleteFromSessionObject('routeMapRecordForHideBackButton', item);
+        }else if(!enableOpenNewTab()){
+          deleteFromSessionObject('routeMapRecordForHideBackButton', item);
+        }
         // window.sessionStorage.setItem('ignore', true);
       }
     });
@@ -724,7 +737,9 @@ export default {
     // const index = state.keepAliveLists.indexOf(tab.tableName);
     // if()
   
-    state.keepAliveLists.map((k, i) => {
+     var i = state.keepAliveLists.length;
+     while(i--) {
+      let k = state.keepAliveLists[i];
       const typeKeepAlive = k.split('.')[0];
       let itemId = null;
       let tableName = null;
@@ -764,10 +779,8 @@ export default {
       } else if (kp === tab.tableName) {
         state.keepAliveLists.splice(i, 1);
       }
-    });
-    // if (index > -1) {
-    //   state.keepAliveLists.splice(index, 1);
-    // }
+    }
+    
     openedMenuLists.forEach((item, index) => {
       let samePath = false;
       if (enableOpenNewTab()) {

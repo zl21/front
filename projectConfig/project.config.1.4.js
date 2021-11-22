@@ -2,7 +2,8 @@ module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
   projectIconPath: '', // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
-  target: 'http://r3-8098.dev.syman.cn/', // 框架研发网关开启环境
+   target: 'http://r3-8098.dev.syman.cn/', // 框架研发网关开启环境
+  //target: 'http://r3-java.dev.burgeononline.com/', // 框架后端测试分支
   // target: 'http://retail-service-center.dev.burgeononline.com/',
   // target: 'http://r3-java.dev.burgeononline.com', // java环境
   // target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 新版本jflow测试环境
@@ -41,6 +42,7 @@ module.exports = {
   // target: 'http://dev.dev.lark-erp.cn/',
   // target: 'http://139.224.134.69:58000', // OMS
   // target: 'http://47.113.103.201:26666', // 斯凯奇
+  // target:'http://retail-service-center.dev.burgeononline.com/',
 
   
 
@@ -105,7 +107,6 @@ module.exports = {
   enableOpenNewTab: true, // 列表界面打开 同表 单对象是否新开tab,默认为false
   blockFullOperation: false, // 禁止不选数据时的批量修改操作,
   customizeMixins: { // 获取所有外部接入的mixins对象
-    setPanel: null,
     //singleObjectButtonGroup: require('./demo/singleObjectButtonGroup.js').default,
     //verticalTableDetailCustomize: require('./demo/horizontalTableDetailCustomize.js').default,
     // standardTableListsCustomize: {
@@ -225,4 +226,5 @@ module.exports = {
   //   }
   // },
   enableSystemUpdate: false, // 开启系统升级功能
+  moveBar:false  // 是否开启登录bar
 };

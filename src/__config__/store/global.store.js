@@ -22,7 +22,7 @@ export default () => ({
     allMenu: {}, // 全部菜单
     // customizeMessage: [], // 存入跳转到定制界面携带的参数    
     primaryMenuIndex: -1,
-    collapseHistoryAndFavorite: false,
+    collapseHistoryAndFavorite: window.localStorage.getItem('showFavorites') === 'true' ? false : true,
     history: [],
     favorite: [],
     menuLists: [],
