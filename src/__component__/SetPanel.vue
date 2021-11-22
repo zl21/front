@@ -95,6 +95,11 @@
       num7() {
         this.changeNum();
       },
+
+      collapseHistoryAndFavorite(val) {
+        this.showFavorites = !val
+      },
+      
       changeSearchFoldnum(val){
         this.num7 = val.queryDisNumber;
         if(this.switchValue !== val.switchValue){
