@@ -17,13 +17,6 @@ export default {
     value: {
       handler(val, old) {
         if (this.items.detailType) {
-          let fkdisplay = this.items.fkobj && this.items.fkobj.fkdisplay;
-          if(fkdisplay === 'drp'){
-            // 在单对象界面中外键字段必须有值
-            if(!Array.isArray(val) && !isEmpty(val)){
-              return;
-            }
-          }
           let ParentForm = this.findParentForm();
           // 获取当前组件的值
           if(!ParentForm){
@@ -166,9 +159,13 @@ export default {
                 // ParentForm.defaulDataValue = JSON.parse(JSON.stringify(ParentForm.formData));
                 // ParentForm.defaulDataLabel = Object.assign(JSON.parse(JSON.stringify(ParentForm.defaulDataLabel)),R3Label);
                 // this.InitializationForm(ParentForm)
+<<<<<<< HEAD
                 console.log(this.items.tableName,'232332',this.activeTab.tableName)
 
                 this.changeForm(ParentForm);
+=======
+                this.changeForm(ParentForm,val);
+>>>>>>> ll_r3_dev
                 return;
                 
               }else{
@@ -217,7 +214,7 @@ export default {
                 }
               }
             }
-            this.changeForm(ParentForm);
+            this.changeForm(ParentForm,val);
             
          
 
@@ -238,13 +235,13 @@ export default {
   methods:{
     InitializationForm(ParentForm){
       // 默认值
-      ParentForm.initializationForm();
+      //ParentForm.initializationForm();
     },
     setNewModify(){
       // 新增修改
 
     },
-    changeForm(ParentForm){
+    changeForm(ParentForm,val){
       // 修改后
       if (ParentForm.$parent.formPanelChange) {
         ParentForm.$parent.formPanelChange(ParentForm.formChangeData, ParentForm.formDataLabel,ParentForm.formChangeDataLabel)
@@ -254,6 +251,14 @@ export default {
 
       let tabPanelsDom = document.querySelector(`#${this.activeTab.tableName}`);
       if(tabPanelsDom){
+        let fkdisplay = this.items.fkobj && this.items.fkobj.fkdisplay;
+        if(['drp','pop','mop'].includes(fkdisplay)){
+          // 在单对象界面中外键字段必须有值
+          if(!Array.isArray(val) && !isEmpty(val)){
+            return;
+          }
+        }
+      
         tabPanelsDom._vue_.setTabPanels();
       }
     }
