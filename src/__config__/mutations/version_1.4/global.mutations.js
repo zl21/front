@@ -976,6 +976,7 @@ export default {
         path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
       }
     }
+    
     if (type === 'tableDetailAction' || type === 'C') {
       if (url) {
         if (url.includes('?')) {
@@ -1088,6 +1089,16 @@ export default {
       }
       return;
     }
+    // 不是新开的菜单，自动删除上一次的新增界面
+   if(window.ProjectConfig && window.ProjectConfig.enableOpenNewTab){
+    let NewkeepAliveModuleName = keepAliveModuleName.substr(2,100)+'.New';
+    state.keepAliveLists = state.keepAliveLists.filter((x)=>{
+        if(!new RegExp(NewkeepAliveModuleName).test(x)){
+          return x;
+        }
+    });
+   }
+
     if (path) {
       router.push({
         path
