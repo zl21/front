@@ -2,6 +2,7 @@ import OmsAgTable from '../view/OmsAgTable.vue'
 import Md from './md/OmsAgTable.md'
 
 import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
+
 import i18n from "@burgeon/internationalization/i18n"; // 国际化
 window.$i18n = i18n;
 
@@ -109,7 +110,7 @@ export default {
 	parameters: {
 		notes: Md,
 	},
-	// argTypes: {
+	argTypes: {
 	// backgroundColor: { control: 'color' },
 	// size: {
 	//   control: { type: 'select' },
