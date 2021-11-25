@@ -2,12 +2,7 @@ import OmsButton from '../view/OmsButton.vue'
 import buttonMd from './md/OmsButton.md'
 import { action } from "@storybook/addon-actions";
 
-import Vue from 'vue';
-import ArkUi from '@syman/ark-ui'
-import '@syman/ark-ui/dist/styles/ark-ui.css'
 import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
-
-Vue.use(ArkUi);
 
 export default {
 	title: '基础组件/OmsButton',

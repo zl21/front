@@ -8,13 +8,16 @@
 
 ### 二.使用说明
 - 引入组件注册
+
 ```javascript
 import businessAgTable from 'professionalComponents/businessAgTable';
 components :{
 	businessAgTable
 }
 ```
+
 - 组件配置项
+
 ```javascript
 	<businessAgTable
       :ag-table-config="agTableConfig"
@@ -129,6 +132,7 @@ components :{
 ```
 
 * 表格其他配置:
+
 ```javascript
     options:{
           datas:{},     //南京框架增加的配置,datas必须存在

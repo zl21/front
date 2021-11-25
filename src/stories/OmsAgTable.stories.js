@@ -1,14 +1,9 @@
 import OmsAgTable from '../view/OmsAgTable.vue'
-import buttonMd from './md/OmsButton.md'
+import Md from './md/OmsAgTable.md'
 
-import Vue from 'vue';
-import ArkUi from '@syman/ark-ui'
-import '@syman/ark-ui/dist/styles/ark-ui.css'
 import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
 import i18n from "@burgeon/internationalization/i18n"; // 国际化
 window.$i18n = i18n;
-
-Vue.use(ArkUi);
 
 const baseColumnDefs = [
 	{
@@ -112,7 +107,7 @@ export default {
 	title: '表格组件/OmsAgTable',
 	component: OmsAgTable,
 	parameters: {
-		notes: buttonMd,
+		notes: Md,
 	},
 	// argTypes: {
 	// backgroundColor: { control: 'color' },
