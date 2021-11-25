@@ -159,13 +159,7 @@ export default {
                 // ParentForm.defaulDataValue = JSON.parse(JSON.stringify(ParentForm.formData));
                 // ParentForm.defaulDataLabel = Object.assign(JSON.parse(JSON.stringify(ParentForm.defaulDataLabel)),R3Label);
                 // this.InitializationForm(ParentForm)
-<<<<<<< HEAD
-                console.log(this.items.tableName,'232332',this.activeTab.tableName)
-
-                this.changeForm(ParentForm);
-=======
                 this.changeForm(ParentForm,val);
->>>>>>> ll_r3_dev
                 return;
                 
               }else{
