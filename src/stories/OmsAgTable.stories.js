@@ -104,7 +104,7 @@ const baseColumnDefs = [
 ];
 
 export default {
-	title: '表格组件/OmsAgTable',
+	title: 'Table/OmsAgTable',
 	component: OmsAgTable,
 	parameters: {
 		notes: Md,

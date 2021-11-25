@@ -5,7 +5,7 @@ import { action } from "@storybook/addon-actions";
 import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
 
 export default {
-	title: '基础组件/OmsButton',
+	title: 'Basic/OmsButton',
 	component: OmsButton,
 	parameters: {
 		notes: buttonMd,
