@@ -17,7 +17,7 @@ module.exports = {
   // target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop网关开启环境
   // target: 'http://r3.burgeon.cn:19999/', // 'http://106.15.154.165:19999/', // Cube
- target: 'http://120.79.145.203/', // 卡宾
+ // target: 'http://120.79.145.203/', // 卡宾
    //target: 'http://r3.burgeon.cn:28888/', // 李宁
   // target: 'http://jflow-shangfei-r3.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://ark-share-dev.dev.burgeononline.com', // ArkShare环境
@@ -39,7 +39,7 @@ module.exports = {
   // target: 'http://47.102.164.111:27777', // 卡宾
   // target: 'http://dev.dev.lark-erp.cn/',
   // target: 'http://139.224.134.69:58000', // OMS
-  // target: 'http://47.113.103.201:26666', // 斯凯奇
+  target: 'http://120.78.163.25/', // 斯凯奇
 
   
 
@@ -207,6 +207,7 @@ module.exports = {
   enableChangeLang: false, // 是否开启切换语言 false关闭 true开启
   //filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
   listFormWebconf:[], // 列表是否支持webcof 字段
+  filterTablesOpenTab:['CUSTOMIZEREPORT']   // 过滤表明新开
   // imageAssets: {
   //   // 与projectConfig.image区别在于这个图片是含有文字的,用于国际化场景
   //   // 格式必须是 （变量+语言）方便解析
