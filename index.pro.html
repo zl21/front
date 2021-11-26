@@ -2,7 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Burgeon R3 Erp Frame</title>
+    <meta name="google" content="notranslate" />
+    <title>Debug: Burgeon R3 Erp Frame</title>
     <style>
       html,
       body {
@@ -28,16 +29,21 @@
       }
     </style>
    <link href="https://cdn.bootcdn.net/ajax/libs/zTree.v3/3.5.40/css/zTreeStyle/zTreeStyle.css" rel="stylesheet">
-   <link href="https://unpkg.com/@syman/ark-ui-bcl@1.1.1/publish/ark.bcl.min.css" rel="stylesheet"></link>
+   <link href="https://unpkg.com/@syman/ark-ui-bcl@1.1.2/publish/ark.bcl.min.css" rel="stylesheet"></link>
+   <!-- <link href="https://unpkg.com/@syman/burgeon-r3@2.1.3/r3.publish/src/assets/css/ag-grid.css" rel="stylesheet"></link>
+   <link href="https://unpkg.com/@syman/burgeon-r3@2.1.3/r3.publish/src/assets/css/ag-theme-balham.less" rel="stylesheet"></link> -->
   </head>
   <body>
     <script>
       window.ProjectConfig={ //因R3框架包默认版本为1.3,因vue初始化与框架挂载时机问题,需项目在使用1.4版本使,自行挂载版本号
-        Version:'1.4',
-        // routerFilter:true //版本号
+        Version:'1.4',  //版本号
       }
     </script>
     <!-- <script src="/static/js/ztree/jquery-1.4.4.min.js"></script> -->
+    <script src="/static/js/vue.js"></script>
+    <script src="/static/js/vuex.js"></script>
+    <script src="/static/js/vue-router.js"></script>
+    <script src="/static/js/axios.js"></script>
 
     <script src="/static/js/vue.min.js"></script>
     <script src="/static/js/vuex.min.js"></script>
@@ -66,6 +72,5 @@
      <script src="https://cdn.bootcdn.net/ajax/libs/zTree.v3/3.5.24/js/jquery.ztree.core.min.js"></script>
      <script src="https://cdn.bootcdn.net/ajax/libs/zTree.v3/3.5.40/js/jquery.ztree.excheck.js"></script>
      <script src="https://cdn.bootcdn.net/ajax/libs/zTree.v3/3.5.40/js/jquery.ztree.exhide.min.js"></script>
-
-    </body>
+  </body>
 </html>

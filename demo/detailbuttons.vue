@@ -1,14 +1,12 @@
 <template>
-    <div>
+    <div style="">
         <Button  type="primary" size="small" @click="buttonClick">
               查找
         </Button>
         <Button  type="primary" size="small"  @click="buttonClick('reset')">
               重置
         </Button>
-         <Button  type="primary" size="small" @click="iconClick">
-              收拉折叠框
-        </Button>
+        
         <!-- {{slotProps.item.name}} -->
       </div>
 </template>

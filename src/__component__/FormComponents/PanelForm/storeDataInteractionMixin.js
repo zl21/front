@@ -17,13 +17,6 @@ export default {
     value: {
       handler(val, old) {
         if (this.items.detailType) {
-          let fkdisplay = this.items.fkobj && this.items.fkobj.fkdisplay;
-          if(fkdisplay === 'drp'){
-            // 在单对象界面中外键字段必须有值
-            if(!Array.isArray(val) && !isEmpty(val)){
-              return;
-            }
-          }
           let ParentForm = this.findParentForm();
           // 获取当前组件的值
           if(!ParentForm){
@@ -111,10 +104,11 @@ export default {
           let keepAliveModuleName = this.activeTab.keepAliveModuleName && (this.activeTab.keepAliveModuleName).toLocaleUpperCase();
             // 初始化的状态
             if (!this.actived) {
-              // 删除空值
+              // 初始化默认值
               ParentForm.defaulDataValue = JSON.parse(JSON.stringify(ParentForm.formData));
               ParentForm.defaulDataLabel = Object.assign(JSON.parse(JSON.stringify(ParentForm.defaulDataLabel)),R3Label);
               if (isEmpty(val)) {
+                // 删除空值
                 delete ParentForm.formData[this.items.colname]
                 delete ParentForm.defaulDataValue[this.items.colname]
                 delete ParentForm.defaulDataLabel[this.items.colname]
@@ -126,6 +120,7 @@ export default {
               // 页面修改
 
               if(this.items.rangecolumn){
+                // 虚拟字段
                 if (val[0] && val[1]) {
                   ParentForm.formChangeData[this.items.rangecolumn.upperlimit.colname] = val[0];
                   ParentForm.formChangeData[this.items.rangecolumn.lowerlimit.colname] = val[1];
@@ -137,30 +132,34 @@ export default {
               let IsModuleName = keepAliveModuleName.substr(keepAliveModuleName.lastIndexOf('.')+1);
               if (/.NEW/.test(IsModuleName) || id ==='-1') {
                 // 新增  删除空值,且没有默认值     
-                ParentForm.formChangeData = Object.assign({}, ParentForm.formChangeData, current_data)
+                ParentForm.formChangeData = Object.assign({}, ParentForm.formChangeData, current_data);
                  // 虚拟区间不用传值
                 if (this.items.rangecolumn) {
                   delete ParentForm.formData[this.items.colname];
                   delete ParentForm.formDatadefault[this.items.colname];
                   delete ParentForm.formChangeData[this.items.colname];
                 }
-                if (isEmpty(val) && isEmpty(this.defaultVale)) {
+                
+                if (isEmpty(val) && isEmpty(this.defaultVale) ) {
+                  // 新增的时候删除没有默认值的空值
                   delete ParentForm.formData[this.items.colname]
                   delete ParentForm.formChangeData[this.items.colname]
-                  delete ParentForm.defaulDataLabel[this.items.colname]
+                  // delete ParentForm.defaulDataLabel[this.items.colname]
 
                   const data = {
                     key: this.items.colname,
-                    itemName: this.activeTab.tableName
+                    itemName: this.items.tableName
                   };
-                  // 删除新增有值后变空
+                  
+                  //删除新增有值后变空
                   ParentForm.deleteFormData(data)
                 }
-                // 默认值
-                ParentForm.defaulDataValue = JSON.parse(JSON.stringify(ParentForm.formData));
-                ParentForm.defaulDataLabel = Object.assign(JSON.parse(JSON.stringify(ParentForm.defaulDataLabel)),R3Label);
+               
+                // // 默认值
+                // ParentForm.defaulDataValue = JSON.parse(JSON.stringify(ParentForm.formData));
+                // ParentForm.defaulDataLabel = Object.assign(JSON.parse(JSON.stringify(ParentForm.defaulDataLabel)),R3Label);
                 // this.InitializationForm(ParentForm)
-                this.changeForm(ParentForm);
+                this.changeForm(ParentForm,val);
                 return;
                 
               }else{
@@ -174,7 +173,7 @@ export default {
                    // 删除新增有值后变空
                    const data = {
                     key: this.items.colname,
-                    itemName: this.activeTab.tableName
+                    itemName: this.items.tableName
                   };
                    ParentForm.deleteFormData(data)
                 }else{
@@ -196,7 +195,7 @@ export default {
               }
               
               // 去除图片上传成功后的保存
-              if (!ossRealtimeSave() && JSON.stringify(val) !== JSON.stringify(this.defaultVale)) {
+              if (this.items.showPlace !== 'childrenForm'&& !ossRealtimeSave() && JSON.stringify(val) !== JSON.stringify(this.defaultVale)) {
                 if (this.items.display === 'image' || this.items.display === 'OBJ_DOC') {
                   // 主子表的子表修改（1:1）的情况下
                   setTimeout(() => {
@@ -209,7 +208,7 @@ export default {
                 }
               }
             }
-            this.changeForm(ParentForm);
+            this.changeForm(ParentForm,val);
             
          
 
@@ -230,10 +229,11 @@ export default {
   methods:{
     InitializationForm(ParentForm){
       // 默认值
-      ParentForm.initializationForm();
+      //ParentForm.initializationForm();
     },
-    changeForm(ParentForm){
+    changeForm(ParentForm,val){
       // 修改后
+      
       if (ParentForm.$parent.formPanelChange) {
         ParentForm.$parent.formPanelChange(ParentForm.formChangeData, ParentForm.formDataLabel,ParentForm.formChangeDataLabel)
       }else{
@@ -242,6 +242,14 @@ export default {
 
       let tabPanelsDom = document.querySelector(`#${this.activeTab.tableName}`);
       if(tabPanelsDom){
+        let fkdisplay = this.items.fkobj && this.items.fkobj.fkdisplay;
+        if(['drp','pop','mop'].includes(fkdisplay)){
+          // 在单对象界面中外键字段必须有值
+          if(!Array.isArray(val) && !isEmpty(val)){
+            return;
+          }
+        }
+      
         tabPanelsDom._vue_.setTabPanels();
       }
     }

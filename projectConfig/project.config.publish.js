@@ -205,6 +205,7 @@ module.exports = {
   enableChangeLang: false, // 是否开启切换语言 false关闭 true开启
   //filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
   listFormWebconf:[], // 列表是否支持webcof 字段
+  filterTablesOpenTab:['CUSTOMIZEREPORT']   // 过滤表明新开
   // imageAssets: {
   //   // 与projectConfig.image区别在于这个图片是含有文字的,用于国际化场景
   //   // 格式必须是 （变量+语言）方便解析

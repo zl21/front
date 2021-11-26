@@ -1,14 +1,12 @@
 /* eslint-disable import/no-dynamic-require */
 <template>
-<!-- :show-tip="items.detailType" -->
- <ValidateCom
-    :rules="rules"
-    :labelWidth="labelWidth"
-    :items="propsMessage"
-    :colname="items.colname"
-    :value="value">
-  <div :class="_items.props.fkdisplay === 'pop' ? 'ItemComponentRoot AttachFilter-pop':'ItemComponentRoot'">
-
+  <!-- :show-tip="items.detailType" -->
+  <ValidateCom :rules="rules"
+               :labelWidth="labelWidth"
+               :items="items"
+               :colname="items.colname"
+               :value="value">
+    <div :class="_items.props.fkdisplay === 'pop' ? 'ItemComponentRoot AttachFilter-pop':'ItemComponentRoot'">
 
       <span class="itemLabel"
             :style="labelStyle"
@@ -34,7 +32,7 @@
               class="label-tip">*</span>
         <template v-if="getVersion() === '1.4' && items.fkobj && items.fkobj.fkdisplay === 'pop' && items.detailType">
           <!-- 路由跳转 -->
-          <template v-if="value && value[0]">
+          <template v-if="value && value[0] && Array.isArray(value)">
             <i class="iconfont iconbj_link"
                data-target-tag="fkIcon"
                style="color: #0f8ee9; cursor: pointer; font-size: 12px"
@@ -44,7 +42,7 @@
         </template>
         <template v-if="getVersion() === '1.4' && items.fkobj && items.fkobj.fkdisplay === 'drp' && items.detailType">
           <!-- 路由跳转 -->
-          <template v-if="value && value[0]">
+          <template v-if="value && value[0] && Array.isArray(value)">
             <i class="iconfont iconbj_link"
                data-target-tag="fkIcon"
                style="color: #0f8ee9; cursor: pointer; font-size: 12px"
@@ -53,7 +51,7 @@
 
         </template>
 
-        <span :title="items.coldesc" >{{ items.coldesc }}:</span>
+        <span :title="items.coldesc">{{ items.coldesc }}:</span>
       </span>
       <div :class=" [_items.props.row >1 ? 'itemComponent height100':'itemComponent',items.isuppercase?'isuppercase':'']"
            :style="_items.display==='image' ? 'overflow:visible' :''">
@@ -94,8 +92,9 @@
       /> -->
         <component :is="componentsName"
                    :ref="items.colname"
-                    v-bind="propsMessage"
-                    v-model="value">
+                   v-bind="propsMessage"
+                   v-model="value"
+                   @on-keydown="enterForm">
           <slot v-if="items.display === 'OBJ_SELECT'">
             <Option v-for="item in items.props.options"
                     :key="item.value"
@@ -107,12 +106,11 @@
         </component>
 
         <!-- 自定义组件 -->
-         <component :is="_items.componentName"
+        <component :is="_items.componentName"
                    v-if="_items.type === 'customization'"
                    :ref="items.colname"
                    v-model="value"
-                    v-on="$listeners"
-                    v-bind="propsMessage"
+                   v-bind="propsMessage"
                    :options="{
           ..._items,
           webConfSingle,
@@ -121,8 +119,7 @@
         }" />
       </div>
 
-
-  </div>
+    </div>
   </ValidateCom>
 </template>
 
@@ -166,7 +163,7 @@ import { Validate } from './PanelForm/Validate';
 // 验证组件的插件
 let ValidateCom = new Validate().init();
 import {
-  Version, MODULE_COMPONENT_NAME, ossRealtimeSave, defaultrange,setComponentsProps
+  Version, MODULE_COMPONENT_NAME, ossRealtimeSave, defaultrange, setComponentsProps
 } from '../../constants/global';
 import createModal from '../PreviewPicture/index';
 import EnumerableInput from '../EnumerableInput.vue';
@@ -225,9 +222,9 @@ export default {
     return {
       filterDate: {},
       resultData: {}, // 结果传值
-      componentsName:'',// 组件名称
-      show:false,// 是否展示报错内容
-      propsMessage:{
+      componentsName: '',// 组件名称
+      show: false,// 是否展示报错内容
+      propsMessage: {
 
       }, // 各个组件的props
       errorTip: '',
@@ -323,7 +320,7 @@ export default {
       return this.filterDate;
     },
 
-    showLabel() {
+    showLabel () {
       if (this._items.webconf && this._items.webconf.hiddenLabel) {
         return false
       }
@@ -332,19 +329,30 @@ export default {
   },
   methods: {
     ...mapMutations('global', ['tabOpen', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
+
+    enterForm (e) {
+      if (e && e.target) {
+        const tagName = e.target.tagName.toLowerCase();
+        if (tagName === 'input') {
+          this.$emit('on-keydown', e)
+        }
+      }
+
+    },
+
     inheritanceComponents () {
       let component = null;
       // 兼容webcof
-      if(this.items.dynamicforcompute){
-         if(!this.items.webconf){
-           this.items.webconf = {
-              dynamicforcompute:{}
-           };
-         }else{
-           this.items.webconf.dynamicforcompute = {}
-         }
+      if (this.items.dynamicforcompute) {
+        if (!this.items.webconf) {
+          this.items.webconf = {
+            dynamicforcompute: {}
+          };
+        } else {
+          this.items.webconf.dynamicforcompute = {}
+        }
 
-          this.items.webconf.dynamicforcompute = this.items.dynamicforcompute;
+        this.items.webconf.dynamicforcompute = this.items.dynamicforcompute;
       }
       let item = this.items;
 
@@ -382,7 +390,7 @@ export default {
           // 列表界面把radio-group渲染成select
           // 列表界面把checkbox-group渲染成select
           const typeList = ['RADIO_GROUP', 'CHECKBOX_GROUP']
-          if(!item.detailType && typeList.includes(item.display)) {
+          if (!item.detailType && typeList.includes(item.display)) {
             item.display = 'OBJ_SELECT'
           }
           componentInstance = new CustomSelect(item).init();
@@ -408,7 +416,7 @@ export default {
         case 'radioGroup':
           componentInstance = new CustomRadioGroup(item).init();
           break;
-        case 'checkboxgroup': 
+        case 'checkboxgroup':
           componentInstance = new CustomCheckboxGroup(item).init();
           break;
         case 'MonthDay': 
@@ -417,14 +425,14 @@ export default {
         case 'String': 
           componentInstance = new CustomStringRender(item).init();
           break;
-        case 'defined': 
+        case 'defined':
           componentInstance = new CustomDefined(item).init();
           break;
         default:
           break;
       }
-      if(componentInstance){
-         component = componentInstance.Components || '';
+      if (componentInstance) {
+        component = componentInstance.Components || '';
         this.propsMessage = componentInstance.props || {};
         // 是否有外部配置
         this.propsMessage = Object.assign(
@@ -434,6 +442,11 @@ export default {
       }
 
       return component;
+    },
+    onkeydown (e) {
+      // 回车
+      // this.$emit('on-keydown',e);
+
     },
     routerNext () {
       // 路由跳转
@@ -476,7 +489,7 @@ export default {
         tableId,
         id,
         label,
-        original:'outclick',
+        original: 'outclick',
         serviceId
       });
     },
@@ -632,8 +645,8 @@ export default {
     resetItem () {
       this.value = new ParameterDataProcessing(JSON.parse(JSON.stringify(this.items))).defaultDataProcessing();
     },
-    getLable(){
-      return new ParameterDataProcessing(JSON.parse(JSON.stringify(this.items)),this.value).getLable();
+    getLable () {
+      return new ParameterDataProcessing(JSON.parse(JSON.stringify(this.items)), this.value).getLable();
     }
 
   },
