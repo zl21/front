@@ -1484,7 +1484,11 @@ export default {
           }
         }
       } else if (!obj.confirm || !JSON.parse(obj.confirm).isselect) {
-        this.objTabActionDialog(obj);
+         if (obj.vuedisplay === 'download') {
+            this.objTabActiondDownload(obj);
+          }else{
+            this.objTabActionDialog(obj);
+          }
       } else if (JSON.parse(obj.confirm).isselect) {
         // 是否是必选列表项, 动作定义根据列表是否选值
         const confirm = JSON.parse(obj.confirm);
