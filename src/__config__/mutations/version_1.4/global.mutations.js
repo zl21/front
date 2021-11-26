@@ -605,9 +605,13 @@ export default {
             routePrefix,
             isActive: true
           };
-          d = Object.assign(d, obj);
-          state.activeTab = Object.assign(state.activeTab, obj);
-          this.commit('global/changeCurrentTabName', { keepAliveModuleName, label: label || state.keepAliveLabelMaps[keepAliveModuleName], customizedModuleName: keepAliveModuleNameRes });
+          let filterTablesOpenTabexist = ( window.ProjectConfig &&  window.ProjectConfig.filterTablesOpenTab || []).includes(keepAliveModuleNameRes);
+          if(!filterTablesOpenTabexist){
+            d = Object.assign(d, obj);
+            state.activeTab = Object.assign(state.activeTab, obj);
+            this.commit('global/changeCurrentTabName', { keepAliveModuleName, label: label || state.keepAliveLabelMaps[keepAliveModuleName], customizedModuleName: keepAliveModuleNameRes });
+          }
+          
           return true;
         }
         // if (d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
