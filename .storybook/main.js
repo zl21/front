@@ -59,6 +59,7 @@ module.exports = {
       vue: 'Vue',
       jquery: '$',
       VueI18n: 'VueI18n',
+      'element-ui': 'ELEMENT',
       lodash: {
         commonjs: 'lodash',
         commonjs2: 'lodash',

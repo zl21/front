@@ -1,13 +1,13 @@
 import OmsButton from 'burgeonComponents/view/OmsButton';
-import loading from 'burgeonComponents/view/loading';
-// import i18n from "@burgeon/internationalization/i18n";
-// window.$i18n = i18n
+// import loading from 'burgeonComponents/view/loading';
+import i18n from "@burgeon/internationalization/i18n";
+window.$i18n = i18n
 
 export default {
   name: 'ImportTable',
   components: {
     OmsButton,
-    loading,
+    // loading,
   },
   props: {
     // 若存在自定义的父组件，即 非动作定义类型的导入按钮
@@ -18,7 +18,7 @@ export default {
   },
   data() {
     return {
-      // vmI18n: i18n,
+      vmI18n: i18n,
       key: '',
       text: '', // 选择的导入文件名
       files: {}, // 选择的文件
@@ -68,7 +68,7 @@ export default {
       }
     },
     tableName() {
-      if (this.$route.params?.tableName) {
+      if (this.$route?.params?.tableName || "") {
         return this.$route.params.tableName || '';
       } else if (this.componentData) {
         return this.componentData.tableName || '';
@@ -77,7 +77,7 @@ export default {
       }
     },
     prefix() {
-      return this.$route.path.slice(1, 7);
+      return this.$route?.path.slice(1, 7) || 'SYSTEM';
     },
   },
   methods: {
@@ -296,7 +296,7 @@ export default {
     } else if (this.prefix == 'SYSTEM') {
       // 标准动作定义
       this.key = this.tableName + '__' + this.webname;
-      this.currentConfig = _this.$OMS2.cusImport[this.key];
+      this.currentConfig = _this?.$OMS2?.cusImport[this.key] || {};
     }
     this.dontShowDownloadA = this.currentConfig.dontShowDownloadA || false;
     this.importNotes = this.currentConfig.importNotes || false;

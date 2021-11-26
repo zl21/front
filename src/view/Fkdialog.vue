@@ -65,7 +65,7 @@
               :page-size-opts="[10, 20, 50, 100]"
               @on-change="l_handleCurrentChange"
               @on-page-size-change="l_handleSizeChange"
-              pager-count="5"
+              :pager-count="pagerCount"
               size="small"
               show-elevator
               show-sizer
@@ -108,7 +108,7 @@
               :page-size-opts="[10, 20, 50, 100]"
               @on-change="l_handleCurrentChange"
               @on-page-size-change="l_handleSizeChange"
-              pager-count="5"
+              :pager-count="pagerCount"
               size="small"
               show-elevator
               show-sizer

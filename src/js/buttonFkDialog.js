@@ -7,8 +7,8 @@
  * @FilePath: /burgeon-business-components/src/js/buttonFkDialog.js
  */
 import fkdialog from 'burgeonComponents/view/Fkdialog.vue';
-// import i18n from "@burgeon/internationalization/i18n";
-// window.$i18n = i18n
+import i18n from "@burgeon/internationalization/i18n";
+window.$i18n = i18n
 
 export default {
   name: 'ButtonFkDialog',
@@ -26,7 +26,7 @@ export default {
   },
   data() {
     return {
-      // vmI18n: $i18n,
+      vmI18n: $i18n,
       fkDialog: {
         // 弹框多选
         dialog: false,
@@ -37,6 +37,9 @@ export default {
     };
   },
   methods: {
+    dialogClose() {
+      this.fkDialog.dialog = false;
+    },
     getFkdialog(item) {
       const self = this;
       const ITEM = JSON.parse(item);

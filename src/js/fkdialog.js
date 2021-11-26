@@ -1,10 +1,10 @@
 /* type="ecmascript-6" */
-// import i18n from "@burgeon/internationalization/i18n";
 import MyDialog from "framework/components/dialog/mydialog.vue";
 import DragDialog from "framework/components/dialog/mydialog.vue";
 import tree from "framework/components/tablelist/tree.vue";
 import ShowTableData from "framework/components/views/custompage/ShowTableData.vue";
-// window.$i18n = i18n;
+import i18n from "@burgeon/internationalization/i18n";
+window.$i18n = i18n;
 
 export default {
   name: 'Fkdialog',
@@ -54,7 +54,8 @@ export default {
   data() {
     return {
       // $i18n: i18n,
-      // vmI18n: i18n,
+      vmI18n: i18n,
+      pagerCount: 5,
       confirmLoading: false, // 页面loading
       t_dialog_show: true, // 弹框显示
       ChineseDictionary: {}, // 名字集合
@@ -720,9 +721,10 @@ export default {
     /* 以上时保存模板时的事件 */
 
     dialogClose() {
-      $(".fkDialog .el-dialog__header .el-dialog__headerbtn").trigger("click");
-      this.t_dialog_show = false;
       this.$emit("dialogClose");
+      return
+      this.t_dialog_show = false;
+      $(".fkDialog .el-dialog__header .el-dialog__headerbtn").trigger("click");
       /* this.l_screen_result_save = {};//初始化
       this.request_param = {};//初始化 */
     }, // 关闭弹出框
@@ -823,6 +825,7 @@ export default {
       const param = new FormData();
       param.append("param", JSON.stringify({ TABLENAME: this.tablename }));
       console.log("1384::");
+      return
       this.service.promotionCenter
         .screen(param, { serviceId: this.serviceId })
         .then((res) => {
@@ -879,6 +882,7 @@ export default {
   },
   mounted() {
     this.entry_page();
+    return
     if (this.$route.params["0"] == "table/SG_B_CHANNEL_PRODUCT") {
       const madel = document.documentElement.querySelector(".v-modal");
       madel.style.zIndex = 1998;
