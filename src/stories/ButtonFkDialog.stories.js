@@ -5,7 +5,7 @@ import { action } from "@storybook/addon-actions";
 import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
 
 export default {
-	title: 'Basic/OmsButton',
+	title: 'Basic/ButtonFkDialog',
 	component: OmsButton,
 	parameters: {
 		notes: Md,
@@ -22,7 +22,7 @@ export default {
 const Template = (args, { argTypes }) => ({
 	components: { OmsButton },
 	props: Object.keys(argTypes),
-	template: '<OmsButton v-bind="$props" @dropDownClick="dropClick" @onClick="onClick"/>',
+	template: '<ButtonFkDialog v-bind="$props" @dropDownClick="dropClick" @onClick="onClick"/>',
 	methods: {
 		dropClick: action("")
 	}

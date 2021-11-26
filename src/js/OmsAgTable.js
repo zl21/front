@@ -15,9 +15,9 @@ export default {
         // commonTableByAgGrid
     },
     props: {
-        renderParams: {
+        /* renderParams: {
             type: Function
-        },
+        }, */
         agTableConfig: {
             type: Object,
             default: {}
