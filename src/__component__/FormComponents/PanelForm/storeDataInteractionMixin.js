@@ -223,11 +223,11 @@ export default {
   methods:{
     InitializationForm(ParentForm){
       // 默认值
-      //ParentForm.initializationForm();
+      ParentForm.initializationForm();
     },
     changeForm(ParentForm,val){
       // 修改后
-      
+  
       if (ParentForm.$parent.formPanelChange) {
         ParentForm.$parent.formPanelChange(ParentForm.formChangeData, ParentForm.formDataLabel,ParentForm.formChangeDataLabel)
       }else{
