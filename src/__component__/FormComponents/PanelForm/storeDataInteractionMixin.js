@@ -229,7 +229,7 @@ export default {
   methods:{
     InitializationForm(ParentForm){
       // 默认值
-      //ParentForm.initializationForm();
+      ParentForm.initializationForm();
     },
     setNewModify(){
       // 新增修改
@@ -237,6 +237,10 @@ export default {
     },
     changeForm(ParentForm,val){
       // 修改后
+<<<<<<< HEAD
+=======
+  
+>>>>>>> ll_r3_dev
       if (ParentForm.$parent.formPanelChange) {
         ParentForm.$parent.formPanelChange(ParentForm.formChangeData, ParentForm.formDataLabel,ParentForm.formChangeDataLabel)
       }else{
