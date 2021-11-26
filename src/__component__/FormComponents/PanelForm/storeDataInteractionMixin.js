@@ -253,8 +253,15 @@ export default {
             return;
           }
         }
-      
-        tabPanelsDom._vue_.setTabPanels();
+        let display = this.items.display;
+        if( this.items.webconf && this.items.webconf.display) {
+          display =  this.items.webconf.display;
+        }
+        // 日期组件忽略
+        if(['OBJ_DATENUMBER', 'OBJ_DATE', 'YearMonth', 'OBJ_DATETIME','MonthDay'].includes(this.items.display)){
+          return;
+        }
+       tabPanelsDom._vue_.setTabPanels();
       }
     }
   },
