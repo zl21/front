@@ -227,5 +227,6 @@ module.exports = {
   // },
   enableSystemUpdate: false, // 开启系统升级功能
   moveBar:false,  // 是否开启登录bar
+  queryConditionExpansion:true, // 一直收拉条件
   filterTablesOpenTab:['CUSTOMIZEREPORT']   // 过滤表明新开
 };

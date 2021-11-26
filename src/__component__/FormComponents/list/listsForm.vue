@@ -496,6 +496,11 @@ export default {
   },
   mounted () {
     this.$el._vue_ = this;
+    if(window.ProjectConfig && window.ProjectConfig.queryConditionExpansion && !this.defaultSpread){
+      setTimeout(()=>{
+        this.toggle()
+      },200);
+    }
     if (this.search) {
       setTimeout(() => {
         this.setColumn();
