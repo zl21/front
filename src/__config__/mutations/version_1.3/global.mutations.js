@@ -1097,7 +1097,7 @@ export default {
       return;
     }
      // 不是新开的菜单，自动删除上一次的新增界面
-   if(window.ProjectConfig && window.ProjectConfig.enableOpenNewTab){
+   if(window.ProjectConfig && !window.ProjectConfig.enableOpenNewTab){
     let NewkeepAliveModuleName = keepAliveModuleName.substr(2,100)+'.New';
     state.keepAliveLists = state.keepAliveLists.filter((x)=>{
         if(!new RegExp(NewkeepAliveModuleName).test(x)){
