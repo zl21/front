@@ -522,12 +522,10 @@ export default {
             // itemModify[itemName].ID = itemObjId;
             // const itemModifyRes = {}; 
             // itemModifyRes[itemName] = [itemModify[itemName]];
-            // const itemModifyDefault = itemCurrentParameter.default;
+            const itemModifyDefault = itemCurrentParameter.default;
             // const itemModifyAssign = Object.assign({}, itemModifyDefault[itemName], itemModify[itemName]);// 整合子表修改和默认值数据
             // 子表1:1模式参数不需要传默认值
-
-            const itemModifyAssign = Object.assign({}, itemModify[itemName]);// 整合子表修改和默认值数据
-
+            const itemModifyAssign = Object.assign(itemObjId == -1 ? itemModifyDefault[itemName] :{}, itemModify[itemName]);// 整合子表修改和默认值数据
             const itemModifyAssignData = {};
             itemModifyAssignData[itemName] = itemModifyAssign;
             itemModifyAssignData[itemName].ID = itemObjId;

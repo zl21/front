@@ -202,6 +202,7 @@ export default {
         const itemModify = itemCurrentParameter.modify;
         const itemAdd = itemCurrentParameter.add;// 子表新增
         const itemDefault = itemCurrentParameter.addDefault;// 子表新增
+      
         if (path) { // 有path的参数
           const { modify } = parame;
           if (itemNameGroup.map(item => item.tableName).includes(itemName)) {
@@ -349,13 +350,14 @@ export default {
             // const itemModifyAssign = Object.assign({}, itemModifyDefault[itemName], itemModify[itemName]);// 整合子表修改和默认值数据
 
             // 子表1:1模式参数不需要传默认值
-            const itemModifyAssign = Object.assign(itemModifyDefault[itemName], itemModify[itemName]);// 整合子表修改和默认值数据
+         
+            const itemModifyAssign = Object.assign(itemObjId ==-1 ? itemModifyDefault[itemName] :{}, itemModify[itemName]);// 整合子表修改和默认值数据
             const itemModifyAssignData = {};
             itemModifyAssignData[itemName] = itemModifyAssign;
             itemModifyAssignData[itemName].ID = itemObjId;
             const itemModifyRes = {}; 
             itemModifyRes[itemName] = [itemModifyAssignData[itemName]];
-
+ 
 
             // itemModify[itemName].ID = itemObjId;
             // const itemModifyRes = {}; 
