@@ -227,5 +227,5 @@ module.exports = {
   // },
   enableSystemUpdate: false, // 开启系统升级功能
   moveBar:false,  // 是否开启登录bar
-  filterTablesOpenTab:['CUSTOMIZEREPORTCUBE']   // 过滤表明新开
+  // filterTablesOpenTab:['CUSTOMIZEREPORTCUBE']   // 过滤表明新开
 };

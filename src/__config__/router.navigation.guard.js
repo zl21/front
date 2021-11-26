@@ -314,7 +314,7 @@ export default (router) => {
           if(customizedModuleName){
              // 定制界面，在enableActivateSameCustomizePage 为false 的时候新开多个页面
               // 已存在打开的模块界面，但是并不是同一个界面
-            let filterTablesOpenTabexist =  window.ProjectConfig &&  window.ProjectConfig.filterTablesOpenTab.includes(customizedModuleName);
+            let filterTablesOpenTabexist =  (window.ProjectConfig &&  window.ProjectConfig.filterTablesOpenTab || []).includes(customizedModuleName);
             if(enableActivateSameCustomizePage() && !filterTablesOpenTabexist){
               existModuleIndex = i;
             }
@@ -392,7 +392,7 @@ export default (router) => {
       // 或是当前是自定义界面的keepAliveModuleName包含当前要跳转的自定义界面的标识，
       // 不必keepAliveModuleName相等，包含自定义界面的标识即可
       // filterTablesOpenTabexist 判断是否在过滤新开里，在则是新开界面
-      let filterTablesOpenTabexist =  window.ProjectConfig &&  window.ProjectConfig.filterTablesOpenTab.includes(customizedModuleName);
+      let filterTablesOpenTabexist = ( window.ProjectConfig &&  window.ProjectConfig.filterTablesOpenTab || []).includes(customizedModuleName);
 
       if (!filterTablesOpenTabexist && dynamicModuleTag !== '' && openedMenuLists.length > 0 && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== ''&& d.tableName===keepAliveModuleNameRes  && d.keepAliveModuleName.includes(keepAliveModuleNameRes))).length > 0) {
         activateSameCustomizePageFlag = true;
