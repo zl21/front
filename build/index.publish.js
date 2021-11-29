@@ -18,35 +18,13 @@ import externalComponents from '../src/__config__/externalComponents'
 import { menuClick } from '../src/__config__/event.config'
 import { connector } from '../src/constants/global'
 import '../src/constants/dateApi'
-import { packageMessage, hookAJAX } from '../src/assets/js/entry.constant'
+import { packageMessage, hookAJAX, requestHello, setXss, setHookAJAX } from '../src/assets/js/entry.constant'
 
 import { getKeepAliveModuleName } from '../src/__config__/router.navigation.guard'
 import '../src/constants/dateApi'
 // import packJson from '../package.json'
 import '../src/index.less'
 
-
-const setXss = () => {
-  // 安全攻击
-  let htmlEncodeByRegExp = (str) => {
-    let s = str
-    if (str.length === 0) {
-      return ''
-    }
-    s = s.replace(/</g, '&lt;')
-    s = s.replace(/>/g, '&gt;')
-    s = s.replace(/ /g, '&nbsp;')
-    s = s.replace(/\'/g, '&#39;') //eslint-disable-line
-    s = s.replace(/\"/g, '&quot;') //eslint-disable-line
-    return s
-  }
-  document.body.addEventListener('input', function(e) {
-    const tagName = e.target.tagName.toLowerCase()
-    if (tagName === 'input' || tagName === 'textarea') {
-      e.target.value = htmlEncodeByRegExp(e.target.value)
-    }
-  })
-}
 // install
 const install = (Vue, R3 = {}) => {
   // 加载
@@ -64,34 +42,7 @@ const install = (Vue, R3 = {}) => {
   Vue.prototype.$store = R3.store
 }
 
-const setHookAJAX = (callback) => {
-  // 接口加密拦截
-  XMLHttpRequest.prototype.nativeOpen = XMLHttpRequest.prototype.open
-  var customizeOpen = function(method, url, async, user, password) {
-    this.nativeOpen(method, url, async, user, password)
-    callback(this)
-  }
-  XMLHttpRequest.prototype.open = customizeOpen
-}
-const requestHello = async function() {
-  const serviceId = window.localStorage.getItem('serviceId')
-  const url = serviceId ? `/${serviceId}/p/cs/hello` : '/p/cs/hello'
-  await network.get(url, undefined, { noServiceId: true }).then((res) => {
-    // 此方法用于向外界（JFlow）提供用户信息。供外部处理自己的需要逻辑。
-    DispatchEvent('userReady', {
-      detail: {
-        userInfo: JSON.parse(JSON.stringify(res.data)),
-      },
-    })
-    if (res.status === 200 && res.data.code === 0) {
-      store.commit('global/updataUserInfoMessage', {
-        userInfo: res.data,
-      })
-      window.localStorage.setItem('userInfo', JSON.stringify(res.data))
-      window.localStorage.setItem('sessionCookie', res.data.sessionCookie)
-    }
-  })
-}
+
 
 export default {
   ...packageMessage,
@@ -177,7 +128,7 @@ export default {
   install, // 添加框架挂载
   connector: connector(), // 1.3框架公共模块包使用
   store,
-  setXss: setXss,
+  setXss,
   hookAJAX,
   setHookAJAX,
   requestHello,
