@@ -2,13 +2,17 @@
   <div :class="classes" :id="id">
     <div v-for="(item,index) in Object.keys(formItemLists)"
          :key="index">
-      <Collapse :value="collapseValue" :id="`Collapse_${item}`">
+      <component :is="CollapseComponent" :id="`Collapse_${item}`"  
+        :value="collapseValue"
+        :isTitleShow="formItemLists[item].parentdesc?true:false"
+        :parentdesc="formItemLists[item].parentdesc"
+        :name="formItemLists[item].parentname"
+      >   
+      <!-- <Collapse :value="collapseValue">
         <Panel title-type="center"
-               :isTitleShow="formItemLists[item].parentdesc?true:false"
-               :index="item"
-               :name="formItemLists[item].parentname">
-          {{ formItemLists[item].parentdesc }}
-          <div slot="content"
+               > -->
+          <!-- {{ formItemLists[item].parentdesc }} -->
+          <div
                :style="setWidth"
                class="content R3masterForm">
             <div v-for="(temp,index) in Object.keys(formItemLists[item].childs)"
@@ -17,6 +21,7 @@
                  :style="formItemLists[item].childs[temp].styles">
               <keep-alive>
                 <component ref="formItem"
+                           @on-keydown="enterForm"
                            :id="formItemLists[item].childs[temp].colname"
                            :is="formItemLists[item].childs[temp].component"
                            :items="formItemLists[item].childs[temp]"
@@ -24,9 +29,10 @@
               </keep-alive>
             </div>
           </div>
-        </Panel>
+          </component>
+        <!-- </Panel>
 
-      </Collapse>
+      </Collapse> -->
     </div>
   </div>
 </template>

@@ -11,7 +11,7 @@ module.exports = {
   // target: 'http://dev.burgeononline.com:8098', // 掌云测试环境(启用网关)
   // target: 'http://106.15.24.156:19093', // 李宁AD
   // target: 'http://139.224.169.76:28888', // 沁园
-  // target: 'http://10.14.6.84', // 商飞开发环境
+  // target: 'http://10.14.6.84', // 商飞开发环境F
   // target: 'http://10.14.3.71', // 商飞预发环境
   // target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop网关开启环境
@@ -205,6 +205,7 @@ module.exports = {
   enableChangeLang: false, // 是否开启切换语言 false关闭 true开启
   //filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
   listFormWebconf:[], // 列表是否支持webcof 字段
+  filterTablesOpenTab:['CUSTOMIZEREPORT']   // 过滤表明新开
   // imageAssets: {
   //   // 与projectConfig.image区别在于这个图片是含有文字的,用于国际化场景
   //   // 格式必须是 （变量+语言）方便解析

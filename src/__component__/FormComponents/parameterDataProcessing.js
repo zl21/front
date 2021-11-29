@@ -372,9 +372,13 @@ export default class ParameterDataProcessing {
 
     // 处理checkbox
     if (this.item.display === 'OBJ_CHECK') {
-      if (!this.item.valuedata && !this.item.defval) {
-        return this.item.combobox.filter(item => !item.limitdis)[0].limitval
+      let value = this.item.valuedata || this.item.default;
+      if (value) {
+        return this.item.combobox.filter(item => {
+          return item.limitval = value;
+        })[0].limitval
       }
+      return this.item.falseValue;
     }
     
     return this.item.valuedata || this.item.default ;

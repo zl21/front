@@ -37,10 +37,14 @@ class CustomExtensionProperty {
     }
 
     this.props = props
+  
   }
 
   // 合并methods
-  mergeMethods() {}
+  mergeMethods() {
+
+    
+  }
 }
 
 export default CustomExtensionProperty
