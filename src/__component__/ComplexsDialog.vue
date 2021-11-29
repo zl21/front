@@ -805,7 +805,8 @@
         this.sendMessage.PAGENUM = 1;
         this.sendMessage.PAGESIZE = 50;
 
-        this.treeChecked();
+        this.init();
+        // this.treeChecked();
         // this.multipleSelectionTable(this.sendMessage, 0);
       },
       multipleSetMultiQuery(obj) {

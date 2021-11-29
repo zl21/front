@@ -96,11 +96,9 @@
       num7() {
         this.changeNum();
       },
-
       collapseHistoryAndFavorite(val) {
         this.showFavorites = !val
-      },
-      
+      },   
       changeSearchFoldnum(val){
         console.log(val,'====');
         this.num7 = val.queryDisNumber;

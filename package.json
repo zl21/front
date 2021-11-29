@@ -78,7 +78,7 @@
         "webpack-merge": "^5.7.3"
     },
     "dependencies": {
-        "@syman/ark-ui": "^1.2.8",
+        "@syman/ark-ui": "1.2.8",
         "awe-dnd": "^0.3.4",
         "axios": "^0.21.1",
         "md5": "^2.3.0",
