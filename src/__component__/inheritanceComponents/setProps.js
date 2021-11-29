@@ -5,9 +5,13 @@ import i18n from '../../assets/js/i18n';
 export class SetPlaceholder {
     constructor(item){
         this.item = item;
+        this.disabled = new SetDisable(this.item).init()
     }
     init(){
         const placeholder = this.item.webconf && this.item.webconf.placeholder ? this.item.webconf.placeholder : null;
+        if(this.disabled) {
+            return ' '
+        }
         return  placeholder || `${i18n.t('form.inputPlaceholder')}${this.item.coldesc}`;
     }
 

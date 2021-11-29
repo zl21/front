@@ -37,6 +37,9 @@ let  Docfile = $Bcl.arkDocfile;
       itemWebconf:this.item.webconf || {},
       webConfSingle:this.item.webConfSingle || {},
       http:network,
+      options: {
+        serviceId: this.item.serviceId || window.localStorage.getItem('serviceId') || '', // 给下载用，避免与上传的网关冲突
+      },
       dataitem:{
         readonly: new SetDisable(this.item).init(), //控制字段是否可编辑
         url: getGateway('/p/cs/batchUpload'),

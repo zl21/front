@@ -7,13 +7,13 @@
             <li>
               <span>{{$t('messages.fillPassword')}}：</span>
               <input
-                      id="newPwd"
-                      v-model="newpaswd"
-                      :class="{'borderactive':inconformity2}"
-                      type="password"
-                      @blur="blur()"
-                      @input="changwd()"
-                      @focus="focus($event,2)">
+                    id="newPwd"
+                    v-model="newpaswd"
+                    :class="{'borderactive':inconformity2}"
+                    type="password"
+                    @blur="blur()"
+                    @input="changwd()"
+                    @focus="focus($event,2)">
               <input type="password" name="password1" style="display:none">
               <p v-show="pawdgrade1" :style="{ color: errorpawdgrade1}">{{ this.newHint }}</p>
               <!--<p v-show="pawdgrade">密码安全程度：<b :style="{ color: activeColor}">{{ grade }}</b></p>-->
@@ -21,10 +21,10 @@
             <li>
               <span>{{$t('messages.confirmPassword')}}：</span>
               <input
-                      v-model="againpaswd"
-                      :class="{'borderactive':inconformity3}"
-                      type="password"
-                      @focus="focus($event,3)">
+                    v-model="againpaswd"
+                    :class="{'borderactive':inconformity3}"
+                    type="password"
+                    @focus="focus($event,3)">
               <input type="password" name="password1" style="display:none">
               <p v-show="inconformity3" :style="{ color: error}">{{$t('messages.passwordInconsistent')}}</p>
             </li>

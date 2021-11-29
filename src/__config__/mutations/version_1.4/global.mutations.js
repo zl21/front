@@ -605,9 +605,17 @@ export default {
             routePrefix,
             isActive: true
           };
-          d = Object.assign(d, obj);
-          state.activeTab = Object.assign(state.activeTab, obj);
-          this.commit('global/changeCurrentTabName', { keepAliveModuleName, label: label || state.keepAliveLabelMaps[keepAliveModuleName], customizedModuleName: keepAliveModuleNameRes });
+          let filterTablesOpenTab = ['CUSTOMIZEREPORT'];
+          if(window.ProjectConfig && window.ProjectConfig.filterTablesOpenTab){
+            filterTablesOpenTab = window.ProjectConfig.filterTablesOpenTab.concat('CUSTOMIZEREPORT');
+          }
+          let filterTablesOpenTabexist = filterTablesOpenTab.includes(keepAliveModuleNameRes);
+          if(!filterTablesOpenTabexist){
+            d = Object.assign(d, obj);
+            state.activeTab = Object.assign(state.activeTab, obj);
+            this.commit('global/changeCurrentTabName', { keepAliveModuleName, label: label || state.keepAliveLabelMaps[keepAliveModuleName], customizedModuleName: keepAliveModuleNameRes });
+          }
+          
           return true;
         }
         // if (d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== '' && d.keepAliveModuleName.includes(keepAliveModuleNameRes))) {
@@ -976,6 +984,7 @@ export default {
         path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
       }
     }
+    
     if (type === 'tableDetailAction' || type === 'C') {
       if (url) {
         if (url.includes('?')) {
@@ -1088,6 +1097,16 @@ export default {
       }
       return;
     }
+      // 不是新开的菜单，自动删除上一次的新增界面
+    if(window.ProjectConfig && !window.ProjectConfig.enableOpenNewTab){
+      let NewkeepAliveModuleName = keepAliveModuleName.substr(2,100)+'.New';
+      state.keepAliveLists = state.keepAliveLists.filter((x)=>{
+          if(!new RegExp(NewkeepAliveModuleName).test(x)){
+            return x;
+          }
+      });
+    }
+
     if (path) {
       router.push({
         path

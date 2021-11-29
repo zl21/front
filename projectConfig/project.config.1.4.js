@@ -2,8 +2,8 @@ module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
   projectIconPath: '', // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
-   target: 'http://r3-8098.dev.syman.cn/', // 框架研发网关开启环境
-  //target: 'http://r3-java.dev.burgeononline.com/', // 框架后端测试分支
+  // target: 'http://r3-8098.dev.syman.cn/', // 框架研发网关开启环境
+  target: 'http://r3-java.dev.burgeononline.com/', // 框架后端测试分支
   // target: 'http://retail-service-center.dev.burgeononline.com/',
   // target: 'http://r3-java.dev.burgeononline.com', // java环境
   // target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 新版本jflow测试环境
@@ -70,7 +70,7 @@ module.exports = {
   // specifiedGlobalGateWay: 'ad-app',
   // specifiedGlobalGateWay: 'user-center',
   encryptedPassword: false, // 是否允许login接口password加密
-  isItemTableNewValidation: true, // 是否允许子表新增有必填项时，输入值才触发子表必填项校验，不输入值则只校验主表
+  isItemTableNewValidation: false, // 是否允许子表新增有必填项时，输入值才触发子表必填项校验，不输入值则只校验主表
   isCommonTable: false, // 是否开启普通表格，默认关闭
   functionPowerRequestURL: '', // 功能权限获取检索项数据接口名称
   cbs: {
@@ -104,7 +104,7 @@ module.exports = {
   logoutTips: false, // 失去会话是否需要登出提示 默认false直接登出
   enableKAQueryDataForUser: false, // 是否开启存储全表查询条件
   dateStorageTime: 1, // 查询条件存储时间，默认1天,建议不要设置太大影响性能
-  enableOpenNewTab: true, // 列表界面打开 同表 单对象是否新开tab,默认为false
+  enableOpenNewTab: false, // 列表界面打开 同表 单对象是否新开tab,默认为false
   blockFullOperation: false, // 禁止不选数据时的批量修改操作,
   customizeMixins: { // 获取所有外部接入的mixins对象
     //singleObjectButtonGroup: require('./demo/singleObjectButtonGroup.js').default,
@@ -226,5 +226,7 @@ module.exports = {
   //   }
   // },
   enableSystemUpdate: false, // 开启系统升级功能
-  moveBar:false  // 是否开启登录bar
+  moveBar:false,  // 是否开启登录bar
+  // queryConditionExpansion:true, // 一直收拉条件
+  filterTablesOpenTab:['CUSTOMIZEREPORT']   // 过滤表明新开
 };
