@@ -583,7 +583,11 @@ export default {
             routePrefix,
             isActive: true
           };
-          let filterTablesOpenTabexist = ( window.ProjectConfig &&  window.ProjectConfig.filterTablesOpenTab || []).includes(keepAliveModuleNameRes);
+          let filterTablesOpenTab = ['CUSTOMIZEREPORT'];
+          if(window.ProjectConfig && window.ProjectConfig.filterTablesOpenTab){
+            filterTablesOpenTab = window.ProjectConfig.filterTablesOpenTab.concat('CUSTOMIZEREPORT');
+          }
+          let filterTablesOpenTabexist = filterTablesOpenTab.includes(keepAliveModuleNameRes);
           if(!filterTablesOpenTabexist){
             d = Object.assign(d, obj);
             state.activeTab = Object.assign(state.activeTab, obj);
