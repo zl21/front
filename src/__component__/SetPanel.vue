@@ -33,6 +33,7 @@
           {{$t('messages.collapseQuery')}}
           <i-switch
             v-model="switchValue"
+            :disabled="queryConditionExpansion"
             class="switch"
             @on-change="switchChange(switchValue)"
           />
@@ -99,11 +100,17 @@
         this.showFavorites = !val
       },   
       changeSearchFoldnum(val){
+        console.log(val,'====');
         this.num7 = val.queryDisNumber;
         if(this.switchValue !== val.switchValue){
             this.switchValue = val.switchValue;
             this.switchChange(this.switchValue);
         }
+        // 兼容云雀默认全展开
+         if(window.ProjectConfig && window.ProjectConfig.queryConditionExpansion && val.switchValue === false){
+            this.switchValue = true;
+            this.switchChange(this.switchValue);
+          }
       }
     },
     data() {
@@ -113,6 +120,7 @@
           show: false,
           title: ''
         },
+        queryConditionExpansion:window.ProjectConfig && window.ProjectConfig.queryConditionExpansion,
         layoutDirection: layoutDirection(), // 收藏夹是否展示
         switchValue: false,
         num7: 3,

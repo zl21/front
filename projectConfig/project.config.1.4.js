@@ -70,7 +70,7 @@ module.exports = {
   // specifiedGlobalGateWay: 'ad-app',
   // specifiedGlobalGateWay: 'user-center',
   encryptedPassword: false, // 是否允许login接口password加密
-  isItemTableNewValidation: true, // 是否允许子表新增有必填项时，输入值才触发子表必填项校验，不输入值则只校验主表
+  isItemTableNewValidation: false, // 是否允许子表新增有必填项时，输入值才触发子表必填项校验，不输入值则只校验主表
   isCommonTable: false, // 是否开启普通表格，默认关闭
   functionPowerRequestURL: '', // 功能权限获取检索项数据接口名称
   cbs: {
@@ -227,5 +227,6 @@ module.exports = {
   // },
   enableSystemUpdate: false, // 开启系统升级功能
   moveBar:false,  // 是否开启登录bar
-  // filterTablesOpenTab:['CUSTOMIZEREPORTCUBE']   // 过滤表明新开
+  // queryConditionExpansion:true, // 一直收拉条件
+  filterTablesOpenTab:['CUSTOMIZEREPORT']   // 过滤表明新开
 };

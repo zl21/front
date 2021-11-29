@@ -417,6 +417,10 @@ export default {
         }
         item.tdAlign = item.type === 'NUMBER' ? 'right' : 'left'
         item.thAlign = 'center'
+
+        // 赋值网关
+        const serviceId = item.serviceId || window.localStorage.getItem('serviceId') || ''
+        item.serviceId = serviceId
         return item
       })
 
