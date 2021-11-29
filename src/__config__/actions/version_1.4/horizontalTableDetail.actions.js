@@ -198,10 +198,12 @@ export default {
         };
       }
     } else if (type === 'modify') { // 编辑保存参数
+
       if (isreftabs) {
         const itemModify = itemCurrentParameter.modify;
         const itemAdd = itemCurrentParameter.add;// 子表新增
         const itemDefault = itemCurrentParameter.addDefault;// 子表新增
+      
         if (path) { // 有path的参数
           const { modify } = parame;
           if (itemNameGroup.map(item => item.tableName).includes(itemName)) {
@@ -343,19 +345,19 @@ export default {
           }
         } else if (sataTypeName === 'modify') { // 子表编辑
           if (temporaryStoragePath) {
-            console.log('子表不支持暂存');
           } else if (tabrelation) { // 处理子表1:1模式逻辑
            const itemModifyDefault = itemCurrentParameter.default;
             // const itemModifyAssign = Object.assign({}, itemModifyDefault[itemName], itemModify[itemName]);// 整合子表修改和默认值数据
 
             // 子表1:1模式参数不需要传默认值
-            const itemModifyAssign = Object.assign(itemModifyDefault[itemName], itemModify[itemName]);// 整合子表修改和默认值数据
+         
+            const itemModifyAssign = Object.assign(itemObjId ==-1 ? itemModifyDefault[itemName] :{}, itemModify[itemName]);// 整合子表修改和默认值数据
             const itemModifyAssignData = {};
             itemModifyAssignData[itemName] = itemModifyAssign;
             itemModifyAssignData[itemName].ID = itemObjId;
             const itemModifyRes = {}; 
             itemModifyRes[itemName] = [itemModifyAssignData[itemName]];
-
+ 
 
             // itemModify[itemName].ID = itemObjId;
             // const itemModifyRes = {}; 
@@ -406,6 +408,7 @@ export default {
         mainTabale.ID = objId;
         parames = mainTabale;
       } else {
+
         const { modify } = parame;
         parames = {
           table: tableName, // 主表表名
@@ -427,6 +430,7 @@ export default {
         parames.fixedData[itemName] = [...import_dialog]
       }
     }
+    console.log(parames);
     network.post(temporaryStoragePath || jflowPath || path || '/p/cs/objectSave', parames).then((res) => {
       if (res.data.code === 0) {
         const data = res.data;

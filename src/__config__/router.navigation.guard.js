@@ -313,11 +313,14 @@ export default (router) => {
          
           if(customizedModuleName){
              // 定制界面，在enableActivateSameCustomizePage 为false 的时候新开多个页面
-            if(enableActivateSameCustomizePage()){
+              // 已存在打开的模块界面，但是并不是同一个界面
+            let filterTablesOpenTabexist =  (window.ProjectConfig &&  window.ProjectConfig.filterTablesOpenTab || []).includes(customizedModuleName);
+            if(enableActivateSameCustomizePage() && !filterTablesOpenTabexist){
               existModuleIndex = i;
             }
           }else{
-             // 已存在打开的模块界面，但是并不是同一个界面
+            
+            
             existModuleIndex = i;
           }
         
@@ -327,7 +330,7 @@ export default (router) => {
         return false;
       })[0];
 
-  
+
     
     if (existModuleIndex !== -1 && KEEP_MODULE_STATE_WHEN_CLICK_MENU && !enableOpenNewTab()) {
       // Condition One:
@@ -388,10 +391,14 @@ export default (router) => {
       // 当前打开的tab的keepAliveModuleName===要跳转页面的keepAliveModuleName，
       // 或是当前是自定义界面的keepAliveModuleName包含当前要跳转的自定义界面的标识，
       // 不必keepAliveModuleName相等，包含自定义界面的标识即可
-      if (dynamicModuleTag !== '' && openedMenuLists.length > 0 && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== ''&& d.tableName===keepAliveModuleNameRes  && d.keepAliveModuleName.includes(keepAliveModuleNameRes))).length > 0) {
+      // filterTablesOpenTabexist 判断是否在过滤新开里，在则是新开界面
+      let filterTablesOpenTabexist = ( window.ProjectConfig &&  window.ProjectConfig.filterTablesOpenTab || []).includes(customizedModuleName);
+
+      if (!filterTablesOpenTabexist && dynamicModuleTag !== '' && openedMenuLists.length > 0 && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName || (keepAliveModuleNameRes !== ''&& d.tableName===keepAliveModuleNameRes  && d.keepAliveModuleName.includes(keepAliveModuleNameRes))).length > 0) {
         activateSameCustomizePageFlag = true;
       }
     }
+   
     if (dynamicModuleTag !== '' && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName).length === 0 && !activateSameCustomizePageFlag) {
       // 新开tab
       // 目标路由所对应的[功能模块]没有存在于openedMenuLists中，则将目标路由应该对应的模块信息写入openedMenuLists

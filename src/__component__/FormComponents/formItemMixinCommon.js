@@ -13,7 +13,9 @@ export default {
     validateInput() {
       return new Promise((resolve) => {
       const preverifyenabled = this.items.preverifyenabled;
-      if (preverifyenabled) {
+      // 子表唯一性不校验
+      let checked = new RegExp(this.items.tableName).test(this.items.moduleComponentName);
+      if (preverifyenabled && checked) {
         network.post('/p/cs/verifyObject', {
           OBJ_ID: this.$route.params.itemId === 'New' ? -1 : this.$route.params.itemId,
           TABLE_NAME: this.$route.params.tableName,
