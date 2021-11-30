@@ -12,7 +12,9 @@ export default {
       network.post('/p/cs/getHistoryAndFavorite').then((res) => {
         if (res.data && res.data.data) {
           const { history, favorite } = res.data.data;
-          commit('updateHistoryAndFavorite', { history, favorite });
+          setTimeout(()=>{
+            commit('updateHistoryAndFavorite', { history, favorite });
+          },200)
         }
       });
     }

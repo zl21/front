@@ -12,7 +12,9 @@ export default {
       network.post('/p/cs/getHistoryAndFavorite').then((res) => {
         if (res.data && res.data.data) {
           const { history, favorite } = res.data.data;
-          commit('updateHistoryAndFavorite', { history, favorite });
+          setTimeout(()=>{
+            commit('updateHistoryAndFavorite', { history, favorite });
+          },200)
         }
       });
     }
@@ -36,7 +38,10 @@ export default {
         id = '-1';
       }
       network.post('/p/cs/recHistory', urlSearchParams({ type, id })).then((res) => {
-        commit('updateHistoryAndFavorite', { history: res.data.data });
+        setTimeout(()=>{
+          commit('updateHistoryAndFavorite', { history: res.data.data });
+        },200)
+       
       });
     }
   },
