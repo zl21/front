@@ -1,7 +1,7 @@
 import axios from 'axios';
 import md5 from 'md5';
-import router from '../__config__/router.config';
-import store from '../__config__/store.config';
+// import router from '../__config__/window.vm.$router.config';
+// import store from '../__config__/window.vm.$store.config';
 import i18n from '../assets/js/i18n';
 import { filterUrl, isJSON } from "./utils";
 
@@ -34,9 +34,9 @@ window.pendingRequestMap = pendingRequestMap;
 // };
 
 const matchGateWay = (url) => {
-  const { tableName, customizedModuleName } = router.currentRoute.params;
+  const { tableName, customizedModuleName } = window.vm.$router.currentRoute.params;
   const globalServiceId = window.localStorage.getItem('serviceId');
-  const serviceIdMap = Object.assign({}, store.state.global.serviceIdMap, JSON.parse(window.localStorage.getItem('serviceIdMap')));
+  const serviceIdMap = Object.assign({}, window.vm.$store.state.global.serviceIdMap, JSON.parse(window.localStorage.getItem('serviceIdMap')));
   // eslint-disable-next-line no-empty
   if (!enableGateWay() || url.indexOf('/getMsgCnt') >= 0) {
     return undefined;
@@ -146,7 +146,7 @@ axios.interceptors.response.use(
     }
     const filterUrlParams = {
       url: response.config.url,
-      router: router.currentRoute,
+      router: window.vm.$router.currentRoute,
       config: getFilterUrlForNetworkData
     };
     // window.ProjectConfig = {
@@ -271,7 +271,7 @@ axios.interceptors.response.use(
       // }));
       // delete pendingRequestMap[requestMd5];
       if (status === 403) {
-        if (logoutTips() && getProjectQuietRoutes().indexOf(router.currentRoute.path) === -1) {
+        if (logoutTips() && getProjectQuietRoutes().indexOf(window.vm.$router.currentRoute.path) === -1) {
           window.vm.$Modal.fcWarning({
             title: i18n.t('feedback.warning'),
             content: i18n.t('messages.lostSession'),
@@ -282,15 +282,15 @@ axios.interceptors.response.use(
               window.sessionStorage.setItem('loginStatus', false);
               window.localStorage.setItem('loginStatus', false);
               window.localStorage.setItem('sessionCookie', '');
-              store.commit('global/updataUserInfoMessage', {
+              window.vm.$store.commit('global/updataUserInfoMessage', {
                 userInfo: {}
               });
               removeSessionObject('userInfo');
-              // console.log(1, router.currentRoute.path);
-              if (getProjectQuietRoutes().indexOf(router.currentRoute.path) === -1) {
+              // console.log(1, window.vm.$router.currentRoute.path);
+              if (getProjectQuietRoutes().indexOf(window.vm.$router.currentRoute.path) === -1) {
                 if (config.url !== '/p/cs/logout') {
-                  // store.dispatch('global/signout');
-                  router.push(getTouristRoute());
+                  // window.vm.$store.dispatch('global/signout');
+                  window.vm.$router.push(getTouristRoute());
                 }
               }
             }
@@ -301,14 +301,14 @@ axios.interceptors.response.use(
           window.localStorage.setItem('loginStatus', false);
           window.localStorage.setItem('sessionCookie', '');
 
-          store.commit('global/updataUserInfoMessage', {
+          window.vm.$store.commit('global/updataUserInfoMessage', {
             userInfo: {}
           });
           removeSessionObject('userInfo');
-          if (getProjectQuietRoutes().indexOf(router.currentRoute.path) === -1) {
+          if (getProjectQuietRoutes().indexOf(window.vm.$router.currentRoute.path) === -1) {
             if (config.url !== '/p/cs/logout') {
-              // store.dispatch('global/signout');
-              router.push(getTouristRoute());
+              // window.vm.$store.dispatch('global/signout');
+              window.vm.$router.push(getTouristRoute());
             }
           }
         }
@@ -404,9 +404,9 @@ axios.interceptors.response.use(
 
 export const getGateway = (url) => {
   const globalServiceId = window.localStorage.getItem('serviceId');
-  const serviceId = store.state.global.serviceIdMap;
-  // const serviceName = store.state.global.activeTab.tableName;
-  const serviceName = router.currentRoute.params.tableName ? router.currentRoute.params.tableName : tableNameForGet;
+  const serviceId = window.vm.$store.state.global.serviceIdMap;
+  // const serviceName = window.vm.$store.state.global.activeTab.tableName;
+  const serviceName = window.vm.$router.currentRoute.params.tableName ? window.vm.$router.currentRoute.params.tableName : tableNameForGet;
   if (!(enableGateWay())) {
     return url;
   }
@@ -453,9 +453,9 @@ function setUrlSeverId(gateWay, url, serviceconfig) {
 }
 // 获取定制界面网关
 export const getCenterByTable = async () => {
-  const tableName = router.currentRoute.params.tableName || router.currentRoute.params.customizedModuleName;
+  const tableName = window.vm.$router.currentRoute.params.tableName || window.vm.$router.currentRoute.params.customizedModuleName;
   const getGlobalServiceId = window.localStorage.getItem('serviceId');
-  const getserviceIdMap = Object.assign({}, store.state.global.serviceIdMap, JSON.parse(window.localStorage.getItem('serviceIdMap')));
+  const getserviceIdMap = Object.assign({}, window.vm.$store.state.global.serviceIdMap, JSON.parse(window.localStorage.getItem('serviceIdMap')));
   if (!enableGateWay()) {
     // 1.3 是无网关的
     return false;
@@ -478,7 +478,7 @@ export const getCenterByTable = async () => {
     tableName
   })).then((res) => {
     if (res.data.code === 0) {
-      const getserviceIdMapdata = Object.assign({}, store.state.global.serviceIdMap, JSON.parse(window.localStorage.getItem('serviceIdMap')));
+      const getserviceIdMapdata = Object.assign({}, window.vm.$store.state.global.serviceIdMap, JSON.parse(window.localStorage.getItem('serviceIdMap')));
       getserviceIdMapdata[tableName] = res.data.data;
       localStorage.setItem('serviceIdMap', JSON.stringify(getserviceIdMapdata));
     }
@@ -513,8 +513,8 @@ function NetworkConstructor() {
 
     if (pendingRequestMap[requestMd5] && now.getTime() - pendingRequestMap[requestMd5].reqTime < REQUEST_PENDDING_EXPIRE()) {
       // return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
-      if (router.currentRoute.params.tableName) {
-        const loadingName = router.currentRoute.meta.moduleName.replace(/\./g, '-');
+      if (window.vm.$router.currentRoute.params.tableName) {
+        const loadingName = window.vm.$router.currentRoute.meta.moduleName.replace(/\./g, '-');
         window.vm.$R3loading.hide(loadingName);
       }
 
@@ -531,8 +531,8 @@ function NetworkConstructor() {
     if (Number(pendingRequestMap[requestMd5].reqTime) - Number(lastTime) < REQUEST_PENDDING_EXPIRE()) {
       // delete pendingRequestMap[requestMd5];
       // return Promise.reject(new Error(`request: [${matchedUrl}] 与上次请求间隔小于${REQUEST_PENDDING_EXPIRE() / 1000}秒.`));
-      if (router.currentRoute.params.tableName) {
-        const loadingName = router.currentRoute.meta.moduleName.replace(/\./g, '-');
+      if (window.vm.$router.currentRoute.params.tableName) {
+        const loadingName = window.vm.$router.currentRoute.meta.moduleName.replace(/\./g, '-');
         window.vm.$R3loading.hide(loadingName);
       }
       return new Promise(() => {});
@@ -540,7 +540,7 @@ function NetworkConstructor() {
 
     let headers = {};
     if (url.includes('/p/cs/objectTab') || url.includes('/p/cs/itemObj')) {
-      const { tableName } = router.currentRoute.params;
+      const { tableName } = window.vm.$router.currentRoute.params;
       headers = {
         headers: {
           'maintable-name': tableName,
@@ -583,8 +583,8 @@ function NetworkConstructor() {
     const now = new Date();
     if (pendingRequestMap[requestMd5] && now.getTime() - pendingRequestMap[requestMd5].reqTime < REQUEST_PENDDING_EXPIRE()) {
       // return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
-      if (router.currentRoute.meta.moduleName) {
-        const loadingName = router.currentRoute.meta.moduleName.replace(/\./g, '-');
+      if (window.vm.$router.currentRoute.meta.moduleName) {
+        const loadingName = window.vm.$router.currentRoute.meta.moduleName.replace(/\./g, '-');
         window.vm.$R3loading.hide(loadingName);
       }
       return new Promise(() => {});
@@ -599,8 +599,8 @@ function NetworkConstructor() {
     if (Number(pendingRequestMap[requestMd5].reqTime) - Number(lastTime) < REQUEST_PENDDING_EXPIRE()) {
       // delete pendingRequestMap[requestMd5];
       // return Promise.reject(new Error(`request: [${matchedUrl}] 与上次请求间隔小于${REQUEST_PENDDING_EXPIRE() / 1000}秒.`));
-      if (router.currentRoute.meta.moduleName) {
-        const loadingName = router.currentRoute.meta.moduleName.replace(/\./g, '-');
+      if (window.vm.$router.currentRoute.meta.moduleName) {
+        const loadingName = window.vm.$router.currentRoute.meta.moduleName.replace(/\./g, '-');
         window.vm.$R3loading.hide(loadingName);
       }
       return new Promise(() => {});

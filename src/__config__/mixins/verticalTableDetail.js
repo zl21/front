@@ -1,7 +1,7 @@
 import { mapState, mapActions, mapMutations } from 'vuex';
 import getComponentName from '../../__utils__/getModuleName';
-import store from '../store.config';
-import router from '../router.config';
+// import store from '../store.config';
+// import router from '../router.config';
 import {
   MODULE_COMPONENT_NAME, INSTANCE_ROUTE, HAS_BEEN_DESTROYED_MODULE, INSTANCE_ROUTE_QUERY, customizeMixins
 } from '../../constants/global';
@@ -11,8 +11,8 @@ import minx from '../../__component__/tableDetailjs/mixin';
 export default () => ({
   provide: {
     [MODULE_COMPONENT_NAME]: getComponentName(),
-    [INSTANCE_ROUTE]: router.currentRoute.fullPath,
-    [INSTANCE_ROUTE_QUERY]: router.currentRoute.params,
+    [INSTANCE_ROUTE]: window.vm.$router.currentRoute.fullPath,
+    [INSTANCE_ROUTE_QUERY]: window.vm.$router.currentRoute.params,
   },
   // mixins: [customizeMixins().verticalTableDetailCustomize ? customizeMixins().verticalTableDetailCustomize : false],
   data() {
@@ -26,10 +26,10 @@ export default () => ({
       this[MODULE_COMPONENT_NAME] = getComponentName();
     }
     if (!this[INSTANCE_ROUTE]) {
-      this[INSTANCE_ROUTE] = router.currentRoute.fullPath;
+      this[INSTANCE_ROUTE] = window.vm.$router.currentRoute.fullPath;
     }
     if (!this[INSTANCE_ROUTE_QUERY]) {
-      this[INSTANCE_ROUTE_QUERY] = router.currentRoute.params;
+      this[INSTANCE_ROUTE_QUERY] = window.vm.$router.currentRoute.params;
     }
   },
   computed: {
@@ -133,7 +133,7 @@ export default () => ({
     try {
       if (this.$options.isKeepAliveModel) {
         // this.$el = null;
-        store.unregisterModule(this.moduleComponentName);
+        window.vm.$store.unregisterModule(this.moduleComponentName);
       }
       // const components = window.Vue.options.components;
       // Object.keys(components).forEach((compontent) => {

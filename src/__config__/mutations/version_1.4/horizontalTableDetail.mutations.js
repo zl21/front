@@ -1,4 +1,4 @@
-import router from '../../router.config';
+// import window.vm.$router.from '../../router.config';
 import i18n from '../../../assets/js/i18n';
 
 export default {
@@ -18,7 +18,7 @@ export default {
     state.isHideTempStorage = value;
   },
   updateTabPanelsData(state, data) {
-    const { tableName, tableId } = router.currentRoute.params;
+    const { tableName, tableId } = window.vm.$router.currentRoute.params;
     const arr = [{
       label: i18n.t('tips.label'),
       tablename: tableName,
@@ -112,7 +112,7 @@ export default {
   }, // 更新按钮数据
   updateDefaultButton(state, data) {
     if (data && data.tabcmd && data.tabcmd.cmds) {
-      const { itemId } = router.currentRoute.params;
+      const { itemId } = window.vm.$router.currentRoute.params;
       data.tabcmd.cmds.some((b, i) => {
         if (b === 'actionMODIFY') {
           let index = '';
@@ -187,7 +187,7 @@ export default {
   seleteAddData(state, data) { // 删除状态里add的空值
     // key,需要删除的key
     // itemName;子表表名
-    const { tableName } = router.currentRoute.params;
+    const { tableName } = window.vm.$router.currentRoute.params;
     if (data.itemName) {
       delete state.updateData[data.itemName].add[data.itemName][data.key];
     } else if (state.updateData[tableName] && state.updateData[tableName].add && state.updateData[tableName].add[tableName]) {
@@ -623,7 +623,7 @@ export default {
     state.globalLoading = value;
   },
   // testUpdateData(state, itemName) { // 检测数据变化
-  //   const { tableName, itemId } = router.currentRoute.params;
+  //   const { tableName, itemId } = window.vm.$router.currentRoute.params;
   //   if (itemId === 'New') { // 单对象新增界面
   //     const addDataForItemTable = state.updateData[tableName].add[itemName];
   //     const addDataForMainTable = state.updateData[tableName].add[tableName];

@@ -26,6 +26,7 @@
 </template>
 
 <script>
+  import i18n from '../../assets/js/i18n'
   import network from '../../__utils__/network';
   import ErCode from "./components/ErCode";
   import MoveBar from "../Login/MoveBar.vue";
@@ -49,6 +50,9 @@
         moveBarshow:window.ProjectConfig &&  window.ProjectConfig.moveBar,
         verifyBar:false  // 滑动条
       }
+    },
+    beforeCreate() {
+      this.$t = i18n.t.bind(i18n)
     },
     methods: {
       login() {

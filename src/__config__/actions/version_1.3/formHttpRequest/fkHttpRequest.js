@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 import network, { urlSearchParams } from '../../../../__utils__/network';
-import router from '../../../router.config';
+// import window.vm.$router.from '../../../router.config';
 
 
 export const fkQueryList = function fkQueryList(params) {
@@ -112,7 +112,7 @@ export const fkQueryListPop = function fkQueryListPop(params) {
   });
 };
 export const itemTableDelete = function itemTableDelete({ params, path, success }) { // 表格删除方法
-  const { itemId } = router.currentRoute.params;
+  const { itemId } = window.vm.$router.currentRoute.params;
   let arrayID = [];
   const objItem = {};
   Object.keys(params.tabItem).reduce((obj, crr) => {

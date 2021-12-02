@@ -176,7 +176,7 @@
   import Vue from 'vue';
   import { mapMutations, mapState, } from 'vuex';
 
-  import router from '../__config__/router.config';
+  // import router from '../__config__/window.vm.$router.config';
   import tableDetailCollection from './TableDetailCollection.vue';
   import singleObjectButtons from './SingleObjectButtons.vue';
   import compositeForm from './CompositeForm.vue';
@@ -630,7 +630,7 @@
       formEnter() {
         this.isclick = false;
         let savePath = '';
-        const { itemId } = router.currentRoute.params;
+        const { itemId } = window.vm.$router.currentRoute.params;
         if(Version() === '1.4') {
           const store = this.$store.state[this[MODULE_COMPONENT_NAME]];
           const itemName = this.tableName;// 子表表名
@@ -670,7 +670,7 @@
         return false;
       },
       determineSaveType(savePath) { // 回车保存
-        const { itemId } = router.currentRoute.params;
+        const { itemId } = window.vm.$router.currentRoute.params;
         if (this.verifyRequiredInformation()) { // 验证表单必填项
           this.saveParameters();// 调用获取参数方法
           const itemName = this.tableName;// 子表表名
@@ -739,7 +739,7 @@
         const objectType = this.type;
         const Id = objId === 'New' ? '-1' : objId;
         const childTableNames = this.childTableNames;
-        const { tableName } = router.currentRoute.params;
+        const { tableName } = window.vm.$router.currentRoute.params;
         const parame = {
           ...this.currentParameter, // 主表信息
           itemCurrentParameter, // 子表信息
@@ -926,7 +926,7 @@
           }, {});
         }
         Object.keys(this.$store.state[this[MODULE_COMPONENT_NAME]].updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
-          const { tableName } = router.currentRoute.params;
+          const { tableName } = window.vm.$router.currentRoute.params;
           if (current === tableName) {
             this.currentParameter = this.$store.state[this[MODULE_COMPONENT_NAME]].updateData[current];
           }

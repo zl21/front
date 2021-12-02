@@ -1,4 +1,4 @@
-import router from '../__config__/router.config';
+// import router from '../__config__/window.vm.$router.config';
 import {
   STANDARD_TABLE_LIST_PREFIX,
   STANDARD_COMMONTABLE_LIST_PREFIX,
@@ -16,7 +16,7 @@ import {
 
 export default ({ route } = {}) => {
   const symbol = '.';
-  const { meta, params } = route || router.currentRoute;
+  const { meta, params } = route || window.vm.$router.currentRoute;
   const { routePrefix } = meta;
   const {
     tableName, tableId, itemId, customizedModuleName, customizedModuleId, pluginModuleName 

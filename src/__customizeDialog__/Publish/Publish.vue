@@ -42,7 +42,7 @@
 <script>
   import ChineseDictionary from '../../assets/js/ChineseDictionary';
   import network, { urlSearchParams } from '../../__utils__/network';
-  import router from '../../__config__/router.config';
+  // importthis.$router.from '../../__config__/router.config';
   import { classFix } from '../../constants/global';
 
 
@@ -93,7 +93,7 @@
           return;
         }
 
-        const { itemId, tableName } = router.currentRoute.params;
+        const { itemId, tableName } =this.$router.currentRoute.params;
         const searchdata = {
           env: this.envValue,
           objId: itemId,

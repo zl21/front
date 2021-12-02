@@ -58,6 +58,9 @@
   export default {
     name: 'LoginCore',
     components: {AccountLogin, PhoneLogin, ChangeLang},
+    // beforeCreate() {
+    //   this.$t = i18n.t.bind(i18n)
+    // },
     data() {
       return {
         globalServiceId: window.localStorage.getItem('serviceId') || '',
