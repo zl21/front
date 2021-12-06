@@ -328,9 +328,13 @@ export default (router) => {
           }else{
             
             if(!enableActivateSameCustomizePage()){
-              // 如果定制界面配置多开，还需要测试是否id 相同
-              if(d.itemId === customizedModuleId){
-                existModuleIndex = i;
+              // 如果定制界面配置多开，还需要测试定制界面是否id 相同
+              if(new RegExp('/CUSTOMIZED/').test(d.routeFullPath)){
+                if(d.itemId === customizedModuleId ){
+                  existModuleIndex = i;
+                }
+              }else{
+                  existModuleIndex = i;
               }
             }else{
               existModuleIndex = i;
