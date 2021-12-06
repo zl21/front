@@ -299,7 +299,9 @@ export default {
         // 清空updataTreeId
         removeSessionObject('TreeId');
         removeSessionObject('routeMapRecordForCustomizePages');
-
+        // 清除plug
+        removeSessionObject('dynamicRoutingIsBackForDelete');
+        removeSessionObject('dynamicRoutingIsBack');
         commit('updateTreeTableListData', []);
         removeSessionObject('keepAliveLabelMapsAll');
 

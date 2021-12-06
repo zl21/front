@@ -315,6 +315,9 @@ export default {
         removeSessionObject('TreeId');
         removeSessionObject('routeMapRecordForCustomizePages');
         commit('updateTreeTableListData', []);
+        // 清除plug
+        removeSessionObject('dynamicRoutingIsBackForDelete');
+        removeSessionObject('dynamicRoutingIsBack');
         removeSessionObject('keepAliveLabelMapsAll');
         window.vm.$router.push({ path: getTouristRoute() });
       })
