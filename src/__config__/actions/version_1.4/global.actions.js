@@ -311,6 +311,8 @@ export default {
         commit('updataUserInfoMessage', {});
         window.localStorage.removeItem('userInfo');
         window.localStorage.removeItem('sessionCookie');
+        window.localStorage.removeItem('serviceIdMap');
+      
         // 清空updataTreeId
         removeSessionObject('TreeId');
         removeSessionObject('routeMapRecordForCustomizePages');

@@ -36,7 +36,15 @@ window.pendingRequestMap = pendingRequestMap;
 const matchGateWay = (url) => {
   const { tableName, customizedModuleName } = window.vm.$router.currentRoute.params;
   const globalServiceId = window.localStorage.getItem('serviceId');
+  let windowServiceIdMap = JSON.parse(window.localStorage.getItem('serviceIdMap'));
+  // 判断是否存储了ServiceIdMap
+  if(!windowServiceIdMap || Object.keys(windowServiceIdMap).length<1){
+    window.localStorage.setItem(
+      'serviceIdMap',JSON.stringify(window.vm.$store.state.global.serviceIdMap)
+    )
+  }
   const serviceIdMap = Object.assign({}, window.vm.$store.state.global.serviceIdMap, JSON.parse(window.localStorage.getItem('serviceIdMap')));
+  
   // eslint-disable-next-line no-empty
   if (!enableGateWay() || url.indexOf('/getMsgCnt') >= 0) {
     return undefined;

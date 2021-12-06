@@ -97,7 +97,7 @@ const getCategory = () => {
           backTouristRoute()
         } else if (res.data.data.length > 0) {
           store.commit('global/updateMenuLists', res.data.data)
-          const serviceIdMaps = res.data.data
+          let serviceIdMaps = res.data.data
             .map((d) => d.children)
             .reduce((a, c) => a.concat(c), [])
             .map((d) => d.children)
@@ -110,10 +110,14 @@ const getCategory = () => {
               a[c.value.toUpperCase()] = c.serviceId
               return a
             }, {})
-          console.log(serviceIdMaps,'====serviceIdMaps')
+  
+          let data = window.localStorage.getItem('serviceIdMap') || '{}';  
+
+          let serviceIdMapData = Object.assign(JSON.parse(data),JSON.parse(JSON.stringify(serviceIdMaps)));
+          console.log(serviceIdMapData.R3,'====serviceIdMapData');   
           window.localStorage.setItem(
             'serviceIdMap',
-            JSON.stringify(serviceIdMaps)
+            JSON.stringify(serviceIdMapData)
           )
           DispatchEvent('gatewayReady')
         } else if (getLocalObject('loginStatus') === true) {
