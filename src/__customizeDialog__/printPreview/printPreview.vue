@@ -9,7 +9,7 @@
 </template>
 <script>
   import { mapState } from 'vuex';
-  import router from '../../__config__/router.config';
+  // import window.vm.$router.from '../../__config__/router.config';
   import { MODULE_COMPONENT_NAME } from '../../constants/global';
   import network from '../../__utils__/network';
 
@@ -56,7 +56,7 @@
     mounted() {
       this.src = '';
       const userId = this.userInfo.id;// 用户ID
-      const { tableName } = router.currentRoute.params;// 明细ID
+      const { tableName } = window.vm.$router.currentRoute.params;// 明细ID
       let printIds = [] || '';
       if (this[MODULE_COMPONENT_NAME][0] === 'S') {
         printIds = this.idArray;

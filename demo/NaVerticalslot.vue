@@ -22,7 +22,6 @@
 export default {
   name:'NaVerticalslot',
   mounted(){
-    console.log(this)
   }
 }
 </script>

@@ -13,7 +13,7 @@ import {
   enableOpenNewTab,
   openTabNumber
 } from '../../../constants/global';
-import router from '../../router.config';
+// import window.vm.$router.from '../../router.config';
 import setCustomeLabel from '../../../__utils__/setCustomeLabel';
 import {
   getSessionObject, updateSessionObject, deleteFromSessionObject, removeSessionObject
@@ -112,12 +112,12 @@ export default {
     if (actionType === 'SYSTEM') {
       if (singleEditType === ':itemId') {
         const path = `/${param.url.replace(/:itemId/, param.id)}`;
-        router.push(
+        window.vm.$router.push(
           path
         );
       } else {
         const path = `/${param.url}`;
-        router.push(
+        window.vm.$router.push(
           path
         );
       }
@@ -147,7 +147,7 @@ export default {
       };
       window.sessionStorage.setItem('tableDetailUrlMessage', JSON.stringify(obj));
       const path = `${LINK_MODULE_PREFIX}/${param.linkName.toUpperCase()}/${param.linkId}`;
-      router.push({
+      window.vm.$router.push({
         path
       });
     } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
@@ -160,7 +160,7 @@ export default {
         };
         setCustomeLabel(data);
       }
-      const treeQuery = router.currentRoute.query;
+      const treeQuery = window.vm.$router.currentRoute.query;
       let path = '';
       if (treeQuery.isTreeTable) {
         // 如果当前列表为树形结构列表界面，则配置的动态路由以及tableurl（配置为跳转定制界面，则路由上定制界面ID为treeTableListSelectId）
@@ -172,7 +172,7 @@ export default {
       } else {
         path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${param.id}`;
       }
-      router.push({
+      window.vm.$router.push({
         path
       });
       if (param.isMenu) {
@@ -359,8 +359,8 @@ export default {
     state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSessionObject('keepAliveLabelMaps'));
     state.serviceIdMap = Object.assign({}, state.serviceIdMap, window.RgetItemLocalStorage('serviceIdMap'));
     const path = getSessionObject('savePath').path;
-    if (path && path !== router.currentRoute.path) {
-      router.push(path);
+    if (path && path !== window.vm.$router.currentRoute.path) {
+      window.vm.$router.push(path);
       // window.location.replace(window.location.href);
       // window.location.reload();
       removeSessionObject('savePath');
@@ -559,7 +559,7 @@ export default {
     state.openedMenuLists = [];
     state.keepAliveLists = [];
     state.activeTab = {};
-    router.push('/');
+    window.vm.$router.push('/');
     window.sessionStorage.removeItem('customizeMessage');
     window.sessionStorage.removeItem('routeMapRecordForHideBackButton');
     window.sessionStorage.removeItem('addRouteToEditor');
@@ -641,7 +641,7 @@ export default {
 
 
     // 清除当前关闭的表单设置的跳转到标准列表表单默认值;
-    const { tableId } = router.currentRoute.params;
+    const { tableId } = window.vm.$router.currentRoute.params;
     removeSessionObject(tableId);
 
 
@@ -800,7 +800,7 @@ export default {
       }
       
       if (tab.stopRouterPush) { // 关闭当前tab时不进行路由跳转
-        const { tableName } = router.currentRoute.params;
+        const { tableName } = window.vm.$router.currentRoute.params;
         if (item.tableName === tableName) {
           state.activeTab = openedMenuLists[index];
         }
@@ -816,11 +816,11 @@ export default {
             } else {
               state.activeTab = openedMenuLists[index - 1]; // 关闭当前tab时始终打开的是最后一个tab
             }
-            router.push({
+            window.vm.$router.push({
               path: state.activeTab.routeFullPath,
             });
           } else {
-            router.push('/');
+            window.vm.$router.push('/');
           }
         }
       }
@@ -857,11 +857,11 @@ export default {
     if (type === 'tableDetailHorizontal') {
       path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
 
-      router.push({ path });
+      window.vm.$router.push({ path });
     }
     if (type === 'tableDetailVertical') {
       path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
-      router.push({ path });
+      window.vm.$router.push({ path });
     }
     if (back) {
       path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
@@ -878,7 +878,7 @@ export default {
         query
       };
 
-      router.push(routeInfo);
+      window.vm.$router.push(routeInfo);
     }
   },
   tabOpen(state, {// 打开一个新tab添加路由
@@ -1031,16 +1031,16 @@ export default {
     if (back) {
       const routeMapRecordForCustomizePage = getSessionObject('routeMapRecordForCustomizePage');
 
-      if (routeMapRecordForCustomizePage[router.currentRoute.fullPath]) {
-        const CustomizePagePath = routeMapRecordForCustomizePage[router.currentRoute.fullPath];
+      if (routeMapRecordForCustomizePage[window.vm.$router.currentRoute.fullPath]) {
+        const CustomizePagePath = routeMapRecordForCustomizePage[window.vm.$router.currentRoute.fullPath];
         Object.keys(routeMapRecordForCustomizePage).map((item) => {
           if (router.currentRoute.fullPath === item) {
-            deleteFromSessionObject('routeMapRecordForCustomizePage', router.currentRoute.fullPath);
+            deleteFromSessionObject('routeMapRecordForCustomizePage', window.vm.$router.currentRoute.fullPath);
           }
         });
 
         // const flag = state.openedMenuLists.filter((d, i) => { // 判断单对象界面要返回来源定制界面是否在前一个
-        //   if (d.tableName === router.currentRoute.params.tableName) {
+        //   if (d.tableName === window.vm.$router.currentRoute.params.tableName) {
         //     d.index = i;
         //     if (i !== 0 && state.openedMenuLists[i - 1].routeFullPath === CustomizePagePath) { // 当自定义及界面要跳转的单对象界面位置不是第一个时
         //       return true;
@@ -1051,7 +1051,7 @@ export default {
         const dom = document.querySelector(`#${router.currentRoute.params.tableName}_TAB`);
         dom.click();
         // if (state.openedMenuLists.length > 1) { // 框架路由tab逻辑为刷新浏览器保留最后一个打开的tab页签，则关闭当前会自动激活前一个
-        router.push(CustomizePagePath);
+        window.vm.$router.push(CustomizePagePath);
         // }
 
         // state.openedMenuLists.map((menu) => {
@@ -1087,12 +1087,12 @@ export default {
           query
         };
          // 如果当前路由等于跳转路由不跳转
-         let currentRouteFullPath = router.currentRoute.fullPath;
+         let currentRouteFullPath = window.vm.$router.currentRoute.fullPath;
          if(currentRouteFullPath.indexOf('?') > 0){
            currentRouteFullPath = currentRouteFullPath.substr(0,currentRouteFullPath.indexOf('?'));
          }
          if(currentRouteFullPath!== path){
-           router.push(routeInfo);
+           window.vm.$router.push(routeInfo);
          }
       }
       return;
@@ -1108,7 +1108,7 @@ export default {
     }
 
     if (path) {
-      router.push({
+      window.vm.$router.push({
         path
       });
     }

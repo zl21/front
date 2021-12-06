@@ -12,7 +12,6 @@
 </template>
 
 <script>
-  import Vue from 'vue';
   import { mapState, mapActions, mapMutations } from 'vuex';
   import SMixins from '../__config__/mixins/standardTableLists';
   import HMixins from '../__config__/mixins/horizontalTableDetail';

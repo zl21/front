@@ -1,23 +1,28 @@
 import md5 from 'md5'
-import packJson from '../../../package.json'
-import { getGuid } from '../../__utils__/random'
-import router from '../../__config__/router.config';
-import store from '../../__config__/store.config'
-import { enableInitializationRequest, specifiedGlobalGateWay, backDashboardRoute, HAS_BEEN_DESTROYED_MODULE } from '../../constants/global'
-import i18n from './i18n'
-import network from '../../__utils__/network';
-import { DispatchEvent } from '../../__utils__/dispatchEvent';
-import { getLocalObject } from '../../__utils__/localStorage';
-import { removeSessionObject, getSessionObject } from '../../__utils__/sessionStorage';
-import getObjdisType from '../../__utils__/getObjdisType';
-import App from '../../App.vue';
+import packJson from '../package.json'
+import { getGuid } from '../src/__utils__/random'
+import router from '../src/__config__/router.config';
+import store from '../src/__config__/store.config'
+import { enableInitializationRequest, specifiedGlobalGateWay, backDashboardRoute, HAS_BEEN_DESTROYED_MODULE } from '../src/constants/global'
+import i18n from '../src/assets/js/i18n'
+import network from '../src/__utils__/network';
+import { DispatchEvent } from '../src/__utils__/dispatchEvent';
+import { getLocalObject } from '../src/__utils__/localStorage';
+import { removeSessionObject, getSessionObject } from '../src/__utils__/sessionStorage';
+import getObjdisType from '../src/__utils__/getObjdisType';
+//import App from '../src/App';
+// import App from '../src/__component__/Login/LoginCore.vue';
+
+import App from '../src/__component__/KeepAliveContainer';
 
 if(!window.vm){
   window.vm = {
   
   }
 }
+
 // 挂载router和store
+console.log(window.vm.$router,'====window.vm.$router');
 if(!window.vm.$router){
   window.vm.$router = router;
 }
@@ -53,14 +58,11 @@ function hookAJAX() {
   XMLHttpRequest.prototype.open = customizeOpen
 }
 
-const createDOM = () => {
+const createDOM = ($el) => {
   const div = document.createElement('div')
   div.setAttribute('id', getGuid())
-  if(window.ProjectConfig && window.ProjectConfig.$el){
-    window.ProjectConfig.$el.appendChild(div)
-  }else{
-    document.body.appendChild(div)
-  }
+  console.log($el,'232323');
+  $el.appendChild(div)
   return div
 }
 
@@ -97,7 +99,7 @@ const getCategory = () => {
           backTouristRoute()
         } else if (res.data.data.length > 0) {
           store.commit('global/updateMenuLists', res.data.data)
-          let serviceIdMaps = res.data.data
+          const serviceIdMaps = res.data.data
             .map((d) => d.children)
             .reduce((a, c) => a.concat(c), [])
             .map((d) => d.children)
@@ -110,14 +112,9 @@ const getCategory = () => {
               a[c.value.toUpperCase()] = c.serviceId
               return a
             }, {})
-  
-          let data = window.localStorage.getItem('serviceIdMap') || '{}';  
-
-          let serviceIdMapData = Object.assign(JSON.parse(data),JSON.parse(JSON.stringify(serviceIdMaps)));
-          console.log(serviceIdMapData.R3,'====serviceIdMapData');   
           window.localStorage.setItem(
             'serviceIdMap',
-            JSON.stringify(serviceIdMapData)
+            JSON.stringify(serviceIdMaps)
           )
           DispatchEvent('gatewayReady')
         } else if (getLocalObject('loginStatus') === true) {
@@ -134,7 +131,9 @@ const getCategory = () => {
 
 const init = ($el) => {
   removeSessionObject(HAS_BEEN_DESTROYED_MODULE);
-  const rootDom = createDOM();
+  const rootDom = createDOM($el);
+  console.log(rootDom,'====')
+
   window.vm = new Vue({
     router,
     store,
@@ -226,56 +225,4 @@ const getGateWayServiceId = ($el) => {
   }
 };
 
-const requestHello = async function() {
-  const serviceId = window.localStorage.getItem('serviceId')
-  const url = serviceId ? `/${serviceId}/p/cs/hello` : '/p/cs/hello'
-  await network.get(url, undefined, { noServiceId: true }).then((res) => {
-    // 此方法用于向外界（JFlow）提供用户信息。供外部处理自己的需要逻辑。
-    DispatchEvent('userReady', {
-      detail: {
-        userInfo: JSON.parse(JSON.stringify(res.data)),
-      },
-    })
-    if (res.status === 200 && res.data.code === 0) {
-      store.commit('global/updataUserInfoMessage', {
-        userInfo: res.data,
-      })
-      window.localStorage.setItem('userInfo', JSON.stringify(res.data))
-      window.localStorage.setItem('sessionCookie', res.data.sessionCookie)
-    }
-  })
-}
-
-const setXss = () => {
-  // 安全攻击
-  let htmlEncodeByRegExp = (str) => {
-    let s = str
-    if (str.length === 0) {
-      return ''
-    }
-    s = s.replace(/</g, '&lt;')
-    s = s.replace(/>/g, '&gt;')
-    s = s.replace(/ /g, '&nbsp;')
-    s = s.replace(/\'/g, '&#39;') //eslint-disable-line
-    s = s.replace(/\"/g, '&quot;') //eslint-disable-line
-    return s
-  }
-  document.body.addEventListener('input', function(e) {
-    const tagName = e.target.tagName.toLowerCase()
-    if (tagName === 'input' || tagName === 'textarea') {
-      e.target.value = htmlEncodeByRegExp(e.target.value)
-    }
-  })
-}
-
-const setHookAJAX = (callback) => {
-  // 接口加密拦截
-  XMLHttpRequest.prototype.nativeOpen = XMLHttpRequest.prototype.open
-  var customizeOpen = function(method, url, async, user, password) {
-    this.nativeOpen(method, url, async, user, password)
-    callback(this)
-  }
-  XMLHttpRequest.prototype.open = customizeOpen
-}
-
-export { packageMessage, hookAJAX, createDOM, getCategory, getGateWayServiceId, init, requestHello, setXss, setHookAJAX }
+export { packageMessage, hookAJAX, createDOM, getCategory, getGateWayServiceId, init }

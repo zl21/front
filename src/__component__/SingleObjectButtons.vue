@@ -64,7 +64,7 @@
   import { mapMutations, mapState, mapActions } from 'vuex';
   import buttonmap from '../assets/js/buttonmap';
   import ButtonGroup from './ButtonComponent.vue';
-  import router from '../__config__/router.config';
+  // import router from '../__config__/router.config';
   import Dialog from './Dialog.vue';
   import WaterMark from './WaterMark.vue';
   import ImportDialog from './ImportDialog.vue';
@@ -1540,12 +1540,12 @@
         if (actionType === 'SYSTEM') { // 框架配置界面
           if (singleEditType === ':itemId') { // 配置的路径未动态id,根据勾选的明细id进行路由拼接
             const path = `/${tabAction.replace(/:itemId/, id)}`;
-            router.push(
+            this.$router.push(
               path
             );
           } else {
             const path = `/${tabAction}`;
-            router.push(
+            this.$router.push(
               path
             );
           }
@@ -2188,7 +2188,6 @@
         const newListPageRouteNew = enableOpenNewTab() ? keepAliveModuleName : keepAliveModuleName.substring(keepAliveModuleName.indexOf('.') + 1, keepAliveModuleName.lastIndexOf('.'));
         const newListPageRouteMOdify = enableOpenNewTab() ? keepAliveModuleName : keepAliveModuleName.substring(keepAliveModuleName.indexOf('.') + 1, keepAliveModuleName.lastIndexOf('.'));
 
-
         let routeMapRecordForSingleObjectNew = '';
         let routeMapRecordForSingleObjectModify = '';
         const routeMapRecordForListModify = {
@@ -2199,7 +2198,9 @@
           to: '',
           from: ''
         };
-        if (this.itemId === 'New') { // 单对象界面配置动态路由时，由动态路由界面跳转的新增单对象界面，点击返回时需回到维护的关系中对应的路由
+        if (this.itemId === 'New') { 
+          // 单对象界面配置动态路由时，由动态路由界面跳转的新增单对象界面，
+          // 点击返回时需回到维护的关系中对应的路由
           Object.keys(routeMapRecordForSingleObject).map((item) => {
             if (item.indexOf(SinglePageRouteNew) > -1) {
               routeMapRecordForSingleObjectNew = item;
@@ -2261,7 +2262,7 @@
           this.tabCloseAppoint({
             routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName, routePrefix, itemId: this.itemId, tableName: this.tableName
           });
-          router.push(routeMapRecordForSingleObject[currentPath]);
+          this.$router.push(routeMapRecordForSingleObject[currentPath]);
 
           // }
           // this.clickButtonsRefresh();
@@ -2271,7 +2272,7 @@
           this.tabCloseAppoint({
             routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName, routePrefix, itemId: this.itemId, tableName: this.tableName
           });
-          router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectNew]);
+          this.$router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectNew]);
 
           // }
           // this.clickButtonsRefresh();
@@ -2287,16 +2288,22 @@
           } else {
             param.type = directionalRouterType;
           }
-          if (routeMapRecordForListNew.from.indexOf('SYSTEM') > -1) { // 返回列表界面
+          if (routeMapRecordForListNew.from.indexOf('SYSTEM') > -1) { 
+            // 返回列表界面
             const deleteValue = {
               k: 'keepAliveModuleName',
               v: routeMapRecordForListNew.to
             };
             updateSessionObject('dynamicRoutingIsBackForDelete', deleteValue);
+            console.log(routeMapRecordForListNew.to,'===')
+            if((routeMapRecordForListNew.to).indexOf('PLUGIN')!== -1){
+              window.sessionStorage.setItem('dynamicRoutingIsBack', true);
+            }
+            
           } else {
             deleteFromSessionObject('routeMapRecord', routeMapRecordForListNew.to);// 清除动态路由对应关系
           }
-          window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
+          // 添加是动态路由返回列表界面标记
           // if (!enableOpenNewTab()) {
 
           this.decreasekeepAliveLists(keepAliveModuleName);
@@ -2312,7 +2319,7 @@
           this.tabCloseAppoint({
             routeFullPath: currentPath, stopRouterPush: true, keepAliveModuleName, routePrefix, itemId: this.itemId, tableName: this.tableName
           });
-          router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectModify]);
+          this.$router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectModify]);
 
           // }
         } else if (routeMapRecordForListModify.to) { // 列表动态路由（新增/复制保存成功后跳转到单对象界面执行返回操作）

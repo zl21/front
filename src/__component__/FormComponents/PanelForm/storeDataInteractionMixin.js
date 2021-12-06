@@ -237,12 +237,18 @@ export default {
     },
     changeForm(ParentForm,val){
       // 修改后
-  
-      if (ParentForm.$parent.formPanelChange) {
-        ParentForm.$parent.formPanelChange(ParentForm.formChangeData, ParentForm.formDataLabel,ParentForm.formChangeDataLabel)
-      }else{
-        ParentForm.$parent.formChange(ParentForm.formChangeData, ParentForm.formDataLabel,ParentForm.formChangeDataLabel)
+      let formChangeData = ParentForm.formChangeData;
+      let formDataLabel = ParentForm.formDataLabel;
+      if(/New/.test(this.$route.params.itemId)){
+        formChangeData = Object.assign(JSON.parse(JSON.stringify(ParentForm.defaulDataValue)),JSON.parse(JSON.stringify(formChangeData)));
+        formDataLabel = Object.assign(JSON.parse(JSON.stringify(ParentForm.defaulDataLabel)),JSON.parse(JSON.stringify(formDataLabel)));
       }
+      if (ParentForm.$parent.formPanelChange) {
+        ParentForm.$parent.formPanelChange(formChangeData, formDataLabel,ParentForm.formChangeDataLabel)
+      }else{
+        ParentForm.$parent.formChange(formChangeData, formDataLabel,ParentForm.formChangeDataLabel)
+      }
+      
 
       let tabPanelsDom = document.querySelector(`#${this.activeTab.tableName}`);
       if(tabPanelsDom){

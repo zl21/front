@@ -1,6 +1,6 @@
 
 import { getSessionObject } from '../../../__utils__/sessionStorage';
-import router from '../../router.config';
+// import window.vm.$router.from '../../router.config';
 import store from '../../store.config';
 import getComponentName from '../../../__utils__/getModuleName';
 
@@ -36,7 +36,7 @@ export default {
 
   // 表单
   async updateDefaultFormItemsLists({ formItems, userInfo }, {data, indexDB}) {
-    const { tableId } = router.currentRoute.params;
+    const { tableId } = window.vm.$router.currentRoute.params;
 
     const getSTDefaultQuery = getSessionObject(tableId);
     if (data && data.length > 0 && getSTDefaultQuery && getSTDefaultQuery.length > 0) {

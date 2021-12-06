@@ -1,7 +1,7 @@
 
 import { mapActions, mapMutations, mapState } from 'vuex';
-import store from '../store.config';
-import router from '../router.config';
+// import store from '../window.vm.$store.config';
+// import router from '../window.vm.$router.config';
 import {
   MODULE_COMPONENT_NAME, INSTANCE_ROUTE, HAS_BEEN_DESTROYED_MODULE, INSTANCE_ROUTE_QUERY 
 } from '../../constants/global';
@@ -12,8 +12,8 @@ export default (modulename) => {
   return ({
     provide: {
       [MODULE_COMPONENT_NAME]: componentName,
-      [INSTANCE_ROUTE]: router.currentRoute.fullPath,
-      [INSTANCE_ROUTE_QUERY]: router.currentRoute.params,
+      [INSTANCE_ROUTE]: window.vm.$router.currentRoute.fullPath,
+      [INSTANCE_ROUTE_QUERY]: window.vm.$router.currentRoute.params,
   
     },
     // mixins: [customizeMixins().horizontalTableDetailCustomize ? customizeMixins().horizontalTableDetailCustomize : false],
@@ -27,10 +27,10 @@ export default (modulename) => {
         this[MODULE_COMPONENT_NAME] = componentName;
       }
       if (!this[INSTANCE_ROUTE]) {
-        this[INSTANCE_ROUTE] = router.currentRoute.fullPath;
+        this[INSTANCE_ROUTE] = window.vm.$router.currentRoute.fullPath;
       }
       if (!this[INSTANCE_ROUTE_QUERY]) {
-        this[INSTANCE_ROUTE_QUERY] = router.currentRoute.params;
+        this[INSTANCE_ROUTE_QUERY] = window.vm.$router.currentRoute.params;
       }
     },
     mounted() {
@@ -130,7 +130,7 @@ export default (modulename) => {
     beforeDestroy() {
       try {
         if (this.$options.isKeepAliveModel) {
-          store.unregisterModule(this.moduleComponentName);
+          window.vm.$store.unregisterModule(this.moduleComponentName);
         }
       } catch (e) {
         console.log(e);

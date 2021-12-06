@@ -1,5 +1,5 @@
 import store from './store.config';
-import router from './router.config';
+// importwindow.vm.$router.from './router.config';
 import { getUrl } from '../__utils__/url';
 import i18n from '../assets/js/i18n';
 
@@ -21,7 +21,7 @@ export const hideMenu = () => {
 export const launchNetworkMonitor = () => {
   window.addEventListener('keydown', (e) => {
     if (e.altKey && e.key.toLowerCase() === 'n') {
-      router.push({
+     window.vm.$router.push({
         path: `${PLUGIN_MODULE_PREFIX}/NETWORKMONITOR`
       });
     }
@@ -82,8 +82,8 @@ export const routeTo = ({ type, info }, cb) => {
     default:
       break;
   }
-  if (router.currentRoute.fullPath !== path) {
-    router.push({ path, query }).catch((e) => { console.error(i18n.t('messages.billOpened')); });
+  if (window.vm.$router.currentRoute.fullPath !== path) {
+   window.vm.$router.push({ path, query }).catch((e) => { console.error(i18n.t('messages.billOpened')); });
   }
 };
 

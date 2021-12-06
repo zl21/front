@@ -305,11 +305,10 @@ export default (router) => {
      
     // 处理 openedMenuLists
     let existModuleIndex = -1;
-
       const existModule = openedMenuLists.filter((d, i) => {
         let currentName = tableName || customizedModuleName ;
         if (d.tableName === currentName) {
-         
+          // 来源字段
           if(customizedModuleName){
              // 定制界面，在enableActivateSameCustomizePage 为false 的时候新开多个页面
               // 已存在打开的模块界面，但是并不是同一个界面
@@ -320,11 +319,26 @@ export default (router) => {
             let filterTablesOpenTabexist =filterTablesOpenTab.includes(customizedModuleName);
             if(enableActivateSameCustomizePage() && !filterTablesOpenTabexist){
               existModuleIndex = i;
+            }else{
+              if(d === customizedModuleId && !enableActivateSameCustomizePage()){
+                existModuleIndex = i;
+              }
             }
           }else{
             
-            
-            existModuleIndex = i;
+            if(!enableActivateSameCustomizePage()){
+              // 如果定制界面配置多开，还需要测试定制界面是否id 相同
+              if(new RegExp('/CUSTOMIZED/').test(d.routeFullPath)){
+                if(d.itemId === customizedModuleId ){
+                  existModuleIndex = i;
+                }
+              }else{
+                  existModuleIndex = i;
+              }
+            }else{
+              existModuleIndex = i;
+            }
+
           }
         
           
@@ -332,6 +346,7 @@ export default (router) => {
         }
         return false;
       })[0];
+      console.log(existModuleIndex,'===existModuleIndex');
 
 
     

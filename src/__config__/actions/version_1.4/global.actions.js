@@ -3,7 +3,7 @@ import {
   enableHistoryAndFavorite, enableInitializationRequest, getTouristRoute, enableGateWay, Version, getGatewayValue, messageSwitch 
 } from '../../../constants/global';
 import { removeSessionObject } from '../../../__utils__/sessionStorage';
-import router from '../../router.config';
+// import window.vm.$router.from '../../router.config';
 import i18n from '../../../assets/js/i18n';
 
 export default {
@@ -12,7 +12,9 @@ export default {
       network.post('/p/cs/getHistoryAndFavorite').then((res) => {
         if (res.data && res.data.data) {
           const { history, favorite } = res.data.data;
-          commit('updateHistoryAndFavorite', { history, favorite });
+          setTimeout(()=>{
+            commit('updateHistoryAndFavorite', { history, favorite });
+          },200)
         }
       });
     }
@@ -27,7 +29,7 @@ export default {
   },
   updateAccessHistory({ commit, state }, { type, id }) {
     // 过滤表的配置
-    let name = router.currentRoute.params.tableName || router.currentRoute.params.customizedModuleName || router.currentRoute.params.pluginModuleName || router.currentRoute.params.linkModuleName;
+    let name = window.vm.$router.currentRoute.params.tableName || window.vm.$router.currentRoute.params.customizedModuleName || window.vm.$router.currentRoute.params.pluginModuleName || window.vm.$router.currentRoute.params.linkModuleName;
       if(window.ProjectConfig.filterHistory && window.ProjectConfig.filterHistory.includes(name)){
         return;
       }
@@ -36,7 +38,10 @@ export default {
         id = '-1';
       }
       network.post('/p/cs/recHistory', urlSearchParams({ type, id })).then((res) => {
-        commit('updateHistoryAndFavorite', { history: res.data.data });
+        setTimeout(()=>{
+          commit('updateHistoryAndFavorite', { history: res.data.data });
+        },200)
+       
       });
     }
   },
@@ -306,12 +311,17 @@ export default {
         commit('updataUserInfoMessage', {});
         window.localStorage.removeItem('userInfo');
         window.localStorage.removeItem('sessionCookie');
+        window.localStorage.removeItem('serviceIdMap');
+      
         // 清空updataTreeId
         removeSessionObject('TreeId');
         removeSessionObject('routeMapRecordForCustomizePages');
         commit('updateTreeTableListData', []);
+        // 清除plug
+        removeSessionObject('dynamicRoutingIsBackForDelete');
+        removeSessionObject('dynamicRoutingIsBack');
         removeSessionObject('keepAliveLabelMapsAll');
-        router.push({ path: getTouristRoute() });
+        window.vm.$router.push({ path: getTouristRoute() });
       })
       .catch(() => {
         window.sessionStorage.setItem('loginStatus', false);
@@ -328,7 +338,7 @@ export default {
         commit('updateTreeTableListData', []);
         removeSessionObject('routeMapRecordForCustomizePages');
         removeSessionObject('keepAliveLabelMapsAll');
-        router.push({ path: getTouristRoute() });
+        window.vm.$router.push({ path: getTouristRoute() });
       });
   }
   
