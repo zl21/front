@@ -126,8 +126,9 @@ const mixin = {
       // console.log("🚀 ~ file: noticeMixin.js ~ line 125 ~ _showNotice ~ this._diffTasks", this._diffTasks)
       for (let i = 0; i < this._diffTasks.length; i++) {
         const item = this._diffTasks[i]
+        const duration = window.ProjectConfig && window.ProjectConfig.noticeDuration
         const options = {
-          duration: 4,
+          duration: duration !== null && duration !== undefined ? duration : 60,
           position: 'bottom-right',
           contentComponent: (h, closeFn) => {
             return h('taskNotice', {

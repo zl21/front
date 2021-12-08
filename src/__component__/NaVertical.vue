@@ -283,13 +283,13 @@ export default {
           this.noticeTimer = setTimeout(() => {
             this._getTaskNotice()
             this.noticeTimer = null
-          }, 1500)
+          }, 4000)
           return
         }
         this.noticeTimer = setTimeout(() => {
           this._getTaskNotice()
           this.noticeTimer = null
-        }, 1500)
+        }, 4000)
       }
     },
 
