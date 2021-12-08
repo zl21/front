@@ -23,7 +23,7 @@ export default {
     PrintPreview: '打印预览',
     PrintPreviewTip: '请先选择需要打印预览的记录！',
     setTemplate: '设置模板',
-    asyncImportSuccess: '本次操作已后台处理，是否至[我的任务]查看',
+    asyncImportSuccess: '本次操作已在后台处理，是否至[我的任务]查看',
     maintainTableName: '请维护表名或OBJID',
     setAssociationTable: '请设置外键关联表的显示配置',
     chooseRecord: '请先选择需要{action}的记录！',

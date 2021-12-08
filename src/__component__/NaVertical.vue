@@ -278,7 +278,18 @@ export default {
 
     taskMessageCount(newVal, oldVal) {
       if(newVal > oldVal) {
-        this._getTaskNotice()
+        if(this.noticeTimer) {
+          clearTimeout(this.noticeTimer);
+          this.noticeTimer = setTimeout(() => {
+            this._getTaskNotice()
+            this.noticeTimer = null
+          }, 1500)
+          return
+        }
+        this.noticeTimer = setTimeout(() => {
+          this._getTaskNotice()
+          this.noticeTimer = null
+        }, 1500)
       }
     },
 
