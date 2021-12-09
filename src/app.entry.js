@@ -225,6 +225,7 @@ export default (projectConfig = {
   if (enableGateWay()) {
     getGateWayServiceId();
   } else {
+    window.localStorage.setItem('serviceId', '') // 清除本地网关
     init();
     getCategory();
   }

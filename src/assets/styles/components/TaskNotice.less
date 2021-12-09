@@ -39,6 +39,8 @@
     cursor: pointer;
     .notice-body-l {
       margin-right: 8px;
+      display: flex;
+      align-items: center;
       .notice-success {
         color: @success-color!important;
       }
@@ -51,12 +53,16 @@
       flex-direction: column;
       .notice-task {
         width: 260px;
+        min-height: 28px;
+        max-height: 72px;
+        overflow: auto;
+        line-height: 16px;
       }
-      .notice-status {
-        color: #888888;
-        margin-top: 4px;
-        width: 260px;
-      }
+      // .notice-status {
+      //   color: #888888;
+      //   margin-top: 4px;
+      //   width: 260px;
+      // }
     }
   }
 }

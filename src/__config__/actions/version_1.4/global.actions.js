@@ -97,9 +97,9 @@ export default {
                 }
               });
               if (exportTask.exportedState) { // 导出成功执行以下逻辑
-                let obj = Version() === '1.3' ? urlSearchParams({ id }) : { objId: id };
+                let obj = { objId: id };
                 obj.id = obj.objId;
-                twork.post(Version() === '1.3' ? '/p/cs/ignoreMsg' : '/p/cs/u_note/ignoreMsg', obj, {
+                network.post('/p/cs/u_note/ignoreMsg', obj, {
                   serviceId: enableGateWay() ? 'asynctask' : ''
                 }).then((r) => {
                   const datas = r.data;
