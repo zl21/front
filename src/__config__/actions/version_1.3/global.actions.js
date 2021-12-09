@@ -46,7 +46,7 @@ export default {
     objid, id, resolve, reject 
   }) { // 获取导出状态
     if (enableInitializationRequest()) {
-      const times = 4;// 循环的次数
+      const times = 5;// 循环的次数
       let index = 0;// 当前次数
       let timer = 0;// 定时器
       const exportTask = {};

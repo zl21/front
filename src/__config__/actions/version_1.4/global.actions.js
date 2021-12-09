@@ -49,7 +49,7 @@ export default {
     objid, id, resolve, reject 
   }) { // 获取导出状态
     if (enableInitializationRequest()) {
-      const times = 4;// 循环的次数
+      const times = 5;// 循环的次数
       let index = 0;// 当前次数
       let timer = 0;// 定时器
       const exportTask = {};
@@ -59,7 +59,7 @@ export default {
         if (index > times) {
           clearInterval(timer);
         } else {
-          network.post('/p/cs/getObject', urlSearchParams({ table: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE', objid }), {
+          network.post('/p/cs/getObject', urlSearchParams({ table: 'U_NOTE', objid }), {
             serviceId: enableGateWay() ? getGatewayValue('U_NOTE') : ''
           }).then((res) => {
             const data = res.data;

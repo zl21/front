@@ -2150,11 +2150,12 @@ export default {
             // fileUrl字段不存在时就代表是异步导出。
             // 异步导出在[我的任务]查看
             if (window.ProjectConfig.messageSwitch) {
-              this.$Modal.fcSuccess({
-                title: this.$t('feedback.success'),
-                mask: true,
-                content: this.buttons.exportdata.message
-              });
+              // this.$Modal.fcSuccess({
+              //   title: this.$t('feedback.success'),
+              //   mask: true,
+              //   content: this.buttons.exportdata.message
+              // });
+              this.asyncExport()
               return
             }
 
@@ -2166,6 +2167,8 @@ export default {
             eleLink.click();
             document.body.removeChild(eleLink);
           } else if (Version() === '1.3') { // Version() === '1.3'
+            this.asyncExport()
+
             // // fileUrl字段不存在时就代表是异步导出。
             // // 异步导出在[我的任务]查看
             // if(!this.buttons.exportdata.fileUrl) {
@@ -2180,53 +2183,53 @@ export default {
             //   return
             // }
 
-            const promises = new Promise((resolve, reject) => {
-              this.getExportedState({
-                objid: this.buttons.exportdata, id: this.buttons.exportdata, resolve, reject
-              });
-            });
-            promises.then(() => {
-              this.$R3loading.hide(this.loadingName);
-              if (this.exportTasks.dialog) {
-                const message = {
-                  mask: true,
-                  title: this.$t('feedback.alert'),
-                  content: this.$t('messages.processingTask'),
-                  showCancel: true,
-                  onOk: () => {
-                    const type = 'tableDetailVertical';
-                    const tab = {
-                      type,
-                      tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
-                      tableId: Version() === '1.3' ? 24386 : 963,
-                      id: this.buttons.exportdata
-                    };
-                    this.tabOpen(tab);
-                    this.updataTaskMessageCount({ id: this.buttons.exportdata, stopUpdataQuantity: true });
-                  }
-                };
-                this.$Modal.fcWarning(message);
-              }
-              if (this.exportTasks.successMsg) {
-                const data = {
-                  mask: true,
-                  title: this.$t('feedback.success'),
-                  content: this.exportTasks.resultMsg
-                };
-                this.$Modal.fcSuccess(data);
-              }
-              this.searchClickData();
-            }, () => {
-              if (this.exportTasks.warningMsg) {
-                this.$R3loading.hide(this.loadingName);
-                const data = {
-                  mask: true,
-                  title: this.$t('feedback.error'),
-                  content: `${this.exportTasks.resultMsg}`
-                };
-                this.$Modal.fcError(data);
-              }
-            });
+            // const promises = new Promise((resolve, reject) => {
+            //   this.getExportedState({
+            //     objid: this.buttons.exportdata, id: this.buttons.exportdata, resolve, reject
+            //   });
+            // });
+            // promises.then(() => {
+            //   this.$R3loading.hide(this.loadingName);
+            //   if (this.exportTasks.dialog) {
+            //     const message = {
+            //       mask: true,
+            //       title: this.$t('feedback.alert'),
+            //       content: this.$t('messages.processingTask'),
+            //       showCancel: true,
+            //       onOk: () => {
+            //         const type = 'tableDetailVertical';
+            //         const tab = {
+            //           type,
+            //           tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
+            //           tableId: Version() === '1.3' ? 24386 : 963,
+            //           id: this.buttons.exportdata
+            //         };
+            //         this.tabOpen(tab);
+            //         this.updataTaskMessageCount({ id: this.buttons.exportdata, stopUpdataQuantity: true });
+            //       }
+            //     };
+            //     this.$Modal.fcWarning(message);
+            //   }
+            //   if (this.exportTasks.successMsg) {
+            //     const data = {
+            //       mask: true,
+            //       title: this.$t('feedback.success'),
+            //       content: this.exportTasks.resultMsg
+            //     };
+            //     this.$Modal.fcSuccess(data);
+            //   }
+            //   this.searchClickData();
+            // }, () => {
+            //   if (this.exportTasks.warningMsg) {
+            //     this.$R3loading.hide(this.loadingName);
+            //     const data = {
+            //       mask: true,
+            //       title: this.$t('feedback.error'),
+            //       content: `${this.exportTasks.resultMsg}`
+            //     };
+            //     this.$Modal.fcError(data);
+            //   }
+            // });
           }
         } else {
           this.$R3loading.hide(this.loadingName);
@@ -2236,6 +2239,46 @@ export default {
         this.$R3loading.hide(this.loadingName);
       });
     },
+
+    // 异步导出
+    asyncExport() {
+      console.log('异步导出',this.buttons);
+      const id = Version() === '1.3' ? this.buttons.exportdata : this.buttons.exportdata.fileUrl
+      const promises = new Promise((resolve, reject) => {
+        this.getExportedState({
+          objid: id, id, resolve, reject
+        });
+      });
+      promises.then(() => {
+        this.$R3loading.hide(this.loadingName);
+        console.log('导出完毕', this.exportTasks)
+        if (!this.exportTasks.dialog) {
+          const message = {
+            mask: true,
+            title: this.$t('feedback.alert'),
+            content: this.$t('messages.processingTask'),
+            onOk: () => {
+            }
+          };
+          this.$Modal.fcWarning(message);
+        }
+        if (this.exportTasks.successMsg) {
+          this.$Message.success(this.exportTasks.resultMsg)
+        }
+        this.searchClickData();
+      }, () => {
+        if (this.exportTasks.warningMsg) {
+          this.$R3loading.hide(this.loadingName);
+          const data = {
+            mask: true,
+            title: this.$t('feedback.error'),
+            content: `${this.exportTasks.resultMsg}`
+          };
+          this.$Modal.fcError(data);
+        }
+      });
+    },
+
     deleteTableList (data) { // 删除方法
       const tableName = this.buttons.tableName;
       const selectIdArr = this.buttons.selectIdArr;

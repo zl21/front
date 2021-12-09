@@ -214,7 +214,7 @@ export default {
     refreshPermission: '刷新接口权限',
     selectAccountFirst: '请先选择账号',
     quickOperation: '快捷操作',
-    processingTask: '任务处理中，请稍后去【我的任务】中下载文件',
+    processingTask: '您可以关闭当前页面继续操作，系统将会进入【我的任务】继续进行，完成后，将会在右下角出弹框提醒，然后单击进入下载',
     operated: '操作的',
     seeDetails: '详见',
     downloadFile: '下载文件'

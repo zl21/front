@@ -214,7 +214,7 @@ export default {
     refreshPermission: 'refresh permissions',
     selectAccountFirst: 'Please select an account first',
     quickOperation: 'quick operation',
-    processingTask: 'The task is being processed, please go to [My Tasks] to download the file later',
+    processingTask: 'You can close the current page to continue the operation, the system will enter [My Tasks] to continue. After completion, a pop-up reminder will be displayed in the lower right corner, and then click to enter the download',
     operated: 'operated',
     seeDetails: 'see details',
     downloadFile: 'download file'
