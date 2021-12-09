@@ -4664,19 +4664,19 @@
         promise.then(() => {
           if (this.buttonsData.exportdata) {
             if (Version() === '1.4') {
-              this.$R3loading.hide(this.loadingName);
-
               // fileUrl字段不存在时就代表是异步导出。
               // 异步导出在[我的任务]查看
               if(window.ProjectConfig.messageSwitch) {
-                this.$Modal.fcSuccess({
-                  title: this.$t('feedback.success'),
-                  mask: true,
-                  content: this.buttonsData.exportdata.message
-                });
+                // this.$Modal.fcSuccess({
+                //   title: this.$t('feedback.success'),
+                //   mask: true,
+                //   content: this.buttonsData.exportdata.message
+                // });
+                this.asyncExport()
                 return
               }
-              
+
+              this.$R3loading.hide(this.loadingName);
               this.searchCondition = null;
               this.searchInfo = '';
               this.currentPage = 1;
@@ -4703,52 +4703,53 @@
               // }
               
               this.updateExportedState({});
-              const promises = new Promise((resolve, reject) => {
-                this.getExportedState({
-                  objid: '0000', resolve, reject
-                });
-              });
-              promises.then(() => {
-                this.$R3loading.hide(this.loadingName);
-                if (this.exportTasks.dialog) {
-                  const message = {
-                    mask: true,
-                    title: this.$t('feedback.alert'),
-                    content: this.$t('messages.processingTask'),
-                    showCancel: true,
-                    onOk: () => {
-                      const type = 'tableDetailVertical';
-                      const tab = {
-                        type,
-                        tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
-                        tableId: Version() === '1.3' ? 24386 : 963,
-                        id: this.buttonsData.exportdata
-                      };
-                      this.tabOpen(tab);
-                      this.updataTaskMessageCount({ id: this.buttonsData.exportdata, stopUpdataQuantity: true });
-                    }
-                  };
-                  this.$Modal.fcWarning(message);
-                }
-                if (this.exportTasks.successMsg) {
-                  const contents = {
-                    mask: true,
-                    title: this.$t('feedback.success'),
-                    content: this.exportTasks.resultMsg
-                  };
-                  this.$Message.success(contents);
-                  // this.$Message.fcSuccess(contents);
-                }
-              }, () => {
-                if (this.exportTasks.warningMsg) {
-                  this.$Modal.fcError({
-                    mask: true,
-                    title: this.$t('feedback.error'),
-                    content: `${this.exportTasks.resultMsg}`,
-                  });
-                }
-                this.$R3loading.hide(this.loadingName);
-              });
+              this.asyncExport()
+              // const promises = new Promise((resolve, reject) => {
+              //   this.getExportedState({
+              //     objid: '0000', resolve, reject
+              //   });
+              // });
+              // promises.then(() => {
+              //   this.$R3loading.hide(this.loadingName);
+              //   if (this.exportTasks.dialog) {
+              //     const message = {
+              //       mask: true,
+              //       title: this.$t('feedback.alert'),
+              //       content: this.$t('messages.processingTask'),
+              //       showCancel: true,
+              //       onOk: () => {
+              //         const type = 'tableDetailVertical';
+              //         const tab = {
+              //           type,
+              //           tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
+              //           tableId: Version() === '1.3' ? 24386 : 963,
+              //           id: this.buttonsData.exportdata
+              //         };
+              //         this.tabOpen(tab);
+              //         this.updataTaskMessageCount({ id: this.buttonsData.exportdata, stopUpdataQuantity: true });
+              //       }
+              //     };
+              //     this.$Modal.fcWarning(message);
+              //   }
+              //   if (this.exportTasks.successMsg) {
+              //     const contents = {
+              //       mask: true,
+              //       title: this.$t('feedback.success'),
+              //       content: this.exportTasks.resultMsg
+              //     };
+              //     this.$Message.success(contents);
+              //     // this.$Message.fcSuccess(contents);
+              //   }
+              // }, () => {
+              //   if (this.exportTasks.warningMsg) {
+              //     this.$Modal.fcError({
+              //       mask: true,
+              //       title: this.$t('feedback.error'),
+              //       content: `${this.exportTasks.resultMsg}`,
+              //     });
+              //   }
+              //   this.$R3loading.hide(this.loadingName);
+              // });
               this.getTabelList(1);
             }
           } else {
@@ -4760,6 +4761,42 @@
           this.$R3loading.hide(this.loadingName);
         });
       },
+
+      // 异步导出
+      asyncExport(){
+        const id = Version() === '1.3' ? this.buttonsData.exportdata : this.buttonsData.exportdata.fileUrl
+        const promises = new Promise((resolve, reject) => {
+            this.getExportedState({
+              objid: id, id, resolve, reject
+            });
+          });
+          promises.then(() => {
+            this.$R3loading.hide(this.loadingName);
+            if (this.exportTasks.dialog) {
+              const message = {
+                mask: true,
+                title: this.$t('feedback.alert'),
+                content: this.$t('messages.processingTask'),
+                onOk: () => {
+                }
+              };
+              this.$Modal.fcWarning(message);
+            }
+            if (this.exportTasks.successMsg) {
+              this.$Message.success(this.exportTasks.resultMsg)
+            }
+          }, () => {
+            if (this.exportTasks.warningMsg) {
+              this.$Modal.fcError({
+                mask: true,
+                title: this.$t('feedback.error'),
+                content: `${this.exportTasks.resultMsg}`,
+              });
+            }
+            this.$R3loading.hide(this.loadingName);
+          });
+      },
+
       objectIMPORT() { // 导入
         const { itemId } = this.$router.currentRoute.params;
         if (itemId === 'New') {
