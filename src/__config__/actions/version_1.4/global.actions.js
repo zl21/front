@@ -66,7 +66,8 @@ export default {
             // resolve();
             if (data.code === 0) { 
               // 筛选信息验证导出是否成功
-              const addcolum = data.data.addcolums.filter(item => item.parentdesc === i18n.t('tips.basicInfo')).length > 0 ? data.data.addcolums.filter(item => item.parentdesc === i18n.t('tips.basicInfo'))[0].childs : [];
+              const baseInfo = data.data.addcolums.filter(item => item.parentdesc === '基础信息')
+              const addcolum = baseInfo.length > 0 ? baseInfo[0].childs : [];
               addcolum.forEach((b) => {
                 if (b.colname === 'TASK_STATE') {
                   if (b.valuedata === '2') {

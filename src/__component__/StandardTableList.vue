@@ -2051,17 +2051,19 @@ export default {
       }
 
       if (obj.name === this.buttonMap.CMD_EXPORT.name) {
-        // 导出
+        // 全量导出
         if (this.buttons.selectIdArr.length === 0) {
-          const title = this.$t('feedback.warning');
-          const contentText = this.$t('messages.exportAllTip')
-          this.dialogMessage(title, contentText, obj);
+          // const title = this.$t('feedback.warning');
+          // const contentText = this.$t('messages.exportAllTip')
+          // this.dialogMessage(title, contentText, obj);
+          this.batchExport(obj);
           return;
         }
         // this.batchExport(obj);
         if (this.R3_openedApi_export && typeof this.R3_openedApi_export === 'function') {
           this.R3_openedApi_export(obj);
         } else {
+          // 批量导出
           this.batchExport(obj);
         }
         return;
@@ -2145,7 +2147,6 @@ export default {
       promise.then(() => {
         if (this.buttons.exportdata) {
           if (Version() === '1.4') { // Version() === '1.4'
-            this.$R3loading.hide(this.loadingName);
 
             // fileUrl字段不存在时就代表是异步导出。
             // 异步导出在[我的任务]查看
@@ -2159,6 +2160,7 @@ export default {
               return
             }
 
+            this.$R3loading.hide(this.loadingName);
             const eleLink = document.createElement('a');
             const path = getGateway(`/p/cs/download?filename=${this.buttons.exportdata.fileUrl}`);
             eleLink.setAttribute('href', path);
@@ -2252,7 +2254,7 @@ export default {
       promises.then(() => {
         this.$R3loading.hide(this.loadingName);
         console.log('导出完毕', this.exportTasks)
-        if (!this.exportTasks.dialog) {
+        if (this.exportTasks.dialog) {
           const message = {
             mask: true,
             title: this.$t('feedback.alert'),
