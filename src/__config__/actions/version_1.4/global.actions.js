@@ -91,7 +91,7 @@ export default {
                     }
                     exportTask.exportedState = false;
                   }
-                } else if (b.colname === 'URL') {
+                } else if (b.colname === 'FILE_URL') {
                   exportTask.file = b.valuedata; 
                 } else if (b.colname === 'MESSAGE') {
                   exportTask.resultMsg = b.valuedata; 
@@ -114,7 +114,8 @@ export default {
                           const eleLink = document.createElement('a');
                           eleLink.download = 'download';
                           eleLink.style.display = 'none';
-                          eleLink.href = file[0].url;
+                          const serviceId = window.localStorage.getItem('serviceId')
+                          eleLink.href = serviceId ? `/${serviceId}${file[0].url}` : file[0].url;
                           document.body.appendChild(eleLink);
                           eleLink.click();
                           document.body.removeChild(eleLink);
@@ -253,7 +254,8 @@ export default {
                       const eleLink = document.createElement('a');
                       eleLink.download = 'download';
                       eleLink.style.display = 'none';
-                      eleLink.href = file[0].url;
+                      const serviceId = window.localStorage.getItem('serviceId')
+                      eleLink.href = serviceId ? `/${serviceId}${file[0].url}` : file[0].url;
                       document.body.appendChild(eleLink);
                       eleLink.click();
                       document.body.removeChild(eleLink);
