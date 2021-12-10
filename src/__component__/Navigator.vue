@@ -276,19 +276,22 @@
 
       taskMessageCount(newVal, oldVal) {
         if(newVal > oldVal) {
-          if(this.noticeTimer) {
-            clearTimeout(this.noticeTimer);
-            this.noticeTimer = setTimeout(() => {
-              this._getTaskNotice()
-              this.noticeTimer = null
-            }, 4000)
-            return
-          }
-          this.noticeTimer = setTimeout(() => {
-            this._getTaskNotice()
-            this.noticeTimer = null
-          }, 4000)
+          this.sendNotice()
         }
+        // if(newVal > oldVal) {
+        //   if(this.noticeTimer) {
+        //     clearTimeout(this.noticeTimer);
+        //     this.noticeTimer = setTimeout(() => {
+        //       this._getTaskNotice()
+        //       this.noticeTimer = null
+        //     }, 4000)
+        //     return
+        //   }
+        //   this.noticeTimer = setTimeout(() => {
+        //     this._getTaskNotice()
+        //     this.noticeTimer = null
+        //   }, 4000)
+        // }
       },
 
       showModule(val) {
@@ -521,6 +524,13 @@
         }
         this.getTaskMessageCount(this.userInfo.id);
       },
+
+      sendNotice() {
+        const stopPolling = window.localStorage.getItem('r3-stopPolling')
+        if(!stopPolling) {
+          this._getTaskNotice()
+        }
+      }
     },
 
     async mounted() {
@@ -541,8 +551,13 @@
         }
       }
     },
+    created() {
+      window.localStorage.setItem('r3-stopPolling', '') // 初始化通知锁。会在导入代码执行时阻止弹出异步任务通知
+      window.addEventListener('checkNotice', this.sendNotice)
+    },
     beforeDestroy() {
       clearInterval(this.messageTimer);
+      window.removeEventListener('checkNotice', this.sendNotice)
     }
   };
 </script>

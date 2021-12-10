@@ -4657,6 +4657,8 @@
           showColumnName: true,
           menu: this.itemInfo.tabledesc
         };
+
+        window.localStorage.setItem('r3-stopPolling', true) // 锁住通知发送
         const promise = new Promise((resolve, reject) => {
           this.$R3loading.show(this.loadingName);
           this.getExportQueryForButtons({ OBJ, resolve, reject });
@@ -4677,6 +4679,10 @@
               }
 
               this.$R3loading.hide(this.loadingName);
+
+              window.localStorage.setItem('r3-stopPolling', '') // 允许通知发送
+              window.dispatchEvent(new CustomEvent('checkNotice')) // 触发通知检测。防止同步任务阻塞期间，把其他异步任务通知拦截了
+
               this.searchCondition = null;
               this.searchInfo = '';
               this.currentPage = 1;
@@ -4772,6 +4778,10 @@
           });
           promises.then(() => {
             this.$R3loading.hide(this.loadingName);
+
+            window.localStorage.setItem('r3-stopPolling', '') // 允许通知发送
+            window.dispatchEvent(new CustomEvent('checkNotice')) // 触发通知检测。防止同步任务阻塞期间，把其他异步任务通知拦截了
+
             if (this.exportTasks.dialog) {
               const message = {
                 mask: true,

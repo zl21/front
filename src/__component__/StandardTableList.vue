@@ -2139,6 +2139,9 @@ export default {
         showColumnName: true,
         menu: this.activeTab.label
       };
+      
+      window.localStorage.setItem('r3-stopPolling', true) // 锁住通知发送
+
       const promise = new Promise((resolve, reject) => {
         this.getExportQueryForButtons({
           OBJ, resolve, reject, buttonsData
@@ -2159,6 +2162,9 @@ export default {
               this.asyncExport()
               return
             }
+
+            window.localStorage.setItem('r3-stopPolling', '') // 允许通知发送
+            window.dispatchEvent(new CustomEvent('checkNotice')) // 触发通知检测。防止同步任务阻塞期间，把其他异步任务通知拦截了
 
             this.$R3loading.hide(this.loadingName);
             const eleLink = document.createElement('a');
@@ -2244,7 +2250,6 @@ export default {
 
     // 异步导出
     asyncExport() {
-      console.log('异步导出',this.buttons);
       const id = Version() === '1.3' ? this.buttons.exportdata : this.buttons.exportdata.fileUrl
       const promises = new Promise((resolve, reject) => {
         this.getExportedState({
@@ -2253,7 +2258,10 @@ export default {
       });
       promises.then(() => {
         this.$R3loading.hide(this.loadingName);
-        console.log('导出完毕', this.exportTasks)
+
+        window.localStorage.setItem('r3-stopPolling', '') // 允许通知发送
+        window.dispatchEvent(new CustomEvent('checkNotice')) // 触发通知检测。防止同步任务阻塞期间，把其他异步任务通知拦截了
+
         if (this.exportTasks.dialog) {
           const message = {
             mask: true,

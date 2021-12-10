@@ -73,7 +73,7 @@ export default {
                   if (b.valuedata === '2') {
                     exportTask.exportedState = true;
                     clearInterval(timer);
-                    resolve();
+                    // resolve();
                     exportTask.successMsg = true;
                     commit('updateExportedState', exportTask);
                   } else if (b.valuedata === '3') { // 异常终止
@@ -265,6 +265,8 @@ export default {
                       resolve();
                     }
                   }
+                }).finally(() => {
+                  resolve();
                 });
               }
             } else {

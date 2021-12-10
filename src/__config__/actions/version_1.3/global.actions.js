@@ -63,10 +63,10 @@ export default {
               // 筛选信息验证导出是否成功
               data.data.addcolums.filter(item => item.parentdesc === i18n.t('tips.basicInfo'))[0].childs.forEach((b) => {
                 if (b.colname === 'TASKSTATE') {
-                  if (b.valuedata === '2') {
+                  if (b.valuedata === '2') { // 此时同步执行任务
                     exportTask.exportedState = true;
                     clearInterval(timer);
-                    resolve();
+                    // resolve();
                     exportTask.successMsg = true;
                     commit('updateExportedState', exportTask);
                   } else if (b.valuedata === '3') { // 异常终止
@@ -255,6 +255,8 @@ export default {
                       resolve();
                     }
                   }
+                }).finally(() => {
+                  resolve();
                 });
               }
             } else {
