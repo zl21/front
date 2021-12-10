@@ -2132,8 +2132,9 @@ export default {
       if (this.buttons.selectIdArr.length !== 0) {
         searchdata.fixedcolumns = { ID: this.buttons.selectIdArr };
       }
+      searchdata.column_include_uicontroller =  true
       const OBJ = {
-        searchdata: searchdata,
+        searchdata,
         filename: this.activeTab.label,
         filetype: '.xlsx',
         showColumnName: true,
