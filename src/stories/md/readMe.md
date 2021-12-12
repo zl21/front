@@ -23,6 +23,14 @@ yarn start-storybook --debug-webpack
 [addon-postcss](https://github.com/storybookjs/addon-postcss#readme)
 
 
+#### 报错记录
+1、style-loader@2
+2、webpack@4
+3、vue-style-loader@3
+4、TypeError: this.getOptions is not a function
+  > less 版本过高, npm install less-loader@6
+
+
 #### 使用说明
 
 1.  xxxx
