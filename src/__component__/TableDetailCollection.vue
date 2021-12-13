@@ -4708,6 +4708,13 @@
               //   return
               // }
               
+              if(window.ProjectConfig.messageSwitch && window.ProjectConfig.enableAsyncTaskTip) {
+                this.$Modal.fcSuccess({
+                    title: this.$t('feedback.success'),
+                    mask: true,
+                    content: this.$t('messages.asyncImportSuccess')
+                });
+              }
               this.updateExportedState({});
               this.asyncExport()
               // const promises = new Promise((resolve, reject) => {
