@@ -46,7 +46,7 @@ export default {
     objid, id, resolve, reject 
   }) { // 获取导出状态
     if (enableInitializationRequest()) {
-      const times = 4;// 循环的次数
+      const times = 5;// 循环的次数
       let index = 0;// 当前次数
       let timer = 0;// 定时器
       const exportTask = {};
@@ -63,10 +63,10 @@ export default {
               // 筛选信息验证导出是否成功
               data.data.addcolums.filter(item => item.parentdesc === i18n.t('tips.basicInfo'))[0].childs.forEach((b) => {
                 if (b.colname === 'TASKSTATE') {
-                  if (b.valuedata === '2') {
+                  if (b.valuedata === '2') { // 此时同步执行任务
                     exportTask.exportedState = true;
                     clearInterval(timer);
-                    resolve();
+                    // resolve();
                     exportTask.successMsg = true;
                     commit('updateExportedState', exportTask);
                   } else if (b.valuedata === '3') { // 异常终止
@@ -104,7 +104,8 @@ export default {
                           const eleLink = document.createElement('a');
                           eleLink.download = 'download';
                           eleLink.style.display = 'none';
-                          eleLink.href = file[0].url;
+                          const serviceId = window.localStorage.getItem('serviceId')
+                          eleLink.href = serviceId ? `/${serviceId}${file[0].url}` : file[0].url;
                           document.body.appendChild(eleLink);
                           eleLink.click();
                           document.body.removeChild(eleLink);
@@ -243,7 +244,8 @@ export default {
                       const eleLink = document.createElement('a');
                       eleLink.download = 'download';
                       eleLink.style.display = 'none';
-                      eleLink.href = file[0].url;
+                      const serviceId = window.localStorage.getItem('serviceId')
+                      eleLink.href = serviceId ? `/${serviceId}${file[0].url}` : file[0].url;
                       document.body.appendChild(eleLink);
                       eleLink.click();
                       document.body.removeChild(eleLink);
@@ -253,6 +255,8 @@ export default {
                       resolve();
                     }
                   }
+                }).finally(() => {
+                  resolve();
                 });
               }
             } else {
