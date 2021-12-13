@@ -1,3 +1,10 @@
+import customizePage from '../__config__/customize.config'
+
+const customizePageList = {}
+Object.keys(customizePage).map(key => {
+  customizePageList[key] = customizePage[key].component
+})
+
 const components= {
   ContentDisplayArea:() => import(
     /* webpackChunkName: 'ContentDisplayArea' */
@@ -119,6 +126,12 @@ const components= {
     /* webpackMode: 'eager' */
     '../__component__/HistoryAndFavorite'
   ),
+  Ztree:() => import(
+    /* webpackChunkName: 'Ztree' */
+    /* webpackMode: 'eager' */
+    '../__component__/Ztree'
+  ),
+  ...customizePageList
 }
 
 export default components
