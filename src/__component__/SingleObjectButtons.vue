@@ -1981,12 +1981,12 @@
               // fileUrl字段不存在时就代表是异步导出。
               // 异步导出在[我的任务]查看
               if(window.ProjectConfig.messageSwitch) {
+                window.ProjectConfig.enableAsyncTaskTip && this.$Modal.fcSuccess({
+                    title: this.$t('feedback.success'),
+                    mask: true,
+                    content: this.$t('messages.asyncImportSuccess')
+                });
                 this.asyncExport()
-                // this.$Modal.fcSuccess({
-                //   title: this.$t('feedback.success'),
-                //   mask: true,
-                //   content: this.buttonsData.exportdata.message
-                // });
                 return
               }
               this.$R3loading.hide(this.loadingName);

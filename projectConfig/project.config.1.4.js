@@ -226,5 +226,6 @@ module.exports = {
   moveBar:false,  // 是否开启登录bar
   // queryConditionExpansion:true, // 一直收拉条件
   filterTablesOpenTab:['CUSTOMIZEREPORT'],   // 过滤表明新开
-  noticeDuration: 60 // 异步通知停留时间
+  noticeDuration: 60, // 异步通知停留时间
+  enableAsyncTaskTip: false, // 点击导出，如果是异步则立即弹出提示弹框。用于兼容旧版异步消息提示
 };

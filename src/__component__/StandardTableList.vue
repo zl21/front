@@ -2056,14 +2056,25 @@ export default {
           // const title = this.$t('feedback.warning');
           // const contentText = this.$t('messages.exportAllTip')
           // this.dialogMessage(title, contentText, obj);
-          this.batchExport(obj);
+          if(window.ProjectConfig.enableAsyncTaskTip) {
+            const title = this.$t('feedback.warning');
+            const contentText = this.$t('messages.exportAllTip')
+            this.dialogMessage(title, contentText, obj);
+          } else {
+            this.batchExport(obj);
+          }
+
           return;
         }
-        // this.batchExport(obj);
         if (this.R3_openedApi_export && typeof this.R3_openedApi_export === 'function') {
           this.R3_openedApi_export(obj);
         } else {
           // 批量导出
+          window.ProjectConfig.enableAsyncTaskTip && this.$Modal.fcSuccess({
+              title: this.$t('feedback.success'),
+              mask: true,
+              content: this.$t('messages.asyncImportSuccess')
+          });
           this.batchExport(obj);
         }
         return;
@@ -2155,11 +2166,6 @@ export default {
             // fileUrl字段不存在时就代表是异步导出。
             // 异步导出在[我的任务]查看
             if (window.ProjectConfig.messageSwitch) {
-              // this.$Modal.fcSuccess({
-              //   title: this.$t('feedback.success'),
-              //   mask: true,
-              //   content: this.buttons.exportdata.message
-              // });
               this.asyncExport()
               return
             }
@@ -2183,11 +2189,11 @@ export default {
             // if(!this.buttons.exportdata.fileUrl) {
             //   this.$R3loading.hide(this.loadingName);
             //   if (window.ProjectConfig.messageSwitch) {
-            //     this.$Modal.fcSuccess({
-            //       title: this.$t('feedback.success'),
-            //       mask: true,
-            //       content: this.$t('messages.processingTask')
-            //     });
+                // this.$Modal.fcSuccess({
+                //   title: this.$t('feedback.success'),
+                //   mask: true,
+                //   content: this.$t('messages.processingTask')
+                // });
             //   }
             //   return
             // }
