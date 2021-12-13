@@ -2072,11 +2072,6 @@ export default {
           this.R3_openedApi_export(obj);
         } else {
           // 批量导出
-          enableAsyncTaskTip() && this.$Modal.fcSuccess({
-              title: this.$t('feedback.success'),
-              mask: true,
-              content: this.$t('messages.asyncImportSuccess')
-          });
           this.batchExport(obj);
         }
         return;
