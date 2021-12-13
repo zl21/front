@@ -957,6 +957,7 @@ const portProxy = {}
 Object.keys(port).forEach(key => {
   portProxy[key] = {...port[key]}
   if(port[key].inputList) {
+    portProxy[key].inputList = []
     port[key].inputList.forEach((item, i) => {
       portProxy[key].inputList[i] = {
         ...item,

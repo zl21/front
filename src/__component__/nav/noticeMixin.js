@@ -1,4 +1,4 @@
-import { Version, enableGateWay, getGatewayValue } from '../../constants/global'
+import { Version, enableGateWay, getGatewayValue, enableTaskNotice } from '../../constants/global'
 import network, { urlSearchParams } from '../../__utils__/network'
 import taskNotice from './taskNotice.vue'
 Vue.component('taskNotice', taskNotice)
@@ -7,7 +7,7 @@ const mixin = {
   methods: {
     // 获取通知
     async _getTaskNotice() {
-      if (!window.ProjectConfig.enableTaskNotice) {
+      if (!enableTaskNotice()) {
         return
       }
       await this._getTaskList()
@@ -126,8 +126,9 @@ const mixin = {
       // console.log("🚀 ~ file: noticeMixin.js ~ line 125 ~ _showNotice ~ this._diffTasks", this._diffTasks)
       for (let i = 0; i < this._diffTasks.length; i++) {
         const item = this._diffTasks[i]
+        const duration = window.ProjectConfig && window.ProjectConfig.noticeDuration
         const options = {
-          duration: 4,
+          duration: duration !== null && duration !== undefined ? duration : 60,
           position: 'bottom-right',
           contentComponent: (h, closeFn) => {
             return h('taskNotice', {

@@ -243,6 +243,7 @@ const getSubSystems = () => {
 if (enableGateWay()) {
   getGateWayServiceId();
 } else {
+  window.localStorage.setItem('serviceId', '') // 清除本地网关
   getSubSystems();
   init();
 }

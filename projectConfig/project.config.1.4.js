@@ -167,7 +167,7 @@ module.exports = {
   agGridOptions: { // ag表格的配置
     // rowHeight: 100
   },
-  messageSwitch: false, // 消息开关
+  messageSwitch: true, // 消息开关
   enableTaskNotice: true,
   useAgGrid: false, // 明细界面的表格全局用ag表格进行渲染
   // (data) => {
@@ -225,5 +225,7 @@ module.exports = {
   enableSystemUpdate: false, // 开启系统升级功能
   moveBar:false,  // 是否开启登录bar
   // queryConditionExpansion:true, // 一直收拉条件
-  filterTablesOpenTab:['CUSTOMIZEREPORT']   // 过滤表明新开
+  filterTablesOpenTab:['CUSTOMIZEREPORT'],   // 过滤表明新开
+  noticeDuration: 60, // 异步通知停留时间
+  enableAsyncTaskTip: false, // 点击导出，如果是异步则立即弹出提示弹框。用于兼容旧版异步消息提示
 };

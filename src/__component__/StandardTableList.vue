@@ -175,7 +175,9 @@ import {
   blockFullOperation,
   isFilterTable,
   listDefaultColumn,
-  classFix
+  classFix,
+  messageSwitch,
+  enableAsyncTaskTip
 } from '../constants/global';
 import { getGateway } from '../__utils__/network';
 import customize from '../__config__/customize.config';
@@ -2051,17 +2053,25 @@ export default {
       }
 
       if (obj.name === this.buttonMap.CMD_EXPORT.name) {
-        // 导出
+        // 全量导出
         if (this.buttons.selectIdArr.length === 0) {
-          const title = this.$t('feedback.warning');
-          const contentText = this.$t('messages.exportAllTip')
-          this.dialogMessage(title, contentText, obj);
+          // const title = this.$t('feedback.warning');
+          // const contentText = this.$t('messages.exportAllTip')
+          // this.dialogMessage(title, contentText, obj);
+          if(enableAsyncTaskTip()) {
+            const title = this.$t('feedback.warning');
+            const contentText = this.$t('messages.exportAllTip')
+            this.dialogMessage(title, contentText, obj);
+          } else {
+            this.batchExport(obj);
+          }
+
           return;
         }
-        // this.batchExport(obj);
         if (this.R3_openedApi_export && typeof this.R3_openedApi_export === 'function') {
           this.R3_openedApi_export(obj);
         } else {
+          // 批量导出
           this.batchExport(obj);
         }
         return;
@@ -2130,13 +2140,17 @@ export default {
       if (this.buttons.selectIdArr.length !== 0) {
         searchdata.fixedcolumns = { ID: this.buttons.selectIdArr };
       }
+      searchdata.column_include_uicontroller =  true
       const OBJ = {
-        searchdata: searchdata,
+        searchdata,
         filename: this.activeTab.label,
         filetype: '.xlsx',
         showColumnName: true,
         menu: this.activeTab.label
       };
+      
+      window.localStorage.setItem('r3-stopPolling', true) // 锁住通知发送
+
       const promise = new Promise((resolve, reject) => {
         this.getExportQueryForButtons({
           OBJ, resolve, reject, buttonsData
@@ -2145,19 +2159,18 @@ export default {
       promise.then(() => {
         if (this.buttons.exportdata) {
           if (Version() === '1.4') { // Version() === '1.4'
-            this.$R3loading.hide(this.loadingName);
 
             // fileUrl字段不存在时就代表是异步导出。
             // 异步导出在[我的任务]查看
-            if (window.ProjectConfig.messageSwitch) {
-              this.$Modal.fcSuccess({
-                title: this.$t('feedback.success'),
-                mask: true,
-                content: this.buttons.exportdata.message
-              });
+            if (messageSwitch()) {
+              this.asyncExport()
               return
             }
 
+            window.localStorage.setItem('r3-stopPolling', '') // 允许通知发送
+            window.dispatchEvent(new CustomEvent('checkNotice')) // 触发通知检测。防止同步任务阻塞期间，把其他异步任务通知拦截了
+
+            this.$R3loading.hide(this.loadingName);
             const eleLink = document.createElement('a');
             const path = getGateway(`/p/cs/download?filename=${this.buttons.exportdata.fileUrl}`);
             eleLink.setAttribute('href', path);
@@ -2166,66 +2179,69 @@ export default {
             eleLink.click();
             document.body.removeChild(eleLink);
           } else if (Version() === '1.3') { // Version() === '1.3'
-            // fileUrl字段不存在时就代表是异步导出。
-            // 异步导出在[我的任务]查看
-            if(!this.buttons.exportdata.fileUrl) {
-              this.$R3loading.hide(this.loadingName);
-              if (window.ProjectConfig.messageSwitch) {
-                this.$Modal.fcSuccess({
-                  title: this.$t('feedback.success'),
-                  mask: true,
-                  content: this.$t('messages.processingTask')
-                });
-              }
-              return
-            }
-            const promises = new Promise((resolve, reject) => {
-              this.getExportedState({
-                objid: this.buttons.exportdata, id: this.buttons.exportdata, resolve, reject
-              });
-            });
-            promises.then(() => {
-              this.$R3loading.hide(this.loadingName);
-              if (this.exportTasks.dialog) {
-                const message = {
-                  mask: true,
-                  title: this.$t('feedback.alert'),
-                  content: this.$t('messages.asyncImportSuccess'),
-                  showCancel: true,
-                  onOk: () => {
-                    const type = 'tableDetailVertical';
-                    const tab = {
-                      type,
-                      tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
-                      tableId: Version() === '1.3' ? 24386 : 963,
-                      id: this.buttons.exportdata
-                    };
-                    this.tabOpen(tab);
-                    this.updataTaskMessageCount({ id: this.buttons.exportdata, stopUpdataQuantity: true });
-                  }
-                };
-                this.$Modal.fcWarning(message);
-              }
-              if (this.exportTasks.successMsg) {
-                const data = {
-                  mask: true,
-                  title: this.$t('feedback.success'),
-                  content: this.exportTasks.resultMsg
-                };
-                this.$Modal.fcSuccess(data);
-              }
-              this.searchClickData();
-            }, () => {
-              if (this.exportTasks.warningMsg) {
-                this.$R3loading.hide(this.loadingName);
-                const data = {
-                  mask: true,
-                  title: this.$t('feedback.error'),
-                  content: `${this.exportTasks.resultMsg}`
-                };
-                this.$Modal.fcError(data);
-              }
-            });
+            this.asyncExport()
+
+            // // fileUrl字段不存在时就代表是异步导出。
+            // // 异步导出在[我的任务]查看
+            // if(!this.buttons.exportdata.fileUrl) {
+            //   this.$R3loading.hide(this.loadingName);
+            //   if (window.ProjectConfig.messageSwitch) {
+                // this.$Modal.fcSuccess({
+                //   title: this.$t('feedback.success'),
+                //   mask: true,
+                //   content: this.$t('messages.processingTask')
+                // });
+            //   }
+            //   return
+            // }
+
+            // const promises = new Promise((resolve, reject) => {
+            //   this.getExportedState({
+            //     objid: this.buttons.exportdata, id: this.buttons.exportdata, resolve, reject
+            //   });
+            // });
+            // promises.then(() => {
+            //   this.$R3loading.hide(this.loadingName);
+            //   if (this.exportTasks.dialog) {
+                // const message = {
+                //   mask: true,
+                //   title: this.$t('feedback.alert'),
+                //   content: this.$t('messages.processingTask'),
+                //   showCancel: true,
+                //   onOk: () => {
+                //     const type = 'tableDetailVertical';
+                //     const tab = {
+                //       type,
+                //       tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
+                //       tableId: Version() === '1.3' ? 24386 : 963,
+                //       id: this.buttons.exportdata
+                //     };
+                //     this.tabOpen(tab);
+                //     this.updataTaskMessageCount({ id: this.buttons.exportdata, stopUpdataQuantity: true });
+                //   }
+                // };
+                // this.$Modal.fcWarning(message);
+            //   }
+            //   if (this.exportTasks.successMsg) {
+            //     const data = {
+            //       mask: true,
+            //       title: this.$t('feedback.success'),
+            //       content: this.exportTasks.resultMsg
+            //     };
+            //     this.$Modal.fcSuccess(data);
+            //   }
+            //   this.searchClickData();
+            // }, () => {
+            //   if (this.exportTasks.warningMsg) {
+            //     this.$R3loading.hide(this.loadingName);
+            //     const data = {
+            //       mask: true,
+            //       title: this.$t('feedback.error'),
+            //       content: `${this.exportTasks.resultMsg}`
+            //     };
+            //     this.$Modal.fcError(data);
+            //   }
+            // });
           }
         } else {
           this.$R3loading.hide(this.loadingName);
@@ -2235,6 +2251,65 @@ export default {
         this.$R3loading.hide(this.loadingName);
       });
     },
+
+    // 异步导出
+    asyncExport() {
+      const id = Version() === '1.3' ? this.buttons.exportdata : this.buttons.exportdata.fileUrl
+      const promises = new Promise((resolve, reject) => {
+        this.getExportedState({
+          objid: id, id, resolve, reject
+        });
+      });
+      promises.then(() => {
+        this.$R3loading.hide(this.loadingName);
+
+        window.localStorage.setItem('r3-stopPolling', '') // 允许通知发送
+        window.dispatchEvent(new CustomEvent('checkNotice')) // 触发通知检测。防止同步任务阻塞期间，把其他异步任务通知拦截了
+
+        if (this.exportTasks.dialog) {
+          if(enableAsyncTaskTip() && Version() === '1.3') {
+              const message = {
+                mask: true,
+                title: this.$t('feedback.alert'),
+                content: this.$t('messages.asyncImportSuccess'),
+                showCancel: true,
+                onOk: () => {
+                  const type = 'tableDetailVertical';
+                  const tab = {
+                    type,
+                    tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
+                    tableId: Version() === '1.3' ? 24386 : 963,
+                    id: this.buttons.exportdata
+                  };
+                  this.tabOpen(tab);
+                  this.updataTaskMessageCount({ id: this.buttons.exportdata, stopUpdataQuantity: true });
+                }
+              };
+              this.$Modal.fcWarning(message);
+              return
+          }
+          this.$Message.success({
+            content: this.$t('messages.processingTask'),
+            duration: 5
+          })
+        }
+        if (this.exportTasks.successMsg) {
+          this.$Message.success(this.exportTasks.resultMsg)
+        }
+        this.searchClickData();
+      }, () => {
+        if (this.exportTasks.warningMsg) {
+          this.$R3loading.hide(this.loadingName);
+          const data = {
+            mask: true,
+            title: this.$t('feedback.error'),
+            content: `${this.exportTasks.resultMsg}`
+          };
+          this.$Modal.fcError(data);
+        }
+      });
+    },
+
     deleteTableList (data) { // 删除方法
       const tableName = this.buttons.tableName;
       const selectIdArr = this.buttons.selectIdArr;

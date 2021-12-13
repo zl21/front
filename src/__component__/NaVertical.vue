@@ -278,8 +278,23 @@ export default {
 
     taskMessageCount(newVal, oldVal) {
       if(newVal > oldVal) {
-        this._getTaskNotice()
+        this.sendNotice()
       }
+
+      // if(newVal > oldVal) {
+      //   if(this.noticeTimer) {
+      //     clearTimeout(this.noticeTimer);
+      //     this.noticeTimer = setTimeout(() => {
+      //       this._getTaskNotice()
+      //       this.noticeTimer = null
+      //     }, 4000)
+      //     return
+      //   }
+      //   this.noticeTimer = setTimeout(() => {
+      //     this._getTaskNotice()
+      //     this.noticeTimer = null
+      //   }, 4000)
+      // }
     },
 
     showModule(val) {
@@ -529,6 +544,13 @@ export default {
       }
       this.getTaskMessageCount(this.userInfo.id);
     },
+
+    sendNotice() {
+      const stopPolling = window.localStorage.getItem('r3-stopPolling')
+      if(!stopPolling) {
+        this._getTaskNotice()
+      }
+    }
   },
   async mounted() {
     this.$el._vue_ = this;
@@ -550,8 +572,15 @@ export default {
       this.toggle();
     }
   },
+
+  created() {
+    window.localStorage.setItem('r3-stopPolling', '') // 初始化通知锁
+    window.addEventListener('checkNotice', this.sendNotice)
+  },
+
   beforeDestroy() {
     clearInterval(this.messageTimer);
+    window.removeEventListener('checkNotice', this.sendNotice)
   }
 };
 </script>

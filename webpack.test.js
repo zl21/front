@@ -17,6 +17,7 @@ module.exports = () => ({
     globalObject: 'this',
     library: 'R3',
     libraryTarget: 'umd',
+    libraryExport: 'default',
     umdNamedDefine: true,
     publicPath: './'
   },

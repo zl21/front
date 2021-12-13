@@ -49,7 +49,7 @@ export default {
     objid, id, resolve, reject 
   }) { // 获取导出状态
     if (enableInitializationRequest()) {
-      const times = 4;// 循环的次数
+      const times = 5;// 循环的次数
       let index = 0;// 当前次数
       let timer = 0;// 定时器
       const exportTask = {};
@@ -59,20 +59,21 @@ export default {
         if (index > times) {
           clearInterval(timer);
         } else {
-          network.post('/p/cs/getObject', urlSearchParams({ table: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE', objid }), {
+          network.post('/p/cs/getObject', urlSearchParams({ table: 'U_NOTE', objid }), {
             serviceId: enableGateWay() ? getGatewayValue('U_NOTE') : ''
           }).then((res) => {
             const data = res.data;
             // resolve();
             if (data.code === 0) { 
               // 筛选信息验证导出是否成功
-              const addcolum = data.data.addcolums.filter(item => item.parentdesc === i18n.t('tips.basicInfo')).length > 0 ? data.data.addcolums.filter(item => item.parentdesc === i18n.t('tips.basicInfo'))[0].childs : [];
+              const baseInfo = data.data.addcolums.filter(item => item.parentdesc === '基础信息')
+              const addcolum = baseInfo.length > 0 ? baseInfo[0].childs : [];
               addcolum.forEach((b) => {
                 if (b.colname === 'TASK_STATE') {
                   if (b.valuedata === '2') {
                     exportTask.exportedState = true;
                     clearInterval(timer);
-                    resolve();
+                    // resolve();
                     exportTask.successMsg = true;
                     commit('updateExportedState', exportTask);
                   } else if (b.valuedata === '3') { // 异常终止
@@ -90,16 +91,16 @@ export default {
                     }
                     exportTask.exportedState = false;
                   }
-                } else if (b.colname === 'URL') {
+                } else if (b.colname === 'FILE_URL') {
                   exportTask.file = b.valuedata; 
                 } else if (b.colname === 'MESSAGE') {
                   exportTask.resultMsg = b.valuedata; 
                 }
               });
               if (exportTask.exportedState) { // 导出成功执行以下逻辑
-                let obj = Version() === '1.3' ? urlSearchParams({ id }) : { objId: id };
+                let obj = { objId: id };
                 obj.id = obj.objId;
-                twork.post(Version() === '1.3' ? '/p/cs/ignoreMsg' : '/p/cs/u_note/ignoreMsg', obj, {
+                network.post('/p/cs/u_note/ignoreMsg', obj, {
                   serviceId: enableGateWay() ? 'asynctask' : ''
                 }).then((r) => {
                   const datas = r.data;
@@ -113,7 +114,8 @@ export default {
                           const eleLink = document.createElement('a');
                           eleLink.download = 'download';
                           eleLink.style.display = 'none';
-                          eleLink.href = file[0].url;
+                          const serviceId = window.localStorage.getItem('serviceId')
+                          eleLink.href = serviceId ? `/${serviceId}${file[0].url}` : file[0].url;
                           document.body.appendChild(eleLink);
                           eleLink.click();
                           document.body.removeChild(eleLink);
@@ -252,7 +254,8 @@ export default {
                       const eleLink = document.createElement('a');
                       eleLink.download = 'download';
                       eleLink.style.display = 'none';
-                      eleLink.href = file[0].url;
+                      const serviceId = window.localStorage.getItem('serviceId')
+                      eleLink.href = serviceId ? `/${serviceId}${file[0].url}` : file[0].url;
                       document.body.appendChild(eleLink);
                       eleLink.click();
                       document.body.removeChild(eleLink);
@@ -262,6 +265,8 @@ export default {
                       resolve();
                     }
                   }
+                }).finally(() => {
+                  resolve();
                 });
               }
             } else {
