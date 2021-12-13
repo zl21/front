@@ -129,7 +129,7 @@ export default {
     // 将任务设置为已读
     async readTask() {
       const url = Version() === '1.4' ? '/p/cs/u_note/ignoreMsg': '/p/cs/ignoreMsg'
-      const data = Version() === '1.4' ? { id: this.info.ID.val } : urlSearchParams({ id: this.info.ID.val })
+      const data = Version() === '1.4' ? { id: this.info.ID.val, objId: this.info.ID.val } : urlSearchParams({ id: this.info.ID.val })
       await network.post(url, data,{
         serviceId: Version() === '1.4' && enableGateWay() ? 'asynctask' : ''
       })
