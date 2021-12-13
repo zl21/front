@@ -1,4 +1,4 @@
-import { Version, enableGateWay, getGatewayValue } from '../../constants/global'
+import { Version, enableGateWay, getGatewayValue, enableTaskNotice } from '../../constants/global'
 import network, { urlSearchParams } from '../../__utils__/network'
 import taskNotice from './taskNotice.vue'
 Vue.component('taskNotice', taskNotice)
@@ -7,7 +7,7 @@ const mixin = {
   methods: {
     // 获取通知
     async _getTaskNotice() {
-      if (!window.ProjectConfig.enableTaskNotice) {
+      if (!enableTaskNotice()) {
         return
       }
       await this._getTaskList()

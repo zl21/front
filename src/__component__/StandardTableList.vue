@@ -175,7 +175,9 @@ import {
   blockFullOperation,
   isFilterTable,
   listDefaultColumn,
-  classFix
+  classFix,
+  messageSwitch,
+  enableAsyncTaskTip
 } from '../constants/global';
 import { getGateway } from '../__utils__/network';
 import customize from '../__config__/customize.config';
@@ -2056,7 +2058,7 @@ export default {
           // const title = this.$t('feedback.warning');
           // const contentText = this.$t('messages.exportAllTip')
           // this.dialogMessage(title, contentText, obj);
-          if(window.ProjectConfig.enableAsyncTaskTip) {
+          if(enableAsyncTaskTip()) {
             const title = this.$t('feedback.warning');
             const contentText = this.$t('messages.exportAllTip')
             this.dialogMessage(title, contentText, obj);
@@ -2070,7 +2072,7 @@ export default {
           this.R3_openedApi_export(obj);
         } else {
           // 批量导出
-          window.ProjectConfig.enableAsyncTaskTip && this.$Modal.fcSuccess({
+          enableAsyncTaskTip() && this.$Modal.fcSuccess({
               title: this.$t('feedback.success'),
               mask: true,
               content: this.$t('messages.asyncImportSuccess')
@@ -2165,7 +2167,7 @@ export default {
 
             // fileUrl字段不存在时就代表是异步导出。
             // 异步导出在[我的任务]查看
-            if (window.ProjectConfig.messageSwitch) {
+            if (messageSwitch()) {
               this.asyncExport()
               return
             }

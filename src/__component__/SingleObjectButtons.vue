@@ -84,7 +84,9 @@
     getCustomizeWaterMark,
     enableActivateSameCustomizePage,
     classFix,
-    enableOpenNewTab
+    enableOpenNewTab,
+    messageSwitch,
+    enableAsyncTaskTip
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import { getUrl, getLabel } from '../__utils__/url';
@@ -1980,8 +1982,8 @@
             if (Version() === '1.4') {
               // fileUrl字段不存在时就代表是异步导出。
               // 异步导出在[我的任务]查看
-              if(window.ProjectConfig.messageSwitch) {
-                window.ProjectConfig.enableAsyncTaskTip && this.$Modal.fcSuccess({
+              if(messageSwitch()) {
+                enableAsyncTaskTip() && this.$Modal.fcSuccess({
                     title: this.$t('feedback.success'),
                     mask: true,
                     content: this.$t('messages.asyncImportSuccess')
@@ -2002,7 +2004,7 @@
               eleLink.click();
               document.body.removeChild(eleLink);
             } else {
-              if(window.ProjectConfig.messageSwitch && window.ProjectConfig.enableAsyncTaskTip) {
+              if(messageSwitch() && enableAsyncTaskTip()) {
                 this.$Modal.fcSuccess({
                     title: this.$t('feedback.success'),
                     mask: true,

@@ -181,7 +181,7 @@
   import { mapState, mapMutations, mapActions } from 'vuex';
   import regExp from '../constants/regExp';
   import {
-    Version, LINK_MODULE_COMPONENT_PREFIX, INSTANCE_ROUTE_QUERY, enableActivateSameCustomizePage, ossRealtimeSave, classFix
+    Version, LINK_MODULE_COMPONENT_PREFIX, INSTANCE_ROUTE_QUERY, enableActivateSameCustomizePage, ossRealtimeSave, classFix, messageSwitch, enableAsyncTaskTip
   } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
   import ComplexsDialog from './ComplexsDialog.vue'; // emit 选中的行
@@ -4668,8 +4668,8 @@
             if (Version() === '1.4') {
               // fileUrl字段不存在时就代表是异步导出。
               // 异步导出在[我的任务]查看
-              if(window.ProjectConfig.messageSwitch) {
-                window.ProjectConfig.enableAsyncTaskTip && this.$Modal.fcSuccess({
+              if(messageSwitch()) {
+                enableAsyncTaskTip() && this.$Modal.fcSuccess({
                     title: this.$t('feedback.success'),
                     mask: true,
                     content: this.$t('messages.asyncImportSuccess')
@@ -4708,7 +4708,7 @@
               //   return
               // }
               
-              if(window.ProjectConfig.messageSwitch && window.ProjectConfig.enableAsyncTaskTip) {
+              if(messageSwitch() && enableAsyncTaskTip()) {
                 this.$Modal.fcSuccess({
                     title: this.$t('feedback.success'),
                     mask: true,
