@@ -4664,12 +4664,13 @@
           this.getExportQueryForButtons({ OBJ, resolve, reject });
         });
         promise.then(() => {
+          console.log(111, this.buttonsData)
           if (this.buttonsData.exportdata) {
             if (Version() === '1.4') {
               // fileUrl字段不存在时就代表是异步导出。
               // 异步导出在[我的任务]查看
               if(messageSwitch()) {
-                this.asyncExport()
+                this.asyncExport(this.buttonsData.exportdata)
                 return
               }
 
@@ -4704,7 +4705,7 @@
               // }
               
               this.updateExportedState({});
-              this.asyncExport()
+              this.asyncExport(this.buttonsData.exportdata)
               // const promises = new Promise((resolve, reject) => {
               //   this.getExportedState({
               //     objid: '0000', resolve, reject
@@ -4764,7 +4765,7 @@
       },
 
       // 异步导出
-      asyncExport(){
+      asyncExport(resp){
         const id = Version() === '1.3' ? this.buttonsData.exportdata : this.buttonsData.exportdata.fileUrl
         const promises = new Promise((resolve, reject) => {
             this.getExportedState({
@@ -4779,18 +4780,18 @@
 
             if (this.exportTasks.dialog) {
               // 兼容之前的异步
-              if(enableAsyncTaskTip()) {
+              if(enableAsyncTaskTip() && Version() === '1.3') {
                 const message = {
                   mask: true,
                   title: this.$t('feedback.alert'),
-                  content: this.$t('messages.processingTask'),
+                  content: resp.message,
                   showCancel: true,
                   onOk: () => {
                     const type = 'tableDetailVertical';
                     const tab = {
                       type,
-                      tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
-                      tableId: Version() === '1.3' ? 24386 : 963,
+                      tableName: 'CP_C_TASK',
+                      tableId: 24386,
                       id: this.buttonsData.exportdata
                     };
                     this.tabOpen(tab);
@@ -4800,14 +4801,10 @@
                 this.$Modal.fcWarning(message);
                 return
               }
-              const message = {
-                mask: true,
-                title: this.$t('feedback.alert'),
+              this.$Message.success({
                 content: this.$t('messages.processingTask'),
-                onOk: () => {
-                }
-              };
-              this.$Modal.fcWarning(message);
+                duration: 5
+              })
             }
             if (this.exportTasks.successMsg) {
               this.$Message.success(this.exportTasks.resultMsg)

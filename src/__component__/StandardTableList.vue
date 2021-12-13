@@ -2272,14 +2272,10 @@ export default {
         window.dispatchEvent(new CustomEvent('checkNotice')) // 触发通知检测。防止同步任务阻塞期间，把其他异步任务通知拦截了
 
         if (this.exportTasks.dialog) {
-          const message = {
-            mask: true,
-            title: this.$t('feedback.alert'),
+          this.$Message.success({
             content: this.$t('messages.processingTask'),
-            onOk: () => {
-            }
-          };
-          this.$Modal.fcWarning(message);
+            duration: 5
+          })
         }
         if (this.exportTasks.successMsg) {
           this.$Message.success(this.exportTasks.resultMsg)
