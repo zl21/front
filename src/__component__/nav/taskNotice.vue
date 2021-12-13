@@ -41,7 +41,7 @@
       </div>
       <div class="notice-body-r">
         <div class="notice-task">{{noticeMessage}}{{this.isSuccess && this.isExport ? `，${$t('messages.seeDetails')}` : ''}}
-          <a :href="link"  color="#1200F5" download  v-if="this.isSuccess && this.isExport" @click.stop>【{{$t('messages.downloadFile')}}】</a>
+          <a :href="link"  color="#1200F5" download  v-if="this.isSuccess && this.isExport" @click.stop="readTask">【{{$t('messages.downloadFile')}}】</a>
         </div>
         <!-- <div class="notice-status one-line-flow" :title="content">{{content}}！</div> -->
       </div>
@@ -51,8 +51,10 @@
 
 <script type="text/ecmascript-6">
 import i18n from '../../assets/js/i18n/index'
+import network, { urlSearchParams } from '../../__utils__/network';
 import {
-  Version
+  Version,
+  enableGateWay,
 } from '../../constants/global';
 
 export default {
@@ -123,6 +125,15 @@ export default {
     handleClick() {
       this.jump(this.info)
     },
+
+    // 将任务设置为已读
+    async readTask() {
+      const url = Version() === '1.4' ? '/p/cs/u_note/ignoreMsg': '/p/cs/ignoreMsg'
+      const data = Version() === '1.4' ? { id: this.info.ID.val } : urlSearchParams({ id: this.info.ID.val })
+      await network.post(url, data,{
+        serviceId: Version() === '1.4' && enableGateWay() ? 'asynctask' : ''
+      })
+    }
   },
 }
 </script>
