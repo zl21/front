@@ -2208,24 +2208,24 @@ export default {
             // promises.then(() => {
             //   this.$R3loading.hide(this.loadingName);
             //   if (this.exportTasks.dialog) {
-            //     const message = {
-            //       mask: true,
-            //       title: this.$t('feedback.alert'),
-            //       content: this.$t('messages.processingTask'),
-            //       showCancel: true,
-            //       onOk: () => {
-            //         const type = 'tableDetailVertical';
-            //         const tab = {
-            //           type,
-            //           tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
-            //           tableId: Version() === '1.3' ? 24386 : 963,
-            //           id: this.buttons.exportdata
-            //         };
-            //         this.tabOpen(tab);
-            //         this.updataTaskMessageCount({ id: this.buttons.exportdata, stopUpdataQuantity: true });
-            //       }
-            //     };
-            //     this.$Modal.fcWarning(message);
+                // const message = {
+                //   mask: true,
+                //   title: this.$t('feedback.alert'),
+                //   content: this.$t('messages.processingTask'),
+                //   showCancel: true,
+                //   onOk: () => {
+                //     const type = 'tableDetailVertical';
+                //     const tab = {
+                //       type,
+                //       tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
+                //       tableId: Version() === '1.3' ? 24386 : 963,
+                //       id: this.buttons.exportdata
+                //     };
+                //     this.tabOpen(tab);
+                //     this.updataTaskMessageCount({ id: this.buttons.exportdata, stopUpdataQuantity: true });
+                //   }
+                // };
+                // this.$Modal.fcWarning(message);
             //   }
             //   if (this.exportTasks.successMsg) {
             //     const data = {
@@ -2272,6 +2272,27 @@ export default {
         window.dispatchEvent(new CustomEvent('checkNotice')) // 触发通知检测。防止同步任务阻塞期间，把其他异步任务通知拦截了
 
         if (this.exportTasks.dialog) {
+          if(enableAsyncTaskTip() && Version() === '1.3') {
+              const message = {
+                mask: true,
+                title: this.$t('feedback.alert'),
+                content: this.$t('messages.asyncImportSuccess'),
+                showCancel: true,
+                onOk: () => {
+                  const type = 'tableDetailVertical';
+                  const tab = {
+                    type,
+                    tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
+                    tableId: Version() === '1.3' ? 24386 : 963,
+                    id: this.buttons.exportdata
+                  };
+                  this.tabOpen(tab);
+                  this.updataTaskMessageCount({ id: this.buttons.exportdata, stopUpdataQuantity: true });
+                }
+              };
+              this.$Modal.fcWarning(message);
+              return
+          }
           this.$Message.success({
             content: this.$t('messages.processingTask'),
             duration: 5

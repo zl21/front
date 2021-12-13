@@ -1983,7 +1983,7 @@
               // fileUrl字段不存在时就代表是异步导出。
               // 异步导出在[我的任务]查看
               if(messageSwitch()) {
-                this.asyncExport(this.buttonsData.exportdata)
+                this.asyncExport()
                 return
               }
               this.$R3loading.hide(this.loadingName);
@@ -1999,7 +1999,7 @@
               eleLink.click();
               document.body.removeChild(eleLink);
             } else {
-              this.asyncExport(this.buttonsData.exportdata)
+              this.asyncExport()
               // // fileUrl字段不存在时就代表是异步导出。
               // // 异步导出在[我的任务]查看
               // if(!this.buttonsData.exportdata.fileUrl) {
@@ -2089,7 +2089,7 @@
       },
 
       // 异步导出
-      asyncExport(resp) {
+      asyncExport() {
         const id = Version() === '1.3' ? this.buttonsData.exportdata : this.buttonsData.exportdata.fileUrl
         const promises = new Promise((resolve, reject) => {
           this.getExportedState({
@@ -2108,7 +2108,7 @@
                 const message = {
                 mask: true,
                 title: this.$t('feedback.alert'),
-                content: resp.message,
+                content: this.$t('messages.asyncImportSuccess'),
                 showCancel: true,
                 onOk: () => {
                   const type = 'tableDetailVertical';

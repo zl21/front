@@ -4664,13 +4664,12 @@
           this.getExportQueryForButtons({ OBJ, resolve, reject });
         });
         promise.then(() => {
-          console.log(111, this.buttonsData)
           if (this.buttonsData.exportdata) {
             if (Version() === '1.4') {
               // fileUrl字段不存在时就代表是异步导出。
               // 异步导出在[我的任务]查看
               if(messageSwitch()) {
-                this.asyncExport(this.buttonsData.exportdata)
+                this.asyncExport()
                 return
               }
 
@@ -4705,7 +4704,7 @@
               // }
               
               this.updateExportedState({});
-              this.asyncExport(this.buttonsData.exportdata)
+              this.asyncExport()
               // const promises = new Promise((resolve, reject) => {
               //   this.getExportedState({
               //     objid: '0000', resolve, reject
@@ -4765,7 +4764,7 @@
       },
 
       // 异步导出
-      asyncExport(resp){
+      asyncExport(){
         const id = Version() === '1.3' ? this.buttonsData.exportdata : this.buttonsData.exportdata.fileUrl
         const promises = new Promise((resolve, reject) => {
             this.getExportedState({
@@ -4777,14 +4776,13 @@
 
             window.localStorage.setItem('r3-stopPolling', '') // 允许通知发送
             window.dispatchEvent(new CustomEvent('checkNotice')) // 触发通知检测。防止同步任务阻塞期间，把其他异步任务通知拦截了
-
             if (this.exportTasks.dialog) {
               // 兼容之前的异步
               if(enableAsyncTaskTip() && Version() === '1.3') {
                 const message = {
                   mask: true,
                   title: this.$t('feedback.alert'),
-                  content: resp.message,
+                  content: this.$t('messages.asyncImportSuccess'),
                   showCancel: true,
                   onOk: () => {
                     const type = 'tableDetailVertical';
