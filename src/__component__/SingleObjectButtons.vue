@@ -86,6 +86,7 @@
     classFix,
     enableOpenNewTab,
     messageSwitch,
+    enableTaskNotice,
     enableAsyncTaskTip
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
@@ -2125,8 +2126,9 @@
               this.$Modal.fcWarning(message);
               return
             }
+            const msg = !enableTaskNotice() && enableAsyncTaskTip() ? this.$t('messages.asyncTaskTip'): this.$t('messages.processingTask')
             this.$Message.success({
-              content: this.$t('messages.processingTask'),
+              content: msg,
               duration: 5
             })
           }
