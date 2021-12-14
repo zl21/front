@@ -130,7 +130,7 @@
     Version, enableHistoryAndFavoriteUI, dashboardConfig,messageSwitch, classFix
   } from '../constants/global';
   import { updateSessionObject } from '../__utils__/sessionStorage';
-  import noticeMixin from './nav/noticeMixin'
+  import noticeMixin from './AsyncTask/noticeMixin'
   import navigatorMixin from './AsyncTask/navigatorMixin'
 
   export default {

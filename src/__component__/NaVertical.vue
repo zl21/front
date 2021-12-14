@@ -130,7 +130,7 @@ import {updateSessionObject} from '../__utils__/sessionStorage';
 import HistoryAndFavorite from './HistoryAndFavorite';
 import MessageList from './nav/MessageList.vue'
 import Setting from './nav/Setting.vue'
-import noticeMixin from './nav/noticeMixin'
+import noticeMixin from './AsyncTask/noticeMixin'
 import navigatorMixin from './AsyncTask/navigatorMixin'
 
 export default {
