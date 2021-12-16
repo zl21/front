@@ -364,6 +364,16 @@ export default {
           componentInstance = new CustomInput(item).init();
           break;
         case 'OBJ_FK':
+          // 兼容webcof 数据
+            ['refcolprem','refcolval'].forEach((option)=>{
+              if(item[option]){
+                if (!item.webconf) {
+                  item.webconf = {}
+                }
+                item.webconf[option] = item[option];
+              }
+            })
+          console.log(item,'=====item');
           if (item.fkobj.searchmodel === 'drp') {
             componentInstance = new BusDropDownSelectFilter(item).init();
           }

@@ -114,12 +114,12 @@ class BusDropDownSelectFilter {
 
       this.PropsData.isShowPopTip = () => {
         // console.log(121212,'===')
-        if (this.item.refcolval) {
-          if (!this.item.webconf) {
-            this.item.webconf = {}
-          }
-          this.item.webconf.refcolval = this.item.refcolval
-        }
+        // if (this.item.refcolval) {
+        //   if (!this.item.webconf) {
+        //     this.item.webconf = {}
+        //   }
+        //   this.item.webconf.refcolval = this.item.refcolval
+        // }
         return setisShowPopTip(this, this.item.webconf, network)
       }
 
