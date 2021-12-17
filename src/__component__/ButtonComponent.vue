@@ -8,7 +8,7 @@
         placement="bottom-start"
       > -->
       <Button
-        v-if="dataArray.search"
+        v-if="dataSetArray.search"
         type="posdefault"
         @click="btnclick('search')"
         v-text="search"
@@ -16,14 +16,14 @@
       <!-- </Poptip> -->
 
       <Button
-        v-show="dataArray.reset"
+        v-show="dataSetArray.reset"
         id="reset"
         type="fcdefault"
         @click="btnclick('reset')"
         v-text="reset"
       />
       <Button
-        v-for="(item, index) in dataArray.buttonGroupShowConfig.buttonGroupShow"
+        v-for="(item, index) in dataSetArray.buttonGroupShowConfig.buttonGroupShow"
         :id="item.eName"
         :key="item.eName"
         :ref="item.ref"
@@ -33,7 +33,7 @@
       />
 
       <!-- 定制按钮 -->
-      <template v-for="item in dataArray.waListButtonsConfig.waListButtons">
+      <template v-for="item in dataSetArray.waListButtonsConfig.waListButtons">
         <template v-if="item.confirm && item.confirm.includes('supPrompt')">
           <Poptip
             trigger="hover"
@@ -66,7 +66,7 @@
       </template>
 
       <Dropdown
-        v-for="(group,i) in dataArray.waListButtonsConfig.waListButtonsGroup"
+        v-for="(group,i) in dataSetArray.waListButtonsConfig.waListButtonsGroup"
         :key="group.webid"
         trigger="click"
         placement="bottom-start"
@@ -134,7 +134,7 @@
 
       <!-- jflow配置按钮-->
       <Button
-        v-for="(item) in dataArray.jflowButton"
+        v-for="(item) in dataSetArray.jflowButton"
         :key="item.button"
         :ref="item"
         type="fcdefault"
@@ -144,7 +144,7 @@
 
 
       <Dropdown
-        v-if="dataArray.printValue"
+        v-if="dataSetArray.printValue"
         id="print"
         trigger="click"
         placement="bottom-start"
@@ -167,14 +167,14 @@
         </DropdownMenu>
       </Dropdown>
       <Button
-        v-if="dataArray.actionCollection && !layoutDirection"
+        v-if="dataSetArray.actionCollection && !layoutDirection"
         type="fcdefault"
         class="collection"
         @click="btnclick('Collection')"
       >
         <span>
           <i
-            v-if="!dataArray.collectiImg"
+            v-if="!dataSetArray.collectiImg"
             class="iconfont iconbj_col"
           />
           <i
@@ -184,7 +184,7 @@
         </span>
       </Button>
       <Button
-        v-show="dataArray.refresh"
+        v-show="dataSetArray.refresh"
         id="refresh"
         type="fcdefault"
         @click="btnclick('refresh')"
@@ -192,14 +192,14 @@
       />
 
       <Button
-        v-if="dataArray.temporaryStorage"
+        v-if="dataSetArray.temporaryStorage"
         id="temporaryStorage"
         type="fcdefault"
         @click="btnclick('temporaryStorage')"
         v-text="temporaryStorage"
       />
       <Button
-        v-if="dataArray.back"
+        v-if="dataSetArray.back"
         id="back"
         type="fcdefault"
         @click="btnclick('back')"
@@ -359,6 +359,14 @@
           `${classFix}R3-button-group`,
         ];
       },
+      dataSetArray(){
+        // 过滤按钮组件传参
+         let {filterComponentData} = window.ProjectConfig; 
+         if(filterComponentData && filterComponentData.button && typeof filterComponentData.button ==='function'){
+            return filterComponentData.button(JSON.parse(JSON.stringify(this.dataArray)),this);
+         }
+         return this.dataArray;
+      }
     },
     methods: {
       choseWaListButton(data) {

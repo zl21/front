@@ -104,7 +104,7 @@ module.exports = {
   enableOpenNewTab: false, // 列表界面打开 同表 单对象是否新开tab,默认为false
   blockFullOperation: false, // 禁止不选数据时的批量修改操作,
   customizeMixins: { // 获取所有外部接入的mixins对象
-    //singleObjectButtonGroup: require('./demo/singleObjectButtonGroup.js').default,
+     singleObjectButtonGroup: require('../demo/singleObjectButtonGroup').default,
     //verticalTableDetailCustomize: require('./demo/horizontalTableDetailCustomize.js').default,
     // standardTableListsCustomize: {
     //   methods: {
@@ -228,4 +228,34 @@ module.exports = {
   filterTablesOpenTab:['CUSTOMIZEREPORT'],   // 过滤表明新开
   noticeDuration: 60, // 异步通知停留时间
   enableAsyncTaskTip: false, // 点击导出，如果是异步则立即弹出提示弹框。用于兼容旧版异步消息提示
+  // filterComponentData:{    // 过滤框架的数据
+  //     button:(data,$this)=>{
+  //       if(Array.isArray(data)){
+  //         //  子表
+  //         let buttondata = data.reduce((arr,item)=>{
+  //           // 去除导出导入
+  //           if(item.eName !== 'actionEXPORT' && item.eName !== "actionIMPORT"){
+  //               arr.push(item);
+  //           }
+  //           return arr;
+  //         },[]);
+  //         return buttondata;
+  //       }else{
+  //         // 标准列表加单对象主表
+  //         let {buttonGroupShow} = data.buttonGroupShowConfig;
+  //         if(Array.isArray(buttonGroupShow)){
+  //           buttonGroupShow = buttonGroupShow.reduce((arr,item)=>{
+  //             // 去除导出导入
+  //             if(item.eName !== 'actionEXPORT' && item.eName !== "actionIMPORT"){
+  //                 arr.push(item);
+  //             }
+  //             return arr;
+  //           },[]);
+  //           data.buttonGroupShowConfig.buttonGroupShow = buttonGroupShow;
+  //         }
+
+  //       }
+  //       return data;
+  //     }
+  // }
 };

@@ -373,7 +373,6 @@ export default {
                 item.webconf[option] = item[option];
               }
             })
-          console.log(item,'=====item');
           if (item.fkobj.searchmodel === 'drp') {
             componentInstance = new BusDropDownSelectFilter(item).init();
           }

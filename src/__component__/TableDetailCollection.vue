@@ -604,7 +604,6 @@
       }
     },
     watch: {
-
       buttonGroups: {
         handler(val) {
           this.buttonData =this.filterButton(val);
@@ -754,7 +753,11 @@
                val.splice(index,1);
           }
         }
-       
+         // 过滤按钮组件传参
+         let {filterComponentData} = window.ProjectConfig; 
+         if(filterComponentData && filterComponentData.button && typeof filterComponentData.button ==='function'){
+            return filterComponentData.button(JSON.parse(JSON.stringify(val)),this);
+         } 
         return val;
 
       },
