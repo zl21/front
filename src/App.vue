@@ -29,19 +29,19 @@
       this.getUserInfo();
     },
 
-    watch: {
-      '$route'(to, from) {
-        // 检查系统升级
-        const { enableSystemUpdate } = window.ProjectConfig
-        if(enableSystemUpdate) {
-          const isFromUpDate = from.path === 'R3UpdateSystem' && to.path === '/' // 从升级界面跳转到主界面
-          const isFromLogin = from.path === 'login' && to.path === '/' // 从升级界面跳转到主界面
-          if(!(isFromUpDate || isFromLogin)) {
-            this.checkUpdate()
-          }
-        }
-      }
-    },
+    // watch: {
+    //   '$route'(to, from) {
+    //     // 检查系统升级
+    //     const { enableSystemUpdate } = window.ProjectConfig
+    //     if(enableSystemUpdate) {
+    //       const isFromUpDate = from.path === 'R3UpdateSystem' && to.path === '/' // 从升级界面跳转到主界面
+    //       const isFromLogin = from.path === 'login' && to.path === '/' // 从升级界面跳转到主界面
+    //       if(!(isFromUpDate || isFromLogin)) {
+    //         this.checkUpdate()
+    //       }
+    //     }
+    //   }
+    // },
 
     methods: {
       getUserInfo() {
@@ -65,15 +65,15 @@
         }
       },
 
-      // 检查系统是否升级完毕
-      checkUpdate() {
-        network.post(`/p/cs/retail/queryLiquibaseExeStatus?hash=${new Date().getTime()}`).then(result => {
-          const res = result.data
-          if (res.code === 0 && res.data.needUpdate) {
-            this.$router.push({ path:'/R3UpdateSystem'})
-          } 
-        })
-      }
+      // // 检查系统是否升级完毕
+      // checkUpdate() {
+      //   network.post(`/p/cs/retail/queryLiquibaseExeStatus?hash=${new Date().getTime()}`).then(result => {
+      //     const res = result.data
+      //     if (res.code === 0 && res.data.needUpdate) {
+      //       this.$router.push({ path:'/R3UpdateSystem'})
+      //     } 
+      //   })
+      // }
     },
   };
 </script>
