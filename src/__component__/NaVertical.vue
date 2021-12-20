@@ -48,8 +48,6 @@
             </slot>
           </DropdownMenu>
         </Dropdown>
-        <!-- <div class="iconfont iconmd-time">
-        </div> -->
 
       </div>
       <!-- 最近操作navigatorSetting -->
@@ -91,27 +89,6 @@
 
         <!-- 消息队列 -->
         <MessageList v-model="showMessages"></MessageList>
-        <!-- <Drawer
-            v-model="messagePanel.show"
-            :closable="false"
-        >
-          <messagePanel
-              v-if="Version==='1.4'"
-              :panel="messagePanel"
-              @markRead="markReadNote"
-              @ignoreMsg="ignoreMsg"
-              @jumpTask="jumpTask"
-              @nextPage="nextPage"
-          />
-          <message-panel-older
-              v-if="Version==='1.3'"
-              :panel="messagePanel"
-              @markRead="markReadNote"
-              @ignoreMsg="ignoreMsg"
-              @jumpTask="jumpTask"
-              @nextPage="nextPage"
-          />
-        </Drawer> -->
       </div>
 
       <div
@@ -126,25 +103,6 @@
 
         <!-- 设置 -->
         <Setting v-model="show"></Setting>
-        <!-- <Drawer
-            v-model="show"
-            :closable="false"
-        >
-          <SetPanel
-              :panel="setPanel"
-              @changePwdBox="changePwdBox"
-          />
-        </Drawer>
-        <Dialog
-            ref="dialogRef"
-            :title="dialogConfig.title"
-            :mask="dialogConfig.mask"
-            :content-text="dialogConfig.contentText"
-            :footer-hide="dialogConfig.footerHide"
-            :confirm="dialogConfig.confirm"
-            :dialog-component-name="dialogComponentName"
-        /> -->
-
       </div>
 
     </component>
@@ -153,24 +111,17 @@
 
 <script>
 import {mapState, mapMutations, mapActions} from 'vuex';
-// import SetPanel from './SetPanel';
-// import messagePanel from './messagePanel';
-// import messagePanelOlder from './messagePanelOlder'; // 1.3
 import Collect from './nav/collect.vue';
 import Lately from './nav/lately.vue';
 import NaVerticalslot from './nav/NaVerticalslot.vue';
 
 
 import ComAutoComplete from './ComAutoComplete';
-// import Dialog from './Dialog.vue';
 import {routeTo} from '../__config__/event.config';
 import network, {urlSearchParams} from '../__utils__/network';
 import {
   classFix,
-  STANDARD_TABLE_LIST_PREFIX,
   Version,
-  enableGateWay,
-  getGatewayValue,
   enableHistoryAndFavoriteUI,
   messageSwitch,
   dashboardConfig
@@ -179,20 +130,17 @@ import {updateSessionObject} from '../__utils__/sessionStorage';
 import HistoryAndFavorite from './HistoryAndFavorite';
 import MessageList from './nav/MessageList.vue'
 import Setting from './nav/Setting.vue'
-import noticeMixin from './nav/noticeMixin'
+import noticeMixin from './AsyncTask/noticeMixin'
+import navigatorMixin from './AsyncTask/navigatorMixin'
 
 export default {
   name: 'Navigator',
 
-  mixins: [noticeMixin],
+  mixins: [noticeMixin, navigatorMixin],
 
   components: {
-    // SetPanel,
-    // Dialog,
-    // messagePanel,
     ComAutoComplete,
     HistoryAndFavorite,
-    // messagePanelOlder,
     Collect,
     Lately,
     MessageList,
@@ -201,36 +149,14 @@ export default {
 
   data() {
     return {
-      // primaryMenuShow: false,
       slotName: '',
-      // messagePanel: {
-      //   show: false,
-      //   list: [],
-      //   loaded: true,
-      //   start: 0,
-      //   total: 0
-      // },
       enableHistoryAndFavoriteUI: enableHistoryAndFavoriteUI(),
       show: false,
       searchBtn: true,
       searchList: [],
-      // setPanel: {
-      //   show: true,
-      //   list: [],
-      // },
       iconShow: true,
       keyWord: '',
-      // dialogConfig: {
-      //   title: this.$t('feedback.alert'),
-      //   mask: true,
-      //   footerHide: false,
-      //   contentText: '',
-      //   confirm: () => {
-      //   },
-      // }, // 弹框配置信息
-      // dialogComponentName: null,
       togglePrimaryMenuData: [],
-      // Version: Version(),
       messageTimer: null,
       showMessages: false
     };
@@ -243,9 +169,6 @@ export default {
       showModule: ({showModule}) => showModule,
       userInfo: ({userInfo}) => userInfo,
       primaryMenuIndex: state => state.primaryMenuIndex,
-      taskMessageCount: state => {
-        return state.taskMessageCount
-      },
       getDashboardConfig() {
         if (dashboardConfig() && dashboardConfig().iconClass) {
           return dashboardConfig().iconClass;
@@ -263,40 +186,10 @@ export default {
       }
       return true;
     },
-    userId() {
-      return this.userInfo && this.userInfo.id;
-    },
     classes: () => `${classFix}NaVertical-bar`
 
   },
   watch: {
-    userId(val) {
-      if (val) {
-        this.getTaskMessageCount(val);
-      }
-    },
-
-    taskMessageCount(newVal, oldVal) {
-      if(newVal > oldVal) {
-        this.sendNotice()
-      }
-
-      // if(newVal > oldVal) {
-      //   if(this.noticeTimer) {
-      //     clearTimeout(this.noticeTimer);
-      //     this.noticeTimer = setTimeout(() => {
-      //       this._getTaskNotice()
-      //       this.noticeTimer = null
-      //     }, 4000)
-      //     return
-      //   }
-      //   this.noticeTimer = setTimeout(() => {
-      //     this._getTaskNotice()
-      //     this.noticeTimer = null
-      //   }, 4000)
-      // }
-    },
-
     showModule(val) {
       if (!val.Navigator) {
         if (this.$el) {
@@ -311,7 +204,6 @@ export default {
       if (val === false) {
         setTimeout(() => {
           this.$refs.AutoComplete.$el.querySelector('input').focus();
-          // this.$refs.AutoComplete.$el.querySelector('input').click();
         }, 300);
       }
     },
@@ -320,7 +212,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('global', ['getTaskMessageCount', 'updataTaskMessageCount']),
+    ...mapActions('global', ['updataTaskMessageCount']),
     ...mapMutations('global', ['updateDashboardPageValue', 'updateTaskMessageCount', 'doCollapseHistoryAndFavorite', 'changeSelectedPrimaryMenu', 'hideMenu', 'tabOpen', 'directionalRouter']),
     togglePrimaryMenu(data, index) {
       this.togglePrimaryMenuData = data;
@@ -335,95 +227,10 @@ export default {
         this.updateDashboardPageValue();
       }
     },
-    mouseover() {
-      console.log(1212);
-    },
-    showDropdown() {
-      console.log(1212);
-    },
+
     messageSlide() {
       this.showMessages = !this.showMessages
-      // this.messagePanel.show = !this.messagePanel.show;
-      // if (this.messagePanel.show) {
-      //   this.getMessages(0);
-      // }
-      // this.searchShow = true;
-      // this.cascaderShow = false;
-      // this.cascaderOpen = false;
-      // this.setPanel.show = false;
     },
-    // ignoreMsg() { // 我的任务忽略功能
-    //   network.post(Version() === '1.3' ? '/p/cs/ignoreAllMsg' : '/p/cs/u_note/ignoreMsg', {}, {
-    //     serviceId: enableGateWay() ? 'asynctask' : ''
-    //   }).then((res) => {
-    //     if (res.data.code === 0) {
-    //       this.updateTaskMessageCount(0);
-    //       this.getMessages(0);
-    //     }
-    //   });
-    // },
-    // jumpTask() { // 跳转我的任务列表界面
-    //   this.messagePanel.show = false;
-    //   const type = STANDARD_TABLE_LIST_PREFIX;
-    //   const tab = {
-    //     type,
-    //     tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
-    //     tableId: Version() === '1.3' ? 24386 : 963,
-    //     label: this.$t('tips.myTask')
-    //   };
-    //   this.tabOpen(tab);
-    // },
-    // nextPage() {
-    //   if (this.messagePanel.start < this.messagePanel.total) {
-    //     this.getMessages();
-    //   }
-    // },
-    // getMessages(start) { // 请求我的任务数据
-    //   const self = this;
-    //   //        self.panel.list = [];
-    //   if (start !== undefined) {
-    //     self.messagePanel.start = start;
-    //     self.messagePanel.list = [];
-    //   }
-    //   let fixedcolumns = {};
-    //   if (Version() === '1.3') {
-    //     fixedcolumns = {
-    //       OPERATOR_ID: [this.userInfo.id],
-    //       READSTATE: ['=0'],
-    //       TASKSTATE: ['=2', '=3']
-    //     };
-    //   } else {
-    //     fixedcolumns = {
-    //       OPERATOR_ID: [this.userInfo.id],
-    //       READ_STATE: ['=0'],
-    //     };
-    //   }
-    //   const searchdata = {
-    //     table: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
-    //     column_include_uicontroller: true,
-    //     fixedcolumns,
-    //     multiple: [],
-    //     startindex: self.messagePanel.start,
-    //     range: 20,
-    //     orderby: [{column: Version() === '1.3' ? 'CP_C_TASK.ID' : 'U_NOTE.ID', asc: false}]
-    //   };
-    //   network.post('/p/cs/QueryList', urlSearchParams({searchdata}), {
-    //     serviceId: enableGateWay() ? getGatewayValue('U_NOTE') : ''
-    //   }).then((res) => {
-    //     const result = res.data;
-    //     if (!result.datas) {
-    //       result.datas = result.data;
-    //     }
-    //     if (result.code === 0) {
-    //       self.messagePanel.list = self.messagePanel.list.concat(result.datas.row);
-    //       console.log(99, self.messagePanel.list);
-
-    //       self.messagePanel.start = result.datas.start + result.datas.rowCount;
-    //       self.messagePanel.total = result.datas.totalRowCount;
-    //       //            self.panel.start = result.start
-    //     }
-    //   });
-    // },
 
     markReadNote(item) { // 我的任务单条跳转单对象界面
       this.messagePanel.show = false;
@@ -437,14 +244,7 @@ export default {
       };
       this.tabOpen(tab);
     },
-    // changePwdBox() {
-    //   this.show = false;
-    //   this.$refs.dialogRef.open();
-    //   this.dialogConfig.title = this.$t('tips.changePassword');
-    //   this.dialogConfig.footerHide = true;
-    //   // Vue.component('ChangePassword', CustomizeModule.ChangePassword.component);
-    //   this.dialogComponentName = 'ChangePassword';
-    // },
+
     enter(event) {
       if (event.keyCode === 13) {
         let index = 0;
@@ -536,21 +336,7 @@ export default {
       if (routerItem) {
         this.routeTonext(routerItem);
       }
-      //
     },
-    getMessageCount() {
-      if (!this.userInfo.id) {
-        return;
-      }
-      this.getTaskMessageCount(this.userInfo.id);
-    },
-
-    sendNotice() {
-      const stopPolling = window.localStorage.getItem('r3-stopPolling')
-      if(!stopPolling) {
-        this._getTaskNotice()
-      }
-    }
   },
   async mounted() {
     this.$el._vue_ = this;
@@ -559,28 +345,10 @@ export default {
     } else {
       this.slotName = NaVerticalslot;
     }
-    // if (Version() === '1.3') {
-    //   this.messageTimer = setInterval(() => {
-    //     this.getMessageCount();
-    //   }, 1000);
-    // }
 
-    this.messageTimer = setInterval(() => {
-      this.getMessageCount();
-    }, 3000);
     if (document.querySelector('.NavigatorVertical')) {
       this.toggle();
     }
   },
-
-  created() {
-    window.localStorage.setItem('r3-stopPolling', '') // 初始化通知锁
-    window.addEventListener('checkNotice', this.sendNotice)
-  },
-
-  beforeDestroy() {
-    clearInterval(this.messageTimer);
-    window.removeEventListener('checkNotice', this.sendNotice)
-  }
 };
 </script>
