@@ -217,7 +217,8 @@ export default {
     processingTask: 'The system is exporting, please wait...',
     operated: 'operated',
     seeDetails: 'see details',
-    downloadFile: 'download file'
+    downloadFile: 'download file',
+    asyncTaskTip: 'The task is being processed, please go to [My Tasks] to download the file later'
   },
   // 具有通用性的文案
   tips: {

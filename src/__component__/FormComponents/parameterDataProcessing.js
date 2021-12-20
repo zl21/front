@@ -270,6 +270,8 @@ export default class ParameterDataProcessing {
     // fk外健
 
     if (this.item.display === 'OBJ_FK') {
+      
+
       let fkobj = this.item.fkobj.searchmodel || this.item.fkdisplay;
       if (['mop'].includes(fkobj) && this.item.valuedata && /total/.test(this.item.valuedata)) {
         const valuedata = JSON.parse(this.item.valuedata);

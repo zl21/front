@@ -168,6 +168,8 @@
             if (typeof target.component === 'function') {
               Vue.component(componentName, target.component);
               Vue.component(componentName)().then((result) => {
+                // 去除定制界面的name
+                result.default.name = '';
                 Vue.component(componentName, Vue.extend(Object.assign({ mixins: [CMixins(), target.label === 'taskList' ? mixinsCustomize : {}] }, result.default)));
               });
               this.currentModule = componentName;

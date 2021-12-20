@@ -127,12 +127,16 @@ class CustomInput {
     this.item.props = this.item.props || {}
     const disabled = new SetDisable(this.item).init();
     this.props = {
-      maxlength: this.item.length || 100,
       item: this.item,
       placeholder: new SetPlaceholder(this.item).init(),
       disabled,
       clearable: true
     }
+    // 单对象长度
+    if(this.item.detailType){
+      this.props.maxlength = this.item.length;
+    }
+
     // 是否开启过滤xss攻击
     if(window.ProjectConfig.setXss && this.item.detailType){
       this.props.htmlExp = true;
