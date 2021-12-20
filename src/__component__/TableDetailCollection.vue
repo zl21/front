@@ -1701,6 +1701,7 @@
       tooltipRenderHeader() {
         return (h, params) => h('span', [
           h('Poptip', {
+            class: 'Poptip',
             style: {},
             props: {
               trigger: 'hover',
@@ -1905,7 +1906,8 @@
             class: {
               'flex-right': cellData.tdAlign === 'right',
               'flex-center': cellData.tdAlign === 'center',
-              'flex-left': cellData.tdAlign === 'left'
+              'flex-left': cellData.tdAlign === 'left',
+              'monthDay': true
             },
           },
           [
@@ -1967,7 +1969,9 @@
           }
           const innerHTML = content;
           // const overflow = maxlength || cellData.width ? 'hidden' : 'none';
-          return h('div', 
+          return h('div', {
+            class: 'tabel-text'
+          },
           [h('div', {
             style: {
               width,
@@ -2040,7 +2044,8 @@
             class: {
               'flex-right': cellData.tdAlign === 'right',
               'flex-center': cellData.tdAlign === 'center',
-              'flex-left': cellData.tdAlign === 'left'
+              'flex-left': cellData.tdAlign === 'left',
+              'table-input': true
             },
           },
           [
@@ -2153,7 +2158,8 @@
         {
           style: {
             overflow: 'hidden'
-          }
+          },
+          class: 'table-checkbox'
         },
         [
           h(tag, {
@@ -2199,7 +2205,8 @@
           class: {
             'flex-right': cellData.tdAlign === 'right',
             'flex-center': cellData.tdAlign === 'center',
-            'flex-left': cellData.tdAlign === 'left'
+            'flex-left': cellData.tdAlign === 'left',
+            'table-select': true
           },
         },
         [
@@ -2258,7 +2265,8 @@
             class: {
               'flex-right': cellData.tdAlign === 'right',
               'flex-center': cellData.tdAlign === 'center',
-              'flex-left': cellData.tdAlign === 'left'
+              'flex-left': cellData.tdAlign === 'left',
+              'table-mutiSelect': true
             },
           },
           [
@@ -2331,7 +2339,8 @@
           class: {
             'flex-right': cellData.tdAlign === 'right',
             'flex-center': cellData.tdAlign === 'center',
-            'flex-left': cellData.tdAlign === 'left'
+            'flex-left': cellData.tdAlign === 'left',
+            'table-dropDownSelectFilter': true
           },
         },
         [
@@ -2698,7 +2707,8 @@
           class: {
             'flex-right': cellData.tdAlign === 'right',
             'flex-center': cellData.tdAlign === 'center',
-            'flex-left': cellData.tdAlign === 'left'
+            'flex-left': cellData.tdAlign === 'left',
+            'table-dropMultiSelectFilter': true
           },
         },
         [
@@ -3027,7 +3037,8 @@
             class: {
               'flex-right': cellData.tdAlign === 'right',
               'flex-center': cellData.tdAlign === 'center',
-              'flex-left': cellData.tdAlign === 'left'
+              'flex-left': cellData.tdAlign === 'left',
+              'table-comAttachFilter': true
             },
           },
           [
@@ -3127,7 +3138,8 @@
             class: {
               'flex-right': cellData.tdAlign === 'right',
               'flex-center': cellData.tdAlign === 'center',
-              'flex-left': cellData.tdAlign === 'left'
+              'flex-left': cellData.tdAlign === 'left',
+              'table-comAttachFilterpop': true
             },
           },
           [
@@ -3216,7 +3228,8 @@
         {
           style: {
             overflow: 'hidden'
-          }
+          },
+          class: 'table-attachFilter'
         },
         [
           h(tag, {
@@ -3402,7 +3415,8 @@
           class: {
             'flex-right': cellData.tdAlign === 'right',
             'flex-center': cellData.tdAlign === 'center',
-            'flex-left': cellData.tdAlign === 'left'
+            'flex-left': cellData.tdAlign === 'left',
+            'table-datePickert': true
           },
         },
         [
@@ -3454,7 +3468,8 @@
           class: {
             'flex-right': cellData.tdAlign === 'right',
             'flex-center': cellData.tdAlign === 'center',
-            'flex-left': cellData.tdAlign === 'left'
+            'flex-left': cellData.tdAlign === 'left',
+            'table-timePicker': true
           },
         },
         [
@@ -3491,7 +3506,10 @@
           const index = Number(this.dataSource.start) + params.index + 1;
           // if (this.dataSource.row[params.index].errorTips && this.dataSource.row[params.index].errorTips.length > 0) {
           if (Object.keys(this.verifyTipObj).length > 0 && this.verifyTipObj[params.row.ID]) {
-            return h('div', [
+            return h('div', {
+              class: 'table-collectionIndex'
+            },
+            [
               h('Poptip', {
                 style: {
                   width: '60px',
@@ -3545,6 +3563,7 @@
               'text-overflow': 'ellipsis',
               'white-space': 'nowrap',
             },
+            class: 'table-fkIcon',
             attrs: {
               title: params.row[cellData.colname] || ''
             },
@@ -3596,6 +3615,7 @@
             'text-overflow': 'ellipsis',
             'white-space': 'nowrap',
           },
+          class: 'table-customerurl',
           attrs: {
             title: params.row[cellData.colname]
           },
@@ -3733,7 +3753,8 @@
             },
             style: {
               overflow: 'hidden'
-            }
+            },
+            class: 'table-image'
           }, [
             h(tag, {
               style: {
@@ -3797,6 +3818,7 @@
               'align-items': 'center',
               overflow: 'hidden'
             },
+            class: 'table-doc'
           }, [
             h('div', {
               style: {
@@ -3894,6 +3916,7 @@
                 transfer: true,
                 content: 'content'
               },
+              class: 'table-docReadonly-poptip',
               scopedSlots: {
                 default: () => h('div', {
                   style: {
@@ -3935,6 +3958,7 @@
               'align-items': 'center',
               overflow: 'hidden'
             },
+            class: 'table-docReadonly',
           }, [
             h('div', {
               style: {
