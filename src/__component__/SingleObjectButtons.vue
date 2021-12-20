@@ -3412,14 +3412,13 @@
         }
       }
       let validate = [];
-
       if (panelForm && panelForm[0]) {
         validate = panelForm.reduce((arr, item, index) => {
           if (index === 0) {
             // 默认第一个主表
             arr.push(...item.validate())
           } else if (this.itemName === item.tableName) {
-            if (!isItemTableNewValidation()) {
+            if (!isItemTableNewValidation() || this.itemId !== 'New') {
               if (Object.keys(item.formChangeData).length > 0 || item.checkedChildForm) {
                 let message = item.validate()
                 arr.push(...message);
@@ -3430,6 +3429,7 @@
                 // }
               }
             } else {
+           
               let message = item.validate()
                 arr.push(...message);
                 // 子表有校验

@@ -36,6 +36,7 @@ export const refcolvalMap = ($this, config,key,type) => {
     }else{
         maintable[config.srccol] = config.maintable || false;
     }
+
     if(key === 'refcolvalArray' && Array.isArray(config)){
         let srccol = config.reduce((arr,item)=>{
                 arr.push(item.srccol);
@@ -46,10 +47,11 @@ export const refcolvalMap = ($this, config,key,type) => {
         config.srccol = srccol;
     }
     let targetVm = FindInstance($this,config.srccol,$this.item.tableName,maintable);
-
     let linkFormMap = {
         [key]: [`${$this.item.tableName || ''}${$this.item.colname}`]
     };
+    console.log(targetVm,'=====',config);
+
     //挂载映射关系到对方 
     let checked = [];
     targetVm.forEach((target)=>{
@@ -129,6 +131,13 @@ type  是否是模糊查询还是外键查询
 export const setFixedcolumns = ($this, type) => {
     let webconf = $this.item.webconf;  
    //  
+    if(webconf && webconf.refcolprem){
+        let precolnameslist = [JSON.parse(JSON.stringify(webconf.refcolprem))];
+        precolnameslist[0].refcolval = $this._srccolValue[webconf.refcolprem.srccol];
+        return {
+            precolnameslist:precolnameslist
+        }
+    }
     if($this.item.precolnameslist){
         return {
             precolnameslist:$this.item.precolnameslist
@@ -195,12 +204,17 @@ network
 
 // 点击是否出现下拉
 export const setisShowPopTip = ($this, config,network,type) => {
+    if(config && config.refcolprem){
+        // 关联店仓权限
+        return refcolvalMap($this, config.refcolprem,'refcolprem',type);
+    }
     if(!$this.item.Query){
         // 不走关联字段查询
         return ()=>{
             return true;
         }
     }
+   
     // refcolval
     if (config && config.refcolval) {
         if(config.refcolval.srccol === '$OBJID$'){
