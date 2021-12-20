@@ -104,9 +104,9 @@ module.exports = {
   enableOpenNewTab: false, // 列表界面打开 同表 单对象是否新开tab,默认为false
   blockFullOperation: false, // 禁止不选数据时的批量修改操作,
   customizeMixins: { // 获取所有外部接入的mixins对象
-     singleObjectButtonGroup: require('../demo/singleObjectButtonGroup').default,
+    //  singleObjectButtonGroup: require('../demo/singleObjectButtonGroup').default,
     //verticalTableDetailCustomize: require('./demo/horizontalTableDetailCustomize.js').default,
-    // standardTableListsCustomize: {
+     standardTableListsCustomize: {
     //   methods: {
     //     R3_processColumns(columns) {
     //       columns.forEach(item => {
@@ -128,7 +128,7 @@ module.exports = {
     //       return rows
     //     }
     //   }
-    // },
+     },
     // horizontalTableDetailCustomize: require('./src/demo/horizontalTableDetailCustomize.js').default,
     taskList: null,
     // tableDetailCollectionMixin: {
