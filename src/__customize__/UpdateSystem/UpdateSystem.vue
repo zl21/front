@@ -158,5 +158,4 @@ export default {
 </script>
 
 <style lang="less">
-@import url('../../assets/styles/components/UpdateSystem.less');
 </style>
