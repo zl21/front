@@ -21,6 +21,12 @@
           cbs().loginCb();
         }
       }
+      // 执行$BCL 的ag 加载时机
+      setTimeout(()=>{
+           if($Bcl && $Bcl.arkCommonTableByAgGrid){
+              $Bcl.arkCommonTableByAgGrid.components.AgGridTable();
+          }
+      },100)
       hideMenu();
       launchNetworkMonitor();
       emptyRecord(Date.now() - Number(dateStorageTime() ? dateStorageTime() : 1) * 24 * 1000 * 60 * 60);
@@ -55,6 +61,7 @@
               }
             });
             if (res.status === 200 && res.data.code === 0) {
+              
               this.$store.commit('global/updataUserInfoMessage', {
                 userInfo: res.data
               });
