@@ -64,7 +64,7 @@ const mixin = {
       }
       const value = event.target.value || ''
       const { webconf, scale, length } = this.item
-      let valLength = length || 100
+      let valLength = length || Number.MAX_SAFE_INTEGER
       // let string = ''
       // let regxString = ''
 
@@ -206,7 +206,7 @@ class CustomInput {
     // 数字类型输入控制
     // 只能输入 正整数
     let string = ''
-    const length = this.item.length || 500
+    const length = this.item.length || Number.MAX_SAFE_INTEGER
     if (this.item.webconf && this.item.webconf.ispositive) {
       if(this.item.scale) {
         string = `^\\d{0,${length}}(\\\.[0-9]{0,${this.item.scale}})?$`
