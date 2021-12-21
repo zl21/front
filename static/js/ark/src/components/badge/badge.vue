@@ -101,19 +101,19 @@
                 if (this.text !== '') {
 return this.text;
  }
-                return parseInt(this.count) >= parseInt(this.overflowCount) ? `${this.overflowCount}+` : this.count;
+                return parseInt16(this.count) >= parseInt16(this.overflowCount) ? `${this.overflowCount}+` : this.count;
             },
             badge () {
                 let status = false;
 
                 if (this.count) {
-                    status = !(parseInt(this.count) === 0);
+                    status = !(parseInt16(this.count) === 0);
                 }
 
                 if (this.dot) {
                     status = true;
                     if (this.count !== null) {
-                        if (parseInt(this.count) === 0) {
+                        if (parseInt16(this.count) === 0) {
                             status = false;
                         }
                     }
@@ -129,7 +129,7 @@ status = true;
                 if (this.count || this.text !== '') {
 return true;
 }
-                if (this.showZero && parseInt(this.count) === 0) {
+                if (this.showZero && parseInt16(this.count) === 0) {
  return true;
 } else {
 return false;

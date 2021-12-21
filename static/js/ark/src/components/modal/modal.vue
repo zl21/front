@@ -258,7 +258,7 @@
             mainStyles() {
                 let style = {};
 
-                const width = parseInt(this.width);
+                const width = parseInt16(this.width);
                 const styleWidth = this.dragData.x !== null
                     ? {
                         top: 0
@@ -283,7 +283,7 @@
                         style.top = `${this.dragData.y}px`;
                         style.marginTop = 0;
                     }
-                    const width = parseInt(this.width);
+                    const width = parseInt16(this.width);
                     const styleWidth = {
                         width: width <= 100 ? `${width}%` : `${width}px`
                     };

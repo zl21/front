@@ -177,7 +177,7 @@
         computed: {
             styles () {
                 const style = Object.assign({}, this.styleObject);
-                const width = parseInt(this.styleObject.width);
+                const width = parseInt16(this.styleObject.width);
                 //console.log(this.columns);
                 style.width = `${width}px`;
                 return style;

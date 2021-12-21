@@ -643,8 +643,8 @@
                     event.preventDefault();
 
                     let navNames = this.navList.map(item => item.name);
-                    const a = parseInt(navNames.findIndex(item => item === dragName));
-                    const b = parseInt(navNames.findIndex(item => item === nav.name));
+                    const a = parseInt16(navNames.findIndex(item => item === dragName));
+                    const b = parseInt16(navNames.findIndex(item => item === nav.name));
                     navNames.splice(b, 1, ...navNames.splice(a, 1, navNames[b]));
                     this.$emit('on-drag-drop', dragName, nav.name, a, b, navNames);
                 }

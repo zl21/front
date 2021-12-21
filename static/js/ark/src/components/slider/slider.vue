@@ -248,7 +248,7 @@
                 return result;
             },
             sliderWidth () {
-                return parseInt(getStyle(this.$refs.slider, 'width'), 10);
+                return parseInt16(getStyle(this.$refs.slider, 'width'), 10);
             },
             tipDisabled () {
                 return this.tipFormat(this.currentValue[0]) === null || this.showTip === 'never';

@@ -1453,7 +1453,7 @@
           } else { // 子表
             let id = '';
             if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
-              id = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
+              id = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt16(item.ID));
             }
             this.downLoad(tab.action, id);
           }
@@ -1482,7 +1482,7 @@
               this.routingHop(tab, this.itemId);// 主表使用明细ID
             } else { // 子表
               if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
-                id = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
+                id = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt16(item.ID));
               }
               const type = [
                 'CUSTOMIZED',
@@ -1510,7 +1510,7 @@
       isCheck() { // 校验是否勾选了明细
         let id = [];
         if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
-          id = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
+          id = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt16(item.ID));
         }
         if (id.length === 0) {
           this.$Message.warning(this.$t('messages.checkID'));
@@ -1717,7 +1717,7 @@
         let idsOldTypeNumber = [];// 1.3ID格式,number类型
 
         if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
-          ids = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
+          ids = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt16(item.ID));
           idsOldTypeNumber = this.updateData[this.itemName].delete[this.itemName].map(item => Number(item.ID));
           idsOld = this.updateData[this.itemName].delete[this.itemName].map(item => item.ID);
           // ids = this.updateData[this.itemName].delete[this.itemName];

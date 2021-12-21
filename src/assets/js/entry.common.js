@@ -33,15 +33,15 @@ window.changeNavigatorSetting = (data) => {
 window.indexedDBApi = {
   addSearch
 };
-let parseIntNew = window.parseInt;
+let parseInt = window.parseInt;
 // 兼容长度大于16位
-window.parseInt = function(value){
+window.parseInt16 = function(value){
     if(typeof value !=='string'){
       value = JSON.stringify(value);
     }
     if(value && value.match(/[0-9]+/) && value.match(/[0-9]+/)[0].length>15){
       return value.match(/[0-9]+/)[0];
     }else{
-      return parseIntNew(value);
+      return parseInt(value);
     }
 }

@@ -25,7 +25,7 @@
 </template>
 <script>
   const sourceImages = [];
-  const base = parseInt((Math.random() * 60), 10) + 10;
+  const base = parseInt16((Math.random() * 60), 10) + 10;
   for (let i = 0; i < 10; i++) {
     sourceImages.push({
       thumbnail: `https://picsum.photos/id/${base + i}/346/216`,
