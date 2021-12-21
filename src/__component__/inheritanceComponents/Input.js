@@ -58,7 +58,7 @@ const mixin = {
   },
 
   mounted() {
-    this.$on('on-change', function(e) {
+    this.$on('on-change', function(event) {
       if (!this.item || this.item.type !== 'NUMBER') {
         return
       }

@@ -41,7 +41,7 @@ module.exports = env => ({
     ztree: 'ztree',
   },
   devServer: {
-    compress: true,
+    // compress: true,
     stats:{
       errorDetails:true,
     },
@@ -126,7 +126,7 @@ module.exports = env => ({
     ]
   },
   target: 'web',
-  devtool: env && env.production ? 'source-map' : false,
+  devtool: 'eval-cheap-module-source-map',
   output: {
     filename: '[name].js',
     chunkFilename: '[name].js',
@@ -154,7 +154,7 @@ module.exports = env => ({
       {
         test: /\.css$/,
         use: [{
-          loader: env && env.production ? MiniCssExtractPlugin.loader : 'style-loader',
+          loader: 'style-loader',
         }, {
           loader: 'css-loader',
         }],
@@ -162,7 +162,7 @@ module.exports = env => ({
       {
         test: /\.(sa|sc|le)ss$/,
         use: [{
-          loader: env && env.production ? MiniCssExtractPlugin.loader : 'style-loader',
+          loader: 'style-loader',
         }, {
           loader: 'css-loader',
         }, {
@@ -253,7 +253,7 @@ module.exports = env => ({
     //   }
     // })
   ],
-  mode: env && env.production ? 'production' : 'development',
+  mode: 'development',
   resolve: {
     extensions: ['.js', '.json', '.vue', '.css'],
     fallback: {
@@ -278,19 +278,19 @@ module.exports = env => ({
       child_process:false
     },
   },
-  optimization: {
-    minimizer: [new TerserJSPlugin({
-      parallel: true,
-      sourceMap: true,
-      terserOptions: {
-        compress: {
-          pure_funcs: ['console.log'],
-          warnings: false
-        }
-      }
-    }), new OptimizeCSSAssetsPlugin({})],
-    splitChunks: {
-      chunks: 'all',
-    }
-  },
+  // optimization: {
+  //   minimizer: [new TerserJSPlugin({
+  //     parallel: true,
+  //     sourceMap: true,
+  //     terserOptions: {
+  //       compress: {
+  //         pure_funcs: ['console.log'],
+  //         warnings: false
+  //       }
+  //     }
+  //   }), new OptimizeCSSAssetsPlugin({})],
+  //   splitChunks: {
+  //     chunks: 'all',
+  //   }
+  // },
 });
