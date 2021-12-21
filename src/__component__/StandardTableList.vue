@@ -177,9 +177,11 @@ import {
   listDefaultColumn,
   classFix,
   messageSwitch,
-  enableAsyncTaskTip
+  enableTaskNotice,
+  enableAsyncTaskTip,
+  enableGateWay
 } from '../constants/global';
-import { getGateway } from '../__utils__/network';
+import network, { getGateway, urlSearchParams} from '../__utils__/network';
 import customize from '../__config__/customize.config';
 // import router from '../__config__/router.config';
 import { getSessionObject, deleteFromSessionObject, updateSessionObject } from '../__utils__/sessionStorage';
@@ -731,10 +733,38 @@ export default {
       this.searchData.range = pageSize;
       this.getQueryList();
     },
+
+    // 是否是从【我的任务】进入单对象
+    isGoToTaskDetail() {
+      const taskTableNames = ['CP_C_TASK', 'U_NOTE']
+      return taskTableNames.includes(this.$route.params.tableName)
+    },
+
+    // 从【我的任务】进入单对象，如果任务未读,需调用读取接口
+    readTask(id) {
+      const url = Version() === '1.4' ? '/p/cs/u_note/ignoreMsg': '/p/cs/ignoreMsg'
+      const data = Version() === '1.4' ? { id, objId: id } : urlSearchParams({ id })
+      network.post(url, data,{
+        serviceId: Version() === '1.4' && enableGateWay() ? 'asynctask' : ''
+      })
+    },
+
+    // 表格双击
     onRowDoubleClick (colDef, row) {
       if (!this.buttons.onRowDoubleClick) { // 配置actionView禁用表格双击事件
         return;
       }
+
+      if(this.isGoToTaskDetail()) {
+        if( Version() === '1.4' && row.READ_STATE.refobjval === 0) {
+          this.readTask(row.ID.val)
+        }
+
+        if( Version() === '1.3' && row.READSTATE.val === '未读') {
+          this.readTask(row.ID.val)
+        }
+      }
+
       // const param = {
       //   url: 'CUSTOMIZED/FUNCTIONPERMISSION/1',
       //   isMenu: true,
@@ -2292,8 +2322,9 @@ export default {
               this.$Modal.fcWarning(message);
               return
           }
+          const msg = !enableTaskNotice() && enableAsyncTaskTip() ? this.$t('messages.asyncTaskTip'): this.$t('messages.processingTask')
           this.$Message.success({
-            content: this.$t('messages.processingTask'),
+            content: msg,
             duration: 5
           })
         }

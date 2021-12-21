@@ -181,7 +181,7 @@
   import { mapState, mapMutations, mapActions } from 'vuex';
   import regExp from '../constants/regExp';
   import {
-    Version, LINK_MODULE_COMPONENT_PREFIX, INSTANCE_ROUTE_QUERY, enableActivateSameCustomizePage, ossRealtimeSave, classFix, messageSwitch, enableAsyncTaskTip
+    Version, LINK_MODULE_COMPONENT_PREFIX, INSTANCE_ROUTE_QUERY, enableActivateSameCustomizePage, ossRealtimeSave, classFix, messageSwitch, enableAsyncTaskTip, enableTaskNotice
   } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
   import ComplexsDialog from './ComplexsDialog.vue'; // emit 选中的行
@@ -4826,8 +4826,9 @@
                 this.$Modal.fcWarning(message);
                 return
               }
+              const msg = !enableTaskNotice() && enableAsyncTaskTip() ? this.$t('messages.asyncTaskTip'): this.$t('messages.processingTask')
               this.$Message.success({
-                content: this.$t('messages.processingTask'),
+                content: msg,
                 duration: 5
               })
             }
