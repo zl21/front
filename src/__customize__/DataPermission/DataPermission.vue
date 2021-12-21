@@ -961,7 +961,7 @@
       saveRequest(obj, resolve, reject) {
         const saveObj = JSON.parse(JSON.stringify(obj));
         if (obj.ID === -1) {
-          saveObj.AD_TABLE_ID = parseInt16(saveObj.AD_TABLE_ID_Value);
+          saveObj.AD_TABLE_ID = window.parseInt16(saveObj.AD_TABLE_ID_Value);
           delete saveObj.AD_TABLE_ID_Value;
         }
         saveObj.GROUPS_ID = this.groupId;
@@ -1073,7 +1073,7 @@
       tableSelect(arr) {
         this.tableDeleteData = arr.reduce((acc, cur) => {
           // if (cur.ID !== -1) {
-          acc.push(parseInt16(cur.ID));
+          acc.push(window.parseInt16(cur.ID));
           // }
           return acc;
         }, []);
@@ -1081,7 +1081,7 @@
       currentChange(arr){
          this.tableDeleteData = arr.reduce((acc, cur) => {
           // if (cur.ID !== -1) {
-          acc.push(parseInt16(cur.ID));
+          acc.push(window.parseInt16(cur.ID));
           // }
           return acc;
         }, []);
@@ -1089,7 +1089,7 @@
       tableSelectAll(arr) {
         this.tableDeleteData = arr.reduce((acc, cur) => {
           // if (cur.ID !== -1) {
-          acc.push(parseInt16(cur.ID));
+          acc.push(window.parseInt16(cur.ID));
           // }
           return acc;
         }, []);

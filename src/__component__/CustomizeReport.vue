@@ -205,7 +205,7 @@
               shadowFrame.style.left = `${boundingLeft}px`;
             }
           }
-        }, parseInt16(delayTime, 10) || 0);
+        }, window.parseInt16(delayTime, 10) || 0);
       },
       /**
        * 根据className隐藏dom
@@ -235,7 +235,7 @@
        */
       doQuery() {
         const self = this;
-        const objid = parseInt16(this.$route.params.customizedModuleId, 10);
+        const objid = window.parseInt16(this.$route.params.customizedModuleId, 10);
         const { queryParams } = this;
         const objParams = {};
         Object.keys(queryParams).forEach((key) => {

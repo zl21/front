@@ -1642,7 +1642,7 @@ export default {
       } else {
         obj = {
           tableName: this.buttons.tableName,
-          ids: this.buttons.selectIdArr.map(d => parseInt16(d))
+          ids: this.buttons.selectIdArr.map(d => window.parseInt16(d))
         };
       }
 
@@ -2365,7 +2365,7 @@ export default {
     },
     batchVoid (data) {
       const tableName = this.buttons.tableName;
-      const ids = this.buttons.selectIdArr.map(d => parseInt16(d));
+      const ids = this.buttons.selectIdArr.map(d => window.parseInt16(d));
       const promise = new Promise((resolve, reject) => {
         this.batchVoidForButtons({
           tableName, ids, resolve, reject, data
@@ -2385,7 +2385,7 @@ export default {
       // 批量提交
       const url = this.buttons.dynamicRequestUrl.submit;
       const tableName = this.buttons.tableName;
-      const ids = this.buttons.selectIdArr.map(d => parseInt16(d));
+      const ids = this.buttons.selectIdArr.map(d => window.parseInt16(d));
       const promise = new Promise((resolve, reject) => {
         this.batchSubmitForButtons({
           url, tableName, ids, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE], data
@@ -2405,7 +2405,7 @@ export default {
       // 批量反提交
       const obj = {
         tableName: this.buttons.tableName,
-        ids: this.buttons.selectIdArr.map(d => parseInt16(d))
+        ids: this.buttons.selectIdArr.map(d => window.parseInt16(d))
       };
       const promise = new Promise((resolve, reject) => {
         this.batchUnSubmitForButtons({

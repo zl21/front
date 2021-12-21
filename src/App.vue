@@ -16,7 +16,7 @@
     name: 'App',
     mounted() {
       const loginTime = window.sessionStorage.getItem('loginTime');
-      if (loginTime && ((Date.now() - parseInt16(loginTime)) < 3000)) {
+      if (loginTime && ((Date.now() - window.parseInt16(loginTime)) < 3000)) {
         if (cbs() && typeof (cbs().loginCb) === 'function') {
           cbs().loginCb();
         }

@@ -122,7 +122,7 @@
             mainStyles () {
                 let style = {};
 
-                const width = parseInt16(this.width);
+                const width = window.parseInt16(this.width);
 
                 const styleWidth = {
                     width: width <= 100 ? `${width}%` : `${width}px`

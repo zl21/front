@@ -141,7 +141,7 @@ export default {
   getBatchDeleteForButtons({ commit }, {
     tableName, selectIdArr, resolve, reject, data
   }) { // 调用删除明细接口
-    const ids = selectIdArr.map(d => parseInt16(d));
+    const ids = selectIdArr.map(d => window.parseInt16(d));
     let jflowpath = '';
     let requestUrlPath = '';
     if (data) {

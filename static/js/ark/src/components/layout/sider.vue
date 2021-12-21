@@ -106,10 +106,10 @@
                 ];
             },
             siderWidth () {
-                return this.collapsible ? this.value ? this.mediaMatched ? 0 : parseInt16(this.collapsedWidth) : parseInt16(this.width) : this.width;
+                return this.collapsible ? this.value ? this.mediaMatched ? 0 : window.parseInt16(this.collapsedWidth) : window.parseInt16(this.width) : this.width;
             },
             showZeroTrigger () {
-                return this.collapsible ? this.mediaMatched && !this.hideTrigger || (parseInt16(this.collapsedWidth) === 0) && this.value && !this.hideTrigger : false;
+                return this.collapsible ? this.mediaMatched && !this.hideTrigger || (window.parseInt16(this.collapsedWidth) === 0) && this.value && !this.hideTrigger : false;
             },
             showBottomTrigger () {
                 return this.collapsible ? !this.mediaMatched && !this.hideTrigger : false;

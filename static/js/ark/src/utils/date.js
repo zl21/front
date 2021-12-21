@@ -190,7 +190,7 @@
             var parts = (v + '').match(/([\+\-]|\d\d)/gi), minutes;
 
             if (parts) {
-                minutes = +(parts[1] * 60) + parseInt16(parts[2], 10);
+                minutes = +(parts[1] * 60) + window.parseInt16(parts[2], 10);
                 d.timezoneOffset = parts[0] === '+' ? minutes : -minutes;
             }
         }]

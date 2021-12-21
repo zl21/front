@@ -244,7 +244,7 @@
             },
             keyUp (e) {
                 const key = e.keyCode;
-                const val = parseInt16(e.target.value);
+                const val = window.parseInt16(e.target.value);
 
                 if (key === 38) {
                     this.prev();
