@@ -144,6 +144,7 @@
         this.currentModule = componentName;
       },
       generateCustomizedComponent() {
+        debugger;
         const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
         const { customizedModuleName, customizedModuleId } = this.$route.params;
         const { query } = this.$route;
@@ -170,15 +171,19 @@
               Vue.component(componentName)().then((result) => {
                 // 去除定制界面的name
                 result.default.name = '';
-                Vue.component(componentName, Vue.extend(Object.assign({ mixins: [CMixins(), target.label === 'taskList' ? mixinsCustomize : {}] }, result.default)));
+                let mixins = [CMixins(), target.label === 'taskList' ? mixinsCustomize : {}];
+                result.default.mixins = result.default.mixins.concat(mixins);
+                Vue.component(componentName, Vue.extend(result.default));
               });
               this.currentModule = componentName;
             } else {
               if (target.component && target.component.name) {
                 // 修改自定义组件name
                 target.component.name = componentName;
+                let mixins = [CMixins(), target.label === 'taskList' ? mixinsCustomize : {}];
+                result.default.mixins = target.component.mixins.concat(mixins);
               }
-              Vue.component(componentName, Vue.extend(Object.assign({ mixins: [CMixins(), target.label === 'taskList' ? mixinsCustomize : {}] }, target.component)));
+              Vue.component(componentName, Vue.extend( target.component));
               this.currentModule = componentName;
             }
           } else {
