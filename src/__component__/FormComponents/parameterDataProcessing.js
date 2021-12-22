@@ -366,7 +366,10 @@ export default class ParameterDataProcessing {
       try {
         return JSON.parse(_value)
       } catch (error) {
-        return _value
+        return {
+          URL:_value,
+          NAME:''
+        }
       }
     }
 
