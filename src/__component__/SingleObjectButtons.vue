@@ -3613,7 +3613,7 @@
 
         const parame = {
           ...this.currentParameter, // 主表信息
-          itemCurrentParameter:itemCurrentParameter || {}, // 子表信息
+          itemCurrentParameter:itemCurrentParameter || this.currentParameter, // 子表信息
           type,
           tableName,
           objId,
