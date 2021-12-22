@@ -42,7 +42,8 @@ module.exports = {
   //target: 'http://dev.dev.lark-erp.cn/',
   // target: 'http://139.224.134.69:58000', // OMS
   // target: 'http://47.113.103.201:26666', // 斯凯奇
-  // target:'http://retail-service-center.dev.burgeononline.com/',
+  // target:'http://retail-service-center.dev.burgeononline.com/', // 零售中台
+  // target:'http://139.196.18.137/',  // 云促销
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
   enableGateWay: true, // 网关是否打开,
