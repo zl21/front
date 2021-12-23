@@ -361,15 +361,21 @@ export default class ParameterDataProcessing {
     // }
 
     // 处理图片,文档默认值,转json
+
     if (this.item.valuedata && ['image', 'OBJ_DOC'].includes(this.item.display)) {
       let _value = this.item.valuedata || this.item.defval;
       try {
-        return JSON.parse(_value)
+        if(Array.isArray(JSON.parse(_value)) ){
+          return JSON.parse(_value)
+        }else{
+          return [_value]
+        }
+        
       } catch (error) {
-        return {
+        return [{
           URL:_value,
           NAME:''
-        }
+        }]
       }
     }
 
