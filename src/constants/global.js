@@ -158,7 +158,7 @@ export const globalGateWay = () => {
 export const setComponentsProps = () => (window.ProjectConfig && window.ProjectConfig.setComponentsProps ? window.ProjectConfig.setComponentsProps : () => ({}));
 export const agGridOptions = () => (window.ProjectConfig && window.ProjectConfig.agGridOptions ? window.ProjectConfig.agGridOptions : {}); // ag表格的配置
 export const messageSwitch = () => (window.ProjectConfig && window.ProjectConfig.messageSwitch ? window.ProjectConfig.messageSwitch : project.messageSwitch); // 消息设置
-export const formItemMixins = () => (window.ProjectConfig && window.ProjectConfig.formItemMixins ? window.ProjectConfig.formItemMixins : project.false); // 添加表单mixins
+export const formItemMixins = () => (window.ProjectConfig && window.ProjectConfig.formItemMixins ? window.ProjectConfig.formItemMixins : false); // 添加表单mixins
 export const autoGatewayUrl = () => (window.ProjectConfig && window.ProjectConfig.autoGatewayUrl ? window.ProjectConfig.autoGatewayUrl : project.autoGatewayUrl); // 是否自动请求网关
 export const enableAsyncTaskTip = () => (window.ProjectConfig && window.ProjectConfig.enableAsyncTaskTip ? window.ProjectConfig.enableAsyncTaskTip : project.enableAsyncTaskTip); // 点击导出，如果是异步则立即弹出提示弹框。用于兼容旧版异步消息提示
 export const enableTaskNotice = () => (window.ProjectConfig && window.ProjectConfig.enableTaskNotice ? window.ProjectConfig.enableTaskNotice : project.enableTaskNotice); // 异步任务，右下角消息通知
