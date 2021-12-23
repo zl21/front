@@ -104,7 +104,7 @@ export default {
     },
 
     noticeMessage() {
-      const beginTime =  Version() === '1.3' ?  this.info.BEGINTIME.val : this.info.CREATIONDATE.val
+      const beginTime =  Version() === '1.3' ?  this.info.BEGINTIME && this.info.BEGINTIME.val : ((this.info.CREATIONDATE && this.info.CREATIONDATE.val) || (this.info.MODIFIEDDATE && this.info.MODIFIEDDATE.val))
       return `${beginTime} ${this.$t('messages.operated')}【${this.info.MENU.val}】【${this.isExport ? this.$t('buttons.export') : this.$t('buttons.import')}】${this.statusMessage}`
     },
 
