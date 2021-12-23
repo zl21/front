@@ -24,7 +24,9 @@
       // 执行$BCL 的ag 加载时机
       setTimeout(()=>{
            if($Bcl && $Bcl.arkCommonTableByAgGrid){
-              $Bcl.arkCommonTableByAgGrid.components.AgGridTable();
+             if($Bcl.arkCommonTableByAgGrid.components && typeof $Bcl.arkCommonTableByAgGrid.components.AgGridTable === 'function'){
+                $Bcl.arkCommonTableByAgGrid.components.AgGridTable();
+             }
           }
       },100)
       hideMenu();
