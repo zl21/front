@@ -48,7 +48,7 @@ export default {
     // 轮询任务数量
     this.messageTimer = setInterval(() => {
       this.getMessageCount()
-    }, 3000)
+    }, 5000)
   },
 
   created() {

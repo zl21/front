@@ -2333,8 +2333,8 @@ export default {
         }
         this.searchClickData();
       }, () => {
+        this.$R3loading.hide(this.loadingName);
         if (this.exportTasks.warningMsg) {
-          this.$R3loading.hide(this.loadingName);
           const data = {
             mask: true,
             title: this.$t('feedback.error'),
