@@ -667,4 +667,8 @@ export default {
   emptyTestData(state) { // 清空TestData
     state.isRequest = [];
   },
+  updateLabelData(state, data) { 
+    // 兼容1.3 的函数
+   
+  },
 };
