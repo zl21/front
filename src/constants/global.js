@@ -160,8 +160,8 @@ export const agGridOptions = () => (window.ProjectConfig && window.ProjectConfig
 export const messageSwitch = () => (window.ProjectConfig && window.ProjectConfig.messageSwitch ? window.ProjectConfig.messageSwitch : project.messageSwitch); // 消息设置
 export const formItemMixins = () => (window.ProjectConfig && window.ProjectConfig.formItemMixins ? window.ProjectConfig.formItemMixins : false); // 添加表单mixins
 export const autoGatewayUrl = () => (window.ProjectConfig && window.ProjectConfig.autoGatewayUrl ? window.ProjectConfig.autoGatewayUrl : project.autoGatewayUrl); // 是否自动请求网关
-export const enableAsyncTaskTip = () => (window.ProjectConfig && window.ProjectConfig.enableAsyncTaskTip ? window.ProjectConfig.enableAsyncTaskTip : project.enableAsyncTaskTip); // 点击导出，如果是异步则立即弹出提示弹框。用于兼容旧版异步消息提示
-export const enableTaskNotice = () => (window.ProjectConfig && (window.ProjectConfig.enableTaskNotice !== undefined) ? window.ProjectConfig.enableTaskNotice : project.enableTaskNotice); // 异步任务，右下角消息通知，默认值true
+export const enableAsyncTaskTip = () => (window.ProjectConfig && window.ProjectConfig.enableAsyncTaskTip !== undefined ? window.ProjectConfig.enableAsyncTaskTip : project.enableAsyncTaskTip); // 点击导出，如果是异步则立即弹出提示弹框。用于兼容旧版异步消息提示，默认值true
+export const enableTaskNotice = () => (window.ProjectConfig && window.ProjectConfig.enableTaskNotice ? window.ProjectConfig.enableTaskNotice : project.enableTaskNotice); // 异步任务，右下角消息通知
 
 // 获取表单网关
 export const getGatewayValue = (key) => {
