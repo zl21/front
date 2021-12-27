@@ -1202,7 +1202,7 @@
             params = param;
           }
         } else if (Version() === '1.4') {
-          const ids = this.tableRowSelectedIds.map(item => parseInt(item.ID));
+          const ids = this.tableRowSelectedIds.map(item => window.parseInt16(item.ID));
           obj = {
             tableName: this.tableName,
             ids

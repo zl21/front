@@ -62,7 +62,7 @@
 
             //临界值大于
             // console.log(el.style.left)
-            if (parseInt(el.style.left) >= width - 1) {
+            if (window.parseInt16(el.style.left) >= width - 1) {
               el.style.left = width + 1 + "px";
               el.parentNode.children[0].style.width = width + 1 + "px";
               el.parentNode.children[1].innerHTML = self.$t('tips.loginVerificationsucceed');
@@ -79,7 +79,7 @@
         document.onmouseup = function() {
           document.onmousemove = null;
           var width = $(".movebox").width() - $(".move").width();
-          if (parseInt(el.style.left) < width - 1) {
+          if (window.parseInt16(el.style.left) < width - 1) {
             el.style.left = -1 + "px";
             el.parentNode.children[0].style.width = 0 + "px";
             el.parentNode.children[1].innerHTML =  self.$t('tips.loginVerification');

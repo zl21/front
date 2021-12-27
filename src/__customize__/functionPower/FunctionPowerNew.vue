@@ -1064,7 +1064,7 @@
         if (/\d+/.test(intNum)) {
           while (intNum !== 0) {
             answer = Math.abs(intNum % 2) + answer;
-            intNum = parseInt(intNum / 2);
+            intNum = window.parseInt16(intNum / 2);
           }
           if (answer.length === 0) {
             answer = '0';

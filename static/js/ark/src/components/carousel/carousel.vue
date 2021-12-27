@@ -229,7 +229,7 @@ export default {
       });
     },
     handleResize () {
-      this.listWidth = parseInt(getStyle(this.$el, 'width'));
+      this.listWidth = window.parseInt16(getStyle(this.$el, 'width'));
       this.updatePos();
       this.updateOffset();
     },

@@ -288,14 +288,14 @@
                 let val = this.currentValue;
                 console.log('blur-1', val)
                 // if (!this.precision && !this.formatter) {
-                //     val = val ? parseInt(val) : 0;
+                //     val = val ? window.parseInt16(val) : 0;
                 // } else {
                 //     val = val ? Number(val.toFixed(this.precision)) : 0;
                 // }
                 if (this.precision) {
                     val = val ? Number(val).toFixed(this.precision) : 0;
                 } else {
-                    val = val ? parseInt(val) : 0;
+                    val = val ? window.parseInt16(val) : 0;
                 }
                 // if (this.formatter) {
                 //     val = this.formatter(val);

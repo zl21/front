@@ -647,5 +647,9 @@ export default {
   },
   updateScrollPosition(state, scrollPositionValue) { // 更新当前单对象滚动位置
     state.scrollPosition = scrollPositionValue;
-  }
+  },
+  updateLabelData(state, data) { 
+    // 兼容1.3 的函数
+   
+  },
 };
