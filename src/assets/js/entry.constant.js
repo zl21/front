@@ -12,6 +12,19 @@ import { removeSessionObject, getSessionObject } from '../../__utils__/sessionSt
 import getObjdisType from '../../__utils__/getObjdisType';
 import App from '../../App.vue';
 
+let parseInt = window.parseInt;
+// 兼容长度大于16位
+window.parseInt16 = function(value){
+    if(typeof value !=='string'){
+      value = JSON.stringify(value);
+    }
+    if(value && value.match(/[0-9]+/) && value.match(/[0-9]+/)[0].length>15){
+      return value.match(/[0-9]+/)[0];
+    }else{
+      return parseInt(value);
+    }
+}
+
 if(!window.vm){
   window.vm = {
   

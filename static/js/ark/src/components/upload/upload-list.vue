@@ -87,7 +87,7 @@
                 return type;
             },
             parsePercentage (val) {
-                return parseInt(val, 10);
+                return window.parseInt16(val, 10);
             }
         }
     };

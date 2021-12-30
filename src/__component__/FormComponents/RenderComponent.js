@@ -5,6 +5,8 @@ import Vue from 'vue';
 import FormItem from './FormItem.vue';
 import {formItemMixins} from '../../constants/global.js';
 import mixins from './formItemMixin'
+import ComponentPlaceholder from '../ComponentPlaceholder.vue';
+
 
 // 处理列表逻辑
 import { SetListProps } from './list/props';
@@ -45,6 +47,16 @@ String.prototype.TextFilter = function TextFilter() {
         item.display = 'OBJ_DOC';
         break;
       case 'text':
+         // 自定义表单项组件的类型
+         if (item.cusurl !== undefined && item.cusurl !== '') {
+          const componentName = item.cusurl;
+          item.type = 'customization';
+          item.componentName = componentName;
+          let {formItemConfig} = window.ProjectConfig;
+          const targetComponent = (formItemConfig[componentName] && formItemConfig[componentName].component) || ComponentPlaceholder;
+          Vue.component(componentName, targetComponent);
+          break;
+        }
       case 'xml':
         if(item.webconf && item.webconf.display === 'YearMonth'){
           item.display = 'YearMonth';
@@ -121,7 +133,7 @@ export default class RenderComponent {
     // const mixins = require('./formItemMixin').default;
     this.ObjectToMerge(FormItem.methods, mixins.methods);
     Object.assign(FormItem.methods, mixins.methods);
-    let formExternalMixins = formItemMixins().default || {};
+    let formExternalMixins = formItemMixins && formItemMixins().default || {};
     FormItem.name = `${this.id}${this.item.colname.TextFilter()}`;
     if(!Vue.component(FormItem.name)){
       Vue.component(`${this.id}${this.item.colname.TextFilter()}`, Vue.extend(Object.assign({ mixins: [mixins,formExternalMixins], isKeepAliveModel: true },FormItem)));

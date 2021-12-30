@@ -133,7 +133,7 @@
                 if (isDown) {
                     this.currentStatus = 'normal';
                     this.$emit('on-status-change', 'normal');
-                } else if (parseInt(this.percent, 10) == 100) {
+                } else if (window.parseInt16(this.percent, 10) == 100) {
                     this.currentStatus = 'success';
                     this.$emit('on-status-change', 'success');
                 }

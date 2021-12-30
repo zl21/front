@@ -37,7 +37,7 @@ export default {
 
         let formData = Object.assign( JSON.parse(JSON.stringify(this.formName._vue_.defaulDataValue || {}))|| {},JSON.parse(JSON.stringify(this.formName._vue_.formData || {})) || {});
         let hiddenSubtable = this.WebConf.hiddenSubtable;
-        if(!this._tabPanel){
+        if(!this._tabPanel  || this._tabPanel.length<1){
           // 记录原始tab
           this._tabPanel = this.tabPanel;
         }

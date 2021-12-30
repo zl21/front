@@ -85,6 +85,11 @@ module.exports = {
     //   defined:require('./demo/standardTableListdefind.vue').default,
     // }  // 定制列表button
   },
+  formItemConfig:{
+    inputMatrix:{
+      component:()=>import('../demo/detailbuttons.vue')
+    }
+  },
   backDashboardRoute: [], // 配置刷新浏览器回到Dashboard界面
   custommizedRequestURL: {
 

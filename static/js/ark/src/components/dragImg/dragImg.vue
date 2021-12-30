@@ -63,8 +63,8 @@
                                 let top = event.offsetY - ImgDisY;
 
                                 /*//移动当前元素*/
-                                targetImg.style.marginLeft =`${parseInt(targetImg.style.marginLeft)+ left}px`;
-                                targetImg.style.marginTop = `${parseInt(targetImg.style.marginTop)+top}px`;
+                                targetImg.style.marginLeft =`${window.parseInt16(targetImg.style.marginLeft)+ left}px`;
+                                targetImg.style.marginTop = `${window.parseInt16(targetImg.style.marginTop)+top}px`;
                         };
                 }, 200);
 

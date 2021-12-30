@@ -16,7 +16,7 @@
     name: 'App',
     mounted() {
       const loginTime = window.sessionStorage.getItem('loginTime');
-      if (loginTime && ((Date.now() - parseInt(loginTime)) < 3000)) {
+      if (loginTime && ((Date.now() - window.parseInt16(loginTime)) < 3000)) {
         if (cbs() && typeof (cbs().loginCb) === 'function') {
           cbs().loginCb();
         }
@@ -24,7 +24,9 @@
       // 执行$BCL 的ag 加载时机
       setTimeout(()=>{
            if($Bcl && $Bcl.arkCommonTableByAgGrid){
-              $Bcl.arkCommonTableByAgGrid.components.AgGridTable();
+             if($Bcl.arkCommonTableByAgGrid.components && typeof $Bcl.arkCommonTableByAgGrid.components.AgGridTable === 'function'){
+                $Bcl.arkCommonTableByAgGrid.components.AgGridTable();
+             }
           }
       },100)
       hideMenu();

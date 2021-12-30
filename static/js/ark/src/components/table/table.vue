@@ -521,7 +521,7 @@
             styles() {
                 let style = {};
                 if (this.setTableHeight) {
-                    const height = parseInt(this.setTableHeight);
+                    const height = window.parseInt16(this.setTableHeight);
                     style.height = `${height}px`;
                 }
                 if (this.width) {
@@ -906,7 +906,7 @@
                 let oldIndex = -1;
                 for (let i in this.objData) {
                     if (this.objData[i]._isHighlight) {
-                        oldIndex = parseInt(i);
+                        oldIndex = window.parseInt16(i);
                         this.objData[i]._isHighlight = false;
                     }
                 }
@@ -950,7 +950,7 @@
                 let selectionIndexes = [];
                 for (let i in this.objData) {
                     if (this.objData[i]._isChecked) {
-                        selectionIndexes.push(parseInt(i));
+                        selectionIndexes.push(window.parseInt16(i));
                     }
                 }
                 return JSON.parse(JSON.stringify(this.spreadData.filter((data, index) => selectionIndexes.indexOf(index) > -1)));
@@ -958,7 +958,7 @@
             toggleSelect(_index) {
                 let data = {};
                 for (let i in this.objData) {
-                    if (parseInt(i) === _index) {
+                    if (window.parseInt16(i) === _index) {
                         data = this.objData[i];
                         break;
                     }
@@ -974,7 +974,7 @@
                 let data = {};
 
                 for (let i in this.objData) {
-                    if (parseInt(i) === _index) {
+                    if (window.parseInt16(i) === _index) {
                         data = this.objData[i];
                         break;
                     }
@@ -1039,7 +1039,7 @@
             toggleExpandTree(_index, row) {
                 let data = {};
                 for (let i in this.objData) {
-                    if (parseInt(i) === _index) {
+                    if (window.parseInt16(i) === _index) {
                         data = this.objData[i];
                         break;
                     }
@@ -1087,9 +1087,9 @@
 
                 if (this.setTableHeight) {
                     this.$nextTick(() => {
-                        const titleHeight = parseInt(getStyle(this.$refs.title, 'height')) || 0;
-                        const headerHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0;
-                        const footerHeight = parseInt(getStyle(this.$refs.footer, 'height')) || 0;
+                        const titleHeight = window.parseInt16(getStyle(this.$refs.title, 'height')) || 0;
+                        const headerHeight = window.parseInt16(getStyle(this.$refs.header, 'height')) || 0;
+                        const footerHeight = window.parseInt16(getStyle(this.$refs.footer, 'height')) || 0;
                         this.bodyHeight = this.setTableHeight - titleHeight - headerHeight - footerHeight;
                         this.$nextTick(() => this.fixedBody());
                     });

@@ -270,6 +270,7 @@ export default {
                 });
               }
             } else {
+              clearInterval(timer);
               reject();
             }
           });

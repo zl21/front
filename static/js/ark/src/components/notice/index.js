@@ -166,7 +166,7 @@ Notification.close = function(id, userOnClose) {
     for (let i = index; i < len - 1 ; i++) {
         if (instances[i].position === position) {
             instances[i].dom.style[instance.verticalProperty] =
-                parseInt(instances[i].dom.style[instance.verticalProperty], 10) - removedHeight - 16 + 'px';
+                window.parseInt16(instances[i].dom.style[instance.verticalProperty], 10) - removedHeight - 16 + 'px';
         }
     }
 };

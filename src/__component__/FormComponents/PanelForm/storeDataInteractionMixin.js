@@ -11,6 +11,7 @@ export default {
   data() {
     return {
       defaultVale: null, //默认值
+      hiddenChildTime:null, // 隐藏子表时间判断
     }
   },
   watch: {
@@ -231,25 +232,8 @@ export default {
       // 默认值
       ParentForm.initializationForm();
     },
-    setNewModify(){
+    setTabPanels(val){
       // 新增修改
-
-    },
-    changeForm(ParentForm,val){
-      // 修改后
-      let formChangeData = ParentForm.formChangeData;
-      let formDataLabel = ParentForm.formDataLabel;
-      if(/New/.test(this.$route.params.itemId)){
-        formChangeData = Object.assign(JSON.parse(JSON.stringify(ParentForm.defaulDataValue)),JSON.parse(JSON.stringify(formChangeData)));
-        formDataLabel = Object.assign(JSON.parse(JSON.stringify(ParentForm.defaulDataLabel)),JSON.parse(JSON.stringify(formDataLabel)));
-      }
-      if (ParentForm.$parent.formPanelChange) {
-        ParentForm.$parent.formPanelChange(formChangeData, formDataLabel,ParentForm.formChangeDataLabel)
-      }else{
-        ParentForm.$parent.formChange(formChangeData, formDataLabel,ParentForm.formChangeDataLabel)
-      }
-      
-
       let tabPanelsDom = document.querySelector(`#${this.activeTab.tableName}`);
       if(tabPanelsDom){
         let fkdisplay = this.items.fkobj && this.items.fkobj.fkdisplay;
@@ -267,8 +251,28 @@ export default {
         if(['OBJ_DATENUMBER','OBJ_TIME','OBJ_DATE', 'YearMonth', 'OBJ_DATETIME','MonthDay'].includes(this.items.display)){
           return;
         }
-       tabPanelsDom._vue_.setTabPanels();
+        console.log(tabPanelsDom._vue_,'===tabPanelsDom._vue_');
+     
+        tabPanelsDom._vue_.setTabPanels();
       }
+    },
+    changeForm(ParentForm,val){
+      // 修改后
+      let formChangeData = ParentForm.formChangeData;
+      let formDataLabel = ParentForm.formDataLabel;
+      if(/New/.test(this.$route.params.itemId)){
+        formChangeData = Object.assign(JSON.parse(JSON.stringify(ParentForm.defaulDataValue)),JSON.parse(JSON.stringify(formChangeData)));
+        formDataLabel = Object.assign(JSON.parse(JSON.stringify(ParentForm.defaulDataLabel)),JSON.parse(JSON.stringify(formDataLabel)));
+      }
+      if (ParentForm.$parent.formPanelChange) {
+        ParentForm.$parent.formPanelChange(formChangeData, formDataLabel,ParentForm.formChangeDataLabel)
+      }else{
+        ParentForm.$parent.formChange(formChangeData, formDataLabel,ParentForm.formChangeDataLabel)
+      }
+      clearTimeout(this.hiddenChildTime);
+      this.hiddenChildTime = setTimeout(()=>{
+        this.setTabPanels(val) 
+      },500)
     }
   },
   mounted() {

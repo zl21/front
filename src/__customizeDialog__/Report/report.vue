@@ -112,7 +112,7 @@
           };
           this.$Modal.fcWarning(data);
         } else {
-          searchdata.ids = this.idArray.map(d => parseInt(d));
+          searchdata.ids = this.idArray.map(d => window.parseInt16(d));
           const datas = {
             tableName,
             searchdata

@@ -611,7 +611,20 @@
         }
       },
 
-      subtables() { // 判断是否有子表
+      subtables() { 
+        // 判断实际是否有子表
+        if (Version() === '1.4') {
+          if (this.isreftabs && this.itemNameGroup.length>0) {
+            return true;
+          }
+          return false;
+        } if (this.itemNameGroup.length > 0) {
+          return true;
+        }
+        return false;
+      },
+      socureIsreftabs() { 
+        // 判断后端传参是否有子表
         if (Version() === '1.4') {
           if (this.isreftabs) {
             return true;
@@ -1453,7 +1466,7 @@
           } else { // 子表
             let id = '';
             if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
-              id = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
+              id = this.updateData[this.itemName].delete[this.itemName].map(item => window.parseInt16(item.ID));
             }
             this.downLoad(tab.action, id);
           }
@@ -1482,7 +1495,7 @@
               this.routingHop(tab, this.itemId);// 主表使用明细ID
             } else { // 子表
               if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
-                id = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
+                id = this.updateData[this.itemName].delete[this.itemName].map(item => window.parseInt16(item.ID));
               }
               const type = [
                 'CUSTOMIZED',
@@ -1510,7 +1523,7 @@
       isCheck() { // 校验是否勾选了明细
         let id = [];
         if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
-          id = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
+          id = this.updateData[this.itemName].delete[this.itemName].map(item => window.parseInt16(item.ID));
         }
         if (id.length === 0) {
           this.$Message.warning(this.$t('messages.checkID'));
@@ -1717,7 +1730,7 @@
         let idsOldTypeNumber = [];// 1.3ID格式,number类型
 
         if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
-          ids = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
+          ids = this.updateData[this.itemName].delete[this.itemName].map(item => window.parseInt16(item.ID));
           idsOldTypeNumber = this.updateData[this.itemName].delete[this.itemName].map(item => Number(item.ID));
           idsOld = this.updateData[this.itemName].delete[this.itemName].map(item => item.ID);
           // ids = this.updateData[this.itemName].delete[this.itemName];
@@ -3586,7 +3599,8 @@
       savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType) { // 主表新增保存方法
         const tableName = this.tableName;
         const objectType = this.objectType;
-        let isreftabs = this.subtables();
+        // 判断后端传参是否是主子表
+        let isreftabs = this.socureIsreftabs();
         const itemNameGroup = this.itemNameGroup;
         let tabrelation = false;
         if (this.getCurrentItemInfo().tabrelation === '1:1') {
@@ -3596,10 +3610,10 @@
           //只校验主表的时候不传子表
             isreftabs = false;
         }
-        
+
         const parame = {
           ...this.currentParameter, // 主表信息
-          itemCurrentParameter, // 子表信息
+          itemCurrentParameter:itemCurrentParameter || this.currentParameter, // 子表信息
           type,
           tableName,
           objId,
@@ -3608,7 +3622,7 @@
           objectType,
           isreftabs,
           sataType,
-          itemNameGroup, // 子表表名
+          itemNameGroup:itemNameGroup||{}, // 子表表名
           itemObjId: this.itemObjId,
           temporaryStoragePath: this.temporaryStoragePath, // 暂存path
           tabrelation, // 子表1:1标记
