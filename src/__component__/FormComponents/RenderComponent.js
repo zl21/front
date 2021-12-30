@@ -5,6 +5,8 @@ import Vue from 'vue';
 import FormItem from './FormItem.vue';
 import {formItemMixins} from '../../constants/global.js';
 import mixins from './formItemMixin'
+import ComponentPlaceholder from '../ComponentPlaceholder.vue';
+
 
 // 处理列表逻辑
 import { SetListProps } from './list/props';
@@ -45,6 +47,16 @@ String.prototype.TextFilter = function TextFilter() {
         item.display = 'OBJ_DOC';
         break;
       case 'text':
+         // 自定义表单项组件的类型
+         if (item.cusurl !== undefined && item.cusurl !== '') {
+          const componentName = item.cusurl;
+          item.type = 'customization';
+          item.componentName = componentName;
+          let {formItemConfig} = window.ProjectConfig;
+          const targetComponent = (formItemConfig[componentName] && formItemConfig[componentName].component) || ComponentPlaceholder;
+          Vue.component(componentName, targetComponent);
+          break;
+        }
       case 'xml':
         if(item.webconf && item.webconf.display === 'YearMonth'){
           item.display = 'YearMonth';
