@@ -76,7 +76,7 @@
         <Collect slot="icon-Collect" v-if="enableHistoryAndFavoriteUI"></Collect>
       </div>
       <div
-          v-if="versionValue"
+          v-if="versionValue && !showTaskIcon"
           class="tag right"
           slot="icon-message"
           @click.prevent="messageSlide"
@@ -89,6 +89,17 @@
 
         <!-- 消息队列 -->
         <MessageList v-model="showMessages"></MessageList>
+      </div>
+
+      <div
+        v-if="versionValue && showTaskIcon"
+        class="tag right"
+        @click.prevent="handlerOpenTasks"
+        slot="icon-task"
+      >
+        <Badge :count="taskMessageCount">
+          <svg-icon icon-class="task" style="color:#1F272C;font-size: 20px"></svg-icon>
+        </Badge>
       </div>
 
       <div
@@ -158,7 +169,7 @@ export default {
       keyWord: '',
       togglePrimaryMenuData: [],
       messageTimer: null,
-      showMessages: false
+      showMessages: false,
     };
   },
   computed: {

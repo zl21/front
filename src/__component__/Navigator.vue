@@ -87,7 +87,7 @@
 
     <ComAutoComplete />
     <div
-      v-if="versionValue"
+      v-if="versionValue && !showTaskIcon"
       class="tag right"
       @click.prevent="messageSlide"
     >
@@ -95,6 +95,16 @@
         <i
           class="iconfont iconbj_message badge"
         />
+      </Badge>
+    </div>
+
+    <div
+      v-if="versionValue && showTaskIcon"
+      class="tag right"
+      @click.prevent="handlerOpenTasks"
+    >
+      <Badge :count="taskMessageCount">
+        <svg-icon icon-class="task" style="width: 21px;"></svg-icon>
       </Badge>
     </div>
 
@@ -164,7 +174,6 @@
         navigatorSetting: ({ navigatorSetting }) => navigatorSetting,
         showModule: ({ showModule }) => showModule,
         primaryMenuIndex: state => state.primaryMenuIndex,
-        taskMessageCount: state => state.taskMessageCount,
         imgSrc: state => state.imgSrc,
         isShowDashboardPage: state => state.isShowDashboardPage,
       }),
