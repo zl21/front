@@ -139,5 +139,4 @@ export default {
   components: {
     ...externalComponents,
   },
-  asyncTaskScheme: 'skq' 
 }
