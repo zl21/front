@@ -16,7 +16,7 @@ const proxyListsForGateway = ['/ad-app/p/c'];
 
 const indexProHtml = path.posix.join('/', 'index.project.html');
 const indexHtml = path.posix.join('/', 'index.project.html');
-
+const SpriteLoaderPlugin = require('svg-sprite-loader/plugin')
 module.exports = env => ({
   entry: {
     index: './build/index.project.js',
@@ -107,7 +107,18 @@ module.exports = env => ({
         ]
       },
       {
-        test: /\.(woff|woff2|eot|ttf|otf|svg)$/,
+        test: /\.svg$/,
+        use: [
+          { 
+            loader: "svg-sprite-loader",
+            options: {
+                symbolId: "icon-[name]"
+            }
+          },
+        ]
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
         use: [
           {
             loader: 'file-loader',
@@ -121,6 +132,7 @@ module.exports = env => ({
     ],
   },
   plugins: [
+    new SpriteLoaderPlugin(),
     new webpack.DefinePlugin({
       'process.env.BUILD_ENV': JSON.stringify(process.env.BUILD_ENV)
     }),
