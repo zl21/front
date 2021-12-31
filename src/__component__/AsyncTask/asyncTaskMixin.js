@@ -1,23 +1,36 @@
+import SkqTasksDialog from './SkqTasksDialog.vue';
 import network, { urlSearchParams } from '../../__utils__/network'
 import {
   ADD_TASK,
   DispatchEvent,
   R3_EXPORT,
   UPDATE_TASK,
+  R3_IMPORT
 } from '../../__utils__/dispatchEvent'
-import { enableInitializationRequest, Version, enableGateWay } from '../../constants/global'
+import {
+  enableInitializationRequest,
+  Version,
+  enableGateWay,
+} from '../../constants/global'
 
 export default {
   data() {
     return {
       exportTimer: undefined,
+      showTasks: false,
+      showTasksNotice: false,
     }
   },
 
+  components: {
+    SkqTasksDialog
+  },
+
   methods: {
+    //处理导出逻辑
     R3handleExport(e) {
       const { url, apiParams } = e.detail
-      
+
       network
         .post(url || '/p/cs/export', urlSearchParams(apiParams))
         .then((res) => {
@@ -32,7 +45,6 @@ export default {
           if (res.data.code === 0) {
             this.checkTaskState(res.data.data)
           }
-          
         })
     },
 
@@ -84,17 +96,38 @@ export default {
         })
     },
 
+    // 处理添加任务
+    handleUpdateTask(e) {
+      if (e.detail.type === 'list') {
+        this.showTasks = true
+      } else {
+        this.showTasksNotice = true
+      }
+      DispatchEvent(UPDATE_TASK)
+    },
+
+    // 关闭弹框
+    handleClose(type) {
+      if (type === 'list') {
+        this.showTasks = false
+      } else {
+        this.showTasksNotice = false
+      }
+    },
+
     // 绑定导出事件
-    attachEvent(eventName) {
-      window.addEventListener(eventName, this.R3handleExport)
+    attachEvent(eventName, callback) {
+      window.addEventListener(eventName, callback)
       this.$once('hook:beforeDestroy', () => {
-        window.removeEventListener(eventName, this.R3handleExport)
+        window.removeEventListener(eventName, callback)
       })
     },
   },
 
   mounted() {
-    this._taskTableName = Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE' // 【我的任务】表明
-    this.attachEvent(R3_EXPORT)
+    this._taskTableName = Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE' // 设置【我的任务】表名
+    this.attachEvent(R3_EXPORT, this.R3handleExport)
+    this.attachEvent(R3_IMPORT, this.handleUpdateTask)
+    this.attachEvent(ADD_TASK, this.handleUpdateTask)
   },
 }

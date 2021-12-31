@@ -22,12 +22,12 @@ export default {
     },
 
     taskMessageCount(newVal, oldVal) {
+      // 如果是斯凯奇的异步方案
+      if(asyncTaskScheme() === 'skq') {
+        DispatchEvent(UPDATE_TASK)
+        return
+      }
       if (newVal > oldVal) {
-        // 如果是斯凯奇的异步方案
-        if(asyncTaskScheme() === 'skq') {
-          DispatchEvent(UPDATE_TASK)
-          return
-        }
         this.sendNotice()
       }
     },
@@ -72,9 +72,10 @@ export default {
 
     // 绑定消息轮询
     attachMessagePolling() {
+      const time = asyncTaskScheme() === 'skq' ? 10000 : 5000
       this.messageTimer = setInterval(() => {
         this.getMessageCount()
-      }, 3000)
+      }, time)
       this.$once('hook:beforeDestroy', () => {
         clearInterval(this.messageTimer)
       })

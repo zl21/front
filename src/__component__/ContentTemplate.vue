@@ -27,20 +27,14 @@ import NavigatorVertical from '../__component__/NavigatorVertical';
 import NaVertical from '../__component__/NaVertical';
 import ContentDisplayArea from '../__component__/ContentDisplayArea';
 import contentdiv from './Content.vue';
-import SkqTasksDialog from './AsyncTask/SkqTasksDialog.vue';
 import asyncTaskMixin from './AsyncTask/asyncTaskMixin';
-import { ADD_TASK, UPDATE_TASK, DispatchEvent } from '../__utils__/dispatchEvent'
-
-// import Contentverticalslot from './Contentverticalslot.vue';
 
 
 export default {
   data() {
     return {
       enableTabLists: true,
-      showTasks: false,
-      showTasksNotice: false,
-      dialogType: ''
+      
     };
   },
 
@@ -48,7 +42,6 @@ export default {
     contentdiv,
     NavigatorVertical,
     NaVertical, ContentDisplayArea,
-    SkqTasksDialog
   },
 
   mixins: [asyncTaskMixin],
@@ -56,35 +49,9 @@ export default {
   name: 'ContentTemplate',
 
   methods: {
-    // 关闭弹框
-    handleClose(type) {
-      if (type === 'list') {
-        this.showTasks = false
-      } else {
-        this.showTasksNotice = false
-      }
-    },
-
-    // 绑定添加任务事件
-    attachAddTaskEvent() {
-      const addTask = (e) => {
-        if (e.detail.type === 'list') {
-          this.showTasks = true
-        } else {
-          this.showTasksNotice = true
-        }
-        DispatchEvent(UPDATE_TASK)
-      }
-
-      window.addEventListener(ADD_TASK, addTask)
-      this.$once('hook:beforeDestroy', () => {
-        window.removeEventListener(ADD_TASK, addTask)
-      })
-    },
   },
 
   mounted() {
-    this.attachAddTaskEvent()
   }
 };
 </script>

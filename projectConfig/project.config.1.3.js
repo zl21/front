@@ -213,7 +213,7 @@ module.exports = {
   //filterURL: [/\/p\/c\/code\/login*/g, /\/p\/c\/message\/login*/g],
   listFormWebconf:[], // 列表是否支持webcof 字段
   noticeDuration: 60, // 通知展示时间
-  filterTablesOpenTab:['CUSTOMIZEREPORT']   // 过滤表明新开
+  filterTablesOpenTab:['CUSTOMIZEREPORT'],   // 过滤表明新开
   // imageAssets: {
   //   // 与projectConfig.image区别在于这个图片是含有文字的,用于国际化场景
   //   // 格式必须是 （变量+语言）方便解析
@@ -230,4 +230,5 @@ module.exports = {
   //     bigData: require('../src/assets/image/home.png'),
   //   }
   // }
+  asyncTaskScheme: 'skq' // 异步导出设计方案
 };

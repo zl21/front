@@ -64,8 +64,20 @@
           :key="item.id"
         >
           <div class="r3-skq-notice-body-l">
-            <svg class="notice-ongoing" viewBox="25 25 50 50" v-if="item.statusCode === 1">
-                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"></circle>
+            <svg
+              class="notice-ongoing"
+              viewBox="25 25 50 50"
+              v-if="item.statusCode === 1"
+            >
+              <circle
+                class="path"
+                cx="50"
+                cy="50"
+                r="20"
+                fill="none"
+                stroke-width="5"
+                stroke-miterlimit="10"
+              ></circle>
             </svg>
             <Icon
               type="ios-checkmark-circle-outline"
@@ -88,13 +100,13 @@
               <a
                 v-if="item.url && item.statusCode === 2"
                 :href="item.url"
-                color="#0F8EE9"
+                :style="item.isRead ? 'color:#7f1bab' : 'color:#0F8EE9'"
                 download
                 @click.stop="downloadTask(item)"
               >【{{$t('messages.downloadFile')}}】</a>
               <a
                 v-else
-                color="#0F8EE9"
+                :style="item.isRead ? 'color:#7f1bab' : 'color:#0F8EE9'"
                 @click.stop="viewTask(item)"
               >【{{$t('tips.details')}}】</a>
             </div>
@@ -229,7 +241,8 @@ export default {
           url: getUrl(item),
           readStatus: item.READ_STATE,
           content,
-          name
+          name,
+          isRead: false // 是否已读
         })
       })
       return newList
@@ -238,6 +251,8 @@ export default {
     // 将任务设置为已读
     async downloadTask(task) {
       this.removeDuration = 500
+      const readTask = this.tasks.find(item => item.id === task.id)
+      readTask.isRead = true
       this.$emit('on-download', task)
     },
 

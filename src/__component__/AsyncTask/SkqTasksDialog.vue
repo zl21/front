@@ -163,10 +163,14 @@ export default {
             this.dynamicAttrs.totalTasks = result.datas.totalRowCount
             const rows = result.datas.row
             // 通知的话只展示5条
-            if(this.type === 'list') {
+            if (this.type === 'list') {
               this.dynamicAttrs.list = rows
             } else {
               this.dynamicAttrs.list = rows.slice(0, 5)
+              // 在读取任务的场景中，列表会出现无数据的情况。此时关闭通知
+              if (this.dynamicAttrs.list.length === 0) {
+                this.$emit('on-close', this.type)
+              }
             }
           }
         }).finally(() => {
@@ -184,14 +188,13 @@ export default {
 
     // 下载文件事件回调
     async downloadCallback(task) {
-      this.updataTaskMessageCount({ id: task.id })
-      // this._getTaskList()
-      DispatchEvent(UPDATE_TASK)
+      await this.updataTaskMessageCount({ id: task.id })
+      // DispatchEvent(UPDATE_TASK) // 改为监听任务数量变化自动触发更新，所以这边手动更新注释了
     },
 
     // 查看详情
-    handlerViewTask(task) {
-      this.updataTaskMessageCount({ id: task.id })
+    async handlerViewTask(task) {
+      await this.updataTaskMessageCount({ id: task.id })
       const type = 'tableDetailVertical'
       const tab = {
         type,
@@ -200,8 +203,7 @@ export default {
         id: task.id
       };
       this.tabOpen(tab)
-      // this._getTaskList()
-      DispatchEvent(UPDATE_TASK)
+      // DispatchEvent(UPDATE_TASK)
     },
 
     // 更新列表(在当前参数基础上获取数据)
