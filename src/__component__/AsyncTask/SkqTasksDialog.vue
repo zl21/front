@@ -104,12 +104,32 @@ export default {
 
     // 查看全部任务
     onViewAllTasks() {
-      const type = STANDARD_TABLE_LIST_PREFIX
+      let taskState = []
+      if (this.taskState) {
+        this.taskState.forEach(item => {
+          taskState.push(item.replace('=', ''))
+        })
+      }
       const tab = {
-        type,
+        type: 'S',
         tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
         tableId: Version() === '1.3' ? 24386 : 963,
         label: this.$t('tips.myTask'),
+        isSetQuery: true,
+        queryData: {
+          tableId: Version() === '1.3' ? 24386 : 963,
+          values: [//设置默认值的字段
+            {
+              colid: Version() === '1.3' ? '162788' : '99149', // 任务状态字段
+              defaultValue: taskState,
+              display: "OBJ_SELECT"
+            }, {
+              colid: Version() === '1.3' ? '162790' : '99152', // 已读状态字段
+              defaultValue: ['0'],
+              display: "OBJ_SELECT"
+            }
+          ]
+        }
       }
 
       this.tabOpen(tab)
@@ -200,7 +220,7 @@ export default {
         type,
         tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
         tableId: Version() === '1.3' ? 24386 : 963,
-        id: task.id
+        id: task.id,
       };
       this.tabOpen(tab)
       // DispatchEvent(UPDATE_TASK)
