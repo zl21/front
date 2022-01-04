@@ -67,6 +67,7 @@ export default {
           this.$refs.dialog.open()
           this._getTaskList()
         } else {
+          Object.assign(this.$data, this.$options.data.call(this))
           this.$refs.dialog.close()
         }
       }
