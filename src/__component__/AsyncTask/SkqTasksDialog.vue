@@ -215,7 +215,10 @@ export default {
 
     // 查看详情
     async handlerViewTask(task) {
-      await this.updataTaskMessageCount({ id: task.id })
+      // 不是执行中的任务，会设置已读
+      if (task.statusCode !== 1) {
+        await this.updataTaskMessageCount({ id: task.id })
+      }
       const type = 'tableDetailVertical'
       const tab = {
         type,
@@ -229,13 +232,62 @@ export default {
 
     // 更新列表(在当前参数基础上获取数据)
     updateTasks() {
+      // 【我的任务】框处于全部状态时，更新进行中任务数量
+      if (this.taskState === undefined && this.type === 'list') {
+        this._updateTaskCount()
+      }
       this._getTaskList({ taskState: this.taskState })
+    },
+
+    // 获取任务数量
+    _updateTaskCount() {
+      let fixedcolumns = {}
+      const readStateKey = Version() === '1.3' ? 'READSTATE' : 'READ_STATE'
+      const taskStateKey = Version() === '1.3' ? 'TASKSTATE' : 'TASK_STATE'
+      fixedcolumns = {
+        OPERATOR_ID: [this.userId],
+        [readStateKey]: ['=0'],
+        [taskStateKey]: ['=1']
+      }
+
+      const searchdata = {
+        table: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
+        column_include_uicontroller: true,
+        fixedcolumns,
+        multiple: [],
+        startindex: 0,
+        range: 1,
+        orderby: [
+          {
+            column: Version() === '1.3' ? 'CP_C_TASK.ID' : 'U_NOTE.ID',
+            asc: false,
+          },
+        ],
+      }
+
+      network
+        .post(
+          `/p/cs/QueryList?hash=${this.type}${new Date().getTime()}`,
+          urlSearchParams({ searchdata }),
+          {
+            serviceId: enableGateWay() ? getGatewayValue('U_NOTE') : '',
+          }
+        ).then(res => {
+          const result = res.data
+          if (!result.datas) {
+            result.datas = result.data
+          }
+          if (result.code === 0) {
+            this.dynamicAttrs.ongoingTasks = result.datas.totalRowCount
+          }
+        })
     },
 
     // 过滤
     handlerFilter(taskState) {
       this.taskState = taskState
       this._getTaskList({ taskState })
+      this._updateTaskCount()
     }
   },
 

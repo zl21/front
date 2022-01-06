@@ -6,9 +6,10 @@
         <Poptip
           trigger="hover"
           transfer
-          placement="bottom-end"
+          placement="bottom"
           v-model="showFilter"
           v-if="dialogType === 'list'"
+          popper-class="r3-skq-notice-pop"
         >
           <div class="r3-skq-task-state">
             <span class="r3-skq-filter-panel">{{title}}</span>
@@ -186,7 +187,7 @@ export default {
     count() {
       if (this.currentStatesCode === 0) {
         return `${this.ongoingTasks}/${this.totalTasks}`
-      } else {
+      } else { // 进行中和已完成直接取querylist接口返回的数量
         return `${this.totalTasks}`
       }
     },
