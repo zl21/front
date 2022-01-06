@@ -1990,6 +1990,26 @@ export default {
           const label = `${this.activeTab.label}新增`;
           let type = '';
           if (this.buttons.isBigStatus) { // 配置海量
+            let {hugeQuery} = window.ProjectConfig;
+            if(hugeQuery){
+              let type = hugeQuery.reduce((arr,item)=>{
+                if(item.table === tableName){
+                   arr = item.tabpanle;
+                } 
+                return arr;
+              },'');
+              if(type){
+                  this.tabOpen({
+                  type,
+                  tableName,
+                  tableId,
+                  label,
+                  id,
+                });
+                return;
+              }
+              
+            }
             window.getObjdisType({ table: tableName }).then((res) => {
               type = res === 'tabpanle' ? 'H' : 'V';
               this.tabOpen({
