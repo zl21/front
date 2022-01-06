@@ -72,7 +72,16 @@ module.exports = {
   customizeMixins: { // 获取所有外部接入的mixins对象
     // singleObjectButtonGroup: require('../demo/singleObjectButtonGroup').default,
     //verticalTableDetailCustomize: require('../demo/horizontalTableDetailCustomize.js').default,
-     standardTableListsCustomize: {
+    setPanel:{
+      mounted(){
+        // 重写退出点击
+        this.clickSignout = ()=>{
+            console.log('退出点击')
+            this.signout();
+        }
+      }
+    },  
+    standardTableListsCustomize: {
       // created(){
       //   let getQueryListPromise = this.getQueryListPromise;
       //   this.getQueryListPromise = function(data, searchDataRes){
