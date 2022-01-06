@@ -1,4 +1,4 @@
-const projectconfig  = require('./project.config.common');
+const projectconfig  = require('./project.config.dev');
 
 const project = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
