@@ -10,7 +10,6 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 let projectConfig = require(`./projectConfig/project.config.${process.env.Version || '1.4'}`);
 
 const target = projectConfig.target; // 框架研发网关开启环境
-console.log(target,'================target',process.env);
 
 const proxyLists = ['/p/c', '/ad-app', '/jflow','/asynctask','/p/cs'];
 const proxyListsForGateway = ['/ad-app/p/c'];
