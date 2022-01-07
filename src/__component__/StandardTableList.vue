@@ -2100,10 +2100,7 @@ export default {
       if (obj.name === this.buttonMap.CMD_EXPORT.name) {
         // 全量导出
         if (this.buttons.selectIdArr.length === 0) {
-          // const title = this.$t('feedback.warning');
-          // const contentText = this.$t('messages.exportAllTip')
-          // this.dialogMessage(title, contentText, obj);
-          if(enableAsyncTaskTip()) {
+          if(enableAsyncTaskTip() && asyncTaskScheme() !== 'skq') {
             const title = this.$t('feedback.warning');
             const contentText = this.$t('messages.exportAllTip')
             this.dialogMessage(title, contentText, obj);
