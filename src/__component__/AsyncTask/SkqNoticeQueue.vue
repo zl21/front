@@ -95,9 +95,9 @@
           </div>
           <div class="r3-skq-notice-body-m">
             <div class="r3-task-content">
-              <span :title="item.content">{{item.content}}</span>
-              <div class="one-line-flow task-title">
-              </div>
+              <span :title="item.content" class="one-line-flow task-title">{{item.content}}</span>
+              <!-- <div class="one-line-flow task-title">
+              </div> -->
               <a
                 v-if="item.url && item.statusCode === 2"
                 :href="item.url"
@@ -279,7 +279,9 @@ export default {
 
     // 查看全部任务
     viewAllTasks() {
-      this.$emit('on-close')
+      if (this.dialogType === 'list') {
+        this.$emit('on-close')
+      }
       this.$emit('on-view-all-tasks')
     },
 

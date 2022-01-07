@@ -191,6 +191,7 @@ import { DispatchEvent, R3_EXPORT } from '../__utils__/dispatchEvent';
 import getUserenv from '../__utils__/getUserenv';
 import { addSearch, querySearch } from '../__utils__/indexedDB';
 import { getPinnedColumns } from '../__utils__/tableMethods'
+import { isTaskProcessing } from '../__utils__/task-utils'
 import tabBar from './tabBar.vue';
 import listsForm from './FormComponents/list/listsForm';
 
@@ -742,7 +743,11 @@ export default {
     },
 
     // 从【我的任务】进入单对象，如果任务未读,需调用读取接口
-    readTask(id) {
+    readTask(row) {
+      if(isTaskProcessing(row)) {
+        return
+      }
+      const id = row.ID.val
       const url = Version() === '1.4' ? '/p/cs/u_note/ignoreMsg': '/p/cs/ignoreMsg'
       const data = Version() === '1.4' ? { id, objId: id } : urlSearchParams({ id })
       network.post(url, data,{
@@ -758,11 +763,11 @@ export default {
 
       if(this.isGoToTaskDetail()) {
         if( Version() === '1.4' && row.READ_STATE.refobjval === 0) {
-          this.readTask(row.ID.val)
+          this.readTask(row)
         }
 
         if( Version() === '1.3' && row.READSTATE.val === '未读') {
-          this.readTask(row.ID.val)
+          this.readTask(row)
         }
       }
 

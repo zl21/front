@@ -72,7 +72,7 @@ export default {
 
     // 绑定消息轮询
     attachMessagePolling() {
-      const time = asyncTaskScheme() === 'skq' ? 1000 : 5000
+      const time = asyncTaskScheme() === 'skq' ? 10000 : 5000
       this.messageTimer = setInterval(() => {
         this.getMessageCount()
       }, time)
