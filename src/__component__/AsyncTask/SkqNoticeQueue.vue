@@ -18,8 +18,7 @@
               size="18"
             ></Icon>
           </div>
-
-          <div slot="content">
+          <div slot="content" class="skq-pop">
             <div
               @click.stop="filterTask(i)"
               class="state-item"
@@ -141,6 +140,7 @@ import {
   getTaskVal,
   getTaskName
 } from '../../__utils__/task-utils'
+import { isClickOutside } from '../../__utils__/dom'
 
 export default {
   name: 'R3SkqNoticeQueue',
@@ -205,6 +205,10 @@ export default {
     this.$t = i18n.t.bind(i18n)
   },
 
+  mounted() {
+    this.attachClickOutSideEvent()
+  },
+
   data() {
     return {
       tasks: [],
@@ -217,6 +221,34 @@ export default {
   },
 
   methods: {
+    // 绑定点击到元素外部事件
+    attachClickOutSideEvent() {
+      window.addEventListener('click', this.clickOutSide)
+      this.$once('hook:beforeDestroy', () => {
+        window.removeEventListener('click', this.clickOutSide)
+      })
+    },
+
+    // 点击到元素外部
+    clickOutSide(e) {
+      if(this.dialogType !== 'list') {
+        return
+      }
+      const iconDom = document.querySelector('.async-task-icon')
+      const doms = [iconDom]
+      const noticeDom = document.querySelector('#r3-skq-notice-queue')
+      if(noticeDom) {
+        doms.push(noticeDom)
+      }
+      const popDom = document.querySelector('#r3-skq-notice-queue .skq-pop')
+      if(popDom) {
+        doms.push(popDom)
+      }
+      if(isClickOutside(e.target, doms)) {
+        this.close()
+      }
+    },
+
     // 重新定义数据结构
     filterList(list) {
       const newList = []

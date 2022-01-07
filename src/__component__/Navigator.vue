@@ -100,7 +100,7 @@
 
     <div
       v-if="versionValue && showTaskIcon"
-      class="tag right"
+      class="tag right async-task-icon"
       @click.prevent="handlerOpenTasks"
     >
       <Badge :count="taskMessageCount">
