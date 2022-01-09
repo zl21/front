@@ -21,10 +21,9 @@ import {
   Version,
   enableGateWay,
   getGatewayValue,
-  STANDARD_TABLE_LIST_PREFIX,
 } from '../../constants/global'
 import network, { urlSearchParams } from '../../__utils__/network'
-import { UPDATE_TASK, DispatchEvent } from '../../__utils__/dispatchEvent'
+import { UPDATE_TASK } from '../../__utils__/dispatchEvent'
 Vue.component('SkqNoticeQueue', SkqNoticeQueue)
 
 export default {
@@ -81,12 +80,14 @@ export default {
         'on-download': this.downloadCallback,
         'on-filter-tasks': this.handlerFilter,
         'on-view-task': this.handlerViewTask,
-        'on-close': this.handleClose
+        'on-close': this.handleClose,
+        'on-show-pop': this.handleShowPop,
       },
       dynamicAttrs: {
         list: [],
         totalTasks: 0, // 总任务数量
         ongoingTasks: 0, // 进行中任务数量
+        completeTasks: 0, // 已完成任务数量
         dialogType: this.type,
         isLoading: false // 接口是否在加载
       },
@@ -136,10 +137,8 @@ export default {
       this.tabOpen(tab)
     },
 
-    // 获取任务列表
-    async _getTaskList({ taskState = undefined, startindex = 0, range = 20 } = {}) {
-      this.dynamicAttrs.isLoading = true
-
+    // 任务列表接口
+    async _requestTaskList({ taskState = undefined, startindex = 0, range = 20 } = {}) {
       let fixedcolumns = {}
       const readStateKey = Version() === '1.3' ? 'READSTATE' : 'READ_STATE'
       const taskStateKey = Version() === '1.3' ? 'TASKSTATE' : 'TASK_STATE'
@@ -166,37 +165,50 @@ export default {
           },
         ],
       }
-      // hash防止短时间内重复请求被节流
-      await network
-        .post(
-          `/p/cs/QueryList?hash=${this.type}${new Date().getTime()}`,
-          urlSearchParams({ searchdata }),
-          {
-            serviceId: enableGateWay() ? getGatewayValue('U_NOTE') : '',
-          }
-        )
-        .then((res) => {
-          const result = res.data
-          if (!result.datas) {
-            result.datas = result.data
-          }
-          if (result.code === 0) {
-            this.dynamicAttrs.totalTasks = result.datas.totalRowCount
-            const rows = result.datas.row
-            // 通知的话只展示5条
-            if (this.type === 'list') {
-              this.dynamicAttrs.list = rows
-            } else {
-              this.dynamicAttrs.list = rows.slice(0, 5)
-              // 在读取任务的场景中，列表会出现无数据的情况。此时关闭通知
-              if (this.dynamicAttrs.list.length === 0) {
-                this.$emit('on-close', this.type)
-              }
+
+      return new Promise((resolve, reject) => {
+        network
+          .post(
+            `/p/cs/QueryList?hash=${this.type}${new Date().getTime()}`, // hash防止短时间内重复请求被节流
+            urlSearchParams({ searchdata }),
+            {
+              serviceId: enableGateWay() ? getGatewayValue('U_NOTE') : '',
             }
+          ).then(res => {
+            const result = res.data
+            if (!result.datas) {
+              result.datas = result.data
+            }
+            if (result.code === 0) {
+              resolve(result.datas)
+            } else {
+              reject(result.datas)
+            }
+
+          }).catch(err => {
+            reject(err)
+          })
+      })
+    },
+
+    // 获取任务列表
+    async _getTaskList(taskState) {
+      this._requestTaskList({taskState}).then((data) => {
+        this.dynamicAttrs.totalTasks = data.totalRowCount
+        const rows = data.row
+        // 通知的话只展示5条
+        if (this.type === 'list') {
+          this.dynamicAttrs.list = rows
+        } else {
+          this.dynamicAttrs.list = rows.slice(0, 5)
+          // 在读取任务的场景中，列表会出现无数据的情况。此时关闭通知
+          if (this.dynamicAttrs.list.length === 0) {
+            this.$emit('on-close', this.type)
           }
-        }).finally(() => {
-          this.dynamicAttrs.isLoading = false
-        })
+        }
+      }).finally(() => {
+        this.dynamicAttrs.isLoading = false
+      })
     },
 
     // 绑定更新事件
@@ -232,62 +244,48 @@ export default {
 
     // 更新列表(在当前参数基础上获取数据)
     updateTasks() {
-      // 【我的任务】框处于全部状态时，更新进行中任务数量
-      if (this.taskState === undefined && this.type === 'list') {
-        this._updateTaskCount()
+      if (!this.show) {
+        return
       }
-      this._getTaskList({ taskState: this.taskState })
+      this._getTaskList(this.taskState)
     },
 
     // 获取任务数量
-    _updateTaskCount() {
-      let fixedcolumns = {}
-      const readStateKey = Version() === '1.3' ? 'READSTATE' : 'READ_STATE'
-      const taskStateKey = Version() === '1.3' ? 'TASKSTATE' : 'TASK_STATE'
-      fixedcolumns = {
-        OPERATOR_ID: [this.userId],
-        [readStateKey]: ['=0'],
-        [taskStateKey]: ['=1']
+    async _updateTaskCount() {
+      // 是【我的任务】时才更新进行中任务数量
+      if (this.type !== 'list') {
+        return
+      }
+      // 当前是全部任务。查询进行中任务数据，并根据进行中任务数量算出已完成任务数量
+      if(this.taskState === undefined) {
+        this.dynamicAttrs.ongoingTasks = (await this._requestTaskList({range: 1, taskState: ['=1']})).totalRowCount
+        this.dynamicAttrs.completeTasks = this.dynamicAttrs.totalTasks - this.dynamicAttrs.ongoingTasks
+        return
+      }
+      // 当前是进行任务。查询已完成任务数据
+      if(Array.isArray(this.taskState) && this.taskState.length === 1) {
+        this.dynamicAttrs.ongoingTasks = this.dynamicAttrs.totalTasks
+        this.dynamicAttrs.completeTasks = (await this._requestTaskList({range: 1, taskState: ['=2','=3']})).totalRowCount
+        return
       }
 
-      const searchdata = {
-        table: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
-        column_include_uicontroller: true,
-        fixedcolumns,
-        multiple: [],
-        startindex: 0,
-        range: 1,
-        orderby: [
-          {
-            column: Version() === '1.3' ? 'CP_C_TASK.ID' : 'U_NOTE.ID',
-            asc: false,
-          },
-        ],
+      // 当前是已完成任务。查询进行中任务数据
+      if(Array.isArray(this.taskState) && this.taskState.length === 2) {
+        this.dynamicAttrs.completeTasks = this.dynamicAttrs.totalTasks
+        this.dynamicAttrs.ongoingTasks = (await this._requestTaskList({range: 1, taskState: ['=1']})).totalRowCount
+        return
       }
+    },
 
-      network
-        .post(
-          `/p/cs/QueryList?hash=${this.type}${new Date().getTime()}`,
-          urlSearchParams({ searchdata }),
-          {
-            serviceId: enableGateWay() ? getGatewayValue('U_NOTE') : '',
-          }
-        ).then(res => {
-          const result = res.data
-          if (!result.datas) {
-            result.datas = result.data
-          }
-          if (result.code === 0) {
-            this.dynamicAttrs.ongoingTasks = result.datas.totalRowCount
-          }
-        })
+    // 显示过滤框时
+    handleShowPop() {
+      this._updateTaskCount() // 更新筛选框里的数量
     },
 
     // 过滤
     handlerFilter(taskState) {
       this.taskState = taskState
-      this._getTaskList({ taskState })
-      this._updateTaskCount()
+      this._getTaskList(taskState)
     }
   },
 

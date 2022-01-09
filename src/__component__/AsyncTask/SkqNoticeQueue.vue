@@ -10,6 +10,7 @@
           v-model="showFilter"
           v-if="dialogType === 'list'"
           popper-class="r3-skq-notice-pop"
+          @on-popper-show="handleShowPop"
         >
           <div class="r3-skq-task-state">
             <span class="r3-skq-filter-panel">{{title}}</span>
@@ -22,7 +23,7 @@
             <div
               @click.stop="filterTask(i)"
               class="state-item"
-              v-for="(state , i) in filterStates"
+              v-for="(state , i) in filterItem"
               :key="i"
             >{{state}}</div>
           </div>
@@ -163,6 +164,13 @@ export default {
       type: Number,
       default: 0
     },
+
+    // 已完成任务数量
+    completeTasks: {
+      type: Number,
+      default: 0
+    },
+
     // 弹框类型： 任务列表，任务通知
     dialogType: {
       type: String,
@@ -184,21 +192,32 @@ export default {
   },
 
   computed: {
-    count() {
-      if (this.currentStatesCode === 0) {
-        return `${this.ongoingTasks}/${this.totalTasks}`
-      } else { // 进行中和已完成直接取querylist接口返回的数量
-        return `${this.totalTasks}`
-      }
-    },
-
+    // 弹框标题
     title() {
       if (this.dialogType === 'list') {
-        return `${this.currentStates}（${this.count}）`
+        if (this.currentStatesCode === 0) { // 全部任务不展示数量
+          return `${this.currentStates} `
+        } else { 
+          return `${this.currentStates}（${this.totalTasks}）`
+        }
       } else {
         return `${this.$t('tips.myTask')}`
       }
     },
+
+    // 过滤条件
+    filterStates() {
+      const ongoing = `${this.$t('feedback.ongoing')}${this.$t('tips.task')}`
+      const completed = `${this.$t('tips.completed')}${this.$t('tips.task')}`
+      return [`${this.$t('tips.all')}${this.$t('tips.task')}`, ongoing, completed]
+    },
+
+    // 过滤框内容
+    filterItem() {
+      const ongoing = `${this.$t('feedback.ongoing')}${this.$t('tips.task')}（${this.ongoingTasks}）`
+      const completed = `${this.$t('tips.completed')}${this.$t('tips.task')}（${this.completeTasks}）`
+      return [`${this.$t('tips.all')}${this.$t('tips.task')}`, ongoing, completed]
+    }
   },
 
   beforeCreate() {
@@ -214,7 +233,6 @@ export default {
       tasks: [],
       showFilter: false,
       removeDuration: 0, // 动画过渡时间
-      filterStates: [`${this.$t('tips.all')}${this.$t('tips.task')}`, `${this.$t('feedback.ongoing')}${this.$t('tips.task')}`, `${this.$t('tips.completed')}${this.$t('tips.task')}`],
       currentStates: `${this.$t('tips.all')}${this.$t('tips.task')}`, // 任务状态值
       currentStatesCode: 0 // // 任务状态码
     }
@@ -287,6 +305,11 @@ export default {
       const readTask = this.tasks.find(item => item.id === task.id)
       readTask.isRead = true
       this.$emit('on-download', task)
+    },
+
+    // 显示筛选
+    handleShowPop() {
+      this.$emit('on-show-pop')
     },
 
     // 筛选任务
