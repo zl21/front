@@ -240,5 +240,6 @@ module.exports = {
   //       return data;
   //     }
   // },
-  R3BrowserPrompt:true
+  R3BrowserPrompt:true,
+  asyncTaskScheme: 'skq'
 }
