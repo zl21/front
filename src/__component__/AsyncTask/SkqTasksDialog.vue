@@ -4,7 +4,7 @@
     :footerHide="true"
     :closable='false'
     :mask='false'
-    :width="type === 'list' ? 385 : 420"
+    :width="type === 'list' ? 410 : 420"
     title=""
     dialogComponentName='skqNoticeQueue'
     :dynamicAttrs="dynamicAttrs"
