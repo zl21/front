@@ -33,7 +33,9 @@ import { mapState } from 'vuex';
 import RenderComponent from '../RenderComponent';
 import ParameterDataProcessing from '../parameterDataProcessing';
 import store from '../../../__config__/store.config';
-
+import {
+    FindInstance 
+  } from '../../ExtendedAttributes/common';
 import {
   Version,
   classFix
@@ -182,12 +184,12 @@ export default {
      
       
         if(arrjson[item.colname] === undefined){          
-          if (this.$parent.delectFormData) {
-              this.$parent.delectFormData(item.colname);
+          if (this.getParent().delectFormData) {
+              this.getParent().delectFormData(item.colname);
             }
         }else{
-           if (this.$parent.updateFormData) {
-              this.$parent.updateFormData(arrjson);
+           if (this.getParent().updateFormData) {
+              this.getParent().updateFormData(arrjson);
             }
         }
 
@@ -333,19 +335,19 @@ export default {
         let hiddenButtons = this.ButtonHtml.data && this.ButtonHtml.data().hiddenButtons || [];
         if (Array.isArray(hiddenButtons)) {
           // 隐藏列表查询按钮
-          let data = JSON.parse(JSON.stringify(this.$parent.buttons));
+          let data = JSON.parse(JSON.stringify(this.getParent().buttons));
           hiddenButtons.forEach((key) => {
             data.dataArray[key] = false;
           });
           if (this.ButtonHtml.props && this.ButtonHtml.props.ButttonCallBack) {
             // 点击回调事件
-            this.ButtonHtml.props.ButttonCallBack.default = this.$parent.buttonClick;
+            this.ButtonHtml.props.ButttonCallBack.default = this.getParent().buttonClick;
           }
           if (this.ButtonHtml.props && this.ButtonHtml.props.IconCallBack) {
             // 收拉框回调
             this.ButtonHtml.props.IconCallBack.default = this.toggle;
           }
-          this.$parent.filterButtonsForShow(data.dataArray);
+          this.getParent().filterButtonsForShow(data.dataArray);
         }
 
       } else {
@@ -377,6 +379,13 @@ export default {
         return false;
       }
       return true;
+    },
+    getParent(){
+      // 获取查找实例
+      let vm  = FindInstance(window.vm,'');
+      console.log(this,'list-=====');
+      return this.$parent.$parent;
+
     },
     deleteEmptyProperty (object) {
       for (const i in object) {

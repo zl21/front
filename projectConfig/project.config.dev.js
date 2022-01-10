@@ -36,7 +36,15 @@ module.exports = {
     //NaVertical:require('./src/demo/NaVerticalslot.vue').default  // 模板渲染
     listFormButton:()=>import('../demo/detailbuttons.vue'),  // 定制列表button
     standardTableList:{
-      defined:()=>import('../demo/standardTableListdefind.vue'),
+      // defined:()=>import('../demo/standardTableListdefind.vue'),
+      tableName:{
+        'AD_TABLE':{
+          defined:()=>import('../demo/standardTableListdefind.vue'),
+        },
+        'GUIGEZU':{
+          layout:()=>import('../demo/standardTableList.vue')
+        },
+      }
     }  // 定制列表button
   },
   domPortal: {
