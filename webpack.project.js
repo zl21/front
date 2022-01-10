@@ -15,15 +15,10 @@ const proxyLists = ['/p/c', '/ad-app', '/jflow','/asynctask','/p/cs'];
 const proxyListsForGateway = ['/ad-app/p/c'];
 
 
-<<<<<<< HEAD
-const indexProHtml = path.posix.join('/', 'index.project.html');
-const indexHtml = path.posix.join('/', 'index.project.html');
-const SpriteLoaderPlugin = require('svg-sprite-loader/plugin')
-=======
 const indexProHtml = path.posix.join('/', 'index.html');
 const indexHtml = path.posix.join('/', 'index.html');
+const SpriteLoaderPlugin = require('svg-sprite-loader/plugin')
 
->>>>>>> feat-ll-quanxian
 module.exports = env => ({
   entry: {
     index: './build/index.project.js',
