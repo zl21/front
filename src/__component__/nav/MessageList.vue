@@ -136,6 +136,7 @@ export default {
         fixedcolumns = {
           OPERATOR_ID: [this.userInfo.id],
           READ_STATE: ['=0'],
+          TASK_STATE: ['=2', '=3']
         };
       }
       const searchdata = {
