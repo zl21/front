@@ -39,7 +39,7 @@ module.exports = {
   // target: 'http://47.102.164.111:27777', // 卡宾
   // target: 'http://dev.dev.lark-erp.cn/',
   // target: 'http://139.224.134.69:58000', // OMS
-  target: 'http://120.78.163.25/', // 斯凯奇
+  target: 'http://120.79.145.203/', // 斯凯奇
 
   
 
@@ -214,6 +214,14 @@ module.exports = {
   listFormWebconf:[], // 列表是否支持webcof 字段
   noticeDuration: 60, // 通知展示时间
   filterTablesOpenTab:['CUSTOMIZEREPORT'],   // 过滤表明新开
+  // hugeQuery:[{   // 海量查询
+  //   table:'SG_B_STO_TRANSFER',
+  //   tabpanle:'V',
+  // },{
+  //   table:'SG_B_SHARE_SA_TRANSFER',
+  //   tabpanle:'V',
+    
+  // }]
   // imageAssets: {
   //   // 与projectConfig.image区别在于这个图片是含有文字的,用于国际化场景
   //   // 格式必须是 （变量+语言）方便解析
