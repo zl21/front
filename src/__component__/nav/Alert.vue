@@ -19,7 +19,7 @@ export default {
         }
         let  userAgent = window.navigator && window.navigator.userAgent; 
         // 取得浏览器的userAgent字符串
-        let BrowserVersion = ['Firefox','Opera','Edg',]
+        let BrowserVersion = ['Firefox','Opera','Edg','MetaSr']
         if(userAgent.indexOf('Chrome') > -1){
             this.show = false;
             BrowserVersion.some((item)=>{
