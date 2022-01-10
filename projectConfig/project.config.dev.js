@@ -41,7 +41,7 @@ module.exports = {
         'AD_TABLE':{
           defined:()=>import('../demo/standardTableListdefind.vue'),
         },
-        'GUIGEZU':{
+        'GUIGEZU':{ // 规格组
           layout:()=>import('../demo/standardTableList.vue')
         },
       }

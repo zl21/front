@@ -45,9 +45,10 @@
                     :id-array="idArray"
                     @buttonClick="buttonClick"
                     @clearSelectIdArray="clearSelectIdArray" />
-        <listsForm slot="list-form"
+        <listsForm slot="list-form"  ref="R3listform"
                   v-if="formItems.defaultFormItemsLists && formItems.defaultFormItemsLists.length > 0"
                   :id="$route.params.tableName"
+                  :moduleComponentName='moduleComponentName'
                   :form-item-lists="formItems.defaultFormItemsLists"
                   :default-spread="changeSearchFoldnum.switchValue"
                   :search="true"
@@ -56,7 +57,7 @@
                   :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
                   @onHandleEnter="searchClickData" />
         <component :is="defined"></component>           
-        <tabBar slot="list-tabBar"
+        <tabBar slot="list-tabBar" ref="R3tabBar"
                 v-if="getFilterTable"
                 :data="ag.tablequery"
                 @tabClick="tabClick" />

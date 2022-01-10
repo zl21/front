@@ -6,7 +6,7 @@
   // 设置字段静态规则
   import setAttributes from '../ExtendedAttributes/setAttributes';
   // 清除字段
-  import {clearFormRefcolval} from '../ExtendedAttributes/common.js';
+  import {clearFormRefcolval ,findComponentDownward} from '../ExtendedAttributes/common.js';
   //  多字段赋值
   import {formRequestInit} from '../ExtendedAttributes/formRequest';
   // 联动计算
@@ -75,11 +75,23 @@ export default {
   },
   methods:{
     findParentForm(){
+      // 查找当前表单的父级实例
       let formItem = document.querySelector(`#${this.items.formName}`);
       if(formItem){
           return formItem._vue_;
       }
-    }
+    },
+    getListParent(){
+      // 获取标准列表的实例
+      let vm  = findComponentDownward(window.vm,this.moduleComponentName);
+      if(vm){
+        return vm
+      }else{
+        return this.$parent.$parent && this.$parent.$parent.$parent;
+      }
+
+
+    },
   },
   mounted () {
     if(this.items.detailType){

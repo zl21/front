@@ -63,10 +63,8 @@ export default class DropMethods {
           return arr;
       },{});
       if (event.code === 'Enter') {
-        if( this.$parent && this.$parent.$parent && this.$parent.$parent.$parent && this.$parent.$parent.$parent){
-          if(typeof this.$parent.$parent.$parent.handleEnter ==='function'){
-            this.$parent.$parent.$parent.handleEnter(...arguments);
-          }
+        if( this.$parent && this.$parent.$parent ){
+           this.$parent.$parent.getListParent().searchClickData(...arguments);
         }
       }
     };

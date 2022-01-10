@@ -2,16 +2,26 @@
 /* eslint-disable vue/html-self-closing */
 <template>
   <div class="StandardTableListRootDiv">
-    <slot name="list-buttons"></slot>
+   <div>
+      <p>哈哈哈，这个是测试啦啦啦</p>
+      <slot name="list-buttons"></slot>
+       <R3ButtonGroup/>
+   </div>
     <slot name="list-tabBar"></slot>
     <slot name="list-form"></slot>
-    <div>哈哈哈，这个是测试啦啦啦</div>
+    
     <slot name="list-table"></slot>
   </div>
 </template>
 <script>
 
  export default {
-    inheritAttrs: false
+    inheritAttrs: false,
+    components:{
+        //  R3ButtonGroup:this.$parent.$refs.R3ButtonGroup
+    },
+    created(){
+      console.log(this.$parent.$refs.R3ButtonGroup)
+    }
 }
 </script>

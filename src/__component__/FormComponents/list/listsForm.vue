@@ -34,7 +34,7 @@ import RenderComponent from '../RenderComponent';
 import ParameterDataProcessing from '../parameterDataProcessing';
 import store from '../../../__config__/store.config';
 import {
-    FindInstance 
+    findComponentDownward 
   } from '../../ExtendedAttributes/common';
 import {
   Version,
@@ -119,6 +119,12 @@ export default {
       type: Boolean,
       default: false
 
+    },
+    moduleComponentName:{
+      type: String,
+      default () {
+        return '';
+      }
     }
   },
   data () {
@@ -382,9 +388,12 @@ export default {
     },
     getParent(){
       // 获取查找实例
-      let vm  = FindInstance(window.vm,'');
-      console.log(this,'list-=====');
-      return this.$parent.$parent;
+      let vm  = findComponentDownward(window.vm,this.moduleComponentName);
+      if(vm){
+        return vm
+      }else{
+        return this.$parent.$parent;
+      }
 
     },
     deleteEmptyProperty (object) {
