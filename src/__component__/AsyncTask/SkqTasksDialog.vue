@@ -52,6 +52,7 @@ export default {
   computed: {
     ...mapState('global', {
       userInfo: ({ userInfo }) => userInfo,
+      taskMessageCount: state => state.taskMessageCount,
     }),
 
     userId() {
@@ -97,7 +98,7 @@ export default {
 
   methods: {
     ...mapActions('global', ['updataTaskMessageCount']),
-    ...mapMutations('global', ['tabOpen']),
+    ...mapMutations('global', ['tabOpen', 'updateTaskMessageCount']),
 
     // 对话框显示
     handleClose() {
@@ -260,20 +261,22 @@ export default {
       if(this.taskState === undefined) {
         this.dynamicAttrs.ongoingTasks = (await this._requestTaskList({range: 1, taskState: ['=1']})).totalRowCount
         this.dynamicAttrs.completeTasks = this.dynamicAttrs.totalTasks - this.dynamicAttrs.ongoingTasks
-        return
       }
       // 当前是进行任务。查询已完成任务数据
       if(Array.isArray(this.taskState) && this.taskState.length === 1) {
         this.dynamicAttrs.ongoingTasks = this.dynamicAttrs.totalTasks
         this.dynamicAttrs.completeTasks = (await this._requestTaskList({range: 1, taskState: ['=2','=3']})).totalRowCount
-        return
       }
 
       // 当前是已完成任务。查询进行中任务数据
       if(Array.isArray(this.taskState) && this.taskState.length === 2) {
         this.dynamicAttrs.completeTasks = this.dynamicAttrs.totalTasks
         this.dynamicAttrs.ongoingTasks = (await this._requestTaskList({range: 1, taskState: ['=1']})).totalRowCount
-        return
+      }
+
+      // fix: 导航栏通知icon上的数量可能和过滤框里的不一致
+      if(this.dynamicAttrs.completeTasks  > this.taskMessageCount) {
+        this.updateTaskMessageCount(this.dynamicAttrs.completeTasks)
       }
     },
 
