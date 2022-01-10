@@ -1,7 +1,7 @@
 import Navigator from '../__component__/Navigator';
 import ContentDisplayArea from '../__component__/ContentDisplayArea';
 import HistoryAndFavorite from '../__component__/HistoryAndFavorite';
-
+import navAlert from '../__component__/nav/Alert.vue';
 export default {
   direction: 'column',
   class:'r3-horizontal-content',
@@ -11,6 +11,11 @@ export default {
       class:'r3-content-Navigator',
       component: Navigator,
       name: 'Navigator', // global.showModule.Navigator = false时，此选项不渲染。
+    },
+    {
+      class:'r3-content-Alert',
+      component: navAlert,
+      name: 'Navigator-Alert',
     },
     {
       weight: 1,

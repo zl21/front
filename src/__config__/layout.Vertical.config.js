@@ -2,6 +2,7 @@ import NavigatorVertical from '../__component__/NavigatorVertical';
 import NaVertical from '../__component__/NaVertical';
 
 import ContentDisplayArea from '../__component__/ContentDisplayArea';
+import navAlert from '../__component__/nav/Alert.vue';
 
 export default {
   direction: 'row',
@@ -22,6 +23,11 @@ export default {
         class:'r3-content-box',
         direction: 'column',
         items: [
+          {
+            class:'r3-content-Alert',
+            component: navAlert,
+            name: 'Navigator-Alert',
+          },
           {
             class:'r3-content-nav',
             style: { margin: '10px 10px 0 10px', backgroundColor: '#fff', overflow: 'hidden' },
