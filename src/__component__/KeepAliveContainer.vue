@@ -1,6 +1,6 @@
 <template>
   <keep-alive
-    :include="keepAliveLists"
+    :include="componentCacheList"
   >
     <component
       :is="currentModule"
@@ -58,7 +58,8 @@
         currentModule: null,
         urlName: '',
         sameNewPage: false,
-        show: true
+        show: true,
+        componentCacheList: []
       };
     },
    
@@ -79,6 +80,7 @@
         } else if (routePrefix === LINK_MODULE_PREFIX) {
           this.generateLinkComponent();
         }
+        this.componentCacheList = this.keepAliveLists
       },
       generateFrameComponent() {
         const componentName = moduleName();
