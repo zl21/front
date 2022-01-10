@@ -1,0 +1,237 @@
+// 任务列表
+#r3-skq-notice-queue {
+  height: 340px;
+  display: flex;
+  flex-direction: column;
+}
+
+// 任务通知
+.r3-dialog-skqNotice {
+  #r3-skq-notice-queue {
+    max-height: 220px;
+    height: auto;
+  }
+  .r3-skq-notice-queue-head {
+    &::before {
+      content: '';
+      display: inline-block;
+      position: absolute;
+      top: -3px;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: @primary-color;
+      border-radius: 6px 6px 0 0;
+    }
+  }
+}
+
+.r3-skq-notice-queue-head {
+  width: 100%;
+  height: 44px;
+  border-bottom: 1px solid #d8d8d8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  .r3-skq-notice-head-l {
+    flex: 1;
+    margin-left: 20px;
+    .r3-skq-task-state {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    .r3-skq-filter-panel {
+      font-size: 14px;
+      color: #212121;
+      font-weight: 500;
+    }
+  }
+
+  .r3-skq-notice-head-r {
+    display: flex;
+    align-items: center;
+    flex: 90px 0 0;
+    font-size: 12px;
+    .r3-skq-view-all {
+      margin-right: 8px;
+      cursor: pointer;
+    }
+    a,
+    i {
+      color: #545454;
+    }
+  }
+}
+
+.r3-skq-notice-queue-body {
+  flex: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative;
+
+  .ark-icon {
+    cursor: default;
+  }
+
+  .r3-skq-notice-body-l {
+    margin-right: 8px;
+    i {
+      margin-top: -1px;
+    }
+  }
+
+  .r3-skq-notice-body-m {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    .r3-task-content {
+      display: flex;
+      align-items: center;
+    }
+
+    .task-title {
+      max-width: 280px;
+      color: #545454;
+    }
+
+    .r3-task-subtitle {
+      margin-top: 8px;
+      color: #9f9f9f;
+    }
+  }
+
+  .r3-task-item {
+    display: flex;
+    margin: 0 12px 16px;
+    &:first-child {
+      margin-top: 16px;
+    }
+  }
+
+  @keyframes ani-demo-spin {
+    // from { transform: rotate(0deg);}
+    // 50%  { transform: rotate(180deg);}
+    // to   { transform: rotate(360deg);}
+    100% {
+      transform: rotate(1turn);
+    }
+  }
+  .path {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+    stroke-linecap: round;
+    animation: 1.5s ease-in-out 0s infinite normal none running dash,
+      6s ease-in-out 0s infinite normal none running color;
+  }
+  .notice-ongoing {
+    -webkit-animation: rotate 2s linear infinite;
+    animation: rotate 2s linear infinite;
+    height: 14px;
+    -webkit-transform-origin: center center;
+    -ms-transform-origin: center center;
+    transform-origin: center center;
+    width: 14px;
+  }
+  @keyframes rotate {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+
+  @keyframes dash {
+    0% {
+      stroke-dasharray: 1, 200;
+      stroke-dashoffset: 0;
+    }
+
+    50% {
+      stroke-dasharray: 89, 200;
+      stroke-dashoffset: -35;
+    }
+
+    to {
+      stroke-dasharray: 89, 200;
+      stroke-dashoffset: -124;
+    }
+  }
+
+  @keyframes color {
+    0%,
+    to {
+      stroke: @info-color;
+    }
+  }
+
+  .notice-success {
+    color: @success-color;
+  }
+  .notice-error {
+    color: @error-color;
+  }
+  .bottom-tip {
+    color: #666;
+    font-size: 12px;
+    text-align: center;
+    cursor: pointer;
+    padding: 12px 0;
+  }
+}
+
+// 筛选框
+.r3-skq-notice-pop.ark-poptip-popper {
+  min-width: auto;
+  .state-item {
+    font-size: 12px;
+    color: #545454;
+    padding: 6px 6px;
+    cursor: pointer;
+    letter-spacing: 1px;
+  }
+}
+
+
+// 覆盖默认样式
+.r3-dialog-skqNoticeQueue {
+  .ark-modal-content-drag {
+    position: fixed;
+  }
+  .ark-modal-body {
+    padding: 0;
+  }
+  .ark-modal-content {
+    top: 51px;
+    right: 45px;
+  }
+
+  .ark-modal-content {
+    margin-top: 0;
+  }
+}
+
+.r3-dialog-skqNotice {
+  .ark-modal-content-drag {
+    position: fixed;
+  }
+  .ark-modal-body {
+    padding: 0;
+  }
+  .ark-modal-content {
+    bottom: 40px;
+    right: 24px;
+  }
+
+  .ark-modal-content {
+    margin-top: 0;
+  }
+}
+
+// 过渡效果
+.r3-slide-fade-leave-active {
+  transition: all 0.5s linear;
+}
+.r3-slide-fade-leave-to
+/* .slide-fade-leave-active for below version 2.1.8 */ {
+  transform: translateX(30px);
+  opacity: 0;
+}

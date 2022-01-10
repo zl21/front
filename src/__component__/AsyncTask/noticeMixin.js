@@ -28,6 +28,7 @@ const mixin = {
         fixedcolumns = {
           OPERATOR_ID: [this.userId],
           READ_STATE: ['=0'],
+          TASK_STATE: ['=2', '=3'],
         }
       }
       const searchdata = {

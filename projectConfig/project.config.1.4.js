@@ -267,4 +267,5 @@ module.exports = {
   //       return data;
   //     }
   // }
+  asyncTaskScheme: 'skq' // 异步导出设计方案
 };

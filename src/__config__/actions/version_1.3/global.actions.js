@@ -269,14 +269,19 @@ export default {
     }
   },
   updataTaskMessageCount({ commit }, { id, stopUpdataQuantity }) { // 更新我的任务数量
-    network.post('/p/cs/ignoreMsg', urlSearchParams({ id })).then((res) => {
-      const datas = res.data;
-      if (datas.code === 0) { 
-        if (!stopUpdataQuantity) {
-          commit('updateIgnoreMsg');
+    return new Promise((resolve, reject) => {
+      network.post('/p/cs/ignoreMsg', urlSearchParams({ id })).then((res) => {
+        const datas = res.data;
+        if (datas.code === 0) { 
+          if (!stopUpdataQuantity) {
+            commit('updateIgnoreMsg');
+          }
         }
-      }
-    });
+        resolve(res);
+      }).catch((err) => {
+        reject(err)
+      })
+    })
   },
    
   getTaskMessageCount({ commit }, userId) { // 获取我的任务数量

@@ -281,16 +281,21 @@ export default {
   updataTaskMessageCount({ commit }, { id, stopUpdataQuantity }) { // 更新我的任务数量
     const obj = Version() === '1.3' ? urlSearchParams({ id }) : { objId: id };
     obj.id = obj.objId;
-    network.post(Version() === '1.3' ? '/p/cs/ignoreMsg' : '/p/cs/u_note/ignoreMsg', obj, {
-      serviceId: enableGateWay() ? 'asynctask' : ''
-    }).then((res) => {
-      const datas = res.data;
-      if (datas.code === 0) { 
-        if (!stopUpdataQuantity) {
-          commit('updateIgnoreMsg');
+    return new Promise((resolve, reject) => {
+      network.post(Version() === '1.3' ? '/p/cs/ignoreMsg' : '/p/cs/u_note/ignoreMsg', obj, {
+        serviceId: enableGateWay() ? 'asynctask' : ''
+      }).then((res) => {
+        const datas = res.data;
+        if (datas.code === 0) { 
+          if (!stopUpdataQuantity) {
+            commit('updateIgnoreMsg');
+          }
         }
-      }
-    });
+        resolve()
+      }).catch((err) => {
+        reject(err)
+      })
+    })
   },
   getTaskMessageCount({ commit }, userId) { // 获取我的任务数量
     if (!messageSwitch()) {

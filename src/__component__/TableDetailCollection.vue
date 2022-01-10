@@ -181,7 +181,7 @@
   import { mapState, mapMutations, mapActions } from 'vuex';
   import regExp from '../constants/regExp';
   import {
-    Version, LINK_MODULE_COMPONENT_PREFIX, INSTANCE_ROUTE_QUERY, enableActivateSameCustomizePage, ossRealtimeSave, classFix, messageSwitch, enableAsyncTaskTip, enableTaskNotice
+    Version, LINK_MODULE_COMPONENT_PREFIX, INSTANCE_ROUTE_QUERY, enableActivateSameCustomizePage, ossRealtimeSave, classFix, messageSwitch, enableAsyncTaskTip, enableTaskNotice, asyncTaskScheme
   } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
   import ComplexsDialog from './ComplexsDialog.vue'; // emit 选中的行
@@ -191,7 +191,7 @@
   import network, { getGateway, urlSearchParams } from '../__utils__/network';
   import ComAttachFilter from './ComAttachFilter.vue';
   import Docfile from './docfile/DocFileComponent.vue';
-  import { DispatchEvent } from '../__utils__/dispatchEvent';
+  import { DispatchEvent, R3_EXPORT } from '../__utils__/dispatchEvent';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import { getUrl, getLabel } from '../__utils__/url';
   import { updateSessionObject } from '../__utils__/sessionStorage';
@@ -4685,9 +4685,22 @@
           menu: this.itemInfo.tabledesc
         };
 
+        // 新异步任务
+        if(asyncTaskScheme() === 'skq') {
+          const params = {
+            detail: {
+              apiParams: OBJ
+            }
+          }
+          DispatchEvent(R3_EXPORT, params)
+          return
+        }
+
         window.localStorage.setItem('r3-stopPolling', true) // 锁住通知发送
         const promise = new Promise((resolve, reject) => {
-          this.$R3loading.show(this.loadingName);
+          if(asyncTaskScheme() !== 'skq') {
+            this.$R3loading.show(this.loadingName);
+          }
           this.getExportQueryForButtons({ OBJ, resolve, reject });
         });
         promise.then(() => {

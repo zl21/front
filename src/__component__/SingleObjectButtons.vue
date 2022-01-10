@@ -87,12 +87,13 @@
     enableOpenNewTab,
     messageSwitch,
     enableTaskNotice,
-    enableAsyncTaskTip
+    enableAsyncTaskTip,
+    asyncTaskScheme
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import { getUrl, getLabel } from '../__utils__/url';
 
-  import { DispatchEvent } from '../__utils__/dispatchEvent';
+  import { DispatchEvent, R3_EXPORT } from '../__utils__/dispatchEvent';
   import { getKeepAliveModuleName } from '../__config__/router.navigation.guard';
   import getUserenv from '../__utils__/getUserenv';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
@@ -1970,10 +1971,23 @@
           showColumnName: true,
         };
 
+        // 新异步任务
+        if(asyncTaskScheme() === 'skq') {
+          const params = {
+            detail: {
+              apiParams: OBJ
+            }
+          }
+          DispatchEvent(R3_EXPORT, params)
+          return
+        }
+
         window.localStorage.setItem('r3-stopPolling', true) // 锁住通知发送
         const promise = new Promise((resolve, reject) => {
           this.getExportQueryForButtons({ OBJ, resolve, reject });
-          this.$R3loading.show(this.loadingName);
+          if(asyncTaskScheme() !== 'skq') {
+            this.$R3loading.show(this.loadingName);
+          }
         });
         const { tablename } = this.getCurrentItemInfo();
         let pageRes = {};

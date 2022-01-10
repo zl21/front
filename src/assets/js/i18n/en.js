@@ -254,6 +254,7 @@ export default {
     rejected: 'rejected',
     virtualTable: 'virtual table',
     detail: 'detail',
+    details: 'details',
     noFiles: 'No files',
     popUp: 'pop-up windows',
     searchResult: 'search result',
@@ -379,7 +380,9 @@ export default {
     unfavoriteSuccessfully: 'unfavorite successfully',
     failedToUnfavorite: 'failed to unfavorite',
     cloneSuccess: 'successfully clone',
-    deleteSuccessfully: 'delete successfully'
+    deleteSuccessfully: 'delete successfully',
+    ongoing: 'ongoing',
+    fail: 'fail'
   },
   // 动作行为(不含按钮里的)
   actions: {
@@ -434,7 +437,7 @@ export default {
     excludeAll: 'exclude all',
     addSelectedRow: 'add selected row',
     addAll: 'add all',
-    login: 'login'
+    login: 'login',
   },
   // 表单(具有通用性的文案)
   form: {

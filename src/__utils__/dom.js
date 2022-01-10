@@ -16,3 +16,16 @@ export function scrollTo(dom, drag = 8) {
 
   scroll()
 }
+
+/**
+* 是否点元素外部
+* @param {element} clickDom 点击元素
+* @param {array<element>} doms 在哪些元素的内部
+* @returns 
+*/
+export function isClickOutside(clickDom, doms) {
+  const isInside = doms.some(dom => {
+    return dom.contains(clickDom)
+  })
+  return !isInside
+}

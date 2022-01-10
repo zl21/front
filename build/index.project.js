@@ -65,6 +65,7 @@ R3.launchApplication({
   lang: 'en',
   useAgGrid: true,
   queryConditionExpansion:true, // 一直收拉条件
+  asyncTaskScheme: 'skq',  
   // filterTablesOpenTab:['FUNCTIONPERMISSION']   // 过滤表明新开
   // imageAssets: {
   //   // 与projectConfig.image区别在于这个图片是含有文字的,用于国际化场景

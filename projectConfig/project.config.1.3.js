@@ -238,4 +238,5 @@ module.exports = {
   //     bigData: require('../src/assets/image/home.png'),
   //   }
   // }
+  asyncTaskScheme: 'skq' // 异步导出设计方案
 };

@@ -254,6 +254,7 @@ export default {
     rejected: '已驳回',
     virtualTable: '虚表',
     detail: '明细',
+    details: '详情',
     noFiles: '暂无文件',
     popUp: '弹出框',
     searchResult: '查询结果',
@@ -379,7 +380,9 @@ export default {
     unfavoriteSuccessfully: '取消收藏成功',
     failedToUnfavorite: '取消收藏失败',
     cloneSuccess: '克隆成功',
-    deleteSuccessfully: '删除成功'
+    deleteSuccessfully: '删除成功',
+    ongoing: '进行中',
+    fail: '失败'
   },
   // 动作行为(不含按钮里的，比如勾选，输入之类)
   actions: {
