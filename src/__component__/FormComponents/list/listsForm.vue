@@ -329,19 +329,19 @@ export default {
 
         })
         this.ButtonHtml = window.ProjectConfig.layoutDirectionSlot.listFormButton;
-        this.hiddenIcon = this.ButtonHtml.data().hiddenIcon || false;
-        let hiddenButtons = this.ButtonHtml.data().hiddenButtons || [];
+        this.hiddenIcon = this.ButtonHtml.data && this.ButtonHtml.data().hiddenIcon || false;
+        let hiddenButtons = this.ButtonHtml.data && this.ButtonHtml.data().hiddenButtons || [];
         if (Array.isArray(hiddenButtons)) {
           // 隐藏列表查询按钮
           let data = JSON.parse(JSON.stringify(this.$parent.buttons));
           hiddenButtons.forEach((key) => {
             data.dataArray[key] = false;
           });
-          if (this.ButtonHtml.props.ButttonCallBack) {
+          if (this.ButtonHtml.props && this.ButtonHtml.props.ButttonCallBack) {
             // 点击回调事件
             this.ButtonHtml.props.ButttonCallBack.default = this.$parent.buttonClick;
           }
-          if (this.ButtonHtml.props.IconCallBack) {
+          if (this.ButtonHtml.props && this.ButtonHtml.props.IconCallBack) {
             // 收拉框回调
             this.ButtonHtml.props.IconCallBack.default = this.toggle;
           }
