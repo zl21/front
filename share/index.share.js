@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import store from '../src/__config__/store.config';
 import network from '../src/__utils__/network';
 import {
