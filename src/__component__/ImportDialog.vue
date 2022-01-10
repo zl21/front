@@ -133,8 +133,9 @@
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import network, { urlSearchParams, getGateway } from '../__utils__/network';
   import Upload from '../__utils__/upload';
-  import { Version, encodeControl, classFix } from '../constants/global';
+  import { Version, encodeControl, classFix, asyncTaskScheme } from '../constants/global';
   import { mapState } from 'vuex';
+  import { DispatchEvent, R3_IMPORT } from '../__utils__/dispatchEvent';
 
   export default {
     name: 'ImportDialog',
@@ -398,6 +399,19 @@
 
       // 上传成功
       handleSuccess(response) {
+        // 新异步任务
+        if(asyncTaskScheme() === 'skq') {
+          const params = {
+            detail: {
+              type: 'notice'
+            }
+          }
+          DispatchEvent(R3_IMPORT, params)
+          this.$R3loading.hide(this.loadingName);
+          this.closeDialog()
+          return
+        }
+
         if (response.code === 0) {
           if (Version() === '1.4') {
             this.$R3loading.hide(this.loadingName);

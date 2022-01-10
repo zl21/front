@@ -12,7 +12,7 @@ const webpack = require('webpack');
 const {
   ModuleFederationPlugin
 } = require('webpack').container;
-
+const SpriteLoaderPlugin = require('svg-sprite-loader/plugin')
 const config = {
   entry: {
     index: './build/index.publish.js'
@@ -108,7 +108,18 @@ const config = {
         }],
       },
       {
-        test: /\.(png|jpg|gif|svg)$/,
+        test: /\.svg$/,
+        use: [
+          { 
+            loader: "svg-sprite-loader",
+            options: {
+                symbolId: "icon-[name]"
+            }
+          },
+        ]
+      },
+      {
+        test: /\.(png|jpg|gif)$/,
         use: [{
           loader: 'url-loader',
           options: {
@@ -130,6 +141,7 @@ const config = {
     ],
   },
   plugins: [
+    new SpriteLoaderPlugin(),
     new webpack.DefinePlugin({
       'process.env.BUILD_ENV': JSON.stringify(process.env.BUILD_ENV)
     }),

@@ -191,6 +191,10 @@ export default {
               option.row = 4;
             }
           }
+          // 兼容矩阵
+          if (option.qtyisshow === false) {
+            option.show = false;
+          }
           if(this.showPlace === 'childrenForm'){
             // 子表兼容
             option.showPlace = 'childrenForm';
