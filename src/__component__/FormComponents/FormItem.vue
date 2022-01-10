@@ -7,7 +7,7 @@
                :colname="items.colname"
                :value="value">
     <div :class="_items.props.fkdisplay === 'pop' ? 'ItemComponentRoot AttachFilter-pop':'ItemComponentRoot'">
-
+    <slot>
       <span class="itemLabel"
             :style="labelStyle"
             v-if="showLabel">
@@ -48,48 +48,11 @@
                style="color: #0f8ee9; cursor: pointer; font-size: 12px"
                @click="routerNext(value)" />
           </template>
-
         </template>
-
         <span :title="items.coldesc">{{ items.coldesc }}:</span>
       </span>
       <div :class=" [_items.props.row >1 ? 'itemComponent height100':'itemComponent',items.isuppercase?'isuppercase':'']"
            :style="_items.display==='image' ? 'overflow:visible' :''">
-        <!-- <Input
-        v-if="_items.type === 'input'"
-        :ref="_items.field"
-        v-model="_items.value"
-        :type="_items.props.type"
-        :clearable="_items.props.clearable"
-        :disabled="_items.props.disabled || _items.props.readonly"
-        :readonly="_items.props.readonly || _items.props.disabled"
-        :rows="_items.props.row"
-        :autosize="_items.props.autosize"
-        :autofocus="_items.props.autofocus"
-        :placeholder="!_items.props.disabled? _items.props.placeholder:''"
-        :size="_items.props.size"
-        :maxlength="_items.props.maxlength"
-        :icon="_items.props.icon"
-        :regx="_items.props.regx"
-        on-click="inputClick"
-        @on-blur="inputBlur"
-        @on-change="inputChange"
-        @on-enert="inputEnter"
-        @on-focus="inputFocus"
-        @on-keyup="inputKeyUp"
-        @on-keydown="inputKeyDown"
-        @on-keypress="inputKeyPress"
-        @on-regx-check="inputRegxCheck"
-      /> -->
-        <!-- <ComAttachFilter
-        v-if="_items.type === 'AttachFilter'"
-        :ref="_items.field"
-        :default-value="_items.value"
-        :default-selected="_items.props.Selected"
-        :propstype="_items.props"
-        @keydown="attachFilterInputKeydown"
-        @valuechange="attachFilterInput"
-      /> -->
         <component :is="componentsName"
                    :ref="items.colname"
                    v-bind="propsMessage"
@@ -118,7 +81,7 @@
           formIndex,
         }" />
       </div>
-
+      </slot>
     </div>
   </ValidateCom>
 </template>

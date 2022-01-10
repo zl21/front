@@ -13,15 +13,19 @@
              :key="ItemLists[item]._index"
              :index="index"
              :class="['item',ItemLists[item].colname,(defaultSpread ? (index > (setdefaultColumn*searchFoldnum - 1 - indexButton) && !dowClass):defaultSpread) ?'long':'']">
-
           <keep-alive>
             <component :is="ItemLists[item].component"
                        :items="ItemLists[item]"
                        @on-change="valueChange"
-                       :label-width="90" />
+                       :label-width="90">
+                       <slot >
+                         <div v-if="listFormTemple(ItemLists[item])" v-html="listFormTemple(ItemLists[item])"></div>
+                      </slot>
+              </component>
           </keep-alive>
         </div>
       </div>
+     
       <component v-if="ButtonHtml"
                  :class="classButton"
                  :is="ButtonHtml"></component>
@@ -125,7 +129,14 @@ export default {
       default () {
         return '';
       }
-    }
+    },
+     listFormTemple:{
+      // 模板项目
+      type: Function,
+      default: ()=>{
+      }  
+
+    },
   },
   data () {
     return {

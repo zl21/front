@@ -30,7 +30,8 @@
       <i v-if="treeShow"
          class="iconfont iconbj_left" />
     </div>
-    <div :is="slotName" 
+    <div :is="slotName"  
+         :getVm="getVm"
        >
         <!-- <Button
           id="hideRefresh"
@@ -52,6 +53,7 @@
                   :form-item-lists="formItems.defaultFormItemsLists"
                   :default-spread="changeSearchFoldnum.switchValue"
                   :search="true"
+                  :listFormTemple="slotTemple.listForm"
                   :treeShow="treeShow"
                   :default-column="Number(4)"
                   :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
@@ -394,6 +396,10 @@ export default {
     },
   },
   methods: {
+    getVm (){
+      // 获取上一层实例
+      return this;
+    },
     // 表格渲染完毕回调
     gridReady (e) {
       if (this.R3_agReady) {
@@ -2809,7 +2815,7 @@ export default {
     const { tableId } = this[INSTANCE_ROUTE_QUERY];
     this.updateAccessHistory({ type: 'table', id: tableId });
   },
-  created () {
+   async created () {
     this._colPositionCache = undefined // 缓存表格列位置，如果相同不再请求接口
     this.buttonMap = buttonmap;
     this.ChineseDictionary = ChineseDictionary;
@@ -2837,10 +2843,16 @@ export default {
           }else if(tableName[table_name].layout){
             // 配置当前的表的布局
             this.slotName = tableName[table_name].layout;
+            if( typeof this.slotName ==='object'){
+              this.slotTemple = this.slotName.slotTemple;
+            }else{
+              this.slotTemple = (await this.slotName()).default.slotTemple;
+            }
           }
 
         }
-         console.log('====');
+       
+      
        }
 
     } else {
