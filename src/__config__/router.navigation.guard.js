@@ -401,7 +401,7 @@ export default (router) => {
         customizedModuleName,
         customizedModuleId,
       };
-      // setCustomeLabel(data);
+       setCustomeLabel(data);
     }
 
     // 通过activateSameCustomizePage配置路由到自定义界面，如果自定义界面标识相同，是否只激活同一个tab,默认为true,只激活同一个tab
