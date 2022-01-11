@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import VueDND from 'awe-dnd';
 import Viewer from 'v-viewer';
 import 'viewerjs/dist/viewer.css'

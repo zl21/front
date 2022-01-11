@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { getGuid } from './src/__utils__/random';
 import router from './src/__config__/router.config';
 import store from './src/__config__/store.config';
