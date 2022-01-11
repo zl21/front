@@ -15,7 +15,9 @@
          :width="modalWidth"
          @on-cancel="onCancel"
          @on-ok="onOk"
-         class-name="ark-modal">
+         class-name="ark-modal"
+         :styles="styles"
+         :className="className">
     <p v-if="contentText">
       {{ contentText }}
     </p>
@@ -32,6 +34,8 @@
                  :saveDialog="saveDialog"
                  :obj-tab-action-dialog-config="objTabActionDialogConfig"
                  :externalOptions="externalOptions"
+                 v-bind="dynamicAttrs"
+                 v-on="dynamicEvents"
                  @setTitle="setTitle"
                  @closeActionDialog="closeActionDialog"
                  @clearSelectIdArray="clearSelectIdArray"
@@ -87,10 +91,10 @@ export default {
     //   type: Boolean,
     //   default: () => false
     // }, // 是否可以滚动
-    // width: {
-    //   type: String,
-    //   default: () => 'auto'
-    // },
+    width: {
+      type: Number,
+      default: 520
+    },
     // zIndex: { // 层级
     //   type: Number,
     //   default: 1000
@@ -164,12 +168,26 @@ export default {
     externalOptions: {
       type: Object,
       default: () => {}
+    },
+    // 动态参数
+    dynamicAttrs: {
+      type: Object,
+    },
+    // 动态事件
+    dynamicEvents: {
+      type: Object,
+    },
+    styles: {
+      type: Object,
+    },
+    className: {
+      type: String,
     }
   },
   data () {
     return {
       showModal: false,
-      modalWidth: 520,
+      modalWidth: this.width,
       setTitleName: ''
     };
   },

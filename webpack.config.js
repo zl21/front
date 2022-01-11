@@ -22,9 +22,9 @@ const proxyListForWuliu = ['/wuliu-admin'];
 const proxyListForKABIN = ['/r3/cabben/pt'];
 const proxyListForOMS = ['/p/c', '/p/cs', '/api', '/ad-app', '/r3-ps', '/r3-cp', '/r3-st', '/r3-oc-oms', '/r3-vip', '/r3-ipcs', '/asynctask/p/c', '/r3-pm', '/r3-ac', '/r3-sg']
 
-const indexProHtml = path.posix.join('/', 'index.pro.html');
+const indexProHtml = path.posix.join('/', 'index.html');
 const indexHtml = path.posix.join('/', 'index.html');
-
+const SpriteLoaderPlugin = require('svg-sprite-loader/plugin')
 module.exports = env => ({
   entry: {
     index: './index.js',
@@ -183,7 +183,18 @@ module.exports = env => ({
         ]
       },
       {
-        test: /\.(woff|woff2|eot|ttf|otf|svg)$/,
+        test: /\.svg$/,
+        use: [
+          { 
+            loader: "svg-sprite-loader",
+            options: {
+                symbolId: "icon-[name]"
+            }
+          },
+        ]
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
         use: [
           {
             loader: 'file-loader',
@@ -197,6 +208,7 @@ module.exports = env => ({
     ],
   },
   plugins: [
+    new SpriteLoaderPlugin(),
     new webpack.DefinePlugin({
       'process.env.BUILD_ENV': JSON.stringify(process.env.BUILD_ENV)
     }),
@@ -208,7 +220,22 @@ module.exports = env => ({
     new HtmlWebpackPlugin({
       chunksSortMode: 'none',
       title: env && env.production ? projectConfig.projectsTitle : `Debug:${projectConfig.projectsTitle}`,
-      template: env && env.production ? './index.pro.html' : './index.html',
+      template: './index.html',
+      templateParameters: (compilation, assets, assetTags, options) => {
+        if(process.env.BUILD_ENV ==='oss_no' || process.env.BUILD_ENV ==='oss'){
+          // 兼容oss 配置
+          return {
+            Version:'1.4',
+            enableGateWay:process.env.BUILD_ENV ==='oss_no' ? false :true,
+            enableLoginPro:false,
+          }
+        }
+        return {
+          Version: process.env.BUILD_ENV ||'1.4',
+          enableGateWay:process.env.BUILD_ENV =='1.4',
+          enableLoginPro:process.env.BUILD_ENV =='1.4',
+        }
+      },
       inject: true,
       favicon: projectConfig.projectIconPath,
     }),
@@ -278,19 +305,4 @@ module.exports = env => ({
       child_process:false
     },
   },
-  // optimization: {
-  //   minimizer: [new TerserJSPlugin({
-  //     parallel: true,
-  //     sourceMap: true,
-  //     terserOptions: {
-  //       compress: {
-  //         pure_funcs: ['console.log'],
-  //         warnings: false
-  //       }
-  //     }
-  //   }), new OptimizeCSSAssetsPlugin({})],
-  //   splitChunks: {
-  //     chunks: 'all',
-  //   }
-  // },
 });

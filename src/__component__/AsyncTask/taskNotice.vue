@@ -56,6 +56,12 @@ import {
   Version,
   enableGateWay,
 } from '../../constants/global';
+import {
+  getTaskMessage,
+  getCreatedTime,
+  getUrl,
+  isTaskSuccess
+} from '../../__utils__/task-utils'
 
 export default {
   name: '',
@@ -87,7 +93,7 @@ export default {
 
   computed: {
     statusMessage() {
-      return this.info.MESSAGE && this.info.MESSAGE.val || (this.info.CONTENT && this.info.CONTENT.val)
+      return getTaskMessage(this.info)
     },
 
     // 是否是导出任务
@@ -100,23 +106,17 @@ export default {
     },
 
     isSuccess() {
-      return (this.info.TASK_STATE && this.info.TASK_STATE.refobjval === 2) || (this.info.TASKSTATE && this.info.TASKSTATE.val === '已完成')
+      return isTaskSuccess(this.info)
     },
 
     noticeMessage() {
-      const beginTime =  Version() === '1.3' ?  this.info.BEGINTIME && this.info.BEGINTIME.val : ((this.info.CREATIONDATE && this.info.CREATIONDATE.val) || (this.info.MODIFIEDDATE && this.info.MODIFIEDDATE.val))
+      const beginTime =  getCreatedTime(this.info)
       return `${beginTime} ${this.$t('messages.operated')}【${this.info.MENU.val}】【${this.isExport ? this.$t('buttons.export') : this.$t('buttons.import')}】${this.statusMessage}`
     },
 
     // 下载用的a标签
     link() {
-      let url = ''
-      const serviceId = window.localStorage.getItem('serviceId')
-      const fileUrl = Version() === '1.3' ? this.info.URL.val : this.info.FILE_URL.val // 接口返回的下载地址
-      if(fileUrl) {
-        url = serviceId ? `/${serviceId}${JSON.parse(fileUrl)[0].url}` : JSON.parse(fileUrl)[0].url
-      }
-      return url
+      return getUrl(this.info)
     }
   },
 

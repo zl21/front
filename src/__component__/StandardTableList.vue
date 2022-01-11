@@ -179,17 +179,19 @@ import {
   messageSwitch,
   enableTaskNotice,
   enableAsyncTaskTip,
-  enableGateWay
+  enableGateWay,
+  asyncTaskScheme
 } from '../constants/global';
 import network, { getGateway, urlSearchParams} from '../__utils__/network';
 import customize from '../__config__/customize.config';
 // import router from '../__config__/router.config';
 import { getSessionObject, deleteFromSessionObject, updateSessionObject } from '../__utils__/sessionStorage';
 import { getUrl, getLabel } from '../__utils__/url';
-import { DispatchEvent } from '../__utils__/dispatchEvent';
+import { DispatchEvent, R3_EXPORT } from '../__utils__/dispatchEvent';
 import getUserenv from '../__utils__/getUserenv';
 import { addSearch, querySearch } from '../__utils__/indexedDB';
 import { getPinnedColumns } from '../__utils__/tableMethods'
+import { isTaskProcessing } from '../__utils__/task-utils'
 import tabBar from './tabBar.vue';
 import listsForm from './FormComponents/list/listsForm';
 
@@ -741,7 +743,11 @@ export default {
     },
 
     // 从【我的任务】进入单对象，如果任务未读,需调用读取接口
-    readTask(id) {
+    readTask(row) {
+      if(isTaskProcessing(row)) {
+        return
+      }
+      const id = row.ID.val
       const url = Version() === '1.4' ? '/p/cs/u_note/ignoreMsg': '/p/cs/ignoreMsg'
       const data = Version() === '1.4' ? { id, objId: id } : urlSearchParams({ id })
       network.post(url, data,{
@@ -757,11 +763,11 @@ export default {
 
       if(this.isGoToTaskDetail()) {
         if( Version() === '1.4' && row.READ_STATE.refobjval === 0) {
-          this.readTask(row.ID.val)
+          this.readTask(row)
         }
 
         if( Version() === '1.3' && row.READSTATE.val === '未读') {
-          this.readTask(row.ID.val)
+          this.readTask(row)
         }
       }
 
@@ -1780,6 +1786,16 @@ export default {
       } else {
         this.searchData.fixedcolumns = fixedcolumns;
       }
+
+      // 我的任务界面加排序参数
+      const tableName = this[INSTANCE_ROUTE_QUERY].tableName
+      if(tableName === 'U_NOTE' || tableName === 'CP_C_TASK') {
+        this.searchData.orderby = [{
+          column: `${tableName}.ID`,
+          asc: false
+        }]
+      }
+
       let json = JSON.parse(JSON.stringify(this.searchData));
       json = Object.assign({}, json, this.treeSearchData);
       // this.getQueryListForAg(this.searchData);
@@ -2109,10 +2125,7 @@ export default {
       if (obj.name === this.buttonMap.CMD_EXPORT.name) {
         // 全量导出
         if (this.buttons.selectIdArr.length === 0) {
-          // const title = this.$t('feedback.warning');
-          // const contentText = this.$t('messages.exportAllTip')
-          // this.dialogMessage(title, contentText, obj);
-          if(enableAsyncTaskTip()) {
+          if(enableAsyncTaskTip() && asyncTaskScheme() !== 'skq') {
             const title = this.$t('feedback.warning');
             const contentText = this.$t('messages.exportAllTip')
             this.dialogMessage(title, contentText, obj);
@@ -2178,7 +2191,9 @@ export default {
     },
 
     batchExport (buttonsData) {
-      this.$R3loading.show(this.loadingName);
+      if(asyncTaskScheme() !== 'skq') {
+        this.$R3loading.show(this.loadingName);
+      }
       // let searchData = {};
       // const { tableName } = this[INSTANCE_ROUTE_QUERY];
       // 导出
@@ -2195,6 +2210,10 @@ export default {
         searchdata.fixedcolumns = { ID: this.buttons.selectIdArr };
       }
       searchdata.column_include_uicontroller =  true
+      // fix:海量数据导出bug
+      if(!searchdata.fixedcolumns) {
+          searchdata.fixedcolumns = {}
+      }
       const OBJ = {
         searchdata,
         filename: this.activeTab.label,
@@ -2202,6 +2221,21 @@ export default {
         showColumnName: true,
         menu: this.activeTab.label
       };
+
+      // 新异步任务
+      if(asyncTaskScheme() === 'skq') {
+        const params = {
+          detail: {
+            apiParams: OBJ
+          }
+        }
+        const { jflowpath, requestUrlPath } = buttonsData
+        if(jflowpath || requestUrlPath) {
+          params.url = jflowpath || requestUrlPath
+        }
+        DispatchEvent(R3_EXPORT, params)
+        return
+      }
       
       window.localStorage.setItem('r3-stopPolling', true) // 锁住通知发送
 
@@ -2351,7 +2385,7 @@ export default {
         if (this.exportTasks.successMsg) {
           this.$Message.success(this.exportTasks.resultMsg)
         }
-        this.searchClickData();
+        // this.searchClickData();
       }, () => {
         this.$R3loading.hide(this.loadingName);
         if (this.exportTasks.warningMsg) {

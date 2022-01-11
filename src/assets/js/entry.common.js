@@ -13,6 +13,14 @@ import R3Dialog from '../../__globalComponentModule__/dialog';
 import { createWatermark } from '../../__utils__/waterMark';
 import store from '../../__config__/store.config';
 import { addSearch } from '../../__utils__/indexedDB'
+import SvgIcon from '../../__component__/SvgIcon/index.vue'// svg组件
+
+// register globally
+Vue.component('svg-icon', SvgIcon)
+
+const req = require.context('../svg', false, /\.svg$/)
+const requireAll = requireContext => requireContext.keys().map(requireContext)
+requireAll(req)
 
 Vue.use(VueDND);
 Vue.use(Viewer);

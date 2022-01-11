@@ -7,15 +7,17 @@ const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const projectConfig = require('./projectConfig/project.config');
+let projectConfig = require(`./projectConfig/project.config.${process.env.Version || '1.4'}`);
 
 const target = projectConfig.target; // 框架研发网关开启环境
-const proxyLists = ['/p/c', '/ad-app', '/jflow','/asynctask'];
+
+const proxyLists = ['/p/c', '/ad-app', '/jflow','/asynctask','/p/cs'];
 const proxyListsForGateway = ['/ad-app/p/c'];
 
 
-const indexProHtml = path.posix.join('/', 'index.project.html');
-const indexHtml = path.posix.join('/', 'index.project.html');
+const indexProHtml = path.posix.join('/', 'index.html');
+const indexHtml = path.posix.join('/', 'index.html');
+const SpriteLoaderPlugin = require('svg-sprite-loader/plugin')
 
 module.exports = env => ({
   entry: {
@@ -107,7 +109,18 @@ module.exports = env => ({
         ]
       },
       {
-        test: /\.(woff|woff2|eot|ttf|otf|svg)$/,
+        test: /\.svg$/,
+        use: [
+          { 
+            loader: "svg-sprite-loader",
+            options: {
+                symbolId: "icon-[name]"
+            }
+          },
+        ]
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
         use: [
           {
             loader: 'file-loader',
@@ -121,8 +134,9 @@ module.exports = env => ({
     ],
   },
   plugins: [
+    new SpriteLoaderPlugin(),
     new webpack.DefinePlugin({
-      'process.env.BUILD_ENV': JSON.stringify(process.env.BUILD_ENV)
+      'process.env.BUILD_ENV': JSON.stringify(process.env.Version),
     }),
     new MiniCssExtractPlugin({
       filename: 'r3.css',
@@ -131,8 +145,15 @@ module.exports = env => ({
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
       chunksSortMode: 'none',
+      templateParameters: (compilation, assets, assetTags, options) => {
+        return {
+          Version: process.env.Version||'1.4',
+          enableGateWay:process.env.Version =='1.4',
+          enableLoginPro:process.env.Version =='1.4',
+        }
+      },
       title: env && env.production ? projectConfig.projectsTitle : `Debug:${projectConfig.projectsTitle}`,
-      template: env && env.production ? './index.project.html' : './index.project.html',
+      template: './index.html',
       inject: true,
       favicon: projectConfig.projectIconPath,
     }),

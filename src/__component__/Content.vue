@@ -14,7 +14,7 @@
         config.items[1].layout.items[1].component = contentConfig();
       }
     }
-    
+   
     return appLayoutConfig().default;
   };
   
@@ -32,6 +32,7 @@
         height: '100%',
         width: '100%',
       }}>
+     
       {
         layout.items.map(item => <div  class={item.class } id={item.id} style={Object.assign(item.style || {}, {
           width: item.width ? `${item.width}px` : Object.assign({}, item.style).width,
