@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import router from './__config__/router.config';
 import routerPrototype from './__config__/router.prototype';
 import store from './__config__/store.config';

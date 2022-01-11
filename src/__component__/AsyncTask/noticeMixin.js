@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { Version, enableGateWay, getGatewayValue, enableTaskNotice } from '../../constants/global'
 import network, { urlSearchParams } from '../../__utils__/network'
 import taskNotice from './taskNotice.vue'
