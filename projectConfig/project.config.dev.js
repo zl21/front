@@ -34,18 +34,31 @@ module.exports = {
   layoutDirectionSlot:{  // 模板渲染
     //NavigatorSubMenu:require('./src/demo/NavigatorSubMenu.vue').default,  // 模板渲染
     //NaVertical:require('./src/demo/NaVerticalslot.vue').default  // 模板渲染
-    listFormButton:()=>import('../demo/detailbuttons.vue'),  // 定制列表button
+    // listFormButton:()=>import('../demo/detailbuttons.vue'),  // 定制列表button
     standardTableList:{
       // defined:()=>import('../demo/standardTableListdefind.vue'),
       tableName:{
         'AD_TABLE':{
           defined:()=>import('../demo/standardTableListdefind.vue'),
         },
-        'GUIGEZU':{ // 规格组
+        'V_STORE':{ // 一对多子表
           layout:()=>import('../demo/standardTableList.vue')
-        },
+        }
       }
-    }  // 定制列表button
+    },  // 定制列表button
+    HTableDetail:{
+      // 左右结构的单对象
+      'V_STORE':{ // 一对多子表
+        layout:()=>import('../demo/HTableDetail.vue')
+      }
+    },
+    VTableDetail:{
+      // 上下结构的单对象
+       'V_STORE':{ // 一对多子表
+        layout:()=>import('../demo/VTableDetail.vue')
+      }
+    }
+
   },
   domPortal: {
     // params对象属性,fromComponent用于区别哪个组件的水印,type区分布局结构
@@ -122,18 +135,28 @@ module.exports = {
      },
     // horizontalTableDetailCustomize: require('./src/demo/horizontalTableDetailCustomize.js').default,
     taskList: null,
-    // tableDetailCollectionMixin: {
-    //   methods: {
-    //     R3_processColumns(columns) {
-    //       console.log('列', columns)
-    //       columns.forEach(item => {
-    //         item.tdAlign = 'left'
-    //         delete item.webconf
-    //       })
-    //       return columns
-    //     }
-    //   }
-    // }
+    tableDetailCollectionMixin: {
+      slotArray:{
+        detailbuttonsa:()=>import('../demo/detailbuttonsa')  //子表按钮的文件
+       }, 
+       slotTableTemplate:()=>import('../demo/tableDetailCollectionSlot'), //  修改子表全局渲染的逻辑的文件,
+       tableName:{
+          'ORDER_MANAGEMWNT':{
+            layout:()=>import('../demo/ORDER_MANAGEMWNT.vue')
+          }
+       }
+
+      // methods: {
+      //   R3_processColumns(columns) {
+      //     console.log('列', columns)
+      //     columns.forEach(item => {
+      //       item.tdAlign = 'left'
+      //       delete item.webconf
+      //     })
+      //     return columns
+      //   }
+      // }
+    }
   },
   imgProgressController: false, // 是否显示图片上传进度
   ossRealtimeSave: false,

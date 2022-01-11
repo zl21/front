@@ -197,7 +197,7 @@
   import { updateSessionObject } from '../__utils__/sessionStorage';
   import getUserenv from '../__utils__/getUserenv';
   import createModal from './PreviewPicture/index';
-  import TableTemplate from './TableDetailCollectionslot';
+  import TableTemplate from './slot/TableDetailCollectionslot';
   import { getPinnedColumns } from '../__utils__/tableMethods'
   // import { commonTableByAgGrid as arkCommonTableByAgGrid } from '@syman/ark-ui-bcl'
 
@@ -680,11 +680,9 @@
       this.$once('setSearchValue', () => {
         this.setSelectDefaultValue(); // 设置下拉的默认查询条件
       })
-      if(this.$parent.slotTableTemplate!== ''){
-        this.slotTableTemplate = this.$parent.slotTableTemplate;
-      }else{
-          this.slotTableTemplate = TableTemplate;
-      }
+      // 初始化卡槽
+      this.initSlot();
+      
     },
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
@@ -695,6 +693,35 @@
         if(this.R3_agReady) {
           this.R3_agReady(e)
         }
+      },
+      initSlot(){
+        // 初始化slot
+        if(this.$parent.slotTableTemplate!== ''){
+            let template = this.$parent.slotTableTemplate[this.tableName];
+
+            if(template){
+              // 当前子表配置
+              if(template.layout){
+                this.slotTableTemplate = this.$parent.slotTableTemplate[this.tableName].layout;
+              }else{
+                this.slotTableTemplate = TableTemplate;
+              }
+            }else{
+              // 全局
+              if(this.$parent.slotTableTemplate){
+                if( typeof this.$parent.slotTableTemplate ==='object'){
+                  this.slotTableTemplate = TableTemplate;
+                }else{
+                  this.slotTableTemplate = this.$parent.slotTableTemplate;
+                }
+              }
+
+            }
+        }else{
+          // 框架默认配置
+            this.slotTableTemplate = TableTemplate;
+        }
+
       },
       
       tableRowDbclick(row) {

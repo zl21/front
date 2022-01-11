@@ -53,12 +53,12 @@
                   :form-item-lists="formItems.defaultFormItemsLists"
                   :default-spread="changeSearchFoldnum.switchValue"
                   :search="true"
-                  :listFormTemple="slotTemple.listForm"
+                  :listFormTemple="slotTemple ? slotTemple.listForm : ()=>{}"
                   :treeShow="treeShow"
                   :default-column="Number(4)"
                   :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
                   @onHandleEnter="searchClickData" />
-        <component :is="defined"></component>           
+        <component :is="defined"  slot="list-defind" ></component>           
         <tabBar slot="list-tabBar" ref="R3tabBar"
                 v-if="getFilterTable"
                 :data="ag.tablequery"
@@ -247,8 +247,8 @@ export default {
       currentTabValue: {},
       filterTableParam: {},
       defined:'', // 插入的组件
-      slotName: ''  // 模板名称
-
+      slotName: '',  // 模板名称
+      slotTemple:''  // 模板的slot    
     };
   },
   computed: {
