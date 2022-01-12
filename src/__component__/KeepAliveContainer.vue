@@ -80,7 +80,7 @@
         } else if (routePrefix === LINK_MODULE_PREFIX) {
           this.generateLinkComponent();
         }
-        this.componentCacheList = this.keepAliveLists
+        this.componentCacheList = [...this.keepAliveLists]
       },
       generateFrameComponent() {
         const componentName = moduleName();
