@@ -1,6 +1,6 @@
 <template>
   <keep-alive
-    :include="keepAliveLists"
+    :include="componentCacheList"
   >
     <component
       :is="currentTable"
@@ -20,7 +20,8 @@
     name: `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.Table.KeepAlive`,
     data() {
       return {
-        currentTable: null
+        currentTable: null,
+        componentCacheList: []
       };
     },
     computed: {
@@ -38,6 +39,7 @@
           deleteFromSessionObject(HAS_BEEN_DESTROYED_MODULE, componentName);
         }
         this.currentTable = componentName;
+        this.componentCacheList = [...this.keepAliveLists]
       }
     },
     mounted() {
