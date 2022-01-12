@@ -1034,7 +1034,7 @@ export default {
       if (routeMapRecordForCustomizePage[window.vm.$router.currentRoute.fullPath]) {
         const CustomizePagePath = routeMapRecordForCustomizePage[window.vm.$router.currentRoute.fullPath];
         Object.keys(routeMapRecordForCustomizePage).map((item) => {
-          if (router.currentRoute.fullPath === item) {
+          if (window.vm.$router.currentRoute.fullPath === item) {
             deleteFromSessionObject('routeMapRecordForCustomizePage', window.vm.$router.currentRoute.fullPath);
           }
         });
