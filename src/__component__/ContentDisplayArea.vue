@@ -1,7 +1,6 @@
 <template>
   <div
     class="dispalyArea"
-    :data-keep-alive="keepAliveContainer"
   >
     <!-- 模块页签组件 -->
     <TabLists v-show="enableTabLists&&openedMenuLists.length>0&&!flag" />
@@ -10,9 +9,10 @@
       id="content"
       style="height: 100%; padding: 0 15px 0;overflow: auto;position: relative"
     >
-      <keep-alive :include="keepAliveContainer">
+      <!-- <keep-alive :include="keepAliveContainer">
         <router-view />
-      </keep-alive>
+      </keep-alive> -->
+      <router-view />
     </div>
     <div
       v-show="getDashboardConfig&&flag"
@@ -70,9 +70,9 @@
     computed: {
       ...mapState('global', ['keepAliveLists', 'openedMenuLists', 'isShowDashboardPage']),
 
-      keepAliveContainer() {
-        return Object.keys(this.keepAliveLists.map(d => d.split('.')[0]).reduce((a, c) => { a[c] = true; return a; }, {})).map(d => `${d}.Table.KeepAlive`);
-      },
+      // keepAliveContainer() {
+      //   return Object.keys(this.keepAliveLists.map(d => d.split('.')[0]).reduce((a, c) => { a[c] = true; return a; }, {})).map(d => `${d}.Table.KeepAlive`);
+      // },
       getDashboardConfig() {
         if (dashboardConfig()) {
           return dashboardConfig();

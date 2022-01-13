@@ -1,6 +1,6 @@
 <template>
   <keep-alive
-    :include="keepAliveLists"
+    :include="componentCacheList"
   >
     <component
       :is="currentTable"
@@ -21,7 +21,8 @@
     name: `${HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX}.Table.KeepAlive`,
     data() {
       return {
-        currentTable: null
+        currentTable: null,
+        componentCacheList: []
       };
     },
     computed: {
@@ -46,6 +47,7 @@
     watch: {
       $route() {
         this.generateComponent();
+        this.componentCacheList = [...this.keepAliveLists]
       },
     }
   };

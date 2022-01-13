@@ -1,6 +1,6 @@
 <template>
   <keep-alive
-    :include="keepAliveLists"
+    :include="componentCacheList"
   >
     <component
       :is="currentModule"
@@ -24,7 +24,8 @@
     name: `${PLUGIN_MODULE_COMPONENT_PREFIX}.Table.KeepAlive`,
     data() {
       return {
-        currentModule: null
+        currentModule: null,
+        componentCacheList: []
       };
     },
     computed: {
@@ -41,6 +42,7 @@
           Vue.component(componentName, target ? target.component : Vue.extend(Object.assign({}, PageNotFound)));
         }
         this.currentModule = componentName;
+        this.componentCacheList = [...this.keepAliveLists]
       }
     },
     mounted() {
