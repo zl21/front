@@ -25,7 +25,7 @@ const project = {
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
   enableGateWay: true, // 网关是否打开,
-  enableLoginPro:true,
+  enableLoginPro:false,
   ...projectconfig,
 };
 module.exports  = project;

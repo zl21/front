@@ -233,7 +233,7 @@ module.exports = env => ({
         return {
           Version: process.env.BUILD_ENV ||'1.4',
           enableGateWay:process.env.BUILD_ENV =='1.4',
-          enableLoginPro:process.env.BUILD_ENV =='1.4',
+          enableLoginPro:false,
         }
       },
       inject: true,

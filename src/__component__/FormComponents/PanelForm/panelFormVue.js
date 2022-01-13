@@ -455,6 +455,29 @@ export default {
       //   this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
       //  }
 
+    },
+    initslot(){
+      // 初始化项目
+      let {layoutDirectionSlot} = window.ProjectConfig;
+      if( layoutDirectionSlot.panelForm){
+        // 针对当前表明
+        if( layoutDirectionSlot.panelForm.tableName ){
+             let { tableName } = this.$route.params;
+             let tableNameList = layoutDirectionSlot.panelForm.tableName[tableName];
+            if(tableNameList.CollapseComponent){
+              this.CollapseComponent = tableNameList.CollapseComponent;
+            }
+        }else{
+            // 针对全表
+            if(layoutDirectionSlot.panelForm.CollapseComponent){
+              this.CollapseComponent = layoutDirectionSlot.panelForm.CollapseComponent;
+            }
+
+          }
+
+      }
+
+
     }
   },
   created() {
@@ -462,12 +485,14 @@ export default {
   },
   mounted () {
     this.setFormlist();
+
     this.CollapseComponent = CollapseComponent;
     if(this.CollapseName === undefined){
       this.CollapseComponent = CollapseComponent;
     }else{
       this.CollapseComponent = this.CollapseName;
     }
+    this.initslot();
     // 通过dom 查找实例
     this.$el._vue_ = this;
     this.id = this.tableName +'-'+ ((this.moduleComponentName.split('.').splice(2,2)).join('-'));

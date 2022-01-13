@@ -45,17 +45,14 @@ module.exports = {
           layout:()=>import('../demo/standardTableList.vue')
         }
       }
-    },  // 定制列表button
-    HTableDetail:{
+    },  // 表单
+    panelForm:{
       // 左右结构的单对象
-      'V_STORE':{ // 一对多子表
-        layout:()=>import('../demo/HTableDetail.vue')
-      }
-    },
-    VTableDetail:{
-      // 上下结构的单对象
-       'V_STORE':{ // 一对多子表
-        layout:()=>import('../demo/VTableDetail.vue')
+      tableName:{
+        'V_STORE':{ // 一对多子表
+          CollapseComponent:()=>import('../demo/collaps.vue'),
+          layout:()=>import('../demo/HTableDetail.vue')
+        }
       }
     }
 
