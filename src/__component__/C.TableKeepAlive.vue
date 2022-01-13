@@ -1,6 +1,6 @@
 <template>
   <keep-alive
-    :include="componentCacheList"
+    :include="keepAliveLists"
   >
     <component
       :is="currentModule"
@@ -25,8 +25,7 @@
     name: `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.Table.KeepAlive`,
     data() {
       return {
-        currentModule: null,
-        componentCacheList: []
+        currentModule: null
       };
     },
     computed: {
@@ -70,7 +69,6 @@
     watch: {
       $route() {
         this.generateComponent();
-        this.componentCacheList = [...this.keepAliveLists]
       },
     }
   };

@@ -1,6 +1,6 @@
 <template>
   <keep-alive
-    :include="componentCacheList"
+    :include="keepAliveLists"
   >
     <iframe
       v-if="urlName"
@@ -27,8 +27,7 @@
     data() {
       return {
         urlName: '',
-        PageNotFound: null,
-        componentCacheList: []
+        PageNotFound: null
       };
     },
     computed: {
@@ -53,7 +52,6 @@
           Vue.component(linkModuleName, Vue.extend(Object.assign({}, PageNotFound)));
           this.PageNotFound = linkModuleName;
         }
-        this.componentCacheList = [...this.keepAliveLists]
       },
     },
     mounted() {
