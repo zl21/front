@@ -1,6 +1,6 @@
 <template>
   <keep-alive
-    :include="componentCacheList"
+    :include="keepAliveLists"
   >
     <component :is="currentTable" />
   </keep-alive>
@@ -18,8 +18,7 @@
     name: `${this.name}`,
     data() {
       return {
-        currentTable: null,
-        componentCacheList: []
+        currentTable: null
       };
     },
     computed: {
@@ -43,7 +42,6 @@
         }
      
         this.currentTable = componentName;
-        this.componentCacheList = [...this.keepAliveLists]
       } 
     },
     mounted() {
