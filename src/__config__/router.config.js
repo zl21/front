@@ -13,6 +13,10 @@ const originalReplace = VueRouter.prototype.replace;
 VueRouter.prototype.replace = function replace(location) {
   return originalReplace.call(this, location).catch(err => err);
 };
+VueRouter.prototype.R3Push = function() {
+  // 路由添加传参
+  this.$R3_params = {...arguments[0]}
+};
 
 Vue.use(VueRouter);
 const mode = mock() ? 'hash' : 'history';

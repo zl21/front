@@ -334,6 +334,11 @@ export default (router) => {
                 if(d.itemId === customizedModuleId ){
                   existModuleIndex = i;
                 }
+                 // 表明相同
+                 if(d.routeFullPath !== to.fullPath){
+                  return false
+                }
+                
               }else{
                   existModuleIndex = i;
               }
@@ -343,11 +348,7 @@ export default (router) => {
 
           }
 
-        // 表明相同
-        
-          if(d.routeFullPath !== to.fullPath){
-            return false
-          }
+          
           return true;
         }
         return false;
@@ -401,10 +402,12 @@ export default (router) => {
     // 跳转至定制界面的逻辑改为：只要单对象标记相同，不进行ID判断，只激活同一个单对象标记相同的界面
     let keepAliveModuleNameRes = '';
     if (dynamicModuleTag === 'C') {
+      let {label} = window.vm.$router.$R3_params || {};
       keepAliveModuleNameRes = keepAliveModuleName.split('.')[1];
       const data = {
         customizedModuleName,
         customizedModuleId,
+        label:label
       };
        setCustomeLabel(data);
     }
