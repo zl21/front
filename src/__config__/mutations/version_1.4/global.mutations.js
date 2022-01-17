@@ -113,12 +113,12 @@ export default {
       if (singleEditType === ':itemId') {
         const path = `/${param.url.replace(/:itemId/, param.id)}`;
         window.vm.$router.push(
-          path
+          path,arguments[1]
         );
       } else {
         const path = `/${param.url}`;
         window.vm.$router.push(
-          path
+          path,arguments[1]
         );
       }
     } else if (actionType === 'https:' || actionType === 'http:') {
@@ -149,7 +149,7 @@ export default {
       const path = `${LINK_MODULE_PREFIX}/${param.linkName.toUpperCase()}/${param.linkId}`;
       window.vm.$router.push({
         path
-      });
+      },arguments[1]);
     } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
       const customizedModuleName = param.url.substring(param.url.indexOf('/') + 1, param.url.lastIndexOf('/'));
       if (param.isMenu) {
@@ -174,7 +174,7 @@ export default {
       }
       window.vm.$router.push({
         path
-      });
+      },arguments[1]);
       if (param.isMenu) {
         const data = {
           customizedModuleName,
@@ -360,7 +360,7 @@ export default {
     state.serviceIdMap = Object.assign({}, state.serviceIdMap, window.RgetItemLocalStorage('serviceIdMap'));
     const path = getSessionObject('savePath').path;
     if (path && path !== window.vm.$router.currentRoute.path) {
-      window.vm.$router.push(path);
+      window.vm.$router.push(path,arguments[1]);
       // window.location.replace(window.location.href);
       // window.location.reload();
       removeSessionObject('savePath');
@@ -818,7 +818,7 @@ export default {
             }
             window.vm.$router.push({
               path: state.activeTab.routeFullPath,
-            });
+            },arguments[1]);
           } else {
             window.vm.$router.push('/');
           }
@@ -1053,7 +1053,7 @@ export default {
         const dom = document.querySelector(`#${router.currentRoute.params.tableName}_TAB`);
         dom.click();
         // if (state.openedMenuLists.length > 1) { // 框架路由tab逻辑为刷新浏览器保留最后一个打开的tab页签，则关闭当前会自动激活前一个
-        window.vm.$router.push(CustomizePagePath);
+        window.vm.$router.push(CustomizePagePath,arguments[1]);
         // }
 
         // state.openedMenuLists.map((menu) => {
@@ -1094,7 +1094,7 @@ export default {
            currentRouteFullPath = currentRouteFullPath.substr(0,currentRouteFullPath.indexOf('?'));
          }
          if(currentRouteFullPath!== path){
-           window.vm.$router.push(routeInfo);
+           window.vm.$router.push(routeInfo,arguments[1]);
          }
       }
       return;
@@ -1109,11 +1109,9 @@ export default {
       });
     }
     if (path) {
-      console.log({...arguments[1]},'====={...arguments[1]}');
-      window.vm.$router.R3Push({...arguments[1]});
       window.vm.$router.push({
         path
-      });
+      },arguments[1]);
     }
   },
   updataUserInfoMessage(state, { userInfo }) {

@@ -1110,10 +1110,9 @@ export default {
     });
    }
     if (path) {
-      window.vm.$router.R3Push({...arguments[1]});
       window.vm.$router.push({
         path
-      });
+      },arguments[1]);
     }
   },
   updataUserInfoMessage(state, { userInfo }) {
