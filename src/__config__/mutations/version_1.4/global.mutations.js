@@ -818,7 +818,7 @@ export default {
             }
             window.vm.$router.push({
               path: state.activeTab.routeFullPath,
-            },arguments[1]);
+            });
           } else {
             window.vm.$router.push('/');
           }
