@@ -402,14 +402,14 @@ export default (router) => {
     // 跳转至定制界面的逻辑改为：只要单对象标记相同，不进行ID判断，只激活同一个单对象标记相同的界面
     let keepAliveModuleNameRes = '';
     if (dynamicModuleTag === 'C') {
-      let {label} = window.vm.$router.$R3_params || {};
+      // let {label} = window.vm.$router.$R3_params || {};
       keepAliveModuleNameRes = keepAliveModuleName.split('.')[1];
-      const data = {
-        customizedModuleName,
-        customizedModuleId,
-        label:label
-      };
-       setCustomeLabel(data);
+      // const data = {
+      //   customizedModuleName,
+      //   customizedModuleId,
+      //   label:label
+      // };
+      //  setCustomeLabel(data);
     }
 
     // 通过activateSameCustomizePage配置路由到自定义界面，如果自定义界面标识相同，是否只激活同一个tab,默认为true,只激活同一个tab
