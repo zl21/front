@@ -120,13 +120,14 @@
           if (obj.vuedisplay === 'TabItem') { // 配置自定义tab
             const webact = obj.webact ? obj.webact.split('/')[0].toUpperCase() : '';// 自定义子表标识
             if (webact === 'HALF' || webact === 'ALL') {
-              Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
+              this.$options.components[`tapComponent.${item.tablename}`] = Vue.extend(tabComponent)
               obj.componentAttribute.componentName = obj.webact.substring(obj.webact.lastIndexOf('/') + 1, obj.webact.length);
             }
-          } else if (Vue.component(`tapComponent.${item.tablename}`) === undefined) {
-            Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
+          } else if (this.$options.components[`tapComponent.${item.tablename}`] === undefined) {
+            this.$options.components[`tapComponent.${item.tablename}`] = Vue.extend(tabComponent)
           }
-          obj.component = `tapComponent.${item.tablename}`;
+          // obj.component = `tapComponent.${item.tablename}`;
+          obj.component = this.$options.components[`tapComponent.${item.tablename}`]
           obj.cilckCallback = this.tabClick;
           arr.push(obj);
         });
@@ -163,8 +164,8 @@
     mounted() {
       const singleButtonComponentName = `${this[MODULE_COMPONENT_NAME]}.SingleObjectButtons`;
         let singleObjectButtonGroupMixins = window.ProjectConfig && window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.singleObjectButtonGroup || {};
-      if (Vue.component(singleButtonComponentName) === undefined) {
-        Vue.component(singleButtonComponentName, Vue.extend(Object.assign({ mixins: [verticalMixins(),singleObjectButtonGroupMixins] }, singleObjectButtons)));
+      if (this.$options.components[singleButtonComponentName] === undefined) {
+        this.$options.components[singleButtonComponentName] = Vue.extend(Object.assign({ mixins: [verticalMixins(),singleObjectButtonGroupMixins] }, singleObjectButtons))
       }
       this.currentSingleButtonComponentName = singleButtonComponentName;
 

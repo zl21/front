@@ -76,20 +76,21 @@
             if (obj.vuedisplay === 'TabItem') { // 引入自定义组件
               const webact = obj.webact ? obj.webact.split('/')[0] : '';// 自定义子表标识
               if (webact === 'HALF' || webact === 'ALL') {
-                Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
+                this.$options.components[`tapComponent.${item.tablename}`] = Vue.extend(tabComponent)
                 obj.componentAttribute.componentName = obj.webact.substring(obj.webact.lastIndexOf('/') + 1, obj.webact.length);// 自定义组件名称
                 obj.componentAttribute.componentType = webactType;// 自定义组件类型ALL/HALF
                 obj.componentAttribute.itemInfo = item;
               }
             } else {
-              if (Vue.component(`tapComponent.${item.tablename}`) === undefined) {
-                Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
+              if (this.$options.components[`tapComponent.${item.tablename}`] === undefined) {
+                this.$options.components[`tapComponent.${item.tablename}`] = Vue.extend(tabComponent)
               }
             }
             if (webactType === 'HALF') { // 如果是自定义tab全定制界面时，不需要引入公共组件,半定制界面需要引入公共组件
               this.updateButtonsDataForCustomization({ tabIndex: index, isShowValue: false });
             }
-            obj.component = `tapComponent.${item.tablename}`;
+            // obj.component = `tapComponent.${item.tablename}`;
+            obj.component = this.$options.components[`tapComponent.${item.tablename}`]
             obj.cilckCallback = this.tabClick;
             obj.isRequest = false;
             if (this.WebConf && this.WebConf.isCustomizeTab) {

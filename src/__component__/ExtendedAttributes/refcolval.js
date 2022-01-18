@@ -50,7 +50,6 @@ export const refcolvalMap = ($this, config,key,type) => {
     let linkFormMap = {
         [key]: [`${$this.item.tableName || ''}${$this.item.colname}`]
     };
-    console.log(targetVm,'=====',config);
 
     //挂载映射关系到对方 
     let checked = [];
