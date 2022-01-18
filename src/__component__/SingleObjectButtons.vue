@@ -3431,17 +3431,27 @@
           }
           return arr;
         }, []);
-      if (this.objectType === 'horizontal') {        
-        let panelFormParent = FindInstance(this,`tapComponent.${this.tableName}`)[0];
-        let panelFormVue = this.$_live_getChildComponent(panelFormParent, 'panelForm');
-        if(panelForm[0] && panelForm[0].tableName !==this.tableName){
-            panelForm.unshift(panelFormVue);
+        let mainName = this.loadingName.replace(/H-|V-/,'');  
+        // 判断当前主表是否存在
+        console.log(document.querySelector(`#${mainName}`),'=====');
+        if(document.querySelector(`#${mainName}`)){
+          if (this.objectType === 'horizontal') {        
+            let panelFormParent = FindInstance(this,`tapComponent.${this.tableName}`)[0];
+            let panelFormVue = this.$_live_getChildComponent(panelFormParent, 'panelForm');
+            if(panelForm[0] && panelForm[0].tableName !==this.tableName){
+                panelForm.unshift(panelFormVue);
+            }
+          }
+
         }
-      }
+
+       
+      
       let validate = [];
       if (panelForm && panelForm[0]) {
         validate = panelForm.reduce((arr, item, index) => {
-          if (index === 0) {
+          // 判断当前主表是否存在
+          if (index === 0 && document.querySelector(`#${mainName}`)) {
             // 默认第一个主表
             arr.push(...item.validate())
           } else if (this.itemName === item.tableName) {
