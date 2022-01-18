@@ -6,6 +6,7 @@ import ParameterDataProcessing from '../parameterDataProcessing';
 import LinkageRelationships from '../../ExtendedAttributes/LinkageRelationships';
 import { validateForm } from './Validate';
 import CollapseComponent from './CollapseComponent.vue';
+import {SetLayoutDirectionSlot} from '../../../__config__/layout/slot';
 import {
      MODULE_COMPONENT_NAME, classFix
   } from '../../../constants/global';
@@ -457,26 +458,8 @@ export default {
 
     },
     initslot(){
-      // 初始化项目
-      let {layoutDirectionSlot} = window.ProjectConfig;
-      if( layoutDirectionSlot.panelForm){
-        // 针对当前表明
-        if( layoutDirectionSlot.panelForm.tableName ){
-             let { tableName } = this.$route.params;
-             let tableNameList = layoutDirectionSlot.panelForm.tableName[tableName];
-            if(tableNameList.CollapseComponent){
-              this.CollapseComponent = tableNameList.CollapseComponent;
-            }
-        }else{
-            // 针对全表
-            if(layoutDirectionSlot.panelForm.CollapseComponent){
-              this.CollapseComponent = layoutDirectionSlot.panelForm.CollapseComponent;
-            }
-
-          }
-
-      }
-
+      // 
+      this.CollapseComponent = new SetLayoutDirectionSlot(this,'panelForm','CollapseComponent').init();
 
     }
   },

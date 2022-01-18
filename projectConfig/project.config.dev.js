@@ -51,10 +51,27 @@ module.exports = {
       tableName:{
         'V_STORE':{ // 一对多子表
           CollapseComponent:()=>import('../demo/collaps.vue'),
+          // layout:()=>import('../demo/HTableDetail.vue')
+        }
+      }
+    },
+    HTableDetail:{
+      tableName:{
+        'V_STORE':{ // 一对多子表
           layout:()=>import('../demo/HTableDetail.vue')
         }
       }
+
+    },
+    HTableDetail:{
+      tableName:{
+        'V_STORE':{ // 一对多子表
+          layout:()=>import('../demo/HTableDetail.vue')
+        }
+      }
+
     }
+
 
   },
   domPortal: {
