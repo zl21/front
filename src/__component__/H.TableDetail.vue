@@ -73,6 +73,7 @@
             if (obj.webact) { // 自定义tab全定制，tab切换时不需要请求，且不显示单对象按钮组件
               webactType = obj.webact.substring(0, obj.webact.lastIndexOf('/')).toUpperCase();
             }
+            tabComponent.name = `tapComponent.${item.tablename}`
             if (obj.vuedisplay === 'TabItem') { // 引入自定义组件
               const webact = obj.webact ? obj.webact.split('/')[0] : '';// 自定义子表标识
               if (webact === 'HALF' || webact === 'ALL') {
