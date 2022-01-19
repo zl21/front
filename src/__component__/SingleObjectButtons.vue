@@ -3431,10 +3431,9 @@
           }
           return arr;
         }, []);
-        let mainName = this.loadingName.replace(/H-|V-/,'');  
+        let {isCustomizeTab} = this.WebConf || {};  
         // 判断当前主表是否存在
-        console.log(document.querySelector(`#${mainName}`),'=====');
-        if(document.querySelector(`#${mainName}`)){
+        if(!isCustomizeTab){
           if (this.objectType === 'horizontal') {        
             let panelFormParent = FindInstance(this,`tapComponent.${this.tableName}`)[0];
             let panelFormVue = this.$_live_getChildComponent(panelFormParent, 'panelForm');
@@ -3451,7 +3450,7 @@
       if (panelForm && panelForm[0]) {
         validate = panelForm.reduce((arr, item, index) => {
           // 判断当前主表是否存在
-          if (index === 0 && document.querySelector(`#${mainName}`)) {
+          if (index === 0 && !isCustomizeTab) {
             // 默认第一个主表
             arr.push(...item.validate())
           } else if (this.itemName === item.tableName) {
