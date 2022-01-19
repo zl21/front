@@ -22,7 +22,11 @@
       <img
         :src="imgSrc.treeImg"
         alt=""
+        v-if="imgSrc.treeImg"
       >
+      <div class="no-tree-data" v-else>
+        <div class="no-tree-data-bg"></div>
+      </div>
       <div class="none-tip">{{$t('messages.addAccountFirst')}}</div>
     </div>
     <template v-else>

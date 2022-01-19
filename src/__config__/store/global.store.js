@@ -3,16 +3,10 @@
 import { Version } from '../../constants/global';
 import closedImg from '../../assets/image/closed@2x.png';
 import openedImg from '../../assets/image/open@2x.png';
-import bigDataImg from '../../assets/image/isBig.png';
 import logoImg from '../../assets/image/logo.png';
 import bannerImg from '../../assets/image/banner.png';
 import bannerEnImg from '../../assets/image/logoen2.png';
-import bigDataEnImg from '../../assets/image/nodata-en.png';
-import loginImg from '../../assets/image/logo.1.png'
-import loginEnImg from '../../assets/image/logoen1.png'
-import treeImg from '../../assets/image/defalut-tree.jpg'
 import i18n from '../../assets/js/i18n';
-
 const mutations = () => require(`../mutations/version_${Version()}/global.mutations`).default;
 const actions = () => require(`../actions/version_${Version()}/global.actions`).default;
 
@@ -58,10 +52,10 @@ export default () => ({
       logoImg,
       closedImg,
       openedImg,
-      treeImg,
+      treeImg: undefined,
       bannerImg: i18n.locale === 'zh' ? bannerImg : bannerEnImg,
-      bigDataImg: i18n.locale === 'zh' ? bigDataImg : bigDataEnImg,
-      loginImg: i18n.locale === 'zh'? loginImg : loginEnImg,
+      bigDataImg: undefined,
+      loginImg: undefined,
     },
     isShowDashboardPage: false,
     previewPictureInstance: [], // 记录图片预览实例

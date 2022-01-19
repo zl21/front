@@ -19,10 +19,13 @@
       v-show="zNodes.length === 0"
       class="no-tree-wrap"
     >
-      <img
-        src="../../assets/image/defalut-tree.jpg"
+      <!-- <img
+        src="../../assets/image/default-tree.jpg"
         alt=""
-      >
+      > -->
+      <div class="no-tree-data" >
+        <div class="no-tree-data-bg"></div>
+      </div>
       <div
         class="no-tree-tip"
         style="margin-top: 30px;text-align: center;"
