@@ -70,6 +70,7 @@
         customizeValue: '',
         currentSingleButtonComponentName: null,  //按钮组件
         from: 'singlePage',
+        childPanel: {}
       };
     },
     computed: {
@@ -121,14 +122,20 @@
           if (obj.vuedisplay === 'TabItem') { // 配置自定义tab
             const webact = obj.webact ? obj.webact.split('/')[0].toUpperCase() : '';// 自定义子表标识
             if (webact === 'HALF' || webact === 'ALL') {
-              this.$options.components[`tapComponent.${item.tablename}`] = Vue.extend(tabComponent)
+              // this.$options.components[`tapComponent.${item.tablename}`] = Vue.extend(tabComponent)
+              if (this.childPanel[`tapComponent.${item.tablename}`] === undefined) {
+                this.childPanel[`tapComponent.${item.tablename}`] = Object.assign({}, tabComponent)
+              }
               obj.componentAttribute.componentName = obj.webact.substring(obj.webact.lastIndexOf('/') + 1, obj.webact.length);
             }
-          } else if (this.$options.components[`tapComponent.${item.tablename}`] === undefined) {
-            this.$options.components[`tapComponent.${item.tablename}`] = Vue.extend(tabComponent)
+          } else if (this.childPanel[`tapComponent.${item.tablename}`] === undefined) {
+            this.childPanel[`tapComponent.${item.tablename}`] = Object.assign({}, tabComponent)
           }
+          // else if (this.$options.components[`tapComponent.${item.tablename}`] === undefined) {
+          //   this.$options.components[`tapComponent.${item.tablename}`] = Vue.extend(tabComponent)
+          // }
           // obj.component = `tapComponent.${item.tablename}`;
-          obj.component = this.$options.components[`tapComponent.${item.tablename}`]
+          obj.component = this.childPanel[`tapComponent.${item.tablename}`]
           obj.cilckCallback = this.tabClick;
           arr.push(obj);
         });
