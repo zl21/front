@@ -55,10 +55,10 @@ module.exports = {
         }
       }
     },
-    HTableDetail:{
+    VTableDetail:{
       tableName:{
         'V_STORE':{ // 一对多子表
-          layout:()=>import('../demo/HTableDetail.vue')
+          layout:()=>import('../demo/VTableDetail.vue')
         }
       }
 

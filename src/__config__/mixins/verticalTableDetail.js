@@ -20,6 +20,7 @@ export default () => ({
   },
   mixins:[minx],
   mounted() {
+    
   },
   created() {
     if (!this[MODULE_COMPONENT_NAME]) {

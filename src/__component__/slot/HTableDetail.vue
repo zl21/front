@@ -9,9 +9,15 @@
 </template>
 <script>
 
+
  export default {
   name: '',
   inheritAttrs: true,
+  props:{
+    id:{
+      t
+    }
+  }
 
 }
 </script>

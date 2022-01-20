@@ -457,16 +457,17 @@ export default {
       //  }
 
     },
-    initslot(){
+    async initslot(){
       // 
-      this.CollapseComponent = new SetLayoutDirectionSlot(this,'panelForm','CollapseComponent').init();
+      let data = await new SetLayoutDirectionSlot(this.$parent,this,'panelForm','CollapseComponent').init(this.CollapseComponent);
+      this.CollapseComponent = data;
 
     }
   },
   created() {
     this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');
   },
-  mounted () {
+  async mounted () {
     this.setFormlist();
 
     this.CollapseComponent = CollapseComponent;
@@ -475,7 +476,7 @@ export default {
     }else{
       this.CollapseComponent = this.CollapseName;
     }
-    this.initslot();
+    await this.initslot();
     // 通过dom 查找实例
     this.$el._vue_ = this;
     this.id = this.tableName +'-'+ ((this.moduleComponentName.split('.').splice(2,2)).join('-'));
