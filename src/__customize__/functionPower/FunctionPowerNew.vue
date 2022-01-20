@@ -791,6 +791,9 @@
       },
       selectFirstOnce() {
         var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+         if(!treeObj){
+            return;
+         }
         // console.log('this.groupId', this.groupId)
         // console.log('this.pageInit', this.pageInit)
         // console.log('nodes', nodes)

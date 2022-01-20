@@ -218,6 +218,7 @@ export default {
     operated: 'operated',
     seeDetails: 'see details',
     downloadFile: 'download file',
+    saveConfigTip:'no Saving configuration',
     asyncTaskTip: 'The task is being processed, please go to [My Tasks] to download the file later'
   },
   // 具有通用性的文案
