@@ -9,6 +9,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { ModuleFederationPlugin } = require('webpack').container;
+
 const projectConfig = require('./projectConfig/project.config');
 
 const target = projectConfig.target; // 框架研发网关开启环境
@@ -28,6 +29,9 @@ const SpriteLoaderPlugin = require('svg-sprite-loader/plugin')
 module.exports = env => ({
   entry: {
     index: './index.js',
+  },
+  experiments:{
+    topLevelAwait:true
   },
   externals: {
     vue: 'Vue',
