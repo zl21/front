@@ -22,10 +22,12 @@ Vue.mixin({
       const allComp = getAllChildComp(vueInstance);
       let componentArr = [];
       const i = allComp.findIndex((vm,index)=>{
-        if(type=== 'all' && vm.$options._componentTag === componentTag){
+        const name = vm.$options.name || vm.$options._componentTag
+        const currentName = name.toLowerCase()
+        if(type=== 'all' && currentName === componentTag.toLowerCase()){
           componentArr.push(vm);
         }else{
-          return vm.$options._componentTag === componentTag
+          return currentName === componentTag.toLowerCase()
         }
 
       });
