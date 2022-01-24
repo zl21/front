@@ -1221,9 +1221,9 @@ export default {
         bannerImg: data.enterpriseBanner ? data.enterpriseBanner : state.imgSrc.bannerImg,
         closedImg: data.collapseImg ? data.collapseImg : state.imgSrc.closedImg,
         openedImg: data.expandImg ? data.expandImg : state.imgSrc.openedImg,
-        bigDataImg: data.bigDataImg ? data.bigDataImg : state.imgSrc.bigDataImg,
-        loginImg: data.loginImg ? data.loginImg : state.imgSrc.loginImg,
-        treeImg: data.treeImg ? data.treeImg : state.imgSrc.treeImg,
+        bigDataImg: data.bigDataImg, // 因为图片大，所以给上面的写法不一样
+        loginImg: data.loginImg,
+        treeImg: data.treeImg,
       };
       state.imgSrc = Object.assign(state.imgSrc, images);
     }

@@ -13,7 +13,10 @@
     />
     <p class="orange" v-if="showTip && inputValue.length>0">"{{inputValue}}"{{Notice}}</p>
     <div v-show="zNodes.length === 0" class="no-tree-wrap">
-      <img :src="imgSrc.treeImg" alt="">
+      <img :src="treeImg" alt="" v-if="treeImg">
+      <div class="no-tree-data" v-else>
+        <div class="no-tree-data-bg"></div>
+      </div>
       <div
           class="no-tree-tip"
           style="margin-top: 30px;text-align: center;"
@@ -119,7 +122,7 @@
       },
 
       ...mapState('global', {
-        imgSrc: state => state.imgSrc,
+        treeImg: state => state.imgSrc.treeImg,
       }),
     },
 
