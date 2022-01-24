@@ -15,11 +15,12 @@
       :style=" { backgroundImage : 'url( ' + bigBackground + ') '} "
     /> -->
     <div
-      v-if="isBig"
+      v-if="isBig && bigBackground"
       class="isBig"
     >
-      <img :src="imgAssets.bigData || bigBackground">
+      <img :src="bigBackground">
     </div>
+    <div v-if="isBig && !bigBackground" :class="['isBig', bigBgClass]"></div>
 
     <!-- <div
       v-show="!isCommonTable && !isBig"
@@ -132,7 +133,6 @@ export default {
     ...mapState('global', {
       bigBackground: ({ imgSrc }) => imgSrc.bigDataImg,
     }),
-    ...mapGetters('global', ['imgAssets']),
     classes() {
       return [
         `${classFix}standardTable`,
@@ -141,6 +141,12 @@ export default {
         }
       ];
     },
+
+    // 海量数据图片样式
+    bigBgClass() {
+      return this.$i18n.locale === 'zh' ? 'big-zh' : 'big-en'
+    },
+
     agOptions() {
       let options = {
         ...this.options,
@@ -698,6 +704,14 @@ export default {
   margin-top: 10px;
   height: calc(100% - 65px);
   width: 100%;
+  &.big-zh {
+    background: url('../assets/image/isBig.png') center center no-repeat;
+    background-size: 25% auto;
+  }
+  &.big-en {
+    background: url('../assets/image/isBig-en.png') center center no-repeat;
+    background-size: 25% auto;
+  }
 }
 .isBig {
   //  background-repeat: no-repeat;

@@ -105,12 +105,12 @@ export default {
       if (singleEditType === ':itemId') {
         const path = `/${param.url.replace(/:itemId/, param.id)}`;
         window.vm.$router.push(
-          path
+          path,arguments[1]
         );
       } else {
         const path = `/${param.url}`;
         window.vm.$router.push(
-          path
+          path,arguments[1]
         );
       }
     } else if (actionType === 'https:' || actionType === 'http:') {
@@ -141,7 +141,7 @@ export default {
       const path = `${LINK_MODULE_PREFIX}/${param.linkName.toUpperCase()}/${param.linkId}`;
       window.vm.$router.push({
         path
-      });
+      },arguments[1]);
     } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
       const customizedModuleName = param.url.substring(param.url.indexOf('/') + 1, param.url.lastIndexOf('/'));
       if (param.isMenu) {
@@ -166,7 +166,7 @@ export default {
       }
       window.vm.$router.push({
         path
-      });
+      },arguments[1]);
       if (param.isMenu) {
         const data = {
           customizedModuleName,
@@ -1054,7 +1054,7 @@ export default {
         const dom = document.querySelector(`#${window.vm.$router.currentRoute.params.tableName}_TAB`);
         dom.click();
         // if (state.openedMenuLists.length > 1) { // 框架路由tab逻辑为刷新浏览器保留最后一个打开的tab页签，则关闭当前会自动激活前一个
-        window.vm.$router.push(CustomizePagePath);
+        window.vm.$router.push(CustomizePagePath,arguments[1]);
         // }
         
         // state.openedMenuLists.map((menu) => {
@@ -1095,7 +1095,7 @@ export default {
            currentRouteFullPath = currentRouteFullPath.substr(0,currentRouteFullPath.indexOf('?'));
          }
          if(currentRouteFullPath!== path){
-           window.vm.$router.push(routeInfo);
+           window.vm.$router.push(routeInfo,arguments[1]);
          }
       }
       return;
@@ -1112,7 +1112,7 @@ export default {
     if (path) {
       window.vm.$router.push({
         path
-      });
+      },arguments[1]);
     }
   },
   updataUserInfoMessage(state, { userInfo }) {
@@ -1232,9 +1232,9 @@ export default {
         bannerImg: data.enterpriseBanner ? data.enterpriseBanner : state.imgSrc.bannerImg,
         closedImg: data.collapseImg ? data.collapseImg : state.imgSrc.closedImg,
         openedImg: data.expandImg ? data.expandImg : state.imgSrc.openedImg,
-        bigDataImg: data.bigDataImg ? data.bigDataImg : state.imgSrc.bigDataImg,
-        loginImg: data.loginImg ? data.loginImg : state.imgSrc.loginImg,
-        treeImg: data.treeImg ? data.treeImg : state.imgSrc.treeImg,
+        bigDataImg: data.bigDataImg,
+        loginImg: data.loginImg,
+        treeImg: data.treeImg,
       };
       state.imgSrc = Object.assign(state.imgSrc, images);
     }

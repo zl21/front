@@ -218,6 +218,7 @@ export default {
     operated: '操作的',
     seeDetails: '详见',
     downloadFile: '下载文件',
+    saveConfigTip:'无保存配置',
     asyncTaskTip: '任务处理中,请稍后去【我的任务】中下载文件'
   },
   // 具有通用性的文案

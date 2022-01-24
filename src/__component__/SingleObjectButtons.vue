@@ -3430,17 +3430,27 @@
           }
           return arr;
         }, []);
-      if (this.objectType === 'horizontal') {        
-        let panelFormParent = FindInstance(this,`tapComponent.${this.tableName}`)[0];
-        let panelFormVue = this.$_live_getChildComponent(panelFormParent, 'panelForm');
-        if(panelForm[0] && panelForm[0].tableName !==this.tableName){
-            panelForm.unshift(panelFormVue);
+        let {isCustomizeTab} = this.WebConf || {};  
+        // 判断当前主表是否存在
+       
+        if(!isCustomizeTab){
+          if (this.objectType === 'horizontal') {        
+            let panelFormParent = FindInstance(this,`tapComponent.${this.tableName}`)[0];
+            let panelFormVue = this.$_live_getChildComponent(panelFormParent, 'panelForm');
+            if(panelForm[0] && panelForm[0].tableName !==this.tableName){
+                panelForm.unshift(panelFormVue);
+            }
+          }
+
         }
-      }
+
+       
+      
       let validate = [];
       if (panelForm && panelForm[0]) {
         validate = panelForm.reduce((arr, item, index) => {
-          if (index === 0) {
+          // 判断当前主表是否存在
+          if (index === 0 && !isCustomizeTab) {
             // 默认第一个主表
             arr.push(...item.validate())
           } else if (this.itemName === item.tableName) {
@@ -3479,6 +3489,11 @@
         }
         return false;
       }
+      if (isCustomizeTab && this.objectType === 'horizontal' && this.itemId == 'New') {
+              // 隐藏主表且主表为新增状态的左右结构，不保存
+            this.$Message.warning(this.$t('messages.saveConfigTip'));
+            return false;
+        }
 
         // const checkedInfo = this.currentParameter.checkedInfo;// 主表校验信息
         // if (checkedInfo || validate) {
@@ -3597,6 +3612,7 @@
         if (window[this.tableName] && window[this.tableName].emitChangeAndContinue) {
           window[this.tableName].emitChangeAndContinue();
         }
+         
 
         return true;
       },

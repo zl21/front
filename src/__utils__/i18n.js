@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import i18n from "../assets/js/i18n";
 import en from '../../static/js/ark/dist/locale/en-US.js'
 import zh from '../../static/js/ark/dist/locale/zh-CN.js'

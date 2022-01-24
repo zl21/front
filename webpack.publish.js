@@ -123,7 +123,7 @@ const config = {
         use: [{
           loader: 'url-loader',
           options: {
-            limit: 1000000,
+            limit: 10000,
             name: '[path][name].[ext]'
           }
         }]
