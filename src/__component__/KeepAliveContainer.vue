@@ -220,6 +220,8 @@
         if (!this.urlName) {
           if (this.$options.components[componentName] === undefined) {
             this.$options.components['PageNotFound'] = PageNotFound
+            this.currentModule = 'PageNotFound';
+            return
           }
           this.currentModule = componentName;
         }
