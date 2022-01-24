@@ -99,7 +99,7 @@
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import { getSessionObject, updateSessionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
   import {FindInstance ,FindInstanceAll} from './ExtendedAttributes/common.js'
-
+import RouterPush from '../__utils__/routerback';
 
   export default {
     data() {
@@ -2269,22 +2269,26 @@
         const currentPath = this.$router.currentRoute.path;
 
 
-        const SinglePageRouteNew = enableOpenNewTab() ? currentPath : currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));
-        const SinglePageRouteModify = enableOpenNewTab() ? currentPath : currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));
+        // const SinglePageRouteNew = enableOpenNewTab() ? currentPath : currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));
+        // const SinglePageRouteModify = enableOpenNewTab() ? currentPath : currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));
 
-        const newListPageRouteNew = enableOpenNewTab() ? keepAliveModuleName : keepAliveModuleName.substring(keepAliveModuleName.indexOf('.') + 1, keepAliveModuleName.lastIndexOf('.'));
-        const newListPageRouteMOdify = enableOpenNewTab() ? keepAliveModuleName : keepAliveModuleName.substring(keepAliveModuleName.indexOf('.') + 1, keepAliveModuleName.lastIndexOf('.'));
+        // const newListPageRouteNew = enableOpenNewTab() ? keepAliveModuleName : keepAliveModuleName.substring(keepAliveModuleName.indexOf('.') + 1, keepAliveModuleName.lastIndexOf('.'));
+        // const newListPageRouteMOdify = enableOpenNewTab() ? keepAliveModuleName : keepAliveModuleName.substring(keepAliveModuleName.indexOf('.') + 1, keepAliveModuleName.lastIndexOf('.'));
 
-        let routeMapRecordForSingleObjectNew = '';
-        let routeMapRecordForSingleObjectModify = '';
-        const routeMapRecordForListModify = {
-          to: '',
-          from: ''
-        };
-        const routeMapRecordForListNew = {
-          to: '',
-          from: ''
-        };
+        // let routeMapRecordForSingleObjectNew = '';
+        // let routeMapRecordForSingleObjectModify = '';
+        // const routeMapRecordForListModify = {
+        //   to: '',
+        //   from: ''
+        // };
+        // const routeMapRecordForListNew = {
+        //   to: '',
+        //   from: ''
+        // };
+        new RouterPush(this, routePrefix, keepAliveModuleName).back();
+       
+        // this.tabOpen(param);
+        return false;
         if (this.itemId === 'New') { 
           // 单对象界面配置动态路由时，由动态路由界面跳转的新增单对象界面，
           // 点击返回时需回到维护的关系中对应的路由
@@ -4071,6 +4075,8 @@
         this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
       },
       hideBackButton() {
+        // 隐藏返回按钮
+        return;
          this.dataArray.back = true;
         const clickMenuAddSingleObjectData = getSessionObject('clickMenuAddSingleObject');
         const currentRoute = this.$router.currentRoute.path;

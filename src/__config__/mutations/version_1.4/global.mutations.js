@@ -104,6 +104,9 @@ export default {
     // linkId:外链表ID，
     // query:路由参数
     // 注：url前不能加/ ，格式应为'CUSTOMIZED/FUNCTIONPERMISSION/2299'
+       
+    // 兼容新开的历史记录
+    arguments[1].router = window.vm.$route;
     if (param && param.url && param.url.includes('?')) {
       param.url = getUserenv({ url: param.url });
     }
@@ -808,14 +811,22 @@ export default {
           openedMenuLists.splice(index, 1);
         }
       } else if (item.routeFullPath === tabRouteFullPath) {
-        openedMenuLists.splice(index, 1);
-        if (tabRouteFullPath && !tab.forbidden) {
-          if (openedMenuLists.length > 0) {
+        if(openedMenuLists[index].routeFullPath ===state.activeTab.routeFullPath){
             if (index === 0) {
               state.activeTab = openedMenuLists[index]; // 关闭当前tab时始终打开的是最后一个tab
             } else {
               state.activeTab = openedMenuLists[index - 1]; // 关闭当前tab时始终打开的是最后一个tab
             }
+        }
+        openedMenuLists.splice(index, 1);
+
+        if (tabRouteFullPath && !tab.forbidden) {
+          if (openedMenuLists.length > 0) {
+            // if (index === 0) {
+            //   state.activeTab = openedMenuLists[index]; // 关闭当前tab时始终打开的是最后一个tab
+            // } else {
+            //   state.activeTab = openedMenuLists[index - 1]; // 关闭当前tab时始终打开的是最后一个tab
+            // }
             window.vm.$router.push({
               path: state.activeTab.routeFullPath,
             });
@@ -912,6 +923,16 @@ export default {
     //     return true;
     //   }
     // }
+    // 兼容新开的历史记录
+    arguments[1].router = {
+      fullPath: window.vm.$route.fullPath,
+      meta: window.vm.$route.meta,
+      name: window.vm.$route.name,
+      params: window.vm.$route.params,
+      path:  window.vm.$route.path,
+      query:  window.vm.$route.query
+    }
+
     if ((type === 'S' || type === 'STANDARD_TABLE_LIST_PREFIX') && isSetQuery && queryData) {
       if (queryData.values && queryData.values.length > 0) {
         let flag = true;

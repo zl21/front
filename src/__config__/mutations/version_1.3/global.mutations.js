@@ -96,6 +96,10 @@ export default {
     // linkName:外链表名，
     // linkId:外链表ID，
     // query:路由参数
+        
+    // 兼容新开的历史记录
+    arguments[1].router = window.vm.$route;
+
     if (param && param.url && param.url.includes('?')) {
       param.url = getUserenv({ url: param.url });
     }
@@ -915,6 +919,11 @@ export default {
     //     return true;
     //   }
     // }
+
+        
+    // 兼容新开的历史记录
+    arguments[1].router = window.vm.$route;
+    
     if ((type === 'S' || type === 'STANDARD_TABLE_LIST_PREFIX') && isSetQuery && queryData) {
       if (queryData.values && queryData.values.length > 0) {
         let flag = true;

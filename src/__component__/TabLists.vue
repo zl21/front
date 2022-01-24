@@ -126,7 +126,6 @@
         'updataSwitchTag'
       ]),
       switchTab(index) {
-  
         const tag = this.openedMenuLists[index];
         if (this.$router.currentRoute.fullPath !== tag.routeFullPath) {
           this.updataSwitchTag(true);
