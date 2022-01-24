@@ -100,7 +100,6 @@
         this.showFavorites = !val
       },   
       changeSearchFoldnum(val){
-        console.log(val,'====');
         this.num7 = val.queryDisNumber;
         if(this.switchValue !== val.switchValue){
             this.switchValue = val.switchValue;

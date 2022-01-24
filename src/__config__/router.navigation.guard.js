@@ -307,9 +307,11 @@ export default (router) => {
     // 处理 openedMenuLists
     let existModuleIndex = -1;
       const existModule = openedMenuLists.filter((d, i) => {
+
         let currentName = tableName || customizedModuleName || pluginModuleName || linkModuleName;
         if (d.tableName === currentName) {
           // 来源字段
+
           if(customizedModuleName){
              // 定制界面，在enableActivateSameCustomizePage 为false 的时候新开多个页面
               // 已存在打开的模块界面，但是并不是同一个界面
@@ -326,13 +328,17 @@ export default (router) => {
               }
             }
           }else{
-            
             if(!enableActivateSameCustomizePage()){
               // 如果定制界面配置多开，还需要测试定制界面是否id 相同
               if(new RegExp('/CUSTOMIZED/').test(d.routeFullPath)){
                 if(d.itemId === customizedModuleId ){
                   existModuleIndex = i;
                 }
+                 // 表明相同
+                 if(d.routeFullPath !== to.fullPath){
+                  return false
+                }
+                
               }else{
                   existModuleIndex = i;
               }
@@ -341,13 +347,12 @@ export default (router) => {
             }
 
           }
-        
+
           
           return true;
         }
         return false;
       })[0];
-      console.log(existModuleIndex,'===existModuleIndex');
 
 
     
@@ -358,6 +363,7 @@ export default (router) => {
       if (routePrefix === (STANDARD_TABLE_LIST_PREFIX || STANDARD_COMMONTABLE_LIST_PREFIX) && existModule.routePrefix !== (STANDARD_TABLE_LIST_PREFIX || STANDARD_COMMONTABLE_LIST_PREFIX) && !isBack) {
         // 非返回逻辑
         // Step One: 处理菜单Tab页签的显示逻辑。
+        console.log(existModule,'======existModule');
         commit('global/forceUpdateOpenedMenuLists', {
           openedMenuInfo: Object.assign({}, existModule, { isActive: true }),
           index: existModuleIndex
@@ -396,12 +402,14 @@ export default (router) => {
     // 跳转至定制界面的逻辑改为：只要单对象标记相同，不进行ID判断，只激活同一个单对象标记相同的界面
     let keepAliveModuleNameRes = '';
     if (dynamicModuleTag === 'C') {
+      // let {label} = window.vm.$router.$R3_params || {};
       keepAliveModuleNameRes = keepAliveModuleName.split('.')[1];
-      const data = {
-        customizedModuleName,
-        customizedModuleId,
-      };
-      // setCustomeLabel(data);
+      // const data = {
+      //   customizedModuleName,
+      //   customizedModuleId,
+      //   label:label
+      // };
+      //  setCustomeLabel(data);
     }
 
     // 通过activateSameCustomizePage配置路由到自定义界面，如果自定义界面标识相同，是否只激活同一个tab,默认为true,只激活同一个tab
