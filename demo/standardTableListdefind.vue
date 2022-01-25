@@ -10,20 +10,6 @@
     <button @click="toggleSetting">显示设置</button>
     <button @click="toggleMessages">显示消息</button>
     <!-- <div>测试已有语言扩展----{{$t('extend.test')}}</div> -->
-
-    <Setting v-model="showSetting"></Setting>
-
-    <MessageList v-model="showMessages"></MessageList>
-
-    <RadioGroup
-      v-model="radioValue"
-      :options="radioOptions"
-    ></RadioGroup>
-
-    <CheckboxGroup
-      v-model="selectValue"
-      :options="selectOptions"
-    ></CheckboxGroup>
   </div>
 </template>
 <script>
@@ -31,10 +17,7 @@ export default {
   inheritAttrs: false,
 
   components: {
-    Setting: R3.components.Setting,
-    RadioGroup: R3.components.RadioGroup,
-    CheckboxGroup: R3.components.CheckboxGroup,
-    MessageList: R3.components.MessageList
+  
   },
 
   data() {
