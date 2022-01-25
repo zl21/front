@@ -27,8 +27,6 @@
   </div>
 </template>
 <script>
-import R3 from '../r3.publish/r3.min';
-
 export default {
   inheritAttrs: false,
 
