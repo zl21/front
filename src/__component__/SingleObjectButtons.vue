@@ -2269,26 +2269,29 @@ import RouterPush from '../__utils__/routerback';
         const currentPath = this.$router.currentRoute.path;
 
 
-        // const SinglePageRouteNew = enableOpenNewTab() ? currentPath : currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));
-        // const SinglePageRouteModify = enableOpenNewTab() ? currentPath : currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));
+        const SinglePageRouteNew = enableOpenNewTab() ? currentPath : currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));
+        const SinglePageRouteModify = enableOpenNewTab() ? currentPath : currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));
 
-        // const newListPageRouteNew = enableOpenNewTab() ? keepAliveModuleName : keepAliveModuleName.substring(keepAliveModuleName.indexOf('.') + 1, keepAliveModuleName.lastIndexOf('.'));
-        // const newListPageRouteMOdify = enableOpenNewTab() ? keepAliveModuleName : keepAliveModuleName.substring(keepAliveModuleName.indexOf('.') + 1, keepAliveModuleName.lastIndexOf('.'));
+        const newListPageRouteNew = enableOpenNewTab() ? keepAliveModuleName : keepAliveModuleName.substring(keepAliveModuleName.indexOf('.') + 1, keepAliveModuleName.lastIndexOf('.'));
+        const newListPageRouteMOdify = enableOpenNewTab() ? keepAliveModuleName : keepAliveModuleName.substring(keepAliveModuleName.indexOf('.') + 1, keepAliveModuleName.lastIndexOf('.'));
 
-        // let routeMapRecordForSingleObjectNew = '';
-        // let routeMapRecordForSingleObjectModify = '';
-        // const routeMapRecordForListModify = {
-        //   to: '',
-        //   from: ''
-        // };
-        // const routeMapRecordForListNew = {
-        //   to: '',
-        //   from: ''
-        // };
-        new RouterPush(this, routePrefix, keepAliveModuleName).back();
+        let routeMapRecordForSingleObjectNew = '';
+        let routeMapRecordForSingleObjectModify = '';
+        const routeMapRecordForListModify = {
+          to: '',
+          from: ''
+        };
+        const routeMapRecordForListNew = {
+          to: '',
+          from: ''
+        };
+        // 拦截跳转逻辑
+        let checked = new RouterPush(this, routePrefix, keepAliveModuleName).back();
+        if(checked){
+            return;
+        }
        
-        // this.tabOpen(param);
-        return false;
+   
         if (this.itemId === 'New') { 
           // 单对象界面配置动态路由时，由动态路由界面跳转的新增单对象界面，
           // 点击返回时需回到维护的关系中对应的路由

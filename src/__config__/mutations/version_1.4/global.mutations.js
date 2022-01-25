@@ -820,20 +820,23 @@ export default {
         }
         openedMenuLists.splice(index, 1);
 
-        if (tabRouteFullPath && !tab.forbidden) {
-          if (openedMenuLists.length > 0) {
-            // if (index === 0) {
-            //   state.activeTab = openedMenuLists[index]; // 关闭当前tab时始终打开的是最后一个tab
-            // } else {
-            //   state.activeTab = openedMenuLists[index - 1]; // 关闭当前tab时始终打开的是最后一个tab
-            // }
-            window.vm.$router.push({
-              path: state.activeTab.routeFullPath,
-            });
-          } else {
-            window.vm.$router.push('/');
-          }
-        }
+        setTimeout(()=>{
+            if (tabRouteFullPath && !tab.forbidden) {
+              if (state.openedMenuLists.length > 0) {
+                // if (index === 0) {
+                //   state.activeTab = openedMenuLists[index]; // 关闭当前tab时始终打开的是最后一个tab
+                // } else {
+                //   state.activeTab = openedMenuLists[index - 1]; // 关闭当前tab时始终打开的是最后一个tab
+                // }
+                window.vm.$router.push({
+                  path: state.activeTab.routeFullPath,
+                });
+              } else {
+                window.vm.$router.push('/');
+              }
+            }
+        },200)
+
       }
     });
   }, // 关闭当前tab

@@ -14,7 +14,7 @@ import { getLocalObject } from './src/__utils__/localStorage';
 import customizedModalConfig from './src/__config__/customizeDialog.config';
 import Loading from './src/__utils__/loading';
 import getObjdisType from './src/__utils__/getObjdisType';
-import projectConfig from './projectConfig/project.config.oss';
+import projectConfig from './projectConfig/project.config';
 import './src/assets/js/entry.common'
 import { packageMessage, hookAJAX, getCategory, getGateWayServiceId, init } from './src/assets/js/entry.constant'
 

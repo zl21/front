@@ -22,7 +22,7 @@ class RouterPush {
             window.vm.$router.push = function push(location) { 
                 if(location ==='/'){
                   // 关闭所有的tab 则清空记录
-                    // self.clear(this);
+                    self.clear(this);
                 }
               
                 let {
@@ -41,8 +41,7 @@ class RouterPush {
                     }
                     if (arguments[1].clearhistory) {
                         // 清除当前表的历史 
-                        console.log(this.$R3_history,tableName);
-                        //delete this.$R3_history[tableName];
+                        delete this.$R3_history[tableName];
                     } else {
                       
                         this.$R3_history[tableName] = arguments[1].router;
@@ -99,9 +98,12 @@ class RouterPush {
                 this.$vm.tabCloseAppoint(closeParame);
                 // 新开s
                 this.$vm.tabOpen(param);
+                return true
             }
             
 
+        }else {
+            return false;
         }
 
     }

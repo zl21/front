@@ -814,23 +814,38 @@ export default {
         if (item.routeFullPath === tabRouteFullPath) {
           openedMenuLists.splice(index, 1);
         }
-      } else if (samePath) {
-        openedMenuLists.splice(index, 1);
-        if (tabRouteFullPath && !tab.forbidden) {
-          if (openedMenuLists.length > 0) {
+      } else if (item.routeFullPath === tabRouteFullPath) {
+        if(openedMenuLists[index].routeFullPath ===state.activeTab.routeFullPath){
             if (index === 0) {
               state.activeTab = openedMenuLists[index]; // 关闭当前tab时始终打开的是最后一个tab
             } else {
               state.activeTab = openedMenuLists[index - 1]; // 关闭当前tab时始终打开的是最后一个tab
             }
-            window.vm.$router.push({
-              path: state.activeTab.routeFullPath,
-            });
-          } else {
-            window.vm.$router.push('/');
-          }
         }
+        openedMenuLists.splice(index, 1);
+
+        setTimeout(()=>{
+            if (tabRouteFullPath && !tab.forbidden) {
+              if (state.openedMenuLists.length > 0) {
+                // if (index === 0) {
+                //   state.activeTab = openedMenuLists[index]; // 关闭当前tab时始终打开的是最后一个tab
+                // } else {
+                //   state.activeTab = openedMenuLists[index - 1]; // 关闭当前tab时始终打开的是最后一个tab
+                // }
+                window.vm.$router.push({
+                  path: state.activeTab.routeFullPath,
+                });
+              } else {
+                window.vm.$router.push('/');
+              }
+            }
+        },200)
+
       }
+      // else if (samePath) {
+      //   openedMenuLists.splice(index, 1);
+        
+      // }
     });
   }, // 关闭当前tab
   tabHref(state, {// 当前tab更换路由
@@ -922,7 +937,15 @@ export default {
 
         
     // 兼容新开的历史记录
-    arguments[1].router = window.vm.$route;
+      // 兼容新开的历史记录
+      arguments[1].router = {
+        fullPath: window.vm.$route.fullPath,
+        meta: window.vm.$route.meta,
+        name: window.vm.$route.name,
+        params: window.vm.$route.params,
+        path:  window.vm.$route.path,
+        query:  window.vm.$route.query
+      }
     
     if ((type === 'S' || type === 'STANDARD_TABLE_LIST_PREFIX') && isSetQuery && queryData) {
       if (queryData.values && queryData.values.length > 0) {
