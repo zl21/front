@@ -67,7 +67,6 @@ export const ignoreGateWay = [
 export const ignorePattern = () => {
   const { ignoreGateWayPattern } = window.ProjectConfig || {};
   const { ignoreGateWayPatternNoConcat } = window.ProjectConfig || {};
-  console.log(ignoreGateWayPatternNoConcat,'====ignoreGateWayPatternNoConcat');
   if(ignoreGateWayPatternNoConcat){
     // 用外部接入的
     return ignoreGateWayPattern || [];
