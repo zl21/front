@@ -242,5 +242,6 @@ module.exports = {
   //     }
   // },
   R3BrowserPrompt:true,
-  asyncTaskScheme: 'skq'
+  asyncTaskScheme: 'skq',
+  //closedChangePassword:true, // 是否关闭展示侧边修改密码配置
 }
