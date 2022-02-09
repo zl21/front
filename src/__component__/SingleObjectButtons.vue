@@ -2286,10 +2286,16 @@ import RouterPush from '../__utils__/routerback';
           from: ''
         };
         // 拦截跳转逻辑
-        let checked = new RouterPush(this, routePrefix, keepAliveModuleName).back();
-        if(checked){
-            return;
+        let { ResetrouterBackLogic } = window.ProjectConfig;
+        if( ResetrouterBackLogic ){
+          // 配置重置返回按钮逻辑（外键跳转有返回字段）
+           let checked = new RouterPush(this, routePrefix, keepAliveModuleName).back();
+            if(checked){
+                return;
+            }
+
         }
+       
        
    
         if (this.itemId === 'New') { 

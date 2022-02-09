@@ -241,5 +241,6 @@ module.exports = {
   //     }
   // },
   R3BrowserPrompt:true,
-  asyncTaskScheme: 'skq'
+  asyncTaskScheme: 'skq',
+  ResetrouterBackLogic:true  // 显示返回按钮
 }
