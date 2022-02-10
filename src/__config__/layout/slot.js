@@ -12,6 +12,7 @@ class SetLayoutDirectionSlot {
         this.$current = $vm;
         this.name = name;
         this.type = type;
+        console.log(Component,'====');
         if(Component){
             // 传入的组件
             this.vm = Component;
@@ -44,14 +45,13 @@ class SetLayoutDirectionSlot {
         let data  = {};
         if(typeof this.vm === 'object'){
             data = this.vm
-        }else{
+        }else {
             data =  (await this.vm()).default;
         }
         let mounted =  data.mounted;
         if(this.name !=='panelForm'){
             data.created = function(){
                 new GetParentVm(this.$parent,this).init();
-                console.log(this.$parent.tabPanels,this.tabPanel,'===============')
             }
 
 

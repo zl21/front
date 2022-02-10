@@ -459,7 +459,7 @@ export default {
     },
     async initslot(){
       // 
-      let data = await new SetLayoutDirectionSlot(this.$parent,this,'panelForm','CollapseComponent').init(this.CollapseComponent);
+      let data = await new SetLayoutDirectionSlot(this.$parent,this,'panelForm','CollapseComponent',this.CollapseComponent).init();
       this.CollapseComponent = data;
 
     }
