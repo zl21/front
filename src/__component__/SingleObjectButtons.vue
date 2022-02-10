@@ -4085,7 +4085,11 @@ import RouterPush from '../__utils__/routerback';
       },
       hideBackButton() {
         // 隐藏返回按钮
-        return;
+        // 拦截跳转逻辑
+        let { ResetrouterBackLogic } = window.ProjectConfig;
+        if( ResetrouterBackLogic ){
+          return true;
+        }
          this.dataArray.back = true;
         const clickMenuAddSingleObjectData = getSessionObject('clickMenuAddSingleObject');
         const currentRoute = this.$router.currentRoute.path;
