@@ -1,10 +1,11 @@
 <template>
   <div :class="[classes,name]">
-      <slot name="v-object-button"></slot>
-      
-  
+     <div class="v-object-list">
+         <slot name="v-object-button"></slot>
+         <Button type="primary" size="small" @click="next">下一步</Button>
+     </div>
+   <slot name="v-object-from"></slot>    
    <div class="step">
-         <Button type="primary" @click="next">下一步</Button>
        <Steps :current="tabCurrentIndex" 
        >
         <Step v-for="(item,i) in tabPanels" :key="i" 
@@ -45,12 +46,10 @@
         }else{
             this.tabCurrentIndex  = -1;
         }
-        // this.$refs.tabPanel.activeKey = this.tabCurrentIndex;
-
      }
   },
   mounted(){
-     console.log(this.tabClick,'============');
+     console.log(this,'============');
     
   }
 
@@ -65,9 +64,9 @@
    .ark-tabs-panels-nav-scroll{
        opacity: 0;
    }
-   .step{
-
-   }
+}
+.v-object-list{
+   display: flex;
 }
 
 </style>

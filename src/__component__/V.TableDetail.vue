@@ -219,8 +219,7 @@
           },0)
         })
         this._resizeObserver.observe(detailContentDom)
-
-      },300)
+      },500)
      
     },
 

@@ -62,14 +62,6 @@ module.exports = {
         }
       }
 
-    },
-    HTableDetail:{
-      tableName:{
-        'V_STORE':{ // 一对多子表
-          layout:()=>import('../demo/HTableDetail.vue')
-        }
-      }
-
     }
 
 
