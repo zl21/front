@@ -23,6 +23,9 @@ Vue.mixin({
       let componentArr = [];
       const i = allComp.findIndex((vm,index)=>{
         const name = vm.$options.name || vm.$options._componentTag
+        if(!name) {
+          return false
+        }
         const currentName = name.toLowerCase()
         if(type=== 'all' && currentName === componentTag.toLowerCase()){
           componentArr.push(vm);
