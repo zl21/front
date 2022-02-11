@@ -62,11 +62,14 @@ export default class DropMethods {
           }
           return arr;
       },{});
-      if (event.code === 'Enter') {
-        if( this.$parent && this.$parent.$parent ){
-           this.$parent.$parent.getListParent().searchClickData(...arguments);
-        }
-      }
+      // if (event.code === 'Enter') {
+      //   if( this.$parent && this.$parent.$parent ){
+      //     let searchClickData = this.$parent.$parent.getListParent().searchClickData;
+      //     if(typeof searchClickData === 'function'){
+      //       searchClickData(...arguments);
+      //     }        
+      //   }
+      // }
     };
   }
 }

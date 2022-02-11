@@ -17,6 +17,7 @@
             <component :is="ItemLists[item].component"
                        :items="ItemLists[item]"
                        @on-change="valueChange"
+                       @on-keydown="handleEnter"
                        :label-width="90">
                        <slot >
                          <div v-if="listFormTemple(ItemLists[item])" v-html="listFormTemple(ItemLists[item])"></div>
@@ -427,8 +428,14 @@ export default {
       }
     },
     // 组件回车事件
-    handleEnter () {
-      this.$emit('onHandleEnter', ...arguments)
+    handleEnter (e) {
+      if(e.keyCode === 13){
+        this.$emit('onHandleEnter', ...arguments)
+        if(this.getParent().searchClickData){
+           this.getParent().searchClickData()
+        };
+      }
+     
     },
     r3Format (val, item) {
       // 兼容1.3 数据格式传参
