@@ -4088,7 +4088,7 @@ import RouterPush from '../__utils__/routerback';
         // 拦截跳转逻辑
         let { ResetrouterBackLogic } = window.ProjectConfig;
         if( ResetrouterBackLogic ){
-          return true;
+          return false;
         }
          this.dataArray.back = true;
         const clickMenuAddSingleObjectData = getSessionObject('clickMenuAddSingleObject');

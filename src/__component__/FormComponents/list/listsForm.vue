@@ -275,16 +275,18 @@ export default {
           // 动态
           let itemArray = document.querySelectorAll('#listForm .item');
           let index = this.setdefaultColumn * this.searchFoldnum;
-         
+          let ListsFormContentDom = document.querySelector('.ListsForm-content');
           let itemArrayLength = itemArray.length;
            if(!this.defaultSpread){
               index = itemArrayLength;
             }
           let _index = index % this.setdefaultColumn;
          
-          if (index > itemArray.length) {
+          if (index > itemArray.length ) {
             //  大于总常数
-            document.querySelector('.ListsForm-content').style.marginBottom = '0px';
+            if(ListsFormContentDom){
+              ListsFormContentDom.style.marginBottom = '0px';
+            }
             let itemLength = itemArray.length;
             this.indexButton = 0;
             let itemLength_index = itemLength % this.setdefaultColumn;
@@ -300,7 +302,9 @@ export default {
                 },100)
 
           }else {
-            document.querySelector('.ListsForm-content').style.marginBottom = '0px';
+            if(ListsFormContentDom){
+              ListsFormContentDom.style.marginBottom = '0px';
+            }
             let itemLength = itemArray.length;
             let itemLength_index = itemLength % this.setdefaultColumn;
             let _index = index % this.setdefaultColumn;
