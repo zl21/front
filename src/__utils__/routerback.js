@@ -34,7 +34,7 @@ class RouterPush {
                         this.$R3_history = self.gethistory() || {};
                     }
                     // 是否新开tab
-                    let tableName = arguments[1].tableName || arguments[1].customizedModuleName || arguments[1].linkName;
+                    let tableName = arguments[1].tableName || arguments[1].customizedModuleName || arguments[1].linkName || arguments[1].pluginModuleName;
                     if (enableOpenNewTab) {
                         // 新开添加id 名称
                         tableName = tableName + `/${arguments[1].id}`;

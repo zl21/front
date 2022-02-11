@@ -106,7 +106,15 @@ export default {
     // 注：url前不能加/ ，格式应为'CUSTOMIZED/FUNCTIONPERMISSION/2299'
        
     // 兼容新开的历史记录
-    arguments[1].router = window.vm.$route;
+    arguments[1].router = {
+      fullPath: window.vm.$route.fullPath,
+      meta: window.vm.$route.meta,
+      name: window.vm.$route.name,
+      params: window.vm.$route.params,
+      path:  window.vm.$route.path,
+      query:  window.vm.$route.query
+    }
+    
     if (param && param.url && param.url.includes('?')) {
       param.url = getUserenv({ url: param.url });
     }
