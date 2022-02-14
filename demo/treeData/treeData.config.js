@@ -1,8 +1,8 @@
 
 
 
-import json from './treeData.json';
-
+// import json from './treeData.json';
+let json = require('./treeData.json');
 // 需要在配置文件中加入externalTreeDatas配置
 
 // 配置文件中相关属性说明：
@@ -18,7 +18,7 @@ import json from './treeData.json';
 
 
 // 注意：返回值中的所有ENAME字段请改为title
-export default {
+module.exports = {
   // value：框架传入的参数，模糊查询的字符
   V_ORDER_INFO:value=>async () => {
      // ....
