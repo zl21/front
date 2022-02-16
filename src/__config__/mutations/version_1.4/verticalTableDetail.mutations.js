@@ -556,7 +556,6 @@ export default {
       state.mainFormInfo.buttonsData.data.isreftabs = true;
     }
 
-    console.log(state.tabPanels.length,state.tabCurrentIndex);
     // if(tabPanels.length<1){
     //   state.mainFormInfo.buttonsData.data.isreftabs = false;
     // }else{

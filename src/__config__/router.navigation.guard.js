@@ -347,7 +347,6 @@ export default (router) => {
         }
         return false;
       })[0];
-      console.log(existModuleIndex,'===existModuleIndex');
 
 
     

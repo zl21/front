@@ -1,5 +1,5 @@
 <template>
-  <div :class="classes">
+  <div >
     <slot name="v-object-button"></slot>
     <div class="verticalTableDetailContent" ref="detailContent">
       <slot name="v-object-from"></slot>

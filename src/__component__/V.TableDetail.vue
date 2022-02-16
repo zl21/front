@@ -1,6 +1,6 @@
 <template>
-  <div :id="currentTableName">
-    <component :is="slotTemple" ref="slotTemple" 
+    <component  
+    :class="classes" :id="currentTableName" :is="slotTemple" ref="slotTemple" 
     
     >
       <component slot="v-object-button"
@@ -40,7 +40,7 @@
           />
         </div>
     </component>
-  </div>
+  
 </template>
 
 <script>
@@ -171,8 +171,10 @@
     mounted() {
       // 重置卡槽实例     
       //  this.$refs.slotTemple = new GetParentVm(this,this.$refs.slotTemple).init();
-      console.log(this.$refs.slotTemple,'======slotTemple');
-
+      // this.$el._vue_ = this;
+      setTimeout(()=>{
+      this.$el._vue_ = this;
+      },10)
       const singleButtonComponentName = `${this[MODULE_COMPONENT_NAME]}.SingleObjectButtons`;
         let singleObjectButtonGroupMixins = window.ProjectConfig && window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.singleObjectButtonGroup || {};
       if (Vue.component(singleButtonComponentName) === undefined) {

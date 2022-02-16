@@ -12,7 +12,6 @@ class SetLayoutDirectionSlot {
         this.$current = $vm;
         this.name = name;
         this.type = type;
-        console.log(Component,'====');
         if(Component){
             // 传入的组件
             this.vm = Component;
@@ -63,12 +62,6 @@ class SetLayoutDirectionSlot {
     }
     async init() {
         return this.mounted();
-        // if(typeof this.vm === 'object'){
-
-        //     return this.vm
-        // }else{
-        //     return this.vm()
-        // }
     }
 
 

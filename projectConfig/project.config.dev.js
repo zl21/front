@@ -55,14 +55,14 @@ module.exports = {
         }
       }
     },
-    VTableDetail:{
-      tableName:{
-        'V_STORE':{ // 一对多子表
-          layout:()=>import('../demo/VTableDetail.vue')
-        }
-      }
+    // VTableDetail:{
+    //   tableName:{
+    //     'V_STORE':{ // 一对多子表
+    //       layout:()=>import('../demo/VTableDetail.vue')
+    //     }
+    //   }
 
-    }
+    // }
 
 
   },
@@ -142,15 +142,15 @@ module.exports = {
     // horizontalTableDetailCustomize: require('./src/demo/horizontalTableDetailCustomize.js').default,
     taskList: null,
     tableDetailCollectionMixin: {
-      slotArray:{
-        detailbuttonsa:()=>import('../demo/detailbuttonsa')  //子表按钮的文件
-       }, 
-       slotTableTemplate:()=>import('../demo/tableDetailCollectionSlot'), //  修改子表全局渲染的逻辑的文件,
-       tableName:{
-          'ORDER_MANAGEMWNT':{
-            layout:()=>import('../demo/ORDER_MANAGEMWNT.vue')
-          }
-       }
+      // slotArray:{
+      //   detailbuttonsa:()=>import('../demo/detailbuttonsa')  //子表按钮的文件
+      //  }, 
+      //  slotTableTemplate:()=>import('../demo/tableDetailCollectionSlot'), //  修改子表全局渲染的逻辑的文件,
+      //  tableName:{
+      //     'ORDER_MANAGEMWNT':{
+      //       layout:()=>import('../demo/ORDER_MANAGEMWNT.vue')
+      //     }
+      //  }
 
       // methods: {
       //   R3_processColumns(columns) {
