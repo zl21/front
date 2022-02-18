@@ -40,6 +40,8 @@ class RouterPush {
                         tableName = arguments[1].url.split('/')[1];
                     }
                     tableName = tableName + `/${arguments[1].id}`;
+
+                    console.log(arguments[1].clearParams,'====');
                     if (arguments[1].clearhistory) {
                         // 清除当前表的历史 
                         if (arguments[1].clearParams) {
@@ -94,13 +96,16 @@ class RouterPush {
                     clearhistory: true,
                     clearParams: url
                 };
+                console.log(param,'param');
                 if(/TABLE_DETAIL/.test(param.url)){
                     param.back = false;
                 }
+                this.$vm.tabCloseAppoint(closeParame);
+
                 // 新开
                 this.$vm.tabOpen(param);
                 // 关闭菜单   
-                this.$vm.tabCloseAppoint(closeParame);
+            
                 return true
             }
         } else {
@@ -132,12 +137,15 @@ class RouterPush {
                 }
                 if(enableOpenNewTab){
                     // 全都是新开界面
-                    clearParamstableName = `${clearParams.tableName}/${clearParams.tableId}`;
+                    clearParamstableName = `${clearParams.tableName}/${clearParams.itemId}`;
                 }
-                let $R3_history_key = Object.keys($route.$R3_history);
+                console.log(clearParamstableName,'clearParamstableName====',clearParams);
+                let $R3_history_key = Object.keys($route.$R3_history || {});
                 if($R3_history_key){
                     $R3_history_key.forEach((item)=>{
                         if(new RegExp(clearParamstableName).test(item)){
+                            console.log(clearParamstableName,'test====');
+
                             delete $route.$R3_history[item]
                         }
 

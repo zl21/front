@@ -1140,6 +1140,11 @@ export default {
         path
       },arguments[1]);
     }
+    if(url){
+      window.vm.$router.push(
+        url,arguments[1]
+      );
+    }
   },
   updataUserInfoMessage(state, { userInfo }) {
     state.userInfo = userInfo;
