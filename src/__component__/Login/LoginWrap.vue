@@ -2,7 +2,8 @@
   <div :class="classes">
     <LoginCore>
       <template slot="logo">
-        <img :src="logo" alt="logo" class="logo">
+        <img :src="logo" alt="logo" class="logo" v-if="logo">
+        <div v-else :class="logoBg"></div>
       </template>
     </LoginCore>
   </div>
@@ -25,7 +26,11 @@
       ...mapGetters('global', ['imgAssets']),
       logo() {
         return this.imgAssets.login
-      }
+      },
+
+      logoBg() {
+        return this.$i18n.locale === 'zh' ? 'r3-login-zh': 'r3-login-en'
+      },
     },
   };
 </script>

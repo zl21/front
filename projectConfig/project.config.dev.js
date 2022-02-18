@@ -1,3 +1,4 @@
+
 module.exports = {
   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用接口请求
   enableHistoryAndFavoriteUI: true, // 是否显示收藏与最近使用UI
@@ -8,7 +9,7 @@ module.exports = {
   touristRoute: '/login', // 游客路由：等用户未登录的时候，需要跳转的页面
   enableInitializationRequest: true, // 是否开启初始化请求
   // enableCustomInterface: false // 是否开启自定义接口,
-  externalTreeDatas: ()=>import('../demo/treeData/treeData.config.js'),
+  externalTreeDatas: require('../demo/treeData/treeData.config.js'),
   customizeWaterMark: {
     // extremely: {
     //   text: '大家',
@@ -242,5 +243,6 @@ module.exports = {
   // },
   R3BrowserPrompt:true,
   asyncTaskScheme: 'skq',
-  ResetrouterBackLogic:true  // 显示返回按钮
+  ResetrouterBackLogic:true,  // 显示返回按钮
+  closedChangePassword:false, // 是否关闭展示侧边修改密码配置
 }

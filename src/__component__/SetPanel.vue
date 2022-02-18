@@ -7,7 +7,7 @@
           {{$t('tips.welcome')}}: {{ getEname }}
         </p>
       </div>
-      <div class="panel-item">
+      <div class="panel-item" v-if="!closedChangePassword" >
         <p @click="changePwd">
           <i class="iconfont iconmd-key explanatory" />{{$t('tips.changePassword')}}
         </p>
@@ -129,12 +129,16 @@
           list: []
         },
         showFavorites: false,
-
-        customizeComponent: null
+        customizeComponent: null,
+        closedChangePassword:false
       };
     },
     mounted() {
       const showFavorites = JSON.parse(window.localStorage.getItem('showFavorites'));
+      let { closedChangePassword } = window.ProjectConfig;
+      if(closedChangePassword){
+        this.closedChangePassword = true;
+      }
       if (showFavorites !== null) {
         this.showFavorites = showFavorites;
         // this.operationFavorites(showFavorites);

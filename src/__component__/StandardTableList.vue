@@ -309,8 +309,9 @@ export default {
       const treeQuery = this.$router.currentRoute.query;
       if (treeQuery.isTreeTable || window.isTree) {
         const { tableName } = this.$router.currentRoute.params;
-        if (window.ProjectConfig && window.ProjectConfig.externalTreeDatas && window.ProjectConfig.externalTreeDatas[tableName]) {
-          return window.ProjectConfig.externalTreeDatas[tableName]();
+        let { externalTreeDatas} = window.ProjectConfig || {};
+        if ( externalTreeDatas && externalTreeDatas[tableName]) {
+          return externalTreeDatas [tableName]();
         }
         // if (treeData) {
         //   if (treeData[tableName]) {
