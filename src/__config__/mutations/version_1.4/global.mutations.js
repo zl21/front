@@ -809,6 +809,7 @@ export default {
       } else if (item.routeFullPath === tabRouteFullPath) {
         samePath = true;
       }
+      
       if (tab.stopRouterPush) { // 关闭当前tab时不进行路由跳转
         const { tableName } = window.vm.$router.currentRoute.params;
         if (item.tableName === tableName) {
@@ -818,32 +819,27 @@ export default {
           openedMenuLists.splice(index, 1);
         }
       } else if (item.routeFullPath === tabRouteFullPath) {
-        if(openedMenuLists[index].routeFullPath ===state.activeTab.routeFullPath){
-            if (index === 0) {
-              state.activeTab = openedMenuLists[index+1]; // 关闭当前tab时始终打开的是最后一个tab
-            } else {
-              state.activeTab = openedMenuLists[index - 1]; // 关闭当前tab时始终打开的是最后一个tab
-            }
-        }
         openedMenuLists.splice(index, 1);
 
-        // setTimeout(()=>{},200)
-            if (tabRouteFullPath && !tab.forbidden) {
-              if (state.openedMenuLists.length > 0) {
-                // if (index === 0) {
-                //   state.activeTab = openedMenuLists[index]; // 关闭当前tab时始终打开的是最后一个tab
-                // } else {
-                //   state.activeTab = openedMenuLists[index - 1]; // 关闭当前tab时始终打开的是最后一个tab
-                // }
-                window.vm.$router.push({
-                  path: state.activeTab.routeFullPath,
-                });
+        if (tabRouteFullPath && !tab.forbidden) {
+          if (openedMenuLists.length > 0) {
+            // 当前关闭等于激活页面
+            if(state.activeTab.routeFullPath === item.routeFullPath){
+              if (index === 0) {
+                state.activeTab = openedMenuLists[index]; // 关闭当前tab时始终打开的是最后一个tab
               } else {
-                window.vm.$router.push('/');
+                state.activeTab = openedMenuLists[index - 1]; // 关闭当前tab时始终打开的是最后一个tab
               }
-            }
-        
 
+            }
+            
+            window.vm.$router.push({
+              path: state.activeTab.routeFullPath,
+            });
+          } else {
+            window.vm.$router.push('/');
+          }
+        }
       }
     });
   }, // 关闭当前tab
