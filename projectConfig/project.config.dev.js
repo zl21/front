@@ -244,5 +244,5 @@ module.exports = {
   R3BrowserPrompt:true,
   asyncTaskScheme: 'skq',
   ResetrouterBackLogic:true,  // 显示返回按钮
-  closedChangePassword:false, // 是否关闭展示侧边修改密码配置
+  closedChangePassword:false // 是否关闭展示侧边修改密码配置
 }

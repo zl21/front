@@ -29,8 +29,6 @@ class RouterPush {
                     // 关闭所有的tab 则清空记录
                     self.clear(this);
                 }
-                console.log(arguments,'====push');
-
                 if (arguments[1]) {
                     if (isEmpty(this.$R3_history)) {
                         // 获取当前历史(应对刷新问题) 
@@ -95,28 +93,24 @@ class RouterPush {
                     NToUpperCase: true,
                     clearhistory: true,
                     clearParams: url
-
                 };
+                if(/TABLE_DETAIL/.test(param.url)){
+                    param.back = false;
+                }
                 // 新开
                 this.$vm.tabOpen(param);
                 // 关闭菜单   
                 this.$vm.tabCloseAppoint(closeParame);
                 return true
             }
-
-
         } else {
             return false;
         }
-
     }
     gethistory() {
         // 历史记录数据
-
         let data = window.localStorage.getItem('$R3_history_current') || '{}';
         return JSON.parse(data);
-        // this.$R3_params =
-
     }
     closeCurrent($route) {
         // 手动关闭菜单时调用的删除事件
@@ -125,12 +119,11 @@ class RouterPush {
             let openedMenuListsDomVue =openedMenuListsDom.__vue__;
             let handleClose = openedMenuListsDomVue.handleClose;
             let { enableOpenNewTab } = window.ProjectConfig;
-
+            // 给关闭tab 界面添加清除历史记录事件
             openedMenuListsDomVue.handleClose = function(){
                 let {
                     openedMenuLists
                 } = window.vm.$store.state.global;
-
                 let clearParams = openedMenuLists[arguments[0]];
                 let clearParamstableName = `${clearParams.tableName}/`;
                 if(/C./.test(clearParams.keepAliveModuleName)){
@@ -150,8 +143,6 @@ class RouterPush {
 
                     })
                 }
-                console.log(clearParamstableName,'====',$route.$R3_history,'$route.$R3_history');
-
                 handleClose.call(this,...arguments);
                 
             }
