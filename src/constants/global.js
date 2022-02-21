@@ -163,6 +163,7 @@ export const autoGatewayUrl = () => (window.ProjectConfig && window.ProjectConfi
 export const enableAsyncTaskTip = () => (window.ProjectConfig && window.ProjectConfig.enableAsyncTaskTip !== undefined ? window.ProjectConfig.enableAsyncTaskTip : project.enableAsyncTaskTip); // 点击导出，如果是异步则立即弹出提示弹框。用于兼容旧版异步消息提示，默认值true
 export const enableTaskNotice = () => (window.ProjectConfig && window.ProjectConfig.enableTaskNotice ? window.ProjectConfig.enableTaskNotice : project.enableTaskNotice); // 异步任务，右下角消息通知
 export const asyncTaskScheme = () => (window.ProjectConfig && window.ProjectConfig.asyncTaskScheme ? window.ProjectConfig.asyncTaskScheme : '');  // 异步导出设计方案
+export const layoutDirectionSlot = () => (window.ProjectConfig && window.ProjectConfig.layoutDirectionSlot) // 通过插槽修改界面布局的功能
 
 // 获取表单网关
 export const getGatewayValue = (key) => {

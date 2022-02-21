@@ -38,7 +38,8 @@ module.exports = {
     listFormButton:()=>import('../demo/detailbuttons.vue'),  // 定制列表button
     standardTableList:{
       defined:()=>import('../demo/standardTableListdefind.vue'),
-    }  // 定制列表button
+    },  // 定制列表button
+    // navigator: ()=>import('../demo/NavigatorSlotDemo.vue') // 定制水平导航
   },
   domPortal: {
     // params对象属性,fromComponent用于区别哪个组件的水印,type区分布局结构
