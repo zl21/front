@@ -16,9 +16,9 @@ export default {
   },
   watch: {
     value: {
-      handler(val, old) {
+     async handler(val, old) {
         if (this.items.detailType) {
-          let ParentForm = this.findParentForm();
+          let ParentForm = await  this.findParentForm();
           // 获取当前组件的值
           if(!ParentForm){
               return;
@@ -273,15 +273,16 @@ export default {
       },500)
     }
   },
-  mounted() {
-    let ParentForm = this.findParentForm();
+  async mounted() {
+    let ParentForm = await this.findParentForm();
     this.defaultVale = new ParameterDataProcessing(JSON.parse(JSON.stringify(this.items))).defaultDataProcessing() || '';
-    if(this.items.colname && ParentForm){
-      if(ParentForm.formDataLabel && /NEW/.test(this.$route.params.itemId) === false){
-        
-        ParentForm.formDataLabel[this.items.colname] = this.defaultVale
+      if(this.items.colname && ParentForm){
+        if(ParentForm.formDataLabel && /NEW/.test(this.$route.params.itemId) === false){
+          
+          ParentForm.formDataLabel[this.items.colname] = this.defaultVale
+        }
       }
-    }
+   
 
     
   }
