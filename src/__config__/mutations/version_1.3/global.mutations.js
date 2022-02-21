@@ -797,7 +797,9 @@ export default {
       } else if (!enableActivateSameCustomizePage() && !enableOpenNewTab()) { // 列表打开本表单对象界面，关闭时，根据表明清除列表以及列表对应的单对象keepAlive
         state.keepAliveLists = state.keepAliveLists.filter(d => d !== tab.keepAliveModuleName);
       } else if (kp === tab.tableName) {
-        state.keepAliveLists.splice(i, 1);
+        if(k === tab.keepAliveModuleName){
+          state.keepAliveLists.splice(i, 1);
+        }
       }
     };
     // if (index > -1) {

@@ -96,15 +96,15 @@ class RouterPush {
                     clearhistory: true,
                     clearParams: url
                 };
-                console.log(param,'param');
                 if(/TABLE_DETAIL/.test(param.url)){
                     param.back = false;
                 }
-                this.$vm.tabCloseAppoint(closeParame);
 
                 // 新开
                 this.$vm.tabOpen(param);
                 // 关闭菜单   
+                this.$vm.tabCloseAppoint(closeParame);
+
             
                 return true
             }
