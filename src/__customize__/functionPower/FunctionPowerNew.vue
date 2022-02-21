@@ -187,11 +187,21 @@
                         />{{ item.description }}
                       </td>
                       <td>
-                        <Checkbox
+                         <template
+                            v-for="(checkItem, j) in item.children"
+                          >
+                         
+                            <Checkbox
+                              :key="j"
+                              :value="checkItem.permission === 128"
+                              @on-change="(currentValue) => functionCheckboxChange(currentValue, {row: item, index: index, itemIndex: j})"
+                            />{{ checkItem.description ? checkItem.description : '' }}
+                          </template>
+                        <!-- <Checkbox
                           v-show="item.children && item.children.length > 0"
                           :value="item.children && item.children.length > 0 ? item.children[0].permission === 128 : false"
                           @on-change="(currentValue) => functionCheckboxChange(currentValue, {row: item, index: index})"
-                        />{{ item.children.length > 0 ? item.children[0].description : '' }}
+                        />{{ item.children.length > 0 ? item.children[0].description : '' }} -->
                       </td>
                     </tr>
                   </tbody>
