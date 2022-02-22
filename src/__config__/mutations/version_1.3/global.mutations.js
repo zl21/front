@@ -842,7 +842,9 @@ export default {
               path: state.activeTab.routeFullPath,
             });
           } else {
-            window.vm.$router.push('/');
+            if(!tab.open){
+              window.vm.$router.push('/');
+            }
           }
         }
       }

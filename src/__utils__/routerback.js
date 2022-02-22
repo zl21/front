@@ -29,7 +29,8 @@ class RouterPush {
                     // 关闭所有的tab 则清空记录
                     self.clear(this);
                 }
-                if (arguments[1]) {
+                // backtoTop 是否返回上一及，默认都返回
+                if (arguments[1] && !arguments[1].backToTop) {
                     if (isEmpty(this.$R3_history)) {
                         // 获取当前历史(应对刷新问题) 
                         this.$R3_history = self.gethistory() || {};
@@ -41,7 +42,6 @@ class RouterPush {
                     }
                     tableName = tableName + `/${arguments[1].id}`;
 
-                    console.log(arguments[1].clearParams,'====');
                     if (arguments[1].clearhistory) {
                         // 清除当前表的历史 
                         if (arguments[1].clearParams) {
@@ -75,6 +75,7 @@ class RouterPush {
             routePrefix: this.routePrefix,
             keepAliveModuleName: this.keepAliveModuleName,
             id: this.$vm.itemId,
+            open:true,  // 是否有新开
             itemId: this.$vm.itemId
         };
 

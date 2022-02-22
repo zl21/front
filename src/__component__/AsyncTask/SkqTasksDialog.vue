@@ -238,6 +238,7 @@ export default {
         tableName: Version() === '1.3' ? 'CP_C_TASK' : 'U_NOTE',
         tableId: Version() === '1.3' ? 24386 : 963,
         id: task.id,
+        backToTop:true
       };
       this.tabOpen(tab)
       // DispatchEvent(UPDATE_TASK)
