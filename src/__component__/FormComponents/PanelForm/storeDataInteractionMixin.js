@@ -251,7 +251,6 @@ export default {
         if(['OBJ_DATENUMBER','OBJ_TIME','OBJ_DATE', 'YearMonth', 'OBJ_DATETIME','MonthDay'].includes(this.items.display)){
           return;
         }
-        console.log(tabPanelsDom._vue_,'===tabPanelsDom._vue_');
      
         tabPanelsDom._vue_.setTabPanels();
       }

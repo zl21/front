@@ -81,12 +81,13 @@ export default {
     },
     enterForm(e) {
       if (e.keyCode === 13) {
-        
+        this.$parent.verifyForm([])
         if (this.$parent) {
           if (Object.keys(this.$refs.panelForm.formChangeData).length > 0) {
             // 判断页面是否有值修改
             this.$refs.panelForm.checkedChildForm = true;
           } else {
+            // 页面直接回车校验
             this.$refs.panelForm.checkedChildForm = false;
             let errorTip = {
               messageTip: [],
@@ -97,16 +98,21 @@ export default {
               return item.tip;
             });
             if (errorTip.messageTip.length > 0) {
-              errorTip.validateForm = document.querySelector(
-                `#${message[0].colname} input`
+              let validateForm = document.querySelector(
+                `#${message[0].colname}`
               );
+              if(validateForm){
+                errorTip.validateForm = validateForm.querySelector('input') ||  validateForm.querySelector('textarea');
+              }
+              console.log(errorTip,'====');
+               this.$parent.verifyForm(errorTip);
             }
-            this.$parent.verifyForm(errorTip);
+
           }
           let checked = document
             .querySelector('.singleObjectButton')
             .__vue__.verifyRequiredInformation();
-
+           
           if (checked) {
             this.$parent.enterClick();
           }
