@@ -33,25 +33,37 @@
       launchNetworkMonitor();
       emptyRecord(Date.now() - Number(dateStorageTime() ? dateStorageTime() : 1) * 24 * 1000 * 60 * 60);
     },
-    created() {
+    async created() {
+      // 如果开启系统升级，且需要更新
+      const { enableSystemUpdate } = window.ProjectConfig
+      if(enableSystemUpdate && await this.checkUpdate()) {
+        window.ProjectConfig.loginCallback = this.loginSucCbk
+        this.$router.push({ path:'/R3UpdateSystem'})
+        this.showContainer = true
+        return
+      }
+
       this.getUserInfo();
     },
 
-    // watch: {
-    //   '$route'(to, from) {
-    //     // 检查系统升级
-    //     const { enableSystemUpdate } = window.ProjectConfig
-    //     if(enableSystemUpdate) {
-    //       const isFromUpDate = from.path === 'R3UpdateSystem' && to.path === '/' // 从升级界面跳转到主界面
-    //       const isFromLogin = from.path === 'login' && to.path === '/' // 从升级界面跳转到主界面
-    //       if(!(isFromUpDate || isFromLogin)) {
-    //         this.checkUpdate()
-    //       }
-    //     }
-    //   }
-    // },
-
     methods: {
+      // 检查系统升级
+      async checkUpdate() {
+        return new Promise((resolve) => {
+          network.post(`/p/c/retail/queryLiquibaseExeStatus?hash=${new Date().getTime()}`).then(result => {
+            const res = result.data
+            if(res.code === 0) {
+              resolve(res.data.needUpdate)
+              // resolve(true)
+            } else {
+              resolve(false)
+            }
+          }).catch(() => {
+            resolve(false);
+          })
+        })
+      },
+
       getUserInfo() {
         if (enableInitializationRequest()) {
           network.get('/p/cs/hello').then((res) => {
@@ -73,16 +85,6 @@
           });
         }
       },
-
-      // // 检查系统是否升级完毕
-      // checkUpdate() {
-      //   network.post(`/p/cs/retail/queryLiquibaseExeStatus?hash=${new Date().getTime()}`).then(result => {
-      //     const res = result.data
-      //     if (res.code === 0 && res.data.needUpdate) {
-      //       this.$router.push({ path:'/R3UpdateSystem'})
-      //     } 
-      //   })
-      // }
     },
   };
 </script>

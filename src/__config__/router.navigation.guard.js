@@ -162,6 +162,10 @@ if (window.ProjectConfig && window.ProjectConfig.externalPluginModules) { // 整
 
 export default (router) => {
   router.beforeEach((to, from, next) => {
+    if(from.path === "/R3UpdateSystem" && window.localStorage.getItem('isUpdatingSystem')) {
+      return
+    }
+
     // if (Object.keys(getSessionObject('loginStatus')) && Object.keys(getSessionObject('loginStatus')).length === 0) {
     //   debugger;
     // }

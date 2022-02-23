@@ -75,9 +75,10 @@ class RouterPush {
             routePrefix: this.routePrefix,
             keepAliveModuleName: this.keepAliveModuleName,
             id: this.$vm.itemId,
-            open:true,  // 是否有新开
+            stopRouterPush: true,
             itemId: this.$vm.itemId
         };
+
 
         let url = this.$vm.tableName + '/' + this.$vm.itemId;
         if (!this.$vm.$router.$R3_history) {
@@ -101,12 +102,15 @@ class RouterPush {
                     param.back = false;
                 }
 
-                // 新开
-                this.$vm.tabOpen(param);
                 // 关闭菜单   
-                this.$vm.tabCloseAppoint(closeParame);
-
-            
+                let { enableOpenNewTab } = window.ProjectConfig;
+                if(closeParame.tableName !== param.tableName || enableOpenNewTab){
+                    console.log(closeParame,param);
+                    this.$vm.tabCloseAppoint(closeParame);
+                }
+                // 新开
+                this.$vm.tabOpen(param);   
+    
                 return true
             }
         } else {

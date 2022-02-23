@@ -36,6 +36,7 @@
 <script>
   import { mapState, mapMutations } from 'vuex';
   import { classFix } from '../constants/global';
+  import {DispatchEvent,R3_TAB_CLOSE} from '../__utils__/dispatchEvent'
 
   // importwindow.vm.$router.from '../__config__/router.config';
 
@@ -137,6 +138,12 @@
       handleClose(index) {
        const tag = this.openedMenuLists[index];
         this.tabCloseAppoint(tag);
+        DispatchEvent(R3_TAB_CLOSE, {
+          detail: {
+            index,
+            ...tag
+          }
+        })
       }, // 关闭当前tab
       emptyClick() {
         this.clickshow = false;

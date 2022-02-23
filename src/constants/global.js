@@ -66,7 +66,14 @@ export const ignoreGateWay = [
 // 不走网关的正则模式匹配
 export const ignorePattern = () => {
   const { ignoreGateWayPattern } = window.ProjectConfig || {};
-  return (project.ignoreGateWayPattern || []).concat(ignoreGateWayPattern || []);
+  const { ignoreGateWayPatternNoConcat } = window.ProjectConfig || {};
+  if(ignoreGateWayPatternNoConcat){
+    // 用外部接入的
+    return ignoreGateWayPattern || [];
+  }else{
+    return (project.ignoreGateWayPattern || []).concat(ignoreGateWayPattern || []);
+
+  }
 };
 
 // 静默路由，当遇到网络请求403时，不跳转到登录页。
