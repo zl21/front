@@ -75,7 +75,7 @@ class RouterPush {
             routePrefix: this.routePrefix,
             keepAliveModuleName: this.keepAliveModuleName,
             id: this.$vm.itemId,
-            stopRouterPush: true,
+            // stopRouterPush: true,
             itemId: this.$vm.itemId
         };
 
@@ -110,6 +110,7 @@ class RouterPush {
                 }
                 // 新开
                 this.$vm.tabOpen(param);   
+                
     
                 return true
             }
