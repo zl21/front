@@ -7,8 +7,10 @@
     <Tabs type="card" class="openedMenuListsItem" 
          closable 
         @on-click="switchTab" 
+        @on-drag-drop="handleDragDrop"
         :title="true"
         :closedClick="handleClose"
+        draggable
         :value="tagIndex">
         <TabPane  v-for="(tag, index) in openedMenuLists" 
         ref="tabBox"
@@ -135,6 +137,16 @@
           this.switchTabForActiveTab(tag);
           // this.updataSwitchTag(false);
         }
+      },
+      // 拖拽排序
+      handleDragDrop(name1, name2, fromIndex, toIndex) {
+        const temp = this.openedMenuLists[toIndex]
+        this.openedMenuLists[toIndex] = this.openedMenuLists[fromIndex]
+        this.openedMenuLists[fromIndex] = temp
+        this.updataOpenedMenuLists([...this.openedMenuLists])
+
+        const activeTab = this.openedMenuLists.find(tab => tab.isActive)
+        this.switchTabForActiveTab(activeTab)
       },
       handleClose(index) {
        const tag = this.openedMenuLists[index];
