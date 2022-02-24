@@ -4086,10 +4086,7 @@ import RouterPush from '../__utils__/routerback';
       hideBackButton() {
         // 隐藏返回按钮
         // 拦截跳转逻辑
-        let { ResetrouterBackLogic } = window.ProjectConfig;
-        if( ResetrouterBackLogic ){
-          return false;
-        }
+       
          this.dataArray.back = true;
         const clickMenuAddSingleObjectData = getSessionObject('clickMenuAddSingleObject');
         const currentRoute = this.$router.currentRoute.path;
@@ -4100,6 +4097,10 @@ import RouterPush from '../__utils__/routerback';
             // updateSessionObject('clickMenuAddSingleObject', clickMenuAddSingleObjectData);
             return true;
           }
+          return false;
+        }
+        let { ResetrouterBackLogic } = window.ProjectConfig;
+        if( ResetrouterBackLogic ){
           return false;
         }
         const addRouteToEditorData = getSessionObject('addRouteToEditor');
