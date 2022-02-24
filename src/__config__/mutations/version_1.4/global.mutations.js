@@ -666,7 +666,7 @@ export default {
     Object.values(clickMenuAddSingleObjectData).map((item) => {
       const routeFullPath = state.activeTab.routeFullPath;
       const resRouteFullPath = ` ${routeFullPath.substring(routeFullPath.indexOf('/') + 1, routeFullPath.lastIndexOf('/'))}/New`;
-      if (routeFullPath.indexOf(item) !== -1) {
+      if (routeFullPath.indexOf(item) !== -1 && new RegExp('New').test(tab.itemId)) {
         const path = `/${resRouteFullPath}`.replace(/\s/g, '');
         deleteFromSessionObject('clickMenuAddSingleObject', path);
       }
