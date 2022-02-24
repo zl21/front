@@ -81,11 +81,11 @@
               return x.keepAliveModuleName === val.keepAliveModuleName;
           });
           this.tagIndex = this.tagIndex.toString();
-          // setTimeout(()=>{
-          //     if(this.openedMenuLists.length === Number(this.tagIndex)+1 && this.$refs.tabs){
-          //       this.$refs.tabs.scrollToActiveTab();
-          //     }
-          // },400)
+          setTimeout(()=>{
+              if(this.openedMenuLists.length === Number(this.tagIndex)+1 && this.$refs.tabs){
+                this.$refs.tabs.scrollNext();
+              }
+          },200)
         }
       }
       // menuLists: {
