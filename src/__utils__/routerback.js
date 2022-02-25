@@ -40,7 +40,7 @@ class RouterPush {
                     if(!tableName){
                         tableName = arguments[1].url.split('/')[1];
                     }
-                    tableName = tableName + `/${arguments[1].id}`;
+                    let tableNameUrl = tableName + `/${arguments[1].id}`;
 
                     if (arguments[1].clearhistory) {
                         // 清除当前表的历史 
@@ -48,7 +48,20 @@ class RouterPush {
                             delete this.$R3_history[arguments[1].clearParams];
                         }
                     } else {
-                        this.$R3_history[tableName] = arguments[1].router;
+                        let { enableOpenNewTab } = window.ProjectConfig;
+
+                        if(!enableOpenNewTab){
+                            if(!arguments[1].target){
+                                this.$R3_history[tableNameUrl] = arguments[1].router;
+                            }else{
+                                // 当在自身页面进行保存时
+                                let formUrl = `${tableName}/${arguments[1].router.params.itemId}`;
+                                this.$R3_history[tableNameUrl] = this.$R3_history[formUrl];
+                                delete this.$R3_history[formUrl];
+                            }
+                        }else{
+                            this.$R3_history[tableNameUrl] = arguments[1].router;
+                        }
                     }
                     this.$R3_params = arguments[1];
                     window.localStorage.setItem('$R3_history_current', JSON.stringify(this.$R3_history));
@@ -109,7 +122,6 @@ class RouterPush {
 
                 // 关闭菜单   
                 if(closeParame.tableName !== param.tableName || enableOpenNewTab){
-                    console.log(closeParame,param);
                     this.$vm.tabCloseAppoint(closeParame);
                 }
                 // 新开
@@ -149,13 +161,10 @@ class RouterPush {
                     // 全都是新开界面
                     clearParamstableName = `${clearParams.tableName}/${clearParams.itemId}`;
                 }
-                console.log(clearParamstableName,'clearParamstableName====',clearParams);
                 let $R3_history_key = Object.keys($route.$R3_history || {});
                 if($R3_history_key){
                     $R3_history_key.forEach((item)=>{
                         if(new RegExp(clearParamstableName).test(item)){
-                            console.log(clearParamstableName,'test====');
-
                             delete $route.$R3_history[item]
                         }
 

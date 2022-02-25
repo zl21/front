@@ -3767,6 +3767,7 @@ import RouterPush from '../__utils__/routerback';
                 const tab = {
                   type: types,
                   tableName,
+                  target:'self',
                   tableId: this.tableId,
                   label,
                   id: this.buttonsData.newMainTableSaveData ? this.buttonsData.newMainTableSaveData.objId : this.itemId
@@ -3778,6 +3779,7 @@ import RouterPush from '../__utils__/routerback';
               const tab = {
                 type: types,
                 tableName,
+                target:'self',
                 tableId: this.tableId,
                 label,
                 id: this.buttonsData.newMainTableSaveData ? this.buttonsData.newMainTableSaveData.objId : this.itemId
