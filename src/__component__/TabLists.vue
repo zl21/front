@@ -140,12 +140,13 @@
       },
       // 拖拽排序
       handleDragDrop(name1, name2, fromIndex, toIndex) {
-        const temp = this.openedMenuLists[toIndex]
-        this.openedMenuLists[toIndex] = this.openedMenuLists[fromIndex]
-        this.openedMenuLists[fromIndex] = temp
-        this.updataOpenedMenuLists([...this.openedMenuLists])
+        const activeTab = this.openedMenuLists[this.tagIndex]
+        const list = [... this.openedMenuLists]
+        const temp = list[fromIndex]
+        list.splice(fromIndex, 1)
+        list.splice(toIndex, 0, temp)
+        this.updataOpenedMenuLists(list)
 
-        const activeTab = this.openedMenuLists.find(tab => tab.isActive)
         this.switchTabForActiveTab(activeTab)
       },
       handleClose(index) {

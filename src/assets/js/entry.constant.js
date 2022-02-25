@@ -127,7 +127,6 @@ const getCategory = () => {
           let data = window.localStorage.getItem('serviceIdMap') || '{}';  
 
           let serviceIdMapData = Object.assign(JSON.parse(data),JSON.parse(JSON.stringify(serviceIdMaps)));
-          console.log(serviceIdMapData.R3,'====serviceIdMapData');   
           window.localStorage.setItem(
             'serviceIdMap',
             JSON.stringify(serviceIdMapData)
@@ -218,7 +217,6 @@ const init = ($el) => {
 if(window.vm.$router){  
   const originalPush = window.vm.$router.push;
   window.vm.$router.push = function push(location) {
-    console.log(arguments[1],'====');
   this.$R3_params = arguments[1];
   return originalPush.call(this, location).catch(err => err);
 };
