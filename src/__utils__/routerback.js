@@ -30,7 +30,7 @@ class RouterPush {
                     self.clear(this);
                 }
                 // backtoTop 是否返回上一及，默认都返回
-                if (arguments[1] && !arguments[1].backToTop) {
+                if (arguments[1] && arguments[1].original) {
                     if (isEmpty(this.$R3_history)) {
                         // 获取当前历史(应对刷新问题) 
                         this.$R3_history = self.gethistory() || {};
