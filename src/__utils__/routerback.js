@@ -30,7 +30,7 @@ class RouterPush {
                     self.clear(this);
                 }
                 // backtoTop 是否返回上一及，默认都返回
-                if (arguments[1] && arguments[1].original) {
+                if (arguments[1] && !arguments[1].backtoTop) {
                     if (isEmpty(this.$R3_history)) {
                         // 获取当前历史(应对刷新问题) 
                         this.$R3_history = self.gethistory() || {};
@@ -98,12 +98,16 @@ class RouterPush {
                     clearhistory: true,
                     clearParams: url
                 };
+                let { enableOpenNewTab } = window.ProjectConfig;
                 if(/TABLE_DETAIL/.test(param.url)){
                     param.back = false;
+                    if(param.tableName === closeParame.tableName && closeParame.itemId ==='New' && !enableOpenNewTab){
+                        delete this.$vm.$router.$R3_history[url];
+                        return false;
+                    }
                 }
 
                 // 关闭菜单   
-                let { enableOpenNewTab } = window.ProjectConfig;
                 if(closeParame.tableName !== param.tableName || enableOpenNewTab){
                     console.log(closeParame,param);
                     this.$vm.tabCloseAppoint(closeParame);
