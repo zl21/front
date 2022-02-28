@@ -1,25 +1,21 @@
 /* eslint-disable */
 const path = require('path');
 // const { VueLoaderPlugin } = require('vue-loader');
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const copyWebpackPlugin = require('copy-webpack-plugin');
-const webpack = require('webpack');
+const { merge } = require('webpack-merge')
+const baseConfig = require('./webpack.base.js')
 
-const {
-  ModuleFederationPlugin
-} = require('webpack').container;
-const SpriteLoaderPlugin = require('svg-sprite-loader/plugin')
 const config = {
   entry: {
     index: './build/index.publish.js'
   },
   output: {
     filename: 'r3.min.js',
-    path: path.join(__dirname, './r3.publish'),
+    path: path.join(__dirname, '../r3.publish'),
     globalObject: 'this',
     library: 'R3',
     libraryTarget: 'umd',
@@ -73,19 +69,7 @@ const config = {
     },
   },
   module: {
-    exprContextCritical: false,
-    rules: [{
-        test: /\.vue$/,
-        use: [{
-          loader: 'vue-loader',
-        }, ],
-      },
-      {
-        test: /\.m?js$/,
-        use: {
-          loader: 'babel-loader'
-        },
-      },
+    rules: [
       {
         test: /\.css$/,
         use: [{
@@ -107,91 +91,24 @@ const config = {
           }
         }],
       },
-      {
-        test: /\.svg$/,
-        use: [
-          { 
-            loader: "svg-sprite-loader",
-            options: {
-                symbolId: "icon-[name]"
-            }
-          },
-        ]
-      },
-      {
-        test: /\.(png|jpg|gif)$/,
-        use: [{
-          loader: 'url-loader',
-          options: {
-            limit: 10000,
-            name: '[path][name].[ext]'
-          }
-        }]
-      },
-      {
-        test: /\.(woff|woff2|eot|ttf|otf)$/,
-        use: [{
-          loader: 'file-loader',
-          options: {
-            name: '[path][name].[ext]',
-            context: 'src',
-          },
-        }, ],
-      },
     ],
   },
   plugins: [
-    new SpriteLoaderPlugin(),
-    new webpack.DefinePlugin({
-      'process.env.BUILD_ENV': JSON.stringify(process.env.BUILD_ENV)
-    }),
     new MiniCssExtractPlugin({
       filename: 'r3.min.css',
     }),
     new CleanWebpackPlugin(['r3.publish']),
-    new VueLoaderPlugin(),
     new copyWebpackPlugin([{
-        from: path.resolve(__dirname, "./src/assets"),
-        to: path.resolve(__dirname, "./r3.publish/src/assets")
+        from: path.resolve(__dirname, "../src/assets"),
+        to: path.resolve(__dirname, "../r3.publish/src/assets")
       },
       {
-        from: path.resolve(__dirname, "./src/index.less"),
-        to: path.resolve(__dirname, "./r3.publish/src")
+        from: path.resolve(__dirname, "../src/index.less"),
+        to: path.resolve(__dirname, "../r3.publish/src")
       },
     ]),
-    // new ModuleFederationPlugin({
-    //   name: '',
-    //   remotes: {
-    //     arkui_BCL: 'arkui_BCL@https://cdn.jsdelivr.net/npm/@syman/ark-ui-bcl@0.0.10/dist/remoteEntry.js',
-    //     shared: ['vue', '@syman/ark-ui', 'axios']
-    //   }
-    // })
   ],
   mode: 'production',
-  resolve: {
-    extensions: ['.js', '.json', '.vue', '.css'],
-    fallback: {
-      path: require.resolve('path-browserify'),
-      module: false,
-      dgram: false,
-      dns: false,
-      fs: false,
-      https: false,
-      http: false,
-      net: false,
-      inspector: false,
-      tls: false,
-      crypto: false,
-      request: false,
-      stream_http: false,
-      vm: false,
-      stream: false,
-      constants: false,
-      os: false,
-      worker_threads: false,
-      child_process: false
-    },
-  },
   optimization: {
     minimizer: [new TerserJSPlugin({
       parallel: true,
@@ -204,5 +121,4 @@ const config = {
     }), new OptimizeCSSAssetsPlugin({})],
   },
 }
-
-module.exports = () => config;
+module.exports = merge(baseConfig, config);

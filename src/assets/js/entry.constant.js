@@ -212,6 +212,16 @@ const init = ($el) => {
   }
   DispatchEvent('initReady');
 };
+// 
+
+if(window.vm.$router){  
+  const originalPush = window.vm.$router.push;
+  window.vm.$router.push = function push(location) {
+    console.log(arguments[1],'====');
+  this.$R3_params = arguments[1];
+  return originalPush.call(this, location).catch(err => err);
+};
+}
 
 const getGateWayServiceId = ($el) => {
   if (enableInitializationRequest()) {

@@ -31,7 +31,9 @@ export default () => ({
   },
   activated() {
     const { customizedModuleId } = this.$route.params;
-    this.updateAccessHistory({ type: 'action', id: customizedModuleId });
+    if(customizedModuleId){
+      this.updateAccessHistory({ type: 'action', id: customizedModuleId });
+    }
   },
   methods: {
     ...mapActions('global',

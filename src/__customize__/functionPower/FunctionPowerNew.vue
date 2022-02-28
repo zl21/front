@@ -187,11 +187,21 @@
                         />{{ item.description }}
                       </td>
                       <td>
-                        <Checkbox
+                         <template
+                            v-for="(checkItem, j) in item.children"
+                          >
+                         
+                            <Checkbox
+                              :key="j"
+                              :value="checkItem.permission === 128"
+                              @on-change="(currentValue) => functionCheckboxChange(currentValue, {row: item, index: index, itemIndex: j})"
+                            />{{ checkItem.description ? checkItem.description : '' }}
+                          </template>
+                        <!-- <Checkbox
                           v-show="item.children && item.children.length > 0"
                           :value="item.children && item.children.length > 0 ? item.children[0].permission === 128 : false"
                           @on-change="(currentValue) => functionCheckboxChange(currentValue, {row: item, index: index})"
-                        />{{ item.children.length > 0 ? item.children[0].description : '' }}
+                        />{{ item.children.length > 0 ? item.children[0].description : '' }} -->
                       </td>
                     </tr>
                   </tbody>
@@ -791,6 +801,9 @@
       },
       selectFirstOnce() {
         var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+         if(!treeObj){
+            return;
+         }
         // console.log('this.groupId', this.groupId)
         // console.log('this.pageInit', this.pageInit)
         // console.log('nodes', nodes)
@@ -1253,13 +1266,13 @@
           this.tableData[row.extendIndex] = tableObj;
         }
       }, // 下边表格扩展功能数据修改
-      editTableDataForFunction(permission, row) {
+      editTableDataForFunction(permission, row,itemIndex) {
         // const tableIndex = this.tableData.findIndex(item => item.ad_table_id === row.ad_table_id);
         // const tableObj = this.tableData.find(item => item.ad_table_id === row.ad_table_id);
         const tableObj = this.tableData[row.extendIndex];
         if (tableObj.actionList && tableObj.actionList.length > 0) {
           const actionListIndex = tableObj.actionList.findIndex(item => item.ad_action_id === row.ad_action_id);
-          tableObj.actionList[actionListIndex].children[0].permission = permission;
+          tableObj.actionList[actionListIndex].children[itemIndex].permission = permission;
           this.tableData[row.extendIndex] = tableObj;
         }
       }, // 下边表格功能数据修改
@@ -1543,16 +1556,28 @@
         // this.getExtendTableSaveData(val, params.row);
       }, // 下边表格扩展功能的checkbox改变时触发
       functionCheckboxChange(val, params) {
+         const { itemIndex } = params;
         // 判断是否选中
         if (val) {
-          params.row.children[0].permission = 128;
-          this.editTableDataForFunction(128, params.row);
+          params.row.children[itemIndex].permission = 128;
+          this.editTableDataForFunction(128, params.row, itemIndex);
         } else {
-          params.row.children[0].permission = 0;
-          this.editTableDataForFunction(0, params.row);
+          params.row.children[itemIndex].permission = 0;
+         this.editTableDataForFunction(0, params.row, itemIndex);
+        }
+        // 判断按钮组是否选中
+        let params_row_child_check = params.row.children.some((item)=>{
+            if(item.permission === 128){
+                return true;
+            }
+        });
+       // 判断按钮组如果有选中则默认选中扩展功能
+        if(params_row_child_check){
+             this.extendTableData[params.index].permission = 128
+        }else{
+             this.extendTableData[params.index].permission = 0
         }
         this.extendTableData[params.index] = params.row;
-
         // 判断下边表格中是否全部选中，如果有没有选中的就存到数组里
         const arr = this.extendTableData.reduce((acc, cur) => {
           if (cur.permission === 0) {
@@ -1567,6 +1592,7 @@
           }
           return acc;
         }, []);
+
         // 如果下边表格里全部选中，将上边表格对应的扩展选中，如果没有全部选中就取消选中
         // const findIndex = this.tableData.findIndex(item => item.ad_table_id === params.row.ad_table_id);
         const findIndex = params.row.extendIndex;

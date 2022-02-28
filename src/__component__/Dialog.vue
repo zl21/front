@@ -50,7 +50,6 @@
 </template>
 
 <script>
-import { target } from '../../projectConfig/project.config';
 import { DispatchEvent } from '../__utils__/dispatchEvent';
 import i18n from '../assets/js/i18n'
 
