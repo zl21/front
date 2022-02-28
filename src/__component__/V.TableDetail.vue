@@ -74,6 +74,7 @@
         currentSingleButtonComponentName: null,  //按钮组件
         slotTemple:'',
         from: 'singlePage',
+        childPanel: {}
       };
     },
     computed: {
@@ -121,16 +122,24 @@
           obj.componentAttribute.mainFormPaths = this.formPaths;
           obj.componentAttribute.tooltipForItemTable = this.tooltipForItem;
           obj.componentAttribute.type = 'vertical';
+          tabComponent.name = `tapComponent.${item.tablename}`
           if (obj.vuedisplay === 'TabItem') { // 配置自定义tab
             const webact = obj.webact ? obj.webact.split('/')[0].toUpperCase() : '';// 自定义子表标识
             if (webact === 'HALF' || webact === 'ALL') {
-              Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
+              // this.$options.components[`tapComponent.${item.tablename}`] = Vue.extend(tabComponent)
+              if (this.childPanel[`tapComponent.${item.tablename}`] === undefined) {
+                this.childPanel[`tapComponent.${item.tablename}`] = Object.assign({}, tabComponent)
+              }
               obj.componentAttribute.componentName = obj.webact.substring(obj.webact.lastIndexOf('/') + 1, obj.webact.length);
             }
-          } else if (Vue.component(`tapComponent.${item.tablename}`) === undefined) {
-            Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
+          } else if (this.childPanel[`tapComponent.${item.tablename}`] === undefined) {
+            this.childPanel[`tapComponent.${item.tablename}`] = Object.assign({}, tabComponent)
           }
-          obj.component = `tapComponent.${item.tablename}`;
+          // else if (this.$options.components[`tapComponent.${item.tablename}`] === undefined) {
+          //   this.$options.components[`tapComponent.${item.tablename}`] = Vue.extend(tabComponent)
+          // }
+          // obj.component = `tapComponent.${item.tablename}`;
+          obj.component = this.childPanel[`tapComponent.${item.tablename}`]
           obj.cilckCallback = this.tabClick;
           arr.push(obj);
         });
@@ -177,8 +186,8 @@
       },10)
       const singleButtonComponentName = `${this[MODULE_COMPONENT_NAME]}.SingleObjectButtons`;
         let singleObjectButtonGroupMixins = window.ProjectConfig && window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.singleObjectButtonGroup || {};
-      if (Vue.component(singleButtonComponentName) === undefined) {
-        Vue.component(singleButtonComponentName, Vue.extend(Object.assign({ mixins: [verticalMixins(),singleObjectButtonGroupMixins] }, singleObjectButtons)));
+      if (this.$options.components[singleButtonComponentName] === undefined) {
+        this.$options.components[singleButtonComponentName] = Vue.extend(Object.assign({ mixins: [verticalMixins(),singleObjectButtonGroupMixins] }, singleObjectButtons))
       }
       this.currentSingleButtonComponentName = singleButtonComponentName;
 

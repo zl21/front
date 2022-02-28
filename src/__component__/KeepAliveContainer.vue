@@ -114,34 +114,15 @@
         }
         if ([STANDARD_TABLE_LIST_PREFIX, STANDARD_COMMONTABLE_LIST_PREFIX, VERTICAL_TABLE_DETAIL_PREFIX, HORIZONTAL_TABLE_DETAIL_PREFIX].indexOf(routePrefix) === -1) { return; }
           component.name = componentName;
-        if (Vue.component(componentName) === undefined) {
-          Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins, mixinsCustomize], isKeepAliveModel: true }, component)));
+        if (this.$options.components[componentName] === undefined) {
+            this.$options.components[componentName] = Vue.extend(Object.assign({ mixins: [mixins, mixinsCustomize], isKeepAliveModel: true }, component))
         } else if (this.sameNewPage) {
           this.sameNewPage = false;
           this.show = false;
-         
-          Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins, mixinsCustomize], isKeepAliveModel: true }, component)));
+          this.$options.components[componentName] = Vue.extend(Object.assign({ mixins: [mixins, mixinsCustomize], isKeepAliveModel: true }, component));
           this.show = true;
         }
-        // else if (this.sameNewPage) {
-        //   this.$store.commit('global/updataNewTagForNewTab', false);
-        //   setTimeout(() => {
-        //     // Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins, mixinsCustomize], isKeepAliveModel: true }, component)));
-        //     // const a = window.vm.$children[0].$children[0].$children[2].$children[1].$children;
-        //     // a.map((item, i) => {
-        //     //   if (item.moduleComponentName === moduleName()) {
-        //     //     a.splice(i, 1);
-        //     //   }
-        //     // });
-        //     if (!this.keepAliveLists.include(componentName)) {
-        //       Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins, mixinsCustomize], isKeepAliveModel: true }, component)));
-        //     }
-        //     this.currentModule = componentName;
-        //     this.$forceUpdate();
-        //     // this.show = false;
-        //     // this.show = true;
-        //   }, 500);
-        // }
+
         this.currentModule = componentName;
       },
       generateCustomizedComponent() {
@@ -154,7 +135,7 @@
         // if (customizedModuleName === 'customizeReport') {
      
         // } else 
-        if (Vue.component(componentName) === undefined) {
+        if (this.$options.components[componentName] === undefined) {
           let target = null;
           const mixinsCustomize = customizeMixins().taskList ? customizeMixins().taskList : {};
           
@@ -167,15 +148,21 @@
           }
           if (target) {
             if (typeof target.component === 'function') {
-              Vue.component(componentName, target.component);
-              Vue.component(componentName)().then((result) => {
-                // 去除定制界面的name
-                result.default.name = '';
+              // Vue.component(componentName, target.component);
+              // Vue.component(componentName)().then((result) => {
+              //   // 去除定制界面的name
+              //   result.default.name = '';
+              //   let mixins = [CMixins(), target.label === 'taskList' ? mixinsCustomize : {}];
+              //   result.default.mixins = (result.default.mixins || []).concat(mixins);
+              //   Vue.component(componentName, Vue.extend(result.default));
+              // });
+              target.component().then(result => {
+                result.default.name = ''
                 let mixins = [CMixins(), target.label === 'taskList' ? mixinsCustomize : {}];
                 result.default.mixins = (result.default.mixins || []).concat(mixins);
-                Vue.component(componentName, Vue.extend(result.default));
-              });
-              this.currentModule = componentName;
+                this.$options.components[componentName] = Vue.extend(result.default)
+                this.currentModule = componentName;
+              })
             } else {
               if (target.component && target.component.name) {
                 // 修改自定义组件name
@@ -183,11 +170,11 @@
                 let mixins = [CMixins(), target.label === 'taskList' ? mixinsCustomize : {}];
                 target.component.mixins = (target.component.mixins || []).concat(mixins);
               }
-              Vue.component(componentName, Vue.extend( target.component));
+              this.$options.components[componentName] = Vue.extend( target.component)
               this.currentModule = componentName;
             }
           } else {
-            Vue.component(componentName, PageNotFound);
+            this.$options.components[componentName] = PageNotFound
             this.currentModule = componentName;
           }
         } else {
@@ -199,15 +186,15 @@
         const { routePrefix } = this.$route.meta;
         if (routePrefix !== PLUGIN_MODULE_PREFIX) { return; }
         const componentName = `${PLUGIN_MODULE_COMPONENT_PREFIX}.${pluginModuleName}`;
-        if (Vue.component(componentName) === undefined) {
+        if (this.$options.components[componentName] === undefined) {
           if (window.ProjectConfig && window.ProjectConfig.externalPluginModules) {
             pluginModules = Object.assign({}, pluginModules, window.ProjectConfig.externalPluginModules);
           }
           const target = pluginModules[pluginModuleName] ? pluginModules[pluginModuleName] : undefined;
           if (target && target.component) {
-            Vue.component(componentName, target.component);
+            this.$options.components[componentName] = target.component
           } else {
-            Vue.component(componentName, Vue.extend(Object.assign({}, PageNotFound)));
+            this.$options.components[componentName] = Vue.extend(Object.assign({}, PageNotFound))
           }
         }
         this.currentModule = componentName;
@@ -219,8 +206,8 @@
           this.LinkUrl.forEach((url) => {
             if (url[linkModuleName]) {
               this.urlName = getUserenv({ url: url[linkModuleName] });
-              if (Vue.component(componentName) === undefined) {
-                Vue.component(componentName, LinkPage);
+              if (this.$options.components[componentName] === undefined) {
+                this.$options.components[componentName] = LinkPage
               }
               this.currentModule = componentName;
 
@@ -231,12 +218,10 @@
         const { routePrefix } = this.$route.meta;
         if (routePrefix !== LINK_MODULE_PREFIX) { return; }
         if (!this.urlName) {
-          if (Vue.component(componentName) === undefined) {
-             console.log('PageNotFound');
-            Vue.component('PageNotFound', PageNotFound);
+          if (this.$options.components[componentName] === undefined) {
+            this.$options.components['PageNotFound'] = PageNotFound
             this.currentModule = 'PageNotFound';
-            return;
-
+            return
           }
          
           this.currentModule = componentName;

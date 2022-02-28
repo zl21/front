@@ -128,7 +128,6 @@ const getCategory = () => {
           let data = window.localStorage.getItem('serviceIdMap') || '{}';  
 
           let serviceIdMapData = Object.assign(JSON.parse(data),JSON.parse(JSON.stringify(serviceIdMaps)));
-          console.log(serviceIdMapData.R3,'====serviceIdMapData');   
           window.localStorage.setItem(
             'serviceIdMap',
             JSON.stringify(serviceIdMapData)

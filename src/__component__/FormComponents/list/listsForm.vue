@@ -377,7 +377,7 @@ export default {
       }
     },
     initComponent (item) { // init组件
-      const Render = new RenderComponent(item, this.id);
+      const Render = new RenderComponent(item, this.id, this);
       return Render.Initialize();
     },
     toggle () { // 折叠切换
