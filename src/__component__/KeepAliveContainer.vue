@@ -223,6 +223,7 @@
             this.currentModule = 'PageNotFound';
             return
           }
+         
           this.currentModule = componentName;
         }
       },

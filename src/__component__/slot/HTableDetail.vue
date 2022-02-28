@@ -9,13 +9,15 @@
 </template>
 <script>
 
+
  export default {
   name: '',
   inheritAttrs: true,
-   mounted(){
-     let self = this;
-     console.log(this);
+  props:{
+    id:{
+      t
+    }
+  }
 
-   }
 }
 </script>

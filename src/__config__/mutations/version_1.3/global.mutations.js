@@ -96,6 +96,17 @@ export default {
     // linkName:外链表名，
     // linkId:外链表ID，
     // query:路由参数
+        
+    // 兼容新开的历史记录
+    arguments[1].router = {
+      fullPath: window.vm.$route.fullPath,
+      meta: window.vm.$route.meta,
+      name: window.vm.$route.name,
+      params: window.vm.$route.params,
+      path:  window.vm.$route.path,
+      query:  window.vm.$route.query
+    }
+
     if (param && param.url && param.url.includes('?')) {
       param.url = getUserenv({ url: param.url });
     }
@@ -663,7 +674,7 @@ export default {
     Object.values(clickMenuAddSingleObjectData).map((item) => {
       const routeFullPath = state.activeTab.routeFullPath;
       const resRouteFullPath = ` ${routeFullPath.substring(routeFullPath.indexOf('/') + 1, routeFullPath.lastIndexOf('/'))}/New`;
-      if (routeFullPath.indexOf(item) !== -1) {
+      if (routeFullPath.indexOf(item) !== -1  && new RegExp('New').test(tab.itemId)) {
         const path = `/${resRouteFullPath}`.replace(/\s/g, '');
         deleteFromSessionObject('clickMenuAddSingleObject', path);
       }
@@ -786,7 +797,9 @@ export default {
       } else if (!enableActivateSameCustomizePage() && !enableOpenNewTab()) { // 列表打开本表单对象界面，关闭时，根据表明清除列表以及列表对应的单对象keepAlive
         state.keepAliveLists = state.keepAliveLists.filter(d => d !== tab.keepAliveModuleName);
       } else if (kp === tab.tableName) {
-        state.keepAliveLists.splice(i, 1);
+        if(k === tab.keepAliveModuleName){
+          state.keepAliveLists.splice(i, 1);
+        }
       }
     };
     // if (index > -1) {
@@ -810,20 +823,28 @@ export default {
         if (item.routeFullPath === tabRouteFullPath) {
           openedMenuLists.splice(index, 1);
         }
-      } else if (samePath) {
+      } else if (item.routeFullPath === tabRouteFullPath) {
         openedMenuLists.splice(index, 1);
+
         if (tabRouteFullPath && !tab.forbidden) {
           if (openedMenuLists.length > 0) {
-            if (index === 0) {
-              state.activeTab = openedMenuLists[index]; // 关闭当前tab时始终打开的是最后一个tab
-            } else {
-              state.activeTab = openedMenuLists[index - 1]; // 关闭当前tab时始终打开的是最后一个tab
+            // 当前关闭等于激活页面
+            if(state.activeTab.routeFullPath === item.routeFullPath){
+              if (index === 0) {
+                state.activeTab = openedMenuLists[index]; // 关闭当前tab时始终打开的是最后一个tab
+              } else {
+                state.activeTab = openedMenuLists[index - 1]; // 关闭当前tab时始终打开的是最后一个tab
+              }
+
             }
+            
             window.vm.$router.push({
               path: state.activeTab.routeFullPath,
             });
           } else {
-            window.vm.$router.push('/');
+            if(!tab.open){
+              window.vm.$router.push('/');
+            }
           }
         }
       }
@@ -915,6 +936,19 @@ export default {
     //     return true;
     //   }
     // }
+
+        
+    // 兼容新开的历史记录
+      // 兼容新开的历史记录
+      arguments[1].router = {
+        fullPath: window.vm.$route.fullPath,
+        meta: window.vm.$route.meta,
+        name: window.vm.$route.name,
+        params: window.vm.$route.params,
+        path:  window.vm.$route.path,
+        query:  window.vm.$route.query
+      }
+    
     if ((type === 'S' || type === 'STANDARD_TABLE_LIST_PREFIX') && isSetQuery && queryData) {
       if (queryData.values && queryData.values.length > 0) {
         let flag = true;
@@ -1113,6 +1147,11 @@ export default {
       window.vm.$router.push({
         path
       },arguments[1]);
+    }
+    if(url){
+      window.vm.$router.push(
+        url,arguments[1]
+      );
     }
   },
   updataUserInfoMessage(state, { userInfo }) {

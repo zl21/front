@@ -8,6 +8,7 @@
          closable 
         @on-click="switchTab" 
         :title="true"
+        ref="tabs"
         :closedClick="handleClose"
         :value="tagIndex">
         <TabPane  v-for="(tag, index) in openedMenuLists" 
@@ -80,6 +81,11 @@
               return x.keepAliveModuleName === val.keepAliveModuleName;
           });
           this.tagIndex = this.tagIndex.toString();
+          setTimeout(()=>{
+              if(this.openedMenuLists.length === Number(this.tagIndex)+1 && this.$refs.tabs){
+                this.$refs.tabs.scrollNext();
+              }
+          },200)
         }
       }
       // menuLists: {
@@ -127,7 +133,6 @@
         'updataSwitchTag'
       ]),
       switchTab(index) {
-  
         const tag = this.openedMenuLists[index];
         if (this.$router.currentRoute.fullPath !== tag.routeFullPath) {
           this.updataSwitchTag(true);

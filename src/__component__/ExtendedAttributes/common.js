@@ -245,7 +245,6 @@ obj
 export const isEmpty = (obj)=>{
     if(typeof obj ==='object'){
         obj = JSON.stringify(obj || {}).replace(/null|,/g,'');
-
     }
 
     if(obj === undefined || obj === "null" || obj === "" || obj === "[]" || obj === "{}"){
