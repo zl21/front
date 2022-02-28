@@ -36,26 +36,26 @@ module.exports = {
     //NavigatorSubMenu:require('./src/demo/NavigatorSubMenu.vue').default,  // 模板渲染
     //NaVertical:require('./src/demo/NaVerticalslot.vue').default  // 模板渲染
     // listFormButton:()=>import('../demo/detailbuttons.vue'),  // 定制列表button
-    standardTableList:{
-      // defined:()=>import('../demo/standardTableListdefind.vue'),
-      tableName:{
-        'AD_TABLE':{
-          defined:()=>import('../demo/standardTableListdefind.vue'),
-        },
-        'V_STORE':{ // 一对多子表
-          layout:()=>import('../demo/standardTableList.vue')
-        }
-      }
-    },  // 表单
-    panelForm:{
-      // 左右结构的单对象
-      tableName:{
-        'V_STORE':{ // 一对多子表
-          CollapseComponent:()=>import('../demo/collaps.vue'),
-          // layout:()=>import('../demo/HTableDetail.vue')
-        }
-      }
-    },
+    // standardTableList:{
+    //   // defined:()=>import('../demo/standardTableListdefind.vue'),
+    //   tableName:{
+    //     'AD_TABLE':{
+    //       defined:()=>import('../demo/standardTableListdefind.vue'),
+    //     },
+    //     'V_STORE':{ // 一对多子表
+    //       layout:()=>import('../demo/standardTableList.vue')
+    //     }
+    //   }
+    // },  // 表单
+    // panelForm:{
+    //   // 左右结构的单对象
+    //   tableName:{
+    //     'V_STORE':{ // 一对多子表
+    //       CollapseComponent:()=>import('../demo/collaps.vue'),
+    //       // layout:()=>import('../demo/HTableDetail.vue')
+    //     }
+    //   }
+    // },
     // VTableDetail:{
     //   tableName:{
     //     'V_STORE':{ // 一对多子表
