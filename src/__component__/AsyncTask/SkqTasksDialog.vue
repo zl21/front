@@ -119,6 +119,7 @@ export default {
         tableId: Version() === '1.3' ? 24386 : 963,
         label: this.$t('tips.myTask'),
         isSetQuery: true,
+        backToTop:true,
         queryData: {
           tableId: Version() === '1.3' ? 24386 : 963,
           values: [//设置默认值的字段
