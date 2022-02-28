@@ -232,8 +232,13 @@
         if (routePrefix !== LINK_MODULE_PREFIX) { return; }
         if (!this.urlName) {
           if (Vue.component(componentName) === undefined) {
+             console.log('PageNotFound');
             Vue.component('PageNotFound', PageNotFound);
+            this.currentModule = 'PageNotFound';
+            return;
+
           }
+         
           this.currentModule = componentName;
         }
       },

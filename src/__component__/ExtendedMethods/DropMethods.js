@@ -62,13 +62,14 @@ export default class DropMethods {
           }
           return arr;
       },{});
-      if (event.code === 'Enter') {
-        if( this.$parent && this.$parent.$parent && this.$parent.$parent.$parent && this.$parent.$parent.$parent){
-          if(typeof this.$parent.$parent.$parent.handleEnter ==='function'){
-            this.$parent.$parent.$parent.handleEnter(...arguments);
-          }
-        }
-      }
+      // if (event.code === 'Enter') {
+      //   if( this.$parent && this.$parent.$parent ){
+      //     let searchClickData = this.$parent.$parent.getListParent().searchClickData;
+      //     if(typeof searchClickData === 'function'){
+      //       searchClickData(...arguments);
+      //     }        
+      //   }
+      // }
     };
   }
 }

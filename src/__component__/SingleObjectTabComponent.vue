@@ -567,6 +567,12 @@
         if (tableDetailCollectionMixin.slotTableTemplate) {
           this.slotTableTemplate = tableDetailCollectionMixin.slotTableTemplate;
         }
+        // 混入当前表明
+        if (tableDetailCollectionMixin.tableName) {
+          if(tableDetailCollectionMixin.tableName[this.tableName]){
+            this.slotTableTemplate = tableDetailCollectionMixin.tableName;
+          }
+        }
        
         const singleObjectButtonsMixin = (window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.singleObjectButtonsMixin) || {};
         const vuexModuleName = this.moduleComponentName;
