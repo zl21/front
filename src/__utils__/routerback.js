@@ -37,6 +37,9 @@ class RouterPush {
                     }
                     // 是否新开tab
                     let tableName = arguments[1].tableName || arguments[1].customizedModuleName || arguments[1].linkName || arguments[1].pluginModuleName;
+                    
+
+                   
                     if(!tableName){
                         tableName = arguments[1].url.split('/')[1];
                     }
@@ -98,6 +101,7 @@ class RouterPush {
             // 获取本地历史记录
             this.$vm.$router.$R3_history = this.gethistory();
         }
+
         if (this.$vm.$router.$R3_history) {
             let tableData = {};
             tableData = this.$vm.$router.$R3_history[url];
@@ -111,6 +115,10 @@ class RouterPush {
                     clearhistory: true,
                     clearParams: url
                 };
+                if(['CP_C_TASK','U_NOTE'].includes(param.tableName)){
+                    // 我的任务除外
+                    return false;
+                }
                 let { enableOpenNewTab } = window.ProjectConfig;
                 if(/TABLE_DETAIL/.test(param.url)){
                     param.back = false;
