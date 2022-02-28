@@ -1,19 +1,19 @@
 import Vue from 'vue';
-import { getGuid } from './src/__utils__/random';
-import router from './src/__config__/router.config';
+// import { getGuid } from './src/__utils__/random';
+// import router from './src/__config__/router.config';
 import store from './src/__config__/store.config';
-import App from './src/App.vue';
-import i18n from './src/assets/js/i18n';
-import network from './src/__utils__/network';
+// import App from './src/App.vue';
+// import i18n from './src/assets/js/i18n';
+// import network from './src/__utils__/network';
 import {
   backDashboardRoute, enableGateWay, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE, specifiedGlobalGateWay
 } from './src/constants/global';
-import { removeSessionObject, getSessionObject } from './src/__utils__/sessionStorage';
-import { getLocalObject } from './src/__utils__/localStorage';
+// import { removeSessionObject, getSessionObject } from './src/__utils__/sessionStorage';
+// import { getLocalObject } from './src/__utils__/localStorage';
 
 import customizedModalConfig from './src/__config__/customizeDialog.config';
 import Loading from './src/__utils__/loading';
-import getObjdisType from './src/__utils__/getObjdisType';
+// import getObjdisType from './src/__utils__/getObjdisType';
 import projectConfig from './projectConfig/project.config';
 import './src/assets/js/entry.common'
 import { packageMessage, hookAJAX, getCategory, getGateWayServiceId, init } from './src/assets/js/entry.constant'
@@ -207,15 +207,15 @@ Vue.use(Loading);
 //   }
 // };
 
-const getSubSystems = () => {
-  if (enableInitializationRequest()) {
-    network.post('/p/cs/getSubSystems').then((res) => {
-      if (res.data.data) {
-        store.commit('global/updateMenuLists', res.data.data);
-      }
-    });
-  }
-};
+// const getSubSystems = () => {
+//   if (enableInitializationRequest()) {
+//     network.post('/p/cs/getSubSystems').then((res) => {
+//       if (res.data.data) {
+//         store.commit('global/updateMenuLists', res.data.data);
+//       }
+//     });
+//   }
+// };
 
 
 // const getGateWayServiceId = () => {
@@ -245,7 +245,7 @@ if (enableGateWay()) {
   getGateWayServiceId();
 } else {
   window.localStorage.setItem('serviceId', '') // 清除本地网关
-  getSubSystems();
+  // getSubSystems();
   init();
 }
 

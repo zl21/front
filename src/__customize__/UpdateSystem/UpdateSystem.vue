@@ -47,14 +47,17 @@ export default {
       loadStyle: {
         width: '0%'
       },
-      loader: $('[loader]'),
-      body: $('body'),
+      loader: undefined,
+      body: undefined,
       progressTotal: 0
     }
   },
 
   async mounted() {
-    this.preloader = $('.preloader');
+    window.localStorage.setItem('isUpdatingSystem', true);
+    this.body = document.querySelector('body')
+    this.loader = document.querySelector('[loader]')
+    this.preloader = document.querySelector('.preloader')
     this.checkProgress()
   },
   watch: {
@@ -78,7 +81,9 @@ export default {
       // 升级进读到100%才跳转走
       if (this.loaded >= 100) {
         this.doneLoading()
-        this.goto()
+        // this.goto()
+        window.localStorage.removeItem('isUpdatingSystem');
+        this.$router.back()
       }
       if (this.loaded < this.progressTotal) {
         this.loaded++
@@ -87,12 +92,12 @@ export default {
 
     doneLoading() {
       clearInterval(this.loading);
-      this.updateStatus();
+      // this.updateStatus();
     },
 
-    updateStatus() {
-      this.loader.fadeOut();
-    },
+    // updateStatus() {
+    //   this.loader && this.loader.fadeOut();
+    // },
 
     // 设置假进度
     setProgressTotal() {
@@ -122,7 +127,7 @@ export default {
     // 请求更新
     async requestUpdate() {
       return new Promise((resolve) => {
-        network.post('/p/cs/retail/exeLiquibaseUpdate').then((result) => {
+        network.post('/p/c/retail/exeLiquibaseUpdate').then((result) => {
           const res = result.data
           if (res.code === 0) {
             resolve(true)
@@ -135,24 +140,24 @@ export default {
       })
     },
 
-    // 界面跳转
-    async goto() {
-      const { loginCallback } = window.ProjectConfig;
-      if (!loginCallback) {
-        // window.location.href = window.location.origin;
-        this.$router.push({ path:'/'})
-        return
-      }
-      if (typeof loginCallback !== 'function') {
-        throw new Error('登录回调必须是一个函数')
-      };
-      const res = await loginCallback();
-      delete window.ProjectConfig.loginCallback
-      if (res) {
-        // window.location.href = window.location.origin;
-        this.$router.push({ path:'/'})
-      };
-    }
+    // // 界面跳转
+    // async goto() {
+    //   const { loginCallback } = window.ProjectConfig;
+    //   if (!loginCallback) {
+    //     // window.location.href = window.location.origin;
+    //     this.$router.push({ path:'/'})
+    //     return
+    //   }
+    //   if (typeof loginCallback !== 'function') {
+    //     throw new Error('登录回调必须是一个函数')
+    //   };
+    //   const res = await loginCallback();
+    //   delete window.ProjectConfig.loginCallback
+    //   if (res) {
+    //     // window.location.href = window.location.origin;
+    //     this.$router.push({ path:'/'})
+    //   };
+    // }
   }
 }
 </script>

@@ -332,14 +332,14 @@
       async goto() {
         this.showChangeLang && await R3I18n(this.lang,{enableApi: true});
 
-        // 如果开启系统升级，且需要更新
-        const { enableSystemUpdate } = window.ProjectConfig
-        if(enableSystemUpdate && await this.checkUpdate()) {
-          window.ProjectConfig.loginCallback = this.loginSucCbk
-          this.$router.push({ path:'/R3UpdateSystem'})
-          this.afterLogin()
-          return
-        }
+        // // 如果开启系统升级，且需要更新
+        // const { enableSystemUpdate } = window.ProjectConfig
+        // if(enableSystemUpdate && await this.checkUpdate()) {
+        //   window.ProjectConfig.loginCallback = this.loginSucCbk
+        //   this.$router.push({ path:'/R3UpdateSystem'})
+        //   this.afterLogin()
+        //   return
+        // }
 
         if (!this.loginSucCbk) {
           // return window.location.href = window.location.origin
@@ -363,22 +363,22 @@
         }, 200)
       },
 
-      // 检查系统升级
-      async checkUpdate() {
-        return new Promise((resolve) => {
-          network.post(`/p/cs/retail/queryLiquibaseExeStatus?hash=${new Date().getTime()}`).then(result => {
-            const res = result.data
-            if(res.code === 0) {
-              resolve(res.data.needUpdate)
-              // resolve(true)
-            } else {
-              resolve(false)
-            }
-          }).catch(() => {
-            resolve(false);
-          })
-        })
-      },
+      // // 检查系统升级
+      // async checkUpdate() {
+      //   return new Promise((resolve) => {
+      //     network.post(`/p/c/retail/queryLiquibaseExeStatus?hash=${new Date().getTime()}`).then(result => {
+      //       const res = result.data
+      //       if(res.code === 0) {
+      //         // resolve(res.data.needUpdate)
+      //         resolve(true)
+      //       } else {
+      //         resolve(false)
+      //       }
+      //     }).catch(() => {
+      //       resolve(false);
+      //     })
+      //   })
+      // },
 
       // 登录后处理事件
       async afterLogin() {
