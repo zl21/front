@@ -6,6 +6,7 @@ import ParameterDataProcessing from '../parameterDataProcessing';
 import LinkageRelationships from '../../ExtendedAttributes/LinkageRelationships';
 import { validateForm } from './Validate';
 import CollapseComponent from './CollapseComponent.vue';
+import {SetLayoutDirectionSlot} from '../../../__config__/layout/slot';
 import {
      MODULE_COMPONENT_NAME, classFix
   } from '../../../constants/global';
@@ -455,19 +456,27 @@ export default {
       //   this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
       //  }
 
+    },
+    async initslot(){
+      // 
+      let data = await new SetLayoutDirectionSlot(this.$parent,this,'panelForm','CollapseComponent',this.CollapseComponent).init();
+      this.CollapseComponent = data;
+
     }
   },
   created() {
     this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');
   },
-  mounted () {
+  async mounted () {
     this.setFormlist();
+
     this.CollapseComponent = CollapseComponent;
     if(this.CollapseName === undefined){
       this.CollapseComponent = CollapseComponent;
     }else{
       this.CollapseComponent = this.CollapseName;
     }
+    await this.initslot();
     // 通过dom 查找实例
     this.$el._vue_ = this;
     this.id = this.tableName +'-'+ ((this.moduleComponentName.split('.').splice(2,2)).join('-'));

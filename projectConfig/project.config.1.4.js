@@ -5,7 +5,7 @@ const project = {
   projectIconPath: '', // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
   target: 'http://r3-8098.dev.syman.cn/', // 框架研发网关开启环境
- //  target: 'http://r3-java.dev.burgeononline.com/', // 框架后端测试分支
+  // target: 'http://r3-java.dev.burgeononline.com/', // 框架后端测试分支
   // target: 'http://retail-service-center.dev.burgeononline.com/',
   // target: 'http://syman-jflow-standard.dev.burgeononline.com/', // 新版本jflow测试环境
   // target: 'http://r3-know-dev.dev.burgeononline.com/', // 知晓测试环境(启用网关)

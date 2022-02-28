@@ -13,15 +13,20 @@
              :key="ItemLists[item]._index"
              :index="index"
              :class="['item',ItemLists[item].colname,(defaultSpread ? (index > (setdefaultColumn*searchFoldnum - 1 - indexButton) && !dowClass):defaultSpread) ?'long':'']">
-
           <keep-alive>
             <component :is="ItemLists[item].component"
                        :items="ItemLists[item]"
                        @on-change="valueChange"
-                       :label-width="90" />
+                       @on-keydown="handleEnter"
+                       :label-width="90">
+                       <slot >
+                         <div v-if="listFormTemple(ItemLists[item])" v-html="listFormTemple(ItemLists[item])"></div>
+                      </slot>
+              </component>
           </keep-alive>
         </div>
       </div>
+     
       <component v-if="ButtonHtml"
                  :class="classButton"
                  :is="ButtonHtml"></component>
@@ -33,7 +38,9 @@ import { mapState } from 'vuex';
 import RenderComponent from '../RenderComponent';
 import ParameterDataProcessing from '../parameterDataProcessing';
 import store from '../../../__config__/store.config';
-
+import {
+    findComponentDownward 
+  } from '../../ExtendedAttributes/common';
 import {
   Version,
   classFix
@@ -117,7 +124,20 @@ export default {
       type: Boolean,
       default: false
 
-    }
+    },
+    moduleComponentName:{
+      type: String,
+      default () {
+        return '';
+      }
+    },
+     listFormTemple:{
+      // 模板项目
+      type: Function,
+      default: ()=>{
+      }  
+
+    },
   },
   data () {
     return {
@@ -182,12 +202,12 @@ export default {
      
       
         if(arrjson[item.colname] === undefined){          
-          if (this.$parent.delectFormData) {
-              this.$parent.delectFormData(item.colname);
+          if (this.getParent().delectFormData) {
+              this.getParent().delectFormData(item.colname);
             }
         }else{
-           if (this.$parent.updateFormData) {
-              this.$parent.updateFormData(arrjson);
+           if (this.getParent().updateFormData) {
+              this.getParent().updateFormData(arrjson);
             }
         }
 
@@ -337,19 +357,19 @@ export default {
         let hiddenButtons = this.ButtonHtml.data && this.ButtonHtml.data().hiddenButtons || [];
         if (Array.isArray(hiddenButtons)) {
           // 隐藏列表查询按钮
-          let data = JSON.parse(JSON.stringify(this.$parent.buttons));
+          let data = JSON.parse(JSON.stringify(this.getParent().buttons));
           hiddenButtons.forEach((key) => {
             data.dataArray[key] = false;
           });
           if (this.ButtonHtml.props && this.ButtonHtml.props.ButttonCallBack) {
             // 点击回调事件
-            this.ButtonHtml.props.ButttonCallBack.default = this.$parent.buttonClick;
+            this.ButtonHtml.props.ButttonCallBack.default = this.getParent().buttonClick;
           }
           if (this.ButtonHtml.props && this.ButtonHtml.props.IconCallBack) {
             // 收拉框回调
             this.ButtonHtml.props.IconCallBack.default = this.toggle;
           }
-          this.$parent.filterButtonsForShow(data.dataArray);
+          this.getParent().filterButtonsForShow(data.dataArray);
         }
 
       } else {
@@ -382,6 +402,16 @@ export default {
       }
       return true;
     },
+    getParent(){
+      // 获取查找实例
+      let vm  = findComponentDownward(window.vm,this.moduleComponentName);
+      if(vm){
+        return vm
+      }else{
+        return this.$parent.$parent;
+      }
+
+    },
     deleteEmptyProperty (object) {
       for (const i in object) {
         const value = object[i];
@@ -402,8 +432,14 @@ export default {
       }
     },
     // 组件回车事件
-    handleEnter () {
-      this.$emit('onHandleEnter', ...arguments)
+    handleEnter (e) {
+      if(e.keyCode === 13){
+        this.$emit('onHandleEnter', ...arguments)
+        if(this.getParent().searchClickData){
+           this.getParent().searchClickData()
+        };
+      }
+     
     },
     r3Format (val, item) {
       // 兼容1.3 数据格式传参
