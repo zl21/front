@@ -99,7 +99,7 @@
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import { getSessionObject, updateSessionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
   import {FindInstance ,FindInstanceAll} from './ExtendedAttributes/common.js'
-
+import RouterPush from '../__utils__/routerback';
 
   export default {
     data() {
@@ -2284,6 +2284,19 @@
           to: '',
           from: ''
         };
+        // 拦截跳转逻辑
+        let { ResetrouterBackLogic } = window.ProjectConfig;
+        if( ResetrouterBackLogic ){
+          // 配置重置返回按钮逻辑（外键跳转有返回字段）
+           let checked = new RouterPush(this, routePrefix, keepAliveModuleName).back();
+            if(checked){
+                return;
+            }
+
+        }
+       
+       
+   
         if (this.itemId === 'New') { 
           // 单对象界面配置动态路由时，由动态路由界面跳转的新增单对象界面，
           // 点击返回时需回到维护的关系中对应的路由
@@ -3753,6 +3766,7 @@
                 const tab = {
                   type: types,
                   tableName,
+                  target:'self',
                   tableId: this.tableId,
                   label,
                   id: this.buttonsData.newMainTableSaveData ? this.buttonsData.newMainTableSaveData.objId : this.itemId
@@ -3764,6 +3778,7 @@
               const tab = {
                 type: types,
                 tableName,
+                target:'self',
                 tableId: this.tableId,
                 label,
                 id: this.buttonsData.newMainTableSaveData ? this.buttonsData.newMainTableSaveData.objId : this.itemId
@@ -4070,6 +4085,9 @@
         this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
       },
       hideBackButton() {
+        // 隐藏返回按钮
+        // 拦截跳转逻辑
+       
          this.dataArray.back = true;
         const clickMenuAddSingleObjectData = getSessionObject('clickMenuAddSingleObject');
         const currentRoute = this.$router.currentRoute.path;
@@ -4080,6 +4098,10 @@
             // updateSessionObject('clickMenuAddSingleObject', clickMenuAddSingleObjectData);
             return true;
           }
+          return false;
+        }
+        let { ResetrouterBackLogic } = window.ProjectConfig;
+        if( ResetrouterBackLogic ){
           return false;
         }
         const addRouteToEditorData = getSessionObject('addRouteToEditor');

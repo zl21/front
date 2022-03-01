@@ -17,11 +17,12 @@ export default class InputMethod{
       
     this.Input.methods.handleEnter = function () {
       handleEnter.call(this, ...arguments);
-      
-      if( this.$parent && this.$parent.$parent && this.$parent.$parent.$parent && this.$parent.$parent.$parent){
-
-        this.$parent.$parent.$parent.handleEnter(...arguments);
-      }
+      // if( this.$parent && this.$parent.$parent ){
+      //   let searchClickData = this.$parent.$parent.getListParent().searchClickData;
+      //   if(typeof searchClickData === 'function'){
+      //     searchClickData(...arguments);
+      //   }
+      // }
       
     };
   }

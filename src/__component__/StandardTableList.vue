@@ -30,68 +30,70 @@
       <i v-if="treeShow"
          class="iconfont iconbj_left" />
     </div>
-    <!-- <div :is="slotName"> -->
-    <div class="StandardTableListRootDiv">
-      <!-- <Button
-        id="hideRefresh"
-        type="fcdefault"
-        @click="b"
-      >
-        测试按钮
-      </Button> -->
-      <ButtonGroup slot="list-buttons"
-                   ref="R3ButtonGroup"
-                   :data-array="buttons.dataArray"
-                   :id-array="idArray"
-                   @buttonClick="buttonClick"
-                   @clearSelectIdArray="clearSelectIdArray" />
-      <listsForm slot="list-form"
-                 v-if="formItems.defaultFormItemsLists && formItems.defaultFormItemsLists.length > 0"
-                 :id="$route.params.tableName"
-                 :form-item-lists="formItems.defaultFormItemsLists"
-                 :default-spread="changeSearchFoldnum.switchValue"
-                 :search="true"
-                 :treeShow="treeShow"
-                 :default-column="Number(4)"
-                 :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
-                 @onHandleEnter="searchClickData" />
-      <component :is="defined"></component>           
-      <tabBar slot="list-tabBar"
-              v-if="getFilterTable"
-              :data="ag.tablequery"
-              @tabClick="tabClick" />
+    <div :is="slotName"  
+         :getVm="getVm"
+       >
+        <!-- <Button
+          id="hideRefresh"
+          type="fcdefault"
+          @click="b"
+        >
+          测试按钮
+        </Button> -->
+        <ButtonGroup slot="list-buttons"
+                    ref="R3ButtonGroup"
+                    :data-array="buttons.dataArray"
+                    :id-array="idArray"
+                    @buttonClick="buttonClick"
+                    @clearSelectIdArray="clearSelectIdArray" />
+        <listsForm slot="list-form"  ref="R3listform"
+                  v-if="formItems.defaultFormItemsLists && formItems.defaultFormItemsLists.length > 0"
+                  :id="$route.params.tableName"
+                  :moduleComponentName='moduleComponentName'
+                  :form-item-lists="formItems.defaultFormItemsLists"
+                  :default-spread="changeSearchFoldnum.switchValue"
+                  :search="true"
+                  :listFormTemple="slotTemple ? slotTemple.listForm : ()=>{}"
+                  :treeShow="treeShow"
+                  :default-column="Number(4)"
+                  :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
+                  @onHandleEnter="searchClickData" />
+        <component :is="defined"  slot="list-defind" ></component>           
+        <tabBar slot="list-tabBar" ref="R3tabBar"
+                v-if="getFilterTable"
+                :data="ag.tablequery"
+                @tabClick="tabClick" />
 
-      <AgTable ref="agTableElement"
-               slot="list-table"
-               :columnRenderer="columnRendererHandler"
-               :agProcessColumns="agProcessColumns"
-               :agProcessRows="agProcessRows"
-               :processAgOptions="processAgOptions"
-               :moduleComponentName='moduleComponentName'
-               :style="agTableElementStyles"
-               :page-attribute="pageAttribute"
-               :datas="ag.datas"
-               :css-status="ag.status4css"
-               :legend="ag.status4css"
-               :is-filter-table="getFilterTable"
-               :user-config-for-ag-table="userConfigForAgTable"
-               :on-page-change="getFilterTable?onPageChangeForFilterTable:onPageChange"
-               :on-page-size-change="getFilterTable?onPageSizeChangeForFilterTable:onPageSizeChange"
-               :on-selection-changed="onSelectionChanged"
-               :on-row-double-click="onRowDoubleClick"
-               :on-sort-changed="onSortChange"
-               :is-big="buttons.isBig"
-               :on-column-moved="onColumnMoved"
-               :on-column-pinned="onColumnPinned"
-               :on-column-visible-changed="onColumnVisibleChanged"
-               :on-cell-single-click="onCellSingleClick"
-               :is-common-table="commonTable"
-               :buttons-data=" buttons.dataArray.waListButtonsConfig.waListButtons"
-               :do-table-search="searchClickData"
-               @CommonTableCustomizedDialog="commonTableCustomizedDialog"
-               @grid-ready="gridReady" />
-    </div>
-
+        <AgTable ref="agTableElement"
+                slot="list-table"
+                :columnRenderer="columnRendererHandler"
+                :agProcessColumns="agProcessColumns"
+                :agProcessRows="agProcessRows"
+                :processAgOptions="processAgOptions"
+                :moduleComponentName='moduleComponentName'
+                :style="agTableElementStyles"
+                :page-attribute="pageAttribute"
+                :datas="ag.datas"
+                :css-status="ag.status4css"
+                :legend="ag.status4css"
+                :is-filter-table="getFilterTable"
+                :user-config-for-ag-table="userConfigForAgTable"
+                :on-page-change="getFilterTable?onPageChangeForFilterTable:onPageChange"
+                :on-page-size-change="getFilterTable?onPageSizeChangeForFilterTable:onPageSizeChange"
+                :on-selection-changed="onSelectionChanged"
+                :on-row-double-click="onRowDoubleClick"
+                :on-sort-changed="onSortChange"
+                :is-big="buttons.isBig"
+                :on-column-moved="onColumnMoved"
+                :on-column-pinned="onColumnPinned"
+                :on-column-visible-changed="onColumnVisibleChanged"
+                :on-cell-single-click="onCellSingleClick"
+                :is-common-table="commonTable"
+                :buttons-data=" buttons.dataArray.waListButtonsConfig.waListButtons"
+                :do-table-search="searchClickData"
+                @CommonTableCustomizedDialog="commonTableCustomizedDialog"
+                @grid-ready="gridReady" />
+  </div>
     <!-- <Modal/>//动作定义弹框，已将动作定义弹框和提示弹框整合，此弹框暂时弃用
       v-if="buttons.actionDialog.show"
       v-model="actionModal"
@@ -142,8 +144,8 @@
                   :title="activeTab.label"
                   @on-oncancle-success="onCancleSuccess"
                   @on-save-success="onSaveSuccess" />
+   
   </div>
-  <!-- </div> -->
 </template>
 
 <script>
@@ -245,8 +247,8 @@ export default {
       currentTabValue: {},
       filterTableParam: {},
       defined:'', // 插入的组件
-      slotName: ''  // 模板名称
-
+      slotName: '',  // 模板名称
+      slotTemple:''  // 模板的slot    
     };
   },
   computed: {
@@ -397,6 +399,10 @@ export default {
     },
   },
   methods: {
+    getVm (){
+      // 获取上一层实例
+      return this;
+    },
     // 表格渲染完毕回调
     gridReady (e) {
       if (this.R3_agReady) {
@@ -2844,7 +2850,7 @@ export default {
     const { tableId } = this[INSTANCE_ROUTE_QUERY];
     this.updateAccessHistory({ type: 'table', id: tableId });
   },
-  created () {
+   async created () {
     this._colPositionCache = undefined // 缓存表格列位置，如果相同不再请求接口
     this.buttonMap = buttonmap;
     this.ChineseDictionary = ChineseDictionary;
@@ -2854,10 +2860,36 @@ export default {
     // } else {
     //   this.slotName = slotTemplate;
     // }
+    this.slotName = slotTemplate;
+  
      if (window.ProjectConfig.layoutDirectionSlot && window.ProjectConfig.layoutDirectionSlot.standardTableList) {
+      //  标准列表配置
        if( window.ProjectConfig.layoutDirectionSlot.standardTableList.defined){
+          // 全局配置  
           this.defined = window.ProjectConfig.layoutDirectionSlot.standardTableList.defined;
+       }else{
+        let table_name= this[INSTANCE_ROUTE_QUERY].tableName;
+        // 配置表
+        let { tableName } = window.ProjectConfig.layoutDirectionSlot.standardTableList;
+        if(tableName && tableName[table_name] ){
+          if(tableName[table_name].defined){
+            // 配置当前的defind
+            this.defined = tableName[table_name].defined;
+          }else if(tableName[table_name].layout){
+            // 配置当前的表的布局
+            this.slotName = tableName[table_name].layout;
+            if( typeof this.slotName ==='object'){
+              this.slotTemple = this.slotName.slotTemple;
+            }else{
+              this.slotTemple = (await this.slotName()).default.slotTemple;
+            }
+          }
+
+        }
+       
+      
        }
+
     } else {
       this.defined = '';
     }

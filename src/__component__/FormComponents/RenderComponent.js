@@ -54,7 +54,8 @@ String.prototype.TextFilter = function TextFilter() {
           item.componentName = componentName;
           let {formItemConfig} = window.ProjectConfig;
           const targetComponent = (formItemConfig[componentName] && formItemConfig[componentName].component) || ComponentPlaceholder;
-          Vue.component(componentName, targetComponent);
+          // Vue.component(componentName, targetComponent);
+          this.vm.$options.components[componentName] = targetComponent
           break;
         }
       case 'xml':
@@ -91,10 +92,11 @@ String.prototype.TextFilter = function TextFilter() {
 
 
 export default class RenderComponent {
-  constructor(item, id) {
+  constructor(item, id, vm) {
     // 初始化对象的语句
     this.id = id;
     this.item = item;
+    this.vm = vm
     this.initProps();
     
   }
@@ -135,8 +137,11 @@ export default class RenderComponent {
     Object.assign(FormItem.methods, mixins.methods);
     let formExternalMixins = formItemMixins && formItemMixins().default || {};
     FormItem.name = `${this.id}${this.item.colname.TextFilter()}`;
-    if(!Vue.component(FormItem.name)){
-      Vue.component(`${this.id}${this.item.colname.TextFilter()}`, Vue.extend(Object.assign({ mixins: [mixins,formExternalMixins], isKeepAliveModel: true },FormItem)));
+    // if(!Vue.component(FormItem.name)){
+    //   Vue.component(`${this.id}${this.item.colname.TextFilter()}`, Vue.extend(Object.assign({ mixins: [mixins,formExternalMixins], isKeepAliveModel: true },FormItem)));
+    // }
+    if(!this.vm.$options.components[`${this.id}${this.item.colname.TextFilter()}`]){
+      this.vm.$options.components[`${this.id}${this.item.colname.TextFilter()}`] = Vue.extend(Object.assign({ mixins: [mixins,formExternalMixins], isKeepAliveModel: true },FormItem))
     }
     return `${this.id}${this.item.colname.TextFilter()}`;
   }

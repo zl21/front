@@ -6,6 +6,7 @@ import ParameterDataProcessing from '../parameterDataProcessing';
 import LinkageRelationships from '../../ExtendedAttributes/LinkageRelationships';
 import { validateForm } from './Validate';
 import CollapseComponent from './CollapseComponent.vue';
+import {SetLayoutDirectionSlot} from '../../../__config__/layout/slot';
 import {
      MODULE_COMPONENT_NAME, classFix
   } from '../../../constants/global';
@@ -228,7 +229,8 @@ export default {
           item.childs[temp].moduleComponentName = this.moduleComponentName;
           
           item.childs[temp].formName = this.tableName +'-'+ ((this.moduleComponentName.split('.').splice(2,2)).join('-'));
-          item.childs[temp] = new RenderComponent(JSON.parse(JSON.stringify(item.childs[temp]))).itemConversion();
+          const child = JSON.parse(JSON.stringify(item.childs[temp]))
+          item.childs[temp] = new RenderComponent(child, undefined, this).itemConversion();
           return temp
         })
         return item;
@@ -276,7 +278,7 @@ export default {
     },
     initComponent (item) { // init组件
       let defaultItem = JSON.parse(JSON.stringify(item));
-      const Render = new RenderComponent(defaultItem, this.tableName);
+      const Render = new RenderComponent(defaultItem, this.tableName, this);
       return Render.Initialize();
     },
     panelRedraw (array) {
@@ -455,19 +457,27 @@ export default {
       //   this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
       //  }
 
+    },
+    async initslot(){
+      // 
+      let data = await new SetLayoutDirectionSlot(this.$parent,this,'panelForm','CollapseComponent',this.CollapseComponent).init();
+      this.CollapseComponent = data;
+
     }
   },
   created() {
     this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');
   },
-  mounted () {
+  async mounted () {
     this.setFormlist();
+
     this.CollapseComponent = CollapseComponent;
     if(this.CollapseName === undefined){
       this.CollapseComponent = CollapseComponent;
     }else{
       this.CollapseComponent = this.CollapseName;
     }
+    await this.initslot();
     // 通过dom 查找实例
     this.$el._vue_ = this;
     this.id = this.tableName +'-'+ ((this.moduleComponentName.split('.').splice(2,2)).join('-'));

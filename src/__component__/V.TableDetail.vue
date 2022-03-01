@@ -1,44 +1,46 @@
 <template>
-  <div
-    :id="currentTableName"
-    :class="classes"
-  >
-    <component
-      :is="currentSingleButtonComponentName"
-      :tabcmd="mainFormInfo.buttonsData.data.tabcmd"
-      object-type="vertical"
-      :item-table-check-func="itemTableCheckFunc"
-      :isreftabs="mainFormInfo.buttonsData.data.isreftabs"
-      :isactive="mainFormInfo.buttonsData.data.isactive"
-      :watermarkimg="resetWaterMark"
-      :item-name-group="childTableNames"
-      :item-info="mainFormInfo"
-      :tabwebact="mainFormInfo.buttonsData.data.tabwebact"
-      :item-name="getItemName"
-      :is-main-form="mainFormInfo"
-    />
-    <div class="verticalTableDetailContent" ref="detailContent">
-      <!-- 上下结构主表 form-->
-      <panelForm
-        :tableName="$route.params.tableName"
-        :readonly="mainFormInfo.buttonsData.data.objreadonly"
-        :defaultData="Object.keys(defaultDataForCopy).length>0?defaultDataForCopy.data:mainFormInfo.formData.data"
-      ></panelForm>
+    <component  
+    :class="classes" :id="currentTableName" :is="slotTemple" ref="slotTemple" 
+    
+    >
+      <component slot="v-object-button"
+        :is="currentSingleButtonComponentName"
+        :tabcmd="mainFormInfo.buttonsData.data.tabcmd"
+        object-type="vertical"
+        :item-table-check-func="itemTableCheckFunc"
+        :isreftabs="mainFormInfo.buttonsData.data.isreftabs"
+        :isactive="mainFormInfo.buttonsData.data.isactive"
+        :watermarkimg="resetWaterMark"
+        :item-name-group="childTableNames"
+        :item-info="mainFormInfo"
+        :tabwebact="mainFormInfo.buttonsData.data.tabwebact"
+        :item-name="getItemName"
+        :is-main-form="mainFormInfo"
+      />
+      <!-- <div class="verticalTableDetailContent" ref="detailContent">
+      </div> -->
 
-      <div class="verticalTabs">
-        <TabPanels
-          v-show="tabPanels.length > 0"
-          ref="tabPanel"
-          class="tabPanel"
-          :tab-margin-left="20"
-          is-keep-alive
-          :beforeLeave="tabBeforeLeave"
-          :type="'singleCard'"
-          :tab-panels="tabPanels"
-        />
-      </div>
-    </div>
-  </div>
+        <!-- 上下结构主表 form-->
+        <panelForm slot="v-object-from"
+          :tableName="$route.params.tableName"
+          :readonly="mainFormInfo.buttonsData.data.objreadonly"
+          :defaultData="Object.keys(defaultDataForCopy).length>0?defaultDataForCopy.data:mainFormInfo.formData.data"
+        ></panelForm>
+
+        <div class="verticalTabs" slot="v-object-TabPanels">
+          <TabPanels  
+            v-show="tabPanels.length > 0"
+            ref="tabPanel"
+            class="tabPanel"
+            :tab-margin-left="20"
+            is-keep-alive
+            :beforeLeave="tabBeforeLeave"
+            :type="'singleCard'"
+            :tab-panels="tabPanels"
+          />
+        </div>
+    </component>
+  
 </template>
 
 <script>
@@ -58,7 +60,8 @@
   import singleObjectButtons from './SingleObjectButtons.vue';
   import compositeForm from './CompositeForm.vue';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
-
+  import slotTemple from './slot/VTableDetail.vue';
+  import { SetLayoutDirectionSlot} from './../__config__/layout/slot';
 
 
   export default {
@@ -69,7 +72,9 @@
       return {
         customizeValue: '',
         currentSingleButtonComponentName: null,  //按钮组件
+        slotTemple:'',
         from: 'singlePage',
+        childPanel: {}
       };
     },
     computed: {
@@ -117,16 +122,24 @@
           obj.componentAttribute.mainFormPaths = this.formPaths;
           obj.componentAttribute.tooltipForItemTable = this.tooltipForItem;
           obj.componentAttribute.type = 'vertical';
+          tabComponent.name = `tapComponent.${item.tablename}`
           if (obj.vuedisplay === 'TabItem') { // 配置自定义tab
             const webact = obj.webact ? obj.webact.split('/')[0].toUpperCase() : '';// 自定义子表标识
             if (webact === 'HALF' || webact === 'ALL') {
-              Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
+              // this.$options.components[`tapComponent.${item.tablename}`] = Vue.extend(tabComponent)
+              if (this.childPanel[`tapComponent.${item.tablename}`] === undefined) {
+                this.childPanel[`tapComponent.${item.tablename}`] = Object.assign({}, tabComponent)
+              }
               obj.componentAttribute.componentName = obj.webact.substring(obj.webact.lastIndexOf('/') + 1, obj.webact.length);
             }
-          } else if (Vue.component(`tapComponent.${item.tablename}`) === undefined) {
-            Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
+          } else if (this.childPanel[`tapComponent.${item.tablename}`] === undefined) {
+            this.childPanel[`tapComponent.${item.tablename}`] = Object.assign({}, tabComponent)
           }
-          obj.component = `tapComponent.${item.tablename}`;
+          // else if (this.$options.components[`tapComponent.${item.tablename}`] === undefined) {
+          //   this.$options.components[`tapComponent.${item.tablename}`] = Vue.extend(tabComponent)
+          // }
+          // obj.component = `tapComponent.${item.tablename}`;
+          obj.component = this.childPanel[`tapComponent.${item.tablename}`]
           obj.cilckCallback = this.tabClick;
           arr.push(obj);
         });
@@ -157,14 +170,24 @@
       compositeForm,
       AutomaticPathGenerationInput
     },
-    created() {
-      this._scrollTopCache = 0 // 缓存内容区滚出距离
+    async created() {
+      
+      this._scrollTopCache = 0; // 缓存内容区滚出距离
+      let data = await new SetLayoutDirectionSlot(this.$parent,this,'VTableDetail','layout',slotTemple).init()
+      this.slotTemple  = data;
+
     },
     mounted() {
+      // 重置卡槽实例     
+      //  this.$refs.slotTemple = new GetParentVm(this,this.$refs.slotTemple).init();
+      // this.$el._vue_ = this;
+      setTimeout(()=>{
+      this.$el._vue_ = this;
+      },10)
       const singleButtonComponentName = `${this[MODULE_COMPONENT_NAME]}.SingleObjectButtons`;
         let singleObjectButtonGroupMixins = window.ProjectConfig && window.ProjectConfig.customizeMixins && window.ProjectConfig.customizeMixins.singleObjectButtonGroup || {};
-      if (Vue.component(singleButtonComponentName) === undefined) {
-        Vue.component(singleButtonComponentName, Vue.extend(Object.assign({ mixins: [verticalMixins(),singleObjectButtonGroupMixins] }, singleObjectButtons)));
+      if (this.$options.components[singleButtonComponentName] === undefined) {
+        this.$options.components[singleButtonComponentName] = Vue.extend(Object.assign({ mixins: [verticalMixins(),singleObjectButtonGroupMixins] }, singleObjectButtons))
       }
       this.currentSingleButtonComponentName = singleButtonComponentName;
 
@@ -199,13 +222,16 @@
         clearInterval(interval);
       }, 10000);
 
-
-      this._resizeObserver = new ResizeObserver((entries) => {
-        setTimeout(() => {
-          this.$refs.detailContent.scrollTop = this._scrollTopCache
-        },0)
-      })
-      this._resizeObserver.observe(this.$refs.detailContent)
+      setTimeout(()=>{
+        let detailContentDom = this.$el.querySelector('.verticalTableDetailContent');
+         this._resizeObserver = new ResizeObserver((entries) => {
+          setTimeout(() => {
+            detailContentDom.scrollTop = this._scrollTopCache
+          },0)
+        })
+        this._resizeObserver.observe(detailContentDom)
+      },500)
+     
     },
 
     beforeDestroy() {
@@ -215,7 +241,7 @@
     methods: {
       tabBeforeLeave(){
         // 缓存滚出去的距离，避免第一次切换子表tab时回到顶部
-        this._scrollTopCache =  this.$refs.detailContent.scrollTop
+        this._scrollTopCache =  this.$el.querySelector('.verticalTableDetailContent').scrollTop
       },
       itemTableCheckFunc() {
         if (this.$refs.tabPanel) {

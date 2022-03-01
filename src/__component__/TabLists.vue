@@ -7,8 +7,11 @@
     <Tabs type="card" class="openedMenuListsItem" 
          closable 
         @on-click="switchTab" 
+        @on-drag-drop="handleDragDrop"
         :title="true"
+        ref="tabs"
         :closedClick="handleClose"
+        draggable
         :value="tagIndex">
         <TabPane  v-for="(tag, index) in openedMenuLists" 
         ref="tabBox"
@@ -74,12 +77,17 @@
       },
     },
     watch: {
+      openedMenuLists:{
+        handler(val) {
+          if(Number(this.tagIndex) === val.length){
+             this.setTagIndex(this.activeTab)
+          }
+        }
+      },
       activeTab:{
         handler(val) {
-          this.tagIndex =  this.openedMenuLists.findIndex((x)=>{
-              return x.keepAliveModuleName === val.keepAliveModuleName;
-          });
-          this.tagIndex = this.tagIndex.toString();
+          this.setTagIndex(val)
+         
         }
       }
       // menuLists: {
@@ -126,8 +134,19 @@
         'updataOpenedMenuLists',
         'updataSwitchTag'
       ]),
+      setTagIndex(val){
+         this.tagIndex =  this.openedMenuLists.findIndex((x)=>{
+              return x.keepAliveModuleName === val.keepAliveModuleName;
+          });
+          this.tagIndex = this.tagIndex.toString();
+          setTimeout(()=>{
+              if(this.openedMenuLists.length === Number(this.tagIndex)+1 && this.$refs.tabs){
+                this.$refs.tabs.scrollNext();
+              }
+          },200)
+
+      },
       switchTab(index) {
-  
         const tag = this.openedMenuLists[index];
         if (this.$router.currentRoute.fullPath !== tag.routeFullPath) {
           this.updataSwitchTag(true);
@@ -135,6 +154,17 @@
           this.switchTabForActiveTab(tag);
           // this.updataSwitchTag(false);
         }
+      },
+      // 拖拽排序
+      handleDragDrop(name1, name2, fromIndex, toIndex) {
+        const activeTab = this.openedMenuLists[this.tagIndex]
+        const list = [... this.openedMenuLists]
+        const temp = list[fromIndex]
+        list.splice(fromIndex, 1)
+        list.splice(toIndex, 0, temp)
+        this.updataOpenedMenuLists(list)
+
+        this.switchTabForActiveTab(activeTab)
       },
       handleClose(index) {
        const tag = this.openedMenuLists[index];
