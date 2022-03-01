@@ -472,7 +472,21 @@ export default {
   },
   decreasekeepAliveLists(state, name) {
     if (enableKeepAlive() && state.keepAliveLists.includes(name)) {
-      state.keepAliveLists.splice(state.keepAliveLists.indexOf(name), 1);
+      if(!enableOpenNewTab()){
+        // 不是新开tab 且是标准单对象时，关闭当前所有的单对象缓存
+        if(name.split('.').length>3){
+          name = name.substring(0,name.lastIndexOf('.'));
+          for(var i = state.keepAliveLists.length - 1; i >=0; i--) {
+            if(new RegExp(name).test(state.keepAliveLists[i])){
+              state.keepAliveLists.splice(i, 1);
+            }
+         }
+        }else{
+          state.keepAliveLists.splice(state.keepAliveLists.indexOf(name), 1);
+        }
+      }else{
+        state.keepAliveLists.splice(state.keepAliveLists.indexOf(name), 1);
+      }
     }
   },
   toggleActiveMenu(state, index) {
