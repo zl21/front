@@ -115,7 +115,7 @@ class RouterPush {
                     clearhistory: true,
                     clearParams: url
                 };
-                if(['CP_C_TASK','U_NOTE'].includes(param.tableName)){
+                if(['CP_C_TASK','U_NOTE'].includes(param.tableName) && ['CP_C_TASK','U_NOTE'].includes(closeParame.tableName)){
                     // 我的任务除外
                     return false;
                 }
