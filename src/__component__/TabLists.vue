@@ -53,6 +53,7 @@
       };
     },
     mounted() {
+
       // if (!this._inactive && this._inactive !== null) {
       //   this.$dragging.$on('dragged', ({ value }) => { // 更新MenuList
       //     this.updataOpenedMenuLists(value.list);
@@ -64,7 +65,14 @@
       ...mapState('global', {
         openedMenuLists: ({ openedMenuLists }) => openedMenuLists,
         activeTab: ({ activeTab }) => activeTab,
-        showModule: ({ showModule }) => showModule
+        showModule: ({ showModule }) => showModule,
+        tablistData(){
+          return {
+            // 用于监听菜单是否变化了
+            openedMenuLists:this.openedMenuLists,
+            activeTab:this.activeTab
+          }
+        }
       }),
       menuLists() {
         const openedMenuListsLength = this.openedMenuLists.length;
@@ -77,19 +85,18 @@
       },
     },
     watch: {
-      openedMenuLists:{
+      tablistData:{
         handler(val) {
-          if(Number(this.tagIndex) === val.length){
-             this.setTagIndex(this.activeTab)
-          }
+          console.log('54546454')
+           this.setTagIndex(this.activeTab)
         }
       },
-      activeTab:{
-        handler(val) {
-          this.setTagIndex(val)
+      // activeTab:{
+      //   handler(val) {
+      //     this.setTagIndex(val)
          
-        }
-      }
+      //   }
+      // }
       // menuLists: {
       //   handler(val) {
       //     this.$nextTick(() => {
