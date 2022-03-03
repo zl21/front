@@ -38,50 +38,51 @@ class RouterPush {
                     // 关闭所有的tab 则清空记录
                     self.clear(this);
                 }
+                self.arguments = arguments;
                 // 历史记录书签
                 self.bookmark(this);
                 return originalPush.call(this, location).catch(err => err);
             };
         }
     }
-    bookmark(self){
+    bookmark($route){
          // 历史记录书签
-        if (arguments[1] && !arguments[1].backToTop) {
-            if (isEmpty(self.$R3_history)) {
+        if (this.arguments[1] && !this.arguments[1].backToTop) {
+            if (isEmpty($route.$R3_history)) {
                 // 获取当前历史(应对刷新问题) 
-                self.$R3_history = this.gethistory() || {};
+                $route.$R3_history = this.gethistory() || {};
             }       
-            let tableName = arguments[1].tableName || arguments[1].customizedModuleName || arguments[1].linkName || arguments[1].pluginModuleName;   
-            let formTableName = arguments[1].router.params.tableName || arguments[1].router.params.customizedModuleName || arguments[1].router.params.linkName || arguments[1].router.params.pluginModuleName;       
+            let tableName = this.arguments[1].tableName || this.arguments[1].customizedModuleName || this.arguments[1].linkName || this.arguments[1].pluginModuleName;   
+            let formTableName = this.arguments[1].router.params.tableName || this.arguments[1].router.params.customizedModuleName || this.arguments[1].router.params.linkName || this.arguments[1].router.params.pluginModuleName;       
     
             if(!tableName){
-                tableName = arguments[1].url.split('/')[1];
+                tableName = this.arguments[1].url.split('/')[1];
             }
-            let tableNameUrl = tableName + `/${arguments[1].id}`;
-            let CurrentUrl = `${tableName}/${arguments[1].router.params.itemId}`;
-            let formUrl = formTableName + `/${arguments[1].router.params.itemId}`;
+            let tableNameUrl = tableName + `/${this.arguments[1].id}`;
+            let CurrentUrl = `${tableName}/${this.arguments[1].router.params.itemId}`;
+            let formUrl = formTableName + `/${this.arguments[1].router.params.itemId}`;
 
-            if (arguments[1].clearhistory) {
+            if (this.arguments[1].clearhistory) {
                 // 清除当前表的历史 
-                if (arguments[1].clearParams) {
-                    delete self.$R3_history[arguments[1].clearParams];
+                if (this.arguments[1].clearParams) {
+                    delete $route.$R3_history[this.arguments[1].clearParams];
                 }
             } else {
                 let { enableOpenNewTab } = window.ProjectConfig;
                 if(!enableOpenNewTab){
-                    if(!arguments[1].target){
-                        this.setNewHistory(tableNameUrl,formUrl)
+                    if(!this.arguments[1].target){
+                        this.setNewHistory($route,tableNameUrl,formUrl)
                     }else{
                         // 当在自身页面进行保存时
-                        self.$R3_history[tableNameUrl] = self.$R3_history[CurrentUrl];
-                        delete self.$R3_history[CurrentUrl];
+                        $route.$R3_history[tableNameUrl] = $route.$R3_history[CurrentUrl];
+                        delete $route.$R3_history[CurrentUrl];
                     }
                 }else{
-                     this.setNewHistory(tableNameUrl,formUrl)
+                     this.setNewHistory($route,tableNameUrl,formUrl)
                 } 
             }
-            self.$R3_params = arguments[1];
-            window.localStorage.setItem('$R3_history_current', JSON.stringify(self.$R3_history));
+            $route.$R3_params = this.arguments[1];
+            window.localStorage.setItem('$R3_history_current', JSON.stringify($route.$R3_history));
         }
           // 调用清除事件的监听
             let {
@@ -90,18 +91,18 @@ class RouterPush {
         if(openedMenuLists.length>0 && !this.listener){
             this.listener = true;
             // 关闭按钮触发的事件
-            this.closeCurrent(this);
+            this.closeCurrent($route);
         }  
     }
-    setNewHistory(self,tableNameUrl,formUrl){
+    setNewHistory($route,tableNameUrl,formUrl){
         // 添加历史记录判断
-        if(self.$R3_history[tableNameUrl] ){
+        if($route.$R3_history[tableNameUrl] ){
             // 当前表已经有历史记录的状态下，判断来源表是否等于当前表
             if(formUrl!=tableNameUrl){
-                self.$R3_history[tableNameUrl] = arguments[1].router;
+                $route.$R3_history[tableNameUrl] = this.arguments[1].router;
             }
         }else{
-            self.$R3_history[tableNameUrl] = arguments[1].router;
+            $route.$R3_history[tableNameUrl] = this.arguments[1].router;
         }
     }
     back() {
