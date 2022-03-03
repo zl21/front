@@ -87,7 +87,6 @@
     watch: {
       tablistData:{
         handler(val) {
-          console.log('54546454')
            this.setTagIndex(this.activeTab)
         }
       },
