@@ -986,8 +986,6 @@ export default {
         v: label
       };
       updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
-    }else{
-      console.log(label,'=====',state.keepAliveLabelMaps[keepAliveModuleName]);
     }
 
     if (state.serviceIdMap[tableName] === undefined) {
