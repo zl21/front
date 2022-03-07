@@ -9,6 +9,7 @@
         @on-click="switchTab" 
         @on-drag-drop="handleDragDrop"
         :title="true"
+        ref="tabs"
         :closedClick="handleClose"
         draggable
         :value="tagIndex">
@@ -52,6 +53,7 @@
       };
     },
     mounted() {
+
       // if (!this._inactive && this._inactive !== null) {
       //   this.$dragging.$on('dragged', ({ value }) => { // 更新MenuList
       //     this.updataOpenedMenuLists(value.list);
@@ -63,7 +65,14 @@
       ...mapState('global', {
         openedMenuLists: ({ openedMenuLists }) => openedMenuLists,
         activeTab: ({ activeTab }) => activeTab,
-        showModule: ({ showModule }) => showModule
+        showModule: ({ showModule }) => showModule,
+        tablistData(){
+          return {
+            // 用于监听菜单是否变化了
+            openedMenuLists:this.openedMenuLists,
+            activeTab:this.activeTab
+          }
+        }
       }),
       menuLists() {
         const openedMenuListsLength = this.openedMenuLists.length;
@@ -76,14 +85,17 @@
       },
     },
     watch: {
-      activeTab:{
+      tablistData:{
         handler(val) {
-          this.tagIndex =  this.openedMenuLists.findIndex((x)=>{
-              return x.keepAliveModuleName === val.keepAliveModuleName;
-          });
-          this.tagIndex = this.tagIndex.toString();
+           this.setTagIndex(this.activeTab)
         }
-      }
+      },
+      // activeTab:{
+      //   handler(val) {
+      //     this.setTagIndex(val)
+         
+      //   }
+      // }
       // menuLists: {
       //   handler(val) {
       //     this.$nextTick(() => {
@@ -128,8 +140,19 @@
         'updataOpenedMenuLists',
         'updataSwitchTag'
       ]),
+      setTagIndex(val){
+         this.tagIndex =  this.openedMenuLists.findIndex((x)=>{
+              return x.keepAliveModuleName === val.keepAliveModuleName;
+          });
+          this.tagIndex = this.tagIndex.toString();
+          setTimeout(()=>{
+              if(this.openedMenuLists.length === Number(this.tagIndex)+1 && this.$refs.tabs){
+                this.$refs.tabs.scrollNext();
+              }
+          },200)
+
+      },
       switchTab(index) {
-  
         const tag = this.openedMenuLists[index];
         if (this.$router.currentRoute.fullPath !== tag.routeFullPath) {
           this.updataSwitchTag(true);

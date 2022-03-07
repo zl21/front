@@ -11,6 +11,7 @@ import { getLocalObject } from '../../__utils__/localStorage';
 import { removeSessionObject, getSessionObject } from '../../__utils__/sessionStorage';
 import getObjdisType from '../../__utils__/getObjdisType';
 import App from '../../App.vue';
+import RouterPush from '../../__utils__/routerback';
 
 let parseInt = window.parseInt;
 // 兼容长度大于16位
@@ -212,15 +213,10 @@ const init = ($el) => {
   }
   DispatchEvent('initReady');
 };
-// 
+// 重写实例
 
-if(window.vm.$router){  
-  const originalPush = window.vm.$router.push;
-  window.vm.$router.push = function push(location) {
-  this.$R3_params = arguments[1];
-  return originalPush.call(this, location).catch(err => err);
-};
-}
+new RouterPush().init();
+
 
 const getGateWayServiceId = ($el) => {
   if (enableInitializationRequest()) {

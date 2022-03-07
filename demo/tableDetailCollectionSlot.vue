@@ -6,7 +6,8 @@
     <div class="detail-content">
        <slot name="detail-search"></slot>
     </div>
-    <slot name="detail-table"></slot>
+    全局一对多子表
+    <!-- <slot name="detail-table"></slot> -->
     <slot name="detail-page"></slot>
   </div>
 </template>
@@ -14,6 +15,11 @@
 
  export default {
     inheritAttrs: false,
+    data(){
+      return {
+        valueHalf:2.5,
+      }
+    },
     mounted(){
       console.log(this.$attrs,'=====子======');
     }

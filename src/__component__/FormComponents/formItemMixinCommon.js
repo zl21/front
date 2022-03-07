@@ -58,14 +58,15 @@ export default {
 
     }
   },
-  mounted() {
+  async mounted() {
     // 设置校验规则
     this.setRules();
     let self = this;
-    this.$parent.$parent.$parent.$nextTick(()=>{
+    let ParentForm = await  this.findParentForm();
+    ParentForm.$nextTick(()=>{
       setTimeout(()=>{
         // 延时渲染完成,阻止页面初始化调用事件
-        self.actived = true;    
+         self.actived = true;    
       },100);
     })
    

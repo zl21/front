@@ -35,10 +35,37 @@ module.exports = {
   layoutDirectionSlot:{  // 模板渲染
     //NavigatorSubMenu:require('./src/demo/NavigatorSubMenu.vue').default,  // 模板渲染
     //NaVertical:require('./src/demo/NaVerticalslot.vue').default  // 模板渲染
-    listFormButton:()=>import('../demo/detailbuttons.vue'),  // 定制列表button
-    standardTableList:{
-      defined:()=>import('../demo/standardTableListdefind.vue'),
-    }  // 定制列表button
+    // listFormButton:()=>import('../demo/detailbuttons.vue'),  // 定制列表button
+    // standardTableList:{
+    //   // defined:()=>import('../demo/standardTableListdefind.vue'),
+    //   tableName:{
+    //     'AD_TABLE':{
+    //       defined:()=>import('../demo/standardTableListdefind.vue'),
+    //     },
+    //     'V_STORE':{ // 一对多子表
+    //       layout:()=>import('../demo/standardTableList.vue')
+    //     }
+    //   }
+    // },  // 表单
+    // panelForm:{
+    //   // 左右结构的单对象
+    //   tableName:{
+    //     'V_STORE':{ // 一对多子表
+    //       CollapseComponent:()=>import('../demo/collaps.vue'),
+    //       // layout:()=>import('../demo/HTableDetail.vue')
+    //     }
+    //   }
+    // },
+    // VTableDetail:{
+    //   tableName:{
+    //     'V_STORE':{ // 一对多子表
+    //       layout:()=>import('../demo/VTableDetail.vue')
+    //     }
+    //   }
+
+    // }
+
+
   },
   domPortal: {
     // params对象属性,fromComponent用于区别哪个组件的水印,type区分布局结构
@@ -68,7 +95,7 @@ module.exports = {
   logoutTips: false, // 失去会话是否需要登出提示 默认false直接登出
   enableKAQueryDataForUser: false, // 是否开启存储全表查询条件
   dateStorageTime: 1, // 查询条件存储时间，默认1天,建议不要设置太大影响性能
-  enableOpenNewTab: false, // 列表界面打开 同表 单对象是否新开tab,默认为false
+  enableOpenNewTab: true, // 列表界面打开 同表 单对象是否新开tab,默认为false
   blockFullOperation: false, // 禁止不选数据时的批量修改操作,
   customizeMixins: { // 获取所有外部接入的mixins对象
     // singleObjectButtonGroup: require('../demo/singleObjectButtonGroup').default,
@@ -115,18 +142,28 @@ module.exports = {
      },
     // horizontalTableDetailCustomize: require('./src/demo/horizontalTableDetailCustomize.js').default,
     taskList: null,
-    // tableDetailCollectionMixin: {
-    //   methods: {
-    //     R3_processColumns(columns) {
-    //       console.log('列', columns)
-    //       columns.forEach(item => {
-    //         item.tdAlign = 'left'
-    //         delete item.webconf
-    //       })
-    //       return columns
-    //     }
-    //   }
-    // }
+    tableDetailCollectionMixin: {
+      // slotArray:{
+      //   detailbuttonsa:()=>import('../demo/detailbuttonsa')  //子表按钮的文件
+      //  }, 
+      //  slotTableTemplate:()=>import('../demo/tableDetailCollectionSlot'), //  修改子表全局渲染的逻辑的文件,
+      //  tableName:{
+      //     'ORDER_MANAGEMWNT':{
+      //       layout:()=>import('../demo/ORDER_MANAGEMWNT.vue')
+      //     }
+      //  }
+
+      // methods: {
+      //   R3_processColumns(columns) {
+      //     console.log('列', columns)
+      //     columns.forEach(item => {
+      //       item.tdAlign = 'left'
+      //       delete item.webconf
+      //     })
+      //     return columns
+      //   }
+      // }
+    }
   },
   imgProgressController: false, // 是否显示图片上传进度
   ossRealtimeSave: false,
@@ -243,5 +280,6 @@ module.exports = {
   // },
   R3BrowserPrompt:true,
   asyncTaskScheme: 'skq',
-  closedChangePassword:false, // 是否关闭展示侧边修改密码配置
+  ResetrouterBackLogic:true,  // 显示返回按钮
+  closedChangePassword:false // 是否关闭展示侧边修改密码配置
 }

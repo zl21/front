@@ -1,129 +1,147 @@
 <template>
-  <div
+  <component
     v-if="showModule.Navigator"
     :class="classes"
+    :is="wrapperComponent"
   >
-    <div
-      class="left"
-      :style="{ width: collapseHistoryAndFavorite ? '50px' : '180px' }"
-    >
-      <img
-        v-if="!collapseHistoryAndFavorite&&enableHistoryAndFavoriteUI"
-        class="trigger"
-        :title="$t('messages.collapseFavorites')"
-        alt=""
-        :src="imgSrc.closedImg"
-        @click="doCollapseHistoryAndFavorite"
+    <!-- 左侧logo -->
+    <template slot="left">
+      <div
+        class="left"
+        :style="{ width: collapseHistoryAndFavorite ? '50px' : '180px' }"
       >
-      <img
-        v-if="collapseHistoryAndFavorite&&enableHistoryAndFavoriteUI"
-        class="trigger"
-        alt=""
-        :title="$t('messages.expandFavorites')"
-        :src="imgSrc.openedImg"
-        @click="doCollapseHistoryAndFavorite"
-      >
-      <div id="navBrandImg">
         <img
-          v-if="!collapseHistoryAndFavorite"
-          class="banner"
+          v-if="!collapseHistoryAndFavorite&&enableHistoryAndFavoriteUI"
+          class="trigger"
+          :title="$t('messages.collapseFavorites')"
           alt=""
-          :src="imgAssets.banner"
+          :src="imgSrc.closedImg"
+          @click="doCollapseHistoryAndFavorite"
         >
         <img
-          v-if="collapseHistoryAndFavorite"
-          class="logo"
+          v-if="collapseHistoryAndFavorite&&enableHistoryAndFavoriteUI"
+          class="trigger"
           alt=""
-          :src="imgSrc.logoImg"
+          :title="$t('messages.expandFavorites')"
+          :src="imgSrc.openedImg"
+          @click="doCollapseHistoryAndFavorite"
         >
+        <div id="navBrandImg">
+          <img
+            v-if="!collapseHistoryAndFavorite"
+            class="banner"
+            alt=""
+            :src="imgAssets.banner"
+          >
+          <img
+            v-if="collapseHistoryAndFavorite"
+            class="logo"
+            alt=""
+            :src="imgSrc.logoImg"
+          >
+        </div>
       </div>
-    </div>
-    <div class="middle">
-      <div style="display: flex;">
-        <NavigatorPrimaryMenu
-          v-for="(menu, index) in menuLists"
-          :key="`primary-menu-${index}`"
-          :data="menu"
-          :index="index"
-          @togglePrimaryMenu="togglePrimaryMenu"
+    </template>
+
+    <!-- 导航菜单 -->
+    <template slot='middle'>
+      <div class="middle">
+        <div style="display: flex;">
+          <NavigatorPrimaryMenu
+            v-for="(menu, index) in menuLists"
+            :key="`primary-menu-${index}`"
+            :data="menu"
+            :index="index"
+            @togglePrimaryMenu="togglePrimaryMenu"
+          />
+        </div>
+      </div>
+      <transition name="fade">
+        <NavigatorSubMenu
+          v-show="primaryMenuIndex!==-1"
+          :data="togglePrimaryMenuData || []"
         />
+      </transition>
+    </template>
+
+    <template slot='icon-home'>
+      <div
+        v-for="(item,index) in navigatorSetting"
+        :key="index"
+        class="tag right"
+        style="width:auto;display:flex"
+      >
+        <Badge
+          style="width:50px;height:50px"
+          :offset="['6px','-8px']"
+          :count="item.count"
+          @click.native="item.callback"
+        >
+          <i
+            class="iconfont"
+            :class="item.icon"
+          />
+        </Badge>
       </div>
-    </div>
-    <transition name="fade">
-      <NavigatorSubMenu
-        v-show="primaryMenuIndex!==-1"
-        :data="togglePrimaryMenuData || []"
-      />
-    </transition>
-    <div
-      v-for="(item,index) in navigatorSetting"
-      :key="index"
-      class="tag right"
-      style="width:auto;display:flex"
-    >
-      <Badge
-        style="width:50px;height:50px"
-        :offset="['6px','-8px']"
-        :count="item.count"
-        @click.native="item.callback"
+      <!-- 返回图标 -->
+      <div
+        v-if="getDashboardConfig"
+        @click="dashboardClick"
+        class="tag right"
       >
         <i
-          class="iconfont"
-          :class="item.icon"
+          :class="getDashboardConfig"
+          :title="$t('tips.backHome')"
+
         />
-      </Badge>
-    </div>
-    <div
-      v-if="getDashboardConfig"
-      @click="dashboardClick"
-      class="tag right"
-    >
-      <i
-        :class="getDashboardConfig"
-        :title="$t('tips.backHome')"
+      </div>
+    </template>
 
-      />
-    </div>
+    <template slot="nav-input">
+      <ComAutoComplete />
+    </template>
 
-    <ComAutoComplete />
-    <div
-      v-if="versionValue && !showTaskIcon"
-      class="tag right"
-      @click.prevent="messageSlide"
-    >
-      <Badge :count="taskMessageCount">
-        <i
-          class="iconfont iconbj_message badge"
-        />
-      </Badge>
-    </div>
-
-    <div
-      v-if="versionValue && showTaskIcon"
-      class="tag right async-task-icon"
-      @click.prevent="handlerOpenTasks"
-    >
-      <Badge :count="taskMessageCount">
-        <svg-icon icon-class="task" style="width: 21px;"></svg-icon>
-      </Badge>
-    </div>
-
-    <!-- 消息队列 -->
-    <MessageList v-model="showMessages"></MessageList>
-
-    <div
-      class="tag right"
-      @click="show = true"
-    >
-      <i
-        class="iconfont iconmd-person"
-        :title="$t('buttons.setting')"
-      />
-    </div>
+    <!-- 异步任务图标 -->
+    <template slot="icon-task">
+      <div
+        v-if="versionValue && !showTaskIcon"
+        class="tag right"
+        @click.prevent="messageSlide"
+      >
+        <Badge :count="taskMessageCount">
+          <i
+            class="iconfont iconbj_message badge"
+          />
+        </Badge>
+      </div>
+      <div
+        v-if="versionValue && showTaskIcon"
+        class="tag right async-task-icon"
+        @click.prevent="handlerOpenTasks"
+      >
+        <Badge :count="taskMessageCount">
+          <svg-icon icon-class="task" style="width: 21px;"></svg-icon>
+        </Badge>
+      </div>
+      <!-- 消息队列弹出层 -->
+      <MessageList v-model="showMessages"></MessageList>
+    </template>
 
     <!-- 设置 -->
-    <Setting v-model="show"></Setting>
-  </div>
+    <template slot="icon-person">
+      <div
+        class="tag right"
+        @click="show = true"
+      >
+        <i
+          class="iconfont iconmd-person"
+          :title="$t('buttons.setting')"
+        />
+      </div>
+      <!-- 设置的弹出层 -->
+      <Setting v-model="show"></Setting>
+    </template>
+  </component>
 </template>
 
 <script>
@@ -137,11 +155,12 @@
   import network, { urlSearchParams } from '../__utils__/network';
   import NavigatorSubMenu from './NavigatorSubMenu';
   import {
-    Version, enableHistoryAndFavoriteUI, dashboardConfig,messageSwitch, classFix
+    Version, enableHistoryAndFavoriteUI, dashboardConfig,messageSwitch, classFix, layoutDirectionSlot
   } from '../constants/global';
   import { updateSessionObject } from '../__utils__/sessionStorage';
   import noticeMixin from './AsyncTask/noticeMixin'
   import navigatorMixin from './AsyncTask/navigatorMixin'
+  import NavigatorSlot from './nav/NavigatorSlot.vue'
 
   export default {
     name: 'Navigator',
@@ -153,7 +172,8 @@
       Setting,
       MessageList,
       NavigatorSubMenu,
-      ComAutoComplete
+      ComAutoComplete,
+      NavigatorSlot
     },
 
     data() {
@@ -164,7 +184,8 @@
         keyWord: '',
         togglePrimaryMenuData: [],
         messageTimer: null,
-        showMessages: false
+        showMessages: false,
+        wrapperComponent: undefined,
       };
     },
     computed: {
@@ -332,6 +353,13 @@
           this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.firstElementChild.firstElementChild.style.padding = '0px';
           this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.style.margin = '0px';
         }
+      }
+
+      const slotObj = layoutDirectionSlot()
+      if (slotObj && slotObj.navigator) {
+        this.wrapperComponent = slotObj.navigator;
+      } else {
+        this.wrapperComponent = NavigatorSlot;
       }
     },
   };

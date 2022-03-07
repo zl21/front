@@ -104,6 +104,17 @@ export default {
     // linkId:外链表ID，
     // query:路由参数
     // 注：url前不能加/ ，格式应为'CUSTOMIZED/FUNCTIONPERMISSION/2299'
+       
+    // 兼容新开的历史记录
+    arguments[1].router = {
+      fullPath: window.vm.$route.fullPath,
+      meta: window.vm.$route.meta,
+      name: window.vm.$route.name,
+      params: window.vm.$route.params,
+      path:  window.vm.$route.path,
+      query:  window.vm.$route.query
+    }
+    
     if (param && param.url && param.url.includes('?')) {
       param.url = getUserenv({ url: param.url });
     }
@@ -461,7 +472,21 @@ export default {
   },
   decreasekeepAliveLists(state, name) {
     if (enableKeepAlive() && state.keepAliveLists.includes(name)) {
-      state.keepAliveLists.splice(state.keepAliveLists.indexOf(name), 1);
+      if(!enableOpenNewTab()){
+        // 不是新开tab 且是标准单对象时，关闭当前所有的单对象缓存
+        if(name.split('.').length>3){
+          name = name.substring(0,name.lastIndexOf('.'));
+          for(var i = state.keepAliveLists.length - 1; i >=0; i--) {
+            if(new RegExp(name).test(state.keepAliveLists[i])){
+              state.keepAliveLists.splice(i, 1);
+            }
+         }
+        }else{
+          state.keepAliveLists.splice(state.keepAliveLists.indexOf(name), 1);
+        }
+      }else{
+        state.keepAliveLists.splice(state.keepAliveLists.indexOf(name), 1);
+      }
     }
   },
   toggleActiveMenu(state, index) {
@@ -655,7 +680,7 @@ export default {
     Object.values(clickMenuAddSingleObjectData).map((item) => {
       const routeFullPath = state.activeTab.routeFullPath;
       const resRouteFullPath = ` ${routeFullPath.substring(routeFullPath.indexOf('/') + 1, routeFullPath.lastIndexOf('/'))}/New`;
-      if (routeFullPath.indexOf(item) !== -1) {
+      if (routeFullPath.indexOf(item) !== -1 && new RegExp('New').test(tab.itemId)) {
         const path = `/${resRouteFullPath}`.replace(/\s/g, '');
         deleteFromSessionObject('clickMenuAddSingleObject', path);
       }
@@ -809,18 +834,26 @@ export default {
         }
       } else if (item.routeFullPath === tabRouteFullPath) {
         openedMenuLists.splice(index, 1);
+
         if (tabRouteFullPath && !tab.forbidden) {
           if (openedMenuLists.length > 0) {
-            if (index === 0) {
-              state.activeTab = openedMenuLists[index]; // 关闭当前tab时始终打开的是最后一个tab
-            } else {
-              state.activeTab = openedMenuLists[index - 1]; // 关闭当前tab时始终打开的是最后一个tab
+            // 当前关闭等于激活页面
+            if(state.activeTab.routeFullPath === item.routeFullPath){
+              if (index === 0) {
+                state.activeTab = openedMenuLists[index]; // 关闭当前tab时始终打开的是最后一个tab
+              } else {
+                state.activeTab = openedMenuLists[index - 1]; // 关闭当前tab时始终打开的是最后一个tab
+              }
+
             }
+            
             window.vm.$router.push({
               path: state.activeTab.routeFullPath,
             });
           } else {
-            window.vm.$router.push('/');
+            if(!tab.open){
+              window.vm.$router.push('/');
+            }
           }
         }
       }
@@ -912,6 +945,16 @@ export default {
     //     return true;
     //   }
     // }
+    // 兼容新开的历史记录
+    arguments[1].router = {
+      fullPath: window.vm.$route.fullPath,
+      meta: window.vm.$route.meta,
+      name: window.vm.$route.name,
+      params: window.vm.$route.params,
+      path:  window.vm.$route.path,
+      query:  window.vm.$route.query
+    }
+
     if ((type === 'S' || type === 'STANDARD_TABLE_LIST_PREFIX') && isSetQuery && queryData) {
       if (queryData.values && queryData.values.length > 0) {
         let flag = true;
@@ -1099,17 +1142,25 @@ export default {
     }
       // 不是新开的菜单，自动删除上一次的新增界面
     if(window.ProjectConfig && !window.ProjectConfig.enableOpenNewTab){
-      let NewkeepAliveModuleName = keepAliveModuleName.substr(2,100)+'.New';
-      state.keepAliveLists = state.keepAliveLists.filter((x)=>{
-          if(!new RegExp(NewkeepAliveModuleName).test(x)){
-            return x;
-          }
-      });
+      if(/\/New$/.test(vm.$route.path) === false){
+        let NewkeepAliveModuleName = keepAliveModuleName.substring(2,100)+'.New';
+        state.keepAliveLists = state.keepAliveLists.filter((x)=>{
+            if(!new RegExp(NewkeepAliveModuleName).test(x)){
+              return x;
+            }
+        });
+
+      }
     }
     if (path) {
       window.vm.$router.push({
         path
       },arguments[1]);
+    }
+    if(url){
+      window.vm.$router.push(
+        url,arguments[1]
+      );
     }
   },
   updataUserInfoMessage(state, { userInfo }) {
