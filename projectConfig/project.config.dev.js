@@ -208,12 +208,12 @@ module.exports = {
   // }
   // formItemMixins:require('./src/demo/formItemMixins'),
   isFilterTable: true, // 是否开启表格过滤功能
-  // DashboardComponent: {
-  //   compontent: () => import(
-  //     './src/__component__/Login.vue'
-  //   ),
-  //   iconClass: 'iconfont iconmd-grid'
-  // }
+  DashboardComponent: {
+    compontent: () => import(
+      '../src/__component__/Login.vue'
+    ),
+    iconClass: 'iconfont iconmd-grid'
+  },
   // classFix: 'r3-', // 样式前缀
   classFix: '', // 样式前缀
   // openTabNumber:2,
