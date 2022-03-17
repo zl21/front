@@ -56,7 +56,7 @@
         <component :is="componentsName"
                    :ref="items.colname"
                    v-bind="propsMessage"
-                   v-model="value"
+                   v-model.trim="value"
                    @on-keydown="enterForm">
           <slot v-if="items.display === 'OBJ_SELECT'">
             <Option v-for="item in items.props.options"
@@ -72,7 +72,7 @@
         <component :is="_items.componentName"
                    v-if="_items.type === 'customization'"
                    :ref="items.colname"
-                   v-model="value"
+                  v-model.trim="value"
                    v-bind="propsMessage"
                    :options="{
           ..._items,
