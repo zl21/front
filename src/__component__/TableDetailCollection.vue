@@ -2172,6 +2172,12 @@
                     const currentColumn = params.column._index - 1;
                     this.tableCellFocusByUpOrDown(elementId, currentColumn, 'up');
                   }
+                },
+                'on-blur': (e) => {
+                  const oldValue = e.target.value
+                  if(typeof oldValue === 'string') {
+                    e.target.value = oldValue.trim()
+                  }
                 }
               }
             })
