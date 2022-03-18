@@ -1305,6 +1305,7 @@ export default {
     getTableQuery () {
       // 获取列表的查询字段
       const searchData = this.searchData;
+
       this.getTableQueryForForm({ searchData });
     },
 
@@ -1862,8 +1863,47 @@ export default {
         resolve();
       });
     },
-    getQueryListPromise (data, searchDataRes) {
+    getOrderMarks(message){
+      // 订单标记 获取虚拟标记的数据
+      const Form = this.$_live_getChildComponent(this, 'listsForm');
+       Form.virtualKey.reduce((arr,item)=>{
+        let dom = document.querySelector(`#${item}`);
+        if(dom && dom.__vue__){
+          let value = dom.__vue__.value;
+          if(Array.isArray(value)){
+            value.forEach((item)=>{
+             if(item){
+               console.log(item,'====');
+               let key = item.split(':')[0];
+               let keyValue = item.split(':')[1];
+               if(item.split(':')[2] == 'true'){
+                //  是否是数字格式
+                  keyValue = Number(keyValue);
+               }
+               if(message.fixedcolumns[key]){
+                 if(message.fixedcolumns[key].includes(keyValue) === false){
+                    message.fixedcolumns[key].push(`=${keyValue}`);
+                 }
+              }else{
+                message.fixedcolumns[key] = [`=${keyValue}`];
+              }
+               
+             }
+          })
+
+          }
+          
+          console.log(value,);
+
+        }
+
+      },{});  
+      return message;
+
+    },
+    getQueryListPromise (message, searchDataRes) {
       // 重拼树的数据
+      let data = this.getOrderMarks(message);
       setTimeout(() => {
         data = Object.assign(data, JSON.parse(JSON.stringify(this.treeSearchData || {})));
         // fix: (#47768)如果查询条件巧好有id字段，会导致查询失效，所以把下面这行(#39252)注释掉了
