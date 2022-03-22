@@ -984,7 +984,7 @@
           this._stopFindDom = true
         }
         const id = `ag-${this.editElementId[elementIndex]}`
-        const focusDom = document.getElementById(id);
+        const focusDom = document.querySelector(`.${id}`)
         if (focusDom && !focusDom.getElementsByTagName('input')[0].disabled) {
           focusDom.getElementsByTagName('input')[0].focus();
           focusDom.getElementsByTagName('input')[0].select();
@@ -2044,7 +2044,7 @@
         } else {
           colIndex = targetColObj._index + 1
         }
-        const dom = document.querySelector(`#ag-${params.index}-${colIndex}`)
+        const dom = document.querySelector(`.ag-${params.index}-${colIndex}`)
 
         if(dom) {
           const input = dom.querySelector('input')
@@ -2089,10 +2089,11 @@
                 'flex-left': cellData.tdAlign === 'left',
                 'input-align-right': cellData.tdAlign === 'right', // 输入框文本对齐
                 'input-align-center': cellData.tdAlign === 'center',
-                'input-align-left': cellData.tdAlign === 'left'
+                'input-align-left': cellData.tdAlign === 'left',
+                [`ag-${params.index}-${params.column._index - 1}`]: true // 联动计算标记
               },
               domProps: {
-                id: `ag-${params.index}-${params.column._index - 1}`,
+                id: `${params.index}-${params.column._index - 1}`,
                 title: colnameData ? colnameData.val : '',
               },
               props: {
