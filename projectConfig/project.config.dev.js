@@ -187,6 +187,7 @@ module.exports = {
   // },
   agGridOptions: { // ag表格的配置
     // rowHeight: 100
+    agHidePaste: true
   },
   messageSwitch: true, // 消息开关
   enableTaskNotice: true,
