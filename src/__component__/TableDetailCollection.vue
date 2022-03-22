@@ -1948,6 +1948,7 @@
               props: {
                 transfer: true,
                 clearable: true,
+                editable: false,
                 value
               },
               on: {
