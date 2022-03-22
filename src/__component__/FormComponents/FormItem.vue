@@ -49,7 +49,7 @@
                @click="routerNext(value)" />
           </template>
         </template>
-        <span :title="items.coldesc">{{ items.coldesc }}:</span>
+        <span  :style="setlabelStyle" :title="items.coldesc">{{ items.coldesc }}:</span>
       </span>
       <div :class=" [_items.props.row >1 ? 'itemComponent height100':'itemComponent',items.isuppercase?'isuppercase':'']"
            :style="_items.display==='image' ? 'overflow:visible' :''">
@@ -189,6 +189,7 @@ export default {
       resultData: {}, // 结果传值
       componentsName: '',// 组件名称
       show: false,// 是否展示报错内容
+      setlabelStyle:'',
       propsMessage: {
 
       }, // 各个组件的props

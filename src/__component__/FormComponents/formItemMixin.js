@@ -25,6 +25,8 @@ import {
 import storeDataInteractionMixin from './PanelForm/storeDataInteractionMixin';
 // 处理单对象表单webcof 映射
 import mapwebconf from '../ExtendedAttributes/mapwebconf.js';
+// 处理高亮规则
+import {highLight} from '../ExtendedAttributes/highlight.js';
 
 
 export default {
@@ -35,6 +37,10 @@ export default {
         if (this.items.detailType) {
           if (this.items.linkage && this.items.linkage.hidecolumn) {
             hideColumn(this, this.items.linkage.hidecolumn)
+          }
+
+          if(this.items.webconf && this.items.webconf.highlight){
+            highLight(this,this.items.webconf)
           }
 
           if (this.items.linkage && this.items.linkage.setAttributes) {
@@ -57,16 +63,12 @@ export default {
               dynamicforcompute(this, this.items.webconf.dynamicforcompute)
             }
           }
-          //   if(this.items.webconf && this.items.webconf.filtercolval){
-
-          //     // 过滤显示字段
-          //    filtercolval(this,this.items.webconf.filtercolval)
-          //  }
           //  清空字段refcolval
           if (this.actived && !this.typesource) {
             clearFormRefcolval(this);
             this.typesource = '';
           }
+          
 
         } else if (this.items.Query) {
           // 清除标准列表的数据
@@ -112,6 +114,9 @@ export default {
     if (this.items.detailType) {
       if (this.items.linkage && this.items.linkage.hidecolumn) {
         hideColumn(this, this.items.linkage.hidecolumn)
+      }
+      if(this.items.webconf && this.items.webconf.highlight){
+        highLight(this,this.items.webconf)
       }
     }
   }

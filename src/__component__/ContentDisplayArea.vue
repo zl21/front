@@ -50,18 +50,18 @@
       $route(to) {
         if (to.path === '/') {
           this.flag = true;
+          this.display = true;
         } else {
           this.flag = false;
         }
-        this.display = true;
       },
       isShowDashboardPage(val) {
         if (val) {
           this.flag = true;
+          this.display = true;
         } else {
           this.flag = false;
         }
-        this.display = true;
       }
     },
     mounted() {
