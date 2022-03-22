@@ -475,6 +475,27 @@
   flex: 70px 0 0;
 }
 
+.highlight-wrap .row-title {
+  flex: 80px 0 0;
+}
+.highlight-wrap .highlight-rules .col {
+  flex: auto;
+}
+.highlight-wrap .highlight-rules .btn-group {
+  flex: 70px 0 0;
+}
+.highlight-wrap .style-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid #dcdee2;
+  border-radius: 4px;
+  min-width: 66px;
+  cursor: pointer;
+}
+
 .MultiTab .ml-5[data-v-5dd5153e] {
   margin-left: 5px;
 }
