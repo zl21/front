@@ -2572,7 +2572,8 @@
                       });
                     }
                   } else if (!this.dropDownIsShowPopTip(cellData, params)) {
-                    const obj = this.copyDataSource.tabth.find(item => item.key === cellData.refcolval.srccol);
+                    // const obj = this.copyDataSource.tabth.find(item => item.key === cellData.refcolval.srccol);
+                    const obj = this.copyDataSource.tabth.find(item => item.colname === cellData.refcolval.srccol);
                     this.$Message.info(`${this.$t('form.selectPlaceholder')}${obj.name}`);
                   } else {
                     if (this.fkSelectedChangeData[params.index]) {
