@@ -220,7 +220,7 @@ module.exports = {
   // openTabNumber:2,
 
   autoGatewayUrl:false,  // 是否请求网关
-  computeForSubtable: false,
+  computeForSubtable: true,
   routerFilter:false, // 跳转是否过滤
   setXss:false, // 是否xss 攻击过滤
   filterHistory:[], // 过滤不需要历史记录的表
