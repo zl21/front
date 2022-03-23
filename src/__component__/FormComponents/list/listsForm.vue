@@ -103,6 +103,7 @@ export default {
       default: 4
     },
     search: {
+      // 是否是查询列表（弹窗单选为false）
       type: Boolean,
       default: false
     },
@@ -230,7 +231,9 @@ export default {
         this.formArray.push(JSON.parse(JSON.stringify(item)));
         return item;
       });
-      this.initKeyGroup()
+      if(this.search){
+         this.initKeyGroup()
+      }
 
      
     },

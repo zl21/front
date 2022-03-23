@@ -144,10 +144,14 @@ class BusDropDownSelectFilter {
           });
         })
       };
-      if (this.item.detailType) {
-        // 外部点击
+      // if (this.item.detailType) {
+      //   // 外部点击
 
-        //new DropMethods(this.item,this).Outside();
+      //   //new DropMethods(this.item,this).Outside();
+      // }
+      if(this.item.showPlace === "childrenForm"){
+        // 子表回车事件
+        new DropMethods(this.item,this).enter();
       }
        // 默认数据
        setTimeout(()=>{
@@ -155,11 +159,11 @@ class BusDropDownSelectFilter {
       },200);
 
     }
-
     if (!this.item.detailType) {
       // 回车查询
       new DropMethods(this.item, this.Vm).keydown();
     }
+
 
 
 
