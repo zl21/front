@@ -11,16 +11,12 @@ export const highLight = function ($current, config) {
     rules
   } = highlight;
   if (highlight.scope !== 'table') {
-    switch (highlight.type) {
-      case 'all':
-        checkAllRules(rules, $current, 'all');
-        break;
-      case 'value':
-        checkValueRules(rules, $current, 'value');
-        break;
-      case 'label':
-        checkLabelRules(rules, $current, 'label');
-        break;
+
+    if(highlight.label){
+      checkLabelRules(highlight.labelStyle, $current, 'label');      
+    }
+    if(highlight.value){
+      checkLabelRules(rules, $current, 'value');      
     }
   }
 };
@@ -31,19 +27,18 @@ export const highLight = function ($current, config) {
  *  @return 重构后的数据 type: Array
  */
 
-export const checkAllRules = function (rules, $current, type) {
-  let style = EachRules(rules, $current.value, type);
-  $current.setlabelStyle = style;
-  setDomStyle(style, $current.$el, $current.items);
+// export const checkAllRules = function (rules, $current, type) {
+//   $current.setlabelStyle = rules;
+//   setDomStyle(style, $current.$el, $current.items);
 
-};
+// };
 
 export const checkValueRules = function (rules, $current, type) {
   let style = EachRules(rules, $current.value, type);
   setDomStyle(style, $current.$el, $current.items);
 };
 export const checkLabelRules = function (rules, $current, type) {
-  let style = EachRules(rules, $current.items.coldesc, type);
+  let style = rules;
   $current.setlabelStyle = style;
 };
 /** 处理 高亮的规则
