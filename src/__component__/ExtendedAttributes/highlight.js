@@ -16,7 +16,7 @@ export const highLight = function ($current, config) {
       checkLabelRules(highlight.labelStyle, $current, 'label');      
     }
     if(highlight.value){
-      checkLabelRules(rules, $current, 'value');      
+      checkValueRules(rules, $current, 'value');      
     }
   }
 };
