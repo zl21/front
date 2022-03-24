@@ -71,7 +71,10 @@ const createDOM = () => {
   const div = document.createElement('div')
   div.setAttribute('id', getGuid())
   if(window.ProjectConfig && window.ProjectConfig.$el){
-    window.ProjectConfig.$el.appendChild(div)
+    if(window.ProjectConfig.$el.children && window.ProjectConfig.$el.children[0]){
+      window.ProjectConfig.$el.children[0].remove();
+    }
+    window.ProjectConfig.$el.appendChild(div);
   }else{
     document.body.appendChild(div)
   }
