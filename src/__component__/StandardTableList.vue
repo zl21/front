@@ -1868,6 +1868,7 @@ export default {
       const Form = this.$_live_getChildComponent(this, 'listsForm');
        Form.virtualKey.reduce((arr,item)=>{
         let dom = document.querySelector(`#${item}`);
+        console.log(dom,'=====');
         if(dom && dom.__vue__){
           let value = dom.__vue__.value;
           if(Array.isArray(value)){
@@ -1880,12 +1881,19 @@ export default {
                 //  是否是数字格式
                   keyValue = Number(keyValue);
                }
+               if(item.split(':')[3]){
+                //  是否是字符串模式
+                  keyValue = `${keyValue}`
+               }else{
+                  keyValue = `=${keyValue}`
+
+               }
                if(message.fixedcolumns[key]){
                  if(message.fixedcolumns[key].includes(keyValue) === false){
-                    message.fixedcolumns[key].push(`=${keyValue}`);
+                    message.fixedcolumns[key].push(`${keyValue}`);
                  }
               }else{
-                message.fixedcolumns[key] = [`=${keyValue}`];
+                message.fixedcolumns[key] = [`${keyValue}`];
               }
                
              }
@@ -1893,8 +1901,6 @@ export default {
 
           }
           
-          console.log(value,);
-
         }
 
       },{});  

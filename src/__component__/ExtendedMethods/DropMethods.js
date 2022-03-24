@@ -57,10 +57,10 @@ export default class DropMethods {
     this.instance.eventFunction['on-keydown'] = function () {
       if (arguments[0].keyCode === 13) {
         // 子表回车事件
-        document.querySelector('body').click();
-        setTimeout(() => {
+        if(Array.isArray(self.value)){
           self.$emit('on-keydown',...arguments);
-        }, 200)
+        }
+        
       } else {
         self.$emit('on-keydown',...arguments);
       }

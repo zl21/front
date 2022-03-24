@@ -172,7 +172,7 @@ export default {
         }
         key_group_conf.forEach((item)=>{
           let data = {
-            coldesc: "测试组件哈哈哈==",
+            coldesc:item.target_description,
             colname: item.target,
             combobox: [],
             show:true,
@@ -182,11 +182,25 @@ export default {
           }
           data.combobox = item.source.reduce((arr,source)=>{
               let data = source.label.reduce((combobox,option)=>{
-                combobox.push({
-                  limitdesc: source.col_name+':'+option.description,
-                  colname:source.col_name,
-                  limitval:`${source.col_name}:${option.value}:${typeof option.value ==='number'}`
-                })
+              source.source_column_limit_values.forEach((columns)=>{
+                if(columns.description === option.value){
+                    combobox.push({
+                      limitdesc: option.description,
+                      colname:source.col_name,
+                      limitval:`${source.col_name}:${columns.value}:${typeof columns.value ==='number'}`
+                    })
+                  }
+              });
+              if(source.source_column_limit_values.length<1){
+                 combobox.push({
+                      limitdesc: option.description,
+                      colname:source.col_name,
+                      limitval:`${source.col_name}:${option.value}:${typeof option.value ==='number'}:other`
+                    })
+              }
+              
+
+              
                 return combobox;
               },[]);
               arr = arr.concat(data);
@@ -194,11 +208,12 @@ export default {
           },[]).concat([]);
           // 添加虚拟字段
           let index = Object.keys(this.ItemLists).length;
-             if(this.ItemLists[item.target]){
+          
+          data.component = this.initComponent(data, index-1);
+          this.ItemLists[item.target] =data;
+          if(this.ItemLists[item.target]){
                 this.virtualKey.push(item.target); 
           };
-          data.component = this.initComponent(data, index-1);
-          this.ItemLists[item.target] = Object.assign({},data);
 
         })
     },
