@@ -10,8 +10,13 @@ export const highLight = function ($current, config) {
   let {
     rules
   } = highlight;
-  if (highlight.scope !== 'table') {
 
+  if($current.items.fkdisplay){
+    // 外键字段回避
+    return;
+  }
+  if (highlight.scope !== 'table') {
+    
     if(highlight.label){
       checkLabelRules(highlight.labelStyle, $current, 'label');      
     }
@@ -50,7 +55,22 @@ export const EachRules = function (rules, value, type) {
   let style;
   rules.some((x) => {
     try {
-      let operator = new Function('v', `return ${x.operator}`);
+      let operator = new Function('v', `return ${x.operator.replace(/undefined/,'')}`);
+      if(Array.isArray(value) && value[0]){
+        if(value[0].ID){
+          value = value.reduce((arr,item)=>{
+              arr.push(item.ID);
+              return arr;
+          },[]).join('');
+        }
+
+      }else{
+       if(value === undefined){
+          value = '';
+       }
+
+      }
+      
       if (operator(value)) {
         style = x.style;
         return;
@@ -59,6 +79,7 @@ export const EachRules = function (rules, value, type) {
       console.log(error);
     }
   });
+
   if (style && type != 'label') {
     let data = Object.keys(style).reduce((arr, item) => {
       if (style[item] && ['normal', 'none'].includes(style[item]) !== true) {
@@ -100,8 +121,8 @@ function setDomStyle(style, $el, items) {
   }
 
   if (dom) {
+    dom.style.cssText = '';
     if (!style) {
-      dom.style.cssText = '';
       return;
     }
     dom.style.cssText = Object.keys(style).reduce((arr, item) => {
