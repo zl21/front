@@ -135,6 +135,10 @@ class CustomInput {
     // 单对象长度
     if(this.item.detailType){
       this.props.maxlength = this.item.length;
+    }else{
+      this.props.splitBefore = true;
+      this.props.splitStr = ' ';
+
     }
 
     // 是否开启过滤xss攻击
@@ -151,7 +155,7 @@ class CustomInput {
       this.uppercase()
     }
     if (this.item.type === 'NUMBER') {
-      this.numericTypes()
+       this.numericTypes()
     }
 
     if (this.item.display === 'OBJ_TEXTAREA') {
