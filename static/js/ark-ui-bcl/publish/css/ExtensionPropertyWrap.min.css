@@ -484,6 +484,9 @@
 .highlight-wrap .highlight-rules .btn-group {
   flex: 70px 0 0;
 }
+.highlight-wrap .help {
+  margin-top: -1px;
+}
 .highlight-wrap .style-button {
   display: flex;
   justify-content: center;
