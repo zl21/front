@@ -39,10 +39,10 @@ export const highLight = function ($current, config) {
 // };
 
 export const checkValueRules = function (rules, $current, type) {
-  let style = EachRules(rules, $current.value, type);
+  let style = EachRules(rules, $current.value, type,$current.items.type);
   setDomStyle(style, $current.$el, $current.items);
 };
-export const checkLabelRules = function (rules, $current, type) {
+export const checkLabelRules = function (rules, $current) {
   let style = rules;
   $current.setlabelStyle = style;
 };
@@ -51,7 +51,7 @@ export const checkLabelRules = function (rules, $current, type) {
  *  @param 表单数据  type：rules 比较的规则 value 比较的值 type 类型
  *  @return 重构后的数据 type: object
  */
-export const EachRules = function (rules, value, type) {
+export const EachRules = function (rules, value, type,display) {
   let style;
   rules.some((x) => {
     try {
@@ -70,11 +70,16 @@ export const EachRules = function (rules, value, type) {
        }
 
       }
-      
-      if (operator(value)) {
-        style = x.style;
-        return;
+      if(display ==='NUMBER' && (value ==='' || value ===null)){
+        return false
+
+      }else{
+        if (operator(value)) {
+          style = x.style;
+          return;
+        }
       }
+     
     } catch (error) {
       console.log(error);
     }
