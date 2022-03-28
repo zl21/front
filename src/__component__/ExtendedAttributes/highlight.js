@@ -70,14 +70,18 @@ export const EachRules = function (rules, value, type,display) {
        }
 
       }
-      if(display ==='NUMBER' && (value ==='' || value ===null)){
-        return false
-
-      }else{
-        if (operator(value)) {
-          style = x.style;
-          return;
+      if(display ==='NUMBER'){
+        if((value ==='' || value ===null)){
+          return false
+        }else {
+          value = Number(value);
+          
         }
+
+      }
+      if (operator(value)) {
+        style = x.style;
+        return;
       }
      
     } catch (error) {
