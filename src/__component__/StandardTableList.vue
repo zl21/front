@@ -1890,7 +1890,12 @@ export default {
                }
                if(message.fixedcolumns[key]){
                  if(message.fixedcolumns[key].includes(keyValue) === false){
-                    message.fixedcolumns[key].push(`${keyValue}`);
+                   if(Array.isArray(message.fixedcolumns[key])){
+                      message.fixedcolumns[key].push(`${keyValue}`);      
+                   }else{
+                      message.fixedcolumns[key] =message.fixedcolumns[key] + ` ${keyValue}`;      
+                   }
+                    
                  }
               }else{
                 message.fixedcolumns[key] = [`${keyValue}`];
