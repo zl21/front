@@ -48,17 +48,18 @@ function hookAJAX() {
   var customizeOpen = function(method, url, async, user, password) {
     this.nativeOpen(method, url, async, user, password)
     let number = Math.floor(Math.random() * 10000)
+    let newTime = new Date().getTime();
     let sessionCookie = window.localStorage.getItem('sessionCookie')
-    this.setRequestHeader('SSSSS-A', new Date().getTime())
+    this.setRequestHeader('SSSSS-A', newTime)
     if (sessionCookie === 'undefined') {
       this.setRequestHeader(
         'SSSSS-B',
-        md5('qwertburgeon' + new Date().getTime() + number)
+        md5('qwertburgeon' + newTime + number)
       )
     } else {
       this.setRequestHeader(
         'SSSSS-B',
-        md5('qwertburgeon' + new Date().getTime() + number + sessionCookie)
+        md5('qwertburgeon' + newTime + number + sessionCookie)
       )
     }
     this.setRequestHeader('SSSSS-C', number)
