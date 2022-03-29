@@ -72,7 +72,7 @@ export const EachRules = function (rules, value, type,display) {
       }
       if(display ==='NUMBER'){
         if((value ==='' || value ===null)){
-          return false
+          value = '';
         }else {
           value = Number(value);
           
