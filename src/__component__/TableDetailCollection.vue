@@ -1826,7 +1826,8 @@
                           }
                           break;
             case 'OBJ_DATENUMBER':
-              val = ele[tab.colname].val.replace(/\-/g, '');
+              const value = ele[tab.colname].val
+              val = value && value.replace(/\-/g, '');
               break;
             default:
               break;
