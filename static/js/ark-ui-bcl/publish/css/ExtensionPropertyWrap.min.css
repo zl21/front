@@ -498,6 +498,12 @@
   min-width: 66px;
   cursor: pointer;
 }
+.highlight-rules-wrap {
+  line-height: 18px;
+}
+.highlight-rules-wrap .title {
+  font-weight: bold;
+}
 
 .MultiTab .ml-5[data-v-5dd5153e] {
   margin-left: 5px;
