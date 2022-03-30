@@ -41,7 +41,8 @@ const project = {
   // target: 'http://47.102.164.111:27777', // 卡宾
   // target: 'http://dev.dev.lark-erp.cn/',
   // target: 'http://139.224.134.69:58000', // OMS
-  target: 'http://120.78.163.25/', // 斯凯奇
+  // target: 'http://120.78.163.25/', // 斯凯奇
+  target: 'https://skxmid-portal.skechers.cn/', // 斯凯奇
   Version: '1.3', // 版本号
   enableGateWay: false, // 网关是否打开,
   enableLoginPro:false,
