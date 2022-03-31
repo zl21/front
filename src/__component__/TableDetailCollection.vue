@@ -984,7 +984,7 @@
           this._stopFindDom = true
         }
         const id = `ag-${this.editElementId[elementIndex]}`
-        const focusDom = document.getElementById(id);
+        const focusDom = document.querySelector(`.${id}`)
         if (focusDom && !focusDom.getElementsByTagName('input')[0].disabled) {
           focusDom.getElementsByTagName('input')[0].focus();
           focusDom.getElementsByTagName('input')[0].select();
@@ -1826,7 +1826,8 @@
                           }
                           break;
             case 'OBJ_DATENUMBER':
-              val = ele[tab.colname].val.replace(/\-/g, '');
+              const value = ele[tab.colname].val
+              val = value && value.replace(/\-/g, '');
               break;
             default:
               break;
@@ -1948,6 +1949,7 @@
               props: {
                 transfer: true,
                 clearable: true,
+                editable: false,
                 value
               },
               on: {
@@ -2044,7 +2046,7 @@
         } else {
           colIndex = targetColObj._index + 1
         }
-        const dom = document.querySelector(`#ag-${params.index}-${colIndex}`)
+        const dom = document.querySelector(`.ag-${params.index}-${colIndex}`)
 
         if(dom) {
           const input = dom.querySelector('input')
@@ -2089,10 +2091,11 @@
                 'flex-left': cellData.tdAlign === 'left',
                 'input-align-right': cellData.tdAlign === 'right', // 输入框文本对齐
                 'input-align-center': cellData.tdAlign === 'center',
-                'input-align-left': cellData.tdAlign === 'left'
+                'input-align-left': cellData.tdAlign === 'left',
+                [`ag-${params.index}-${params.column._index - 1}`]: true // 联动计算标记
               },
               domProps: {
-                id: `ag-${params.index}-${params.column._index - 1}`,
+                id: `${params.index}-${params.column._index - 1}`,
                 title: colnameData ? colnameData.val : '',
               },
               props: {
@@ -2135,7 +2138,7 @@
                   const oldId = this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val
 
                   // 是否进行联动计算
-                  if(window.ProjectConfig.computeForSubtable) {
+                  if(window.ProjectConfig.computeForSubtable && cellData.webconf && cellData.webconf.dynamicforcompute) {
                     const dynamicforcompute = cellData.webconf.dynamicforcompute
                     const oldTargetValue = this.dataSource.row[params.index][dynamicforcompute.computecolumn].val
                     // 找到目标字段相关的信息
@@ -2576,7 +2579,8 @@
                       });
                     }
                   } else if (!this.dropDownIsShowPopTip(cellData, params)) {
-                    const obj = this.copyDataSource.tabth.find(item => item.key === cellData.refcolval.srccol);
+                    // const obj = this.copyDataSource.tabth.find(item => item.key === cellData.refcolval.srccol);
+                    const obj = this.copyDataSource.tabth.find(item => item.colname === cellData.refcolval.srccol);
                     this.$Message.info(`${this.$t('form.selectPlaceholder')}${obj.name}`);
                   } else {
                     if (this.fkSelectedChangeData[params.index]) {
