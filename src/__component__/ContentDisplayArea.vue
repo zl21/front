@@ -21,7 +21,7 @@
     >
       <component
         :is="getDashboardConfig.compontent"
-        v-if="getDashboardConfig&&getDashboardConfig.compontent"
+        v-if="getDashboardConfig&&getDashboardConfig.compontent && display"
       />
     </div>
   </div>
@@ -37,6 +37,7 @@
     data() {
       return {
         enableTabLists: true,
+        display:false, // 控制台是否初始化显示
         flag: false
       };
     },
@@ -49,6 +50,7 @@
       $route(to) {
         if (to.path === '/') {
           this.flag = true;
+          this.display = true;
         } else {
           this.flag = false;
         }
@@ -56,6 +58,7 @@
       isShowDashboardPage(val) {
         if (val) {
           this.flag = true;
+          this.display = true;
         } else {
           this.flag = false;
         }
@@ -64,8 +67,14 @@
     mounted() {
       if (this.$router.currentRoute.path === '/') {
         this.flag = true;
+        this.display = true;
+      }else{
+        this.display = false;
       }
 
+    },
+    beforeCreate(){
+        
     },
     computed: {
       ...mapState('global', ['keepAliveLists', 'openedMenuLists', 'isShowDashboardPage']),

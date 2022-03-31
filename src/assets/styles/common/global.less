@@ -2117,6 +2117,16 @@
   justify-content: center;
   align-items: center;
   padding-top: 8px;
+  .ark-input{
+    &::placeholder{
+      color: @input-placeholder-color;
+      font-weight: normal;
+      text-decoration:none;
+      font-style:normal;
+      background-color: none;
+    }
+
+  }
 
   .itemLabel {
     margin-right: 4px;
@@ -2139,6 +2149,8 @@
     > div {
       flex: 1;
     }
+   
+   
   }
   .label-tip {
     color: @error-color;

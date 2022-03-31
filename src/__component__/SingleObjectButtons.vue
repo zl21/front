@@ -1674,7 +1674,7 @@ import RouterPush from '../__utils__/routerback';
         if (typeof (data.event) === 'function') {
           this.saveCallBack = data.event;
         }
-        if (data && data.requestUrlPath) {
+        if (data ) {
           this.saveButtonPath = data.requestUrlPath;
         }
         // 兼容sp 配置走标准配置
