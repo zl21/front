@@ -11,14 +11,15 @@ export const highLight = function ($current, config) {
     rules
   } = highlight;
 
-  if($current.items.fkdisplay){
-    // 外键字段回避
-    return;
-  }
+ 
   if (highlight.scope !== 'table') {
     
     if(highlight.label){
       checkLabelRules(highlight.labelStyle, $current, 'label');      
+    }
+    if($current.items.fkdisplay){
+      // 外键字段回避
+      return;
     }
     if(highlight.value){
       checkValueRules(rules, $current, 'value');      
