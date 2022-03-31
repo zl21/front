@@ -49,14 +49,14 @@
                @click="routerNext(value)" />
           </template>
         </template>
-        <span :title="items.coldesc">{{ items.coldesc }}:</span>
+        <span  :style="setlabelStyle" :title="items.coldesc">{{ items.coldesc }}:</span>
       </span>
       <div :class=" [_items.props.row >1 ? 'itemComponent height100':'itemComponent',items.isuppercase?'isuppercase':'']"
            :style="_items.display==='image' ? 'overflow:visible' :''">
         <component :is="componentsName"
                    :ref="items.colname"
                    v-bind="propsMessage"
-                   v-model="value"
+                   v-model.trim="value"
                    @on-keydown="enterForm">
           <slot v-if="items.display === 'OBJ_SELECT'">
             <Option v-for="item in items.props.options"
@@ -72,7 +72,7 @@
         <component :is="_items.componentName"
                    v-if="_items.type === 'customization'"
                    :ref="items.colname"
-                   v-model="value"
+                  v-model.trim="value"
                    v-bind="propsMessage"
                    :options="{
           ..._items,
@@ -189,6 +189,7 @@ export default {
       resultData: {}, // 结果传值
       componentsName: '',// 组件名称
       show: false,// 是否展示报错内容
+      setlabelStyle:'',
       propsMessage: {
 
       }, // 各个组件的props

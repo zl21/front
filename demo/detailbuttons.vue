@@ -42,6 +42,9 @@
         this.IconCallBack()
       }
 
+    },
+    mounted(){
+      alert('哈哈')
     }
 }
 </script>

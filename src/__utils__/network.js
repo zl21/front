@@ -562,6 +562,11 @@ function NetworkConstructor() {
         }
       };
     }
+    if(serviceconfig && !serviceconfig.serviceId){
+      Object.keys(serviceconfig).forEach((key)=>{
+        headers[key] = serviceconfig[key];
+      })
+    }
 
     headers = Object.assign({}, headers, {
       cancelToken: new CancelToken(((c) => { // 在axios封装的函数中写上这句就可以了
