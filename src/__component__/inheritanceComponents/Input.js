@@ -103,6 +103,14 @@ const mixin = {
       // itemComponent.propsMessage.regx = typeRegExp
       itemComponent.propsMessage.maxlength = valLength // 最大长度不包含符号
     })
+
+
+    this.$on('on-blur',function(e){
+      const oldValue = e.target.value
+      if(typeof oldValue === 'string') {
+        e.target.value = oldValue.trim()
+      }
+    })
   },
 }
 class CustomInput {
