@@ -48,17 +48,18 @@ function hookAJAX() {
   var customizeOpen = function(method, url, async, user, password) {
     this.nativeOpen(method, url, async, user, password)
     let number = Math.floor(Math.random() * 10000)
+    let newTime = new Date().getTime();
     let sessionCookie = window.localStorage.getItem('sessionCookie')
-    this.setRequestHeader('SSSSS-A', new Date().getTime())
+    this.setRequestHeader('SSSSS-A', newTime)
     if (sessionCookie === 'undefined') {
       this.setRequestHeader(
         'SSSSS-B',
-        md5('qwertburgeon' + new Date().getTime() + number)
+        md5('qwertburgeon' + newTime + number)
       )
     } else {
       this.setRequestHeader(
         'SSSSS-B',
-        md5('qwertburgeon' + new Date().getTime() + number + sessionCookie)
+        md5('qwertburgeon' + newTime + number + sessionCookie)
       )
     }
     this.setRequestHeader('SSSSS-C', number)
@@ -71,7 +72,10 @@ const createDOM = () => {
   const div = document.createElement('div')
   div.setAttribute('id', getGuid())
   if(window.ProjectConfig && window.ProjectConfig.$el){
-    window.ProjectConfig.$el.appendChild(div)
+    if(window.ProjectConfig.$el.children && window.ProjectConfig.$el.children[0]){
+      window.ProjectConfig.$el.children[0].remove();
+    }
+    window.ProjectConfig.$el.appendChild(div);
   }else{
     document.body.appendChild(div)
   }

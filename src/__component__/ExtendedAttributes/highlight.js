@@ -10,17 +10,18 @@ export const highLight = function ($current, config) {
   let {
     rules
   } = highlight;
+
+  if($current.items.fkdisplay){
+    // 外键字段回避
+    return;
+  }
   if (highlight.scope !== 'table') {
-    switch (highlight.type) {
-      case 'all':
-        checkAllRules(rules, $current, 'all');
-        break;
-      case 'value':
-        checkValueRules(rules, $current, 'value');
-        break;
-      case 'label':
-        checkLabelRules(rules, $current, 'label');
-        break;
+    
+    if(highlight.label){
+      checkLabelRules(highlight.labelStyle, $current, 'label');      
+    }
+    if(highlight.value){
+      checkValueRules(rules, $current, 'value');      
     }
   }
 };
@@ -31,19 +32,18 @@ export const highLight = function ($current, config) {
  *  @return 重构后的数据 type: Array
  */
 
-export const checkAllRules = function (rules, $current, type) {
-  let style = EachRules(rules, $current.value, type);
-  $current.setlabelStyle = style;
-  setDomStyle(style, $current.$el, $current.items);
+// export const checkAllRules = function (rules, $current, type) {
+//   $current.setlabelStyle = rules;
+//   setDomStyle(style, $current.$el, $current.items);
 
-};
+// };
 
 export const checkValueRules = function (rules, $current, type) {
-  let style = EachRules(rules, $current.value, type);
+  let style = EachRules(rules, $current.value, type,$current.items.type);
   setDomStyle(style, $current.$el, $current.items);
 };
-export const checkLabelRules = function (rules, $current, type) {
-  let style = EachRules(rules, $current.items.coldesc, type);
+export const checkLabelRules = function (rules, $current) {
+  let style = rules;
   $current.setlabelStyle = style;
 };
 /** 处理 高亮的规则
@@ -51,19 +51,44 @@ export const checkLabelRules = function (rules, $current, type) {
  *  @param 表单数据  type：rules 比较的规则 value 比较的值 type 类型
  *  @return 重构后的数据 type: object
  */
-export const EachRules = function (rules, value, type) {
+export const EachRules = function (rules, value, type,display) {
   let style;
   rules.some((x) => {
     try {
-      let operator = new Function('v', `return ${x.operator}`);
+      let operator = new Function('v', `return ${x.operator.replace(/undefined/,'')}`);
+      if(Array.isArray(value) && value[0]){
+        if(value[0].ID){
+          value = value.reduce((arr,item)=>{
+              arr.push(item.ID);
+              return arr;
+          },[]).join('');
+        }
+
+      }else{
+       if(value === undefined){
+          value = '';
+       }
+
+      }
+      if(display ==='NUMBER'){
+        if((value ==='' || value ===null)){
+          return false
+        }else {
+          value = Number(value);
+          
+        }
+
+      }
       if (operator(value)) {
         style = x.style;
         return;
       }
+     
     } catch (error) {
       console.log(error);
     }
   });
+
   if (style && type != 'label') {
     let data = Object.keys(style).reduce((arr, item) => {
       if (style[item] && ['normal', 'none'].includes(style[item]) !== true) {
@@ -105,8 +130,8 @@ function setDomStyle(style, $el, items) {
   }
 
   if (dom) {
+    dom.style.cssText = '';
     if (!style) {
-      dom.style.cssText = '';
       return;
     }
     dom.style.cssText = Object.keys(style).reduce((arr, item) => {

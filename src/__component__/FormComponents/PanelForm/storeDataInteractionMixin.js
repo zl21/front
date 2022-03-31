@@ -167,8 +167,7 @@ export default {
                 //详情明细  有值 
                 ParentForm.formChangeData = Object.assign({}, ParentForm.formChangeData, current_data)
                 ParentForm.formChangeDataLabel = Object.assign({}, ParentForm.formChangeDataLabel, R3Label)
-
-                if (JSON.stringify(val) === JSON.stringify(this.defaultVale)) {
+                if (JSON.stringify(val ||'') === JSON.stringify(this.defaultVale)) {
                   delete ParentForm.formChangeData[this.items.colname]
                   delete ParentForm.formChangeDataLabel[this.items.colname]
                    // 删除新增有值后变空
