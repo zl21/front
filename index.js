@@ -4,7 +4,7 @@ import Vue from 'vue';
 import store from './src/__config__/store.config';
 // import App from './src/App.vue';
 // import i18n from './src/assets/js/i18n';
-// import network from './src/__utils__/network';
+import network from './src/__utils__/network';
 import {
   backDashboardRoute, enableGateWay, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE, specifiedGlobalGateWay
 } from './src/constants/global';
@@ -207,15 +207,15 @@ Vue.use(Loading);
 //   }
 // };
 
-// const getSubSystems = () => {
-//   if (enableInitializationRequest()) {
-//     network.post('/p/cs/getSubSystems').then((res) => {
-//       if (res.data.data) {
-//         store.commit('global/updateMenuLists', res.data.data);
-//       }
-//     });
-//   }
-// };
+const getSubSystems = () => {
+  if (enableInitializationRequest()) {
+    network.post('/p/cs/getSubSystems').then((res) => {
+      if (res.data.data) {
+        store.commit('global/updateMenuLists', res.data.data);
+      }
+    });
+  }
+};
 
 
 // const getGateWayServiceId = () => {
@@ -245,7 +245,7 @@ if (enableGateWay()) {
   getGateWayServiceId();
 } else {
   window.localStorage.setItem('serviceId', '') // 清除本地网关
-  // getSubSystems();
+  getSubSystems();
   init();
 }
 
