@@ -1866,9 +1866,11 @@ export default {
     getOrderMarks(message){
       // 订单标记 获取虚拟标记的数据
       const Form = this.$_live_getChildComponent(this, 'listsForm');
+      if(!Form || !Array.isArray(Form.virtualKey)){
+          return message;
+      }
        Form.virtualKey.reduce((arr,item)=>{
         let dom = document.querySelector(`#${item}`);
-        console.log(dom,'=====');
         if(dom && dom.__vue__){
           let value = dom.__vue__.value;
           if(Array.isArray(value)){
