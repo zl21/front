@@ -984,7 +984,7 @@
           this._stopFindDom = true
         }
         const id = `ag-${this.editElementId[elementIndex]}`
-        const focusDom = document.getElementById(id);
+        const focusDom = document.querySelector(`.${id}`)
         if (focusDom && !focusDom.getElementsByTagName('input')[0].disabled) {
           focusDom.getElementsByTagName('input')[0].focus();
           focusDom.getElementsByTagName('input')[0].select();
@@ -1826,7 +1826,8 @@
                           }
                           break;
             case 'OBJ_DATENUMBER':
-              val = ele[tab.colname].val.replace(/\-/g, '');
+              const value = ele[tab.colname].val
+              val = value && value.replace(/\-/g, '');
               break;
             default:
               break;
@@ -1948,6 +1949,7 @@
               props: {
                 transfer: true,
                 clearable: true,
+                editable: false,
                 value
               },
               on: {
@@ -2044,7 +2046,7 @@
         } else {
           colIndex = targetColObj._index + 1
         }
-        const dom = document.querySelector(`#ag-${params.index}-${colIndex}`)
+        const dom = document.querySelector(`.ag-${params.index}-${colIndex}`)
 
         if(dom) {
           const input = dom.querySelector('input')
@@ -2078,7 +2080,8 @@
           [
             h(tag, {
               style: {
-                width: '100px',
+                // width: '100px',
+                maxWidth: cellData.width ? cellData.width : '100px',
                 height: '100%',
                 display: 'flex',
                 alignItems: 'center'
@@ -2089,10 +2092,11 @@
                 'flex-left': cellData.tdAlign === 'left',
                 'input-align-right': cellData.tdAlign === 'right', // 输入框文本对齐
                 'input-align-center': cellData.tdAlign === 'center',
-                'input-align-left': cellData.tdAlign === 'left'
+                'input-align-left': cellData.tdAlign === 'left',
+                [`ag-${params.index}-${params.column._index - 1}`]: true // 联动计算标记
               },
               domProps: {
-                id: `ag-${params.index}-${params.column._index - 1}`,
+                id: `${params.index}-${params.column._index - 1}`,
                 title: colnameData ? colnameData.val : '',
               },
               props: {
@@ -2135,7 +2139,7 @@
                   const oldId = this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val
 
                   // 是否进行联动计算
-                  if(window.ProjectConfig.computeForSubtable) {
+                  if(window.ProjectConfig.computeForSubtable && cellData.webconf && cellData.webconf.dynamicforcompute) {
                     const dynamicforcompute = cellData.webconf.dynamicforcompute
                     const oldTargetValue = this.dataSource.row[params.index][dynamicforcompute.computecolumn].val
                     // 找到目标字段相关的信息
@@ -2171,6 +2175,12 @@
                     const elementId = i.$el.id;
                     const currentColumn = params.column._index - 1;
                     this.tableCellFocusByUpOrDown(elementId, currentColumn, 'up');
+                  }
+                },
+                'on-blur': (e) => {
+                  const oldValue = e.target.value
+                  if(typeof oldValue === 'string') {
+                    e.target.value = oldValue.trim()
                   }
                 }
               }
@@ -2570,7 +2580,8 @@
                       });
                     }
                   } else if (!this.dropDownIsShowPopTip(cellData, params)) {
-                    const obj = this.copyDataSource.tabth.find(item => item.key === cellData.refcolval.srccol);
+                    // const obj = this.copyDataSource.tabth.find(item => item.key === cellData.refcolval.srccol);
+                    const obj = this.copyDataSource.tabth.find(item => item.colname === cellData.refcolval.srccol);
                     this.$Message.info(`${this.$t('form.selectPlaceholder')}${obj.name}`);
                   } else {
                     if (this.fkSelectedChangeData[params.index]) {
@@ -4126,7 +4137,9 @@
         }
         return null;
       },
-      putDataFromCell(currentValue, oldValue, colname, IDValue, type, fkdisplay, oldFkIdValue) {        // 组装数据 存入store
+      putDataFromCell(newV, oldV, colname, IDValue, type, fkdisplay, oldFkIdValue) {        // 组装数据 存入store
+        let currentValue = typeof newV === 'string' ? newV.trim() : newV
+        let oldValue = typeof oldV === 'string' ? oldV.trim() : oldV
         if (!currentValue) {
           if (fkdisplay === 'mrp' || fkdisplay === 'mop') {
             currentValue = '';
@@ -4554,10 +4567,14 @@
         // 表单验证
         const verifyData = [];
         const data = this.afterSendData[this.tableName];
+
         if (data && data.length > 0) {
           data.map((ele) => {
             Reflect.ownKeys(ele).forEach((key) => {
-              const value = ele[key];
+              let value = ele[key];
+              if(typeof value === 'string') {
+                value = value.trim()
+              }
               if (value === null || value === undefined || value === '') {
                 const titleArray = this.dataSource.tabth.filter(col => col.colname === key && col.isnotnull && col.colname !== EXCEPT_COLUMN_NAME);
                 if (titleArray.length > 0) {
