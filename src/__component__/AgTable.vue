@@ -700,7 +700,6 @@ export default {
 }
 .detailTable,
 .isBig {
-  border: 1px solid #d8d8d8;
   margin-top: 10px;
   height: calc(100% - 65px);
   width: 100%;
