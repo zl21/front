@@ -1870,13 +1870,14 @@ export default {
           return message;
       }
        Form.virtualKey.reduce((arr,item)=>{
+        //  清除虚拟字段的key
+       delete message.fixedcolumns[item];
         let dom = document.querySelector(`#${item}`);
         if(dom && dom.__vue__){
           let value = dom.__vue__.value;
           if(Array.isArray(value)){
             value.forEach((item)=>{
              if(item){
-               console.log(item,'====');
                let key = item.split(':')[0];
                let keyValue = item.split(':')[1];
                if(item.split(':')[2] == 'true'){
@@ -1902,7 +1903,6 @@ export default {
               }else{
                 message.fixedcolumns[key] = [`${keyValue}`];
               }
-               
              }
           })
 
