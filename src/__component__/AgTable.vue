@@ -321,6 +321,10 @@ export default {
   },
   watch: {
     datas(val) {
+      if(this.$route.meta.moduleName !== this._moduleName) {
+        return
+      }
+
       if (!this.isCommonTable && !this.isBig) {
         this.agGridTable(val.tabth, val.row, val);
         setTimeout(() => {
@@ -664,6 +668,7 @@ export default {
   },
   beforeCreate() {
     this.lockSelected = false // 防止回调勾选时触发回调事件用的
+    this._moduleName = this.$route.meta.moduleName
   },
   activated() {
     if (this.rows.length === 0) {
