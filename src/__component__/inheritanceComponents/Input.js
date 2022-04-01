@@ -103,6 +103,14 @@ const mixin = {
       // itemComponent.propsMessage.regx = typeRegExp
       itemComponent.propsMessage.maxlength = valLength // 最大长度不包含符号
     })
+
+
+    this.$on('on-blur',function(e){
+      const oldValue = e.target.value
+      if(typeof oldValue === 'string') {
+        e.target.value = oldValue.trim()
+      }
+    })
   },
 }
 class CustomInput {
@@ -135,6 +143,10 @@ class CustomInput {
     // 单对象长度
     if(this.item.detailType){
       this.props.maxlength = this.item.length;
+    }else{
+      this.props.splitBefore = true;
+      this.props.splitStr = ' ';
+
     }
 
     // 是否开启过滤xss攻击
@@ -151,7 +163,7 @@ class CustomInput {
       this.uppercase()
     }
     if (this.item.type === 'NUMBER') {
-      this.numericTypes()
+       this.numericTypes()
     }
 
     if (this.item.display === 'OBJ_TEXTAREA') {

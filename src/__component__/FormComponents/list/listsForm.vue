@@ -16,6 +16,7 @@
           <keep-alive>
             <component :is="ItemLists[item].component"
                        :items="ItemLists[item]"
+                       :id="ItemLists[item].colname"
                        @on-change="valueChange"
                        @on-keydown="handleEnter"
                        :label-width="90">
@@ -54,6 +55,9 @@ export default {
       // isRequest: ({ isRequest }) => isRequest,
 
     }),
+    key_group(){
+      return this.$store.state[this.moduleComponentName].ag.key_group;
+    },
     className () {
       return `${this.dowClass === false ? ' iconfont  iconios-arrow-down' : 'iconfont  iconios-arrow-down icon-xiadown'}`;
     },
@@ -99,6 +103,7 @@ export default {
       default: 4
     },
     search: {
+      // 是否是查询列表（弹窗单选为false）
       type: Boolean,
       default: false
     },
@@ -146,6 +151,10 @@ export default {
       component: '', // 设置组件名称
       setdefaultColumn: 4,
       ButtonHtml: '',
+      virtualKey:[
+        // 虚拟字段存值 virtualKey{}
+
+      ],
       bottombutton: false, // 按钮是否下移
       hiddenIcon: false,  // 默认不隐藏icon
       indexButton: 0,  // 渲染按钮+1
@@ -154,7 +163,61 @@ export default {
     };
   },
   methods: {
-    resetForm () {
+    initKeyGroup(){
+      // 初始化订单标记
+     
+       let key_group_conf = this.key_group;
+        if(!key_group_conf ){
+            return ;
+        }
+        key_group_conf.forEach((item)=>{
+          let data = {
+            coldesc:item.target_description,
+            colname: item.target,
+            combobox: [],
+            show:true,
+            _index : Math.random(),
+            virtualField:true, // 虚拟字段
+            display: "OBJ_SELECT"
+          }
+          data.combobox = item.source.reduce((arr,source)=>{
+              let data = source.label.reduce((combobox,option)=>{
+              source.source_column_limit_values.forEach((columns)=>{
+                if(columns.description === option.value){
+                    combobox.push({
+                      limitdesc: option.description,
+                      colname:source.col_name,
+                      limitval:`${source.col_name}:${columns.value}:${typeof columns.value ==='number'}`
+                    })
+                  }
+              });
+              if(source.source_column_limit_values.length<1){
+                 combobox.push({
+                      limitdesc: option.description,
+                      colname:source.col_name,
+                      limitval:`${source.col_name}:${option.value}:${typeof option.value ==='number'}:other`
+                    })
+              }
+              
+
+              
+                return combobox;
+              },[]);
+              arr = arr.concat(data);
+              return arr;
+          },[]).concat([]);
+          // 添加虚拟字段
+          let index = Object.keys(this.ItemLists).length;
+          
+          data.component = this.initComponent(data, index-1);
+          this.ItemLists[item.target] =data;
+          if(this.ItemLists[item.target]){
+                this.virtualKey.push(item.target); 
+          };
+
+        })
+    },
+    resetForm (type) {
       // 处理合并字段
       this.ItemLists = {}
       this.formArray = []
@@ -183,6 +246,11 @@ export default {
         this.formArray.push(JSON.parse(JSON.stringify(item)));
         return item;
       });
+      if(this.search){
+         this.initKeyGroup()
+      }
+
+     
     },
     valueChange (item, val) {
       // 表单change
@@ -468,6 +536,7 @@ export default {
 
     // public API
     getFormData () {
+     
       return new Promise((resolve, reject) => {
         let formData = {};
         this.formArray.every((item) => {
@@ -477,7 +546,7 @@ export default {
           }
           const value = item && item.isuppercase && components.value && !item.display ? components.value.toUpperCase() : components.value;
 
-
+          
           const json = this.r3Format(this.dealData(item, value), item);
           if (item.fkobj && item.fkobj.searchmodel) {
             if (Version() === '1.3') {
@@ -529,7 +598,7 @@ export default {
 
   },
   created () {
-    this.resetForm();
+    this.resetForm(0);
     // 处理折叠的默认值
     this.setdefaultColumn = this.defaultColumn;
     this.dowClass = !this.defaultSpread;

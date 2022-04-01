@@ -191,7 +191,7 @@ module.exports = {
   },
   messageSwitch: true, // 消息开关
   enableTaskNotice: true,
-  useAgGrid: false, // 明细界面的表格全局用ag表格进行渲染
+  useAgGrid: true, // 明细界面的表格全局用ag表格进行渲染
   // (data) => {
   //   if (data.router.params) {
   //     if (data.router.params.tableName && data.config().configPage[data.router.params.tableName].filter(u => u === data.url).length > 0) { // 筛选出配置界面不需要根据框架code报错提示框的接口
@@ -209,12 +209,12 @@ module.exports = {
   // }
   // formItemMixins:require('./src/demo/formItemMixins'),
   isFilterTable: true, // 是否开启表格过滤功能
-  // DashboardComponent: {
-  //   compontent: () => import(
-  //     './src/__component__/Login.vue'
-  //   ),
-  //   iconClass: 'iconfont iconmd-grid'
-  // }
+  DashboardComponent: {
+    compontent: () => import(
+      '../demo/detailbuttons.vue'
+    ),
+    iconClass: 'iconfont iconmd-grid'
+  },
   // classFix: 'r3-', // 样式前缀
   classFix: '', // 样式前缀
   // openTabNumber:2,
