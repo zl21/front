@@ -501,9 +501,9 @@ export default {
     handleEnter (e) {
       if(e.keyCode === 13){
         this.$emit('onHandleEnter', ...arguments)
-        if(this.getParent().searchClickData){
-           this.getParent().searchClickData()
-        };
+        // if(this.getParent().searchClickData){
+        //   //  this.getParent().searchClickData()
+        // };
       }
      
     },
