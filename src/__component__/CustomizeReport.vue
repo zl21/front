@@ -128,7 +128,6 @@
         shadowContainer.style.left = '0';
         document.body.style.overflow = 'hidden'; // 控制body的overflow属性，否则会影响高度计算
         const existFrame = document.getElementById(`${iframe.getAttribute('id')}-shadow`);
-        console.log(existFrame,iframe,'====existFrame=====');
         if (existFrame) {
           // existFrame.remove();
         }
@@ -139,7 +138,14 @@
         iframe.style.position = 'absolute';
         iframe.style.width = `${reportIFrame.offsetWidth}px`;
         iframe.style.height = `${reportIFrame.offsetHeight}px`;
+        iframe.style.backgroundColor = '#fff';
         // iframe.style.border = '1px solid black';
+        console.log(reportIFrame.offsetWidth,'reportIFrame.offsetWidth')
+        if(reportIFrame.offsetWidth ===0){
+             setTimeout(()=>{
+                this.fixIframeHeight(10); // 自适应
+            },2000)
+        }
         iframe.style.display = 'none';
         shadowContainer.appendChild(iframe);
         this.fixIframeHeight(10); // 自适应
@@ -208,6 +214,7 @@
         setTimeout(() => {
           if (this.$refs.reportIFrame && this.$refs.reportIFrame.parentNode) {
             console.log(this.$refs.reportIFrame.parentNode.getBoundingClientRect(),'====')
+        
             const boundingTop = parentContainer.getBoundingClientRect().top;
   
             const boundingLeft = this.$refs.reportIFrame.parentNode.getBoundingClientRect().left;
@@ -392,6 +399,7 @@
       } else {
         this.updateShadowFrame(this.$refs.reportIFrame.cloneNode());
       }
+      
       this.fixIframeHeight(400);
       document.onclick = () => {
         this.hideDom('__drop_down_content_wrapper__');
