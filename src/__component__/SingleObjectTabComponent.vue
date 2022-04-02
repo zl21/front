@@ -960,7 +960,7 @@
           // currentValue === 0是因为数子输入框输入再删除会把默认值变成0，而不是''
           // currentValue === '[]' 的出现的场景时文件上传表单
          
-          if((currentValue === 0 && defaultValue === undefined) || (currentValue === '' && defaultValue === undefined) || (currentValue === '[]' && defaultValue === undefined) || isEqualString || isEqual) {
+          if((currentValue === '' && defaultValue === undefined) || (currentValue === '[]' && defaultValue === undefined) || isEqualString || isEqual) {
             delete form[field];
              const data = {
               key: field,
