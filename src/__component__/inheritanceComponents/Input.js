@@ -248,6 +248,12 @@ class CustomInput {
       this.item.props.regx = typeRegExp
       this.props.regx = typeRegExp
     }
+
+     if(!this.item.detailType){
+      this.props.regx = /^(<=)?(>=)?[-\+\=\>\<]?\d{0,9007199254740991}$/;
+      this.item.props.regx = /^(<=)?(>=)?[-\+\=\>\<]?\d{0,9007199254740991}$/;
+    }
+
   }
 
   // 重写按下键盘事件
