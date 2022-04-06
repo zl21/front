@@ -2082,6 +2082,7 @@
               style: {
                 // width: '100px',
                 maxWidth: cellData.width ? cellData.width : '100px',
+                minWidth: cellData.width ? undefined : '100px',
                 height: '100%',
                 display: 'flex',
                 alignItems: 'center'
