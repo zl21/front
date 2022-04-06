@@ -3,8 +3,8 @@ const path = require('path');
 // const { VueLoaderPlugin } = require('vue-loader');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
+const { ESBuildMinifyPlugin } = require('esbuild-loader')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const copyWebpackPlugin = require('copy-webpack-plugin');
 const { merge } = require('webpack-merge')
 const baseConfig = require('./webpack.base.js')
@@ -110,15 +110,21 @@ const config = {
   ],
   mode: 'production',
   optimization: {
-    minimizer: [new TerserJSPlugin({
-      parallel: true,
-      sourceMap: true,
-      terserOptions: {
-        compress: {
-          pure_funcs: ['console.log']
-        }
-      }
-    }), new OptimizeCSSAssetsPlugin({})],
+    minimizer: [
+    //   new TerserJSPlugin({
+    //   parallel: true,
+    //   sourceMap: true,
+    //   terserOptions: {
+    //     compress: {
+    //       pure_funcs: ['console.log']
+    //     }
+    //   }
+    // })
+    new ESBuildMinifyPlugin({
+      drop: ['console','debugger'],
+      css: true // 压缩css
+    })
+  ],
   },
 }
 module.exports = merge(baseConfig, config);

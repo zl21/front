@@ -56,6 +56,7 @@ module.exports = {
     rules: [
       {
         test: /\.vue$/,
+        exclude: /node_modules/,
         use: [
           {
             loader: 'vue-loader',
@@ -63,11 +64,16 @@ module.exports = {
         ],
       },
       {
-        test: /\.m?js$/,
+        test: /\.js$/,
         exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-        },
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              cacheDirectory: true, // 开启缓存
+            },
+          },
+        ],
       },
       {
         test: /\.(png|jpg|gif)$/,
@@ -132,11 +138,7 @@ module.exports = {
     port: 8209,
     host: '0.0.0.0',
     open: true,
-    historyApiFallback: {
-      rewrites: [
-        { from: /.*/, to: './index.html' },
-      ],
-    },
+    historyApiFallback: true,
     publicPath: '/',
     proxy: [
       {
@@ -213,4 +215,10 @@ module.exports = {
     ],
   },
   devtool: 'eval-cheap-module-source-map',
+  cache: {
+    type: 'filesystem',
+    buildDependencies: {
+      config: [__filename],
+    },
+  },
 }
