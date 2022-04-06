@@ -250,8 +250,23 @@ class CustomInput {
     }
 
      if(!this.item.detailType){
-      this.props.regx = /^(<=)?(>=)?[-\+\=\>\<]?\d{0,9007199254740991}$/;
-      this.item.props.regx = /^(<=)?(>=)?[-\+\=\>\<]?\d{0,9007199254740991}$/;
+      //  查询条件的正则 可以支持运算符
+      let string = `^[+\\=\\>\\<]?[=]?[-]?\\d{0,${length}}$`;
+      if(this.item.scale){
+        string = `^[+\\=\\>\\<]?[=]?[-]?\\d{0,${length}}?(\\.[0-9]{0,${this.item.scale}})?$`
+      }
+      if (this.item.webconf && this.item.webconf.ispositive) {
+          string = string.replace('[-]?', function (a, b){
+              return ''
+          });
+      }
+      this.props.regx =new RegExp(string);
+      this.item.props.regx = new RegExp(string);
+    }
+    // 子表表单为number 默认不抛出0
+    if(this.item.showPlace === "childrenForm"){
+      this.props.holdEmpty = true;
+      this.item.props.holdEmpty = true
     }
 
   }
