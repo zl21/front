@@ -952,7 +952,7 @@
         Object.keys(form).forEach(field => {
           const defaultValue = defaultData[field]
           const currentValue = form[field]
-          const isEqual = defaultValue && (defaultValue == currentValue) // 强转化是否相等。处理数字输入框的场景用
+          const isEqual = (defaultValue == currentValue) // 强转化是否相等。处理数字输入框的场景用
           const isEqualString = defaultValue && (JSON.stringify(defaultValue) === JSON.stringify(currentValue)) // 引用型对象转字符串进行比较是否相等
 
           // 条件1: 没初始值，且没有输入值
