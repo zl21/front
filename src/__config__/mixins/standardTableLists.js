@@ -98,7 +98,8 @@ export default () => ({
     ...mapState(getComponentName(), {
       ag: ({ ag, userConfigForAgTable }) => {
         // 处理标准表格的隐藏列逻辑
-        const data = JSON.parse(JSON.stringify(ag));
+        // const data = JSON.parse(JSON.stringify(ag));
+        const data = Object.assign({}, ag)
         if (isCommonTable() && userConfigForAgTable && userConfigForAgTable.hideColumn && data.datas.tabth) {
           userConfigForAgTable.hideColumn.split(',').every((item) => {
             data.datas.tabth = data.datas.tabth.filter((temp) => {
