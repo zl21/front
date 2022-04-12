@@ -1972,10 +1972,11 @@ export default {
               this.searchData.range = res.data.data.defaultrange;
             }
           }
-          this.$R3loading.hide(this.loadingName);
-        }, () => { // 状态为rejected时执行
-          this.$R3loading.hide(this.loadingName);
-        });
+        }).finally(() => {
+          setTimeout(() => {
+            this.$R3loading.hide(this.loadingName);
+          },20)
+        })
       }, 150);
     },
     paramePreEvent (data, searchDataRes) {
