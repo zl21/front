@@ -1973,9 +1973,11 @@ export default {
             }
           }
         }).finally(() => {
-          setTimeout(() => {
-            this.$R3loading.hide(this.loadingName);
-          },20)
+          this.$nextTick(() => {
+            setTimeout(() => {
+              this.$R3loading.hide(this.loadingName); // 确保滚动条位置调整完毕
+            },40)
+          })
         })
       }, 150);
     },
