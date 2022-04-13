@@ -20,7 +20,10 @@
     >
       <img :src="bigBackground">
     </div>
-    <div v-if="isBig && !bigBackground" :class="['isBig', bigBgClass]"></div>
+    <div
+      v-if="isBig && !bigBackground"
+      :class="['isBig', bigBgClass]"
+    ></div>
 
     <!-- <div
       v-show="!isCommonTable && !isBig"
@@ -317,16 +320,22 @@ export default {
     // 定制表格选项
     processAgOptions: {
       type: Function
+    },
+    // 表格数据。用于更新表格勾选
+    listData: {
+      type: Array
     }
   },
   watch: {
     datas(val) {
-      if(this.$route.meta.moduleName !== this._moduleName) {
+      if (this.$route.meta.moduleName !== this._moduleName) {
         return
       }
 
       if (!this.isCommonTable && !this.isBig) {
-        this.agGridTable(val.tabth, val.row, val);
+        const column = JSON.parse(JSON.stringify(val.tabth))
+        const row = JSON.parse(JSON.stringify(val.row))
+        this.agGridTable(column, row, val);
         setTimeout(() => {
           const { agGridTableContainer } = this.$refs;
 
@@ -339,6 +348,13 @@ export default {
         }, 30);
       }
     },
+    listData(val) {
+      // fix: 表格刷新后，勾选没有清空
+      const { agGridTableContainer } = this.$refs;
+      if (!this.isCommonTable && !this.isBig && agGridTableContainer) {
+        this.setTableSelected()
+      }
+    }
   },
   methods: {
     // 表格准备完毕
@@ -362,11 +378,11 @@ export default {
 
         const isAllCloseFilter = floatingFilter()
         // 如果设置了浮动开关以全局开关为准
-        if(isAllCloseFilter !== undefined) {
+        if (isAllCloseFilter !== undefined) {
           data[i].floatingFilter = isAllCloseFilter
           data[i].filter = isAllCloseFilter
           // id列 不显示浮动
-          if(isAllCloseFilter && data[i].colname === 'ID') {
+          if (isAllCloseFilter && data[i].colname === 'ID') {
             data[i].floatingFilter = false
             data[i].filter = false
           }
@@ -452,9 +468,10 @@ export default {
           obj.colId = item.colname;
         }); // 排序
       }
-      const datas = Object.assign({}, self.datas);
-      datas.deleteFailInfo = self.datas.deleteFailInfo
-        ? self.datas.deleteFailInfo
+      const propsDatas = JSON.parse(JSON.stringify(self.datas))
+      const datas = Object.assign({}, propsDatas);
+      datas.deleteFailInfo = propsDatas.deleteFailInfo
+        ? propsDatas.deleteFailInfo
         : [];
       datas.hideColumn = self.userConfigForAgTable.hideColumn; // 隐藏列
       datas.colPosition = self.userConfigForAgTable.colPosition; // 移动列
@@ -503,7 +520,7 @@ export default {
       // 新表格只考虑全局开关什么时候关闭
       let globalFloatingFilter = floatingFilter()
 
-      if(this.isNewAg) {
+      if (this.isNewAg) {
         this.existFilter(this.columns)
       } else {
         globalFloatingFilter = this.isOpenFilter(this.columns)
@@ -583,10 +600,10 @@ export default {
       // }
 
       // floatingFilter只有在旧版表格上才生效
-      if(globalFloatingFilter !== undefined) {
+      if (globalFloatingFilter !== undefined) {
         options.floatingFilter = globalFloatingFilter
       }
-      
+
       this.options = options
     },
 
@@ -637,7 +654,7 @@ export default {
           this.lockSelected = true;
           const { agGridTableContainer } = this.$refs;
           const selectedIndex = [];
-          this.datas.row.forEach((row, index) => {
+          this.listData.forEach((row, index) => {
             if (this.selectRow.includes(row.ID.val)) {
               selectedIndex.push(index);
             }
@@ -651,6 +668,13 @@ export default {
           setTimeout(() => {
             this.lockSelected = false;
           }, 25)
+        } else {
+          this.lockSelected = true
+          const { agGridTableContainer } = this.$refs
+          agGridTableContainer.api.deselectAll()
+          setTimeout(() => {
+            this.lockSelected = false
+          }, 25)
         }
       }, 20);
     },
@@ -658,7 +682,7 @@ export default {
     // 重设表格
     resetTable() {
       if (!this.isCommonTable && !this.isBig) {
-        const {agGridTableContainer} = this.$refs;
+        const { agGridTableContainer } = this.$refs;
         if (agGridTableContainer) {
           agGridTableContainer.fixAgRenderChoke();
           this.setTableSelected();
@@ -698,7 +722,7 @@ export default {
   flex-direction: column;
   height: 100%;
   .common-table {
-     margin-top: 10px;
+    margin-top: 10px;
     overflow-y: hidden;
     flex: 1;
   }
@@ -769,12 +793,11 @@ export default {
   .queryDesc {
     order: 3;
   }
-  .detailTable{
+  .detailTable {
     margin-top: 0px;
   }
-.common-table{
+  .common-table {
     margin-top: 0px;
-
-}
+  }
 }
 </style>

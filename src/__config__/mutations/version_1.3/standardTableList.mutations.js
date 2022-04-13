@@ -10,8 +10,9 @@ export default {
     ag.datas.deleteFailInfo = failInfo;
     ag.datas = Object.assign({}, ag.datas);
   },
-  updateTableDataWithMerge({ ag }, data) {
-    ag.datas.row = data.row;
+  updateTableDataWithMerge(state, data) {
+    state.listData = data.row
+    state.ag.datas.row = data.row;
   },
   updateTableData({
     ag
