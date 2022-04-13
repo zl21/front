@@ -1870,13 +1870,14 @@ export default {
           return message;
       }
        Form.virtualKey.reduce((arr,item)=>{
+        //  清除虚拟字段的key
+       delete message.fixedcolumns[item];
         let dom = document.querySelector(`#${item}`);
         if(dom && dom.__vue__){
           let value = dom.__vue__.value;
           if(Array.isArray(value)){
             value.forEach((item)=>{
              if(item){
-               console.log(item,'====');
                let key = item.split(':')[0];
                let keyValue = item.split(':')[1];
                if(item.split(':')[2] == 'true'){
@@ -1902,7 +1903,6 @@ export default {
               }else{
                 message.fixedcolumns[key] = [`${keyValue}`];
               }
-               
              }
           })
 
@@ -1972,10 +1972,13 @@ export default {
               this.searchData.range = res.data.data.defaultrange;
             }
           }
-          this.$R3loading.hide(this.loadingName);
-        }, () => { // 状态为rejected时执行
-          this.$R3loading.hide(this.loadingName);
-        });
+        }).finally(() => {
+          this.$nextTick(() => {
+            setTimeout(() => {
+              this.$R3loading.hide(this.loadingName); // 确保滚动条位置调整完毕
+            },40)
+          })
+        })
       }, 150);
     },
     paramePreEvent (data, searchDataRes) {

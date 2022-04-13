@@ -9,7 +9,7 @@ module.exports = {
   touristRoute: '/login', // 游客路由：等用户未登录的时候，需要跳转的页面
   enableInitializationRequest: true, // 是否开启初始化请求
   // enableCustomInterface: false // 是否开启自定义接口,
-  externalTreeDatas: require('../demo/treeData/treeData.config.js'),
+  // externalTreeDatas: require('../demo/treeData/treeData.config.js'),
   customizeWaterMark: {
     // extremely: {
     //   text: '大家',
@@ -209,12 +209,12 @@ module.exports = {
   // }
   // formItemMixins:require('./src/demo/formItemMixins'),
   isFilterTable: true, // 是否开启表格过滤功能
-  DashboardComponent: {
-    compontent: () => import(
-      '../demo/detailbuttons.vue'
-    ),
-    iconClass: 'iconfont iconmd-grid'
-  },
+  // DashboardComponent: {
+  //   compontent: () => import(
+  //     '../demo/detailbuttons.vue'
+  //   ),
+  //   iconClass: 'iconfont iconmd-grid'
+  // },
   // classFix: 'r3-', // 样式前缀
   classFix: '', // 样式前缀
   // openTabNumber:2,

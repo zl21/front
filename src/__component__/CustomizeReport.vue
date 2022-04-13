@@ -6,7 +6,7 @@
   >
     <div
       class="iframe-container"
-      :style="{ marginTop: isCtrl ? '15px' : '5px' }"
+      :style="{ marginTop: '5px' }"
     >
       <iframe
         :id="iframeId"
@@ -45,7 +45,7 @@
         POSID: '',
         isCtrl: true, // 默认过滤条件在FC中控制
         initialState: true,
-        iframeId: `${Math.round(Math.random() * 1000000000)}-report-iframe`,
+        iframeId: `report-iframe`,
         filterText: '',
         allowFilterRows: 100,
         collapseFilter: false,
@@ -61,7 +61,16 @@
     computed: {
       ...mapState('global', {
         userInfo: ({ userInfo }) => userInfo,
+        openedMenuLists: ({ openedMenuLists }) => openedMenuLists
       })
+    }, 
+    watch:{
+      openedMenuLists(val){
+        setTimeout(()=>{
+          this.removeFrame()
+        },500)
+      }
+
     },
     components: {
       // 'dropdown-select-api': DropdownSelectApi,
@@ -91,7 +100,9 @@
         if (shadowFrame) {
           shadowFrame.style.display = '';
           shadowFrame.style.opacity = '1';
-          shadowFrame.style.top = `${reportIFrame.getBoundingClientRect().top}px`;
+          shadowFrame.style.backgroundColor = '#fff';
+          console.log(reportIFrame);
+          //shadowFrame.style.top = `${reportIFrame.getBoundingClientRect().top}px`;
           shadowFrame.style.left = `${reportIFrame.getBoundingClientRect().left}px`;
         }
         // 防止DOM事件阻塞，以下操作可保证当前组件的影子Frame正常显示。
@@ -118,7 +129,7 @@
         document.body.style.overflow = 'hidden'; // 控制body的overflow属性，否则会影响高度计算
         const existFrame = document.getElementById(`${iframe.getAttribute('id')}-shadow`);
         if (existFrame) {
-          existFrame.remove();
+          // existFrame.remove();
         }
         iframe.setAttribute('id', `${iframe.getAttribute('id')}-shadow`);
         iframe.setAttribute('src', this.reportUrl);
@@ -127,7 +138,14 @@
         iframe.style.position = 'absolute';
         iframe.style.width = `${reportIFrame.offsetWidth}px`;
         iframe.style.height = `${reportIFrame.offsetHeight}px`;
+        iframe.style.backgroundColor = '#fff';
         // iframe.style.border = '1px solid black';
+        console.log(reportIFrame.offsetWidth,'reportIFrame.offsetWidth')
+        if(reportIFrame.offsetWidth ===0){
+             setTimeout(()=>{
+                this.fixIframeHeight(10); // 自适应
+            },2000)
+        }
         iframe.style.display = 'none';
         shadowContainer.appendChild(iframe);
         this.fixIframeHeight(10); // 自适应
@@ -190,11 +208,15 @@
        */
       fixIframeHeight(delayTime) {
         const shadowFrame = document.getElementById(`${this.iframeId}-shadow`);
+        const parentContainer = document.querySelector('.iframe-container');
         const { reportIFrame } = this.$refs;
         this.iframeHeight = 0;
         setTimeout(() => {
           if (this.$refs.reportIFrame && this.$refs.reportIFrame.parentNode) {
-            const boundingTop = this.$refs.reportIFrame.parentNode.getBoundingClientRect().top;
+            console.log(this.$refs.reportIFrame.parentNode.getBoundingClientRect(),'====')
+        
+            const boundingTop = parentContainer.getBoundingClientRect().top;
+  
             const boundingLeft = this.$refs.reportIFrame.parentNode.getBoundingClientRect().left;
             this.iframeHeight = document.body.clientHeight - boundingTop - 5;
             if (shadowFrame) {
@@ -308,9 +330,31 @@
       removeShadowFrame() {
         const shadowFrame = document.getElementById(`${this.iframeId}-shadow`);
         if (shadowFrame) {
-          shadowFrame.remove();
+          shadowFrame.style.display ='none';
         }
+        setTimeout(()=>{
+          this.removeFrame()
+        },500)
+        
       },
+       // 过滤iframe 是否关闭
+      removeFrame(){
+        let customizedModuleId =window.vm.$store.state.global.openedMenuLists.reduce((arr,i)=>{
+             if(i.tableName ==='CUSTOMIZEREPORT'){
+                arr.push(`CUSTOMIZEREPORT-${i.itemId}-report-iframe-shadow`);
+             }
+             return arr;
+           },[]);
+            const shadowFrameArr = document.querySelectorAll('.__shadow_iframe_container__ iframe');
+           shadowFrameArr.forEach((item,index)=>{
+              if(item.id && customizedModuleId.includes(item.id)=== false){
+                item.style.display ='';
+                    item.parentNode.removeChild(item);
+              }
+           })
+
+      },
+      // 删除已经关闭的iframe
       listenDomResize(dom, callback) {
         const className = '__obj_element_resize_listener_class__';
         const createObjElement = () => {
@@ -345,7 +389,7 @@
       }
     },
     beforeMount() {
-      this.iframeId = `${this.$route.params.customizedModuleId}-report-iframe`;
+      this.iframeId = `${this.$route.params.customizedModuleName}-${this.$route.params.customizedModuleId}-report-iframe`;
     },
     mounted() {
       this.fetchFilter();
@@ -355,6 +399,7 @@
       } else {
         this.updateShadowFrame(this.$refs.reportIFrame.cloneNode());
       }
+      
       this.fixIframeHeight(400);
       document.onclick = () => {
         this.hideDom('__drop_down_content_wrapper__');

@@ -198,9 +198,6 @@ export default {
                       limitval:`${source.col_name}:${option.value}:${typeof option.value ==='number'}:other`
                     })
               }
-              
-
-              
                 return combobox;
               },[]);
               arr = arr.concat(data);
@@ -210,11 +207,12 @@ export default {
           let index = Object.keys(this.ItemLists).length;
           
           data.component = this.initComponent(data, index-1);
-          this.ItemLists[item.target] =data;
+          if(this.ItemLists[item.target]){
+            this.ItemLists[item.target] =data;
+          }
           if(this.ItemLists[item.target]){
                 this.virtualKey.push(item.target); 
           };
-
         })
     },
     resetForm (type) {
@@ -503,9 +501,9 @@ export default {
     handleEnter (e) {
       if(e.keyCode === 13){
         this.$emit('onHandleEnter', ...arguments)
-        if(this.getParent().searchClickData){
-           this.getParent().searchClickData()
-        };
+        // if(this.getParent().searchClickData){
+        //   //  this.getParent().searchClickData()
+        // };
       }
      
     },

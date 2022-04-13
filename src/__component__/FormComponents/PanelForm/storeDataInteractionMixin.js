@@ -76,7 +76,10 @@ export default {
             }
             if (Version() === '1.4') {
               if (current_value === '') {
-                current_value = 0;
+                // 不是子表区域才传0
+                if(!this.items.showPlace){
+                  current_value = 0;
+                }
               }
             }
             

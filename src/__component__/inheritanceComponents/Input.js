@@ -248,6 +248,27 @@ class CustomInput {
       this.item.props.regx = typeRegExp
       this.props.regx = typeRegExp
     }
+
+     if(!this.item.detailType){
+      //  查询条件的正则 可以支持运算符
+      let string = `^[+\\=\\>\\<]?[=]?[-]?\\d{0,${length}}$`;
+      if(this.item.scale){
+        string = `^[+\\=\\>\\<]?[=]?[-]?\\d{0,${length}}?(\\.[0-9]{0,${this.item.scale}})?$`
+      }
+      if (this.item.webconf && this.item.webconf.ispositive) {
+          string = string.replace('[-]?', function (a, b){
+              return ''
+          });
+      }
+      this.props.regx =new RegExp(string);
+      this.item.props.regx = new RegExp(string);
+    }
+    // 子表表单为number 默认不抛出0
+    if(this.item.showPlace === "childrenForm"){
+      this.props.holdEmpty = true;
+      this.item.props.holdEmpty = true
+    }
+
   }
 
   // 重写按下键盘事件
