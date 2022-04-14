@@ -1,5 +1,6 @@
 <template>
   <div style="height: 100%; width: 100%">
+      <iframe src="http://localhost:8179/iframe?url=/SYSTEM/TABLE/RSC_C_PAYWAY/14428" style="height: 500px;width: 500px;"></iframe>
     <RouterView />
   </div>
 </template>
@@ -35,6 +36,7 @@
     },
     async created() {
       // 如果开启系统升级，且需要更新
+     
       const { enableSystemUpdate } = window.ProjectConfig
       if(enableSystemUpdate && await this.checkUpdate()) {
         window.ProjectConfig.loginCallback = this.loginSucCbk

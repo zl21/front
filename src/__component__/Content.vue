@@ -3,7 +3,11 @@
   
  
   const appLayout = () => {
-    const appLayoutSrc = layoutDirection() ? 'layout.Vertical.config.js' : 'layout.config.js';
+    let appLayoutSrc = layoutDirection() ? 'layout.Vertical.config.js' : 'layout.config.js';
+    if(window.ProjectConfig && window.ProjectConfig.displayAreas ==='content'){
+      // 展示区域
+      appLayoutSrc = 'layout.content.config';
+    }
     const appLayoutConfig = () => require(`../__config__/${appLayoutSrc}`);
     if (window.ProjectConfig && window.ProjectConfig.appLayout) {
       return window.ProjectConfig.appLayout;
