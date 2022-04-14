@@ -352,6 +352,7 @@ export default {
       // fix: 表格刷新后，勾选没有清空
       const { agGridTableContainer } = this.$refs;
       if (!this.isCommonTable && !this.isBig && agGridTableContainer) {
+        this.rows = val
         this.setTableSelected()
       }
     }
