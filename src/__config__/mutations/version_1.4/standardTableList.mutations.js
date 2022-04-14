@@ -13,6 +13,7 @@ export default {
   updateTableDataWithMerge(state, data) {
     state.listData = data.row
     state.ag.datas.row = data.row;
+    state.ag.datas.totalRowCount = data.totalRowCount // fix: 删除数据(一条正确和一条错误)遇到报错时，总条数没更新
   },
   updateTableData({
     ag
