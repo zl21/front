@@ -167,6 +167,7 @@ export default () => ({
       dynamicRouting: false, // 表格时候开启动态路由
     },
     webConf: {},
+    listData: []
   },
   actions: actions(),
   mutations: mutations()

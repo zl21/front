@@ -10,9 +10,10 @@ export default {
     ag.datas.deleteFailInfo = failInfo;
     ag.datas = Object.assign({}, ag.datas);
   },
-  updateTableDataWithMerge({ ag }, data) {
-    ag.datas.row = data.row;
-    // ag.datas = Object.assign({}, ag.datas);
+  updateTableDataWithMerge(state, data) {
+    state.listData = data.row
+    state.ag.datas.row = data.row;
+    state.ag.datas.totalRowCount = data.totalRowCount // fix: 删除数据(一条正确和一条错误)遇到报错时，总条数没更新
   },
   updateTableData({
     ag
