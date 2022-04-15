@@ -74,6 +74,7 @@
                 :style="agTableElementStyles"
                 :page-attribute="pageAttribute"
                 :datas="ag.datas"
+                :listData="listData"
                 :css-status="ag.status4css"
                 :legend="ag.status4css"
                 :is-filter-table="getFilterTable"
