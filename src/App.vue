@@ -35,6 +35,7 @@
     },
     async created() {
       // 如果开启系统升级，且需要更新
+     
       const { enableSystemUpdate } = window.ProjectConfig
       if(enableSystemUpdate && await this.checkUpdate()) {
         window.ProjectConfig.loginCallback = this.loginSucCbk

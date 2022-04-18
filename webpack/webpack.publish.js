@@ -111,19 +111,19 @@ const config = {
   mode: 'production',
   optimization: {
     minimizer: [
-    //   new TerserJSPlugin({
-    //   parallel: true,
-    //   sourceMap: true,
-    //   terserOptions: {
-    //     compress: {
-    //       pure_funcs: ['console.log']
-    //     }
-    //   }
-    // })
-    new ESBuildMinifyPlugin({
-      drop: ['console','debugger'],
-      css: true // 压缩css
+      new TerserJSPlugin({
+      parallel: true,
+      sourceMap: true,
+      terserOptions: {
+        compress: {
+          pure_funcs: ['console.log']
+        }
+      }
     })
+    // new ESBuildMinifyPlugin({
+    //   drop: ['console','debugger'],
+    //   css: true // 压缩css
+    // })
   ],
   },
 }
