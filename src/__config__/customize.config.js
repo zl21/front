@@ -78,5 +78,13 @@ export default {
       '../__customize__/ApiPermission/ApiPermission.vue'
     ),
     label: i18n.t('messages.devAccount')
+  },
+  fieldConfig: {
+    component: () => import(
+      /* webpackChunkName: 'fieldConfig' */
+      /* webpackMode: 'eager' */
+      '../__customize__/FieldConfig/index.vue'
+    ),
+    label: i18n.t('messages.fieldConfig')
   }
 };

@@ -219,7 +219,9 @@ export default {
     seeDetails: '详见',
     downloadFile: '下载文件',
     saveConfigTip:'无保存配置',
-    asyncTaskTip: '任务处理中,请稍后去【我的任务】中下载文件'
+    asyncTaskTip: '任务处理中,请稍后去【我的任务】中下载文件',
+    fieldConfig: '字段配置',
+    continueFieldConfig: '当前未进行过字段配置，是否应用默认模板并继续？'
   },
   // 具有通用性的文案
   tips: {

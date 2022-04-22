@@ -33,6 +33,9 @@
         v-text="item.name"
       />
 
+      <!-- 字段配置按钮 -->
+      <Button @click="btnclick('field-config')" type="fcdefault">{{$t('messages.fieldConfig')}}</Button>
+
       <!-- 定制按钮 -->
       <template v-for="item in dataSetArray.waListButtonsConfig.waListButtons">
         <template v-if="item.confirm && item.confirm.includes('supPrompt')">

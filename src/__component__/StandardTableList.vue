@@ -1395,6 +1395,30 @@ export default {
       this.onSelectionChangedAssignment({ rowIdArray, rowArray });
     },
 
+    openConfigPage() {
+      // this.$Modal.fcWarning({
+      //   title: this.$t('feedback.warning'),
+      //   content: this.$t('messages.continueFieldConfig'),
+      //   titleAlign: 'center',
+      //   mask: true,
+      //   showCancel: true,
+      //   onOk: () => {
+      //     this.tabOpen({
+      //       type: 'C',
+      //       label: '字段配置',
+      //       url: '/CUSTOMIZED/FIELDCONFIG/1'
+      //     })
+      //   }
+      // })
+      this.tabOpen({
+        type: 'C',
+        label: '字段配置',
+        customizedModuleName: 'FIELDCONFIG',
+        customizedModuleId: 1,
+        id: 1
+      })
+    },
+
     buttonClick (type, obj) {
       this.TreeChange = false;
       this.setActiveTabActionValue({});// 点击按钮前清除上一次按钮存的信息
@@ -1411,6 +1435,8 @@ export default {
         // 查询成功后清除表格选中项
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });
         this.$refs.agTableElement.clearChecked();
+      }  else if(type === 'field-config') {
+        this.openConfigPage();
       } else {
         this.searchEvent();
       }
