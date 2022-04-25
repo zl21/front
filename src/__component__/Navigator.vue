@@ -10,22 +10,24 @@
         class="left"
         :style="{ width: collapseHistoryAndFavorite ? '50px' : '180px' }"
       >
-        <img
-          v-if="!collapseHistoryAndFavorite&&enableHistoryAndFavoriteUI"
-          class="trigger"
-          :title="$t('messages.collapseFavorites')"
-          alt=""
-          :src="imgSrc.closedImg"
-          @click="doCollapseHistoryAndFavorite"
-        >
-        <img
-          v-if="collapseHistoryAndFavorite&&enableHistoryAndFavoriteUI"
-          class="trigger"
-          alt=""
-          :title="$t('messages.expandFavorites')"
-          :src="imgSrc.openedImg"
-          @click="doCollapseHistoryAndFavorite"
-        >
+        <span>
+            <img
+              v-if="!collapseHistoryAndFavorite&&enableHistoryAndFavoriteUI"
+              class="trigger"
+              :title="$t('messages.collapseFavorites')"
+              alt=""
+              :src="imgSrc.closedImg"
+              @click="doCollapseHistoryAndFavorite"
+            >
+            <img
+              v-if="collapseHistoryAndFavorite&&enableHistoryAndFavoriteUI"
+              class="trigger"
+              alt=""
+              :title="$t('messages.expandFavorites')"
+              :src="imgSrc.openedImg"
+              @click="doCollapseHistoryAndFavorite"
+            >
+        </span>
         <div id="navBrandImg">
           <img
             v-if="!collapseHistoryAndFavorite"
@@ -230,8 +232,11 @@
           if (this.$el) {
             this.$el.parentElement.hidden = true;
             this.$el.parentElement.parentElement.hidden = true;
-            this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.firstElementChild.firstElementChild.style.padding = '0px';
-            this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.style.margin = '0px';
+            if(this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild){
+               this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.firstElementChild.firstElementChild.style.padding = '0px';
+              this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.style.margin = '0px';
+            }
+           
           }
         }
       },
@@ -350,8 +355,11 @@
         if (this.$el) {
           this.$el.parentElement.hidden = true;
           this.$el.parentElement.parentElement.hidden = true;
-          this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.firstElementChild.firstElementChild.style.padding = '0px';
-          this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.style.margin = '0px';
+          if(this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild){
+            this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.firstElementChild.firstElementChild.style.padding = '0px';
+            this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.style.margin = '0px';
+          }
+          
         }
       }
 

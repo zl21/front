@@ -32,7 +32,6 @@
         @click="btnclick('fix', item,index)"
         v-text="item.name"
       />
-
       <!-- 定制按钮 -->
       <template v-for="item in dataSetArray.waListButtonsConfig.waListButtons">
         <template v-if="item.confirm && item.confirm.includes('supPrompt')">
@@ -58,6 +57,7 @@
           :id="item.eName"
           :key="item.webid"
           :ref="item.ref"
+          :class="/^[a-zA-Z]+$/.test(item.webname) ? item.webname :''"
           :disabled="item.disabled"
           type="fcdefault"
           @click="btnclick('custom', item)"
