@@ -76,7 +76,6 @@ export default {
           }
           return  arr;
         },[]);
-               
        if(this.exclude.length!==checkedValue.length){
           //  兼容外键字段
           document.body.click();
@@ -91,6 +90,13 @@ export default {
           if( this.$refs.tabPanel && this.tabPanel.length!== showchecked.length){
             if(this.$refs.tabPanel.activeKey!== this.tabCurrentIndex){
               this.tabClick(this.tabCurrentIndex);
+            }else{
+              // 兼容渲染时机问题
+              if(document.querySelector('.tabPanel-sublist .tabComponent') && document.querySelector('.tabComponent').children.length<1){
+                    if(document.querySelector('.tabPanel-sublist .ark-tabs-panels-tab-active')){
+                      document.querySelector('.tabPanel-sublist .ark-tabs-panels-tab-active').click();
+                    }
+              }
             }
             if(this.$refs.tabPanel){
               this.$refs.tabPanel.$el.style.display='block';
