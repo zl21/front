@@ -13,6 +13,7 @@
         <!-- 消息提示 -->
         <slot name="icon-message"></slot>
         <slot name="icon-task"></slot>
+        <slot name="icon-outlink"></slot>
         <slot name="icon-person"></slot>
     </div>
   </div>

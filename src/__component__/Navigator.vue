@@ -128,7 +128,10 @@
       <!-- 消息队列弹出层 -->
       <MessageList v-model="showMessages"></MessageList>
     </template>
-
+    <!-- 跳转外链 -->
+    <template slot="icon-outside">
+        <OutLink></OutLink>
+    </template>  
     <!-- 设置 -->
     <template slot="icon-person">
       <div
@@ -163,6 +166,7 @@
   import noticeMixin from './AsyncTask/noticeMixin'
   import navigatorMixin from './AsyncTask/navigatorMixin'
   import NavigatorSlot from './nav/NavigatorSlot.vue'
+  import OutLink from './nav/outlink.vue'
 
   export default {
     name: 'Navigator',
@@ -175,7 +179,8 @@
       MessageList,
       NavigatorSubMenu,
       ComAutoComplete,
-      NavigatorSlot
+      NavigatorSlot,
+      OutLink
     },
 
     data() {

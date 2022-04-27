@@ -101,7 +101,8 @@
           <svg-icon icon-class="task" style="color:#1F272C;font-size: 20px"></svg-icon>
         </Badge>
       </div>
-
+      <!-- 跳转外链 -->
+      <OutLink slot="icon-outlink"></OutLink>
       <div
           class="tag right"
           slot="icon-person"
@@ -128,6 +129,8 @@ import NaVerticalslot from './nav/NaVerticalslot.vue';
 
 
 import ComAutoComplete from './ComAutoComplete';
+import OutLink from './nav/outlink.vue'
+
 import {routeTo} from '../__config__/event.config';
 import network, {urlSearchParams} from '../__utils__/network';
 import {
@@ -155,7 +158,8 @@ export default {
     Collect,
     Lately,
     MessageList,
-    Setting
+    Setting,
+    OutLink
   },
 
   data() {

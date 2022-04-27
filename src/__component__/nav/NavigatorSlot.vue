@@ -14,7 +14,8 @@
     
     <!-- 任务图标 -->
     <slot name="icon-task"></slot>
-
+     <!-- 外链 -->
+    <slot name="icon-outside"></slot>
     <!-- 个人设置 -->
     <slot name="icon-person"></slot>
   </div>
