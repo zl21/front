@@ -20,7 +20,7 @@ import {
   @CurrentUrl:表示当前表+来源的id
 
 
-*/ 
+*/
 class RouterPush {
     constructor(vm, routePrefix, keepAliveModuleName) {
         this.$vm = vm;
@@ -45,22 +45,25 @@ class RouterPush {
             };
         }
     }
-    bookmark($route){
-         // 历史记录书签
+    bookmark($route) {
+        // 历史记录书签
         if (this.arguments[1] && !this.arguments[1].backToTop) {
             if (isEmpty($route.$R3_history)) {
                 // 获取当前历史(应对刷新问题) 
                 $route.$R3_history = this.gethistory() || {};
-            }       
-            let tableName = this.arguments[1].tableName || this.arguments[1].customizedModuleName || this.arguments[1].linkName || this.arguments[1].pluginModuleName;   
-            let formTableName = this.arguments[1].router.params.tableName || this.arguments[1].router.params.customizedModuleName || this.arguments[1].router.params.linkName || this.arguments[1].router.params.pluginModuleName;       
-    
-            if(!tableName){
+            }
+            let tableName = this.arguments[1].tableName || this.arguments[1].customizedModuleName || this.arguments[1].linkName || this.arguments[1].pluginModuleName;
+            let formTableName = this.arguments[1].router.params.tableName || this.arguments[1].router.params.customizedModuleName || this.arguments[1].router.params.linkName || this.arguments[1].router.params.pluginModuleName;
+
+            if (!tableName) {
+                // 表明不存在，截图路径上的
                 tableName = this.arguments[1].url.split('/')[1];
             }
             let tableNameUrl = tableName + `/${this.arguments[1].id}`;
             let CurrentUrl = `${tableName}/${this.arguments[1].router.params.itemId}`;
             let formUrl = formTableName + `/${this.arguments[1].router.params.itemId}`;
+            // 清除nav 记录  
+            this.clearNav(`/${this.arguments[1].tableName}/`);
 
             if (this.arguments[1].clearhistory) {
                 // 清除当前表的历史 
@@ -68,42 +71,60 @@ class RouterPush {
                     delete $route.$R3_history[this.arguments[1].clearParams];
                 }
             } else {
-                let { enableOpenNewTab } = window.ProjectConfig;
-                if(!enableOpenNewTab){
-                    if(!this.arguments[1].target){
-                        this.setNewHistory($route,tableNameUrl,formUrl)
-                    }else{
+                let {
+                    enableOpenNewTab
+                } = window.ProjectConfig;
+                if (!enableOpenNewTab) {
+                    if (!this.arguments[1].target) {
+                        this.setNewHistory($route, tableNameUrl, formUrl)
+                    } else {
                         // 当在自身页面进行保存时
                         $route.$R3_history[tableNameUrl] = $route.$R3_history[CurrentUrl];
                         delete $route.$R3_history[CurrentUrl];
+
                     }
-                }else{
-                     this.setNewHistory($route,tableNameUrl,formUrl)
-                } 
+                } else {
+                    this.setNewHistory($route, tableNameUrl, formUrl)
+                }
             }
             $route.$R3_params = this.arguments[1];
-            window.localStorage.setItem('$R3_history_current', JSON.stringify($route.$R3_history));
+
+        } else {
+            // 默认其余都是走导航,用来计算从导航跳转到单对象的隐藏返回按钮
+
+            if (!$route.$R3_history || !$route.$R3_history.nav) {
+                $route.$R3_history = {};
+                $route.$R3_history.nav = {};
+            }
+            setTimeout(()=>{
+                $route.$R3_history.nav[$route.currentRoute.path] = $route.currentRoute.path;
+                window.localStorage.setItem('$R3_history_current', JSON.stringify($route.$R3_history));
+            },0);
         }
-          // 调用清除事件的监听
-            let {
-                openedMenuLists
-            } = window.vm.$store.state.global;
-        if(openedMenuLists.length>0 && !this.listener){
+        window.localStorage.setItem('$R3_history_current', JSON.stringify($route.$R3_history));
+
+        // 调用清除事件的监听
+        let {
+            openedMenuLists
+        } = window.vm.$store.state.global;
+        if (openedMenuLists.length > 0 && !this.listener) {
             this.listener = true;
             // 关闭按钮触发的事件
             this.closeCurrent($route);
-        }  
+        }
     }
-    setNewHistory($route,tableNameUrl,formUrl){
+    setNewHistory($route, tableNameUrl, formUrl) {
         // 添加历史记录判断
-        if($route.$R3_history[tableNameUrl] ){
+        if ($route.$R3_history[tableNameUrl]) {
             // 当前表已经有历史记录的状态下，判断来源表是否等于当前表
-            if(formUrl!=tableNameUrl){
+            if (formUrl != tableNameUrl) {
                 $route.$R3_history[tableNameUrl] = this.arguments[1].router;
             }
-        }else{
+        } else {
             $route.$R3_history[tableNameUrl] = this.arguments[1].router;
         }
+        this.clearNav($route.currentRoute.path)
+
     }
     back() {
         // 框架返回逻辑
@@ -138,28 +159,29 @@ class RouterPush {
                     clearhistory: true,
                     clearParams: url
                 };
-                if(['CP_C_TASK','U_NOTE'].includes(param.tableName) && ['CP_C_TASK','U_NOTE'].includes(closeParame.tableName)){
+                if (['CP_C_TASK', 'U_NOTE'].includes(param.tableName) && ['CP_C_TASK', 'U_NOTE'].includes(closeParame.tableName)) {
                     // 我的任务除外
                     return false;
                 }
-                let { enableOpenNewTab } = window.ProjectConfig;
-                if(/TABLE_DETAIL/.test(param.url)){
+                let {
+                    enableOpenNewTab
+                } = window.ProjectConfig;
+                if (/TABLE_DETAIL/.test(param.url)) {
                     param.back = false;
-
-                    if(param.tableName === closeParame.tableName && closeParame.itemId ==='New' && !enableOpenNewTab){
+                    if (param.tableName === closeParame.tableName && closeParame.itemId === 'New' && !enableOpenNewTab) {
                         delete this.$vm.$router.$R3_history[url];
                         return false;
                     }
                 }
 
                 // 关闭菜单   
-                if(closeParame.tableName !== param.tableName || enableOpenNewTab){
+                if (closeParame.tableName !== param.tableName || enableOpenNewTab) {
                     this.$vm.tabCloseAppoint(closeParame);
                 }
                 // 新开
-                this.$vm.tabOpen(param);   
-                
-    
+                this.$vm.tabOpen(param);
+
+
                 return true
             }
         } else {
@@ -175,44 +197,72 @@ class RouterPush {
         // 手动关闭菜单时调用的删除事件
         let openedMenuListsDom = document.querySelector('.openedMenuLists');
         if (openedMenuListsDom) {
-            let openedMenuListsDomVue =openedMenuListsDom.__vue__;
+            let openedMenuListsDomVue = openedMenuListsDom.__vue__;
             let handleClose = openedMenuListsDomVue.handleClose;
-            let { enableOpenNewTab } = window.ProjectConfig;
+            let {
+                enableOpenNewTab
+            } = window.ProjectConfig;
             // 给关闭tab 界面添加清除历史记录事件
-            openedMenuListsDomVue.handleClose = function(){
+            let self = this;
+            openedMenuListsDomVue.handleClose = function () {
                 let {
                     openedMenuLists
                 } = window.vm.$store.state.global;
                 let clearParams = openedMenuLists[arguments[0]];
                 let clearParamstableName = `${clearParams.tableName}/`;
-                if(/C./.test(clearParams.keepAliveModuleName)){
+                if (/C./.test(clearParams.keepAliveModuleName)) {
                     // 定制界面
                     clearParamstableName = `${clearParams.tableName}/${clearParams.tableId}`;
                 }
-                if(enableOpenNewTab){
+                if (enableOpenNewTab) {
                     // 全都是新开界面
                     clearParamstableName = `${clearParams.tableName}/${clearParams.itemId}`;
                 }
                 let $R3_history_key = Object.keys($route.$R3_history || {});
-                if($R3_history_key){
-                    $R3_history_key.forEach((item)=>{
-                        if(new RegExp(clearParamstableName).test(item)){
+                if ($R3_history_key) {
+                    $R3_history_key.forEach((item) => {
+                        if (new RegExp(clearParamstableName).test(item)) {
                             delete $route.$R3_history[item]
                         }
                     })
                 }
-                handleClose.call(this,...arguments);
-                
+
+                self.clearNav($route.currentRoute.path);
+                handleClose.call(this, ...arguments);
+
             }
         }
 
         //
+    }
+    clearNav(url) {
+        // 清除导航跳转来的记录
+        let getHistoryData = JSON.parse(JSON.stringify(this.gethistory()));
+        Object.keys(getHistoryData.nav).forEach((key)=>{
+                if(new RegExp(url).test(key)){
+                    delete getHistoryData.nav[key]
+                }
+        });
+        window.vm.$router.$R3_history.nav = getHistoryData.nav;
+        window.localStorage.setItem('$R3_history_current', JSON.stringify( window.vm.$router.$R3_history));
+
+
     }
     clear($this) {
         // 清除所有历史记录
         $this.$R3_history = {};
         this.listener = false;
         window.localStorage.setItem('$R3_history_current', '{}');
+    }
+    exists(name) {
+        // 是否存在是从功能清单跳转过来的菜单
+        let getHistoryData = this.gethistory();
+        if (getHistoryData.nav[name]) {
+            return true
+        } else {
+            return false;
+        }
+
     }
     init() {
         this.router();
