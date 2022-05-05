@@ -91,7 +91,10 @@ class RouterPush {
 
         } else {
             // 默认其余都是走导航,用来计算从导航跳转到单对象的隐藏返回按钮
-
+            // $route.beforeEach((to, from, next) => {
+            //     console.log(from,'=======');
+            //     next();
+            // })
             if (!$route.$R3_history || !$route.$R3_history.nav) {
                 $route.$R3_history = {};
                 $route.$R3_history.nav = {};

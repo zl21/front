@@ -95,11 +95,6 @@ import dataProp from '../../__config__/props.config';
 // 弹窗单选
 // import myPopDialog from './PopDialog';
 // 富文本编辑
-import WangeditorVue from '../Wangeditor.vue';
-//   弹窗单选 弹窗多选
-import ComAttachFilter from '../ComAttachFilter.vue';
-//   上传文件
-import Docfile from '../docfile/DocFileComponent.vue';
 
 import BusDropDownSelectFilter from '../inheritanceComponents/BusDropDownSelectFilter';
 import CustomDropMultiSelectFilter from '../inheritanceComponents/DropMultiSelectFilter';
@@ -129,7 +124,6 @@ import {
   Version, MODULE_COMPONENT_NAME, ossRealtimeSave, defaultrange, setComponentsProps
 } from '../../constants/global';
 import createModal from '../PreviewPicture/index';
-import EnumerableInput from '../EnumerableInput.vue';
 import getComponentName from '../../__utils__/getModuleName'
 import i18n from '../../assets/js/i18n'
 
@@ -139,7 +133,7 @@ import i18n from '../../assets/js/i18n'
 
 export default {
   components: {
-    EnumerableInput, ComAttachFilter, Docfile, ValidateCom
+    ValidateCom
   },
   // mixins: [mixins],
   // inject: [MODULE_COMPONENT_NAME],
@@ -637,10 +631,10 @@ export default {
     this.componentsName = this.inheritanceComponents();
   },
   mounted () {
-    window.addEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetProps);
-    window.addEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
-    window.addEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
-    window.addEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
+    // window.addEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetProps);
+    // window.addEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
+    // window.addEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
+    // window.addEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
     this.resetItem()
   }
 };
