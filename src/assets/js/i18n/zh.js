@@ -194,6 +194,7 @@ export default {
     expandFavorite: '是否展开收藏夹',
     collapseQuery: '折叠查询条件',
     queryDefaultRows: '查询条件默认显示行数',
+    SwitchToShow:'切换展现方式',
     noHistory: '暂无历史记录',
     noCollection: '暂无收藏记录',
     generateBarcode: '生成条码',
@@ -382,6 +383,7 @@ export default {
     failedToUnfavorite: '取消收藏失败',
     cloneSuccess: '克隆成功',
     deleteSuccessfully: '删除成功',
+    RefreshThePrompt: '该改动需要刷新浏览器生效',
     ongoing: '进行中',
     fail: '失败'
   },
@@ -512,5 +514,9 @@ export default {
   // 定制弹框PublishPrintTemplate
   publishPrintTemplate: {
     continueCover: '当前的操作会执行全量覆盖！是否继续？'
+  }, 
+  // 换肤
+  changeTheme:{
+    title:'主题色'
   }
 }

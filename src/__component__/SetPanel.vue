@@ -54,6 +54,7 @@
           />
         </p>
       </div>
+      <settingColor ></settingColor>
       <div class="panel-item">
         <p @click="clickSignout">
           <i class="iconfont iconmd-exit explanatory" />
@@ -69,11 +70,15 @@
   import { layoutDirection, enableInitializationRequest, customizeMixins, classFix } from '../constants/global';
   import network, { urlSearchParams } from '../__utils__/network';
   import moduleName from '../__utils__/getModuleName';
+  import settingColor from './nav/settingColor.vue';
 
   export default {
     name: 'SetPanel',
     props: ['panel'],
     mixins: [customizeMixins().setPanel ? customizeMixins().setPanel : false],
+    components:{
+        settingColor
+    },
     computed: {
       ...mapState('global', {
         userInfo: ({ userInfo }) => userInfo,
@@ -130,10 +135,11 @@
         },
         showFavorites: false,
         customizeComponent: null,
-        closedChangePassword:false
+        closedChangePassword:false,
       };
     },
     mounted() {
+    
       const showFavorites = JSON.parse(window.localStorage.getItem('showFavorites'));
       let { closedChangePassword } = window.ProjectConfig;
       if(closedChangePassword){

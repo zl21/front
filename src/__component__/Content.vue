@@ -3,6 +3,8 @@
   
  
   const appLayout = () => {
+      console.log(layoutDirection(),'======4343')
+
     let appLayoutSrc = layoutDirection() ? 'layout.Vertical.config.js' : 'layout.config.js';
     if(window.ProjectConfig && window.ProjectConfig.displayAreas ==='content'){
       // 展示区域
