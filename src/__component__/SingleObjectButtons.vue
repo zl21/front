@@ -4101,13 +4101,13 @@ import RouterPush from '../__utils__/routerback';
           }
           return false;
         }
-        let checked = new RouterPush(this).exists(currentRoute);
-        // 判断来源是否存在;
-        if(checked){
-            this.dataArray.back = false;
-        }else{
-           this.dataArray.back = true;
-        }
+        // let checked = new RouterPush(this).exists(currentRoute);
+        // // 判断来源是否存在;
+        // if(checked){
+        //     this.dataArray.back = false;
+        // }else{
+        //    this.dataArray.back = true;
+        // }
         let { ResetrouterBackLogic } = window.ProjectConfig;
         if( ResetrouterBackLogic ){
           return false;
