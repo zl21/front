@@ -1,5 +1,5 @@
 <template>
-  <div :class="classes" v-if="showColorSetting">
+  <div :class="classes" v-if="showColorSetting && userInfo.isadmin">
     <!-- 切换布局结构 -->
     <div class="panel-item">
       <p>
@@ -28,6 +28,7 @@ import { classFix, Version } from '../../constants/global';
 import network from '../../__utils__/network';
 import '../../assets/svg/iconfont';
 // import changeTheme from 'webpack-theme-color-replacer-syman/src/views/ChangeTheme/ChangeTheme.vue';
+import {mapState} from 'vuex';
 
 export default {
   name: 'OutLink',
@@ -42,6 +43,9 @@ export default {
   components: {
   },
   computed: {
+    ...mapState('global', {
+      userInfo: ({userInfo}) => userInfo,
+    }),
     classes() {
       return [`${classFix}setting-color`];
     },

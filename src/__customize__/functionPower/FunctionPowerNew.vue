@@ -833,7 +833,7 @@
         functionPowerActions().groupTreeload({
           success: (res) => {
             if (res.data.code === 0) {
-              res.data.data = [];
+              // res.data.data = [];
               resolve(res.data.data);
               if(res.data.data[0]){
                 this.groupId = res.data.data[0].ID;
