@@ -13,20 +13,21 @@
       </p>
     </div>
     <!-- 换肤功能 -->
-    <changeTheme
+    <component
+      :is="changeThemeComponent"
       ref="changeTheme"
       @on-change="updatesystemcolor($event, 'color')"
       :name="$t('changeTheme.title')"
       :value="themeColor"
-    ></changeTheme>
+    />
   </div>
 </template>
 
 <script>
-import { classFix ,Version} from '../../constants/global';
+import { classFix, Version } from '../../constants/global';
 import network from '../../__utils__/network';
 import '../../assets/svg/iconfont';
-import changeTheme from 'webpack-theme-color-replacer-syman/src/views/ChangeTheme/ChangeTheme.vue';
+// import changeTheme from 'webpack-theme-color-replacer-syman/src/views/ChangeTheme/ChangeTheme.vue';
 
 export default {
   name: 'OutLink',
@@ -34,11 +35,11 @@ export default {
     return {
       switchToShow: false, // 默认是水平，true 是垂直结构
       themeColor: '',
-      showColorSetting:false // 是否显示
+      changeThemeComponent:'',// 换肤插件
+      showColorSetting: false, // 是否显示
     };
   },
   components: {
-    changeTheme,
   },
   computed: {
     classes() {
@@ -89,24 +90,26 @@ export default {
           });
         }
         this.themeColor = data.color;
-        if (this.$refs.changeTheme.primaryColor !== this.themeColor) {
-          this.$refs.changeTheme.changeThemeColor(this.themeColor);
-        }
+        // if (this.$refs.changeTheme.primaryColor !== this.themeColor) {
+        //   this.$refs.changeTheme.changeThemeColor(this.themeColor);
+        // }
         // window.ProjectConfig.layoutDirection = this.switchToShow;
         // localStorage.setItem('layoutDirection', this.switchToShow);
       });
     },
   },
-  created() {
+  mounted() {
     let { showColorSetting } = window.ProjectConfig;
     //
     if (Version() === '1.4' && showColorSetting) {
       this.showColorSetting = true;
       this.switchToShow = localStorage.getItem('layoutDirection') === 'true';
-      this.getsystemcolor();
+      if(this.$parent.changeThemeComponent){
+          this.changeThemeComponent = this.$parent.changeThemeComponent;
+          this.getsystemcolor();
+      }
 
     }
   },
-
 };
 </script>
