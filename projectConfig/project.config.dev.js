@@ -287,6 +287,6 @@ module.exports = {
   asyncTaskScheme: 'skq',
   ResetrouterBackLogic:true,  // 显示返回按钮
   closedChangePassword:false, // 是否关闭展示侧边修改密码配置
-  showColorSetting:true, // 是否显示设置主题的color
-  SingleSignOnSwitch:true // 是否显示单点登录
+  showColorSetting:false, // 是否显示设置主题的color
+  SingleSignOnSwitch:false // 是否显示单点登录
 }
