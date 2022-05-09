@@ -55,7 +55,7 @@ export default {
       // 换肤 切换展现形式
       let param = {
         is_up_down: this.switchToShow,
-        color: window.__r3_theme_color.colors[0],
+        color: this.themeColor ,
       };
       param[key] = value;
       network.post('/p/cs/updatesystemcolor', param).then(() => {

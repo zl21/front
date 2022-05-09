@@ -2,8 +2,8 @@
   <div :class="classes" v-if="outList.length > 0">
     <div class="tag r3-outlink">
       <!-- 长度为1 -->
-      <div v-if="outList.length === 1" @click="outlink(outList[0])">
-        <svg class="r3-svg-icon" aria-hidden="true">
+      <div v-if="outList.length === 1" @click="outlink(outList[0])" :title="outList[0].type">
+        <svg class="r3-svg-icon" aria-hidden="true" :style="svgColor(outList[0].icon)">
           <use :xlink:href="`#${outList[0].icon}`"></use>
         </svg>
       </div>
@@ -18,7 +18,7 @@
             :key="i"
             @click.native="outlink(item)"
           >
-            <svg class="r3-svg-icon" aria-hidden="true">
+            <svg class="r3-svg-icon" aria-hidden="true" :style="svgColor(item.icon)">
               <use :xlink:href="`#${item.icon}`"></use>
             </svg>
             <span>{{ item.type }}</span>
@@ -38,7 +38,17 @@ export default {
   name: 'OutLink',
   data() {
     return {
-      icon: ['BOS_logo', 'yunque', 'bojun'],
+      icon: {
+        'icon-BOS_logo':{
+          color:'#3071a1',
+        },
+        'icon-yunque':{
+          color:'#1d74ff',
+        },
+        'icon-bojun':{
+          color:'#438EB9',
+        }
+      },
       outList: [],
     };
   },
@@ -46,6 +56,12 @@ export default {
     classes() {
       return [`${classFix}out-link`];
     },
+    svgColor(){
+      return function(val) {
+         return `color:${this.icon[val]}`;
+      };
+
+    }
   },
   methods: {
     outlink(item) {
