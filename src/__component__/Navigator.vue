@@ -28,7 +28,7 @@
               @click="doCollapseHistoryAndFavorite"
             >
         </span>
-        <div id="navBrandImg">
+        <div id="navBrandImg" :class="!collapseHistoryAndFavorite ?'navBrandImg-banner':'navBrandImg-logo'">
           <img
             v-if="!collapseHistoryAndFavorite"
             class="banner"

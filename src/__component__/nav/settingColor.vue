@@ -13,8 +13,7 @@
       </p>
     </div>
     <!-- 换肤功能 -->
-    <component
-      :is="changeThemeComponent"
+    <changeTheme
       ref="changeTheme"
       @on-change="updatesystemcolor($event, 'color')"
       :name="$t('changeTheme.title')"
@@ -41,6 +40,7 @@ export default {
     };
   },
   components: {
+    // changeTheme
   },
   computed: {
     ...mapState('global', {
@@ -60,16 +60,13 @@ export default {
       param[key] = value;
       network.post('/p/cs/updatesystemcolor', param).then(() => {
         if (key === 'is_up_down') {
-          this.$Modal.fcWarning({
-            title: this.$t('feedback.alert'),
-            content: this.$t('feedback.RefreshThePrompt'),
-            titleAlign: 'center',
-            mask: true,
-            showCancel: false,
-            onOk: () => {
+          this.$Message.info({
+                content: this.$t('feedback.RefreshThePrompt'),
+                duration: 1,
+            });
+            setTimeout(()=>{
               window.location.reload();
-            },
-          });
+            },500)
         } else {
           this.themeColor = value;
         }
@@ -82,25 +79,35 @@ export default {
       network.post('/p/c/getsystemcolor').then((res) => {
         let data = res.data.data;
         if (data.is_up_down !== this.switchToShow) {
-          this.$Modal.fcWarning({
-            title: this.$t('feedback.alert'),
-            content: this.$t('feedback.RefreshThePrompt'),
-            titleAlign: 'center',
-            mask: true,
-            showCancel: false,
-            onOk: () => {
-              window.location.reload();
-            },
-          });
+          this.switchToShow = data.is_up_down;
+          // this.$Message.info({
+          //       content: this.$t('feedback.RefreshThePrompt'),
+          //       duration: 1,
+          //   });
+          //   setTimeout(()=>{
+          //     window.location.reload();
+          //   },500)
         }
         this.themeColor = data.color;
-        // if (this.$refs.changeTheme.primaryColor !== this.themeColor) {
-        //   this.$refs.changeTheme.changeThemeColor(this.themeColor);
-        // }
-        // window.ProjectConfig.layoutDirection = this.switchToShow;
-        // localStorage.setItem('layoutDirection', this.switchToShow);
+        
+        if(window['_R3_CHANGETHEME']){
+            window['_R3_CHANGETHEME'](this.themeColor, this).then((res) => {
+                  document.querySelector('body').style.opacity = '1';
+            });
+        }
+        window.ProjectConfig.layoutDirection = this.switchToShow;
+        localStorage.setItem('layoutDirection', this.switchToShow);
       });
     },
+  },
+  beforeCreate(){
+      let { showColorSetting } = window.ProjectConfig;
+      if(showColorSetting){
+        document.querySelector('body').style.opacity = '0';
+        setTimeout(()=>{
+          document.querySelector('body').style.opacity = '1';
+        },1000)
+      }
   },
   mounted() {
     let { showColorSetting } = window.ProjectConfig;
@@ -108,10 +115,8 @@ export default {
     if (Version() === '1.4' && showColorSetting) {
       this.showColorSetting = true;
       this.switchToShow = localStorage.getItem('layoutDirection') === 'true';
-      if(this.$parent.changeThemeComponent){
-          this.changeThemeComponent = this.$parent.changeThemeComponent;
-          this.getsystemcolor();
-      }
+      this.getsystemcolor();
+
 
     }
   },

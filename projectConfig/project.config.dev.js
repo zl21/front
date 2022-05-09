@@ -102,7 +102,8 @@ module.exports = {
     //verticalTableDetailCustomize: require('../demo/horizontalTableDetailCustomize.js').default,
     setPanel:{
       created(){
-        this.changeThemeComponent = require('../node_modules/webpack-theme-color-replacer-syman/src/views/ChangeTheme/ChangeTheme.vue').default;
+        // this.changeThemeComponent = require('../node_modules/webpack-theme-color-replacer-syman/src/views/ChangeTheme/ChangeTheme.vue').default;
+        // this.changeThemeColor = require('../node_modules/webpack-theme-color-replacer-syman/src/views/ChangeTheme/changeThemeColor');
       },
       mounted(){
         // 重写退出点击
