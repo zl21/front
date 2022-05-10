@@ -422,6 +422,7 @@ export default {
     save: 'save',
     find: 'find',
     jump: 'jump',
+    clickview: 'click to view',
     upload: 'upload',
     ignore: 'ignore',
     fold: 'fold',

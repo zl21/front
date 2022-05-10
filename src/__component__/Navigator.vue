@@ -110,20 +110,36 @@
         class="tag right"
         @click.prevent="messageSlide"
       >
+       <Tooltip
+          width="50"
+          trigger="hover"
+        >
         <Badge :count="taskMessageCount">
           <i
             class="iconfont iconbj_message badge"
           />
         </Badge>
+          <div slot="content">
+            {{$t('tips.message')}}
+          </div>
+        </Tooltip>
       </div>
       <div
         v-if="versionValue && showTaskIcon"
         class="tag right async-task-icon"
         @click.prevent="handlerOpenTasks"
       >
+        <Tooltip
+          width="50"
+          trigger="hover"
+        >
         <Badge :count="taskMessageCount">
           <svg-icon icon-class="task" style="width: 21px;"></svg-icon>
         </Badge>
+          <div slot="content">
+            {{$t('tips.task')}}
+          </div>
+        </Tooltip>
       </div>
       <!-- 消息队列弹出层 -->
       <MessageList v-model="showMessages"></MessageList>
@@ -138,10 +154,18 @@
         class="tag right"
         @click="show = true"
       >
+       <Tooltip
+          width="50"
+          trigger="hover"
+        >
         <i
           class="iconfont iconmd-person"
           :title="$t('buttons.setting')"
         />
+         <div slot="content">
+            {{$t('buttons.setting')}}
+          </div>
+        </Tooltip>
       </div>
       <!-- 设置的弹出层 -->
       <Setting v-model="show"></Setting>

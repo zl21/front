@@ -81,11 +81,19 @@
           slot="icon-message"
           @click.prevent="messageSlide"
       >
-        <Badge :count="taskMessageCount">
-          <i
-              class="iconfont iconbj_message badge"
-          />
-        </Badge>
+       <Tooltip
+          width="50"
+          trigger="hover"
+        >
+            <Badge :count="taskMessageCount">
+              <i
+                  class="iconfont iconbj_message badge"
+              />
+            </Badge>
+            <div slot="content">
+                {{$t('tips.message')}}
+            </div>
+        </Tooltip>
 
         <!-- 消息队列 -->
         <MessageList v-model="showMessages"></MessageList>
@@ -97,9 +105,17 @@
         @click.prevent="handlerOpenTasks"
         slot="icon-task"
       >
+      <Tooltip
+          width="50"
+          trigger="hover"
+        >
         <Badge :count="taskMessageCount">
           <svg-icon icon-class="task" style="color:#1F272C;font-size: 20px"></svg-icon>
         </Badge>
+          <div slot="content">
+            {{$t('tips.task')}}
+          </div>
+        </Tooltip>
       </div>
       <!-- 跳转外链 -->
       <OutLink slot="icon-outlink"></OutLink>
@@ -108,11 +124,18 @@
           slot="icon-person"
           @click="show = true"
       >
+       <Tooltip
+          width="50"
+          trigger="hover"
+        >
         <i
             class="iconfont iconmd-person"
             :title="$t('buttons.setting')"
         />
-
+         <div slot="content">
+            {{$t('buttons.setting')}}
+          </div>
+        </Tooltip>
         <!-- 设置 -->
         <Setting v-model="show"></Setting>
       </div>

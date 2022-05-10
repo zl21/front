@@ -430,6 +430,7 @@ export default {
     exitFullscreen: '退出全屏',
     exit: '退出',
     view: '查看',
+    clickview: '点击查看',
     antiSubmit: '反提交',
     viewDetails: '查看明细',
     filter: '筛选',
