@@ -12,6 +12,7 @@
 
  import { Version } from '../../constants/global'
  import i18n from '../../assets/js/i18n'
+ import { enableKAQueryDataForUser } from '../../constants/global'
 
 function get_default_datenumber(formItem, isDetailPage) {
   // 单对象界面
@@ -72,6 +73,70 @@ function get_default_date(formItem, isDetailPage) {
     }
     return timeRange;
   }
+}
+
+// 获取用户id
+function getUserId() {
+  const userJson = localStorage.getItem('userInfo') || ''
+  let user = {}
+  if (userJson) {
+    user = JSON.parse(userJson)
+  }
+  return user.id
+}
+
+// 获取inputWithSelect选项
+export function getSelectOption(colname, tableName) {
+  const userId = getUserId()
+  const json = localStorage.getItem(`${userId}_${tableName}_${colname}`) || ''
+  return json
+}
+
+export function get_default_InputWithSelect(val, selectValue) {
+  let value = val || ''
+  switch (selectValue) {
+    case 'all':
+      break
+    case 'equal':
+      if (value) {
+        let valueArr = [] // 存储含空格的字符
+        let valueArr2 = [] // 存储含逗号的字符
+        if (Array.isArray(value)) {
+          value = value.map(item => item.replace(/=/g, ''))
+          value = value.join(',')
+        }
+        value = value.trim()
+        value = value.split(' ')
+        // 例如11 22 33,44  55,66
+        for (let i = 0; i < value.length; i++) {
+          let element = value[i].trim()
+          if (element && !element.includes(',')) {
+            valueArr.push(`=${element}`)
+          }
+          if (element && element.includes(',')) {
+            valueArr2.push(element)
+          }
+        }
+        // 需要进一步分割含逗号的
+        valueArr2 = valueArr2.join(',').split(',')
+        for (let j = 0; j < valueArr2.length; j++) {
+          const ele = valueArr2[j].trim()
+          if (ele) {
+            valueArr.push(`=${ele}`)
+          }
+        }
+        value = valueArr
+      }
+      break
+    case 'isNotNull':
+      value = 'is not null'
+      break
+    case 'isNull':
+      value = 'is null'
+      break
+
+  }
+  return value
 }
 export default class ParameterDataProcessing {
   constructor(item, value) {
@@ -392,6 +457,20 @@ export default class ParameterDataProcessing {
       return this.item.falseValue;
     }
     
+    // 处理inputWithSelect
+    if(this.item.display === 'InputWithSelect') {
+      let selectValue = this.item.webconf.inputWithSelectOption
+      if (enableKAQueryDataForUser() || this.item.enableKAQueryDataForUser) {
+        this._tableName = this.item._id
+        this._colname = this.item.colname
+        const option = getSelectOption(this._colname, this._tableName)
+        if (option) {
+          selectValue = option
+        }
+      }
+      const value = get_default_InputWithSelect(this.item.default, selectValue)
+      return value
+    }
     return this.item.valuedata || this.item.default ;
   }
 

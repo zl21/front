@@ -114,6 +114,7 @@ import CustomDefined from '../inheritanceComponents/Defined'
 import CustomStringRender from '../inheritanceComponents/StringRender'
 import CustomCheckboxGroup from '../inheritanceComponents/CheckboxGroup';
 import CustomMonthDay from '../inheritanceComponents/MonthDay';
+import CustomInputWithSelect from '../inheritanceComponents/inputWithSelect';
 
 import ParameterDataProcessing from './parameterDataProcessing';
 import { Validate } from './PanelForm/Validate';
@@ -393,6 +394,9 @@ export default {
           break;
         case 'String': 
           componentInstance = new CustomStringRender(item).init();
+          break;
+        case 'InputWithSelect':
+          componentInstance = new CustomInputWithSelect(item).init();
           break;
         case 'defined':
           componentInstance = new CustomDefined(item).init();

@@ -143,6 +143,12 @@ export default {
       }  
 
     },
+    tableWebconf: {
+      type: Object,
+      default: () => {
+        return {}
+      }
+    }
   },
   data () {
     return {
@@ -232,6 +238,9 @@ export default {
         if (item.webconf && item.webconf.display === 'MonthDay') {
           item.display = 'MonthDay';
         }
+        if (item.webconf && item.webconf.display === 'InputWithSelect') {
+          item.display = 'InputWithSelect';
+        }
         if (item.colname) {
           item._index = Math.random()
           this.ItemLists[item.colname] = JSON.parse(JSON.stringify(item));
@@ -241,6 +250,7 @@ export default {
           this.ItemLists[item.colname] = JSON.parse(JSON.stringify(item));
         }
         this.ItemLists[item.colname].component = this.initComponent(this.ItemLists[item.colname], index)
+        this.ItemLists[item.colname].enableKAQueryDataForUser = this.tableWebconf.enableKAQueryDataForUser
         this.formArray.push(JSON.parse(JSON.stringify(item)));
         return item;
       });

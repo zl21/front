@@ -54,6 +54,7 @@
                   :default-spread="changeSearchFoldnum.switchValue"
                   :search="true"
                   :listFormTemple="slotTemple ? slotTemple.listForm : ()=>{}"
+                  :table-webconf="webConf"
                   :treeShow="treeShow"
                   :default-column="Number(4)"
                   :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
@@ -190,7 +191,7 @@ import customize from '../__config__/customize.config';
 // import router from '../__config__/router.config';
 import { getSessionObject, deleteFromSessionObject, updateSessionObject } from '../__utils__/sessionStorage';
 import { getUrl, getLabel } from '../__utils__/url';
-import { DispatchEvent, R3_EXPORT } from '../__utils__/dispatchEvent';
+import { DispatchEvent, R3_EXPORT, R3_LIST_SEARCH } from '../__utils__/dispatchEvent';
 import getUserenv from '../__utils__/getUserenv';
 import { addSearch, querySearch } from '../__utils__/indexedDB';
 import { getPinnedColumns } from '../__utils__/tableMethods'
@@ -1929,6 +1930,11 @@ export default {
         const promise = new Promise((resolve, reject) => {
           this.requiredCheck(data).then(() => {
             this.$R3loading.show(this.loadingName);
+            DispatchEvent(R3_LIST_SEARCH, {
+              detail: {
+                type: 'search'
+              }
+            })
             const currentParame = this.paramePreEvent(data, searchDataRes)
             currentParame.resolve = resolve;
             currentParame.reject = reject;
