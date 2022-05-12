@@ -121,7 +121,7 @@ export const isItemTableNewValidation = () => (window.ProjectConfig && typeof wi
 export const isCommonTable = () => (window.ProjectConfig && typeof window.ProjectConfig.isCommonTable === 'boolean' ? window.ProjectConfig.isCommonTable : project.isCommonTable);
 export const enableRestrictSave = () => (window.ProjectConfig && typeof window.ProjectConfig.enableRestrictSave === 'boolean' ? window.ProjectConfig.enableRestrictSave : project.enableRestrictSave);
 export const cbs = () => (window.ProjectConfig && window.ProjectConfig.cbs ? window.ProjectConfig.cbs : project.cbs || {});
-export const layoutDirection = () => ((window.ProjectConfig && typeof window.ProjectConfig.layoutDirection === 'boolean' ? window.ProjectConfig.layoutDirection : project.layoutDirection) || false);
+export const layoutDirection = () => ((window.ProjectConfig && typeof window.ProjectConfig.layoutDirection === 'boolean' ? window.ProjectConfig.layoutDirection : project.layoutDirection) || localStorage.getItem('layoutDirection') === 'true' ? localStorage.getItem('layoutDirection') :false);
 export const contentConfig = () => (window.ProjectConfig && window.ProjectConfig.contentConfig ? window.ProjectConfig.contentConfig : project.contentConfig);
 export const REQUEST_PENDDING_EXPIRE = () => (window.ProjectConfig && window.ProjectConfig.requestPenddingExpire ? window.ProjectConfig.requestPenddingExpire : project.requestPenddingExpire);
 export const encodeControl = () => (window.ProjectConfig && typeof window.ProjectConfig.encodeControl === 'boolean' ? window.ProjectConfig.encodeControl : project.encodeControl);

@@ -6,7 +6,7 @@
     <div
       class="left"
     >
-      <div id="navBrandImg">
+      <div id="navBrandImg" class="navBrandImg-banner">
         <img
           class="banner"
           alt=""

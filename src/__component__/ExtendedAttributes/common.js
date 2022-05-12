@@ -50,6 +50,9 @@ export const FindInstance = ($this,name,tableName,maintable) => {
         }
     }else{
         panelFormParent =  document.querySelector(`#${mainTableName}`)._vue_;
+        if(!panelFormParent){
+            panelFormParent = $this.$_live_getChildComponent(window.vm,`${$this.activeTab.keepAliveModuleName}`);
+        }
     }
     if(name === 'panelForm'){
         let panelForm = $this.$_live_getChildComponent(panelFormParent, 'panelForm');

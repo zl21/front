@@ -5,6 +5,7 @@ const TerserJSPlugin = require('terser-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const { merge } = require('webpack-merge')
+const SyThemeColorReplacer = require('webpack-theme-color-replacer-syman')
 
 const baseConfig = require('./webpack.base.js')
 let projectConfig = require(`../projectConfig/project.config.${process.env
@@ -50,6 +51,9 @@ const config = (env) => ({
   plugins: [
     new MiniCssExtractPlugin({
       filename: 'r3.css',
+    }),
+    new SyThemeColorReplacer({
+      matchColors:'#fd6442',
     }),
     new CleanWebpackPlugin([env && env.production ? 'dist' : 'devDist']),
     new HtmlWebpackPlugin({

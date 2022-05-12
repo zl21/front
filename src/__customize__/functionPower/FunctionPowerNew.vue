@@ -833,11 +833,17 @@
         functionPowerActions().groupTreeload({
           success: (res) => {
             if (res.data.code === 0) {
+              // res.data.data = [];
               resolve(res.data.data);
-              this.groupId = res.data.data[0].ID;
-              this.newGroupId = res.data.data[0].ID;
-              this.oldMenuTreeObj = JSON.parse(JSON.stringify(res.data.data[0]));
-              this.newMenuTreeObj = JSON.parse(JSON.stringify(res.data.data[0]));
+              if(res.data.data[0]){
+                this.groupId = res.data.data[0].ID;
+                this.newGroupId = res.data.data[0].ID;
+                this.oldMenuTreeObj = JSON.parse(JSON.stringify(res.data.data[0]));
+                this.newMenuTreeObj = JSON.parse(JSON.stringify(res.data.data[0]));
+              }else{
+                 this.spinShow = false;
+              }
+             
               // this.menuTreeData = this.restructureMenuTreeData(res.data.data, true);
               // this.getTableData()
             } else {

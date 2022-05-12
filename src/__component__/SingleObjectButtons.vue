@@ -4100,10 +4100,18 @@ import RouterPush from '../__utils__/routerback';
           }
           return false;
         }
+        // let checked = new RouterPush(this).exists(currentRoute);
+        // // 判断来源是否存在;
+        // if(checked){
+        //     this.dataArray.back = false;
+        // }else{
+        //    this.dataArray.back = true;
+        // }
         let { ResetrouterBackLogic } = window.ProjectConfig;
         if( ResetrouterBackLogic ){
           return false;
         }
+
         const addRouteToEditorData = getSessionObject('addRouteToEditor');
         let flag = false;
         Object.keys(addRouteToEditorData).some((a) => { // 菜单跳转单对象新增，保存后跳转到编辑界面，满足记录规则三维护的关系中存在当前菜单跳转新增界面匹配的对应关系，不显示返回按钮

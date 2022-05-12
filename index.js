@@ -5,6 +5,8 @@ import store from './src/__config__/store.config';
 // import App from './src/App.vue';
 // import i18n from './src/assets/js/i18n';
 import network from './src/__utils__/network';
+import changeThemeColor from 'webpack-theme-color-replacer-syman/src/views/index';
+// console.log(changeThemeColor,'====changeThemeColor');
 import {
   backDashboardRoute, enableGateWay, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE, specifiedGlobalGateWay
 } from './src/constants/global';
@@ -67,6 +69,7 @@ const registerCustomizedModal = () => {
 registerCustomizedModal();
 
 Vue.use(Loading);
+Vue.use(changeThemeColor);
 
 // const backTouristRoute = () => {
 //   // window.sessionStorage.setItem('loginStatus', false);// 清除登陆标记

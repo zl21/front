@@ -28,7 +28,7 @@
               @click="doCollapseHistoryAndFavorite"
             >
         </span>
-        <div id="navBrandImg">
+        <div id="navBrandImg" :class="!collapseHistoryAndFavorite ?'navBrandImg-banner':'navBrandImg-logo'">
           <img
             v-if="!collapseHistoryAndFavorite"
             class="banner"
@@ -110,35 +110,62 @@
         class="tag right"
         @click.prevent="messageSlide"
       >
+       <Tooltip
+          width="50"
+          trigger="hover"
+        >
         <Badge :count="taskMessageCount">
           <i
             class="iconfont iconbj_message badge"
           />
         </Badge>
+          <div slot="content">
+            {{$t('tips.message')}}
+          </div>
+        </Tooltip>
       </div>
       <div
         v-if="versionValue && showTaskIcon"
         class="tag right async-task-icon"
         @click.prevent="handlerOpenTasks"
       >
+        <Tooltip
+          width="50"
+          trigger="hover"
+        >
         <Badge :count="taskMessageCount">
           <svg-icon icon-class="task" style="width: 21px;"></svg-icon>
         </Badge>
+          <div slot="content">
+            {{$t('tips.task')}}
+          </div>
+        </Tooltip>
       </div>
       <!-- 消息队列弹出层 -->
       <MessageList v-model="showMessages"></MessageList>
     </template>
-
+    <!-- 跳转外链 -->
+    <template slot="icon-outside">
+        <OutLink></OutLink>
+    </template>  
     <!-- 设置 -->
     <template slot="icon-person">
       <div
         class="tag right"
         @click="show = true"
       >
+       <Tooltip
+          width="50"
+          trigger="hover"
+        >
         <i
           class="iconfont iconmd-person"
           :title="$t('buttons.setting')"
         />
+         <div slot="content">
+            {{$t('buttons.setting')}}
+          </div>
+        </Tooltip>
       </div>
       <!-- 设置的弹出层 -->
       <Setting v-model="show"></Setting>
@@ -163,6 +190,7 @@
   import noticeMixin from './AsyncTask/noticeMixin'
   import navigatorMixin from './AsyncTask/navigatorMixin'
   import NavigatorSlot from './nav/NavigatorSlot.vue'
+  import OutLink from './nav/outlink.vue'
 
   export default {
     name: 'Navigator',
@@ -175,7 +203,8 @@
       MessageList,
       NavigatorSubMenu,
       ComAutoComplete,
-      NavigatorSlot
+      NavigatorSlot,
+      OutLink
     },
 
     data() {
