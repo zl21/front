@@ -51,3 +51,17 @@ export const isEmpty = (obj)=>{
   }
  
 }
+
+export const copy = function(text){
+  const dom = document.createElement('input')
+  dom.style.opacity = 0
+  dom.style.position = 'fixed'
+  dom.style.left='-99999px'
+  dom.setAttribute('id', 'r3-copy-input')
+  document.body.appendChild(dom)
+
+  dom.value = text
+  dom.select()
+  document.execCommand('copy') 
+  document.body.removeChild(dom)
+}

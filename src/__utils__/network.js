@@ -4,6 +4,7 @@ import md5 from 'md5';
 // import store from '../__config__/window.vm.$store.config';
 import i18n from '../assets/js/i18n';
 import { filterUrl, isJSON } from "./utils";
+import { copy } from '../__utils__/common'
 
 import {
   ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, getProjectQuietRoutes, REQUEST_PENDDING_EXPIRE, getTouristRoute, logoutTips, Version, filterUrlForNetworkScript, getFilterUrlForNetworkData,autoGatewayUrl
@@ -161,25 +162,31 @@ axios.interceptors.response.use(
     //   filterUrlForNetworkScript: FilterUrlForNetwork
     // };
     if (filterUrlForNetworkScript(filterUrlParams)) {
+      let errorMessage = '' // 用于复制粘贴的报错
       if ((response.data.code === -1 || response.data.code === -2)) {
         let errorHTML = Array.isArray(response.data.error || response.data.data) && (response.data.error || response.data.data).reduce((arr, x) => {
-          arr.push(`<p>${x.objid ? `objid${x.objid}` : i18n.t('feedback.modifyFail')}:${x.message}</p>`); return arr;
+          const msg = x.objid ? `objid${x.objid}` : i18n.t('feedback.modifyFail')
+          errorMessage += (msg +`:${x.message}`)
+
+          arr.push(`<p>${msg}:${x.message}</p>`); return arr;
         }, []).join('') || '';
-        // if (!config.url.includes('/p/cs/batchSave')) {
-        //   errorHTML = '';
-        // }
+
         // 处理1.4版本的error明细报错
         if (response.data.data && Array.isArray(response.data.data.errors)) {
           errorHTML = response.data.data.errors.reduce((arr, x) => {
-            arr.push(`<p>${x.id ? `${i18n.t('tips.detail')}${x.id}` : i18n.t('feedback.modifyFail')}:${x.message}</p>`); return arr;
+            const msg = x.id ? `${i18n.t('tips.detail')}${x.id}` : i18n.t('feedback.modifyFail')
+            errorMessage += (msg +`:${x.message}`)
+            arr.push(`<p>${msg}:${x.message}</p>`); return arr;
           }, []).join('') || '';
         }
         let Modalflag = true;
         let innerHTML = '';
 
         if (response.data.message + errorHTML !== 'undefined') {
-          innerHTML = response.data.message + errorHTML;
+          errorMessage = response.data.message+ errorMessage
+          innerHTML = response.data.message + errorHTML
         } else if (response.data.msg + errorHTML !== 'undefined') {
+          errorMessage = response.data.msg+ errorMessage
           innerHTML = response.data.msg + errorHTML;
         } else {
           Modalflag = false;
@@ -190,6 +197,25 @@ axios.interceptors.response.use(
             titleAlign: 'center',
             title: i18n.t('feedback.error'),
             // content: formatJsonEmg
+            showCancel: true,
+            okType: 'posdefault',
+            cancelText: i18n.t('buttons.copy'),
+            onCancel: function() {
+              // 阻止点击后弹框消失
+              this.$children[0].visible = true
+              this._removeCache = this.remove
+              this.remove = function() {}
+
+              copy(errorMessage)
+              window.vm.$Message.success(`${i18n.t('buttons.copy')}${i18n.t('feedback.success')}`)
+            },
+            onOk: function() {
+              // 关闭弹框
+              if(this._removeCache) {
+                this.$children[0].visible = false
+                this._removeCache()
+              }
+            },
             render: h => h('div', [
               h('div', {
                 style: {
@@ -235,8 +261,7 @@ axios.interceptors.response.use(
                 })
               ])
 
-            ])
-
+            ]),
           });
         }
       }
@@ -329,6 +354,25 @@ axios.interceptors.response.use(
             titleAlign: 'center',
             title: i18n.t('feedback.error'),
             // content: formatJsonEmg
+            showCancel: true,
+            cancelText: i18n.t('buttons.copy'),
+            onCancel: function() {
+              // 阻止点击后弹框消失
+              this.$children[0].visible = true
+              this._removeCache = this.remove
+              this.remove = function() {}
+
+              copy(emg)
+              window.vm.$Message.success(`${i18n.t('buttons.copy')}${i18n.t('feedback.success')}`)
+            },
+            okType: 'posdefault',
+            onOk: function() {
+              // 关闭弹框
+              if(this._removeCache) {
+                this.$children[0].visible = false
+                this._removeCache()
+              }
+            },
             render: h => h('div', {
               style: {
                 padding: '10px 20px 0',
