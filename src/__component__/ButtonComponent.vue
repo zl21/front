@@ -230,6 +230,7 @@
   import Dialog from './Dialog.vue';
   import network from '../__utils__/network';
   import { MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY,layoutDirection, enableHistoryAndFavoriteUI, classFix } from '../constants/global';
+  import { DispatchEvent, R3_BUTTON_CLICK } from '../__utils__/dispatchEvent'
 
 
   export default {
@@ -559,6 +560,15 @@
         // }
       },
       btnclick(type, item) {
+        if(type === 'reset') {
+          localStorage.setItem('r3-click-reset', 'true')
+        }
+        DispatchEvent(R3_BUTTON_CLICK, {
+          detail: {
+            type,
+            item
+          }
+        })
         this.$emit('buttonClick', type, item);
       },
 
