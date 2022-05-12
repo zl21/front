@@ -15,8 +15,7 @@
     />
      -->
     <div v-if="isTreeList">
-
-      <tree v-show="treeShow"
+      <tree-v v-show="treeShow"
             ref="tree"
             :tree-datas="treeConfigData"
             @menuTreeChange="menuTreeChange" />
@@ -30,7 +29,7 @@
       <i v-if="treeShow"
          class="iconfont iconbj_left" />
     </div>
-    <div :is="slotName"  
+    <div :is="slotName"
          :getVm="getVm"
        >
         <!-- <Button
@@ -59,7 +58,7 @@
                   :default-column="Number(4)"
                   :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
                   @onHandleEnter="searchClickData" />
-        <component :is="defined"  slot="list-defind" ></component>           
+        <component :is="defined"  slot="list-defind" ></component>
         <tabBar slot="list-tabBar" ref="R3tabBar"
                 v-if="getFilterTable"
                 :data="ag.tablequery"
@@ -146,7 +145,7 @@
                   :title="activeTab.label"
                   @on-oncancle-success="onCancleSuccess"
                   @on-save-success="onSaveSuccess" />
-   
+
   </div>
 </template>
 
@@ -162,7 +161,7 @@ import ChineseDictionary from '../assets/js/ChineseDictionary';
 import ImportDialog from './ImportDialog.vue';
 import ErrorModal from './ErrorModal.vue';
 import modifyDialog from './ModifyModal.vue';
-import tree from './tree.vue';
+import TreeV from './TreeV/treeV';
 import slotTemplate from './slot/standardTableList.vue';
 
 import regExp from '../constants/regExp';
@@ -201,7 +200,7 @@ import listsForm from './FormComponents/list/listsForm';
 
 export default {
   components: {
-    tree,
+    TreeV,
     ButtonGroup,
     AgTable,
     FormItemComponent,
@@ -248,9 +247,10 @@ export default {
       }, // 弹框配置信息
       currentTabValue: {},
       filterTableParam: {},
+      treeChecked: false,
       defined:'', // 插入的组件
       slotName: '',  // 模板名称
-      slotTemple:''  // 模板的slot    
+      slotTemple:''  // 模板的slot
     };
   },
   computed: {
@@ -325,7 +325,7 @@ export default {
         // }
       }
 
-      return async () => { return {} };
+      return async () => { return [] };
     },
     defaultColumn () { // 获取配置列表一行几列数据
       return listDefaultColumn();
@@ -340,11 +340,10 @@ export default {
         // }
         const { tableName, customizedModuleName } = this.$router.currentRoute.params;
 
-
         clearTimeout(this.ztreetimer);
         const checked = this.moduleComponentName.split('.').includes(tableName || customizedModuleName);
         this.ztreetimer = setTimeout(() => {
-          if (this.$refs && this.$refs.tree && this.mountedChecked && !this.TreeChange && checked) {
+          if (this.$refs && this.$refs.tree && this.mountedChecked && !this.TreeChange && checked && !this.treeChecked) {
             this.$refs.tree.getTreeInfo();
           }
         }, 50);
@@ -536,7 +535,7 @@ export default {
       // } else {
       //   delete this.searchData.range;
       // }
-      
+
       this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
       this.searchData.fixedcolumns = await this.dataProcessing();
       if (data.tab_value) {
@@ -612,7 +611,7 @@ export default {
     ...mapActions('global', ['updateAccessHistory', 'getExportedState', 'updataTaskMessageCount', 'getMenuLists']),
     ...mapMutations('global', ['updateCustomizeMessage', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter', 'updataSTDefaultQuery']),
 
-    async menuTreeChange (treeName, currentId, flag, queryFilterData, searchData) {
+    async menuTreeChange (currentId, flag, queryFilterData, searchData) {
       let fixedcolumns = await this.dataProcessing();
       let filterTableParam = JSON.parse(JSON.stringify(this.filterTableParam));
       let fixedcolumnsdata = JSON.parse(JSON.stringify(fixedcolumns));
@@ -623,6 +622,7 @@ export default {
         delete this.searchData.reffixedcolumns;
       }
       this.TreeChange = true;
+      this.treeChecked = true;
       if (flag === false) {
         // 如果取消则不走查树
         searchData = {};
@@ -632,6 +632,7 @@ export default {
       // this.getQueryListForAg(this.searchData);
 
       const searchDataRes = Object.assign({}, this.searchData, searchData);
+      // console.log('searchData', searchData)
 
       this.getQueryListPromise(searchDataRes);
       this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
@@ -1286,7 +1287,7 @@ export default {
         }
         // this.isChangeTreeConfigData = 'Y'; //oldTree
         if (this.isTreeList && this.$refs.tree) {
-          this.$refs.tree.clearNode();
+          this.$refs.tree.update();
           this.treeSearchData = {};// 将树配置的参数清除，保证下一个查询时恢复框架默认参数
         }
         if (this.buttons.isBig) {
@@ -1407,6 +1408,7 @@ export default {
       } else if (type === 'Collection') {
         this.clickButtonsCollect();
       } else if (type === 'reset') {
+        this.treeChecked = false;
         // 重置列表渲染
         this.resetForm();
         // 查询成功后清除表格选中项
@@ -1896,23 +1898,24 @@ export default {
                if(message.fixedcolumns[key]){
                  if(message.fixedcolumns[key].includes(keyValue) === false){
                    if(Array.isArray(message.fixedcolumns[key])){
-                      message.fixedcolumns[key].push(`${keyValue}`);      
+                      message.fixedcolumns[key].push(`${keyValue}`);
                    }else{
-                      message.fixedcolumns[key] =message.fixedcolumns[key] + ` ${keyValue}`;      
+                      message.fixedcolumns[key] =message.fixedcolumns[key] + ` ${keyValue}`;
                    }
-                    
+
                  }
               }else{
                 message.fixedcolumns[key] = [`${keyValue}`];
               }
+
              }
           })
 
           }
-          
+
         }
 
-      },{});  
+      },{});
       return message;
 
     },
@@ -1962,9 +1965,9 @@ export default {
                       this.updateFormData(await this.dataProcessing());
                     })
 
-                }  
-                
-              
+                }
+
+
             }
             this.getQueryListForAg(currentParame);
           });
@@ -2017,6 +2020,17 @@ export default {
       this.$Modal.fcWarning(data);
       // this.$refs.dialogRefs.open();
     },
+    routerParms(){
+      return {
+         fullPath: window.vm.$route.fullPath,
+          meta: window.vm.$route.meta,
+          name: window.vm.$route.name,
+          params: window.vm.$route.params,
+          path:  window.vm.$route.path,
+          query:  window.vm.$route.query
+      }
+
+    },
     AddDetailClick (type, obj) {
       DispatchEvent('R3StandardButtonClick', {
         detail: {
@@ -2039,20 +2053,36 @@ export default {
             if (singleEditType === ':itemId') {
               const path = `/${tableurl.replace(/:itemId/, 'New')}`;
               this.$router.push(
-                path
+                path,
+                 {
+                  type:'tablelist',
+                  path:path,
+                  id:'New',
+                  router:this.routerParms()
+                }
               );
             } else {
               const path = `/${tableurl}`;
               this.$router.push(
-                path
+                path,
+                {
+                  type:'tablelist',
+                  path:path,
+                  router:this.routerParms()
+                }
               );
             }
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
             const customizedModuleName = tableurl.substring(tableurl.indexOf('/') + 1, tableurl.lastIndexOf('/')).toLocaleUpperCase();
             const path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/New`;
-            this.$router.push({
-              path
-            });
+            this.$router.push(
+              path,
+              {
+                  type:'tablelist',
+                  path:path,
+                  router:this.routerParms()
+              }
+            );
             const objs = {
               customizedModuleName,
               id: 'New'
@@ -2081,7 +2111,7 @@ export default {
               let type = hugeQuery.reduce((arr,item)=>{
                 if(item.table === tableName){
                    arr = item.tabpanle;
-                } 
+                }
                 return arr;
               },'');
               if(type){
@@ -2094,7 +2124,7 @@ export default {
                 });
                 return;
               }
-              
+
             }
             window.getObjdisType({ table: tableName }).then((res) => {
               type = res === 'tabpanle' ? 'H' : 'V';
@@ -2306,7 +2336,7 @@ export default {
         DispatchEvent(R3_EXPORT, params)
         return
       }
-      
+
       window.localStorage.setItem('r3-stopPolling', true) // 锁住通知发送
 
       const promise = new Promise((resolve, reject) => {
@@ -2703,12 +2733,23 @@ export default {
             const itemId = this.buttons.selectIdArr.filter(item => item);
             const path = `/${tabAction.replace(/:itemId/, itemId)}`;
             this.$router.push(
-              path
+              path,
+              {
+                  type:'tablelist',
+                  path:path,
+                  id:itemId,
+                  router:this.routerParms()
+              }
             );
           } else {
             const path = `/${tabAction}`;
             this.$router.push(
-              path
+              path,
+              {
+                type:'tablelist',
+                path:path,
+                router:this.routerParms()
+              }
             );
           }
         } else if (actionType === 'https:' || actionType === 'http:') {
@@ -2924,11 +2965,11 @@ export default {
     //   this.slotName = slotTemplate;
     // }
     this.slotName = slotTemplate;
-  
+
      if (window.ProjectConfig.layoutDirectionSlot && window.ProjectConfig.layoutDirectionSlot.standardTableList) {
       //  标准列表配置
        if( window.ProjectConfig.layoutDirectionSlot.standardTableList.defined){
-          // 全局配置  
+          // 全局配置
           this.defined = window.ProjectConfig.layoutDirectionSlot.standardTableList.defined;
        }else{
         let table_name= this[INSTANCE_ROUTE_QUERY].tableName;
@@ -2949,10 +2990,9 @@ export default {
           }
 
         }
-       
-      
-       }
 
+
+       }
     } else {
       this.defined = '';
     }

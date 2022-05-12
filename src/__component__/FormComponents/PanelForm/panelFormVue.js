@@ -200,18 +200,35 @@ export default {
             // 子表兼容
             option.showPlace = 'childrenForm';
           }
-            // const srccol = option.validate && option.validate.refcolval && option.validate.refcolval.srccol;
-            // const prmsrccol = option.validate && option.refcolprem && option.refcolprem.srccol;
-            // this.LinkageForm.push({
-            //   key: `${this.tableName}${option.colname}`,
-            //   name: option.name,
-            //   show: option.show,
-            //   srccol: `${this.tableName}${srccol || prmsrccol}`,
-            //   maintable: true,
-            //   tableName: this.tableName
-            // });
-          return option;
-        })
+            
+          if(option.webconf && option.webconf.resolveJson){
+            // option.display = 'String';
+            try {
+                // 兼容组件展开功能
+              JSON.parse(option.valuedata).forEach((valueItem,index)=>{
+                let current = {...option};
+                current.name = valueItem.label;
+                current.valuedata = valueItem.value;
+                current.colname  = current.colname +index
+                current.col = current.col || 1;
+                current.row = current.row || 1;
+                current.display = valueItem.type ==='text'? 'String' :valueItem.type;
+                arr.push(current);
+              });
+              
+            } catch (error) {
+              console.log(error);
+              
+            }
+          }else{
+            arr.push(option);
+          }
+
+         
+          return arr;
+        },[])
+        console.log('====option',_childs); 
+
         // _childs = _childs.filter(child => child.display !== 'none')
         item.childs = { ...layoutAlgorithm(Number(data.objviewcol), _childs) };
         Object.keys(item.childs).map((temp) => {

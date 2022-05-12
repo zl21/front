@@ -2,6 +2,8 @@ import store from './store.config';
 // importwindow.vm.$router.from './router.config';
 import { getUrl } from '../__utils__/url';
 import i18n from '../assets/js/i18n';
+import RouterPush from '../__utils__/routerback';
+
 
 import {
   STANDARD_TABLE_LIST_PREFIX,
@@ -82,6 +84,7 @@ export const routeTo = ({ type, info }, cb) => {
     default:
       break;
   }
+  new RouterPush().setNavRouter(window.vm.$router,path);
   if (window.vm.$router.currentRoute.fullPath !== path) {
    window.vm.$router.push({ path, query }).catch((e) => { console.error(i18n.t('messages.billOpened')); });
   }
