@@ -64,8 +64,7 @@ export default {
       },
       outList: [
         {
-          icon: 'icon-BOS_logo',
-          type: 'bos31',
+         
         },
       ],
       windowList: {}, // 存储window 对象
