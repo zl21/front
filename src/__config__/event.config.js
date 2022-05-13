@@ -84,9 +84,9 @@ export const routeTo = ({ type, info }, cb) => {
     default:
       break;
   }
-  new RouterPush().setNavRouter(window.vm.$router,path);
   if (window.vm.$router.currentRoute.fullPath !== path) {
-   window.vm.$router.push({ path, query }).catch((e) => { console.error(i18n.t('messages.billOpened')); });
+    new RouterPush().setNavRouter(window.vm.$router,path);
+    window.vm.$router.push({ path, query }).catch((e) => { console.error(i18n.t('messages.billOpened')); });
   }
 };
 

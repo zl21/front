@@ -116,14 +116,12 @@ class RouterPush {
     }
     setNewHistory($route, tableNameUrl, formUrl) {
         // 添加历史记录判断
-        console.log($route, tableNameUrl, formUrl,'========setnew');
         if ($route.$R3_history[tableNameUrl]) {
             // 当前表已经有历史记录的状态下，判断来源表是否等于当前表
             if (formUrl != tableNameUrl) {
               //  $route.$R3_history[tableNameUrl] = this.arguments[1].router;
             }
         } else {
-            console.log($route.$R3_history,this.arguments[1].router);
            $route.$R3_history[tableNameUrl] = {...this.arguments[1].router};
         }
        // this.clearNav($route.currentRoute.path)

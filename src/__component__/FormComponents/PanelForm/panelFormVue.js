@@ -176,7 +176,7 @@ export default {
       // 数组转对象处理，避免vue渲染时的指针问题
       data.addcolums.map((item, index) => {
         let _childs = item.childs ? item.childs : [item.child];
-        _childs.map((option) => {
+        _childs = _childs.reduce((arr,option) => {
           // 判断是否展示组件
           if (option.display === 'none' || option.show === false) {
             option.show = false;
@@ -210,8 +210,8 @@ export default {
                 current.name = valueItem.label;
                 current.valuedata = valueItem.value;
                 current.colname  = current.colname +index
-                current.col = current.col || 1;
-                current.row = current.row || 1;
+                current.col = Number(valueItem.col) || 1;
+                current.row =  Number(valueItem.row) || 1;
                 current.display = valueItem.type ==='text'? 'String' :valueItem.type;
                 arr.push(current);
               });
@@ -227,7 +227,6 @@ export default {
          
           return arr;
         },[])
-        console.log('====option',_childs); 
 
         // _childs = _childs.filter(child => child.display !== 'none')
         item.childs = { ...layoutAlgorithm(Number(data.objviewcol), _childs) };
