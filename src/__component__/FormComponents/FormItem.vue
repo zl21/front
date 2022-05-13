@@ -88,13 +88,7 @@
 
 <script>
 import { mapMutations, mapState } from 'vuex';
-
 import dataProp from '../../__config__/props.config';
-// 弹窗多选面板
-// import Dialog from './ComplexsDialog';
-// 弹窗单选
-// import myPopDialog from './PopDialog';
-// 富文本编辑
 
 import BusDropDownSelectFilter from '../inheritanceComponents/BusDropDownSelectFilter';
 import CustomDropMultiSelectFilter from '../inheritanceComponents/DropMultiSelectFilter';
@@ -115,6 +109,7 @@ import CustomStringRender from '../inheritanceComponents/StringRender'
 import CustomCheckboxGroup from '../inheritanceComponents/CheckboxGroup';
 import CustomMonthDay from '../inheritanceComponents/MonthDay';
 import CustomInputWithSelect from '../inheritanceComponents/inputWithSelect';
+import CustomIconfontPicker from '../inheritanceComponents/IconfontPicker'
 
 import ParameterDataProcessing from './parameterDataProcessing';
 import { Validate } from './PanelForm/Validate';
@@ -401,6 +396,8 @@ export default {
         case 'defined':
           componentInstance = new CustomDefined(item).init();
           break;
+        case 'iconfontpicker':
+          componentInstance = new CustomIconfontPicker(item).init()
         default:
           break;
       }
