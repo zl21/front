@@ -76,7 +76,9 @@ export default {
     },
     svgColor() {
       return function(val) {
+        if(val){
         return `color:${this.icon[val].color}`;
+        }
       };
     },
   },

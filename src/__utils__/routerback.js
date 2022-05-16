@@ -59,7 +59,7 @@ class RouterPush {
                 this.arguments[1].tableName = tablelistdata.tableName;
                 this.arguments[1].id = tablelistdata.id;
                 this.arguments[1].router.params.itemId = this.arguments[1].id;
-
+                console.log(this.arguments[1],tablelistdata);
 
             }
             let tableName = this.arguments[1].tableName || this.arguments[1].customizedModuleName || this.arguments[1].linkName || this.arguments[1].pluginModuleName || tablelistdata.tableName;
@@ -193,11 +193,13 @@ class RouterPush {
         // 匹配路径
         let tableName = '';
         let tableId = '';
+        console.log(data.path,'====');
         if(/SYSTEM/.test(data.path)){
-            let path  = data.path.split(/(V|H)/)[2];
+            let path  = data.path.split(/\/[H|V]\//)[1];
             let pathName = path.split('/');
-            tableName = pathName[1];
-            tableId = pathName[3];
+            console.log(pathName,'======121212');
+            tableName = pathName[0];
+            tableId = pathName[2];
         }
 
         return {
@@ -210,7 +212,11 @@ class RouterPush {
     gethistory() {
         // 历史记录数据
         let data = window.localStorage.getItem('$R3_history_current') || '{}';
-        return JSON.parse(data);
+        try {
+            return JSON.parse(data);
+        } catch (error) {
+            return {};
+        }
     }
     closeCurrent($route) {
         // 手动关闭菜单时调用的删除事件

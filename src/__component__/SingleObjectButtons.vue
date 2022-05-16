@@ -1542,6 +1542,16 @@ import RouterPush from '../__utils__/routerback';
           return [this.itemId];
         }
       },
+      routerParms(){
+          return {
+              fullPath: window.vm.$route.fullPath,
+              meta: window.vm.$route.meta,
+              name: window.vm.$route.name,
+              params: window.vm.$route.params,
+              path:  window.vm.$route.path,
+              query:  window.vm.$route.query
+        }
+    },
       routingHop(tab, id) {
         // tab.action配置路径前不能加/
         // /:itemId?id=1&&name=2
@@ -1558,12 +1568,23 @@ import RouterPush from '../__utils__/routerback';
           if (singleEditType === ':itemId') { // 配置的路径未动态id,根据勾选的明细id进行路由拼接
             const path = `/${tabAction.replace(/:itemId/, id)}`;
             this.$router.push(
-              path
+              path,
+              {
+                  type:'tablelist',
+                  path:path,
+                  id:id,
+                  router:this.routerParms()
+                }
             );
           } else {
             const path = `/${tabAction}`;
             this.$router.push(
-              path
+              path,
+              {
+                  type:'tablelist',
+                  path:path,
+                  router:this.routerParms()
+                }
             );
           }
         } else if (actionType === 'https:' || actionType === 'http:') { // 外链界面
