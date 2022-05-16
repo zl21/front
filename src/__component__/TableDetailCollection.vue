@@ -199,7 +199,6 @@
   import createModal from './PreviewPicture/index';
   import TableTemplate from './slot/TableDetailCollectionslot';
   import { getPinnedColumns } from '../__utils__/tableMethods'
-  import CustomSwitch from './inheritanceComponents/Switch'
   // import { commonTableByAgGrid as arkCommonTableByAgGrid } from '@syman/ark-ui-bcl'
 
   Vue.component('ComAttachFilter', ComAttachFilter);
@@ -297,7 +296,7 @@
           doc: { tag: 'Poptip', event: this.docRender },
           MonthDay: { tag: 'MonthDay', event: this.monthDayRender },
           iconfontpicker: { tag: 'arkIconfontPicker', event: this.iconPickerRender },
-          // switch: {tag: 'Switch', event: this.switchRender}
+          switch: {tag: 'i-switch', event: this.switchRender}
         },
         _beforeSendData: {}, // 之前的数据
         get beforeSendData() {
@@ -1904,10 +1903,9 @@
 
         // 未检查到的类型
         if (!this.DISPLAY_ENUM[cellData.display]) {
-        console.log(cellData.display, cellData.name,cellData)
-
           return null;
         }
+
         return this.DISPLAY_ENUM[cellData.display].event(cellData, this.DISPLAY_ENUM[cellData.display].tag);
       },
 
@@ -1959,17 +1957,24 @@
       },
 
       switchRender(cellData, tag) {
-        console.log("🚀 ~ 单元格", cellData)
         return (h, params) => {
           const rowData = this.copyDataSource.row[params.index]
-          console.log("🚀 ~ 行数据", rowData)
+          const value = rowData[cellData.colname].val
           if(!rowData) {
             return null
           }
-          // const componentInstance = new CustomSwitch({
-          //   combobox: cellData.combobox,
-          //   value: rowData.val
-          // }).init()
+          let trueValue
+          let falseValue
+          if (cellData.combobox) {
+            cellData.combobox.map((item) => {
+              if(item.limitdis){
+                trueValue = item.limitval
+              }else{
+                falseValue = item.limitval
+              }
+              return item;
+            });
+          }
 
           return h('div',{
             style: {
@@ -1985,13 +1990,16 @@
               'table-switch': true
             },
           },[
-            h('CustomSwitch', 
+            h(tag, 
               {
                 props:{
-                  value: rowData.val
+                  size:'small',
+                  value,
+                  trueValue,
+                  falseValue
                 },
                 on: {
-                  'change': (event) => {
+                  'on-change': (event) => {
                     let value = event;
                     let oldIdValue = this.dataSource.row[params.index][cellData.colname].val;
                     this.putDataFromCell(value, oldIdValue, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
