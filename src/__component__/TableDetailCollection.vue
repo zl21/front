@@ -1965,12 +1965,16 @@
           }
           let trueValue
           let falseValue
+          let defaultValue
           if (cellData.combobox) {
             cellData.combobox.map((item) => {
               if(item.limitdis){
                 trueValue = item.limitval
               }else{
                 falseValue = item.limitval
+              }
+              if(item.limitdesc === value) {
+                defaultValue = item.limitval
               }
               return item;
             });
@@ -1994,7 +1998,7 @@
               {
                 props:{
                   size:'small',
-                  value,
+                  value: defaultValue,
                   trueValue,
                   falseValue
                 },
