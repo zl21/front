@@ -199,6 +199,7 @@
   import createModal from './PreviewPicture/index';
   import TableTemplate from './slot/TableDetailCollectionslot';
   import { getPinnedColumns } from '../__utils__/tableMethods'
+  import CustomSwitch from './inheritanceComponents/Switch'
   // import { commonTableByAgGrid as arkCommonTableByAgGrid } from '@syman/ark-ui-bcl'
 
   Vue.component('ComAttachFilter', ComAttachFilter);
@@ -294,7 +295,9 @@
           OBJ_TIME: { tag: 'TimePicker', event: this.timePickerRender },
           image: { tag: 'Poptip', event: this.imageRender },
           doc: { tag: 'Poptip', event: this.docRender },
-          MonthDay: { tag: 'MonthDay', event: this.monthDayRender }
+          MonthDay: { tag: 'MonthDay', event: this.monthDayRender },
+          iconfontpicker: { tag: 'arkIconfontPicker', event: this.iconPickerRender },
+          // switch: {tag: 'Switch', event: this.switchRender}
         },
         _beforeSendData: {}, // 之前的数据
         get beforeSendData() {
@@ -1863,6 +1866,7 @@
         return renderColumns;
       },
       collectionCellRender(cellData) {
+
         if (cellData.customerurl && Object.keys(cellData.customerurl).length > 0) {
           return this.customerurlRender(cellData);
         }
@@ -1898,11 +1902,108 @@
           return this.DISPLAY_ENUM[type].event(cellData, this.DISPLAY_ENUM[type].tag)
         }
 
+        // 未检查到的类型
         if (!this.DISPLAY_ENUM[cellData.display]) {
+        console.log(cellData.display, cellData.name,cellData)
+
           return null;
         }
         return this.DISPLAY_ENUM[cellData.display].event(cellData, this.DISPLAY_ENUM[cellData.display].tag);
       },
+
+      iconPickerRender(cellData, tag) {
+        return (h, params) => {
+          const rowData = this.copyDataSource.row[params.index]
+          if(!rowData) {
+            return null
+          }
+          const jsonValue = rowData[cellData.colname].val || '{}'
+          const value = JSON.parse(jsonValue)
+          return h('div',{
+            style: {
+              overflow: 'hidden',
+              height: '100%',
+              display: 'flex',
+              'align-items': 'center'
+            },
+            class: {
+              'flex-right': cellData.tdAlign === 'right',
+              'flex-center': cellData.tdAlign === 'center',
+              'flex-left': cellData.tdAlign === 'left',
+              'iconfontpicker': true
+            },
+          },[
+            h(tag, 
+              {
+                style: {
+                  height: '22px'
+                },
+                props:{
+                  transferJson: true,
+                  value,
+                  icon: value.icon,
+                  color: value.color,
+                },
+                on: {
+                  'change': (event) => {
+                    let value = event;
+                    let oldIdValue = this.dataSource.row[params.index][cellData.colname].val;
+                    this.putDataFromCell(value, oldIdValue, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                    this.putLabelDataFromCell(value, oldIdValue, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, oldIdValue);
+                  },
+                }
+              }
+            )
+          ])
+        }
+      },
+
+      switchRender(cellData, tag) {
+        console.log("🚀 ~ 单元格", cellData)
+        return (h, params) => {
+          const rowData = this.copyDataSource.row[params.index]
+          console.log("🚀 ~ 行数据", rowData)
+          if(!rowData) {
+            return null
+          }
+          // const componentInstance = new CustomSwitch({
+          //   combobox: cellData.combobox,
+          //   value: rowData.val
+          // }).init()
+
+          return h('div',{
+            style: {
+              overflow: 'hidden',
+              height: '100%',
+              display: 'flex',
+              'align-items': 'center'
+            },
+            class: {
+              'flex-right': cellData.tdAlign === 'right',
+              'flex-center': cellData.tdAlign === 'center',
+              'flex-left': cellData.tdAlign === 'left',
+              'table-switch': true
+            },
+          },[
+            h('CustomSwitch', 
+              {
+                props:{
+                  value: rowData.val
+                },
+                on: {
+                  'change': (event) => {
+                    let value = event;
+                    let oldIdValue = this.dataSource.row[params.index][cellData.colname].val;
+                    this.putDataFromCell(value, oldIdValue, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                    this.putLabelDataFromCell(value, oldIdValue, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, oldIdValue);
+                  },
+                }
+              }
+            )
+          ])
+        }
+      },
+
       strLen(str) {
         let len = 0;
         for (let i = 0; i < str.length; i++) {
