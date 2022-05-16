@@ -416,6 +416,14 @@
         :options="_items.props">
       </string-render>
 
+      <arkIconfontPicker
+        v-if="_items.type === 'iconfontpicker'"
+        :ref="_items.field"
+        v-model="_items.value"
+        :placeholder="_items.props.placeholder"
+        :disabled="_items.props.disabled"
+      ></arkIconfontPicker>
+
       <!-- 自定义组件 -->
       <component
         :is="_items.componentName"
@@ -634,6 +642,10 @@
             clearable: true
           });
         }
+        if(item.type === 'InputWithSelect') {
+          item.type = 'input'
+        }
+
         item.event = Object.assign({}, this.items.event);
 
         return item;
