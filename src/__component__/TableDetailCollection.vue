@@ -1918,6 +1918,17 @@
           if(!rowData) {
             return null
           }
+
+          let obj
+          if(this.isCommonTable || !this.useAgGrid) {
+            const value = rowData[params.column.colname].val
+            obj = {
+              value
+            }
+          } else {
+            obj = params
+          }
+          
           return h('div',{
             style: {
               overflow: 'hidden',
@@ -1935,7 +1946,7 @@
             h('IconfontComponent', 
               {
                 props:{
-                  params
+                  params: obj
                 },
               }
             )
