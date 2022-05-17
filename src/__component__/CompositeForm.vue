@@ -2276,6 +2276,7 @@
 
         if(current.display === 'switch') {
           item.type = 'select'
+          item.props.multiple = false;
         }
 
         if(current.display === 'iconfontpicker') {
