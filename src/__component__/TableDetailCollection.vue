@@ -1956,6 +1956,7 @@
               overflow: 'hidden',
               height: '100%',
               display: 'flex',
+              'min-width': '120px',
               'align-items': 'center'
             },
             class: {
