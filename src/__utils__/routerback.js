@@ -56,6 +56,9 @@ class RouterPush {
             if(this.arguments[1].type ==='tablelist'){
                 // 从列表单对象
                 tablelistdata = this.pathMatching(this.arguments[1]);
+                if(!tablelistdata){
+                    return ;
+                }
                 this.arguments[1].tableName = tablelistdata.tableName;
                 this.arguments[1].id = tablelistdata.id;
                 this.arguments[1].router.params.itemId = this.arguments[1].id;
@@ -193,19 +196,20 @@ class RouterPush {
         // 匹配路径
         let tableName = '';
         let tableId = '';
-        console.log(data.path,'====');
-        if(/SYSTEM/.test(data.path)){
+        if(/SYSTEM/.test(data.path) && /\/[H|V]\//.test(data.path)){
             let path  = data.path.split(/\/[H|V]\//)[1];
             let pathName = path.split('/');
-            console.log(pathName,'======121212');
             tableName = pathName[0];
             tableId = pathName[2];
+            return {
+                tableName:tableName,
+                id:tableId
+            }
+        }else{
+            return false
         }
 
-        return {
-            tableName:tableName,
-            id:tableId
-        }
+     
 
 
     }

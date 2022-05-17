@@ -1,5 +1,6 @@
 <template>
   <div :class="classes" v-if="outList.length > 0">
+  
     <div class="tag r3-outlink">
       <!-- 长度为1 -->
       <div v-if="outList.length === 1" @click="outlink(outList[0])">
@@ -63,9 +64,7 @@ export default {
         },
       },
       outList: [
-        {
-         
-        },
+      
       ],
       windowList: {}, // 存储window 对象
     };
@@ -114,7 +113,6 @@ export default {
         .post('/p/cs/ssosystemlist')
         .then((res) => {
           if (res.data.code === 0) {
-            console.log(res.data.data, '=====res');
             this.outList = res.data.data;
           }
         })
