@@ -422,6 +422,8 @@
         v-model="_items.value"
         :placeholder="_items.props.placeholder"
         :disabled="_items.props.disabled"
+        transferJson
+        @change="iconValueChange"
       ></arkIconfontPicker>
 
       <!-- 自定义组件 -->
@@ -740,6 +742,10 @@
       },
       definedChange(value) {
         // 自定义界面的value
+        this._items.value = value;
+        this.valueChange();
+      },
+      iconValueChange(value) {
         this._items.value = value;
         this.valueChange();
       },
