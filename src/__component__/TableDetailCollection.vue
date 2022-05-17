@@ -296,7 +296,7 @@
           doc: { tag: 'Poptip', event: this.docRender },
           MonthDay: { tag: 'MonthDay', event: this.monthDayRender },
           iconfontpicker: { tag: 'arkIconfontPicker', event: this.iconPickerRender },
-          switch: {tag: 'i-switch', event: this.switchRender}
+          switch: {tag: 'i-switch', event: this.switchRender},
         },
         _beforeSendData: {}, // 之前的数据
         get beforeSendData() {
@@ -1887,6 +1887,9 @@
           if (cellData.display === 'text') {
             return this.textRender(cellData, this.DISPLAY_ENUM[cellData.display].tag);
           }
+          if(cellData.display === 'iconfontpicker') {
+            return this.iconRender(cellData);
+          }
           return null;
         }
         if (cellData.isfk && cellData.fkdisplay) {
@@ -1907,6 +1910,37 @@
         }
 
         return this.DISPLAY_ENUM[cellData.display].event(cellData, this.DISPLAY_ENUM[cellData.display].tag);
+      },
+
+      iconRender(cellData) {
+        return (h, params) => {
+          const rowData = this.copyDataSource.row[params.index]
+          if(!rowData) {
+            return null
+          }
+          return h('div',{
+            style: {
+              overflow: 'hidden',
+              height: '100%',
+              display: 'flex',
+              'align-items': 'center'
+            },
+            class: {
+              'flex-right': cellData.tdAlign === 'right',
+              'flex-center': cellData.tdAlign === 'center',
+              'flex-left': cellData.tdAlign === 'left',
+              'table-icon': true
+            },
+          },[
+            h('IconfontComponent', 
+              {
+                props:{
+                  params
+                },
+              }
+            )
+          ])
+        }
       },
 
       iconPickerRender(cellData, tag) {
