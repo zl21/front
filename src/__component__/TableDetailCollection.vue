@@ -1992,6 +1992,7 @@
                   'change': (event) => {
                     let value = event;
                     let oldIdValue = this.dataSource.row[params.index][cellData.colname].val;
+                    this.copyDataSource.row[params.index][cellData.colname].val = event;
                     this.putDataFromCell(value, oldIdValue, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
                     this.putLabelDataFromCell(value, oldIdValue, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, oldIdValue);
                   },
