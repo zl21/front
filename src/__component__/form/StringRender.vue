@@ -1,6 +1,7 @@
 <template>
   <div
     v-html="customizedDefaultValue || value"
+    :title="customizedDefaultValue || value"
     :style="options.webconf && options.webconf.styleForString"
     class="string-wrap one-line-flow"
   >
