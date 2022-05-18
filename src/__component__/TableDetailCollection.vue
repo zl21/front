@@ -1429,12 +1429,23 @@
               const itemId = this.tableRowSelectedIds.map(item => item.ID).toString();
               const path = `/${tabAction.replace(/:itemId/, itemId)}`;
               this.$router.push(
-                path
+                path,
+                {
+                  type:'tablelist',
+                  path:path,
+                  id:itemId,
+                  router:this.routerParms()
+                }
               );
             } else {
               const path = `/${tabAction}`;
               this.$router.push(
-                path
+                path,
+                {
+                  type:'tablelist',
+                  path:path,
+                  router:this.routerParms()
+                }
               );
             }
           } else if (actionType === 'https:' || actionType === 'http:') {
@@ -1538,6 +1549,16 @@
         }
 
       },
+       routerParms(){
+          return {
+              fullPath: window.vm.$route.fullPath,
+              meta: window.vm.$route.meta,
+              name: window.vm.$route.name,
+              params: window.vm.$route.params,
+              path:  window.vm.$route.path,
+              query:  window.vm.$route.query
+        }
+    },
       objectTryDelete(obj) { // 按钮删除方法
         if (obj && obj.path && obj.path.includes('sp|')) {
           obj.path = null;

@@ -52,19 +52,31 @@ class RouterPush {
                 // 获取当前历史(应对刷新问题) 
                 $route.$R3_history = this.gethistory() || {};
             }
-            let tableName = this.arguments[1].tableName || this.arguments[1].customizedModuleName || this.arguments[1].linkName || this.arguments[1].pluginModuleName;
+            let tablelistdata = {};
+            if(this.arguments[1].type ==='tablelist'){
+                // 从列表单对象
+                tablelistdata = this.pathMatching(this.arguments[1]);
+                if(!tablelistdata){
+                    return ;
+                }
+                this.arguments[1].tableName = tablelistdata.tableName;
+                this.arguments[1].id = tablelistdata.id;
+                this.arguments[1].router.params.itemId = this.arguments[1].id;
+                console.log(this.arguments[1],tablelistdata);
+
+            }
+            let tableName = this.arguments[1].tableName || this.arguments[1].customizedModuleName || this.arguments[1].linkName || this.arguments[1].pluginModuleName || tablelistdata.tableName;
             let formTableName = this.arguments[1].router.params.tableName || this.arguments[1].router.params.customizedModuleName || this.arguments[1].router.params.linkName || this.arguments[1].router.params.pluginModuleName;
 
             if (!tableName) {
                 // 表明不存在，截图路径上的
                 tableName = this.arguments[1].url.split('/')[1];
             }
-            let tableNameUrl = tableName + `/${this.arguments[1].id}`;
+            let tableNameUrl = tableName + `/${(this.arguments[1].id || tablelistdata.tableId)}`;
             let CurrentUrl = `${tableName}/${this.arguments[1].router.params.itemId}`;
             let formUrl = formTableName + `/${this.arguments[1].router.params.itemId}`;
             // 清除nav 记录  
-            this.clearNav(`/${this.arguments[1].tableName}/`);
-
+            this.clearNav(`/${(this.arguments[1].tableName || tablelistdata.tableName)}/`);
             if (this.arguments[1].clearhistory) {
                 // 清除当前表的历史 
                 if (this.arguments[1].clearParams) {
@@ -84,25 +96,14 @@ class RouterPush {
 
                     }
                 } else {
-                    this.setNewHistory($route, tableNameUrl, formUrl)
+                   this.setNewHistory($route, tableNameUrl, formUrl)
                 }
             }
             $route.$R3_params = this.arguments[1];
 
         } else {
-            // 默认其余都是走导航,用来计算从导航跳转到单对象的隐藏返回按钮
-            // $route.beforeEach((to, from, next) => {
-            //     console.log(from,'=======');
-            //     next();
-            // })
-            if (!$route.$R3_history || !$route.$R3_history.nav) {
-                $route.$R3_history = {};
-                $route.$R3_history.nav = {};
-            }
-            setTimeout(()=>{
-                $route.$R3_history.nav[$route.currentRoute.path] = $route.currentRoute.path;
-                window.localStorage.setItem('$R3_history_current', JSON.stringify($route.$R3_history));
-            },0);
+        
+           
         }
         window.localStorage.setItem('$R3_history_current', JSON.stringify($route.$R3_history));
 
@@ -121,12 +122,12 @@ class RouterPush {
         if ($route.$R3_history[tableNameUrl]) {
             // 当前表已经有历史记录的状态下，判断来源表是否等于当前表
             if (formUrl != tableNameUrl) {
-                $route.$R3_history[tableNameUrl] = this.arguments[1].router;
+              //  $route.$R3_history[tableNameUrl] = this.arguments[1].router;
             }
         } else {
-            $route.$R3_history[tableNameUrl] = this.arguments[1].router;
+           $route.$R3_history[tableNameUrl] = {...this.arguments[1].router};
         }
-        this.clearNav($route.currentRoute.path)
+       // this.clearNav($route.currentRoute.path)
 
     }
     back() {
@@ -191,10 +192,35 @@ class RouterPush {
             return false;
         }
     }
+    pathMatching(data){
+        // 匹配路径
+        let tableName = '';
+        let tableId = '';
+        if(/SYSTEM/.test(data.path) && /\/[H|V]\//.test(data.path)){
+            let path  = data.path.split(/\/[H|V]\//)[1];
+            let pathName = path.split('/');
+            tableName = pathName[0];
+            tableId = pathName[2];
+            return {
+                tableName:tableName,
+                id:tableId
+            }
+        }else{
+            return false
+        }
+
+     
+
+
+    }
     gethistory() {
         // 历史记录数据
         let data = window.localStorage.getItem('$R3_history_current') || '{}';
-        return JSON.parse(data);
+        try {
+            return JSON.parse(data);
+        } catch (error) {
+            return {};
+        }
     }
     closeCurrent($route) {
         // 手动关闭菜单时调用的删除事件
@@ -241,7 +267,7 @@ class RouterPush {
     clearNav(url) {
         // 清除导航跳转来的记录
         let getHistoryData = JSON.parse(JSON.stringify(this.gethistory()));
-        Object.keys(getHistoryData.nav).forEach((key)=>{
+        Object.keys(getHistoryData.nav || {}).forEach((key)=>{
                 if(new RegExp(url).test(key)){
                     delete getHistoryData.nav[key]
                 }
@@ -257,10 +283,19 @@ class RouterPush {
         this.listener = false;
         window.localStorage.setItem('$R3_history_current', '{}');
     }
+    setNavRouter($route,path){
+        // 是否是导航跳转
+        if (!$route.$R3_history || !$route.$R3_history.nav) {
+            $route.$R3_history = {};
+            $route.$R3_history.nav = {};
+        }
+        $route.$R3_history.nav[path] = path;
+        window.localStorage.setItem('$R3_history_current', JSON.stringify($route.$R3_history));
+    }
     exists(name) {
         // 是否存在是从功能清单跳转过来的菜单
-        let getHistoryData = this.gethistory();
-        if (getHistoryData.nav[name]) {
+        let getHistoryData = this.gethistory() || {};
+        if (getHistoryData.nav && getHistoryData.nav[name]) {
             return true
         } else {
             return false;

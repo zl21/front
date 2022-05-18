@@ -110,6 +110,7 @@ import CustomCheckboxGroup from '../inheritanceComponents/CheckboxGroup';
 import CustomMonthDay from '../inheritanceComponents/MonthDay';
 import CustomInputWithSelect from '../inheritanceComponents/inputWithSelect';
 import CustomIconfontPicker from '../inheritanceComponents/IconfontPicker'
+import CustomSwitch from '../inheritanceComponents/Switch';
 
 import ParameterDataProcessing from './parameterDataProcessing';
 import { Validate } from './PanelForm/Validate';
@@ -307,9 +308,10 @@ export default {
         } else {
           this.items.webconf.dynamicforcompute = {}
         }
-
         this.items.webconf.dynamicforcompute = this.items.dynamicforcompute;
       }
+      // 标准列表不显示Switch
+    
       let item = this.items;
 
       let componentInstance = null
@@ -350,11 +352,13 @@ export default {
           componentInstance = new CustomDatePicker(item).init();
           break;
         case 'OBJ_SELECT':
+        case 'OBJ_SWITCH' :
         case 'RADIO_GROUP':
         case 'CHECKBOX_GROUP':
           // 列表界面把radio-group渲染成select
           // 列表界面把checkbox-group渲染成select
-          const typeList = ['RADIO_GROUP', 'CHECKBOX_GROUP']
+          // 列表界面把OBJ_SWITCH渲染成select
+          const typeList = ['RADIO_GROUP', 'CHECKBOX_GROUP','OBJ_SWITCH']
           if (!item.detailType && typeList.includes(item.display)) {
             item.display = 'OBJ_SELECT'
           }
@@ -362,7 +366,12 @@ export default {
           break;
         case 'OBJ_CHECK':
           componentInstance = new CustomCheckbox(item).init();
-          break;
+
+          break; 
+         case 'switch' :
+           componentInstance = new CustomSwitch(item).init();
+          break;  
+
         case 'image':
           componentInstance = new CustomImageUpload(item).init();
           break;

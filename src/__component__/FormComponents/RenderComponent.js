@@ -82,6 +82,7 @@ String.prototype.TextFilter = function TextFilter() {
         break;
       case 'OBJ_DATE':
         item.display = 'OBJ_DATETIME';
+       
       default:
         break;
     }

@@ -2017,6 +2017,17 @@ export default {
       this.$Modal.fcWarning(data);
       // this.$refs.dialogRefs.open();
     },
+     routerParms(){
+      return {
+         fullPath: window.vm.$route.fullPath,
+          meta: window.vm.$route.meta,
+          name: window.vm.$route.name,
+          params: window.vm.$route.params,
+          path:  window.vm.$route.path,
+          query:  window.vm.$route.query
+      }
+
+    },
     AddDetailClick (type, obj) {
       DispatchEvent('R3StandardButtonClick', {
         detail: {
@@ -2039,20 +2050,38 @@ export default {
             if (singleEditType === ':itemId') {
               const path = `/${tableurl.replace(/:itemId/, 'New')}`;
               this.$router.push(
-                path
+                path,
+                {
+                  type:'tablelist',
+                  path:path,
+                  id:'New',
+                  router:this.routerParms()
+                }
               );
             } else {
               const path = `/${tableurl}`;
               this.$router.push(
-                path
+                path,
+                {
+                  type:'tablelist',
+                  path:path,
+                  id:'New',
+                  router:this.routerParms()
+                }
               );
             }
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
             const customizedModuleName = tableurl.substring(tableurl.indexOf('/') + 1, tableurl.lastIndexOf('/')).toLocaleUpperCase();
             const path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/New`;
-            this.$router.push({
-              path
-            });
+            this.$router.push(
+              path,
+              {
+                  type:'tablelist',
+                  path:path,
+                  id:'New',
+                  router:this.routerParms()
+                }
+            );
             const objs = {
               customizedModuleName,
               id: 'New'
@@ -2703,12 +2732,23 @@ export default {
             const itemId = this.buttons.selectIdArr.filter(item => item);
             const path = `/${tabAction.replace(/:itemId/, itemId)}`;
             this.$router.push(
-              path
+              path,
+              {
+                  type:'tablelist',
+                  path:path,
+                  id:itemId,
+                  router:this.routerParms()
+                }
             );
           } else {
             const path = `/${tabAction}`;
             this.$router.push(
-              path
+              path,
+              {
+                  type:'tablelist',
+                  path:path,
+                  router:this.routerParms()
+                }
             );
           }
         } else if (actionType === 'https:' || actionType === 'http:') {
