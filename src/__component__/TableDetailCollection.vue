@@ -5165,6 +5165,7 @@
         if (!this._inactive) {
           this.isRefreshClick = true;
           this.currentOrderList = [];
+          this.deleteFailInfo = undefined
         }
       });
       if (!this._inactive) {
