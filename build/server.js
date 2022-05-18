@@ -1,9 +1,17 @@
 const express = require('express');
 const app = express();
+const history = require('connect-history-api-fallback');
+
+app.use(history({
+
+  verbose: true,
+  index: 'index.html'
+
+}))
 app.use(express.static('dist'));
 
 const { createProxyMiddleware } = require('http-proxy-middleware');
-let url = 'http://r3-8098.dev.syman.cn/';
+let url = 'http://120.79.145.203/';
 app.use(
     '/p/cs',
     createProxyMiddleware({
@@ -26,5 +34,5 @@ app.use(
   })
 );
 app.listen(3500, () => {
-  console.info('打开浏览器', 'http://127.0.0.1:3500');
+  console.info('打开浏览器', 'http://192.168.5.210:3500');
 });
