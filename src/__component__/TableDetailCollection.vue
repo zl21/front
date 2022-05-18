@@ -294,7 +294,9 @@
           OBJ_TIME: { tag: 'TimePicker', event: this.timePickerRender },
           image: { tag: 'Poptip', event: this.imageRender },
           doc: { tag: 'Poptip', event: this.docRender },
-          MonthDay: { tag: 'MonthDay', event: this.monthDayRender }
+          MonthDay: { tag: 'MonthDay', event: this.monthDayRender },
+          iconfontpicker: { tag: 'arkIconfontPicker', event: this.iconPickerRender },
+          switch: {tag: 'i-switch', event: this.switchRender},
         },
         _beforeSendData: {}, // 之前的数据
         get beforeSendData() {
@@ -1884,6 +1886,7 @@
         return renderColumns;
       },
       collectionCellRender(cellData) {
+
         if (cellData.customerurl && Object.keys(cellData.customerurl).length > 0) {
           return this.customerurlRender(cellData);
         }
@@ -1905,6 +1908,9 @@
           if (cellData.display === 'text') {
             return this.textRender(cellData, this.DISPLAY_ENUM[cellData.display].tag);
           }
+          if(cellData.display === 'iconfontpicker') {
+            return this.iconRender(cellData);
+          }
           return null;
         }
         if (cellData.isfk && cellData.fkdisplay) {
@@ -1919,11 +1925,165 @@
           return this.DISPLAY_ENUM[type].event(cellData, this.DISPLAY_ENUM[type].tag)
         }
 
+        // 未检查到的类型
         if (!this.DISPLAY_ENUM[cellData.display]) {
           return null;
         }
+
         return this.DISPLAY_ENUM[cellData.display].event(cellData, this.DISPLAY_ENUM[cellData.display].tag);
       },
+
+      iconRender(cellData) {
+        return (h, params) => {
+          const rowData = this.copyDataSource.row[params.index]
+          if(!rowData) {
+            return null
+          }
+
+          let obj
+          if(this.isCommonTable || !this.useAgGrid) {
+            const value = rowData[params.column.colname].val
+            obj = {
+              value
+            }
+          } else {
+            obj = params
+          }
+          
+          return h('div',{
+            style: {
+              overflow: 'hidden',
+              height: '100%',
+              display: 'flex',
+              'align-items': 'center'
+            },
+            class: {
+              'flex-right': cellData.tdAlign === 'right',
+              'flex-center': cellData.tdAlign === 'center',
+              'flex-left': cellData.tdAlign === 'left',
+              'table-icon': true
+            },
+          },[
+            h('IconfontComponent', 
+              {
+                props:{
+                  params: obj
+                },
+              }
+            )
+          ])
+        }
+      },
+
+      iconPickerRender(cellData, tag) {
+        return (h, params) => {
+          const rowData = this.copyDataSource.row[params.index]
+          if(!rowData) {
+            return null
+          }
+          const jsonValue = rowData[cellData.colname].val || '{}'
+          const value = JSON.parse(jsonValue)
+          return h('div',{
+            style: {
+              overflow: 'hidden',
+              height: '100%',
+              display: 'flex',
+              'min-width': '120px',
+              'align-items': 'center'
+            },
+            class: {
+              'flex-right': cellData.tdAlign === 'right',
+              'flex-center': cellData.tdAlign === 'center',
+              'flex-left': cellData.tdAlign === 'left',
+              'iconfontpicker': true
+            },
+          },[
+            h(tag, 
+              {
+                style: {
+                  height: '22px'
+                },
+                props:{
+                  transferJson: true,
+                  value,
+                  icon: value.icon,
+                  color: value.color,
+                },
+                on: {
+                  'change': (event) => {
+                    let value = event;
+                    let oldIdValue = this.dataSource.row[params.index][cellData.colname].val;
+                    this.copyDataSource.row[params.index][cellData.colname].val = event;
+                    this.putDataFromCell(value, oldIdValue, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                    this.putLabelDataFromCell(value, oldIdValue, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, oldIdValue);
+                  },
+                }
+              }
+            )
+          ])
+        }
+      },
+
+      switchRender(cellData, tag) {
+        return (h, params) => {
+          const rowData = this.copyDataSource.row[params.index]
+          const value = rowData[cellData.colname].val
+          if(!rowData) {
+            return null
+          }
+          let trueValue
+          let falseValue
+          let defaultValue
+          if (cellData.combobox) {
+            cellData.combobox.map((item) => {
+              if(item.limitdis){
+                trueValue = item.limitval
+              }else{
+                falseValue = item.limitval
+              }
+              if(item.limitdesc === value) {
+                defaultValue = item.limitval
+              }
+              return item;
+            });
+          }
+
+          return h('div',{
+            style: {
+              overflow: 'hidden',
+              height: '100%',
+              display: 'flex',
+              'align-items': 'center'
+            },
+            class: {
+              'flex-right': cellData.tdAlign === 'right',
+              'flex-center': cellData.tdAlign === 'center',
+              'flex-left': cellData.tdAlign === 'left',
+              'table-switch': true
+            },
+          },[
+            h(tag, 
+              {
+                props:{
+                  size:'small',
+                  value: defaultValue,
+                  trueValue,
+                  falseValue
+                },
+                on: {
+                  'on-change': (event) => {
+                    let value = event;
+                    let oldIdValue = this.dataSource.row[params.index][cellData.colname].val;
+                    this.putDataFromCell(value, oldIdValue, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                    this.putLabelDataFromCell(value, oldIdValue, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, oldIdValue);
+                  },
+                }
+              }
+            )
+          ])
+        }
+      },
+
       strLen(str) {
         let len = 0;
         for (let i = 0; i < str.length; i++) {
@@ -5026,6 +5186,7 @@
         if (!this._inactive) {
           this.isRefreshClick = true;
           this.currentOrderList = [];
+          this.deleteFailInfo = undefined
         }
       });
       if (!this._inactive) {
