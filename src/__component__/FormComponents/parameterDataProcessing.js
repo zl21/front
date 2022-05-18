@@ -301,8 +301,9 @@ export default class ParameterDataProcessing {
       //  兼容默认值defval 是单对象默认值， default 是列表默认值   valuedata:是单对象的值
       this.item.default = this.item.defval
     }
+
     // select
-    if ((this.item.default || this.item.defval) && this.item.display === 'OBJ_SELECT') {
+    if ((this.item.default || this.item.defval) && (this.item.display === 'OBJ_SELECT' || this.item.display === 'OBJ_SWITCH' )) {
       // detailType为真，说明是单对象
       // return this.item.default ? this.item.default.split(',') : this.item.defval;
       if(this.item.valuedata){
@@ -325,6 +326,7 @@ export default class ParameterDataProcessing {
     }
     // 
     if(this.item.display === 'OBJ_SELECT' && isDetailPage){
+      
       let index = this.setSelectedValue(this.item);
       if(index<0){
           return ''
@@ -447,7 +449,7 @@ export default class ParameterDataProcessing {
 
 
     // 处理checkbox
-    if (this.item.display === 'OBJ_CHECK') {
+    if (this.item.display === 'OBJ_CHECK' || this.item.display === 'switch') {
       let value = this.item.valuedata || this.item.default;
       if (value) {
         return this.item.combobox.filter(item => {
@@ -493,7 +495,7 @@ export default class ParameterDataProcessing {
 
     }
    
-    if (this.item.display === 'OBJ_CHECK') {
+    if (this.item.display === 'OBJ_CHECK' || this.item.display === "switch") {
       const optionIndex = this.item.combobox.findIndex(x => x.limitval === this.value);
       if (optionIndex !== -1) {
         return this.item.combobox[optionIndex].limitdesc;

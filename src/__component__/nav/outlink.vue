@@ -1,27 +1,21 @@
 <template>
   <div :class="classes" v-if="outList.length > 0">
+  
     <div class="tag r3-outlink">
       <!-- 长度为1 -->
-      <div
-        v-if="outList.length === 1"
-        @click="outlink(outList[0])"
-      >
-        <Tooltip
-          width="50"
-          trigger="hover"
-        >
+      <div v-if="outList.length === 1" @click="outlink(outList[0])">
+        <Tooltip width="50" trigger="hover">
           <svg
-          class="r3-svg-icon"
-          aria-hidden="true"
-          :style="svgColor(outList[0].icon)"
-        >
-          <use :xlink:href="`#${outList[0].icon}`"></use>
-        </svg>
+            class="r3-svg-icon"
+            aria-hidden="true"
+            :style="svgColor(outList[0].icon)"
+          >
+            <use :xlink:href="`#${outList[0].icon}`"></use>
+          </svg>
           <div slot="content">
-            {{$t('buttons.jump')}}{{outList[0].type}}
+            {{ $t('buttons.jump') }}{{ outList[0].type }}
           </div>
         </Tooltip>
-        
       </div>
       <!-- 长度大于1 -->
       <Dropdown v-if="outList.length < 2">
@@ -69,7 +63,10 @@ export default {
           color: '#438EB9',
         },
       },
-      outList: [],
+      outList: [
+      
+      ],
+      windowList: {}, // 存储window 对象
     };
   },
   computed: {
@@ -78,19 +75,34 @@ export default {
     },
     svgColor() {
       return function(val) {
+        if(val){
         return `color:${this.icon[val].color}`;
+        }
       };
     },
   },
   methods: {
     outlink(item) {
       // 跳转单点登录
+
       network
         .post('/p/cs/ssothirdsystem', { type: item.type })
         .then((res) => {
           if (res.data.code === 0) {
             let url = res.data.data;
-            window.open(url);
+            if (!this.windowList[item.type]) {
+              this.windowList[item.type] = window.open(
+                url
+              );
+            } else {
+              if (this.windowList[item.type].opener) {
+                this.windowList[item.type].focus();
+              } else {
+                this.windowList[item.type] = window.open(
+                  url
+                );
+              }
+            }
           }
         })
         .catch(() => {});
@@ -101,7 +113,6 @@ export default {
         .post('/p/cs/ssosystemlist')
         .then((res) => {
           if (res.data.code === 0) {
-            console.log(res.data.data, '=====res');
             this.outList = res.data.data;
           }
         })

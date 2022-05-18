@@ -97,7 +97,7 @@ function HiddenFields(tableName){
           formItem.show = false 
         }
         if(temp.clear){  //是否配置了隐藏字段时需要清空数据
-          if(target.items.display === 'OBJ_CHECK'){
+          if(target.items.display === 'OBJ_CHECK' || target.items.display === 'switch'){
             target.value = target.items.combobox.filter(item => !item.limitdis)[0].limitval
           }else{
            

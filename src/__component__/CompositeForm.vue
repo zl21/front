@@ -2274,6 +2274,15 @@
         }
         // 外键的单选多选判断
 
+        if(current.display === 'switch') {
+          item.type = 'select'
+          item.props.multiple = false;
+        }
+
+        if(current.display === 'iconfontpicker') {
+          item.type = 'iconfontpicker'
+        }
+
         if (current.combobox) {
           const arr = current.combobox.reduce((sum, items) => {
             sum.push({
