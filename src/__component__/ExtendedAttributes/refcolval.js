@@ -46,7 +46,6 @@ export const refcolvalMap = ($this, config,key,type) => {
          config = {};
         config.srccol = srccol;
     }
-    console.log(121212,'====');
     let targetVm = FindInstance($this,config.srccol,$this.item.tableName,maintable);
     let linkFormMap = {
         [key]: [`${$this.item.tableName || ''}${$this.item.colname}`]
@@ -55,7 +54,7 @@ export const refcolvalMap = ($this, config,key,type) => {
     //挂载映射关系到对方 
     let checked = [];
     targetVm.forEach((target)=>{
-        if(target.items.show){
+        if(target && target.items.show){
             if(!target.items._linkFormMap ||  target.items._linkFormMap && !target.items._linkFormMap[key]){
                 target.items._linkFormMap = linkFormMap;
             }else{

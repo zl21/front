@@ -130,6 +130,8 @@ import CollapseName from './FormComponents/childrenForm/CollapseComponent.vue';
               if (Array.isArray(itemChilds)) {
                 itemChilds.forEach((option) => {
                   option.isnotnull = false;
+                  option.onjump = true;
+                  // onjump 不要外键跳转
                 });
                 arr.push(itemChilds);
               } else {

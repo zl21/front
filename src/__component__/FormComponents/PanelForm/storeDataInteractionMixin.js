@@ -201,13 +201,19 @@ export default {
               if (this.items.showPlace !== 'childrenForm'&& !ossRealtimeSave() && JSON.stringify(val) !== JSON.stringify(this.defaultVale)) {
                 if (this.items.display === 'image' || this.items.display === 'OBJ_DOC') {
                   // 主子表的子表修改（1:1）的情况下
-                  setTimeout(() => {
-                    const dom = document.getElementById('actionMODIFY');
-                    if (dom) {
-                      dom.click();
-                    }
+                  if(/New/.test(this.$route.params.itemId)!==true){
+                    // 新增不走自动保存逻辑
+                    setTimeout(() => {
+                      const dom = document.getElementById('actionMODIFY');
+                      if (dom) {
+                        dom.click();
+                      }
+  
+                    }, 600);
 
-                  }, 600);
+                    
+                  }
+                  
                 }
               }
             }
