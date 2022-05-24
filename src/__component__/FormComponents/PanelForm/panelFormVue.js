@@ -119,6 +119,11 @@ export default {
       // 初始化
       clearTimeout(this.timer);
       this.timer = setTimeout(() => {
+        if(!this.$parent.InitializationForm && !this.$parent.formPanelChange ){
+          // 应对弹窗问题
+            this.$emit('on-InitializationForm',this.defaulDataValue, this.formDataLabel,this.defaulDataLabel)
+            return true;
+        }
         if (this.$parent.formPanelChange) {
           // v
           this.$parent.initFormPanel(this.defaulDataValue, this.formDataLabel,this.defaulDataLabel)
@@ -243,7 +248,6 @@ export default {
           item.childs[temp].component = this.initComponent(item.childs[temp], index);
           item.childs[temp].isMainTable = this.isMainTable;
           item.childs[temp].moduleComponentName = this.moduleComponentName;
-          
           item.childs[temp].formName = this.tableName +'-'+ ((this.moduleComponentName.split('.').splice(2,2)).join('-'));
           const child = JSON.parse(JSON.stringify(item.childs[temp]))
           item.childs[temp] = new RenderComponent(child, undefined, this).itemConversion();
@@ -486,7 +490,7 @@ export default {
   },
   async mounted () {
     this.setFormlist();
-
+    console.log(this,'=====defaultData==');
     this.CollapseComponent = CollapseComponent;
     if(this.CollapseName === undefined){
       this.CollapseComponent = CollapseComponent;

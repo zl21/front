@@ -40,6 +40,14 @@ export const FindInstance = ($this,name,tableName,maintable) => {
     let mainTableName = $this.$route.params.tableName;
      //console.log(mainTableName,'34343',$this.$route.params,$this.activeTab.keepAliveModuleName);
     let panelFormParent = {};
+    if(tableName === 'BatchModal'){
+        // 批量修改的
+        return [$this.$_live_getChildComponent(window.vm, tableName+name)]
+    }
+    if(/BatchModal/.test(name)){
+        // 批量修改的
+        return [$this.$_live_getChildComponent(window.vm, name)]
+    }
     if(document.querySelector('.ListsForm-box')){
         panelFormParent = document.querySelector('.ListsForm-box')._vue_;
         name = name.replace(new RegExp(mainTableName), "");

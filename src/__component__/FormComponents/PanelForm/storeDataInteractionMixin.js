@@ -265,6 +265,12 @@ export default {
         formChangeData = Object.assign(JSON.parse(JSON.stringify(ParentForm.defaulDataValue)),JSON.parse(JSON.stringify(formChangeData)));
         formDataLabel = Object.assign(JSON.parse(JSON.stringify(ParentForm.defaulDataLabel)),JSON.parse(JSON.stringify(formDataLabel)));
       }
+      if(!ParentForm.$parent.formPanelChange && !ParentForm.$parent.formChange){
+        // 不存在,例如弹窗等
+        ParentForm.$emit('on-changeForm',formChangeData, formDataLabel,ParentForm.formChangeDataLabel);
+        return true;
+
+      }
       if (ParentForm.$parent.formPanelChange) {
         ParentForm.$parent.formPanelChange(formChangeData, formDataLabel,ParentForm.formChangeDataLabel)
       }else{

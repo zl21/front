@@ -31,7 +31,7 @@ module.exports = {
     //   return `${data.url}&session_id=${data.sessionid}&userid=${userInfo.name ? userInfo.id : POSNAME}`
     // } 
   }, // 框架回调，形如 { loginCb: function() {} }
-  layoutDirection: true, // 默认是false ,水平排版 ，true 是垂直排版
+  layoutDirection: false, // 默认是false ,水平排版 ，true 是垂直排版
   layoutDirectionSlot:{  // 模板渲染
     //NavigatorSubMenu:require('./src/demo/NavigatorSubMenu.vue').default,  // 模板渲染
     //NaVertical:require('./src/demo/NaVerticalslot.vue').default  // 模板渲染

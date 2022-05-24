@@ -46,6 +46,7 @@ export const refcolvalMap = ($this, config,key,type) => {
          config = {};
         config.srccol = srccol;
     }
+    console.log(121212,'====');
     let targetVm = FindInstance($this,config.srccol,$this.item.tableName,maintable);
     let linkFormMap = {
         [key]: [`${$this.item.tableName || ''}${$this.item.colname}`]
