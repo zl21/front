@@ -482,6 +482,8 @@ export default {
       // 
       let data = await new SetLayoutDirectionSlot(this.$parent,this,'panelForm','CollapseComponent',this.CollapseComponent).init();
       this.CollapseComponent = data;
+    
+
 
     }
   },
@@ -490,7 +492,6 @@ export default {
   },
   async mounted () {
     this.setFormlist();
-    console.log(this,'=====defaultData==');
     this.CollapseComponent = CollapseComponent;
     if(this.CollapseName === undefined){
       this.CollapseComponent = CollapseComponent;

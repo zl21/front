@@ -38,6 +38,7 @@
             :type="'singleCard'"
             :tab-panels="tabPanels"
           />
+          <div class="panelForm"></div>
         </div>
     </component>
   
