@@ -129,9 +129,14 @@ import CollapseName from './FormComponents/childrenForm/CollapseComponent.vue';
               const itemChilds = item.childs || item.child;
               if (Array.isArray(itemChilds)) {
                 itemChilds.forEach((option) => {
+                  // isnotnull 去除必填
                   option.isnotnull = false;
-                  option.onjump = true;
                   // onjump 不要外键跳转
+                  option.onjump = true;
+                  if(option.display ==='switch'){
+                      option.display = 'select';
+                  }
+                  
                 });
                 arr.push(itemChilds);
               } else {
@@ -258,6 +263,7 @@ import CollapseName from './FormComponents/childrenForm/CollapseComponent.vue';
       },
       formChange(data, defaultData, changeData) {
         // form 修改的数据
+        console.log(data, '=============', changeData);
         this.formChangeData = Object.assign({}, data);
         this.defaultData = Object.assign({}, changeData);
         Object.keys(this.defaultData).forEach((item) => {
