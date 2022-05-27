@@ -5,6 +5,7 @@
       <component :is="CollapseComponent"  :id="`Collapse_${item}`"  
         :value="collapseValue"
         :tableName="tableName"
+        :isMainTable="isMainTable"
         :isTitleShow="formItemLists[item].parentdesc?true:false"
         :parentdesc="formItemLists[item].parentdesc"
         :keyName="`${formItemLists[item].parentdesc}`"

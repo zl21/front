@@ -38,16 +38,25 @@ export default {
       default: ''
     },
     tableName:{
+    // 当前主表表明
       type: String,
       default: ''
+    },
+    isMainTable:{
+      // 是否是主子表
+      type: Boolean,
+      default: false
     }
 
   },
   mounted(){
     let TransformPanelFormConfig = window.ProjectConfig && window.ProjectConfig.TransformPanelFormConfig || [];
     // TransformPanelFormConfig 是否移动到子表下面
-    if(TransformPanelFormConfig.includes(this.keyName) && /\/V\//.test(this.$route.path) && this.tableName === this.$route.params.tableName){
-      document.querySelector('.verticalTabs .panelForm').appendChild(this.$el);
+    console.log(this.isMainTable,'=========isMainTable');
+    if(TransformPanelFormConfig.includes(this.keyName) && /\/V\//.test(this.$route.path) && this.tableName === this.$route.params.tableName ){
+      setTimeout(()=>{
+        document.querySelector('.verticalTabs .panelForm').appendChild(this.$el);
+      },200)
     }
   }
 };
