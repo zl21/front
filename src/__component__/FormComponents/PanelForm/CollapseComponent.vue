@@ -52,11 +52,8 @@ export default {
   mounted(){
     let TransformPanelFormConfig = window.ProjectConfig && window.ProjectConfig.TransformPanelFormConfig || [];
     // TransformPanelFormConfig 是否移动到子表下面
-    console.log(this.isMainTable,'=========isMainTable');
     if(TransformPanelFormConfig.includes(this.keyName) && /\/V\//.test(this.$route.path) && this.tableName === this.$route.params.tableName ){
-      setTimeout(()=>{
-        document.querySelector('.verticalTabs .panelForm').appendChild(this.$el);
-      },200)
+        document.querySelector('#verticalTabs_panelForm').appendChild(this.$el);
     }
   }
 };
