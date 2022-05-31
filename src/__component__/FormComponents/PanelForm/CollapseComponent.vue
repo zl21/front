@@ -1,6 +1,6 @@
 <template>
 
-  <Collapse :value="value" ref="name">
+  <Collapse :value="value" :data-name="name">
     <Panel title-type="center" 
            :isTitleShow="isTitleShow"
            :name="name">

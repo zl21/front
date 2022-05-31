@@ -330,6 +330,17 @@ export default {
                 this.$el.querySelector(`#Collapse_${index}`).style.display = 'block';
               }
 
+            }else{
+              // 兼容hr 移动到子表下面的联动规则  bug：53132
+              let TransformPanelFormConfig = window.ProjectConfig && window.ProjectConfig.TransformPanelFormConfig || [];
+              if(TransformPanelFormConfig.includes(this.formItemLists[index].parentname)){
+                if(!checked){
+                  document.querySelector('#verticalTabs_panelForm').querySelector(`#Collapse_${index}`).style.display = 'none';
+                }else{
+                  document.querySelector('#verticalTabs_panelForm').querySelector(`#Collapse_${index}`).style.display = 'block';
+                }
+
+              }
             }
             
          });
