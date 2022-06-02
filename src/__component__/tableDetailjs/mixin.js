@@ -93,9 +93,12 @@ export default {
             }else{
               // 兼容渲染时机问题
               if(document.querySelector('.tabPanel-sublist .tabComponent') && document.querySelector('.tabComponent').children.length<1){
-                    if(document.querySelector('.tabPanel-sublist .ark-tabs-panels-tab-active')){
-                      document.querySelector('.tabPanel-sublist .ark-tabs-panels-tab-active').click();
-                    }
+                setTimeout(()=>{
+                  if(document.querySelector('.tabPanel-sublist .ark-tabs-panels-tab-active')){
+                    document.querySelector('.tabPanel-sublist .ark-tabs-panels-tab-active').click();
+                  }
+                },10)
+                    
               }
             }
             if(this.$refs.tabPanel){
