@@ -289,5 +289,6 @@ module.exports = {
   closedChangePassword:false, // 是否关闭展示侧边修改密码配置
   showColorSetting:false, // 是否显示设置主题的color
   SingleSignOnSwitch:false, // 是否显示单点登录
+  SetCustomModal:require('../demo/CustomModal.js').default,
   TransformPanelFormConfig:['日志'] // 主表hr字段是否放到下面
 }

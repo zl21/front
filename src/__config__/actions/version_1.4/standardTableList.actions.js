@@ -31,7 +31,7 @@ export default {
     };
     searchdata = Object.assign(searchdata, searchdatas);
     delete searchdata.startIndex;
-    network.post('/p/cs/QueryList', urlSearchParams({
+    network.post('/p/cs/QueryList/55', urlSearchParams({
       searchdata
     })).then(async (res) => {
       // 存在es检索，展示合计总计
