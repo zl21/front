@@ -22,6 +22,8 @@ import { packageMessage, hookAJAX, requestHello, setXss, setHookAJAX } from '../
 
 import { getKeepAliveModuleName } from '../src/__config__/router.navigation.guard'
 import '../src/constants/dateApi'
+import CustomModal from '../src/__utils__/Modal';
+
 // import packJson from '../package.json'
 import '../src/index.less'
 
@@ -135,6 +137,9 @@ export default {
   config: {
     extentionForColumn,
     extentionForTable,
+  },
+  utils:{
+    CustomModal
   },
   components: {
     ...externalComponents,

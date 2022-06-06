@@ -1,10 +1,10 @@
-import CustomModal from '../src/__utils__/Modal';
 
 /*
 props.contentHtml  弹窗提示内容
 props.showType    弹窗提示类型
   
 */ 
+const { CustomModal } = window.R3.utils;
 
 class CustomModalNew extends CustomModal{
     constructor( props,response) {
