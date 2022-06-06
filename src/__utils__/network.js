@@ -195,9 +195,9 @@ axios.interceptors.response.use(
           // 报错弹窗
           let { SetCustomModal } =  window.ProjectConfig;
           if(SetCustomModal){
-            new SetCustomModal({contentHtml:emg,showType:'fcError'},error.response.data).init();
+            new SetCustomModal({contentHtml:innerHTML,showType:'fcError'},response.data).init();
           }else{
-            new CustomModal({contentHtml:emg,showType:'fcError'},response.data).init();
+            new CustomModal({contentHtml:innerHTML,showType:'fcError'},response.data).init();
           }
         }
       }
