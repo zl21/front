@@ -5,10 +5,12 @@ import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css'
 import '../r3.publish/r3.min.css'
 
 import projectConfig from '../projectConfig/project.config';
+import changeThemeColor from 'webpack-theme-color-replacer-syman/src/views/index';
 
 // const R3 = window.R3.default
 Window.R3 = R3;
 
+Vue.use(changeThemeColor);
 const {
   network,
   urlSearchParams

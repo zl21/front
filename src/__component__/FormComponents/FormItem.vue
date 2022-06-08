@@ -88,18 +88,7 @@
 
 <script>
 import { mapMutations, mapState } from 'vuex';
-
 import dataProp from '../../__config__/props.config';
-// 弹窗多选面板
-// import Dialog from './ComplexsDialog';
-// 弹窗单选
-// import myPopDialog from './PopDialog';
-// 富文本编辑
-import WangeditorVue from '../Wangeditor.vue';
-//   弹窗单选 弹窗多选
-import ComAttachFilter from '../ComAttachFilter.vue';
-//   上传文件
-import Docfile from '../docfile/DocFileComponent.vue';
 
 import BusDropDownSelectFilter from '../inheritanceComponents/BusDropDownSelectFilter';
 import CustomDropMultiSelectFilter from '../inheritanceComponents/DropMultiSelectFilter';
@@ -119,6 +108,9 @@ import CustomDefined from '../inheritanceComponents/Defined'
 import CustomStringRender from '../inheritanceComponents/StringRender'
 import CustomCheckboxGroup from '../inheritanceComponents/CheckboxGroup';
 import CustomMonthDay from '../inheritanceComponents/MonthDay';
+import CustomInputWithSelect from '../inheritanceComponents/inputWithSelect';
+import CustomIconfontPicker from '../inheritanceComponents/IconfontPicker'
+import CustomSwitch from '../inheritanceComponents/Switch';
 
 import ParameterDataProcessing from './parameterDataProcessing';
 import { Validate } from './PanelForm/Validate';
@@ -129,7 +121,6 @@ import {
   Version, MODULE_COMPONENT_NAME, ossRealtimeSave, defaultrange, setComponentsProps
 } from '../../constants/global';
 import createModal from '../PreviewPicture/index';
-import EnumerableInput from '../EnumerableInput.vue';
 import getComponentName from '../../__utils__/getModuleName'
 import i18n from '../../assets/js/i18n'
 
@@ -139,7 +130,7 @@ import i18n from '../../assets/js/i18n'
 
 export default {
   components: {
-    EnumerableInput, ComAttachFilter, Docfile, ValidateCom
+    ValidateCom
   },
   // mixins: [mixins],
   // inject: [MODULE_COMPONENT_NAME],
@@ -317,9 +308,10 @@ export default {
         } else {
           this.items.webconf.dynamicforcompute = {}
         }
-
         this.items.webconf.dynamicforcompute = this.items.dynamicforcompute;
       }
+      // 标准列表不显示Switch
+    
       let item = this.items;
 
       let componentInstance = null
@@ -360,11 +352,13 @@ export default {
           componentInstance = new CustomDatePicker(item).init();
           break;
         case 'OBJ_SELECT':
+        case 'OBJ_SWITCH' :
         case 'RADIO_GROUP':
         case 'CHECKBOX_GROUP':
           // 列表界面把radio-group渲染成select
           // 列表界面把checkbox-group渲染成select
-          const typeList = ['RADIO_GROUP', 'CHECKBOX_GROUP']
+          // 列表界面把OBJ_SWITCH渲染成select
+          const typeList = ['RADIO_GROUP', 'CHECKBOX_GROUP','OBJ_SWITCH']
           if (!item.detailType && typeList.includes(item.display)) {
             item.display = 'OBJ_SELECT'
           }
@@ -372,7 +366,12 @@ export default {
           break;
         case 'OBJ_CHECK':
           componentInstance = new CustomCheckbox(item).init();
-          break;
+
+          break; 
+         case 'switch' :
+           componentInstance = new CustomSwitch(item).init();
+          break;  
+
         case 'image':
           componentInstance = new CustomImageUpload(item).init();
           break;
@@ -400,9 +399,14 @@ export default {
         case 'String': 
           componentInstance = new CustomStringRender(item).init();
           break;
+        case 'InputWithSelect':
+          componentInstance = new CustomInputWithSelect(item).init();
+          break;
         case 'defined':
           componentInstance = new CustomDefined(item).init();
           break;
+        case 'iconfontpicker':
+          componentInstance = new CustomIconfontPicker(item).init()
         default:
           break;
       }
@@ -637,10 +641,10 @@ export default {
     this.componentsName = this.inheritanceComponents();
   },
   mounted () {
-    window.addEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetProps);
-    window.addEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
-    window.addEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
-    window.addEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
+    // window.addEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetProps);
+    // window.addEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
+    // window.addEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
+    // window.addEventListener(`${this.moduleComponentName}Dynam`, this.setListenerDynam);
     this.resetItem()
   }
 };

@@ -6,6 +6,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const { ModuleFederationPlugin } = require('webpack').container
 const { merge } = require('webpack-merge')
 const baseConfig = require('./webpack.base.js')
+const SyThemeColorReplacer = require('webpack-theme-color-replacer-syman')
+
 
 const projectConfig = require('../projectConfig/project.config')
 
@@ -57,6 +59,9 @@ const config = (env) => ({
   plugins: [
     new MiniCssExtractPlugin({
       filename: 'r3.css',
+    }),
+    new SyThemeColorReplacer({
+      matchColors:'#fd6442',
     }),
     new CleanWebpackPlugin([env && env.production ? 'dist' : 'devDist']),
     new HtmlWebpackPlugin({

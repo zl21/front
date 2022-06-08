@@ -303,7 +303,6 @@ export default (router) => {
     }
 
     // 判断是否状态中已经存在某个模块，不存在则创建。用户自定义界面不创建
-
     if (preventRegisterModule.indexOf(routePrefix) === -1 && dynamicModuleTag !== '' && store.state[keepAliveModuleName] === undefined) {
       store.registerModule(keepAliveModuleName, moduleGenerator[dynamicModuleTag]());
     }
@@ -379,7 +378,7 @@ export default (router) => {
         const includesKeepAliveLists = keepAliveLists.includes(fromKeepAliveModuleName);
         // customizedModuleName, pluginModuleName, linkModuleName
         let fromTableName = from.params.tableName ||from.params.customizedModuleName;
-        let toTableName =  to.params.tableName || to.params.customizedModuleName;
+        let toTableName =  to.params.tableName || to.params.customizedModuleName || to.params.pluginModuleName;
         if ((isBack && toTableName === fromTableName && includesKeepAliveLists) || (paramItemId === 'New' && fromParamItemId !== 'undefined' && paramTableId === fromParamTableId && includesKeepAliveLists)) {
           commit('global/decreasekeepAliveLists', fromKeepAliveModuleName);
         }
@@ -388,6 +387,7 @@ export default (router) => {
           openedMenuInfo: {
             isActive: true,
             label: `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
+
             keepAliveModuleName,
             tableName: tableName || customizedModuleName || pluginModuleName || linkModuleName,
             routeFullPath: to.fullPath, // 由to.path改为to.fullPath为取带query的路径
@@ -468,6 +468,7 @@ export default (router) => {
     } else if (to.path !== '/') { // 处理激活同一个tab对应表逻辑
       // 目标路由所对应的[功能模块]已经存在与openedMenuList中，则将需要处理openedMenuList中相匹配的索引值的激活状态。
       // 不新开tab
+
       if (window.ProjectConfig && window.ProjectConfig.externalPluginModules) { // 整合外部插件配置与框架插件配置
         pluginModules = Object.assign({}, pluginModules, window.ProjectConfig.externalPluginModules);
       }

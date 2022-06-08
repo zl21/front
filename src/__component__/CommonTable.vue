@@ -252,6 +252,26 @@
                   renderHeader: this.tooltipRenderHeader(),
                   width: cur.webconf && cur.webconf.standard_width
                 }, cur));
+              }  else if(cur.display === 'iconfontpicker') {
+                if (cur.isorder) {
+                  cur.sortable = 'custom';
+                }
+                acc.push(Object.assign({
+                  title: cur.name,
+                  key: cur.colname,
+                  render: this.iconRender(cur),
+                  width: cur.webconf && cur.webconf.standard_width
+                }, cur));
+              } else if(cur.display === 'switch') {
+                if (cur.isorder) {
+                  cur.sortable = 'custom';
+                }
+                acc.push(Object.assign({
+                  title: cur.name,
+                  key: cur.colname,
+                  render: this.switchTextRender(cur),
+                  width: cur.webconf && cur.webconf.standard_width
+                }, cur));
               } else {
                 if (cur.isorder) {
                   cur.sortable = 'custom';
@@ -276,7 +296,7 @@
                   render: this.collectionIndexRender(),
                   //  this.buttonsRender()
                 }, cur));
-              } else if (['switch', 'command', 'image', 'doc', 'operatebuts'].indexOf(cur.display) > -1) {
+              } else if (['command', 'image', 'doc', 'operatebuts'].indexOf(cur.display) > -1) {
                 switch (cur.display) {
                 case 'switch':
                   acc.push(Object.assign({
@@ -379,6 +399,26 @@
                   render: this.customerUrlRender(),
                   width: cur.webconf && cur.webconf.standard_width
                 }, cur));
+              } else if(cur.display === 'iconfontpicker') {
+                if (cur.isorder) {
+                  cur.sortable = 'custom';
+                }
+                acc.push(Object.assign({
+                  title: cur.name,
+                  key: cur.colname,
+                  render: this.iconRender(cur),
+                  width: cur.webconf && cur.webconf.standard_width
+                }, cur));
+              } else if(cur.display === 'switch') {
+                if (cur.isorder) {
+                  cur.sortable = 'custom';
+                }
+                acc.push(Object.assign({
+                  title: cur.name,
+                  key: cur.colname,
+                  render: this.switchTextRender(cur),
+                  width: cur.webconf && cur.webconf.standard_width
+                }, cur));
               } else {
                 if (cur.isorder) {
                   cur.sortable = 'custom';
@@ -400,6 +440,7 @@
         }
         return [];
       }, // 表头
+
       tableData() {
         if (Object.keys(this.datas).length > 0) {
           const data = this.datas.row.reduce((acc, cur) => {
@@ -555,6 +596,46 @@
         // cssStr = `${cssStr} ` + cssColorStr;
         return cssStr;
       }, // 行样式
+
+      switchTextRender() {
+        return (h, params) => {
+          const rowData = params.row[params.column.colname]
+          if(!rowData) {
+            return null
+          }
+          return h('span',{
+            style: {
+            },
+            class: {
+              'table-switch': true
+            },
+            domProps: {
+              innerText: rowData
+            }
+          })
+        }
+      },
+
+      iconRender() {
+        return (h, params) => {
+          const rowData = params.row[params.column.colname]
+          if(!rowData) {
+            return null
+          }
+          return h('IconfontComponent',{
+            style: {
+            },
+            class: {
+              'table-icon': true
+            },
+            props:{
+              params: {
+                value: rowData
+              }
+            },
+          })
+        }
+      },
       customerUrlRender() {
         return (h, params) => h('span', {
           domProps: {

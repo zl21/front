@@ -416,6 +416,16 @@
         :options="_items.props">
       </string-render>
 
+      <arkIconfontPicker
+        v-if="_items.type === 'iconfontpicker'"
+        :ref="_items.field"
+        v-model="_items.value"
+        :placeholder="_items.props.placeholder"
+        :disabled="_items.props.disabled"
+        transferJson
+        @change="iconValueChange"
+      ></arkIconfontPicker>
+
       <!-- 自定义组件 -->
       <component
         :is="_items.componentName"
@@ -634,6 +644,10 @@
             clearable: true
           });
         }
+        if(item.type === 'InputWithSelect') {
+          item.type = 'input'
+        }
+
         item.event = Object.assign({}, this.items.event);
 
         return item;
@@ -728,6 +742,10 @@
       },
       definedChange(value) {
         // 自定义界面的value
+        this._items.value = value;
+        this.valueChange();
+      },
+      iconValueChange(value) {
         this._items.value = value;
         this.valueChange();
       },

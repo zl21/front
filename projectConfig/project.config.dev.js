@@ -101,6 +101,10 @@ module.exports = {
     // singleObjectButtonGroup: require('../demo/singleObjectButtonGroup').default,
     //verticalTableDetailCustomize: require('../demo/horizontalTableDetailCustomize.js').default,
     setPanel:{
+      created(){
+        // this.changeThemeComponent = require('../node_modules/webpack-theme-color-replacer-syman/src/views/ChangeTheme/ChangeTheme.vue').default;
+        // this.changeThemeColor = require('../node_modules/webpack-theme-color-replacer-syman/src/views/ChangeTheme/changeThemeColor');
+      },
       mounted(){
         // 重写退出点击
         this.clickSignout = ()=>{
@@ -282,5 +286,7 @@ module.exports = {
   R3BrowserPrompt:true,
   asyncTaskScheme: 'skq',
   ResetrouterBackLogic:true,  // 显示返回按钮
-  closedChangePassword:false // 是否关闭展示侧边修改密码配置
+  closedChangePassword:false, // 是否关闭展示侧边修改密码配置
+  showColorSetting:false, // 是否显示设置主题的color
+  SingleSignOnSwitch:false // 是否显示单点登录
 }

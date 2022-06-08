@@ -6,7 +6,7 @@
     <div
       class="left"
     >
-      <div id="navBrandImg">
+      <div id="navBrandImg" class="navBrandImg-banner">
         <img
           class="banner"
           alt=""
@@ -136,8 +136,11 @@
           if (this.$el) {
             this.$el.parentElement.hidden = true;
             this.$el.parentElement.parentElement.hidden = true;
-            this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.firstElementChild.firstElementChild.style.padding = '0px';
-            this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.style.margin = '0px';
+            if(this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild){
+              this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.firstElementChild.firstElementChild.style.padding = '0px';
+              this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.style.margin = '0px';
+            }
+            
           }
         }
       },

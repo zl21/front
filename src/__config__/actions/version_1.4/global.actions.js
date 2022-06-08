@@ -91,7 +91,7 @@ export default {
                     }
                     exportTask.exportedState = false;
                   }
-                } else if (b.colname === 'FILE_URL') {
+                } else if (b.colname === 'URL') {
                   exportTask.file = b.valuedata; 
                 } else if (b.colname === 'MESSAGE') {
                   exportTask.resultMsg = b.valuedata; 

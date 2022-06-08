@@ -18,7 +18,7 @@ function getCreatedTime(task) {
 function getUrl(task) {
   let url = ''
   const serviceId = window.localStorage.getItem('serviceId')
-  const fileUrl = Version() === '1.3' ? task.URL.val : task.FILE_URL.val // 接口返回的下载地址
+  const fileUrl = task.URL.val // 接口返回的下载地址
   if (fileUrl) {
     url = serviceId
       ? `/${serviceId}${JSON.parse(fileUrl)[0].url}`

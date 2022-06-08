@@ -81,11 +81,19 @@
           slot="icon-message"
           @click.prevent="messageSlide"
       >
-        <Badge :count="taskMessageCount">
-          <i
-              class="iconfont iconbj_message badge"
-          />
-        </Badge>
+       <Tooltip
+          width="50"
+          trigger="hover"
+        >
+            <Badge :count="taskMessageCount">
+              <i
+                  class="iconfont iconbj_message badge"
+              />
+            </Badge>
+            <div slot="content">
+                {{$t('tips.message')}}
+            </div>
+        </Tooltip>
 
         <!-- 消息队列 -->
         <MessageList v-model="showMessages"></MessageList>
@@ -97,21 +105,37 @@
         @click.prevent="handlerOpenTasks"
         slot="icon-task"
       >
+      <Tooltip
+          width="50"
+          trigger="hover"
+        >
         <Badge :count="taskMessageCount">
           <svg-icon icon-class="task" style="color:#1F272C;font-size: 20px"></svg-icon>
         </Badge>
+          <div slot="content">
+            {{$t('tips.task')}}
+          </div>
+        </Tooltip>
       </div>
-
+      <!-- 跳转外链 -->
+      <OutLink slot="icon-outlink"></OutLink>
       <div
           class="tag right"
           slot="icon-person"
           @click="show = true"
       >
+       <Tooltip
+          width="50"
+          trigger="hover"
+        >
         <i
             class="iconfont iconmd-person"
             :title="$t('buttons.setting')"
         />
-
+         <div slot="content">
+            {{$t('buttons.setting')}}
+          </div>
+        </Tooltip>
         <!-- 设置 -->
         <Setting v-model="show"></Setting>
       </div>
@@ -128,6 +152,8 @@ import NaVerticalslot from './nav/NaVerticalslot.vue';
 
 
 import ComAutoComplete from './ComAutoComplete';
+import OutLink from './nav/outlink.vue'
+
 import {routeTo} from '../__config__/event.config';
 import network, {urlSearchParams} from '../__utils__/network';
 import {
@@ -155,7 +181,8 @@ export default {
     Collect,
     Lately,
     MessageList,
-    Setting
+    Setting,
+    OutLink
   },
 
   data() {
@@ -206,8 +233,12 @@ export default {
         if (this.$el) {
           this.$el.parentElement.hidden = true;
           this.$el.parentElement.parentElement.hidden = true;
-          this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.firstElementChild.firstElementChild.style.padding = '0px';
-          this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.style.margin = '0px';
+          if(this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild){
+              this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.firstElementChild.firstElementChild.style.padding = '0px';
+              this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.style.margin = '0px';
+
+          }
+         
         }
       }
     },

@@ -3,7 +3,7 @@ export class SetListProps {
       this.item = item;
       this.configuration = {
          // 列表查询条件需要展示的
-         webconf:['queryrule','placeholder','ispositive','required','refcolval', 'dateShortcut']
+         webconf:['queryrule','placeholder','ispositive','required','refcolval', 'dateShortcut','inputWithSelectOption']
       }
    }
    filterData(){

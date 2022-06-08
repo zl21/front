@@ -37,7 +37,7 @@ export default {
 
   // 表单
   updateDefaultFormItemsLists({ formItems }, {data, indexDB}) {
-    const { tableId } = window.vm.$router.currentRoute.params;
+    const { tableId, tableName } = window.vm.$router.currentRoute.params;
 
     const getSTDefaultQuery = getSessionObject(tableId);
     if (data && data.length > 0 && getSTDefaultQuery && getSTDefaultQuery.length > 0) {
@@ -55,8 +55,9 @@ export default {
       });
     }
 
+    const reset = localStorage.getItem('r3-click-reset')
     // 处理indexDB的默认值
-    if(indexDB && data && data.length > 0){
+    if(indexDB && data && data.length > 0 && !reset){
       Object.keys(indexDB).map((c) => {
         data.map((d) => {
           if (c === d.colname && indexDB[c]) {
@@ -83,7 +84,22 @@ export default {
           }
         });
       });
+      // 值为空时，用接口值回填select值
+      data.forEach((item) => {
+        if(!Object.keys(indexDB).includes(item.colname) && item.webconf && item.webconf.display === "InputWithSelect") {
+          // item.default = ''
+          const userJson = localStorage.getItem('userInfo') || ''
+          let user = {}
+          if (userJson) {
+            user = JSON.parse(userJson)
+          }
+          const userId = user.id
+          localStorage.setItem(`${userId}_${tableName}_${item.colname}`, item.webconf.inputWithSelectOption)
+        }
+      })
     }
+    
+    localStorage.removeItem('r3-click-reset')
     formItems.defaultFormItemsLists = data;
   },
   updateFormData({
@@ -105,8 +121,11 @@ export default {
   updateDefaultSearchFoldnum({ formItems }, data) {
     formItems.searchFoldnum = data;
   },
- 
-
+  updateFormAssignData({
+    formItems
+  }, data) {
+    formItems.data = Object.assign(formItems.data,data);
+  },
   // 按钮组
   updataIsBig({ buttons }, value) {
     buttons.isBig = value; // 更新是否为海量表

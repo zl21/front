@@ -54,6 +54,7 @@
                   :default-spread="changeSearchFoldnum.switchValue"
                   :search="true"
                   :listFormTemple="slotTemple ? slotTemple.listForm : ()=>{}"
+                  :table-webconf="webConf"
                   :treeShow="treeShow"
                   :default-column="Number(4)"
                   :search-foldnum="Number(changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum)"
@@ -190,7 +191,7 @@ import customize from '../__config__/customize.config';
 // import router from '../__config__/router.config';
 import { getSessionObject, deleteFromSessionObject, updateSessionObject } from '../__utils__/sessionStorage';
 import { getUrl, getLabel } from '../__utils__/url';
-import { DispatchEvent, R3_EXPORT } from '../__utils__/dispatchEvent';
+import { DispatchEvent, R3_EXPORT, R3_LIST_SEARCH } from '../__utils__/dispatchEvent';
 import getUserenv from '../__utils__/getUserenv';
 import { addSearch, querySearch } from '../__utils__/indexedDB';
 import { getPinnedColumns } from '../__utils__/tableMethods'
@@ -1972,6 +1973,11 @@ export default {
         const promise = new Promise((resolve, reject) => {
           this.requiredCheck(data).then(() => {
             this.$R3loading.show(this.loadingName);
+            DispatchEvent(R3_LIST_SEARCH, {
+              detail: {
+                type: 'search'
+              }
+            })
             const currentParame = this.paramePreEvent(data, searchDataRes)
             currentParame.resolve = resolve;
             currentParame.reject = reject;
@@ -2054,6 +2060,17 @@ export default {
       this.$Modal.fcWarning(data);
       // this.$refs.dialogRefs.open();
     },
+     routerParms(){
+      return {
+         fullPath: window.vm.$route.fullPath,
+          meta: window.vm.$route.meta,
+          name: window.vm.$route.name,
+          params: window.vm.$route.params,
+          path:  window.vm.$route.path,
+          query:  window.vm.$route.query
+      }
+
+    },
     AddDetailClick (type, obj) {
       DispatchEvent('R3StandardButtonClick', {
         detail: {
@@ -2076,20 +2093,38 @@ export default {
             if (singleEditType === ':itemId') {
               const path = `/${tableurl.replace(/:itemId/, 'New')}`;
               this.$router.push(
-                path
+                path,
+                {
+                  type:'tablelist',
+                  path:path,
+                  id:'New',
+                  router:this.routerParms()
+                }
               );
             } else {
               const path = `/${tableurl}`;
               this.$router.push(
-                path
+                path,
+                {
+                  type:'tablelist',
+                  path:path,
+                  id:'New',
+                  router:this.routerParms()
+                }
               );
             }
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
             const customizedModuleName = tableurl.substring(tableurl.indexOf('/') + 1, tableurl.lastIndexOf('/')).toLocaleUpperCase();
             const path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/New`;
-            this.$router.push({
-              path
-            });
+            this.$router.push(
+              path,
+              {
+                  type:'tablelist',
+                  path:path,
+                  id:'New',
+                  router:this.routerParms()
+                }
+            );
             const objs = {
               customizedModuleName,
               id: 'New'
@@ -2740,12 +2775,23 @@ export default {
             const itemId = this.buttons.selectIdArr.filter(item => item);
             const path = `/${tabAction.replace(/:itemId/, itemId)}`;
             this.$router.push(
-              path
+              path,
+              {
+                  type:'tablelist',
+                  path:path,
+                  id:itemId,
+                  router:this.routerParms()
+                }
             );
           } else {
             const path = `/${tabAction}`;
             this.$router.push(
-              path
+              path,
+              {
+                  type:'tablelist',
+                  path:path,
+                  router:this.routerParms()
+                }
             );
           }
         } else if (actionType === 'https:' || actionType === 'http:') {

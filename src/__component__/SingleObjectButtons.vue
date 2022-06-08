@@ -784,7 +784,6 @@ import RouterPush from '../__utils__/routerback';
               });
         }
         
-        
       },
       testUpdata() { // 校验是否修改过值
         // 校验逻辑为判断单对象各个组件向当前状态模块内抛出的修改后的值，如果该表名对应的对象内有值，则认为该表修改了值
@@ -1543,6 +1542,16 @@ import RouterPush from '../__utils__/routerback';
           return [this.itemId];
         }
       },
+      routerParms(){
+          return {
+              fullPath: window.vm.$route.fullPath,
+              meta: window.vm.$route.meta,
+              name: window.vm.$route.name,
+              params: window.vm.$route.params,
+              path:  window.vm.$route.path,
+              query:  window.vm.$route.query
+        }
+    },
       routingHop(tab, id) {
         // tab.action配置路径前不能加/
         // /:itemId?id=1&&name=2
@@ -1559,12 +1568,23 @@ import RouterPush from '../__utils__/routerback';
           if (singleEditType === ':itemId') { // 配置的路径未动态id,根据勾选的明细id进行路由拼接
             const path = `/${tabAction.replace(/:itemId/, id)}`;
             this.$router.push(
-              path
+              path,
+              {
+                  type:'tablelist',
+                  path:path,
+                  id:id,
+                  router:this.routerParms()
+                }
             );
           } else {
             const path = `/${tabAction}`;
             this.$router.push(
-              path
+              path,
+              {
+                  type:'tablelist',
+                  path:path,
+                  router:this.routerParms()
+                }
             );
           }
         } else if (actionType === 'https:' || actionType === 'http:') { // 外链界面
@@ -4088,7 +4108,6 @@ import RouterPush from '../__utils__/routerback';
       hideBackButton() {
         // 隐藏返回按钮
         // 拦截跳转逻辑
-       
          this.dataArray.back = true;
         const clickMenuAddSingleObjectData = getSessionObject('clickMenuAddSingleObject');
         const currentRoute = this.$router.currentRoute.path;
@@ -4101,10 +4120,18 @@ import RouterPush from '../__utils__/routerback';
           }
           return false;
         }
+        let checked = new RouterPush(this).exists(currentRoute);
+        // 判断来源是否存在;
+        if(checked){
+            this.dataArray.back = false;
+        }else{
+           this.dataArray.back = true;
+        }
         let { ResetrouterBackLogic } = window.ProjectConfig;
         if( ResetrouterBackLogic ){
           return false;
         }
+
         const addRouteToEditorData = getSessionObject('addRouteToEditor');
         let flag = false;
         Object.keys(addRouteToEditorData).some((a) => { // 菜单跳转单对象新增，保存后跳转到编辑界面，满足记录规则三维护的关系中存在当前菜单跳转新增界面匹配的对应关系，不显示返回按钮

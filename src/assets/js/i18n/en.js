@@ -194,6 +194,7 @@ export default {
     expandFavorite: 'whether to expand favorites',
     collapseQuery: 'collapse query conditions',
     queryDefaultRows: 'number of query area rows',
+    SwitchToShow:'switch to show',
     noHistory: 'no history',
     noCollection: 'no collection',
     generateBarcode: 'generate barcode',
@@ -384,6 +385,7 @@ export default {
     failedToUnfavorite: 'failed to unfavorite',
     cloneSuccess: 'successfully clone',
     deleteSuccessfully: 'delete successfully',
+    RefreshThePrompt: 'The change takes effect after the browser is refreshed',
     ongoing: 'ongoing',
     fail: 'fail'
   },
@@ -422,6 +424,7 @@ export default {
     save: 'save',
     find: 'find',
     jump: 'jump',
+    clickview: 'click to view',
     upload: 'upload',
     ignore: 'ignore',
     fold: 'fold',
@@ -514,5 +517,10 @@ export default {
   // 定制弹框PublishPrintTemplate
   publishPrintTemplate: {
     continueCover: 'The current operation will perform full coverage! Whether to continue?'
+  },
+  // 换肤
+  changeTheme:{
+    title:'Theme color'
   }
+  
 }

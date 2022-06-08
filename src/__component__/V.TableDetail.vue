@@ -31,7 +31,7 @@
           <TabPanels  
             v-show="tabPanels.length > 0"
             ref="tabPanel"
-            class="tabPanel"
+            class="tabPanel tabPanel-sublist"
             :tab-margin-left="20"
             is-keep-alive
             :beforeLeave="tabBeforeLeave"

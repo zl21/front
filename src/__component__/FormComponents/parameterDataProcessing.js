@@ -12,6 +12,7 @@
 
  import { Version } from '../../constants/global'
  import i18n from '../../assets/js/i18n'
+ import { enableKAQueryDataForUser } from '../../constants/global'
 
 function get_default_datenumber(formItem, isDetailPage) {
   // 单对象界面
@@ -72,6 +73,70 @@ function get_default_date(formItem, isDetailPage) {
     }
     return timeRange;
   }
+}
+
+// 获取用户id
+function getUserId() {
+  const userJson = localStorage.getItem('userInfo') || ''
+  let user = {}
+  if (userJson) {
+    user = JSON.parse(userJson)
+  }
+  return user.id
+}
+
+// 获取inputWithSelect选项
+export function getSelectOption(colname, tableName) {
+  const userId = getUserId()
+  const json = localStorage.getItem(`${userId}_${tableName}_${colname}`) || ''
+  return json
+}
+
+export function get_default_InputWithSelect(val, selectValue) {
+  let value = val || ''
+  switch (selectValue) {
+    case 'all':
+      break
+    case 'equal':
+      if (value) {
+        let valueArr = [] // 存储含空格的字符
+        let valueArr2 = [] // 存储含逗号的字符
+        if (Array.isArray(value)) {
+          value = value.map(item => item.replace(/=/g, ''))
+          value = value.join(',')
+        }
+        value = value.trim()
+        value = value.split(' ')
+        // 例如11 22 33,44  55,66
+        for (let i = 0; i < value.length; i++) {
+          let element = value[i].trim()
+          if (element && !element.includes(',')) {
+            valueArr.push(`=${element}`)
+          }
+          if (element && element.includes(',')) {
+            valueArr2.push(element)
+          }
+        }
+        // 需要进一步分割含逗号的
+        valueArr2 = valueArr2.join(',').split(',')
+        for (let j = 0; j < valueArr2.length; j++) {
+          const ele = valueArr2[j].trim()
+          if (ele) {
+            valueArr.push(`=${ele}`)
+          }
+        }
+        value = valueArr
+      }
+      break
+    case 'isNotNull':
+      value = 'is not null'
+      break
+    case 'isNull':
+      value = 'is null'
+      break
+
+  }
+  return value
 }
 export default class ParameterDataProcessing {
   constructor(item, value) {
@@ -236,8 +301,9 @@ export default class ParameterDataProcessing {
       //  兼容默认值defval 是单对象默认值， default 是列表默认值   valuedata:是单对象的值
       this.item.default = this.item.defval
     }
+
     // select
-    if ((this.item.default || this.item.defval) && this.item.display === 'OBJ_SELECT') {
+    if ((this.item.default || this.item.defval) && (this.item.display === 'OBJ_SELECT' || this.item.display === 'OBJ_SWITCH' )) {
       // detailType为真，说明是单对象
       // return this.item.default ? this.item.default.split(',') : this.item.defval;
       if(this.item.valuedata){
@@ -260,6 +326,7 @@ export default class ParameterDataProcessing {
     }
     // 
     if(this.item.display === 'OBJ_SELECT' && isDetailPage){
+      
       let index = this.setSelectedValue(this.item);
       if(index<0){
           return ''
@@ -382,7 +449,7 @@ export default class ParameterDataProcessing {
 
 
     // 处理checkbox
-    if (this.item.display === 'OBJ_CHECK') {
+    if (this.item.display === 'OBJ_CHECK' || this.item.display === 'switch') {
       let value = this.item.valuedata || this.item.default;
       if (value) {
         return this.item.combobox.filter(item => {
@@ -392,6 +459,20 @@ export default class ParameterDataProcessing {
       return this.item.falseValue;
     }
     
+    // 处理inputWithSelect
+    if(this.item.display === 'InputWithSelect') {
+      let selectValue = this.item.webconf.inputWithSelectOption
+      if (enableKAQueryDataForUser() || this.item.enableKAQueryDataForUser) {
+        this._tableName = this.item._id
+        this._colname = this.item.colname
+        const option = getSelectOption(this._colname, this._tableName)
+        if (option) {
+          selectValue = option
+        }
+      }
+      const value = get_default_InputWithSelect(this.item.default, selectValue)
+      return value
+    }
     return this.item.valuedata || this.item.default ;
   }
 
@@ -414,7 +495,7 @@ export default class ParameterDataProcessing {
 
     }
    
-    if (this.item.display === 'OBJ_CHECK') {
+    if (this.item.display === 'OBJ_CHECK' || this.item.display === "switch") {
       const optionIndex = this.item.combobox.findIndex(x => x.limitval === this.value);
       if (optionIndex !== -1) {
         return this.item.combobox[optionIndex].limitdesc;
