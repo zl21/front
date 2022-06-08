@@ -197,6 +197,7 @@ import { getPinnedColumns } from '../__utils__/tableMethods'
 import { isTaskProcessing } from '../__utils__/task-utils'
 import tabBar from './tabBar.vue';
 import listsForm from './FormComponents/list/listsForm';
+import { getAllTemplate } from '../api/fieldConfig'
 
 export default {
   components: {
@@ -1396,27 +1397,43 @@ export default {
     },
 
     openConfigPage() {
-      // this.$Modal.fcWarning({
-      //   title: this.$t('feedback.warning'),
-      //   content: this.$t('messages.continueFieldConfig'),
-      //   titleAlign: 'center',
-      //   mask: true,
-      //   showCancel: true,
-      //   onOk: () => {
-      //     this.tabOpen({
-      //       type: 'C',
-      //       label: '字段配置',
-      //       url: '/CUSTOMIZED/FIELDCONFIG/1'
-      //     })
-      //   }
-      // })
-      this.tabOpen({
-        type: 'C',
-        label: '字段配置',
-        customizedModuleName: 'FIELDCONFIG',
-        customizedModuleId: 1,
-        id: 1
+      const { tableId } = this[INSTANCE_ROUTE_QUERY]
+      const tabName = this.$store.state.global.activeTab.label
+      const pageName = `${tabName}字段配置`
+
+      getAllTemplate({
+        table_id: tableId
+      }).then(res => {
+        if(res.code === 0 ) {
+          if(res.data) {
+            this.tabOpen({
+              type: 'C',
+              label: pageName,
+              customizedModuleName: 'FIELDCONFIG',
+              customizedModuleId: tableId,
+              id: tableId
+            })
+          } else {
+            this.$Modal.fcWarning({
+              title: this.$t('feedback.warning'),
+              content: this.$t('messages.continueFieldConfig'),
+              titleAlign: 'center',
+              mask: true,
+              showCancel: true,
+              onOk: () => {
+                this.tabOpen({
+                  type: 'C',
+                  label: pageName,
+                  url: `/CUSTOMIZED/FIELDCONFIG/${tableId}`
+                })
+              }
+            })
+          }
+        }
+        console.log("🚀 ~ file: StandardTableList.vue ~ line 1401 ~ getAllTemplate ~ res", res)
       })
+      
+      
     },
 
     buttonClick (type, obj) {
