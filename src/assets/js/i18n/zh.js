@@ -521,5 +521,34 @@ export default {
   // 换肤
   changeTheme:{
     title:'主题色'
+  },
+  fieldConfig: {
+    saveAndApply: '保存并应用',
+    onlySave: '仅保存',
+    saveAs: '另存为',
+    increase: '新增',
+    back: '返回',
+    delete: '删除',
+    add: '添加',
+    availableFields: '全部可用字段',
+    drag: '拖拽可更改排序',
+    enableSort: '开启排序',
+    disableSort: '关闭排序',
+    template: '当前模板',
+    enterField: '请输入字段名搜索',
+    addTable: '添加至列表界面表格',
+    addFilter: '添加至列表界面条件过滤',
+    listField: '列表界面表格显示字段配置',
+    filterField: '列表界面条件过滤字段配置',
+    visibleFields: '单对象界面显示字段配置',
+    newTemplate: '当前配置模板不可修改，是否以当前修改创建新模板并应用',
+    createTemplate: '创建模板',
+    templateName: '模板名称',
+    updateSuccess: '更新成功',
+    notDelete: '当前配置模板不可删除',
+    shouldDelete: '是否执行删除',
+    saveAsTemplate: '另存为新模板',
+    pleaseEnter: '请输入',
+    switchTemplate: '模板尚未保存，请先去保存模板，再进行切换'
   }
 }

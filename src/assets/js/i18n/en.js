@@ -521,6 +521,34 @@ export default {
   // 换肤
   changeTheme:{
     title:'Theme color'
+  },
+  fieldConfig: {
+    saveAndApply: 'save and apply',
+    onlySave: 'save only',
+    saveAs: 'save as',
+    increase: 'increase',
+    back: 'back',
+    delete: 'delete',
+    add: 'add',
+    availableFields: 'available fields',
+    drag: 'drag to change sorting',
+    enableSort: 'turn on sorting',
+    disableSort: 'close sorting',
+    template: 'current template',
+    enterField: 'please enter field name to search',
+    addTable: 'add to list interface form',
+    addFilter: 'add to list interface condition filter',
+    listField: 'list interface table display field configuration',
+    filterField: 'list interface condition filter field configuration',
+    visibleFields: 'single object interface display field configuration',
+    newTemplate: 'The current configuration template cannot be modified, whether to create a new template with the current modification and apply it',
+    createTemplate: 'create a template',
+    templateName: 'template name',
+    updateSuccess: 'update completed',
+    notDelete: 'The current configuration template cannot be deleted',
+    shouldDelete: 'Whether to delete',
+    saveAsTemplate: 'save as new template',
+    pleaseEnter: 'please enter',
+    switchTemplate: 'The template has not been saved, please save the template first, and then switch'
   }
-  
 }
