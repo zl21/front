@@ -24,6 +24,7 @@
         placement="right"
         trigger="click"
         popper-class="ak-add-options"
+        v-if="!isDisabled"
       >
         <template slot="content">
           <div
@@ -39,25 +40,19 @@
           style="cursor: pointer;"
           type="ios-add-circle-outline"
         />
-        <span style="cursor: pointer;">{{$t('fieldConfig.add')}}</span>
+        <span style="cursor: pointer;margin-top: 4px;display: inline-block;">{{$t('fieldConfig.add')}}</span>
       </Poptip>
 
-    </div>
-    <!-- <Dropdown
-      transfer
-      placement="top"
-      trigger="click"
-    >
-      <div class="add-field-btn">
-        <Icon type="ios-add-circle-outline" />
-        <span>{{$t('fieldConfig.add')}}</span>
-      </div>
 
-      <DropdownMenu slot="list">
-        <DropdownItem>驴打滚</DropdownItem>
-        <DropdownItem>炸酱面</DropdownItem>
-      </DropdownMenu>
-    </Dropdown> -->
+      <template v-else>
+        <Icon
+          style="margin-right: 4px;"
+          type="ios-add-circle-outline"
+          class="disable-color"
+        />
+        <span class="disable-color">{{$t('fieldConfig.add')}}</span>
+      </template>
+    </div>
   </div>
 </template>
 
@@ -76,38 +71,14 @@ export default {
   data() {
     return {
       prefixClass,
-      // data: [
-      //   {
-      //     title: 'parent 1',
-      //     expand: true,
-      //     children: [
-      //       {
-      //         title: 'parent 1-1',
-      //         expand: true,
-      //       },
-      //       {
-      //         title: 'parent 1-2',
-      //         expand: true,
-      //       }
-      //     ]
-      //   },
-      //   {
-      //     title: 'parent 2',
-      //     expand: true,
-      //     children: [
-      //       {
-      //         title: 'parent 2-1',
-      //         expand: true,
-      //       },
-      //       {
-      //         title: 'parent 2-2',
-      //         expand: true,
-      //       }
-      //     ]
-      //   }
-      // ],
       query: '',
       checkedList: []
+    }
+  },
+
+  computed: {
+    isDisabled() {
+      return this.checkedList.length === 0
     }
   },
 
