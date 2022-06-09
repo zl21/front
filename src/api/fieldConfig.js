@@ -64,3 +64,9 @@ export async function removeTemplate(data) {
   const res = await network.post(autoGateWay('/p/cs/deleteColumnTemplate'), data)
   return Promise.resolve(res.data)
 }
+
+// 获取公共模板
+export async function getPublicTemplate(data) {
+  const res = await network.post(autoGateWay('/p/cs/getUserTemplate'), data)
+  return Promise.resolve(res.data)
+}

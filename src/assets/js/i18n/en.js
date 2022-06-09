@@ -554,6 +554,7 @@ export default {
     setDefault: 'whether to set as a public template',
     addTipsOne: 'there is no template in the current table, click ',
     addTipsTwo: 'to add a field configuration template',
-    listConfig: 'list interface configuration'
+    listConfig: 'list interface configuration',
+    publicTemplate: 'public template'
   }
 }

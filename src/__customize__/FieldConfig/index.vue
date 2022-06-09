@@ -131,7 +131,7 @@ import FoldTree from './FoldTree.vue'
 import DialogContent from './DialogContent'
 import i18n from '../../assets/js/i18n'
 import Vue from 'vue'
-import { getAllFields, getAllTemplate, getTemplateFields, saveFields, applyFields, createTemplate, removeTemplate } from '../../api/fieldConfig'
+import { getAllFields, getAllTemplate, getTemplateFields, saveFields, applyFields, createTemplate, removeTemplate, getPublicTemplate } from '../../api/fieldConfig'
 
 const prefixClass = `field-page`;
 
@@ -175,7 +175,8 @@ export default {
       fieldTreeData: [],
       createdTemplateName: '',
       isDefaultTemplate: false,
-      hasTemplate: false
+      hasTemplate: false,
+      publicTemplate: false
     }
   },
 
@@ -200,7 +201,7 @@ export default {
             </div>`,
           data() {
             return {
-              isDefaultTemplate: vm.isDefaultTemplate,
+              isDefaultTemplate: vm.publicTemplate === vm.currentTemplate,
               isadmin: isadmin
             }
           },
@@ -210,6 +211,17 @@ export default {
               vm.$Message.success(vm.$t('feedback.saveSuccess'))
               vm.isDefaultTemplate = false
               vm.cacheConfig()
+              const publicRes = await getPublicTemplate({table_id: vm._tableId})
+              if(publicRes.code === 0) {
+                vm.publicTemplate = publicRes.data
+              }
+              console.log("🚀 ~ file: index.vue ~ line 544 ~ _getAllTemplate ~ publicRes", publicRes)
+              vm.templateList = vm.templateList.map(item => {
+                return {
+                  label: vm.publicTemplate === item.value ? item.value + `(${vm.$t('fieldConfig.publicTemplate')})` : item.value,
+                  value: item.value
+                }
+              })
               this.$parent.close()
             },
             close() {
@@ -540,9 +552,14 @@ export default {
     async _getAllTemplate() {
       const res = await getAllTemplate({ table_id: this._tableId })
       if (res.code === 0 && res.data && res.data.length > 0) {
+        const publicRes = await getPublicTemplate({table_id: this._tableId})
+        if(publicRes.code === 0) {
+          this.publicTemplate = publicRes.data
+        }
+        console.log("🚀 ~ file: index.vue ~ line 544 ~ _getAllTemplate ~ publicRes", publicRes)
         this.templateList = res.data.map(item => {
           return {
-            label: item,
+            label: this.publicTemplate === item ? item + `(${this.$t('fieldConfig.publicTemplate')})` : item,
             value: item
           }
         })
