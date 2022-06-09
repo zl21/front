@@ -2,7 +2,7 @@
   <DragList
     axis="y"
     :lock-to-container-edges="true"
-    :press-delay="300"
+    :press-delay="0"
     v-model="list"
     :class="prefixClass"
     :shouldCancelStart="shouldCancelStart"
@@ -20,12 +20,12 @@
             <i
               class="iconfont icon-sort1"
               :class="{'ark-btn-ghost ark-btn-primary': item.IS_ORDER}"
-              v-if="enableDrag"
+              v-if="enableSort"
               @click="toggleDrag(item)"
             ></i>
           </Poptip>
           <span
-            :data-enable-drag="item.IS_ORDER"
+            :data-enable-drag="true"
             class="field-name"
             :title="item.value"
           >{{ item.value }}</span>
@@ -54,7 +54,7 @@ export default {
     value: {
       type: Array
     },
-    enableDrag: {
+    enableSort: {
       type: Boolean
     }
   },

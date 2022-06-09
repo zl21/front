@@ -86,7 +86,7 @@
               >
                 <div class="config-title">{{$t('fieldConfig.listField')}}（{{$t('fieldConfig.drag')}}）</div>
                 <div class="config-area">
-                  <DragPanel v-model="visibleFields" enableDrag></DragPanel>
+                  <DragPanel v-model="visibleFields" enableSort></DragPanel>
                 </div>
               </div>
               <div
