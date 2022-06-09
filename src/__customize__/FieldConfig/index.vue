@@ -209,6 +209,7 @@ export default {
               await vm._applyFields() // 把当前界面数据保存到新模板
               vm.$Message.success(vm.$t('feedback.saveSuccess'))
               vm.isDefaultTemplate = false
+              vm.cacheConfig()
               this.$parent.close()
             },
             close() {
@@ -227,6 +228,7 @@ export default {
     // 点击仅保存
     async save() {
       await this._saveFields(this.currentTemplate)
+      this.cacheConfig()
       this.$Message.success(this.$t('feedback.saveSuccess'))
     },
 
@@ -419,27 +421,65 @@ export default {
       })
     },
 
+    // 判断数据是否修改
+    isChangeData() {
+      // if(this._filterCache.length !== this.filterFields.length) {
+      //   return true
+      // }
+      // if(this._visibleCache.length !== this.visibleFields.length) {
+      //   return true
+      // }
+      // for(var i = 0; i < this._filterCache.length;i++ ) {
+      //   const cacheField = this._filterCache[i]
+      //   const field = this.filterFields[i]
+      //   if(cacheField.ID !== field.ID) {
+      //     console.log(222,cacheField,field)
+      //     return true
+      //   }
+      //   if(cacheField.IS_ORDER !== field.IS_ORDER) {
+      //     console.log(333,cacheField,field)
+      //     return true
+      //   }
+      // }
+
+      // for(var i = 0; i < this._visibleCache.length;i++ ) {
+      //   const cacheField = this._visibleCache[i]
+      //   const field = this.visibleFields[i]
+      //   if(cacheField.ID !== field.ID) {
+      //     console.log(444,cacheField,field)
+      //     return true
+      //   }
+      //   if(cacheField.IS_ORDER !== field.IS_ORDER) {
+      //     console.log(555,cacheField,field)
+      //     return true
+      //   }
+      // }
+      // return false
+      return JSON.stringify(this._filterCache) !== JSON.stringify(this.filterFields) || JSON.stringify(this._visibleCache) !== JSON.stringify(this.visibleFields)
+    },
+
     // 处理字段树变化
     handleChange(e) {
       if(!e) {
         return
       }
       console.log("🚀 ~ file: index.vue ~ line 288 ~ handleChange ~ e", e)
-      // const isSaved = false
-      // if (this.currentTemplate !== e && !isSaved) {
-      //   this.selectedTemplate = this.currentTemplate
-      //   this.$Modal.fcWarning({
-      //     title: this.$t('feedback.warning'),
-      //     content: this.$t('fieldConfig.switchTemplate'),
-      //     titleAlign: 'center',
-      //     mask: true,
-      //   })
-      // } else {
-      //   this.currentTemplate = e
-      // }
-      console.log('之前，',this.currentTemplate, this.selectedTemplate)
-      this.currentTemplate = e
-      this._getTemplateFields(e)
+      const isChange = this.isChangeData()
+      if (this.currentTemplate !== e && isChange) {
+        this.selectedTemplate = this.currentTemplate
+        this.$Modal.fcWarning({
+          title: this.$t('feedback.warning'),
+          content: this.$t('fieldConfig.switchTemplate'),
+          titleAlign: 'center',
+          mask: true,
+        })
+      } else {
+        this.currentTemplate = e
+        this._getTemplateFields(e)
+      }
+      // console.log('之前，',this.currentTemplate, this.selectedTemplate)
+      // this.currentTemplate = e
+      // this._getTemplateFields(e)
     },
 
     // 获取未添加到配置的字段
@@ -526,8 +566,15 @@ export default {
         if (res.code === 0) {
           this.filterFields = this.transformToDragData(res.data.COLUMN_CONDITIONS)
           this.visibleFields = this.transformToDragData(res.data.COLUMN_LIST)
+          this.cacheConfig()
         }
       })
+    },
+
+    // 缓存配置
+    cacheConfig() {
+      this._visibleCache = JSON.parse(JSON.stringify(this.visibleFields))
+      this._filterCache = JSON.parse(JSON.stringify(this.filterFields))
     },
 
     // 获取表的所有字段
@@ -570,6 +617,8 @@ export default {
   },
 
   async mounted() {
+    this._visibleCache = []
+    this._filterCache = []
     const tableId = this.$route.params.customizedModuleId
     this._tableId = tableId
     this._getAllFields()
