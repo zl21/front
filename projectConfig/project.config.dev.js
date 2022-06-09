@@ -288,5 +288,6 @@ module.exports = {
   ResetrouterBackLogic:true,  // 显示返回按钮
   closedChangePassword:false, // 是否关闭展示侧边修改密码配置
   showColorSetting:false, // 是否显示设置主题的color
-  SingleSignOnSwitch:false // 是否显示单点登录
+  SingleSignOnSwitch:false, // 是否显示单点登录
+  enableFieldConfig: true, // 是否展示字段配置按钮
 }

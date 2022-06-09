@@ -15,16 +15,16 @@
             transfer
             trigger="hover"
             popper-class="ak-drag-pop"
-            :content="item.enableDrag ? $t('fieldConfig.disableSort') : $t('fieldConfig.enableSort')"
+            :content="item.IS_ORDER ? $t('fieldConfig.disableSort') : $t('fieldConfig.enableSort')"
           >
             <i
               class="iconfont icon-sort1"
-              :class="{'ark-btn-ghost ark-btn-primary': item.enableDrag}"
+              :class="{'ark-btn-ghost ark-btn-primary': item.IS_ORDER}"
               @click="toggleDrag(item)"
             ></i>
           </Poptip>
           <span
-            :data-enable-drag="item.enableDrag"
+            :data-enable-drag="item.IS_ORDER"
             class="field-name"
             :title="item.value"
           >{{ item.value }}</span>
@@ -98,7 +98,7 @@ export default {
       const index = this.value.findIndex(item => {
         return item.value === row.value
       })
-      this.value[index].enableDrag = !this.value[index].enableDrag
+      this.value[index].IS_ORDER = !this.value[index].IS_ORDER
     }
   },
 

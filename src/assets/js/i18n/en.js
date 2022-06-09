@@ -222,7 +222,7 @@ export default {
     saveConfigTip:'no Saving configuration',
     asyncTaskTip: 'The task is being processed, please go to [My Tasks] to download the file later',
     fieldConfig: 'field config',
-    continueFieldConfig: 'No field configuration is currently done, do you want to apply the default template and continue?'
+    continueFieldConfig: 'No field configuration is currently done, do you want to create a template and continue?'
   },
   // 具有通用性的文案
   tips: {
@@ -541,7 +541,7 @@ export default {
     listField: 'list interface table display field configuration',
     filterField: 'list interface condition filter field configuration',
     visibleFields: 'single object interface display field configuration',
-    newTemplate: 'The current configuration template cannot be modified, whether to create a new template with the current modification and apply it',
+    newTemplate: 'whether to save the current template and apply',
     createTemplate: 'create a template',
     templateName: 'template name',
     updateSuccess: 'update completed',
@@ -549,6 +549,8 @@ export default {
     shouldDelete: 'Whether to delete',
     saveAsTemplate: 'save as new template',
     pleaseEnter: 'please enter',
-    switchTemplate: 'The template has not been saved, please save the template first, and then switch'
+    switchTemplate: 'The template has not been saved, please save the template first, and then switch',
+    createSuccess: 'create successfully',
+    setDefault: 'whether to set as a public template'
   }
 }

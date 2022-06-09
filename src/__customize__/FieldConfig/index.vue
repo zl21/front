@@ -64,7 +64,10 @@
             <div class="config-content">
               <div class="config-panel">
                 <div class="fields-wrap">
-                  <FieldTree></FieldTree>
+                  <FieldTree
+                    :data="fieldTreeData"
+                    @add-field="handleAddField"
+                  ></FieldTree>
                 </div>
               </div>
               <div
@@ -110,7 +113,7 @@ import FoldTree from './FoldTree.vue'
 import DialogContent from './DialogContent'
 import i18n from '../../assets/js/i18n'
 import Vue from 'vue'
-import { getAllFields } from '../../api/fieldConfig'
+import { getAllFields, getAllTemplate, getTemplateFields, saveFields, applyFields, createTemplate, removeTemplate } from '../../api/fieldConfig'
 
 const prefixClass = `field-page`;
 
@@ -128,73 +131,111 @@ export default {
   data() {
     return {
       prefixClass,
-      currentTemplate: 'London',
-      selectedTemplate: 'London',
-      templateList: [
-        {
-          value: 'New York',
-          label: 'New York'
-        },
-        {
-          value: 'London',
-          label: 'London'
-        },
-      ],
-      currentTab: '1',
-      visibleFields: [
-        {
-          value: 'New York',
-          enableDrag: true
-        },
-        {
-          value: '带参数金色里程角色登录残局得胜了上传介绍',
-          enableDrag: false
-        },
-        {
-          value: 'csdcc',
-          enableDrag: true
-        }
-      ],
-      filterFields: [{
-        value: 'csdcc',
-        enableDrag: true
-      }],
+      currentTemplate: '',
+      selectedTemplate: '',
+      templateList: [],
+      currentTab: '0',
+      visibleFields: [],
+      filterFields: [],
       tabList: [
         {
           label: '列表界面配置',
           value: 0,
           type: 1, // 1是列表，2是主表, 3是子表
         },
-        {
-          label: '单对象界面主表配置',
-          value: 1,
-          type: 2
-        },
-        {
-          label: '单对象界面子表()配置',
-          value: 3,
-          type: 3
-        },
+        // {
+        //   label: '单对象界面主表配置',
+        //   value: 1,
+        //   type: 2
+        // },
+        // {
+        //   label: '单对象界面子表()配置',
+        //   value: 3,
+        //   type: 3
+        // },
       ],
-      createdTemplateName: ''
+      fieldTreeData: [],
+      createdTemplateName: '',
+      isDefaultTemplate: false
     }
   },
 
   methods: {
+    // 点击保存应用按钮
     saveAndApply() {
+      const userInfoJson = window.localStorage.getItem('userInfo') || '{}'
+      const { isadmin } = JSON.parse(userInfoJson)
+      const vm = this
       this.$Modal.fcWarning({
-        title: this.$t('tips.warning'),
+        title: this.$t('feedback.warning'),
         content: this.$t('fieldConfig.newTemplate') + '？',
         titleAlign: 'center',
         mask: true,
-        showCancel: true,
-        onOk: () => {
-          this.createTemplateDialog('add')
+        footerHide: true,
+        footerTemplate: {
+          template:
+            `<div>
+              <Checkbox v-model="isDefaultTemplate" @on-change="handleChange" v-if="isadmin" style="text-align:left;width: 182px;">${vm.$t('fieldConfig.setDefault')}</Checkbox>
+              <Button size="small" type="fcdefault" @click="close">${vm.$t('buttons.cancel')}</Button>
+              <Button size="small" type="fcdefault" @click="ok">${vm.$t('buttons.confirm')}</Button>
+            </div>`,
+          data() {
+            return {
+              isDefaultTemplate: vm.isDefaultTemplate,
+              isadmin: isadmin
+            }
+          },
+          methods: {
+            async ok() {
+              await vm._applyFields() // 把当前界面数据保存到新模板
+              vm.$Message.success(vm.$t('feedback.saveSuccess'))
+              vm.isDefaultTemplate = false
+              this.$parent.close()
+            },
+            close() {
+              this.$parent.close();
+            },
+
+            handleChange(e) {
+              vm.isDefaultTemplate = e
+            }
+          }
+
         }
       })
     },
 
-    save() {
+    // 点击仅保存
+    async save() {
+      await this._saveFields(this.currentTemplate)
+      this.$Message.success(this.$t('feedback.saveSuccess'))
+    },
+
+    // 调用保存修改接口
+    async _saveFields(templateName) {
+      await saveFields({
+        template_name: templateName,
+        table_id: this._tableId,
+        COLUMN_CONDITIONS: this.filterFields,
+        COLUMN_LIST: this.visibleFields
+      }).then(res => {
+        if (res.code === 0) {
+        }
+      })
+    },
+
+    // 调用保存应用配置api
+    async _applyFields() {
+      await applyFields({
+        template_name: this.currentTemplate,
+        table_id: this._tableId,
+        COLUMN_CONDITIONS: this.filterFields,
+        COLUMN_LIST: this.visibleFields,
+        IS_DEFAULT: this.isDefaultTemplate
+      }).then(res => {
+        if (res.code === 0) {
+        }
+      })
     },
 
     back() {
@@ -204,7 +245,7 @@ export default {
       const key = `${tableName}/${tableId}`
       const { keepAliveModuleName } = this.$store.state.global.activeTab;
 
-      if(!this.$router.$R3_history[key]) {
+      if (!this.$router.$R3_history[key]) {
         return
       }
       const url = this.$router.$R3_history[key].fullPath
@@ -221,29 +262,46 @@ export default {
       })
     },
 
+    // 删除
     handleDelete() {
-      this.$Modal.fcWarning({
-        title: this.$t('tips.warning'),
-        content: this.$t('fieldConfig.notDelete') + '？',
-        titleAlign: 'center',
-        mask: true,
-        showCancel: true,
-        onOk: () => {
-        }
-      })
-
       // this.$Modal.fcWarning({
-      //   title: this.$t('tips.warning'),
-      //   content: this.$t('fieldConfig.shouldDelete'),
+      //   title: this.$t('feedback.warning'),
+      //   content: this.$t('fieldConfig.notDelete') + '？',
       //   titleAlign: 'center',
       //   mask: true,
       //   showCancel: true,
       //   onOk: () => {
       //   }
       // })
+
+      this.$Modal.fcWarning({
+        title: this.$t('feedback.warning'),
+        content: this.$t('fieldConfig.shouldDelete'),
+        titleAlign: 'center',
+        mask: true,
+        showCancel: true,
+        onOk: () => {
+          removeTemplate({
+            template_name: this.currentTemplate,
+            table_id: this._tableId
+          }).then(async (res) => {
+            if (res.code === 0) {
+              this.$Message.success(this.$t('feedback.deleteSuccessfully'))
+              await this._getAllTemplate()
+              if (this.templateList.length > 0) {
+                this.currentTemplate = this.templateList[0].value
+                this.selectedTemplate = this.templateList[0].value
+              }
+              await this._getTemplateFields(this.currentTemplate)
+            }
+          })
+        }
+      })
     },
 
+    // 打开创建模板名称弹框
     createTemplateDialog(type) {
+      const vm = this
       const title = type === 'add' ? this.$t('fieldConfig.createTemplate') : this.$t('fieldConfig.saveAsTemplate')
       this.$Modal.fcSuccess({
         title,
@@ -252,40 +310,190 @@ export default {
             on: {
               change: (e) => {
                 this.createdTemplateName = e.target.value
-                console.log("🚀 ~ file: index.vue ~ line 181 ~ save ~ this.createdTemplateName", this.createdTemplateName)
               }
             }
           })
         },
         titleAlign: 'center',
         mask: true,
-        showCancel: true,
+        footerHide: true,
+        footerTemplate: {
+          template:
+            `<div><Button size="small" type="fcdefault" @click="close">${vm.$t('buttons.cancel')}</Button>
+                    <Button size="small" type="fcdefault" @click="ok">${vm.$t('buttons.confirm')}</Button></div>`,
+          methods: {
+            ok() {
+              if (!vm.createdTemplateName) {
+                vm.$Message.error(vm.$t('messages.requiredTemplateName'))
+                return
+              }
+              if (type === 'add') {
+                vm._createTemplate().then(async res => {
+                  if (res.code === 0) {
+                    await vm._getAllTemplate()
+                    await vm._getTemplateFields(vm.createdTemplateName)
+                    vm.currentTemplate = vm.createdTemplateName
+                    vm.selectedTemplate = vm.createdTemplateName
+                    vm.$Message.success(vm.$t('fieldConfig.createSuccess'))
+                  }
+                })
+              }
+              if (type === 'saveAs') {
+                vm._createTemplate().then(async res => {
+                  if (res.code === 0) {
+                    vm.isDefaultTemplate = false
+                    await vm._getAllTemplate()
+                    await vm._applyFields() // 把当前界面数据保存到新模板
+                    await vm._getTemplateFields(vm.currentTemplate) // 更新界面字段
+                    vm.currentTemplate = vm.createdTemplateName
+                    vm.selectedTemplate = vm.createdTemplateName
+                    vm.$Message.success(vm.$t('feedback.saveSuccess'))
+                  }
+                })
+              }
+              this.$parent.close();
+            },
+            close() {
+              this.$parent.close();
+            }
+          }
+        },
       })
     },
 
+    // 请求新增接口
+    async _createTemplate() {
+      return await createTemplate({
+        template_name: this.createdTemplateName,
+        table_id: this._tableId
+      }).then(async (res) => {
+        if (res.code === 0) {
+        }
+        return Promise.resolve(res)
+      })
+    },
+
+    // 处理字段树变化
     handleChange(e) {
-      const isSaved = false
-      if (this.currentTemplate !== e && !isSaved) {
-        this.selectedTemplate = this.currentTemplate
-        this.$Modal.fcWarning({
-          title: this.$t('tips.warning'),
-          content: this.$t('fieldConfig.switchTemplate'),
-          titleAlign: 'center',
-          mask: true,
-        })
+      if(!e) {
+        return
+      }
+      console.log("🚀 ~ file: index.vue ~ line 288 ~ handleChange ~ e", e)
+      // const isSaved = false
+      // if (this.currentTemplate !== e && !isSaved) {
+      //   this.selectedTemplate = this.currentTemplate
+      //   this.$Modal.fcWarning({
+      //     title: this.$t('feedback.warning'),
+      //     content: this.$t('fieldConfig.switchTemplate'),
+      //     titleAlign: 'center',
+      //     mask: true,
+      //   })
+      // } else {
+      //   this.currentTemplate = e
+      // }
+      console.log('之前，',this.currentTemplate, this.selectedTemplate)
+      this.currentTemplate = e
+      this._getTemplateFields(e)
+    },
+
+    // 获取未添加到配置的字段
+    getDiffData(originList, targetList) {
+      const diffList = []
+      for (let i = 0; i < originList.length; i++) {
+        const originField = originList[i]
+        const index = targetList.findIndex(item => item.NAME === originField.NAME)
+        if (index === -1) {
+          diffList.push(originField)
+        }
+      }
+      return targetList.concat(diffList)
+    },
+
+    // 添加字段
+    handleAddField(type, data) {
+      if (type === 1) {
+        const diffData = this.getDiffData(data, this.visibleFields)
+        this.visibleFields = this.transformToDragData(diffData)
       } else {
-        this.currentTemplate = e
+        const diffData = this.getDiffData(data, this.filterFields)
+        this.filterFields = this.transformToDragData(diffData)
+      }
+
+      this.resetTree()
+    },
+
+    // 重置树
+    resetTree() {
+      const newData = this.fieldTreeData[0].children.map(item => {
+        return {
+          ...item,
+          checked: false
+        }
+      })
+
+      this.fieldTreeData = [
+        {
+          title: this.$t('fieldConfig.availableFields'),
+          expand: true,
+          children: newData
+        }
+      ]
+    },
+
+    // 把数据转成拖拽列表数据
+    transformToDragData(data) {
+      return data.map(item => {
+        return {
+          ...item,
+          value: item.NAME
+        }
+      })
+    },
+
+    // 获取所有模板
+    async _getAllTemplate() {
+      const res = await getAllTemplate({ table_id: this._tableId })
+      if (res.code === 0) {
+        this.templateList = res.data.map(item => {
+          return {
+            label: item,
+            value: item
+          }
+        })
       }
     },
 
-    getAllFields() {
-      console.log(this.$route)
-      const tableId = this.$route.params.customizedModuleId
-      getAllFields({
-        table_id: tableId
+    // 获取模板字段
+    async _getTemplateFields(templateName) {
+      await getTemplateFields({
+        template_name: templateName,
+        table_id: this._tableId
       }).then(res => {
-        console.log("🚀 ~ file: index.vue ~ line 292 ~ network.post ~ res", res)
-        if(res.code === 0) {
+        if (res.code === 0) {
+          this.filterFields = this.transformToDragData(res.data.COLUMN_CONDITIONS)
+          this.visibleFields = this.transformToDragData(res.data.COLUMN_LIST)
+        }
+      })
+    },
+
+    // 获取表的所有字段
+    _getAllFields() {
+      getAllFields().then(res => {
+        if (res.code === 0) {
+          const data = res.data.map(item => {
+            return {
+              title: item.NAME,
+              ...item,
+              expand: true
+            }
+          })
+          this.fieldTreeData = [
+            {
+              title: this.$t('fieldConfig.availableFields'),
+              expand: true,
+              children: data
+            }
+          ]
         }
       })
     }
@@ -295,8 +503,14 @@ export default {
     this.$t = i18n.t.bind(i18n)
   },
 
-  mounted() {
-    this.getAllFields()
+  async mounted() {
+    const tableId = this.$route.params.customizedModuleId
+    this._tableId = tableId
+    this._getAllFields()
+    await this._getAllTemplate()
+    this.currentTemplate = this.templateList[0].value
+    this.selectedTemplate = this.templateList[0].value
+    await this._getTemplateFields(this.currentTemplate)
   }
 }
 </script>

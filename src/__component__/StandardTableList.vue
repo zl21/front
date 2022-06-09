@@ -198,7 +198,11 @@ import { getPinnedColumns } from '../__utils__/tableMethods'
 import { isTaskProcessing } from '../__utils__/task-utils'
 import tabBar from './tabBar.vue';
 import listsForm from './FormComponents/list/listsForm';
-import { getAllTemplate } from '../api/fieldConfig'
+import { getAllTemplate, createTemplate } from '../api/fieldConfig'
+
+import Vue from 'vue'
+import DialogContent from '../__customize__/FieldConfig/DialogContent'
+Vue.component('DialogContent', DialogContent)
 
 export default {
   components: {
@@ -211,8 +215,7 @@ export default {
     modifyDialog,
     dialogComponent,
     tabBar,
-    listsForm
-
+    listsForm,
   },
   data () {
     return {
@@ -1397,6 +1400,59 @@ export default {
       this.onSelectionChangedAssignment({ rowIdArray, rowArray });
     },
 
+    // 创建模板
+    createTemplateDialog() {
+      let templateName = ''
+      const vm = this
+      this.$Modal.fcSuccess({
+        title: this.$t('fieldConfig.createTemplate'),
+        render: (r) => {
+          return r('DialogContent', {
+            on: {
+              change: (e) => {
+                templateName = e.target.value
+              }
+            }
+          })
+        },
+        titleAlign: 'center',
+        mask: true,
+        showCancel: true,
+        footerHide: true,
+        footerTemplate: {
+          template:
+            `<div><Button size="small" type="fcdefault" @click="close">${vm.$t('buttons.cancel')}</Button>
+                    <Button size="small" type="fcdefault" @click="ok">${vm.$t('buttons.confirm')}</Button></div>`,
+          methods: {
+            ok() {
+              if(!templateName) {
+                vm.$Message.error(vm.$t('messages.requiredTemplateName'))
+                return
+              }
+              const { tableId } = vm[INSTANCE_ROUTE_QUERY]
+                createTemplate({
+                  template_name: templateName,
+                  table_id: tableId
+                }, true).then(res => {
+                  if(res.code === 0) {
+                    const pageName = `${tabName}字段配置`
+                    vm.tabOpen({
+                      type: 'C',
+                      label: pageName,
+                      url: `/CUSTOMIZED/FIELDCONFIG/${tableId}`
+                    })
+                  }
+                })
+              this.$parent.close();
+            },
+            close() {
+              this.$parent.close();
+            }
+          }
+        },
+      })
+    },
+
     openConfigPage() {
       const { tableId } = this[INSTANCE_ROUTE_QUERY]
       const tabName = this.$store.state.global.activeTab.label
@@ -1404,7 +1460,7 @@ export default {
 
       getAllTemplate({
         table_id: tableId
-      }).then(res => {
+      }, true).then(res => {
         if(res.code === 0 ) {
           if(res.data) {
             this.tabOpen({
@@ -1422,16 +1478,11 @@ export default {
               mask: true,
               showCancel: true,
               onOk: () => {
-                this.tabOpen({
-                  type: 'C',
-                  label: pageName,
-                  url: `/CUSTOMIZED/FIELDCONFIG/${tableId}`
-                })
+                this.createTemplateDialog()
               }
             })
           }
         }
-        console.log("🚀 ~ file: StandardTableList.vue ~ line 1401 ~ getAllTemplate ~ res", res)
       })
       
       

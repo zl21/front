@@ -15,6 +15,7 @@
         :queryStyle="{
           color: 'red'
         }"
+        @on-check-change="handleCheck"
       ></Tree>
     </div>
     <div class="add-field-btn">
@@ -68,40 +69,45 @@ const prefixClass = `field-tree`;
 export default {
   name: 'FieldTree',
 
+  props: {
+    data: {}
+  },
+
   data() {
     return {
       prefixClass,
-      data: [
-        {
-          title: 'parent 1',
-          expand: true,
-          children: [
-            {
-              title: 'parent 1-1',
-              expand: true,
-            },
-            {
-              title: 'parent 1-2',
-              expand: true,
-            }
-          ]
-        },
-        {
-          title: 'parent 2',
-          expand: true,
-          children: [
-            {
-              title: 'parent 2-1',
-              expand: true,
-            },
-            {
-              title: 'parent 2-2',
-              expand: true,
-            }
-          ]
-        }
-      ],
-      query: ''
+      // data: [
+      //   {
+      //     title: 'parent 1',
+      //     expand: true,
+      //     children: [
+      //       {
+      //         title: 'parent 1-1',
+      //         expand: true,
+      //       },
+      //       {
+      //         title: 'parent 1-2',
+      //         expand: true,
+      //       }
+      //     ]
+      //   },
+      //   {
+      //     title: 'parent 2',
+      //     expand: true,
+      //     children: [
+      //       {
+      //         title: 'parent 2-1',
+      //         expand: true,
+      //       },
+      //       {
+      //         title: 'parent 2-2',
+      //         expand: true,
+      //       }
+      //     ]
+      //   }
+      // ],
+      query: '',
+      checkedList: []
     }
   },
 
@@ -111,8 +117,12 @@ export default {
 
   methods: {
     add(option) {
-      this.$emit('add-field', option)
+      this.$emit('add-field', option, this.checkedList)
     },
+    
+    handleCheck(e) {
+      this.checkedList = e.filter(item => item.title !== this.$t('fieldConfig.availableFields'))
+    }
   },
 
   mounted() {
