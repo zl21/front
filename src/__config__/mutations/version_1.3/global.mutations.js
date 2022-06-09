@@ -393,6 +393,10 @@ export default {
     // 清除缓存
     state.keepAliveLists.splice(i, 1);
   },
+  addkeepAliveLists(state, data){
+    // 添加keepAliveLists 缓存
+    state.keepAliveLists = state.keepAliveLists.concat([data.name]);
+  },
   increaseKeepAliveLists(state, data) {
     let keepAliveModuleNameRes = '';
     if ((enableActivateSameCustomizePage()) && data.dynamicModuleTag === 'C') { // 只处理自定义界面情况，
