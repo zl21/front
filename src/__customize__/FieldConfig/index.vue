@@ -6,15 +6,18 @@
         <arkButton
           class="config-btn"
           @click="saveAndApply"
+          v-if="hasTemplate"
         >{{$t('fieldConfig.saveAndApply')}}</arkButton>
         <arkButton
           type="fcdefault"
           class="config-btn"
           @click="save"
+          v-if="hasTemplate"
         >{{$t('fieldConfig.onlySave')}}</arkButton>
         <arkButton
           type="fcdefault"
           class="config-btn"
+          v-if="hasTemplate"
           @click="createTemplateDialog('saveAs')"
         >{{$t('fieldConfig.saveAs')}}</arkButton>
         <arkButton
@@ -30,6 +33,7 @@
         <arkButton
           type="fcdefault"
           @click="handleDelete"
+          v-if="hasTemplate"
         >{{$t('fieldConfig.delete')}}</arkButton>
       </div>
       <div class="field-page-header-r">
@@ -49,7 +53,7 @@
       </div>
     </section>
 
-    <section class="field-page-body">
+    <section class="field-page-body" v-if="hasTemplate">
       <div class="config-wrap">
         <Tabs
           :value="currentTab"
@@ -103,6 +107,14 @@
       </div>
     </section>
 
+    <section class="field-no-template" v-else>
+      <img src="../../assets/image/field-config-null.png" alt="">
+      <div class="add-tip">
+        <span>{{$t('fieldConfig.addTipsOne')}}</span>
+        <span class="add-hl" @click="createTemplateDialog('add')">"{{$t('buttons.add')}}"</span>
+        <span>{{$t('fieldConfig.addTipsTwo')}}</span>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -156,7 +168,8 @@ export default {
       ],
       fieldTreeData: [],
       createdTemplateName: '',
-      isDefaultTemplate: false
+      isDefaultTemplate: false,
+      hasTemplate: false
     }
   },
 
@@ -288,10 +301,7 @@ export default {
             if (res.code === 0) {
               this.$Message.success(this.$t('feedback.deleteSuccessfully'))
               await this._getAllTemplate()
-              if (this.templateList.length > 0) {
-                this.currentTemplate = this.templateList[0].value
-                this.selectedTemplate = this.templateList[0].value
-              }
+              this.resetTemplate()
               await this._getTemplateFields(this.currentTemplate)
             }
           })
@@ -453,13 +463,21 @@ export default {
     // 获取所有模板
     async _getAllTemplate() {
       const res = await getAllTemplate({ table_id: this._tableId })
-      if (res.code === 0) {
+      if (res.code === 0 && res.data && res.data.length > 0) {
         this.templateList = res.data.map(item => {
           return {
             label: item,
             value: item
           }
         })
+        this.hasTemplate = true
+      } else {
+        this.hasTemplate = false
+        this.templateList = []
+        this.visibleFields = []
+        this.filterFields = []
+        this.currentTemplate = ''
+        this.selectedTemplate = ''
       }
     },
 
@@ -496,6 +514,13 @@ export default {
           ]
         }
       })
+    },
+
+    resetTemplate() {
+      if(this.templateList.length > 0) {
+        this.currentTemplate = this.templateList[0].value
+        this.selectedTemplate = this.templateList[0].value
+      }
     }
   },
 
@@ -508,13 +533,11 @@ export default {
     this._tableId = tableId
     this._getAllFields()
     await this._getAllTemplate()
-    this.currentTemplate = this.templateList[0].value
-    this.selectedTemplate = this.templateList[0].value
-    await this._getTemplateFields(this.currentTemplate)
+    this.resetTemplate()
+    this.currentTemplate && await this._getTemplateFields(this.currentTemplate)
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import './index.less';
 </style>

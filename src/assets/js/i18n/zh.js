@@ -551,6 +551,8 @@ export default {
     pleaseEnter: '请输入',
     switchTemplate: '模板尚未保存，请先去保存模板，再进行切换',
     createSuccess: '创建成功',
-    setDefault: '是否设为公共模板'
+    setDefault: '是否设为公共模板',
+    addTipsOne: '当前表无模板，点击',
+    addTipsTwo: '可新增字段配置模板'
   }
 }

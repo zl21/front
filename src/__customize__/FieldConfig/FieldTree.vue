@@ -131,5 +131,4 @@ export default {
 </script>
 
 <style lang="scss">
-@import './index.less';
 </style>

@@ -551,6 +551,8 @@ export default {
     pleaseEnter: 'please enter',
     switchTemplate: 'The template has not been saved, please save the template first, and then switch',
     createSuccess: 'create successfully',
-    setDefault: 'whether to set as a public template'
+    setDefault: 'whether to set as a public template',
+    addTipsOne: 'there is no template in the current table, click ',
+    addTipsTwo: 'to add a field configuration template'
   }
 }

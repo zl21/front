@@ -45,6 +45,7 @@
 }
 
 .field-page {
+  height: 100%;
   .field-page-header {
     padding: 8px 0px;
     display: flex;
@@ -62,6 +63,27 @@
 
   .field-page-body {
     height: calc(100% - 42px);
+  }
+
+  .field-no-template {
+    height: calc(100% - 42px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      width: 300px;
+    }
+
+    .add-tip {
+      margin-top: 20px;
+    }
+
+    .add-hl {
+      color: @primary-color;
+      cursor: pointer;
+    }
   }
 }
 
