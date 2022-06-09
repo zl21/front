@@ -326,6 +326,36 @@ export default {
             on: {
               change: (e) => {
                 this.createdTemplateName = e.target.value
+              },
+              enter: (e) => {
+                if (!vm.createdTemplateName) {
+                  vm.$Message.error(vm.$t('messages.requiredTemplateName'))
+                  return
+                }
+                if (type === 'add') {
+                  vm._createTemplate().then(async res => {
+                    if (res.code === 0) {
+                      await vm._getAllTemplate()
+                      await vm._getTemplateFields(vm.createdTemplateName)
+                      vm.currentTemplate = vm.createdTemplateName
+                      vm.selectedTemplate = vm.createdTemplateName
+                      vm.$Message.success(vm.$t('fieldConfig.createSuccess'))
+                    }
+                  })
+                }
+                if (type === 'saveAs') {
+                  vm._createTemplate().then(async res => {
+                    if (res.code === 0) {
+                      vm.isDefaultTemplate = false
+                      await vm._getAllTemplate()
+                      await vm._applyFields() // 把当前界面数据保存到新模板
+                      await vm._getTemplateFields(vm.currentTemplate) // 更新界面字段
+                      vm.currentTemplate = vm.createdTemplateName
+                      vm.selectedTemplate = vm.createdTemplateName
+                      vm.$Message.success(vm.$t('feedback.saveSuccess'))
+                    }
+                  })
+                }
               }
             }
           })

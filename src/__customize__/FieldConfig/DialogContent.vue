@@ -4,6 +4,7 @@
     <div>
       <Input
         @on-change="change"
+        @on-enter="handleEnter"
         :placeholder="$t('fieldConfig.pleaseEnter')"
       ></Input>
     </div>
@@ -29,6 +30,10 @@ export default {
   methods: {
     change(e) {
       this.$emit('change', e)
+    },
+
+    handleEnter(e) {
+      this.$emit('enter', e)
     }
   }
 }
