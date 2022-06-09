@@ -20,6 +20,7 @@
             <i
               class="iconfont icon-sort1"
               :class="{'ark-btn-ghost ark-btn-primary': item.IS_ORDER}"
+              v-if="enableDrag"
               @click="toggleDrag(item)"
             ></i>
           </Poptip>
@@ -52,6 +53,9 @@ export default {
   props: {
     value: {
       type: Array
+    },
+    enableDrag: {
+      type: Boolean
     }
   },
 

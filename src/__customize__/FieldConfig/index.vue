@@ -27,9 +27,15 @@
         >{{$t('fieldConfig.increase')}}</arkButton>
         <arkButton
           type="fcdefault"
+          class="config-btn"
           @click="handleDelete"
           v-if="hasTemplate"
         >{{$t('fieldConfig.delete')}}</arkButton>
+        <arkButton
+          type="fcdefault"
+          class="config-btn"
+          @click="refresh"
+        >{{$t('buttons.refresh')}}</arkButton>
         <arkButton
           type="fcdefault"
           class="config-btn"
@@ -80,7 +86,7 @@
               >
                 <div class="config-title">{{$t('fieldConfig.listField')}}（{{$t('fieldConfig.drag')}}）</div>
                 <div class="config-area">
-                  <DragPanel v-model="visibleFields"></DragPanel>
+                  <DragPanel v-model="visibleFields" enableDrag></DragPanel>
                 </div>
               </div>
               <div
@@ -521,6 +527,11 @@ export default {
         this.currentTemplate = this.templateList[0].value
         this.selectedTemplate = this.templateList[0].value
       }
+    },
+
+    async refresh() {
+      this._getAllFields()
+      this.currentTemplate && await this._getTemplateFields(this.currentTemplate)
     }
   },
 
