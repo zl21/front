@@ -27,14 +27,14 @@
         >{{$t('fieldConfig.increase')}}</arkButton>
         <arkButton
           type="fcdefault"
-          class="config-btn"
-          @click="back"
-        >{{$t('fieldConfig.back')}}</arkButton>
-        <arkButton
-          type="fcdefault"
           @click="handleDelete"
           v-if="hasTemplate"
         >{{$t('fieldConfig.delete')}}</arkButton>
+        <arkButton
+          type="fcdefault"
+          class="config-btn"
+          @click="back"
+        >{{$t('fieldConfig.back')}}</arkButton>
       </div>
       <div class="field-page-header-r">
         <span>{{$t('fieldConfig.template')}}：</span>
