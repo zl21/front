@@ -84,7 +84,7 @@
                 class="config-panel"
                 v-show="tab.type !== 2"
               >
-                <div class="config-title">{{$t('fieldConfig.listField')}}（{{$t('fieldConfig.drag')}}）</div>
+                <div class="config-title">{{$t('fieldConfig.listField')}}</div>
                 <div class="config-area">
                   <DragPanel v-model="visibleFields" enableSort></DragPanel>
                 </div>
@@ -93,7 +93,7 @@
                 class="config-panel"
                 v-show="tab.type !== 2"
               >
-                <div class="config-title">{{$t('fieldConfig.filterField')}}（{{$t('fieldConfig.drag')}}）</div>
+                <div class="config-title">{{$t('fieldConfig.filterField')}}</div>
                 <div class="config-area">
                   <DragPanel v-model="filterFields"></DragPanel>
                 </div>
@@ -157,7 +157,7 @@ export default {
       filterFields: [],
       tabList: [
         {
-          label: '列表界面配置',
+          label: this.$t('fieldConfig.listConfig'),
           value: 0,
           type: 1, // 1是列表，2是主表, 3是子表
         },

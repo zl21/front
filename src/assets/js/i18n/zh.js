@@ -553,6 +553,7 @@ export default {
     createSuccess: '创建成功',
     setDefault: '是否设为公共模板',
     addTipsOne: '当前表无模板，点击',
-    addTipsTwo: '可新增字段配置模板'
+    addTipsTwo: '可新增字段配置模板',
+    listConfig: '列表界面配置'
   }
 }
