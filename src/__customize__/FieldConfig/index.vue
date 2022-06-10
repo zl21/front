@@ -59,7 +59,10 @@
       </div>
     </section>
 
-    <section class="field-page-body" v-if="hasTemplate">
+    <section
+      class="field-page-body"
+      v-if="hasTemplate"
+    >
       <div class="config-wrap">
         <Tabs
           :value="currentTab"
@@ -87,7 +90,10 @@
               >
                 <div class="config-title">{{$t('fieldConfig.listField')}} （{{$t('fieldConfig.drag')}}）</div>
                 <div class="config-area">
-                  <DragPanel v-model="visibleFields" enableSort></DragPanel>
+                  <DragPanel
+                    v-model="visibleFields"
+                    enableSort
+                  ></DragPanel>
                 </div>
               </div>
               <div
@@ -113,15 +119,28 @@
         </Tabs>
       </div>
 
-      <Spin size="large" fix v-if="showLoading"></Spin>
+      <Spin
+        size="large"
+        fix
+        v-if="showLoading"
+      ></Spin>
 
     </section>
 
-    <section class="field-no-template" v-else>
-      <img src="/static/images/field-config-null.png" alt="">
+    <section
+      class="field-no-template"
+      v-else
+    >
+      <img
+        src="/static/images/field-config-null.png"
+        alt=""
+      >
       <div class="add-tip">
         <span>{{$t('fieldConfig.addTipsOne')}}</span>
-        <span class="add-hl" @click="createTemplateDialog('add')">"{{$t('buttons.add')}}"</span>
+        <span
+          class="add-hl"
+          @click="createTemplateDialog('add')"
+        >"{{$t('buttons.add')}}"</span>
         <span>{{$t('fieldConfig.addTipsTwo')}}</span>
       </div>
     </section>
@@ -216,11 +235,11 @@ export default {
               vm.$Message.success(vm.$t('feedback.saveSuccess'))
               vm.isDefaultTemplate = false
               vm.cacheConfig()
-              const publicRes = await getPublicTemplate({table_id: vm._tableId})
-              if(publicRes.code === 0) {
+              const publicRes = await getPublicTemplate({ table_id: vm._tableId })
+              if (publicRes.code === 0) {
                 vm.publicTemplate = publicRes.data
               }
-              console.log("🚀 ~ file: index.vue ~ line 544 ~ _getAllTemplate ~ publicRes", publicRes)
+
               vm.templateList = vm.templateList.map(item => {
                 return {
                   label: vm.publicTemplate === item.value ? item.value + `(${vm.$t('fieldConfig.publicTemplate')})` : item.value,
@@ -359,50 +378,54 @@ export default {
       })
     },
 
+    subName(type) {
+      if (!this.createdTemplateName) {
+        this.$Message.error(this.$t('messages.requiredTemplateName'))
+        return
+      }
+      if (type === 'add') {
+        this._createTemplate().then(async res => {
+          if (res.code === 0) {
+            await this._getAllTemplate()
+            await this._getTemplateFields(this.createdTemplateName)
+            this.currentTemplate = this.createdTemplateName
+            this.selectedTemplate = this.createdTemplateName
+            this.$Message.success(this.$t('fieldConfig.createSuccess'))
+          }
+        })
+      }
+      if (type === 'saveAs') {
+        this._createTemplate().then(async res => {
+          if (res.code === 0) {
+            this.isDefaultTemplate = false
+            await this._getAllTemplate()
+            await this._applyFields() // 把当前界面数据保存到新模板
+            await this._getTemplateFields(this.currentTemplate) // 更新界面字段
+            this.currentTemplate = this.createdTemplateName
+            this.selectedTemplate = this.createdTemplateName
+            this.$Message.success(this.$t('feedback.saveSuccess'))
+          }
+        })
+      }
+    },
+
     // 打开创建模板名称弹框
     createTemplateDialog(type) {
       const vm = this
       const title = type === 'add' ? this.$t('fieldConfig.createTemplate') : this.$t('fieldConfig.saveAsTemplate')
       this.$Modal.fcSuccess({
         title,
-        render: (r) => {
-          return r('DialogContent', {
-            on: {
-              change: (e) => {
-                this.createdTemplateName = e.target.value
-              },
-              enter: (e) => {
-                if (!vm.createdTemplateName) {
-                  vm.$Message.error(vm.$t('messages.requiredTemplateName'))
-                  return
-                }
-                if (type === 'add') {
-                  vm._createTemplate().then(async res => {
-                    if (res.code === 0) {
-                      await vm._getAllTemplate()
-                      await vm._getTemplateFields(vm.createdTemplateName)
-                      vm.currentTemplate = vm.createdTemplateName
-                      vm.selectedTemplate = vm.createdTemplateName
-                      vm.$Message.success(vm.$t('fieldConfig.createSuccess'))
-                    }
-                  })
-                }
-                if (type === 'saveAs') {
-                  vm._createTemplate().then(async res => {
-                    if (res.code === 0) {
-                      vm.isDefaultTemplate = false
-                      await vm._getAllTemplate()
-                      await vm._applyFields() // 把当前界面数据保存到新模板
-                      await vm._getTemplateFields(vm.currentTemplate) // 更新界面字段
-                      vm.currentTemplate = vm.createdTemplateName
-                      vm.selectedTemplate = vm.createdTemplateName
-                      vm.$Message.success(vm.$t('feedback.saveSuccess'))
-                    }
-                  })
-                }
-              }
+        contentTemplate: {
+          template: `<DialogContent @change="change" @enter="enter"></DialogContent>`,
+          methods: {
+            change(e) {
+              vm.createdTemplateName = e.target.value
+            },
+            enter(e) {
+              vm.subName(type)
+              this.$parent.cancel();
             }
-          })
+          }
         },
         titleAlign: 'center',
         mask: true,
@@ -413,38 +436,11 @@ export default {
                     <Button size="small" type="fcdefault" @click="ok">${vm.$t('buttons.confirm')}</Button></div>`,
           methods: {
             ok() {
-              if (!vm.createdTemplateName) {
-                vm.$Message.error(vm.$t('messages.requiredTemplateName'))
-                return
-              }
-              if (type === 'add') {
-                vm._createTemplate().then(async res => {
-                  if (res.code === 0) {
-                    await vm._getAllTemplate()
-                    await vm._getTemplateFields(vm.createdTemplateName)
-                    vm.currentTemplate = vm.createdTemplateName
-                    vm.selectedTemplate = vm.createdTemplateName
-                    vm.$Message.success(vm.$t('fieldConfig.createSuccess'))
-                  }
-                })
-              }
-              if (type === 'saveAs') {
-                vm._createTemplate().then(async res => {
-                  if (res.code === 0) {
-                    vm.isDefaultTemplate = false
-                    await vm._getAllTemplate()
-                    await vm._applyFields() // 把当前界面数据保存到新模板
-                    await vm._getTemplateFields(vm.currentTemplate) // 更新界面字段
-                    vm.currentTemplate = vm.createdTemplateName
-                    vm.selectedTemplate = vm.createdTemplateName
-                    vm.$Message.success(vm.$t('feedback.saveSuccess'))
-                  }
-                })
-              }
-              this.$parent.close();
+              vm.subName(type)
+              this.$parent.cancel();
             },
             close() {
-              this.$parent.close();
+              this.$parent.cancel();
             }
           }
         },
@@ -475,11 +471,9 @@ export default {
       //   const cacheField = this._filterCache[i]
       //   const field = this.filterFields[i]
       //   if(cacheField.ID !== field.ID) {
-      //     console.log(222,cacheField,field)
       //     return true
       //   }
       //   if(cacheField.IS_ORDER !== field.IS_ORDER) {
-      //     console.log(333,cacheField,field)
       //     return true
       //   }
       // }
@@ -488,11 +482,9 @@ export default {
       //   const cacheField = this._visibleCache[i]
       //   const field = this.visibleFields[i]
       //   if(cacheField.ID !== field.ID) {
-      //     console.log(444,cacheField,field)
       //     return true
       //   }
       //   if(cacheField.IS_ORDER !== field.IS_ORDER) {
-      //     console.log(555,cacheField,field)
       //     return true
       //   }
       // }
@@ -502,10 +494,9 @@ export default {
 
     // 处理字段树变化
     handleChange(e) {
-      if(!e) {
+      if (!e) {
         return
       }
-      console.log("🚀 ~ file: index.vue ~ line 288 ~ handleChange ~ e", e)
       const isChange = this.isChangeData()
       if (this.currentTemplate !== e && isChange) {
         this.selectedTemplate = this.currentTemplate
@@ -582,11 +573,10 @@ export default {
     async _getAllTemplate() {
       const res = await getAllTemplate({ table_id: this._tableId })
       if (res.code === 0 && res.data && res.data.length > 0) {
-        const publicRes = await getPublicTemplate({table_id: this._tableId})
-        if(publicRes.code === 0) {
+        const publicRes = await getPublicTemplate({ table_id: this._tableId })
+        if (publicRes.code === 0) {
           this.publicTemplate = publicRes.data
         }
-        console.log("🚀 ~ file: index.vue ~ line 544 ~ _getAllTemplate ~ publicRes", publicRes)
         this.templateList = res.data.map(item => {
           return {
             label: this.publicTemplate === item ? item + `(${this.$t('fieldConfig.publicTemplate')})` : item,
@@ -647,7 +637,7 @@ export default {
     },
 
     resetTemplate() {
-      if(this.templateList.length > 0) {
+      if (this.templateList.length > 0) {
         this.currentTemplate = this.templateList[0].value
         this.selectedTemplate = this.templateList[0].value
       }

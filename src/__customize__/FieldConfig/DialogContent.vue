@@ -1,13 +1,11 @@
 <template>
   <div class="dialog-content">
     <div class="dialog-content-title">{{$t('fieldConfig.templateName')}}：</div>
-    <div>
-      <Input
-        @on-change="change"
-        @on-enter="handleEnter"
-        :placeholder="$t('fieldConfig.pleaseEnter')"
-      ></Input>
-    </div>
+    <Input
+      @on-change="change"
+      @on-enter="handleEnter"
+      :placeholder="$t('fieldConfig.pleaseEnter')"
+    ></Input>
   </div>
 </template>
 
@@ -41,9 +39,16 @@ export default {
 
 <style lang="scss" scoped>
 .dialog-content {
-  padding: 20px 10px;
+  display: flex;
+  align-items: center;
+  width: 100%;
   .dialog-content-title {
-    margin-bottom: 8px;
+    margin: 16px 0;
+    width: 80px;
+  }
+
+  ::v-deep.ark-input-innerWrap {
+    display: none;
   }
 }
 </style>
