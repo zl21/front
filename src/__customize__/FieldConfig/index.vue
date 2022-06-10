@@ -404,7 +404,7 @@ export default {
           if (res.code === 0) {
             this.isDefaultTemplate = false
             await this._getAllTemplate()
-            await this._applyFields(this.createdTemplateName) // 把当前界面数据保存到新模板
+            await this._saveFields(this.createdTemplateName) // 把当前界面数据保存到新模板
             await this._getTemplateFields(this.createdTemplateName) // 更新界面字段
             this.currentTemplate = this.createdTemplateName
             this.selectedTemplate = this.createdTemplateName
