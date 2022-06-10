@@ -240,7 +240,7 @@ axios.interceptors.response.use(
       // }));
       // delete pendingRequestMap[requestMd5];
       if (status === 403) {
-        if (logoutTips() && getProjectQuietRoutes().indexOf(window.vm.$router.currentRoute.path) === -1) {
+        if (logoutTips() && getProjectQuietRoutes().indexOf(window.vm.$router.currentRoute.path) === -1 && localStorage.getItem('loginStatus') ==='true') {
           window.vm.$Modal.fcWarning({
             title: i18n.t('feedback.warning'),
             content: i18n.t('messages.lostSession'),

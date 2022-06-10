@@ -20,12 +20,12 @@
         "build:share": "cross-env BUILD_ENV=oss webpack --color --progress --config ./webpack/webpack.share.js --env.production",
         "build:style": "gulp --gulpfile ./src/__utils__/build-style.js",
         "build:test": "cross-env BUILD_ENV=publish webpack --color --progress --config ./webpack/webpack.test.js --env.NODE_ENV=development",
-        "build:publish": "npm i && cross-env BUILD_ENV=publish webpack --color --progress --config ./webpack/webpack.publish.js  --env.NODE_ENV=publish",
+        "build:publish": "cross-env BUILD_ENV=publish webpack --color --progress --config ./webpack/webpack.publish.js  --env.NODE_ENV=publish",
         "zip": "node ./src/__utils__/doZip.js",
         "deploy": "npm publish && node ./src/__utils__/dingtalk.js &&  npm run git",
         "server": "node ./build/server",
         "git": "node ./src/__utils__/release.js",
-        "upload": "ark oss --upload --ossPath=/@syman-burgeon-r3/ --localPath=./r3.publish"
+        "upload": "ark oss --upload --ossPath=/TEST/@syman-burgeon-r3 --localPath=./r3.publish"
     },
     "repository": {
         "type": "git",
