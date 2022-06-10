@@ -77,6 +77,7 @@
                   <FieldTree
                     :data="fieldTreeData"
                     @add-field="handleAddField"
+                    ref="fieldTree"
                   ></FieldTree>
                 </div>
               </div>
@@ -84,7 +85,7 @@
                 class="config-panel"
                 v-show="tab.type !== 2"
               >
-                <div class="config-title">{{$t('fieldConfig.listField')}}</div>
+                <div class="config-title">{{$t('fieldConfig.listField')}} （{{$t('fieldConfig.drag')}}）</div>
                 <div class="config-area">
                   <DragPanel v-model="visibleFields" enableSort></DragPanel>
                 </div>
@@ -639,6 +640,7 @@ export default {
       this._getAllFields()
       this.currentTemplate && await this._getTemplateFields(this.currentTemplate)
       this.showLoading = false
+      this.$refs.fieldTree.checkedList = []
     }
   },
 

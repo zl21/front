@@ -88,7 +88,8 @@ export default {
 
   methods: {
     add(option) {
-      this.$emit('add-field', option, this.checkedList)
+      this.$emit('add-field', option, JSON.parse(JSON.stringify(this.checkedList)))
+      this.checkedList = []
     },
     
     handleCheck(e) {
