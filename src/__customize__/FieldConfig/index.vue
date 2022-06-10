@@ -378,7 +378,7 @@ export default {
       })
     },
 
-    subName(type) {
+    subName(type, callback) {
       if (!this.createdTemplateName) {
         this.$Message.error(this.$t('messages.requiredTemplateName'))
         return
@@ -391,6 +391,7 @@ export default {
             this.currentTemplate = this.createdTemplateName
             this.selectedTemplate = this.createdTemplateName
             this.$Message.success(this.$t('fieldConfig.createSuccess'))
+            callback()
           }
         })
       }
@@ -404,6 +405,7 @@ export default {
             this.currentTemplate = this.createdTemplateName
             this.selectedTemplate = this.createdTemplateName
             this.$Message.success(this.$t('feedback.saveSuccess'))
+            callback()
           }
         })
       }
@@ -411,6 +413,7 @@ export default {
 
     // 打开创建模板名称弹框
     createTemplateDialog(type) {
+      this.createdTemplateName = ''
       const vm = this
       const title = type === 'add' ? this.$t('fieldConfig.createTemplate') : this.$t('fieldConfig.saveAsTemplate')
       this.$Modal.fcSuccess({
@@ -422,8 +425,7 @@ export default {
               vm.createdTemplateName = e.target.value
             },
             enter(e) {
-              vm.subName(type)
-              this.$parent.cancel();
+              vm.subName(type, this.$parent.cancel)
             }
           }
         },
@@ -436,8 +438,7 @@ export default {
                     <Button size="small" type="fcdefault" @click="ok">${vm.$t('buttons.confirm')}</Button></div>`,
           methods: {
             ok() {
-              vm.subName(type)
-              this.$parent.cancel();
+              vm.subName(type, this.$parent.cancel)
             },
             close() {
               this.$parent.cancel();
