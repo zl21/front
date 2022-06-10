@@ -23,7 +23,7 @@
         <arkButton
           type="fcdefault"
           class="config-btn"
-          @click="createTemplateDialog('add')"
+          @click="add"
         >{{$t('fieldConfig.increase')}}</arkButton>
         <arkButton
           type="fcdefault"
@@ -274,6 +274,24 @@ export default {
         if (res.code === 0) {
         }
       })
+    },
+
+    add() {
+      const isChange = this.isChangeData()
+      if (isChange) {
+        this.$Modal.fcWarning({
+          title: this.$t('feedback.warning'),
+          content: this.$t('messages.confirmAdd'),
+          titleAlign: 'center',
+          mask: true,
+          showCancel: true,
+          onOk: () => {
+            this.createTemplateDialog('add')
+          }
+        })
+      } else {
+        this.createTemplateDialog('add')
+      }
     },
 
     back() {

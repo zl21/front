@@ -555,6 +555,7 @@ export default {
     addTipsOne: 'there is no template in the current table, click ',
     addTipsTwo: 'to add a field configuration template',
     listConfig: 'list interface configuration',
-    publicTemplate: 'application template'
+    publicTemplate: 'application template',
+    confirmAdd: 'the template has not been saved, confirm to add'
   }
 }
