@@ -34,7 +34,7 @@
       />
 
       <!-- 字段配置按钮 -->
-      <Button @click="btnclick('field-config')" type="fcdefault" v-if="showFieldBtn()">{{$t('messages.fieldConfig')}}</Button>
+      <Button @click="btnclick('field-config')" type="fcdefault" v-if="showFieldBtn() && !itemId">{{$t('messages.fieldConfig')}}</Button>
 
       <!-- 定制按钮 -->
       <template v-for="item in dataSetArray.waListButtonsConfig.waListButtons">
