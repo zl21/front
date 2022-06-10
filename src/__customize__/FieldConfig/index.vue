@@ -232,7 +232,7 @@ export default {
           methods: {
             async ok() {
               await vm._applyFields(vm.currentTemplate) // 把当前界面数据保存到新模板
-              this.resetTree()
+              vm.resetTree()
               vm.$Message.success(vm.$t('feedback.saveSuccess'))
               vm.isDefaultTemplate = false
               vm.cacheConfig()
