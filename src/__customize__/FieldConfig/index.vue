@@ -272,6 +272,25 @@ export default {
     },
 
     back() {
+      const isChange = this.isChangeData()
+      if (isChange) {
+        this.$Modal.fcWarning({
+          title: this.$t('feedback.warning'),
+          content: this.$t('messages.confirmBack'),
+          titleAlign: 'center',
+          mask: true,
+          showCancel: true,
+          onOk: () => {
+            this.jump()
+          }
+        })
+        return
+      }
+
+      this.jump()
+    },
+
+    jump() {
       const { fullPath } = this.$route;
       const tableName = this.$route.params.customizedModuleName
       const tableId = this.$route.params.customizedModuleId
