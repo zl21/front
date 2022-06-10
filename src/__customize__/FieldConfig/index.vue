@@ -391,6 +391,8 @@ export default {
             this.currentTemplate = this.createdTemplateName
             this.selectedTemplate = this.createdTemplateName
             this.$Message.success(this.$t('fieldConfig.createSuccess'))
+            this.resetTree()
+            this.$refs.fieldTree[0].clear()
             callback()
           }
         })
@@ -405,6 +407,8 @@ export default {
             this.currentTemplate = this.createdTemplateName
             this.selectedTemplate = this.createdTemplateName
             this.$Message.success(this.$t('feedback.saveSuccess'))
+            this.resetTree()
+            this.$refs.fieldTree[0].clear()
             callback()
           }
         })
