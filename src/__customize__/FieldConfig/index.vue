@@ -301,11 +301,9 @@ export default {
         return
       }
       const url = this.$router.$R3_history[key].fullPath
-      this.$store.commit('global/tabCloseAppoint', {
-        routeFullPath: fullPath,
-        keepAliveModuleName,
-        tableName
-      });
+
+      const tab = this.$store.state.global.openedMenuLists.find(item => item.keepAliveModuleName === this._moduleName)
+      this.$store.commit('global/tabCloseAppoint', tab)
 
       this.$store.commit('global/tabOpen', {
         back: true,
@@ -316,16 +314,6 @@ export default {
 
     // 删除
     handleDelete() {
-      // this.$Modal.fcWarning({
-      //   title: this.$t('feedback.warning'),
-      //   content: this.$t('fieldConfig.notDelete') + '？',
-      //   titleAlign: 'center',
-      //   mask: true,
-      //   showCancel: true,
-      //   onOk: () => {
-      //   }
-      // })
-
       this.$Modal.fcWarning({
         title: this.$t('feedback.warning'),
         content: this.$t('fieldConfig.shouldDelete'),
@@ -655,6 +643,7 @@ export default {
   async mounted() {
     this._visibleCache = []
     this._filterCache = []
+    this._moduleName = this.$route.meta.moduleName
     const tableId = this.$route.params.customizedModuleId
     this._tableId = tableId
     this._getAllFields()
