@@ -22,6 +22,7 @@ class CustomModal {
         this.props.content = this.setContent(this.item.contentHtml);
         this.props.footerTemplate = this.setFooter();
         this.props = Object.assign(this.props,this.item);
+        window.vm.$Modal.remove();
         return window.vm.$Modal[this.props.showType](this.props);
     }
     
