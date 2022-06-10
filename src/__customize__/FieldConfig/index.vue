@@ -111,6 +111,9 @@
           </TabPane>
         </Tabs>
       </div>
+
+      <Spin size="large" fix v-if="showLoading"></Spin>
+
     </section>
 
     <section class="field-no-template" v-else>
@@ -177,6 +180,7 @@ export default {
       isDefaultTemplate: false,
       hasTemplate: false,
       publicTemplate: false,
+      showLoading: false
     }
   },
 
@@ -631,8 +635,10 @@ export default {
     },
 
     async refresh() {
+      this.showLoading = true
       this._getAllFields()
       this.currentTemplate && await this._getTemplateFields(this.currentTemplate)
+      this.showLoading = false
     }
   },
 
@@ -641,6 +647,7 @@ export default {
   },
 
   async mounted() {
+    this.showLoading = true
     this._visibleCache = []
     this._filterCache = []
     this._moduleName = this.$route.meta.moduleName
@@ -650,6 +657,7 @@ export default {
     await this._getAllTemplate()
     this.resetTemplate()
     this.currentTemplate && await this._getTemplateFields(this.currentTemplate)
+    this.showLoading = false
   }
 }
 </script>
