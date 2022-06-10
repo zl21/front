@@ -666,7 +666,11 @@ export default {
     this._getAllFields()
     await this._getAllTemplate()
     this.resetTemplate()
-    this.currentTemplate && await this._getTemplateFields(this.currentTemplate)
+    // 优先展示应用模板
+    const template = this.publicTemplate || this.currentTemplate
+    this.currentTemplate = template
+    this.selectedTemplate = template
+    this.currentTemplate && await this._getTemplateFields(template)
     this.showLoading = false
   }
 }
