@@ -649,7 +649,9 @@ export default {
       this._getAllFields()
       this.currentTemplate && await this._getTemplateFields(this.currentTemplate)
       this.showLoading = false
-      this.$refs.fieldTree.checkedList = []
+      console.log("🚀 ~ file: index.vue ~ line 653 ~ refresh ~ this.$refs.fieldTree", this.$refs.fieldTree)
+
+      this.$refs.fieldTree[0].clear()
     }
   },
 

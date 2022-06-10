@@ -94,6 +94,10 @@ export default {
     
     handleCheck(e) {
       this.checkedList = e.filter(item => item.title !== this.$t('fieldConfig.availableFields'))
+    },
+
+    clear() {
+      this.checkedList = []
     }
   },
 
