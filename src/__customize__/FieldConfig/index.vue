@@ -231,7 +231,8 @@ export default {
           },
           methods: {
             async ok() {
-              await vm._applyFields(this.currentTemplate) // 把当前界面数据保存到新模板
+              await vm._applyFields(vm.currentTemplate) // 把当前界面数据保存到新模板
+              this.resetTree()
               vm.$Message.success(vm.$t('feedback.saveSuccess'))
               vm.isDefaultTemplate = false
               vm.cacheConfig()
@@ -264,6 +265,7 @@ export default {
     // 点击仅保存
     async save() {
       await this._saveFields(this.currentTemplate)
+      this.resetTree()
       this.cacheConfig()
       this.$Message.success(this.$t('feedback.saveSuccess'))
     },
@@ -368,6 +370,7 @@ export default {
             table_id: this._tableId
           }).then(async (res) => {
             if (res.code === 0) {
+              this.resetTree()
               this.$Message.success(this.$t('feedback.deleteSuccessfully'))
               await this._getAllTemplate()
               this.resetTemplate()
@@ -392,7 +395,6 @@ export default {
             this.selectedTemplate = this.createdTemplateName
             this.$Message.success(this.$t('fieldConfig.createSuccess'))
             this.resetTree()
-            this.$refs.fieldTree[0].clear()
             callback()
           }
         })
@@ -408,7 +410,6 @@ export default {
             this.selectedTemplate = this.createdTemplateName
             this.$Message.success(this.$t('feedback.saveSuccess'))
             this.resetTree()
-            this.$refs.fieldTree[0].clear()
             callback()
           }
         })
@@ -515,7 +516,6 @@ export default {
         this.currentTemplate = e
         this._getTemplateFields(e)
         this.resetTree()
-        this.$refs.fieldTree[0].clear()
       }
       // console.log('之前，',this.currentTemplate, this.selectedTemplate)
       // this.currentTemplate = e
@@ -564,6 +564,7 @@ export default {
           children: newData
         }
       ]
+      this.$refs.fieldTree[0].clear()
     },
 
     // 把数据转成拖拽列表数据
@@ -655,8 +656,7 @@ export default {
       this._getAllFields()
       this.currentTemplate && await this._getTemplateFields(this.currentTemplate)
       this.showLoading = false
-
-      this.$refs.fieldTree[0].clear()
+      this.resetTree()
     }
   },
 
