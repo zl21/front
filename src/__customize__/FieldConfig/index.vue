@@ -201,7 +201,7 @@ export default {
             </div>`,
           data() {
             return {
-              isDefaultTemplate: vm.publicTemplate === vm.currentTemplate,
+              isDefaultTemplate: vm.isDefaultTemplate,
               isadmin: isadmin
             }
           },

@@ -555,6 +555,6 @@ export default {
     addTipsOne: '当前表无模板，点击',
     addTipsTwo: '可新增字段配置模板',
     listConfig: '列表界面配置',
-    publicTemplate: '公共模板'
+    publicTemplate: '应用模板'
   }
 }
