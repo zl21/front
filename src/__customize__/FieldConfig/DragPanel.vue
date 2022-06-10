@@ -11,19 +11,21 @@
     <template v-slot="{item}">
       <div class="field-item">
         <div class="field-item-l">
-          <Poptip
+          <Tooltip
             transfer
-            trigger="hover"
-            popper-class="ak-drag-pop"
+            placement="top"
+            class="ak-drag-pop"
+            v-if="enableSort && item.value!== 'ID'"
             :content="item.IS_ORDER ? $t('fieldConfig.disableSort') : $t('fieldConfig.enableSort')"
           >
             <i
               class="iconfont icon-sort1"
               :class="{'ark-btn-ghost ark-btn-primary': item.IS_ORDER}"
-              v-if="enableSort"
               @click="toggleDrag(item)"
             ></i>
-          </Poptip>
+            
+          </Tooltip>
+          <span v-else style="width:16px;display:inline-block;"></span>
           <span
             :data-enable-drag="true"
             class="field-name"
