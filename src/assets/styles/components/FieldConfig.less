@@ -127,6 +127,17 @@
   .ark-tree > ul > li > ul {
     border-left: 1px solid #dcdee2;
   }
+  .ark-tree li > ul:last-child > li:last-child > label {
+    &::after {
+      content: '';
+      position: absolute;
+      height: 17px;
+      width: 2px;
+      background: #f8f7f7;
+      left: -2px;
+      top: 8px;
+    }
+  }
   .ark-tree ul li:before {
     background-color: #dcdee2;
   }
