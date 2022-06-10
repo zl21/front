@@ -231,7 +231,7 @@ export default {
           },
           methods: {
             async ok() {
-              await vm._applyFields() // 把当前界面数据保存到新模板
+              await vm._applyFields(this.currentTemplate) // 把当前界面数据保存到新模板
               vm.$Message.success(vm.$t('feedback.saveSuccess'))
               vm.isDefaultTemplate = false
               vm.cacheConfig()
@@ -282,9 +282,9 @@ export default {
     },
 
     // 调用保存应用配置api
-    async _applyFields() {
+    async _applyFields(templateName) {
       await applyFields({
-        template_name: this.currentTemplate,
+        template_name: templateName,
         table_id: this._tableId,
         COLUMN_CONDITIONS: this.filterFields,
         COLUMN_LIST: this.visibleFields,
@@ -402,8 +402,8 @@ export default {
           if (res.code === 0) {
             this.isDefaultTemplate = false
             await this._getAllTemplate()
-            await this._applyFields() // 把当前界面数据保存到新模板
-            await this._getTemplateFields(this.currentTemplate) // 更新界面字段
+            await this._applyFields(this.createdTemplateName) // 把当前界面数据保存到新模板
+            await this._getTemplateFields(this.createdTemplateName) // 更新界面字段
             this.currentTemplate = this.createdTemplateName
             this.selectedTemplate = this.createdTemplateName
             this.$Message.success(this.$t('feedback.saveSuccess'))
