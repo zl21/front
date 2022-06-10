@@ -100,7 +100,7 @@
                 class="config-panel"
                 v-show="tab.type !== 2"
               >
-                <div class="config-title">{{$t('fieldConfig.filterField')}}</div>
+                <div class="config-title">{{$t('fieldConfig.filterField')}} （{{$t('fieldConfig.drag')}}）</div>
                 <div class="config-area">
                   <DragPanel v-model="filterFields"></DragPanel>
                 </div>
