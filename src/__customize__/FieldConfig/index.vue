@@ -114,7 +114,7 @@
     </section>
 
     <section class="field-no-template" v-else>
-      <img src="../../assets/image/field-config-null.png" alt="">
+      <img src="/static/images/field-config-null.png" alt="">
       <div class="add-tip">
         <span>{{$t('fieldConfig.addTipsOne')}}</span>
         <span class="add-hl" @click="createTemplateDialog('add')">"{{$t('buttons.add')}}"</span>
@@ -176,7 +176,7 @@ export default {
       createdTemplateName: '',
       isDefaultTemplate: false,
       hasTemplate: false,
-      publicTemplate: false
+      publicTemplate: false,
     }
   },
 

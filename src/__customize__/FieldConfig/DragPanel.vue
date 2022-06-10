@@ -25,7 +25,7 @@
             ></i>
           </Poptip>
           <span
-            :data-enable-drag="false"
+            :data-enable-drag="true"
             class="field-name"
             :title="item.value"
           >{{ item.value }}</span>
