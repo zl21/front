@@ -510,6 +510,8 @@ export default {
       } else {
         this.currentTemplate = e
         this._getTemplateFields(e)
+        this.resetTree()
+        this.$refs.fieldTree[0].clear()
       }
       // console.log('之前，',this.currentTemplate, this.selectedTemplate)
       // this.currentTemplate = e
@@ -649,7 +651,6 @@ export default {
       this._getAllFields()
       this.currentTemplate && await this._getTemplateFields(this.currentTemplate)
       this.showLoading = false
-      console.log("🚀 ~ file: index.vue ~ line 653 ~ refresh ~ this.$refs.fieldTree", this.$refs.fieldTree)
 
       this.$refs.fieldTree[0].clear()
     }
