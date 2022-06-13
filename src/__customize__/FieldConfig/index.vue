@@ -679,7 +679,27 @@ export default {
       }
     },
 
+    // 刷新
     async refresh() {
+      const isChange = this.isChangeData()
+      if (isChange) {
+        this.$Modal.fcWarning({
+          title: this.$t('feedback.warning'),
+          content: this.$t('messages.confirmRefresh'),
+          titleAlign: 'center',
+          mask: true,
+          showCancel: true,
+          onOk: async () => {
+            this.showLoading = true
+            this._getAllFields()
+            this.currentTemplate && await this._getTemplateFields(this.currentTemplate)
+            this.showLoading = false
+            this.resetTree()
+          }
+        })
+        return
+      }
+
       this.showLoading = true
       this._getAllFields()
       this.currentTemplate && await this._getTemplateFields(this.currentTemplate)
