@@ -32,6 +32,10 @@
         @click="btnclick('fix', item,index)"
         v-text="item.name"
       />
+
+      <!-- 字段配置按钮 -->
+      <Button @click="btnclick('field-config')" type="fcdefault" v-if="showFieldBtn() && !itemId">{{$t('messages.fieldConfig')}}</Button>
+
       <!-- 定制按钮 -->
       <template v-for="item in dataSetArray.waListButtonsConfig.waListButtons">
         <template v-if="item.confirm && item.confirm.includes('supPrompt')">
@@ -229,7 +233,7 @@
   import { mapState } from 'vuex';
   import Dialog from './Dialog.vue';
   import network from '../__utils__/network';
-  import { MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY,layoutDirection, enableHistoryAndFavoriteUI, classFix } from '../constants/global';
+  import { MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY,layoutDirection, enableHistoryAndFavoriteUI, classFix, enableFieldConfig } from '../constants/global';
   import { DispatchEvent, R3_BUTTON_CLICK } from '../__utils__/dispatchEvent'
 
 
@@ -371,6 +375,10 @@
       }
     },
     methods: {
+      showFieldBtn() {
+        return enableFieldConfig()
+      },
+
       choseWaListButton(data) {
         if(!data.disabled){
           // 激活状态下

@@ -1,0 +1,54 @@
+<template>
+  <div class="dialog-content">
+    <div class="dialog-content-title">{{$t('fieldConfig.templateName')}}：</div>
+    <Input
+      @on-change="change"
+      @on-enter="handleEnter"
+      :placeholder="$t('fieldConfig.pleaseEnter')"
+    ></Input>
+  </div>
+</template>
+
+<script type="text/ecmascript-6">
+import i18n from '../../assets/js/i18n'
+
+export default {
+  name: 'DialogContent',
+
+  beforeCreate() {
+    this.$t = i18n.t.bind(i18n)
+  },
+
+  data() {
+    return {
+
+    }
+  },
+
+  methods: {
+    change(e) {
+      this.$emit('change', e)
+    },
+
+    handleEnter(e) {
+      this.$emit('enter', e)
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.dialog-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  .dialog-content-title {
+    margin: 16px 0;
+    width: 80px;
+  }
+
+  ::v-deep.ark-input-innerWrap {
+    display: none;
+  }
+}
+</style>

@@ -220,7 +220,9 @@ export default {
     seeDetails: 'see details',
     downloadFile: 'download file',
     saveConfigTip:'no Saving configuration',
-    asyncTaskTip: 'The task is being processed, please go to [My Tasks] to download the file later'
+    asyncTaskTip: 'The task is being processed, please go to [My Tasks] to download the file later',
+    fieldConfig: 'field config',
+    continueFieldConfig: 'No field configuration is currently done, do you want to create a template and continue?'
   },
   // 具有通用性的文案
   tips: {
@@ -519,6 +521,41 @@ export default {
   // 换肤
   changeTheme:{
     title:'Theme color'
+  },
+  fieldConfig: {
+    saveAndApply: 'save and apply',
+    onlySave: 'save only',
+    saveAs: 'save as',
+    increase: 'increase',
+    back: 'back',
+    delete: 'delete',
+    add: 'add',
+    availableFields: 'available fields',
+    drag: 'drag to change sorting',
+    enableSort: 'turn on sorting',
+    disableSort: 'close sorting',
+    template: 'current template',
+    enterField: 'please enter field name to search',
+    addTable: 'add to list interface form',
+    addFilter: 'add to list interface condition filter',
+    listField: 'list interface table display field configuration',
+    filterField: 'list interface condition filter field configuration',
+    visibleFields: 'single object interface display field configuration',
+    newTemplate: 'whether to save the current template and apply',
+    createTemplate: 'create a template',
+    templateName: 'template name',
+    updateSuccess: 'update completed',
+    notDelete: 'The current configuration template cannot be deleted',
+    shouldDelete: 'Whether to delete',
+    saveAsTemplate: 'save as new template',
+    pleaseEnter: 'please enter',
+    switchTemplate: 'The template has not been saved, please save the template first, and then switch',
+    createSuccess: 'create successfully',
+    setDefault: 'whether to set as a public template',
+    addTipsOne: 'there is no template in the current table, click ',
+    addTipsTwo: 'to add a field configuration template',
+    listConfig: 'list interface configuration',
+    publicTemplate: 'application template',
+    confirmAdd: 'the template has not been saved, confirm to add'
   }
-  
 }

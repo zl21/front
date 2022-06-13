@@ -53,7 +53,11 @@ let globalDefaultGateWay = [
   '/p/cs/recHistory',
   '/p/cs/setHideColumn',
   '/p/cs/changechruserpwd',
-  '/p/cs/SearchWords'
+  '/p/cs/SearchWords',
+  '/p/c/getsystemcolor',
+  '/p/cs/ssosystemlist',
+  '/p/cs/ssothirdsystem',
+  '/p/cs/updatesystemcolor'
 ];
 
 // 不走网关的接口
@@ -172,6 +176,7 @@ export const enableTaskNotice = () => (window.ProjectConfig && window.ProjectCon
 export const asyncTaskScheme = () => (window.ProjectConfig && window.ProjectConfig.asyncTaskScheme ? window.ProjectConfig.asyncTaskScheme : '');  // 异步导出设计方案
 export const layoutDirectionSlot = () => (window.ProjectConfig && window.ProjectConfig.layoutDirectionSlot) // 通过插槽修改界面布局的功能
 export const isEditableDate = () => (window.ProjectConfig && window.ProjectConfig.editableDate === true) // 是否日期组件是否可编辑
+export const enableFieldConfig = () => (window.ProjectConfig && window.ProjectConfig.enableFieldConfig === true)  // 是否展示字段配置按钮
 
 // 获取表单网关
 export const getGatewayValue = (key) => {

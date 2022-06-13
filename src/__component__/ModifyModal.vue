@@ -25,12 +25,13 @@
           {{$t('messages.selectedModifiedRecord',{total:ids})}}
         </div>
         <component
-          :is="'CompositeFormpop'"
-          :default-data="newformList"
-          :default-column-col="formList.objviewcol"
+          :is="'panelForm'"
+          :defaultData="newformList"
+          :CollapseName="CollapseName"
+          :tableName="tableName"
           class="pop-formPanel"
           type=""
-          @formChange="formChange"
+          @on-changeForm="formChange"
         />
         <div class="button R3-button-group modifyButton">
           <Button
@@ -54,6 +55,7 @@
 <script>
   import { Version, classFix } from '../constants/global';
   import ModalConfirm from './Dialog/Confirm.vue';
+import CollapseName from './FormComponents/childrenForm/CollapseComponent.vue';
 
   let fkHttpRequest = undefined
   import(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`).then(data => {
@@ -64,7 +66,7 @@
   export default {
     name: 'ModifyDialog',
     components: {
-      ModalConfirm
+      ModalConfirm,
     },
     data() {
       return {
@@ -74,6 +76,7 @@
         formChangeData: {},
         fixedcolumns: {},
         defaultData: {},
+        CollapseName: CollapseName,
         Condition: 'list',
         changeType: 'Modify',
         objids: [],
@@ -105,6 +108,7 @@
       }, // 设置标题是否居中 // center left
     },
     created() {
+      this.tableName = 'BatchModal';
       // const searchObject = {
       //   table: this.router.tableName
       // };
@@ -125,7 +129,14 @@
               const itemChilds = item.childs || item.child;
               if (Array.isArray(itemChilds)) {
                 itemChilds.forEach((option) => {
+                  // isnotnull 去除必填
                   option.isnotnull = false;
+                  // onjump 不要外键跳转
+                  option.onjump = true;
+                  if(option.display ==='switch'){
+                      option.display = 'select';
+                  }
+                  
                 });
                 arr.push(itemChilds);
               } else {
@@ -141,8 +152,11 @@
 
             childs = childs.flat();
             this.newformList = {
-              inpubobj: childs,
+              addcolums:  [{
+                  childs: childs,
+                }],
               objviewcol: val.objviewcol
+
             };
           }
         },
@@ -249,6 +263,7 @@
       },
       formChange(data, defaultData, changeData) {
         // form 修改的数据
+        console.log(data, '=============', changeData);
         this.formChangeData = Object.assign({}, data);
         this.defaultData = Object.assign({}, changeData);
         Object.keys(this.defaultData).forEach((item) => {

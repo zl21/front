@@ -170,7 +170,7 @@ export default {
                 //详情明细  有值 
                 ParentForm.formChangeData = Object.assign({}, ParentForm.formChangeData, current_data)
                 ParentForm.formChangeDataLabel = Object.assign({}, ParentForm.formChangeDataLabel, R3Label)
-                if (JSON.stringify(val ||'') === JSON.stringify(this.defaultVale)) {
+                if (JSON.stringify(val ||'') === JSON.stringify(this.defaultVale) && ['image','OBJ_DOC'].includes(this.items.display) === false) {
                   delete ParentForm.formChangeData[this.items.colname]
                   delete ParentForm.formChangeDataLabel[this.items.colname]
                    // 删除新增有值后变空
@@ -201,13 +201,19 @@ export default {
               if (this.items.showPlace !== 'childrenForm'&& !ossRealtimeSave() && JSON.stringify(val) !== JSON.stringify(this.defaultVale)) {
                 if (this.items.display === 'image' || this.items.display === 'OBJ_DOC') {
                   // 主子表的子表修改（1:1）的情况下
-                  setTimeout(() => {
-                    const dom = document.getElementById('actionMODIFY');
-                    if (dom) {
-                      dom.click();
-                    }
+                  if(/New/.test(this.$route.params.itemId)!==true){
+                    // 新增不走自动保存逻辑
+                    setTimeout(() => {
+                      const dom = document.getElementById('actionMODIFY');
+                      if (dom) {
+                        dom.click();
+                      }
+  
+                    }, 600);
 
-                  }, 600);
+                    
+                  }
+                  
                 }
               }
             }
@@ -264,6 +270,12 @@ export default {
       if(/New/.test(this.$route.params.itemId)){
         formChangeData = Object.assign(JSON.parse(JSON.stringify(ParentForm.defaulDataValue)),JSON.parse(JSON.stringify(formChangeData)));
         formDataLabel = Object.assign(JSON.parse(JSON.stringify(ParentForm.defaulDataLabel)),JSON.parse(JSON.stringify(formDataLabel)));
+      }
+      if(!ParentForm.$parent.formPanelChange && !ParentForm.$parent.formChange){
+        // 不存在,例如弹窗等
+        ParentForm.$emit('on-changeForm',formChangeData, formDataLabel,ParentForm.formChangeDataLabel);
+        return true;
+
       }
       if (ParentForm.$parent.formPanelChange) {
         ParentForm.$parent.formPanelChange(formChangeData, formDataLabel,ParentForm.formChangeDataLabel)

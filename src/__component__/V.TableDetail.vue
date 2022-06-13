@@ -38,6 +38,8 @@
             :type="'singleCard'"
             :tab-panels="tabPanels"
           />
+          <!-- 日志迁移位置 -->
+          <div id="verticalTabs_panelForm" class="panelForm"></div>
         </div>
     </component>
   
@@ -235,7 +237,9 @@
     },
 
     beforeDestroy() {
-      this._resizeObserver.disconnect()
+      if(this._resizeObserver){
+        this._resizeObserver.disconnect()
+      }
     },
 
     methods: {
