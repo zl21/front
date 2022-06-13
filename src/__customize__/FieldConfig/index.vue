@@ -154,6 +154,7 @@ import FoldTree from './FoldTree.vue'
 import DialogContent from './DialogContent'
 import i18n from '../../assets/js/i18n'
 import Vue from 'vue'
+import { mapGetters, mapMutations } from 'vuex'
 import { getAllFields, getAllTemplate, getTemplateFields, saveFields, applyFields, createTemplate, removeTemplate, getPublicTemplate } from '../../api/fieldConfig'
 
 const prefixClass = `field-page`;
@@ -204,7 +205,36 @@ export default {
     }
   },
 
+  computed: {
+    ...mapGetters('global', ['labelMaps', 'menuLists']),
+
+    storeData() {
+      if (Object.keys(this.labelMaps).length > 0 && this.menuLists.length > 0) {
+        return {
+          labelMaps: this.labelMaps,
+          menuLists: this.menuLists
+        }
+      } else {
+        return {}
+      }
+    }
+  },
+
+  watch: {
+    storeData: {
+      immediate: true,
+      handler: function (val) {
+        if (Object.keys(val).length > 0 && !this._setMap) {
+          this._setMap = true
+          this.setPageLabel(val.labelMaps, val.menuLists)
+        }
+      }
+    }
+  },
+
   methods: {
+    ...mapMutations('global', ['updataOpenedMenuLists', 'switchTabForActiveTab']),
+
     // 点击保存应用按钮
     saveAndApply() {
       const userInfoJson = window.localStorage.getItem('userInfo') || '{}'
@@ -335,11 +365,9 @@ export default {
     },
 
     jump() {
-      const { fullPath } = this.$route;
       const tableName = this.$route.params.customizedModuleName
       const tableId = this.$route.params.customizedModuleId
       const key = `${tableName}/${tableId}`
-      const { keepAliveModuleName } = this.$store.state.global.activeTab;
 
       if (!this.$router.$R3_history[key]) {
         return
@@ -657,6 +685,28 @@ export default {
       this.currentTemplate && await this._getTemplateFields(this.currentTemplate)
       this.showLoading = false
       this.resetTree()
+    },
+
+    // 设置界面tab
+    setPageLabel(labelMap, menuLists) {
+      const tableName = this.$route.params.customizedModuleName
+      const tableId = this.$route.params.customizedModuleId
+      const key = `${tableName}/${tableId}`
+      const originTable = this.$router.$R3_history[key]
+
+      if (!originTable) {
+        return
+      }
+      const originModule = originTable.meta.moduleName
+      const originTableLabel = labelMap[originModule]
+
+      const newMenuList = JSON.parse(JSON.stringify(menuLists))
+      const currentTab = newMenuList.find(item => item.keepAliveModuleName === this._moduleName)
+      if (currentTab.label === 'undefined') {
+        currentTab.label = originTableLabel + this.$t('messages.fieldConfig')
+        this.updataOpenedMenuLists(newMenuList)
+        this.switchTabForActiveTab(currentTab)
+      }
     }
   },
 
