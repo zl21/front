@@ -220,7 +220,9 @@ export default {
     seeDetails: '详见',
     downloadFile: '下载文件',
     saveConfigTip:'无保存配置',
-    asyncTaskTip: '任务处理中,请稍后去【我的任务】中下载文件'
+    asyncTaskTip: '任务处理中,请稍后去【我的任务】中下载文件',
+    fieldConfig: '字段配置',
+    continueFieldConfig: '当前未进行过字段配置，是否创建模板并继续？'
   },
   // 具有通用性的文案
   tips: {
@@ -519,5 +521,41 @@ export default {
   // 换肤
   changeTheme:{
     title:'主题色'
+  },
+  fieldConfig: {
+    saveAndApply: '保存并应用',
+    onlySave: '仅保存',
+    saveAs: '另存为',
+    increase: '新增',
+    back: '返回',
+    delete: '删除',
+    add: '添加',
+    availableFields: '全部可用字段',
+    drag: '拖拽可更改排序',
+    enableSort: '开启排序',
+    disableSort: '关闭排序',
+    template: '当前模板',
+    enterField: '请输入字段名搜索',
+    addTable: '添加至列表界面表格',
+    addFilter: '添加至列表界面条件过滤',
+    listField: '列表界面表格显示字段配置',
+    filterField: '列表界面条件过滤字段配置',
+    visibleFields: '单对象界面显示字段配置',
+    newTemplate: '是否保存当前模板并应用',
+    createTemplate: '创建模板',
+    templateName: '模板名称',
+    updateSuccess: '更新成功',
+    notDelete: '当前配置模板不可删除',
+    shouldDelete: '是否执行删除',
+    saveAsTemplate: '另存为新模板',
+    pleaseEnter: '请输入',
+    switchTemplate: '模板尚未保存，请先去保存模板，再进行切换',
+    createSuccess: '创建成功',
+    setDefault: '是否设为公共模板',
+    addTipsOne: '当前表无模板，点击',
+    addTipsTwo: '可新增字段配置模板',
+    listConfig: '列表界面配置',
+    publicTemplate: '应用模板',
+    confirmAdd: '模板尚未保存，确定新增'
   }
 }

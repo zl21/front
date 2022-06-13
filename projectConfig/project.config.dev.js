@@ -193,7 +193,7 @@ module.exports = {
     // rowHeight: 100
     agHidePaste: true
   },
-  messageSwitch: true, // 消息开关
+  messageSwitch: false, // 消息开关
   enableTaskNotice: true,
   useAgGrid: true, // 明细界面的表格全局用ag表格进行渲染
   // (data) => {
@@ -289,5 +289,6 @@ module.exports = {
   closedChangePassword:false, // 是否关闭展示侧边修改密码配置
   showColorSetting:false, // 是否显示设置主题的color
   SingleSignOnSwitch:false, // 是否显示单点登录
+  enableFieldConfig: true, // 是否展示字段配置按钮
   TransformPanelFormConfig:['日志'] // 主表hr字段是否放到下面
 }

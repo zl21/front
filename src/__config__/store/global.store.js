@@ -97,6 +97,12 @@ export default () => ({
         ...imgsObj
       }
       return imgs
+    },
+    labelMaps(state) {
+      return state.keepAliveLabelMaps
+    },
+    menuLists(state) {
+      return state.openedMenuLists
     }
   },
   mutations: mutations(),

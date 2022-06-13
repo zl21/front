@@ -31,6 +31,10 @@ class RouterPush {
     router() {
         // 重写router
         if (window.vm.$router) {
+            if (isEmpty(window.vm.$router.$R3_history)) {
+                // 获取当前历史(应对刷新问题) 
+                window.vm.$router.$R3_history = this.gethistory() || {};
+            }
             const originalPush = window.vm.$router.push;
             let self = this;
             window.vm.$router.push = function push(location) {
