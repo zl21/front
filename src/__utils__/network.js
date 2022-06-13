@@ -44,8 +44,10 @@ const matchGateWay = (url) => {
       'serviceIdMap',JSON.stringify(window.vm.$store.state.global.serviceIdMap)
     )
   }
-  const serviceIdMap = Object.assign({}, window.vm.$store.state.global.serviceIdMap, JSON.parse(window.localStorage.getItem('serviceIdMap')));
-  
+  let serviceIdMap = Object.assign({}, window.vm.$store.state.global.serviceIdMap, JSON.parse(window.localStorage.getItem('serviceIdMap')));
+  if(serviceIdMap && Object.keys(serviceIdMap).length<1){
+    serviceIdMap =  Object.assign({}, JSON.parse(window.localStorage.getItem('serviceIdMapOld')));
+  }
   // eslint-disable-next-line no-empty
   if (!enableGateWay() || url.indexOf('/getMsgCnt') >= 0) {
     return undefined;
@@ -287,7 +289,7 @@ axios.interceptors.response.use(
         if (!filterUrl(config && config.url) || !isJSON(emg)) {
           // 报错弹窗
          let { SetCustomModal } =  window.ProjectConfig;
-          if(window.vm.$router.currentRoute.path !== '/login' && new RegExp('/p/cs').test(config.url)===false){
+          if(window.vm.$router.currentRoute.path !== '/login'){
             if(SetCustomModal){
               new SetCustomModal({contentHtml:emg,showType:'fcError'},error.response).init();
             }else{

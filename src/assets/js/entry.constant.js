@@ -136,6 +136,10 @@ const getCategory = () => {
             'serviceIdMap',
             JSON.stringify(serviceIdMapData)
           )
+          window.localStorage.setItem(
+            'serviceIdMapOld',
+            JSON.stringify(serviceIdMaps)
+          )
           DispatchEvent('gatewayReady')
         } else if (getLocalObject('loginStatus') === true) {
           setMessage({ content: i18n.t('messages.NoMenuPermission') })
