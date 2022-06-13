@@ -17,13 +17,24 @@ class CustomModal {
         this.props.titleAlign = 'center';
         this.props.title = i18n.t('feedback.error');
         this.props.footerHide = true;
+        this.fileterurl = ['/p/cs/addTemplateName']
+    }
+    checked (){
+
+        let checkedUrl = this.fileterurl.some((url)=>{
+            return new RegExp(url).test(this.response.config.url)
+        });
+        return checkedUrl;
     }
     init() {
         this.props.content = this.setContent(this.item.contentHtml);
         this.props.footerTemplate = this.setFooter();
         this.props = Object.assign(this.props,this.item);
-        window.vm.$Modal.remove();
-        return window.vm.$Modal[this.props.showType](this.props);
+        if(!this.checked()){
+            window.vm.$Modal.remove();
+            return window.vm.$Modal[this.props.showType](this.props);
+        }
+       
     }
     
     setContent(html) {

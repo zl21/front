@@ -195,9 +195,9 @@ axios.interceptors.response.use(
           // 报错弹窗
           let { SetCustomModal } =  window.ProjectConfig;
           if(SetCustomModal){
-            new SetCustomModal({contentHtml:innerHTML,showType:'fcError'},response.data).init();
+            new SetCustomModal({contentHtml:innerHTML,showType:'fcError'},response).init();
           }else{
-            new CustomModal({contentHtml:innerHTML,showType:'fcError'},response.data).init();
+            new CustomModal({contentHtml:innerHTML,showType:'fcError'},response).init();
           }
         }
       }
@@ -286,12 +286,15 @@ axios.interceptors.response.use(
         const emg = error.response.data.message || error.response.data.msg;
         if (!filterUrl(config && config.url) || !isJSON(emg)) {
           // 报错弹窗
-          let { SetCustomModal } =  window.ProjectConfig;
-          if(SetCustomModal){
-            new SetCustomModal({contentHtml:emg,showType:'fcError'},error.response.data).init();
-          }else{
-            new CustomModal({contentHtml:emg,showType:'fcError'},error.response.data).init();
+         let { SetCustomModal } =  window.ProjectConfig;
+          if(window.vm.$router.currentRoute.path !== '/login' && new RegExp('/p/cs').test(config.url)===false){
+            if(SetCustomModal){
+              new SetCustomModal({contentHtml:emg,showType:'fcError'},error.response).init();
+            }else{
+              new CustomModal({contentHtml:emg,showType:'fcError'},error.response).init();
+            }
           }
+          
 
         }
         // let formatJsonEmg = null;
@@ -412,6 +415,7 @@ function NetworkConstructor() {
   this.post = async (url, config, serviceconfig, close) => {
     closeMessage = close;
     await getCenterByTable();
+
     const gateWay = matchGateWay(url);
     // 判断菜单网关 gateWay ？ serviceId 外键网关 ？
     const matchedUrl = setUrlSeverId(gateWay, url, serviceconfig);
@@ -467,9 +471,11 @@ function NetworkConstructor() {
       };
     }
     if(serviceconfig && !serviceconfig.serviceId){
+
       Object.keys(serviceconfig).forEach((key)=>{
         headers[key] = serviceconfig[key];
       })
+
     }
 
     headers = Object.assign({}, headers, {
@@ -477,13 +483,13 @@ function NetworkConstructor() {
         window.cancle = c;
       }))
     });
-
     return axios.post(matchedUrl, config, headers);
   };
 
   // equals to axios.get(url, config)
   this.get = async (url, config, serviceconfig) => {
     await getCenterByTable();
+
     const gateWay = matchGateWay(url);
     const matchedUrl = setUrlSeverId(gateWay, url, serviceconfig);
     let data = {};
