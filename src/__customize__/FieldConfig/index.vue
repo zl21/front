@@ -723,6 +723,16 @@ export default {
         this.updataOpenedMenuLists(newMenuList)
         this.switchTabForActiveTab(currentTab)
       }
+    },
+
+    clearModule() {
+      const keepAlive = this.$store.state.global.keepAliveLists
+      const moduleNameIndex = keepAlive.findIndex(item => item === this._moduleName)
+      if (moduleNameIndex > -1) {
+        this.delectkeepAliveLists({
+          i: moduleNameIndex
+        })
+      }
     }
   },
 
@@ -749,15 +759,16 @@ export default {
     this.showLoading = false
   },
 
+  deactivated() {
+    const keepAlive = this.$store.state.global.keepAliveLists
+    if(keepAlive.length !== this.menuLists.length) {
+      this.clearModule()
+    }
+  },
+
   beforeDestroy() {
     // 删除缓存
-    const keepAlive = this.$store.state.global.keepAliveLists
-    const moduleNameIndex = keepAlive.findIndex(item => item === this._moduleName)
-    if (moduleNameIndex > -1) {
-      this.delectkeepAliveLists({
-        i: moduleNameIndex
-      })
-    }
+    this.clearModule()
   }
 }
 </script>
