@@ -681,6 +681,10 @@ export default {
 
     // 刷新
     async refresh() {
+      if(this.templateList.length === 0) {
+        this.$Message.success(this.$t('feedback.refreshSuccess'))
+        return
+      }
       const isChange = this.isChangeData()
       if (isChange) {
         this.$Modal.fcWarning({
@@ -695,6 +699,7 @@ export default {
             this.currentTemplate && await this._getTemplateFields(this.currentTemplate)
             this.showLoading = false
             this.resetTree()
+            this.$Message.success(this.$t('feedback.refreshSuccess'))
           }
         })
         return
@@ -705,6 +710,7 @@ export default {
       this.currentTemplate && await this._getTemplateFields(this.currentTemplate)
       this.showLoading = false
       this.resetTree()
+      this.$Message.success(this.$t('feedback.refreshSuccess'))
     },
 
     // 设置界面tab
@@ -722,7 +728,7 @@ export default {
 
       const newMenuList = JSON.parse(JSON.stringify(menuLists))
       const currentTab = newMenuList.find(item => item.keepAliveModuleName === this._moduleName)
-      if (currentTab.label === 'undefined') {
+      if (currentTab && currentTab.label === 'undefined') {
         currentTab.label = originTableLabel + this.$t('messages.fieldConfig')
         this.updataOpenedMenuLists(newMenuList)
         this.switchTabForActiveTab(currentTab)
