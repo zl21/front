@@ -424,6 +424,8 @@ export default {
             this.$Message.success(this.$t('fieldConfig.createSuccess'))
             this.resetTree()
             callback()
+          } else {
+            this.$Message.error(res.message)
           }
         })
       }
@@ -439,6 +441,8 @@ export default {
             this.$Message.success(this.$t('feedback.saveSuccess'))
             this.resetTree()
             callback()
+          } else {
+            this.$Message.error(res.message)
           }
         })
       }

@@ -52,6 +52,7 @@ export async function getAllFields(data) {
 export async function createTemplate(data, disabledGateWay) {
   const res = await network.post(autoGateWay('/p/cs/addTemplateName'), data, {
     noServiceId: true,
+    keepOpen: true
   })
   return Promise.resolve(res.data)
 }
