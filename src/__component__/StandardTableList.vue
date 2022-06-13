@@ -1401,16 +1401,20 @@ export default {
     },
 
     openConfigPage() {
-      const { tableId } = this[INSTANCE_ROUTE_QUERY]
+      const { tableId, tableName } = this[INSTANCE_ROUTE_QUERY]
       const tabName = this.$store.state.global.activeTab.label
       const pageName = `${tabName}字段配置`
+      const openedMenuLists = this.$store.state.global.openedMenuLists
+      const currentModuleName = this.$route.meta.moduleName
+      const currentTab = openedMenuLists.find(item => item.keepAliveModuleName === currentModuleName)
 
       this.tabOpen({
         type: 'C',
         label: pageName,
-        customizedModuleName: 'FIELDCONFIG',
-        customizedModuleId: tableId,
-        id: tableId
+        // customizedModuleName: 'FIELDCONFIG',
+        // customizedModuleId: tableId,
+        // id: tableId
+        url: `/CUSTOMIZED/FIELDCONFIG/${tableId}?originTableName=${tableName}&originLabel=${currentTab.label}`
       })
     },
 

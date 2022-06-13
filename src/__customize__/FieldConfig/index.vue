@@ -206,27 +206,16 @@ export default {
   },
 
   computed: {
-    ...mapGetters('global', ['labelMaps', 'menuLists']),
-
-    storeData() {
-      if (Object.keys(this.labelMaps).length > 0 && this.menuLists.length > 0) {
-        return {
-          labelMaps: this.labelMaps,
-          menuLists: this.menuLists
-        }
-      } else {
-        return {}
-      }
-    }
+    ...mapGetters('global', ['menuLists']),
   },
 
   watch: {
-    storeData: {
+    menuLists: {
       immediate: true,
       handler: function (val) {
-        if (Object.keys(val).length > 0 && !this._setMap) {
+        if (val.length > 0 && !this._setMap) {
           this._setMap = true
-          this.setPageLabel(val.labelMaps, val.menuLists)
+          this.setPageLabel(val)
         }
       }
     }
@@ -365,18 +354,12 @@ export default {
     },
 
     jump() {
-      const tableName = this.$route.params.customizedModuleName
       const tableId = this.$route.params.customizedModuleId
-      const key = `${tableName}/${tableId}`
 
-      if (!this.$router.$R3_history[key]) {
-        return
-      }
-      const url = this.$router.$R3_history[key].fullPath
+      const url = `/SYSTEM/TABLE/AD_TABLE/${tableId}`
 
       // 更新menulist
       const tabIndex = this.menuLists.findIndex(item => item.keepAliveModuleName === this._moduleName)
-      const tab = this.menuLists[tabIndex]
       const newMenuLists = JSON.parse(JSON.stringify(this.menuLists))
       newMenuLists.splice(tabIndex, 1)
       this.updataOpenedMenuLists(newMenuLists)
@@ -730,22 +713,13 @@ export default {
     },
 
     // 设置界面tab
-    setPageLabel(labelMap, menuLists) {
-      const tableName = this.$route.params.customizedModuleName
-      const tableId = this.$route.params.customizedModuleId
-      const key = `${tableName}/${tableId}`
-      const originTable = this.$router.$R3_history[key]
-
-      if (!originTable) {
-        return
-      }
-      const originModule = originTable.meta.moduleName
-      const originTableLabel = labelMap[originModule]
-
+    setPageLabel(menuLists) {
       const newMenuList = JSON.parse(JSON.stringify(menuLists))
+      const { originLabel } = this.$route.query
       const currentTab = newMenuList.find(item => item.keepAliveModuleName === this._moduleName)
+
       if (currentTab && currentTab.label === 'undefined') {
-        currentTab.label = originTableLabel + this.$t('messages.fieldConfig')
+        currentTab.label = originLabel + this.$t('messages.fieldConfig')
         this.updataOpenedMenuLists(newMenuList)
         this.switchTabForActiveTab(currentTab)
       }
@@ -756,8 +730,9 @@ export default {
     this.$t = i18n.t.bind(i18n)
   },
 
-  async mounted() {
+  async mounted() {    
     this.showLoading = true
+
     this._visibleCache = []
     this._filterCache = []
     this._moduleName = this.$route.meta.moduleName

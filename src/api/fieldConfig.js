@@ -5,10 +5,7 @@ import { enableGateWay } from '../constants/global'
 // 根据来源表判断是否加网关
 function autoGateWay(url) {
   if (enableGateWay()) {
-    const { customizedModuleName, customizedModuleId } = vm.$route.params
-    const originTable =
-      vm.$router.$R3_history[`${customizedModuleName}/${customizedModuleId}`]
-    const originTableName = originTable.params.tableName
+    const { originTableName } = vm.$route.query
     const serviceIdMap = JSON.parse(
       window.localStorage.getItem('serviceIdMap') || '{}'
     )
