@@ -355,8 +355,8 @@ export default {
 
     jump() {
       const tableId = this.$route.params.customizedModuleId
-
-      const url = `/SYSTEM/TABLE/AD_TABLE/${tableId}`
+      const { originTableName } = this.$route.query
+      const url = `/SYSTEM/TABLE/${originTableName}/${tableId}`
 
       // 更新menulist
       const tabIndex = this.menuLists.findIndex(item => item.keepAliveModuleName === this._moduleName)
