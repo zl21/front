@@ -222,7 +222,7 @@ export default {
   },
 
   methods: {
-    ...mapMutations('global', ['updataOpenedMenuLists', 'switchTabForActiveTab','tabCloseAppoint','tabOpen','delectkeepAliveLists']),
+    ...mapMutations('global', ['updataOpenedMenuLists', 'switchTabForActiveTab', 'tabCloseAppoint', 'tabOpen', 'delectkeepAliveLists']),
 
     // 点击保存应用按钮
     saveAndApply() {
@@ -680,7 +680,7 @@ export default {
 
     // 刷新
     async refresh() {
-      if(this.templateList.length === 0) {
+      if (this.templateList.length === 0) {
         this.$Message.success(this.$t('feedback.refreshSuccess'))
         return
       }
@@ -730,7 +730,7 @@ export default {
     this.$t = i18n.t.bind(i18n)
   },
 
-  async mounted() {    
+  async mounted() {
     this.showLoading = true
 
     this._visibleCache = []
@@ -747,6 +747,17 @@ export default {
     this.selectedTemplate = template
     this.currentTemplate && await this._getTemplateFields(template)
     this.showLoading = false
+  },
+
+  beforeDestroy() {
+    // 删除缓存
+    const keepAlive = this.$store.state.global.keepAliveLists
+    const moduleNameIndex = keepAlive.findIndex(item => item === this._moduleName)
+    if (moduleNameIndex > -1) {
+      this.delectkeepAliveLists({
+        i: moduleNameIndex
+      })
+    }
   }
 }
 </script>
