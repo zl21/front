@@ -393,6 +393,10 @@ export default {
     // 清除缓存
     state.keepAliveLists.splice(i, 1);
   },
+  addkeepAliveLists(state, data){
+    // 添加keepAliveLists 缓存
+    state.keepAliveLists = state.keepAliveLists.concat([data.name]);
+  },
   increaseKeepAliveLists(state, data) {
     let keepAliveModuleNameRes = '';
     if ((enableActivateSameCustomizePage()) && data.dynamicModuleTag === 'C') { // 只处理自定义界面情况，
@@ -808,10 +812,16 @@ export default {
         filtrate();
       } else if (enableOpenNewTab()) {
         filtrate();
-      } else if (!enableActivateSameCustomizePage() && !enableOpenNewTab()) { // 列表打开本表单对象界面，关闭时，根据表明清除列表以及列表对应的单对象keepAlive
-        state.keepAliveLists = state.keepAliveLists.filter(d => d !== tab.keepAliveModuleName);
+      } else if (!enableActivateSameCustomizePage() && !enableOpenNewTab()) { 
+        // 列表打开本表单对象界面，关闭时，根据表明清除列表以及列表对应的单对象keepAlive
+         // keepAlive 该字段表示要缓存当前页面的状态
+         if(!tab.keepAlive){
+          state.keepAliveLists = state.keepAliveLists.filter(d => d !== tab.keepAliveModuleName);
+         }
       } else if (kp === tab.tableName) {
-        state.keepAliveLists.splice(i, 1);
+        if(!tab.keepAlive){
+          state.keepAliveLists.splice(i, 1);
+        }
       }
     };
     // if (index > -1) {

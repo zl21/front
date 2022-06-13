@@ -54,7 +54,7 @@ export const refcolvalMap = ($this, config,key,type) => {
     //挂载映射关系到对方 
     let checked = [];
     targetVm.forEach((target)=>{
-        if(target.items.show){
+        if(target && target.items.show){
             if(!target.items._linkFormMap ||  target.items._linkFormMap && !target.items._linkFormMap[key]){
                 target.items._linkFormMap = linkFormMap;
             }else{

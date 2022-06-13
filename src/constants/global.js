@@ -53,7 +53,11 @@ let globalDefaultGateWay = [
   '/p/cs/recHistory',
   '/p/cs/setHideColumn',
   '/p/cs/changechruserpwd',
-  '/p/cs/SearchWords'
+  '/p/cs/SearchWords',
+  '/p/c/getsystemcolor',
+  '/p/cs/ssosystemlist',
+  '/p/cs/ssothirdsystem',
+  '/p/cs/updatesystemcolor'
 ];
 
 // 不走网关的接口
@@ -171,6 +175,7 @@ export const enableAsyncTaskTip = () => (window.ProjectConfig && window.ProjectC
 export const enableTaskNotice = () => (window.ProjectConfig && window.ProjectConfig.enableTaskNotice ? window.ProjectConfig.enableTaskNotice : project.enableTaskNotice); // 异步任务，右下角消息通知
 export const asyncTaskScheme = () => (window.ProjectConfig && window.ProjectConfig.asyncTaskScheme ? window.ProjectConfig.asyncTaskScheme : '');  // 异步导出设计方案
 export const layoutDirectionSlot = () => (window.ProjectConfig && window.ProjectConfig.layoutDirectionSlot) // 通过插槽修改界面布局的功能
+export const enableFieldConfig = () => (window.ProjectConfig && window.ProjectConfig.enableFieldConfig === true)  // 是否展示字段配置按钮
 
 // 获取表单网关
 export const getGatewayValue = (key) => {

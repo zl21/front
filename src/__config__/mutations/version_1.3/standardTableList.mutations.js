@@ -286,6 +286,7 @@ export default {
         colPosition: userConfig.colPosition,
         fixedColumn: userConfig.fixedColumn
       };
+      state.buttons.dataArray.collectiImg = userConfig.isFavorite;
     }
   },
   updateAgConfig(state, { key, value }) {
