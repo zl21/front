@@ -181,7 +181,7 @@
   import { mapState, mapMutations, mapActions } from 'vuex';
   import regExp from '../constants/regExp';
   import {
-    Version, LINK_MODULE_COMPONENT_PREFIX, INSTANCE_ROUTE_QUERY, enableActivateSameCustomizePage, ossRealtimeSave, classFix, messageSwitch, enableAsyncTaskTip, enableTaskNotice, asyncTaskScheme
+    Version, LINK_MODULE_COMPONENT_PREFIX, INSTANCE_ROUTE_QUERY, enableActivateSameCustomizePage, ossRealtimeSave, classFix, messageSwitch, enableAsyncTaskTip, enableTaskNotice, asyncTaskScheme, isEditableDate
   } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
   import ComplexsDialog from './ComplexsDialog.vue'; // emit 选中的行
@@ -3650,7 +3650,8 @@
               value: params.row[cellData.colname],
               type: cellData.display === 'OBJ_DATENUMBER' ? 'date' : 'datetime',
               transfer: true,
-              editable: false
+              editable: isEditableDate(),
+              editableYear: isEditableDate()
             },
             nativeOn: {
               // click: (e) => {
