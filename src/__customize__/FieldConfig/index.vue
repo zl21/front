@@ -233,7 +233,7 @@ export default {
   },
 
   methods: {
-    ...mapMutations('global', ['updataOpenedMenuLists', 'switchTabForActiveTab']),
+    ...mapMutations('global', ['updataOpenedMenuLists', 'switchTabForActiveTab','tabCloseAppoint','tabOpen','delectkeepAliveLists']),
 
     // 点击保存应用按钮
     saveAndApply() {
@@ -374,10 +374,22 @@ export default {
       }
       const url = this.$router.$R3_history[key].fullPath
 
-      const tab = this.$store.state.global.openedMenuLists.find(item => item.keepAliveModuleName === this._moduleName)
-      this.$store.commit('global/tabCloseAppoint', tab)
+      // 更新menulist
+      const tabIndex = this.menuLists.findIndex(item => item.keepAliveModuleName === this._moduleName)
+      const tab = this.menuLists[tabIndex]
+      const newMenuLists = JSON.parse(JSON.stringify(this.menuLists))
+      newMenuLists.splice(tabIndex, 1)
+      this.updataOpenedMenuLists(newMenuLists)
 
-      this.$store.commit('global/tabOpen', {
+      // 删除缓存
+      const keepAlive = this.$store.state.global.keepAliveLists
+      const moduleNameIndex = keepAlive.findIndex(item => item === this._moduleName)
+      this.delectkeepAliveLists({
+        i: moduleNameIndex
+      })
+
+      // 重新激活tab
+      this.tabOpen({
         back: true,
         url,
         NToUpperCase: true,
