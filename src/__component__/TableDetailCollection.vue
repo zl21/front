@@ -4093,9 +4093,11 @@
                   },
                   on: {
                     filechange: (val) => {
-                      this.copyDataSource.row[params.index][cellData.colname].val = JSON.stringify(val);
-                      this.putDataFromCell(val.length > 0 ? JSON.stringify(val) : '', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                      this.putLabelDataFromCell(val.length > 0 ? JSON.stringify(val) : '', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                      const newValue = val.length > 0 ? JSON.stringify(val) : ''
+                      const oldValue = this.dataSource.row[params.index][cellData.colname].val
+                      this.copyDataSource.row[params.index][cellData.colname].val = newValue;
+                      this.putDataFromCell(newValue, oldValue, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, cellData.display);
+                      this.putLabelDataFromCell(newValue, oldValue, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, oldValue);
 
                       if (!ossRealtimeSave()) {
                         //DispatchEvent('childTableSaveFile', { detail: { type: 'save' } });
@@ -4342,7 +4344,8 @@
         }
         if (this.afterSendData[this.tableName]) {
           const rowDatas = this.afterSendData[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
-          if (currentValue !== oldValue || (fkdisplay === 'drp' && oldFkIdValue !== oldValue)) {
+          // type === 'doc' 即文档组件值一样也需要更新。fix: #52968
+          if (currentValue !== oldValue || (fkdisplay === 'drp' && oldFkIdValue !== oldValue ) || type === 'doc') {
             if (rowDatas.length > 0) {
               rowDatas[0][colname] = currentValue;
             } else {
