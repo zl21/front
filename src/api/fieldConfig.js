@@ -5,11 +5,8 @@ import { enableGateWay } from '../constants/global'
 // 根据来源表判断是否加网关
 function autoGateWay(url) {
   if (enableGateWay()) {
-    const { originTableName } = vm.$route.query
-    const serviceIdMap = JSON.parse(
-      window.localStorage.getItem('serviceIdMap') || '{}'
-    )
-    return `/${serviceIdMap[originTableName]}${url}`
+    const { serviceId } = vm.$route.query
+    return `/${serviceId}${url}`
   } else {
     return url
   }

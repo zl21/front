@@ -1437,13 +1437,18 @@ export default {
       const currentModuleName = this.$route.meta.moduleName
       const currentTab = openedMenuLists.find(item => item.keepAliveModuleName === currentModuleName)
 
+      const serviceIdMap = JSON.parse(
+        window.localStorage.getItem('serviceIdMap') || '{}'
+      )
+      const serviceId = serviceIdMap[tableName]
+
       this.tabOpen({
         type: 'C',
         label: pageName,
         // customizedModuleName: 'FIELDCONFIG',
         // customizedModuleId: tableId,
         // id: tableId
-        url: `/CUSTOMIZED/FIELDCONFIG/${tableId}?originTableName=${tableName}&originLabel=${currentTab.label}`
+        url: `/CUSTOMIZED/FIELDCONFIG/${tableId}?originTableName=${tableName}&originLabel=${currentTab.label}&serviceId=${serviceId}`
       })
     },
 
