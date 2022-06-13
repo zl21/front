@@ -53,7 +53,11 @@ let globalDefaultGateWay = [
   '/p/cs/recHistory',
   '/p/cs/setHideColumn',
   '/p/cs/changechruserpwd',
-  '/p/cs/SearchWords'
+  '/p/cs/SearchWords',
+  '/p/c/getsystemcolor',
+  '/p/cs/ssosystemlist',
+  '/p/cs/ssothirdsystem',
+  '/p/cs/updatesystemcolor'
 ];
 
 // 不走网关的接口

@@ -34,6 +34,7 @@ export default {
   watch: {
     value: {
       handler(val, old) { //单对象字段 监听数据，处理数据联动
+        console.log(this.items.detailType)
         if (this.items.detailType) {
           if (this.items.linkage && this.items.linkage.hidecolumn) {
             hideColumn(this, this.items.linkage.hidecolumn)

@@ -512,6 +512,12 @@ export default class ParameterDataProcessing {
           return arr;
         }, []).join(',');
       }
+      if (this.item.display === 'image' || this.item.display === 'OBJ_DOC') {
+        return this.value.reduce((arr,item)=>{
+            arr.push(item.NAME || item.name)
+            return arr;
+        },[]).join(',');
+      }
     }else{
       return this.value
     }

@@ -3770,8 +3770,10 @@ import RouterPush from '../__utils__/routerback';
             if (enableOpenNewTab()) {
               // 当开启同表新开tab模式，为解决新增成功后跳转到新开的编辑界面后，新增界面loading未关闭问题
               this.$R3loading.hide(this.loadingName);
-              this.clearEditData();// 清空store update数据
-              this.upData();// 为解决新增保存后新开tab，新增界面信息未清除问题
+              //this.clearEditData();// 清空store update数据
+              //this.upData();// 为解决新增保存后新开tab，新增界面信息未清除问题
+              // 处理多开复制保存激活新增页面缓存问题  bug：53133
+              this.decreasekeepAliveLists(this[MODULE_COMPONENT_NAME]);
             }
             let types = '';
             if (this.objectType === 'horizontal') {
@@ -3837,7 +3839,7 @@ import RouterPush from '../__utils__/routerback';
         }
       },
       clearMainEditData() {
-        this.updateChangeData({ tableName: this.tableName, value: {} });
+        this.emptyChangeData(this.tableName);
         this.updateModifyData({ tableName: this.tableName, value: {} });
         this.updateAddDefaultData({ tableName: this.tableName, value: {} });
         this.updateAddData({ tableName: this.tableName, value: {} });
@@ -3857,7 +3859,8 @@ import RouterPush from '../__utils__/routerback';
         } else {
           tableName = this.itemName;
         }
-        this.updateChangeData({ tableName, value: {} });
+        // this.updateChangeData({ tableName, value: {} });
+        this.emptyChangeData(this.tableName);
         this.updateModifyData({ tableName, value: {} });
         this.updateAddDefaultData({ tableName, value: {} });
         this.updateAddData({ tableName, value: { } });
