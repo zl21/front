@@ -352,15 +352,6 @@ export default {
             this.$refs.tree.getTreeInfo();
           }
         }, 50);
-
-        // 缓存表格列，用于move事件回调里的判断
-        if(Object.keys(val.datas).length > 0 && val.datas.tabth && !this._cacheColumn) {
-          this._cacheColumn = true
-          this._initColumn = JSON.parse(JSON.stringify(val.datas.tabth))
-        }
-        if(Object.keys(val.datas).length > 0 && val.datas.tabth) {
-          this._currentColumn = JSON.parse(JSON.stringify(val.datas.tabth))
-        }
       }
     },
     formLists () {
@@ -943,29 +934,11 @@ export default {
       }
     },
 
-    // 判断是否是接口请求引起的列移动
-    isMoveByApi() {
-      const currentColumn = this._currentColumn
-      if(this._initColumn.length !== currentColumn.length) {
-        return true
-      }
-      for(let i = 0; i < this._initColumn.length; i++) {
-        // 顺序不一致视为接口重新请求了
-        if(this._initColumn[i].colname !== currentColumn[i].colname) {
-          return true
-        }
-      }
-      return false
-    },
-
     onColumnMoved (cols) {      
       if(cols === this._colPositionCache) {
         return
       }
-      if(this.isMoveByApi()){
-        this._initColumn = JSON.parse(JSON.stringify(this._currentColumn))
-        return
-      }
+
       this._colPositionCache = cols
       const { tableId } = this[INSTANCE_ROUTE_QUERY];
       this.setColPosition({
@@ -3013,8 +2986,6 @@ export default {
   },
    async created () {
     this._colPositionCache = undefined // 缓存表格列位置，如果相同不再请求接口
-    this._initColumn = [] // 缓存初始接口列
-    this._currentColumn = [] // 缓存最新的接口列
 
     this.buttonMap = buttonmap;
     this.ChineseDictionary = ChineseDictionary;
