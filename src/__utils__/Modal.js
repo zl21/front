@@ -45,7 +45,7 @@ class CustomModal {
         return {
             template:
                `<div>
-                    <Button size="small" type="fcdefault" @click="copy">${i18n.t('buttons.copy')}</Button>
+                    <Button size="small" type="fcdefault" @click="copy" class="buttonCopy">${i18n.t('buttons.copy')}</Button>
                     <Button size="small" type="posdefault"  @click="close">${i18n.t('buttons.close')}</Button>
                 </div>`,
             methods: {
