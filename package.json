@@ -25,7 +25,9 @@
         "deploy": "npm publish && node ./src/__utils__/dingtalk.js &&  npm run git",
         "server": "node ./build/server",
         "git": "node ./src/__utils__/release.js",
-        "upload": "ark oss --upload --ossPath=/TEST/@syman-burgeon-r3 --localPath=./r3.publish"
+        "upload": "ark oss --upload --ossPath=/TEST/@syman-burgeon-r3 --localPath=./r3.publish",
+        "uploadCdn": "ark oss --upload --ossPath=/CDN/@syman/burgeon-r3/3.6.8 --localPath=./r3.publish"
+
     },
     "repository": {
         "type": "git",
