@@ -188,6 +188,7 @@ export default {
     const tableName = this.state.global.activeTab.tableName;
     const favorite = this.state.global.favorite;
     favorite.forEach((element) => {
+      console.log(tableName,'==收藏==',element.value);
       if (element.value === tableName) {
         buttons.dataArray.collectiImg = true;
       }
@@ -298,6 +299,7 @@ export default {
         colPosition: userConfig.colPosition,
         fixedColumn: userConfig.fixedColumn
       };
+      state.buttons.dataArray.collectiImg = userConfig.isFavorite;
     }
   },
   updateAgConfig(state, { key, value }) {

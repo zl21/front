@@ -5,6 +5,7 @@
 import Vue from 'vue';
 import dataProp from '../../__config__/props.config';
 import { SetPlaceholder ,SetDisable} from './setProps';
+import { isEditableDate } from '../../constants/global'
 
 let DatePicker = Ark.DatePicker;
 let TimePicker = Ark.TimePicker;
@@ -32,7 +33,8 @@ class CustomDatePicker {
       transfer:true,
       type:this.type(),
       format:this.format(),
-      editable: false
+      editable: this.item.display !== 'OBJ_TIME' && isEditableDate(),
+      editableYear: this.item.display !== 'OBJ_TIME' && isEditableDate()
     }
     let _that = this;
 

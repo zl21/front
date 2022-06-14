@@ -77,8 +77,8 @@ export default class LinkageRelationships{
     delete target.hidecolumn
   }
   // 不存在的字段
-  nonexistence(target,key){
-    if(key ==='hideColumn' && target.hideColumn.ishide ){
+  nonexistence(target){
+    if( target.hidecolumn && target.hidecolumn.ishide ){
         target.show = true;
       }else{
         target.show = false;

@@ -8,7 +8,7 @@ import projectConfig from '../projectConfig/project.config';
 import changeThemeColor from 'webpack-theme-color-replacer-syman/src/views/index';
 
 // const R3 = window.R3.default
-Window.R3 = R3;
+window.R3 = R3;
 
 Vue.use(changeThemeColor);
 const {
@@ -33,5 +33,6 @@ keyList.forEach((key) => {
 Vue.prototype.$network = network
 Vue.prototype.$urlSearchParams = urlSearchParams
 R3.launchApplication({
-  ...projectConfig
+  ...projectConfig,
+  SetCustomModal:require('../demo/CustomModal').default,
 })

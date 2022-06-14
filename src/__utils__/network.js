@@ -4,7 +4,7 @@ import md5 from 'md5';
 // import store from '../__config__/window.vm.$store.config';
 import i18n from '../assets/js/i18n';
 import { filterUrl, isJSON } from "./utils";
-import { copy } from '../__utils__/common'
+import CustomModal from './Modal.js'
 
 import {
   ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, getProjectQuietRoutes, REQUEST_PENDDING_EXPIRE, getTouristRoute, logoutTips, Version, filterUrlForNetworkScript, getFilterUrlForNetworkData,autoGatewayUrl
@@ -44,8 +44,10 @@ const matchGateWay = (url) => {
       'serviceIdMap',JSON.stringify(window.vm.$store.state.global.serviceIdMap)
     )
   }
-  const serviceIdMap = Object.assign({}, window.vm.$store.state.global.serviceIdMap, JSON.parse(window.localStorage.getItem('serviceIdMap')));
-  
+  let serviceIdMap = Object.assign({}, window.vm.$store.state.global.serviceIdMap, JSON.parse(window.localStorage.getItem('serviceIdMap')));
+  if(serviceIdMap && Object.keys(serviceIdMap).length<1){
+    serviceIdMap =  Object.assign({}, JSON.parse(window.localStorage.getItem('serviceIdMapOld')));
+  }
   // eslint-disable-next-line no-empty
   if (!enableGateWay() || url.indexOf('/getMsgCnt') >= 0) {
     return undefined;
@@ -192,77 +194,13 @@ axios.interceptors.response.use(
           Modalflag = false;
         }
         if (Modalflag) {
-          window.vm.$Modal.fcError({
-            mask: true,
-            titleAlign: 'center',
-            title: i18n.t('feedback.error'),
-            // content: formatJsonEmg
-            showCancel: true,
-            okType: 'posdefault',
-            cancelText: i18n.t('buttons.copy'),
-            onCancel: function() {
-              // 阻止点击后弹框消失
-              this.$children[0].visible = true
-              this._removeCache = this.remove
-              this.remove = function() {}
-
-              copy(errorMessage)
-              window.vm.$Message.success(`${i18n.t('buttons.copy')}${i18n.t('feedback.success')}`)
-            },
-            onOk: function() {
-              // 关闭弹框
-              if(this._removeCache) {
-                this.$children[0].visible = false
-                this._removeCache()
-              }
-            },
-            render: h => h('div', [
-              h('div', {
-                style: {
-                  padding: '10px 20px 0',
-                  display: 'flex',
-                  // alignItems: 'center',
-                  lineHeight: '16px'
-                }
-              }, [
-
-                h('i', {
-                  props: {
-                  },
-                  style: {
-                    marginRight: '5px',
-                    display: 'inline-block',
-                    'font-size': '28px',
-                    'margin-right': ' 10px',
-                    'line-height': ' 1',
-                    padding: ' 10px 0',
-                    color: 'red'
-                  },
-                  class: 'iconfont iconbj_error fcError '
-                }),
-                h('div', {
-                  attrs: {
-                  // rows: 8,
-                  // readonly: 'readonly',
-                  },
-                  domProps: {
-                    innerHTML,
-                  },
-                  style: `width: 80%;
-                    margin: 1px;
-                    margin-bottom: -8px;
-                    box-sizing: border-box;
-                    padding: 5px;
-                    resize: none;
-                    max-height: 100px;
-                    max-width: 300px;
-                    overflow: auto;
-                    `
-                })
-              ])
-
-            ]),
-          });
+          // 报错弹窗
+          let { SetCustomModal } =  window.ProjectConfig;
+          if(SetCustomModal){
+            new SetCustomModal({contentHtml:innerHTML,showType:'fcError'},response).init();
+          }else{
+            new CustomModal({contentHtml:innerHTML,showType:'fcError'},response).init();
+          }
         }
       }
     }
@@ -304,7 +242,7 @@ axios.interceptors.response.use(
       // }));
       // delete pendingRequestMap[requestMd5];
       if (status === 403) {
-        if (logoutTips() && getProjectQuietRoutes().indexOf(window.vm.$router.currentRoute.path) === -1) {
+        if (logoutTips() && getProjectQuietRoutes().indexOf(window.vm.$router.currentRoute.path) === -1 && localStorage.getItem('loginStatus') ==='true') {
           window.vm.$Modal.fcWarning({
             title: i18n.t('feedback.warning'),
             content: i18n.t('messages.lostSession'),
@@ -349,90 +287,17 @@ axios.interceptors.response.use(
       // 如果http状态码正常，则直接返回数据
         const emg = error.response.data.message || error.response.data.msg;
         if (!filterUrl(config && config.url) || !isJSON(emg)) {
-          window.vm.$Modal.fcError({
-            mask: true,
-            titleAlign: 'center',
-            title: i18n.t('feedback.error'),
-            // content: formatJsonEmg
-            showCancel: true,
-            cancelText: i18n.t('buttons.copy'),
-            onCancel: function() {
-              // 阻止点击后弹框消失
-              this.$children[0].visible = true
-              this._removeCache = this.remove
-              this.remove = function() {}
+          // 报错弹窗
+         let { SetCustomModal } =  window.ProjectConfig;
+          if(window.vm.$router.currentRoute.path !== '/login'){
+            if(SetCustomModal){
+              new SetCustomModal({contentHtml:emg,showType:'fcError'},error.response).init();
+            }else{
+              new CustomModal({contentHtml:emg,showType:'fcError'},error.response).init();
+            }
+          }
+          
 
-              copy(emg)
-              window.vm.$Message.success(`${i18n.t('buttons.copy')}${i18n.t('feedback.success')}`)
-            },
-            okType: 'posdefault',
-            onOk: function() {
-              // 关闭弹框
-              if(this._removeCache) {
-                this.$children[0].visible = false
-                this._removeCache()
-              }
-            },
-            render: h => h('div', {
-              style: {
-                padding: '10px 20px 0',
-                display: 'flex',
-                // alignItems: 'center',
-                lineHeight: '16px'
-              }
-            }, [
-
-              h('i', {
-                props: {
-                },
-                style: {
-                  marginRight: '5px',
-                  display: 'inline-block',
-                  'font-size': '28px',
-                  'margin-right': ' 10px',
-                  'line-height': ' 1',
-                  padding: ' 10px 0',
-                  color: 'red'
-                },
-                class: 'iconfont iconbj_error fcError '
-              }),
-              h('div', {
-                attrs: {
-                  // rows: 8,
-                  // readonly: 'readonly',
-                },
-                domProps: {
-                  innerHTML: emg,
-                },
-                style: `width: 80%;
-                  margin: 1px;
-                  margin-bottom: -8px;
-                  box-sizing: border-box;
-                  padding: 5px;
-                  resize: none;
-                  max-height: 100px;
-                  max-width: 300px;
-                  overflow: auto;
-                  `
-              })
-            ])
-            // render: createElement => createElement('textarea', {
-            //   domProps: {
-            //     value: formatJsonEmg,
-            //     rows: 8,
-            //     style: `width: 99%;
-            //     margin: 1px;
-            //     margin-bottom: -8px;
-            //     box-sizing: border-box;
-            //     padding: 5px;
-            //     resize: none;
-            //     `
-            //   },
-            //   attrs: {
-            //     readonly: 'readonly',
-            //   }
-            // })
-          });
         }
         // let formatJsonEmg = null;
         // try {
@@ -552,6 +417,7 @@ function NetworkConstructor() {
   this.post = async (url, config, serviceconfig, close) => {
     closeMessage = close;
     await getCenterByTable();
+
     const gateWay = matchGateWay(url);
     // 判断菜单网关 gateWay ？ serviceId 外键网关 ？
     const matchedUrl = setUrlSeverId(gateWay, url, serviceconfig);
@@ -607,9 +473,11 @@ function NetworkConstructor() {
       };
     }
     if(serviceconfig && !serviceconfig.serviceId){
+
       Object.keys(serviceconfig).forEach((key)=>{
         headers[key] = serviceconfig[key];
       })
+
     }
 
     headers = Object.assign({}, headers, {
@@ -617,13 +485,13 @@ function NetworkConstructor() {
         window.cancle = c;
       }))
     });
-
     return axios.post(matchedUrl, config, headers);
   };
 
   // equals to axios.get(url, config)
   this.get = async (url, config, serviceconfig) => {
     await getCenterByTable();
+
     const gateWay = matchGateWay(url);
     const matchedUrl = setUrlSeverId(gateWay, url, serviceconfig);
     let data = {};

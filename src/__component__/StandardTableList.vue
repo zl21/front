@@ -198,6 +198,11 @@ import { getPinnedColumns } from '../__utils__/tableMethods'
 import { isTaskProcessing } from '../__utils__/task-utils'
 import tabBar from './tabBar.vue';
 import listsForm from './FormComponents/list/listsForm';
+import { getAllTemplate, createTemplate } from '../api/fieldConfig'
+
+import Vue from 'vue'
+import DialogContent from '../__customize__/FieldConfig/DialogContent'
+Vue.component('DialogContent', DialogContent)
 
 export default {
   components: {
@@ -210,8 +215,7 @@ export default {
     modifyDialog,
     dialogComponent,
     tabBar,
-    listsForm
-
+    listsForm,
   },
   data () {
     return {
@@ -333,7 +337,7 @@ export default {
   },
   watch: {
     ag: {
-      handler () {
+      handler (val) {
         // 监听ag数据 yan触发树的数据变化
         // if (!this.mountedChecked) {
         //   return false;
@@ -929,10 +933,12 @@ export default {
         this.searchData.orderby = obj.orderbyData;
       }
     },
-    onColumnMoved (cols) {
+
+    onColumnMoved (cols) {      
       if(cols === this._colPositionCache) {
         return
       }
+
       this._colPositionCache = cols
       const { tableId } = this[INSTANCE_ROUTE_QUERY];
       this.setColPosition({
@@ -1396,6 +1402,29 @@ export default {
       this.onSelectionChangedAssignment({ rowIdArray, rowArray });
     },
 
+    openConfigPage() {
+      const { tableId, tableName } = this[INSTANCE_ROUTE_QUERY]
+      const tabName = this.$store.state.global.activeTab.label
+      const pageName = `${tabName}字段配置`
+      const openedMenuLists = this.$store.state.global.openedMenuLists
+      const currentModuleName = this.$route.meta.moduleName
+      const currentTab = openedMenuLists.find(item => item.keepAliveModuleName === currentModuleName)
+
+      const serviceIdMap = JSON.parse(
+        window.localStorage.getItem('serviceIdMap') || '{}'
+      )
+      const serviceId = serviceIdMap[tableName]
+
+      this.tabOpen({
+        type: 'C',
+        label: pageName,
+        // customizedModuleName: 'FIELDCONFIG',
+        // customizedModuleId: tableId,
+        // id: tableId
+        url: `/CUSTOMIZED/FIELDCONFIG/${tableId}?originTableName=${tableName}&originLabel=${currentTab.label}&serviceId=${serviceId}`
+      })
+    },
+
     buttonClick (type, obj) {
       this.TreeChange = false;
       this.setActiveTabActionValue({});// 点击按钮前清除上一次按钮存的信息
@@ -1412,6 +1441,8 @@ export default {
         // 查询成功后清除表格选中项
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });
         this.$refs.agTableElement.clearChecked();
+      }  else if(type === 'field-config') {
+        this.openConfigPage();
       } else {
         this.searchEvent();
       }
@@ -2955,6 +2986,7 @@ export default {
   },
    async created () {
     this._colPositionCache = undefined // 缓存表格列位置，如果相同不再请求接口
+
     this.buttonMap = buttonmap;
     this.ChineseDictionary = ChineseDictionary;
     this.loadingName = this.$route.meta.moduleName.replace(/\./g, '-');

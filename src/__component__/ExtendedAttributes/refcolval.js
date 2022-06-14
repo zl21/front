@@ -54,7 +54,7 @@ export const refcolvalMap = ($this, config,key,type) => {
     //挂载映射关系到对方 
     let checked = [];
     targetVm.forEach((target)=>{
-        if(target.items.show){
+        if(target && target.items.show){
             if(!target.items._linkFormMap ||  target.items._linkFormMap && !target.items._linkFormMap[key]){
                 target.items._linkFormMap = linkFormMap;
             }else{
@@ -293,13 +293,15 @@ export const postTableData = async function(self,url){
 }
 
  // 字段联动 模糊查询
- export  function postData(self,url){
+ export  const postData = async function(self,url){
     let Fixedcolumns = setFixedcolumns(self,'AutoRequest');
     if(Fixedcolumns.precolnameslist){
         this.searchdata.precolnameslist = Fixedcolumns.precolnameslist;
     }
    
     let selfChildren = this.$children[0];
+    const promiseResult = await selfChildren.isShowPopTip();
+
     if(typeof selfChildren.isShowPopTip === 'function'){
         if(!selfChildren.isShowPopTip()){
             this.$el.querySelector('input').value ='';
@@ -307,11 +309,8 @@ export const postTableData = async function(self,url){
             resolve([]);
           });
         }else if(selfChildren.isShowPopTip() &&  typeof selfChildren.isShowPopTip().then === 'function'){
-            selfChildren.isShowPopTip().then((res)=>{
-              if(res === true){
-                return newpostData(Fixedcolumns,this,url)
-              }
-          });
+            return newpostData(this._datafixedcolumns,this,url);
+
         }else{
           return newpostData(Fixedcolumns,this,url);
         }
