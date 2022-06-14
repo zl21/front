@@ -246,7 +246,7 @@
                         innerHTML:
                           item.colname === 'ID'
                             ? data.start + params.index + 1
-                            : params.row[item.colname].val
+                            : params.row[item.colname] && params.row[item.colname].val
                       }
                     })
                   });
@@ -256,7 +256,7 @@
                     key: `${item.colname}`,
                     render: (h, params) => h('div', {
                       domProps: {
-                        innerHTML: params.row[item.colname].val
+                        innerHTML: params.row[item.colname] && params.row[item.colname].val
                       }
                     })
                   });
