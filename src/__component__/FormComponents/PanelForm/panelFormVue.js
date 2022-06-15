@@ -92,6 +92,12 @@ export default {
       },
       deep: true
     },
+    readonly:{
+      handler (val) {  //处理展开面板的默认值
+        this.setFormlist();
+        this.clearForm();
+      }  
+    },
     defaultData:{
       handler (val) {  //处理展开面板的默认值
          const { tableName, customizedModuleName } = this.$route.params;
@@ -101,11 +107,9 @@ export default {
 
         }
         this.$R3loading.show(this.loadingName);
-        clearTimeout(this.formTime);
-        this.formTime = setTimeout(()=>{
-            this.setFormlist();
-            this.clearForm();
-        },50);
+        this.setFormlist();
+        this.clearForm();
+       
 
       },
       deep: true
@@ -145,7 +149,12 @@ export default {
 
     },
     setFormlist(){
-
+      clearTimeout(this.formTime);
+      this.formTime = setTimeout(()=>{
+        this.getFormLayout()
+      },100);
+    },
+    getFormLayout(){
       let data = JSON.parse(JSON.stringify(this.defaultData))
       if (!data.addcolums) {
         setTimeout(()=>{
@@ -232,7 +241,6 @@ export default {
          
           return arr;
         },[])
-
         // _childs = _childs.filter(child => child.display !== 'none')
         item.childs = { ...layoutAlgorithm(Number(data.objviewcol), _childs) };
         Object.keys(item.childs).map((temp) => {
@@ -273,7 +281,8 @@ export default {
 
       // 调整排版
       this.setResize()
-    },
+
+    },  
     deleteFormData(data){
       //删除状态的key
          let updateLinkageForm = this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/seleteAddData`]
