@@ -23,7 +23,7 @@
         <!-- 上下结构主表 form-->
         <panelForm slot="v-object-from"
           :tableName="$route.params.tableName"
-          :readonly="mainFormInfo.buttonsData.data.objreadonly"
+          :readonly="objreadonly"
           :defaultData="Object.keys(defaultDataForCopy).length>0?defaultDataForCopy.data:mainFormInfo.formData.data"
         ></panelForm>
 
@@ -89,6 +89,9 @@
           arr.push(obj[key] = customizeData[key]);
           return arr;
         }, []);
+      },
+      objreadonly(){
+        return this.mainFormInfo.buttonsData.data.objreadonly
       },
       resetWaterMark() {
         if (this.mainFormInfo.buttonsData.data.watermarkimg) {
