@@ -582,7 +582,8 @@
         const cssStatus = JSON.parse(JSON.stringify(this.cssStatus));
         cssStatus.sort((a, b) => a.priority - b.priority);
         cssStatus.forEach((item) => {
-          const columnKey = this.columns.find(tem => tem.title === item.desc).key;
+          const columnKeydesc = this.columns.find(tem => tem.title === item.desc);
+          const columnKey = columnKeydesc && columnKeydesc.key;
           const cssFindindex = item.value.findIndex(cur => cur === row[columnKey]);
           if (cssFindindex > -1) {
             // if (item.css[cssFindindex].indexOf('color') > -1) {
