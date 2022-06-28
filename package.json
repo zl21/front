@@ -1,6 +1,6 @@
 {
     "name": "@syman/burgeon-r3",
-    "version": "1.4.47",
+    "version": "1.4.47@senmir",
     "description": "A Project for R3 Erp.",
     "main": "r3.publish/r3.min.js",
     "files": [
@@ -14,6 +14,7 @@
         "start": " webpack-dev-server --progress --env.develop",
         "build": "webpack --color --progress --config webpack.config.js --env.production",
         "build:publish": "cross-env BUILD_ENV=publish webpack --color --progress --config webpack.publish.js  --env.NODE_ENV=production",
+        "push": "npm run build:publish && yalc push",
         "zip": "node doZip.js"
     },
     "repository": {

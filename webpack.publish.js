@@ -22,6 +22,7 @@ module.exports = () => ({
     umdNamedDefine: true
   },
   devtool: 'source-map',
+  // devtool: 'eval-cheap-module-source-map',
   externals: {
     vue: {
       commonjs: 'vue',

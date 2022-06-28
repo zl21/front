@@ -777,8 +777,10 @@
           if (this.dataSource.fullRangeSubTotalRow) {
             for (const key in this.dataSource.fullRangeSubTotalRow) {
               if (Object.prototype.hasOwnProperty.call(this.dataSource.fullRangeSubTotalRow, key)) {
-                const element = `<div class="text-right">${this.dataSource.fullRangeSubTotalRow[key]}</div>`;
-                cell[key] = element.val;
+                let key_value = this.dataSource.fullRangeSubTotalRow[key]
+                key_value = typeof key_value == 'string' ? key_value : key_value.val
+                const element = `<div class="text-right">${key_value}</div>`;
+                cell[key] = element;
               }
             }
           }
