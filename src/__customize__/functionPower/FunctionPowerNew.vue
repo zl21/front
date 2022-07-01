@@ -39,6 +39,7 @@
         </Input>
         <div class="menuContainer">
           <tree
+                  :key="jqTree"
                   ref="ztree"
                   :tree-datas="treeConfigData"
                   @menuTreeChange="menuTreeChange"
@@ -330,6 +331,7 @@
     components: {tree},
     data() {
       return {
+        jqTree: 'jqTree',
         pageInit: false,
         isSaveError: false, // 是否保存失败
         spinShow: false, // loading是否显示
@@ -613,6 +615,7 @@
           this.$refs.ztree.clearInputVal();
           this.$refs.ztree.search();
           this.refresh();
+          this.jqTree += + new Date();
           this.selectFirstOnce();
         }
       }, // 刷新按钮

@@ -1,6 +1,6 @@
 {
     "name": "@syman/burgeon-r3",
-    "version": "3.5.7",
+    "version": "3.5.7-1",
     "description": "A Project for R3 Erp.",
     "main": "r3.publish/r3.min.js",
     "files": [
@@ -24,6 +24,7 @@
         "zip": "node ./src/__utils__/doZip.js",
         "deploy": "npm publish && node ./src/__utils__/dingtalk.js &&  npm run git",
         "server": "node ./build/server",
+        "push": "npm run build:publish && yalc push",
         "git": "node ./src/__utils__/release.js"
     },
     "repository": {
