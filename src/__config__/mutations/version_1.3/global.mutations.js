@@ -168,6 +168,9 @@ export default {
       if (treeQuery.isTreeTable) {
         // 如果当前列表为树形结构列表界面，则配置的动态路由以及tableurl（配置为跳转定制界面，则路由上定制界面ID为treeTableListSelectId）
         path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${param.id}`;
+      } else if (singleEditType.includes('?')) {
+        const _query = param.url.slice(param.url.indexOf(':itemId?') + ':itemId?'.length)
+        path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${param.id}?${_query}`;
       } else if (singleEditType !== ':itemId') {
         path = `/${param.url}`;
          // 固定id label 匹配错误
